@@ -1,0 +1,22 @@
+overwrite: true
+schema: 'http://localhost:4000/graphql'
+documents: 'packages/app/src/graphql/**/*.ts'
+generates:
+  packages/app/src/generated/apolloComponents.tsx:
+    config:
+      noNamespaces: true
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      useIndexSignature: true
+      gqlImport: "@apollo/client#gql"
+      reactApolloVersion: 3
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+  packages/app/src/generated/introspectionSchema.json:
+    plugins:
+      - introspection
+    config:
+      minify: true

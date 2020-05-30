@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { ContextInterface } from '../types';
+import { ContextInterface } from '../types/context';
 import { User, UserModel } from '../entities/User';
 import { compare } from 'bcryptjs';
 import { IN_TEST } from '../config';

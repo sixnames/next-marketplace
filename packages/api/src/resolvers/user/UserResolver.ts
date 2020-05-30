@@ -17,7 +17,7 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateUserInput } from './UpdateUserInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
-import { ContextInterface } from '../../types';
+import { ContextInterface } from '../../types/context';
 import { attemptSignIn, ensureSignedOut, attemptSignOut } from '../../utils/auth';
 import { hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';

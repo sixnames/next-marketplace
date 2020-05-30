@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS, SESS_OPTIONS, DEV_ORIGIN, DB_URI } from './config';
+import { APOLLO_OPTIONS, SESS_OPTIONS, DEV_ORIGIN, DB_URI, DEFAULT_CITY } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -46,6 +46,15 @@ const createApp = () => {
 
   app.use(sessionHandler);
 
+  // Get current city from subdomain name
+  app.use((req, _, next) => {
+    const city = req.headers['x-subdomain']
+    req.session!.city = city ? city : DEFAULT_CITY;
+    next();
+  });
+
+  // app.use(IMAGES_DIRECTORY_NAME, express.static(path.join(__dirname, '../../web/src/images')));
+
   const server = new ApolloServer({
     ...APOLLO_OPTIONS,
     schema,
@@ -59,8 +68,6 @@ const createApp = () => {
       credentials: true,
     },
   });
-
-  // app.use(IMAGES_DIRECTORY_NAME, express.static(path.join(__dirname, '../../web/src/images')));
 
   return {
     app,

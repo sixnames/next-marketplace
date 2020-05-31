@@ -1,8 +1,20 @@
 *
-!./package.json
-!./packages/api/package.json
-!./packages/common/package.json
-!./packages/api/dist
-!./packages/common/dist
-!./packages/api/.env.prod
-!./packages/api/.env.example
+!/package.json
+
+# API
+!/packages/api/package.json
+!/packages/api/dist
+!/packages/api/.env.prod
+!/packages/api/.env.example
+
+# CONFIG
+!/packages/config/package.json
+!/packages/config/dist
+
+# UTILS
+!/packages/utils/package.json
+!/packages/utils/dist
+
+# VALIDATION
+!/packages/validation/package.json
+!/packages/validation/dist

@@ -5,7 +5,7 @@
     "module": "commonjs",
     "declaration": false,
     "outDir": "./dist",
-    "rootDir": "./",
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,

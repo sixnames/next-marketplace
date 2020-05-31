@@ -48,7 +48,7 @@ const createApp = () => {
 
   // Get current city from subdomain name
   app.use((req, _, next) => {
-    const city = req.headers['x-subdomain']
+    const city = req.headers['x-subdomain'];
     req.session!.city = city ? city : DEFAULT_CITY;
     next();
   });

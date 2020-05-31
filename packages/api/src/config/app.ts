@@ -4,3 +4,4 @@ export const IN_PROD = NODE_ENV === 'production';
 export const IN_TEST = NODE_ENV === 'test';
 
 export const DEFAULT_CITY = 'moscow';
+export const DEFAULT_LANG = 'ru';

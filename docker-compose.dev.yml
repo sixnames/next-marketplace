@@ -3,13 +3,13 @@ version: '3'
 services:
   db:
     image: mongo
-    container_name: whinenot-db
+    container_name: winenot-db
     ports:
       - '27017:27017'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=secret
-      - MONGO_INITDB_DATABASE=whinenot-db
+      - MONGO_INITDB_DATABASE=winenot-db
       - DB_USERNAME=admin
       - DB_PASSWORD=secret
     volumes:

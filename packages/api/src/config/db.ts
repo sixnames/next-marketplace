@@ -5,7 +5,7 @@ export const {
   DB_PASSWORD = 'secret',
   DB_HOST = 'localhost',
   DB_PORT = 27017,
-  DB_NAME = 'whinenot-db',
+  DB_NAME = 'winenot-db',
 
   ADMIN_NAME = 'admin',
   ADMIN_EMAIL = 'admin@gmail.com',

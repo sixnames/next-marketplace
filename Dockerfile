@@ -15,8 +15,4 @@ RUN yarn lerna:bootstrap
 COPY . .
 RUN yarn build:utils
 
-EXPOSE 4000
-
 CMD ["yarn", "dev"]
-#RUN yarn dev
-#RUN cd packages/api && yarn dev

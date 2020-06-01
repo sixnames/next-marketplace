@@ -1,23 +1,31 @@
 version: '3'
 
 services:
-  db:
+  app:
+    container_name: app
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    links:
+      - mongo
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./packages:/usr/src/app/packages
+  mongo:
+    container_name: mongo
     image: mongo
-    container_name: winenot-db
+    logging:
+      driver: none
     ports:
       - '27017:27017'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=secret
-      - MONGO_INITDB_DATABASE=winenot-db
-      - DB_USERNAME=admin
-      - DB_PASSWORD=secret
     volumes:
-      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
       - ./data:/data/db
-#  web:
-#    image: nginx
-#    volumes:
-#      - ./nginx-dev.conf:/etc/nginx/conf.d/mysite.template
-#    ports:
-#      - "8080:80"
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    container_name: nginx
+    ports:
+      - 80:80

@@ -6,8 +6,7 @@ import createInitialData from './utils/createInitialData';
 
 (async () => {
   try {
-    const connection = await mongoose.connect(DB_URI, DB_OPTIONS);
-    console.log('connection', connection);
+    await mongoose.connect(DB_URI, DB_OPTIONS);
 
     const { app, server } = createApp();
 

@@ -13,9 +13,11 @@ export const {
   ADMIN_PASSWORD = 'admin',
 } = process.env;
 
-export const DB_URI = `mongodb://${DB_USERNAME}:${encodeURIComponent(
+/*export const DB_URI = `mongodb://${DB_USERNAME}:${encodeURIComponent(
   `${DB_PASSWORD}`,
-)}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+)}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;*/
+
+export const DB_URI = `mongodb://mongo:27017/app`;
 
 export const DB_OPTIONS: ConnectionOptions = {
   useNewUrlParser: true,

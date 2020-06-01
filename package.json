@@ -12,18 +12,20 @@
   },
   "scripts": {
     "up": "docker-compose -f docker-compose.dev.yml up -d",
+    "up:dev": "docker-compose -f docker-compose.development.yml up --build",
     "postup": "wait-on data && npm run dev",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
+
     "dev": "lerna run --parallel dev",
     "test": "lerna run --parallel test",
+
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
     "lerna:bootstrap": "lerna bootstrap",
+
     "generate": "graphql-codegen --config codegen.yml",
-    "build:config": "lerna exec --scope @rg/config -- npm run build",
-    "build:utils": "lerna exec --scope @rg/utils -- npm run build",
-    "build:validation": "lerna exec --scope @rg/validation -- npm run build"
+    "build:utils": "lerna exec --scope @rg/validation --scope @rg/config --scope @rg/utils -- npm run build"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.13.5",

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "predev": "rimraf ./dist",
-    "dev": "ts-node-dev --transpileOnly --no-notify src",
+    "dev": "ts-node-dev --poll --transpileOnly --no-notify src",
     "start": "node ./dist/src/index.js",
     "build": "rimraf ./dist && tsc",
     "test": "jest --runInBand --detectOpenHandles",

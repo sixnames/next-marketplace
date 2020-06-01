@@ -1,20 +1,9 @@
-*
-!/package.json
-
-# API
-!/packages/api/package.json
-!/packages/api/dist
-!/packages/api/.env.prod
-!/packages/api/.env.example
-
-# CONFIG
-!/packages/config/package.json
-!/packages/config/dist
-
-# UTILS
-!/packages/utils/package.json
-!/packages/utils/dist
-
-# VALIDATION
-!/packages/validation/package.json
-!/packages/validation/dist
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+README.md
+LICENSE

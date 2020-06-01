@@ -3,7 +3,7 @@ import { ConnectionOptions } from 'mongoose';
 export const {
   DB_USERNAME = 'admin',
   DB_PASSWORD = 'secret',
-  DB_HOST = 'localhost',
+  DB_HOST = 'mongo',
   DB_PORT = 27017,
   DB_NAME = 'winenot-db',
 

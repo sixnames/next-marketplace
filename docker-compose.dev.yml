@@ -11,8 +11,11 @@ services:
       - mongo
     environment:
       NODE_ENV: development
+      SKIP_PREFLIGHT_CHECK: "true"
+      CI: "true"
     volumes:
       - ./packages:/usr/src/app/packages
+    stdin_open: true
   mongo:
     container_name: mongo
     image: mongo

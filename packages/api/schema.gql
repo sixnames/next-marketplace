@@ -3,11 +3,6 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-input AddAttributesGroupToRubricInput {
-  attributesGroupId: ID!
-  rubricId: ID!
-}
-
 input AddAttributeToGroupInput {
   groupId: ID!
   metric: ID
@@ -63,13 +58,6 @@ input CreateOptionsGroupInput {
   name: String!
 }
 
-input CreateRubricInput {
-  catalogueName: String!
-  name: String!
-  parent: ID
-  variant: ID
-}
-
 input CreateRubricVariantInput {
   name: String!
 }
@@ -86,11 +74,6 @@ input CreateUserInput {
 input DeleteAttributeFromGroupInput {
   attributeId: ID!
   groupId: ID!
-}
-
-input DeleteAttributesGroupFromRubricInput {
-  attributesGroupId: ID!
-  rubricId: ID!
 }
 
 input DeleteOptionFromGroupInput {
@@ -110,22 +93,18 @@ type MetricPayloadType {
 }
 
 type Mutation {
-  addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
-  createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
   createUser(input: CreateUserInput!): UserPayloadType!
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
-  deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
-  deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
   signIn(input: SignInInput!): UserPayloadType!
@@ -136,7 +115,6 @@ type Mutation {
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
-  updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
 }
@@ -192,7 +170,6 @@ type Query {
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
-  getRubric(id: ID!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
   getUser(id: ID!): User
@@ -203,7 +180,7 @@ type Rubric {
   active: Boolean!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: String!
-  children(excluded: [ID!]): [Rubric!]!
+  children: [Rubric!]!
   id: ID!
   level: Int!
   name: String!
@@ -215,12 +192,6 @@ type Rubric {
 type RubricAttributesGroup {
   node: AttributesGroup!
   showInCatalogueFilter: Boolean!
-}
-
-type RubricPayloadType {
-  message: String!
-  rubric: Rubric
-  success: Boolean!
 }
 
 type RubricVariant {
@@ -277,14 +248,6 @@ input UpdateOptionInGroupInput {
 input UpdateOptionsGroupInput {
   id: ID!
   name: String!
-}
-
-input UpdateRubricInput {
-  catalogueName: String!
-  id: ID!
-  name: String!
-  parent: ID
-  variant: ID
 }
 
 input UpdateRubricVariantInput {

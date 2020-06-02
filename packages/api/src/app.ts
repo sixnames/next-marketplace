@@ -8,6 +8,7 @@ import {
   // DEV_ORIGIN,
   DB_URI,
   DEFAULT_CITY,
+  DEFAULT_LANG,
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
@@ -56,6 +57,7 @@ const createApp = () => {
   app.use((req, _, next) => {
     const city = req.headers['x-subdomain'];
     req.session!.city = city ? city : DEFAULT_CITY;
+    req.session!.lang = DEFAULT_LANG;
     next();
   });
 

@@ -1,64 +1,67 @@
-import {
-  Arg,
-  Field,
-  FieldResolver,
-  ID,
-  Mutation,
-  ObjectType,
-  Query,
-  Resolver,
-  Root,
-} from 'type-graphql';
-import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
-import {
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_ZERO,
-  RUBRIC_LEVEL_TWO,
-} from '@rg/config';
-import { DocumentType, Ref } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
-import { CreateRubricInput } from './CreateRubricInput';
-import {
-  addAttributesGroupToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  updateRubricInputSchema,
-} from '@rg/validation';
-import { generateSlug } from '../../utils/slug';
-import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { UpdateRubricInput } from './UpdateRubricInput';
-import { Types } from 'mongoose';
-import { RubricVariant } from '../../entities/RubricVariant';
-import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
-import { AttributesGroupModel } from '../../entities/AttributesGroup';
-import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
+import { Arg, Ctx, ID, Query, Resolver } from 'type-graphql';
+import { Rubric, RubricModel } from '../../entities/Rubric';
+import { RUBRIC_LEVEL_ONE } from '@rg/config';
+import { ContextInterface } from '../../types/context';
+import { DEFAULT_CITY, DEFAULT_LANG } from '../../config';
 
-@ObjectType()
+/*@ObjectType()
 class RubricPayloadType extends PayloadType() {
   @Field((_type) => Rubric, { nullable: true })
   rubric?: Rubric | null;
-}
+}*/
 
 @Resolver((_of) => Rubric)
 export class RubricResolver {
-  @Query(() => Rubric)
+  /*@Query(() => Rubric)
   async getRubric(@Arg('id', (_type) => ID) id: string) {
     return RubricModel.findById(id);
-  }
+  }*/
 
   @Query(() => [Rubric])
   async getRubricsTree(
+    @Ctx() ctx: ContextInterface,
     @Arg('excluded', (_type) => ID, { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
+    const rubrics = await RubricModel.find({
+      _id: { $nin: excluded },
+      cities: {
+        key: `${ctx.req.session!.city}`,
+        lang: {
+          key: `${ctx.req.session!.lang}`,
+          node: {
+            level: RUBRIC_LEVEL_ONE,
+          },
+        },
+      },
+    });
+
+    const currentData = rubrics.map((rubric: Rubric) => {
+      const currentCity = rubric.cities.find(({ key }) => key === ctx.req.session!.city);
+
+      let currentLang;
+      currentLang = currentCity!.lang.find(({ key }) => key === ctx.req.session!.lang);
+      if (!currentLang) {
+        currentLang = currentCity!.lang.find(({ key }) => key === DEFAULT_LANG);
+      }
+
+      return {
+        id: rubric.id,
+        ...currentLang,
+      };
+    });
+
+    console.log(currentData);
+
+    // return currentData;
+
     return RubricModel.find({
       _id: { $nin: excluded },
       level: RUBRIC_LEVEL_ONE,
     });
   }
 
-  @Mutation(() => RubricPayloadType)
+  /*@Mutation(() => RubricPayloadType)
   async createRubric(@Arg('input') input: CreateRubricInput): Promise<RubricPayloadType> {
     try {
       await createRubricInputSchema.validate(input);
@@ -113,9 +116,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
-
-  @Mutation(() => RubricPayloadType)
+  }*/
+  /*@Mutation(() => RubricPayloadType)
   async updateRubric(@Arg('input') input: UpdateRubricInput): Promise<RubricPayloadType> {
     try {
       await updateRubricInputSchema.validate(input);
@@ -151,9 +153,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
-
-  @Mutation(() => RubricPayloadType)
+  }*/
+  /*@Mutation(() => RubricPayloadType)
   async deleteRubric(@Arg('id', (_type) => ID) id: string): Promise<RubricPayloadType> {
     try {
       const rubric = await RubricModel.find({ _id: id }).select({ id: 1 }).lean().exec();
@@ -163,10 +164,10 @@ export class RubricResolver {
       const allRubrics = [...rubric, ...children].map(({ _id }) => _id);
 
       // TODO [Slava] after products
-      /*const updatedProducts = await Product.updateMany(
+      /!*const updatedProducts = await Product.updateMany(
         { rubrics: { $in: allRubrics } },
         { $pull: { rubrics: { $in: allRubrics } } },
-      );*/
+      );*!/
 
       const removed = await RubricModel.deleteMany({ _id: { $in: allRubrics } });
 
@@ -188,9 +189,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
-
-  @Mutation(() => RubricPayloadType)
+  }*/
+  /*@Mutation(() => RubricPayloadType)
   async addAttributesGroupToRubric(
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
@@ -271,9 +271,8 @@ export class RubricResolver {
         message: 'Ошибка добавления Группы атрибутов в рубрику.',
       };
     }
-  }
-
-  @Mutation(() => RubricPayloadType)
+  }*/
+  /*@Mutation(() => RubricPayloadType)
   async deleteAttributesGroupFromRubric(
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
@@ -349,9 +348,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
-
-  @FieldResolver()
+  }*/
+  /*@FieldResolver()
   async children(
     @Root() rubric: DocumentType<Rubric>,
     @Arg('excluded', (_type) => ID, { nullable: true })
@@ -361,20 +359,17 @@ export class RubricResolver {
       _id: { $nin: excluded },
       parent: rubric.id,
     });
-  }
-
-  @FieldResolver()
+  }*/
+  /*@FieldResolver()
   async variant(@Root() rubric: DocumentType<Rubric>): Promise<Ref<RubricVariant> | null> {
     return (await rubric.populate('variant').execPopulate()).variant;
-  }
-
-  @FieldResolver()
+  }*/
+  /*@FieldResolver()
   async parent(@Root() rubric: DocumentType<Rubric>): Promise<Ref<Rubric> | null> {
     return (await rubric.populate('parent').execPopulate()).parent;
-  }
-
-  @FieldResolver()
+  }*/
+  /*@FieldResolver()
   async attributesGroups(@Root() rubric: DocumentType<Rubric>): Promise<RubricAttributesGroup[]> {
     return (await rubric.populate('attributesGroups.node').execPopulate()).attributesGroups;
-  }
+  }*/
 }

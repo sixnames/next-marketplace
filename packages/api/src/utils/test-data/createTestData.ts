@@ -35,6 +35,34 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
+import { DEFAULT_CITY, DEFAULT_LANG } from '../../config';
+
+interface GetRubricCitiesInterface {
+  name: string;
+  catalogueName: string;
+  level: number;
+  slug: string;
+  variant?: string;
+  parent?: string | null;
+  attributesGroups: {
+    showInCatalogueFilter: boolean;
+    node: string;
+  }[];
+}
+
+function getRubricCities(node: GetRubricCitiesInterface) {
+  return [
+    {
+      key: DEFAULT_CITY,
+      lang: [
+        {
+          key: DEFAULT_LANG,
+          node,
+        },
+      ],
+    },
+  ];
+}
 
 const createTestData = async () => {
   // Clear old test data
@@ -116,54 +144,68 @@ const createTestData = async () => {
   ];
 
   const rubricLevelOne = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_ONE,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName),
-    variant: equipmentRubricVariant.id,
-    attributesGroups: rubricAttributesGroups,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_ONE,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName),
+      variant: equipmentRubricVariant.id,
+      attributesGroups: rubricAttributesGroups,
+    }),
   });
 
   const rubricLevelTwo = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_TWO,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName),
-    parent: rubricLevelOne.id,
-    attributesGroups: rubricAttributesGroups,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_TWO,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName),
+      parent: rubricLevelOne.id,
+      attributesGroups: rubricAttributesGroups,
+    }),
   });
 
   const rubricLevelTwoTables = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_TWO_TABLES,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName),
-    parent: rubricLevelOne.id,
-    attributesGroups: rubricAttributesGroupsB,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_TWO_TABLES,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName),
+      parent: rubricLevelOne.id,
+      attributesGroups: rubricAttributesGroupsB,
+    }),
   });
 
   await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_TABLES,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName),
-    parent: rubricLevelTwoTables.id,
-    attributesGroups: rubricAttributesGroupsB,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_THREE_TABLES,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName),
+      parent: rubricLevelTwoTables.id,
+      attributesGroups: rubricAttributesGroupsB,
+    }),
   });
 
   await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName),
-    parent: rubricLevelTwoTables.id,
-    attributesGroups: rubricAttributesGroupsB,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName),
+      parent: rubricLevelTwoTables.id,
+      attributesGroups: rubricAttributesGroupsB,
+    }),
   });
 
   // const rubricLevelThree = await RubricModel.create({
   await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
-    parent: rubricLevelTwo.id,
-    attributesGroups: rubricAttributesGroups,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_THREE,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
+      parent: rubricLevelTwo.id,
+      attributesGroups: rubricAttributesGroups,
+    }),
   });
 
   // const rubricLevelThreeB = await RubricModel.create({
   await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_B,
-    slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName),
-    parent: rubricLevelTwo.id,
-    attributesGroups: rubricAttributesGroups,
+    cities: getRubricCities({
+      ...MOCK_RUBRIC_LEVEL_THREE_B,
+      slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName),
+      parent: rubricLevelTwo.id,
+      attributesGroups: rubricAttributesGroups,
+    }),
   });
 
   // Products

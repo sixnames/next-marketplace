@@ -1,8 +1,8 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
-import { AttributesGroup } from './AttributesGroup';
-import { RubricVariant } from './RubricVariant';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
+import { RubricVariant } from './RubricVariant';
+import { AttributesGroup } from './AttributesGroup';
 
 @ObjectType()
 export class RubricAttributesGroup {
@@ -15,8 +15,11 @@ export class RubricAttributesGroup {
   public node: Ref<AttributesGroup>;
 }
 
-// Rubric data in current city and language
-export class RubricNode {
+@ObjectType()
+export class Rubric {
+  @Field(() => ID)
+  public id: string;
+
   @Field(() => String)
   @prop({ required: true, trim: true })
   public name: string;
@@ -38,48 +41,24 @@ export class RubricNode {
   public active: boolean;
 
   @Field(() => Rubric, { nullable: true })
-  @prop({ ref: 'Rubric' })
+  @prop({ ref: Rubric })
   public parent: Ref<Rubric> | null;
+
+  @Field(() => Rubric)
+  public children: Rubric[];
 
   @Field(() => [RubricAttributesGroup])
   @prop({ type: RubricAttributesGroup })
   public attributesGroups: RubricAttributesGroup[];
 
-  @Field(() => [Rubric])
-  public children: Rubric[];
-
   @Field(() => RubricVariant, { nullable: true })
-  @prop({ ref: RubricVariant })
+  @prop({
+    ref: RubricVariant,
+    required: function (this: Rubric) {
+      return this.level === RUBRIC_LEVEL_ONE;
+    },
+  })
   public variant: Ref<RubricVariant> | null;
-}
-
-// Rubric language in current city
-export class RubricLang {
-  @prop({ required: true })
-  public key: string;
-
-  @prop({ required: true })
-  public node: RubricNode;
-}
-
-// Rubric current city
-export class RubricCity {
-  @Field(() => String)
-  @prop({ required: true })
-  public key: string;
-
-  @prop({ type: RubricLang, required: true })
-  public lang: RubricLang[];
-}
-
-@ObjectType()
-export class Rubric {
-  @Field(() => ID)
-  public id: string;
-
-  // Field with data of cities and languages
-  @prop({ type: RubricCity, required: true })
-  public cities: RubricCity[];
 }
 
 export const RubricModel = getModelForClass(Rubric);

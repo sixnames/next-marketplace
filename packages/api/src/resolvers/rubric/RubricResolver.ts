@@ -1,17 +1,33 @@
-import { Arg, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  ID,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
-import { RUBRIC_LEVEL_ONE, RUBRIC_LEVEL_ZERO } from '@rg/config';
+import { RUBRIC_LEVEL_ONE, RUBRIC_LEVEL_STEP, RUBRIC_LEVEL_ZERO } from '@rg/config';
 import { ContextInterface } from '../../types/context';
 import { DocumentType, Ref } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
 import getCityData from '../../utils/getCityData';
 import { RubricVariant } from '../../entities/RubricVariant';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { generateDefaultLangSlug } from '../../utils/slug';
+import PayloadType from '../common/PayloadType';
+import { CreateRubricInput } from './CreateRubricInput';
+import { createRubricInputSchema } from '@rg/validation';
 
-/*@ObjectType()
+@ObjectType()
 class RubricPayloadType extends PayloadType() {
   @Field((_type) => Rubric, { nullable: true })
   rubric?: Rubric | null;
-}*/
+}
 
 @Resolver((_of) => Rubric)
 export class RubricResolver {
@@ -33,23 +49,24 @@ export class RubricResolver {
     });
   }
 
-  /*@Mutation(() => RubricPayloadType)
-  async createRubric(@Arg('input') input: CreateRubricInput): Promise<RubricPayloadType> {
+  @Mutation(() => RubricPayloadType)
+  async createRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: CreateRubricInput,
+  ): Promise<RubricPayloadType> {
     try {
+      const city = ctx.req.session!.city;
       await createRubricInputSchema.validate(input);
 
       const { parent, name } = input;
-      const existingOptions = parent
-        ? {
-            parent,
-            name,
-          }
-        : {
-            name,
-            parent: null,
-          };
 
-      const exists = await RubricModel.exists(existingOptions);
+      const nameValues = name.map(({ value }) => value);
+      const exists = await RubricModel.exists({
+        'cities.node.parent': parent ? parent : null,
+        'cities.node.name.value': {
+          $in: nameValues,
+        },
+      });
 
       if (exists) {
         return {
@@ -64,10 +81,17 @@ export class RubricResolver {
       };
 
       const rubric = await RubricModel.create({
-        ...input,
-        variant: parentRubric.level === RUBRIC_LEVEL_ZERO ? input.variant : null,
-        slug: generateSlug(input.catalogueName),
-        level: parentRubric.level + RUBRIC_LEVEL_STEP,
+        cities: [
+          {
+            key: city,
+            node: {
+              ...input,
+              variant: parentRubric.level === RUBRIC_LEVEL_ZERO ? input.variant : null,
+              level: parentRubric.level + RUBRIC_LEVEL_STEP,
+              slug: generateDefaultLangSlug(input.catalogueName),
+            },
+          },
+        ],
       });
 
       if (!rubric) {
@@ -88,7 +112,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
+
   /*@Mutation(() => RubricPayloadType)
   async updateRubric(@Arg('input') input: UpdateRubricInput): Promise<RubricPayloadType> {
     try {

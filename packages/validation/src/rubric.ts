@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { name, id } from './templates';
+import { id, langInput, notNullableName } from './templates';
 
 const parent = Yup.string().nullable();
 const variant = Yup.string().when('parent', {
@@ -14,16 +14,16 @@ const attributesGroupId = Yup.string()
   .required('ID группы атрибутов обязательно к заполнению.');
 
 export const createRubricInputSchema = Yup.object().shape({
-  name,
-  catalogueName: name,
+  name: langInput(notNullableName('Название рубрики')),
+  catalogueName: langInput(notNullableName('Название каталога')),
   parent,
   variant,
 });
 
 export const updateRubricInputSchema = Yup.object().shape({
   id,
-  name,
-  catalogueName: name,
+  name: langInput(notNullableName('Название рубрики')),
+  catalogueName: langInput(notNullableName('Название каталога')),
   parent,
   variant,
 });

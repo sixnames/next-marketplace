@@ -58,6 +58,13 @@ input CreateOptionsGroupInput {
   name: String!
 }
 
+input CreateRubricInput {
+  catalogueName: [LangInput!]!
+  name: [LangInput!]!
+  parent: ID
+  variant: ID
+}
+
 input CreateRubricVariantInput {
   name: String!
 }
@@ -79,6 +86,11 @@ input DeleteAttributeFromGroupInput {
 input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
+}
+
+input LangInput {
+  key: String!
+  value: String!
 }
 
 type LanguageType {
@@ -103,6 +115,7 @@ type Mutation {
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
+  createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
   createUser(input: CreateUserInput!): UserPayloadType!
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
@@ -215,6 +228,12 @@ type RubricNode {
   parent: Rubric
   slug: String!
   variant: RubricVariant
+}
+
+type RubricPayloadType {
+  message: String!
+  rubric: Rubric
+  success: Boolean!
 }
 
 type RubricVariant {

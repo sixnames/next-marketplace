@@ -1,6 +1,6 @@
 import { DEFAULT_LANG } from '../config';
 
-interface LanguageInterface {
+export interface LanguageInterface {
   key: string;
   value: string;
 }

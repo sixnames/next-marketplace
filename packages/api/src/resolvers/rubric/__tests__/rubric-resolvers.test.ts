@@ -1,5 +1,11 @@
-// import { anotherRubric, testRubric } from '../__fixtures__';
+import {
+  // anotherRubric,
+  testRubric,
+} from '../__fixtures__';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
+import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '@rg/config';
+import getLangField from '../../../utils/getLangField';
+import { DEFAULT_LANG } from '../../../config';
 
 describe.only('Rubrics', () => {
   it('Should rubrics CRUD', async () => {
@@ -10,7 +16,7 @@ describe.only('Rubrics', () => {
     const {
       data: {
         getRubricsTree,
-        // getAllRubricVariants,
+        getAllRubricVariants,
         // getAllAttributesGroups
       },
     } = await query(`
@@ -26,26 +32,9 @@ describe.only('Rubrics', () => {
         getRubricsTree {
           id
           name
-          slug
-          level
-          active
-          variant {
-            id
-            name
-          }
-          parent {
-            id
-          }
           children {
             id
             name
-          }
-          attributesGroups {
-            showInCatalogueFilter
-            node {
-              id
-              name
-            }
           }
         }
       }
@@ -53,12 +42,11 @@ describe.only('Rubrics', () => {
 
     // const attributesGroup = getAllAttributesGroups[0];
     const treeParent = getRubricsTree[0];
-    console.log(JSON.stringify(treeParent, null, 2));
-    // const treeChild = treeParent.children[0];
+    const treeChild = treeParent.children[0];
     expect(getRubricsTree.length).toEqual(1);
-    // expect(treeParent.name).toEqual(MOCK_RUBRIC_LEVEL_ONE.name);
-    // expect(treeParent.children.length).toEqual(2);
-    // expect(treeChild.name).toEqual(MOCK_RUBRIC_LEVEL_TWO.name);
+    expect(treeParent.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(treeParent.children.length).toEqual(2);
+    expect(treeChild.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO.name, DEFAULT_LANG));
 
     // Should return current rubric
     const { data } = await query(`
@@ -71,19 +59,45 @@ describe.only('Rubrics', () => {
       }
     `);
     expect(data.getRubric.id).toEqual(treeParent.id);
-    // expect(data.getRubric.name).toEqual(MOCK_RUBRIC_LEVEL_ONE.name);
-    // expect(data.getRubric.catalogueName).toEqual(MOCK_RUBRIC_LEVEL_ONE.catalogueName);
+    expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(data.getRubric.catalogueName).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_ONE.catalogueName, DEFAULT_LANG),
+    );
+
+    // Should return duplicate rubric error on rubric create
+    const { mutate } = await getTestClientWithAuthenticatedUser();
+    const { data: exists } = await mutate(`
+      mutation {
+        createRubric(
+          input: {
+            name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
+            catalogueName: [{key: "ru", value: "${getLangField(
+              MOCK_RUBRIC_LEVEL_ONE.catalogueName,
+              DEFAULT_LANG,
+            )}"}]
+            variant: "${getAllRubricVariants[0].id}"
+          }
+        ) {
+          success
+          message
+          rubric {
+            id
+            name
+          }
+        }
+      }
+    `);
+    expect(exists.createRubric.success).toBeFalsy();
 
     // Should create rubric
-    /*const { mutate } = await getTestClientWithAuthenticatedUser();
     const {
       data: { createRubric },
     } = await mutate(`
       mutation {
         createRubric(
           input: {
-            name: "${testRubric.name}"
-            catalogueName: "${testRubric.catalogueName}"
+            name: [{key: "ru", value: "${testRubric.name}"}]
+            catalogueName: [{key: "ru", value: "${testRubric.catalogueName}"}]
             variant: "${getAllRubricVariants[0].id}"
           }
         ) {
@@ -101,9 +115,10 @@ describe.only('Rubrics', () => {
         }
       }
     `);
+    console.log(createRubric);
     expect(createRubric.success).toBeTruthy();
     expect(createRubric.rubric.name).toEqual(testRubric.name);
-    expect(createRubric.rubric.catalogueName).toEqual(testRubric.catalogueName);*/
+    expect(createRubric.rubric.catalogueName).toEqual(testRubric.catalogueName);
 
     // Should update rubric
     /*const {

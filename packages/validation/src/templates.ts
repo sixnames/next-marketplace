@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
 import { ROLES_ENUM } from '@rg/config';
+import { StringSchema } from 'yup';
 
 export const minPasswordLength = 5;
 export const maxPasswordLength = 30;
@@ -13,6 +14,21 @@ export const minPrice = 0;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
 export const role = Yup.mixed().oneOf(ROLES_ENUM);
+
+export const langInput = (valueSchema: StringSchema) =>
+  Yup.array().of(
+    Yup.object({
+      key: Yup.string().trim().required('Язык обязателен к заполнению.'),
+      value: valueSchema,
+    }),
+  );
+
+export const notNullableName = (nameTarget: string) =>
+  Yup.string()
+    .min(minNameLength, `${nameTarget} должно состоять минимум из ${minNameLength} символов`)
+    .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
+    .trim()
+    .required(`${nameTarget} обязателено к заполнению.`);
 
 export const name = Yup.string()
   .nullable()

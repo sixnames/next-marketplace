@@ -6,7 +6,7 @@ const { email, password, phone, name } = max;
 
 describe('User', () => {
   it('Should CRUD user', async () => {
-    const { mutate, query, user } = await getTestClientWithUser();
+    const { mutate, query, user } = await getTestClientWithUser({});
     if (!user) {
       throw Error('Test user not found');
     }

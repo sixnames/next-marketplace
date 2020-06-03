@@ -5,6 +5,17 @@ import { RubricVariant } from './RubricVariant';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
 
 @ObjectType()
+export class LanguageType {
+  @Field(() => String)
+  @prop({ required: true })
+  public key: string;
+
+  @Field(() => String)
+  @prop({ required: true })
+  public value: string;
+}
+
+@ObjectType()
 export class RubricAttributesGroup {
   @Field(() => Boolean)
   @prop({ required: true, default: false })
@@ -15,15 +26,16 @@ export class RubricAttributesGroup {
   public node: Ref<AttributesGroup>;
 }
 
-// Rubric data in current city and language
+// Rubric data in current city
+@ObjectType()
 export class RubricNode {
-  @Field(() => String)
-  @prop({ required: true, trim: true })
-  public name: string;
+  @Field(() => [LanguageType])
+  @prop({ type: LanguageType, required: true })
+  public name: LanguageType[];
 
   @Field(() => String)
-  @prop({ required: true, trim: true })
-  public catalogueName: string;
+  @prop({ type: LanguageType, required: true })
+  public catalogueName: LanguageType[];
 
   @Field(() => String)
   @prop({ required: true })
@@ -45,31 +57,21 @@ export class RubricNode {
   @prop({ type: RubricAttributesGroup })
   public attributesGroups: RubricAttributesGroup[];
 
-  @Field(() => [Rubric])
-  public children: Rubric[];
-
   @Field(() => RubricVariant, { nullable: true })
   @prop({ ref: RubricVariant })
   public variant: Ref<RubricVariant> | null;
 }
 
-// Rubric language in current city
-export class RubricLang {
-  @prop({ required: true })
-  public key: string;
-
-  @prop({ required: true })
-  public node: RubricNode;
-}
-
 // Rubric current city
+@ObjectType()
 export class RubricCity {
   @Field(() => String)
   @prop({ required: true })
   public key: string;
 
-  @prop({ type: RubricLang, required: true })
-  public lang: RubricLang[];
+  @Field(() => RubricNode)
+  @prop({ required: true })
+  public node: RubricNode;
 }
 
 @ObjectType()
@@ -77,7 +79,34 @@ export class Rubric {
   @Field(() => ID)
   public id: string;
 
-  // Field with data of cities and languages
+  @Field(() => String)
+  public name: string;
+
+  @Field(() => String)
+  public catalogueName: string;
+
+  @Field(() => String)
+  public slug: string;
+
+  @Field(() => Int)
+  public level: number;
+
+  @Field(() => Boolean)
+  public active: boolean;
+
+  @Field(() => Rubric, { nullable: true })
+  public parent: Rubric | null;
+
+  @Field(() => [Rubric])
+  public children: Rubric[];
+
+  @Field(() => [RubricAttributesGroup])
+  public attributesGroups: RubricAttributesGroup[];
+
+  @Field(() => RubricVariant, { nullable: true })
+  public variant: RubricVariant | null;
+
+  @Field(() => [RubricCity])
   @prop({ type: RubricCity, required: true })
   public cities: RubricCity[];
 }

@@ -4,7 +4,7 @@ import { Metric } from '../../../entities/Metric';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
-    const { query, mutate } = await getTestClientWithUser();
+    const { query, mutate } = await getTestClientWithUser({});
 
     // Should return all metrics
     const { data: allMetrics } = await query(`

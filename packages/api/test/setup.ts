@@ -1,4 +1,3 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { DB_OPTIONS } from '../src/config';
 import createApp from '../src/app';
@@ -12,12 +11,9 @@ export const testClient = createTestClient({
   apolloServer: server,
 });
 
-let mongod: MongoMemoryServer;
 beforeAll(async () => {
   jest.setTimeout(10000);
-  mongod = new MongoMemoryServer();
-  const uri = await mongod.getConnectionString();
-  await mongoose.connect(uri, DB_OPTIONS);
+  await mongoose.connect(`${process.env.MONGO_URL}`, DB_OPTIONS);
 });
 
 beforeEach(async () => {
@@ -26,7 +22,6 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await mongoose.disconnect();
-  await mongod.stop();
 });
 
 afterEach(async () => {

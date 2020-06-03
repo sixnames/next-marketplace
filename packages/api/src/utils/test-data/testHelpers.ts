@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { testClient } from '../../../test/setup';
 import { TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../config';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, DEFAULT_CITY, DEFAULT_LANG } from '../../config';
 import { User, UserModel } from '../../entities/User';
 
 interface WithUserMutationInterface {
@@ -19,7 +19,15 @@ interface AuthenticatedUserMutationInterface {
   setOptions: TestSetOptions;
 }
 
-export const getTestClientWithUser = async (): Promise<WithUserMutationInterface> => {
+interface GetTestClientWithUserInterface {
+  city?: string;
+  lang?: string;
+}
+
+export const getTestClientWithUser = async ({
+  city = DEFAULT_CITY,
+  lang = DEFAULT_LANG,
+}: GetTestClientWithUserInterface): Promise<WithUserMutationInterface> => {
   const user = await UserModel.findOne({
     email: ADMIN_EMAIL,
   });
@@ -28,7 +36,10 @@ export const getTestClientWithUser = async (): Promise<WithUserMutationInterface
 
   setOptions({
     request: {
-      session: {},
+      session: {
+        city,
+        lang,
+      },
     },
   });
 
@@ -38,7 +49,7 @@ export const getTestClientWithUser = async (): Promise<WithUserMutationInterface
 export const getTestClientWithAuthenticatedUser = async (): Promise<
   AuthenticatedUserMutationInterface
 > => {
-  const { mutate, query, setOptions } = await getTestClientWithUser();
+  const { mutate, query, setOptions } = await getTestClientWithUser({});
 
   const {
     data: {

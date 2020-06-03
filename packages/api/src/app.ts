@@ -2,14 +2,7 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import {
-  APOLLO_OPTIONS,
-  SESS_OPTIONS,
-  // DEV_ORIGIN,
-  DB_URI,
-  DEFAULT_CITY,
-  DEFAULT_LANG,
-} from './config';
+import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -39,7 +32,7 @@ const createApp = () => {
 
   const MongoDBStore = connectMongoDBStore(session);
   const store = new MongoDBStore({
-    uri: DB_URI,
+    uri: MONGO_URL,
     collection: 'sessions',
   });
 

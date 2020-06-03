@@ -11,13 +11,12 @@ export const {
   ADMIN_EMAIL = 'admin@gmail.com',
   ADMIN_PHONE = '+79998884433',
   ADMIN_PASSWORD = 'admin',
+  MONGO_URL = `mongodb://mongo:27017/app`,
 } = process.env;
 
 /*export const DB_URI = `mongodb://${DB_USERNAME}:${encodeURIComponent(
   `${DB_PASSWORD}`,
 )}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;*/
-
-export const DB_URI = `mongodb://mongo:27017/app`;
 
 export const DB_OPTIONS: ConnectionOptions = {
   useNewUrlParser: true,

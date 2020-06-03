@@ -1,8 +1,11 @@
-import { Arg, Ctx, ID, Query, Resolver } from 'type-graphql';
-import { Rubric, RubricModel } from '../../entities/Rubric';
-import { RUBRIC_LEVEL_ONE } from '@rg/config';
+import { Arg, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
+import { RUBRIC_LEVEL_ONE, RUBRIC_LEVEL_ZERO } from '@rg/config';
 import { ContextInterface } from '../../types/context';
-import { DEFAULT_CITY, DEFAULT_LANG } from '../../config';
+import { DocumentType, Ref } from '@typegoose/typegoose';
+import getLangField from '../../utils/getLangField';
+import getCityData from '../../utils/getCityData';
+import { RubricVariant } from '../../entities/RubricVariant';
 
 /*@ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -12,10 +15,10 @@ class RubricPayloadType extends PayloadType() {
 
 @Resolver((_of) => Rubric)
 export class RubricResolver {
-  /*@Query(() => Rubric)
+  @Query(() => Rubric)
   async getRubric(@Arg('id', (_type) => ID) id: string) {
     return RubricModel.findById(id);
-  }*/
+  }
 
   @Query(() => [Rubric])
   async getRubricsTree(
@@ -23,41 +26,10 @@ export class RubricResolver {
     @Arg('excluded', (_type) => ID, { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
-    const rubrics = await RubricModel.find({
-      _id: { $nin: excluded },
-      cities: {
-        key: `${ctx.req.session!.city}`,
-        lang: {
-          key: `${ctx.req.session!.lang}`,
-          node: {
-            level: RUBRIC_LEVEL_ONE,
-          },
-        },
-      },
-    });
-
-    const currentData = rubrics.map((rubric: Rubric) => {
-      const currentCity = rubric.cities.find(({ key }) => key === ctx.req.session!.city);
-
-      let currentLang;
-      currentLang = currentCity!.lang.find(({ key }) => key === ctx.req.session!.lang);
-      if (!currentLang) {
-        currentLang = currentCity!.lang.find(({ key }) => key === DEFAULT_LANG);
-      }
-
-      return {
-        id: rubric.id,
-        ...currentLang,
-      };
-    });
-
-    console.log(currentData);
-
-    // return currentData;
-
     return RubricModel.find({
       _id: { $nin: excluded },
-      level: RUBRIC_LEVEL_ONE,
+      'cities.key': ctx.req.session!.city,
+      'cities.node.level': RUBRIC_LEVEL_ONE,
     });
   }
 
@@ -204,7 +176,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: 'Группа атрибутов или Рубрика не найдеы.',
+          message: 'Группа атрибутов или Рубрика не найдены.',
         };
       }
 
@@ -291,7 +263,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: 'Группа атрибутов или Рубрика не найдеы.',
+          message: 'Группа атрибутов или Рубрика не найдены.',
         };
       }
 
@@ -349,27 +321,108 @@ export class RubricResolver {
       };
     }
   }*/
-  /*@FieldResolver()
+
+  @FieldResolver()
+  async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return '';
+    }
+    return getLangField(city!.node.name, ctx.req.session!.lang);
+  }
+
+  @FieldResolver()
+  async catalogueName(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return '';
+    }
+    return getLangField(city!.node.catalogueName, ctx.req.session!.lang);
+  }
+
+  @FieldResolver()
+  async slug(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return '';
+    }
+    return city.node.slug;
+  }
+
+  @FieldResolver()
+  async level(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<number> {
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return RUBRIC_LEVEL_ZERO;
+    }
+    return city.node.level;
+  }
+
+  @FieldResolver()
+  async active(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<boolean> {
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return false;
+    }
+    return city.node.active;
+  }
+
+  @FieldResolver()
+  async parent(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<Ref<Rubric> | null> {
+    const populated = await rubric.populate('cities.node.parent').execPopulate();
+    const city = getCityData(populated.cities, ctx.req.session!.city);
+    if (!city) {
+      return null;
+    }
+    return city.node.parent;
+  }
+
+  @FieldResolver()
+  async variant(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<Ref<RubricVariant> | null> {
+    const populated = await rubric.populate('cities.node.variant').execPopulate();
+    const city = getCityData(populated.cities, ctx.req.session!.city);
+    if (!city) {
+      return null;
+    }
+    return city.node.variant;
+  }
+
+  @FieldResolver()
   async children(
     @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
     @Arg('excluded', (_type) => ID, { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
       _id: { $nin: excluded },
-      parent: rubric.id,
+      'cities.key': ctx.req.session!.city,
+      'cities.node.parent': rubric.id,
     });
-  }*/
-  /*@FieldResolver()
-  async variant(@Root() rubric: DocumentType<Rubric>): Promise<Ref<RubricVariant> | null> {
-    return (await rubric.populate('variant').execPopulate()).variant;
-  }*/
-  /*@FieldResolver()
-  async parent(@Root() rubric: DocumentType<Rubric>): Promise<Ref<Rubric> | null> {
-    return (await rubric.populate('parent').execPopulate()).parent;
-  }*/
-  /*@FieldResolver()
-  async attributesGroups(@Root() rubric: DocumentType<Rubric>): Promise<RubricAttributesGroup[]> {
-    return (await rubric.populate('attributesGroups.node').execPopulate()).attributesGroups;
-  }*/
+  }
+
+  @FieldResolver()
+  async attributesGroups(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<RubricAttributesGroup[]> {
+    const populated = await rubric.populate('cities.node.attributesGroups.node').execPopulate();
+    const city = getCityData(populated.cities, ctx.req.session!.city);
+    if (!city) {
+      return [];
+    }
+    return city.node.attributesGroups;
+  }
 }

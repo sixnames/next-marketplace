@@ -66,35 +66,81 @@ export const MOCK_RUBRIC_TYPE_EQUIPMENT = { name: 'cy-test-equipment' };
 export const MOCK_RUBRIC_TYPE_STAGE = { name: 'cy-test-stage' };
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
-  name: 'cy-test-furniture',
-  catalogueName: 'furniture',
+  name: [
+    { key: 'ru', value: 'cy-test-furniture' },
+    { key: 'en', value: 'cy-test-furniture' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'furniture' },
+    { key: 'en', value: 'furniture' },
+  ],
   level: 1,
   parent: null,
 };
-export const MOCK_RUBRIC_LEVEL_TWO = { name: 'cy-test-chairs', catalogueName: 'chairs', level: 2 };
+export const MOCK_RUBRIC_LEVEL_TWO = {
+  name: [
+    { key: 'ru', value: 'cy-test-chairs' },
+    { key: 'en', value: 'cy-test-chairs' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'chairs' },
+    { key: 'en', value: 'chairs' },
+  ],
+  level: 2,
+};
 export const MOCK_RUBRIC_LEVEL_TWO_TABLES = {
-  name: 'cy-test-tables',
-  catalogueName: 'tables',
+  name: [
+    { key: 'ru', value: 'cy-test-tables' },
+    { key: 'en', value: 'cy-test-tables' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'tables' },
+    { key: 'en', value: 'tables' },
+  ],
   level: 2,
 };
 export const MOCK_RUBRIC_LEVEL_THREE = {
-  name: 'cy-test-chairs-loft',
-  catalogueName: 'loft',
+  name: [
+    { key: 'ru', value: 'cy-test-chairs-loft' },
+    { key: 'en', value: 'cy-test-chairs-loft' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'loft' },
+    { key: 'en', value: 'loft' },
+  ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_B = {
-  name: 'cy-test-chairs-bar',
-  catalogueName: 'bar',
+  name: [
+    { key: 'ru', value: 'cy-test-chairs-bar' },
+    { key: 'en', value: 'cy-test-chairs-bar' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'bar' },
+    { key: 'en', value: 'bar' },
+  ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES = {
-  name: 'cy-test-tables-loft',
-  catalogueName: 'loft',
+  name: [
+    { key: 'ru', value: 'cy-test-tables-loft' },
+    { key: 'en', value: 'cy-test-tables-loft' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'loft' },
+    { key: 'en', value: 'loft' },
+  ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
-  name: 'cy-test-tables-bar',
-  catalogueName: 'bar',
+  name: [
+    { key: 'ru', value: 'cy-test-tables-bar' },
+    { key: 'en', value: 'cy-test-tables-bar' },
+  ],
+  catalogueName: [
+    { key: 'ru', value: 'bar' },
+    { key: 'en', value: 'bar' },
+  ],
   level: 3,
 };
 

@@ -81,6 +81,11 @@ input DeleteOptionFromGroupInput {
   optionId: ID!
 }
 
+type LanguageType {
+  key: String!
+  value: String!
+}
+
 type Metric {
   id: ID!
   name: String!
@@ -170,6 +175,7 @@ type Query {
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
+  getRubric(id: ID!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
   getUser(id: ID!): User
@@ -180,7 +186,8 @@ type Rubric {
   active: Boolean!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: String!
-  children: [Rubric!]!
+  children(excluded: [ID!]): [Rubric!]!
+  cities: [RubricCity!]!
   id: ID!
   level: Int!
   name: String!
@@ -192,6 +199,22 @@ type Rubric {
 type RubricAttributesGroup {
   node: AttributesGroup!
   showInCatalogueFilter: Boolean!
+}
+
+type RubricCity {
+  key: String!
+  node: RubricNode!
+}
+
+type RubricNode {
+  active: Boolean!
+  attributesGroups: [RubricAttributesGroup!]!
+  catalogueName: [String!]!
+  level: Int!
+  name: [LanguageType!]!
+  parent: Rubric
+  slug: String!
+  variant: RubricVariant
 }
 
 type RubricVariant {

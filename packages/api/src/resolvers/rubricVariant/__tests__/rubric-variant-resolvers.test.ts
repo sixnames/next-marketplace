@@ -3,7 +3,7 @@ import { RubricVariant } from '../../../entities/RubricVariant';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
-    const { mutate, query } = await getTestClientWithUser();
+    const { mutate, query } = await getTestClientWithUser({});
 
     // Shouldn't create rubric types on validation error
     const {

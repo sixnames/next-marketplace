@@ -1,7 +1,4 @@
-import {
-  // anotherRubric,
-  testRubric,
-} from '../__fixtures__';
+import { anotherRubric, testRubric } from '../__fixtures__';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
 import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '@rg/config';
 import getLangField from '../../../utils/getLangField';
@@ -115,21 +112,23 @@ describe.only('Rubrics', () => {
         }
       }
     `);
-    console.log(createRubric);
     expect(createRubric.success).toBeTruthy();
     expect(createRubric.rubric.name).toEqual(testRubric.name);
     expect(createRubric.rubric.catalogueName).toEqual(testRubric.catalogueName);
 
-    // Should update rubric
-    /*const {
-      data: { updateRubric },
+    // Should return duplicate rubric error on rubric update
+    const {
+      data: { updateRubric: falseUpdateRubric },
     } = await mutate(`
       mutation {
         updateRubric(
           input: {
             id: "${createRubric.rubric.id}"
-            name: "${anotherRubric.name}"
-            catalogueName: "${anotherRubric.catalogueName}"
+            name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
+            catalogueName: [{key: "ru", value: "${getLangField(
+              MOCK_RUBRIC_LEVEL_ONE.catalogueName,
+              DEFAULT_LANG,
+            )}"}]
             variant: "${createRubric.rubric.variant.id}"
           }
         ) {
@@ -143,9 +142,35 @@ describe.only('Rubrics', () => {
         }
       }
     `);
+    expect(falseUpdateRubric.success).toBeFalsy();
+
+    // Should update rubric
+    const {
+      data: { updateRubric },
+    } = await mutate(`
+      mutation {
+        updateRubric(
+          input: {
+            id: "${createRubric.rubric.id}"
+            name: [{key: "ru", value: "${anotherRubric.name}"}]
+            catalogueName: [{key: "ru", value: "${anotherRubric.catalogueName}"}]
+            variant: "${createRubric.rubric.variant.id}"
+          }
+        ) {
+          success
+          message
+          rubric {
+            id
+            name
+            catalogueName
+          }
+        }
+      }
+    `);
+
     expect(updateRubric.success).toBeTruthy();
     expect(updateRubric.rubric.name).toEqual(anotherRubric.name);
-    expect(updateRubric.rubric.catalogueName).toEqual(anotherRubric.catalogueName);*/
+    expect(updateRubric.rubric.catalogueName).toEqual(anotherRubric.catalogueName);
 
     // Should delete rubric
     /*const {

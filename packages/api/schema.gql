@@ -133,6 +133,7 @@ type Mutation {
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
+  updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
 }
@@ -290,6 +291,14 @@ input UpdateOptionInGroupInput {
 input UpdateOptionsGroupInput {
   id: ID!
   name: String!
+}
+
+input UpdateRubricInput {
+  catalogueName: [LangInput!]!
+  id: ID!
+  name: [LangInput!]!
+  parent: ID
+  variant: ID
 }
 
 input UpdateRubricVariantInput {

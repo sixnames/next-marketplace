@@ -21,7 +21,9 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
-import { createRubricInputSchema } from '@rg/validation';
+import { createRubricInputSchema, updateRubricInputSchema } from '@rg/validation';
+import { UpdateRubricInput } from './UpdateRubricInput';
+import { Types } from 'mongoose';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -114,23 +116,54 @@ export class RubricResolver {
     }
   }
 
-  /*@Mutation(() => RubricPayloadType)
-  async updateRubric(@Arg('input') input: UpdateRubricInput): Promise<RubricPayloadType> {
+  @Mutation(() => RubricPayloadType)
+  async updateRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: UpdateRubricInput,
+  ): Promise<RubricPayloadType> {
     try {
+      const city = ctx.req.session!.city;
       await updateRubricInputSchema.validate(input);
 
       const { id, ...values } = input;
-      const { catalogueName, parent, variant } = values;
+      const { catalogueName, parent, variant, name } = values;
+
+      const nameValues = name.map(({ value }) => value);
+      const exists = await RubricModel.exists({
+        'cities.node.parent': parent ? parent : null,
+        'cities.node.name.value': {
+          $in: nameValues,
+        },
+      });
+
+      if (exists) {
+        return {
+          success: false,
+          message: 'Рубрика с таким именем уже существует.',
+        };
+      }
+
       const withNewLink = {
         ...values,
         parent: Types.ObjectId(parent),
         variant: Types.ObjectId(variant),
-        slug: generateSlug(catalogueName),
+        slug: generateDefaultLangSlug(catalogueName),
       };
 
-      const rubric = await RubricModel.findByIdAndUpdate(id, withNewLink, {
-        new: true,
-      });
+      const rubric = await RubricModel.findOneAndUpdate(
+        {
+          _id: id,
+          'cities.key': city,
+        },
+        {
+          $set: {
+            'cities.$.node': withNewLink,
+          },
+        },
+        {
+          new: true,
+        },
+      );
 
       if (!rubric) {
         return {
@@ -150,7 +183,8 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
+
   /*@Mutation(() => RubricPayloadType)
   async deleteRubric(@Arg('id', (_type) => ID) id: string): Promise<RubricPayloadType> {
     try {
@@ -187,6 +221,7 @@ export class RubricResolver {
       };
     }
   }*/
+
   /*@Mutation(() => RubricPayloadType)
   async addAttributesGroupToRubric(
     @Arg('input') input: AddAttributesGroupToRubricInput,

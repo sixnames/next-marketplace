@@ -154,7 +154,8 @@ type Mutation {
 type Option {
   color: String
   id: ID!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
 }
 
 type OptionsGroup {
@@ -236,7 +237,7 @@ type RubricCity {
 type RubricNode {
   active: Boolean!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueName: [String!]!
+  catalogueName: [LanguageType!]!
   level: Int!
   name: [LanguageType!]!
   parent: Rubric

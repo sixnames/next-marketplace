@@ -23,7 +23,7 @@ export class RubricNode {
   @prop({ type: LanguageType, required: true, _id: false })
   public name: LanguageType[];
 
-  @Field(() => String)
+  @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true, _id: false })
   public catalogueName: LanguageType[];
 

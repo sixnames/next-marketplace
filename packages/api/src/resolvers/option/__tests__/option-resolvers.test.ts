@@ -1,6 +1,8 @@
 import { newOption } from '../__fixtures__';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
 import { OptionModel } from '../../../entities/Option';
+import getLangField from '../../../utils/getLangField';
+import { DEFAULT_LANG } from '../../../config';
 
 describe('Options', () => {
   it('Should return current option', async () => {
@@ -15,12 +17,13 @@ describe('Options', () => {
           getOption(
             id: "${target.id}"
           ) {
-            name
+            id
+            nameString
           }
         }
       `,
     );
 
-    expect(getOption.name).toEqual(target.name);
+    expect(getOption.nameString).toEqual(getLangField(target.name, DEFAULT_LANG));
   });
 });

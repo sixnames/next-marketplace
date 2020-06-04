@@ -32,9 +32,27 @@ export const MOCK_METRICS = [
 
 // Options
 export const MOCK_OPTIONS = [
-  { name: 'cy-test-gray', color: '999999' },
-  { name: 'cy-test-red', color: '99020b' },
-  { name: 'cy-test-green', color: '1a9904' },
+  {
+    name: [
+      { key: 'ru', value: 'cy-test-gray' },
+      { key: 'en', value: 'cy-test-gray' },
+    ],
+    color: '999999',
+  },
+  {
+    name: [
+      { key: 'ru', value: 'cy-test-red' },
+      { key: 'en', value: 'cy-test-red' },
+    ],
+    color: '99020b',
+  },
+  {
+    name: [
+      { key: 'ru', value: 'cy-test-green' },
+      { key: 'en', value: 'cy-test-green' },
+    ],
+    color: '1a9904',
+  },
 ];
 
 export const MOCK_OPTIONS_GROUP = { name: 'cy-test-colors' };

@@ -1,7 +1,13 @@
 export const newOption = {
-  name: 'Option name',
+  name: [
+    { key: 'ru', value: 'Option name' },
+    { key: 'en', value: 'Option name' },
+  ],
 };
 
 export const anotherOption = {
-  name: 'Another name',
+  name: [
+    { key: 'ru', value: 'Another name' },
+    { key: 'en', value: 'Another name' },
+  ],
 };

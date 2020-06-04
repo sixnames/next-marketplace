@@ -20,6 +20,7 @@ import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
+  updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -27,6 +28,7 @@ import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { Types } from 'mongoose';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
+import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -243,7 +245,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  /*@Mutation(() => OptionsGroupPayloadType)
+  @Mutation(() => OptionsGroupPayloadType)
   async updateOptionInGroup(
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -260,13 +262,15 @@ export class OptionsGroupResolver {
         };
       }
 
-      const existingOptions = await OptionModel.find({ _id: { $in: group.options } })
-        .select({ name: 1, id: 1 })
-        .lean()
-        .exec();
-      const existingOption = existingOptions.find(({ name: optionName }) => optionName === name);
+      const nameValues = name.map(({ value }) => value);
+      const existingOptions = await OptionModel.exists({
+        _id: { $in: group.options },
+        'name.value': {
+          $in: nameValues,
+        },
+      });
 
-      if (existingOption && existingOption._id.toString() !== optionId) {
+      if (existingOptions) {
         return {
           success: false,
           message: 'Опция с таким именем уже присутствует в данной группе.',
@@ -300,7 +304,7 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   /*@Mutation(() => OptionsGroupPayloadType)
   async deleteOptionFromGroup(

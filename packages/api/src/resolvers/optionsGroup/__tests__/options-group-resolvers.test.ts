@@ -32,7 +32,7 @@ const addOptionToGroupMutation = (
         }
       `;
 
-/*const updateOptionInGroupMutation = (
+const updateOptionInGroupMutation = (
   groupId: string,
   optionId: string,
   name: string,
@@ -43,22 +43,24 @@ const addOptionToGroupMutation = (
             input: {
               groupId: "${groupId}"
               optionId: "${optionId}"
-              name: "${name}"
+              name: [{key: "ru", value: "${name}"}],
               color: "${color}"
             }
           ) {
             message
             success
             group {
+              id
+              nameString
               options {
                 id
-                name
+                nameString
                 color
               }
             }
           }
         }
-      `;*/
+      `;
 
 describe('Options groups', () => {
   it('Should CRUD options group', async () => {
@@ -258,18 +260,18 @@ describe('Options groups', () => {
       data: { addOptionToGroup },
     } = await mutate(addOptionToGroupMutation(group.id));
     expect(addOptionToGroup.success).toBeTruthy();
-    // const addedOption = addOptionToGroup.group.options[0];
+    const addedOption = addOptionToGroup.group.options[0];
 
     // Should return validation error on option update
-    /*const {
+    const {
       data: {
         updateOptionInGroup: { success: updateOptionInGroupFalseSuccess },
       },
     } = await mutate(updateOptionInGroupMutation(group.id, addedOption.id, 'f', 'b'));
-    expect(updateOptionInGroupFalseSuccess).toBeFalsy();*/
+    expect(updateOptionInGroupFalseSuccess).toBeFalsy();
 
     // Should update option in options group
-    /*const newOptionName = 'newOptionName';
+    const newOptionName = 'newOptionName';
     const newOptionColor = '898989';
     const {
       data: {
@@ -281,11 +283,10 @@ describe('Options groups', () => {
     } = await mutate(
       updateOptionInGroupMutation(group.id, addedOption.id, newOptionName, newOptionColor),
     );
-
     const updatedOption = updatedOptions.find(({ id }: { id: string }) => id === addedOption.id);
     expect(updateOptionInGroupSuccess).toBeTruthy();
-    expect(updatedOption.name).toEqual(newOptionName);
-    expect(updatedOption.color).toEqual(newOptionColor);*/
+    expect(updatedOption.nameString).toEqual(newOptionName);
+    expect(updatedOption.color).toEqual(newOptionColor);
 
     // Should delete option from options group
     /*const {

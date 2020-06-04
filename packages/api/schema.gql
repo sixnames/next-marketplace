@@ -93,6 +93,11 @@ input DeleteAttributesGroupFromRubricInput {
   rubricId: ID!
 }
 
+input DeleteOptionFromGroupInput {
+  groupId: ID!
+  optionId: ID!
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -128,6 +133,7 @@ type Mutation {
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
+  deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!

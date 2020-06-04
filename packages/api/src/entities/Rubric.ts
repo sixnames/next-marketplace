@@ -3,17 +3,7 @@ import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
-
-@ObjectType()
-export class LanguageType {
-  @Field(() => String)
-  @prop({ required: true })
-  public key: string;
-
-  @Field(() => String)
-  @prop({ required: true })
-  public value: string;
-}
+import { LanguageType } from './common';
 
 @ObjectType()
 export class RubricAttributesGroup {

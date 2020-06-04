@@ -3,6 +3,11 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddAttributesGroupToRubricInput {
+  attributesGroupId: ID!
+  rubricId: ID!
+}
+
 input AddAttributeToGroupInput {
   groupId: ID!
   metric: ID
@@ -110,6 +115,7 @@ type MetricPayloadType {
 }
 
 type Mutation {
+  addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
@@ -123,6 +129,7 @@ type Mutation {
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
+  deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
   signIn(input: SignInInput!): UserPayloadType!

@@ -11,7 +11,12 @@ import {
   Root,
 } from 'type-graphql';
 import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
-import { RUBRIC_LEVEL_ONE, RUBRIC_LEVEL_STEP, RUBRIC_LEVEL_ZERO } from '@rg/config';
+import {
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_STEP,
+  RUBRIC_LEVEL_TWO,
+  RUBRIC_LEVEL_ZERO,
+} from '@rg/config';
 import { ContextInterface } from '../../types/context';
 import { DocumentType, Ref } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
@@ -21,9 +26,15 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
-import { createRubricInputSchema, updateRubricInputSchema } from '@rg/validation';
+import {
+  addAttributesGroupToRubricInputSchema,
+  createRubricInputSchema,
+  updateRubricInputSchema,
+} from '@rg/validation';
 import { UpdateRubricInput } from './UpdateRubricInput';
 import { Types } from 'mongoose';
+import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
+import { AttributesGroupModel } from '../../entities/AttributesGroup';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -185,20 +196,37 @@ export class RubricResolver {
     }
   }
 
-  /*@Mutation(() => RubricPayloadType)
-  async deleteRubric(@Arg('id', (_type) => ID) id: string): Promise<RubricPayloadType> {
+  @Mutation(() => RubricPayloadType)
+  async deleteRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<RubricPayloadType> {
     try {
-      const rubric = await RubricModel.find({ _id: id }).select({ id: 1 }).lean().exec();
+      const city = ctx.req.session!.city;
+      // TODO [Slava] Уточнить у Яна по поводу удаления из БД или из города
+      const rubric = await RubricModel.find({
+        _id: id,
+        'cities.key': city,
+      })
+        .select({ id: 1 })
+        .lean()
+        .exec();
 
-      const children = await RubricModel.find({ parent: id }).select({ id: 1 }).lean().exec();
+      const children = await RubricModel.find({
+        'cities.key': city,
+        'cities.node.parent': id,
+      })
+        .select({ id: 1 })
+        .lean()
+        .exec();
 
       const allRubrics = [...rubric, ...children].map(({ _id }) => _id);
 
       // TODO [Slava] after products
-      /!*const updatedProducts = await Product.updateMany(
+      /*const updatedProducts = await Product.updateMany(
         { rubrics: { $in: allRubrics } },
         { $pull: { rubrics: { $in: allRubrics } } },
-      );*!/
+      );*/
 
       const removed = await RubricModel.deleteMany({ _id: { $in: allRubrics } });
 
@@ -220,17 +248,22 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
-  /*@Mutation(() => RubricPayloadType)
+  @Mutation(() => RubricPayloadType)
   async addAttributesGroupToRubric(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
       await addAttributesGroupToRubricInputSchema.validate(input);
+      const city = ctx.req.session!.city;
 
       const { rubricId, attributesGroupId } = input;
-      const rubric = await RubricModel.findById(rubricId);
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
 
       if (!rubric || !attributesGroup) {
@@ -240,7 +273,10 @@ export class RubricResolver {
         };
       }
 
-      if (rubric.level !== RUBRIC_LEVEL_TWO) {
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
+
+      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
         return {
           success: false,
           message: `В рубрику не ${RUBRIC_LEVEL_TWO}-го уровня нельзя добавить группу атрибутов.`,
@@ -248,16 +284,20 @@ export class RubricResolver {
         };
       }
 
-      const children = await RubricModel.find({ parent: rubric.id })
+      const children = await RubricModel.find({
+        'cities.key': city,
+        'cities.node.parent': rubric.id,
+      })
         .select({ _id: 1 })
         .lean()
         .exec();
       const childrenIds = children.map(({ _id }) => _id);
-      const parentId = rubric.parent;
+      const parentId = currentRubricCityNode.parent;
 
       const updatedRubrics = await RubricModel.updateMany(
         {
           _id: { $in: [...childrenIds, parentId, rubricId] },
+          'cities.key': city,
           attributesGroups: {
             $not: {
               $elemMatch: {
@@ -268,7 +308,7 @@ export class RubricResolver {
         },
         {
           $addToSet: {
-            attributesGroups: {
+            'cities.$.node.attributesGroups': {
               showInCatalogueFilter: false,
               node: Types.ObjectId(attributesGroupId),
             },
@@ -303,7 +343,8 @@ export class RubricResolver {
         message: 'Ошибка добавления Группы атрибутов в рубрику.',
       };
     }
-  }*/
+  }
+
   /*@Mutation(() => RubricPayloadType)
   async deleteAttributesGroupFromRubric(
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,

@@ -11,11 +11,7 @@ describe.only('Rubrics', () => {
 
     // Should return rubrics tree=
     const {
-      data: {
-        getRubricsTree,
-        getAllRubricVariants,
-        // getAllAttributesGroups
-      },
+      data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
     } = await query(`
       query {
         getAllRubricVariants {
@@ -37,7 +33,7 @@ describe.only('Rubrics', () => {
       }
     `);
 
-    // const attributesGroup = getAllAttributesGroups[0];
+    const attributesGroup = getAllAttributesGroups[0];
     const treeParent = getRubricsTree[0];
     const treeChild = treeParent.children[0];
     expect(getRubricsTree.length).toEqual(1);
@@ -173,7 +169,7 @@ describe.only('Rubrics', () => {
     expect(updateRubric.rubric.catalogueName).toEqual(anotherRubric.catalogueName);
 
     // Should delete rubric
-    /*const {
+    const {
       data: { deleteRubric },
     } = await mutate(`
       mutation {
@@ -184,10 +180,10 @@ describe.only('Rubrics', () => {
         }
       }
     `);
-    expect(deleteRubric.success).toBeTruthy();*/
+    expect(deleteRubric.success).toBeTruthy();
 
     // Should add attributes group to the second level rubric
-    /*const {
+    const {
       data: {
         addAttributesGroupToRubric: { rubric, success },
       },
@@ -217,7 +213,7 @@ describe.only('Rubrics', () => {
     `);
     const { attributesGroups } = rubric;
     expect(success).toBeTruthy();
-    expect(attributesGroups.length).toEqual(2);*/
+    expect(attributesGroups.length).toEqual(2);
 
     // Should delete attributes group from rubric
     /*const {

@@ -16,6 +16,12 @@ input AddAttributeToGroupInput {
   type: AttributeTypeEnum!
 }
 
+input AddOptionToGroupInput {
+  color: String
+  groupId: ID!
+  name: [LangInput!]!
+}
+
 type Attribute {
   id: ID!
   metric: Metric
@@ -111,6 +117,7 @@ type MetricPayloadType {
 type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
+  addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -121,6 +128,7 @@ type Mutation {
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
+  deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!

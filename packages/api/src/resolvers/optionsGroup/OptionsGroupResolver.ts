@@ -17,11 +17,16 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
-import { createOptionsGroupSchema, updateOptionsGroupSchema } from '@rg/validation';
+import {
+  addOptionToGroupSchema,
+  createOptionsGroupSchema,
+  updateOptionsGroupSchema,
+} from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { Types } from 'mongoose';
+import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -173,7 +178,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  /*@Mutation(() => OptionsGroupPayloadType)
+  @Mutation(() => OptionsGroupPayloadType)
   async addOptionToGroup(
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -190,9 +195,12 @@ export class OptionsGroupResolver {
         };
       }
 
+      const nameValues = input.name.map(({ value }) => value);
       const existingOptions = await OptionModel.exists({
         _id: { $in: group.options },
-        name: input.name,
+        'name.value': {
+          $in: nameValues,
+        },
       });
 
       if (existingOptions) {
@@ -233,7 +241,7 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   /*@Mutation(() => OptionsGroupPayloadType)
   async updateOptionInGroup(

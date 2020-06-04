@@ -1,11 +1,10 @@
-import { MOCK_OPTIONS_GROUP } from '@rg/config';
+import { MOCK_OPTIONS, MOCK_OPTIONS_GROUP } from '@rg/config';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';
-import { anotherOptionsGroup, optionsGroup } from '../__fixtures__';
-// import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
+import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
-/*const addOptionToGroupMutation = (
+const addOptionToGroupMutation = (
   groupId: string,
   name = optionForGroup.name,
   color: string | null = optionForGroup.color,
@@ -14,24 +13,24 @@ import { anotherOptionsGroup, optionsGroup } from '../__fixtures__';
           addOptionToGroup(
             input: {
               groupId: "${groupId}"
-              name: "${name}",
-              color: "${color}",
+              name: [{key: "ru", value: "${name}"}],
+              color: ${color ? `"${color}"` : color},
             }
           ) {
             success
             message
             group {
               id
-              name
+              nameString
               options {
                 id
-                name
+                nameString
                 color
               }
             }
           }
         }
-      `;*/
+      `;
 
 /*const updateOptionInGroupMutation = (
   groupId: string,
@@ -237,7 +236,7 @@ describe('Options groups', () => {
     expect(data.deleteOptionsGroup.success).toBeTruthy();
 
     // Shouldn't create option on validation error
-    /*const {
+    const {
       data: {
         addOptionToGroup: { success: addOptionToGroupValidationFail },
       },
@@ -246,17 +245,20 @@ describe('Options groups', () => {
 
     // Should return duplicate options group error on option update
     const { data: optionDuplicate } = await mutate(
-      addOptionToGroupMutation(group.id, MOCK_OPTIONS[0].name, MOCK_OPTIONS[0].color),
+      addOptionToGroupMutation(
+        group.id,
+        getLangField(MOCK_OPTIONS[0].name, DEFAULT_LANG),
+        MOCK_OPTIONS[0].color,
+      ),
     );
-    expect(optionDuplicate.addOptionToGroup.success).toBeFalsy();*/
+    expect(optionDuplicate.addOptionToGroup.success).toBeFalsy();
 
     // Should create option and add it to the options group
-    /*const {
+    const {
       data: { addOptionToGroup },
     } = await mutate(addOptionToGroupMutation(group.id));
-
     expect(addOptionToGroup.success).toBeTruthy();
-    const addedOption = addOptionToGroup.group.options[0];*/
+    // const addedOption = addOptionToGroup.group.options[0];
 
     // Should return validation error on option update
     /*const {

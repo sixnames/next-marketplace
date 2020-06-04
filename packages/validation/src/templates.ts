@@ -38,9 +38,9 @@ export const name = Yup.string()
   .required('Имя обязателено к заполнению.');
 
 export const color = Yup.string()
-  .matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример #333333.')
+  .nullable()
   .trim()
-  .nullable();
+  .matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример 333333.');
 
 export const email = Yup.string()
   .email('Невалидный Email формат')

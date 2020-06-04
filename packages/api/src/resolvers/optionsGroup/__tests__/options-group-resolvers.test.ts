@@ -289,7 +289,7 @@ describe('Options groups', () => {
     expect(updatedOption.color).toEqual(newOptionColor);
 
     // Should delete option from options group
-    /*const {
+    const {
       data: { deleteOptionFromGroup },
     } = await mutate(`
         mutation {
@@ -303,7 +303,7 @@ describe('Options groups', () => {
             group {
               options {
                 id
-                name
+                nameString
                 color
               }
             }
@@ -312,6 +312,6 @@ describe('Options groups', () => {
       `);
 
     expect(deleteOptionFromGroup.success).toBeTruthy();
-    expect(deleteOptionFromGroup.group.options.length).toEqual(3);*/
+    expect(deleteOptionFromGroup.group.options.length).toEqual(3);
   });
 });

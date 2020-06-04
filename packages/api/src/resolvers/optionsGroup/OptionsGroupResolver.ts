@@ -20,6 +20,7 @@ import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
+  deleteOptionFromGroupSchema,
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '@rg/validation';
@@ -29,6 +30,7 @@ import { AttributeModel } from '../../entities/Attribute';
 import { Types } from 'mongoose';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
+import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -306,7 +308,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  /*@Mutation(() => OptionsGroupPayloadType)
+  @Mutation(() => OptionsGroupPayloadType)
   async deleteOptionFromGroup(
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -346,7 +348,7 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   @FieldResolver()
   async nameString(

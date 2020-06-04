@@ -1,33 +1,24 @@
 import {
   Arg,
-  Field,
   FieldResolver,
-  Mutation,
-  ObjectType,
   Query,
   Resolver,
   Root,
   ID,
+  Ctx,
+  ObjectType,
+  Field,
+  Mutation,
 } from 'type-graphql';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
-import PayloadType from '../common/PayloadType';
-import {
-  createOptionsGroupSchema,
-  updateOptionsGroupSchema,
-  updateOptionInGroupSchema,
-  addOptionToGroupSchema,
-  deleteOptionFromGroupSchema,
-} from '@rg/validation';
-import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
-import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
-import { Option, OptionModel } from '../../entities/Option';
-import { AddOptionToGroupInput } from './AddOptionToGroupInput';
-import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
-import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
+import { Option } from '../../entities/Option';
 import { DocumentType, Ref } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
-import { AttributeModel } from '../../entities/Attribute';
+import { ContextInterface } from '../../types/context';
+import getLangField from '../../utils/getLangField';
+import PayloadType from '../common/PayloadType';
+import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
+import { createOptionsGroupSchema } from '@rg/validation';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -54,7 +45,12 @@ export class OptionsGroupResolver {
     try {
       await createOptionsGroupSchema.validate(input);
 
-      const isGroupExists = await OptionsGroupModel.exists(input);
+      const nameValues = input.name.map(({ value }) => value);
+      const isGroupExists = await OptionsGroupModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
 
       if (isGroupExists) {
         return {
@@ -85,7 +81,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  @Mutation(() => OptionsGroupPayloadType)
+  /*@Mutation(() => OptionsGroupPayloadType)
   async updateOptionsGroup(
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -125,9 +121,9 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
+  }*/
 
-  @Mutation(() => OptionsGroupPayloadType)
+  /*@Mutation(() => OptionsGroupPayloadType)
   async deleteOptionsGroup(@Arg('id', (_type) => ID) id: string): Promise<OptionsGroupPayloadType> {
     try {
       const connectedWithAttributes = await AttributeModel.exists({ options: Types.ObjectId(id) });
@@ -167,9 +163,9 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
+  }*/
 
-  @Mutation(() => OptionsGroupPayloadType)
+  /*@Mutation(() => OptionsGroupPayloadType)
   async addOptionToGroup(
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -229,9 +225,9 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
+  }*/
 
-  @Mutation(() => OptionsGroupPayloadType)
+  /*@Mutation(() => OptionsGroupPayloadType)
   async updateOptionInGroup(
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -288,9 +284,9 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }
+  }*/
 
-  @Mutation(() => OptionsGroupPayloadType)
+  /*@Mutation(() => OptionsGroupPayloadType)
   async deleteOptionFromGroup(
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -330,6 +326,14 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
+  }*/
+
+  @FieldResolver()
+  async nameString(
+    @Root() group: DocumentType<OptionsGroup>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    return getLangField(group.name, ctx.req.session!.lang);
   }
 
   @FieldResolver()

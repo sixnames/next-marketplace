@@ -16,12 +16,6 @@ input AddAttributeToGroupInput {
   type: AttributeTypeEnum!
 }
 
-input AddOptionToGroupInput {
-  color: String
-  groupId: ID!
-  name: String!
-}
-
 type Attribute {
   id: ID!
   metric: Metric
@@ -60,7 +54,7 @@ input CreateMetricInput {
 }
 
 input CreateOptionsGroupInput {
-  name: String!
+  name: [LangInput!]!
 }
 
 input CreateRubricInput {
@@ -93,11 +87,6 @@ input DeleteAttributesGroupFromRubricInput {
   rubricId: ID!
 }
 
-input DeleteOptionFromGroupInput {
-  groupId: ID!
-  optionId: ID!
-}
-
 input LangInput {
   key: String!
   value: String!
@@ -122,7 +111,6 @@ type MetricPayloadType {
 type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
-  addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -133,8 +121,6 @@ type Mutation {
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
-  deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
-  deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
@@ -144,8 +130,6 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroup!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
-  updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
-  updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
@@ -160,7 +144,8 @@ type Option {
 
 type OptionsGroup {
   id: ID!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   options: [Option!]!
 }
 
@@ -291,18 +276,6 @@ input UpdateAttributesGroupInput {
 }
 
 input UpdateMetricInput {
-  id: ID!
-  name: String!
-}
-
-input UpdateOptionInGroupInput {
-  color: String
-  groupId: ID!
-  name: String!
-  optionId: ID!
-}
-
-input UpdateOptionsGroupInput {
   id: ID!
   name: String!
 }

@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import { name, id } from './templates';
+import { id, langInput, notNullableName } from './templates';
 
 export const createOptionsGroupSchema = Yup.object().shape({
-  name,
+  name: langInput(notNullableName('Название группы опций')),
 });
 
 export const updateOptionsGroupSchema = Yup.object().shape({
   id,
-  name,
+  name: langInput(notNullableName('Название группы опций')),
 });

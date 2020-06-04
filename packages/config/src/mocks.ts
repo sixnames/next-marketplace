@@ -55,8 +55,18 @@ export const MOCK_OPTIONS = [
   },
 ];
 
-export const MOCK_OPTIONS_GROUP = { name: 'cy-test-colors' };
-export const MOCK_OPTIONS_GROUP_FOR_DELETE = { name: 'cy-test-group-for-delete' };
+export const MOCK_OPTIONS_GROUP = {
+  name: [
+    { key: 'ru', value: 'cy-test-colors' },
+    { key: 'en', value: 'cy-test-colors' },
+  ],
+};
+export const MOCK_OPTIONS_GROUP_FOR_DELETE = {
+  name: [
+    { key: 'ru', value: 'cy-test-group-for-delete' },
+    { key: 'en', value: 'cy-test-group-for-delete' },
+  ],
+};
 
 // Attributes
 export const MOCK_ATTRIBUTE_MULTIPLE = {

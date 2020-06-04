@@ -163,24 +163,9 @@ describe.only('Rubrics', () => {
         }
       }
     `);
-
     expect(updateRubric.success).toBeTruthy();
     expect(updateRubric.rubric.name).toEqual(anotherRubric.name);
     expect(updateRubric.rubric.catalogueName).toEqual(anotherRubric.catalogueName);
-
-    // Should delete rubric
-    const {
-      data: { deleteRubric },
-    } = await mutate(`
-      mutation {
-        deleteRubric(
-          id: "${updateRubric.rubric.id}"
-        ) {
-          success
-        }
-      }
-    `);
-    expect(deleteRubric.success).toBeTruthy();
 
     // Should add attributes group to the second level rubric
     const {
@@ -244,5 +229,19 @@ describe.only('Rubrics', () => {
     `);
     expect(deleteAttributesGroupFromRubric.success).toBeTruthy();
     expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);*/
+
+    // Should delete rubric
+    const {
+      data: { deleteRubric },
+    } = await mutate(`
+      mutation {
+        deleteRubric(
+          id: "${treeParent.id}"
+        ) {
+          success
+        }
+      }
+    `);
+    expect(deleteRubric.success).toBeTruthy();
   });
 });

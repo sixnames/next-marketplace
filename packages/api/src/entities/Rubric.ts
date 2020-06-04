@@ -30,11 +30,11 @@ export class RubricAttributesGroup {
 @ObjectType()
 export class RubricNode {
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
+  @prop({ type: LanguageType, required: true, _id: false })
   public name: LanguageType[];
 
   @Field(() => String)
-  @prop({ type: LanguageType, required: true })
+  @prop({ type: LanguageType, required: true, _id: false })
   public catalogueName: LanguageType[];
 
   @Field(() => String)
@@ -70,7 +70,7 @@ export class RubricCity {
   public key: string;
 
   @Field(() => RubricNode)
-  @prop({ required: true })
+  @prop({ required: true, _id: false })
   public node: RubricNode;
 }
 
@@ -107,7 +107,7 @@ export class Rubric {
   public variant: RubricVariant | null;
 
   @Field(() => [RubricCity])
-  @prop({ type: RubricCity, required: true })
+  @prop({ type: RubricCity, required: true, _id: false })
   public cities: RubricCity[];
 }
 

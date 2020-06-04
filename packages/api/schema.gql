@@ -88,6 +88,11 @@ input DeleteAttributeFromGroupInput {
   groupId: ID!
 }
 
+input DeleteAttributesGroupFromRubricInput {
+  attributesGroupId: ID!
+  rubricId: ID!
+}
+
 input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
@@ -126,6 +131,7 @@ type Mutation {
   createUser(input: CreateUserInput!): UserPayloadType!
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
+  deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!

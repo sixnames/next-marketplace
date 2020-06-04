@@ -29,12 +29,14 @@ import { CreateRubricInput } from './CreateRubricInput';
 import {
   addAttributesGroupToRubricInputSchema,
   createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema,
   updateRubricInputSchema,
 } from '@rg/validation';
 import { UpdateRubricInput } from './UpdateRubricInput';
 import { Types } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
+import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -203,14 +205,19 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       const city = ctx.req.session!.city;
-      // TODO [Slava] Уточнить у Яна по поводу удаления из БД или из города
-      const rubric = await RubricModel.find({
+      const rubric = await RubricModel.findOne({
         _id: id,
         'cities.key': city,
       })
-        .select({ id: 1 })
         .lean()
         .exec();
+
+      if (!rubric) {
+        return {
+          success: false,
+          message: 'Рубрика не найдена.',
+        };
+      }
 
       const children = await RubricModel.find({
         'cities.key': city,
@@ -219,16 +226,52 @@ export class RubricResolver {
         .select({ id: 1 })
         .lean()
         .exec();
+      const allRubrics = [rubric, ...children].map(({ _id }) => _id);
 
-      const allRubrics = [...rubric, ...children].map(({ _id }) => _id);
+      // If rubric exists in one city
+      if (rubric.cities.length === 1) {
+        // TODO [Slava] after products
+        /*const updatedProducts = await Product.updateMany(
+          { rubrics: { $in: allRubrics } },
+          { $pull: { rubrics: { $in: allRubrics } } },
+        );*/
 
+        const removed = await RubricModel.deleteMany({ _id: { $in: allRubrics } });
+
+        // if (!removed || !updatedProducts) {
+        if (!removed) {
+          return {
+            success: false,
+            message: 'Ошибка удаления рубрики.',
+          };
+        }
+
+        return {
+          success: true,
+          message: 'Рубрика удалена.',
+        };
+      }
+
+      // If rubric exists in multiple cities
       // TODO [Slava] after products
       /*const updatedProducts = await Product.updateMany(
         { rubrics: { $in: allRubrics } },
         { $pull: { rubrics: { $in: allRubrics } } },
       );*/
 
-      const removed = await RubricModel.deleteMany({ _id: { $in: allRubrics } });
+      const removed = await RubricModel.updateMany(
+        {
+          _id: { $in: allRubrics },
+          'cities.key': city,
+        },
+        {
+          $pull: {
+            cities: {
+              key: city,
+            },
+          },
+        },
+      );
 
       // if (!removed || !updatedProducts) {
       if (!removed) {
@@ -345,7 +388,7 @@ export class RubricResolver {
     }
   }
 
-  /*@Mutation(() => RubricPayloadType)
+  @Mutation(() => RubricPayloadType)
   async deleteAttributesGroupFromRubric(
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
@@ -421,7 +464,7 @@ export class RubricResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   @FieldResolver()
   async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {

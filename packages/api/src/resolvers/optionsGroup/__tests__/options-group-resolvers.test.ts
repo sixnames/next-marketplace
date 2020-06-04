@@ -227,14 +227,14 @@ describe('Options groups', () => {
     expect(updatedGroup.nameString).toEqual(anotherOptionsGroup.name);
 
     // Should delete options group
-    /*const { data } = await mutate(`
+    const { data } = await mutate(`
         mutation {
           deleteOptionsGroup(id: "${updatedGroup.id}") {
             success
           }
         }
       `);
-    expect(data.deleteOptionsGroup.success).toBeTruthy();*/
+    expect(data.deleteOptionsGroup.success).toBeTruthy();
 
     // Shouldn't create option on validation error
     /*const {

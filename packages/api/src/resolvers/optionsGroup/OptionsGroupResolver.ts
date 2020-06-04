@@ -11,7 +11,7 @@ import {
   Mutation,
 } from 'type-graphql';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
-import { Option } from '../../entities/Option';
+import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType, Ref } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
@@ -20,6 +20,8 @@ import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import { createOptionsGroupSchema, updateOptionsGroupSchema } from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
+import { AttributeModel } from '../../entities/Attribute';
+import { Types } from 'mongoose';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -129,7 +131,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  /*@Mutation(() => OptionsGroupPayloadType)
+  @Mutation(() => OptionsGroupPayloadType)
   async deleteOptionsGroup(@Arg('id', (_type) => ID) id: string): Promise<OptionsGroupPayloadType> {
     try {
       const connectedWithAttributes = await AttributeModel.exists({ options: Types.ObjectId(id) });
@@ -144,7 +146,7 @@ export class OptionsGroupResolver {
       const removedOptions = await OptionModel.deleteMany({
         _id: { $in: group.options },
       });
-      if (!removedOptions) {
+      if (!removedOptions.ok) {
         return {
           success: false,
           message: 'Ошибка удаления опций из группы.',
@@ -169,7 +171,7 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   /*@Mutation(() => OptionsGroupPayloadType)
   async addOptionToGroup(

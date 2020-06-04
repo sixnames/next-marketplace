@@ -201,7 +201,7 @@ describe.only('Rubrics', () => {
     expect(attributesGroups.length).toEqual(2);
 
     // Should delete attributes group from rubric
-    /*const {
+    const {
       data: { deleteAttributesGroupFromRubric },
     } = await mutate(`
       mutation {
@@ -228,7 +228,7 @@ describe.only('Rubrics', () => {
       }
     `);
     expect(deleteAttributesGroupFromRubric.success).toBeTruthy();
-    expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);*/
+    expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);
 
     // Should delete rubric
     const {

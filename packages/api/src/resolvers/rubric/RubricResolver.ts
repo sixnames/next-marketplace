@@ -390,18 +390,19 @@ export class RubricResolver {
 
   @Mutation(() => RubricPayloadType)
   async deleteAttributesGroupFromRubric(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
+      const city = ctx.req.session!.city;
       await deleteAttributesGroupFromRubricInputSchema.validate(input);
 
       const { rubricId, attributesGroupId } = input;
-      const rubric = (await RubricModel.findById(rubricId)) || {
-        id: null,
-        attributesGroups: [],
-        level: RUBRIC_LEVEL_ZERO,
-        parent: null,
-      };
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
+
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
 
       if (!rubric || !attributesGroup) {
@@ -411,30 +412,38 @@ export class RubricResolver {
         };
       }
 
-      if (rubric.level !== RUBRIC_LEVEL_TWO) {
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
+
+      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
         return {
           success: false,
           message: `Из рубрики не ${RUBRIC_LEVEL_TWO}-го уровня нельзя удалить группу атрибутов.`,
         };
       }
 
-      const children = await RubricModel.find({ parent: rubric.id })
+      const children = await RubricModel.find({
+        'cities.key': city,
+        'cities.node.parent': rubric.id,
+      })
         .select({ _id: 1 })
         .lean()
         .exec();
       const childrenIds = children.map(({ _id }) => _id);
-      const parentId = rubric.parent;
+      const parentId = currentRubricCityNode.parent;
 
       const updatedRubrics = await RubricModel.updateMany(
-        { _id: { $in: [...childrenIds, parentId, rubricId] } },
+        {
+          _id: { $in: [...childrenIds, parentId, rubricId] },
+          'cities.key': city,
+        },
         {
           $pull: {
-            attributesGroups: {
-              node: Types.ObjectId(attributesGroupId),
+            'cities.$.node.attributesGroups': {
+              node: attributesGroupId,
             },
           },
         },
-        { new: true },
       );
 
       if (!updatedRubrics.ok) {

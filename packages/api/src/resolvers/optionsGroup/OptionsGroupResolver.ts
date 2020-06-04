@@ -17,8 +17,9 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
-import { createOptionsGroupSchema } from '@rg/validation';
+import { createOptionsGroupSchema, updateOptionsGroupSchema } from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -81,7 +82,7 @@ export class OptionsGroupResolver {
     }
   }
 
-  /*@Mutation(() => OptionsGroupPayloadType)
+  @Mutation(() => OptionsGroupPayloadType)
   async updateOptionsGroup(
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -90,7 +91,12 @@ export class OptionsGroupResolver {
 
       const { id, ...values } = input;
 
-      const isGroupExists = await OptionsGroupModel.exists({ name: values.name });
+      const nameValues = values.name.map(({ value }) => value);
+      const isGroupExists = await OptionsGroupModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
 
       if (isGroupExists) {
         return {
@@ -121,7 +127,7 @@ export class OptionsGroupResolver {
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   /*@Mutation(() => OptionsGroupPayloadType)
   async deleteOptionsGroup(@Arg('id', (_type) => ID) id: string): Promise<OptionsGroupPayloadType> {

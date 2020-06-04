@@ -2,7 +2,7 @@ import { MOCK_OPTIONS_GROUP } from '@rg/config';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';
-import { optionsGroup } from '../__fixtures__';
+import { anotherOptionsGroup, optionsGroup } from '../__fixtures__';
 // import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
 /*const addOptionToGroupMutation = (
@@ -158,7 +158,7 @@ describe('Options groups', () => {
     expect(createdGroup.nameString).toEqual(optionsGroup.name);
 
     // Shouldn't update options group if new name is not valid
-    /*const {
+    const {
       data: {
         updateOptionsGroup: { success: updateOptionsGroupFailSuccess },
       },
@@ -167,62 +167,64 @@ describe('Options groups', () => {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: "f"
+              name: [{key: "ru", value: "f"}]
             }
           ) {
             success
             message
             group {
               id
-              name
+              nameString
             }
           }
         }
       `);
-    expect(updateOptionsGroupFailSuccess).toBeFalsy();*/
+    expect(updateOptionsGroupFailSuccess).toBeFalsy();
 
     // Should return duplicate options group error on group update
-    /*const { data: duplicateOnUpdate } = await mutate(`
+    const {
+      data: { updateOptionsGroup: duplicateOnUpdate },
+    } = await mutate(`
         mutation {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: "${group.name}"
+              name: [{key: "ru", value: "${group.nameString}"}]
             }
           ) {
             success
             group {
-              name
+              id
+              nameString
             }
           }
         }
       `);
-    expect(duplicateOnUpdate.updateOptionsGroup.success).toBeFalsy();*/
+    expect(duplicateOnUpdate.success).toBeFalsy();
 
     // Should update options group
-    /*const {
+    const {
       data: { updateOptionsGroup },
     } = await mutate(`
         mutation {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: "${anotherOptionsGroup.name}"
+              name: [{key: "ru", value: "${anotherOptionsGroup.name}"}]
             }
           ) {
             success
             message
             group {
               id
-              name
+              nameString
             }
           }
         }
       `);
-
     const updatedGroup = updateOptionsGroup.group;
     expect(updateOptionsGroup.success).toBeTruthy();
-    expect(updatedGroup.name).toEqual(anotherOptionsGroup.name);*/
+    expect(updatedGroup.nameString).toEqual(anotherOptionsGroup.name);
 
     // Should delete options group
     /*const { data } = await mutate(`

@@ -257,8 +257,18 @@ export const MOCK_ATTRIBUTES_GROUP_B = {
 };
 
 // Rubrics
-export const MOCK_RUBRIC_TYPE_EQUIPMENT = { name: 'cy-test-equipment' };
-export const MOCK_RUBRIC_TYPE_STAGE = { name: 'cy-test-stage' };
+export const MOCK_RUBRIC_TYPE_EQUIPMENT = {
+  name: [
+    { key: 'ru', value: 'cy-test-equipment' },
+    { key: 'en', value: 'cy-test-equipment' },
+  ],
+};
+export const MOCK_RUBRIC_TYPE_STAGE = {
+  name: [
+    { key: 'ru', value: 'cy-test-stage' },
+    { key: 'en', value: 'cy-test-stage' },
+  ],
+};
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [

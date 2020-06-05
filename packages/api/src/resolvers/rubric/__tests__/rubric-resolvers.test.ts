@@ -16,7 +16,7 @@ describe.only('Rubrics', () => {
       query {
         getAllRubricVariants {
           id
-          name
+          nameString
         }
         getAllAttributesGroups {
           id
@@ -102,7 +102,7 @@ describe.only('Rubrics', () => {
             catalogueName
             variant {
               id
-              name
+              nameString
             }
           }
         }

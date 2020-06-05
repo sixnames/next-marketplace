@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import { name, id } from './templates';
+import { id, langInput, notNullableName } from './templates';
 
 export const createMetricInputSchema = Yup.object().shape({
-  name,
+  name: langInput(notNullableName('Название типа измерения')),
 });
 
 export const updateMetricSchema = Yup.object().shape({
   id,
-  name,
+  name: langInput(notNullableName('Название типа измерения')),
 });

@@ -73,7 +73,7 @@ input CreateRubricInput {
 }
 
 input CreateRubricVariantInput {
-  name: String!
+  name: [LangInput!]!
 }
 
 input CreateUserInput {
@@ -257,7 +257,8 @@ type RubricPayloadType {
 
 type RubricVariant {
   id: ID!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
 }
 
 type RubricVariantPayloadType {
@@ -321,7 +322,7 @@ input UpdateRubricInput {
 
 input UpdateRubricVariantInput {
   id: ID!
-  name: String!
+  name: [LangInput!]!
 }
 
 input UpdateUserInput {

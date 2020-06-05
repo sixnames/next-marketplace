@@ -1,4 +1,15 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver, ID } from 'type-graphql';
+import {
+  Arg,
+  Field,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  ID,
+  FieldResolver,
+  Root,
+  Ctx,
+} from 'type-graphql';
 import PayloadType from '../common/PayloadType';
 import { Metric, MetricModel } from '../../entities/Metric';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -6,6 +17,9 @@ import { CreateMetricInput } from './CreateMetricInput';
 import { createMetricInputSchema, updateMetricSchema } from '@rg/validation';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
+import { DocumentType } from '@typegoose/typegoose';
+import { ContextInterface } from '../../types/context';
+import getLangField from '../../utils/getLangField';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {
@@ -30,11 +44,16 @@ export class MetricResolver {
     try {
       await createMetricInputSchema.validate(input);
 
-      const exist = await MetricModel.exists({ name: input.name });
+      const nameValues = input.name.map(({ value }) => value);
+      const exist = await MetricModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
       if (exist) {
         return {
           success: false,
-          message: 'Типа измерения с таким именем уже существует.',
+          message: 'Тип измерения с таким именем уже существует.',
         };
       }
 
@@ -64,6 +83,19 @@ export class MetricResolver {
   async updateMetric(@Arg('input') input: UpdateMetricInput): Promise<MetricPayloadType> {
     try {
       await updateMetricSchema.validate(input);
+
+      const nameValues = input.name.map(({ value }) => value);
+      const exist = await MetricModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+      if (exist) {
+        return {
+          success: false,
+          message: 'Тип измерения с таким именем уже существует.',
+        };
+      }
 
       const { id, ...values } = input;
       const metric = await MetricModel.findByIdAndUpdate(id, values, { new: true });
@@ -118,5 +150,13 @@ export class MetricResolver {
         message: getResolverErrorMessage(e),
       };
     }
+  }
+
+  @FieldResolver()
+  async nameString(
+    @Root() option: DocumentType<Metric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    return getLangField(option.name, ctx.req.session!.lang);
   }
 }

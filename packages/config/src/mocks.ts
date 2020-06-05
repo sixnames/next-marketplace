@@ -1,33 +1,166 @@
 export const MOCK_METRICS = [
-  { name: 'км/ч' },
-  { name: 'мм' },
-  { name: 'шт.' },
-  { name: 'м2' },
-  { name: 'мест' },
-  { name: 'км' },
-  { name: 'кВт' },
-  { name: 'руб.' },
-  { name: 'лет' },
-  { name: 'см' },
-  { name: '%' },
-  { name: 'м' },
-  { name: 'часов' },
-  { name: 'кг' },
-  { name: 'чел.' },
-  { name: 'м/с' },
-  { name: 'год' },
-  { name: 'мин.' },
-  { name: 'р.' },
-  { name: 'году' },
-  { name: 'ед.' },
-  { name: 'мл.' },
-  { name: 'л/ч.' },
-  { name: 'Hz' },
-  { name: 'Вт' },
-  { name: '°' },
-  { name: '°C' },
-  { name: 'кд/м2' },
-  { name: 'м3/ч' },
+  {
+    name: [
+      { key: 'ru', value: 'км/ч' },
+      { key: 'en', value: 'km/h' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'мм' },
+      { key: 'en', value: 'mm' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'шт.' },
+      { key: 'en', value: 'units' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'м2' },
+      { key: 'en', value: 'm2' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'мест' },
+      { key: 'en', value: 'places' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'км' },
+      { key: 'en', value: 'km' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'кВт' },
+      { key: 'en', value: 'kw' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'руб.' },
+      { key: 'en', value: 'rub.' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'лет' },
+      { key: 'en', value: 'years' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'см' },
+      { key: 'en', value: 'cm' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: '%' },
+      { key: 'en', value: '%' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'м' },
+      { key: 'en', value: 'm' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'часов' },
+      { key: 'en', value: 'hours' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'кг' },
+      { key: 'en', value: 'kg' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'чел.' },
+      { key: 'en', value: 'people' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'м/с' },
+      { key: 'en', value: 'm/s' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'год' },
+      { key: 'en', value: 'year' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'мин.' },
+      { key: 'en', value: 'minutes' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'ед.' },
+      { key: 'en', value: 'units' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'мл.' },
+      { key: 'en', value: 'ml' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'л/ч.' },
+      { key: 'en', value: 'p/h' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'Hz' },
+      { key: 'en', value: 'Hz' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'Вт' },
+      { key: 'en', value: 'Wt' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: '°' },
+      { key: 'en', value: '°' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: '°C' },
+      { key: 'en', value: '°C' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'кд/м2' },
+      { key: 'en', value: 'kd/m2' },
+    ],
+  },
+  {
+    name: [
+      { key: 'ru', value: 'м3/ч' },
+      { key: 'en', value: 'm3/h' },
+    ],
+  },
 ];
 
 // Options

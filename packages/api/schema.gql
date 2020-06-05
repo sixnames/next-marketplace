@@ -56,7 +56,7 @@ input CreateAttributesGroupInput {
 }
 
 input CreateMetricInput {
-  name: String!
+  name: [LangInput!]!
 }
 
 input CreateOptionsGroupInput {
@@ -110,7 +110,8 @@ type LanguageType {
 
 type Metric {
   id: ID!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
 }
 
 type MetricPayloadType {
@@ -293,7 +294,7 @@ input UpdateAttributesGroupInput {
 
 input UpdateMetricInput {
   id: ID!
-  name: String!
+  name: [LangInput!]!
 }
 
 input UpdateOptionInGroupInput {

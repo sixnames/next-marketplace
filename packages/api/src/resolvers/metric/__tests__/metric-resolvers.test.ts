@@ -11,7 +11,7 @@ describe('Metric', () => {
       query {
         getAllMetrics {
           id
-          name
+          nameString
         }
       }
     `);
@@ -27,7 +27,7 @@ describe('Metric', () => {
       query GetMetric($id: ID!){
         getMetric(id: $id) {
           id
-          name
+          nameString
         }
       }
     `,
@@ -50,7 +50,7 @@ describe('Metric', () => {
           message
           metric {
             id
-            name
+            nameString
           }
         }
       }
@@ -58,7 +58,7 @@ describe('Metric', () => {
       {
         variables: {
           input: {
-            name: '',
+            name: [{ key: 'ru', value: '' }],
           },
         },
       },
@@ -77,7 +77,7 @@ describe('Metric', () => {
           message
           metric {
             id
-            name
+            nameString
           }
         }
       }
@@ -85,16 +85,16 @@ describe('Metric', () => {
       {
         variables: {
           input: {
-            name: newMetricName,
+            name: [{ key: 'ru', value: newMetricName }],
           },
         },
       },
     );
     expect(createMetric.success).toBeTruthy();
-    expect(createMetric.metric.name).toEqual(newMetricName);
+    expect(createMetric.metric.nameString).toEqual(newMetricName);
 
     // Should update metric
-    const updatedMetricName = 'new';
+    const updatedMetricName = 'newB';
     const {
       data: { updateMetric },
     } = await mutate(
@@ -105,7 +105,7 @@ describe('Metric', () => {
           message
           metric {
             id
-            name
+            nameString
           }
         }
       }
@@ -114,13 +114,13 @@ describe('Metric', () => {
         variables: {
           input: {
             id: createMetric.metric.id,
-            name: updatedMetricName,
+            name: [{ key: 'ru', value: updatedMetricName }],
           },
         },
       },
     );
     expect(updateMetric.success).toBeTruthy();
-    expect(updateMetric.metric.name).toEqual(updatedMetricName);
+    expect(updateMetric.metric.nameString).toEqual(updatedMetricName);
 
     // Should delete metric
     const {

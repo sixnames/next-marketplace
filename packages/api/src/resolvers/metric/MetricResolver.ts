@@ -20,6 +20,7 @@ import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {
@@ -40,8 +41,12 @@ export class MetricResolver {
   }
 
   @Mutation(() => MetricPayloadType)
-  async createMetric(@Arg('input') input: CreateMetricInput): Promise<MetricPayloadType> {
+  async createMetric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: CreateMetricInput,
+  ): Promise<MetricPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await createMetricInputSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -53,7 +58,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: 'Тип измерения с таким именем уже существует.',
+          message: getMessageTranslation(`metric.create.duplicate.${lang}`),
         };
       }
 
@@ -62,13 +67,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: 'Ошибка создания типа измерения.',
+          message: getMessageTranslation(`metric.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип измерения создан.',
+        message: getMessageTranslation(`metric.create.success.${lang}`),
         metric,
       };
     } catch (e) {
@@ -80,8 +85,12 @@ export class MetricResolver {
   }
 
   @Mutation(() => MetricPayloadType)
-  async updateMetric(@Arg('input') input: UpdateMetricInput): Promise<MetricPayloadType> {
+  async updateMetric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: UpdateMetricInput,
+  ): Promise<MetricPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateMetricSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -93,7 +102,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: 'Тип измерения с таким именем уже существует.',
+          message: getMessageTranslation(`metric.update.duplicate.${lang}`),
         };
       }
 
@@ -103,13 +112,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: 'Тип измерения не найден.',
+          message: getMessageTranslation(`metric.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип измерения обновлён.',
+        message: getMessageTranslation(`metric.update.success.${lang}`),
         metric,
       };
     } catch (e) {
@@ -121,13 +130,17 @@ export class MetricResolver {
   }
 
   @Mutation(() => MetricPayloadType)
-  async deleteMetric(@Arg('id', (_type) => ID) id: string): Promise<MetricPayloadType> {
+  async deleteMetric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<MetricPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       const isUsedInAttributes = await AttributeModel.exists({ metric: id });
       if (isUsedInAttributes) {
         return {
           success: false,
-          message: 'Тип измерения используется в атрибутах, его нельзя удалить.',
+          message: getMessageTranslation(`metric.update.used.${lang}`),
         };
       }
 
@@ -136,13 +149,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: 'Ошибка удаления типа измерения.',
+          message: getMessageTranslation(`metric.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип измерения удалён.',
+        message: getMessageTranslation(`metric.update.success.${lang}`),
       };
     } catch (e) {
       return {

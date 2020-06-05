@@ -20,6 +20,7 @@ import { RubricModel } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {
@@ -41,9 +42,11 @@ export class RubricVariantResolver {
 
   @Mutation(() => RubricVariantPayloadType)
   async createRubricVariant(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await createRubricVariantInputSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -55,7 +58,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: 'Типа рубрики с таким именем уже существует.',
+          message: getMessageTranslation(`rubricVariant.create.duplicate.${lang}`),
         };
       }
 
@@ -64,13 +67,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: 'Ошибка создания типа рубрики.',
+          message: getMessageTranslation(`rubricVariant.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип рубрики создан.',
+        message: getMessageTranslation(`rubricVariant.create.success.${lang}`),
         variant,
       };
     } catch (e) {
@@ -83,9 +86,11 @@ export class RubricVariantResolver {
 
   @Mutation(() => RubricVariantPayloadType)
   async updateRubricVariant(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateRubricVariantSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -97,7 +102,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: 'Типа рубрики с таким именем уже существует.',
+          message: getMessageTranslation(`rubricVariant.update.duplicate.${lang}`),
         };
       }
 
@@ -107,13 +112,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: 'Тип рубрики не найден.',
+          message: getMessageTranslation(`rubricVariant.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип рубрики обновлён.',
+        message: getMessageTranslation(`rubricVariant.update.success.${lang}`),
         variant,
       };
     } catch (e) {
@@ -131,6 +136,8 @@ export class RubricVariantResolver {
   ): Promise<RubricVariantPayloadType> {
     try {
       const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+
       const isUsedInRubrics = await RubricModel.exists({
         'cities.key': city,
         'cities.node.variant': id,
@@ -138,7 +145,7 @@ export class RubricVariantResolver {
       if (isUsedInRubrics) {
         return {
           success: false,
-          message: 'Тип рубрики используется в рубриках, его нельзя удалить.',
+          message: getMessageTranslation(`rubricVariant.delete.used.${lang}`),
         };
       }
 
@@ -147,13 +154,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: 'Ошибка удаления типа рубрики.',
+          message: getMessageTranslation(`rubricVariant.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Тип рубрики удалён.',
+        message: getMessageTranslation(`rubricVariant.delete.success.${lang}`),
       };
     } catch (e) {
       return {

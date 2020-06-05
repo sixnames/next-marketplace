@@ -154,9 +154,9 @@ export class MetricResolver {
 
   @FieldResolver()
   async nameString(
-    @Root() option: DocumentType<Metric>,
+    @Root() metric: DocumentType<Metric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(option.name, ctx.req.session!.lang);
+    return getLangField(metric.name, ctx.req.session!.lang);
   }
 }

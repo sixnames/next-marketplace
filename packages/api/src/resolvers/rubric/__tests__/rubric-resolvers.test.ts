@@ -20,7 +20,7 @@ describe.only('Rubrics', () => {
         }
         getAllAttributesGroups {
           id
-          name
+          nameString
         }
         getRubricsTree {
           id
@@ -189,7 +189,7 @@ describe.only('Rubrics', () => {
             attributesGroups {
               node {
                 id
-                name
+                nameString
               }
             }
           }
@@ -220,7 +220,7 @@ describe.only('Rubrics', () => {
             attributesGroups {
               node {
                 id
-                name
+                nameString
               }
             }
           }

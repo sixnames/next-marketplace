@@ -11,9 +11,9 @@ input AddAttributesGroupToRubricInput {
 input AddAttributeToGroupInput {
   groupId: ID!
   metric: ID
-  name: String!
+  name: [LangInput!]!
   options: ID
-  type: AttributeTypeEnum!
+  variant: AttributeVariantEnum!
 }
 
 input AddOptionToGroupInput {
@@ -25,16 +25,18 @@ input AddOptionToGroupInput {
 type Attribute {
   id: ID!
   metric: Metric
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   options: OptionsGroup
   slug: String!
-  type: AttributeTypeEnum!
+  variant: AttributeVariantEnum!
 }
 
 type AttributesGroup {
   attributes: [Attribute!]!
   id: ID!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
 }
 
 type AttributesGroupPayloadType {
@@ -44,7 +46,7 @@ type AttributesGroupPayloadType {
 }
 
 """Attribute type enum"""
-enum AttributeTypeEnum {
+enum AttributeVariantEnum {
   multipleSelect
   number
   select
@@ -52,7 +54,7 @@ enum AttributeTypeEnum {
 }
 
 input CreateAttributesGroupInput {
-  name: String!
+  name: [LangInput!]!
 }
 
 input CreateMetricInput {
@@ -282,14 +284,14 @@ input UpdateAttributeInGroup {
   attributeId: ID!
   groupId: ID!
   metric: ID
-  name: String!
+  name: [LangInput!]!
   options: ID
-  type: AttributeTypeEnum!
+  variant: AttributeVariantEnum!
 }
 
 input UpdateAttributesGroupInput {
   id: ID!
-  name: String!
+  name: [LangInput!]!
 }
 
 input UpdateMetricInput {

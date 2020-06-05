@@ -1,20 +1,32 @@
 import { ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING } from '@rg/config';
 
 export const stringAttribute = {
-  name: 'string attribute',
-  type: ATTRIBUTE_TYPE_STRING,
+  name: [
+    { key: 'ru', value: 'string attribute' },
+    { key: 'en', value: 'string attribute' },
+  ],
+  variant: ATTRIBUTE_TYPE_STRING,
   slug: 'string attribute',
 };
 
 export const selectAttribute = {
-  name: 'select attribute',
-  type: ATTRIBUTE_TYPE_SELECT,
+  name: [
+    { key: 'ru', value: 'select attribute' },
+    { key: 'en', value: 'select attribute' },
+  ],
+  variant: ATTRIBUTE_TYPE_SELECT,
 };
 
 export const optionsGroupForAttribute = {
-  name: 'group',
+  name: [
+    { key: 'ru', value: 'group' },
+    { key: 'en', value: 'group' },
+  ],
 };
 
 export const anotherOptionsGroupForAttribute = {
-  name: 'groupB',
+  name: [
+    { key: 'ru', value: 'groupB' },
+    { key: 'en', value: 'groupB' },
+  ],
 };

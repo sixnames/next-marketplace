@@ -1,7 +1,8 @@
 import { Field, InputType } from 'type-graphql';
+import { LangInput } from '../common/LangInput';
 
 @InputType()
 export class CreateAttributesGroupInput {
-  @Field(() => String)
-  name: string;
+  @Field(() => [LangInput])
+  name: LangInput[];
 }

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { name, id } from './templates';
+import { id, langInput, notNullableName } from './templates';
 import {
   ATTRIBUTE_TYPES_ENUMS,
   ATTRIBUTE_TYPE_SELECT,
@@ -17,7 +17,7 @@ const options = Yup.string()
 const metric = Yup.string().nullable();
 
 const attributeCommonFields = {
-  name,
+  name: langInput(notNullableName('Название атрибута')),
   type: Yup.mixed().oneOf(ATTRIBUTE_TYPES_ENUMS).required('Тип атрибута обязателен к заполнению.'),
   metric,
   options,

@@ -25,14 +25,12 @@ import {
   // PRODUCT_IMAGE_SIZES,
   // MOCK_PRODUCT_IMAGES,
 } from '@rg/config';
-// import { generateSlug } from '../slug';
-// import { storeTestAssets } from '../assets/storeJimpAsset';
 import createInitialData from '../createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { AttributeModel } from '../../entities/Attribute';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
-import { generateSlug } from '../slug';
+import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import { DEFAULT_CITY } from '../../config';
@@ -90,28 +88,28 @@ const createTestData = async () => {
     });
 
     // Attributes
-    const attributeMultipleSlug = generateSlug(MOCK_ATTRIBUTE_MULTIPLE.name);
+    const attributeMultipleSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_MULTIPLE.name);
     const attributeMultiple = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_MULTIPLE,
       slug: attributeMultipleSlug,
       options: optionsGroup.id,
     });
 
-    const attributeSelectSlug = generateSlug(MOCK_ATTRIBUTE_SELECT.name);
+    const attributeSelectSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_SELECT.name);
     const attributeSelect = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_SELECT,
       slug: attributeSelectSlug,
       options: optionsGroup.id,
     });
 
-    const attributeStringSlug = generateSlug(MOCK_ATTRIBUTE_STRING.name);
+    const attributeStringSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_STRING.name);
     const attributeString = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_STRING,
       slug: attributeStringSlug,
       options: optionsGroup.id,
     });
 
-    const attributeNumberSlug = generateSlug(MOCK_ATTRIBUTE_NUMBER.name);
+    const attributeNumberSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_NUMBER.name);
     const attributeNumber = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_NUMBER,
       slug: attributeNumberSlug,
@@ -156,7 +154,7 @@ const createTestData = async () => {
     const rubricLevelOne = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_ONE,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName),
         variant: equipmentRubricVariant.id,
         attributesGroups: rubricAttributesGroups,
       }),
@@ -165,7 +163,7 @@ const createTestData = async () => {
     const rubricLevelTwo = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroups,
       }),
@@ -174,7 +172,7 @@ const createTestData = async () => {
     const rubricLevelTwoTables = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_TABLES,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroupsB,
       }),
@@ -183,7 +181,7 @@ const createTestData = async () => {
     await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_TABLES,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName),
         parent: rubricLevelTwoTables.id,
         attributesGroups: rubricAttributesGroupsB,
       }),
@@ -192,7 +190,7 @@ const createTestData = async () => {
     await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName),
         parent: rubricLevelTwoTables.id,
         attributesGroups: rubricAttributesGroupsB,
       }),
@@ -202,7 +200,7 @@ const createTestData = async () => {
     await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
         parent: rubricLevelTwo.id,
         attributesGroups: rubricAttributesGroups,
       }),
@@ -212,7 +210,7 @@ const createTestData = async () => {
     await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B,
-        slug: generateSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName[0].value),
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName),
         parent: rubricLevelTwo.id,
         attributesGroups: rubricAttributesGroups,
       }),
@@ -261,7 +259,7 @@ const createTestData = async () => {
     };
 
     const productImagesA = ['./test/test-image-0.jpg', './test/test-image-1.jpg'];
-    const linkProductForDelete = generateSlug(MOCK_PRODUCT_FOR_DELETE.cardName);
+    const linkProductForDelete = generateDefaultLangSlug(MOCK_PRODUCT_FOR_DELETE.cardName);
     const imagesProductForDelete = await storeTestAssets({
       urls: productImagesA,
       sizes: PRODUCT_IMAGE_SIZES,
@@ -277,7 +275,7 @@ const createTestData = async () => {
     });
 
     // for second rubric in third level
-    const linkProductBDelete = generateSlug(MOCK_PRODUCT_B_PRODUCT.cardName);
+    const linkProductBDelete = generateDefaultLangSlug(MOCK_PRODUCT_B_PRODUCT.cardName);
     const productImagesB = ['./test/test-image-1.jpg', './test/test-image-0.jpg'];
     const imagesProductBDelete = await storeTestAssets({
       urls: productImagesB,
@@ -294,7 +292,7 @@ const createTestData = async () => {
     });
 
     // main product
-    const slug = generateSlug(MOCK_PRODUCT.cardName);
+    const slug = generateDefaultLangSlug(MOCK_PRODUCT.cardName);
     const productImagesC = ['./test/test-image-2.jpg', './test/test-image-1.jpg'];
     const imagesProduct = await storeTestAssets({
       urls: productImagesC,

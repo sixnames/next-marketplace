@@ -1,3 +1,10 @@
+import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_NUMBER,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPE_STRING,
+} from './common';
+
 export const MOCK_METRICS = [
   {
     name: [
@@ -203,24 +210,51 @@ export const MOCK_OPTIONS_GROUP_FOR_DELETE = {
 
 // Attributes
 export const MOCK_ATTRIBUTE_MULTIPLE = {
-  name: 'cy-test-attribute-multiple',
-  type: 'multipleSelect',
+  name: [
+    { key: 'ru', value: 'cy-test-attribute-multiple' },
+    { key: 'en', value: 'cy-test-attribute-multiple' },
+  ],
+  variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
 };
 export const MOCK_ATTRIBUTE_SELECT = {
-  name: 'cy-test-attribute-select',
-  type: 'select',
+  name: [
+    { key: 'ru', value: 'cy-test-attribute-select' },
+    { key: 'en', value: 'cy-test-attribute-select' },
+  ],
+  variant: ATTRIBUTE_TYPE_SELECT,
 };
 export const MOCK_ATTRIBUTE_STRING = {
-  name: 'cy-test-attribute-string',
-  type: 'string',
+  name: [
+    { key: 'ru', value: 'cy-test-attribute-string' },
+    { key: 'en', value: 'cy-test-attribute-string' },
+  ],
+  variant: ATTRIBUTE_TYPE_STRING,
 };
 export const MOCK_ATTRIBUTE_NUMBER = {
-  name: 'cy-test-attribute-number',
-  type: 'number',
+  name: [
+    { key: 'ru', value: 'cy-test-attribute-number' },
+    { key: 'en', value: 'cy-test-attribute-number' },
+  ],
+  variant: ATTRIBUTE_TYPE_NUMBER,
 };
-export const MOCK_ATTRIBUTES_GROUP = { name: 'cy-test-chair-features' };
-export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = { name: 'cy-test-group-for-delete' };
-export const MOCK_ATTRIBUTES_GROUP_B = { name: 'cy-test-group-b' };
+export const MOCK_ATTRIBUTES_GROUP = {
+  name: [
+    { key: 'ru', value: 'cy-test-chair-features' },
+    { key: 'en', value: 'cy-test-chair-features' },
+  ],
+};
+export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
+  name: [
+    { key: 'ru', value: 'cy-test-group-for-delete' },
+    { key: 'en', value: 'cy-test-group-for-delete' },
+  ],
+};
+export const MOCK_ATTRIBUTES_GROUP_B = {
+  name: [
+    { key: 'ru', value: 'cy-test-group-b' },
+    { key: 'en', value: 'cy-test-group-b' },
+  ],
+};
 
 // Rubrics
 export const MOCK_RUBRIC_TYPE_EQUIPMENT = { name: 'cy-test-equipment' };

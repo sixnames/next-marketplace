@@ -1,18 +1,22 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { arrayProp, getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
 import { Attribute } from './Attribute';
+import { LanguageType } from './common';
 
 @ObjectType()
 export class AttributesGroup {
   @Field((_type) => ID)
   public id: string;
 
-  @Field((_type) => String)
-  @prop({ required: true, trim: true })
-  public name: string;
+  @Field(() => LanguageType)
+  @prop({ type: LanguageType, required: true, _id: false })
+  public name: LanguageType[];
+
+  @Field(() => String)
+  public nameString: string;
 
   @Field((_type) => [Attribute])
-  @arrayProp({ ref: Attribute })
+  @prop({ ref: Attribute })
   public attributes: Ref<Attribute>[];
 }
 

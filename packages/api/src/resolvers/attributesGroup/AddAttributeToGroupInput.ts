@@ -1,16 +1,17 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { AttributeTypeEnum } from '../../entities/Attribute';
+import { AttributeVariantEnum } from '../../entities/Attribute';
+import { LangInput } from '../common/LangInput';
 
 @InputType()
 export class AddAttributeToGroupInput {
   @Field(() => ID)
   groupId: string;
 
-  @Field(() => String)
-  name: string;
+  @Field(() => [LangInput])
+  name: LangInput[];
 
-  @Field((_type) => AttributeTypeEnum)
-  public type: AttributeTypeEnum;
+  @Field((_type) => AttributeVariantEnum)
+  public variant: AttributeVariantEnum;
 
   @Field((_type) => ID, { nullable: true })
   public options: string;

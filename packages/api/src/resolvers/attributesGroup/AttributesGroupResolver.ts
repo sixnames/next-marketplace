@@ -8,6 +8,7 @@ import {
   Field,
   Root,
   FieldResolver,
+  Ctx,
 } from 'type-graphql';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
@@ -23,10 +24,12 @@ import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';
 import { DocumentType, Ref } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
-import { generateSlug } from '../../utils/slug';
+import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateAttributeInGroup } from './UpdateAttributeInGroup';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { Types } from 'mongoose';
+import { ContextInterface } from '../../types/context';
+import getLangField from '../../utils/getLangField';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -209,7 +212,7 @@ export class AttributesGroupResolver {
 
       const attribute = await AttributeModel.create({
         ...values,
-        slug: generateSlug(values.name),
+        slug: generateDefaultLangSlug(values.name),
       });
       if (!attribute) {
         return {
@@ -341,5 +344,13 @@ export class AttributesGroupResolver {
     @Root() attributesGroup: DocumentType<AttributesGroup>,
   ): Promise<Ref<Attribute>[]> {
     return (await attributesGroup.populate('attributes').execPopulate()).attributes;
+  }
+
+  @FieldResolver()
+  async nameString(
+    @Root() attributesGroup: DocumentType<AttributesGroup>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    return getLangField(attributesGroup.name, ctx.req.session!.lang);
   }
 }

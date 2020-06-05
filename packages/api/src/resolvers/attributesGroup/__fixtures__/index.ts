@@ -1,14 +1,14 @@
 import { ATTRIBUTE_TYPE_STRING } from '@rg/config';
 
 export const attributesGroup = {
-  name: 'cy-test-group-name',
+  name: [{ key: 'ru', value: 'cy-test-group-name' }],
 };
 
 export const anotherAttributesGroup = {
-  name: 'cy-test-group-another-name',
+  name: [{ key: 'ru', value: 'cy-test-group-another-name' }],
 };
 
 export const attributeForGroup = {
-  name: 'cy-test-attributes-group-name',
-  type: ATTRIBUTE_TYPE_STRING,
+  name: [{ key: 'ru', value: 'cy-test-attributes-group-name' }],
+  variant: ATTRIBUTE_TYPE_STRING,
 };

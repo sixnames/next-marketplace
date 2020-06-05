@@ -6,7 +6,7 @@ import { Metric } from '../../entities/Metric';
 import { LangInput } from '../common/LangInput';
 
 @InputType()
-export class UpdateAttributeInGroup {
+export class UpdateAttributeInGroupInput {
   @Field(() => ID)
   groupId: string;
 

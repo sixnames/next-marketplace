@@ -144,7 +144,7 @@ type Mutation {
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
-  updateAttributeInGroup(input: UpdateAttributeInGroup!): AttributesGroupPayloadType!
+  updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
@@ -280,7 +280,7 @@ input SignUpInput {
   secondName: String
 }
 
-input UpdateAttributeInGroup {
+input UpdateAttributeInGroupInput {
   attributeId: ID!
   groupId: ID!
   metric: ID

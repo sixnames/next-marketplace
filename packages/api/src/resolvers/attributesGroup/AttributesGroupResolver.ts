@@ -3,33 +3,34 @@ import {
   Resolver,
   Arg,
   ID,
-  Mutation,
-  ObjectType,
-  Field,
   Root,
   FieldResolver,
   Ctx,
+  Mutation,
+  ObjectType,
+  Field,
 } from 'type-graphql';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
+import { DocumentType, Ref } from '@typegoose/typegoose';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
+import { ContextInterface } from '../../types/context';
+import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
-import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
 } from '@rg/validation';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';
-import { DocumentType, Ref } from '@typegoose/typegoose';
-import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import { UpdateAttributeInGroup } from './UpdateAttributeInGroup';
-import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
+import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { Types } from 'mongoose';
-import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
+import { RubricModel } from '../../entities/Rubric';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -50,63 +51,13 @@ export class AttributesGroupResolver {
       nullable: true,
       description: `list of excluded groups id's`,
     })
-    exclude: string[],
+    exclude: string[] = [],
   ): Promise<AttributesGroup[]> {
-    if (exclude) {
-      return AttributesGroupModel.find({
-        _id: {
-          $nin: exclude,
-        },
-      });
-    }
-    return AttributesGroupModel.find();
-  }
-
-  @Mutation(() => AttributesGroupPayloadType)
-  async deleteAttributesGroup(
-    @Arg('id', () => ID) id: string,
-  ): Promise<AttributesGroupPayloadType> {
-    try {
-      // TODO [Slava] after rubric
-      /*const connectedWithRubrics =
-        (await Rubric.find({ 'attributesGroups.node': { $in: id } }).countDocuments()) > 0;
-      if (connectedWithRubrics) {
-        return {
-          success: false,
-          message: 'Группа атрибутов используется в рубриках, её нельзя удалить.',
-        };
-      }*/
-
-      const group = (await AttributesGroupModel.findById(id)) || { attributes: [] };
-      const removedAttributes = await AttributeModel.deleteMany({
-        _id: { $in: group.attributes },
-      });
-      if (!removedAttributes) {
-        return {
-          success: false,
-          message: 'Ошибка удаления атрибутов из группы.',
-        };
-      }
-
-      const removedGroup = await AttributesGroupModel.findByIdAndDelete(id);
-
-      if (!removedGroup) {
-        return {
-          success: false,
-          message: 'Ошибка удаления группы атрибутов.',
-        };
-      }
-
-      return {
-        success: true,
-        message: 'Группа атрибутов удалена.',
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: getResolverErrorMessage(e),
-      };
-    }
+    return AttributesGroupModel.find({
+      _id: {
+        $nin: exclude,
+      },
+    });
   }
 
   @Mutation(() => AttributesGroupPayloadType)
@@ -116,7 +67,13 @@ export class AttributesGroupResolver {
     try {
       await createAttributesGroupSchema.validate(input);
 
-      const isGroupExists = await AttributesGroupModel.exists(input);
+      const nameValues = input.name.map(({ value }) => value);
+      const isGroupExists = await AttributesGroupModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+
       if (isGroupExists) {
         return {
           success: false,
@@ -154,7 +111,13 @@ export class AttributesGroupResolver {
       await updateAttributesGroupSchema.validate(input);
 
       const { id, ...values } = input;
-      const isGroupExists = await AttributesGroupModel.exists(values);
+
+      const nameValues = input.name.map(({ value }) => value);
+      const isGroupExists = await AttributesGroupModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
       if (isGroupExists) {
         return {
           success: false,
@@ -187,23 +150,89 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  async deleteAttributesGroup(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', () => ID) id: string,
+  ): Promise<AttributesGroupPayloadType> {
+    try {
+      const city = ctx.req.session!.city;
+      const connectedWithRubrics = await RubricModel.exists({
+        'cities.key': city,
+        'cities.node.attributesGroups.node': {
+          $in: id,
+        },
+      });
+      if (connectedWithRubrics) {
+        return {
+          success: false,
+          message: 'Группа атрибутов используется в рубриках, её нельзя удалить.',
+        };
+      }
+
+      const group = await AttributesGroupModel.findById(id);
+      if (!group) {
+        return {
+          success: false,
+          message: 'Группа атрибутов не найдена.',
+        };
+      }
+
+      const removedAttributes = await AttributeModel.deleteMany({
+        _id: { $in: group.attributes },
+      });
+
+      if (!removedAttributes) {
+        return {
+          success: false,
+          message: 'Ошибка удаления атрибутов из группы.',
+        };
+      }
+
+      const removedGroup = await AttributesGroupModel.findByIdAndDelete(id);
+
+      if (!removedGroup) {
+        return {
+          success: false,
+          message: 'Ошибка удаления группы атрибутов.',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'Группа атрибутов удалена.',
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => AttributesGroupPayloadType)
   async addAttributeToGroup(
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
       await addAttributeToGroupSchema.validate(input);
       const { groupId, ...values } = input;
-      const group = (await AttributesGroupModel.findById(groupId)) || { attributes: [] };
+      const group = await AttributesGroupModel.findById(groupId);
 
-      const existingAttributes = await AttributeModel.find({
+      if (!group) {
+        return {
+          success: false,
+          message: 'Группа атрибутов не найдена.',
+        };
+      }
+
+      const nameValues = input.name.map(({ value }) => value);
+      const existingAttributes = await AttributeModel.exists({
         _id: { $in: group.attributes },
-      })
-        .select({ name: 1 })
-        .lean()
-        .exec();
-      const existingNames = existingAttributes.map(({ name }) => name);
-
-      if (existingNames.includes(values.name)) {
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+      if (existingAttributes) {
         return {
           success: false,
           message: 'Атрибут с таким именем уже присутствует в данной группе.',
@@ -223,7 +252,11 @@ export class AttributesGroupResolver {
 
       const updatedGroup = await AttributesGroupModel.findByIdAndUpdate(
         groupId,
-        { attributes: [...group.attributes, attribute.id] },
+        {
+          $push: {
+            attributes: attribute.id,
+          },
+        },
         { new: true },
       );
 
@@ -249,7 +282,7 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async updateAttributeInGroup(
-    @Arg('input') input: UpdateAttributeInGroup,
+    @Arg('input') input: UpdateAttributeInGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
       await updateAttributeInGroupSchema.validate(input);
@@ -264,15 +297,14 @@ export class AttributesGroupResolver {
         };
       }
 
-      const existingAttributes = await AttributeModel.find({
+      const nameValues = input.name.map(({ value }) => value);
+      const existingAttributes = await AttributeModel.exists({
         _id: { $in: group.attributes },
-      })
-        .select({ name: 1 })
-        .lean()
-        .exec();
-
-      const existingNames = existingAttributes.map(({ name }) => name);
-      if (existingNames.includes(values.name)) {
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+      if (existingAttributes) {
         return {
           success: false,
           message: 'Атрибут с таким именем уже присутствует в данной группе.',

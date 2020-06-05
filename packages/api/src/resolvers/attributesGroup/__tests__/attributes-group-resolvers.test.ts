@@ -1,54 +1,58 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
-import { anotherAttributesGroup, attributeForGroup, attributesGroup } from '../__fixtures__';
+import { MOCK_ATTRIBUTES_GROUP } from '@rg/config';
+import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 
 const addAttributeToGroupMutation = (
   groupId: string,
-  name = attributeForGroup.name,
-  type = attributeForGroup.type,
-) => `
+  name = attributeForGroup.name[0].value,
+  variant = attributeForGroup.variant,
+) => {
+  return `
         mutation {
           addAttributeToGroup (
             input: {
               groupId: "${groupId}"
-              name: "${name}"
-              type: ${type}
+              name: [{key: "ru", value: "${name}"}]
+              variant: ${variant}
             }
           ) {
             success
             message
             group {
               id
-              name
+              nameString
               attributes {
                 id
-                name
-                type
+                nameString
+                variant
                 options {
                   id
-                  name
+                  nameString
                 }
               }
             }
           }
         }
       `;
+};
 
 describe('Attributes Groups', () => {
   it('Should CRUD attributes groups.', async () => {
-    const { mutate, query } = await getTestClientWithAuthenticatedUser();
+    const { query, mutate } = await getTestClientWithAuthenticatedUser();
 
     // Should return all attributes groups
-    const { data } = await query(`
+    const {
+      data: { getAllAttributesGroups },
+    } = await query(`
       query {
         getAllAttributesGroups {
           id
-          name
+          nameString
         }
       }
     `);
-    expect(data.getAllAttributesGroups.length).toEqual(3);
-
-    const group = data.getAllAttributesGroups[0];
+    expect(getAllAttributesGroups.length).toEqual(3);
+    const group = getAllAttributesGroups[0];
 
     // Should return current attributes group.
     const {
@@ -57,76 +61,118 @@ describe('Attributes Groups', () => {
       query {
         getAttributesGroup(id: "${group.id}") {
           id
-          name
+          nameString
         }
       }
     `);
-    expect(getAttributesGroup.name).toEqual(group.name);
+    expect(getAttributesGroup.nameString).toEqual(group.nameString);
 
     // Shouldn't create attributes group on validation error.
     const {
       data: {
         createAttributesGroup: { success: createAttributesGroupSuccess },
       },
-    } = await mutate(`
-        mutation {
-          createAttributesGroup (
-            input: {
-              name: "f"
-            }
-          ) {
+    } = await mutate(
+      `
+        mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
+          createAttributesGroup(input: $input) {
             success
             group {
-              name
+              nameString
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            name: [{ key: 'ru', value: 'f' }],
+          },
+        },
+      },
+    );
     expect(createAttributesGroupSuccess).toBeFalsy();
+
+    // Shouldn't create attributes group on duplicate error.
+    const {
+      data: {
+        createAttributesGroup: { success: createDuplicateAttributesGroupSuccess },
+      },
+    } = await mutate(
+      `
+        mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
+          createAttributesGroup(input: $input) {
+            success
+            message
+            group {
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            name: MOCK_ATTRIBUTES_GROUP.name,
+          },
+        },
+      },
+    );
+    expect(createDuplicateAttributesGroupSuccess).toBeFalsy();
 
     // Should create attributes group.
     const {
       data: { createAttributesGroup },
-    } = await mutate(`
-        mutation {
-          createAttributesGroup (
-            input: {
-              name: "${attributesGroup.name}"
-            }
-          ) {
+    } = await mutate(
+      `
+        mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
+          createAttributesGroup(input: $input) {
             success
             group {
               id
-              name
+              nameString
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            name: attributesGroup.name,
+          },
+        },
+      },
+    );
     expect(createAttributesGroup.success).toBeTruthy();
-    expect(createAttributesGroup.group.name).toEqual(attributesGroup.name);
+    expect(createAttributesGroup.group.nameString).toEqual(attributesGroup.name[0].value);
 
     // Should update attributes group.
     const {
       data: { updateAttributesGroup },
-    } = await mutate(`
-        mutation {
-          updateAttributesGroup (
-            input: {
-              id: "${createAttributesGroup.group.id}"
-              name: "${anotherAttributesGroup.name}"
-            }
-          ) {
+    } = await mutate(
+      `
+        mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
+          updateAttributesGroup(input: $input) {
             success
             group {
               id
-              name
+              nameString
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            id: createAttributesGroup.group.id,
+            name: anotherAttributesGroup.name,
+          },
+        },
+      },
+    );
     expect(updateAttributesGroup.success).toBeTruthy();
     expect(updateAttributesGroup.group.id).toEqual(createAttributesGroup.group.id);
-    expect(updateAttributesGroup.group.name).toEqual(anotherAttributesGroup.name);
+    expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
 
     // Shouldn't create attribute and return validation error.
     const {
@@ -146,11 +192,10 @@ describe('Attributes Groups', () => {
       },
     } = await mutate(addAttributeToGroupMutation(group.id));
     const addedAttribute = attributes[0];
-
     expect(success).toBeTruthy();
     expect(attributes.length).toEqual(1);
-    expect(addedAttribute.name).toEqual(attributeForGroup.name);
-    expect(addedAttribute.type).toEqual(attributeForGroup.type);
+    expect(addedAttribute.nameString).toEqual(attributeForGroup.name[0].value);
+    expect(addedAttribute.variant).toEqual(attributeForGroup.variant);
 
     // Should update attribute in the group.
     const newName = 'cy-test-attributes-group-name-new';
@@ -159,15 +204,11 @@ describe('Attributes Groups', () => {
         updateAttributeInGroup: { group: updatedGroup },
         updateAttributeInGroup,
       },
-    } = await mutate(`
-        mutation {
+    } = await mutate(
+      `
+        mutation UpdateAttributeInGroup($input: UpdateAttributeInGroupInput!) {
           updateAttributeInGroup (
-            input: {
-              groupId: "${group.id}"
-              attributeId: "${addedAttribute.id}"
-              name: "${newName}"
-              type: ${addedAttribute.type}
-            }
+            input: $input
           ) {
             success
             message
@@ -175,17 +216,28 @@ describe('Attributes Groups', () => {
               id
               attributes {
                 id
-                name
+                nameString
               }
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            groupId: group.id,
+            attributeId: addedAttribute.id,
+            name: [{ key: 'ru', value: newName }],
+            variant: addedAttribute.variant,
+          },
+        },
+      },
+    );
     const updatedAttribute = updatedGroup.attributes.find(
       ({ id }: { id: string }) => id === addedAttribute.id,
     );
     expect(updateAttributeInGroup.success).toBeTruthy();
-    expect(updatedAttribute.name).toEqual(newName);
+    expect(updatedAttribute.nameString).toEqual(newName);
 
     // Should delete attribute from the group.
     const {
@@ -208,13 +260,12 @@ describe('Attributes Groups', () => {
               id
               attributes {
                 id
-                name
+                nameString
               }
             }
           }
         }
       `);
-
     expect(successAfterAttributeDelete).toBeTruthy();
     expect(groupAfterAttributeDelete.attributes.length).toEqual(0);
 
@@ -230,7 +281,6 @@ describe('Attributes Groups', () => {
           }
         }
       `);
-
     expect(deleteAttributesGroup.success).toBeTruthy();
   });
 });

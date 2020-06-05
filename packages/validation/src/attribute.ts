@@ -18,7 +18,9 @@ const metric = Yup.string().nullable();
 
 const attributeCommonFields = {
   name: langInput(notNullableName('Название атрибута')),
-  type: Yup.mixed().oneOf(ATTRIBUTE_TYPES_ENUMS).required('Тип атрибута обязателен к заполнению.'),
+  variant: Yup.mixed()
+    .oneOf(ATTRIBUTE_TYPES_ENUMS)
+    .required('Тип атрибута обязателен к заполнению.'),
   metric,
   options,
 };

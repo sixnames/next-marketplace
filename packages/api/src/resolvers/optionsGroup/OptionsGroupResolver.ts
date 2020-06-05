@@ -195,7 +195,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Ошибка создания опции.',
+          message: 'Группа опции не найдена.',
         };
       }
 
@@ -224,7 +224,11 @@ export class OptionsGroupResolver {
 
       const updatedGroup = await OptionsGroupModel.findByIdAndUpdate(
         groupId,
-        { options: [...group.options, option.id] },
+        {
+          $push: {
+            options: option.id,
+          },
+        },
         { new: true },
       );
       if (!updatedGroup) {

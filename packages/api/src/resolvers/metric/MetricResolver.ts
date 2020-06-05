@@ -140,7 +140,7 @@ export class MetricResolver {
       if (isUsedInAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.update.used.${lang}`),
+          message: getMessageTranslation(`metric.delete.used.${lang}`),
         };
       }
 
@@ -149,13 +149,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.update.error.${lang}`),
+          message: getMessageTranslation(`metric.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`metric.update.success.${lang}`),
+        message: getMessageTranslation(`metric.delete.success.${lang}`),
       };
     } catch (e) {
       return {

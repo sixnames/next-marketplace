@@ -37,6 +37,7 @@ import { Types } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -71,6 +72,7 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
       await createRubricInputSchema.validate(input);
 
       const { parent, name } = input;
@@ -86,7 +88,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: 'Рубрика с таким именем уже существует.',
+          message: getMessageTranslation(`rubric.create.duplicate.${lang}`),
         };
       }
 
@@ -112,13 +114,13 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: 'Ошибка создания рубрики.',
+          message: getMessageTranslation(`rubric.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Рубрика создана.',
+        message: getMessageTranslation(`rubric.create.success.${lang}`),
         rubric,
       };
     } catch (e) {
@@ -136,6 +138,7 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
       await updateRubricInputSchema.validate(input);
 
       const { id, ...values } = input;
@@ -152,7 +155,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: 'Рубрика с таким именем уже существует.',
+          message: getMessageTranslation(`rubric.update.duplicate.${lang}`),
         };
       }
 
@@ -181,13 +184,13 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: 'Рубрика не найдена.',
+          message: getMessageTranslation(`rubric.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Рубрика обновлена.',
+        message: getMessageTranslation(`rubric.update.success.${lang}`),
         rubric,
       };
     } catch (e) {
@@ -205,6 +208,7 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
       const rubric = await RubricModel.findOne({
         _id: id,
         'cities.key': city,
@@ -215,7 +219,7 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: 'Рубрика не найдена.',
+          message: getMessageTranslation(`rubric.delete.notFound.${lang}`),
         };
       }
 
@@ -242,13 +246,13 @@ export class RubricResolver {
         if (!removed) {
           return {
             success: false,
-            message: 'Ошибка удаления рубрики.',
+            message: getMessageTranslation(`rubric.delete.error.${lang}`),
           };
         }
 
         return {
           success: true,
-          message: 'Рубрика удалена.',
+          message: getMessageTranslation(`rubric.delete.success.${lang}`),
         };
       }
 
@@ -277,13 +281,13 @@ export class RubricResolver {
       if (!removed) {
         return {
           success: false,
-          message: 'Ошибка удаления рубрики.',
+          message: getMessageTranslation(`rubric.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Рубрика удалена.',
+        message: getMessageTranslation(`rubric.delete.success.${lang}`),
       };
     } catch (e) {
       return {
@@ -301,7 +305,7 @@ export class RubricResolver {
     try {
       await addAttributesGroupToRubricInputSchema.validate(input);
       const city = ctx.req.session!.city;
-
+      const lang = ctx.req.session!.lang;
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
@@ -312,7 +316,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: 'Группа атрибутов или Рубрика не найдены.',
+          message: getMessageTranslation(`rubric.addAttributesGroup.notFound.${lang}`),
         };
       }
 
@@ -322,7 +326,7 @@ export class RubricResolver {
       if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
         return {
           success: false,
-          message: `В рубрику не ${RUBRIC_LEVEL_TWO}-го уровня нельзя добавить группу атрибутов.`,
+          message: getMessageTranslation(`rubric.addAttributesGroup.levelError.${lang}`),
           rubric,
         };
       }
@@ -362,28 +366,21 @@ export class RubricResolver {
       if (!updatedRubrics.ok) {
         return {
           success: false,
-          message: 'Ошибка добавления Группы атрибутов в рубрику.',
+          message: getMessageTranslation(`rubric.addAttributesGroup.error.${lang}`),
         };
       }
 
       const updatedRubric = await RubricModel.findById(rubricId);
 
-      if (!updatedRubric) {
-        return {
-          success: false,
-          message: 'Ошибка добавления Группы атрибутов в рубрику.',
-        };
-      }
-
       return {
         success: true,
-        message: 'Группа атрибутов добавлена в рубрику',
+        message: getMessageTranslation(`rubric.addAttributesGroup.success.${lang}`),
         rubric: updatedRubric,
       };
     } catch (e) {
       return {
         success: false,
-        message: 'Ошибка добавления Группы атрибутов в рубрику.',
+        message: getResolverErrorMessage(e),
       };
     }
   }
@@ -395,6 +392,7 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
       await deleteAttributesGroupFromRubricInputSchema.validate(input);
 
       const { rubricId, attributesGroupId } = input;
@@ -408,7 +406,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: 'Группа атрибутов или Рубрика не найдены.',
+          message: getMessageTranslation(`rubric.deleteAttributesGroup.notFound.${lang}`),
         };
       }
 
@@ -418,7 +416,7 @@ export class RubricResolver {
       if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
         return {
           success: false,
-          message: `Из рубрики не ${RUBRIC_LEVEL_TWO}-го уровня нельзя удалить группу атрибутов.`,
+          message: getMessageTranslation(`rubric.deleteAttributesGroup.levelError.${lang}`),
         };
       }
 
@@ -449,22 +447,15 @@ export class RubricResolver {
       if (!updatedRubrics.ok) {
         return {
           success: false,
-          message: 'Ошибка удаления Группы атрибутов из рубрики.',
+          message: getMessageTranslation(`rubric.deleteAttributesGroup.error.${lang}`),
         };
       }
 
       const updatedRubric = await RubricModel.findById(rubricId);
 
-      if (!updatedRubric) {
-        return {
-          success: false,
-          message: 'Ошибка удаления Группы атрибутов из рубрики.',
-        };
-      }
-
       return {
         success: true,
-        message: 'Группа атрибутов удалена из рубрики',
+        message: getMessageTranslation(`rubric.deleteAttributesGroup.success.${lang}`),
         rubric: updatedRubric,
       };
     } catch (e) {

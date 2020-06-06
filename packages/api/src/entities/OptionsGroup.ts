@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { arrayProp, getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
 import { Option } from './Option';
 import { LanguageType } from './common';
 
@@ -16,7 +16,7 @@ export class OptionsGroup {
   public nameString: string;
 
   @Field((_type) => [Option])
-  @arrayProp({ ref: Option })
+  @prop({ ref: Option })
   public options: Ref<Option>[];
 }
 

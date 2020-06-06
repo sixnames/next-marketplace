@@ -13,15 +13,8 @@ export const initial = gql`
       phone
       role
       isAdmin
-      isBookkeeper
-      isContractor
-      isDriver
-      isHelper
-      isLogistician
       isManager
-      isStage
-      isWarehouse
-      isSuper
+      isCustomer
     }
   }
 `;

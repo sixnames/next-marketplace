@@ -16,6 +16,11 @@ services:
       PUBLIC_URL: "app"
     volumes:
       - /usr/src/app/node_modules
+      - /usr/src/app/packages/api/node_modules
+      - /usr/src/app/packages/app/node_modules
+      - /usr/src/app/packages/config/node_modules
+      - /usr/src/app/packages/utils/node_modules
+      - /usr/src/app/packages/validation/node_modules
       - ./packages:/usr/src/app/packages
     stdin_open: true
   mongo:

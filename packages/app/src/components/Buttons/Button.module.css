@@ -1,0 +1,167 @@
+.butn {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 2px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 0;
+  font-size: 1rem;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+  box-shadow: none;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.butn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+.icon {
+  position: relative;
+  top: 1px;
+  flex-shrink: 0;
+  display: block;
+  margin-right: 5px;
+}
+
+.iconNoGap {
+  margin: 0;
+}
+
+.noChildren {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.circle {
+  border-radius: 50%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.circle .icon {
+  margin: 0;
+}
+
+.small {
+  height: 1.5rem;
+  border-width: 1px;
+  font-size: 0.875rem;
+}
+
+.small .icon {
+  top: 1px;
+  width: 1rem;
+  height: 1rem;
+}
+
+.circle.small {
+  width: 1.5rem;
+}
+
+.normal {
+  height: 2rem;
+}
+
+.normal .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.circle.normal {
+  width: 2rem;
+}
+
+.big {
+  height: 3rem;
+}
+
+.big .icon {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.circle.big {
+  width: 3rem;
+}
+
+.button [class*='excel-icon'] {
+  top: 1px;
+  fill: var(--excel);
+}
+
+.button:hover [class*='excel-icon'] {
+  fill: var(--white);
+}
+
+.primary {
+  color: var(--white);
+  border: 2px solid var(--theme);
+  background-color: var(--theme);
+}
+
+.primary .icon {
+  fill: var(--white);
+}
+
+.primary:hover {
+  color: var(--theme);
+  background-color: var(--white);
+}
+
+.primary:hover .icon {
+  fill: var(--theme);
+}
+
+.secondary {
+  color: var(--theme);
+  border: 2px solid var(--theme);
+  background-color: var(--buttonLightBackground);
+}
+
+.secondary .icon {
+  fill: var(--theme);
+}
+
+.secondary:hover {
+  color: var(--white);
+  background-color: var(--theme);
+}
+
+.secondary:hover .icon {
+  fill: var(--white);
+}
+
+.gray {
+  color: var(--midGray);
+  border: 2px solid var(--midGray);
+  background-color: var(--buttonLightBackground);
+}
+
+.gray .icon {
+  fill: var(--midGray);
+}
+
+.gray:hover {
+  color: var(--buttonLightBackground);
+  background-color: var(--midGray);
+}
+
+.gray:hover .icon {
+  fill: var(--buttonLightBackground);
+}
+
+.noFrame {
+  border: none;
+  background-color: transparent;
+}

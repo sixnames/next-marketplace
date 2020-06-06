@@ -1,1 +1,379 @@
-scalar Upload
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Attribute {
+  id: ID!
+  metric: Metric
+  name: [LanguageType!]!
+  nameString: String!
+  options: OptionsGroup
+  slug: String!
+  variant: AttributeVariantEnum!
+}
+
+type AttributesGroup {
+  attributes: [Attribute!]!
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type AttributesGroupPayloadType {
+  group: AttributesGroup
+  message: String!
+  success: Boolean!
+}
+
+type LanguageType {
+  key: String!
+  value: String!
+}
+
+type Metric {
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type MetricPayloadType {
+  message: String!
+  metric: Metric
+  success: Boolean!
+}
+
+type Mutation {
+  addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
+  addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
+  addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createMetric(input: CreateMetricInput!): MetricPayloadType!
+  createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
+  createRubric(input: CreateRubricInput!): RubricPayloadType!
+  createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
+  createUser(input: CreateUserInput!): UserPayloadType!
+  deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
+  deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
+  deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
+  deleteMetric(id: ID!): MetricPayloadType!
+  deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
+  deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
+  deleteRubric(id: ID!): RubricPayloadType!
+  deleteRubricVariant(id: ID!): RubricVariantPayloadType!
+  deleteUser(id: ID!): UserPayloadType!
+  signIn(input: SignInInput!): UserPayloadType!
+  signOut: UserPayloadType!
+  signUp(input: SignUpInput!): UserPayloadType!
+  updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
+  updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
+  updateMetric(input: UpdateMetricInput!): MetricPayloadType!
+  updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
+  updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
+  updateRubric(input: UpdateRubricInput!): RubricPayloadType!
+  updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
+  updateUser(input: UpdateUserInput!): UserPayloadType!
+}
+
+type Option {
+  color: String
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type OptionsGroup {
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+  options: [Option!]!
+}
+
+type OptionsGroupPayloadType {
+  group: OptionsGroup
+  message: String!
+  success: Boolean!
+}
+
+type PaginatedUsersResponse {
+  docs: [User!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type Query {
+  getAllAttributesGroups(
+    "list of excluded groups id's"
+    exclude: [ID!]
+  ): [AttributesGroup!]!
+  getAllMetrics: [Metric!]
+  getAllOptionsGroups: [OptionsGroup!]!
+  getAllRubricVariants: [RubricVariant!]
+  getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
+  getAttribute(id: ID!): Attribute
+  getAttributesGroup(id: ID!): AttributesGroup
+  getMetric(id: ID!): Metric
+  getOption(id: ID!): Option
+  getOptionsGroup(id: ID!): OptionsGroup
+  getRubric(id: ID!): Rubric!
+  getRubricVariant(id: ID!): RubricVariant
+  getRubricsTree(excluded: [ID!]): [Rubric!]!
+  getUser(id: ID!): User
+  me: User
+}
+
+type Rubric {
+  active: Boolean!
+  attributesGroups: [RubricAttributesGroup!]!
+  catalogueName: String!
+  children(excluded: [ID!]): [Rubric!]!
+  cities: [RubricCity!]!
+  id: ID!
+  level: Int!
+  name: String!
+  parent: Rubric
+  slug: String!
+  variant: RubricVariant
+}
+
+type RubricAttributesGroup {
+  node: AttributesGroup!
+  showInCatalogueFilter: Boolean!
+}
+
+type RubricCity {
+  key: String!
+  node: RubricNode!
+}
+
+type RubricNode {
+  active: Boolean!
+  attributesGroups: [RubricAttributesGroup!]!
+  catalogueName: [LanguageType!]!
+  level: Int!
+  name: [LanguageType!]!
+  parent: Rubric
+  slug: String!
+  variant: RubricVariant
+}
+
+type RubricPayloadType {
+  message: String!
+  rubric: Rubric
+  success: Boolean!
+}
+
+type RubricVariant {
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type RubricVariantPayloadType {
+  message: String!
+  success: Boolean!
+  variant: RubricVariant
+}
+
+type User {
+  email: String!
+  fullName: String!
+  id: ID!
+  isAdmin: Boolean!
+  isCustomer: Boolean!
+  isManager: Boolean!
+  itemId: Int!
+  lastName: String
+  name: String!
+  phone: String!
+  role: String!
+  secondName: String
+  shortName: String!
+}
+
+type UserPayloadType {
+  message: String!
+  success: Boolean!
+  user: User
+}
+
+"Attribute type enum"
+enum AttributeVariantEnum {
+  multipleSelect
+  number
+  select
+  string
+}
+
+"Pagination sortDir enum"
+enum PaginateSortDirectionEnum {
+  asc
+  desc
+}
+
+"User pagination sortBy enum"
+enum UserSortByEnum {
+  createdAt
+  email
+  lastName
+  name
+  phone
+  role
+  secondName
+}
+
+input AddAttributeToGroupInput {
+  groupId: ID!
+  metric: ID
+  name: [LangInput!]!
+  options: ID
+  variant: AttributeVariantEnum!
+}
+
+input AddAttributesGroupToRubricInput {
+  attributesGroupId: ID!
+  rubricId: ID!
+}
+
+input AddOptionToGroupInput {
+  color: String
+  groupId: ID!
+  name: [LangInput!]!
+}
+
+input CreateAttributesGroupInput {
+  name: [LangInput!]!
+}
+
+input CreateMetricInput {
+  name: [LangInput!]!
+}
+
+input CreateOptionsGroupInput {
+  name: [LangInput!]!
+}
+
+input CreateRubricInput {
+  catalogueName: [LangInput!]!
+  name: [LangInput!]!
+  parent: ID
+  variant: ID
+}
+
+input CreateRubricVariantInput {
+  name: [LangInput!]!
+}
+
+input CreateUserInput {
+  email: String!
+  lastName: String
+  name: String!
+  phone: String
+  role: String
+  secondName: String
+}
+
+input DeleteAttributeFromGroupInput {
+  attributeId: ID!
+  groupId: ID!
+}
+
+input DeleteAttributesGroupFromRubricInput {
+  attributesGroupId: ID!
+  rubricId: ID!
+}
+
+input DeleteOptionFromGroupInput {
+  groupId: ID!
+  optionId: ID!
+}
+
+input LangInput {
+  key: String!
+  value: String!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input SignUpInput {
+  email: String!
+  lastName: String
+  name: String!
+  password: String!
+  phone: String
+  secondName: String
+}
+
+input UpdateAttributeInGroupInput {
+  attributeId: ID!
+  groupId: ID!
+  metric: ID
+  name: [LangInput!]!
+  options: ID
+  variant: AttributeVariantEnum!
+}
+
+input UpdateAttributesGroupInput {
+  id: ID!
+  name: [LangInput!]!
+}
+
+input UpdateMetricInput {
+  id: ID!
+  name: [LangInput!]!
+}
+
+input UpdateOptionInGroupInput {
+  color: String
+  groupId: ID!
+  name: [LangInput!]!
+  optionId: ID!
+}
+
+input UpdateOptionsGroupInput {
+  id: ID!
+  name: [LangInput!]!
+}
+
+input UpdateRubricInput {
+  catalogueName: [LangInput!]!
+  id: ID!
+  name: [LangInput!]!
+  parent: ID
+  variant: ID
+}
+
+input UpdateRubricVariantInput {
+  id: ID!
+  name: [LangInput!]!
+}
+
+input UpdateUserInput {
+  email: String!
+  id: ID!
+  lastName: String
+  name: String!
+  phone: String!
+  role: String!
+  secondName: String
+}
+
+input UserPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  query: String
+  sortBy: UserSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}

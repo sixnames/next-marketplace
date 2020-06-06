@@ -31,6 +31,7 @@ import { Types } from 'mongoose';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -52,9 +53,11 @@ export class OptionsGroupResolver {
 
   @Mutation(() => OptionsGroupPayloadType)
   async createOptionsGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await createOptionsGroupSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -67,7 +70,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: 'Группа с таким именем уже создана.',
+          message: getMessageTranslation(`optionsGroup.create.duplicate.${lang}`),
         };
       }
 
@@ -76,13 +79,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Ошибка создания группы опций.',
+          message: getMessageTranslation(`optionsGroup.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа опций создана.',
+        message: getMessageTranslation(`optionsGroup.create.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -95,9 +98,11 @@ export class OptionsGroupResolver {
 
   @Mutation(() => OptionsGroupPayloadType)
   async updateOptionsGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateOptionsGroupSchema.validate(input);
 
       const { id, ...values } = input;
@@ -112,7 +117,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: 'Группа с таким именем уже создана.',
+          message: getMessageTranslation(`optionsGroup.update.duplicate.${lang}`),
         };
       }
 
@@ -123,13 +128,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа опций не найдена.',
+          message: getMessageTranslation(`optionsGroup.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа опций обновлена.',
+        message: getMessageTranslation(`optionsGroup.update.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -141,13 +146,17 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
-  async deleteOptionsGroup(@Arg('id', (_type) => ID) id: string): Promise<OptionsGroupPayloadType> {
+  async deleteOptionsGroup(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       const connectedWithAttributes = await AttributeModel.exists({ options: Types.ObjectId(id) });
       if (connectedWithAttributes) {
         return {
           success: false,
-          message: 'Группа опций используется в атрибутах, её нельзя удалить.',
+          message: getMessageTranslation(`optionsGroup.delete.used.${lang}`),
         };
       }
 
@@ -158,7 +167,7 @@ export class OptionsGroupResolver {
       if (!removedOptions.ok) {
         return {
           success: false,
-          message: 'Ошибка удаления опций из группы.',
+          message: getMessageTranslation(`optionsGroup.delete.optionsError.${lang}`),
         };
       }
 
@@ -166,13 +175,13 @@ export class OptionsGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: 'Ошибка удаления Группы опций.',
+          message: getMessageTranslation(`optionsGroup.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа опций удалена.',
+        message: getMessageTranslation(`optionsGroup.delete.success.${lang}`),
       };
     } catch (e) {
       return {
@@ -184,9 +193,11 @@ export class OptionsGroupResolver {
 
   @Mutation(() => OptionsGroupPayloadType)
   async addOptionToGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await addOptionToGroupSchema.validate(input);
 
       const { groupId, ...values } = input;
@@ -195,7 +206,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа опции не найдена.',
+          message: getMessageTranslation(`optionsGroup.addOption.groupError.${lang}`),
         };
       }
 
@@ -210,7 +221,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: 'Опция с таким именем уже присутствует в данной группе.',
+          message: getMessageTranslation(`optionsGroup.addOption.duplicate.${lang}`),
         };
       }
 
@@ -218,7 +229,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: 'Ошибка создания опции.',
+          message: getMessageTranslation(`optionsGroup.addOption.optionError.${lang}`),
         };
       }
 
@@ -234,13 +245,13 @@ export class OptionsGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: 'Ошибка привязки опции к группе.',
+          message: getMessageTranslation(`optionsGroup.addOption.addError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Опция добавлена в группу.',
+        message: getMessageTranslation(`optionsGroup.addOption.success.${lang}`),
         group: updatedGroup,
       };
     } catch (e) {
@@ -253,9 +264,11 @@ export class OptionsGroupResolver {
 
   @Mutation(() => OptionsGroupPayloadType)
   async updateOptionInGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateOptionInGroupSchema.validate(input);
 
       const { groupId, optionId, color, name } = input;
@@ -264,7 +277,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа опций не найдена.',
+          message: getMessageTranslation(`optionsGroup.updateOption.groupError.${lang}`),
         };
       }
 
@@ -279,7 +292,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: 'Опция с таким именем уже присутствует в данной группе.',
+          message: getMessageTranslation(`optionsGroup.updateOption.duplicate.${lang}`),
         };
       }
 
@@ -295,13 +308,13 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: 'Опция не найдена.',
+          message: getMessageTranslation(`optionsGroup.updateOption.updateError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Опция обновлена.',
+        message: getMessageTranslation(`optionsGroup.updateOption.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -314,9 +327,11 @@ export class OptionsGroupResolver {
 
   @Mutation(() => OptionsGroupPayloadType)
   async deleteOptionFromGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await deleteOptionFromGroupSchema.validate(input);
       const { groupId, optionId } = input;
       const option = await OptionModel.findByIdAndDelete(optionId);
@@ -324,7 +339,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: 'Опция не найдена.',
+          message: getMessageTranslation(`optionsGroup.deleteOption.deleteError.${lang}`),
         };
       }
 
@@ -337,13 +352,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа опций не найдена.',
+          message: getMessageTranslation(`optionsGroup.deleteOption.groupError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Опция удалена.',
+        message: getMessageTranslation(`optionsGroup.deleteOption.success.${lang}`),
         group,
       };
     } catch (e) {

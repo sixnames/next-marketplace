@@ -30,7 +30,7 @@ const optionsGroupTranslations = {
     },
     delete: {
       used: {
-        ru: 'Группа опций используется в атрибутах, его нельзя удалить.',
+        ru: 'Группа опций используется в атрибутах, её нельзя удалить.',
         en: `Options group is used in attributes. You can't delete it.`,
       },
       optionsError: {

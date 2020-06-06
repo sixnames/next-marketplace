@@ -31,6 +31,7 @@ import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { Types } from 'mongoose';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -62,9 +63,11 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async createAttributesGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: CreateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await createAttributesGroupSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -77,7 +80,7 @@ export class AttributesGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: 'Группа с таким именем уже создана.',
+          message: getMessageTranslation(`attributesGroup.create.duplicate.${lang}`),
         };
       }
 
@@ -86,13 +89,13 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Ошибка создания группы атрибутов.',
+          message: getMessageTranslation(`attributesGroup.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа атрибутов создана.',
+        message: getMessageTranslation(`attributesGroup.create.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -105,9 +108,11 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async updateAttributesGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: UpdateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateAttributesGroupSchema.validate(input);
 
       const { id, ...values } = input;
@@ -121,7 +126,7 @@ export class AttributesGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: 'Группа с таким именем уже создана.',
+          message: getMessageTranslation(`attributesGroup.update.duplicate.${lang}`),
         };
       }
 
@@ -132,13 +137,13 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа атрибутов не найдена.',
+          message: getMessageTranslation(`attributesGroup.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа атрибутов обновлена.',
+        message: getMessageTranslation(`attributesGroup.update.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -155,6 +160,7 @@ export class AttributesGroupResolver {
     @Arg('id', () => ID) id: string,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       const city = ctx.req.session!.city;
       const connectedWithRubrics = await RubricModel.exists({
         'cities.key': city,
@@ -165,7 +171,7 @@ export class AttributesGroupResolver {
       if (connectedWithRubrics) {
         return {
           success: false,
-          message: 'Группа атрибутов используется в рубриках, её нельзя удалить.',
+          message: getMessageTranslation(`attributesGroup.delete.used.${lang}`),
         };
       }
 
@@ -173,7 +179,7 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа атрибутов не найдена.',
+          message: getMessageTranslation(`attributesGroup.delete.notFound.${lang}`),
         };
       }
 
@@ -181,10 +187,10 @@ export class AttributesGroupResolver {
         _id: { $in: group.attributes },
       });
 
-      if (!removedAttributes) {
+      if (!removedAttributes.ok) {
         return {
           success: false,
-          message: 'Ошибка удаления атрибутов из группы.',
+          message: getMessageTranslation(`attributesGroup.delete.attributesError.${lang}`),
         };
       }
 
@@ -193,13 +199,13 @@ export class AttributesGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: 'Ошибка удаления группы атрибутов.',
+          message: getMessageTranslation(`attributesGroup.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Группа атрибутов удалена.',
+        message: getMessageTranslation(`attributesGroup.delete.success.${lang}`),
       };
     } catch (e) {
       return {
@@ -211,9 +217,11 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async addAttributeToGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await addAttributeToGroupSchema.validate(input);
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
@@ -221,7 +229,7 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа атрибутов не найдена.',
+          message: getMessageTranslation(`attributesGroup.addAttribute.groupError.${lang}`),
         };
       }
 
@@ -235,7 +243,7 @@ export class AttributesGroupResolver {
       if (existingAttributes) {
         return {
           success: false,
-          message: 'Атрибут с таким именем уже присутствует в данной группе.',
+          message: getMessageTranslation(`attributesGroup.addAttribute.duplicate.${lang}`),
         };
       }
 
@@ -246,7 +254,7 @@ export class AttributesGroupResolver {
       if (!attribute) {
         return {
           success: false,
-          message: 'Ошибка создания атрибута.',
+          message: getMessageTranslation(`attributesGroup.addAttribute.attributeError.${lang}`),
         };
       }
 
@@ -263,13 +271,13 @@ export class AttributesGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: 'Ошибка атрибута опции к группе.',
+          message: getMessageTranslation(`attributesGroup.addAttribute.addError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Атрибут добавлен в группу.',
+        message: getMessageTranslation(`attributesGroup.addAttribute.success.${lang}`),
         group: updatedGroup,
       };
     } catch (e) {
@@ -282,9 +290,11 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async updateAttributeInGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: UpdateAttributeInGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       await updateAttributeInGroupSchema.validate(input);
 
       const { groupId, attributeId, ...values } = input;
@@ -293,7 +303,7 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа атрибутов не найдена.',
+          message: getMessageTranslation(`attributesGroup.updateAttribute.groupError.${lang}`),
         };
       }
 
@@ -307,7 +317,7 @@ export class AttributesGroupResolver {
       if (existingAttributes) {
         return {
           success: false,
-          message: 'Атрибут с таким именем уже присутствует в данной группе.',
+          message: getMessageTranslation(`attributesGroup.updateAttribute.duplicate.${lang}`),
         };
       }
 
@@ -315,13 +325,13 @@ export class AttributesGroupResolver {
       if (!attribute) {
         return {
           success: false,
-          message: 'Атрибут не найден.',
+          message: getMessageTranslation(`attributesGroup.updateAttribute.updateError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Атрибут обновлен.',
+        message: getMessageTranslation(`attributesGroup.updateAttribute.success.${lang}`),
         group,
       };
     } catch (e) {
@@ -334,15 +344,17 @@ export class AttributesGroupResolver {
 
   @Mutation(() => AttributesGroupPayloadType)
   async deleteAttributeFromGroup(
+    @Ctx() ctx: ContextInterface,
     @Arg('input') input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      const lang = ctx.req.session!.lang;
       const { groupId, attributeId } = input;
       const attribute = await AttributeModel.findByIdAndDelete(attributeId);
       if (!attribute) {
         return {
           success: false,
-          message: 'Атрибут не найден.',
+          message: getMessageTranslation(`attributesGroup.deleteAttribute.deleteError.${lang}`),
         };
       }
 
@@ -354,13 +366,13 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: 'Группа атрибутов не найдена.',
+          message: getMessageTranslation(`attributesGroup.deleteAttribute.groupError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Атрибут удалён.',
+        message: getMessageTranslation(`attributesGroup.deleteAttribute.success.${lang}`),
         group,
       };
     } catch (e) {

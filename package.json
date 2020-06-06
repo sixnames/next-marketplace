@@ -15,6 +15,10 @@
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
 
+    "up:serve": "docker-compose -f docker-compose.serve.yml up",
+    "stop:serve": "docker-compose -f docker-compose.serve.yml stop",
+    "down:serve": "docker-compose -f docker-compose.serve.yml down && rm -rf data/*",
+
     "dev": "lerna run --parallel dev",
     "test": "lerna run --parallel test",
 

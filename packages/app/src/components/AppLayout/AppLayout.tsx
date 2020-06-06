@@ -5,7 +5,19 @@ import Spinner from '../Spinner/Spinner';
 import AppNav from './AppNav';
 import { useAppContext } from '../../context/appContext';
 import classes from './AppLayout.module.css';
+import { Link, Route, Routes } from 'react-router-dom';
 // import { ROUTE_SIGN_IN } from '@rg/config';
+
+const Home: React.FC = () => {
+  return (
+    <div>
+      Home
+      <div>
+        <Link to='about'>About</Link>
+      </div>
+    </div>
+  );
+};
 
 const AppLayout: React.FC = () => {
   const { isFetching, isAuthenticated } = useUserContext();
@@ -26,9 +38,9 @@ const AppLayout: React.FC = () => {
       <AppNav />
 
       <main className={classes.content}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias asperiores, cumque delectus,
-        et eveniet expedita facere illum inventore labore maiores nam qui quod reiciendis. Dolore,
-        iste, porro? Adipisci, ratione, soluta.
+        <Routes basename={'/app'}>
+          <Route path={'/'} element={<Home />} />
+        </Routes>
       </main>
 
       {isLoading && <Spinner />}

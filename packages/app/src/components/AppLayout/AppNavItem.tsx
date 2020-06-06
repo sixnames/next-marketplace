@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import TTip from '../TTip/TTip';
 import Icon from '../Icon/Icon';
 import { NavItemInterface } from '../../types';
-import classes from './AppNavItem.module.css';
+import { Link } from 'react-router-dom';
 import { ROUTE_SIGN_OUT } from '@rg/config';
+import classes from './AppNavItem.module.css';
 
 interface AppNavItemInterface {
   item: NavItemInterface;
@@ -24,15 +25,15 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const { name, icon, path, children } = item;
+  const { name, icon, to, children, counter } = item;
 
   useEffect(() => {
     if (children) {
-      const paths = children.map(({ path }) => {
-        if (typeof path === 'string') {
-          return path;
+      const paths = children.map(({ to }) => {
+        if (typeof to === 'string') {
+          return to;
         }
-        return path.pathname;
+        return to.pathname;
       });
 
       const current = paths.includes(pathname);
@@ -86,15 +87,15 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
 
             return (
               <li className={classes.item} onClick={closeNavHandler} key={name}>
-                {/*<Link
-                  href={path}
+                <Link
+                  to={to}
                   className={`${classes.complexLink}`}
-                  activeClassName={classes.linkActive}
+                  // activeClassName={classes.linkActive}
                 >
                   <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
                     {name}
                   </span>
-                </Link>*/}
+                </Link>
               </li>
             );
           })}
@@ -103,7 +104,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
     );
   }
 
-  if (path === ROUTE_SIGN_OUT) {
+  if (to === ROUTE_SIGN_OUT) {
     return (
       <li className={classes.item}>
         <TTip tooltipPlacement={'right'} title={compact ? name : ''}>
@@ -130,10 +131,10 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
   return (
     <li className={classes.item} onClick={closeNavHandler}>
       <TTip tooltipPlacement={'right'} title={compact ? name : ''}>
-        {/*<Link
-          href={`${path}`}
+        <Link
+          to={`${to}`}
           className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
-          activeClassName={classes.LinkActive}
+          // activeClassName={classes.LinkActive}
         >
           <span className={`${classes.linkIcon}`}>
             {icon && (
@@ -150,7 +151,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
               {counter}
             </span>
           ) : null}
-        </Link>*/}
+        </Link>
       </TTip>
     </li>
   );

@@ -1,4 +1,5 @@
 import { IconType } from '../components/Icon/Icon';
+import { LinkProps } from 'react-router-dom';
 
 export type Theme = 'light' | 'dark' | 'not all';
 export type ButtonTheme = 'primary' | 'secondary' | 'gray';
@@ -15,27 +16,21 @@ export type PostfixType =
 
 export type ObjectType = { [key: string]: any };
 export interface QueryInterface {
-  query?: ObjectType;
+  search?: string;
 }
 
-export interface PathInterface {
+export interface PathInterface extends QueryInterface {
   pathname: string;
-  query?: { [key: string]: string | string[] };
 }
 
-export interface NavItemChildInterface {
+export interface NavItemChildInterface extends LinkProps {
   name: string;
-  path: string | PathInterface;
   hidden?: boolean;
   testId?: string;
 }
 
-export interface NavItemInterface {
-  name: string;
-  path?: string | PathInterface;
+export interface NavItemInterface extends NavItemChildInterface {
   icon?: IconType;
   counter?: number;
   children?: NavItemChildInterface[];
-  hidden?: boolean;
-  testId?: string;
 }

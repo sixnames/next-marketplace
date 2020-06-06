@@ -17,7 +17,7 @@ const AppNav: React.FC = () => {
   const { toggleTheme, isDark } = useThemeContext();
   const { isCompact, toggleCompactHandler, setCompactOn, setCompactOff } = useCompact();
   // const signOutHandler = useSignOut();
-
+  console.log(navItems);
   const mobileNavHandler = useCallback(toggleCompactHandler, []);
   const closeNavHandler = useCallback(setCompactOn, []);
   const openNavHandler = useCallback(setCompactOff, []);
@@ -90,7 +90,7 @@ const AppNav: React.FC = () => {
 
               <li className={`${classes.bottom} ${classes.bottomFirst}`}>
                 <TTip tooltipPlacement={'right'} title={isCompact ? 'Вернуться на сайт' : ''}>
-                  {/*<Link
+                  <a
                     href={`/`}
                     className={`${classes.bottomLink} ${
                       isCompact ? classes.bottomLinkCompact : ''
@@ -104,7 +104,7 @@ const AppNav: React.FC = () => {
                     >
                       Вернуться в каталог
                     </span>
-                  </Link>*/}
+                  </a>
                 </TTip>
               </li>
 
@@ -136,7 +136,7 @@ const AppNav: React.FC = () => {
         </div>
       </div>
 
-      {!isCompact && <AnimateOpacity className={classes.bottomdrop} onClick={closeNavHandler} />}
+      {!isCompact && <AnimateOpacity className={classes.backdrop} onClick={closeNavHandler} />}
     </nav>
   );
 };

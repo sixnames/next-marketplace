@@ -17,43 +17,44 @@ const useAppNavItems = (): NavItemInterface[] => {
     name: `Заказы`,
     icon: `ShoppingCart`,
     counter: ordersCounter,
-    path: `/orders`,
+    to: `orders`,
   };
 
   const cmsRoute: NavItemInterface = {
     name: 'CMS',
     icon: 'Settings',
+    to: '',
     children: [
       {
         name: 'Рубрикатор',
-        path: {
-          pathname: '/rubrics',
-          query: { ...withFilterQuery },
+        to: {
+          pathname: 'rubrics',
+          search: withFilterQuery,
         },
       },
       {
         name: 'Товары',
-        path: {
-          pathname: '/products',
-          query: { ...withFilterQuery },
+        to: {
+          pathname: 'products',
+          search: withFilterQuery,
         },
       },
       {
         name: 'Типы рубрик',
-        path: '/rubric-types',
+        to: 'rubric-types',
       },
       {
         name: 'Группы атрибутов',
-        path: {
-          pathname: '/attributes-groups',
-          query: { ...withFilterQuery },
+        to: {
+          pathname: 'attributes-groups',
+          search: withFilterQuery,
         },
       },
       {
         name: 'Группы опций',
-        path: {
-          pathname: '/options-groups',
-          query: { ...withFilterQuery },
+        to: {
+          pathname: 'options-groups',
+          search: withFilterQuery,
         },
       },
     ],
@@ -62,14 +63,14 @@ const useAppNavItems = (): NavItemInterface[] => {
   const userSettingsRoute: NavItemInterface = {
     icon: `Person`,
     name: `Профиль`,
-    path: `/profile`,
+    to: `profile`,
   };
 
   const constantRoutes: NavItemInterface[] = [
     {
       icon: `ExitToApp`,
       name: `Выход`,
-      path: ROUTE_SIGN_OUT,
+      to: ROUTE_SIGN_OUT,
     },
   ];
 

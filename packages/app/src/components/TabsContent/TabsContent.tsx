@@ -6,7 +6,7 @@ interface TabsContentInterface {
 }
 
 const TabsContent: React.FC<TabsContentInterface> = ({ className, children }) => {
-  // TODO [Slava] query string
+  // TODO query string
   const query: any = {};
   const firstTab = '0';
   const tab = query && query.tab ? query.tab : firstTab;

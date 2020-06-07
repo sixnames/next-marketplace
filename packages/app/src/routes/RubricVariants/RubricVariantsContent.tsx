@@ -59,7 +59,7 @@ const RubricVariantsContent: React.FC = () => {
   if (loading) return <Spinner isNested />;
   if (error || !data) return <RequestError />;
 
-  // TODO [Slava] LangInput
+  // TODO LangInput
   function createRubricVariantHandler() {
     showModal({
       type: UPDATE_NAME_MODAL,
@@ -81,7 +81,7 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  // TODO [Slava] LangInput
+  // TODO LangInput
   function updateRubricVariantHandler({ name, id }: { id: string; name: string }) {
     showModal({
       type: UPDATE_NAME_MODAL,

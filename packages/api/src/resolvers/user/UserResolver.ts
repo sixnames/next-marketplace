@@ -206,7 +206,7 @@ export class UserResolver {
         };
       }
 
-      // TODO [Slava] send email confirmation
+      // TODO send email confirmation
 
       return {
         success: true,

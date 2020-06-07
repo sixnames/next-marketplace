@@ -55,7 +55,7 @@ export const ensureSignedOut = (req: Request) => {
 
 export const attemptSignOut = async (req: Request) => {
   return new Promise((resolve) => {
-    // TODO [Slava] temporary. Remove after apollo-server-integration-testing update or fork the package
+    // TODO temporary. Remove after apollo-server-integration-testing update or fork the package
     if (IN_TEST) {
       req.session!.userId = null;
       resolve(true);

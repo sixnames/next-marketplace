@@ -235,7 +235,7 @@ export class RubricResolver {
 
       // If rubric exists in one city
       if (rubric.cities.length === 1) {
-        // TODO [Slava] after products
+        // TODO after products
         /*const updatedProducts = await Product.updateMany(
           { rubrics: { $in: allRubrics } },
           { $pull: { rubrics: { $in: allRubrics } } },
@@ -258,7 +258,7 @@ export class RubricResolver {
       }
 
       // If rubric exists in multiple cities
-      // TODO [Slava] after products
+      // TODO after products
       /*const updatedProducts = await Product.updateMany(
         { rubrics: { $in: allRubrics } },
         { $pull: { rubrics: { $in: allRubrics } } },

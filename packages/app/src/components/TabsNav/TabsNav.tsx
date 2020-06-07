@@ -12,7 +12,7 @@ interface TabsNavInterface {
   className?: string;
 }
 
-// TODO [Slava] active class
+// TODO active class
 const TabsNav: React.FC<TabsNavInterface> = ({ navConfig, className }) => {
   return (
     <ul className={`${classes.frame} ${className ? className : ''}`}>

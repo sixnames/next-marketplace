@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './TableRowImage.module.css';
-// TODO [Slava] table cell image
+// TODO table cell image
 const TableRowImage: React.FC = () => {
   return (
     <div className={classes.frame}>

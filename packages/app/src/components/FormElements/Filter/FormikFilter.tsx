@@ -20,7 +20,7 @@ const FormikFilter: React.FC<FormikFilterInterface> = ({
   initialQueryValue,
 }) => {
   const [initialQuery, setInitialQuery] = useState<ObjectType | null>(null);
-  // TODO [Slava] router
+  // TODO router
   const router: any = { pathname: '', query: {}, replace: (args: any) => args };
   const { pathname = '', query } = router;
 

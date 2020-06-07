@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import useSound from 'use-sound';
 import Icon, { IconType } from '../Icon/Icon';
-// TODO [Slava] Link
+// TODO Link
 // import Link from '../Link/Link';
 import ButtonCross from '../Buttons/ButtonCross';
 import { NotificationType } from '../../types';

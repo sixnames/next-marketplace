@@ -16,7 +16,7 @@ interface UseRouterQueryInterface {
 }
 
 const useRouterQuery = (): UseRouterQueryInterface => {
-  // TODO [Slava] router query
+  // TODO router query
   const router: any = { pathname: '', query: {} };
   const { pathname = '', query = {} } = router;
 

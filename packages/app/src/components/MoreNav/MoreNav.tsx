@@ -36,7 +36,7 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                 if (hidden) {
                   return null;
                 }
-                // TODO [Slava] active class
+                // TODO active class
                 return (
                   <li className={classes.item} key={name} data-cy={testId}>
                     <Link

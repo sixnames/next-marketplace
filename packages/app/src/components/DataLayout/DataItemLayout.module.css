@@ -1,0 +1,48 @@
+.Frame {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--lighterGray);
+  height: 100vh;
+}
+
+.Frame > .Inner {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.ContentFrame {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100% - 105px);
+  max-height: calc(100% - 105px);
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 100%;
+}
+
+.Content > div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 100%;
+  background-color: var(--white);
+  box-shadow: var(--shadow);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.Content > div > * {
+  width: 100%;
+}
+
+@media only screen and (max-width: 1024px) {
+  .Frame {
+    height: calc(100vh - 76px);
+    max-height: calc(100vh - 76px);
+  }
+}

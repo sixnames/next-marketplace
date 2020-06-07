@@ -1,0 +1,10 @@
+.frame {
+  padding-top: 3rem;
+  padding-right: 1rem;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+  color: var(--red);
+}

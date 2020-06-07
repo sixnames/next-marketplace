@@ -1,0 +1,54 @@
+import React, { useEffect, useState } from 'react';
+import classes from './FormikImageUploadPreview.module.css';
+import ButtonCross from '../../Buttons/ButtonCross';
+
+interface FormikImageUploadPreviewInterface {
+  file: any;
+  removeImageHandler: (index?: number) => void;
+  inline?: boolean;
+  index?: number;
+}
+
+const FormikImageUploadPreview: React.FC<FormikImageUploadPreviewInterface> = ({
+  file = null,
+  removeImageHandler,
+  inline,
+  index,
+}) => {
+  const [thumb, setThumb] = useState<string | ArrayBuffer | null>(null);
+
+  useEffect(() => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumb(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [file]);
+
+  if (!file || !thumb) {
+    return null;
+  }
+
+  const alt = file && file.name ? file.name : '';
+
+  return (
+    <div
+      className={`${classes.frame} ${inline ? classes.inline : ''}`}
+      data-cy={`file-preview-${index}`}
+    >
+      <div>
+        <img src={`${thumb}`} alt={alt} width={150} height={150} />
+      </div>
+
+      <ButtonCross
+        className={classes.remove}
+        onClick={() => removeImageHandler(index)}
+        testId={`file-preview-remove-${index}`}
+      />
+    </div>
+  );
+};
+
+export default FormikImageUploadPreview;

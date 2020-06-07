@@ -13,6 +13,8 @@
 
 .frame svg {
   color: var(--theme);
+  width: auto;
+  height: auto;
 }
 
 .wide {

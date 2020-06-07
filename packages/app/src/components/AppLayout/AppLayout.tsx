@@ -6,6 +6,8 @@ import AppNav from './AppNav';
 import { useAppContext } from '../../context/appContext';
 import classes from './AppLayout.module.css';
 import { Link, Route, Routes } from 'react-router-dom';
+import { IN_DEV } from '../../config';
+import SignIn from '../../routes/SignIn/SignIn';
 // import { ROUTE_SIGN_IN } from '@rg/config';
 
 const Home: React.FC = () => {
@@ -22,16 +24,22 @@ const Home: React.FC = () => {
 const AppLayout: React.FC = () => {
   const { isFetching, isAuthenticated } = useUserContext();
   const { isLoading } = useAppContext();
-  console.log({ isFetching, isAuthenticated });
-  /*useEffect(() => {
-    if (!isAuthenticated && !isFetching) {
-      Router.replace(ROUTE_SIGN_IN);
-    }
-  }, [isAuthenticated, isFetching]);*/
 
-  /*if (isFetching || !isAuthenticated) {
-    return <Spinner />;
-  }*/
+  if (isFetching && !isAuthenticated) {
+    return (
+      <div className={classes.frame}>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated && !isFetching && IN_DEV) {
+    return (
+      <div className={classes.frame}>
+        <SignIn />
+      </div>
+    );
+  }
 
   return (
     <div className={classes.frame}>

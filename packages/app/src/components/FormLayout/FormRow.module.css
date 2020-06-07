@@ -1,0 +1,22 @@
+.frame {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.frame > div {
+  width: calc(50% - 7px);
+  flex-grow: 0;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame > div {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .frame > div {
+    width: calc(50% - 10px);
+  }
+}

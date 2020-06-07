@@ -1,0 +1,21 @@
+.Wide {
+  width: 100%;
+}
+
+.Frame {
+  position: relative;
+  height: var(--inputHeightNormal);
+  background-color: var(--inputBackground);
+  border-radius: 4px;
+}
+
+.Frame svg {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  fill: var(--midGray);
+  transform: translateY(-50%);
+}

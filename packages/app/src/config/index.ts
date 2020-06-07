@@ -1,3 +1,6 @@
+// Common
+export const { NODE_ENV = 'development', API_URL = 'http://localhost:4000/graphql' } = process.env;
+
 // Query params
 export const QUERY_DATA_LAYOUT_FILTER = 'isFilterVisible';
 export const QUERY_DATA_LAYOUT_FILTER_VALUE = '1';

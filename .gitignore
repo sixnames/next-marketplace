@@ -87,8 +87,8 @@ typings/
 .env.local
 .env.test
 .env.test.local
-.env.development
-.env.development.local
+#.env.development
+#.env.development.local
 .env.production
 .env.production.local
 

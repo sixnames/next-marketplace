@@ -7,11 +7,12 @@ import { ThemeContextProvider } from './context/themeContext';
 import { AppContextProvider } from './context/appContext';
 import { NotificationsProvider } from './context/notificationsContext';
 import { UserContextProvider } from './context/userContext';
+import { API_URL } from './config';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri: 'http://localhost/api/graphql',
+    uri: API_URL,
   }),
 });
 

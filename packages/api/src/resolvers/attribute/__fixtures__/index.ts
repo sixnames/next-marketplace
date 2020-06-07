@@ -1,11 +1,12 @@
 import { ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING } from '@rg/config';
+import { AttributeVariantEnum } from '../../../entities/Attribute';
 
 export const stringAttribute = {
   name: [
     { key: 'ru', value: 'string attribute' },
     { key: 'en', value: 'string attribute' },
   ],
-  variant: ATTRIBUTE_TYPE_STRING,
+  variant: ATTRIBUTE_TYPE_STRING as AttributeVariantEnum,
   slug: 'string attribute',
 };
 

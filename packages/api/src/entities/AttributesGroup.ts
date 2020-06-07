@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Attribute } from './Attribute';
 import { LanguageType } from './common';
 
@@ -17,7 +17,7 @@ export class AttributesGroup {
 
   @Field((_type) => [Attribute])
   @prop({ ref: Attribute })
-  attributes: Ref<Attribute>[];
+  attributes: string[];
 }
 
 export const AttributesGroupModel = getModelForClass(AttributesGroup);

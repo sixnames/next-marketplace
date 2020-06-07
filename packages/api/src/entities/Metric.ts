@@ -5,14 +5,14 @@ import { LanguageType } from './common';
 @ObjectType()
 export class Metric {
   @Field(() => ID)
-  public id: string;
+  readonly id: string;
 
   @Field(() => LanguageType)
   @prop({ type: LanguageType, required: true, _id: false })
-  public name: LanguageType[];
+  name: LanguageType[];
 
   @Field(() => String)
-  public nameString: string;
+  readonly nameString: string;
 }
 
 export const MetricModel = getModelForClass(Metric);

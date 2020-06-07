@@ -28,7 +28,7 @@ import {
 import createInitialData from '../createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
-import { AttributeModel } from '../../entities/Attribute';
+import { AttributeModel, AttributeVariantEnum } from '../../entities/Attribute';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
@@ -91,6 +91,7 @@ const createTestData = async () => {
     const attributeMultipleSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_MULTIPLE.name);
     const attributeMultiple = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_MULTIPLE,
+      variant: MOCK_ATTRIBUTE_MULTIPLE.variant as AttributeVariantEnum,
       slug: attributeMultipleSlug,
       options: optionsGroup.id,
     });
@@ -98,6 +99,7 @@ const createTestData = async () => {
     const attributeSelectSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_SELECT.name);
     const attributeSelect = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_SELECT,
+      variant: MOCK_ATTRIBUTE_SELECT.variant as AttributeVariantEnum,
       slug: attributeSelectSlug,
       options: optionsGroup.id,
     });
@@ -105,6 +107,7 @@ const createTestData = async () => {
     const attributeStringSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_STRING.name);
     const attributeString = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_STRING,
+      variant: MOCK_ATTRIBUTE_STRING.variant as AttributeVariantEnum,
       slug: attributeStringSlug,
       options: optionsGroup.id,
     });
@@ -112,11 +115,16 @@ const createTestData = async () => {
     const attributeNumberSlug = generateDefaultLangSlug(MOCK_ATTRIBUTE_NUMBER.name);
     const attributeNumber = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_NUMBER,
+      variant: MOCK_ATTRIBUTE_NUMBER.variant as AttributeVariantEnum,
       slug: attributeNumberSlug,
       options: optionsGroup.id,
     });
 
-    await AttributesGroupModel.create(MOCK_ATTRIBUTES_GROUP_FOR_DELETE);
+    await AttributesGroupModel.create({
+      ...MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
+      attributes: [],
+    });
+
     const attributesGroup = await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP,
       attributes: [

@@ -12,7 +12,7 @@ import {
 } from 'type-graphql';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
-import { DocumentType, Ref } from '@typegoose/typegoose';
+import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
@@ -27,7 +27,6 @@ import {
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
 import { AttributeModel } from '../../entities/Attribute';
-import { Types } from 'mongoose';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
@@ -74,7 +73,7 @@ export class OptionsGroupResolver {
         };
       }
 
-      const group = await OptionsGroupModel.create(input);
+      const group = await OptionsGroupModel.create({ ...input, options: [] });
 
       if (!group) {
         return {
@@ -152,7 +151,7 @@ export class OptionsGroupResolver {
   ): Promise<OptionsGroupPayloadType> {
     try {
       const lang = ctx.req.session!.lang;
-      const connectedWithAttributes = await AttributeModel.exists({ options: Types.ObjectId(id) });
+      const connectedWithAttributes = await AttributeModel.exists({ options: id });
       if (connectedWithAttributes) {
         return {
           success: false,
@@ -345,7 +344,7 @@ export class OptionsGroupResolver {
 
       const group = await OptionsGroupModel.findByIdAndUpdate(
         groupId,
-        { $pull: { options: Types.ObjectId(optionId) } },
+        { $pull: { options: optionId } },
         { new: true },
       );
 
@@ -378,7 +377,7 @@ export class OptionsGroupResolver {
   }
 
   @FieldResolver()
-  async options(@Root() optionsGroup: DocumentType<OptionsGroup>): Promise<Ref<Option>[]> {
-    return (await optionsGroup.populate('options').execPopulate()).options;
+  async options(@Root() optionsGroup: DocumentType<OptionsGroup>): Promise<Option[]> {
+    return OptionModel.find({ _id: { $in: optionsGroup.options } });
   }
 }

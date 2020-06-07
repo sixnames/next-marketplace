@@ -18,10 +18,10 @@ import {
   RUBRIC_LEVEL_ZERO,
 } from '@rg/config';
 import { ContextInterface } from '../../types/context';
-import { DocumentType, Ref } from '@typegoose/typegoose';
+import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
 import getCityData from '../../utils/getCityData';
-import { RubricVariant } from '../../entities/RubricVariant';
+import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
@@ -106,6 +106,7 @@ export class RubricResolver {
               variant: parentRubric.level === RUBRIC_LEVEL_ZERO ? input.variant : null,
               level: parentRubric.level + RUBRIC_LEVEL_STEP,
               slug: generateDefaultLangSlug(input.catalogueName),
+              attributesGroups: [],
             },
           },
         ],
@@ -509,7 +510,7 @@ export class RubricResolver {
   async active(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-  ): Promise<boolean> {
+  ): Promise<boolean | null | undefined> {
     const city = getCityData(rubric.cities, ctx.req.session!.city);
     if (!city) {
       return false;
@@ -521,26 +522,26 @@ export class RubricResolver {
   async parent(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-  ): Promise<Ref<Rubric> | null> {
+  ): Promise<Rubric | null> {
     const populated = await rubric.populate('cities.node.parent').execPopulate();
     const city = getCityData(populated.cities, ctx.req.session!.city);
     if (!city) {
       return null;
     }
-    return city.node.parent;
+    return RubricModel.findById(city.node.parent);
   }
 
   @FieldResolver()
   async variant(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-  ): Promise<Ref<RubricVariant> | null> {
+  ): Promise<RubricVariant | null> {
     const populated = await rubric.populate('cities.node.variant').execPopulate();
     const city = getCityData(populated.cities, ctx.req.session!.city);
     if (!city) {
       return null;
     }
-    return city.node.variant;
+    return RubricVariantModel.findById(city.node.variant);
   }
 
   @FieldResolver()

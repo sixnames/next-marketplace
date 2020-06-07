@@ -11,7 +11,7 @@ import {
   Field,
 } from 'type-graphql';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { DocumentType, Ref } from '@typegoose/typegoose';
+import { DocumentType } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
@@ -28,7 +28,6 @@ import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';
 import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
-import { Types } from 'mongoose';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
 import { getMessageTranslation } from '../../config/translations';
@@ -360,7 +359,7 @@ export class AttributesGroupResolver {
 
       const group = await AttributesGroupModel.findByIdAndUpdate(
         groupId,
-        { $pull: { attributes: Types.ObjectId(attributeId) } },
+        { $pull: { attributes: attributeId } },
         { new: true },
       );
       if (!group) {
@@ -384,10 +383,8 @@ export class AttributesGroupResolver {
   }
 
   @FieldResolver()
-  async attributes(
-    @Root() attributesGroup: DocumentType<AttributesGroup>,
-  ): Promise<Ref<Attribute>[]> {
-    return (await attributesGroup.populate('attributes').execPopulate()).attributes;
+  async attributes(@Root() attributesGroup: DocumentType<AttributesGroup>): Promise<Attribute[]> {
+    return AttributeModel.find({ _id: { $in: attributesGroup.attributes } });
   }
 
   @FieldResolver()

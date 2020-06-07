@@ -1,23 +1,23 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Option } from './Option';
 import { LanguageType } from './common';
 
 @ObjectType()
 export class OptionsGroup {
   @Field(() => ID)
-  public id: string;
+  readonly id: string;
 
   @Field(() => LanguageType)
   @prop({ type: LanguageType, required: true, _id: false })
-  public name: LanguageType[];
+  name: LanguageType[];
 
   @Field(() => String)
-  public nameString: string;
+  readonly nameString: string;
 
   @Field((_type) => [Option])
   @prop({ ref: Option })
-  public options: Ref<Option>[];
+  options: string[];
 }
 
 export const OptionsGroupModel = getModelForClass(OptionsGroup);

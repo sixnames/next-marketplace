@@ -35,11 +35,11 @@ export class Attribute {
 
   @Field((_type) => OptionsGroup, { nullable: true })
   @prop({ ref: OptionsGroup })
-  options?: string;
+  options?: string | null;
 
   @Field((_type) => Metric, { nullable: true })
   @prop({ ref: Metric })
-  metric?: string;
+  metric?: string | null;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })

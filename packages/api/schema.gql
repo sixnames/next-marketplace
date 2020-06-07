@@ -80,7 +80,7 @@ input CreateUserInput {
   email: String!
   lastName: String
   name: String!
-  phone: String
+  phone: String!
   role: String
   secondName: String
 }
@@ -239,7 +239,7 @@ type RubricCity {
 }
 
 type RubricNode {
-  active: Boolean!
+  active: Boolean
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: [LanguageType!]!
   level: Int!
@@ -336,6 +336,7 @@ input UpdateUserInput {
 }
 
 type User {
+  createdAt: Int!
   email: String!
   fullName: String!
   id: ID!
@@ -349,6 +350,7 @@ type User {
   role: String!
   secondName: String
   shortName: String!
+  updatedAt: Int!
 }
 
 input UserPaginateInput {

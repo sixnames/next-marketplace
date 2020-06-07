@@ -5,18 +5,18 @@ import { LanguageType } from './common';
 @ObjectType()
 export class Option {
   @Field(() => ID)
-  public id: string;
+  readonly id: string;
 
   @Field(() => LanguageType)
   @prop({ type: LanguageType, required: true, _id: false })
-  public name: LanguageType[];
+  name: LanguageType[];
 
   @Field(() => String)
-  public nameString: string;
+  readonly nameString: string;
 
   @Field((_type) => String, { nullable: true })
-  @prop()
-  public color: string;
+  @prop({ type: String })
+  color?: string | null;
 }
 
 export const OptionModel = getModelForClass(Option);

@@ -1,32 +1,10 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { useInitialQuery } from '../generated/apolloComponents';
-
-export interface MeInterface {
-  id: string;
-  email: string;
-  name: string;
-  secondName?: string;
-  lastName?: string;
-  fullName: string;
-  shortName: string;
-  phone: string;
-  role: string;
-  isAdmin: boolean;
-  isBookkeeper: boolean;
-  isContractor: boolean;
-  isDriver: boolean;
-  isHelper: boolean;
-  isLogistician: boolean;
-  isManager: boolean;
-  isStage: boolean;
-  isWarehouse: boolean;
-  isSuper: boolean;
-}
+import { InitialQuery, useInitialQuery } from '../generated/apolloComponents';
 
 interface ContextState {
   isAuthenticated: boolean;
   isFetching: boolean;
-  me?: MeInterface;
+  me?: InitialQuery['me'];
 }
 
 type UserContext = {
@@ -81,7 +59,7 @@ function useUserContext() {
 
   const { state, setState } = context;
 
-  function setMeIn(user: MeInterface | null) {
+  function setMeIn(user: InitialQuery['me']) {
     if (user) {
       setState((prevState: ContextState) => ({
         ...prevState,

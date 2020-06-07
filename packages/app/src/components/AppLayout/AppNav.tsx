@@ -6,18 +6,18 @@ import useAppNavItems from '../../hooks/useAppNavItems';
 import Icon from '../../components/Icon/Icon';
 import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
 import TTip from '../TTip/TTip';
-// import useSignOut from '../../hooks/mutations/useSignOut';
-import classes from './AppNav.module.css';
+import useSignOut from '../../hooks/mutations/useSignOut';
 import { useThemeContext } from '../../context/themeContext';
+import { useLocation } from 'react-router-dom';
+import classes from './AppNav.module.css';
 
 const AppNav: React.FC = () => {
-  // const { pathname } = useRouter();
-  const pathname = '';
+  const { pathname } = useLocation();
   const navItems = useAppNavItems();
   const { toggleTheme, isDark } = useThemeContext();
   const { isCompact, toggleCompactHandler, setCompactOn, setCompactOff } = useCompact();
-  // const signOutHandler = useSignOut();
-  console.log(navItems);
+  const signOutHandler = useSignOut();
+
   const mobileNavHandler = useCallback(toggleCompactHandler, []);
   const closeNavHandler = useCallback(setCompactOn, []);
   const openNavHandler = useCallback(setCompactOff, []);
@@ -80,8 +80,7 @@ const AppNav: React.FC = () => {
                     key={item.name}
                     item={item}
                     pathname={pathname}
-                    // signOutHandler={signOutHandler}
-                    signOutHandler={() => {}}
+                    signOutHandler={signOutHandler}
                     openNavHandler={openNavHandler}
                     closeNavHandler={closeNavHandler}
                   />

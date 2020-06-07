@@ -41,7 +41,7 @@ const useAppNavItems = (): NavItemInterface[] => {
       },
       {
         name: 'Типы рубрик',
-        to: 'rubric-types',
+        to: 'rubric-variants',
       },
       {
         name: 'Группы атрибутов',

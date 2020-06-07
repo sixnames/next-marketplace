@@ -83,7 +83,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
           }`}
         >
           {children.map((dropdownItem) => {
-            const { name } = dropdownItem;
+            const { name, to } = dropdownItem;
 
             return (
               <li className={classes.item} onClick={closeNavHandler} key={name}>

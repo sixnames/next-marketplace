@@ -5,21 +5,9 @@ import Spinner from '../Spinner/Spinner';
 import AppNav from './AppNav';
 import { useAppContext } from '../../context/appContext';
 import classes from './AppLayout.module.css';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { IN_DEV } from '../../config';
 import SignIn from '../../routes/SignIn/SignIn';
-// import { ROUTE_SIGN_IN } from '@rg/config';
-
-const Home: React.FC = () => {
-  return (
-    <div>
-      Home
-      <div>
-        <Link to='about'>About</Link>
-      </div>
-    </div>
-  );
-};
 
 const AppLayout: React.FC = () => {
   const { isFetching, isAuthenticated } = useUserContext();
@@ -46,9 +34,7 @@ const AppLayout: React.FC = () => {
       <AppNav />
 
       <main className={classes.content}>
-        <Routes basename={'/app'}>
-          <Route path={'/'} element={<Home />} />
-        </Routes>
+        <Outlet />
       </main>
 
       {isLoading && <Spinner />}

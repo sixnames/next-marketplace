@@ -17,6 +17,7 @@ export const SIGN_IN = gql`
         role
         isAdmin
         isManager
+        isCustomer
       }
     }
   }

@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import AnimateOpacity from '../AnimateOpacity/AnimateOpacity';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import classes from './Spinner.module.css';
 
@@ -12,13 +11,13 @@ interface SpinnerInterface {
 const Spinner: React.FC<SpinnerInterface> = ({ className, isNested, wide = false }) => {
   return (
     <Fragment>
-      <AnimateOpacity
+      <div
         className={`${classes.frame} ${className ? className : ''} ${
           isNested ? classes.nested : ''
         } ${wide ? classes.wide : ''}`}
       >
         <CircularProgress />
-      </AnimateOpacity>
+      </div>
     </Fragment>
   );
 };

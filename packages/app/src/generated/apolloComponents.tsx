@@ -895,7 +895,7 @@ export type SignInMutation = (
     & Pick<UserPayloadType, 'success' | 'message'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager'>
+      & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
     )> }
   ) }
 );
@@ -1609,6 +1609,7 @@ export const SignInDocument = gql`
       role
       isAdmin
       isManager
+      isCustomer
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { ATTRIBUTE_TYPES_ENUMS } from '@rg/config';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
@@ -20,30 +20,30 @@ registerEnumType(AttributeVariantEnum, {
 @ObjectType()
 export class Attribute {
   @Field((_type) => ID)
-  public id: string;
+  readonly id: string;
 
   @Field(() => LanguageType)
   @prop({ type: LanguageType, required: true, _id: false })
-  public name: LanguageType[];
+  name: LanguageType[];
 
   @Field(() => String)
-  public nameString: string;
+  readonly nameString: string;
 
   @Field((_type) => AttributeVariantEnum)
   @prop({ required: true, enum: ATTRIBUTE_TYPES_ENUMS })
-  public variant: AttributeVariantEnum;
+  variant: AttributeVariantEnum;
 
   @Field((_type) => OptionsGroup, { nullable: true })
   @prop({ ref: OptionsGroup })
-  public options: Ref<OptionsGroup>;
+  options?: string;
 
   @Field((_type) => Metric, { nullable: true })
   @prop({ ref: Metric })
-  public metric: Ref<Metric>;
+  metric?: string;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })
-  public slug: string;
+  slug: string;
 }
 
 export const AttributeModel = getModelForClass(Attribute);

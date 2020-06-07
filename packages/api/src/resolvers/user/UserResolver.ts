@@ -32,6 +32,7 @@ import {
   createUserSchema,
 } from '@rg/validation';
 import { DocumentType } from '@typegoose/typegoose';
+import { getMessageTranslation } from '../../config/translations';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -68,15 +69,19 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async createUser(@Arg('input') input: CreateUserInput): Promise<UserPayloadType> {
+  async createUser(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: CreateUserInput,
+  ): Promise<UserPayloadType> {
     try {
       await createUserSchema.validate(input);
 
+      const lang = ctx.req.session!.lang;
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
           success: false,
-          message: 'Пользователь с данным Email уже существует.',
+          message: getMessageTranslation(`user.create.duplicate.${lang}`),
         };
       }
 
@@ -84,19 +89,23 @@ export class UserResolver {
         length: 10,
         numbers: true,
       });
-
-      const user = await UserModel.create({ ...input, password });
+      const { role, ...values } = input;
+      const user = await UserModel.create({
+        ...values,
+        password,
+        role: role || ROLE_CUSTOMER,
+      });
 
       if (!user) {
         return {
           success: false,
-          message: 'Ошибка создания пользователя.',
+          message: getMessageTranslation(`user.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Пользователь создан.',
+        message: getMessageTranslation(`user.create.success.${lang}`),
         user,
       };
     } catch (e) {
@@ -108,23 +117,31 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async updateUser(@Arg('input') input: UpdateUserInput) {
+  async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
     try {
       await updateUserSchema.validate(input);
+      const lang = ctx.req.session!.lang;
 
       const { id, ...values } = input;
       const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
+      const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
+      if (exists) {
+        return {
+          success: false,
+          message: getMessageTranslation(`user.update.duplicate.${lang}`),
+        };
+      }
 
       if (!user) {
         return {
           success: false,
-          message: 'Пользователь не найден.',
+          message: getMessageTranslation(`user.update.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Пользователь изменён.',
+        message: getMessageTranslation(`user.update.success.${lang}`),
         user,
       };
     } catch (e) {
@@ -136,20 +153,21 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async deleteUser(@Arg('id', (_type) => ID) id: string) {
+  async deleteUser(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
+      const lang = ctx.req.session!.lang;
       const user = await UserModel.findByIdAndDelete(id);
 
       if (!user) {
         return {
           success: false,
-          message: 'Ошибка удаления пользователя.',
+          message: getMessageTranslation(`user.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Пользователь удалён.',
+        message: getMessageTranslation(`user.delete.success.${lang}`),
       };
     } catch (e) {
       return {
@@ -160,21 +178,31 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signUp(@Arg('input') input: SignUpInput) {
+  async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
     try {
       await signUpValidationSchema.validate(input);
+      const lang = ctx.req.session!.lang;
+
+      const exists = await UserModel.exists({ email: input.email });
+      if (exists) {
+        return {
+          success: false,
+          message: getMessageTranslation(`user.create.duplicate.${lang}`),
+        };
+      }
 
       const password = await hash(input.password, 10);
 
       const user = await UserModel.create({
         ...input,
         password,
+        role: ROLE_CUSTOMER,
       });
 
       if (!user) {
         return {
           success: false,
-          message: 'Ошибка создания пользователя.',
+          message: getMessageTranslation(`user.create.error.${lang}`),
         };
       }
 
@@ -182,7 +210,7 @@ export class UserResolver {
 
       return {
         success: true,
-        message: 'Пользователь создан.',
+        message: getMessageTranslation(`user.create.success.${lang}`),
         user,
       };
     } catch (e) {
@@ -194,20 +222,21 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signIn(@Arg('input') input: SignInInput, @Ctx() ctx: ContextInterface) {
+  async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
     try {
       await signInValidationSchema.validate(input);
+      const lang = ctx.req.session!.lang;
 
       const isSignedOut = ensureSignedOut(ctx.req);
 
       if (!isSignedOut) {
         return {
           success: false,
-          message: 'Вы уже авторизованы.',
+          message: getMessageTranslation(`user.signIn.authorized.${lang}`),
         };
       }
 
-      const { user, message } = await attemptSignIn(input.email, input.password);
+      const { user, message } = await attemptSignIn(input.email, input.password, lang);
 
       if (!user) {
         return {
@@ -240,16 +269,17 @@ export class UserResolver {
   async signOut(@Ctx() ctx: ContextInterface) {
     try {
       const isSignedOut = await attemptSignOut(ctx.req);
+      const lang = ctx.req.session!.lang;
 
       if (!isSignedOut) {
         return {
           success: false,
-          message: 'Вы не авторизованы.',
+          message: getMessageTranslation(`user.signOut.notAuthorized.error.${lang}`),
         };
       }
       return {
         success: true,
-        message: 'Вы вышли из аккаунта.',
+        message: getMessageTranslation(`user.signOut.notAuthorized.success.${lang}`),
       };
     } catch (e) {
       return {

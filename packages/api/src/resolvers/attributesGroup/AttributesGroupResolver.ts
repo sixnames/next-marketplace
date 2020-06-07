@@ -84,7 +84,7 @@ export class AttributesGroupResolver {
         };
       }
 
-      const group = await AttributesGroupModel.create(input);
+      const group = await AttributesGroupModel.create({ ...input, attributes: [] });
 
       if (!group) {
         return {

@@ -11,11 +11,11 @@ export class AddAttributeToGroupInput {
   name: LangInput[];
 
   @Field((_type) => AttributeVariantEnum)
-  public variant: AttributeVariantEnum;
+  variant: AttributeVariantEnum;
 
   @Field((_type) => ID, { nullable: true })
-  public options: string;
+  options: string;
 
   @Field((_type) => ID, { nullable: true })
-  public metric: string;
+  metric: string;
 }

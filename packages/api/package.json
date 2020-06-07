@@ -13,7 +13,7 @@
   "dependencies": {
     "@rg/config": "1.0.1",
     "@rg/validation": "1.0.1",
-    "@typegoose/typegoose": "^7.1.0",
+    "@typegoose/typegoose": "^7.2.0",
     "apollo-server-express": "^2.13.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
@@ -32,7 +32,7 @@
     "mongoose-paginate-v2": "^1.3.9",
     "mongoose-plugin-autoinc": "^1.1.9",
     "reflect-metadata": "^0.1.13",
-    "type-graphql": "^1.0.0-rc.1"
+    "type-graphql": "^1.0.0-rc.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

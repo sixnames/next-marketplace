@@ -3533,7 +3533,7 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@typegoose/typegoose@^7.1.0":
+"@typegoose/typegoose@^7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-7.2.0.tgz#b15bc52f943e3db42515516242be481d6d23dd43"
   integrity sha512-oNAGPlABIKOeWvrZoXTq+I1PPFn6Iu1d0jOQ5kmlDK5H46QteqRTbUOpBJKb9KuKW576gYMsnW0T/VU2S8ErdQ==
@@ -17613,7 +17613,7 @@ type-fest@^0.8.1:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.8.1.tgz#09e249ebde851d3b1e48d27c105444667f17b83d"
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
-type-graphql@^1.0.0-rc.1:
+type-graphql@^1.0.0-rc.2:
   version "1.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/type-graphql/-/type-graphql-1.0.0-rc.2.tgz#db4ffd4dd1b16ec4974442a3348501aedeb4c266"
   integrity sha512-zhZc93d/0ufrSnhwvVcgtXABVXwRoHMKNVbZiXcb+2Xv1RFNmZWhm4EtqsD9LzRVCWcVXpKRKTq8O4csdfuRUQ==

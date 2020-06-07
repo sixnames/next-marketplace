@@ -1,7 +1,7 @@
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { ROLE_CUSTOMER, ROLES_ENUM } from '@rg/config';
+import { ROLES_ENUM } from '@rg/config';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
@@ -15,43 +15,49 @@ import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 @index({ '$**': 'text' })
 export class User extends TimeStamps {
   @Field(() => ID)
-  public id: string;
+  readonly id: string;
 
   @Field(() => Int)
-  public itemId: number;
+  readonly itemId: number;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })
-  public name: string;
+  name: string;
 
   @Field((_type) => String, { nullable: true })
   @prop({ trim: true })
-  public lastName: string;
+  lastName?: string;
 
   @Field((_type) => String, { nullable: true })
   @prop({ trim: true })
-  public secondName: string;
+  secondName?: string;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })
-  public email: string;
+  email: string;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })
-  public phone: string;
+  phone: string;
 
   @prop({ required: true, trim: true })
-  public password: string;
+  password: string;
 
   @Field((_type) => String)
-  @prop({ required: true, default: ROLE_CUSTOMER, enum: ROLES_ENUM })
-  public role: string;
+  @prop({ required: true, enum: ROLES_ENUM })
+  role: string;
 
   @Field((_type) => String)
-  public fullName: string;
+  readonly fullName: string;
 
   @Field((_type) => String)
-  public shortName: string;
+  readonly shortName: string;
+
+  @Field(() => Int)
+  readonly createdAt: Readonly<Date>;
+
+  @Field(() => Int)
+  readonly updatedAt: Readonly<Date>;
 
   static paginate: (
     query?: FilterQuery<User>,

@@ -3,6 +3,7 @@ import { ContextInterface } from '../types/context';
 import { User, UserModel } from '../entities/User';
 import { compare } from 'bcryptjs';
 import { IN_TEST } from '../config';
+import { getMessageTranslation } from '../config/translations';
 
 type Request = ContextInterface['req'];
 
@@ -10,9 +11,13 @@ const signedIn = (req: Request) => {
   return req.session && req.session.userId;
 };
 
-export const attemptSignIn = async (email: User['email'], password: User['password']) => {
-  const emailErrorMessage = 'Пользователь с указанным email не найден';
-  const passwordErrorMessage = 'Введён неправильный пароль';
+export const attemptSignIn = async (
+  email: User['email'],
+  password: User['password'],
+  lang: string,
+) => {
+  const emailErrorMessage = getMessageTranslation(`user.singIn.emailError.${lang}`);
+  const passwordErrorMessage = getMessageTranslation(`user.singIn.passwordError.${lang}`);
 
   const user = await UserModel.findOne({ email });
 
@@ -34,7 +39,7 @@ export const attemptSignIn = async (email: User['email'], password: User['passwo
 
   return {
     user,
-    message: `Здравствуйте ${user.name}! Рады Вас снова видеть.`,
+    message: getMessageTranslation(`user.singIn.success.${lang}`),
   };
 };
 

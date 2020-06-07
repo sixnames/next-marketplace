@@ -10,14 +10,14 @@ export class CreateUserInput implements Partial<User> {
   name: string;
 
   @Field({ nullable: true })
-  lastName: string;
+  lastName?: string;
 
   @Field({ nullable: true })
-  secondName: string;
+  secondName?: string;
 
-  @Field({ nullable: true })
+  @Field()
   phone: string;
 
   @Field({ nullable: true })
-  role: string;
+  role?: string;
 }

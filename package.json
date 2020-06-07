@@ -11,11 +11,12 @@
     "url": "https://github.com/ya-gu/winenot.git"
   },
   "scripts": {
-    "up": "docker-compose -f docker-compose.dev.yml up --build",
+    "up": "docker-compose -f docker-compose.dev.yml up -d",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
+    "postup": "wait-on data && npm run dev",
 
-    "up:serve": "docker-compose -f docker-compose.serve.yml up",
+    "up:serve": "docker-compose -f docker-compose.serve.yml up --build",
     "stop:serve": "docker-compose -f docker-compose.serve.yml stop",
     "down:serve": "docker-compose -f docker-compose.serve.yml down && rm -rf data/*",
 

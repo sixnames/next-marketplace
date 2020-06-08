@@ -7,7 +7,7 @@ import Inner from '../Inner/Inner';
 import DataLayoutFilter from './DataLayoutFilter';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import classes from './DataLayout.module.css';
-import { NavItemInterface } from '../../types';
+import { NavItemInterface, ObjectType } from '../../types';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from '../ContentItemControls/ContentItemControls';
@@ -19,6 +19,10 @@ interface DataLayoutInterface {
   filterResult: any;
   filterResultNavConfig?: NavItemInterface[] | null;
   preview?: any;
+}
+
+export interface FilterResultArgsInterface {
+  query: ObjectType;
 }
 
 const DataLayout: React.FC<DataLayoutInterface> = ({

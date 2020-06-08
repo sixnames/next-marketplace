@@ -1034,6 +1034,21 @@ export type UpdateRubricVariantMutation = (
   ) }
 );
 
+export type GetAllOptionsGroupsQueryVariables = {};
+
+
+export type GetAllOptionsGroupsQuery = (
+  { __typename?: 'Query' }
+  & { getAllOptionsGroups: Array<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+    & { options: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, 'id'>
+    )> }
+  )> }
+);
+
 export type GetAllRubricVariantsQueryVariables = {};
 
 
@@ -1120,21 +1135,6 @@ export type GetOptionsGroupQuery = (
     & { options: Array<(
       { __typename?: 'Option' }
       & Pick<Option, 'id' | 'nameString' | 'color'>
-    )> }
-  )> }
-);
-
-export type GetOptionsGroupsQueryVariables = {};
-
-
-export type GetOptionsGroupsQuery = (
-  { __typename?: 'Query' }
-  & { getAllOptionsGroups: Array<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, 'id' | 'nameString'>
-    & { options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, 'id'>
     )> }
   )> }
 );
@@ -2114,6 +2114,42 @@ export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export const GetAllOptionsGroupsDocument = gql`
+    query GetAllOptionsGroups {
+  getAllOptionsGroups {
+    id
+    nameString
+    options {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllOptionsGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllOptionsGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllOptionsGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllOptionsGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
+      }
+export function useGetAllOptionsGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
+        }
+export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
+export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
+export type GetAllOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {
@@ -2337,42 +2373,6 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetOptionsGroupsDocument = gql`
-    query GetOptionsGroups {
-  getAllOptionsGroups {
-    id
-    nameString
-    options {
-      id
-    }
-  }
-}
-    `;
-
-/**
- * __useGetOptionsGroupsQuery__
- *
- * To run a query within a React component, call `useGetOptionsGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetOptionsGroupsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetOptionsGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetOptionsGroupsQuery, GetOptionsGroupsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetOptionsGroupsQuery, GetOptionsGroupsQueryVariables>(GetOptionsGroupsDocument, baseOptions);
-      }
-export function useGetOptionsGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetOptionsGroupsQuery, GetOptionsGroupsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetOptionsGroupsQuery, GetOptionsGroupsQueryVariables>(GetOptionsGroupsDocument, baseOptions);
-        }
-export type GetOptionsGroupsQueryHookResult = ReturnType<typeof useGetOptionsGroupsQuery>;
-export type GetOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupsLazyQuery>;
-export type GetOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupsQuery, GetOptionsGroupsQueryVariables>;
 export const GetRubricDocument = gql`
     query GetRubric($id: ID!) {
   getRubric(id: $id) {

@@ -3,6 +3,7 @@ import AppLayout from '../AppLayout/AppLayout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NotFound from '../../routes/NotFound/NotFound';
 import RubricVariantsRoute from '../../routes/RubricVariants/RubricVariantsRoute';
+import OptionsGroupsRoute from '../../routes/OptionsGroups/OptionsGroupsRoute';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route path={'products'} element={<div>Products</div>} />
           <Route path={'rubric-variants'} element={<RubricVariantsRoute />} />
           <Route path={'attributes-groups'} element={<div>Attributes groups</div>} />
-          <Route path={'options-groups'} element={<div>Options groups</div>} />
+          <Route path={'options-groups'} element={<OptionsGroupsRoute />} />
 
           {/*404*/}
           <Route path='*' element={<NotFound />} />

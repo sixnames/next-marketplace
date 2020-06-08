@@ -1,4 +1,5 @@
-import { ParsedUrlQuery } from 'querystring';
+import qs, { ParsedUrlQuery } from 'querystring';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface RemoveQueryInterface {
   key: string;
@@ -13,36 +14,35 @@ interface UseRouterQueryInterface {
   removeQuery: ({ key }: RemoveQueryInterface) => void;
   toggleQuery: ({ key, value }: SetQueryInterface) => void;
   query: ParsedUrlQuery;
+  pathname: string;
 }
 
 const useRouterQuery = (): UseRouterQueryInterface => {
-  // TODO router query
-  const router: any = { pathname: '', query: {} };
-  const { pathname = '', query = {} } = router;
+  const { search = '', pathname } = useLocation();
+  const navigate = useNavigate();
+  const query = qs.parse(search);
 
   function setQuery({ key, value }: SetQueryInterface) {
-    router.replace({
-      pathname,
-      query: {
-        ...query,
-        [key]: value,
-      },
+    const search = qs.stringify({
+      ...query,
+      [key]: value,
     });
+    navigate(`${pathname}?${search}`);
   }
 
   function removeQuery({ key }: RemoveQueryInterface) {
-    router.replace({
-      pathname,
-      query: Object.keys(query).reduce((acc: {}, queryKey: string) => {
-        if (queryKey === key) {
-          return { ...acc };
-        }
-        return {
-          ...acc,
-          [queryKey]: query[queryKey],
-        };
-      }, {}),
-    });
+    const queryObject = Object.keys(query).reduce((acc: {}, queryKey: string) => {
+      if (queryKey === key) {
+        return { ...acc };
+      }
+      return {
+        ...acc,
+        [queryKey]: query[queryKey],
+      };
+    }, {});
+
+    const search = qs.stringify(queryObject);
+    navigate(`${pathname}?${search}`, { replace: true });
   }
 
   function toggleQuery({ key, value }: SetQueryInterface) {
@@ -56,7 +56,7 @@ const useRouterQuery = (): UseRouterQueryInterface => {
     return setQuery({ key, value });
   }
 
-  return { setQuery, removeQuery, toggleQuery, query };
+  return { setQuery, removeQuery, toggleQuery, query, pathname };
 };
 
 export default useRouterQuery;

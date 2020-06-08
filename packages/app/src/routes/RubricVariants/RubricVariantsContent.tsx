@@ -66,7 +66,7 @@ const RubricVariantsContent: React.FC = () => {
       props: {
         title: 'Название типа рубрики',
         buttonText: 'Создать',
-        testId: 'rubric-type-modal',
+        testId: 'rubric-variant-modal',
         confirm: (values: { name: string }) => {
           showLoading();
           return createRubricVariantMutation({
@@ -82,13 +82,13 @@ const RubricVariantsContent: React.FC = () => {
   }
 
   // TODO LangInput
-  function updateRubricVariantHandler({ name, id }: { id: string; name: string }) {
+  function updateRubricVariantHandler({ nameString, id }: { id: string; nameString: string }) {
     showModal({
       type: UPDATE_NAME_MODAL,
       props: {
         title: 'Название типа рубрики',
-        testId: 'rubric-type-modal',
-        oldName: name,
+        testId: 'rubric-variant-modal',
+        oldName: nameString,
         confirm: (values: { name: string }) => {
           showLoading();
           return updateRubricVariantMutation({
@@ -104,12 +104,12 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  function deleteRubricVariantHandler({ name, id }: { id: string; name: string }) {
+  function deleteRubricVariantHandler({ nameString, id }: { id: string; nameString: string }) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
-        testId: 'rubric-type-delete-modal',
-        message: `Вы уверенны, что хотите тип рубрик ${name}?`,
+        testId: 'rubric-variant-delete-modal',
+        message: `Вы уверенны, что хотите тип рубрик ${nameString}?`,
         confirm: () => {
           showLoading();
           return deleteRubricVariantMutation({
@@ -141,7 +141,7 @@ const RubricVariantsContent: React.FC = () => {
 
   const columns = [
     {
-      key: 'name',
+      key: 'nameString',
       title: 'Название',
       render: (name: string) => name,
     },
@@ -149,15 +149,15 @@ const RubricVariantsContent: React.FC = () => {
       key: 'id',
       title: '',
       textAlign: 'right',
-      render: (id: string, { name }: { name: string }) => {
+      render: (id: string, { nameString }: { nameString: string }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать тип рубрики'}
-            updateHandler={() => updateRubricVariantHandler({ id, name })}
+            updateHandler={() => updateRubricVariantHandler({ id, nameString })}
             deleteTitle={'Удалить тип рубрики'}
-            deleteHandler={() => deleteRubricVariantHandler({ id, name })}
-            testId={name}
+            deleteHandler={() => deleteRubricVariantHandler({ id, nameString })}
+            testId={nameString}
           />
         );
       },
@@ -165,14 +165,14 @@ const RubricVariantsContent: React.FC = () => {
   ];
 
   return (
-    <div data-cy={'rubric-types-list'}>
+    <div data-cy={'rubric-variants-list'}>
       <DataLayoutTitle
         titleRight={
           <ContentItemControls
             justifyContent={'flex-end'}
             createTitle={'Создать тип рубрики'}
             createHandler={createRubricVariantHandler}
-            testId={`rubric-type`}
+            testId={`rubric-variant`}
           />
         }
       />

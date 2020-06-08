@@ -1,7 +1,7 @@
 declare namespace Cypress {
   interface MockGraphqlInterface {
-    schema: any;
-    operations: { [key: string]: any };
+    schema?: any;
+    operations?: { [key: string]: any };
   }
 
   interface AttachFileOptionsInterface {
@@ -20,6 +20,7 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     mockGraphql(args: MockGraphqlInterface): Chainable<Element>;
+    mockGraphqlOps(args: MockGraphqlInterface): Chainable<Element>;
     getByCy(testId: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;

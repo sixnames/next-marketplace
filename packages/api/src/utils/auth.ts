@@ -16,8 +16,9 @@ export const attemptSignIn = async (
   password: User['password'],
   lang: string,
 ) => {
-  const emailErrorMessage = getMessageTranslation(`user.singIn.emailError.${lang}`);
-  const passwordErrorMessage = getMessageTranslation(`user.singIn.passwordError.${lang}`);
+  console.log(`user.singIn.success.${lang}`);
+  const emailErrorMessage = getMessageTranslation(`user.signIn.emailError.${lang}`);
+  const passwordErrorMessage = getMessageTranslation(`user.signIn.passwordError.${lang}`);
 
   const user = await UserModel.findOne({ email });
 
@@ -39,7 +40,7 @@ export const attemptSignIn = async (
 
   return {
     user,
-    message: getMessageTranslation(`user.singIn.success.${lang}`),
+    message: getMessageTranslation(`user.signIn.success.${lang}`),
   };
 };
 

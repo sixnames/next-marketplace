@@ -5,6 +5,28 @@ import {
   ATTRIBUTE_TYPE_STRING,
 } from './common';
 
+export const ME_AS_ADMIN = {
+  id: 'adminBro',
+  email: 'admin@gmail.com',
+  password: 'admin',
+  name: 'Admin',
+  secondName: 'Secondname',
+  lastName: 'Lastname',
+  fullName: 'Admin Secondname Lastname',
+  shortName: 'A. Lastname',
+  phone: '+79990002233',
+  isAdmin: true,
+  isBookkeeper: false,
+  isContractor: false,
+  isDriver: false,
+  isHelper: false,
+  isLogistician: false,
+  isManager: false,
+  isStage: false,
+  isWarehouse: false,
+  isSuper: false,
+};
+
 export const MOCK_METRICS = [
   {
     name: [

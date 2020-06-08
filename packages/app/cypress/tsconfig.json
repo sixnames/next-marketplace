@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "../node_modules",
+    "target": "es5",
+    "lib": ["es5", "es2016", "dom"],
+    "types": ["cypress"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "experimentalDecorators": true
+  },
+  "include": ["**/*.ts"]
+}

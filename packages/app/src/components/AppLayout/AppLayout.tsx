@@ -8,10 +8,11 @@ import classes from './AppLayout.module.css';
 import { Outlet } from 'react-router-dom';
 import { IN_DEV } from '../../config';
 import SignIn from '../../routes/SignIn/SignIn';
+import Modal from '../Modal/Modal';
 
 const AppLayout: React.FC = () => {
   const { isFetching, isAuthenticated } = useUserContext();
-  const { isLoading } = useAppContext();
+  const { isLoading, isModal } = useAppContext();
 
   if (isFetching && !isAuthenticated) {
     return (
@@ -38,7 +39,7 @@ const AppLayout: React.FC = () => {
       </main>
 
       {isLoading && <Spinner />}
-      {/*{isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}*/}
+      {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
     </div>
   );
 };

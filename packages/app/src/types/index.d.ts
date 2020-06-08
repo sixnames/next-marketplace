@@ -34,3 +34,8 @@ export interface NavItemInterface extends NavItemChildInterface {
   counter?: number;
   children?: NavItemChildInterface[];
 }
+
+export interface LangInterface {
+  key: string;
+  value: string;
+}

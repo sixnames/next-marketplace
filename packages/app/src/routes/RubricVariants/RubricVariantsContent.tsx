@@ -15,6 +15,7 @@ import {
   useUpdateRubricVariantMutation,
 } from '../../generated/apolloComponents';
 import { CONFIRM_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
+import { LangInterface } from '../../types';
 
 const RubricVariantsContent: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
@@ -67,12 +68,12 @@ const RubricVariantsContent: React.FC = () => {
         title: 'Название типа рубрики',
         buttonText: 'Создать',
         testId: 'rubric-variant-modal',
-        confirm: (values: { name: string }) => {
+        confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return createRubricVariantMutation({
             variables: {
               input: {
-                name: [{ key: 'ru', value: values.name }],
+                name: values.name,
               },
             },
           });
@@ -89,12 +90,12 @@ const RubricVariantsContent: React.FC = () => {
         title: 'Название типа рубрики',
         testId: 'rubric-variant-modal',
         oldName: nameString,
-        confirm: (values: { name: string }) => {
+        confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return updateRubricVariantMutation({
             variables: {
               input: {
-                name: [{ key: 'ru', value: values.name }],
+                name: values.name,
                 id,
               },
             },
@@ -121,12 +122,13 @@ const RubricVariantsContent: React.FC = () => {
                 const cachedData: GetAllRubricVariantsQuery | null = cache.readQuery({
                   query: GET_ALL_RUBRIC_VARIANTS,
                 });
+
                 if (cachedData && cachedData.getAllRubricVariants) {
                   cache.writeQuery({
                     query: GET_ALL_RUBRIC_VARIANTS,
                     data: {
                       getAllRubricVariants: cachedData.getAllRubricVariants.filter(
-                        ({ id: itemId }) => itemId !== id,
+                        ({ id: cachedId }) => cachedId !== id,
                       ),
                     },
                   });
@@ -181,7 +183,7 @@ const RubricVariantsContent: React.FC = () => {
           data={data?.getAllRubricVariants}
           columns={columns}
           emptyMessage={'Список пуст'}
-          testIdKye={'name'}
+          testIdKey={'nameString'}
         />
       </DataLayoutContentFrame>
     </div>

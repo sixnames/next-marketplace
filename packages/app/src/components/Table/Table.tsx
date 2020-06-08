@@ -23,7 +23,7 @@ interface TableInterface {
   className?: string;
   fixPosition?: string;
   emptyMessage?: string;
-  testIdKye?: string;
+  testIdKey?: string;
 }
 
 const Table: React.FC<TableInterface> = ({
@@ -36,7 +36,7 @@ const Table: React.FC<TableInterface> = ({
   className,
   fixPosition = 0,
   emptyMessage = 'Нет данных',
-  testIdKye = '',
+  testIdKey = '',
 }) => {
   const fixedStyle = {
     transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
@@ -55,7 +55,7 @@ const Table: React.FC<TableInterface> = ({
     (columns, data) => {
       return data.map((dataItem: any, i: number) => {
         const { hidden, id, isWarning = false } = dataItem;
-        const testId = dataItem[testIdKye];
+        const testId = dataItem[testIdKey];
         const key = id ? id : i;
         if (hidden) return null;
 
@@ -87,7 +87,7 @@ const Table: React.FC<TableInterface> = ({
         );
       });
     },
-    [onRowClick, testIdKye],
+    [onRowClick, testIdKey],
   );
 
   const renderTableBody = useMemo(() => {

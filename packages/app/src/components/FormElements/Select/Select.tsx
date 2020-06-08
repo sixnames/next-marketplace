@@ -1,11 +1,11 @@
 import React from 'react';
 import InputLine from '../Input/InputLine';
 import classes from './Select.module.css';
-import { ObjectType, PostfixType, SizeType } from '../../../types';
+import { PostfixType, SizeType } from '../../../types';
 
-export interface SelectOptionInterface extends ObjectType {
+export interface SelectOptionInterface {
   id: string;
-  name: string;
+  nameString: string;
   lastName?: string;
 }
 
@@ -51,11 +51,11 @@ const Select: React.FC<SelectInterface> = ({
   testId,
   ...props
 }) => {
-  const withFirstOptions = firstOption
+  const withFirstOptions: SelectOptionInterface[] = firstOption
     ? [
         {
           id: '',
-          name: firstOption,
+          nameString: firstOption,
         },
         ...options,
       ]
@@ -88,14 +88,14 @@ const Select: React.FC<SelectInterface> = ({
           value={value || ''}
           {...props}
         >
-          {withFirstOptions.map(({ name, lastName, id }) => {
-            const optionName = lastName ? `${name.toString().charAt(0)}. ${lastName}` : name;
+          {withFirstOptions.map(({ nameString, lastName, id }) => {
+            const optionName = lastName ? `${nameString.charAt(0)}. ${lastName}` : nameString;
             const optionTestIdName = name.split(' ').join('_');
 
             return (
               <option
                 key={id}
-                value={setNameToValue ? name : id}
+                value={setNameToValue ? nameString : id}
                 data-cy={`option-${optionTestIdName}`}
               >
                 {optionName}

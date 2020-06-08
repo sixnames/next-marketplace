@@ -30,6 +30,12 @@ export const notNullableName = (nameTarget: string) =>
     .trim()
     .required(`${nameTarget} обязателено к заполнению.`);
 
+export const nameLangSchema = (nameTarget: string) => {
+  return Yup.object().shape({
+    name: langInput(notNullableName(nameTarget)),
+  });
+};
+
 export const name = Yup.string()
   .nullable()
   .min(minNameLength, `Имя должно состоять минимум из ${minNameLength} символов`)

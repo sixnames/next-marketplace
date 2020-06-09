@@ -1038,6 +1038,17 @@ export type UpdateRubricVariantMutation = (
   ) }
 );
 
+export type GetAllAttributesGroupsQueryVariables = {};
+
+
+export type GetAllAttributesGroupsQuery = (
+  { __typename?: 'Query' }
+  & { getAllAttributesGroups: Array<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+  )> }
+);
+
 export type GetAllOptionsGroupsQueryVariables = {};
 
 
@@ -1085,17 +1096,6 @@ export type GetAttributesGroupQuery = (
         & Pick<Metric, 'id' | 'nameString'>
       )> }
     )> }
-  )> }
-);
-
-export type GetAttributesGroupsQueryVariables = {};
-
-
-export type GetAttributesGroupsQuery = (
-  { __typename?: 'Query' }
-  & { getAllAttributesGroups: Array<(
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
   )> }
 );
 
@@ -2123,6 +2123,39 @@ export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export const GetAllAttributesGroupsDocument = gql`
+    query GetAllAttributesGroups {
+  getAllAttributesGroups {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAllAttributesGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAttributesGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAttributesGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAttributesGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAttributesGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
+      }
+export function useGetAllAttributesGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
+        }
+export type GetAllAttributesGroupsQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsQuery>;
+export type GetAllAttributesGroupsLazyQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsLazyQuery>;
+export type GetAllAttributesGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>;
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {
@@ -2239,39 +2272,6 @@ export function useGetAttributesGroupLazyQuery(baseOptions?: ApolloReactHooks.La
 export type GetAttributesGroupQueryHookResult = ReturnType<typeof useGetAttributesGroupQuery>;
 export type GetAttributesGroupLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupLazyQuery>;
 export type GetAttributesGroupQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>;
-export const GetAttributesGroupsDocument = gql`
-    query GetAttributesGroups {
-  getAllAttributesGroups {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetAttributesGroupsQuery__
- *
- * To run a query within a React component, call `useGetAttributesGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAttributesGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAttributesGroupsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAttributesGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAttributesGroupsQuery, GetAttributesGroupsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAttributesGroupsQuery, GetAttributesGroupsQueryVariables>(GetAttributesGroupsDocument, baseOptions);
-      }
-export function useGetAttributesGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAttributesGroupsQuery, GetAttributesGroupsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAttributesGroupsQuery, GetAttributesGroupsQueryVariables>(GetAttributesGroupsDocument, baseOptions);
-        }
-export type GetAttributesGroupsQueryHookResult = ReturnType<typeof useGetAttributesGroupsQuery>;
-export type GetAttributesGroupsLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsLazyQuery>;
-export type GetAttributesGroupsQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupsQuery, GetAttributesGroupsQueryVariables>;
 export const GetAttributesGroupsForRubricDocument = gql`
     query GetAttributesGroupsForRubric($exclude: [ID!]) {
   getAllAttributesGroups(exclude: $exclude) {

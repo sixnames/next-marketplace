@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NotFound from '../../routes/NotFound/NotFound';
 import RubricVariantsRoute from '../../routes/RubricVariants/RubricVariantsRoute';
 import OptionsGroupsRoute from '../../routes/OptionsGroups/OptionsGroupsRoute';
+import AttributesGroupsRoute from '../../routes/AttributesGroups/AttributesGroupsRoute';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route path={'rubrics'} element={<div>Rubrics</div>} />
           <Route path={'products'} element={<div>Products</div>} />
           <Route path={'rubric-variants'} element={<RubricVariantsRoute />} />
-          <Route path={'attributes-groups'} element={<div>Attributes groups</div>} />
+          <Route path={'attributes-groups'} element={<AttributesGroupsRoute />} />
           <Route path={'options-groups'} element={<OptionsGroupsRoute />} />
 
           {/*404*/}

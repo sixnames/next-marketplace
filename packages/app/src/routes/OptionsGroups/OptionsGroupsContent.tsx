@@ -36,11 +36,11 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     onError: onErrorCallback,
   });
 
-  function deleteOptionFromGroupHandler(id: string, name: string) {
+  function deleteOptionFromGroupHandler(id: string, nameString: string) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
-        message: `Вы уверенны, что хотите удалить опцию ${name}?`,
+        message: `Вы уверенны, что хотите удалить опцию ${nameString}?`,
         confirm: () => {
           showLoading();
           return deleteOptionFromGroupMutation({
@@ -51,11 +51,11 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     });
   }
 
-  function updateOptionInGroupHandler(id: string, name: string, color?: string) {
+  function updateOptionInGroupHandler(id: string, nameString: string, color?: string) {
     showModal({
       type: OPTION_IN_GROUP_MODAL,
       props: {
-        name,
+        oldName: nameString,
         color,
         confirm: ({ name, color }: { name: LangInterface[]; color?: string }) => {
           showLoading();
@@ -84,7 +84,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
 
   const columns = [
     {
-      key: 'name',
+      key: 'nameString',
       title: 'Название',
       render: (name: string) => name,
     },
@@ -97,15 +97,15 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
       key: 'id',
       title: '',
       textAlign: 'right',
-      render: (id: string, { name, color }: { name: string; color?: string }) => {
+      render: (id: string, { nameString, color }: { nameString: string; color?: string }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать опцию'}
-            updateHandler={() => updateOptionInGroupHandler(id, name, color)}
+            updateHandler={() => updateOptionInGroupHandler(id, nameString, color)}
             deleteTitle={'Удалить опцию'}
-            deleteHandler={() => deleteOptionFromGroupHandler(id, name)}
-            testId={`${name}-option`}
+            deleteHandler={() => deleteOptionFromGroupHandler(id, nameString)}
+            testId={`${nameString}-option`}
           />
         );
       },
@@ -125,7 +125,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
           data={options}
           columns={columns}
           emptyMessage={'В группе нет опций'}
-          testIdKey={'name'}
+          testIdKey={'nameString'}
         />
       </DataLayoutContentFrame>
     </Fragment>

@@ -8,6 +8,11 @@ export const UPDATE_OPTIONS_GROUP_MUTATION = gql`
       group {
         id
         nameString
+        options {
+          id
+          nameString
+          color
+        }
       }
     }
   }

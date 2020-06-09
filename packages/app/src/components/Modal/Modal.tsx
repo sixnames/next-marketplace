@@ -4,14 +4,14 @@ import Spinner from '../Spinner/Spinner';
 import Backdrop from '../Backdrop/Backdrop';
 import { useAppContext } from '../../context/appContext';
 import classes from './Modal.module.css';
-import { CONFIRM_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
 import ConfirmModal from './ConfirmModal/ConfirmModal';
 
 // const UserExistsModal = React.lazy(() => import('./UserExistsModal/UserExistsModal'));
 
 // const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
 const UpdateNameModal = React.lazy(() => import('./UpdateNameModal/UpdateNameModal'));
-// const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
+const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
 // const CreateRubricModal = React.lazy(() => import('./CreateRubricModal/CreateRubricModal'));
 /*const AddAttributesGroupToRubricModal = React.lazy(() =>
   import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
@@ -44,7 +44,7 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === UPDATE_NAME_MODAL && <UpdateNameModal {...modalProps} />}
 
-          {/*{modalType === OPTION_IN_GROUP_MODAL && <OptionInGroupModal {...modalProps} />}*/}
+          {modalType === OPTION_IN_GROUP_MODAL && <OptionInGroupModal {...modalProps} />}
 
           {/*{modalType === ATTRIBUTE_IN_GROUP_MODAL && <AttributeInGroupModal {...modalProps} />}*/}
 

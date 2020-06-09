@@ -11,7 +11,7 @@ import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import useRouterQuery from '../../hooks/useRouterQuery';
 
 interface OptionsGroupControlsInterface {
   id: string;
@@ -19,8 +19,7 @@ interface OptionsGroupControlsInterface {
 }
 
 const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, name }) => {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const { removeQuery } = useRouterQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -50,7 +49,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
             },
           });
 
-          navigate(pathname, { replace: true });
+          removeQuery({ key: 'group' });
         }
       }
     },
@@ -59,7 +58,10 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   const [addOptionToGroupMutation] = useAddOptionToGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.addOptionToGroup),
+    onCompleted: (data) => {
+      console.log(data);
+      onCompleteCallback(data.addOptionToGroup);
+    },
     onError: onErrorCallback,
   });
 

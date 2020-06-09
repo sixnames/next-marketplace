@@ -992,6 +992,10 @@ export type UpdateOptionsGroupMutation = (
     & { group?: Maybe<(
       { __typename?: 'OptionsGroup' }
       & Pick<OptionsGroup, 'id' | 'nameString'>
+      & { options: Array<(
+        { __typename?: 'Option' }
+        & Pick<Option, 'id' | 'nameString' | 'color'>
+      )> }
     )> }
   ) }
 );
@@ -2005,6 +2009,11 @@ export const UpdateOptionsGroupDocument = gql`
     group {
       id
       nameString
+      options {
+        id
+        nameString
+        color
+      }
     }
   }
 }

@@ -20,7 +20,7 @@ interface UseRouterQueryInterface {
 const useRouterQuery = (): UseRouterQueryInterface => {
   const { search = '', pathname } = useLocation();
   const navigate = useNavigate();
-  const query = qs.parse(search);
+  const query = qs.parse(search.slice(1));
 
   function setQuery({ key, value }: SetQueryInterface) {
     const search = qs.stringify({

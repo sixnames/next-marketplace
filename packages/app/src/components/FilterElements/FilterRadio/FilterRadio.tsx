@@ -53,7 +53,7 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
       <Link
         to={{
           pathname,
-          search,
+          search: `?${search}`,
         }}
         className={`${classes.frame} ${isCurrent ? classes.current : ''} ${
           className ? className : ''

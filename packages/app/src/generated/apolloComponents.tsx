@@ -28,6 +28,7 @@ export type Query = {
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getRubric: Rubric;
   getRubricsTree: Array<Rubric>;
+  getAttributeVariants?: Maybe<Array<AttributeVariant>>;
 };
 
 
@@ -248,6 +249,12 @@ export type RubricNode = {
   parent?: Maybe<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
+};
+
+export type AttributeVariant = {
+   __typename?: 'AttributeVariant';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
 };
 
 export type Mutation = {
@@ -1123,6 +1130,9 @@ export type GetNewAttributeOptionsQuery = (
   )>, getAllMetrics?: Maybe<Array<(
     { __typename?: 'Metric' }
     & Pick<Metric, 'id' | 'nameString'>
+  )>>, getAttributeVariants?: Maybe<Array<(
+    { __typename?: 'AttributeVariant' }
+    & Pick<AttributeVariant, 'id' | 'nameString'>
   )>> }
 );
 
@@ -2313,6 +2323,10 @@ export const GetNewAttributeOptionsDocument = gql`
     nameString
   }
   getAllMetrics {
+    id
+    nameString
+  }
+  getAttributeVariants {
     id
     nameString
   }

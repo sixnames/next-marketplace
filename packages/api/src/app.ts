@@ -20,6 +20,7 @@ import { AttributeResolver } from './resolvers/attribute/AttributeResolver';
 import { AttributesGroupResolver } from './resolvers/attributesGroup/AttributesGroupResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
+import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -29,6 +30,7 @@ const createApp = () => {
       OptionResolver,
       OptionsGroupResolver,
       AttributeResolver,
+      AttributeVariantResolver,
       AttributesGroupResolver,
       RubricVariantResolver,
       RubricResolver,

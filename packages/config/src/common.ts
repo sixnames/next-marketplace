@@ -80,10 +80,10 @@ export const ATTRIBUTE_TYPES_ENUMS = [
 ];
 
 export const ATTRIBUTE_TYPES_LIST = [
-  { id: ATTRIBUTE_TYPE_SELECT, name: 'Селект' },
-  { id: ATTRIBUTE_TYPE_MULTIPLE_SELECT, name: 'Мульти-селект' },
-  { id: ATTRIBUTE_TYPE_STRING, name: 'Строка' },
-  { id: ATTRIBUTE_TYPE_NUMBER, name: 'Число' },
+  { id: ATTRIBUTE_TYPE_SELECT, nameString: 'Селект' },
+  { id: ATTRIBUTE_TYPE_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
+  { id: ATTRIBUTE_TYPE_STRING, nameString: 'Строка' },
+  { id: ATTRIBUTE_TYPE_NUMBER, nameString: 'Число' },
 ];
 
 // PRODUCT CONDITION

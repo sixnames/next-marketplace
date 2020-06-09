@@ -10,9 +10,9 @@ export const NEW_ATTRIBUTE_OPTIONS_QUERY = gql`
       id
       nameString
     }
-    #    getAttributeTypes {
-    #      id
-    #      name
-    #    }
+    getAttributeVariants {
+      id
+      nameString
+    }
   }
 `;

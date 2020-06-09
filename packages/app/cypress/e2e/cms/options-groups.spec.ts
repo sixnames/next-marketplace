@@ -177,7 +177,7 @@ describe('Options Groups', () => {
     cy.getByCy(`group-${groupNewName}`).should('not.exist');
   });
 
-  it.only(`Should CRUD option in group and show validation error`, () => {
+  it(`Should CRUD option in group and show validation error`, () => {
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`options-group-create`).click();
 

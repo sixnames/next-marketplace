@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --poll --transpileOnly --no-notify src",
     "start": "node ./dist/src/index.js",
     "build": "rimraf ./dist && tsc",
-    "test": "jest --runInBand --detectOpenHandles",
+    "test": "jest --runInBand --detectOpenHandles --coverage",
     "test:watch": "jest --watch --runInBand --detectOpenHandles"
   },
   "dependencies": {

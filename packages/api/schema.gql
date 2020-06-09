@@ -45,6 +45,11 @@ type AttributesGroupPayloadType {
   success: Boolean!
 }
 
+type AttributeVariant {
+  id: ID!
+  nameString: String!
+}
+
 """Attribute type enum"""
 enum AttributeVariantEnum {
   multipleSelect
@@ -204,6 +209,7 @@ type Query {
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
   getAttributesGroup(id: ID!): AttributesGroup
+  getAttributeVariants: [AttributeVariant!]
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup

@@ -25,6 +25,10 @@ const attributeCommonFields = {
   options,
 };
 
+export const attributeInGroupSchema = Yup.object().shape({
+  ...attributeCommonFields,
+});
+
 export const addAttributeToGroupSchema = Yup.object().shape({
   groupId: id,
   ...attributeCommonFields,

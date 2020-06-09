@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import {
-  GetAttributesGroupsQuery,
+  GetAllAttributesGroupsQuery,
   useCreateAttributesGroupMutation,
-  useGetAttributesGroupsQuery,
+  useGetAllAttributesGroupsQuery,
 } from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
@@ -14,7 +14,7 @@ import { UPDATE_NAME_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
 
 const AttributesGroupsFilter: React.FC = () => {
-  const { data, loading, error } = useGetAttributesGroupsQuery();
+  const { data, loading, error } = useGetAllAttributesGroupsQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -23,7 +23,7 @@ const AttributesGroupsFilter: React.FC = () => {
     update: (cache, { data }) => {
       if (data) {
         const { createAttributesGroup } = data;
-        const cachedData: GetAttributesGroupsQuery | null = cache.readQuery({
+        const cachedData: GetAllAttributesGroupsQuery | null = cache.readQuery({
           query: ATTRIBUTES_GROUPS_QUERY,
         });
 

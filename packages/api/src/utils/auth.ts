@@ -16,7 +16,6 @@ export const attemptSignIn = async (
   password: User['password'],
   lang: string,
 ) => {
-  console.log(`user.singIn.success.${lang}`);
   const emailErrorMessage = getMessageTranslation(`user.signIn.emailError.${lang}`);
   const passwordErrorMessage = getMessageTranslation(`user.signIn.passwordError.${lang}`);
 

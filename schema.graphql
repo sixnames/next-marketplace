@@ -15,6 +15,11 @@ type Attribute {
   variant: AttributeVariantEnum!
 }
 
+type AttributeVariant {
+  id: ID!
+  nameString: String!
+}
+
 type AttributesGroup {
   attributes: [Attribute!]!
   id: ID!
@@ -120,6 +125,7 @@ type Query {
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
+  getAttributeVariants: [AttributeVariant!]
   getAttributesGroup(id: ID!): AttributesGroup
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
@@ -156,7 +162,7 @@ type RubricCity {
 }
 
 type RubricNode {
-  active: Boolean!
+  active: Boolean
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: [LanguageType!]!
   level: Int!
@@ -185,6 +191,7 @@ type RubricVariantPayloadType {
 }
 
 type User {
+  createdAt: Int!
   email: String!
   fullName: String!
   id: ID!
@@ -198,6 +205,7 @@ type User {
   role: String!
   secondName: String
   shortName: String!
+  updatedAt: Int!
 }
 
 type UserPayloadType {
@@ -277,7 +285,7 @@ input CreateUserInput {
   email: String!
   lastName: String
   name: String!
-  phone: String
+  phone: String!
   role: String
   secondName: String
 }

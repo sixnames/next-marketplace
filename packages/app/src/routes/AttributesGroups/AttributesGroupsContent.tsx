@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import {
   Attribute,
+  Metric,
+  OptionsGroup,
   UpdateAttributeInGroupInput,
   useDeleteAttributeFromGroupMutation,
   useGetAttributesGroupQuery,
@@ -13,23 +15,12 @@ import AttributesGroupControls from './AttributesGroupControls';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import Table from '../../components/Table/Table';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
-import { getAttributeType } from '../../utils/locales';
+import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };
-}
-
-export interface MetricInterface {
-  id: string;
-  name: string;
-}
-
-export interface OptionInterface {
-  id: string;
-  name: string;
-  color?: string;
 }
 
 const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ query = {} }) => {
@@ -108,19 +99,19 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
       render: (name: string) => name,
     },
     {
-      key: 'type',
+      key: 'variant',
       title: 'Тип',
-      render: (type: string) => getAttributeType(type),
+      render: (variant: string) => getAttributeVariant(variant),
     },
     {
       key: 'options',
       title: 'Опции',
-      render: (options: OptionInterface) => (options ? options.name : null),
+      render: (options: OptionsGroup) => (options ? options.nameString : null),
     },
     {
       key: 'metric',
       title: 'Единица измерения',
-      render: (metric: MetricInterface) => (metric ? metric.name : null),
+      render: (metric: Metric) => (metric ? metric.nameString : null),
     },
     {
       key: 'id',

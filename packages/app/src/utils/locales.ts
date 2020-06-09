@@ -3,8 +3,8 @@ export const localeString = (value: string | number) => {
   return value ? finalValue.toLocaleString('ru-RU') : 0;
 };
 
-export const getAttributeType = (value: string) => {
-  switch (value) {
+export const getAttributeVariant = (variant: string) => {
+  switch (variant) {
     case 'select':
       return 'Селект';
     case 'multipleSelect':

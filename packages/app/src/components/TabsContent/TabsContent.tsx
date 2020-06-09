@@ -1,13 +1,12 @@
 import React from 'react';
-// import { useRouter } from 'next/router';
+import useRouterQuery from '../../hooks/useRouterQuery';
 
 interface TabsContentInterface {
   className?: string;
 }
 
 const TabsContent: React.FC<TabsContentInterface> = ({ className, children }) => {
-  // TODO query string
-  const query: any = {};
+  const { query } = useRouterQuery();
   const firstTab = '0';
   const tab = query && query.tab ? query.tab : firstTab;
 

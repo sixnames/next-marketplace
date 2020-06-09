@@ -1,5 +1,5 @@
 import { format, isValid } from 'date-fns';
-// TODO add formats to the config
+
 export const dateFormat = (value: string) => {
   const date = new Date(value);
   if (isValid(date)) {

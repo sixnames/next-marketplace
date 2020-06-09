@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import useSound from 'use-sound';
 import Icon, { IconType } from '../Icon/Icon';
-// TODO Link
-// import Link from '../Link/Link';
 import ButtonCross from '../Buttons/ButtonCross';
 import { NotificationType } from '../../types';
 import classes from './Notification.module.css';
+import { Link } from 'react-router-dom';
 
 interface NotificationInterface {
   type: NotificationType;
@@ -59,9 +58,9 @@ const Notification: React.FC<NotificationInterface> = ({
       <div className={classes.content}>
         <div className={classes.title}>{title}</div>
         {path ? (
-          <a href={`${path}`} className={classes.message} onClick={closeHandler}>
+          <Link to={`${path}`} className={classes.message} onClick={closeHandler}>
             {message}
-          </a>
+          </Link>
         ) : (
           <div>{message}</div>
         )}

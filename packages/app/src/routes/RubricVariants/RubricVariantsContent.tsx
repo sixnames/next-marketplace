@@ -60,7 +60,6 @@ const RubricVariantsContent: React.FC = () => {
   if (loading) return <Spinner isNested />;
   if (error || !data) return <RequestError />;
 
-  // TODO LangInput
   function createRubricVariantHandler() {
     showModal({
       type: UPDATE_NAME_MODAL,
@@ -82,7 +81,6 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  // TODO LangInput
   function updateRubricVariantHandler({ nameString, id }: { id: string; nameString: string }) {
     showModal({
       type: UPDATE_NAME_MODAL,

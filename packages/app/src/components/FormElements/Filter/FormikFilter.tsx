@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ObjectType } from '../../../types';
 import { Formik, Form } from 'formik';
+import useRouterQuery from '../../../hooks/useRouterQuery';
 
 interface ChildrenPropsInterface {
   onResetHandler: () => void;
@@ -20,9 +21,7 @@ const FormikFilter: React.FC<FormikFilterInterface> = ({
   initialQueryValue,
 }) => {
   const [initialQuery, setInitialQuery] = useState<ObjectType | null>(null);
-  // TODO router
-  const router: any = { pathname: '', query: {}, replace: (args: any) => args };
-  const { pathname = '', query } = router;
+  const { pathname, query, replaceLocation } = useRouterQuery();
 
   useEffect(() => {
     if (!initialQuery) {
@@ -41,7 +40,7 @@ const FormikFilter: React.FC<FormikFilterInterface> = ({
         if (onSubmitHandler) {
           onSubmitHandler(values);
         }
-        router.replace({
+        replaceLocation({
           pathname,
           query: {
             ...query,
@@ -53,7 +52,7 @@ const FormikFilter: React.FC<FormikFilterInterface> = ({
       {({ resetForm }) => {
         function onResetHandler() {
           resetForm(initialValues);
-          router.replace({
+          replaceLocation({
             pathname,
             query: initialQuery,
           });

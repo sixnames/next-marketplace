@@ -1,4 +1,4 @@
-import qs, { ParsedUrlQuery } from 'querystring';
+import qs, { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface RemoveQueryInterface {
@@ -9,10 +9,16 @@ interface SetQueryInterface extends RemoveQueryInterface {
   value: any;
 }
 
+interface ReplaceLocationInterface {
+  pathname: string;
+  query?: ParsedUrlQueryInput | null;
+}
+
 interface UseRouterQueryInterface {
   setQuery: ({ key, value }: SetQueryInterface) => void;
   removeQuery: ({ key }: RemoveQueryInterface) => void;
   toggleQuery: ({ key, value }: SetQueryInterface) => void;
+  replaceLocation: (args: ReplaceLocationInterface) => void;
   query: ParsedUrlQuery;
   pathname: string;
 }
@@ -56,7 +62,12 @@ const useRouterQuery = (): UseRouterQueryInterface => {
     return setQuery({ key, value });
   }
 
-  return { setQuery, removeQuery, toggleQuery, query, pathname };
+  function replaceLocation({ pathname, query }: ReplaceLocationInterface) {
+    const search = qs.stringify(query || {});
+    navigate(`${pathname}?${search}`, { replace: true });
+  }
+
+  return { setQuery, removeQuery, toggleQuery, replaceLocation, query, pathname };
 };
 
 export default useRouterQuery;

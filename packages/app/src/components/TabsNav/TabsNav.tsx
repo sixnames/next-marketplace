@@ -1,10 +1,10 @@
 import React from 'react';
 import classes from './TabsNav.module.css';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export interface TabsNavConfigInterface {
   name: string;
-  href: string;
+  to: string;
 }
 
 interface TabsNavInterface {
@@ -12,19 +12,14 @@ interface TabsNavInterface {
   className?: string;
 }
 
-// TODO active class
 const TabsNav: React.FC<TabsNavInterface> = ({ navConfig, className }) => {
   return (
     <ul className={`${classes.frame} ${className ? className : ''}`}>
-      {navConfig.map(({ name, href }) => (
-        <li className={`${classes.item}`} key={href}>
-          <Link
-            // activeClassName={classes.active}
-            className={`${classes.link}`}
-            to={href}
-          >
+      {navConfig.map(({ name, to }) => (
+        <li className={`${classes.item}`} key={to}>
+          <NavLink activeClassName={classes.active} className={`${classes.link}`} to={to}>
             {name}
-          </Link>
+          </NavLink>
         </li>
       ))}
     </ul>

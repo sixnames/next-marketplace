@@ -4,7 +4,7 @@ import AnimateOpacity from '../AnimateOpacity/AnimateOpacity';
 import { NavItemInterface } from '../../types';
 import classes from './MoreNav.module.css';
 import Backdrop from '../Backdrop/Backdrop';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface MoreNavInterface {
   navConfig: NavItemInterface[];
@@ -36,18 +36,18 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                 if (hidden) {
                   return null;
                 }
-                // TODO active class
+
                 return (
                   <li className={classes.item} key={name} data-cy={testId}>
-                    <Link
+                    <NavLink
                       to={to}
-                      // activeClassName={classes.linkActive}
+                      activeClassName={classes.linkActive}
                       className={classes.link}
                       onClick={hideDropdownHandler}
                     >
                       {icon && <Icon name={icon} className={classes.icon} />}
                       <span className={classes.linkName}>{name}</span>
-                    </Link>
+                    </NavLink>
                   </li>
                 );
               })}

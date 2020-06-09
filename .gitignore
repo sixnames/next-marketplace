@@ -9,8 +9,8 @@ lerna-debug.log*
 
 # testing
 /coverage
-/packages/client/cypress/videos
-/packages/client/cypress/screenshots
+/packages/app/cypress/videos
+/packages/app/cypress/screenshots
 cardName-0.jpg
 
 # production

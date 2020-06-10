@@ -53,11 +53,11 @@ export class User extends TimeStamps {
   @Field((_type) => String)
   readonly shortName: string;
 
-  @Field(() => Int)
-  readonly createdAt: Readonly<Date>;
+  @Field()
+  readonly createdAt: Date;
 
-  @Field(() => Int)
-  readonly updatedAt: Readonly<Date>;
+  @Field()
+  readonly updatedAt: Date;
 
   static paginate: (
     query?: FilterQuery<User>,

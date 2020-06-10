@@ -7,7 +7,7 @@ import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { AssetType, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
-import { JsonObjectScalar } from '../Scalars/JsonObjectScalar';
+import { JsonObjectScalar } from '../scalars/JsonObjectScalar';
 
 // Product attribute
 @ObjectType()

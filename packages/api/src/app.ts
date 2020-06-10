@@ -21,8 +21,7 @@ import { AttributesGroupResolver } from './resolvers/attributesGroup/AttributesG
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
-import { ObjectId } from 'mongodb';
-import { JsonObjectScalar } from './Scalars/JsonObjectScalar';
+import { ProductResolver } from './resolvers/product/ProductResolver';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -36,6 +35,7 @@ const createApp = () => {
       AttributesGroupResolver,
       RubricVariantResolver,
       RubricResolver,
+      ProductResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: true,

@@ -22,6 +22,11 @@ input AddOptionToGroupInput {
   name: [LangInput!]!
 }
 
+type AssetType {
+  index: Int!
+  url: String!
+}
+
 type Attribute {
   id: ID!
   metric: Metric
@@ -105,6 +110,9 @@ input DeleteOptionFromGroupInput {
   optionId: ID!
 }
 
+"""JSON object"""
+scalar JSONObject
+
 input LangInput {
   key: String!
   value: String!
@@ -179,6 +187,19 @@ type OptionsGroupPayloadType {
   success: Boolean!
 }
 
+type PaginatedProductsResponse {
+  docs: [Product!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedUsersResponse {
   docs: [User!]!
   hasNextPage: Int!
@@ -198,6 +219,60 @@ enum PaginateSortDirectionEnum {
   desc
 }
 
+type Product {
+  cities: [ProductCity!]!
+  createdAt: Timestamp!
+  id: ID!
+  itemId: Int!
+  updatedAt: Timestamp!
+}
+
+type ProductAttribute {
+  node: Attribute!
+  showInCard: Boolean!
+  value: JSONObject!
+}
+
+type ProductAttributesGroup {
+  attributes: [ProductAttribute!]!
+  node: AttributesGroup!
+  showInCard: Boolean!
+}
+
+type ProductCity {
+  key: String!
+  node: ProductNode!
+}
+
+type ProductNode {
+  assets: [AssetType!]!
+  attributesGroups: [ProductAttributesGroup!]!
+  attributesSource: ID!
+  cardName: [LanguageType!]!
+  description: [LanguageType!]!
+  name: [LanguageType!]!
+  price: Int!
+  rubrics: [ID!]!
+  slug: String!
+}
+
+input ProductPaginateInput {
+  limit: Int = 100
+  noRubrics: Boolean
+  notInRubric: ID
+  page: Int = 1
+  query: String
+  rubric: ID
+  sortBy: ProductSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}
+
+"""Product pagination sortBy enum"""
+enum ProductSortByEnum {
+  createdAt
+  price
+}
+
 type Query {
   getAllAttributesGroups(
     """list of excluded groups id's"""
@@ -205,6 +280,7 @@ type Query {
   ): [AttributesGroup!]!
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
+  getAllProducts(input: ProductPaginateInput!): PaginatedProductsResponse!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
@@ -213,6 +289,7 @@ type Query {
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
+  getProduct(id: ID!): Product!
   getRubric(id: ID!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
@@ -287,6 +364,11 @@ input SignUpInput {
   secondName: String
 }
 
+"""
+The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
+
 input UpdateAttributeInGroupInput {
   attributeId: ID!
   groupId: ID!
@@ -342,7 +424,7 @@ input UpdateUserInput {
 }
 
 type User {
-  createdAt: Int!
+  createdAt: Timestamp!
   email: String!
   fullName: String!
   id: ID!
@@ -356,7 +438,7 @@ type User {
   role: String!
   secondName: String
   shortName: String!
-  updatedAt: Int!
+  updatedAt: Timestamp!
 }
 
 input UserPaginateInput {

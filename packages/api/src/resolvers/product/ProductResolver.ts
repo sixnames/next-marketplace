@@ -4,6 +4,7 @@ import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import { ContextInterface } from '../../types/context';
+import generatePaginationOptions from '../../utils/generatePaginationOptions';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
@@ -22,13 +23,14 @@ export class ProductResolver {
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const searchOptions = getProductsFilter(args, city);
-    const options = {
+    const query = getProductsFilter(args, city);
+    const { options } = generatePaginationOptions({
       limit,
       page,
       sortDir,
       sortBy,
-    };
-    return ProductModel.paginate(searchOptions, options);
+    });
+
+    return ProductModel.paginate(query, options);
   }
 }

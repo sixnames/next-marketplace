@@ -22,6 +22,7 @@ import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantRe
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
 import { ProductResolver } from './resolvers/product/ProductResolver';
+import path from 'path';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -38,7 +39,7 @@ const createApp = () => {
       ProductResolver,
     ],
     dateScalarMode: 'timestamp',
-    emitSchemaFile: true,
+    emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
   });
 

@@ -113,7 +113,7 @@ export class Product extends TimeStamps {
 
   @Field(() => String)
   readonly cardName: string;
-
+  //
   @Field(() => String)
   readonly slug: string;
 

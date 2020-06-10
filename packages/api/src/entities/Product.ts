@@ -108,6 +108,33 @@ export class Product extends TimeStamps {
   @Field(() => Int)
   readonly itemId: number;
 
+  @Field(() => String)
+  readonly name: string;
+
+  @Field(() => String)
+  readonly cardName: string;
+
+  @Field(() => String)
+  readonly slug: string;
+
+  @Field(() => String)
+  readonly description: string;
+
+  @Field(() => [ID])
+  readonly rubrics: string[];
+
+  @Field(() => ID, { nullable: true })
+  readonly attributesSource: string;
+
+  @Field(() => [ProductAttributesGroup])
+  readonly attributesGroups: ProductAttributesGroup[];
+
+  @Field(() => [AssetType])
+  readonly assets: AssetType[];
+
+  @Field(() => Int)
+  readonly price: number;
+
   @Field(() => [ProductCity])
   @prop({ type: ProductCity, required: true, _id: false })
   cities: ProductCity[];

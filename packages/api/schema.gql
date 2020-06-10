@@ -220,10 +220,19 @@ enum PaginateSortDirectionEnum {
 }
 
 type Product {
+  assets: [AssetType!]!
+  attributesGroups: [ProductAttributesGroup!]!
+  attributesSource: ID
+  cardName: String!
   cities: [ProductCity!]!
   createdAt: Timestamp!
+  description: String!
   id: ID!
   itemId: Int!
+  name: String!
+  price: Int!
+  rubrics: [ID!]!
+  slug: String!
   updatedAt: Timestamp!
 }
 

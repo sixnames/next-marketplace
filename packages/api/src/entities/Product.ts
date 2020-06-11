@@ -3,7 +3,7 @@ import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import { FilterQuery, PaginateOptions, PaginateResult, Schema } from 'mongoose';
 import { AssetType, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
@@ -21,7 +21,7 @@ export class ProductAttribute {
   node: string;
 
   @Field(() => JsonObjectScalar)
-  @prop({ required: true })
+  @prop({ type: Schema.Types.Mixed, required: true })
   value: JSON;
 }
 
@@ -37,7 +37,7 @@ export class ProductAttributesGroup {
   node: string;
 
   @Field(() => [ProductAttribute])
-  @prop({ ref: ProductAttribute })
+  @prop({ type: ProductAttribute, required: true })
   attributes: ProductAttribute[];
 }
 
@@ -61,7 +61,7 @@ export class ProductNode {
   description: LanguageType[];
 
   @Field(() => [ID])
-  @prop({ required: true })
+  @prop({ type: String, required: true })
   rubrics: string[];
 
   @Field(() => ID)

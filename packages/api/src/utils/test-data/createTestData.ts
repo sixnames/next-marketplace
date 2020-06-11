@@ -19,10 +19,9 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_TABLES,
   MOCK_RUBRIC_LEVEL_THREE_TABLES,
   MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-  // MOCK_PRODUCT,
+  MOCK_PRODUCT_FOR_DELETE,
   // MOCK_PRODUCT_FOR_DELETE,
   // MOCK_PRODUCT_B_PRODUCT,
-  // PRODUCT_IMAGE_SIZES,
   // MOCK_PRODUCT_IMAGES,
 } from '@rg/config';
 import createInitialData from '../createInitialData';
@@ -34,6 +33,7 @@ import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import { DEFAULT_CITY } from '../../config';
+import { ProductModel } from '../../entities/Product';
 
 interface LangInterface {
   key: string;
@@ -62,6 +62,55 @@ function getRubricCities(node: GetRubricCitiesInterface) {
     {
       key: 'spb',
       node,
+    },
+  ];
+}
+
+interface GetProductCitiesInterface {
+  name: LangInterface[];
+  cardName: LangInterface[];
+  description: LangInterface[];
+  rubrics: string[];
+  attributesSource: string;
+  attributesGroups: {
+    showInCard: boolean;
+    node: string;
+    attributes: {
+      showInCard: boolean;
+      node: string;
+      value: {
+        [key: string]: any[];
+      };
+    }[];
+  }[];
+  price: number;
+}
+
+function getProductCities(node: GetProductCitiesInterface) {
+  const assets = [
+    {
+      index: 0,
+      url: 'url',
+    },
+  ];
+  const slug = generateDefaultLangSlug(node.cardName);
+
+  return [
+    {
+      key: DEFAULT_CITY,
+      node: {
+        ...node,
+        slug,
+        assets,
+      },
+    },
+    {
+      key: 'spb',
+      node: {
+        ...node,
+        slug,
+        assets,
+      },
     },
   ];
 }
@@ -204,8 +253,7 @@ const createTestData = async () => {
       }),
     });
 
-    // const rubricLevelThree = await RubricModel.create({
-    await RubricModel.create({
+    const rubricLevelThree = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
@@ -225,37 +273,36 @@ const createTestData = async () => {
     });
 
     // Products
-    // for delete
-    /*const productAttributes = {
+    const productAttributes = {
       attributesSource: rubricLevelTwo.id,
       attributesGroups: [
         {
-          source: attributesGroup.id,
+          node: attributesGroup.id,
           showInCard: true,
           attributes: [
             {
-              source: attributeMultiple.id,
+              node: attributeMultiple.id,
               showInCard: true,
               value: {
                 [attributeMultipleSlug]: optionsIds,
               },
             },
             {
-              source: attributeSelect.id,
+              node: attributeSelect.id,
               showInCard: true,
               value: {
                 [attributeSelectSlug]: optionsIds,
               },
             },
             {
-              source: attributeString.id,
+              node: attributeString.id,
               showInCard: true,
               value: {
                 [attributeStringSlug]: ['string'],
               },
             },
             {
-              source: attributeNumber.id,
+              node: attributeNumber.id,
               showInCard: true,
               value: {
                 [attributeNumberSlug]: [123],
@@ -266,24 +313,27 @@ const createTestData = async () => {
       ],
     };
 
-    const productImagesA = ['./test/test-image-0.jpg', './test/test-image-1.jpg'];
-    const linkProductForDelete = generateDefaultLangSlug(MOCK_PRODUCT_FOR_DELETE.cardName);
-    const imagesProductForDelete = await storeTestAssets({
+    // for delete
+    // const productImagesA = ['./test/test-image-0.jpg', './test/test-image-1.jpg'];
+    /*const imagesProductForDelete = await storeTestAssets({
       urls: productImagesA,
       sizes: PRODUCT_IMAGE_SIZES,
       slug: linkProductForDelete,
+    });*/
+
+    // const test = await ProductModel.create({
+    await ProductModel.create({
+      cities: getProductCities({
+        ...MOCK_PRODUCT_FOR_DELETE,
+        ...productAttributes,
+        rubrics: [rubricLevelThree.id],
+      }),
     });
 
-    await Product.create({
-      ...MOCK_PRODUCT_FOR_DELETE,
-      ...productAttributes,
-      slug: linkProductForDelete,
-      rubrics: [rubricLevelThree.id],
-      assets: imagesProductForDelete,
-    });
+    // console.log(JSON.stringify(test, null, 2));
 
     // for second rubric in third level
-    const linkProductBDelete = generateDefaultLangSlug(MOCK_PRODUCT_B_PRODUCT.cardName);
+    /*const linkProductBDelete = generateDefaultLangSlug(MOCK_PRODUCT_B_PRODUCT.cardName);
     const productImagesB = ['./test/test-image-1.jpg', './test/test-image-0.jpg'];
     const imagesProductBDelete = await storeTestAssets({
       urls: productImagesB,
@@ -291,16 +341,16 @@ const createTestData = async () => {
       slug: linkProductBDelete,
     });
 
-    await Product.create({
+    await ProductModel.create({
       ...MOCK_PRODUCT_B_PRODUCT,
       ...productAttributes,
       slug: linkProductBDelete,
       rubrics: [rubricLevelThreeB.id],
       assets: imagesProductBDelete,
-    });
+    });*/
 
     // main product
-    const slug = generateDefaultLangSlug(MOCK_PRODUCT.cardName);
+    /*const slug = generateDefaultLangSlug(MOCK_ProductModel.cardName);
     const productImagesC = ['./test/test-image-2.jpg', './test/test-image-1.jpg'];
     const imagesProduct = await storeTestAssets({
       urls: productImagesC,
@@ -308,8 +358,8 @@ const createTestData = async () => {
       slug,
     });
 
-    // const product = await Product.create({
-    await Product.create({
+    // const product = await ProductModel.create({
+    await ProductModel.create({
       ...MOCK_PRODUCT,
       ...productAttributes,
       slug,

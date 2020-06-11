@@ -92,9 +92,11 @@ export class ProductResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<string[]> {
     const city = getCityData(product.cities, ctx.req.session!.city);
+    // console.log(JSON.stringify(city, null, 2));
     if (!city) {
       return [];
     }
+    // console.log(JSON.stringify(city, null, 2));
     return city.node.rubrics;
   }
 
@@ -115,11 +117,29 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<ProductAttributesGroup[]> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
-    if (!city) {
+    try {
+      const populated = await product
+        .populate({
+          path: 'cities.node.attributesGroups.node',
+          model: 'AttributesGroup',
+        })
+        .populate({
+          path: 'cities.node.attributesGroups.attributes.node',
+          model: 'Attribute',
+        })
+        // .populate('cities.node.attributesGroups.node')
+        // .populate('cities.node.attributesGroups.attributes.node')
+        .execPopulate();
+      const city = getCityData(populated.cities, ctx.req.session!.city);
+      console.log(JSON.stringify(city!.node.attributesGroups, null, 2));
+      if (!city) {
+        return [];
+      }
+      return city.node.attributesGroups;
+    } catch (e) {
+      console.log(e);
       return [];
     }
-    return city.node.attributesGroups;
   }
 
   @FieldResolver()

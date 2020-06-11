@@ -385,22 +385,49 @@ export const MOCK_PRODUCT = {
 };
 
 export const MOCK_PRODUCT_FOR_DELETE = {
-  name: 'cy-test-product-for-delete',
-  cardName: 'cy-test-product-for-delete',
+  name: [
+    { key: 'ru', value: 'cy-test-product-for-delete' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-product-for-delete' },
+    { key: 'en', value: 'bar' },
+  ],
   price: 200,
-  description: 'very long item description',
+  description: [
+    { key: 'ru', value: 'very long item description' },
+    { key: 'en', value: 'bar' },
+  ],
 };
 
 export const MOCK_PRODUCT_B_PRODUCT = {
-  name: 'cy-test-b-product',
-  cardName: 'cy-test-b-product',
+  name: [
+    { key: 'ru', value: 'cy-test-b-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-b-product' },
+    { key: 'en', value: 'bar' },
+  ],
   price: 100,
-  description: 'B description',
+  description: [
+    { key: 'ru', value: 'B description' },
+    { key: 'en', value: 'bar' },
+  ],
 };
 
 export const MOCK_PRODUCT_NEW_PRODUCT = {
-  name: 'cy-test-new-product',
-  cardName: 'cy-test-new-product',
+  name: [
+    { key: 'ru', value: 'cy-test-new-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-new-product' },
+    { key: 'en', value: 'bar' },
+  ],
   price: 2000,
-  description: 'new description',
+  description: [
+    { key: 'ru', value: 'new description' },
+    { key: 'en', value: 'bar' },
+  ],
 };

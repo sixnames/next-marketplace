@@ -1,17 +1,33 @@
 export const testProduct = {
-  name: 'name',
-  cardName: 'cardName',
-  price: 100,
-  description: 'description',
-  link: 'link',
+  name: [
+    { key: 'ru', value: 'cy-test-new-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-new-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  price: 200,
+  description: [
+    { key: 'ru', value: 'very long item description' },
+    { key: 'en', value: 'bar' },
+  ],
 };
 
 export const anotherProduct = {
-  name: 'another name',
-  cardName: 'another cardName',
+  name: [
+    { key: 'ru', value: 'cy-test-another-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-another-product' },
+    { key: 'en', value: 'bar' },
+  ],
   price: 200,
-  description: 'another description',
-  link: 'another link',
+  description: [
+    { key: 'ru', value: 'very long item description' },
+    { key: 'en', value: 'bar' },
+  ],
 };
 
 export const rubricForProduct = {

@@ -1,11 +1,17 @@
-import { getTestClientWithUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithUser, mutateWithImages } from '../../../utils/test-data/testHelpers';
+import { testProduct } from '../__fixtures__';
+import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_NUMBER,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPE_STRING,
+} from '@rg/config';
 
 describe('Product', () => {
-  beforeEach(async () => {});
-
-  it('Should return current product.', async () => {
+  it('Should CRUD product.', async () => {
     const { query } = await getTestClientWithUser({});
 
+    // Should return paginated products.
     const {
       data: { getAllProducts },
     } = await query(
@@ -61,55 +67,94 @@ describe('Product', () => {
         },
       },
     );
-    expect(getAllProducts.docs).toHaveLength(3);
+    const allProducts = getAllProducts.docs;
+    const createdProduct = allProducts[0];
+    expect(allProducts).toHaveLength(3);
     expect(getAllProducts.totalDocs).toEqual(3);
 
-    /*
+    // Should return current product
     const {
-      data: { getProduct },
+      data: { getProduct, getRubricsTree },
     } = await query(`
       query {
         getProduct(id: "${createdProduct.id}") {
           id
           name
         }
-      }
-    `);
-
-    expect(getProduct.id).toEqual(createdProduct.id);*/
-    // expect(getProduct.name).toEqual(createdProduct.name);
-    expect(true).toBeTruthy();
-  });
-
-  /*it('Should return paginated products.', async () => {
-    const { query } = await getTestClientWithAuthenticatedUser();
-    const createdProducts = await Product.insertMany([testProduct, anotherProduct]);
-
-    const {
-      data: { getAllProducts },
-    } = await query(`
-      query {
-        getAllProducts(
-          limit: 100,
-          page: 1,
-          sortBy: createdAt
-          sortDir: desc
-        ) {
-          docs {
+        getRubricsTree {
+          id
+          name
+          children {
             id
+            name
+            attributesGroups {
+              node {
+                id
+                attributes {
+                  id
+                  itemId
+                  variant
+                  options {
+                    id
+                    options {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            children {
+              id
+              name
+            }
           }
-          totalDocs
         }
       }
     `);
+    const rubricLevelOne = getRubricsTree[0];
+    const rubricLevelTwo = rubricLevelOne.children[0];
+    const rubricLevelTree = rubricLevelTwo.children[0];
+    expect(getProduct.id).toEqual(createdProduct.id);
+    expect(getProduct.name).toEqual(createdProduct.name);
 
-    expect(getAllProducts.docs.length).toEqual(createdProducts.length);
-    expect(getAllProducts.totalDocs).toEqual(createdProducts.length);
-  });*/
+    const productAttributes = {
+      attributesSource: rubricLevelTwo.id,
+      attributesGroups: rubricLevelTwo.attributesGroups.map(({ node }: { [key: string]: any }) => {
+        const { id, attributes } = node;
+        return {
+          node: id,
+          showInCard: true,
+          attributes: attributes.map(({ id, itemId, variant, options }: { [key: string]: any }) => {
+            let value = [];
 
-  /*it(`Should create product.`, async function () {
-    const rubric = await Rubric.create(rubricForProduct);
+            if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) {
+              value = options.options.map(({ id }: { id: string }) => id);
+            }
 
+            if (variant === ATTRIBUTE_TYPE_SELECT) {
+              value = options.options[0].id;
+            }
+
+            if (variant === ATTRIBUTE_TYPE_STRING) {
+              value = ['string'];
+            }
+
+            if (variant === ATTRIBUTE_TYPE_NUMBER) {
+              value = ['123'];
+            }
+
+            return {
+              node: id,
+              showInCard: true,
+              key: itemId,
+              value,
+            };
+          }),
+        };
+      }),
+    };
+
+    // Should create product.
     const { createProduct } = await mutateWithImages({
       mutation: `
           mutation CreateProduct($input: CreateProductInput!) {
@@ -117,35 +162,60 @@ describe('Product', () => {
               success
               product {
                 id
+                itemId
                 name
                 cardName
-                price
+                slug
                 description
-                images
                 rubrics
+                attributesSource
+                attributesGroups {
+                  showInCard
+                  node {
+                    id
+                    nameString
+                  }
+                  attributes {
+                    showInCard
+                    key
+                    node {
+                      id
+                      nameString
+                    }
+                    value
+                  }
+                }
+                assets {
+                  index
+                  url
+                }
+                price
               }
             }
           }`,
-      input: (image: Promise<any>) => ({
-        name: testProduct.name,
-        cardName: testProduct.cardName,
-        price: testProduct.price,
-        description: testProduct.description,
-        rubrics: [rubric.id],
-        images: [image],
-      }),
+      input: (image: Promise<any>) => {
+        return {
+          name: testProduct.name,
+          cardName: testProduct.cardName,
+          price: testProduct.price,
+          description: testProduct.description,
+          rubrics: [rubricLevelTree.id],
+          assets: [image],
+          ...productAttributes,
+        };
+      },
     });
 
     const { product, success } = createProduct;
 
     expect(success).toBeTruthy();
-    expect(product.name).toEqual(testProduct.name);
-    expect(product.cardName).toEqual(testProduct.cardName);
+    expect(product.name).toEqual(testProduct.name[0].value);
+    expect(product.cardName).toEqual(testProduct.cardName[0].value);
+    expect(product.description).toEqual(testProduct.description[0].value);
     expect(product.price).toEqual(testProduct.price);
-    expect(product.description).toEqual(testProduct.description);
-    expect(product.rubrics).toEqual([rubric.id]);
-    expect(product.images).toHaveLength(1);
-  });*/
+    expect(product.rubrics).toEqual([rubricLevelTree.id]);
+    expect(product.assets).toHaveLength(1);
+  });
 
   /*it(`Should update product.`, async function () {
     const { mutate } = await getTestClientWithAuthenticatedUser();

@@ -9,7 +9,7 @@ describe.only('Rubrics', () => {
     expect(true).toBeTruthy();
     const { query } = await getTestClientWithAuthenticatedUser();
 
-    // Should return rubrics tree=
+    // Should return rubrics tree
     const {
       data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
     } = await query(`

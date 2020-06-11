@@ -282,7 +282,7 @@ const createTestData = async () => {
               node: attributeSelect.id,
               showInCard: true,
               key: attributeSelect.itemId,
-              value: optionsIds,
+              value: [optionsIds[0]],
             },
             {
               node: attributeString.id,

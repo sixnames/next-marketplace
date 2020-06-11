@@ -75,6 +75,17 @@ input CreateOptionsGroupInput {
   name: [LangInput!]!
 }
 
+input CreateProductInput {
+  assets: [Upload!]!
+  attributesGroups: [ProductAttributesGroupInput!]!
+  attributesSource: ID!
+  cardName: [LangInput!]!
+  description: [LangInput!]!
+  name: [LangInput!]!
+  price: Int!
+  rubrics: [ID!]!
+}
+
 input CreateRubricInput {
   catalogueName: [LangInput!]!
   name: [LangInput!]!
@@ -139,6 +150,7 @@ type Mutation {
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
+  createProduct(input: CreateProductInput!): ProductPayloadType!
   createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
   createUser(input: CreateUserInput!): UserPayloadType!
@@ -234,8 +246,17 @@ type Product {
 }
 
 type ProductAttribute {
+  """Attribute reference via attribute itemId field"""
   key: Int!
   node: Attribute!
+  showInCard: Boolean!
+  value: [String!]!
+}
+
+input ProductAttributeInput {
+  """Attribute reference via attribute itemId field"""
+  key: Int!
+  node: ID!
   showInCard: Boolean!
   value: [String!]!
 }
@@ -243,6 +264,12 @@ type ProductAttribute {
 type ProductAttributesGroup {
   attributes: [ProductAttribute!]!
   node: AttributesGroup!
+  showInCard: Boolean!
+}
+
+input ProductAttributesGroupInput {
+  attributes: [ProductAttributeInput!]!
+  node: ID!
   showInCard: Boolean!
 }
 
@@ -272,6 +299,12 @@ input ProductPaginateInput {
   rubric: ID
   sortBy: ProductSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
+}
+
+type ProductPayloadType {
+  message: String!
+  product: Product
+  success: Boolean!
 }
 
 """Product pagination sortBy enum"""
@@ -429,6 +462,9 @@ input UpdateUserInput {
   role: String!
   secondName: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   createdAt: Timestamp!

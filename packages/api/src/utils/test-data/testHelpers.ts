@@ -98,8 +98,8 @@ export const mutateWithImages = async ({ mutation, input }: MutateInterface): Pr
     const image = new Promise((resolve) =>
       resolve({
         createReadStream: () => file,
-        stream: file,
         filename: filename,
+        encoding: 'UTF-8',
         mimetype: `image/jpg`,
       }),
     );

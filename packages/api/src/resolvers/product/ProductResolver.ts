@@ -1,4 +1,15 @@
-import { Arg, Ctx, FieldResolver, ID, ObjectType, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  ID,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Product, ProductAttributesGroup, ProductModel } from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
@@ -9,9 +20,17 @@ import { DocumentType } from '@typegoose/typegoose';
 import getCityData from '../../utils/getCityData';
 import getLangField from '../../utils/getLangField';
 import { AssetType } from '../../entities/common';
+import PayloadType from '../common/PayloadType';
+import { CreateProductInput } from './CreateProductInput';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
+
+@ObjectType()
+class ProductPayloadType extends PayloadType() {
+  @Field((_type) => Product, { nullable: true })
+  product?: Product | null;
+}
 
 @Resolver((_of) => Product)
 export class ProductResolver {
@@ -36,6 +55,29 @@ export class ProductResolver {
     });
 
     return ProductModel.paginate(query, options);
+  }
+
+  @Mutation(() => ProductPayloadType)
+  async createProduct(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: CreateProductInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      console.log(JSON.stringify(input, null, 2));
+      const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+      console.log(city, lang);
+
+      return {
+        success: false,
+        message: 'error',
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: 'error',
+      };
+    }
   }
 
   @FieldResolver()
@@ -92,11 +134,9 @@ export class ProductResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<string[]> {
     const city = getCityData(product.cities, ctx.req.session!.city);
-    // console.log(JSON.stringify(city, null, 2));
     if (!city) {
       return [];
     }
-    // console.log(JSON.stringify(city, null, 2));
     return city.node.rubrics;
   }
 
@@ -127,8 +167,6 @@ export class ProductResolver {
           path: 'cities.node.attributesGroups.attributes.node',
           model: 'Attribute',
         })
-        // .populate('cities.node.attributesGroups.node')
-        // .populate('cities.node.attributesGroups.attributes.node')
         .execPopulate();
       const city = getCityData(populated.cities, ctx.req.session!.city);
 

@@ -24,10 +24,10 @@ interface GetTestClientWithUserInterface {
   lang?: string;
 }
 
-export const getTestClientWithUser = async ({
+export async function getTestClientWithUser({
   city = DEFAULT_CITY,
   lang = DEFAULT_LANG,
-}: GetTestClientWithUserInterface): Promise<WithUserMutationInterface> => {
+}: GetTestClientWithUserInterface): Promise<WithUserMutationInterface> {
   const user = await UserModel.findOne({
     email: ADMIN_EMAIL,
   });
@@ -44,11 +44,11 @@ export const getTestClientWithUser = async ({
   });
 
   return { mutate, query, user, setOptions };
-};
+}
 
-export const getTestClientWithAuthenticatedUser = async (): Promise<
+export async function getTestClientWithAuthenticatedUser(): Promise<
   AuthenticatedUserMutationInterface
-> => {
+> {
   const { mutate, query, setOptions } = await getTestClientWithUser({});
 
   const {
@@ -83,19 +83,18 @@ export const getTestClientWithAuthenticatedUser = async (): Promise<
   );
 
   return { mutate, query, user, setOptions };
-};
+}
 
 interface MutateInterface {
   mutation: string;
   input: Function;
 }
 
-export const mutateWithImages = async ({ mutation, input }: MutateInterface): Promise<any> => {
-  try {
-    const filename = 'test-image-0.jpg';
+async function getTestStreams() {
+  const fileNames = ['test-image-0.jpg', 'test-image-1.jpg', 'test-image-2.jpg'];
+  return fileNames.map((filename) => {
     const file = fs.createReadStream(path.resolve(`./test/${filename}`));
-
-    const image = new Promise((resolve) =>
+    return new Promise((resolve) =>
       resolve({
         createReadStream: () => file,
         filename: filename,
@@ -103,15 +102,20 @@ export const mutateWithImages = async ({ mutation, input }: MutateInterface): Pr
         mimetype: `image/jpg`,
       }),
     );
+  });
+}
 
+export async function mutateWithImages({ mutation, input }: MutateInterface): Promise<any> {
+  try {
+    const files = await getTestStreams();
     const { mutate } = await getTestClientWithAuthenticatedUser();
 
     return await mutate(mutation, {
       variables: {
-        input: input(image),
+        input: input(files),
       },
     });
   } catch (e) {
     console.log(e);
   }
-};
+}

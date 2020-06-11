@@ -22,6 +22,8 @@ import getLangField from '../../utils/getLangField';
 import { AssetType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
+import storeUploads from '../../utils/storeUploads';
+import { generateDefaultLangSlug } from '../../utils/slug';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
@@ -63,7 +65,10 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      console.log(JSON.stringify(input, null, 2));
+      const { assets, cardName } = input;
+      const slug = generateDefaultLangSlug(cardName);
+      const assetsUrls = await storeUploads({ files: assets, slug });
+      console.log(assetsUrls);
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
       console.log(city, lang);

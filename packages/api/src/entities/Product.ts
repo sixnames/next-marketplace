@@ -19,7 +19,7 @@ export class ProductAttribute {
   @prop({ ref: Attribute })
   node: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Attribute reference via attribute itemId field' })
   @prop({ required: true })
   key: number;
 

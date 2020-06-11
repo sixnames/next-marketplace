@@ -131,7 +131,7 @@ export class ProductResolver {
         // .populate('cities.node.attributesGroups.attributes.node')
         .execPopulate();
       const city = getCityData(populated.cities, ctx.req.session!.city);
-      console.log(JSON.stringify(city!.node.attributesGroups, null, 2));
+
       if (!city) {
         return [];
       }

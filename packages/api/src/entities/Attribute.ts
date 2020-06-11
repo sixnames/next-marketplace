@@ -48,10 +48,6 @@ export class Attribute {
   @Field((_type) => Metric, { nullable: true })
   @prop({ ref: Metric })
   metric?: string | null;
-
-  @Field((_type) => String)
-  @prop({ required: true, trim: true })
-  slug: string;
 }
 
 export const AttributeModel = getModelForClass(Attribute);

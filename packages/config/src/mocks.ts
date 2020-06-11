@@ -378,10 +378,19 @@ export const MOCK_PRODUCT_IMAGES = [
 ];
 
 export const MOCK_PRODUCT = {
-  name: 'cy-test-product',
-  cardName: 'cy-test-product',
+  name: [
+    { key: 'ru', value: 'cy-test-product' },
+    { key: 'en', value: 'bar' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-product' },
+    { key: 'en', value: 'bar' },
+  ],
   price: 100,
-  description: 'very long item description',
+  description: [
+    { key: 'ru', value: 'very long item description' },
+    { key: 'en', value: 'bar' },
+  ],
 };
 
 export const MOCK_PRODUCT_FOR_DELETE = {

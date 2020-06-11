@@ -3,11 +3,10 @@ import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { FilterQuery, PaginateOptions, PaginateResult, Schema } from 'mongoose';
+import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { AssetType, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
-import { JsonObjectScalar } from '../scalars/JsonObjectScalar';
 
 // Product attribute
 @ObjectType()
@@ -20,9 +19,13 @@ export class ProductAttribute {
   @prop({ ref: Attribute })
   node: string;
 
-  @Field(() => JsonObjectScalar)
-  @prop({ type: Schema.Types.Mixed, required: true })
-  value: JSON;
+  @Field(() => Int)
+  @prop({ required: true })
+  key: number;
+
+  @Field(() => [String])
+  @prop({ type: String, required: true })
+  value: string[];
 }
 
 // Product attributes group

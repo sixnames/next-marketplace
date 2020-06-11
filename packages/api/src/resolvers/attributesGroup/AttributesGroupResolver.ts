@@ -26,7 +26,6 @@ import {
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';
 import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
-import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
@@ -246,10 +245,7 @@ export class AttributesGroupResolver {
         };
       }
 
-      const attribute = await AttributeModel.create({
-        ...values,
-        slug: generateDefaultLangSlug(values.name),
-      });
+      const attribute = await AttributeModel.create(values);
       if (!attribute) {
         return {
           success: false,

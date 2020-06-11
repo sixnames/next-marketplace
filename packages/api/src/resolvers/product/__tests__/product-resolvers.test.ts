@@ -7,8 +7,7 @@ describe('Product', () => {
     const { query } = await getTestClientWithUser({});
 
     const {
-      // data: { getAllProducts },
-      data: test,
+      data: { getAllProducts },
     } = await query(
       `
       query GetAllProducts($input: ProductPaginateInput!){
@@ -30,6 +29,7 @@ describe('Product', () => {
               }
               attributes {
                 showInCard
+                key
                 node {
                   id
                   nameString
@@ -61,8 +61,8 @@ describe('Product', () => {
         },
       },
     );
-
-    console.log(JSON.stringify(test, null, 2));
+    expect(getAllProducts.docs).toHaveLength(3);
+    expect(getAllProducts.totalDocs).toEqual(3);
 
     /*
     const {

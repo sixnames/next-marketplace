@@ -29,11 +29,11 @@ type AssetType {
 
 type Attribute {
   id: ID!
+  itemId: Int!
   metric: Metric
   name: [LanguageType!]!
   nameString: String!
   options: OptionsGroup
-  slug: String!
   variant: AttributeVariantEnum!
 }
 
@@ -109,9 +109,6 @@ input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
 }
-
-"""JSON object"""
-scalar JSONObject
 
 input LangInput {
   key: String!
@@ -237,9 +234,10 @@ type Product {
 }
 
 type ProductAttribute {
+  key: Int!
   node: Attribute!
   showInCard: Boolean!
-  value: JSONObject!
+  value: [String!]!
 }
 
 type ProductAttributesGroup {

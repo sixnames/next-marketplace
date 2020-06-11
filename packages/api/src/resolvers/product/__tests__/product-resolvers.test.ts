@@ -209,16 +209,15 @@ describe('Product', () => {
         };
       },
     });
-    console.log(createProduct);
-    // const { product, success } = createProduct;
+    const { product, success } = createProduct;
 
-    // expect(success).toBeTruthy();
-    // expect(product.name).toEqual(testProduct.name[0].value);
-    // expect(product.cardName).toEqual(testProduct.cardName[0].value);
-    // expect(product.description).toEqual(testProduct.description[0].value);
-    // expect(product.price).toEqual(testProduct.price);
-    // expect(product.rubrics).toEqual([rubricLevelTree.id]);
-    // expect(product.assets).toHaveLength(1);
+    expect(success).toBeTruthy();
+    expect(product.name).toEqual(testProduct.name[0].value);
+    expect(product.cardName).toEqual(testProduct.cardName[0].value);
+    expect(product.description).toEqual(testProduct.description[0].value);
+    expect(product.price).toEqual(testProduct.price);
+    expect(product.rubrics).toEqual([rubricLevelTree.id]);
+    expect(product.assets).toHaveLength(3);
   });
 
   /*it(`Should update product.`, async function () {

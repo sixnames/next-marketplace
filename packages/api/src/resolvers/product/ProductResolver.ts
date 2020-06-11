@@ -65,22 +65,42 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { assets, cardName } = input;
-      const slug = generateDefaultLangSlug(cardName);
-      const assetsUrls = await storeUploads({ files: assets, slug });
-      console.log(assetsUrls);
+      const { assets, ...values } = input;
+      const slug = generateDefaultLangSlug(values.cardName);
+      const assetsResult = await storeUploads({ files: assets, slug });
+
       const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
-      console.log(city, lang);
+      // const lang = ctx.req.session!.lang;
+
+      const product = await ProductModel.create({
+        cities: [
+          {
+            key: city,
+            node: {
+              ...values,
+              slug,
+              assets: assetsResult,
+            },
+          },
+        ],
+      });
+      // TODO translations
+      if (!product) {
+        return {
+          success: false,
+          message: 'Ошибка создания товара.',
+        };
+      }
 
       return {
-        success: false,
-        message: 'error',
+        success: true,
+        message: 'Товар создан.',
+        product,
       };
     } catch (e) {
       return {
         success: false,
-        message: 'error',
+        message: 'Ошибка создания товара.',
       };
     }
   }

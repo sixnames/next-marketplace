@@ -1,4 +1,4 @@
-import { getTestClientWithUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
 import { MOCK_RUBRIC_TYPE_EQUIPMENT } from '@rg/config';
 

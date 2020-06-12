@@ -160,6 +160,7 @@ type Mutation {
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
+  deleteProduct(id: ID!): ProductPayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!

@@ -1,4 +1,4 @@
-import { getTestClientWithUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../../config';
 import { max, alex } from '../__fixtures__';
 

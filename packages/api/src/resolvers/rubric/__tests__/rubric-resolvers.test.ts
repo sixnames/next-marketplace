@@ -1,5 +1,5 @@
 import { anotherRubric, testRubric } from '../__fixtures__';
-import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '@rg/config';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';

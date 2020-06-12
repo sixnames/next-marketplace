@@ -1,4 +1,4 @@
-import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { stringAttribute } from '../__fixtures__';
 import { AttributeModel } from '../../../entities/Attribute';
 

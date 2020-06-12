@@ -96,7 +96,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: 'exists.',
+          message: 'Товар с указанным именем уже существует.',
         };
       }
 
@@ -169,7 +169,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: 'exists.',
+          message: 'Товар с указанным именем уже существует.',
         };
       }
 
@@ -203,6 +203,77 @@ export class ProductResolver {
         success: true,
         message: 'Товар обновлён.',
         product,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: 'Ошибка обновления товара.',
+      };
+    }
+  }
+
+  @Mutation(() => ProductPayloadType)
+  async deleteProduct(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', () => ID) id: string,
+  ): Promise<ProductPayloadType> {
+    try {
+      // TODO translations and validation
+      const city = ctx.req.session!.city;
+      // const lang = ctx.req.session!.lang;
+
+      const product = await ProductModel.findOne({
+        _id: id,
+        'cities.key': city,
+      });
+
+      if (!product) {
+        return {
+          success: false,
+          message: 'Товар не найден.',
+        };
+      }
+
+      if (product.cities.length === 1) {
+        const removed = ProductModel.findByIdAndDelete(id);
+
+        if (!removed) {
+          return {
+            success: false,
+            message: 'Ошибка удаления товара.',
+          };
+        }
+
+        return {
+          success: true,
+          message: 'Товар удалён.',
+        };
+      }
+
+      const removed = ProductModel.updateOne(
+        {
+          _id: id,
+          'cities.key': city,
+        },
+        {
+          $pull: {
+            cities: {
+              key: city,
+            },
+          },
+        },
+      );
+
+      if (!removed) {
+        return {
+          success: false,
+          message: 'Ошибка удаления товара.',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'Товар удалён.',
       };
     } catch (e) {
       return {

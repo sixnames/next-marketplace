@@ -1,5 +1,5 @@
 import { newOption } from '../__fixtures__';
-import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { OptionModel } from '../../../entities/Option';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';

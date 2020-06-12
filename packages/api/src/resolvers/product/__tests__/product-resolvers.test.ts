@@ -1,16 +1,11 @@
-import { getTestClientWithUser, mutateWithImages } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithUser, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { anotherProduct, testProduct } from '../__fixtures__';
-import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
-} from '@rg/config';
 import { Upload } from '../../../types/upload';
+import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
-    const { query } = await getTestClientWithUser({});
+    const { query, mutate } = await getTestClientWithUser({});
 
     // Should return paginated products.
     const {
@@ -118,42 +113,7 @@ describe('Product', () => {
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.name).toEqual(currentProduct.name);
 
-    const productAttributes = {
-      attributesSource: rubricLevelTwo.id,
-      attributesGroups: rubricLevelTwo.attributesGroups.map(({ node }: { [key: string]: any }) => {
-        const { id, attributes } = node;
-        return {
-          node: id,
-          showInCard: true,
-          attributes: attributes.map(({ id, itemId, variant, options }: { [key: string]: any }) => {
-            let value = [];
-
-            if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) {
-              value = options.options.map(({ id }: { id: string }) => id);
-            }
-
-            if (variant === ATTRIBUTE_TYPE_SELECT) {
-              value = options.options[0].id;
-            }
-
-            if (variant === ATTRIBUTE_TYPE_STRING) {
-              value = ['string'];
-            }
-
-            if (variant === ATTRIBUTE_TYPE_NUMBER) {
-              value = ['123'];
-            }
-
-            return {
-              node: id,
-              showInCard: true,
-              key: itemId,
-              value,
-            };
-          }),
-        };
-      }),
-    };
+    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
 
     // Should create product.
     const {
@@ -285,68 +245,27 @@ describe('Product', () => {
     expect(updatedProduct.price).toEqual(anotherProduct.price);
     expect(updatedProduct.rubrics).toEqual([rubricLevelTree.id]);
     expect(updatedProduct.assets).toHaveLength(3);
-  });
 
-  /*it(`Should update product.`, async function () {
-    const { mutate } = await getTestClientWithAuthenticatedUser();
-    const createdProduct = await Product.create(testProduct);
-
-    const {
-      data: {
-        updateProduct: { success, product },
-      },
-    } = await mutate(
-      `
-      mutation UpdateProduct($input: UpdateProductInput!){
-        updateProduct(input: $input) {
-          success
-          product {
-            id
-            name
-          }
-        }
-      }
-    `,
-      {
-        variables: {
-          input: {
-            id: createdProduct.id,
-            name: anotherProduct.name,
-          },
-        },
-      },
-    );
-
-    expect(success).toBeTruthy();
-    expect(product.name).toEqual(anotherProduct.name);
-    expect(product.id).toEqual(createdProduct.id);
-  });*/
-
-  /*it(`Should delete product.`, async function () {
-    const createdProduct = await Product.create(testProduct);
-    const { mutate } = await getTestClientWithAuthenticatedUser();
-
+    // Should delete product
     const {
       data: {
         deleteProduct: { success },
       },
     } = await mutate(
       `
-    mutation DeleteProduct($input: DeleteProductInput!){
-      deleteProduct(input: $input) {
-        success
-      }
-    }
-  `,
+        mutation DeleteProduct($id: ID!){
+          deleteProduct(id: $id) {
+            success
+          }
+        }
+      `,
       {
         variables: {
-          input: {
-            id: createdProduct.id,
-          },
+          id: updatedProduct.id,
         },
       },
     );
 
     expect(success).toBeTruthy();
-  });*/
+  });
 });

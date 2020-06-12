@@ -1,5 +1,5 @@
 import { MOCK_OPTIONS, MOCK_OPTIONS_GROUP } from '@rg/config';
-import { getTestClientWithAuthenticatedUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';

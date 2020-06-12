@@ -1,4 +1,4 @@
-import { getTestClientWithUser } from '../../../utils/test-data/testHelpers';
+import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { MOCK_METRICS } from '@rg/config';
 import { Metric } from '../../../entities/Metric';
 

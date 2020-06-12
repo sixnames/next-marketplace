@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import { DB_OPTIONS } from '../src/config';
 import createApp from '../src/app';
 import { createTestClient } from 'apollo-server-integration-testing';
-import createTestData from '../src/utils/test-data/createTestData';
-import clearTestData from '../src/utils/test-data/clearTestData';
+import createTestData from '../src/utils/testUtils/createTestData';
+import clearTestData from '../src/utils/testUtils/clearTestData';
 
 const { server } = createApp();
 

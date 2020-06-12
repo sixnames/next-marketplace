@@ -1,5 +1,5 @@
 import { getTestClientWithUser, mutateWithImages } from '../../../utils/test-data/testHelpers';
-import { testProduct } from '../__fixtures__';
+import { anotherProduct, testProduct } from '../__fixtures__';
 import {
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
   ATTRIBUTE_TYPE_NUMBER,
@@ -209,9 +209,10 @@ describe('Product', () => {
         };
       },
     });
-    const { product: createdProduct, success } = createProduct;
 
-    expect(success).toBeTruthy();
+    const { product: createdProduct, success: createSuccess } = createProduct;
+
+    expect(createSuccess).toBeTruthy();
     expect(createdProduct.name).toEqual(testProduct.name[0].value);
     expect(createdProduct.cardName).toEqual(testProduct.cardName[0].value);
     expect(createdProduct.description).toEqual(testProduct.description[0].value);
@@ -220,6 +221,70 @@ describe('Product', () => {
     expect(createdProduct.assets).toHaveLength(3);
 
     // Should update product.
+    const {
+      data: { updateProduct },
+    } = await mutateWithImages({
+      mutation: `
+          mutation UpdateProduct($input: UpdateProductInput!) {
+            updateProduct(input: $input) {
+              success
+              message
+              product {
+                id
+                itemId
+                name
+                cardName
+                slug
+                description
+                rubrics
+                attributesSource
+                attributesGroups {
+                  showInCard
+                  node {
+                    id
+                    nameString
+                  }
+                  attributes {
+                    showInCard
+                    key
+                    node {
+                      id
+                      nameString
+                    }
+                    value
+                  }
+                }
+                assets {
+                  index
+                  url
+                }
+                price
+              }
+            }
+          }`,
+      input: (images: Promise<Upload>[]) => {
+        return {
+          id: createdProduct.id,
+          name: anotherProduct.name,
+          cardName: anotherProduct.cardName,
+          price: anotherProduct.price,
+          description: anotherProduct.description,
+          rubrics: [rubricLevelTree.id],
+          assets: images,
+          ...productAttributes,
+        };
+      },
+    });
+
+    const { product: updatedProduct, success: updateSuccess } = updateProduct;
+
+    expect(updateSuccess).toBeTruthy();
+    expect(updatedProduct.name).toEqual(anotherProduct.name[0].value);
+    expect(updatedProduct.cardName).toEqual(anotherProduct.cardName[0].value);
+    expect(updatedProduct.description).toEqual(anotherProduct.description[0].value);
+    expect(updatedProduct.price).toEqual(anotherProduct.price);
+    expect(updatedProduct.rubrics).toEqual([rubricLevelTree.id]);
+    expect(updatedProduct.assets).toHaveLength(3);
   });
 
   /*it(`Should update product.`, async function () {

@@ -372,19 +372,14 @@ export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
 };
 
 // Products
-export const MOCK_PRODUCT_IMAGES = [
-  './cypress/fixtures/test-image-1.jpg',
-  './cypress/fixtures/test-image-2.jpg',
-];
-
 export const MOCK_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-product' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-product' },
   ],
   price: 100,
   description: [
@@ -396,11 +391,11 @@ export const MOCK_PRODUCT = {
 export const MOCK_PRODUCT_FOR_DELETE = {
   name: [
     { key: 'ru', value: 'cy-test-product-for-delete' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-product-for-delete' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-product-for-delete' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-product-for-delete' },
   ],
   price: 200,
   description: [
@@ -412,11 +407,11 @@ export const MOCK_PRODUCT_FOR_DELETE = {
 export const MOCK_PRODUCT_B_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-b-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-b-product' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-b-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-b-product' },
   ],
   price: 100,
   description: [
@@ -428,11 +423,11 @@ export const MOCK_PRODUCT_B_PRODUCT = {
 export const MOCK_PRODUCT_NEW_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-new-product' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-new-product' },
   ],
   price: 2000,
   description: [

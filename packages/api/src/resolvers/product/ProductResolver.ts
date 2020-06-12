@@ -74,6 +74,32 @@ export class ProductResolver {
       const city = ctx.req.session!.city;
       // const lang = ctx.req.session!.lang;
 
+      const nameValues = input.name.map(({ value }) => value);
+      const cardNameValues = input.cardName.map(({ value }) => value);
+      const exists = await ProductModel.exists({
+        $or: [
+          {
+            'cities.key': city,
+            'cities.node.name.value': {
+              $in: nameValues,
+            },
+          },
+          {
+            'cities.key': city,
+            'cities.node.cardName.value': {
+              $in: cardNameValues,
+            },
+          },
+        ],
+      });
+
+      if (exists) {
+        return {
+          success: false,
+          message: 'exists.',
+        };
+      }
+
       const product = await ProductModel.create({
         cities: [
           {
@@ -160,6 +186,9 @@ export class ProductResolver {
               assets: assetsResult,
             },
           },
+        },
+        {
+          new: true,
         },
       );
 

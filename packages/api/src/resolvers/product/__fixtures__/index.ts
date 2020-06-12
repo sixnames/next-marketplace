@@ -1,11 +1,11 @@
 export const testProduct = {
   name: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-new-product' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-new-product' },
   ],
   price: 200,
   description: [
@@ -17,11 +17,11 @@ export const testProduct = {
 export const anotherProduct = {
   name: [
     { key: 'ru', value: 'cy-test-another-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-another-product' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-another-product' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'cy-test-another-product' },
   ],
   price: 200,
   description: [

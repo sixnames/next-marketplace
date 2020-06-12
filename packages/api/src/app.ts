@@ -23,6 +23,7 @@ import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
 import { ProductResolver } from './resolvers/product/ProductResolver';
 import path from 'path';
+import { getSharpImage } from './utils/assets/getSharpImage';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -65,6 +66,29 @@ const createApp = () => {
     req.session!.city = city ? city : DEFAULT_CITY;
     req.session!.lang = DEFAULT_LANG;
     next();
+  });
+
+  // Assets
+  app.get('/assets/*', (req, res) => {
+    // Extract the query-parameter
+    const widthString = (req.query.width as string) || undefined;
+    const heightString = (req.query.height as string) || undefined;
+    const format = (req.query.format as string) || 'webp';
+    const path = req.path;
+
+    // Parse to integer if possible
+    let width, height;
+    if (widthString) {
+      width = parseInt(widthString);
+    }
+    if (heightString) {
+      height = parseInt(heightString);
+    }
+    // Set the content-type of the response
+    res.type(`image/${format}`);
+
+    // Get the resized image
+    getSharpImage({ path, format, width, height }).pipe(res);
   });
 
   // app.use(IMAGES_DIRECTORY_NAME, express.static(path.join(__dirname, '../../web/src/images')));

@@ -22,7 +22,7 @@ import getLangField from '../../utils/getLangField';
 import { AssetType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
-import storeUploads from '../../utils/storeUploads';
+import storeUploads from '../../utils/assets/storeUploads';
 import { generateDefaultLangSlug } from '../../utils/slug';
 
 @ObjectType()

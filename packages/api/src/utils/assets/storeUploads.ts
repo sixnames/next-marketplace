@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import fs, { ReadStream } from 'fs';
 import mkdirp from 'mkdirp';
-import { Upload } from '../types/upload';
+import { Upload } from '../../types/upload';
 
 export interface StoreUploadsInterface {
   files: Upload[];
@@ -42,7 +42,7 @@ function getBufferFromFileStream(stream: ReadStream) {
 
 const storeUploads = async ({ files, slug }: StoreUploadsInterface): Promise<AssetInterface[]> => {
   const filesPath = `./assets/${slug}`;
-  const filesResolvePath = `/images/${slug}`;
+  const filesResolvePath = `/assets/${slug}`;
   const exists = fs.existsSync(filesPath);
   if (!exists) {
     await mkdirp(filesPath);

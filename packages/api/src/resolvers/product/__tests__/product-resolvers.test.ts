@@ -248,14 +248,13 @@ describe('Product', () => {
 
     // Should delete product
     const {
-      data: {
-        deleteProduct: { success },
-      },
+      data: { deleteProduct },
     } = await mutate(
       `
         mutation DeleteProduct($id: ID!){
           deleteProduct(id: $id) {
             success
+            message
           }
         }
       `,
@@ -266,6 +265,6 @@ describe('Product', () => {
       },
     );
 
-    expect(success).toBeTruthy();
+    expect(deleteProduct.success).toBeTruthy();
   });
 });

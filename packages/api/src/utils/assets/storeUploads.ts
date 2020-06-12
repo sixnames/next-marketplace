@@ -7,6 +7,7 @@ import del from 'del';
 export interface StoreUploadsInterface {
   files: Upload[];
   slug: string;
+  city: string;
 }
 
 export interface AssetInterface {
@@ -41,9 +42,13 @@ function getBufferFromFileStream(stream: ReadStream) {
   });
 }
 
-const storeUploads = async ({ files, slug }: StoreUploadsInterface): Promise<AssetInterface[]> => {
-  const filesPath = `./assets/${slug}`;
-  const filesResolvePath = `/assets/${slug}`;
+const storeUploads = async ({
+  files,
+  slug,
+  city,
+}: StoreUploadsInterface): Promise<AssetInterface[]> => {
+  const filesPath = `./assets/${city}/${slug}`;
+  const filesResolvePath = `/assets/${city}/${slug}`;
   const exists = fs.existsSync(filesPath);
   if (!exists) {
     // Create directory if not exists

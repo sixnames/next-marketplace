@@ -25,6 +25,7 @@ import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateProductInput } from './UpdateProductInput';
+import del from 'del';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
@@ -67,12 +68,12 @@ export class ProductResolver {
   ): Promise<ProductPayloadType> {
     try {
       // TODO translations and validation
-      const { assets, ...values } = input;
-      const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug });
-
       const city = ctx.req.session!.city;
       // const lang = ctx.req.session!.lang;
+
+      const { assets, ...values } = input;
+      const slug = generateDefaultLangSlug(values.cardName);
+      const assetsResult = await storeUploads({ files: assets, slug, city });
 
       const nameValues = input.name.map(({ value }) => value);
       const cardNameValues = input.cardName.map(({ value }) => value);
@@ -140,12 +141,12 @@ export class ProductResolver {
   ): Promise<ProductPayloadType> {
     try {
       // TODO translations and validation
-      const { id, assets, ...values } = input;
-      const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug });
-
       const city = ctx.req.session!.city;
       // const lang = ctx.req.session!.lang;
+
+      const { id, assets, ...values } = input;
+      const slug = generateDefaultLangSlug(values.cardName);
+      const assetsResult = await storeUploads({ files: assets, slug, city });
 
       const nameValues = input.name.map(({ value }) => value);
       const cardNameValues = input.cardName.map(({ value }) => value);
@@ -173,7 +174,25 @@ export class ProductResolver {
         };
       }
 
-      const product = await ProductModel.findOneAndUpdate(
+      const product = await ProductModel.findById(id);
+      if (!product) {
+        return {
+          success: false,
+          message: 'Товар не найден.',
+        };
+      }
+
+      const currentCity = getCityData(product.cities, city);
+      const filesPath = `./assets/${city}/${currentCity!.node.slug}`;
+      const removedAssets = await del(filesPath);
+      if (!removedAssets.length) {
+        return {
+          success: false,
+          message: 'Ошибка изображений товара.',
+        };
+      }
+
+      const updatedProduct = await ProductModel.findOneAndUpdate(
         {
           _id: id,
           'cities.key': city,
@@ -192,7 +211,7 @@ export class ProductResolver {
         },
       );
 
-      if (!product) {
+      if (!updatedProduct) {
         return {
           success: false,
           message: 'Ошибка обновления товара.',
@@ -202,7 +221,7 @@ export class ProductResolver {
       return {
         success: true,
         message: 'Товар обновлён.',
-        product,
+        product: updatedProduct,
       };
     } catch (e) {
       return {
@@ -234,10 +253,14 @@ export class ProductResolver {
         };
       }
 
-      if (product.cities.length === 1) {
-        const removed = ProductModel.findByIdAndDelete(id);
+      const currentCity = getCityData(product.cities, city);
+      const filesPath = `./assets/${city}/${currentCity!.node.slug}`;
 
-        if (!removed) {
+      if (product.cities.length === 1) {
+        const removed = await ProductModel.findByIdAndDelete(id);
+        const removedAssets = await del(filesPath);
+
+        if (!removed || !removedAssets) {
           return {
             success: false,
             message: 'Ошибка удаления товара.',
@@ -250,7 +273,7 @@ export class ProductResolver {
         };
       }
 
-      const removed = ProductModel.updateOne(
+      const removed = await ProductModel.updateOne(
         {
           _id: id,
           'cities.key': city,
@@ -264,7 +287,9 @@ export class ProductResolver {
         },
       );
 
-      if (!removed) {
+      const removedAssets = await del(filesPath);
+
+      if (!removed.ok || !removedAssets) {
         return {
           success: false,
           message: 'Ошибка удаления товара.',

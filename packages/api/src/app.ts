@@ -84,14 +84,13 @@ const createApp = () => {
     if (heightString) {
       height = parseInt(heightString);
     }
+
     // Set the content-type of the response
     res.type(`image/${format}`);
 
-    // Get the resized image
+    // Get the processed image
     getSharpImage({ path, format, width, height }).pipe(res);
   });
-
-  // app.use(IMAGES_DIRECTORY_NAME, express.static(path.join(__dirname, '../../web/src/images')));
 
   const server = new ApolloServer({
     ...APOLLO_OPTIONS,

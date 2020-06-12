@@ -28,6 +28,7 @@ import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { createProductSchema, updateProductSchema } from '@rg/validation';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
@@ -69,7 +70,8 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO validation
+      await createProductSchema.validate(input);
+
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
 
@@ -142,7 +144,8 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO validation
+      await updateProductSchema.validate(input);
+
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
 

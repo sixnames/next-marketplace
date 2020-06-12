@@ -9,3 +9,4 @@ export * from './user';
 export * from './metric';
 export * from './rubricVariant';
 export * from './rubric';
+export * from './product';

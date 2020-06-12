@@ -38,6 +38,7 @@ import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInp
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 import { getMessageTranslation } from '../../config/translations';
+import { ProductModel } from '../../entities/Product';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -235,16 +236,23 @@ export class RubricResolver {
 
       // If rubric exists in one city
       if (rubric.cities.length === 1) {
-        // TODO after products
-        /*const updatedProducts = await Product.updateMany(
-          { rubrics: { $in: allRubrics } },
-          { $pull: { rubrics: { $in: allRubrics } } },
-        );*/
+        const updatedProducts = await ProductModel.updateMany(
+          {
+            'cities.key': city,
+            'cities.node.rubrics': { $in: allRubrics },
+          },
+          {
+            $pull: {
+              'cities.$.node.rubrics': {
+                $in: allRubrics,
+              },
+            },
+          },
+        );
 
         const removed = await RubricModel.deleteMany({ _id: { $in: allRubrics } });
 
-        // if (!removed || !updatedProducts) {
-        if (!removed) {
+        if (!removed.ok || !updatedProducts.ok) {
           return {
             success: false,
             message: getMessageTranslation(`rubric.delete.error.${lang}`),
@@ -258,11 +266,19 @@ export class RubricResolver {
       }
 
       // If rubric exists in multiple cities
-      // TODO after products
-      /*const updatedProducts = await Product.updateMany(
-        { rubrics: { $in: allRubrics } },
-        { $pull: { rubrics: { $in: allRubrics } } },
-      );*/
+      const updatedProducts = await ProductModel.updateMany(
+        {
+          'cities.key': city,
+          'cities.node.rubrics': { $in: allRubrics },
+        },
+        {
+          $pull: {
+            'cities.$.node.rubrics': {
+              $in: allRubrics,
+            },
+          },
+        },
+      );
 
       const removed = await RubricModel.updateMany(
         {
@@ -278,8 +294,7 @@ export class RubricResolver {
         },
       );
 
-      // if (!removed || !updatedProducts) {
-      if (!removed) {
+      if (!removed.ok || !updatedProducts.ok) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.delete.error.${lang}`),

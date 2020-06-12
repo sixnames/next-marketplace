@@ -242,7 +242,6 @@ export class ProductResolver {
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO  validation
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
 

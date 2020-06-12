@@ -2,6 +2,7 @@ import sharp from 'sharp';
 import fs, { ReadStream } from 'fs';
 import mkdirp from 'mkdirp';
 import { Upload } from '../../types/upload';
+import del from 'del';
 
 export interface StoreUploadsInterface {
   files: Upload[];
@@ -45,6 +46,11 @@ const storeUploads = async ({ files, slug }: StoreUploadsInterface): Promise<Ass
   const filesResolvePath = `/assets/${slug}`;
   const exists = fs.existsSync(filesPath);
   if (!exists) {
+    // Create directory if not exists
+    await mkdirp(filesPath);
+  } else {
+    // Clear directory if exists
+    await del(filesPath);
     await mkdirp(filesPath);
   }
 

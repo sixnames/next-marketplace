@@ -171,6 +171,7 @@ type Mutation {
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
+  updateProduct(input: UpdateProductInput!): ProductPayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
@@ -438,6 +439,18 @@ input UpdateOptionInGroupInput {
 input UpdateOptionsGroupInput {
   id: ID!
   name: [LangInput!]!
+}
+
+input UpdateProductInput {
+  assets: [Upload!]!
+  attributesGroups: [ProductAttributesGroupInput!]!
+  attributesSource: ID!
+  cardName: [LangInput!]!
+  description: [LangInput!]!
+  id: ID!
+  name: [LangInput!]!
+  price: Int!
+  rubrics: [ID!]!
 }
 
 input UpdateRubricInput {

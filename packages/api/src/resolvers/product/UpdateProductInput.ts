@@ -5,7 +5,10 @@ import { Upload } from '../../types/upload';
 import { ProductAttributesGroupInput } from '../common/ProductAttributesGroupInput';
 
 @InputType()
-export class CreateProductInput {
+export class UpdateProductInput {
+  @Field(() => ID)
+  id: string;
+
   @Field(() => [LangInput])
   name: LangInput[];
 

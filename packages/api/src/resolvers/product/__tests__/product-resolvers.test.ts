@@ -69,7 +69,7 @@ describe('Product', () => {
       },
     );
     const allProducts = getAllProducts.docs;
-    const createdProduct = allProducts[0];
+    const currentProduct = allProducts[0];
     expect(allProducts).toHaveLength(3);
     expect(getAllProducts.totalDocs).toEqual(3);
 
@@ -78,7 +78,7 @@ describe('Product', () => {
       data: { getProduct, getRubricsTree },
     } = await query(`
       query {
-        getProduct(id: "${createdProduct.id}") {
+        getProduct(id: "${currentProduct.id}") {
           id
           name
         }
@@ -115,8 +115,8 @@ describe('Product', () => {
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelTree = rubricLevelTwo.children[0];
-    expect(getProduct.id).toEqual(createdProduct.id);
-    expect(getProduct.name).toEqual(createdProduct.name);
+    expect(getProduct.id).toEqual(currentProduct.id);
+    expect(getProduct.name).toEqual(currentProduct.name);
 
     const productAttributes = {
       attributesSource: rubricLevelTwo.id,
@@ -209,15 +209,17 @@ describe('Product', () => {
         };
       },
     });
-    const { product, success } = createProduct;
+    const { product: createdProduct, success } = createProduct;
 
     expect(success).toBeTruthy();
-    expect(product.name).toEqual(testProduct.name[0].value);
-    expect(product.cardName).toEqual(testProduct.cardName[0].value);
-    expect(product.description).toEqual(testProduct.description[0].value);
-    expect(product.price).toEqual(testProduct.price);
-    expect(product.rubrics).toEqual([rubricLevelTree.id]);
-    expect(product.assets).toHaveLength(3);
+    expect(createdProduct.name).toEqual(testProduct.name[0].value);
+    expect(createdProduct.cardName).toEqual(testProduct.cardName[0].value);
+    expect(createdProduct.description).toEqual(testProduct.description[0].value);
+    expect(createdProduct.price).toEqual(testProduct.price);
+    expect(createdProduct.rubrics).toEqual([rubricLevelTree.id]);
+    expect(createdProduct.assets).toHaveLength(3);
+
+    // Should update product.
   });
 
   /*it(`Should update product.`, async function () {

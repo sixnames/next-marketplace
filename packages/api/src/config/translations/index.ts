@@ -5,8 +5,10 @@ import rubricVariantTranslations from './rubricVariantTranslations';
 import optionsGroupTranslations from './optionsGroupTranslations';
 import attributesGroupTranslations from './attributesGroupTranslations';
 import rubricTranslations from './rubricTranslations';
+import productTranslations from './productTranslations';
 
 export const translations = {
+  ...productTranslations,
   ...userTranslations,
   ...metricTranslations,
   ...rubricVariantTranslations,

@@ -26,6 +26,8 @@ import storeUploads from '../../utils/assets/storeUploads';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
+import { getMessageTranslation } from '../../config/translations';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 
 @ObjectType()
 class PaginatedProductsResponse extends PaginateType(Product) {}
@@ -67,9 +69,9 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO translations and validation
+      // TODO validation
       const city = ctx.req.session!.city;
-      // const lang = ctx.req.session!.lang;
+      const lang = ctx.req.session!.lang;
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -97,7 +99,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: 'Товар с указанным именем уже существует.',
+          message: getMessageTranslation(`product.create.duplicate.${lang}`),
         };
       }
 
@@ -117,19 +119,19 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: 'Ошибка создания товара.',
+          message: getMessageTranslation(`product.create.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Товар создан.',
+        message: getMessageTranslation(`product.create.success.${lang}`),
         product,
       };
     } catch (e) {
       return {
         success: false,
-        message: 'Ошибка создания товара.',
+        message: getResolverErrorMessage(e),
       };
     }
   }
@@ -140,9 +142,9 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO translations and validation
+      // TODO validation
       const city = ctx.req.session!.city;
-      // const lang = ctx.req.session!.lang;
+      const lang = ctx.req.session!.lang;
 
       const { id, assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -170,7 +172,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: 'Товар с указанным именем уже существует.',
+          message: getMessageTranslation(`product.update.duplicate.${lang}`),
         };
       }
 
@@ -178,7 +180,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: 'Товар не найден.',
+          message: getMessageTranslation(`product.update.notFound.${lang}`),
         };
       }
 
@@ -188,7 +190,7 @@ export class ProductResolver {
       if (!removedAssets.length) {
         return {
           success: false,
-          message: 'Ошибка изображений товара.',
+          message: getMessageTranslation(`product.update.assetsError.${lang}`),
         };
       }
 
@@ -214,19 +216,19 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: 'Ошибка обновления товара.',
+          message: getMessageTranslation(`product.update.updateError.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Товар обновлён.',
+        message: getMessageTranslation(`product.update.success.${lang}`),
         product: updatedProduct,
       };
     } catch (e) {
       return {
         success: false,
-        message: 'Ошибка обновления товара.',
+        message: getResolverErrorMessage(e),
       };
     }
   }
@@ -237,9 +239,9 @@ export class ProductResolver {
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
-      // TODO translations and validation
+      // TODO  validation
       const city = ctx.req.session!.city;
-      // const lang = ctx.req.session!.lang;
+      const lang = ctx.req.session!.lang;
 
       const product = await ProductModel.findOne({
         _id: id,
@@ -249,7 +251,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: 'Товар не найден.',
+          message: getMessageTranslation(`product.delete.notFound.${lang}`),
         };
       }
 
@@ -263,13 +265,13 @@ export class ProductResolver {
         if (!removed || !removedAssets) {
           return {
             success: false,
-            message: 'Ошибка удаления товара.',
+            message: getMessageTranslation(`product.delete.error.${lang}`),
           };
         }
 
         return {
           success: true,
-          message: 'Товар удалён.',
+          message: getMessageTranslation(`product.delete.success.${lang}`),
         };
       }
 
@@ -292,18 +294,18 @@ export class ProductResolver {
       if (!removed.ok || !removedAssets) {
         return {
           success: false,
-          message: 'Ошибка удаления товара.',
+          message: getMessageTranslation(`product.delete.error.${lang}`),
         };
       }
 
       return {
         success: true,
-        message: 'Товар удалён.',
+        message: getMessageTranslation(`product.delete.success.${lang}`),
       };
     } catch (e) {
       return {
         success: false,
-        message: 'Ошибка обновления товара.',
+        message: getResolverErrorMessage(e),
       };
     }
   }

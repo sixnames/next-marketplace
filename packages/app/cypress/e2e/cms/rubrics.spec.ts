@@ -10,11 +10,13 @@ import {
   MOCK_RUBRIC_TYPE_STAGE,
 } from '@rg/config';
 
-const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name;
-const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name;
-const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name;
-const mockRubricType = MOCK_RUBRIC_TYPE_EQUIPMENT.name;
+const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
+const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
+const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockNewRubric = 'cy-test-new-rubric';
+
+const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
+const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
 
 describe('Rubrics', () => {
   beforeEach(() => {
@@ -25,37 +27,97 @@ describe('Rubrics', () => {
         Initial: {
           me: ME_AS_ADMIN,
         },
+        GetAllRubricVariants: {
+          getAllRubricVariants: [
+            {
+              id: '11',
+              nameString: mockRubricVariantName,
+            },
+            {
+              id: '22',
+              nameString: mockRubricVariantNameForDelete,
+            },
+          ],
+        },
+        GetRubricsTree: {
+          getRubricsTree: [
+            {
+              id: '1',
+              name: mockRubricLevelOneName,
+              level: 1,
+              variant: {
+                id: '11',
+                nameString: mockRubricVariantName,
+              },
+              totalProductsCount: 1,
+              activeProductsCount: 1,
+              children: [
+                {
+                  id: '2',
+                  name: mockRubricLevelTwoName,
+                  level: 2,
+                  variant: null,
+                  totalProductsCount: 1,
+                  activeProductsCount: 1,
+                  children: [
+                    {
+                      id: '3',
+                      name: mockRubricLevelThreeName,
+                      level: 3,
+                      variant: null,
+                      totalProductsCount: 1,
+                      activeProductsCount: 1,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        CreateRubric: {
+          createRubric: {
+            success: true,
+            message: 'true',
+            rubric: {
+              id: '4',
+              name: mockNewRubric,
+              level: 1,
+              variant: {
+                id: '11',
+                nameString: mockRubricVariantName,
+              },
+              totalProductsCount: 0,
+              activeProductsCount: 0,
+              children: [],
+            },
+          },
+        },
       },
     });
 
     cy.visit(`/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
-  it('Should have rubrics list', () => {
+  it('Should CRUD rubrics tree', () => {
+    // Should have rubrics list
     cy.getByCy(`rubrics-tree`).should('exist');
-  });
 
-  /*it('Should show validation errors on new rubric creation', () => {
+    // Should show validation errors on new rubric creation
     cy.getByCy(`create-rubric`).click();
     cy.getByCy(`create-rubric-modal`).should('exist');
-
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`name-error`).should('exist');
-    cy.getByCy(`catalogueName-error`).should('exist');
-    cy.getByCy(`type-error`).should('exist');
-  });*/
+    cy.getByCy(`name[0].value-error`).should('exist');
+    cy.getByCy(`catalogueName[0].value-error`).should('exist');
+    cy.getByCy(`variant-error`).should('exist');
 
-  /*it('Should create a new rubric', () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
+    // Should create a new rubric on first level
     cy.getByCy(`rubric-name`).type(mockNewRubric);
     cy.getByCy(`catalogue-name`).type(mockNewRubric);
-    cy.selectOptionByTestId(`rubric-type`, mockRubricType[0].value);
+    cy.getByCy(`rubric-variant`).select('11');
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.getByCy(`${mockNewRubric}`).should('exist');
-  });*/
+    // cy.getByCy(`tree-${mockNewRubric}`).should('exist');
+  });
 
   /*it(`Shouldn't create a new rubric if exists on first level`, () => {
     cy.getByCy(`create-rubric`).click();

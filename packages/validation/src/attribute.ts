@@ -8,8 +8,10 @@ import {
 
 const options = Yup.string()
   .nullable()
-  .when('type', {
-    is: (type) => type === ATTRIBUTE_TYPE_SELECT || type === ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  .when('variant', {
+    is: (variant) => {
+      return variant === ATTRIBUTE_TYPE_SELECT || variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT;
+    },
     then: Yup.string().required('Группа опций обязательна к заполнению.'),
     otherwise: Yup.string(),
   });

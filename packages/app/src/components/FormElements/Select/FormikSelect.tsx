@@ -50,7 +50,7 @@ const FormikSelect: React.FC<FormikSelectInterface> = ({
               notValid={notValid}
             />
 
-            {showInlineError && <FieldErrorMessage name={name} />}
+            {showInlineError && notValid && <FieldErrorMessage name={name} />}
           </div>
         );
       }}

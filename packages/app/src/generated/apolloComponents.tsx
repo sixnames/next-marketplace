@@ -945,28 +945,27 @@ export type CreateRubricMutation = (
     & Pick<RubricPayloadType, 'success' | 'message'>
     & { rubric?: Maybe<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       )>, children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
+        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
         & { variant?: Maybe<(
           { __typename?: 'RubricVariant' }
           & Pick<RubricVariant, 'id' | 'nameString'>
-        )> }
-      )>, parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
-        & { children: Array<(
+        )>, children: Array<(
           { __typename?: 'Rubric' }
-          & Pick<Rubric, 'id' | 'name' | 'level'>
+          & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
           & { variant?: Maybe<(
             { __typename?: 'RubricVariant' }
             & Pick<RubricVariant, 'id' | 'nameString'>
           )> }
         )> }
+      )>, parent?: Maybe<(
+        { __typename?: 'Rubric' }
+        & Pick<Rubric, 'id'>
       )> }
     )> }
   ) }
@@ -1767,6 +1766,8 @@ export const CreateRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
       children {
         id
         name
@@ -1775,11 +1776,8 @@ export const CreateRubricDocument = gql`
           id
           nameString
         }
-      }
-      parent {
-        id
-        name
-        level
+        totalProductsCount
+        activeProductsCount
         children {
           id
           name
@@ -1788,7 +1786,12 @@ export const CreateRubricDocument = gql`
             id
             nameString
           }
+          totalProductsCount
+          activeProductsCount
         }
+      }
+      parent {
+        id
       }
     }
   }

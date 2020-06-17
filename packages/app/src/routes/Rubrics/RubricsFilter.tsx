@@ -36,17 +36,17 @@ const RubricsFilter: React.FC = () => {
           query: RUBRICS_TREE_QUERY,
         });
 
-        if (cacheData && cacheData.getRubricsTree) {
+        if (cacheData && cacheData.getRubricsTree && createdRubric) {
           const { getRubricsTree } = cacheData;
 
           proxy.writeQuery({
             query: RUBRICS_TREE_QUERY,
             data: {
               getRubricsTree:
-                createdRubric?.level === RUBRIC_LEVEL_ONE
-                  ? [...getRubricsTree, createdRubric]
+                createdRubric.level === RUBRIC_LEVEL_ONE
+                  ? getRubricsTree.concat(createdRubric)
                   : updateItemInTree({
-                      target: createdRubric?.parent ? createdRubric?.parent.id : '',
+                      target: createdRubric.parent ? createdRubric.parent.id : '',
                       tree: getRubricsTree,
                       updater: (parent) => ({
                         ...parent,

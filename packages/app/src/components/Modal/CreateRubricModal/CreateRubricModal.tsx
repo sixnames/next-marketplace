@@ -41,9 +41,19 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
       <Formik
         validationSchema={createRubricInputSchema}
         initialValues={{
-          name: '',
-          catalogueName: '',
-          type: null,
+          name: [
+            {
+              key: 'ru',
+              value: '',
+            },
+          ],
+          catalogueName: [
+            {
+              key: 'ru',
+              value: '',
+            },
+          ],
+          variant: null,
           parent: null,
           subParent: null,
         }}
@@ -55,11 +65,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
             result.parent = subParent;
           }
 
-          confirm({
-            ...result,
-            name: [{ key: 'ru', value: result.name }],
-            catalogueName: [{ key: 'ru', value: result.catalogueName }],
-          });
+          confirm(result);
         }}
       >
         {({ values }) => {
@@ -68,21 +74,31 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
 
           return (
             <Form>
-              <FormikInput
-                isRequired
-                showInlineError
-                label={'Название'}
-                name={'name'}
-                testId={'rubric-name'}
-              />
+              {values.name.map((_, index) => {
+                return (
+                  <FormikInput
+                    key={index}
+                    name={`name[${index}].value`}
+                    label={'Название'}
+                    testId={'rubric-name'}
+                    showInlineError
+                    isRequired
+                  />
+                );
+              })}
 
-              <FormikInput
-                isRequired
-                showInlineError
-                label={'Название каталога'}
-                name={'catalogueName'}
-                testId={'catalogue-name'}
-              />
+              {values.name.map((_, index) => {
+                return (
+                  <FormikInput
+                    key={index}
+                    name={`catalogueName[${index}].value`}
+                    label={'Название каталога'}
+                    testId={'catalogue-name'}
+                    showInlineError
+                    isRequired
+                  />
+                );
+              })}
 
               {!parent && (
                 <FormikSelect
@@ -90,8 +106,8 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
                   showInlineError
                   firstOption={'Не выбран'}
                   label={'Тип рубрики'}
-                  name={'type'}
-                  testId={'rubric-type'}
+                  name={'variant'}
+                  testId={'rubric-variant'}
                   options={data?.getAllRubricVariants || []}
                 />
               )}

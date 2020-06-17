@@ -1,4 +1,4 @@
-import { RUBRIC_LEVEL_TWO } from '@rg/config';
+import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '@rg/config';
 
 const rubricTranslations = {
   rubric: {
@@ -78,6 +78,46 @@ const rubricTranslations = {
       success: {
         ru: 'Группа атрибутов удалена из рубрики.',
         en: 'Attributes group removed from rubric.',
+      },
+    },
+    addProduct: {
+      notFound: {
+        ru: 'Товар или Рубрика не найдены.',
+        en: 'Rubric or product not found.',
+      },
+      exists: {
+        ru: 'Товар уже присутствует в группе.',
+        en: 'Product already exists in this group.',
+      },
+      levelError: {
+        ru: `В рубрику не ${RUBRIC_LEVEL_THREE}-го уровня нельзя добавить товар.`,
+        en: `You can't add product to rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
+      },
+      addToProductError: {
+        ru: 'Ошибка добавления товара в рубрику.',
+        en: 'Add product to rubric error.',
+      },
+      success: {
+        ru: 'Товар добавлен в рубрику.',
+        en: 'Product added to the rubric.',
+      },
+    },
+    deleteProduct: {
+      notFound: {
+        ru: 'Товар или Рубрика не найдены.',
+        en: 'Rubric or product not found.',
+      },
+      levelError: {
+        ru: `Из рубрики не ${RUBRIC_LEVEL_THREE}-го уровня нельзя удалить товар.`,
+        en: `You can't delete product from rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
+      },
+      deleteFromProductError: {
+        ru: 'Ошибка удаления товара из рубрики.',
+        en: 'Delete product from rubric error.',
+      },
+      success: {
+        ru: 'Товар удалён из рубрики.',
+        en: 'Product removed from rubric.',
       },
     },
   },

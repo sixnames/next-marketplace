@@ -22,6 +22,11 @@ input AddOptionToGroupInput {
   name: [LangInput!]!
 }
 
+input AddProductToRubricInput {
+  productId: ID!
+  rubricId: ID!
+}
+
 type AssetType {
   index: Int!
   url: String!
@@ -121,6 +126,11 @@ input DeleteOptionFromGroupInput {
   optionId: ID!
 }
 
+input DeleteProductFromRubricInput {
+  productId: ID!
+  rubricId: ID!
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -147,6 +157,7 @@ type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -161,6 +172,7 @@ type Mutation {
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
+  deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
@@ -281,6 +293,7 @@ type ProductCity {
 }
 
 type ProductNode {
+  active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
   attributesSource: ID!
@@ -297,8 +310,8 @@ input ProductPaginateInput {
   noRubrics: Boolean
   notInRubric: ID
   page: Int = 1
-  query: String
   rubric: ID
+  search: String
   sortBy: ProductSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
 }
@@ -322,7 +335,7 @@ type Query {
   ): [AttributesGroup!]!
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
-  getAllProducts(input: ProductPaginateInput!): PaginatedProductsResponse!
+  getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
@@ -341,6 +354,7 @@ type Query {
 
 type Rubric {
   active: Boolean!
+  activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: String!
   children(excluded: [ID!]): [Rubric!]!
@@ -349,7 +363,9 @@ type Rubric {
   level: Int!
   name: String!
   parent: Rubric
+  products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
+  totalProductsCount: Int!
   variant: RubricVariant
 }
 
@@ -378,6 +394,15 @@ type RubricPayloadType {
   message: String!
   rubric: Rubric
   success: Boolean!
+}
+
+input RubricProductPaginateInput {
+  limit: Int = 100
+  notInRubric: ID
+  page: Int = 1
+  search: String
+  sortBy: ProductSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
 }
 
 type RubricVariant {
@@ -501,7 +526,7 @@ type User {
 input UserPaginateInput {
   limit: Int = 100
   page: Int = 1
-  query: String
+  search: String
   sortBy: UserSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
 }

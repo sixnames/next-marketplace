@@ -103,6 +103,7 @@ function getProductCities(node: GetProductCitiesInterface) {
         ...node,
         slug,
         assets,
+        active: true,
       },
     },
     {
@@ -111,6 +112,7 @@ function getProductCities(node: GetProductCitiesInterface) {
         ...node,
         slug,
         assets,
+        active: true,
       },
     },
   ];

@@ -31,7 +31,7 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { createProductSchema, updateProductSchema } from '@rg/validation';
 
 @ObjectType()
-class PaginatedProductsResponse extends PaginateType(Product) {}
+export class PaginatedProductsResponse extends PaginateType(Product) {}
 
 @ObjectType()
 class ProductPayloadType extends PayloadType() {
@@ -49,7 +49,7 @@ export class ProductResolver {
   @Query(() => PaginatedProductsResponse)
   async getAllProducts(
     @Ctx() ctx: ContextInterface,
-    @Arg('input') input: ProductPaginateInput,
+    @Arg('input', { nullable: true }) input: ProductPaginateInput = {},
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
@@ -113,6 +113,7 @@ export class ProductResolver {
               ...values,
               slug,
               assets: assetsResult,
+              active: true,
             },
           },
         ],

@@ -14,6 +14,7 @@ import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubri
 import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
+  RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '@rg/config';
@@ -28,8 +29,10 @@ import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
 import {
   addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
   createRubricInputSchema,
   deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
   updateRubricInputSchema,
 } from '@rg/validation';
 import { UpdateRubricInput } from './UpdateRubricInput';
@@ -39,6 +42,12 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 import { getMessageTranslation } from '../../config/translations';
 import { ProductModel } from '../../entities/Product';
+import { AddProductToRubricInput } from './AddProductToRubricInput';
+import { getProductsFilter } from '../../utils/getProductsFilter';
+import generatePaginationOptions from '../../utils/generatePaginationOptions';
+import { PaginatedProductsResponse } from '../product/ProductResolver';
+import { RubricProductPaginateInput } from './RubricProductPaginateInput';
+import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -482,6 +491,162 @@ export class RubricResolver {
     }
   }
 
+  @Mutation(() => RubricPayloadType)
+  async addProductToRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: AddProductToRubricInput,
+  ): Promise<RubricPayloadType> {
+    try {
+      await addProductToRubricInputSchema.validate(input);
+      const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+      const { rubricId, productId } = input;
+
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
+
+      const product = await ProductModel.findOne({
+        'cities.key': city,
+        _id: productId,
+      });
+
+      if (!rubric || !product) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+        };
+      }
+
+      const exists = await ProductModel.exists({
+        'cities.key': city,
+        'cities.node.rubrics': {
+          $in: rubricId,
+        },
+        _id: productId,
+      });
+
+      if (exists) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.exists.${lang}`),
+        };
+      }
+
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
+
+      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
+        };
+      }
+
+      const updatedProduct = await ProductModel.updateOne(
+        {
+          _id: productId,
+          'cities.key': city,
+        },
+        {
+          $push: {
+            'cities.$.node.rubrics': rubricId,
+          },
+        },
+      );
+
+      if (!updatedProduct.ok) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.addToProductError.${lang}`),
+          rubric,
+        };
+      }
+
+      return {
+        success: true,
+        message: getMessageTranslation(`rubric.addProduct.success.${lang}`),
+        rubric,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => RubricPayloadType)
+  async deleteProductFromRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: DeleteProductFromRubricInput,
+  ): Promise<RubricPayloadType> {
+    try {
+      await deleteProductFromRubricInputSchema.validate(input);
+      const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+      const { rubricId, productId } = input;
+
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
+
+      const product = await ProductModel.findOne({
+        'cities.key': city,
+        _id: productId,
+      });
+
+      if (!rubric || !product) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.deleteProduct.notFound.${lang}`),
+        };
+      }
+
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
+      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.deleteProduct.levelError.${lang}`),
+        };
+      }
+
+      const updatedProduct = await ProductModel.updateOne(
+        {
+          _id: productId,
+          'cities.key': city,
+        },
+        {
+          $pull: {
+            'cities.$.node.rubrics': rubricId,
+          },
+        },
+      );
+
+      if (!updatedProduct.ok) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.deleteProduct.deleteFromProductError.${lang}`),
+          rubric,
+        };
+      }
+
+      return {
+        success: true,
+        message: getMessageTranslation(`rubric.deleteProduct.success.${lang}`),
+        rubric,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
   @FieldResolver()
   async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
     const city = getCityData(rubric.cities, ctx.req.session!.city);
@@ -584,5 +749,55 @@ export class RubricResolver {
       return [];
     }
     return city.node.attributesGroups;
+  }
+
+  @FieldResolver()
+  async products(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+    @Arg('input', { nullable: true }) input: RubricProductPaginateInput = {},
+  ): Promise<PaginatedProductsResponse> {
+    const city = ctx.req.session!.city;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const query = getProductsFilter({ ...args, rubric: rubric._id }, city);
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+
+    return ProductModel.paginate(query, options);
+  }
+
+  @FieldResolver()
+  async totalProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<number> {
+    const city = ctx.req.session!.city;
+
+    return ProductModel.countDocuments({
+      'cities.key': city,
+      'cities.node.rubrics': {
+        $in: rubric._id,
+      },
+    });
+  }
+
+  @FieldResolver()
+  async activeProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<number> {
+    const city = ctx.req.session!.city;
+
+    return ProductModel.countDocuments({
+      'cities.key': city,
+      'cities.node.active': true,
+      'cities.node.rubrics': {
+        $in: rubric._id,
+      },
+    });
   }
 }

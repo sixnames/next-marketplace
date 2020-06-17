@@ -30,9 +30,13 @@ describe.only('Rubrics', () => {
         getRubricsTree {
           id
           name
+          totalProductsCount
+          activeProductsCount
           children {
             id
             name
+            totalProductsCount
+            activeProductsCount
             attributesGroups {
               node {
                 id
@@ -52,6 +56,8 @@ describe.only('Rubrics', () => {
             children {
               id
               name
+              totalProductsCount
+              activeProductsCount
               products {
                 docs { id }
               }
@@ -60,7 +66,7 @@ describe.only('Rubrics', () => {
         }
       }
     `);
-
+    console.log(JSON.stringify(getRubricsTree, null, 2));
     const attributesGroup = getAllAttributesGroups[0];
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];

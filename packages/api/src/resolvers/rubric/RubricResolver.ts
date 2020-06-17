@@ -769,4 +769,35 @@ export class RubricResolver {
 
     return ProductModel.paginate(query, options);
   }
+
+  @FieldResolver()
+  async totalProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<number> {
+    const city = ctx.req.session!.city;
+
+    return ProductModel.countDocuments({
+      'cities.key': city,
+      'cities.node.rubrics': {
+        $in: rubric._id,
+      },
+    });
+  }
+
+  @FieldResolver()
+  async activeProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<number> {
+    const city = ctx.req.session!.city;
+
+    return ProductModel.countDocuments({
+      'cities.key': city,
+      'cities.node.active': true,
+      'cities.node.rubrics': {
+        $in: rubric._id,
+      },
+    });
+  }
 }

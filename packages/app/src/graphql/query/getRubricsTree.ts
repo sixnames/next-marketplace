@@ -10,8 +10,8 @@ export const RUBRICS_TREE_QUERY = gql`
         id
         nameString
       }
-      #      totalProductsCount
-      #      activeProductsCount
+      totalProductsCount
+      activeProductsCount
       children(excluded: $excluded) {
         id
         name
@@ -20,8 +20,8 @@ export const RUBRICS_TREE_QUERY = gql`
           id
           nameString
         }
-        #        totalProductsCount
-        #        activeProductsCount
+        totalProductsCount
+        activeProductsCount
         children(excluded: $excluded) {
           id
           name
@@ -30,8 +30,8 @@ export const RUBRICS_TREE_QUERY = gql`
             id
             nameString
           }
-          #          totalProductsCount
-          #          activeProductsCount
+          totalProductsCount
+          activeProductsCount
         }
       }
     }

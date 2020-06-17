@@ -1,7 +1,7 @@
 import { PaginateInput } from '../common/PaginateInput';
 import { Field, ID, InputType, registerEnumType } from 'type-graphql';
 
-enum ProductSortByEnum {
+export enum ProductSortByEnum {
   price = 'price',
   createdAt = 'createdAt',
 }

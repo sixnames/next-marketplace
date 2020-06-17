@@ -22,6 +22,11 @@ input AddOptionToGroupInput {
   name: [LangInput!]!
 }
 
+input AddProductToRubricInput {
+  productId: ID!
+  rubricId: ID!
+}
+
 type AssetType {
   index: Int!
   url: String!
@@ -144,6 +149,7 @@ type MetricPayloadType {
 }
 
 type Mutation {
+  addAddProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
@@ -281,6 +287,7 @@ type ProductCity {
 }
 
 type ProductNode {
+  active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
   attributesSource: ID!
@@ -297,8 +304,8 @@ input ProductPaginateInput {
   noRubrics: Boolean
   notInRubric: ID
   page: Int = 1
-  query: String
   rubric: ID
+  search: String
   sortBy: ProductSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
 }
@@ -341,6 +348,7 @@ type Query {
 
 type Rubric {
   active: Boolean!
+  activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: String!
   children(excluded: [ID!]): [Rubric!]!
@@ -349,7 +357,9 @@ type Rubric {
   level: Int!
   name: String!
   parent: Rubric
+  products(input: RubricProductPaginateInput!): PaginatedProductsResponse!
   slug: String!
+  totalProductsCount: Int!
   variant: RubricVariant
 }
 
@@ -370,6 +380,7 @@ type RubricNode {
   level: Int!
   name: [LanguageType!]!
   parent: Rubric
+  products: [Product!]!
   slug: String!
   variant: RubricVariant
 }
@@ -378,6 +389,16 @@ type RubricPayloadType {
   message: String!
   rubric: Rubric
   success: Boolean!
+}
+
+input RubricProductPaginateInput {
+  limit: Int = 100
+  notInRubric: ID
+  page: Int = 1
+  rubric: ID
+  search: String
+  sortBy: ProductSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
 }
 
 type RubricVariant {
@@ -501,7 +522,7 @@ type User {
 input UserPaginateInput {
   limit: Int = 100
   page: Int = 1
-  query: String
+  search: String
   sortBy: UserSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
 }

@@ -82,6 +82,10 @@ export class ProductNode {
   @Field(() => Int)
   @prop({ required: true })
   price: number;
+
+  @Field(() => Boolean)
+  @prop({ required: true, default: true })
+  active: boolean;
 }
 
 // Product current city

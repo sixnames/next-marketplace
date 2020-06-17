@@ -22,5 +22,5 @@ export class PaginateInput {
   sortDir?: PaginateSortDirectionEnum;
 
   @Field({ nullable: true })
-  query?: string;
+  search?: string;
 }

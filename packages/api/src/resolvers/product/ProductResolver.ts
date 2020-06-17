@@ -31,7 +31,7 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { createProductSchema, updateProductSchema } from '@rg/validation';
 
 @ObjectType()
-class PaginatedProductsResponse extends PaginateType(Product) {}
+export class PaginatedProductsResponse extends PaginateType(Product) {}
 
 @ObjectType()
 class ProductPayloadType extends PayloadType() {
@@ -113,6 +113,7 @@ export class ProductResolver {
               ...values,
               slug,
               assets: assetsResult,
+              active: true,
             },
           },
         ],

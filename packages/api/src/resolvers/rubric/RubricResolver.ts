@@ -28,6 +28,7 @@ import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
 import {
   addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
   createRubricInputSchema,
   deleteAttributesGroupFromRubricInputSchema,
   updateRubricInputSchema,
@@ -39,6 +40,11 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 import { getMessageTranslation } from '../../config/translations';
 import { ProductModel } from '../../entities/Product';
+import { AddProductToRubricInput } from './AddProductToRubricInput';
+import { getProductsFilter } from '../../utils/getProductsFilter';
+import generatePaginationOptions from '../../utils/generatePaginationOptions';
+import { PaginatedProductsResponse } from '../product/ProductResolver';
+import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -482,6 +488,98 @@ export class RubricResolver {
     }
   }
 
+  @Mutation(() => RubricPayloadType)
+  async addAddProductToRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: AddProductToRubricInput,
+  ): Promise<RubricPayloadType> {
+    try {
+      await addProductToRubricInputSchema.validate(input);
+      const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+      const { rubricId, productId } = input;
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
+
+      const product = await ProductModel.findOne({
+        'cities.key': city,
+        _id: productId,
+      });
+
+      if (!rubric || !product) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+        };
+      }
+
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
+
+      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
+          rubric,
+        };
+      }
+
+      const children = await RubricModel.find({
+        'cities.key': city,
+        'cities.node.parent': rubric.id,
+      })
+        .select({ _id: 1 })
+        .lean()
+        .exec();
+      const childrenIds = children.map(({ _id }) => _id);
+      const parentId = currentRubricCityNode.parent;
+
+      const updatedRubrics = await RubricModel.updateMany(
+        {
+          _id: { $in: [...childrenIds, parentId, rubricId] },
+          'cities.key': city,
+          attributesGroups: {
+            $not: {
+              $elemMatch: {
+                node: productId,
+              },
+            },
+          },
+        },
+        {
+          $addToSet: {
+            'cities.$.node.products': {
+              showInCatalogueFilter: false,
+              node: Types.ObjectId(productId),
+            },
+          },
+        },
+      );
+
+      if (!updatedRubrics.ok) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.error.${lang}`),
+        };
+      }
+
+      const updatedRubric = await RubricModel.findById(rubricId);
+
+      return {
+        success: true,
+        message: getMessageTranslation(`rubric.addProduct.success.${lang}`),
+        rubric: updatedRubric,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
   @FieldResolver()
   async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
     const city = getCityData(rubric.cities, ctx.req.session!.city);
@@ -584,5 +682,24 @@ export class RubricResolver {
       return [];
     }
     return city.node.attributesGroups;
+  }
+
+  @FieldResolver()
+  async products(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: RubricProductPaginateInput,
+  ): Promise<PaginatedProductsResponse> {
+    const city = ctx.req.session!.city;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const query = getProductsFilter({ ...args, rubric: rubric._id }, city);
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+
+    return ProductModel.paginate(query, options);
   }
 }

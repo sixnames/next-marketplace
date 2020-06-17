@@ -102,6 +102,24 @@ const rubricTranslations = {
         en: 'Product added to the rubric.',
       },
     },
+    deleteProduct: {
+      notFound: {
+        ru: 'Товар или Рубрика не найдены.',
+        en: 'Rubric or product not found.',
+      },
+      levelError: {
+        ru: `Из рубрики не ${RUBRIC_LEVEL_THREE}-го уровня нельзя удалить товар.`,
+        en: `You can't delete product from rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
+      },
+      deleteFromProductError: {
+        ru: 'Ошибка удаления товара из рубрики.',
+        en: 'Delete product from rubric error.',
+      },
+      success: {
+        ru: 'Товар удалён из рубрики.',
+        en: 'Product removed from rubric.',
+      },
+    },
   },
 };
 

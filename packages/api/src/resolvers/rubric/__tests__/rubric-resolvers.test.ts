@@ -326,7 +326,7 @@ describe.only('Rubrics', () => {
       data: { deleteProductFromRubric },
     } = await mutate(`
       mutation {
-        addProductToRubric(
+        deleteProductFromRubric(
           input: {
             rubricId: "${rubricLevelTree.id}"
             productId: "${createdProduct.id}"
@@ -348,7 +348,9 @@ describe.only('Rubrics', () => {
       }
     `);
     expect(deleteProductFromRubric.success).toBeTruthy();
-    expect(deleteProductFromRubric.rubric.products.docs.length).toEqual(1);
+    expect(deleteProductFromRubric.rubric.products.docs.length).toEqual(
+      rubricLevelTree.products.docs.length,
+    );
 
     // Should delete rubric
     const {

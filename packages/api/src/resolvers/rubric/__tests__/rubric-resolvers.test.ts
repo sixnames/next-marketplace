@@ -1,8 +1,13 @@
-import { anotherRubric, testRubric } from '../__fixtures__';
-import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
+import { anotherRubric, testProduct, testRubric } from '../__fixtures__';
+import {
+  getTestClientWithAuthenticatedUser,
+  mutateWithImages,
+} from '../../../utils/testUtils/testHelpers';
 import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '@rg/config';
 import getLangField from '../../../utils/getLangField';
 import { DEFAULT_LANG } from '../../../config';
+import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
+import { Upload } from '../../../types/upload';
 
 describe.only('Rubrics', () => {
   it('Should rubrics CRUD', async () => {
@@ -28,30 +33,55 @@ describe.only('Rubrics', () => {
           children {
             id
             name
+            attributesGroups {
+              node {
+                id
+                attributes {
+                  id
+                  itemId
+                  variant
+                  options {
+                    id
+                    options {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            children {
+              id
+              name
+              products {
+                docs { id }
+              }
+            }
           }
         }
       }
     `);
 
     const attributesGroup = getAllAttributesGroups[0];
-    const treeParent = getRubricsTree[0];
-    const treeChild = treeParent.children[0];
+    const rubricLevelOne = getRubricsTree[0];
+    const rubricLevelTwo = rubricLevelOne.children[0];
+    const rubricLevelTree = rubricLevelTwo.children[0];
+    const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
     expect(getRubricsTree.length).toEqual(1);
-    expect(treeParent.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
-    expect(treeParent.children.length).toEqual(2);
-    expect(treeChild.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO.name, DEFAULT_LANG));
+    expect(rubricLevelOne.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(rubricLevelOne.children.length).toEqual(2);
+    expect(rubricLevelTwo.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO.name, DEFAULT_LANG));
 
     // Should return current rubric
     const { data } = await query(`
       query {
-        getRubric(id: "${treeParent.id}") {
+        getRubric(id: "${rubricLevelOne.id}") {
           id
           name
           catalogueName
         }
       }
     `);
-    expect(data.getRubric.id).toEqual(treeParent.id);
+    expect(data.getRubric.id).toEqual(rubricLevelOne.id);
     expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
     expect(data.getRubric.catalogueName).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.catalogueName, DEFAULT_LANG),
@@ -176,7 +206,7 @@ describe.only('Rubrics', () => {
       mutation {
         addAttributesGroupToRubric(
           input: {
-            rubricId: "${treeChild.id}"
+            rubricId: "${rubricLevelTwo.id}"
             attributesGroupId: "${attributesGroup.id}"
           }
         ) {
@@ -207,7 +237,7 @@ describe.only('Rubrics', () => {
       mutation {
         deleteAttributesGroupFromRubric(
           input: {
-            rubricId: "${treeChild.id}"
+            rubricId: "${rubricLevelTwo.id}"
             attributesGroupId: "${attributesGroup.id}"
           }
         ) {
@@ -230,13 +260,103 @@ describe.only('Rubrics', () => {
     expect(deleteAttributesGroupFromRubric.success).toBeTruthy();
     expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);
 
+    // Should add product to the third level rubric
+    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+
+    // Create new product for rubric.
+    const {
+      data: { createProduct },
+    } = await mutateWithImages({
+      mutation: `
+          mutation CreateProduct($input: CreateProductInput!) {
+            createProduct(input: $input) {
+              success
+              message
+              product {
+                id
+              }
+            }
+          }`,
+      input: (images: Promise<Upload>[]) => {
+        return {
+          name: testProduct.name,
+          cardName: testProduct.cardName,
+          price: testProduct.price,
+          description: testProduct.description,
+          rubrics: [rubricLevelTreeForNewProduct.id],
+          assets: images,
+          ...productAttributes,
+        };
+      },
+    });
+    const { product: createdProduct } = createProduct;
+
+    const {
+      data: { addProductToRubric },
+    } = await mutate(`
+      mutation {
+        addProductToRubric(
+          input: {
+            rubricId: "${rubricLevelTree.id}"
+            productId: "${createdProduct.id}"
+          }
+        ) {
+          success
+          message
+          rubric {
+            id
+            name
+            level
+            products {
+              docs {
+                id
+              }
+            }
+          }
+        }
+      }
+    `);
+    expect(addProductToRubric.success).toBeTruthy();
+    expect(addProductToRubric.rubric.products.docs.length).toEqual(
+      rubricLevelTree.products.docs.length + 1,
+    );
+
+    // Should delete product from third level rubric
+    const {
+      data: { deleteProductFromRubric },
+    } = await mutate(`
+      mutation {
+        addProductToRubric(
+          input: {
+            rubricId: "${rubricLevelTree.id}"
+            productId: "${createdProduct.id}"
+          }
+        ) {
+          success
+          message
+          rubric {
+            id
+            name
+            level
+            products {
+              docs {
+                id
+              }
+            }
+          }
+        }
+      }
+    `);
+    expect(deleteProductFromRubric.success).toBeTruthy();
+    expect(deleteProductFromRubric.rubric.products.docs.length).toEqual(1);
+
     // Should delete rubric
     const {
       data: { deleteRubric },
     } = await mutate(`
       mutation {
         deleteRubric(
-          id: "${treeParent.id}"
+          id: "${rubricLevelOne.id}"
         ) {
           success
         }

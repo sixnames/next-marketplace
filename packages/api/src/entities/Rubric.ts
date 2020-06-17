@@ -4,7 +4,6 @@ import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
 import { LanguageType } from './common';
-import { Product } from './Product';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 
 @ObjectType()
@@ -52,10 +51,6 @@ export class RubricNode {
   @Field(() => RubricVariant, { nullable: true })
   @prop({ ref: RubricVariant })
   variant?: string | null;
-
-  @Field(() => [Product])
-  @prop({ ref: Product })
-  products?: string[];
 }
 
 // Rubric current city

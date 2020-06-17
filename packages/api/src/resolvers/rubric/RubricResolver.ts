@@ -14,6 +14,7 @@ import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubri
 import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
+  RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '@rg/config';
@@ -489,7 +490,7 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
-  async addAddProductToRubric(
+  async addProductToRubric(
     @Ctx() ctx: ContextInterface,
     @Arg('input') input: AddProductToRubricInput,
   ): Promise<RubricPayloadType> {
@@ -498,6 +499,7 @@ export class RubricResolver {
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
       const { rubricId, productId } = input;
+
       const rubric = await RubricModel.findOne({
         'cities.key': city,
         _id: rubricId,
@@ -515,62 +517,55 @@ export class RubricResolver {
         };
       }
 
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
+      const exists = await ProductModel.exists({
+        'cities.key': city,
+        'cities.node.rubrics': {
+          $in: rubricId,
+        },
+        _id: productId,
+      });
 
-      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
+      if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
-          rubric,
+          message: getMessageTranslation(`rubric.addProduct.exists.${lang}`),
         };
       }
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': rubric.id,
-      })
-        .select({ _id: 1 })
-        .lean()
-        .exec();
-      const childrenIds = children.map(({ _id }) => _id);
-      const parentId = currentRubricCityNode.parent;
+      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
+      const currentRubricLevel = currentRubricCityNode.level;
 
-      const updatedRubrics = await RubricModel.updateMany(
+      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
+        };
+      }
+
+      const updatedProduct = await ProductModel.updateOne(
         {
-          _id: { $in: [...childrenIds, parentId, rubricId] },
+          _id: productId,
           'cities.key': city,
-          attributesGroups: {
-            $not: {
-              $elemMatch: {
-                node: productId,
-              },
-            },
-          },
         },
         {
-          $addToSet: {
-            'cities.$.node.products': {
-              showInCatalogueFilter: false,
-              node: Types.ObjectId(productId),
-            },
+          $push: {
+            'cities.$.node.rubrics': rubricId,
           },
         },
       );
 
-      if (!updatedRubrics.ok) {
+      if (!updatedProduct.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.error.${lang}`),
+          message: getMessageTranslation(`rubric.addProduct.addToProductError.${lang}`),
+          rubric,
         };
       }
-
-      const updatedRubric = await RubricModel.findById(rubricId);
 
       return {
         success: true,
         message: getMessageTranslation(`rubric.addProduct.success.${lang}`),
-        rubric: updatedRubric,
+        rubric,
       };
     } catch (e) {
       return {
@@ -688,7 +683,7 @@ export class RubricResolver {
   async products(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-    @Arg('input') input: RubricProductPaginateInput,
+    @Arg('input', { nullable: true }) input: RubricProductPaginateInput = {},
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;

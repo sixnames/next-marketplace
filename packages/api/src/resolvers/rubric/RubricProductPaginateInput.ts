@@ -8,8 +8,5 @@ export class RubricProductPaginateInput extends PaginateInput {
   sortBy?: ProductSortByEnum;
 
   @Field((_type) => ID, { nullable: true })
-  rubric: string;
-
-  @Field((_type) => ID, { nullable: true })
   notInRubric?: string;
 }

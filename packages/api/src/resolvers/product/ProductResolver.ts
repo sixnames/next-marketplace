@@ -49,7 +49,7 @@ export class ProductResolver {
   @Query(() => PaginatedProductsResponse)
   async getAllProducts(
     @Ctx() ctx: ContextInterface,
-    @Arg('input') input: ProductPaginateInput,
+    @Arg('input', { nullable: true }) input: ProductPaginateInput = {},
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;

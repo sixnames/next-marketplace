@@ -149,10 +149,10 @@ type MetricPayloadType {
 }
 
 type Mutation {
-  addAddProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -329,7 +329,7 @@ type Query {
   ): [AttributesGroup!]!
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
-  getAllProducts(input: ProductPaginateInput!): PaginatedProductsResponse!
+  getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
@@ -357,7 +357,7 @@ type Rubric {
   level: Int!
   name: String!
   parent: Rubric
-  products(input: RubricProductPaginateInput!): PaginatedProductsResponse!
+  products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
   variant: RubricVariant
@@ -380,7 +380,6 @@ type RubricNode {
   level: Int!
   name: [LanguageType!]!
   parent: Rubric
-  products: [Product!]!
   slug: String!
   variant: RubricVariant
 }
@@ -395,7 +394,6 @@ input RubricProductPaginateInput {
   limit: Int = 100
   notInRubric: ID
   page: Int = 1
-  rubric: ID
   search: String
   sortBy: ProductSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc

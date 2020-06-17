@@ -1,4 +1,4 @@
-import { RUBRIC_LEVEL_TWO } from '@rg/config';
+import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '@rg/config';
 
 const rubricTranslations = {
   rubric: {
@@ -78,6 +78,28 @@ const rubricTranslations = {
       success: {
         ru: 'Группа атрибутов удалена из рубрики.',
         en: 'Attributes group removed from rubric.',
+      },
+    },
+    addProduct: {
+      notFound: {
+        ru: 'Товар или Рубрика не найдены.',
+        en: 'Rubric or product not found.',
+      },
+      exists: {
+        ru: 'Товар уже присутствует в группе.',
+        en: 'Product already exists in this group.',
+      },
+      levelError: {
+        ru: `В рубрику не ${RUBRIC_LEVEL_THREE}-го уровня нельзя добавить товар.`,
+        en: `You can't add product to rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
+      },
+      addToProductError: {
+        ru: 'Ошибка добавления товара в рубрику.',
+        en: 'Add product to rubric error.',
+      },
+      success: {
+        ru: 'Товар добавлен в рубрику.',
+        en: 'Product added to the rubric.',
       },
     },
   },

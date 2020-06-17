@@ -28,7 +28,7 @@ describe('Rubrics', () => {
       },
     });
 
-    cy.visit(`/rubrics?${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   it('Should have rubrics list', () => {

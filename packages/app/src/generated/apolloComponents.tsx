@@ -1426,7 +1426,7 @@ export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level'>
+    & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
     & { variant?: Maybe<(
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1439,13 +1439,13 @@ export type GetRubricQuery = (
       )> }
     )>, children: Array<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       )>, children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
+        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
         & { variant?: Maybe<(
           { __typename?: 'RubricVariant' }
           & Pick<RubricVariant, 'id' | 'nameString'>
@@ -2820,6 +2820,8 @@ export const GetRubricDocument = gql`
       id
       nameString
     }
+    totalProductsCount
+    activeProductsCount
     parent {
       id
       name
@@ -2836,6 +2838,8 @@ export const GetRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
       children {
         id
         name
@@ -2844,6 +2848,8 @@ export const GetRubricDocument = gql`
           id
           nameString
         }
+        totalProductsCount
+        activeProductsCount
       }
     }
   }

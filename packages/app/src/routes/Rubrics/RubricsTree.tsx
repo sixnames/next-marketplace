@@ -40,13 +40,15 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
       </div>
     );
 
-    const titleLeftContent = titleLeft ? () => titleLeft(id, name) : null;
+    const titleLeftContent = titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null;
 
     if (isLast) {
       return (
         <Accordion
           // isOpen={true}
-          titleLeft={lastTitleLeft ? () => lastTitleLeft(id, name) : titleLeftContent}
+          titleLeft={
+            lastTitleLeft ? () => lastTitleLeft(id, `tree-link-${name}`) : titleLeftContent
+          }
           disabled={totalProductsCount === 0 || isLastDisabled}
           titleRight={counters}
           title={name}
@@ -61,7 +63,7 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
         <Accordion
           // isOpen={isFirst}
           isOpen={true}
-          titleLeft={titleLeft ? () => titleLeft(id, name) : null}
+          titleLeft={titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null}
           titleClassName={isFirst ? classes.first : ''}
           titleRight={counters}
           title={name}

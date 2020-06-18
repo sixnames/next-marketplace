@@ -11,8 +11,8 @@ export const RUBRIC_QUERY = gql`
         id
         nameString
       }
-      #      totalProductsCount
-      #      activeProductsCount
+      totalProductsCount
+      activeProductsCount
       parent {
         id
         name
@@ -29,8 +29,8 @@ export const RUBRIC_QUERY = gql`
           id
           nameString
         }
-        #        totalProductsCount
-        #        activeProductsCount
+        totalProductsCount
+        activeProductsCount
         children {
           id
           name
@@ -39,8 +39,8 @@ export const RUBRIC_QUERY = gql`
             id
             nameString
           }
-          #          totalProductsCount
-          #          activeProductsCount
+          totalProductsCount
+          activeProductsCount
         }
       }
     }

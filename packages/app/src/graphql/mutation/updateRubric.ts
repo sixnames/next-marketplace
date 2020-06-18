@@ -14,8 +14,8 @@ export const UPDATE_RUBRIC = gql`
           id
           nameString
         }
-        #        totalProductsCount
-        #        activeProductsCount
+        totalProductsCount
+        activeProductsCount
       }
     }
   }

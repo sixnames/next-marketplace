@@ -9,11 +9,14 @@ import {
   MOCK_RUBRIC_TYPE_EQUIPMENT,
   MOCK_RUBRIC_TYPE_STAGE,
 } from '@rg/config';
+import { CreateRubricInput } from '../../../src/generated/apolloComponents';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockNewRubric = 'cy-test-new-rubric';
+const mockNewSecondLevelRubric = 'cy-test-new-second-level-rubric';
+const mockNewThirdLevelRubric = 'cy-test-new-third-level-rubric';
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
@@ -38,6 +41,44 @@ describe('Rubrics', () => {
               nameString: mockRubricVariantNameForDelete,
             },
           ],
+        },
+        GetRubric: ({ id }: { id: string }) => {
+          let level = 1;
+          let name = mockRubricLevelOneName;
+          let catalogueName = mockRubricLevelOneName;
+
+          if (id === '2') {
+            level = 2;
+          } else if (id === '3') {
+            level = 3;
+          }
+
+          if (id === '2') {
+            name = mockRubricLevelTwoName;
+            catalogueName = mockRubricLevelTwoName;
+          } else if (id === '3') {
+            name = mockRubricLevelThreeName;
+            catalogueName = mockRubricLevelThreeName;
+          }
+
+          return {
+            getRubric: {
+              id,
+              name,
+              catalogueName,
+              level,
+              variant:
+                level === 1
+                  ? {
+                      id: '11',
+                      nameString: mockRubricVariantName,
+                    }
+                  : null,
+              totalProductsCount: 1,
+              activeProductsCount: 1,
+              children: [],
+            },
+          };
         },
         GetRubricsTree: {
           getRubricsTree: [
@@ -74,23 +115,85 @@ describe('Rubrics', () => {
             },
           ],
         },
-        CreateRubric: {
-          createRubric: {
+        UpdateRubric: {
+          updateRubric: {
             success: true,
             message: 'true',
             rubric: {
-              id: '4',
+              id: '1',
               name: mockNewRubric,
+              catalogueName: mockNewRubric,
               level: 1,
               variant: {
-                id: '11',
-                nameString: mockRubricVariantName,
+                id: '22',
+                nameString: mockRubricVariantNameForDelete,
               },
-              totalProductsCount: 0,
-              activeProductsCount: 0,
-              children: [],
+              totalProductsCount: 1,
+              activeProductsCount: 1,
             },
           },
+        },
+        CreateRubric: ({ input }: { input: CreateRubricInput }) => {
+          if (input.parent === '1') {
+            return {
+              createRubric: {
+                success: true,
+                message: 'true',
+                rubric: {
+                  id: '5',
+                  name: mockNewSecondLevelRubric,
+                  level: 2,
+                  variant: null,
+                  totalProductsCount: 0,
+                  activeProductsCount: 0,
+                  children: [],
+                  parent: {
+                    id: '1',
+                  },
+                },
+              },
+            };
+          }
+
+          if (input.parent === '5') {
+            return {
+              createRubric: {
+                success: true,
+                message: 'true',
+                rubric: {
+                  id: '6',
+                  name: mockNewThirdLevelRubric,
+                  level: 3,
+                  variant: null,
+                  totalProductsCount: 0,
+                  activeProductsCount: 0,
+                  children: [],
+                  parent: {
+                    id: '5',
+                  },
+                },
+              },
+            };
+          }
+
+          return {
+            createRubric: {
+              success: true,
+              message: 'true',
+              rubric: {
+                id: '4',
+                name: mockNewRubric,
+                level: 1,
+                variant: {
+                  id: '11',
+                  nameString: mockRubricVariantName,
+                },
+                totalProductsCount: 0,
+                activeProductsCount: 0,
+                children: [],
+              },
+            },
+          };
         },
       },
     });
@@ -116,92 +219,45 @@ describe('Rubrics', () => {
     cy.getByCy(`rubric-variant`).select('11');
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
-    // cy.getByCy(`tree-${mockNewRubric}`).should('exist');
+    cy.getByCy(`tree-${mockNewRubric}`).should('exist');
+
+    // Should create a new rubric on second level
+    cy.getByCy(`create-rubric`).click();
+    cy.getByCy(`rubric-name`).type(mockNewSecondLevelRubric);
+    cy.getByCy(`catalogue-name`).type(mockNewSecondLevelRubric);
+    cy.getByCy(`parent`).select('1');
+    cy.getByCy(`rubric-submit`).click();
+    cy.getByCy(`tree-${mockNewSecondLevelRubric}`).should('exist');
+
+    // Should create a new rubric on third level
+    cy.getByCy(`create-rubric`).click();
+    cy.getByCy(`rubric-name`).type(mockNewThirdLevelRubric);
+    cy.getByCy(`catalogue-name`).type(mockNewThirdLevelRubric);
+    cy.getByCy(`parent`).select('1');
+    cy.getByCy(`subParent`).select('5');
+    cy.getByCy(`rubric-submit`).click();
+    cy.getByCy(`tree-${mockNewThirdLevelRubric}`).should('exist');
   });
 
-  /*it(`Shouldn't create a new rubric if exists on first level`, () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
-    cy.getByCy(`rubric-name`).type(mockRubricLevelOneName[0].value);
-    cy.getByCy(`catalogue-name`).type(mockRubricLevelOneName[0].value);
-    cy.selectOptionByTestId(`rubric-type`, mockRubricType[0].value);
-    cy.getByCy(`rubric-submit`).click();
-
-    cy.getByCy(`error-notification`).should('exist');
-  });*/
-
-  /*it('Should create a new rubric on second level', () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
-    cy.getByCy(`rubric-name`).type(mockNewRubric);
-    cy.getByCy(`catalogue-name`).type(mockNewRubric);
-    cy.selectOptionByTestId(`parent`, mockRubricLevelOneName[0].value);
-    cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.getByCy(`tree-${mockNewRubric}`).contains(mockNewRubric);
-  });*/
-
-  /*it(`Shouldn't create a new rubric if exists on second level`, () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
-    cy.getByCy(`rubric-name`).type(mockRubricLevelTwoName[0].value);
-    cy.getByCy(`catalogue-name`).type(mockRubricLevelTwoName[0].value);
-    cy.selectOptionByTestId(`parent`, mockRubricLevelOneName[0].value);
-    cy.getByCy(`rubric-submit`).click();
-
-    cy.getByCy(`error-notification`).should('exist');
-  });*/
-
-  /*it('Should create a new rubric on third level', () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
-    cy.getByCy(`rubric-name`).type(mockNewRubric);
-    cy.getByCy(`catalogue-name`).type(mockNewRubric);
-    cy.selectOptionByTestId(`parent`, mockRubricLevelOneName[0].value);
-    cy.selectOptionByTestId(`subParent`, mockRubricLevelTwoName[0].value);
-    cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.getByCy(`tree-${mockNewRubric}`).contains(mockNewRubric);
-  });*/
-
-  /*it(`Shouldn't create a new rubric if exists on third level`, () => {
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-
-    cy.getByCy(`rubric-name`).type(mockRubricLevelThreeName[0].value);
-    cy.getByCy(`catalogue-name`).type(mockRubricLevelThreeName[0].value);
-    cy.selectOptionByTestId(`parent`, mockRubricLevelOneName[0].value);
-    cy.selectOptionByTestId(`subParent`, mockRubricLevelTwoName[0].value);
-    cy.getByCy(`rubric-submit`).click();
-
-    cy.getByCy(`error-notification`).should('exist');
-  });*/
-
-  /*it('Should have rubric details tab', () => {
-    cy.getByCy(`${mockRubricLevelOneName}`).click();
+  it.only('Should have rubric details tab', () => {
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.getByCy('rubric-name').should('exist');
     cy.getByCy('catalogue-name').should('exist');
-    cy.getByCy('rubric-type').should('exist');
-  });*/
+    cy.getByCy('rubric-variant').should('exist');
 
-  /*it('Should have rubric type on first level only', () => {
-    cy.getByCy(`${mockRubricLevelTwoName}`).click();
-    cy.getByCy('rubric-type').should('not.exist');
+    // Shouldn't have rubric variant on first level only
+    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
+    cy.getByCy('rubric-variant').should('not.exist');
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
+    cy.getByCy('rubric-variant').should('not.exist');
 
-    cy.getByCy(`${mockRubricLevelThreeName}`).click();
-    cy.getByCy('rubric-type').should('not.exist');
-  });*/
-
-  /*it('Should update rubric', () => {
-    cy.getByCy(`${mockRubricLevelOneName}`).click();
+    // Should update rubric
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.getByCy('rubric-name').clear().type(mockNewRubric);
     cy.getByCy('catalogue-name').clear().type(mockNewRubric);
-    cy.selectOptionByTestId(`rubric-type`, MOCK_RUBRIC_TYPE_STAGE.name[0].value);
+    cy.getByCy('rubric-variant').select('22');
     cy.getByCy('rubric-submit').click();
-    cy.getByCy('rubrics-tree').contains(mockNewRubric);
-  });*/
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).should('not.exist');
+    cy.getByCy(`tree-link-${mockNewRubric}`).should('exist');
+  });
 });

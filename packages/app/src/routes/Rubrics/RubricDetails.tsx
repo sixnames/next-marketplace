@@ -25,7 +25,10 @@ interface RubricDetailsInterface {
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRubric),
+    onCompleted: (data) => {
+      console.log(data);
+      onCompleteCallback(data.updateRubric);
+    },
     onError: onErrorCallback,
   });
 
@@ -40,8 +43,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
 
   const initialValues = {
     id,
-    name,
-    catalogueName,
+    name: [{ key: 'ru', value: name || '' }],
+    catalogueName: [{ key: 'ru', value: catalogueName || '' }],
     variant: variant ? variant.id : null,
   };
 
@@ -58,39 +61,44 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
 
           return updateRubricMutation({
             variables: {
-              input: {
-                ...values,
-                name: [{ key: 'ru', value: values.name! }],
-                catalogueName: [{ key: 'ru', value: values.name! }],
-                variant: values.variant,
-              },
+              input: values,
             },
           });
         }}
       >
-        {() => {
+        {({ values }) => {
           return (
             <Form>
               <div className={classes.section}>
                 <Accordion title={'Основная информация'} isOpen>
                   <div className={classes.content}>
-                    <FormikInput
-                      isRequired
-                      isHorizontal
-                      showInlineError
-                      label={'Название'}
-                      name={'name'}
-                      testId={'rubric-name'}
-                    />
+                    {values.name.map((_, index) => {
+                      return (
+                        <FormikInput
+                          key={index}
+                          name={`name[${index}].value`}
+                          label={'Название'}
+                          testId={'rubric-name'}
+                          showInlineError
+                          isRequired
+                          isHorizontal
+                        />
+                      );
+                    })}
 
-                    <FormikInput
-                      isRequired
-                      isHorizontal
-                      showInlineError
-                      label={'Название каталога'}
-                      name={'catalogueName'}
-                      testId={'catalogue-name'}
-                    />
+                    {values.catalogueName.map((_, index) => {
+                      return (
+                        <FormikInput
+                          key={index}
+                          name={`catalogueName[${index}].value`}
+                          label={'Название каталога'}
+                          testId={'catalogue-name'}
+                          showInlineError
+                          isRequired
+                          isHorizontal
+                        />
+                      );
+                    })}
 
                     {isFirstLevel && (
                       <FormikSelect
@@ -99,8 +107,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
                         showInlineError
                         firstOption={'Не выбран'}
                         label={'Тип рубрики'}
-                        name={'type'}
-                        testId={'rubric-type'}
+                        name={'variant'}
+                        testId={'rubric-variant'}
                         options={data?.getAllRubricVariants || []}
                       />
                     )}

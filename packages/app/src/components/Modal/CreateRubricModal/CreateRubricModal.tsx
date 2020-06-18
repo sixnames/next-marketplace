@@ -87,7 +87,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
                 );
               })}
 
-              {values.name.map((_, index) => {
+              {values.catalogueName.map((_, index) => {
                 return (
                   <FormikInput
                     key={index}

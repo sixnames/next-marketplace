@@ -58,10 +58,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   const [addOptionToGroupMutation] = useAddOptionToGroupMutation({
-    onCompleted: (data) => {
-      console.log(data);
-      onCompleteCallback(data.addOptionToGroup);
-    },
+    onCompleted: (data) => onCompleteCallback(data.addOptionToGroup),
     onError: onErrorCallback,
   });
 

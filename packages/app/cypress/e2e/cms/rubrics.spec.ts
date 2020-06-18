@@ -3,6 +3,8 @@ import schema from '../../../src/generated/introspectionSchema.json';
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
 import {
   ME_AS_ADMIN,
+  MOCK_ATTRIBUTES_GROUP,
+  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_TWO,
@@ -20,6 +22,9 @@ const mockNewThirdLevelRubric = 'cy-test-new-third-level-rubric';
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
+
+const mockRubricAttributesGroup = MOCK_ATTRIBUTES_GROUP.name[0].value;
+const mockRubricAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
 
 describe('Rubrics', () => {
   beforeEach(() => {
@@ -201,6 +206,115 @@ describe('Rubrics', () => {
             message: 'true',
           },
         },
+        GetAllAttributesGroups: {
+          getAllAttributesGroups: [
+            {
+              id: '44',
+              nameString: mockRubricAttributesGroup,
+            },
+            {
+              id: '55',
+              nameString: mockRubricAttributesGroupForDelete,
+            },
+          ],
+        },
+        GetAttributesGroupsForRubric: {
+          getAllAttributesGroups: [
+            {
+              id: '55',
+              nameString: mockRubricAttributesGroupForDelete,
+            },
+          ],
+        },
+        GetRubricAttributes: ({ id }: { id: string }) => {
+          if (id === '1' || id === '3') {
+            return {
+              getRubric: {
+                id: '2',
+                attributesGroups: [
+                  {
+                    id: '444',
+                    showInCatalogueFilter: true,
+                    node: {
+                      id: '44',
+                      nameString: mockRubricAttributesGroup,
+                    },
+                  },
+                ],
+              },
+            };
+          }
+
+          return {
+            getRubric: {
+              id: '2',
+              attributesGroups: [
+                {
+                  id: '444',
+                  showInCatalogueFilter: true,
+                  node: {
+                    id: '44',
+                    nameString: mockRubricAttributesGroup,
+                  },
+                },
+                {
+                  id: '555',
+                  showInCatalogueFilter: true,
+                  node: {
+                    id: '55',
+                    nameString: mockRubricAttributesGroupForDelete,
+                  },
+                },
+              ],
+            },
+          };
+        },
+        DeleteAttributesGroupFromRubric: {
+          deleteAttributesGroupFromRubric: {
+            success: true,
+            message: 'true',
+            rubric: {
+              id: '2',
+              attributesGroups: [
+                {
+                  id: '444',
+                  showInCatalogueFilter: true,
+                  node: {
+                    id: '44',
+                    nameString: mockRubricAttributesGroup,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        AddAttributesGroupToRubric: {
+          addAttributesGroupToRubric: {
+            success: true,
+            message: 'true',
+            rubric: {
+              id: '2',
+              attributesGroups: [
+                {
+                  id: '444',
+                  showInCatalogueFilter: true,
+                  node: {
+                    id: '44',
+                    nameString: mockRubricAttributesGroup,
+                  },
+                },
+                {
+                  id: '555',
+                  showInCatalogueFilter: true,
+                  node: {
+                    id: '55',
+                    nameString: mockRubricAttributesGroupForDelete,
+                  },
+                },
+              ],
+            },
+          },
+        },
       },
     });
 
@@ -273,5 +387,37 @@ describe('Rubrics', () => {
     cy.getByCy('rubric-submit').click();
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).should('not.exist');
     cy.getByCy(`tree-link-${mockNewRubric}`).should('exist');
+  });
+
+  it('Should CRUD rubric attributes', () => {
+    // Should delete attributes group
+    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
+    cy.visitMoreNavLink('attributes');
+    cy.getByCy(`${mockRubricAttributesGroupForDelete}-delete`).click();
+    cy.getByCy(`attributes-group-delete-modal`).should('exist');
+    cy.getByCy(`confirm`).click();
+    cy.getByCy(`${mockRubricAttributesGroupForDelete}-delete`).should('not.exist');
+
+    // Shouldn't contain deleted attributes group on first level
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.visitMoreNavLink('attributes');
+    cy.getByCy(`${mockRubricAttributesGroupForDelete}-delete`).should('not.exist');
+
+    // Shouldn't contain deleted attributes group on third level
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
+    cy.visitMoreNavLink('attributes');
+    cy.getByCy(`${mockRubricAttributesGroupForDelete}-delete`).should('not.exist');
+
+    // Should show validation error on add attributes group to the rubric
+    cy.getByCy(`${mockRubricLevelTwoName}-create`).click();
+    cy.getByCy(`add-attributes-group-to-rubric-modal`).should('exist');
+    cy.getByCy(`attributes-group-submit`).click();
+    cy.getByCy('attributesGroupId-error').should('exist');
+
+    // Should add attributes group to the list
+    cy.getByCy('attributes-groups').select('55');
+    cy.getByCy(`attributes-group-submit`).click();
+    cy.getByCy(`add-attributes-group-to-rubric-modal`).should('not.exist');
+    cy.getByCy('rubric-attributes').should('contain', mockRubricAttributesGroupForDelete);
   });
 });

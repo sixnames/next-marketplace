@@ -17,7 +17,7 @@ import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../confi
 
 interface AttributesGroupInterface {
   id: string;
-  name: string;
+  nameString: string;
 }
 
 interface RubricDetailsInterface {
@@ -25,7 +25,7 @@ interface RubricDetailsInterface {
 }
 
 const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
-  const isSecondLevel = rubric.level === RUBRIC_LEVEL_TWO;
+  const isNotSecondLevel = rubric.level !== RUBRIC_LEVEL_TWO;
 
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -62,7 +62,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       type: CONFIRM_MODAL,
       props: {
         testId: 'attributes-group-delete-modal',
-        message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
+        message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.nameString} из рубрики?`,
         confirm: () => {
           showLoading();
           return deleteAttributesGroupFromRubricMutation({
@@ -101,7 +101,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   const columns = [
     {
-      key: 'node.name',
+      key: 'node.nameString',
       title: 'Название',
       render: (name: string) => name,
     },
@@ -109,14 +109,15 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       key: 'node.id',
       title: '',
       textAlign: 'right',
-      render: (_: string, attributesGroup: { node: { name: string; id: string } }) => {
+      render: (_: string, attributesGroup: { node: { nameString: string; id: string } }) => {
         const { node } = attributesGroup;
         return (
           <ContentItemControls
+            disabled={isNotSecondLevel}
             justifyContent={'flex-end'}
             deleteTitle={'Удалить группу атрибутов из рубрики'}
             deleteHandler={() => deleteAttributesGroupHandler(node)}
-            testId={node.name}
+            testId={node.nameString}
           />
         );
       },
@@ -127,13 +128,12 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     <div data-cy={'rubric-attributes'}>
       <DataLayoutTitle
         titleRight={
-          isSecondLevel ? (
-            <ContentItemControls
-              createTitle={'Добавить группу атрибутов в рубрику'}
-              testId={rubric.name}
-              createHandler={addAttributesGroupToRubricHandler}
-            />
-          ) : null
+          <ContentItemControls
+            disabled={isNotSecondLevel}
+            createTitle={'Добавить группу атрибутов в рубрику'}
+            testId={rubric.name}
+            createHandler={addAttributesGroupToRubricHandler}
+          />
         }
       >
         Атрибуты

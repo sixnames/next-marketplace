@@ -15,6 +15,7 @@ export interface ContentItemControlsInterface {
   justifyContent?: JustifyType;
   theme?: ButtonTheme;
   testId?: string;
+  disabled?: boolean;
 }
 
 const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
@@ -29,6 +30,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   justifyContent = 'flex-start',
   theme = 'gray',
   testId,
+  disabled,
 }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`} style={{ justifyContent }}>
@@ -42,6 +44,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={createHandler}
             theme={theme}
             testId={`${testId}-create`}
+            disabled={disabled}
           />
         </div>
       )}
@@ -56,6 +59,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={updateHandler}
             theme={theme}
             testId={`${testId}-update`}
+            disabled={disabled}
           />
         </div>
       )}
@@ -70,6 +74,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={deleteHandler}
             theme={theme}
             testId={`${testId}-delete`}
+            disabled={disabled}
           />
         </div>
       )}

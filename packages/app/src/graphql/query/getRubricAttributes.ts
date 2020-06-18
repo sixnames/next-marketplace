@@ -5,6 +5,7 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
     getRubric(id: $id) {
       id
       attributesGroups {
+        id
         showInCatalogueFilter
         node {
           id

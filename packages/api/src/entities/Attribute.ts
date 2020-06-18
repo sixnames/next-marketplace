@@ -31,7 +31,7 @@ export class Attribute {
   readonly itemId: number;
 
   @Field(() => LanguageType)
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 
   @Field(() => String)

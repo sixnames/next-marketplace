@@ -49,6 +49,11 @@ import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 
+interface ParentRelatedDataInterface {
+  variant: null | undefined | string;
+  level: number;
+}
+
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
   @Field((_type) => Rubric, { nullable: true })
@@ -102,10 +107,18 @@ export class RubricResolver {
         };
       }
 
-      const parentRubric = (await RubricModel.findById(parent)) || {
-        id: null,
-        level: RUBRIC_LEVEL_ZERO,
+      const parentRubric = await RubricModel.findById(parent);
+
+      const parentRelatedData: ParentRelatedDataInterface = {
+        variant: null,
+        level: RUBRIC_LEVEL_ONE,
       };
+
+      if (parentRubric) {
+        const parentCity = getCityData(parentRubric.cities, city);
+        parentRelatedData.variant = parentCity!.node.variant;
+        parentRelatedData.level = parentCity!.node.level + RUBRIC_LEVEL_STEP;
+      }
 
       const rubric = await RubricModel.create({
         cities: [
@@ -113,8 +126,7 @@ export class RubricResolver {
             key: city,
             node: {
               ...input,
-              variant: parentRubric.level === RUBRIC_LEVEL_ZERO ? input.variant : null,
-              level: parentRubric.level + RUBRIC_LEVEL_STEP,
+              ...parentRelatedData,
               slug: generateDefaultLangSlug(input.catalogueName),
               attributesGroups: [],
             },

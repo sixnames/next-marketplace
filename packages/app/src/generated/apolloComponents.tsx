@@ -345,6 +345,7 @@ export type RubricProductsArgs = {
 
 export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
+  id: Scalars['ID'];
   showInCatalogueFilter: Scalars['Boolean'];
   node: AttributesGroup;
 };
@@ -864,7 +865,7 @@ export type AddAttributesGroupToRubricMutation = (
       & Pick<Rubric, 'id'>
       & { attributesGroups: Array<(
         { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
         & { node: (
           { __typename?: 'AttributesGroup' }
           & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -1044,7 +1045,7 @@ export type DeleteAttributesGroupFromRubricMutation = (
       & Pick<Rubric, 'id'>
       & { attributesGroups: Array<(
         { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
         & { node: (
           { __typename?: 'AttributesGroup' }
           & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -1480,7 +1481,7 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -1612,6 +1613,7 @@ export const AddAttributesGroupToRubricDocument = gql`
     rubric {
       id
       attributesGroups {
+        id
         showInCatalogueFilter
         node {
           id
@@ -1963,6 +1965,7 @@ export const DeleteAttributesGroupFromRubricDocument = gql`
     rubric {
       id
       attributesGroups {
+        id
         showInCatalogueFilter
         node {
           id
@@ -2934,6 +2937,7 @@ export const GetRubricAttributesDocument = gql`
   getRubric(id: $id) {
     id
     attributesGroups {
+      id
       showInCatalogueFilter
       node {
         id

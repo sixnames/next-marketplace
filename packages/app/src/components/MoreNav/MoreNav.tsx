@@ -45,7 +45,7 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                   <li
                     className={`${classes.item} ${isCurrentLink ? classes.linkActive : ''}`}
                     key={name}
-                    data-cy={`more-nav-${testId}`}
+                    data-cy={`more-nav-item-${testId}`}
                   >
                     <NavLink to={to} className={classes.link} onClick={hideDropdownHandler}>
                       {icon && <Icon name={icon} className={classes.icon} />}

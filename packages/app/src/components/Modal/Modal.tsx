@@ -5,6 +5,7 @@ import Backdrop from '../Backdrop/Backdrop';
 import { useAppContext } from '../../context/appContext';
 import classes from './Modal.module.css';
 import {
+  ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
   ATTRIBUTE_IN_GROUP_MODAL,
   CONFIRM_MODAL,
   CREATE_RUBRIC_MODAL,
@@ -19,9 +20,9 @@ import ConfirmModal from './ConfirmModal/ConfirmModal';
 const UpdateNameModal = React.lazy(() => import('./UpdateNameModal/UpdateNameModal'));
 const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = React.lazy(() => import('./CreateRubricModal/CreateRubricModal'));
-/*const AddAttributesGroupToRubricModal = React.lazy(() =>
+const AddAttributesGroupToRubricModal = React.lazy(() =>
   import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
-);*/
+);
 const AttributeInGroupModal = React.lazy(() =>
   import('./AttributeInGroupModal/AttributeInGroupModal'),
 );
@@ -56,9 +57,9 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
 
-          {/*{modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
+          {modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
             <AddAttributesGroupToRubricModal {...modalProps} />
-          )}*/}
+          )}
 
           {/*{modalType === ADD_PRODUCT_TO_RUBRIC_MODAL && <AddProductToRubricModal {...modalProps} />}*/}
 

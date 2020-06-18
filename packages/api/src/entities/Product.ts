@@ -48,11 +48,11 @@ export class ProductAttributesGroup {
 @ObjectType()
 export class ProductNode {
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   cardName: LanguageType[];
 
   @Field(() => String)
@@ -60,7 +60,7 @@ export class ProductNode {
   slug: string;
 
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   description: LanguageType[];
 
   @Field(() => [ID])
@@ -72,11 +72,11 @@ export class ProductNode {
   attributesSource: string;
 
   @Field(() => [ProductAttributesGroup])
-  @prop({ type: ProductAttributesGroup, required: true, _id: false })
+  @prop({ type: ProductAttributesGroup, required: true })
   attributesGroups: ProductAttributesGroup[];
 
   @Field(() => [AssetType])
-  @prop({ type: AssetType, required: true, _id: false })
+  @prop({ type: AssetType, required: true })
   assets: AssetType[];
 
   @Field(() => Int)
@@ -96,7 +96,7 @@ export class ProductCity {
   key: string;
 
   @Field(() => ProductNode)
-  @prop({ required: true, _id: false })
+  @prop({ required: true })
   node: ProductNode;
 }
 
@@ -143,7 +143,7 @@ export class Product extends TimeStamps {
   readonly price: number;
 
   @Field(() => [ProductCity])
-  @prop({ type: ProductCity, required: true, _id: false })
+  @prop({ type: ProductCity, required: true })
   cities: ProductCity[];
 
   @Field()

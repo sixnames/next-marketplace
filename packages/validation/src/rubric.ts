@@ -36,6 +36,10 @@ export const addAttributesGroupToRubricInputSchema = Yup.object().shape({
   attributesGroupId,
 });
 
+export const addAttributesGroupToRubricClientSchema = Yup.object().shape({
+  attributesGroupId,
+});
+
 export const deleteAttributesGroupFromRubricInputSchema = Yup.object().shape({
   rubricId,
   attributesGroupId,

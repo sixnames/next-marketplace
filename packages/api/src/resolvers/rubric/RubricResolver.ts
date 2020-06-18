@@ -382,7 +382,7 @@ export class RubricResolver {
         {
           _id: { $in: [...childrenIds, parentId, rubricId] },
           'cities.key': city,
-          attributesGroups: {
+          'cities.node.attributesGroups': {
             $not: {
               $elemMatch: {
                 node: attributesGroupId,
@@ -394,12 +394,11 @@ export class RubricResolver {
           $addToSet: {
             'cities.$.node.attributesGroups': {
               showInCatalogueFilter: false,
-              node: Types.ObjectId(attributesGroupId),
+              node: attributesGroupId,
             },
           },
         },
       );
-
       if (!updatedRubrics.ok) {
         return {
           success: false,

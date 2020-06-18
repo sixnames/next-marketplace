@@ -24,6 +24,8 @@ import { AttributeVariantResolver } from './resolvers/attributeVariant/Attribute
 import { ProductResolver } from './resolvers/product/ProductResolver';
 import path from 'path';
 import { getSharpImage } from './utils/assets/getSharpImage';
+import createTestData from './utils/testUtils/createTestData';
+import clearTestData from './utils/testUtils/clearTestData';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -66,6 +68,16 @@ const createApp = () => {
     req.session!.city = city ? city : DEFAULT_CITY;
     req.session!.lang = DEFAULT_LANG;
     next();
+  });
+
+  // Test data
+  app.get('/create-test-data', async (_, res) => {
+    await createTestData();
+    res.send('test data created');
+  });
+  app.get('/clear-test-data', async (_, res) => {
+    await clearTestData();
+    res.send('test data removed');
   });
 
   // Assets

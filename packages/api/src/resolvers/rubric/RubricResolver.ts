@@ -58,8 +58,8 @@ class RubricPayloadType extends PayloadType() {
 @Resolver((_of) => Rubric)
 export class RubricResolver {
   @Query(() => Rubric)
-  async getRubric(@Arg('id', (_type) => ID) id: string) {
-    return RubricModel.findById(id);
+  async getRubric(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+    return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
   @Query(() => [Rubric])

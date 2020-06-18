@@ -1126,6 +1126,19 @@ export type DeleteProductFromRubricMutation = (
   ) }
 );
 
+export type DeleteRubricMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type DeleteRubricVariantMutationVariables = {
   id: Scalars['ID'];
 };
@@ -1266,7 +1279,7 @@ export type UpdateRubricMutation = (
     & Pick<RubricPayloadType, 'success' | 'message'>
     & { rubric?: Maybe<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
@@ -2141,6 +2154,39 @@ export function useDeleteProductFromRubricMutation(baseOptions?: ApolloReactHook
 export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
+export const DeleteRubricDocument = gql`
+    mutation DeleteRubric($id: ID!) {
+  deleteRubric(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
+
+/**
+ * __useDeleteRubricMutation__
+ *
+ * To run a mutation, you first call `useDeleteRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRubricMutation, { data, loading, error }] = useDeleteRubricMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, baseOptions);
+      }
+export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
+export type DeleteRubricMutationResult = ApolloReactCommon.MutationResult<DeleteRubricMutation>;
+export type DeleteRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const DeleteRubricVariantDocument = gql`
     mutation DeleteRubricVariant($id: ID!) {
   deleteRubricVariant(id: $id) {
@@ -2438,6 +2484,8 @@ export const UpdateRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
     }
   }
 }

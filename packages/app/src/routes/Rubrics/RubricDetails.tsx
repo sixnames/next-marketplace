@@ -25,10 +25,7 @@ interface RubricDetailsInterface {
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => {
-      console.log(data);
-      onCompleteCallback(data.updateRubric);
-    },
+    onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });
 

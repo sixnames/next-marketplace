@@ -195,6 +195,12 @@ describe('Rubrics', () => {
             },
           };
         },
+        DeleteRubric: {
+          deleteRubric: {
+            success: true,
+            message: 'true',
+          },
+        },
       },
     });
 
@@ -239,7 +245,15 @@ describe('Rubrics', () => {
     cy.getByCy(`tree-${mockNewThirdLevelRubric}`).should('exist');
   });
 
-  it.only('Should have rubric details tab', () => {
+  it('Should delete rubric', () => {
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.getByCy(`rubric-delete`).click();
+    cy.getByCy('delete-rubric-modal').should('exist');
+    cy.getByCy('confirm').click();
+    cy.getByCy(`success-notification`).should('exist');
+  });
+
+  it('Should have rubric details tab', () => {
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.getByCy('rubric-name').should('exist');
     cy.getByCy('catalogue-name').should('exist');

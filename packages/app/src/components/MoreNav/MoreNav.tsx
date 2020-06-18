@@ -5,6 +5,7 @@ import { NavItemInterface } from '../../types';
 import classes from './MoreNav.module.css';
 import Backdrop from '../Backdrop/Backdrop';
 import { NavLink } from 'react-router-dom';
+import useRouterQuery from '../../hooks/useRouterQuery';
 
 interface MoreNavInterface {
   navConfig: NavItemInterface[];
@@ -13,6 +14,7 @@ interface MoreNavInterface {
 
 const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { search } = useRouterQuery();
 
   function toggleDropdownHandler() {
     setIsDropdownOpen((prevState) => !prevState);
@@ -37,14 +39,15 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                   return null;
                 }
 
+                const isCurrentLink = to.search === search;
+
                 return (
-                  <li className={classes.item} key={name} data-cy={testId}>
-                    <NavLink
-                      to={to}
-                      activeClassName={classes.linkActive}
-                      className={classes.link}
-                      onClick={hideDropdownHandler}
-                    >
+                  <li
+                    className={`${classes.item} ${isCurrentLink ? classes.linkActive : ''}`}
+                    key={name}
+                    data-cy={`more-nav-${testId}`}
+                  >
+                    <NavLink to={to} className={classes.link} onClick={hideDropdownHandler}>
                       {icon && <Icon name={icon} className={classes.icon} />}
                       <span className={classes.linkName}>{name}</span>
                     </NavLink>

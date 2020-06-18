@@ -1,12 +1,19 @@
 import useRouterQuery from './useRouterQuery';
 import { NavItemInterface } from '../types';
-import qs from 'querystring';
+import qs, { ParsedUrlQuery } from 'querystring';
 
 interface UseTabsConfigInterface {
   config: Omit<NavItemInterface, 'to'>[];
 }
 
-const useTabsConfig = () => {
+interface UseTabsConfigReturnInterface {
+  pathname: string;
+  query: ParsedUrlQuery;
+  generateTabsConfig: (args: UseTabsConfigInterface) => NavItemInterface[];
+  generateTabSearch: (tab: number) => string;
+}
+
+const useTabsConfig = (): UseTabsConfigReturnInterface => {
   const { pathname, query } = useRouterQuery();
 
   function generateTabSearch(tab: number) {

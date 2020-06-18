@@ -4,6 +4,9 @@
 }
 
 .trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   padding-top: 2px;
   padding-right: 2px;
@@ -65,14 +68,15 @@
   fill: var(--midGray);
 }
 
-.linkActive,
+.linkActive .link,
 .link:hover {
   color: var(--theme);
   text-decoration: none;
 }
 
-.linkActive:hover {
+.linkActive .link {
   cursor: default;
+  pointer-events: none;
 }
 
 .iconActive .icon,

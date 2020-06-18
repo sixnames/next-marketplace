@@ -13,8 +13,8 @@ export const CREATE_RUBRIC_MUTATION = gql`
           id
           nameString
         }
-        #        totalProductsCount
-        #        activeProductsCount
+        totalProductsCount
+        activeProductsCount
         children {
           id
           name
@@ -23,13 +23,8 @@ export const CREATE_RUBRIC_MUTATION = gql`
             id
             nameString
           }
-          #          totalProductsCount
-          #          activeProductsCount
-        }
-        parent {
-          id
-          name
-          level
+          totalProductsCount
+          activeProductsCount
           children {
             id
             name
@@ -38,9 +33,12 @@ export const CREATE_RUBRIC_MUTATION = gql`
               id
               nameString
             }
-            #            totalProductsCount
-            #            activeProductsCount
+            totalProductsCount
+            activeProductsCount
           }
+        }
+        parent {
+          id
         }
       }
     }

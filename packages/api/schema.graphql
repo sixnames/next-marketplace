@@ -370,6 +370,7 @@ type Rubric {
 }
 
 type RubricAttributesGroup {
+  id: ID!
   node: AttributesGroup!
   showInCatalogueFilter: Boolean!
 }

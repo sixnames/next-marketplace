@@ -5,6 +5,7 @@ import NotFound from '../../routes/NotFound/NotFound';
 import RubricVariantsRoute from '../../routes/RubricVariants/RubricVariantsRoute';
 import OptionsGroupsRoute from '../../routes/OptionsGroups/OptionsGroupsRoute';
 import AttributesGroupsRoute from '../../routes/AttributesGroups/AttributesGroupsRoute';
+import RubricsRoute from '../../routes/Rubrics/RubricsRoute';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
           <Route path={'profile'} element={<div>Profile</div>} />
 
           {/*CMS*/}
-          <Route path={'rubrics'} element={<div>Rubrics</div>} />
+          <Route path={'rubrics'} element={<RubricsRoute />} />
           <Route path={'products'} element={<div>Products</div>} />
           <Route path={'rubric-variants'} element={<RubricVariantsRoute />} />
           <Route path={'attributes-groups'} element={<AttributesGroupsRoute />} />

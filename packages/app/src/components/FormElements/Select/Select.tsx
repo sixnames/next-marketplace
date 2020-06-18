@@ -5,7 +5,8 @@ import { PostfixType, SizeType } from '../../../types';
 
 export interface SelectOptionInterface {
   id: string;
-  nameString: string;
+  nameString?: string;
+  name?: string;
   lastName?: string;
 }
 
@@ -66,6 +67,16 @@ const Select: React.FC<SelectInterface> = ({
   const additionalClassName = className ? className : '';
   const selectClassName = `${classes.select} ${sizeClassName} ${errorClassName} ${additionalClassName}`;
 
+  function getOptionName(name = '', lastName?: string) {
+    const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
+    const optionTestIdName = name.split(' ').join('-');
+
+    return {
+      optionName,
+      optionTestIdName,
+    };
+  }
+
   return (
     <InputLine
       isRequired={isRequired}
@@ -88,14 +99,14 @@ const Select: React.FC<SelectInterface> = ({
           value={value || ''}
           {...props}
         >
-          {withFirstOptions.map(({ nameString, lastName, id }) => {
-            const optionName = lastName ? `${nameString.charAt(0)}. ${lastName}` : nameString;
-            const optionTestIdName = name.split(' ').join('_');
+          {withFirstOptions.map(({ nameString, name, lastName, id }) => {
+            const finalName = nameString ? nameString : name;
+            const { optionName, optionTestIdName } = getOptionName(finalName, lastName);
 
             return (
               <option
                 key={id}
-                value={setNameToValue ? nameString : id}
+                value={setNameToValue ? optionName : id}
                 data-cy={`option-${optionTestIdName}`}
               >
                 {optionName}

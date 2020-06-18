@@ -8,6 +8,7 @@ export const DELETE_ATTRIBUTES_GROUP_FROM_RUBRIC = gql`
       rubric {
         id
         attributesGroups {
+          id
           showInCatalogueFilter
           node {
             id

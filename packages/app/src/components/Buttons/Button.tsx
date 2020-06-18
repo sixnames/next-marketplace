@@ -65,7 +65,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
           popper: tooltipClasses ? tooltipClasses.popper : '',
           tooltip: tooltipClasses ? tooltipClasses.tooltip : '',
         }}
-        title={title}
+        title={!disabled ? title : ''}
         placement={tooltipPlacement}
       >
         <button data-cy={testId} disabled={disabled} className={buttonClass} type={type} {...props}>

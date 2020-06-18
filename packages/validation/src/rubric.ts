@@ -2,11 +2,13 @@ import * as Yup from 'yup';
 import { id, langInput, notNullableName } from './templates';
 
 const parent = Yup.string().nullable();
-const variant = Yup.string().when('parent', {
-  is: (val) => val,
-  then: Yup.string().nullable(),
-  otherwise: Yup.string().required('Типа рубрики обязателен к заполнению.'),
-});
+const variant = Yup.string()
+  .nullable()
+  .when('parent', {
+    is: (val) => val,
+    then: Yup.string().nullable(),
+    otherwise: Yup.string().required('Типа рубрики обязателен к заполнению.'),
+  });
 
 const rubricId = Yup.string().nullable().required('ID рубрики обязательно к заполнению.');
 const attributesGroupId = Yup.string()
@@ -31,6 +33,10 @@ export const updateRubricInputSchema = Yup.object().shape({
 
 export const addAttributesGroupToRubricInputSchema = Yup.object().shape({
   rubricId,
+  attributesGroupId,
+});
+
+export const addAttributesGroupToRubricClientSchema = Yup.object().shape({
   attributesGroupId,
 });
 

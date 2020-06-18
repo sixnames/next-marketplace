@@ -9,6 +9,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
+  Timestamp: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -22,6 +26,8 @@ export type Query = {
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
   getAttribute?: Maybe<Attribute>;
+  getProduct: Product;
+  getAllProducts: PaginatedProductsResponse;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
@@ -62,6 +68,16 @@ export type QueryGetAttributeArgs = {
 };
 
 
+export type QueryGetProductArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllProductsArgs = {
+  input?: Maybe<ProductPaginateInput>;
+};
+
+
 export type QueryGetAttributesGroupArgs = {
   id: Scalars['ID'];
 };
@@ -98,12 +114,13 @@ export type User = {
   role: Scalars['String'];
   fullName: Scalars['String'];
   shortName: Scalars['String'];
-  createdAt: Scalars['Int'];
-  updatedAt: Scalars['Int'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
   isAdmin: Scalars['Boolean'];
   isCustomer: Scalars['Boolean'];
   isManager: Scalars['Boolean'];
 };
+
 
 export type PaginatedUsersResponse = {
    __typename?: 'PaginatedUsersResponse';
@@ -123,7 +140,7 @@ export type UserPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
   sortDir?: Maybe<PaginateSortDirectionEnum>;
-  query?: Maybe<Scalars['String']>;
+  search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<UserSortByEnum>;
 };
 
@@ -176,12 +193,12 @@ export type OptionsGroup = {
 export type Attribute = {
    __typename?: 'Attribute';
   id: Scalars['ID'];
+  itemId: Scalars['Int'];
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   variant: AttributeVariantEnum;
   options?: Maybe<OptionsGroup>;
   metric?: Maybe<Metric>;
-  slug: Scalars['String'];
 };
 
 /** Attribute type enum */
@@ -192,6 +209,31 @@ export enum AttributeVariantEnum {
   Number = 'number'
 }
 
+export type Product = {
+   __typename?: 'Product';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Scalars['String'];
+  cardName: Scalars['String'];
+  slug: Scalars['String'];
+  description: Scalars['String'];
+  rubrics: Array<Scalars['ID']>;
+  attributesSource?: Maybe<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<AssetType>;
+  price: Scalars['Int'];
+  cities: Array<ProductCity>;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type ProductAttributesGroup = {
+   __typename?: 'ProductAttributesGroup';
+  showInCard: Scalars['Boolean'];
+  node: AttributesGroup;
+  attributes: Array<ProductAttribute>;
+};
+
 export type AttributesGroup = {
    __typename?: 'AttributesGroup';
   id: Scalars['ID'];
@@ -199,6 +241,72 @@ export type AttributesGroup = {
   nameString: Scalars['String'];
   attributes: Array<Attribute>;
 };
+
+export type ProductAttribute = {
+   __typename?: 'ProductAttribute';
+  showInCard: Scalars['Boolean'];
+  node: Attribute;
+  /** Attribute reference via attribute itemId field */
+  key: Scalars['Int'];
+  value: Array<Scalars['String']>;
+};
+
+export type AssetType = {
+   __typename?: 'AssetType';
+  url: Scalars['String'];
+  index: Scalars['Int'];
+};
+
+export type ProductCity = {
+   __typename?: 'ProductCity';
+  key: Scalars['String'];
+  node: ProductNode;
+};
+
+export type ProductNode = {
+   __typename?: 'ProductNode';
+  name: Array<LanguageType>;
+  cardName: Array<LanguageType>;
+  slug: Scalars['String'];
+  description: Array<LanguageType>;
+  rubrics: Array<Scalars['ID']>;
+  attributesSource: Scalars['ID'];
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<AssetType>;
+  price: Scalars['Int'];
+  active: Scalars['Boolean'];
+};
+
+export type PaginatedProductsResponse = {
+   __typename?: 'PaginatedProductsResponse';
+  docs: Array<Product>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type ProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ProductSortByEnum>;
+  rubric?: Maybe<Scalars['ID']>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  noRubrics?: Maybe<Scalars['Boolean']>;
+};
+
+/** Product pagination sortBy enum */
+export enum ProductSortByEnum {
+  Price = 'price',
+  CreatedAt = 'createdAt'
+}
 
 export type RubricVariant = {
    __typename?: 'RubricVariant';
@@ -219,6 +327,9 @@ export type Rubric = {
   children: Array<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
+  products: PaginatedProductsResponse;
+  totalProductsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
   cities: Array<RubricCity>;
 };
 
@@ -227,10 +338,25 @@ export type RubricChildrenArgs = {
   excluded?: Maybe<Array<Scalars['ID']>>;
 };
 
+
+export type RubricProductsArgs = {
+  input?: Maybe<RubricProductPaginateInput>;
+};
+
 export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
+  id: Scalars['ID'];
   showInCatalogueFilter: Scalars['Boolean'];
   node: AttributesGroup;
+};
+
+export type RubricProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ProductSortByEnum>;
+  notInRubric?: Maybe<Scalars['ID']>;
 };
 
 export type RubricCity = {
@@ -274,6 +400,9 @@ export type Mutation = {
   addOptionToGroup: OptionsGroupPayloadType;
   updateOptionInGroup: OptionsGroupPayloadType;
   deleteOptionFromGroup: OptionsGroupPayloadType;
+  createProduct: ProductPayloadType;
+  updateProduct: ProductPayloadType;
+  deleteProduct: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -288,6 +417,8 @@ export type Mutation = {
   deleteRubric: RubricPayloadType;
   addAttributesGroupToRubric: RubricPayloadType;
   deleteAttributesGroupFromRubric: RubricPayloadType;
+  addProductToRubric: RubricPayloadType;
+  deleteProductFromRubric: RubricPayloadType;
 };
 
 
@@ -361,6 +492,21 @@ export type MutationDeleteOptionFromGroupArgs = {
 };
 
 
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+
+export type MutationDeleteProductArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationCreateAttributesGroupArgs = {
   input: CreateAttributesGroupInput;
 };
@@ -428,6 +574,16 @@ export type MutationAddAttributesGroupToRubricArgs = {
 
 export type MutationDeleteAttributesGroupFromRubricArgs = {
   input: DeleteAttributesGroupFromRubricInput;
+};
+
+
+export type MutationAddProductToRubricArgs = {
+  input: AddProductToRubricInput;
+};
+
+
+export type MutationDeleteProductFromRubricArgs = {
+  input: DeleteProductFromRubricInput;
 };
 
 export type UserPayloadType = {
@@ -525,6 +681,51 @@ export type DeleteOptionFromGroupInput = {
   optionId: Scalars['ID'];
 };
 
+export type ProductPayloadType = {
+   __typename?: 'ProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<Product>;
+};
+
+export type CreateProductInput = {
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  attributesSource: Scalars['ID'];
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
+export type ProductAttributesGroupInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  attributes: Array<ProductAttributeInput>;
+};
+
+export type ProductAttributeInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  /** Attribute reference via attribute itemId field */
+  key: Scalars['Int'];
+  value: Array<Scalars['String']>;
+};
+
+
+export type UpdateProductInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  attributesSource: Scalars['ID'];
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
 export type AttributesGroupPayloadType = {
    __typename?: 'AttributesGroupPayloadType';
   success: Scalars['Boolean'];
@@ -611,6 +812,16 @@ export type DeleteAttributesGroupFromRubricInput = {
   attributesGroupId: Scalars['ID'];
 };
 
+export type AddProductToRubricInput = {
+  rubricId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
+export type DeleteProductFromRubricInput = {
+  rubricId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
 export type AddAttributeToGroupMutationVariables = {
   input: AddAttributeToGroupInput;
 };
@@ -654,7 +865,7 @@ export type AddAttributesGroupToRubricMutation = (
       & Pick<Rubric, 'id'>
       & { attributesGroups: Array<(
         { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
         & { node: (
           { __typename?: 'AttributesGroup' }
           & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -735,28 +946,27 @@ export type CreateRubricMutation = (
     & Pick<RubricPayloadType, 'success' | 'message'>
     & { rubric?: Maybe<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       )>, children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
+        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
         & { variant?: Maybe<(
           { __typename?: 'RubricVariant' }
           & Pick<RubricVariant, 'id' | 'nameString'>
-        )> }
-      )>, parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
-        & { children: Array<(
+        )>, children: Array<(
           { __typename?: 'Rubric' }
-          & Pick<Rubric, 'id' | 'name' | 'level'>
+          & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
           & { variant?: Maybe<(
             { __typename?: 'RubricVariant' }
             & Pick<RubricVariant, 'id' | 'nameString'>
           )> }
         )> }
+      )>, parent?: Maybe<(
+        { __typename?: 'Rubric' }
+        & Pick<Rubric, 'id'>
       )> }
     )> }
   ) }
@@ -835,7 +1045,7 @@ export type DeleteAttributesGroupFromRubricMutation = (
       & Pick<Rubric, 'id'>
       & { attributesGroups: Array<(
         { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
         & { node: (
           { __typename?: 'AttributesGroup' }
           & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -876,6 +1086,57 @@ export type DeleteOptionsGroupMutation = (
   & { deleteOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteProductMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteProductMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProduct: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteProductFromRubricMutationVariables = {
+  input: DeleteProductFromRubricInput;
+};
+
+
+export type DeleteProductFromRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProductFromRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+    & { rubric?: Maybe<(
+      { __typename?: 'Rubric' }
+      & Pick<Rubric, 'id'>
+      & { products: (
+        { __typename?: 'PaginatedProductsResponse' }
+        & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+        & { docs: Array<(
+          { __typename?: 'Product' }
+          & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
+export type DeleteRubricMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -1019,7 +1280,7 @@ export type UpdateRubricMutation = (
     & Pick<RubricPayloadType, 'success' | 'message'>
     & { rubric?: Maybe<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1136,6 +1397,23 @@ export type GetNewAttributeOptionsQuery = (
   )>> }
 );
 
+export type GetNonRubricProductsQueryVariables = {
+  input?: Maybe<ProductPaginateInput>;
+};
+
+
+export type GetNonRubricProductsQuery = (
+  { __typename?: 'Query' }
+  & { getAllProducts: (
+    { __typename?: 'PaginatedProductsResponse' }
+    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Product' }
+      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+    )> }
+  ) }
+);
+
 export type GetOptionsGroupQueryVariables = {
   id: Scalars['ID'];
 };
@@ -1162,7 +1440,7 @@ export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level'>
+    & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
     & { variant?: Maybe<(
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1175,13 +1453,13 @@ export type GetRubricQuery = (
       )> }
     )>, children: Array<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       )>, children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
+        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
         & { variant?: Maybe<(
           { __typename?: 'RubricVariant' }
           & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1203,12 +1481,34 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'showInCatalogueFilter'>
+      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
       ) }
     )> }
+  ) }
+);
+
+export type GetRubricProductsQueryVariables = {
+  id: Scalars['ID'];
+  notInRubric?: Maybe<Scalars['ID']>;
+};
+
+
+export type GetRubricProductsQuery = (
+  { __typename?: 'Query' }
+  & { getRubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'id'>
+    & { products: (
+      { __typename?: 'PaginatedProductsResponse' }
+      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+      & { docs: Array<(
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+      )> }
+    ) }
   ) }
 );
 
@@ -1221,19 +1521,19 @@ export type GetRubricsTreeQuery = (
   { __typename?: 'Query' }
   & { getRubricsTree: Array<(
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'level'>
+    & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
     & { variant?: Maybe<(
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
     )>, children: Array<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       )>, children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level'>
+        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
         & { variant?: Maybe<(
           { __typename?: 'RubricVariant' }
           & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1313,6 +1613,7 @@ export const AddAttributesGroupToRubricDocument = gql`
     rubric {
       id
       attributesGroups {
+        id
         showInCatalogueFilter
         node {
           id
@@ -1480,6 +1781,8 @@ export const CreateRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
       children {
         id
         name
@@ -1488,11 +1791,8 @@ export const CreateRubricDocument = gql`
           id
           nameString
         }
-      }
-      parent {
-        id
-        name
-        level
+        totalProductsCount
+        activeProductsCount
         children {
           id
           name
@@ -1501,7 +1801,12 @@ export const CreateRubricDocument = gql`
             id
             nameString
           }
+          totalProductsCount
+          activeProductsCount
         }
+      }
+      parent {
+        id
       }
     }
   }
@@ -1660,6 +1965,7 @@ export const DeleteAttributesGroupFromRubricDocument = gql`
     rubric {
       id
       attributesGroups {
+        id
         showInCatalogueFilter
         node {
           id
@@ -1770,6 +2076,120 @@ export function useDeleteOptionsGroupMutation(baseOptions?: ApolloReactHooks.Mut
 export type DeleteOptionsGroupMutationHookResult = ReturnType<typeof useDeleteOptionsGroupMutation>;
 export type DeleteOptionsGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionsGroupMutation>;
 export type DeleteOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
+export const DeleteProductDocument = gql`
+    mutation DeleteProduct($id: ID!) {
+  deleteProduct(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteProductMutationFn = ApolloReactCommon.MutationFunction<DeleteProductMutation, DeleteProductMutationVariables>;
+
+/**
+ * __useDeleteProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductMutation, { data, loading, error }] = useDeleteProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteProductMutation, DeleteProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteProductMutation, DeleteProductMutationVariables>(DeleteProductDocument, baseOptions);
+      }
+export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
+export type DeleteProductMutationResult = ApolloReactCommon.MutationResult<DeleteProductMutation>;
+export type DeleteProductMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
+export const DeleteProductFromRubricDocument = gql`
+    mutation DeleteProductFromRubric($input: DeleteProductFromRubricInput!) {
+  deleteProductFromRubric(input: $input) {
+    success
+    message
+    rubric {
+      id
+      products {
+        totalDocs
+        page
+        totalPages
+        docs {
+          id
+          itemId
+          name
+          price
+          slug
+        }
+      }
+    }
+  }
+}
+    `;
+export type DeleteProductFromRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
+
+/**
+ * __useDeleteProductFromRubricMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductFromRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductFromRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductFromRubricMutation, { data, loading, error }] = useDeleteProductFromRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProductFromRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>(DeleteProductFromRubricDocument, baseOptions);
+      }
+export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
+export type DeleteProductFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteProductFromRubricMutation>;
+export type DeleteProductFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
+export const DeleteRubricDocument = gql`
+    mutation DeleteRubric($id: ID!) {
+  deleteRubric(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
+
+/**
+ * __useDeleteRubricMutation__
+ *
+ * To run a mutation, you first call `useDeleteRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRubricMutation, { data, loading, error }] = useDeleteRubricMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, baseOptions);
+      }
+export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
+export type DeleteRubricMutationResult = ApolloReactCommon.MutationResult<DeleteRubricMutation>;
+export type DeleteRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const DeleteRubricVariantDocument = gql`
     mutation DeleteRubricVariant($id: ID!) {
   deleteRubricVariant(id: $id) {
@@ -2067,6 +2487,8 @@ export const UpdateRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
     }
   }
 }
@@ -2357,6 +2779,48 @@ export function useGetNewAttributeOptionsLazyQuery(baseOptions?: ApolloReactHook
 export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsQuery>;
 export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
 export type GetNewAttributeOptionsQueryResult = ApolloReactCommon.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
+export const GetNonRubricProductsDocument = gql`
+    query GetNonRubricProducts($input: ProductPaginateInput) {
+  getAllProducts(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      id
+      itemId
+      name
+      price
+      slug
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetNonRubricProductsQuery__
+ *
+ * To run a query within a React component, call `useGetNonRubricProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNonRubricProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNonRubricProductsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetNonRubricProductsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, baseOptions);
+      }
+export function useGetNonRubricProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, baseOptions);
+        }
+export type GetNonRubricProductsQueryHookResult = ReturnType<typeof useGetNonRubricProductsQuery>;
+export type GetNonRubricProductsLazyQueryHookResult = ReturnType<typeof useGetNonRubricProductsLazyQuery>;
+export type GetNonRubricProductsQueryResult = ApolloReactCommon.QueryResult<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>;
 export const GetOptionsGroupDocument = gql`
     query GetOptionsGroup($id: ID!) {
   getOptionsGroup(id: $id) {
@@ -2407,6 +2871,8 @@ export const GetRubricDocument = gql`
       id
       nameString
     }
+    totalProductsCount
+    activeProductsCount
     parent {
       id
       name
@@ -2423,6 +2889,8 @@ export const GetRubricDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
       children {
         id
         name
@@ -2431,6 +2899,8 @@ export const GetRubricDocument = gql`
           id
           nameString
         }
+        totalProductsCount
+        activeProductsCount
       }
     }
   }
@@ -2467,6 +2937,7 @@ export const GetRubricAttributesDocument = gql`
   getRubric(id: $id) {
     id
     attributesGroups {
+      id
       showInCatalogueFilter
       node {
         id
@@ -2502,6 +2973,52 @@ export function useGetRubricAttributesLazyQuery(baseOptions?: ApolloReactHooks.L
 export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
 export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
 export type GetRubricAttributesQueryResult = ApolloReactCommon.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
+export const GetRubricProductsDocument = gql`
+    query GetRubricProducts($id: ID!, $notInRubric: ID) {
+  getRubric(id: $id) {
+    id
+    products(input: {notInRubric: $notInRubric}) {
+      totalDocs
+      page
+      totalPages
+      docs {
+        id
+        itemId
+        name
+        price
+        slug
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRubricProductsQuery__
+ *
+ * To run a query within a React component, call `useGetRubricProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRubricProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRubricProductsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      notInRubric: // value for 'notInRubric'
+ *   },
+ * });
+ */
+export function useGetRubricProductsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, baseOptions);
+      }
+export function useGetRubricProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, baseOptions);
+        }
+export type GetRubricProductsQueryHookResult = ReturnType<typeof useGetRubricProductsQuery>;
+export type GetRubricProductsLazyQueryHookResult = ReturnType<typeof useGetRubricProductsLazyQuery>;
+export type GetRubricProductsQueryResult = ApolloReactCommon.QueryResult<GetRubricProductsQuery, GetRubricProductsQueryVariables>;
 export const GetRubricsTreeDocument = gql`
     query GetRubricsTree($excluded: [ID!]) {
   getRubricsTree(excluded: $excluded) {
@@ -2512,6 +3029,8 @@ export const GetRubricsTreeDocument = gql`
       id
       nameString
     }
+    totalProductsCount
+    activeProductsCount
     children(excluded: $excluded) {
       id
       name
@@ -2520,6 +3039,8 @@ export const GetRubricsTreeDocument = gql`
         id
         nameString
       }
+      totalProductsCount
+      activeProductsCount
       children(excluded: $excluded) {
         id
         name
@@ -2528,6 +3049,8 @@ export const GetRubricsTreeDocument = gql`
           id
           nameString
         }
+        totalProductsCount
+        activeProductsCount
       }
     }
   }

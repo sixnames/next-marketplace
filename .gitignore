@@ -14,7 +14,7 @@ lerna-debug.log*
 cardName-0.jpg
 
 # production
-/build
+build
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

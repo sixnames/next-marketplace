@@ -8,6 +8,9 @@ import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver'
 
 @ObjectType()
 export class RubricAttributesGroup {
+  @Field(() => ID)
+  readonly id: string;
+
   @Field(() => Boolean)
   @prop({ required: true, default: false })
   showInCatalogueFilter: boolean;
@@ -21,11 +24,11 @@ export class RubricAttributesGroup {
 @ObjectType()
 export class RubricNode {
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true, _id: false })
+  @prop({ type: LanguageType, required: true })
   catalogueName: LanguageType[];
 
   @Field(() => String)
@@ -61,7 +64,7 @@ export class RubricCity {
   key: string;
 
   @Field(() => RubricNode)
-  @prop({ required: true, _id: false })
+  @prop({ required: true })
   node: RubricNode;
 }
 
@@ -107,7 +110,7 @@ export class Rubric {
   readonly activeProductsCount: number;
 
   @Field(() => [RubricCity])
-  @prop({ type: RubricCity, required: true, _id: false })
+  @prop({ type: RubricCity, required: true })
   cities: RubricCity[];
 }
 

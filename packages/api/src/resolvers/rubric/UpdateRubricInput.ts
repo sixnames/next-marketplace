@@ -16,5 +16,5 @@ export class UpdateRubricInput {
   parent: string;
 
   @Field(() => ID, { nullable: true })
-  variant: string;
+  variant?: string;
 }

@@ -20,6 +20,7 @@ interface UseRouterQueryInterface {
   toggleQuery: ({ key, value }: SetQueryInterface) => void;
   replaceLocation: (args: ReplaceLocationInterface) => void;
   query: ParsedUrlQuery;
+  search: string;
   pathname: string;
 }
 
@@ -67,7 +68,7 @@ const useRouterQuery = (): UseRouterQueryInterface => {
     navigate(`${pathname}?${search}`, { replace: true });
   }
 
-  return { setQuery, removeQuery, toggleQuery, replaceLocation, query, pathname };
+  return { setQuery, removeQuery, toggleQuery, replaceLocation, query, pathname, search };
 };
 
 export default useRouterQuery;

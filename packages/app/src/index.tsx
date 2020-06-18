@@ -20,18 +20,16 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ThemeContextProvider>
-      <ApolloProvider client={client}>
-        <AppContextProvider>
-          <UserContextProvider>
-            <NotificationsProvider>
-              <App />
-            </NotificationsProvider>
-          </UserContextProvider>
-        </AppContextProvider>
-      </ApolloProvider>
-    </ThemeContextProvider>
-  </React.StrictMode>,
+  <ThemeContextProvider>
+    <ApolloProvider client={client}>
+      <AppContextProvider>
+        <UserContextProvider>
+          <NotificationsProvider>
+            <App />
+          </NotificationsProvider>
+        </UserContextProvider>
+      </AppContextProvider>
+    </ApolloProvider>
+  </ThemeContextProvider>,
   document.getElementById('root'),
 );

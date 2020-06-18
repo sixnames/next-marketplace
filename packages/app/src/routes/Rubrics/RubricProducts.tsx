@@ -8,7 +8,6 @@ import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 import {
-  GetRubricProductsQuery,
   GetRubricQuery,
   useDeleteProductFromRubricMutation,
   useGetRubricProductsQuery,
@@ -51,6 +50,12 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       {
         query: RUBRICS_TREE_QUERY,
       },
+      {
+        query: RUBRIC_PRODUCTS_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
     ],
   });
 
@@ -79,39 +84,6 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                 rubricId: rubric.id,
                 productId: product.id,
               },
-            },
-            update: (proxy, mutationResult) => {
-              const cachedData: GetRubricProductsQuery | null = proxy.readQuery({
-                query: RUBRIC_PRODUCTS_QUERY,
-                variables: {
-                  id: rubric.id,
-                },
-              });
-
-              if (
-                cachedData &&
-                cachedData.getRubric &&
-                mutationResult &&
-                mutationResult.data &&
-                mutationResult.data.deleteProductFromRubric &&
-                mutationResult.data.deleteProductFromRubric.success &&
-                mutationResult.data.deleteProductFromRubric.rubric
-              ) {
-                const { products } = mutationResult.data.deleteProductFromRubric.rubric;
-
-                proxy.writeQuery({
-                  query: RUBRIC_PRODUCTS_QUERY,
-                  variables: {
-                    id: rubric.id,
-                  },
-                  data: {
-                    getRubric: {
-                      ...cachedData.getRubric,
-                      products,
-                    },
-                  },
-                });
-              }
             },
           });
         },

@@ -5,6 +5,8 @@ import {
   ME_AS_ADMIN,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
+  MOCK_PRODUCT,
+  MOCK_PRODUCT_FOR_DELETE,
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_TWO,
@@ -20,11 +22,17 @@ const mockNewRubric = 'cy-test-new-rubric';
 const mockNewSecondLevelRubric = 'cy-test-new-second-level-rubric';
 const mockNewThirdLevelRubric = 'cy-test-new-third-level-rubric';
 
+// Rubric variants
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
 
+// Rubric attributes groups
 const mockRubricAttributesGroup = MOCK_ATTRIBUTES_GROUP.name[0].value;
 const mockRubricAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
+
+// Rubric products
+const mockRubricProduct = MOCK_PRODUCT.name[0].value;
+const mockRubricProductForDelete = MOCK_PRODUCT_FOR_DELETE.name[0].value;
 
 describe('Rubrics', () => {
   beforeEach(() => {
@@ -230,7 +238,7 @@ describe('Rubrics', () => {
           if (id === '1' || id === '3') {
             return {
               getRubric: {
-                id: '2',
+                id,
                 attributesGroups: [
                   {
                     id: '444',
@@ -247,7 +255,7 @@ describe('Rubrics', () => {
 
           return {
             getRubric: {
-              id: '2',
+              id,
               attributesGroups: [
                 {
                   id: '444',
@@ -312,6 +320,64 @@ describe('Rubrics', () => {
                   },
                 },
               ],
+            },
+          },
+        },
+        GetRubricProducts: ({ id, notInRubric }: { id: string; notInRubric?: string }) => {
+          return {
+            getRubric: {
+              id,
+              products: {
+                totalDocs: 2,
+                page: 1,
+                totalPages: 1,
+                docs: [
+                  {
+                    id: '888',
+                    itemId: 0,
+                    name: mockRubricProduct,
+                    price: 99,
+                    slug: mockRubricProduct,
+                  },
+                  {
+                    id: '999',
+                    itemId: 1,
+                    name: mockRubricProductForDelete,
+                    price: 199,
+                    slug: mockRubricProductForDelete,
+                  },
+                ],
+              },
+            },
+          };
+        },
+        DeleteProductFromRubric: {
+          deleteProductFromRubric: {
+            success: true,
+            message: 'true',
+            rubric: {
+              id: '3',
+              products: {
+                totalDocs: 2,
+                page: 1,
+                totalPages: 1,
+                docs: [
+                  {
+                    id: '888',
+                    itemId: 0,
+                    name: mockRubricProduct,
+                    price: 99,
+                    slug: mockRubricProduct,
+                  },
+                  {
+                    id: '999',
+                    itemId: 1,
+                    name: mockRubricProductForDelete,
+                    price: 199,
+                    slug: mockRubricProductForDelete,
+                  },
+                ],
+              },
             },
           },
         },
@@ -419,5 +485,28 @@ describe('Rubrics', () => {
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`add-attributes-group-to-rubric-modal`).should('not.exist');
     cy.getByCy('rubric-attributes').should('contain', mockRubricAttributesGroupForDelete);
+  });
+
+  it.only('Should CRUD rubric products', () => {
+    // Should have products on third level rubric only
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.openMoreNav();
+    cy.getByCy('more-nav-list').should('not.contain', 'Товары');
+    cy.closeMoreNav();
+
+    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
+    cy.openMoreNav();
+    cy.getByCy('more-nav-list').should('not.contain', 'Товары');
+    cy.closeMoreNav();
+
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
+    cy.visitMoreNavLink('products');
+    cy.getByCy('rubric-products').should('exist');
+
+    // Should delete product from rubric
+    cy.getByCy(`${mockRubricProductForDelete}-delete`).click();
+    cy.getByCy('delete-product-from-rubric-modal').should('exist');
+    cy.getByCy(`confirm`).click();
+    // cy.getByCy('rubric-products').should('not.contain', mockRubricProductForDelete);
   });
 });

@@ -13,7 +13,7 @@ import { CONFIRM_MODAL } from '../../config/modals';
 import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 
 const RubricsRoute: React.FC = () => {
-  const { query } = useRouterQuery();
+  const { query, removeQuery } = useRouterQuery();
   const { rubric } = query;
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -28,7 +28,12 @@ const RubricsRoute: React.FC = () => {
   });
 
   const [deleteRubricMutation] = useDeleteRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteRubric),
+    onCompleted: (data) => {
+      if (data && data.deleteRubric && data.deleteRubric.success) {
+        removeQuery({ key: 'rubric' });
+        onCompleteCallback(data.deleteRubric);
+      }
+    },
     onError: onErrorCallback,
     refetchQueries: [
       {
@@ -81,15 +86,17 @@ const RubricsRoute: React.FC = () => {
     ],
   });
 
+  const contentControlsConfig = {
+    deleteHandler: deleteRubricHandler,
+    deleteTitle: 'Удалить рубрику',
+    testId: 'rubric',
+  };
+
   return (
     <DataLayout
       title={'Рубрикатор'}
       filterContent={<RubricsFilter />}
-      contentControlsConfig={{
-        deleteHandler: deleteRubricHandler,
-        deleteTitle: 'Удалить рубрику',
-        testId: 'rubric',
-      }}
+      contentControlsConfig={rubric ? contentControlsConfig : null}
       filterResultNavConfig={rubric ? filterResultNavConfig : null}
       filterResult={() => {
         if (rubric === QUERY_DATA_LAYOUT_NO_RUBRIC) {

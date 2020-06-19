@@ -15,7 +15,7 @@ import ContentItemControls, {
 interface DataLayoutInterface {
   title: string;
   filterContent?: ReactNode;
-  contentControlsConfig?: ContentItemControlsInterface;
+  contentControlsConfig?: ContentItemControlsInterface | null;
   filterResult: any;
   filterResultNavConfig?: NavItemInterface[] | null;
   preview?: any;

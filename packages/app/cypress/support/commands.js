@@ -64,7 +64,14 @@ Cypress.Commands.add('visitMoreNavLink', (testId) => {
 });
 
 Cypress.Commands.add('closeNotification', () => {
-  cy.getByCy('close-notification').click();
+  cy.getByCy('close-notification').as('close');
+  cy.get('@close').then((close) => {
+    close.each(function (_index, item) {
+      if (item) {
+        item.click();
+      }
+    });
+  });
 });
 
 Cypress.Commands.add('createTestData', () => {

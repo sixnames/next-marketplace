@@ -29,6 +29,7 @@ interface SelectInterface {
   setNameToValue?: boolean;
   options: SelectOptionInterface[];
   testId?: string;
+  disabled?: boolean;
 }
 
 const Select: React.FC<SelectInterface> = ({

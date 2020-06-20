@@ -1,0 +1,13 @@
+.frame:not(:last-child) {
+  margin-bottom: var(--lineGap);
+}
+
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+
+.list {
+  padding-left: 1rem;
+}

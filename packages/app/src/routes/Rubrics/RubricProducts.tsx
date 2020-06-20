@@ -37,6 +37,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   const { data, loading, error } = useGetRubricProductsQuery({
     skip: !rubric,
+    fetchPolicy: 'network-only',
     variables: {
       id: rubric.id,
     },

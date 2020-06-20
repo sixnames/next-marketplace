@@ -63,7 +63,19 @@ function getRubricCities(node: GetRubricCitiesInterface) {
     },
     {
       key: 'spb',
-      node,
+      node: {
+        ...node,
+        name: [
+          {
+            key: 'ru',
+            value: `${node.name[0].value}-spb`,
+          },
+          {
+            key: 'en',
+            value: `${node.name[1].value}-spb`,
+          },
+        ],
+      },
     },
   ];
 }
@@ -110,6 +122,16 @@ function getProductCities(node: GetProductCitiesInterface) {
       key: 'spb',
       node: {
         ...node,
+        name: [
+          {
+            key: 'ru',
+            value: `${node.name[0].value}-spb`,
+          },
+          {
+            key: 'en',
+            value: `${node.name[1].value}-spb`,
+          },
+        ],
         slug,
         assets,
         active: true,

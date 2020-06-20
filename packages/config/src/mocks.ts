@@ -220,13 +220,13 @@ export const MOCK_OPTIONS = [
 export const MOCK_OPTIONS_GROUP = {
   name: [
     { key: 'ru', value: 'cy-test-colors' },
-    { key: 'en', value: 'cy-test-colors' },
+    { key: 'en', value: 'cy-test-colors-en' },
   ],
 };
 export const MOCK_OPTIONS_GROUP_FOR_DELETE = {
   name: [
     { key: 'ru', value: 'cy-test-group-for-delete' },
-    { key: 'en', value: 'cy-test-group-for-delete' },
+    { key: 'en', value: 'cy-test-group-for-delete-en' },
   ],
 };
 
@@ -234,47 +234,47 @@ export const MOCK_OPTIONS_GROUP_FOR_DELETE = {
 export const MOCK_ATTRIBUTE_MULTIPLE = {
   name: [
     { key: 'ru', value: 'cy-test-attribute-multiple' },
-    { key: 'en', value: 'cy-test-attribute-multiple' },
+    { key: 'en', value: 'cy-test-attribute-multiple-en' },
   ],
   variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
 };
 export const MOCK_ATTRIBUTE_SELECT = {
   name: [
     { key: 'ru', value: 'cy-test-attribute-select' },
-    { key: 'en', value: 'cy-test-attribute-select' },
+    { key: 'en', value: 'cy-test-attribute-select-en' },
   ],
   variant: ATTRIBUTE_TYPE_SELECT,
 };
 export const MOCK_ATTRIBUTE_STRING = {
   name: [
     { key: 'ru', value: 'cy-test-attribute-string' },
-    { key: 'en', value: 'cy-test-attribute-string' },
+    { key: 'en', value: 'cy-test-attribute-string-en' },
   ],
   variant: ATTRIBUTE_TYPE_STRING,
 };
 export const MOCK_ATTRIBUTE_NUMBER = {
   name: [
     { key: 'ru', value: 'cy-test-attribute-number' },
-    { key: 'en', value: 'cy-test-attribute-number' },
+    { key: 'en', value: 'cy-test-attribute-number-en' },
   ],
   variant: ATTRIBUTE_TYPE_NUMBER,
 };
 export const MOCK_ATTRIBUTES_GROUP = {
   name: [
     { key: 'ru', value: 'cy-test-chair-features' },
-    { key: 'en', value: 'cy-test-chair-features' },
+    { key: 'en', value: 'cy-test-chair-features-en' },
   ],
 };
 export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
   name: [
     { key: 'ru', value: 'cy-test-group-for-delete' },
-    { key: 'en', value: 'cy-test-group-for-delete' },
+    { key: 'en', value: 'cy-test-group-for-delete-en' },
   ],
 };
 export const MOCK_ATTRIBUTES_GROUP_B = {
   name: [
     { key: 'ru', value: 'cy-test-group-b' },
-    { key: 'en', value: 'cy-test-group-b' },
+    { key: 'en', value: 'cy-test-group-b-en' },
   ],
 };
 
@@ -282,24 +282,24 @@ export const MOCK_ATTRIBUTES_GROUP_B = {
 export const MOCK_RUBRIC_TYPE_EQUIPMENT = {
   name: [
     { key: 'ru', value: 'cy-test-equipment' },
-    { key: 'en', value: 'cy-test-equipment' },
+    { key: 'en', value: 'cy-test-equipment-en' },
   ],
 };
 export const MOCK_RUBRIC_TYPE_STAGE = {
   name: [
     { key: 'ru', value: 'cy-test-stage' },
-    { key: 'en', value: 'cy-test-stage' },
+    { key: 'en', value: 'cy-test-stage-en' },
   ],
 };
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [
     { key: 'ru', value: 'cy-test-furniture' },
-    { key: 'en', value: 'cy-test-furniture' },
+    { key: 'en', value: 'cy-test-furniture-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'furniture' },
-    { key: 'en', value: 'furniture' },
+    { key: 'en', value: 'furniture-en' },
   ],
   level: 1,
   parent: null,
@@ -307,66 +307,66 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
 export const MOCK_RUBRIC_LEVEL_TWO = {
   name: [
     { key: 'ru', value: 'cy-test-chairs' },
-    { key: 'en', value: 'cy-test-chairs' },
+    { key: 'en', value: 'cy-test-chairs-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'chairs' },
-    { key: 'en', value: 'chairs' },
+    { key: 'en', value: 'chairs-en' },
   ],
   level: 2,
 };
 export const MOCK_RUBRIC_LEVEL_TWO_TABLES = {
   name: [
     { key: 'ru', value: 'cy-test-tables' },
-    { key: 'en', value: 'cy-test-tables' },
+    { key: 'en', value: 'cy-test-tables-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'tables' },
-    { key: 'en', value: 'tables' },
+    { key: 'en', value: 'tables-en' },
   ],
   level: 2,
 };
 export const MOCK_RUBRIC_LEVEL_THREE = {
   name: [
     { key: 'ru', value: 'cy-test-chairs-loft' },
-    { key: 'en', value: 'cy-test-chairs-loft' },
+    { key: 'en', value: 'cy-test-chairs-loft-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'loft' },
-    { key: 'en', value: 'loft' },
+    { key: 'en', value: 'loft-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_B = {
   name: [
     { key: 'ru', value: 'cy-test-chairs-bar' },
-    { key: 'en', value: 'cy-test-chairs-bar' },
+    { key: 'en', value: 'cy-test-chairs-bar-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'bar' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES = {
   name: [
     { key: 'ru', value: 'cy-test-tables-loft' },
-    { key: 'en', value: 'cy-test-tables-loft' },
+    { key: 'en', value: 'cy-test-tables-loft-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'loft' },
-    { key: 'en', value: 'loft' },
+    { key: 'en', value: 'loft-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
   name: [
     { key: 'ru', value: 'cy-test-tables-bar' },
-    { key: 'en', value: 'cy-test-tables-bar' },
+    { key: 'en', value: 'cy-test-tables-bar-en' },
   ],
   catalogueName: [
     { key: 'ru', value: 'bar' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
   level: 3,
 };
@@ -375,63 +375,63 @@ export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
 export const MOCK_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-product' },
-    { key: 'en', value: 'cy-test-product' },
+    { key: 'en', value: 'cy-test-product-en' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-product' },
-    { key: 'en', value: 'cy-test-product' },
+    { key: 'en', value: 'cy-test-product-en' },
   ],
   price: 100,
   description: [
     { key: 'ru', value: 'very long item description' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
 };
 
 export const MOCK_PRODUCT_FOR_DELETE = {
   name: [
     { key: 'ru', value: 'cy-test-product-for-delete' },
-    { key: 'en', value: 'cy-test-product-for-delete' },
+    { key: 'en', value: 'cy-test-product-for-delete-en' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-product-for-delete' },
-    { key: 'en', value: 'cy-test-product-for-delete' },
+    { key: 'en', value: 'cy-test-product-for-delete-en' },
   ],
   price: 200,
   description: [
     { key: 'ru', value: 'very long item description' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
 };
 
 export const MOCK_PRODUCT_B_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-b-product' },
-    { key: 'en', value: 'cy-test-b-product' },
+    { key: 'en', value: 'cy-test-b-product-en' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-b-product' },
-    { key: 'en', value: 'cy-test-b-product' },
+    { key: 'en', value: 'cy-test-b-product-en' },
   ],
   price: 100,
   description: [
     { key: 'ru', value: 'B description' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
 };
 
 export const MOCK_PRODUCT_NEW_PRODUCT = {
   name: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'cy-test-new-product' },
+    { key: 'en', value: 'cy-test-new-product-en' },
   ],
   cardName: [
     { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'cy-test-new-product' },
+    { key: 'en', value: 'cy-test-new-product-en' },
   ],
   price: 2000,
   description: [
     { key: 'ru', value: 'new description' },
-    { key: 'en', value: 'bar' },
+    { key: 'en', value: 'bar-en' },
   ],
 };

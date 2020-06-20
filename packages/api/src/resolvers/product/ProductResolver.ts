@@ -42,8 +42,8 @@ class ProductPayloadType extends PayloadType() {
 @Resolver((_of) => Product)
 export class ProductResolver {
   @Query(() => Product)
-  async getProduct(@Arg('id', (_type) => ID) id: string) {
-    return ProductModel.findById(id);
+  async getProduct(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+    return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
   @Query(() => PaginatedProductsResponse)
@@ -60,7 +60,6 @@ export class ProductResolver {
       sortDir,
       sortBy,
     });
-
     return ProductModel.paginate(query, options);
   }
 

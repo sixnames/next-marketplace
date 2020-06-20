@@ -6,6 +6,7 @@ import { useAppContext } from '../../context/appContext';
 import classes from './Modal.module.css';
 import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
+  ADD_PRODUCT_TO_RUBRIC_MODAL,
   ATTRIBUTE_IN_GROUP_MODAL,
   CONFIRM_MODAL,
   CREATE_RUBRIC_MODAL,
@@ -29,9 +30,9 @@ const AttributeInGroupModal = React.lazy(() =>
 /*const CreateNewProductModal = React.lazy(() =>
   import('./CreateNewProductModal/CreateNewProductModal'),
 );*/
-/*const AddProductToRubricModal = React.lazy(() =>
+const AddProductToRubricModal = React.lazy(() =>
   import('./AddProductToRubricModal/AddProductToRubricModal'),
-);*/
+);
 
 interface ModalInterface {
   modalType: string;
@@ -61,7 +62,7 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
             <AddAttributesGroupToRubricModal {...modalProps} />
           )}
 
-          {/*{modalType === ADD_PRODUCT_TO_RUBRIC_MODAL && <AddProductToRubricModal {...modalProps} />}*/}
+          {modalType === ADD_PRODUCT_TO_RUBRIC_MODAL && <AddProductToRubricModal {...modalProps} />}
 
           {/*{modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}*/}
         </Suspense>

@@ -24,12 +24,15 @@ const NoRubricProducts: React.FC = () => {
   const [deleteProductMutation] = useDeleteProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteProduct),
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: GET_NON_RUBRIC_PRODUCTS_QUERY,
         variables: {
-          noRubrics: true,
-          page,
+          input: {
+            noRubrics: true,
+            page,
+          },
         },
       },
     ],

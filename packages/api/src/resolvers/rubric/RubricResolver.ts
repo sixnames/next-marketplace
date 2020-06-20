@@ -787,13 +787,8 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-
-    return ProductModel.countDocuments({
-      'cities.key': city,
-      'cities.node.rubrics': {
-        $in: rubric._id,
-      },
-    });
+    const query = getProductsFilter({ rubric: rubric._id }, city);
+    return ProductModel.countDocuments(query);
   }
 
   @FieldResolver()
@@ -802,13 +797,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-
-    return ProductModel.countDocuments({
-      'cities.key': city,
-      'cities.node.active': true,
-      'cities.node.rubrics': {
-        $in: rubric._id,
-      },
-    });
+    const query = getProductsFilter({ rubric: rubric._id, active: true }, city);
+    return ProductModel.countDocuments(query);
   }
 }

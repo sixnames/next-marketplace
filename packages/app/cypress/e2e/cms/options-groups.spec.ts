@@ -14,8 +14,8 @@ const mockOptionColor = MOCK_OPTIONS[0].color;
 const mockGroupForDeleteName = MOCK_OPTIONS_GROUP_FOR_DELETE.name[0].value;
 const createdGroupName = 'cy-test-new-group';
 const groupNewName = 'cy-test-updated-name';
-const optionFakeName = 'f';
-const optionFakeColor = 'b';
+const fakeName = 'f';
+const fakeColor = 'b';
 const optionName = 'cy-test-option';
 const optionColor = '333333';
 const optionNewName = 'cy-test-new-option-name';
@@ -41,30 +41,30 @@ describe('Options Groups', () => {
   });
 
   it('Should CRUD options group', () => {
-    const groupName = 'cy-test-new-group';
-    const groupNewName = 'cy-test-new-name';
-
     cy.getByCy(`create-options-group`).click();
 
     // Should show validation error on not valid options group name
-    cy.getByCy(`update-name-input`).type('f');
+    cy.getByCy(`update-name-input`).type(fakeName);
     cy.getByCy(`update-name-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should create group
-    cy.getByCy(`update-name-input`).clear().type(groupName);
+    cy.getByCy(`update-name-input`).clear().type(createdGroupName);
     cy.getByCy(`update-name-submit`).click();
     cy.getByCy(`create-options-group-modal`).should('not.exist');
-    cy.getByCy(`group-${groupName}`).should('exist');
+    cy.getByCy(`group-${createdGroupName}`).should('exist');
     cy.closeNotification();
 
     // Should update group title on groups filter click
-    cy.getByCy(`group-${groupName}`).click();
-    cy.getByCy(`group-title`).contains(groupName).should('exist');
+    cy.getByCy(`group-${createdGroupName}`).click();
+    cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
 
     // Should update options group
     cy.getByCy(`options-group-update`).click();
-    cy.getByCy(`update-name-input`).should('have.value', groupName).clear().type(groupNewName);
+    cy.getByCy(`update-name-input`)
+      .should('have.value', createdGroupName)
+      .clear()
+      .type(groupNewName);
     cy.getByCy(`update-name-submit`).click();
     cy.contains(groupNewName).should('exist');
     cy.closeNotification();
@@ -90,8 +90,8 @@ describe('Options Groups', () => {
     // Shouldn't create option in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`options-group-create`).click();
-    cy.getByCy(`option-name`).type('f');
-    cy.getByCy(`option-color`).type('b');
+    cy.getByCy(`option-name`).type(fakeName);
+    cy.getByCy(`option-color`).type(fakeColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
     cy.getByCy(`color-error`).should('exist');
@@ -105,8 +105,6 @@ describe('Options Groups', () => {
 
     //Should create option in group
     cy.getByCy(`options-group-create`).click();
-    const optionName = 'cy-test-option';
-    const optionColor = '333333';
     cy.getByCy(`option-name`).type(optionName);
     cy.getByCy(`option-color`).type(optionColor);
     cy.getByCy(`option-submit`).click();
@@ -114,8 +112,6 @@ describe('Options Groups', () => {
     cy.closeNotification();
 
     // Should update option in group
-    const optionNewName = 'cy-test-new-option';
-    const optionNewColor = 'fafafa';
     cy.getByCy(`${optionName}-option-update`).click();
     cy.getByCy(`option-name`).should('have.value', optionName).clear().type(optionNewName);
     cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);

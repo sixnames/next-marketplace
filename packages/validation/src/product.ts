@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langInput, notNullableName } from './templates';
+import { id, langInput, minPrice, notNullableName } from './templates';
 
 export const productAttributeSchema = Yup.object().shape({
   showInCard: Yup.boolean().required(
@@ -26,7 +26,9 @@ const productCommonFields = {
   description: langInput(notNullableName('Описание товара')),
   rubrics: Yup.array().of(Yup.string().required('Рубрики обязательны к заполнению')),
   attributesSource: Yup.string().required('Источник аттрибутов обязателен к заполнению'),
-  price: Yup.number().required('Цена обязательна к заполнению'),
+  price: Yup.number()
+    .min(minPrice, `Цена должна быть выше ${minPrice}`)
+    .required('Цена обязательна к заполнению'),
   attributesGroups: Yup.array()
     .of(productAttributesGroupSchema)
     .required('Поле Группы атрибутов обязательно к заполнению'),

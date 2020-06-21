@@ -24,6 +24,7 @@ interface FormikSelectInterface {
   options: SelectOptionInterface[];
   testId?: string;
   showInlineError?: boolean;
+  disabled?: boolean;
 }
 
 const FormikSelect: React.FC<FormikSelectInterface> = ({

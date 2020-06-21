@@ -17,14 +17,9 @@ import { ADD_PRODUCT_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals'
 import { RUBRIC_PRODUCTS_QUERY } from '../../graphql/query/getRubricProducts';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
+import TableRowImage from '../../components/Table/TableRowImage';
 
-export interface RubricProductsInterface {
-  id: string;
-  itemId: number;
-  name: string;
-  price: number;
-  slug: string;
-}
+type RubricProduct = GetRubricProductsQuery['getRubric']['products']['docs'][0];
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
@@ -38,6 +33,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   const { data, loading, error } = useGetRubricProductsQuery({
     skip: !rubric,
+    fetchPolicy: 'network-only',
     variables: {
       id: rubric.id,
     },
@@ -50,6 +46,12 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+      },
+      {
+        query: RUBRIC_PRODUCTS_QUERY,
+        variables: {
+          id: rubric.id,
+        },
       },
     ],
   });
@@ -65,7 +67,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     getRubric: { products },
   } = data;
 
-  function deleteProductFromRubricHandler(product: RubricProductsInterface) {
+  function deleteProductFromRubricHandler(product: RubricProduct) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
@@ -79,39 +81,6 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                 rubricId: rubric.id,
                 productId: product.id,
               },
-            },
-            update: (proxy, mutationResult) => {
-              const cachedData: GetRubricProductsQuery | null = proxy.readQuery({
-                query: RUBRIC_PRODUCTS_QUERY,
-                variables: {
-                  id: rubric.id,
-                },
-              });
-
-              if (
-                cachedData &&
-                cachedData.getRubric &&
-                mutationResult &&
-                mutationResult.data &&
-                mutationResult.data.deleteProductFromRubric &&
-                mutationResult.data.deleteProductFromRubric.success &&
-                mutationResult.data.deleteProductFromRubric.rubric
-              ) {
-                const { products } = mutationResult.data.deleteProductFromRubric.rubric;
-
-                proxy.writeQuery({
-                  query: RUBRIC_PRODUCTS_QUERY,
-                  variables: {
-                    id: rubric.id,
-                  },
-                  data: {
-                    getRubric: {
-                      ...cachedData.getRubric,
-                      products,
-                    },
-                  },
-                });
-              }
             },
           });
         },
@@ -129,14 +98,13 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   }
 
   const columns = [
-    /*{
-      key: 'images',
+    {
+      key: 'mainImage',
       title: 'Изображение',
-      render: (images: ProductImagesInterface[]) => {
-        const mainImage = images[0].thumbSmall;
-        return <TableRowImage path={mainImage} alt={''} title={''} />;
+      render: (mainImage: string, product: RubricProduct) => {
+        return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
       },
-    },*/
+    },
     {
       key: 'name',
       title: 'Название',
@@ -151,7 +119,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       key: 'id',
       title: '',
       textAlign: 'right',
-      render: (_: string, product: RubricProductsInterface) => {
+      render: (_: string, product: RubricProduct) => {
         const { name } = product;
         return (
           <ContentItemControls

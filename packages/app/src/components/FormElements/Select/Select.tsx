@@ -29,6 +29,7 @@ interface SelectInterface {
   setNameToValue?: boolean;
   options: SelectOptionInterface[];
   testId?: string;
+  disabled?: boolean;
 }
 
 const Select: React.FC<SelectInterface> = ({
@@ -69,7 +70,7 @@ const Select: React.FC<SelectInterface> = ({
 
   function getOptionName(name = '', lastName?: string) {
     const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
-    const optionTestIdName = name.split(' ').join('-');
+    const optionTestIdName = name.split(' ').join('_');
 
     return {
       optionName,

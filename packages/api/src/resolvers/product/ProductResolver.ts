@@ -42,8 +42,8 @@ class ProductPayloadType extends PayloadType() {
 @Resolver((_of) => Product)
 export class ProductResolver {
   @Query(() => Product)
-  async getProduct(@Arg('id', (_type) => ID) id: string) {
-    return ProductModel.findById(id);
+  async getProduct(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+    return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
   @Query(() => PaginatedProductsResponse)
@@ -60,7 +60,6 @@ export class ProductResolver {
       sortDir,
       sortBy,
     });
-
     return ProductModel.paginate(query, options);
   }
 
@@ -422,7 +421,24 @@ export class ProductResolver {
     if (!city) {
       return [];
     }
-    return city.node.assets;
+    return city.node.assets.sort((a, b) => a.index - b.index);
+  }
+
+  @FieldResolver()
+  async mainImage(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    const city = getCityData(product.cities, ctx.req.session!.city);
+    if (!city) {
+      return '';
+    }
+    const mainImage = city.node.assets.find(({ index }) => index === 0);
+
+    if (!mainImage) {
+      return '';
+    }
+    return mainImage.url;
   }
 
   @FieldResolver()

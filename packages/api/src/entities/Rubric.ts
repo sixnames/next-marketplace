@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { getModelForClass, prop as Property, Ref } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
@@ -12,11 +12,11 @@ export class RubricAttributesGroup {
   readonly id: string;
 
   @Field(() => Boolean)
-  @prop({ required: true, default: false })
+  @Property({ required: true, default: false })
   showInCatalogueFilter: boolean;
 
   @Field(() => AttributesGroup)
-  @prop({ ref: AttributesGroup })
+  @Property({ ref: AttributesGroup })
   node: string;
 }
 
@@ -24,35 +24,35 @@ export class RubricAttributesGroup {
 @ObjectType()
 export class RubricNode {
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
+  @Property({ type: LanguageType, required: true })
   name: LanguageType[];
 
   @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
+  @Property({ type: LanguageType, required: true })
   catalogueName: LanguageType[];
 
   @Field(() => String)
-  @prop({ required: true })
+  @Property({ required: true })
   slug: string;
 
   @Field(() => Int)
-  @prop({ required: true, default: RUBRIC_LEVEL_ONE })
+  @Property({ required: true, default: RUBRIC_LEVEL_ONE })
   level: number;
 
   @Field(() => Boolean, { nullable: true })
-  @prop({ required: true, default: true })
+  @Property({ required: true, default: true })
   active?: boolean;
 
   @Field(() => Rubric, { nullable: true })
-  @prop({ ref: 'Rubric' })
-  parent?: string | null;
+  @Property({ ref: 'Rubric' })
+  parent?: Ref<Rubric> | null;
 
   @Field(() => [RubricAttributesGroup])
-  @prop({ type: RubricAttributesGroup })
+  @Property({ type: RubricAttributesGroup })
   attributesGroups: RubricAttributesGroup[];
 
   @Field(() => RubricVariant, { nullable: true })
-  @prop({ ref: RubricVariant })
+  @Property({ ref: RubricVariant })
   variant?: string | null;
 }
 
@@ -60,11 +60,11 @@ export class RubricNode {
 @ObjectType()
 export class RubricCity {
   @Field(() => String)
-  @prop({ required: true })
+  @Property({ required: true })
   key: string;
 
   @Field(() => RubricNode)
-  @prop({ required: true })
+  @Property({ required: true })
   node: RubricNode;
 }
 
@@ -110,7 +110,7 @@ export class Rubric {
   readonly activeProductsCount: number;
 
   @Field(() => [RubricCity])
-  @prop({ type: RubricCity, required: true })
+  @Property({ type: RubricCity, required: true })
   cities: RubricCity[];
 }
 

@@ -35,7 +35,11 @@ import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import { DEFAULT_CITY } from '../../config';
-import { ProductModel } from '../../entities/Product';
+import { ProductCity, ProductModel } from '../../entities/Product';
+import { Types } from 'mongoose';
+import sharp from 'sharp';
+import fs from 'fs';
+import mkdirp from 'mkdirp';
 
 interface LangInterface {
   key: string;
@@ -48,7 +52,7 @@ interface GetRubricCitiesInterface {
   level: number;
   slug: string;
   variant?: string;
-  parent?: string | null;
+  parent?: Types.ObjectId | null;
   attributesGroups: {
     showInCatalogueFilter: boolean;
     node: string;
@@ -63,7 +67,19 @@ function getRubricCities(node: GetRubricCitiesInterface) {
     },
     {
       key: 'spb',
-      node,
+      node: {
+        ...node,
+        name: [
+          {
+            key: 'ru',
+            value: `${node.name[0].value}-spb`,
+          },
+          {
+            key: 'en',
+            value: `${node.name[1].value}-spb`,
+          },
+        ],
+      },
     },
   ];
 }
@@ -87,35 +103,93 @@ interface GetProductCitiesInterface {
   price: number;
 }
 
-function getProductCities(node: GetProductCitiesInterface) {
-  const assets = [
-    {
-      index: 0,
-      url: 'url',
-    },
-  ];
-  const slug = generateDefaultLangSlug(node.cardName);
+async function getProductCities(node: GetProductCitiesInterface): Promise<ProductCity[]> {
+  const cities = [DEFAULT_CITY, 'spb'];
+  const initialFilePath = './test/test-image-0.jpg';
 
-  return [
-    {
-      key: DEFAULT_CITY,
-      node: {
-        ...node,
-        slug,
-        assets,
-        active: true,
-      },
-    },
-    {
-      key: 'spb',
-      node: {
-        ...node,
-        slug,
-        assets,
-        active: true,
-      },
-    },
-  ];
+  return Promise.all(
+    cities.map(async (city) => {
+      const slug = generateDefaultLangSlug(node.cardName);
+      const filesPath = `./assets/${city}/${slug}`;
+      const filesResolvePath = `/assets/${city}/${slug}`;
+      const fileName = `${slug}-${0}`;
+      const resolvePath = `${filesResolvePath}/${fileName}.jpg`;
+      const finalPath = `${filesPath}/${fileName}.jpg`;
+
+      const exists = fs.existsSync(filesPath);
+      if (!exists) {
+        await mkdirp(filesPath);
+      } else {
+        return new Promise<ProductCity>(async (resolve) => {
+          resolve({
+            key: city,
+            node: {
+              ...node,
+              name:
+                city === DEFAULT_CITY
+                  ? node.name
+                  : [
+                      {
+                        key: 'ru',
+                        value: `${node.name[0].value}-${city}`,
+                      },
+                      {
+                        key: 'en',
+                        value: `${node.name[1].value}-${city}`,
+                      },
+                    ],
+              slug,
+              assets: [
+                {
+                  index: 0,
+                  url: resolvePath,
+                },
+              ],
+              active: true,
+            },
+          });
+        });
+      }
+
+      return new Promise<ProductCity>(async (resolve, reject) => {
+        sharp(initialFilePath)
+          .jpeg()
+          .toFile(finalPath)
+          .then(() => {
+            resolve({
+              key: city,
+              node: {
+                ...node,
+                name:
+                  city === DEFAULT_CITY
+                    ? node.name
+                    : [
+                        {
+                          key: 'ru',
+                          value: `${node.name[0].value}-${city}`,
+                        },
+                        {
+                          key: 'en',
+                          value: `${node.name[1].value}-${city}`,
+                        },
+                      ],
+                slug,
+                assets: [
+                  {
+                    index: 0,
+                    url: resolvePath,
+                  },
+                ],
+                active: true,
+              },
+            });
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    }),
+  );
 }
 
 const createTestData = async () => {
@@ -305,7 +379,7 @@ const createTestData = async () => {
 
     // for delete
     await ProductModel.create({
-      cities: getProductCities({
+      cities: await getProductCities({
         ...MOCK_PRODUCT_FOR_DELETE,
         ...productAttributes,
         rubrics: [rubricLevelThree.id],
@@ -314,7 +388,7 @@ const createTestData = async () => {
 
     // for second rubric in third level
     await ProductModel.create({
-      cities: getProductCities({
+      cities: await getProductCities({
         ...MOCK_PRODUCT_B_PRODUCT,
         ...productAttributes,
         rubrics: [rubricLevelThreeB.id],
@@ -324,7 +398,7 @@ const createTestData = async () => {
     // main product
     // const product = await ProductModel.create({
     await ProductModel.create({
-      cities: getProductCities({
+      cities: await getProductCities({
         ...MOCK_PRODUCT,
         ...productAttributes,
         rubrics: [rubricLevelThree.id],

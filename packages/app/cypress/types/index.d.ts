@@ -26,6 +26,7 @@ declare namespace Cypress {
     selectNthOption(select: string, nth: number): Chainable<Element>;
     createTestData(): void;
     clearTestData(): void;
+    closeNotification(): void;
     visitMoreNavLink(testId: string): void;
     openMoreNav(): void;
     closeMoreNav(): void;

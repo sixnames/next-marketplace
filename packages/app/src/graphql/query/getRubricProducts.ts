@@ -14,6 +14,7 @@ export const RUBRIC_PRODUCTS_QUERY = gql`
           name
           price
           slug
+          mainImage
         }
       }
     }

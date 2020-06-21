@@ -52,6 +52,7 @@ import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
   level: number;
+  parent?: Types.ObjectId | null;
 }
 
 @ObjectType()
@@ -110,14 +111,16 @@ export class RubricResolver {
       const parentRubric = await RubricModel.findById(parent);
 
       const parentRelatedData: ParentRelatedDataInterface = {
-        variant: null,
+        variant: input.variant,
         level: RUBRIC_LEVEL_ONE,
+        parent: null,
       };
 
       if (parentRubric) {
         const parentCity = getCityData(parentRubric.cities, city);
         parentRelatedData.variant = parentCity!.node.variant;
         parentRelatedData.level = parentCity!.node.level + RUBRIC_LEVEL_STEP;
+        parentRelatedData.parent = Types.ObjectId(parent);
       }
 
       const rubric = await RubricModel.create({
@@ -125,10 +128,11 @@ export class RubricResolver {
           {
             key: city,
             node: {
-              ...input,
-              ...parentRelatedData,
+              name: input.name,
+              catalogueName: input.catalogueName,
               slug: generateDefaultLangSlug(input.catalogueName),
               attributesGroups: [],
+              ...parentRelatedData,
             },
           },
         ],
@@ -382,7 +386,7 @@ export class RubricResolver {
         {
           _id: { $in: [...childrenIds, parentId, rubricId] },
           'cities.key': city,
-          attributesGroups: {
+          'cities.node.attributesGroups': {
             $not: {
               $elemMatch: {
                 node: attributesGroupId,
@@ -394,12 +398,11 @@ export class RubricResolver {
           $addToSet: {
             'cities.$.node.attributesGroups': {
               showInCatalogueFilter: false,
-              node: Types.ObjectId(attributesGroupId),
+              node: attributesGroupId,
             },
           },
         },
       );
-
       if (!updatedRubrics.ok) {
         return {
           success: false,
@@ -532,11 +535,15 @@ export class RubricResolver {
       }
 
       const exists = await ProductModel.exists({
-        'cities.key': city,
-        'cities.node.rubrics': {
-          $in: rubricId,
-        },
         _id: productId,
+        cities: {
+          $elemMatch: {
+            key: city,
+            'node.rubrics': {
+              $in: [rubricId],
+            },
+          },
+        },
       });
 
       if (exists) {
@@ -788,13 +795,8 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-
-    return ProductModel.countDocuments({
-      'cities.key': city,
-      'cities.node.rubrics': {
-        $in: rubric._id,
-      },
-    });
+    const query = getProductsFilter({ rubric: rubric._id }, city);
+    return ProductModel.countDocuments(query);
   }
 
   @FieldResolver()
@@ -803,13 +805,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-
-    return ProductModel.countDocuments({
-      'cities.key': city,
-      'cities.node.active': true,
-      'cities.node.rubrics': {
-        $in: rubric._id,
-      },
-    });
+    const query = getProductsFilter({ rubric: rubric._id, active: true }, city);
+    return ProductModel.countDocuments(query);
   }
 }

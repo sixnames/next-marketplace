@@ -34,6 +34,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     variables: {
       id: rubric.id,
     },
+    fetchPolicy: 'network-only',
   });
 
   const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({

@@ -22,8 +22,11 @@ import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantRe
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
 import { ProductResolver } from './resolvers/product/ProductResolver';
-import path from 'path';
+import { FeaturesASTOptionResolver } from './resolvers/featuresASTOption/FeaturesASTOptionResolver';
 import { getSharpImage } from './utils/assets/getSharpImage';
+import createTestData from './utils/testUtils/createTestData';
+import clearTestData from './utils/testUtils/clearTestData';
+import path from 'path';
 
 const createApp = () => {
   const schema = buildSchemaSync({
@@ -36,6 +39,7 @@ const createApp = () => {
       AttributeVariantResolver,
       AttributesGroupResolver,
       RubricVariantResolver,
+      FeaturesASTOptionResolver,
       RubricResolver,
       ProductResolver,
     ],
@@ -66,6 +70,16 @@ const createApp = () => {
     req.session!.city = city ? city : DEFAULT_CITY;
     req.session!.lang = DEFAULT_LANG;
     next();
+  });
+
+  // Test data
+  app.get('/create-test-data', async (_, res) => {
+    await createTestData();
+    res.send('test data created');
+  });
+  app.get('/clear-test-data', async (_, res) => {
+    await clearTestData();
+    res.send('test data removed');
   });
 
   // Assets

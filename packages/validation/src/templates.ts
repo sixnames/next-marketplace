@@ -10,7 +10,7 @@ export const maxDescriptionLength = 300;
 export const minNameLength = 2;
 export const minShortNameLength = 1;
 export const maxNameLength = 70;
-export const minPrice = 0;
+export const minPrice = 1;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
 export const role = Yup.mixed().oneOf(ROLES_ENUM);

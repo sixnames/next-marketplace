@@ -535,11 +535,15 @@ export class RubricResolver {
       }
 
       const exists = await ProductModel.exists({
-        'cities.key': city,
-        'cities.node.rubrics': {
-          $in: rubricId,
-        },
         _id: productId,
+        cities: {
+          $elemMatch: {
+            key: city,
+            'node.rubrics': {
+              $in: [rubricId],
+            },
+          },
+        },
       });
 
       if (exists) {

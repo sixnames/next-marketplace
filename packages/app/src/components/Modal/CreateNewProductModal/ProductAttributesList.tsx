@@ -32,14 +32,14 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ gro
         key: itemId,
         value: [],
       })),
-    [group],
+    [node.attributes],
   );
 
   useEffect(() => {
     const currentGroupValue = get(values, inputName);
     if (!currentGroupValue) {
       setFieldValue(inputName, {
-        source: id,
+        node: id,
         showInCard: true,
         attributes: groupAttributesValue,
       });

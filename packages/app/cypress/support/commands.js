@@ -29,7 +29,7 @@ import 'cypress-file-upload';
 const apiURI = 'http://localhost:4000';
 const createTestDataURI = `${apiURI}/create-test-data`;
 const clearTestDataURI = `${apiURI}/clear-test-data`;
-const authRoute = '/test-sign-in';
+const authRoute = '/sign-in';
 
 Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);
@@ -83,6 +83,10 @@ Cypress.Commands.add('clearTestData', () => {
 });
 
 Cypress.Commands.add('auth', ({ email, password, redirect }) => {
-  cy.visit(`${authRoute}?email=${email}&password=${password}&redirect=${redirect}`);
+  cy.visit(`${authRoute}`);
+  cy.get(`[data-cy="sign-in-email"]`).type(email);
+  cy.get(`[data-cy="sign-in-password"]`).type(password);
+  cy.get(`[data-cy="sign-in-submit"]`).click();
   cy.get(`[data-cy="close-notification"]`).click();
+  cy.visit(redirect);
 });

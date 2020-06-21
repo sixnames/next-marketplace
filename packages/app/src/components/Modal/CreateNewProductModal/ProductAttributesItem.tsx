@@ -24,14 +24,14 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   attribute,
   inputName,
 }) => {
-  const { variant, options, nameString, metric, itemId } = attribute;
+  const { variant, options, nameString, metric } = attribute;
   const firstValueIndex = 0;
   const labelPostfix = metric ? metric.nameString : '';
 
   const optionsList = options ? options.options : [];
 
-  const singleValueInputName = `${inputName}.value.${itemId}[${firstValueIndex}]`;
-  const multipleValueInputName = `${inputName}.value.${itemId}`;
+  const singleValueInputName = `${inputName}.value[${firstValueIndex}]`;
+  const multipleValueInputName = `${inputName}.value`;
 
   function getAttributeInput() {
     if (variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING) {

@@ -20,9 +20,10 @@ import RubricsTree from '../../../routes/Rubrics/RubricsTree';
 import FormikArrayCheckbox from '../../FormElements/Checkbox/FormikArrayCheckbox';
 import InputLine from '../../FormElements/Input/InputLine';
 import ProductAttributes from './ProductAttributes';
-import { MutationUpdaterFn, PureQueryOptions, RefetchQueriesFunction } from '@apollo/client';
+import { createProductSchema } from '@rg/validation';
 import classes from './CreateNewProductModal.module.css';
-import { createProductSchema, minPrice } from '@rg/validation';
+import { MutationUpdaterFn, PureQueryOptions } from 'apollo-client';
+import { RefetchQueriesFunction } from '@apollo/react-common';
 
 export interface CreateNewProductModalInterface {
   rubricId?: string;
@@ -90,7 +91,17 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 assets: values.assets,
                 rubrics: values.rubrics || [],
                 attributesSource: `${values.attributesSource}`,
-                attributesGroups: values.attributesGroups,
+                attributesGroups: values.attributesGroups.map((group) => {
+                  return {
+                    ...group,
+                    attributes: group.attributes.map((attribute) => {
+                      return {
+                        ...attribute,
+                        value: attribute.value.map((value) => `${value}`),
+                      };
+                    }),
+                  };
+                }),
               },
             },
           });
@@ -116,7 +127,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                   <FormikInput
                     isRequired
                     key={index}
-                    label={'Имя'}
+                    label={'Название'}
                     name={`name[${index}].value`}
                     testId={'product-name'}
                     showInlineError
@@ -129,7 +140,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                   <FormikInput
                     isRequired
                     key={index}
-                    label={'Имя страницы товара'}
+                    label={'Название страницы товара'}
                     name={`cardName[${index}].value`}
                     testId={'product-card-name'}
                     showInlineError
@@ -143,7 +154,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 name={'price'}
                 testId={'product-price'}
                 type={'number'}
-                min={minPrice}
                 showInlineError
               />
 

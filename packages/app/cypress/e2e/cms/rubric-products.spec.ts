@@ -32,12 +32,14 @@ const mockProductNewCarDescription = MOCK_PRODUCT_NEW_PRODUCT.description[0].val
 
 const mockAttributeSelectName = MOCK_ATTRIBUTE_SELECT.name[0].value;
 const mockAttributeSelectValue = MOCK_OPTIONS[0].name[0].value;
+const mockAttributeMultipleSelectValueA = MOCK_OPTIONS[0].name[0].value;
+const mockAttributeMultipleSelectValueB = MOCK_OPTIONS[1].name[0].value;
 const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
 const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 
 const modal = 'add-product-to-rubric-modal';
 
-describe('Rubric products', () => {
+describe.skip('Rubric products', () => {
   beforeEach(() => {
     cy.server();
     cy.mockGraphql({
@@ -54,7 +56,7 @@ describe('Rubric products', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should CRUD products in rubric', () => {
@@ -73,7 +75,7 @@ describe('Rubric products', () => {
 
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
     cy.visitMoreNavLink('products');
-    // cy.getByCy('rubric-products').should('exist');
+    cy.getByCy('rubric-products').should('exist');
 
     // Should delete product from rubric
     cy.getByCy(`${mockProductForDelete}-delete`).click();
@@ -88,9 +90,9 @@ describe('Rubric products', () => {
     cy.getByCy(mockProductForDelete).should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy(`confirm`).click();
+    cy.closeNotification();
     cy.getByCy('delete-product-modal').should('not.exist');
     cy.getByCy(mockProductForDelete).should('not.exist');
-    cy.closeNotification();
 
     // Should add product from tree to the rubric
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
@@ -106,17 +108,17 @@ describe('Rubric products', () => {
     cy.closeNotification();
 
     // Should add product from not in rubric list to the rubric
-    /*cy.getByCy('product-create').click();
+    cy.getByCy('product-create').click();
     cy.get(`[data-cy=${modal}] [data-cy=${QUERY_DATA_LAYOUT_NO_RUBRIC}]`).click();
     cy.getByCy(`${mockProduct}-create`).click();
     cy.getByCy(mockProduct).should('exist');
     cy.closeNotification();
     cy.getByCy(`${mockProduct}-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.closeNotification();*/
+    cy.closeNotification();
 
     // Should add product from search result to the rubric
-    /*cy.getByCy('product-create').click();
+    cy.getByCy('product-create').click();
     cy.getByCy('product-search-input').type(mockProduct);
     cy.getByCy('product-search-reset').click();
     cy.getByCy('product-search-input').should('not.have.value', mockProduct);
@@ -124,18 +126,18 @@ describe('Rubric products', () => {
     cy.getByCy('product-search-submit').click();
     cy.getByCy(`${mockProduct}-create`).click();
     cy.getByCy(mockProduct).should('exist');
-    cy.closeNotification();*/
+    cy.closeNotification();
 
     // Shouldn't create product on validation error
-    /*cy.getByCy('product-create').click();
+    cy.getByCy('product-create').click();
     cy.getByCy('add-product-to-rubric-modal').should('exist');
     cy.getByCy('create-new-product').click();
     cy.getByCy('create-new-product-modal').should('exist');
     cy.getByCy('submit-new-product').click();
-    cy.getByCy('name-error').should('exist');
-    cy.getByCy('cardName-error').should('exist');
+    cy.getByCy('name[0].value-error').should('exist');
+    cy.getByCy('cardName[0].value-error').should('exist');
     cy.getByCy('price-error').should('exist');
-    cy.getByCy('description-error').should('exist');*/
+    cy.getByCy('description[0].value-error').should('exist');
   });
 });
 
@@ -147,18 +149,18 @@ describe('Rubric products creation', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
-  it.skip('Should create product and add it to the rubric', () => {
+  it('Should create product and add it to the rubric', () => {
     // sign in as admin
     cy.auth({
       email: ME_AS_ADMIN.email,
       password: ME_AS_ADMIN.password,
-      redirect: `/rubrics?${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      redirect: `/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
     });
 
-    cy.getByCy(`${mockRubricLevelThreeName}`).click();
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
     cy.visitMoreNavLink('products');
     cy.getByCy('product-create').click();
     cy.getByCy('create-new-product').click();
@@ -180,7 +182,7 @@ describe('Rubric products creation', () => {
     // fill inputs
     cy.getByCy('product-name').type(mockProductNewName);
     cy.getByCy('product-card-name').type(mockProductNewCardName);
-    cy.getByCy('product-price').type(`${mockProductNewCardPrice}`);
+    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
     cy.getByCy('product-description').type(mockProductNewCarDescription);
 
     // fill attributes
@@ -188,8 +190,8 @@ describe('Rubric products creation', () => {
       `attributesSource`,
       `${mockRubricLevelOneName}_>_${mockRubricLevelTwoName}`,
     );
-    cy.getByCy(`${MOCK_OPTIONS[0].name}-checkbox`).check();
-    cy.getByCy(`${MOCK_OPTIONS[1].name}-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueA}-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueB}-checkbox`).check();
 
     cy.selectOptionByTestId(mockAttributeSelectName, mockAttributeSelectValue);
     cy.getByCy(`${mockAttributeSelectName}-showInCard-checkbox`).check();

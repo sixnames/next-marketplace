@@ -8,8 +8,8 @@ import TabsContent from '../../components/TabsContent/TabsContent';
 import RubricDetails from './RubricDetails';
 import RubricAttributes from './RubricAttributes';
 import RubricProducts from './RubricProducts';
+import { QueryResult } from 'react-apollo';
 import classes from './RubricsContent.module.css';
-import { QueryResult } from '@apollo/client';
 
 interface RubricsContentInterface {
   queryResult: QueryResult<GetRubricQuery, GetRubricQueryVariables>;

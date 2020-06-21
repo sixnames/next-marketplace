@@ -8,6 +8,10 @@ import Button from '../../Buttons/Button';
 import { useFormikContext } from 'formik';
 import { ObjectType } from '../../../types';
 import { get } from 'lodash';
+import {
+  GetFeaturesAstOptionsQuery,
+  useGetFeaturesAstOptionsQuery,
+} from '../../../generated/apolloComponents';
 
 interface CreateNewProductAttributesSelectInterface {
   disabled?: boolean;

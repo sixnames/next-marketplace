@@ -4,6 +4,7 @@ import ProductAttributesItem from './ProductAttributesItem';
 import { useFormikContext } from 'formik';
 import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
 import { get } from 'lodash';
+import { GetFeaturesAstOptionsQuery } from '../../../generated/apolloComponents';
 
 export type ProductAttributesListType = GetFeaturesAstOptionsQuery['getFeaturesASTOptions'][0]['attributesGroups'];
 export type ProductAttributesGroupType = ProductAttributesListType[0];
@@ -21,16 +22,15 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ gro
   const { setFieldValue, values } = useFormikContext();
   const inputName = `attributesGroups[${index}]`;
   const { node } = group;
-  const { id, name, attributes } = node;
+  const { id, nameString, attributes } = node;
 
   const groupAttributesValue = useMemo(
     () =>
-      group.node.attributes.map(({ id, slug }) => ({
-        source: id,
+      node.attributes.map(({ id, itemId }) => ({
+        node: id,
         showInCard: false,
-        value: {
-          [`${slug}`]: [],
-        },
+        key: itemId,
+        value: [],
       })),
     [group],
   );
@@ -48,7 +48,7 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ gro
 
   return (
     <div className={classes.frame}>
-      <div className={classes.title}>{name}</div>
+      <div className={classes.title}>{nameString}</div>
       <FormikCheckboxLine
         label={'Показать группу в карточке товара'}
         name={`${inputName}.showInCard`}

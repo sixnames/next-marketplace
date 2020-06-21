@@ -24,53 +24,53 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   attribute,
   inputName,
 }) => {
-  const { type, options, name, metric, slug } = attribute;
+  const { variant, options, nameString, metric, itemId } = attribute;
   const firstValueIndex = 0;
-  const labelPostfix = metric ? metric.name : '';
+  const labelPostfix = metric ? metric.nameString : '';
 
   const optionsList = options ? options.options : [];
 
-  const singleValueInputName = `${inputName}.value.${slug}[${firstValueIndex}]`;
-  const multipleValueInputName = `${inputName}.value.${slug}`;
+  const singleValueInputName = `${inputName}.value.${itemId}[${firstValueIndex}]`;
+  const multipleValueInputName = `${inputName}.value.${itemId}`;
 
   function getAttributeInput() {
-    if (type === ATTRIBUTE_TYPE_NUMBER || type === ATTRIBUTE_TYPE_STRING) {
+    if (variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING) {
       return (
         <FormikInput
-          min={type === 'string' ? undefined : 0}
-          label={name}
+          min={variant === 'string' ? undefined : 0}
+          label={nameString}
           labelPostfix={labelPostfix}
-          type={type === ATTRIBUTE_TYPE_STRING ? 'text' : 'number'}
+          type={variant === ATTRIBUTE_TYPE_STRING ? 'text' : 'number'}
           name={singleValueInputName}
-          testId={name}
+          testId={nameString}
         />
       );
     }
 
-    if (type === ATTRIBUTE_TYPE_SELECT) {
+    if (variant === ATTRIBUTE_TYPE_SELECT) {
       return (
         <FormikSelect
-          label={name}
+          label={nameString}
           labelPostfix={labelPostfix}
           options={optionsList}
           firstOption={'Не выбрано'}
           name={singleValueInputName}
-          testId={slug}
+          testId={nameString}
         />
       );
     }
 
-    if (type === ATTRIBUTE_TYPE_MULTIPLE_SELECT && options) {
+    if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT && options) {
       return (
         <InputLine name={multipleValueInputName} label={name}>
-          {optionsList.map(({ id, name }) => {
+          {optionsList.map(({ id, nameString }) => {
             return (
               <FormikArrayCheckboxLine
                 name={multipleValueInputName}
                 value={id}
                 key={id}
-                label={name}
-                testId={name}
+                label={nameString}
+                testId={nameString}
                 inList
               />
             );
@@ -89,7 +89,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
       <FormikCheckboxLine
         label={'Показать в карточке товара'}
         name={`${inputName}.showInCard`}
-        testId={`${name}-showInCard`}
+        testId={`${nameString}-showInCard`}
         low
       />
     </div>

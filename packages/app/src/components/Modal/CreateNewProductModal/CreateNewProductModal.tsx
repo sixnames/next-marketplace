@@ -1,7 +1,12 @@
 import React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
-import { useGetRubricsTreeQuery } from '../../../generated/apolloComponents';
+import {
+  CreateProductInput,
+  CreateProductMutation,
+  useCreateProductMutation,
+  useGetRubricsTreeQuery,
+} from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/mutations/useMutationCallbacks';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
@@ -17,6 +22,7 @@ import InputLine from '../../FormElements/Input/InputLine';
 import ProductAttributes from './ProductAttributes';
 import { MutationUpdaterFn, PureQueryOptions, RefetchQueriesFunction } from '@apollo/client';
 import classes from './CreateNewProductModal.module.css';
+import { createProductSchema, minPrice } from '@rg/validation';
 
 export interface CreateNewProductModalInterface {
   rubricId?: string;
@@ -55,14 +61,14 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     );
   }
 
-  const initialValues = {
-    name: null,
-    cardName: null,
-    price: null,
-    description: null,
-    images: [],
+  const initialValues: CreateProductInput = {
+    name: [{ key: 'ru', value: '' }],
+    cardName: [{ key: 'ru', value: '' }],
+    price: 0,
+    description: [{ key: 'ru', value: '' }],
+    assets: [],
     rubrics: rubricId ? [rubricId] : [],
-    attributesSource: null,
+    attributesSource: '',
     attributesGroups: [],
   };
 
@@ -70,35 +76,21 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     <ModalFrame testId={'create-new-product-modal'}>
       <ModalTitle>Создание товара</ModalTitle>
       <Formik
-        // validationSchema={newProductSchema}
+        validationSchema={createProductSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          createProductMutation({
+          return createProductMutation({
             variables: {
               input: {
-                name: values.name || '',
-                cardName: values.cardName || '',
-                description: values.description || '',
-                price: values.price || 0,
-                images: values.images || [],
+                name: values.name,
+                cardName: values.cardName,
+                description: values.description,
+                price: values.price,
+                assets: values.assets,
                 rubrics: values.rubrics || [],
                 attributesSource: `${values.attributesSource}`,
-                attributesGroups: values.attributesGroups.map(
-                  (attributesGroup: ProductAttributesGroupInterface) => ({
-                    ...attributesGroup,
-                    attributes: attributesGroup.attributes.map((attribute) => {
-                      const slug = Object.keys(attribute.value)[0];
-
-                      return {
-                        ...attribute,
-                        value: {
-                          [`${slug}`]: attribute.value[slug].map((value: any) => `${value}`),
-                        },
-                      };
-                    }),
-                  }),
-                ),
+                attributesGroups: values.attributesGroups,
               },
             },
           });
@@ -113,27 +105,37 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
               <FormikDropZone
                 tooltip={'Подсказка для загрузки изображения'}
                 label={'Изображения'}
-                name={'images'}
+                name={'assets'}
                 testId={'product-images'}
                 isRequired
                 showInlineError
               />
 
-              <FormikInput
-                isRequired
-                label={'Имя'}
-                name={'name'}
-                testId={'product-name'}
-                showInlineError
-              />
+              {values.name.map((_, index) => {
+                return (
+                  <FormikInput
+                    isRequired
+                    key={index}
+                    label={'Имя'}
+                    name={`name[${index}].value`}
+                    testId={'product-name'}
+                    showInlineError
+                  />
+                );
+              })}
 
-              <FormikInput
-                isRequired
-                label={'Имя страницы товара'}
-                name={'cardName'}
-                testId={'product-card-name'}
-                showInlineError
-              />
+              {values.cardName.map((_, index) => {
+                return (
+                  <FormikInput
+                    isRequired
+                    key={index}
+                    label={'Имя страницы товара'}
+                    name={`cardName[${index}].value`}
+                    testId={'product-card-name'}
+                    showInlineError
+                  />
+                );
+              })}
 
               <FormikInput
                 isRequired
@@ -145,13 +147,18 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 showInlineError
               />
 
-              <FormikTextarea
-                isRequired
-                label={'Описание'}
-                name={'description'}
-                testId={'product-description'}
-                showInlineError
-              />
+              {values.cardName.map((_, index) => {
+                return (
+                  <FormikTextarea
+                    isRequired
+                    key={index}
+                    label={'Описание'}
+                    name={`description[${index}].value`}
+                    testId={'product-description'}
+                    showInlineError
+                  />
+                );
+              })}
 
               {!rubricId && data && data.getRubricsTree && (
                 <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>

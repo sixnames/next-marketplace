@@ -4,26 +4,26 @@ export const GET_FEATURES_AST_OPTIONS_QUERY = gql`
   query GetFeaturesASTOptions($selected: [ID!]!) {
     getFeaturesASTOptions(selected: $selected) {
       id
-      name
+      nameString
       attributesGroups {
         node {
           id
-          name
+          nameString
           attributes {
             id
-            name
-            type
-            slug
+            itemId
+            nameString
+            variant
             metric {
               id
-              name
+              nameString
             }
             options {
               id
-              name
+              nameString
               options {
                 id
-                name
+                nameString
                 color
               }
             }

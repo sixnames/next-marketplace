@@ -10,7 +10,7 @@ export class CreateRubricInput {
   catalogueName: LangInput[];
 
   @Field(() => ID, { nullable: true })
-  parent: string;
+  parent?: string;
 
   @Field(() => ID, { nullable: true })
   variant: string;

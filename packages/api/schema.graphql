@@ -131,6 +131,12 @@ input DeleteProductFromRubricInput {
   rubricId: ID!
 }
 
+type FeaturesASTOption {
+  attributesGroups: [RubricAttributesGroup!]!
+  id: ID!
+  nameString: String!
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -341,6 +347,7 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
+  getFeaturesASTOptions(selected: [ID!]!): [FeaturesASTOption!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup

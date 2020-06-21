@@ -52,6 +52,7 @@ import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
   level: number;
+  parent?: Types.ObjectId | null;
 }
 
 @ObjectType()
@@ -110,14 +111,16 @@ export class RubricResolver {
       const parentRubric = await RubricModel.findById(parent);
 
       const parentRelatedData: ParentRelatedDataInterface = {
-        variant: null,
+        variant: input.variant,
         level: RUBRIC_LEVEL_ONE,
+        parent: null,
       };
 
       if (parentRubric) {
         const parentCity = getCityData(parentRubric.cities, city);
         parentRelatedData.variant = parentCity!.node.variant;
         parentRelatedData.level = parentCity!.node.level + RUBRIC_LEVEL_STEP;
+        parentRelatedData.parent = Types.ObjectId(parent);
       }
 
       const rubric = await RubricModel.create({
@@ -125,10 +128,11 @@ export class RubricResolver {
           {
             key: city,
             node: {
-              ...input,
-              ...parentRelatedData,
+              name: input.name,
+              catalogueName: input.catalogueName,
               slug: generateDefaultLangSlug(input.catalogueName),
               attributesGroups: [],
+              ...parentRelatedData,
             },
           },
         ],

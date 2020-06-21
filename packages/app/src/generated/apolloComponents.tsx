@@ -35,6 +35,7 @@ export type Query = {
   getRubric: Rubric;
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
+  getFeaturesASTOptions: Array<FeaturesAstOption>;
 };
 
 
@@ -100,6 +101,11 @@ export type QueryGetRubricArgs = {
 
 export type QueryGetRubricsTreeArgs = {
   excluded?: Maybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryGetFeaturesAstOptionsArgs = {
+  selected: Array<Scalars['ID']>;
 };
 
 export type User = {
@@ -381,6 +387,13 @@ export type AttributeVariant = {
    __typename?: 'AttributeVariant';
   id: Scalars['ID'];
   nameString: Scalars['String'];
+};
+
+export type FeaturesAstOption = {
+   __typename?: 'FeaturesASTOption';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  attributesGroups: Array<RubricAttributesGroup>;
 };
 
 export type Mutation = {
@@ -1377,6 +1390,41 @@ export type GetAttributesGroupsForRubricQuery = (
   & { getAllAttributesGroups: Array<(
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetFeaturesAstOptionsQueryVariables = {
+  selected: Array<Scalars['ID']>;
+};
+
+
+export type GetFeaturesAstOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getFeaturesASTOptions: Array<(
+    { __typename?: 'FeaturesASTOption' }
+    & Pick<FeaturesAstOption, 'id' | 'nameString'>
+    & { attributesGroups: Array<(
+      { __typename?: 'RubricAttributesGroup' }
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+          & { metric?: Maybe<(
+            { __typename?: 'Metric' }
+            & Pick<Metric, 'id' | 'nameString'>
+          )>, options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+            & { options: Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, 'id' | 'nameString' | 'color'>
+            )> }
+          )> }
+        )> }
+      ) }
+    )> }
   )> }
 );
 
@@ -2738,6 +2786,65 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: ApolloRea
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
+export const GetFeaturesAstOptionsDocument = gql`
+    query GetFeaturesASTOptions($selected: [ID!]!) {
+  getFeaturesASTOptions(selected: $selected) {
+    id
+    nameString
+    attributesGroups {
+      node {
+        id
+        nameString
+        attributes {
+          id
+          itemId
+          nameString
+          variant
+          metric {
+            id
+            nameString
+          }
+          options {
+            id
+            nameString
+            options {
+              id
+              nameString
+              color
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFeaturesAstOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetFeaturesAstOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeaturesAstOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFeaturesAstOptionsQuery({
+ *   variables: {
+ *      selected: // value for 'selected'
+ *   },
+ * });
+ */
+export function useGetFeaturesAstOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>(GetFeaturesAstOptionsDocument, baseOptions);
+      }
+export function useGetFeaturesAstOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>(GetFeaturesAstOptionsDocument, baseOptions);
+        }
+export type GetFeaturesAstOptionsQueryHookResult = ReturnType<typeof useGetFeaturesAstOptionsQuery>;
+export type GetFeaturesAstOptionsLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstOptionsLazyQuery>;
+export type GetFeaturesAstOptionsQueryResult = ApolloReactCommon.QueryResult<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>;
 export const GetNewAttributeOptionsDocument = gql`
     query GetNewAttributeOptions {
   getAllOptionsGroups {

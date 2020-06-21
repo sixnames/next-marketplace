@@ -36,6 +36,7 @@ import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import { DEFAULT_CITY } from '../../config';
 import { ProductModel } from '../../entities/Product';
+import { Types } from 'mongoose';
 
 interface LangInterface {
   key: string;
@@ -48,7 +49,7 @@ interface GetRubricCitiesInterface {
   level: number;
   slug: string;
   variant?: string;
-  parent?: string | null;
+  parent?: Types.ObjectId | null;
   attributesGroups: {
     showInCatalogueFilter: boolean;
     node: string;

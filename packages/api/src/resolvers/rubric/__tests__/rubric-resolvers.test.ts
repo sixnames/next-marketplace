@@ -66,11 +66,11 @@ describe.only('Rubrics', () => {
         }
       }
     `);
-    console.log(JSON.stringify(getRubricsTree, null, 2));
+
     const attributesGroup = getAllAttributesGroups[0];
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];
-    const rubricLevelTree = rubricLevelTwo.children[0];
+    const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
     expect(getRubricsTree.length).toEqual(1);
     expect(rubricLevelOne.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
@@ -303,7 +303,7 @@ describe.only('Rubrics', () => {
       mutation {
         addProductToRubric(
           input: {
-            rubricId: "${rubricLevelTree.id}"
+            rubricId: "${rubricLevelThree.id}"
             productId: "${createdProduct.id}"
           }
         ) {
@@ -324,7 +324,7 @@ describe.only('Rubrics', () => {
     `);
     expect(addProductToRubric.success).toBeTruthy();
     expect(addProductToRubric.rubric.products.docs.length).toEqual(
-      rubricLevelTree.products.docs.length + 1,
+      rubricLevelThree.products.docs.length + 1,
     );
 
     // Should delete product from third level rubric
@@ -334,7 +334,7 @@ describe.only('Rubrics', () => {
       mutation {
         deleteProductFromRubric(
           input: {
-            rubricId: "${rubricLevelTree.id}"
+            rubricId: "${rubricLevelThree.id}"
             productId: "${createdProduct.id}"
           }
         ) {
@@ -355,8 +355,49 @@ describe.only('Rubrics', () => {
     `);
     expect(deleteProductFromRubric.success).toBeTruthy();
     expect(deleteProductFromRubric.rubric.products.docs.length).toEqual(
-      rubricLevelTree.products.docs.length,
+      rubricLevelThree.products.docs.length,
     );
+
+    // Should return features AST for current rubric
+    const {
+      data: { getFeaturesASTOptions },
+    } = await query(`
+      query {
+        getFeaturesASTOptions(selected: ["${rubricLevelThree.id}"]) {
+          id
+          nameString
+          attributesGroups {
+            node {
+              id
+              nameString
+              attributes {
+                id
+                itemId
+                nameString
+                variant
+                metric {
+                  id
+                  nameString
+                }
+                options {
+                  id
+                  nameString
+                  options {
+                    id
+                    nameString
+                    color
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `);
+
+    expect(getFeaturesASTOptions[0].id).toEqual(rubricLevelTwo.id);
+    expect(getFeaturesASTOptions[0].attributesGroups).toHaveLength(1);
+    expect(getFeaturesASTOptions[0].attributesGroups[0].node.attributes).toHaveLength(4);
 
     // Should delete rubric
     const {

@@ -909,6 +909,31 @@ export type AddOptionToGroupMutation = (
   ) }
 );
 
+export type AddProductTuRubricMutationVariables = {
+  input: AddProductToRubricInput;
+};
+
+
+export type AddProductTuRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { addProductToRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+    & { rubric?: Maybe<(
+      { __typename?: 'Rubric' }
+      & Pick<Rubric, 'id' | 'activeProductsCount' | 'totalProductsCount'>
+      & { products: (
+        { __typename?: 'PaginatedProductsResponse' }
+        & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+        & { docs: Array<(
+          { __typename?: 'Product' }
+          & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
 export type CreateAttributesGroupMutationVariables = {
   input: CreateAttributesGroupInput;
 };
@@ -1463,7 +1488,7 @@ export type GetNewAttributeOptionsQuery = (
 );
 
 export type GetNonRubricProductsQueryVariables = {
-  input?: Maybe<ProductPaginateInput>;
+  input: ProductPaginateInput;
 };
 
 
@@ -1756,6 +1781,56 @@ export function useAddOptionToGroupMutation(baseOptions?: ApolloReactHooks.Mutat
 export type AddOptionToGroupMutationHookResult = ReturnType<typeof useAddOptionToGroupMutation>;
 export type AddOptionToGroupMutationResult = ApolloReactCommon.MutationResult<AddOptionToGroupMutation>;
 export type AddOptionToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
+export const AddProductTuRubricDocument = gql`
+    mutation AddProductTuRubric($input: AddProductToRubricInput!) {
+  addProductToRubric(input: $input) {
+    success
+    message
+    rubric {
+      id
+      activeProductsCount
+      totalProductsCount
+      products {
+        totalDocs
+        page
+        totalPages
+        docs {
+          id
+          itemId
+          name
+          price
+          slug
+        }
+      }
+    }
+  }
+}
+    `;
+export type AddProductTuRubricMutationFn = ApolloReactCommon.MutationFunction<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>;
+
+/**
+ * __useAddProductTuRubricMutation__
+ *
+ * To run a mutation, you first call `useAddProductTuRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductTuRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductTuRubricMutation, { data, loading, error }] = useAddProductTuRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductTuRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>(AddProductTuRubricDocument, baseOptions);
+      }
+export type AddProductTuRubricMutationHookResult = ReturnType<typeof useAddProductTuRubricMutation>;
+export type AddProductTuRubricMutationResult = ApolloReactCommon.MutationResult<AddProductTuRubricMutation>;
+export type AddProductTuRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>;
 export const CreateAttributesGroupDocument = gql`
     mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
   createAttributesGroup(input: $input) {
@@ -2944,7 +3019,7 @@ export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewA
 export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
 export type GetNewAttributeOptionsQueryResult = ApolloReactCommon.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
 export const GetNonRubricProductsDocument = gql`
-    query GetNonRubricProducts($input: ProductPaginateInput) {
+    query GetNonRubricProducts($input: ProductPaginateInput!) {
   getAllProducts(input: $input) {
     totalDocs
     page

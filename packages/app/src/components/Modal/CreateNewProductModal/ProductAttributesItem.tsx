@@ -62,7 +62,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
 
     if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT && options) {
       return (
-        <InputLine name={multipleValueInputName} label={name}>
+        <InputLine name={multipleValueInputName} label={nameString}>
           {optionsList.map(({ id, nameString }) => {
             return (
               <FormikArrayCheckboxLine

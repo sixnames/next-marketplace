@@ -3,7 +3,7 @@ import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import Button from '../../Buttons/Button';
 import {
-  GetRubricProductsQuery,
+  useAddProductTuRubricMutation,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
   useGetRubricsTreeQuery,
@@ -22,6 +22,7 @@ import { useAppContext } from '../../../context/appContext';
 import useProductsListColumns from '../../../hooks/useProductsListColumns';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
+import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
 
 interface AddProductToRubricModalInterface {
   rubricId: string;
@@ -40,7 +41,7 @@ interface NotInRubricProductsListInterface {
 interface ProductsSearchListInterface {
   addProductToRubricHandler: (id: string) => void;
   notInRubric: string;
-  query: string;
+  search: string;
 }
 
 const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
@@ -72,7 +73,12 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
   } = data;
 
   return (
-    <Table data={products} columns={columns} emptyMessage={'Список пуст'} testIdKye={'name'} />
+    <Table
+      data={products.docs}
+      columns={columns}
+      emptyMessage={'Список пуст'}
+      testIdKey={'nameString'}
+    />
   );
 };
 
@@ -90,9 +96,11 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
   const { data, loading, error } = useGetNonRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      noRubrics: true,
-      page,
-      limit,
+      input: {
+        noRubrics: true,
+        page,
+        limit,
+      },
     },
   });
 
@@ -110,7 +118,7 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
 };
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
-  query,
+  search,
   addProductToRubricHandler,
   notInRubric,
 }) => {
@@ -124,9 +132,11 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   const { data, loading, error } = useGetNonRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      page,
-      notInRubric,
-      query,
+      input: {
+        page,
+        notInRubric,
+        search,
+      },
     },
   });
 
@@ -144,7 +154,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
     <Table
       data={docs}
       columns={columns}
-      emptyMessage={`По запросу &quot;${query}&quot; товарв не найдено`}
+      emptyMessage={`По запросу &quot;${search}&quot; товаров не найдено`}
       testIdKey={'name'}
     />
   );
@@ -152,7 +162,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
 
 const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ rubricId }) => {
   const { onCompleteCallback, onErrorCallback } = useMutationCallbacks({ withModal: true });
-  const [query, setQuery] = useState<string | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
   const { showModal } = useAppContext();
   const { data, error, loading } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
@@ -169,38 +179,17 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
       {
         query: RUBRICS_TREE_QUERY,
       },
+      {
+        query: RUBRIC_PRODUCTS_QUERY,
+        variables: {
+          id: rubricId,
+        },
+      },
     ],
-    update: (proxy, { data }) => {
-      if (data && data.addProductToRubric && data.addProductToRubric.success) {
-        const cachedData: GetRubricProductsQuery | null = proxy.readQuery({
-          query: RUBRIC_PRODUCTS_QUERY,
-          variables: {
-            id: rubricId,
-          },
-        });
-
-        if (cachedData && cachedData.getRubric) {
-          const { rubric } = data.addProductToRubric;
-
-          proxy.writeQuery({
-            query: RUBRIC_PRODUCTS_QUERY,
-            variables: {
-              id: rubricId,
-            },
-            data: {
-              getRubric: {
-                ...cachedData.getRubric,
-                products: rubric ? [...rubric.products] : [...cachedData.getRubric.products],
-              },
-            },
-          });
-        }
-      }
-    },
   });
 
   function addProductToRubricHandler(productId: string) {
-    addProductToRubricMutation({
+    return addProductToRubricMutation({
       variables: {
         input: {
           rubricId,
@@ -219,36 +208,13 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
           {
             query: RUBRICS_TREE_QUERY,
           },
+          {
+            query: RUBRIC_PRODUCTS_QUERY,
+            variables: {
+              id: rubricId,
+            },
+          },
         ],
-        update: (proxy, { data }) => {
-          if (data && data.createProduct && data.createProduct.success) {
-            const { product } = data.createProduct;
-            if (product) {
-              const queryOptions = {
-                query: RUBRIC_PRODUCTS_QUERY,
-                variables: {
-                  id: rubricId,
-                },
-              };
-
-              const cachedData = proxy.readQuery<GetRubricProductsQuery>(queryOptions);
-
-              if (cachedData && cachedData.getRubric) {
-                const { getRubric } = cachedData;
-
-                proxy.writeQuery({
-                  ...queryOptions,
-                  data: {
-                    getRubric: {
-                      ...getRubric,
-                      products: [...getRubric.products, product],
-                    },
-                  },
-                });
-              }
-            }
-          }
-        },
       },
     });
   }
@@ -275,15 +241,15 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
       </ModalTitle>
 
       <FormikIndividualSearch
-        onSubmit={setQuery}
+        onSubmit={setSearch}
         testId={'product'}
         withReset
-        onReset={() => setQuery(null)}
+        onReset={() => setSearch(null)}
       />
 
-      {query ? (
+      {search ? (
         <ProductsSearchList
-          query={query}
+          search={search}
           notInRubric={rubricId}
           addProductToRubricHandler={addProductToRubricHandler}
         />

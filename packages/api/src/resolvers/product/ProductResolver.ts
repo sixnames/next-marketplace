@@ -421,7 +421,24 @@ export class ProductResolver {
     if (!city) {
       return [];
     }
-    return city.node.assets;
+    return city.node.assets.sort((a, b) => a.index - b.index);
+  }
+
+  @FieldResolver()
+  async mainImage(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    const city = getCityData(product.cities, ctx.req.session!.city);
+    if (!city) {
+      return '';
+    }
+    const mainImage = city.node.assets.find(({ index }) => index === 0);
+
+    if (!mainImage) {
+      return '';
+    }
+    return mainImage.url;
   }
 
   @FieldResolver()

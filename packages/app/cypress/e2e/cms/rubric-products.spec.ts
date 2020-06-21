@@ -39,7 +39,7 @@ const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 
 const modal = 'add-product-to-rubric-modal';
 
-describe.skip('Rubric products', () => {
+describe('Rubric products', () => {
   beforeEach(() => {
     cy.server();
     cy.mockGraphql({

@@ -139,6 +139,9 @@ export class Product extends TimeStamps {
   @Field(() => [AssetType])
   readonly assets: AssetType[];
 
+  @Field(() => String)
+  readonly mainImage: string;
+
   @Field(() => Int)
   readonly price: number;
 

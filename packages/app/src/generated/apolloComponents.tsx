@@ -227,6 +227,7 @@ export type Product = {
   attributesSource?: Maybe<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
+  mainImage: Scalars['String'];
   price: Scalars['Int'];
   cities: Array<ProductCity>;
   createdAt: Scalars['Timestamp'];
@@ -1596,7 +1597,7 @@ export type GetRubricProductsQuery = (
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
       )> }
     ) }
   ) }
@@ -3226,6 +3227,7 @@ export const GetRubricProductsDocument = gql`
         name
         price
         slug
+        mainImage
       }
     }
   }

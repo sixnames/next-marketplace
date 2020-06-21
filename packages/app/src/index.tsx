@@ -8,12 +8,12 @@ import { ThemeContextProvider } from './context/themeContext';
 import { AppContextProvider } from './context/appContext';
 import { NotificationsProvider } from './context/notificationsContext';
 import { UserContextProvider } from './context/userContext';
-import { API_URL } from './config';
+import { API_PATH } from './config';
 import App from './components/App/App';
 import './reset.css';
 
 const link = createUploadLink({
-  uri: API_URL,
+  uri: API_PATH,
   credentials: 'include',
 });
 

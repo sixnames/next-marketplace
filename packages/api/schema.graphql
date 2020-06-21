@@ -258,6 +258,7 @@ type Product {
   description: String!
   id: ID!
   itemId: Int!
+  mainImage: String!
   name: String!
   price: Int!
   rubrics: [ID!]!

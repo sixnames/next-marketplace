@@ -143,7 +143,7 @@ describe('Rubric products', () => {
 
 // Used separate describe block for file upload mutation
 // cypress-graphql-mock module throws error on file upload
-describe.only('Rubric products creation', () => {
+describe('Rubric products creation', () => {
   beforeEach(() => {
     cy.createTestData();
   });

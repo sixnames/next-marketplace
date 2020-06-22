@@ -23,6 +23,7 @@ import useProductsListColumns from '../../../hooks/useProductsListColumns';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
+import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
 
 interface AddProductToRubricModalInterface {
   rubricId: string;
@@ -100,6 +101,7 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
         noRubrics: true,
         page,
         limit,
+        countActiveProducts: true,
       },
     },
   });
@@ -111,10 +113,24 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
   if (loading) return <Spinner isNested />;
   if (error || !data || !data.getAllProducts) return <RequestError />;
   const {
-    getAllProducts: { docs },
+    getAllProducts: { docs, totalDocs, activeProductsCount },
   } = data;
 
-  return <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />;
+  return (
+    <Accordion
+      title={'Товары вне рубрик'}
+      testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
+      titleRight={
+        <RubricsTreeCounters
+          activeProductsCount={activeProductsCount || 0}
+          totalProductsCount={totalDocs}
+          testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
+        />
+      }
+    >
+      <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />
+    </Accordion>
+  );
 };
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
@@ -267,9 +283,7 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
             )}
           />
 
-          <Accordion title={'Товары вне рубрик'} testId={QUERY_DATA_LAYOUT_NO_RUBRIC}>
-            <NotInRubricProductsList addProductToRubricHandler={addProductToRubricHandler} />
-          </Accordion>
+          <NotInRubricProductsList addProductToRubricHandler={addProductToRubricHandler} />
         </Fragment>
       )}
     </ModalFrame>

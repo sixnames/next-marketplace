@@ -2,6 +2,7 @@ import React from 'react';
 import Accordion from '../../components/Accordion/Accordion';
 import classes from './RubricsTree.module.css';
 import { RUBRIC_LEVEL_THREE } from '@rg/config';
+import RubricsTreeCounters from './RubricsTreeCounters';
 
 export interface RubricsTreeItemInterface {
   id: string;
@@ -32,13 +33,6 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
   function renderChildren(item: RubricsTreeItemInterface, isFirst?: boolean) {
     const { id, activeProductsCount = 0, totalProductsCount = 0, name, children, level } = item;
     const isLast = level === RUBRIC_LEVEL_THREE;
-    const counters = (
-      <div className={classes.counters}>
-        <span data-cy={`${name}-active`}>{activeProductsCount}</span>
-        {` / `}
-        <span data-cy={`${name}-total`}>{totalProductsCount}</span>
-      </div>
-    );
 
     const titleLeftContent = titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null;
 
@@ -50,7 +44,13 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
             lastTitleLeft ? () => lastTitleLeft(id, `tree-link-${name}`) : titleLeftContent
           }
           disabled={totalProductsCount === 0 || isLastDisabled}
-          titleRight={counters}
+          titleRight={
+            <RubricsTreeCounters
+              activeProductsCount={activeProductsCount}
+              totalProductsCount={totalProductsCount}
+              testId={name}
+            />
+          }
           title={name}
           key={id}
           testId={`tree-${name}`}
@@ -65,7 +65,13 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
           isOpen={true}
           titleLeft={titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null}
           titleClassName={isFirst ? classes.first : ''}
-          titleRight={counters}
+          titleRight={
+            <RubricsTreeCounters
+              testId={name}
+              activeProductsCount={activeProductsCount}
+              totalProductsCount={totalProductsCount}
+            />
+          }
           title={name}
           key={id}
           testId={`tree-${name}`}

@@ -1,5 +1,6 @@
 import ContentItemControls from '../components/ContentItemControls/ContentItemControls';
 import React from 'react';
+import TableRowImage from '../components/Table/TableRowImage';
 
 export interface ProductsListItemInterface {
   id: string;
@@ -7,6 +8,7 @@ export interface ProductsListItemInterface {
   name: string;
   price: number;
   slug: string;
+  mainImage: string;
 }
 
 export interface ProductColumnsInterface {
@@ -32,14 +34,13 @@ const useProductsListColumns = ({
       title: 'Арт.',
       render: (itemID: number) => itemID,
     },
-    /*{
-      key: 'images',
+    {
+      key: 'mainImage',
       title: 'Изображение',
-      render: (images: ProductImagesInterface[]) => {
-        const mainImage = images[0].thumbSmall;
-        return <TableRowImage path={mainImage} alt={'Выбрать товар'} title={''} />;
+      render: (mainImage: string, product: ProductsListItemInterface) => {
+        return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
       },
-    },*/
+    },
     {
       key: 'name',
       title: 'Название',

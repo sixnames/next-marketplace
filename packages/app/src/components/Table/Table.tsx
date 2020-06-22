@@ -11,6 +11,7 @@ interface Column {
   render?: (cellData: any, dataItem: any, index: number) => ReactNode;
   sortBy?: string;
   title?: string;
+  hidden?: boolean;
 }
 
 interface TableInterface {
@@ -44,11 +45,12 @@ const Table: React.FC<TableInterface> = ({
     color: fixPosition ? 'white' : null,
   };
 
-  const tHead = columns.map(({ title, sortBy, fix, style }) => ({
+  const tHead = columns.map(({ title, sortBy, fix, style, hidden }) => ({
     title,
     sortBy,
     fix,
     style,
+    hidden,
   }));
 
   const renderColumns = useCallback(
@@ -67,8 +69,12 @@ const Table: React.FC<TableInterface> = ({
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
             {columns.map((cell: Column, cellIndex: number) => {
-              const { key = '', render, style, colSpan } = cell;
+              const { key = '', render, style, colSpan, hidden } = cell;
               const cellData = key ? get(dataItem, key) : null;
+
+              if (hidden) {
+                return null;
+              }
 
               return (
                 <td
@@ -106,7 +112,11 @@ const Table: React.FC<TableInterface> = ({
     <table className={className || ''}>
       <thead>
         <tr className={classes.row}>
-          {tHead.map(({ title = '', sortBy, style }, i) => {
+          {tHead.map(({ title = '', sortBy, style, hidden }, i) => {
+            if (hidden) {
+              return null;
+            }
+
             return (
               <th
                 className={classes.headCell}

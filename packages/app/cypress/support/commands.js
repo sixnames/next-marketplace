@@ -38,7 +38,6 @@ Cypress.Commands.add('getByCy', (testId) => {
 Cypress.Commands.add('selectNthOption', (select, nth) => {
   cy.get(`${select} option:nth-child(${nth})`).as('option');
   cy.get('@option').then((option) => {
-    console.log(option);
     cy.get(select).invoke('val', option.val()).trigger('change');
   });
 });

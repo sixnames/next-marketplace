@@ -24,4 +24,7 @@ export class ProductPaginateInput extends PaginateInput {
 
   @Field((_type) => Boolean, { nullable: true })
   noRubrics?: boolean;
+
+  @Field((_type) => Boolean, { nullable: true })
+  countActiveProducts?: boolean;
 }

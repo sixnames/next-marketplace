@@ -217,6 +217,7 @@ type OptionsGroupPayloadType {
 }
 
 type PaginatedProductsResponse {
+  activeProductsCount: Int
   docs: [Product!]!
   hasNextPage: Int!
   hasPrevPage: Int!
@@ -313,6 +314,7 @@ type ProductNode {
 }
 
 input ProductPaginateInput {
+  countActiveProducts: Boolean
   limit: Int = 100
   noRubrics: Boolean
   notInRubric: ID

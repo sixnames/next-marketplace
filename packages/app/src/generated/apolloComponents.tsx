@@ -296,6 +296,7 @@ export type PaginatedProductsResponse = {
   pagingCounter: Scalars['Int'];
   hasPrevPage: Scalars['Int'];
   hasNextPage: Scalars['Int'];
+  activeProductsCount?: Maybe<Scalars['Int']>;
 };
 
 export type ProductPaginateInput = {
@@ -307,6 +308,7 @@ export type ProductPaginateInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
 /** Product pagination sortBy enum */
@@ -1497,10 +1499,10 @@ export type GetNonRubricProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
     & { docs: Array<(
       { __typename?: 'Product' }
-      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
     )> }
   ) }
 );
@@ -1569,7 +1571,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id'>
+    & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
       & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
@@ -3025,12 +3027,14 @@ export const GetNonRubricProductsDocument = gql`
     totalDocs
     page
     totalPages
+    activeProductsCount
     docs {
       id
       itemId
       name
       price
       slug
+      mainImage
     }
   }
 }
@@ -3176,6 +3180,7 @@ export const GetRubricAttributesDocument = gql`
     query GetRubricAttributes($id: ID!) {
   getRubric(id: $id) {
     id
+    level
     attributesGroups {
       id
       showInCatalogueFilter

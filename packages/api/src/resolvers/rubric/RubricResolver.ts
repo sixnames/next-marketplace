@@ -48,6 +48,7 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
+import { getRubricCounters } from '../../utils/rubricResolverHelpers';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -795,8 +796,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-    const query = getProductsFilter({ rubric: rubric._id }, city);
-    return ProductModel.countDocuments(query);
+    return getRubricCounters({ city, rubric });
   }
 
   @FieldResolver()
@@ -805,7 +805,6 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
     const city = ctx.req.session!.city;
-    const query = getProductsFilter({ rubric: rubric._id, active: true }, city);
-    return ProductModel.countDocuments(query);
+    return getRubricCounters({ city, rubric, args: { active: true } });
   }
 }

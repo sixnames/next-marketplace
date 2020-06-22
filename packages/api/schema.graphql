@@ -250,6 +250,7 @@ enum PaginateSortDirectionEnum {
 }
 
 type Product {
+  active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
   attributesSource: ID

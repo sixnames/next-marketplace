@@ -145,6 +145,9 @@ export class Product extends TimeStamps {
   @Field(() => Int)
   readonly price: number;
 
+  @Field(() => Boolean)
+  readonly active: boolean;
+
   @Field(() => [ProductCity])
   @prop({ type: ProductCity, required: true })
   cities: ProductCity[];

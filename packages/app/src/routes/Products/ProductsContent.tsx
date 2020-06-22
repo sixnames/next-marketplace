@@ -9,9 +9,9 @@ import { useDeleteProductMutation, useGetAllProductsQuery } from '../../generate
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
-import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/query/getAllProducts';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import { CONFIRM_MODAL } from '../../config/modals';
+import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 const ProductsContent: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({

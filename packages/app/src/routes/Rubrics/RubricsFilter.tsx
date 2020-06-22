@@ -10,13 +10,13 @@ import RubricsTree from './RubricsTree';
 import FilterRadio from '../../components/FilterElements/FilterRadio/FilterRadio';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
-import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 import updateItemInTree from '../../utils/updateItemInTree';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
 import { CREATE_RUBRIC_MODAL } from '../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../config';
 import classes from './RubricsFilter.module.css';
 import RubricsTreeCounters from './RubricsTreeCounters';
+import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 const RubricsFilter: React.FC = () => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({

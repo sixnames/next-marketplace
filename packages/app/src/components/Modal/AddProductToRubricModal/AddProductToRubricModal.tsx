@@ -14,8 +14,6 @@ import RequestError from '../../RequestError/RequestError';
 import RubricsTree from '../../../routes/Rubrics/RubricsTree';
 import Table from '../../Table/Table';
 import useMutationCallbacks from '../../../hooks/mutations/useMutationCallbacks';
-import { RUBRIC_PRODUCTS_QUERY } from '../../../graphql/query/getRubricProducts';
-import { RUBRICS_TREE_QUERY } from '../../../graphql/query/getRubricsTree';
 import Accordion from '../../Accordion/Accordion';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
 import { useAppContext } from '../../../context/appContext';
@@ -24,6 +22,7 @@ import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
 import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/CmsRubricsAndProducts';
 
 interface AddProductToRubricModalInterface {
   rubricId: string;

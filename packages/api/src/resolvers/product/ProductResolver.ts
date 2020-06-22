@@ -494,4 +494,16 @@ export class ProductResolver {
     }
     return city.node.price;
   }
+
+  @FieldResolver()
+  async active(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<boolean> {
+    const city = getCityData(product.cities, ctx.req.session!.city);
+    if (!city) {
+      return false;
+    }
+    return city.node.active;
+  }
 }

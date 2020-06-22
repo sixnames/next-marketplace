@@ -7,13 +7,13 @@ import RequestError from '../../components/RequestError/RequestError';
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
-import { GET_NON_RUBRIC_PRODUCTS_QUERY } from '../../graphql/query/getNonRubricProducts';
 import {
   useDeleteProductMutation,
   useGetNonRubricProductsQuery,
 } from '../../generated/apolloComponents';
 import { CONFIRM_MODAL } from '../../config/modals';
 import Pager from '../../components/Pager/Pager';
+import { GET_NON_RUBRIC_PRODUCTS_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 const NoRubricProducts: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({

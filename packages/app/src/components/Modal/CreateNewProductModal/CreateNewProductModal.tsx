@@ -39,6 +39,9 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   const { data, loading, error } = useGetRubricsTreeQuery({
     skip: Boolean(rubricId),
     fetchPolicy: 'network-only',
+    variables: {
+      counters: {},
+    },
   });
 
   const { onErrorCallback, onCompleteCallback, hideModal, showLoading } = useMutationCallbacks({

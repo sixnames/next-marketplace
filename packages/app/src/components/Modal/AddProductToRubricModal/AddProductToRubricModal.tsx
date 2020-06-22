@@ -170,7 +170,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
     <Table
       data={docs}
       columns={columns}
-      emptyMessage={`По запросу &quot;${search}&quot; товаров не найдено`}
+      emptyMessage={`По запросу "${search}" товаров не найдено`}
       testIdKey={'name'}
     />
   );

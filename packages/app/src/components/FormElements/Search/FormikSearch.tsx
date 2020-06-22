@@ -17,7 +17,7 @@ const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) =>
           frameClass={classes.line}
           className={classes.input}
           placeholder={`Поиск...`}
-          name={'query'}
+          name={'search'}
           low
           testId={`${testId}-search-input`}
         />

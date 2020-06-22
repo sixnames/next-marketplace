@@ -6,6 +6,7 @@ import RubricVariantsRoute from '../../routes/RubricVariants/RubricVariantsRoute
 import OptionsGroupsRoute from '../../routes/OptionsGroups/OptionsGroupsRoute';
 import AttributesGroupsRoute from '../../routes/AttributesGroups/AttributesGroupsRoute';
 import RubricsRoute from '../../routes/Rubrics/RubricsRoute';
+import ProductsRoute from '../../routes/Products/ProductsRoute';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
 
           {/*CMS*/}
           <Route path={'rubrics'} element={<RubricsRoute />} />
-          <Route path={'products'} element={<div>Products</div>} />
+          <Route path={'products'} element={<ProductsRoute />} />
           <Route path={'rubric-variants'} element={<RubricVariantsRoute />} />
           <Route path={'attributes-groups'} element={<AttributesGroupsRoute />} />
           <Route path={'options-groups'} element={<OptionsGroupsRoute />} />

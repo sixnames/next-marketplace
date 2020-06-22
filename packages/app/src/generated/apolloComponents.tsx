@@ -1379,6 +1379,23 @@ export type GetAllOptionsGroupsQuery = (
   )> }
 );
 
+export type GetAllProductsQueryVariables = {
+  input: ProductPaginateInput;
+};
+
+
+export type GetAllProductsQuery = (
+  { __typename?: 'Query' }
+  & { getAllProducts: (
+    { __typename?: 'PaginatedProductsResponse' }
+    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Product' }
+      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
+    )> }
+  ) }
+);
+
 export type GetAllRubricVariantsQueryVariables = {};
 
 
@@ -2747,6 +2764,49 @@ export function useGetAllOptionsGroupsLazyQuery(baseOptions?: ApolloReactHooks.L
 export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
 export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
 export type GetAllOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;
+export const GetAllProductsDocument = gql`
+    query GetAllProducts($input: ProductPaginateInput!) {
+  getAllProducts(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      id
+      itemId
+      name
+      price
+      slug
+      mainImage
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllProductsQuery__
+ *
+ * To run a query within a React component, call `useGetAllProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProductsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllProductsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, baseOptions);
+      }
+export function useGetAllProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, baseOptions);
+        }
+export type GetAllProductsQueryHookResult = ReturnType<typeof useGetAllProductsQuery>;
+export type GetAllProductsLazyQueryHookResult = ReturnType<typeof useGetAllProductsLazyQuery>;
+export type GetAllProductsQueryResult = ApolloReactCommon.QueryResult<GetAllProductsQuery, GetAllProductsQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

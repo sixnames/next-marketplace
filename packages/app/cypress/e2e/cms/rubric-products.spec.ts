@@ -149,7 +149,7 @@ describe('Rubric products creation', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should create product and add it to the rubric', () => {

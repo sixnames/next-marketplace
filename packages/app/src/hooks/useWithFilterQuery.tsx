@@ -1,9 +1,18 @@
 import useIsMobile from './useIsMobile';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../config';
+import qs from 'querystring';
 
 function useWithFilterQuery() {
   const isMobile = useIsMobile();
-  return isMobile ? '' : QUERY_DATA_LAYOUT_FILTER_ENABLED;
+  const withFilter = {
+    isFilterVisible: 1,
+  };
+
+  return isMobile
+    ? {}
+    : {
+        parsed: withFilter,
+        string: `?${qs.stringify(withFilter)}`,
+      };
 }
 
 export default useWithFilterQuery;

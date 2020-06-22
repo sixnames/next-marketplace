@@ -1,3 +1,5 @@
+import { alwaysArray } from './alwaysArray';
+
 interface InArrayInterface {
   $in: any[];
 }
@@ -27,39 +29,46 @@ export function getProductsFilter(
   args: { [key: string]: any } = {},
   city: string,
 ): ProductsFiltersInterface {
-  const additionalQuery = Object.keys(args).reduce((acc, key) => {
-    const value = args[key];
-
-    if (!!value && key === 'query') {
-      return {
-        ...acc,
+  const searchQuery = args.search
+    ? {
         $text: {
-          $search: value,
+          $search: args.search,
           $caseSensitive: false,
         },
-      };
-    }
+      }
+    : {};
 
-    if (!!value && key === 'rubric') {
-      return { ...acc, 'node.rubrics': { $in: [value] } };
-    }
+  const additionalQuery = Object.keys(args).reduce((acc, key) => {
+    const value = args[key];
+    if (!!value) {
+      if (key === 'search') {
+        return acc;
+      }
 
-    if (!!value && key === 'notInRubric') {
-      return { ...acc, 'node.rubrics': { $nin: [value] } };
-    }
+      if (key === 'rubric') {
+        const query = alwaysArray(value);
+        return { ...acc, 'node.rubrics': { $in: query } };
+      }
 
-    if (!!value && key === 'noRubrics') {
-      return { ...acc, 'node.rubrics': { $exists: true, $size: 0 } };
-    }
+      if (key === 'notInRubric') {
+        const query = alwaysArray(value);
+        return { ...acc, 'node.rubrics': { $nin: query } };
+      }
 
-    if (!!value && key === 'active') {
-      return { ...acc, 'node.active': value };
+      if (key === 'noRubrics') {
+        return { ...acc, 'node.rubrics': { $exists: true, $size: 0 } };
+      }
+
+      if (key === 'active') {
+        return { ...acc, 'node.active': value };
+      }
     }
 
     return acc;
   }, {});
 
   return {
+    ...searchQuery,
     cities: {
       $elemMatch: {
         key: city,

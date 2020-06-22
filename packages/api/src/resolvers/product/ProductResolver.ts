@@ -4,13 +4,19 @@ import {
   Field,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Query,
   Resolver,
   Root,
 } from 'type-graphql';
-import { Product, ProductAttributesGroup, ProductModel } from '../../entities/Product';
+import {
+  Product,
+  ProductAttributesGroup,
+  ProductModel,
+  ProductsCounters,
+} from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
@@ -29,9 +35,13 @@ import del from 'del';
 import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { createProductSchema, updateProductSchema } from '@rg/validation';
+import { ProductsCountersInput } from './ProductsCountersInput';
 
 @ObjectType()
-export class PaginatedProductsResponse extends PaginateType(Product) {}
+export class PaginatedProductsResponse extends PaginateType(Product) {
+  @Field((_type) => Int, { nullable: true })
+  activeProductsCount?: number;
+}
 
 @ObjectType()
 class ProductPayloadType extends PayloadType() {
@@ -52,15 +62,47 @@ export class ProductResolver {
     @Arg('input', { nullable: true }) input: ProductPaginateInput = {},
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const {
+      limit = 100,
+      page = 1,
+      sortBy = 'createdAt',
+      sortDir = 'desc',
+      countActiveProducts = false,
+      ...args
+    } = input;
     const query = getProductsFilter(args, city);
+    const activeProductsQuery = getProductsFilter({ ...args, active: true }, city);
+
     const { options } = generatePaginationOptions({
       limit,
       page,
       sortDir,
       sortBy,
     });
-    return ProductModel.paginate(query, options);
+
+    const paginateResult = await ProductModel.paginate(query, options);
+
+    return {
+      ...paginateResult,
+      activeProductsCount: countActiveProducts
+        ? await ProductModel.countDocuments(activeProductsQuery)
+        : 0,
+    };
+  }
+
+  @Query(() => ProductsCounters)
+  async getProductsCounters(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: ProductsCountersInput,
+  ): Promise<ProductsCounters> {
+    const city = ctx.req.session!.city;
+    const activeProductsQuery = getProductsFilter({ ...input, active: true }, city);
+    const allProductsQuery = getProductsFilter(input, city);
+
+    return {
+      activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),
+      totalProductsCount: await ProductModel.countDocuments(allProductsQuery),
+    };
   }
 
   @Mutation(() => ProductPayloadType)

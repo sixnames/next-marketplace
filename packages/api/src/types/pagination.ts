@@ -3,7 +3,7 @@ export interface PaginationOptions {
   page: number;
   sortDir: string;
   sortBy: string;
-  query?: string | null;
+  search?: string | null;
 }
 
 export interface GetPaginationOptionsPayload {

@@ -15,13 +15,15 @@ import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 const RubricsRoute: React.FC = () => {
   const { query, removeQuery } = useRouterQuery();
   const { rubric } = query;
+  const isCurrentRubric = rubric && rubric !== QUERY_DATA_LAYOUT_NO_RUBRIC;
+
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
   });
   const { generateTabsConfig } = useTabsConfig();
   const queryResult = useGetRubricQuery({
     fetchPolicy: 'network-only',
-    skip: !rubric || rubric === QUERY_DATA_LAYOUT_NO_RUBRIC,
+    skip: !isCurrentRubric,
     variables: {
       id: `${rubric}`,
     },
@@ -38,6 +40,9 @@ const RubricsRoute: React.FC = () => {
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
       },
     ],
   });
@@ -96,8 +101,8 @@ const RubricsRoute: React.FC = () => {
     <DataLayout
       title={'Рубрикатор'}
       filterContent={<RubricsFilter />}
-      contentControlsConfig={rubric ? contentControlsConfig : null}
-      filterResultNavConfig={rubric ? filterResultNavConfig : null}
+      contentControlsConfig={isCurrentRubric ? contentControlsConfig : null}
+      filterResultNavConfig={isCurrentRubric ? filterResultNavConfig : null}
       filterResult={() => {
         if (rubric === QUERY_DATA_LAYOUT_NO_RUBRIC) {
           return <NoRubricProducts />;

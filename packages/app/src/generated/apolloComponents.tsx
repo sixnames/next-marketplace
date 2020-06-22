@@ -28,6 +28,7 @@ export type Query = {
   getAttribute?: Maybe<Attribute>;
   getProduct: Product;
   getAllProducts: PaginatedProductsResponse;
+  getProductsCounters: ProductsCounters;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
@@ -76,6 +77,11 @@ export type QueryGetProductArgs = {
 
 export type QueryGetAllProductsArgs = {
   input?: Maybe<ProductPaginateInput>;
+};
+
+
+export type QueryGetProductsCountersArgs = {
+  input: ProductsCountersInput;
 };
 
 
@@ -296,6 +302,7 @@ export type PaginatedProductsResponse = {
   pagingCounter: Scalars['Int'];
   hasPrevPage: Scalars['Int'];
   hasNextPage: Scalars['Int'];
+  activeProductsCount?: Maybe<Scalars['Int']>;
 };
 
 export type ProductPaginateInput = {
@@ -307,6 +314,7 @@ export type ProductPaginateInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
 /** Product pagination sortBy enum */
@@ -314,6 +322,18 @@ export enum ProductSortByEnum {
   Price = 'price',
   CreatedAt = 'createdAt'
 }
+
+export type ProductsCounters = {
+   __typename?: 'ProductsCounters';
+  totalProductsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+};
+
+export type ProductsCountersInput = {
+  rubric?: Maybe<Scalars['ID']>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  noRubrics?: Maybe<Scalars['Boolean']>;
+};
 
 export type RubricVariant = {
    __typename?: 'RubricVariant';
@@ -836,6 +856,73 @@ export type DeleteProductFromRubricInput = {
   productId: Scalars['ID'];
 };
 
+export type CmsRubricFragmentFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
+  & { variant?: Maybe<(
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+  )> }
+);
+
+export type CreateRubricMutationVariables = {
+  input: CreateRubricInput;
+};
+
+
+export type CreateRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { createRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+    & { rubric?: Maybe<(
+      { __typename?: 'Rubric' }
+      & { children: Array<(
+        { __typename?: 'Rubric' }
+        & { children: Array<(
+          { __typename?: 'Rubric' }
+          & CmsRubricFragmentFragment
+        )> }
+        & CmsRubricFragmentFragment
+      )>, parent?: Maybe<(
+        { __typename?: 'Rubric' }
+        & Pick<Rubric, 'id'>
+      )> }
+      & CmsRubricFragmentFragment
+    )> }
+  ) }
+);
+
+export type UpdateRubricMutationVariables = {
+  input: UpdateRubricInput;
+};
+
+
+export type UpdateRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+    & { rubric?: Maybe<(
+      { __typename?: 'Rubric' }
+      & CmsRubricFragmentFragment
+    )> }
+  ) }
+);
+
+export type DeleteRubricMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type AddAttributeToGroupMutationVariables = {
   input: AddAttributeToGroupInput;
 };
@@ -920,18 +1007,6 @@ export type AddProductTuRubricMutation = (
   & { addProductToRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'activeProductsCount' | 'totalProductsCount'>
-      & { products: (
-        { __typename?: 'PaginatedProductsResponse' }
-        & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
-        & { docs: Array<(
-          { __typename?: 'Product' }
-          & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
-        )> }
-      ) }
-    )> }
   ) }
 );
 
@@ -986,44 +1061,6 @@ export type CreateProductMutation = (
     & { product?: Maybe<(
       { __typename?: 'Product' }
       & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
-    )> }
-  ) }
-);
-
-export type CreateRubricMutationVariables = {
-  input: CreateRubricInput;
-};
-
-
-export type CreateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { createRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-      & { variant?: Maybe<(
-        { __typename?: 'RubricVariant' }
-        & Pick<RubricVariant, 'id' | 'nameString'>
-      )>, children: Array<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-        & { variant?: Maybe<(
-          { __typename?: 'RubricVariant' }
-          & Pick<RubricVariant, 'id' | 'nameString'>
-        )>, children: Array<(
-          { __typename?: 'Rubric' }
-          & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-          & { variant?: Maybe<(
-            { __typename?: 'RubricVariant' }
-            & Pick<RubricVariant, 'id' | 'nameString'>
-          )> }
-        )> }
-      )>, parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id'>
-      )> }
     )> }
   ) }
 );
@@ -1168,31 +1205,6 @@ export type DeleteProductFromRubricMutation = (
   & { deleteProductFromRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id'>
-      & { products: (
-        { __typename?: 'PaginatedProductsResponse' }
-        & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
-        & { docs: Array<(
-          { __typename?: 'Product' }
-          & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
-        )> }
-      ) }
-    )> }
-  ) }
-);
-
-export type DeleteRubricMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -1319,27 +1331,6 @@ export type UpdateOptionsGroupMutation = (
       & { options: Array<(
         { __typename?: 'Option' }
         & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
-  ) }
-);
-
-export type UpdateRubricMutationVariables = {
-  input: UpdateRubricInput;
-};
-
-
-export type UpdateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'catalogueName' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-      & { variant?: Maybe<(
-        { __typename?: 'RubricVariant' }
-        & Pick<RubricVariant, 'id' | 'nameString'>
       )> }
     )> }
   ) }
@@ -1497,10 +1488,10 @@ export type GetNonRubricProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
     & { docs: Array<(
       { __typename?: 'Product' }
-      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
+      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
     )> }
   ) }
 );
@@ -1569,7 +1560,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id'>
+    & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
       & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
@@ -1605,6 +1596,7 @@ export type GetRubricProductsQuery = (
 
 export type GetRubricsTreeQueryVariables = {
   excluded?: Maybe<Array<Scalars['ID']>>;
+  counters: ProductsCountersInput;
 };
 
 
@@ -1631,7 +1623,10 @@ export type GetRubricsTreeQuery = (
         )> }
       )> }
     )> }
-  )> }
+  )>, getProductsCounters: (
+    { __typename?: 'ProductsCounters' }
+    & Pick<ProductsCounters, 'totalProductsCount' | 'activeProductsCount'>
+  ) }
 );
 
 export type InitialQueryVariables = {};
@@ -1645,7 +1640,133 @@ export type InitialQuery = (
   )> }
 );
 
+export const CmsRubricFragmentFragmentDoc = gql`
+    fragment CMSRubricFragment on Rubric {
+  id
+  name
+  level
+  variant {
+    id
+    nameString
+  }
+  totalProductsCount
+  activeProductsCount
+}
+    `;
+export const CreateRubricDocument = gql`
+    mutation CreateRubric($input: CreateRubricInput!) {
+  createRubric(input: $input) {
+    success
+    message
+    rubric {
+      ...CMSRubricFragment
+      children {
+        ...CMSRubricFragment
+        children {
+          ...CMSRubricFragment
+        }
+      }
+      parent {
+        id
+      }
+    }
+  }
+}
+    ${CmsRubricFragmentFragmentDoc}`;
+export type CreateRubricMutationFn = ApolloReactCommon.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
 
+/**
+ * __useCreateRubricMutation__
+ *
+ * To run a mutation, you first call `useCreateRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRubricMutation, { data, loading, error }] = useCreateRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRubricMutation, CreateRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateRubricMutation, CreateRubricMutationVariables>(CreateRubricDocument, baseOptions);
+      }
+export type CreateRubricMutationHookResult = ReturnType<typeof useCreateRubricMutation>;
+export type CreateRubricMutationResult = ApolloReactCommon.MutationResult<CreateRubricMutation>;
+export type CreateRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRubricMutation, CreateRubricMutationVariables>;
+export const UpdateRubricDocument = gql`
+    mutation UpdateRubric($input: UpdateRubricInput!) {
+  updateRubric(input: $input) {
+    success
+    message
+    rubric {
+      ...CMSRubricFragment
+    }
+  }
+}
+    ${CmsRubricFragmentFragmentDoc}`;
+export type UpdateRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateRubricMutation, UpdateRubricMutationVariables>;
+
+/**
+ * __useUpdateRubricMutation__
+ *
+ * To run a mutation, you first call `useUpdateRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRubricMutation, { data, loading, error }] = useUpdateRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRubricMutation, UpdateRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateRubricMutation, UpdateRubricMutationVariables>(UpdateRubricDocument, baseOptions);
+      }
+export type UpdateRubricMutationHookResult = ReturnType<typeof useUpdateRubricMutation>;
+export type UpdateRubricMutationResult = ApolloReactCommon.MutationResult<UpdateRubricMutation>;
+export type UpdateRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricMutation, UpdateRubricMutationVariables>;
+export const DeleteRubricDocument = gql`
+    mutation DeleteRubric($id: ID!) {
+  deleteRubric(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
+
+/**
+ * __useDeleteRubricMutation__
+ *
+ * To run a mutation, you first call `useDeleteRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRubricMutation, { data, loading, error }] = useDeleteRubricMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, baseOptions);
+      }
+export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
+export type DeleteRubricMutationResult = ApolloReactCommon.MutationResult<DeleteRubricMutation>;
+export type DeleteRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const AddAttributeToGroupDocument = gql`
     mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
   addAttributeToGroup(input: $input) {
@@ -1787,23 +1908,6 @@ export const AddProductTuRubricDocument = gql`
   addProductToRubric(input: $input) {
     success
     message
-    rubric {
-      id
-      activeProductsCount
-      totalProductsCount
-      products {
-        totalDocs
-        page
-        totalPages
-        docs {
-          id
-          itemId
-          name
-          price
-          slug
-        }
-      }
-    }
   }
 }
     `;
@@ -1949,75 +2053,6 @@ export function useCreateProductMutation(baseOptions?: ApolloReactHooks.Mutation
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = ApolloReactCommon.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
-export const CreateRubricDocument = gql`
-    mutation CreateRubric($input: CreateRubricInput!) {
-  createRubric(input: $input) {
-    success
-    message
-    rubric {
-      id
-      name
-      level
-      variant {
-        id
-        nameString
-      }
-      totalProductsCount
-      activeProductsCount
-      children {
-        id
-        name
-        level
-        variant {
-          id
-          nameString
-        }
-        totalProductsCount
-        activeProductsCount
-        children {
-          id
-          name
-          level
-          variant {
-            id
-            nameString
-          }
-          totalProductsCount
-          activeProductsCount
-        }
-      }
-      parent {
-        id
-      }
-    }
-  }
-}
-    `;
-export type CreateRubricMutationFn = ApolloReactCommon.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
-
-/**
- * __useCreateRubricMutation__
- *
- * To run a mutation, you first call `useCreateRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createRubricMutation, { data, loading, error }] = useCreateRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRubricMutation, CreateRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateRubricMutation, CreateRubricMutationVariables>(CreateRubricDocument, baseOptions);
-      }
-export type CreateRubricMutationHookResult = ReturnType<typeof useCreateRubricMutation>;
-export type CreateRubricMutationResult = ApolloReactCommon.MutationResult<CreateRubricMutation>;
-export type CreateRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRubricMutation, CreateRubricMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {
@@ -2295,21 +2330,6 @@ export const DeleteProductFromRubricDocument = gql`
   deleteProductFromRubric(input: $input) {
     success
     message
-    rubric {
-      id
-      products {
-        totalDocs
-        page
-        totalPages
-        docs {
-          id
-          itemId
-          name
-          price
-          slug
-        }
-      }
-    }
   }
 }
     `;
@@ -2338,39 +2358,6 @@ export function useDeleteProductFromRubricMutation(baseOptions?: ApolloReactHook
 export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
-export const DeleteRubricDocument = gql`
-    mutation DeleteRubric($id: ID!) {
-  deleteRubric(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
-
-/**
- * __useDeleteRubricMutation__
- *
- * To run a mutation, you first call `useDeleteRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteRubricMutation, { data, loading, error }] = useDeleteRubricMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, baseOptions);
-      }
-export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
-export type DeleteRubricMutationResult = ApolloReactCommon.MutationResult<DeleteRubricMutation>;
-export type DeleteRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const DeleteRubricVariantDocument = gql`
     mutation DeleteRubricVariant($id: ID!) {
   deleteRubricVariant(id: $id) {
@@ -2654,51 +2641,6 @@ export function useUpdateOptionsGroupMutation(baseOptions?: ApolloReactHooks.Mut
 export type UpdateOptionsGroupMutationHookResult = ReturnType<typeof useUpdateOptionsGroupMutation>;
 export type UpdateOptionsGroupMutationResult = ApolloReactCommon.MutationResult<UpdateOptionsGroupMutation>;
 export type UpdateOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
-export const UpdateRubricDocument = gql`
-    mutation UpdateRubric($input: UpdateRubricInput!) {
-  updateRubric(input: $input) {
-    success
-    message
-    rubric {
-      id
-      name
-      catalogueName
-      level
-      variant {
-        id
-        nameString
-      }
-      totalProductsCount
-      activeProductsCount
-    }
-  }
-}
-    `;
-export type UpdateRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateRubricMutation, UpdateRubricMutationVariables>;
-
-/**
- * __useUpdateRubricMutation__
- *
- * To run a mutation, you first call `useUpdateRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateRubricMutation, { data, loading, error }] = useUpdateRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRubricMutation, UpdateRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateRubricMutation, UpdateRubricMutationVariables>(UpdateRubricDocument, baseOptions);
-      }
-export type UpdateRubricMutationHookResult = ReturnType<typeof useUpdateRubricMutation>;
-export type UpdateRubricMutationResult = ApolloReactCommon.MutationResult<UpdateRubricMutation>;
-export type UpdateRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricMutation, UpdateRubricMutationVariables>;
 export const UpdateRubricVariantDocument = gql`
     mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
   updateRubricVariant(input: $input) {
@@ -3025,12 +2967,14 @@ export const GetNonRubricProductsDocument = gql`
     totalDocs
     page
     totalPages
+    activeProductsCount
     docs {
       id
       itemId
       name
       price
       slug
+      mainImage
     }
   }
 }
@@ -3176,6 +3120,7 @@ export const GetRubricAttributesDocument = gql`
     query GetRubricAttributes($id: ID!) {
   getRubric(id: $id) {
     id
+    level
     attributesGroups {
       id
       showInCatalogueFilter
@@ -3261,7 +3206,7 @@ export type GetRubricProductsQueryHookResult = ReturnType<typeof useGetRubricPro
 export type GetRubricProductsLazyQueryHookResult = ReturnType<typeof useGetRubricProductsLazyQuery>;
 export type GetRubricProductsQueryResult = ApolloReactCommon.QueryResult<GetRubricProductsQuery, GetRubricProductsQueryVariables>;
 export const GetRubricsTreeDocument = gql`
-    query GetRubricsTree($excluded: [ID!]) {
+    query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {
     id
     name
@@ -3295,6 +3240,10 @@ export const GetRubricsTreeDocument = gql`
       }
     }
   }
+  getProductsCounters(input: $counters) {
+    totalProductsCount
+    activeProductsCount
+  }
 }
     `;
 
@@ -3311,6 +3260,7 @@ export const GetRubricsTreeDocument = gql`
  * const { data, loading, error } = useGetRubricsTreeQuery({
  *   variables: {
  *      excluded: // value for 'excluded'
+ *      counters: // value for 'counters'
  *   },
  * });
  */

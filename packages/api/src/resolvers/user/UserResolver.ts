@@ -57,13 +57,13 @@ export class UserResolver {
 
   @Query(() => PaginatedUsersResponse)
   async getAllUsers(@Arg('input') input: UserPaginateInput): Promise<PaginatedUsersResponse> {
-    const { limit = 100, page = 1, query, sortBy = 'createdAt', sortDir = 'desc' } = input;
+    const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
     const { searchOptions, options } = generatePaginationOptions({
       limit,
       page,
       sortDir,
       sortBy,
-      query,
+      search,
     });
     return UserModel.paginate(searchOptions, options);
   }

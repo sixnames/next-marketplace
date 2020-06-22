@@ -17,7 +17,7 @@ import { ADD_PRODUCT_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals'
 import { RUBRIC_PRODUCTS_QUERY } from '../../graphql/query/getRubricProducts';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
-import TableRowImage from '../../components/Table/TableRowImage';
+import useProductsListColumns from '../../hooks/useProductsListColumns';
 
 type RubricProduct = GetRubricProductsQuery['getRubric']['products']['docs'][0];
 
@@ -46,6 +46,9 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
       },
       {
         query: RUBRIC_PRODUCTS_QUERY,
@@ -55,17 +58,6 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       },
     ],
   });
-
-  if (!data && !loading && !error) {
-    return <DataLayoutTitle>Выберите рубрику</DataLayoutTitle>;
-  }
-
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubric) return <RequestError />;
-
-  const {
-    getRubric: { products },
-  } = data;
 
   function deleteProductFromRubricHandler(product: RubricProduct) {
     showModal({
@@ -97,41 +89,21 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  const columns = [
-    {
-      key: 'mainImage',
-      title: 'Изображение',
-      render: (mainImage: string, product: RubricProduct) => {
-        return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
-      },
-    },
-    {
-      key: 'name',
-      title: 'Название',
-      render: (name: string) => name,
-    },
-    {
-      key: 'price',
-      title: 'Цена',
-      render: (price: number) => price,
-    },
-    {
-      key: 'id',
-      title: '',
-      textAlign: 'right',
-      render: (_: string, product: RubricProduct) => {
-        const { name } = product;
-        return (
-          <ContentItemControls
-            justifyContent={'flex-end'}
-            deleteTitle={'Удалить товар из рубрики'}
-            deleteHandler={() => deleteProductFromRubricHandler(product)}
-            testId={name}
-          />
-        );
-      },
-    },
-  ];
+  const columns = useProductsListColumns({
+    deleteTitle: 'Удалить товар из рубрики',
+    deleteHandler: deleteProductFromRubricHandler,
+  });
+
+  if (!data && !loading && !error) {
+    return <DataLayoutTitle>Выберите рубрику</DataLayoutTitle>;
+  }
+
+  if (loading) return <Spinner isNested />;
+  if (error || !data || !data.getRubric) return <RequestError />;
+
+  const {
+    getRubric: { products },
+  } = data;
 
   const { docs, totalPages } = products;
 

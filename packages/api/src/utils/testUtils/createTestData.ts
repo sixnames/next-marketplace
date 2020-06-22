@@ -103,51 +103,57 @@ interface GetProductCitiesInterface {
   price: number;
 }
 
-async function getProductCities(node: GetProductCitiesInterface): Promise<ProductCity[]> {
+async function getProductCities(
+  node: GetProductCitiesInterface,
+  active = true,
+): Promise<ProductCity[]> {
   const cities = [DEFAULT_CITY, 'spb'];
   const initialFilePath = './test/test-image-0.jpg';
+  const slug = generateDefaultLangSlug(node.cardName);
+  const productName = node.name[0].value;
 
   return Promise.all(
     cities.map(async (city) => {
-      const slug = generateDefaultLangSlug(node.cardName);
       const filesPath = `./assets/${city}/${slug}`;
       const filesResolvePath = `/assets/${city}/${slug}`;
       const fileName = `${slug}-${0}`;
       const resolvePath = `${filesResolvePath}/${fileName}.jpg`;
       const finalPath = `${filesPath}/${fileName}.jpg`;
 
+      const resolveObject = {
+        key: city,
+        node: {
+          ...node,
+          name:
+            city === DEFAULT_CITY
+              ? node.name
+              : [
+                  {
+                    key: 'ru',
+                    value: `${productName}-${city}`,
+                  },
+                  {
+                    key: 'en',
+                    value: `${productName}-${city}`,
+                  },
+                ],
+          slug,
+          assets: [
+            {
+              index: 0,
+              url: resolvePath,
+            },
+          ],
+          active,
+        },
+      };
+
       const exists = fs.existsSync(filesPath);
       if (!exists) {
         await mkdirp(filesPath);
       } else {
         return new Promise<ProductCity>(async (resolve) => {
-          resolve({
-            key: city,
-            node: {
-              ...node,
-              name:
-                city === DEFAULT_CITY
-                  ? node.name
-                  : [
-                      {
-                        key: 'ru',
-                        value: `${node.name[0].value}-${city}`,
-                      },
-                      {
-                        key: 'en',
-                        value: `${node.name[1].value}-${city}`,
-                      },
-                    ],
-              slug,
-              assets: [
-                {
-                  index: 0,
-                  url: resolvePath,
-                },
-              ],
-              active: true,
-            },
-          });
+          resolve(resolveObject);
         });
       }
 
@@ -156,33 +162,7 @@ async function getProductCities(node: GetProductCitiesInterface): Promise<Produc
           .jpeg()
           .toFile(finalPath)
           .then(() => {
-            resolve({
-              key: city,
-              node: {
-                ...node,
-                name:
-                  city === DEFAULT_CITY
-                    ? node.name
-                    : [
-                        {
-                          key: 'ru',
-                          value: `${node.name[0].value}-${city}`,
-                        },
-                        {
-                          key: 'en',
-                          value: `${node.name[1].value}-${city}`,
-                        },
-                      ],
-                slug,
-                assets: [
-                  {
-                    index: 0,
-                    url: resolvePath,
-                  },
-                ],
-                active: true,
-              },
-            });
+            resolve(resolveObject);
           })
           .catch((error) => {
             reject(error);
@@ -379,11 +359,14 @@ const createTestData = async () => {
 
     // for delete
     await ProductModel.create({
-      cities: await getProductCities({
-        ...MOCK_PRODUCT_FOR_DELETE,
-        ...productAttributes,
-        rubrics: [rubricLevelThree.id],
-      }),
+      cities: await getProductCities(
+        {
+          ...MOCK_PRODUCT_FOR_DELETE,
+          ...productAttributes,
+          rubrics: [rubricLevelThree.id],
+        },
+        false,
+      ),
     });
 
     // for second rubric in third level

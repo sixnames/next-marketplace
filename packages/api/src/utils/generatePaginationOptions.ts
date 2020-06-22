@@ -1,17 +1,17 @@
 import { GetPaginationOptionsPayload, PaginationOptions } from '../types/pagination';
 
 const generatePaginationOptions = (args: PaginationOptions): GetPaginationOptionsPayload => {
-  const { limit, page, sortDir, sortBy, query } = args;
+  const { limit, page, sortDir, sortBy, search } = args;
   const options = {
     limit,
     page,
     sort: `${sortBy} ${sortDir}`,
   };
 
-  const searchOptions = query
+  const searchOptions = search
     ? {
         $text: {
-          $search: query,
+          $search: search,
           $caseSensitive: false,
         },
       }

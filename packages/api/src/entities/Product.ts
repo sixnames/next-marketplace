@@ -161,4 +161,13 @@ export class Product extends TimeStamps {
   ) => Promise<PaginateResult<Product>>;
 }
 
+@ObjectType()
+export class ProductsCounters {
+  @Field(() => Int)
+  readonly totalProductsCount: number;
+
+  @Field(() => Int)
+  readonly activeProductsCount: number;
+}
+
 export const ProductModel = getModelForClass(Product);

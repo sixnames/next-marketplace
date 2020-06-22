@@ -5,23 +5,6 @@ export const ADD_PRODUCT_TO_RUBRIC_MUTATION = gql`
     addProductToRubric(input: $input) {
       success
       message
-      rubric {
-        id
-        activeProductsCount
-        totalProductsCount
-        products {
-          totalDocs
-          page
-          totalPages
-          docs {
-            id
-            itemId
-            name
-            price
-            slug
-          }
-        }
-      }
     }
   }
 `;

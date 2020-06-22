@@ -141,8 +141,8 @@ describe('Rubric products', () => {
   });
 });
 
-// Used separate describe for file upload mutation
-// cypress-graphql-mock throw error on file upload
+// Used separate describe block for file upload mutation
+// cypress-graphql-mock module throws error on file upload
 describe('Rubric products creation', () => {
   beforeEach(() => {
     cy.createTestData();

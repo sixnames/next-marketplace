@@ -42,7 +42,7 @@ describe('Rubrics', () => {
     cy.clearTestData();
   });
 
-  it.only('Should CRUD rubrics tree', () => {
+  it('Should CRUD rubrics tree', () => {
     // Should show validation errors on new rubric creation
     cy.getByCy(`create-rubric`).click();
     cy.getByCy(`create-rubric-modal`).should('exist');

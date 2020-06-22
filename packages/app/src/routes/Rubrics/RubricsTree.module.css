@@ -13,7 +13,3 @@
 .frame .first {
   border-left-color: var(--theme);
 }
-
-.counters {
-  margin-left: auto;
-}

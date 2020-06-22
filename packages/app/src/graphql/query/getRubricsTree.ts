@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const RUBRICS_TREE_QUERY = gql`
-  query GetRubricsTree($excluded: [ID!]) {
+  query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
     getRubricsTree(excluded: $excluded) {
       id
       name
@@ -34,6 +34,10 @@ export const RUBRICS_TREE_QUERY = gql`
           activeProductsCount
         }
       }
+    }
+    getProductsCounters(input: $counters) {
+      totalProductsCount
+      activeProductsCount
     }
   }
 `;

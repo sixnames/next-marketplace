@@ -46,6 +46,9 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
       },
       {
         query: RUBRIC_PRODUCTS_QUERY,

@@ -40,6 +40,9 @@ const RubricsRoute: React.FC = () => {
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
       },
     ],
   });

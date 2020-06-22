@@ -12,10 +12,11 @@ import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 import updateItemInTree from '../../utils/updateItemInTree';
-import classes from './RubricsFilter.module.css';
 import { RUBRIC_LEVEL_ONE } from '@rg/config';
 import { CREATE_RUBRIC_MODAL } from '../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../config';
+import classes from './RubricsFilter.module.css';
+import RubricsTreeCounters from './RubricsTreeCounters';
 
 const RubricsFilter: React.FC = () => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
@@ -23,6 +24,11 @@ const RubricsFilter: React.FC = () => {
   });
   const { data, error, loading } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
+    variables: {
+      counters: {
+        noRubrics: true,
+      },
+    },
   });
 
   const [createRubricMutation] = useCreateRubricMutation({
@@ -34,6 +40,9 @@ const RubricsFilter: React.FC = () => {
 
         const cacheData: GetRubricsTreeQuery | null = proxy.readQuery({
           query: RUBRICS_TREE_QUERY,
+          variables: {
+            counters: { noRubrics: true },
+          },
         });
 
         if (cacheData && cacheData.getRubricsTree && createdRubric) {
@@ -64,7 +73,10 @@ const RubricsFilter: React.FC = () => {
 
   if (loading) return <Spinner />;
   if (error || !data || !data.getRubricsTree) return <RequestError />;
-  const { getRubricsTree } = data;
+  const {
+    getRubricsTree,
+    getProductsCounters: { activeProductsCount, totalProductsCount },
+  } = data;
 
   function createRubricHandler() {
     showModal({
@@ -94,13 +106,20 @@ const RubricsFilter: React.FC = () => {
         )}
       />
 
-      <FilterRadio
-        className={classes.noRubrics}
-        id={QUERY_DATA_LAYOUT_NO_RUBRIC}
-        name={'Товары вне рубрик'}
-        queryKey={'rubric'}
-        testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
-      />
+      <div className={classes.noRubrics}>
+        <FilterRadio
+          id={QUERY_DATA_LAYOUT_NO_RUBRIC}
+          name={'Товары вне рубрик'}
+          queryKey={'rubric'}
+          testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
+        />
+
+        <RubricsTreeCounters
+          activeProductsCount={activeProductsCount}
+          totalProductsCount={totalProductsCount}
+          testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
+        />
+      </div>
 
       <Button size={'small'} onClick={createRubricHandler} testId={'create-rubric'}>
         Добавить рубрику

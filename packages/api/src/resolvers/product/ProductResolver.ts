@@ -11,7 +11,12 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Product, ProductAttributesGroup, ProductModel } from '../../entities/Product';
+import {
+  Product,
+  ProductAttributesGroup,
+  ProductModel,
+  ProductsCounters,
+} from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
@@ -30,6 +35,7 @@ import del from 'del';
 import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { createProductSchema, updateProductSchema } from '@rg/validation';
+import { ProductsCountersInput } from './ProductsCountersInput';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -81,6 +87,21 @@ export class ProductResolver {
       activeProductsCount: countActiveProducts
         ? await ProductModel.countDocuments(activeProductsQuery)
         : 0,
+    };
+  }
+
+  @Query(() => ProductsCounters)
+  async getProductsCounters(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: ProductsCountersInput,
+  ): Promise<ProductsCounters> {
+    const city = ctx.req.session!.city;
+    const activeProductsQuery = getProductsFilter({ ...input, active: true }, city);
+    const allProductsQuery = getProductsFilter(input, city);
+
+    return {
+      activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),
+      totalProductsCount: await ProductModel.countDocuments(allProductsQuery),
     };
   }
 

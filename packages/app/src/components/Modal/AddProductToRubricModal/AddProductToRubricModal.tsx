@@ -184,6 +184,7 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
     fetchPolicy: 'network-only',
     variables: {
       excluded: [rubricId],
+      counters: { noRubrics: true },
     },
   });
 
@@ -194,6 +195,9 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
       },
       {
         query: RUBRIC_PRODUCTS_QUERY,
@@ -223,6 +227,9 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
         refetchQueries: [
           {
             query: RUBRICS_TREE_QUERY,
+            variables: {
+              counters: { noRubrics: true },
+            },
           },
           {
             query: RUBRIC_PRODUCTS_QUERY,

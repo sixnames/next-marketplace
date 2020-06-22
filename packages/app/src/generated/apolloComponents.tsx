@@ -28,6 +28,7 @@ export type Query = {
   getAttribute?: Maybe<Attribute>;
   getProduct: Product;
   getAllProducts: PaginatedProductsResponse;
+  getProductsCounters: ProductsCounters;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
@@ -76,6 +77,11 @@ export type QueryGetProductArgs = {
 
 export type QueryGetAllProductsArgs = {
   input?: Maybe<ProductPaginateInput>;
+};
+
+
+export type QueryGetProductsCountersArgs = {
+  input: ProductsCountersInput;
 };
 
 
@@ -316,6 +322,18 @@ export enum ProductSortByEnum {
   Price = 'price',
   CreatedAt = 'createdAt'
 }
+
+export type ProductsCounters = {
+   __typename?: 'ProductsCounters';
+  totalProductsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+};
+
+export type ProductsCountersInput = {
+  rubric?: Maybe<Scalars['ID']>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  noRubrics?: Maybe<Scalars['Boolean']>;
+};
 
 export type RubricVariant = {
    __typename?: 'RubricVariant';
@@ -1607,6 +1625,7 @@ export type GetRubricProductsQuery = (
 
 export type GetRubricsTreeQueryVariables = {
   excluded?: Maybe<Array<Scalars['ID']>>;
+  counters: ProductsCountersInput;
 };
 
 
@@ -1633,7 +1652,10 @@ export type GetRubricsTreeQuery = (
         )> }
       )> }
     )> }
-  )> }
+  )>, getProductsCounters: (
+    { __typename?: 'ProductsCounters' }
+    & Pick<ProductsCounters, 'totalProductsCount' | 'activeProductsCount'>
+  ) }
 );
 
 export type InitialQueryVariables = {};
@@ -3266,7 +3288,7 @@ export type GetRubricProductsQueryHookResult = ReturnType<typeof useGetRubricPro
 export type GetRubricProductsLazyQueryHookResult = ReturnType<typeof useGetRubricProductsLazyQuery>;
 export type GetRubricProductsQueryResult = ApolloReactCommon.QueryResult<GetRubricProductsQuery, GetRubricProductsQueryVariables>;
 export const GetRubricsTreeDocument = gql`
-    query GetRubricsTree($excluded: [ID!]) {
+    query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {
     id
     name
@@ -3300,6 +3322,10 @@ export const GetRubricsTreeDocument = gql`
       }
     }
   }
+  getProductsCounters(input: $counters) {
+    totalProductsCount
+    activeProductsCount
+  }
 }
     `;
 
@@ -3316,6 +3342,7 @@ export const GetRubricsTreeDocument = gql`
  * const { data, loading, error } = useGetRubricsTreeQuery({
  *   variables: {
  *      excluded: // value for 'excluded'
+ *      counters: // value for 'counters'
  *   },
  * });
  */

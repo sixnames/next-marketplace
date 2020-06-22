@@ -331,6 +331,17 @@ type ProductPayloadType {
   success: Boolean!
 }
 
+type ProductsCounters {
+  activeProductsCount: Int!
+  totalProductsCount: Int!
+}
+
+input ProductsCountersInput {
+  noRubrics: Boolean
+  notInRubric: ID
+  rubric: ID
+}
+
 """Product pagination sortBy enum"""
 enum ProductSortByEnum {
   createdAt
@@ -355,6 +366,7 @@ type Query {
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
+  getProductsCounters(input: ProductsCountersInput!): ProductsCounters!
   getRubric(id: ID!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant

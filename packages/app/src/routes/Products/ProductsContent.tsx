@@ -12,6 +12,7 @@ import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import { CONFIRM_MODAL } from '../../config/modals';
 import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsContent: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
@@ -19,6 +20,7 @@ const ProductsContent: React.FC = () => {
   });
 
   const { setPage, page, contentFilters } = useDataLayoutMethods();
+  const navigate = useNavigate();
 
   const { data, error, loading } = useGetAllProductsQuery({
     variables: {
@@ -58,7 +60,11 @@ const ProductsContent: React.FC = () => {
 
   const columns = useProductsListColumns({
     updateTitle: 'Редактировать товар',
-    updateHandler: () => console.log('update'),
+    updateHandler: ({ id }) =>
+      navigate({
+        pathname: '/app/cms/product',
+        search: `?id=${id}`,
+      }),
     deleteTitle: 'Удалить товар',
     deleteHandler: deleteProductHandler,
   });

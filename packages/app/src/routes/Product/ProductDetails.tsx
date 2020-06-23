@@ -70,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   };
 
   return (
-    <InnerWide>
+    <InnerWide testId={'product-details'}>
       <Formik
         enableReinitialize
         validationSchema={updateProductSchema}

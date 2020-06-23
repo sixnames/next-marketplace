@@ -5,11 +5,12 @@ interface InnerWideInterface {
   lowTop?: boolean;
   lowBottom?: boolean;
   className?: string;
+  testId?: string;
 }
 
-const InnerWide: React.FC<InnerWideInterface> = ({ children, ...props }) => {
+const InnerWide: React.FC<InnerWideInterface> = ({ children, testId, ...props }) => {
   return (
-    <Inner {...props} wide>
+    <Inner {...props} wide testId={testId}>
       {children}
     </Inner>
   );

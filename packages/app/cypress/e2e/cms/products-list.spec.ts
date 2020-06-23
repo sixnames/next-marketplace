@@ -5,6 +5,7 @@ import {
   MOCK_ATTRIBUTE_SELECT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_OPTIONS,
+  MOCK_PRODUCT_B_PRODUCT,
   MOCK_PRODUCT_FOR_DELETE,
   MOCK_PRODUCT_NEW_PRODUCT,
   MOCK_RUBRIC_LEVEL_ONE,
@@ -15,6 +16,7 @@ import {
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
 
 const mockProductForDelete = MOCK_PRODUCT_FOR_DELETE.name[0].value;
+const mockProductB = MOCK_PRODUCT_B_PRODUCT.name[0].value;
 const mockRubricLevelOne = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwo = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
@@ -60,6 +62,7 @@ describe('Products list', () => {
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(mockProductForDelete).should('not.exist');
+    cy.closeNotification();
   });
 });
 
@@ -68,20 +71,31 @@ describe('Products list', () => {
 describe('New products creation', () => {
   beforeEach(() => {
     cy.createTestData();
-  });
-
-  after(() => {
-    cy.clearTestData();
-  });
-
-  it('Should create product and add it to the rubric', () => {
     // sign in as admin
     cy.auth({
       email: ME_AS_ADMIN.email,
       password: ME_AS_ADMIN.password,
       redirect: `/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
     });
+  });
 
+  after(() => {
+    // cy.clearTestData();
+  });
+
+  it.only('Should open product details', () => {
+    cy.getByCy(`${mockProductB}-update`).click();
+    cy.getByCy(`product-details`).should('exist');
+
+    // Should update product main image
+    cy.getByCy('file-preview-remove-0').click();
+    cy.getByCy('remove-image-confirm').click();
+    cy.getByCy('product-images').attachFile('test-image-1.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('submit-product').click();
+    cy.getByCy(`success-notification`).should('exist');
+  });
+
+  it('Should create product and add it to the rubric', () => {
     cy.getByCy(`product-create`).click();
 
     // attach images

@@ -56,7 +56,7 @@ describe('Rubric products', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should CRUD products in rubric', () => {

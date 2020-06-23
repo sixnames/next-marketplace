@@ -23,10 +23,6 @@ const productTranslations = {
         ru: 'Товар не найден.',
         en: 'Product not found.',
       },
-      assetsError: {
-        ru: 'Ошибка изображений товара.',
-        en: 'Product assets error.',
-      },
       updateError: {
         ru: 'Ошибка обновления товара.',
         en: 'Product update error.',

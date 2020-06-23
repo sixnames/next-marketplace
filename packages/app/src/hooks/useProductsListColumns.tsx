@@ -37,7 +37,7 @@ const useProductsListColumns = ({
     },
     {
       key: 'mainImage',
-      title: 'Изображение',
+      title: 'Фото',
       render: (mainImage: string, product: ProductsListItemInterface) => {
         return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
       },

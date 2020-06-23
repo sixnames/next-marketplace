@@ -11,7 +11,9 @@ import {
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_THREE_B,
+  MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
   MOCK_RUBRIC_LEVEL_TWO,
+  MOCK_RUBRIC_LEVEL_TWO_TABLES,
 } from '@rg/config';
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
 
@@ -21,6 +23,8 @@ const mockRubricLevelOne = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwo = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockRubricLevelThreeB = MOCK_RUBRIC_LEVEL_THREE_B.name[0].value;
+const mockTablesRubricLevelTwo = MOCK_RUBRIC_LEVEL_TWO_TABLES.name[0].value;
+const mockTablesRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_TABLES_B.name[0].value;
 
 const mockProductNewName = MOCK_PRODUCT_NEW_PRODUCT.name[0].value;
 const mockProductNewCardName = MOCK_PRODUCT_NEW_PRODUCT.cardName[0].value;
@@ -80,10 +84,10 @@ describe('New products creation', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
-  it.only('Should open product details', () => {
+  it('Should open product details', () => {
     cy.getByCy(`${mockProductB}-update`).click();
     cy.getByCy(`product-details`).should('exist');
 
@@ -91,6 +95,30 @@ describe('New products creation', () => {
     cy.getByCy('file-preview-remove-0').click();
     cy.getByCy('remove-image-confirm').click();
     cy.getByCy('product-images').attachFile('test-image-1.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('submit-product').click();
+    cy.getByCy(`success-notification`).should('exist');
+
+    // Should update product main fields
+    cy.getByCy('product-name').clear().type(mockProductNewName);
+    cy.getByCy('product-card-name').clear().type(mockProductNewCardName);
+    cy.getByCy('product-price').clear().clear().type(`${mockProductNewCardPrice}`);
+    cy.getByCy('product-description').clear().type(mockProductNewCarDescription);
+    cy.getByCy('submit-product').click();
+    cy.getByCy(`success-notification`).should('exist');
+
+    // Should update product attributes
+    cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
+    cy.getByCy(`tree-link-${mockTablesRubricLevelThree}-checkbox`).check();
+    cy.getByCy(`attributesSource`).should('be.disabled');
+    cy.getByCy('attributes-source-reset').click();
+    cy.selectOptionByTestId(
+      `attributesSource`,
+      `${mockRubricLevelOneName}_>_${mockTablesRubricLevelTwo}`,
+    );
+    cy.getByCy(mockAttributeStringName).type('string');
+    cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
+    cy.getByCy(mockAttributeNumberName).type('999');
+    cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
     cy.getByCy('submit-product').click();
     cy.getByCy(`success-notification`).should('exist');
   });

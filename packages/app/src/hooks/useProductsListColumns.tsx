@@ -9,6 +9,7 @@ export interface ProductsListItemInterface {
   price: number;
   slug: string;
   mainImage: string;
+  active: boolean;
 }
 
 export interface ProductColumnsInterface {
@@ -36,7 +37,7 @@ const useProductsListColumns = ({
     },
     {
       key: 'mainImage',
-      title: 'Изображение',
+      title: 'Фото',
       render: (mainImage: string, product: ProductsListItemInterface) => {
         return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
       },
@@ -50,6 +51,11 @@ const useProductsListColumns = ({
       key: 'price',
       title: 'Цена',
       render: (price: number) => price,
+    },
+    {
+      key: 'active',
+      title: 'Активен',
+      render: (active: boolean) => (active ? 'Да' : 'Нет'),
     },
     {
       key: '',

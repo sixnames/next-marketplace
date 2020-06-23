@@ -1,4 +1,4 @@
-import qs, { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring';
+import qs, { ParsedUrlQuery } from 'querystring';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface RemoveQueryInterface {
@@ -11,7 +11,7 @@ interface SetQueryInterface extends RemoveQueryInterface {
 
 interface ReplaceLocationInterface {
   pathname: string;
-  query?: ParsedUrlQueryInput | null;
+  query: ParsedUrlQuery | null;
 }
 
 interface UseRouterQueryInterface {

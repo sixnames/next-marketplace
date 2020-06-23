@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import session from 'express-session';
 import express from 'express';
+import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import {
   APOLLO_OPTIONS,
@@ -83,7 +84,7 @@ const createApp = () => {
   });
 
   // Assets
-  app.get('/assets/*', (req, res) => {
+  app.get('/assets/*', cors({ origin: DEV_ORIGIN }), (req, res) => {
     // Extract the query-parameter
     const widthString = (req.query.width as string) || undefined;
     const heightString = (req.query.height as string) || undefined;

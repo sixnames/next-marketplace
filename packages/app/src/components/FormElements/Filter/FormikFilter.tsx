@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ObjectType } from '../../../types';
 import { Formik, Form } from 'formik';
 import useRouterQuery from '../../../hooks/useRouterQuery';
+import { ParsedUrlQueryInput } from 'querystring';
 
 interface ChildrenPropsInterface {
   onResetHandler: () => void;
@@ -10,7 +11,7 @@ interface ChildrenPropsInterface {
 interface FormikFilterInterface {
   onSubmitHandler?: (values: ObjectType) => void;
   initialValues: ObjectType;
-  initialQueryValue?: ObjectType;
+  initialQueryValue?: ParsedUrlQueryInput;
   children: (props: ChildrenPropsInterface) => React.ReactElement;
 }
 

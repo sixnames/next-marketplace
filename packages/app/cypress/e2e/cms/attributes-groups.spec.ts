@@ -31,7 +31,7 @@ describe('Attributes Groups', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

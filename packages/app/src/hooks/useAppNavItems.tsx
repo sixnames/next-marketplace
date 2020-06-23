@@ -28,33 +28,33 @@ const useAppNavItems = (): NavItemInterface[] => {
       {
         name: 'Рубрикатор',
         to: {
-          pathname: 'rubrics',
-          search: withFilterQuery,
+          pathname: 'cms/rubrics',
+          search: withFilterQuery.string,
         },
       },
       {
         name: 'Товары',
         to: {
-          pathname: 'products',
-          search: withFilterQuery,
+          pathname: 'cms/products',
+          search: withFilterQuery.string,
         },
       },
       {
         name: 'Типы рубрик',
-        to: 'rubric-variants',
+        to: 'cms/rubric-variants',
       },
       {
         name: 'Группы атрибутов',
         to: {
-          pathname: 'attributes-groups',
-          search: withFilterQuery,
+          pathname: 'cms/attributes-groups',
+          search: withFilterQuery.string,
         },
       },
       {
         name: 'Группы опций',
         to: {
-          pathname: 'options-groups',
-          search: withFilterQuery,
+          pathname: 'cms/options-groups',
+          search: withFilterQuery.string,
         },
       },
     ],

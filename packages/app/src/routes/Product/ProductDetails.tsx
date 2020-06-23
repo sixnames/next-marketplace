@@ -1,92 +1,86 @@
 import React from 'react';
-import ModalFrame from '../ModalFrame';
-import ModalTitle from '../ModalTitle';
 import {
-  CreateProductInput,
-  CreateProductMutation,
-  useCreateProductMutation,
+  GetProductQuery,
   useGetRubricsTreeQuery,
-} from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/mutations/useMutationCallbacks';
+  useUpdateProductMutation,
+} from '../../generated/apolloComponents';
+import InnerWide from '../../components/Inner/InnerWide';
+import Spinner from '../../components/Spinner/Spinner';
+import RequestError from '../../components/RequestError/RequestError';
 import { Form, Formik } from 'formik';
-import Button from '../../Buttons/Button';
-import ModalButtons from '../ModalButtons';
-import FormikInput from '../../FormElements/Input/FormikInput';
-import FormikTextarea from '../../FormElements/Textarea/FormikTextarea';
-import FormikDropZone from '../../FormElements/Upload/FormikDropZone';
-import Spinner from '../../Spinner/Spinner';
-import RequestError from '../../RequestError/RequestError';
-import RubricsTree from '../../../routes/Rubrics/RubricsTree';
-import FormikArrayCheckbox from '../../FormElements/Checkbox/FormikArrayCheckbox';
-import InputLine from '../../FormElements/Input/InputLine';
-import ProductAttributes from './ProductAttributes';
-import { createProductSchema } from '@rg/validation';
-import classes from './CreateNewProductModal.module.css';
-import { MutationUpdaterFn, PureQueryOptions } from 'apollo-client';
-import { RefetchQueriesFunction } from '@apollo/react-common';
+import FormikInput from '../../components/FormElements/Input/FormikInput';
+import FormikTextarea from '../../components/FormElements/Textarea/FormikTextarea';
+import InputLine from '../../components/FormElements/Input/InputLine';
+import RubricsTree from '../Rubrics/RubricsTree';
+import FormikArrayCheckbox from '../../components/FormElements/Checkbox/FormikArrayCheckbox';
+import ProductAttributes from '../../components/Modal/CreateNewProductModal/ProductAttributes';
+import Button from '../../components/Buttons/Button';
+import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
+import { updateProductSchema } from '@rg/validation';
+import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
+import useUrlFiles from '../../hooks/useUrlFiles';
+import classes from './ProductDetails.module.css';
 
-export interface CreateNewProductModalInterface {
-  rubricId?: string;
-  update?: MutationUpdaterFn<CreateProductMutation>;
-  refetchQueries?: (string | PureQueryOptions)[] | RefetchQueriesFunction;
+interface ProductDetailsInterface {
+  product: GetProductQuery['getProduct'];
 }
 
-const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
-  rubricId,
-  update,
-  refetchQueries,
-}) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
+  const files = useUrlFiles(product.assets);
   const { data, loading, error } = useGetRubricsTreeQuery({
-    skip: Boolean(rubricId),
     fetchPolicy: 'network-only',
     variables: {
       counters: {},
     },
   });
-
-  const { onErrorCallback, onCompleteCallback, hideModal, showLoading } = useMutationCallbacks({
-    withModal: true,
-  });
-
-  const [createProductMutation] = useCreateProductMutation({
-    awaitRefetchQueries: true,
-    refetchQueries,
-    update,
-    onCompleted: (data) => onCompleteCallback(data.createProduct),
+  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
+  const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.updateProduct),
   });
 
-  if (loading && !rubricId) return <Spinner />;
-  if ((error || !data || !data.getRubricsTree) && !rubricId) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
+  if (loading) return <Spinner />;
+  if (error || !data || !data.getRubricsTree || !product) {
+    return <RequestError />;
   }
 
-  const initialValues: CreateProductInput = {
-    name: [{ key: 'ru', value: '' }],
-    cardName: [{ key: 'ru', value: '' }],
-    price: 0,
-    description: [{ key: 'ru', value: '' }],
-    assets: [],
-    rubrics: rubricId ? [rubricId] : [],
-    attributesSource: '',
-    attributesGroups: [],
+  const initialValues = {
+    id: product.id,
+    name: [{ key: 'ru', value: product.name }],
+    cardName: [{ key: 'ru', value: product.cardName }],
+    price: product.price,
+    description: [{ key: 'ru', value: product.description }],
+    assets: files,
+    rubrics: product.rubrics,
+    attributesSource: product.attributesSource,
+    attributesGroups: product.attributesGroups.map((group) => {
+      return {
+        showInCard: group.showInCard,
+        node: group.node.id,
+        attributes: group.attributes.map((attribute) => {
+          return {
+            showInCard: attribute.showInCard,
+            node: attribute.node.id,
+            key: attribute.node.itemId,
+            value: attribute.value.map((value) => `${value}`),
+          };
+        }),
+      };
+    }),
   };
 
   return (
-    <ModalFrame testId={'create-new-product-modal'}>
-      <ModalTitle>Создание товара</ModalTitle>
+    <InnerWide testId={'product-details'}>
       <Formik
-        validationSchema={createProductSchema}
+        enableReinitialize
+        validationSchema={updateProductSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          return createProductMutation({
+          return updateProductMutation({
             variables: {
               input: {
+                id: values.id,
                 name: values.name,
                 cardName: values.cardName,
                 description: values.description,
@@ -111,7 +105,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
         }}
       >
         {({ values }) => {
-          const { rubrics } = values;
+          const { rubrics, attributesSource } = values;
           const showFeatures = rubrics.length > 0;
 
           return (
@@ -173,7 +167,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 );
               })}
 
-              {!rubricId && data && data.getRubricsTree && (
+              {data && data.getRubricsTree && (
                 <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>
                   <RubricsTree
                     low
@@ -191,22 +185,17 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 </InputLine>
               )}
 
-              {showFeatures && <ProductAttributes />}
+              {showFeatures && <ProductAttributes disabled={Boolean(attributesSource)} />}
 
-              <ModalButtons>
-                <Button type={'submit'} testId={'submit-new-product'}>
-                  Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
-                  Отмена
-                </Button>
-              </ModalButtons>
+              <Button testId={'submit-product'} type={'submit'}>
+                Сохранить
+              </Button>
             </Form>
           );
         }}
       </Formik>
-    </ModalFrame>
+    </InnerWide>
   );
 };
 
-export default CreateNewProductModal;
+export default ProductDetails;

@@ -15,9 +15,9 @@ const FormikIndividualSearch: React.FC<FormikIndividualSearchInterface> = ({
   withReset,
   onReset,
 }) => {
-  const initialValues = { query: '' };
+  const initialValues = { search: '' };
   return (
-    <Formik initialValues={initialValues} onSubmit={({ query }) => onSubmit(query)}>
+    <Formik initialValues={initialValues} onSubmit={({ search }) => onSubmit(search)}>
       {({ resetForm }) => {
         function resetFormHandler() {
           if (onReset) {

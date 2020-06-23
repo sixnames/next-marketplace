@@ -10,7 +10,7 @@ import useRouterQuery from '../../hooks/useRouterQuery';
 import useTabsConfig from '../../hooks/useTabsConfig';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import { CONFIRM_MODAL } from '../../config/modals';
-import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
+import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 const RubricsRoute: React.FC = () => {
   const { query, removeQuery } = useRouterQuery();

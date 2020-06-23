@@ -6,7 +6,6 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
-import { RUBRICS_TREE_QUERY } from '../../graphql/query/getRubricsTree';
 import {
   GetRubricProductsQuery,
   GetRubricQuery,
@@ -14,10 +13,10 @@ import {
   useGetRubricProductsQuery,
 } from '../../generated/apolloComponents';
 import { ADD_PRODUCT_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
-import { RUBRIC_PRODUCTS_QUERY } from '../../graphql/query/getRubricProducts';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 type RubricProduct = GetRubricProductsQuery['getRubric']['products']['docs'][0];
 

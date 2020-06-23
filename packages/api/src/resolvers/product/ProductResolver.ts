@@ -192,20 +192,20 @@ export class ProductResolver {
       const lang = ctx.req.session!.lang;
 
       const { id, assets, ...values } = input;
-      const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug, city });
 
       const nameValues = input.name.map(({ value }) => value);
       const cardNameValues = input.cardName.map(({ value }) => value);
       const exists = await ProductModel.exists({
         $or: [
           {
+            _id: { $ne: id },
             'cities.key': city,
             'cities.node.name.value': {
               $in: nameValues,
             },
           },
           {
+            _id: { $ne: id },
             'cities.key': city,
             'cities.node.cardName.value': {
               $in: cardNameValues,
@@ -229,15 +229,8 @@ export class ProductResolver {
         };
       }
 
-      const currentCity = getCityData(product.cities, city);
-      const filesPath = `./assets/${city}/${currentCity!.node.slug}`;
-      const removedAssets = await del(filesPath);
-      if (!removedAssets.length) {
-        return {
-          success: false,
-          message: getMessageTranslation(`product.update.assetsError.${lang}`),
-        };
-      }
+      const slug = generateDefaultLangSlug(values.cardName);
+      const assetsResult = await storeUploads({ files: assets, slug, city });
 
       const updatedProduct = await ProductModel.findOneAndUpdate(
         {
@@ -493,5 +486,17 @@ export class ProductResolver {
       return 0;
     }
     return city.node.price;
+  }
+
+  @FieldResolver()
+  async active(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<boolean> {
+    const city = getCityData(product.cities, ctx.req.session!.city);
+    if (!city) {
+      return false;
+    }
+    return city.node.active;
   }
 }

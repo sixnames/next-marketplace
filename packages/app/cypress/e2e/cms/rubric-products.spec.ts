@@ -52,11 +52,11 @@ describe('Rubric products', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should CRUD products in rubric', () => {
@@ -149,7 +149,7 @@ describe('Rubric products creation', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should create product and add it to the rubric', () => {
@@ -157,7 +157,7 @@ describe('Rubric products creation', () => {
     cy.auth({
       email: ME_AS_ADMIN.email,
       password: ME_AS_ADMIN.password,
-      redirect: `/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      redirect: `/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
     });
 
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();

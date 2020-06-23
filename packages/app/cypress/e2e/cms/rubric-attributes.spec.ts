@@ -29,7 +29,7 @@ describe('Rubric attributes', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

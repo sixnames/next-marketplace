@@ -156,8 +156,4 @@
     display: flex;
     justify-content: flex-end;
   }
-
-  /*.Inner {
-    height: calc(100vh - 135px);
-  }*/
 }

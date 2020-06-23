@@ -12,7 +12,13 @@ interface TableRowImageInterface {
 const TableRowImage: React.FC<TableRowImageInterface> = ({ url, alt, title, width = 40 }) => {
   return (
     <div className={classes.frame}>
-      <img src={`${API_URL}${url}?width=${width}`} alt={alt} title={title} loading={'lazy'} />
+      <img
+        src={`${API_URL}${url}?width=${width}`}
+        width={width}
+        alt={alt}
+        title={title}
+        loading={'lazy'}
+      />
     </div>
   );
 };

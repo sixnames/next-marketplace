@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classes from './FormikImageUploadPreview.module.css';
 import ButtonCross from '../../Buttons/ButtonCross';
+import { readImageBlob } from '../../../utils/assetHelpers';
 
 interface FormikImageUploadPreviewInterface {
   file: any;
@@ -18,13 +19,16 @@ const FormikImageUploadPreview: React.FC<FormikImageUploadPreviewInterface> = ({
   const [thumb, setThumb] = useState<string | ArrayBuffer | null>(null);
 
   useEffect(() => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumb(reader.result);
-      };
-      reader.readAsDataURL(file);
+    async function getImageThumb() {
+      if (file && typeof file !== 'string') {
+        const fileThumb = await readImageBlob(file);
+        setThumb(fileThumb);
+      } else {
+        setThumb(file);
+      }
     }
+
+    getImageThumb();
   }, [file]);
 
   if (!file || !thumb) {

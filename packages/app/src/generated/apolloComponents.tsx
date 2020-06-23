@@ -857,6 +857,70 @@ export type DeleteProductFromRubricInput = {
   productId: Scalars['ID'];
 };
 
+export type ProductFragmentFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics' | 'attributesSource'>
+  & { assets: Array<(
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'url' | 'index'>
+  )>, attributesGroups: Array<(
+    { __typename?: 'ProductAttributesGroup' }
+    & Pick<ProductAttributesGroup, 'showInCard'>
+    & { node: (
+      { __typename?: 'AttributesGroup' }
+      & Pick<AttributesGroup, 'id' | 'nameString'>
+    ), attributes: Array<(
+      { __typename?: 'ProductAttribute' }
+      & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
+      & { node: (
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+        & { metric?: Maybe<(
+          { __typename?: 'Metric' }
+          & Pick<Metric, 'id' | 'nameString'>
+        )>, options?: Maybe<(
+          { __typename?: 'OptionsGroup' }
+          & Pick<OptionsGroup, 'id' | 'nameString'>
+          & { options: Array<(
+            { __typename?: 'Option' }
+            & Pick<Option, 'id' | 'nameString' | 'color'>
+          )> }
+        )> }
+      ) }
+    )> }
+  )> }
+);
+
+export type GetProductQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetProductQuery = (
+  { __typename?: 'Query' }
+  & { getProduct: (
+    { __typename?: 'Product' }
+    & ProductFragmentFragment
+  ) }
+);
+
+export type UpdateProductMutationVariables = {
+  input: UpdateProductInput;
+};
+
+
+export type UpdateProductMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProduct: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+    & { product?: Maybe<(
+      { __typename?: 'Product' }
+      & ProductFragmentFragment
+    )> }
+  ) }
+);
+
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
@@ -1636,6 +1700,54 @@ export type InitialQuery = (
   )> }
 );
 
+export const ProductFragmentFragmentDoc = gql`
+    fragment ProductFragment on Product {
+  id
+  itemId
+  name
+  cardName
+  slug
+  price
+  description
+  assets {
+    url
+    index
+  }
+  rubrics
+  attributesSource
+  attributesGroups {
+    showInCard
+    node {
+      id
+      nameString
+    }
+    attributes {
+      showInCard
+      key
+      node {
+        id
+        itemId
+        nameString
+        variant
+        metric {
+          id
+          nameString
+        }
+        options {
+          id
+          nameString
+          options {
+            id
+            nameString
+            color
+          }
+        }
+      }
+      value
+    }
+  }
+}
+    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -1666,6 +1778,75 @@ export const RubricProductFragmentFragmentDoc = gql`
   }
 }
     `;
+export const GetProductDocument = gql`
+    query GetProduct($id: ID!) {
+  getProduct(id: $id) {
+    ...ProductFragment
+  }
+}
+    ${ProductFragmentFragmentDoc}`;
+
+/**
+ * __useGetProductQuery__
+ *
+ * To run a query within a React component, call `useGetProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetProductQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, baseOptions);
+      }
+export function useGetProductLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, baseOptions);
+        }
+export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
+export type GetProductLazyQueryHookResult = ReturnType<typeof useGetProductLazyQuery>;
+export type GetProductQueryResult = ApolloReactCommon.QueryResult<GetProductQuery, GetProductQueryVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($input: UpdateProductInput!) {
+  updateProduct(input: $input) {
+    success
+    message
+    product {
+      ...ProductFragment
+    }
+  }
+}
+    ${ProductFragmentFragmentDoc}`;
+export type UpdateProductMutationFn = ApolloReactCommon.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, baseOptions);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = ApolloReactCommon.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
 export const GetRubricsTreeDocument = gql`
     query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {

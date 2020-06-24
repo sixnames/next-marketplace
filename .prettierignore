@@ -1,9 +1,7 @@
 .cache
 .next
 package.json
-package-lock.json
 node_modules
-lerna.json
 yarn.lock
 public
 dist

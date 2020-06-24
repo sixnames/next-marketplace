@@ -116,7 +116,7 @@ const createApp = () => {
   server.applyMiddleware({
     app,
     cors: {
-      origin: DEV_ORIGIN,
+      // origin: DEV_ORIGIN,
       credentials: true,
     },
   });

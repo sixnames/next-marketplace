@@ -27,7 +27,7 @@ const Notification: React.FC<NotificationInterface> = ({
   testId,
   closeHandler,
 }) => {
-  const [play] = useSound('/sounds/definite.mp3');
+  const [play] = useSound('/app/sounds/definite.mp3');
   let typeColor;
 
   useEffect(() => {

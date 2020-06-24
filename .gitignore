@@ -9,8 +9,8 @@ lerna-debug.log*
 
 # testing
 /coverage
-/packages/app/cypress/videos
-/packages/app/cypress/screenshots
+/app/cypress/videos
+/app/cypress/screenshots
 cardName-0.jpg
 
 # production
@@ -52,7 +52,7 @@ packages/web/public
 
 # Images
 packages/web/src/images/
-packages/api/assets/
+api/assets/
 dist
 
 # Dependency directories

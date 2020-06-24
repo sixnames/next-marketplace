@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import schema from '../../../src/generated/introspectionSchema.json';
-import { ME_AS_ADMIN } from '@rg/config';
+import { ME_AS_ADMIN } from '../../../src/config';
 
 describe('Mocks', () => {
   beforeEach(() => {

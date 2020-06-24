@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 import schema from '../../../src/generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
-  MOCK_OPTIONS,
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
   MOCK_OPTIONS_GROUP,
+  MOCK_OPTIONS,
   MOCK_OPTIONS_GROUP_FOR_DELETE,
-} from '@rg/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
+  ME_AS_ADMIN,
+} from '../../../src/config';
 
 const mockGroupName = MOCK_OPTIONS_GROUP.name[0].value;
 const mockOptionName = MOCK_OPTIONS[0].name[0].value;

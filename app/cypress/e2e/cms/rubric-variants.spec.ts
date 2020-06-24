@@ -1,7 +1,11 @@
 /// <reference types="cypress" />
 import schema from '../../../src/generated/introspectionSchema.json';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
-import { ME_AS_ADMIN, MOCK_RUBRIC_TYPE_EQUIPMENT, MOCK_RUBRIC_TYPE_STAGE } from '@rg/config';
+import {
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+  MOCK_RUBRIC_TYPE_EQUIPMENT,
+  MOCK_RUBRIC_TYPE_STAGE,
+  ME_AS_ADMIN,
+} from '../../../src/config';
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;

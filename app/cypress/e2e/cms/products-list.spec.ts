@@ -14,8 +14,8 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
   MOCK_RUBRIC_LEVEL_TWO,
   MOCK_RUBRIC_LEVEL_TWO_TABLES,
-} from '@rg/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+} from '../../../src/config';
 
 const mockProductForDelete = MOCK_PRODUCT_FOR_DELETE.name[0].value;
 const mockProductB = MOCK_PRODUCT_B_PRODUCT.name[0].value;

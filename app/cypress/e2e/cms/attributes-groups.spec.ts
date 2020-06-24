@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 import schema from '../../../src/generated/introspectionSchema.json';
 import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ME_AS_ADMIN,
   MOCK_ATTRIBUTES_GROUP,
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_GROUP,
-} from '@rg/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../src/config';
+  ME_AS_ADMIN,
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+} from '../../../src/config';
 
 const mockGroupName = MOCK_ATTRIBUTES_GROUP.name[0].value;
 const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;

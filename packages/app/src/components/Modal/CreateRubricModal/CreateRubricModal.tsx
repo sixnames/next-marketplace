@@ -13,8 +13,8 @@ import {
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
-import { createRubricInputSchema } from '@rg/validation';
-import { RUBRIC_LEVEL_TWO } from '@rg/config';
+import { createRubricInputSchema } from '../../../validation';
+import { RUBRIC_LEVEL_TWO } from '../../../config';
 
 interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;

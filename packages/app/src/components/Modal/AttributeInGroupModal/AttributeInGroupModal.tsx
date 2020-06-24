@@ -15,13 +15,8 @@ import {
 } from '../../../generated/apolloComponents';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
-import { attributeInGroupSchema } from '@rg/validation';
-import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
-} from '@rg/config';
+import { attributeInGroupSchema } from '../../../validation';
+import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING, ATTRIBUTE_TYPE_NUMBER } from '../../../config';
 
 interface AddAttributeToGroupModalInterface {
   attribute?: Attribute;

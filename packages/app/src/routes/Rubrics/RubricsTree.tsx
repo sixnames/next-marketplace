@@ -1,8 +1,8 @@
 import React from 'react';
 import Accordion from '../../components/Accordion/Accordion';
 import classes from './RubricsTree.module.css';
-import { RUBRIC_LEVEL_THREE } from '@rg/config';
 import RubricsTreeCounters from './RubricsTreeCounters';
+import { RUBRIC_LEVEL_THREE } from '../../config';
 
 export interface RubricsTreeItemInterface {
   id: string;

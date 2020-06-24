@@ -12,8 +12,8 @@ import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutConten
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
-import { RUBRIC_LEVEL_TWO } from '@rg/config';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
+import { RUBRIC_LEVEL_TWO } from '../../config';
 
 interface AttributesGroupInterface {
   id: string;

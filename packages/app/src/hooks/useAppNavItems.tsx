@@ -1,7 +1,7 @@
 import { useUserContext } from '../context/userContext';
-import { ROUTE_SIGN_OUT } from '@rg/config';
 import { NavItemInterface } from '../types';
 import useWithFilterQuery from './useWithFilterQuery';
+import { ROUTE_SIGN_OUT } from '../config';
 
 const useAppNavItems = (): NavItemInterface[] => {
   const { me } = useUserContext();

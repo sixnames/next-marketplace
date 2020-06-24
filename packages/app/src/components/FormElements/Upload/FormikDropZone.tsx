@@ -8,7 +8,7 @@ import { get } from 'lodash';
 import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
 import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
-import { NEGATIVE_INDEX } from '@rg/config';
+import { NEGATIVE_INDEX } from '../../../config';
 
 interface FormikDropZoneInterface {
   format?: string;

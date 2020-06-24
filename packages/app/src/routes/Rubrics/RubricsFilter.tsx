@@ -11,9 +11,8 @@ import FilterRadio from '../../components/FilterElements/FilterRadio/FilterRadio
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import updateItemInTree from '../../utils/updateItemInTree';
-import { RUBRIC_LEVEL_ONE } from '@rg/config';
 import { CREATE_RUBRIC_MODAL } from '../../config/modals';
-import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../config';
+import { QUERY_DATA_LAYOUT_NO_RUBRIC, RUBRIC_LEVEL_ONE } from '../../config';
 import classes from './RubricsFilter.module.css';
 import RubricsTreeCounters from './RubricsTreeCounters';
 import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';

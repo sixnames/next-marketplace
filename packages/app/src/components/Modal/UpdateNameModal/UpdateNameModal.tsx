@@ -7,7 +7,7 @@ import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik, FormikValues } from 'formik';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
-import { nameLangSchema } from '@rg/validation';
+import { nameLangSchema } from '../../../validation';
 
 interface UpdateNameModalInterface {
   title?: string;

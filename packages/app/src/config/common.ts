@@ -1,3 +1,5 @@
+export const NEGATIVE_INDEX = -1;
+export const TABLE_IMAGE_WIDTH = 40;
 // ROLES
 export const ROLE_ADMIN = 'ADMIN';
 export const ROLE_CUSTOMER = 'CUSTOMER';
@@ -112,3 +114,4 @@ export const PRODUCT_CONDITIONS_LIST = [
   { id: PRODUCT_CONDITION_BAD, name: 'Плохое' },
   { id: PRODUCT_CONDITION_AWFUL, name: 'Ужасное' },
 ];
+

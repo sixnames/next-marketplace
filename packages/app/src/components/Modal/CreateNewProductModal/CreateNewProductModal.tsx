@@ -20,10 +20,10 @@ import RubricsTree from '../../../routes/Rubrics/RubricsTree';
 import FormikArrayCheckbox from '../../FormElements/Checkbox/FormikArrayCheckbox';
 import InputLine from '../../FormElements/Input/InputLine';
 import ProductAttributes from './ProductAttributes';
-import { createProductSchema } from '@rg/validation';
-import classes from './CreateNewProductModal.module.css';
 import { MutationUpdaterFn, PureQueryOptions } from 'apollo-client';
 import { RefetchQueriesFunction } from '@apollo/react-common';
+import classes from './CreateNewProductModal.module.css';
+import { createProductSchema } from '../../../validation';
 
 export interface CreateNewProductModalInterface {
   rubricId?: string;

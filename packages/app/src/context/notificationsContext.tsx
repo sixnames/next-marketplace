@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Notification from '../components/Notification/Notification';
-import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from '@rg/config';
+import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from '../config';
 
 const NotificationsContext = createContext({});
 

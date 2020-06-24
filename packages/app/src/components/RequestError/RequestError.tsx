@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './RequestError.module.css';
-import { DATA_ERROR_MESSAGE } from '@rg/config';
+import { DATA_ERROR_MESSAGE } from '../../config';
 
 interface RequestErrorInterface {
   message?: string;

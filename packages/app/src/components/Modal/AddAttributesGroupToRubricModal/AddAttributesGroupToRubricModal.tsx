@@ -8,8 +8,7 @@ import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
-import { addAttributesGroupToRubricClientSchema } from '@rg/validation';
-// import classes from './AddAttributesGroupToRubricModal.module.css';
+import { addAttributesGroupToRubricClientSchema } from '../../../validation';
 
 interface AddAttributesGroupToRubricModalInterface {
   testId: string;

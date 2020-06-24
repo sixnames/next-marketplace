@@ -14,9 +14,9 @@ import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
-import { RUBRIC_LEVEL_ONE, RUBRIC_LEVEL_ZERO } from '@rg/config';
-import { updateRubricInputSchema } from '@rg/validation';
 import Accordion from '../../components/Accordion/Accordion';
+import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
+import { updateRubricInputSchema } from '../../validation';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];

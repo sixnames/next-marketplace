@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './TableRowImage.module.css';
-import { API_URL } from '../../config';
+import { API_URL, TABLE_IMAGE_WIDTH } from '../../config';
 
 interface TableRowImageInterface {
   url: string;
@@ -9,7 +9,7 @@ interface TableRowImageInterface {
   width?: number;
 }
 
-const TableRowImage: React.FC<TableRowImageInterface> = ({ url, alt, title, width = 40 }) => {
+const TableRowImage: React.FC<TableRowImageInterface> = ({ url, alt, title, width = TABLE_IMAGE_WIDTH }) => {
   return (
     <div className={classes.frame}>
       <img

@@ -6,8 +6,8 @@ import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
-import { optionInGroupSchema } from '@rg/validation';
 import { LangInterface } from '../../../types';
+import { optionInGroupSchema } from '../../../validation';
 
 interface ValuesInterface {
   name: LangInterface[];

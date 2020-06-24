@@ -3,8 +3,8 @@ import TTip from '../TTip/TTip';
 import Icon from '../Icon/Icon';
 import { NavItemInterface } from '../../types';
 import { NavLink } from 'react-router-dom';
-import { ROUTE_SIGN_OUT } from '@rg/config';
 import classes from './AppNavItem.module.css';
+import { ROUTE_SIGN_OUT } from '../../config';
 
 interface AppNavItemInterface {
   item: NavItemInterface;

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
-import { THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '@rg/config';
 import { Theme } from '../types';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '../config';
 
 interface ThemeContextInterface {
   theme: Theme;

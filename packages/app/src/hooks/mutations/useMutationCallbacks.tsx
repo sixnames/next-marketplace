@@ -1,6 +1,6 @@
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { useAppContext } from '../../context/appContext';
-import { ERROR_NOTIFICATION_MESSAGE } from '@rg/config';
+import { ERROR_NOTIFICATION_MESSAGE } from '../../config';
 
 interface ResponseInterface {
   success: boolean;

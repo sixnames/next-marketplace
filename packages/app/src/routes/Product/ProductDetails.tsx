@@ -16,10 +16,10 @@ import FormikArrayCheckbox from '../../components/FormElements/Checkbox/FormikAr
 import ProductAttributes from '../../components/Modal/CreateNewProductModal/ProductAttributes';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/mutations/useMutationCallbacks';
-import { updateProductSchema } from '@rg/validation';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import useUrlFiles from '../../hooks/useUrlFiles';
 import classes from './ProductDetails.module.css';
+import { updateProductSchema } from '../../validation';
 
 interface ProductDetailsInterface {
   product: GetProductQuery['getProduct'];

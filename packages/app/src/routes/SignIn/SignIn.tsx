@@ -2,12 +2,12 @@ import React from 'react';
 import useSignIn from '../../hooks/mutations/useSignIn';
 import { Form, Formik } from 'formik';
 import { SignInInput } from '../../generated/apolloComponents';
-import { signInValidationSchema } from '@rg/validation';
 import Inner from '../../components/Inner/Inner';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import Button from '../../components/Buttons/Button';
 import Title from '../../components/Title/Title';
 import classes from './SignIn.module.css';
+import { signInValidationSchema } from '../../validation';
 
 const SignIn: React.FC = () => {
   const { signInHandler } = useSignIn();

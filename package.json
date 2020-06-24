@@ -1,10 +1,5 @@
 {
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -51,7 +46,8 @@
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-react-hooks": "^4.0.0",
     "prettier": "^2.0.5",
-    "wait-on": "^5.0.0"
+    "wait-on": "^5.0.0",
+    "graphql": "^15.1.0"
   },
   "husky": {
     "hooks": {

@@ -9,7 +9,7 @@ import FormBlock from '../../FormLayout/FormBlock';
 import InputLine from '../Input/InputLine';
 import classes from '../DatePickers/DatePickers.module.css';
 import '../DatePickers/DatePickerCommonStyles.css';
-import { TIME_FORMAT, DATE_TIME_FORMAT } from '@rg/config';
+import { DATE_TIME_FORMAT, TIME_FORMAT } from '../../../config';
 
 interface FormikDateTimeRangeInterface {
   fromName: string;

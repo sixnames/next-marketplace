@@ -34,8 +34,8 @@ import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { createProductSchema, updateProductSchema } from '@rg/validation';
 import { ProductsCountersInput } from './ProductsCountersInput';
+import { createProductSchema, updateProductSchema } from '../../validation';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {

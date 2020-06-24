@@ -1,5 +1,5 @@
-import { ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING } from '@rg/config';
 import { AttributeVariantEnum } from '../../../entities/Attribute';
+import { ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING } from '../../../config';
 
 export const stringAttribute = {
   name: [

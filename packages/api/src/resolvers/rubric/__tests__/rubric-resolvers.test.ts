@@ -3,9 +3,8 @@ import {
   getTestClientWithAuthenticatedUser,
   mutateWithImages,
 } from '../../../utils/testUtils/testHelpers';
-import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '@rg/config';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG } from '../../../config';
+import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '../../../config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 

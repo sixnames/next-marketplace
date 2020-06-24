@@ -17,13 +17,6 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
-import {
-  addOptionToGroupSchema,
-  createOptionsGroupSchema,
-  deleteOptionFromGroupSchema,
-  updateOptionInGroupSchema,
-  updateOptionsGroupSchema,
-} from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';
 import { AttributeModel } from '../../entities/Attribute';
@@ -31,6 +24,12 @@ import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
 import { getMessageTranslation } from '../../config/translations';
+import {
+  addOptionToGroupSchema,
+  createOptionsGroupSchema,
+  deleteOptionFromGroupSchema, updateOptionInGroupSchema,
+  updateOptionsGroupSchema,
+} from '../../validation';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {

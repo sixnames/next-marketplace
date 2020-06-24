@@ -1,10 +1,10 @@
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { ROLES_ENUM } from '@rg/config';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import { ROLES_ENUM } from '../config';
 
 @ObjectType()
 @plugin(mongoosePaginate)

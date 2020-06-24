@@ -1,31 +1,4 @@
 import { clearTestDataHandler } from './clearTestData';
-import {
-  MOCK_OPTIONS,
-  MOCK_OPTIONS_GROUP,
-  MOCK_OPTIONS_GROUP_FOR_DELETE,
-  MOCK_ATTRIBUTE_MULTIPLE,
-  MOCK_ATTRIBUTES_GROUP,
-  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_ATTRIBUTE_SELECT,
-  MOCK_ATTRIBUTE_STRING,
-  MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTES_GROUP_B,
-  MOCK_RUBRIC_TYPE_EQUIPMENT,
-  MOCK_RUBRIC_TYPE_STAGE,
-  MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE,
-  MOCK_RUBRIC_LEVEL_TWO,
-  MOCK_RUBRIC_LEVEL_THREE_B,
-  MOCK_RUBRIC_LEVEL_TWO_TABLES,
-  MOCK_RUBRIC_LEVEL_THREE_TABLES,
-  MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-  MOCK_PRODUCT_FOR_DELETE,
-  MOCK_PRODUCT_B_PRODUCT,
-  MOCK_PRODUCT,
-  // MOCK_PRODUCT_FOR_DELETE,
-  // MOCK_PRODUCT_B_PRODUCT,
-  // MOCK_PRODUCT_IMAGES,
-} from '@rg/config';
 import createInitialData from '../createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
@@ -34,7 +7,27 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
-import { DEFAULT_CITY } from '../../config';
+import {
+  DEFAULT_CITY,
+  MOCK_ATTRIBUTE_MULTIPLE,
+  MOCK_ATTRIBUTE_NUMBER,
+  MOCK_ATTRIBUTE_SELECT, MOCK_ATTRIBUTE_STRING,
+  MOCK_ATTRIBUTES_GROUP,
+  MOCK_ATTRIBUTES_GROUP_B,
+  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
+  MOCK_OPTIONS,
+  MOCK_OPTIONS_GROUP,
+  MOCK_OPTIONS_GROUP_FOR_DELETE,
+  MOCK_PRODUCT,
+  MOCK_PRODUCT_B_PRODUCT, MOCK_PRODUCT_FOR_DELETE,
+  MOCK_RUBRIC_LEVEL_ONE,
+  MOCK_RUBRIC_LEVEL_THREE,
+  MOCK_RUBRIC_LEVEL_THREE_B,
+  MOCK_RUBRIC_LEVEL_THREE_TABLES, MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
+  MOCK_RUBRIC_LEVEL_TWO, MOCK_RUBRIC_LEVEL_TWO_TABLES,
+  MOCK_RUBRIC_TYPE_EQUIPMENT,
+  MOCK_RUBRIC_TYPE_STAGE,
+} from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
 import sharp from 'sharp';

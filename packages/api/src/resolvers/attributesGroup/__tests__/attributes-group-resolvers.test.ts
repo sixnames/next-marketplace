@@ -1,6 +1,6 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
-import { MOCK_ATTRIBUTES_GROUP } from '@rg/config';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
+import { MOCK_ATTRIBUTES_GROUP } from '../../../config';
 
 const addAttributeToGroupMutation = (
   groupId: string,

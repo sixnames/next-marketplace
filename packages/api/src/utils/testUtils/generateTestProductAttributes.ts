@@ -1,10 +1,9 @@
 import { Rubric } from '../../entities/Rubric';
 import {
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
-} from '@rg/config';
+} from '../../config';
 
 interface GenerateTestProductAttributesInterface {
   rubricLevelTwo: Rubric;

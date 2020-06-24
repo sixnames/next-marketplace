@@ -12,7 +12,6 @@ import {
 } from 'type-graphql';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import PayloadType from '../common/PayloadType';
-import { createRubricVariantInputSchema, updateRubricVariantSchema } from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateRubricVariantInput } from './CreateRubricVariantInput';
 import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
@@ -21,6 +20,7 @@ import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
 import { getMessageTranslation } from '../../config/translations';
+import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {

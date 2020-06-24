@@ -6,7 +6,7 @@ export const {
   // DB_HOST = 'mongo',
   DB_HOST = 'localhost',
   DB_PORT = 27017,
-  DB_NAME = 'winenot-db',
+  DB_NAME = 'winepoint-db',
 
   ADMIN_NAME = 'admin',
   ADMIN_EMAIL = 'admin@gmail.com',

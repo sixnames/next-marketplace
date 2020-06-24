@@ -17,12 +17,6 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
-import {
-  addAttributeToGroupSchema,
-  createAttributesGroupSchema,
-  updateAttributeInGroupSchema,
-  updateAttributesGroupSchema,
-} from '@rg/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';
 import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
@@ -30,6 +24,12 @@ import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
 import { getMessageTranslation } from '../../config/translations';
+import {
+  addAttributeToGroupSchema,
+  createAttributesGroupSchema,
+  updateAttributeInGroupSchema,
+  updateAttributesGroupSchema,
+} from '../../validation';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {

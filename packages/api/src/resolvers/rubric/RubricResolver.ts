@@ -11,13 +11,6 @@ import {
   Root,
 } from 'type-graphql';
 import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
-import {
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_THREE,
-  RUBRIC_LEVEL_TWO,
-  RUBRIC_LEVEL_ZERO,
-} from '@rg/config';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
@@ -27,14 +20,6 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
-import {
-  addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  deleteProductFromRubricInputSchema,
-  updateRubricInputSchema,
-} from '@rg/validation';
 import { UpdateRubricInput } from './UpdateRubricInput';
 import { Types } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
@@ -49,6 +34,18 @@ import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 import { getRubricCounters } from '../../utils/rubricResolverHelpers';
+import {
+  addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema, createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema, deleteProductFromRubricInputSchema,
+  updateRubricInputSchema,
+} from '../../validation';
+import {
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_STEP,
+  RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO,
+  RUBRIC_LEVEL_ZERO,
+} from '../../config';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;

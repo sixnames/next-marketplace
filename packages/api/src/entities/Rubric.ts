@@ -2,9 +2,9 @@ import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, prop as Property, Ref } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { RUBRIC_LEVEL_ONE } from '@rg/config';
 import { LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
+import { RUBRIC_LEVEL_ONE } from '../config';
 
 @ObjectType()
 export class RubricAttributesGroup {

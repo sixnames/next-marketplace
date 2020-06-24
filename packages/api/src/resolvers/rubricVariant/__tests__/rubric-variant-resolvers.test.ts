@@ -1,6 +1,6 @@
 import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
-import { MOCK_RUBRIC_TYPE_EQUIPMENT } from '@rg/config';
+import { MOCK_RUBRIC_TYPE_EQUIPMENT } from '../../../config';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {

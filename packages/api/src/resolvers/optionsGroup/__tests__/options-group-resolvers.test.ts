@@ -1,7 +1,6 @@
-import { MOCK_OPTIONS, MOCK_OPTIONS_GROUP } from '@rg/config';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG } from '../../../config';
+import { DEFAULT_LANG, MOCK_OPTIONS, MOCK_OPTIONS_GROUP } from '../../../config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
 const addOptionToGroupMutation = (

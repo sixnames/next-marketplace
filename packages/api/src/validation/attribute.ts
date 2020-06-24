@@ -1,15 +1,15 @@
 import * as Yup from 'yup';
 import { id, langInput, notNullableName } from './templates';
 import {
-  ATTRIBUTE_TYPES_ENUMS,
-  ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-} from '@rg/config';
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPES_ENUMS,
+} from '../config';
 
 const options = Yup.string()
   .nullable()
   .when('variant', {
-    is: (variant) => {
+    is: (variant: string) => {
       return variant === ATTRIBUTE_TYPE_SELECT || variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT;
     },
     then: Yup.string().required('Группа опций обязательна к заполнению.'),

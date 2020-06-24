@@ -14,13 +14,13 @@ import PayloadType from '../common/PayloadType';
 import { Metric, MetricModel } from '../../entities/Metric';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateMetricInput } from './CreateMetricInput';
-import { createMetricInputSchema, updateMetricSchema } from '@rg/validation';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/getLangField';
 import { getMessageTranslation } from '../../config/translations';
+import { createMetricInputSchema, updateMetricSchema } from '../../validation';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {

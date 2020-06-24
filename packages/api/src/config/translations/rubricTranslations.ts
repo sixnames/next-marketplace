@@ -1,4 +1,4 @@
-import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '@rg/config';
+import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '../common';
 
 const rubricTranslations = {
   rubric: {

@@ -10,8 +10,6 @@
     "test": "npm run cy:start"
   },
   "dependencies": {
-    "@rg/validation": "1.0.1",
-    "@rg/config": "1.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",

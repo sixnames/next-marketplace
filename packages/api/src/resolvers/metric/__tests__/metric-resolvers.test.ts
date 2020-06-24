@@ -1,6 +1,6 @@
 import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
-import { MOCK_METRICS } from '@rg/config';
 import { Metric } from '../../../entities/Metric';
+import { MOCK_METRICS } from '../../../config';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {

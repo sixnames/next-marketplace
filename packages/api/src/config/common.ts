@@ -1,6 +1,3 @@
-// ERRORS
-export const HTTP_QUERY_ERROR = 'HttpQueryError';
-
 // ROLES
 export const ROLE_ADMIN = 'ADMIN';
 export const ROLE_CUSTOMER = 'CUSTOMER';

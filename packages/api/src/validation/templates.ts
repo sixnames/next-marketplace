@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
-import { ROLES_ENUM } from '@rg/config';
 import { StringSchema } from 'yup';
+import { ROLES_ENUM } from '../config';
 
 export const minPasswordLength = 5;
 export const maxPasswordLength = 30;

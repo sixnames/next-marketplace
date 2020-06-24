@@ -24,15 +24,15 @@ import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
-import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '@rg/config';
+import { DocumentType } from '@typegoose/typegoose';
+import { getMessageTranslation } from '../../config/translations';
+import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '../../config';
 import {
+  createUserSchema,
   signInValidationSchema,
   signUpValidationSchema,
   updateUserSchema,
-  createUserSchema,
-} from '@rg/validation';
-import { DocumentType } from '@typegoose/typegoose';
-import { getMessageTranslation } from '../../config/translations';
+} from '../../validation';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}

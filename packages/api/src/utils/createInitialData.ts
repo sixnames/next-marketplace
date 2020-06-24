@@ -1,5 +1,11 @@
-import { MOCK_METRICS, ROLE_ADMIN } from '@rg/config';
-import { ADMIN_NAME, ADMIN_EMAIL, ADMIN_PHONE, ADMIN_PASSWORD } from '../config';
+import {
+  ADMIN_NAME,
+  ADMIN_EMAIL,
+  ADMIN_PHONE,
+  ADMIN_PASSWORD,
+  MOCK_METRICS,
+  ROLE_ADMIN,
+} from '../config';
 import { MetricModel } from '../entities/Metric';
 import { UserModel } from '../entities/User';
 import { hash } from 'bcryptjs';

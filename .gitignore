@@ -52,7 +52,7 @@ packages/web/public
 
 # Images
 packages/web/src/images/
-packages/api/assets/
+api/assets/
 dist
 
 # Dependency directories

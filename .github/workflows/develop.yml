@@ -25,13 +25,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-#    - name: Install root dependencies
-#      run: yarn
-#
-#    - name: Install api dependencies
-#      run: cd api && npm install
-#
-#    - name: Install app dependencies
-#      run: cd app && npm install
-    - run: yarn up:serve
+#    - run: yarn
+    - run: cd api && npm install
+    - run: cd app && npm install
+    - run: yarn up
     - run: yarn test

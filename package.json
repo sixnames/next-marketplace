@@ -23,6 +23,10 @@
     "test:api": "cd api && yarn test",
     "test:app": "cd app && yarn test",
 
+    "install": "concurrently -n root,api,app \"yarn\" \"yarn install:api\" \"yarn install:app\"",
+    "install:api": "cd api && yarn",
+    "install:app": "cd app && yarn",
+
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
 

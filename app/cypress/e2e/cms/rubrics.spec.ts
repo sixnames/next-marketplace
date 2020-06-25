@@ -35,7 +35,7 @@ describe('Rubrics', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

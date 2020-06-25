@@ -26,10 +26,10 @@ import 'cypress-file-upload';
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-const apiURI = 'http://localhost:4000';
+const apiURI = 'http://localhost/api';
 const createTestDataURI = `${apiURI}/create-test-data`;
 const clearTestDataURI = `${apiURI}/clear-test-data`;
-const authRoute = '/sign-in';
+const authRoute = '/app/sign-in';
 
 Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);

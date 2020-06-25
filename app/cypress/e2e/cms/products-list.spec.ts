@@ -54,7 +54,7 @@ describe('Products list', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {
@@ -79,7 +79,7 @@ describe('New products creation', () => {
     cy.auth({
       email: ME_AS_ADMIN.email,
       password: ME_AS_ADMIN.password,
-      redirect: `/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      redirect: `/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
     });
   });
 

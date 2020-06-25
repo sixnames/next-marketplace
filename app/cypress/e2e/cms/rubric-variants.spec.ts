@@ -24,7 +24,7 @@ describe('Rubric variants', () => {
     });
 
     cy.createTestData();
-    cy.visit(`/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

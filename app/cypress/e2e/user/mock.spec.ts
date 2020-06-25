@@ -13,7 +13,7 @@ describe('Mocks', () => {
         },
       },
     });
-    cy.visit('/');
+    cy.visit('/app/');
   });
 
   it('Smoke test', () => {

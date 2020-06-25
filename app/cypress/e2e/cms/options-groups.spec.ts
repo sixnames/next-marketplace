@@ -33,7 +33,7 @@ describe('Options Groups', () => {
       },
     });
     cy.createTestData();
-    cy.visit(`/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.visit(`/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

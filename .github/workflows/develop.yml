@@ -33,9 +33,5 @@ jobs:
 #
 #    - name: Install app dependencies
 #      run: cd app && npm install
-
-    - name: Spinup docker-compose.stage
     - run: yarn up:serve
-
-    - name: Run tests
     - run: yarn test

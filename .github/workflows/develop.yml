@@ -27,6 +27,4 @@ jobs:
 
     - run: yarn
     - run: cd api && npm install
-    - run: cd app && npm install
-    - run: yarn up
-    - run: yarn test
+    - run: yarn test:api

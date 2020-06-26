@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "react-scripts start",
     "build": "react-scripts build",
+    "build:stage": "eval $(cat .env.stage) react-scripts build",
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "test": "npm run cy:start"

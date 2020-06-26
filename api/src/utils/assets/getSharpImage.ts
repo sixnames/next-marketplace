@@ -9,16 +9,21 @@ interface GetSharpImageInterface {
 }
 
 export function getSharpImage({ path, format, width, height }: GetSharpImageInterface) {
-  const readStream = fs.createReadStream(`.${path}`);
-  let transform = sharp();
+  try {
+    const readStream = fs.createReadStream(`.${path}`);
+    let transform = sharp();
 
-  if (format) {
-    transform = transform.toFormat(format);
+    if (format) {
+      transform = transform.toFormat(format);
+    }
+
+    if (width || height) {
+      transform = transform.resize(width, height);
+    }
+
+    return readStream.pipe(transform);
+  } catch (e) {
+    console.log(e);
+    return null;
   }
-
-  if (width || height) {
-    transform = transform.resize(width, height);
-  }
-
-  return readStream.pipe(transform);
 }

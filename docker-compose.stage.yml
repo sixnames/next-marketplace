@@ -31,27 +31,21 @@ services:
     container_name: api
     restart: always
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.develop
       context: ./api
     volumes:
-      - /app/node_modules
-      - ./api:/app
+      - ./api/assets:/app/assets
     depends_on:
       - mongo
   app:
     container_name: app
     restart: always
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.develop
       context: ./app
-    volumes:
-      - /app/node_modules
-      - ./app:/app
-    environment:
-      NODE_ENV: development
-      PUBLIC_URL: app
-      CI: "true"
-      REACT_APP_API_URL: http://localhost/api
+#    environment:
+#      PUBLIC_URL: app
+#      REACT_APP_API_URL: http://localhost/api
     stdin_open: true
     depends_on:
       - api

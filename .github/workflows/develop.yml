@@ -21,7 +21,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: yarn install:api
-      - run: yarn test:app
+      - run: yarn test:api
 
   build:
     runs-on: ubuntu-latest

@@ -84,7 +84,7 @@ describe('New products creation', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should open product details', () => {
@@ -123,7 +123,7 @@ describe('New products creation', () => {
     cy.getByCy(`success-notification`).should('exist');
   });
 
-  it('Should create product and add it to the rubric', () => {
+  it.only('Should create product and add it to the rubric', () => {
     cy.getByCy(`product-create`).click();
 
     // attach images

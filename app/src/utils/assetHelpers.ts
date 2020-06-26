@@ -1,9 +1,10 @@
 import { AssetType } from '../generated/apolloComponents';
+import { ASSETS_URL } from '../config';
 
 export async function getImageBlobFromUrl(url: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${process.env.REACT_APP_API_URL}${url}`, true);
+    xhr.open('GET', `${ASSETS_URL}${url}`, true);
     xhr.responseType = 'blob';
     xhr.onload = function () {
       if (this.status === 200) {

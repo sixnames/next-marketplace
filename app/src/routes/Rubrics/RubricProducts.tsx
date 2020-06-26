@@ -17,6 +17,7 @@ import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
 import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { useNavigate } from 'react-router-dom';
 
 type RubricProduct = GetRubricProductsQuery['getRubric']['products']['docs'][0];
 
@@ -88,9 +89,16 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
+  const navigate = useNavigate();
   const columns = useProductsListColumns({
     deleteTitle: 'Удалить товар из рубрики',
     deleteHandler: deleteProductFromRubricHandler,
+    updateTitle: 'Редактировать товар',
+    updateHandler: ({ id }) =>
+      navigate({
+        pathname: '/app/cms/product',
+        search: `?id=${id}`,
+      }),
   });
 
   if (!data && !loading && !error) {

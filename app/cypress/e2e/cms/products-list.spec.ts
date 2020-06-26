@@ -84,7 +84,7 @@ describe('New products creation', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should open product details', () => {

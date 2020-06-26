@@ -7,10 +7,24 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
-
+  apiTest:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
 
+    steps:
+      - uses: actions/checkout@v2
+      - name: Development
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: yarn install:api
+      - run: yarn test:app
+
+  build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
@@ -24,9 +38,8 @@ jobs:
 
     # Install all dependencies
     - run: yarn
-    - run: yarn install:api
     - run: yarn install:app
 
     # Testing
     - run: yarn up:testing
-    - run: yarn test
+    - run: yarn test:app

@@ -24,8 +24,8 @@ jobs:
 
     # Install all dependencies
     - run: yarn
-    - run: install:api
-    - run: install:app
+    - run: yarn install:api
+    - run: yarn install:app
 
     # Testing
     - run: yarn up:testing

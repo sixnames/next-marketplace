@@ -21,6 +21,8 @@ export const {
   )}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
 } = process.env;
 
+console.log(JSON.stringify({ env: process.env, url: MONGO_URL }, null, 2));
+
 export const DB_OPTIONS: ConnectionOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,

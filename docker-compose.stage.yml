@@ -13,12 +13,6 @@ services:
       - ./data:/data/db
     env_file:
       - .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD
-      - MONGO_INITDB_DATABASE
-      - DB_USERNAME
-      - DB_PASSWORD
   nginx:
     container_name: nginx
     restart: always
@@ -37,20 +31,10 @@ services:
       context: ./api
     volumes:
       - ./api/assets:/app/assets
-    depends_on:
-      - mongo
     env_file:
       - .env
-    environment:
-      - DB_NAME
-      - DB_USERNAME
-      - DB_PASSWORD
-      - SESS_NAME
-      - SESS_TTL
-      - ADMIN_NAME
-      - ADMIN_EMAIL
-      - ADMIN_PHONE
-      - ADMIN_PASSWORD
+    depends_on:
+      - mongo
   app:
     container_name: app
     restart: always
@@ -58,5 +42,7 @@ services:
       dockerfile: Dockerfile.stage
       context: ./app
     stdin_open: true
+    env_file:
+      - .env
     depends_on:
       - api

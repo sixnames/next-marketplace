@@ -7,17 +7,29 @@ on:
     branches: [ develop ]
 
 jobs:
+#  sshAccess:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: executing remote ssh commands using password
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.DEV_HOST }}
+#          username: ${{ secrets.DEV_USERNAME }}
+#          password: ${{ secrets.PASSWORD }}
+#          port: ${{ secrets.PORT }}
+#          script: cd site && ls -a
   sshAccess:
     runs-on: ubuntu-latest
     steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
+      - name: ls -a via ssh
+        uses: garygrossgarten/github-action-ssh@release
         with:
+          command: cd site && ls -a
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USERNAME }}
-#          password: ${{ secrets.PASSWORD }}
-#          port: ${{ secrets.PORT }}
-          script: cd site && ls -a
+#          passphrase: ${{ secrets.PASSPHRASE }}
+          privateKey: ${{ secrets.DEV_PRIVATE_KEY}}
+
 #  apiTest:
 #    runs-on: ubuntu-latest
 #    strategy:

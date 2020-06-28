@@ -51,6 +51,7 @@ build/Release
 packages/web/public
 certbot
 dhparam
+init-letsencrypt.sh
 
 # Images
 packages/web/src/images/

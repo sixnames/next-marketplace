@@ -15,9 +15,9 @@
     "stop:serve": "docker-compose -f docker-compose.stage.yml stop",
     "down:serve": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
 
-    "up:testing": "docker-compose -f docker-compose.stage.yml up -d --build",
-    "stop:testing": "docker-compose -f docker-compose.stage.yml stop",
-    "down:testing": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
+    "up:testing": "docker-compose -f docker-compose.testing.yml up -d --build",
+    "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
+    "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
 
     "dev": "concurrently -n api,app \"yarn dev:api\" \"yarn dev:app\"",
     "dev:api": "cd api && yarn dev",

@@ -21,7 +21,7 @@ services:
     container_name: nginx
     restart: always
     build:
-      dockerfile: Dockerfile.stage
+      dockerfile: Dockerfile.testing
       context: ./nginx
     ports:
       - 80:80
@@ -31,7 +31,7 @@ services:
     container_name: api
     restart: always
     build:
-      dockerfile: Dockerfile.stage
+      dockerfile: Dockerfile.testing
       context: ./api
     volumes:
       - ./api/assets:/app/assets
@@ -41,7 +41,7 @@ services:
     container_name: app
     restart: always
     build:
-      dockerfile: Dockerfile.stage
+      dockerfile: Dockerfile.testing
       context: ./app
     stdin_open: true
     depends_on:

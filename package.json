@@ -11,9 +11,9 @@
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
     "postup": "wait-on data && yarn dev",
 
-    "up:serve": "docker-compose -f docker-compose.stage.yml up --build",
-    "stop:serve": "docker-compose -f docker-compose.stage.yml stop",
-    "down:serve": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
+    "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
+    "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
+    "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
 
     "up:testing": "docker-compose -f docker-compose.testing.yml up -d --build",
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",

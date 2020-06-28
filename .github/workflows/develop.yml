@@ -7,36 +7,47 @@ on:
     branches: [ develop ]
 
 jobs:
-  apiTest:
+  name: SSH
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Development
-        uses: actions/setup-node@v1
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - run: yarn install:api
-      - run: yarn test:api
-
-  appTest:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Development
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - run: yarn
-    - run: yarn install:app
-    - run: yarn up:testing
-    - run: yarn test:app
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+#          password: ${{ secrets.PASSWORD }}
+#          port: ${{ secrets.PORT }}
+          script: cd site && ls -a
+#  apiTest:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [12.x]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Development
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - run: yarn install:api
+#      - run: yarn test:api
+#
+#  appTest:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [12.x]
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Development
+#      uses: actions/setup-node@v1
+#      with:
+#        node-version: ${{ matrix.node-version }}
+#
+#    - run: yarn
+#    - run: yarn install:app
+#    - run: yarn up:testing
+#    - run: yarn test:app

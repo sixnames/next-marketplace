@@ -21,22 +21,8 @@ services:
       context: ./nginx
     ports:
       - 80:80
-      - 443:443
-    volumes:
-    - ./dhparam:/etc/nginx/dhparam
-    - ./certbot/conf/:/etc/nginx/ssl/
-    - ./certbot/data:/usr/share/nginx/html/letsencrypt
     depends_on:
       - app
-  certbot:
-    image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email slava.kirshman@icloud.com --agree-tos --no-eff-email -d winepointdev.ru
-    volumes:
-      - ./certbot/conf/:/etc/letsencrypt
-      - ./certbot/logs/:/var/log/letsencrypt
-      - ./certbot/data:/usr/share/nginx/html/letsencrypt
-    depends_on:
-      - nginx
   api:
     container_name: api
     restart: always

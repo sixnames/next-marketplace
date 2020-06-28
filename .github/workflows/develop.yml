@@ -42,7 +42,7 @@ jobs:
 #    - run: yarn test:app
 
   deploy:
-    needs: [apiTest, appTest]
+#    needs: [apiTest, appTest]
     runs-on: ubuntu-latest
     steps:
       - name: ls -a via ssh

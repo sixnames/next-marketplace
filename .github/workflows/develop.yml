@@ -7,7 +7,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  name: SSH
+  sshAccess:
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands using password

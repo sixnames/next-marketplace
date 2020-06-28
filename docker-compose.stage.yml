@@ -21,7 +21,7 @@ services:
     container_name: nginx
     restart: always
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.stage
       context: ./nginx
     ports:
       - 80:80
@@ -31,7 +31,7 @@ services:
     container_name: api
     restart: always
     build:
-      dockerfile: Dockerfile.develop
+      dockerfile: api/Dockerfile.stage
       context: ./api
     volumes:
       - ./api/assets:/app/assets
@@ -41,11 +41,8 @@ services:
     container_name: app
     restart: always
     build:
-      dockerfile: Dockerfile.develop
+      dockerfile: app/Dockerfile.stage
       context: ./app
-#    environment:
-#      PUBLIC_URL: app
-#      REACT_APP_API_URL: http://localhost/api
     stdin_open: true
     depends_on:
       - api

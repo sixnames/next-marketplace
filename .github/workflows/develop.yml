@@ -7,7 +7,42 @@ on:
     branches: [ develop ]
 
 jobs:
+  apiTest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Development
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: yarn install:api
+      - run: yarn test:api
+
+  appTest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Development
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: yarn
+    - run: yarn install:app
+    - run: yarn up:testing
+    - run: yarn test:app
+
   deploy:
+    needs: [apiTest, appTest]
     runs-on: ubuntu-latest
     steps:
       - name: ls -a via ssh
@@ -18,36 +53,3 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           privateKey: ${{ secrets.DEV_PRIVATE_KEY}}
 
-#  apiTest:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        node-version: [12.x]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Development
-#        uses: actions/setup-node@v1
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#
-#      - run: yarn install:api
-#      - run: yarn test:api
-#
-#  appTest:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        node-version: [12.x]
-#
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Development
-#      uses: actions/setup-node@v1
-#      with:
-#        node-version: ${{ matrix.node-version }}
-#
-#    - run: yarn
-#    - run: yarn install:app
-#    - run: yarn up:testing
-#    - run: yarn test:app

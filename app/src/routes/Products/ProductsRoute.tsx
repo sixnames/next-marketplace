@@ -30,7 +30,7 @@ const ProductsRoute: React.FC = () => {
 
   return (
     <DataLayout
-      title={'Товары lorem'}
+      title={'Товары'}
       filterContent={<ProductsFilter />}
       filterResult={() => <ProductsContent />}
       contentControlsConfig={{

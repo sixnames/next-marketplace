@@ -45,7 +45,7 @@ jobs:
 #    needs: [apiTest, appTest]
     runs-on: ubuntu-latest
     steps:
-      - name: ls -a via ssh
+      - name: deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: cd www && git pull && docker-compose -f docker-compose.stage.yml up --build -d

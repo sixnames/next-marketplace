@@ -3,8 +3,8 @@ name: Build, Test, Deploy to the develop
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+#  pull_request:
+#    branches: [ develop ]
 
 jobs:
   apiTest:

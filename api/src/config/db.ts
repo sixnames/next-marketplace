@@ -20,7 +20,7 @@ export const {
     `${DB_PASSWORD}`,
   )}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
 } = process.env;
-
+console.log(MONGO_URL);
 export const DB_OPTIONS: ConnectionOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,

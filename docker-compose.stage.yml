@@ -13,16 +13,6 @@ services:
       - ./data:/data/db
     env_file:
       - .env
-#  nginx:
-#    container_name: nginx
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.stage
-#      context: ./nginx
-#    ports:
-#      - 80:80
-#    depends_on:
-#      - app
   api:
     container_name: api
     restart: always

@@ -1,7 +1,7 @@
-FROM node:alpine
-WORKDIR /app
+FROM node:12.18-alpine
+WORKDIR /site
 COPY ./package.json ./yarn.lock ./
 RUN yarn
-COPY . ./
-EXPOSE 3001
+COPY . .
+EXPOSE 3000
 CMD ["yarn", "dev"]

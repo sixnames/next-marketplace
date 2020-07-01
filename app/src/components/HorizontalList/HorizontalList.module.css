@@ -1,9 +1,0 @@
-.frame {
-  display: flex;
-  align-items: center;
-}
-
-.frame > * {
-  margin-bottom: 1rem;
-  margin-right: 1rem;
-}

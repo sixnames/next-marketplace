@@ -4,6 +4,7 @@ import { testClient } from '../../../test/setup';
 import { TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, DEFAULT_CITY, DEFAULT_LANG } from '../../config';
 import { User, UserModel } from '../../entities/User';
+import { Upload } from '../../types/upload';
 
 interface WithUserMutationInterface {
   mutate: TestQuery;
@@ -87,14 +88,14 @@ export async function getTestClientWithAuthenticatedUser(): Promise<
 
 interface MutateInterface {
   mutation: string;
-  input: Function;
+  input: (files: Promise<Upload>[]) => void;
 }
 
 async function getTestStreams() {
   const fileNames = ['test-image-0.jpg', 'test-image-1.jpg', 'test-image-2.jpg'];
   return fileNames.map((filename) => {
     const file = fs.createReadStream(path.resolve(`./test/${filename}`));
-    return new Promise((resolve) =>
+    return new Promise<Upload>((resolve) =>
       resolve({
         createReadStream: () => file,
         filename: filename,

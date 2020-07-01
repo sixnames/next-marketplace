@@ -1,6 +1,0 @@
-{
-  "baseUrl": "http://localhost",
-  "integrationFolder": "cypress/e2e",
-  "viewportWidth": 1440,
-  "video": false
-}

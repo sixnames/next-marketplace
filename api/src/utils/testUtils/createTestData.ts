@@ -149,12 +149,12 @@ async function getProductCities(
       if (!exists) {
         await mkdirp(filesPath);
       } else {
-        return new Promise<ProductCity>(async (resolve) => {
+        return new Promise<ProductCity>((resolve) => {
           resolve(resolveObject);
         });
       }
 
-      return new Promise<ProductCity>(async (resolve, reject) => {
+      return new Promise<ProductCity>((resolve, reject) => {
         sharp(initialFilePath)
           .jpeg()
           .toFile(finalPath)

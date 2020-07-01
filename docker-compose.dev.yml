@@ -27,8 +27,7 @@ services:
       - 80:80
     depends_on:
       - api
-      - app
-      - site
+      - client
   api:
     container_name: api
     restart: on-failure
@@ -40,31 +39,15 @@ services:
       - ./api:/api
     depends_on:
       - mongo
-  app:
-    container_name: app
-    restart: on-failure
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./app
-    volumes:
-      - /app/node_modules
-      - ./app:/app
-    environment:
-      NODE_ENV: development
-      PUBLIC_URL: app
-      PORT: 3001
-    stdin_open: true
-    depends_on:
-      - api
-  site:
-    container_name: site
+  client:
+    container_name: client
     restart: always
     build:
       dockerfile: Dockerfile.dev
-      context: ./site
+      context: client
     volumes:
-      - /site/node_modules
-      - ./site:/site
+      - /client/node_modules
+      - ./client:/client
     depends_on:
       - api
 

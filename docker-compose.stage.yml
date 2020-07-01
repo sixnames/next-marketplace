@@ -45,7 +45,7 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile.stage
-      context: ./site
+      context: client
     ports:
       - '3000:3000'
     env_file:

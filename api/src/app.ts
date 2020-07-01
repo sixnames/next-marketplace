@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import session from 'express-session';
-import express from 'express';
+import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
@@ -21,7 +21,7 @@ import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
 import path from 'path';
 
-const createApp = () => {
+const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
     resolvers: [
       UserResolver,

@@ -27,7 +27,8 @@ import { getMessageTranslation } from '../../config/translations';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
-  deleteOptionFromGroupSchema, updateOptionInGroupSchema,
+  deleteOptionFromGroupSchema,
+  updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '../../validation';
 

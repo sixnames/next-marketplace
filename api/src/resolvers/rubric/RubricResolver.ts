@@ -36,14 +36,17 @@ import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
 import { getRubricCounters } from '../../utils/rubricResolverHelpers';
 import {
   addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema, createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema, deleteProductFromRubricInputSchema,
+  addProductToRubricInputSchema,
+  createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
   updateRubricInputSchema,
 } from '../../validation';
 import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO,
+  RUBRIC_LEVEL_THREE,
+  RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 

@@ -17,6 +17,6 @@ export const translations = {
   ...rubricTranslations,
 };
 
-export const getMessageTranslation = (path: string) => {
+export const getMessageTranslation = (path: string): string => {
   return `${get(translations, path)}`;
 };

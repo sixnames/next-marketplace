@@ -51,6 +51,6 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile.testing
-      context: ./site
+      context: client
     depends_on:
       - api

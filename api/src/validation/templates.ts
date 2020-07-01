@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
-import { StringSchema } from 'yup';
+import { NotRequiredArraySchema, ObjectSchema, Shape, StringSchema } from 'yup';
 import { ROLES_ENUM } from '../config';
 
 export const minPasswordLength = 5;
@@ -8,14 +8,16 @@ export const maxPasswordLength = 30;
 export const minDescriptionLength = 15;
 export const maxDescriptionLength = 300;
 export const minNameLength = 2;
-export const minShortNameLength = 1;
+// export const minShortNameLength = 1;
 export const maxNameLength = 70;
 export const minPrice = 1;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
 export const role = Yup.mixed().oneOf(ROLES_ENUM);
 
-export const langInput = (valueSchema: StringSchema) =>
+export const langInput = (
+  valueSchema: StringSchema,
+): NotRequiredArraySchema<{ key: string; value: string | undefined } | undefined> =>
   Yup.array().of(
     Yup.object({
       key: Yup.string().trim().required('Язык обязателен к заполнению.'),
@@ -23,14 +25,23 @@ export const langInput = (valueSchema: StringSchema) =>
     }),
   );
 
-export const notNullableName = (nameTarget: string) =>
+export const notNullableName = (
+  nameTarget: string,
+): StringSchema<Exclude<string | undefined, undefined | null>> =>
   Yup.string()
     .min(minNameLength, `${nameTarget} должно состоять минимум из ${minNameLength} символов`)
     .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
     .trim()
     .required(`${nameTarget} обязателено к заполнению.`);
 
-export const nameLangSchema = (nameTarget: string) => {
+export const nameLangSchema = (
+  nameTarget: string,
+): ObjectSchema<
+  Shape<
+    Record<string, unknown> | undefined,
+    { name: ({ key: string; value: string | undefined } | undefined)[] | undefined }
+  >
+> => {
   return Yup.object().shape({
     name: langInput(notNullableName(nameTarget)),
   });

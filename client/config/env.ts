@@ -1,8 +1,9 @@
 const { env } = process || { env: {} };
 export const { NODE_ENV = 'development' } = env;
-const { protocol, host } = window.location;
+// TODO api url
+// const { protocol, host } = window.location;
 // export const API_PATH = `${process.env.REACT_APP_API_URL}/graphql`;
-export const API_URL = `${protocol}//${host}`;
+export const API_URL = `http//localhost`;
 export const ASSETS_URL = `${API_URL}/api`;
 export const API_PATH = `${API_URL}/api/graphql`;
 export const IN_DEV = NODE_ENV === 'development';

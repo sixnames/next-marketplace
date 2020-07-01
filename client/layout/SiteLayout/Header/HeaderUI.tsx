@@ -3,8 +3,8 @@ import HeaderUserNav from './HeaderUserNav';
 import { useUserContext } from '../../../context/userContext';
 import Icon from '../../../components/Icon/Icon';
 import Link from '../../../components/Link/Link';
-import { ROUTE_SIGN_IN } from '../../../../config';
 import classes from './HeaderUi.module.css';
+import { ROUTE_SIGN_IN } from '../../../config';
 
 const HeaderUi: React.FC = () => {
   const { me } = useUserContext();

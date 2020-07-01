@@ -3,9 +3,9 @@ import AnimateOpacity from '../../../components/AnimateOpacity/AnimateOpacity';
 import Icon from '../../../components/Icon/Icon';
 import { MeType } from '../../../context/userContext';
 import Link from '../../../components/Link/Link';
-import useSignOut from '../../../hooks/mutations/useSignOut';
 import classes from './HeaderUserNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
+import useSignOut from '../../../hooks/useSignOut';
 
 interface HeaderUserNavInterface {
   me: MeType;
@@ -18,8 +18,8 @@ const HeaderUserNav: React.FC<HeaderUserNavInterface> = ({ me, hideDropdown }) =
     return null;
   }
 
-  const { isSuper, isManager, isAdmin } = me;
-  const isPersonnel = isSuper || isManager || isAdmin;
+  const { isAdmin } = me;
+  const isPersonnel = isAdmin;
 
   return (
     <AnimateOpacity className={classes.frame}>

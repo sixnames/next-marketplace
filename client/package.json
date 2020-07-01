@@ -14,23 +14,24 @@
     "@apollo/react-hooks": "^3.1.5",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@types/react-beautiful-dnd": "^13.0.0",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-upload-client": "^13.0.0",
+    "formik": "^2.1.4",
     "graphql-tag": "^2.10.3",
     "lodash": "^4.17.15",
     "next": "9.4.4",
     "notistack": "^0.9.17",
     "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-spring": "^8.0.27",
-    "formik": "^2.1.4",
-    "react-masked-field": "^2.0.3",
     "react-beautiful-dnd": "^13.0.0",
-    "@types/react-beautiful-dnd": "^13.0.0",
+    "react-dom": "16.13.1",
     "react-dropzone": "^11.0.1",
+    "react-masked-field": "^2.0.3",
+    "react-paginate": "^6.3.2",
+    "react-spring": "^8.0.27",
     "use-sound": "^1.0.2",
-    "react-paginate": "^6.3.2"
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.4.1",
@@ -39,10 +40,11 @@
     "@types/lodash": "^4.14.157",
     "@types/node": "^14.0.14",
     "@types/react": "^16.9.41",
+    "@types/react-paginate": "^6.2.1",
     "cypress": "^4.9.0",
     "cypress-file-upload": "^4.0.7",
     "ts-loader": "^7.0.5",
     "typescript": "^3.9.5",
-    "@types/react-paginate": "^6.2.1"
+    "@types/yup": "^0.29.3"
   }
 }

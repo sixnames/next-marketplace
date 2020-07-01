@@ -4,11 +4,13 @@ import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { createUploadLink } from 'apollo-upload-client';
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
+// TODO make dynamic uri
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: createUploadLink({
-      uri: '/api/graphql',
+      uri: process.browser ? 'http://localhost/api/graphql' : 'http://api:4000/graphql',
       credentials: 'include',
     }),
     cache: new InMemoryCache(),
@@ -20,7 +22,7 @@ export function initializeApollo(
 ): ApolloClient<NormalizedCacheObject> {
   const _apolloClient = apolloClient ?? createApolloClient();
 
-  // If your page has Next.js data fetching methods that use Apollo Client, the initial state
+  // If your page has Next.js data fetching methods that use Apollo Client, the INITIAL_QUERY state
   // get hydrated here
   if (initialState) {
     _apolloClient.cache.restore(initialState);

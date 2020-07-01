@@ -1,0 +1,65 @@
+.frame {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  flex-shrink: 0;
+}
+
+.small {
+  margin-bottom: 1rem;
+}
+
+.normal {
+  margin-bottom: 1.25rem;
+}
+
+.big {
+  margin-bottom: 1.875rem;
+}
+
+.light {
+  height: 60px;
+  align-items: center;
+  background-color: var(--primaryBackground);
+  box-shadow: var(--shadow);
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+}
+
+.low {
+  margin-bottom: 0;
+}
+
+.big .text {
+  font-size: 2.25rem;
+}
+
+.normal .text {
+  font-size: 2rem;
+}
+
+.small .text {
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  color: var(--midGray);
+}
+
+@media only screen and (max-width: 1024px) {
+  .light {
+    height: 40px;
+  }
+
+  .big .text {
+    font-size: 2rem;
+  }
+
+  .normal .text {
+    font-size: 1.5rem;
+  }
+
+  .small .text {
+    font-size: 1.25rem;
+  }
+}

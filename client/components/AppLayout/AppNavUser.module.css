@@ -1,0 +1,100 @@
+.frame {
+  display: flex;
+  position: relative;
+  padding-top: 14px;
+  padding-right: 20px;
+  padding-bottom: 14px;
+  padding-left: 20px;
+}
+
+.content {
+  width: calc(100% - 28px);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  fill: var(--gray);
+}
+
+.name {
+  position: relative;
+  z-index: 2;
+  font-weight: bold;
+  color: var(--white);
+}
+
+@media only screen and (min-width: 1025px) {
+  .frame {
+    white-space: nowrap;
+  }
+
+  .frameCompact {
+    justify-content: center;
+    padding-top: 14px;
+    padding-right: 0;
+    padding-bottom: 14px;
+    padding-left: 0;
+  }
+
+  .contentCompact {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    bottom: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+  }
+
+  .iconCompact {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    flex-grow: 1;
+    align-items: center;
+    height: 36px;
+    min-height: 36px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 10px;
+    margin-bottom: 0;
+  }
+
+  .frame svg {
+    display: none;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+  }
+
+  .name {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 2px;
+    font-size: 15px;
+    text-align: left;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .infoLabel {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .frame {
+    font-size: 13px;
+    line-height: 1em;
+    padding-bottom: 0;
+  }
+}

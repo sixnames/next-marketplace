@@ -1,0 +1,159 @@
+.Frame {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secndaryBackground);
+  height: 100vh;
+}
+
+.Inner {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  padding-bottom: 1rem;
+  height: calc(100vh - 100px);
+}
+
+.Title {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+  background-color: var(--primaryBackground);
+  box-shadow: var(--shadow);
+}
+
+.TitleRight {
+  margin-left: auto;
+}
+
+.Filter {
+  flex-shrink: 0;
+  width: 240px;
+  max-height: 100%;
+  margin-right: 15px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 100%;
+  max-width: 100%;
+  background-color: var(--primaryBackground);
+  box-shadow: var(--shadow);
+  border-radius: 3px;
+}
+
+.ContentFrame {
+  position: relative;
+  z-index: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 100%;
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+.Preview {
+  flex-shrink: 0;
+  width: 340px;
+  max-height: 100%;
+  margin-left: 15px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.Controls {
+  display: flex;
+  align-items: center;
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.ControlsLeft {
+  margin-right: auto;
+}
+
+.NoControls {
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+}
+
+.MoreNav {
+  margin-left: 1rem;
+}
+
+.ControlsButton:not(:first-child) {
+  margin-left: 0.5rem;
+}
+
+.FilterClose {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+@media only screen and (min-width: 1025px) {
+  .FilterClose {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .Frame {
+    display: block;
+    height: auto;
+    min-height: calc(100vh - 36px);
+  }
+
+  .Inner {
+    height: auto;
+    display: block;
+  }
+
+  .Title {
+    font-size: 1.25rem;
+  }
+
+  .Filter {
+    width: auto;
+    padding-top: 0.5rem;
+    padding-right: var(--innerBlockHorizontalPadding);
+    padding-bottom: 1rem;
+    padding-left: var(--innerBlockHorizontalPadding);
+    margin-right: 0;
+    margin-bottom: 1rem;
+    background-color: var(--primaryBackground);
+    box-shadow: var(--shadow);
+    border-radius: 3px;
+  }
+
+  .FilterContent {
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .Title {
+    display: block;
+    font-size: 1.125rem;
+  }
+
+  .TitleRightWithGap {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,22 @@
+.frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--inputHeightNormal);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: var(--inputPaddingHorizontal);
+  padding-right: var(--inputPaddingHorizontal);
+  margin: 0;
+  font-size: 14px;
+  color: var(--textColor);
+  border: 1px solid var(--borderColor);
+  background-color: var(--inputBackground);
+  outline: none;
+  box-shadow: 0 0 0 transparent;
+  border-radius: 3px;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}

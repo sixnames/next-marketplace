@@ -1,0 +1,40 @@
+.frame {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0;
+  left: 60px;
+  z-index: 9999;
+  width: calc(100vw - 60px);
+  height: 100vh;
+  background-color: rgba(50, 50, 50, 0.3);
+}
+
+.frame svg {
+  color: var(--theme);
+  width: auto;
+  height: auto;
+}
+
+.wide {
+  left: 0;
+  width: 100vw;
+}
+
+.nested {
+  position: relative;
+  left: 0;
+  height: 100px;
+  width: 100%;
+  background: none;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    left: 0;
+    bottom: 40px;
+    height: calc(100vh - 76px);
+    width: 100vw;
+  }
+}

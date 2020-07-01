@@ -1,0 +1,39 @@
+.frame {
+  bottom: 0;
+  z-index: 90;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+  box-shadow: var(--shadow);
+  background-color: var(--primaryBackground);
+}
+
+.frameFixed {
+  position: fixed;
+  left: 60px;
+  width: calc(100vw - 60px);
+}
+
+.frameAbsolute {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+
+.frame > * {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.frame > *:not(:first-child) {
+  margin-left: 1rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frameFixed {
+    left: 0;
+    width: 100vw;
+  }
+}

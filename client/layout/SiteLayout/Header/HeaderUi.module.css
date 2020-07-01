@@ -1,0 +1,107 @@
+.frame {
+  display: flex;
+  align-items: center;
+  margin-left: 1.25rem;
+}
+
+.item {
+  position: relative;
+}
+
+.item:not(:first-child) {
+  margin-left: 1rem;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  align-items: center;
+  color: var(--textColor);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.linkCurrent,
+.link:hover {
+  color: var(--theme);
+  text-decoration: none;
+}
+
+.linkCurrent .icon,
+.link:hover .icon {
+  fill: var(--theme);
+}
+
+.iconHolder {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--midGray);
+}
+
+.counter {
+  position: absolute;
+  top: -8px;
+  right: -17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--white);
+  background-color: var(--red);
+  border-radius: 9px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin-left: 0;
+    background-color: var(--secndaryBackground);
+    box-shadow: var(--shadow);
+  }
+
+  .label {
+    display: none;
+  }
+
+  .link {
+    height: 40px;
+    padding-left: 1em;
+    padding-right: 1em;
+    justify-content: center;
+  }
+
+  .link svg {
+    fill: var(--textColor);
+  }
+
+  .item:not(:first-child) {
+    margin-left: 0;
+  }
+
+  .counter {
+    font-size: 0.7rem;
+    top: -5px;
+    right: -15px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+  }
+}

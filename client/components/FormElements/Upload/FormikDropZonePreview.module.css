@@ -1,0 +1,13 @@
+.frame {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+
+.item {
+  margin-bottom: 1rem;
+}
+
+.item:not(:first-child) {
+  margin-left: 1rem;
+}

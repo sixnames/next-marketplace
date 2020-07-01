@@ -1,0 +1,8 @@
+.frame {
+  display: flex;
+  align-items: center;
+}
+
+.item:not(:first-child) {
+  margin-left: 0.5rem;
+}

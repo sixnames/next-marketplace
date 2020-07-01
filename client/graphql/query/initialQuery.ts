@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const initial = gql`
+export const INITIAL_QUERY = gql`
   query Initial {
     me {
       id

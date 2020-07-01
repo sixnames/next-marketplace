@@ -1,0 +1,13 @@
+.frame {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  min-height: var(--inputHeightNormal);
+}
+
+.frame span {
+  cursor: pointer;
+  padding-left: 7px;
+  flex-grow: 1;
+  color: var(--textSecondaryColor);
+}

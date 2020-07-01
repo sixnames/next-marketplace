@@ -1,0 +1,108 @@
+.frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding-right: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.trigger svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  fill: var(--textColor);
+}
+
+.rubrics {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.rubricsActive {
+  visibility: visible;
+  opacity: 1;
+  transition: all 0.2s;
+}
+
+.rubricsFrame {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  background-color: var(--primaryBackground);
+  box-shadow: var(--shadow);
+  border-radius: 0 0 4px 4px;
+}
+
+.mainRubrics {
+  background-color: var(--secndaryBackground);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-weight: bold;
+  border-radius: 0 0 0 4px;
+}
+
+.mainRubricsItem {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding-top: 0.5rem;
+  padding-left: 2rem;
+  padding-bottom: 0.5rem;
+  padding-right: 2rem;
+  color: var(--textColor);
+}
+
+.current {
+  background-color: var(--lightGray);
+  box-shadow: 0 5px 10px -8px var(--midGray);
+  color: var(--theme);
+  text-decoration: none;
+}
+
+.subRubricsLink:hover,
+.subRubricsTitle:hover,
+.mainRubricsItem:hover {
+  color: var(--theme);
+  text-decoration: none;
+}
+
+.subRubrics {
+  display: grid;
+  grid-column-gap: 1.25rem;
+  grid-row-gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 170px));
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.subRubricsTitle {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--textColor);
+  font-weight: bold;
+}
+
+.subRubricsLink {
+  display: block;
+  color: var(--midGray);
+}
+
+.mainRubricsItem:not(:first-child) {
+  margin-top: 0.5rem;
+}

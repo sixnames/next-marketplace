@@ -1,0 +1,162 @@
+.item {
+  position: relative;
+}
+
+.counter {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--primaryBackground);
+}
+
+.linkIcon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.linkIcon svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--gray);
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: var(--gray);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 0.2s;
+}
+
+.complexItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: var(--gray);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.complexItemActive svg {
+  fill: var(--theme);
+}
+
+.complexItem:after,
+.link:after {
+  position: absolute;
+  content: '';
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: calc(100% - 40px);
+  height: 1px;
+  background-color: var(--borderColor);
+  transform: translateX(-50%);
+  opacity: 0.3;
+}
+
+.complexLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding-left: 50px;
+  padding-right: 5px;
+  color: var(--gray);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 0.2s;
+}
+
+.complexLink:hover {
+  text-decoration: none;
+}
+
+.linkActive {
+  color: var(--white);
+  background-color: var(--theme);
+}
+
+.linkActive svg {
+  fill: var(--white);
+}
+
+.linkText {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+.dropdown {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.15s;
+}
+
+.dropdownActive {
+  max-height: 20000px;
+  opacity: 1;
+  transition: max-height 0.8s, opacity 0.2s;
+}
+
+@media only screen and (min-width: 1025px) {
+  .counterCompact {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .linkCompact,
+  .complexItemCompact {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    white-space: nowrap;
+  }
+
+  .linkCompact .linkIcon,
+  .complexItemCompact .linkIcon {
+    margin: 0;
+  }
+
+  .dropdownCompact,
+  .linkTextCompact {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    bottom: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+  }
+}

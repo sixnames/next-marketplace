@@ -2,16 +2,16 @@ import React from 'react';
 import AppLayout from '../../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
 import { UserContextProvider } from '../../../context/userContext';
-import RubricVariantsRoute from '../../../routes/RubricVariants/RubricVariantsRoute';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
+import OptionsGroupsRoute from '../../../routes/OptionsGroups/OptionsGroupsRoute';
 
-const RubricVariants: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const OptionsGroups: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
     <UserContextProvider me={myData}>
-      <AppLayout title={'Типы рубрик'}>
-        <RubricVariantsRoute />
+      <AppLayout title={'Группы опций'}>
+        <OptionsGroupsRoute />
       </AppLayout>
     </UserContextProvider>
   );
@@ -21,4 +21,4 @@ const RubricVariants: NextPage<AppPageInterface> = ({ initialApolloState }) => {
 export const getServerSideProps: GetServerSideProps = getAppServerSideProps;
 
 // noinspection JSUnusedGlobalSymbols
-export default RubricVariants;
+export default OptionsGroups;

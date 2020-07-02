@@ -2,18 +2,11 @@ import React from 'react';
 import AppLayout from '../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
 import { UserContextProvider } from '../../context/userContext';
-import { initializeApollo } from '../../apollo/client';
-import { INITIAL_QUERY } from '../../graphql/query/initialQuery';
-import { InitialQueryResult } from '../../generated/apolloComponents';
-import privateRouteHandler from '../../utils/privateRouteHandler';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
+import getAppServerSideProps, { AppPageInterface } from '../../utils/getAppServerSideProps';
 
-export interface AppInterface {
-  initialApolloState: InitialQueryResult['data'];
-}
-
-const App: NextPage<AppInterface> = ({ initialApolloState }) => {
+const App: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
@@ -28,26 +21,6 @@ const App: NextPage<AppInterface> = ({ initialApolloState }) => {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const apolloClient = initializeApollo();
-
-  const initialApolloState = await apolloClient.query({
-    query: INITIAL_QUERY,
-    context: {
-      headers: req.headers,
-    },
-  });
-
-  if (!initialApolloState.data || !initialApolloState.data.me) {
-    privateRouteHandler(res);
-    return { props: {} };
-  }
-
-  return {
-    props: {
-      initialApolloState: initialApolloState.data,
-    },
-  };
-};
+export const getServerSideProps: GetServerSideProps = getAppServerSideProps;
 
 export default App;

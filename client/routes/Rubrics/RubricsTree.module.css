@@ -1,0 +1,15 @@
+.frame {
+  margin-bottom: 3rem;
+}
+
+.frameLow {
+  margin-bottom: var(--lineGap);
+}
+
+.nested {
+  padding-left: 0.5rem;
+}
+
+.frame .first {
+  border-left-color: var(--theme);
+}

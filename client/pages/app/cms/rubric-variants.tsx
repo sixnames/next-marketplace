@@ -6,6 +6,7 @@ import { UserContextProvider } from '../../../context/userContext';
 import { initializeApollo } from '../../../apollo/client';
 import { INITIAL_QUERY } from '../../../graphql/query/initialQuery';
 import privateRouteHandler from '../../../utils/privateRouteHandler';
+import RubricVariantsRoute from '../../../routes/RubricVariants/RubricVariantsRoute';
 
 type RubricVariantsInterface = AppInterface;
 
@@ -15,9 +16,7 @@ const RubricVariants: NextPage<RubricVariantsInterface> = ({ initialApolloState 
   return (
     <UserContextProvider me={myData}>
       <AppLayout>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus distinctio enim eveniet
-        labore laborum neque non numquam quibusdam, quis soluta! Autem commodi ex, id magni omnis
-        possimus praesentium quod ullam.
+        <RubricVariantsRoute />
       </AppLayout>
     </UserContextProvider>
   );

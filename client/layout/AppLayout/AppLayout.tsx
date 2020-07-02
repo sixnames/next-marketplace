@@ -5,6 +5,7 @@ import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
 import AppNav from './AppNav';
 import { useAppContext } from '../../context/appContext';
 import Meta from '../Meta';
+import Modal from '../../components/Modal/Modal';
 import classes from './AppLayout.module.css';
 
 interface AppLayoutInterface {
@@ -12,7 +13,7 @@ interface AppLayoutInterface {
 }
 
 const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
-  const { isLoading } = useAppContext();
+  const { isLoading, isModal } = useAppContext();
 
   return (
     <div className={classes.frame}>
@@ -27,7 +28,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
       </main>
 
       {isLoading && <Spinner />}
-      {/*{isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}*/}
+      {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
     </div>
   );
 };

@@ -1,0 +1,10 @@
+.counters {
+  display: flex;
+  margin-left: auto;
+}
+
+.counters span {
+  display: block;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
+}

@@ -15,6 +15,7 @@ interface UseRouterQueryInterface {
   removeQuery: ({ key }: RemoveQueryInterface) => void;
   toggleQuery: ({ key, value }: SetQueryInterface) => void;
   query: ParsedUrlQuery;
+  pathname: string;
 }
 
 const useRouterQuery = (): UseRouterQueryInterface => {
@@ -57,7 +58,7 @@ const useRouterQuery = (): UseRouterQueryInterface => {
     return setQuery({ key, value });
   }
 
-  return { setQuery, removeQuery, toggleQuery, query };
+  return { setQuery, removeQuery, toggleQuery, query, pathname };
 };
 
 export default useRouterQuery;

@@ -40,3 +40,8 @@ export interface NavItemInterface {
   hidden?: boolean;
   testId?: string;
 }
+
+export interface LangInterface {
+  key: string;
+  value: string;
+}

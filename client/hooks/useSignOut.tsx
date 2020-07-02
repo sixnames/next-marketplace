@@ -8,8 +8,8 @@ const useSignOut = () => {
   const [signOutMutation] = useSignOutMutation({
     onCompleted: (data) => {
       if (data.signOut && data.signOut.success) {
-        setMeOut();
         onCompleteCallback(data.signOut);
+        setMeOut();
       }
     },
   });

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { InitialQuery } from '../generated/apolloComponents';
+import { useRouter } from 'next/router';
 
 export type MeType = InitialQuery['me'];
 
@@ -48,6 +49,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children,
 };
 
 function useUserContext() {
+  const { replace } = useRouter();
   const context: UserContext = useContext(UserContext);
 
   if (!context) {
@@ -74,6 +76,7 @@ function useUserContext() {
         me: null,
       };
     });
+    return replace('/');
   }
 
   return {

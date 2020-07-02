@@ -1,5 +1,5 @@
 import { useUserContext } from '../context/userContext';
-import { ROUTE_SIGN_OUT } from '../config';
+import { ROUTE_APP, ROUTE_CMS, ROUTE_SIGN_OUT } from '../config';
 import { NavItemInterface } from '../types';
 import useWithFilterQuery from './useWithFilterQuery';
 
@@ -17,7 +17,7 @@ const useAppNavItems = (): NavItemInterface[] => {
     name: `Заказы`,
     icon: `ShoppingCart`,
     counter: ordersCounter,
-    path: `/orders`,
+    path: `${ROUTE_APP}/orders`,
   };
 
   const cmsRoute: NavItemInterface = {
@@ -27,32 +27,32 @@ const useAppNavItems = (): NavItemInterface[] => {
       {
         name: 'Товары',
         path: {
-          pathname: '/products',
+          pathname: `${ROUTE_CMS}/products`,
           query: { ...withFilterQuery },
         },
       },
       {
         name: 'Рубрикатор',
         path: {
-          pathname: '/rubrics',
+          pathname: `${ROUTE_CMS}/rubrics`,
           query: { ...withFilterQuery },
         },
       },
       {
         name: 'Типы рубрик',
-        path: '/rubric-types',
+        path: `${ROUTE_CMS}/rubric-variants`,
       },
       {
         name: 'Группы атрибутов',
         path: {
-          pathname: '/attributes-groups',
+          pathname: `${ROUTE_CMS}/attributes-groups`,
           query: { ...withFilterQuery },
         },
       },
       {
         name: 'Группы опций',
         path: {
-          pathname: '/options-groups',
+          pathname: `${ROUTE_CMS}/options-groups`,
           query: { ...withFilterQuery },
         },
       },
@@ -62,7 +62,7 @@ const useAppNavItems = (): NavItemInterface[] => {
   const userSettingsRoute: NavItemInterface = {
     icon: `Person`,
     name: `Профиль`,
-    path: `/profile`,
+    path: `${ROUTE_APP}/profile`,
   };
 
   const constantRoutes: NavItemInterface[] = [

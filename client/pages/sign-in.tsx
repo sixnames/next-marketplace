@@ -4,13 +4,22 @@ import SignInRoute from '../routes/SignInRoute/SignInRoute';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_QUERY } from '../graphql/query/initialQuery';
+import { UserContextProvider } from '../context/userContext';
+import { InitialQueryResult } from '../generated/apolloComponents';
 
-const SignIn: NextPage = (props) => {
-  console.log(props);
+interface SignInInterface {
+  initialApolloState: InitialQueryResult['data'];
+}
+
+const SignIn: NextPage<SignInInterface> = ({ initialApolloState }) => {
+  const myData = initialApolloState ? initialApolloState.me : null;
+
   return (
-    <SiteLayout>
-      <SignInRoute />
-    </SiteLayout>
+    <UserContextProvider me={myData}>
+      <SiteLayout>
+        <SignInRoute />
+      </SiteLayout>
+    </UserContextProvider>
   );
 };
 
@@ -18,18 +27,16 @@ const SignIn: NextPage = (props) => {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const apolloClient = initializeApollo();
 
-  await apolloClient.query({
+  const initialApolloState = await apolloClient.query({
     query: INITIAL_QUERY,
     context: {
-      headers: {
-        cookie: req.headers.cookie,
-      },
+      headers: req.headers,
     },
   });
 
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(),
+      initialApolloState: initialApolloState.data,
     },
   };
 };

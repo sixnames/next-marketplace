@@ -1700,6 +1700,37 @@ export type InitialQuery = (
   )> }
 );
 
+export type SiteRubricFragmentFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, 'id' | 'name' | 'slug' | 'catalogueName' | 'level'>
+  & { variant?: Maybe<(
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+  )> }
+);
+
+export type InitialSiteQueryQueryVariables = {};
+
+
+export type InitialSiteQueryQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
+  )>, getRubricsTree: Array<(
+    { __typename?: 'Rubric' }
+    & { children: Array<(
+      { __typename?: 'Rubric' }
+      & { children: Array<(
+        { __typename?: 'Rubric' }
+        & SiteRubricFragmentFragment
+      )> }
+      & SiteRubricFragmentFragment
+    )> }
+    & SiteRubricFragmentFragment
+  )> }
+);
+
 export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
@@ -1775,6 +1806,19 @@ export const RubricProductFragmentFragmentDoc = gql`
     slug
     mainImage
     active
+  }
+}
+    `;
+export const SiteRubricFragmentFragmentDoc = gql`
+    fragment SiteRubricFragment on Rubric {
+  id
+  name
+  slug
+  catalogueName
+  level
+  variant {
+    id
+    nameString
   }
 }
     `;
@@ -3474,3 +3518,55 @@ export function useInitialLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type InitialQueryHookResult = ReturnType<typeof useInitialQuery>;
 export type InitialLazyQueryHookResult = ReturnType<typeof useInitialLazyQuery>;
 export type InitialQueryResult = ApolloReactCommon.QueryResult<InitialQuery, InitialQueryVariables>;
+export const InitialSiteQueryDocument = gql`
+    query InitialSiteQuery {
+  me {
+    id
+    email
+    name
+    secondName
+    lastName
+    fullName
+    shortName
+    phone
+    role
+    isAdmin
+    isManager
+    isCustomer
+  }
+  getRubricsTree {
+    ...SiteRubricFragment
+    children {
+      ...SiteRubricFragment
+      children {
+        ...SiteRubricFragment
+      }
+    }
+  }
+}
+    ${SiteRubricFragmentFragmentDoc}`;
+
+/**
+ * __useInitialSiteQueryQuery__
+ *
+ * To run a query within a React component, call `useInitialSiteQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitialSiteQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitialSiteQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitialSiteQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+      }
+export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+        }
+export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
+export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
+export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;

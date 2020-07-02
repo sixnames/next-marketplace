@@ -9,11 +9,11 @@ import Inner from '../components/Inner/Inner';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
 
-interface HomeInterface {
+interface CatalogueInterface {
   initialApolloState: InitialSiteQueryQueryResult['data'];
 }
 
-const Home: NextPage<HomeInterface> = ({ initialApolloState }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
@@ -21,7 +21,7 @@ const Home: NextPage<HomeInterface> = ({ initialApolloState }) => {
       <SiteContextProvider value={initialApolloState}>
         <SiteLayout>
           <Inner>
-            <Title>Main page</Title>
+            <Title>Catalogue</Title>
           </Inner>
         </SiteLayout>
       </SiteContextProvider>
@@ -32,7 +32,6 @@ const Home: NextPage<HomeInterface> = ({ initialApolloState }) => {
 // noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const apolloClient = initializeApollo();
-
   const initialApolloState = await apolloClient.query({
     query: INITIAL_SITE_QUERY,
     context: {
@@ -47,4 +46,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   };
 };
 
-export default Home;
+// noinspection JSUnusedGlobalSymbols
+export default Catalogue;

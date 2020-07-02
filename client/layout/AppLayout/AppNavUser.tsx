@@ -19,6 +19,7 @@ const AppNavUser: React.FC<AppNavUserInterface> = ({ compact, openNavHandler }) 
 
   return (
     <div
+      data-cy={'app-nav-user'}
       className={`${classes.frame} ${compact ? classes.frameCompact : ''}`}
       onClick={openNavHandler}
     >

@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
     <footer className={classes.frame}>
       <Inner className={classes.inner} lowBottom>
         <ul className={classes.nav}>
-          <li className={classes.navItem}>
+          {/*<li className={classes.navItem}>
             <Link href={'/about'}>
               <a>О компании</a>
             </Link>
@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             <Link href={'/about'}>
               <a>Наши кейсы</a>
             </Link>
-          </li>
+          </li>*/}
         </ul>
 
         <div className={classes.right}>

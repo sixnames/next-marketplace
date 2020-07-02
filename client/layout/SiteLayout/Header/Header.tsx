@@ -17,11 +17,11 @@ const Header: React.FC = () => {
       <div className={classes.top}>
         <Inner lowTop lowBottom className={classes.inner}>
           <ul className={classes.topNav}>
-            <li className={classes.topNavItem}>
+            {/*<li className={classes.topNavItem}>
               <Link href={'/about'}>
                 <a>Наши кейсы</a>
               </Link>
-            </li>
+            </li>*/}
           </ul>
 
           <div className={classes.topRight}>

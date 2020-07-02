@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Inner from '../../../components/Inner/Inner';
 import Icon from '../../../components/Icon/Icon';
 import Link from 'next/link';
 import classes from './HeaderNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
+import { useSiteContext } from '../../../context/siteContext';
 
 function HeaderNav() {
+  const { getRubricsTree } = useSiteContext();
   const [isRubricsOpen, setIsRubricsOpen] = useState(false);
   const [currentRubric, setCurrentRubric] = useState<string | null>(null);
-  const data = {
-    api: {
-      getRubricsTree: [],
-    },
-  };
+  const [subRubrics, setSubRubrics] = useState<any[]>([]);
 
   function toggleRubricsHandler() {
     setIsRubricsOpen((prevState) => !prevState);
@@ -26,19 +24,14 @@ function HeaderNav() {
     setCurrentRubric(id);
   }
 
-  let subRubrics: any[] = [];
-
-  const {
-    api: { getRubricsTree },
-  } = data;
-
-  if (currentRubric) {
-    const currentChildren: {} | undefined = getRubricsTree.find(({ id }) => id === currentRubric);
-    if (currentChildren) {
-      // TODO [Slava] pass rubric children here
-      subRubrics = [];
+  useEffect(() => {
+    if (currentRubric) {
+      const currentChildren = getRubricsTree.find(({ id }) => id === currentRubric);
+      if (currentChildren && currentChildren.children) {
+        setSubRubrics(currentChildren.children);
+      }
     }
-  }
+  }, [currentRubric, getRubricsTree]);
 
   return (
     <Inner lowTop lowBottom>
@@ -55,8 +48,15 @@ function HeaderNav() {
                 const isCurrent = id === currentRubric;
                 return (
                   <li key={id}>
-                    <Link href={slug}>
+                    <Link
+                      href={{
+                        pathname: '[catalogue]',
+                        query: { id: `${id}` },
+                      }}
+                      as={slug}
+                    >
                       <a
+                        onClick={hideRubricsHandler}
                         onMouseEnter={() => setCurrentRubricHandler(id)}
                         className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
                       >
@@ -71,17 +71,33 @@ function HeaderNav() {
             <div className={classes.subRubrics}>
               {subRubrics.map(({ name, id, slug, children = [] }) => (
                 <div key={id}>
-                  <Link href={slug}>
-                    <a className={classes.subRubricsTitle}>{name}</a>
+                  <Link
+                    href={{
+                      pathname: '[catalogue]',
+                      query: { id: `${id}` },
+                    }}
+                    as={slug}
+                  >
+                    <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
+                      {name}
+                    </a>
                   </Link>
 
                   {!!children && (
                     <ul>
                       {children.map(
                         ({ name, id, slug }: { name: string; id: string; slug: string }) => (
-                          <li className={classes.mainRubricsItem} key={id}>
-                            <Link href={slug}>
-                              <a className={classes.subRubricsLink}>{name}</a>
+                          <li className={classes.subRubricsItem} key={id}>
+                            <Link
+                              href={{
+                                pathname: '[catalogue]',
+                                query: { id: `${id}` },
+                              }}
+                              as={slug}
+                            >
+                              <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
+                                {name}
+                              </a>
                             </Link>
                           </li>
                         ),

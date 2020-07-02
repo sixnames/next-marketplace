@@ -2,7 +2,14 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
+import {
+  APOLLO_OPTIONS,
+  SESS_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  MONGO_URL,
+  DEV_ORIGIN,
+} from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -112,10 +119,11 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     context: ({ req, res, connection }) => (connection ? connection.context : { req, res }),
   });
 
+  // TODO remove cors for production
   server.applyMiddleware({
     app,
     cors: {
-      // origin: DEV_ORIGIN,
+      origin: DEV_ORIGIN,
       credentials: true,
     },
   });

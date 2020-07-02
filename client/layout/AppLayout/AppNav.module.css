@@ -267,11 +267,11 @@
     display: none;
   }
 
-  .backdrop {
+  .bottomdrop {
     height: calc(100vh - 36px);
   }
 
-  .backdrop:before {
+  .bottomdrop:before {
     position: absolute;
     content: '';
     top: 0;
@@ -281,6 +281,10 @@
     height: 100%;
     background-color: var(--black);
     opacity: 0.4;
+  }
+
+  .bottom {
+    margin-bottom: 40px;
   }
 }
 

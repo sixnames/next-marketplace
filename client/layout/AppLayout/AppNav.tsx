@@ -8,9 +8,10 @@ import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
 import TTip from '../../components/TTip/TTip';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
-import useSignOut from '../../hooks/mutations/useSignOut';
+import useSignOut from '../../hooks/useSignOut';
 import classes from './AppNav.module.css';
 import { useThemeContext } from '../../context/themeContext';
+import { NavItemInterface } from '../../types';
 
 const AppNav: React.FC = () => {
   const { pathname } = useRouter();
@@ -19,9 +20,9 @@ const AppNav: React.FC = () => {
   const { isCompact, toggleCompactHandler, setCompactOn, setCompactOff } = useCompact();
   const signOutHandler = useSignOut();
 
-  const mobileNavHandler = useCallback(toggleCompactHandler, []);
-  const closeNavHandler = useCallback(setCompactOn, []);
-  const openNavHandler = useCallback(setCompactOff, []);
+  const mobileNavHandler = useCallback(toggleCompactHandler, [toggleCompactHandler]);
+  const closeNavHandler = useCallback(setCompactOn, [setCompactOn]);
+  const openNavHandler = useCallback(setCompactOff, [setCompactOff]);
   const themeTooltip = isDark ? 'Светлая тема' : 'Тёмная тема';
 
   return (
@@ -74,7 +75,7 @@ const AppNav: React.FC = () => {
 
           <div className={`${classes.list} ${isCompact ? classes.listClosed : ''}`}>
             <ul className={classes.listHolder}>
-              {navItems.map((item) => {
+              {navItems.map((item: NavItemInterface) => {
                 return (
                   <AppNavItem
                     compact={isCompact}

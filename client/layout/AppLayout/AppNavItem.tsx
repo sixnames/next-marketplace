@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TTip from '../../components/TTip/TTip';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
-import { ROUTE_SIGN_OUT } from '../../../config';
+import { ROUTE_SIGN_OUT } from '../../config';
 import { NavItemInterface } from '../../types';
 import classes from './AppNavItem.module.css';
 

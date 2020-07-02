@@ -10,7 +10,8 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: createUploadLink({
-      uri: process.browser ? 'http://localhost/api/graphql' : 'http://api:4000/graphql',
+      // uri: process.browser ? 'http://localhost/api/graphql' : 'http://api:4000/graphql',
+      uri: 'http://localhost:4000/graphql',
       credentials: 'include',
     }),
     cache: new InMemoryCache(),

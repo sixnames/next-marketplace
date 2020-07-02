@@ -66,8 +66,17 @@
   color: var(--textColor);
 }
 
+.subRubricsItem {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: var(--textColor);
+}
+
 .current {
-  background-color: var(--lightGray);
+  background-color: var(--primaryBackground);
   box-shadow: 0 5px 10px -8px var(--midGray);
   color: var(--theme);
   text-decoration: none;

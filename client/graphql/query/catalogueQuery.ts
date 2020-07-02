@@ -12,6 +12,28 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
       }
       activeProductsCount
       catalogueName
+      attributesGroups {
+        id
+        showInCatalogueFilter
+        node {
+          id
+          nameString
+          attributes {
+            id
+            nameString
+            variant
+            itemId
+            options {
+              id
+              nameString
+              options {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      }
       products(input: $productsInput) {
         totalDocs
         page

@@ -1528,7 +1528,7 @@ export type UpdateRubricVariantMutation = (
 
 export type GetCatalogueRubricQueryVariables = {
   id: Scalars['ID'];
-  products?: Maybe<RubricProductPaginateInput>;
+  productsInput?: Maybe<RubricProductPaginateInput>;
 };
 
 
@@ -1540,6 +1540,25 @@ export type GetCatalogueRubricQuery = (
     & { variant?: Maybe<(
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
+    )>, attributesGroups: Array<(
+      { __typename?: 'RubricAttributesGroup' }
+      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'itemId'>
+          & { options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+            & { options: Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, 'id' | 'nameString'>
+            )> }
+          )> }
+        )> }
+      ) }
     )>, products: (
       { __typename?: 'PaginatedProductsResponse' }
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
@@ -3138,7 +3157,7 @@ export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateR
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($id: ID!, $products: RubricProductPaginateInput) {
+    query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
   getRubric(id: $id) {
     id
     name
@@ -3149,7 +3168,29 @@ export const GetCatalogueRubricDocument = gql`
     }
     activeProductsCount
     catalogueName
-    products(input: $products) {
+    attributesGroups {
+      id
+      showInCatalogueFilter
+      node {
+        id
+        nameString
+        attributes {
+          id
+          nameString
+          variant
+          itemId
+          options {
+            id
+            nameString
+            options {
+              id
+              nameString
+            }
+          }
+        }
+      }
+    }
+    products(input: $productsInput) {
       totalDocs
       page
       totalPages
@@ -3179,7 +3220,7 @@ export const GetCatalogueRubricDocument = gql`
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
  *      id: // value for 'id'
- *      products: // value for 'products'
+ *      productsInput: // value for 'productsInput'
  *   },
  * });
  */

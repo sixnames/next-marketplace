@@ -27,6 +27,7 @@ import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
 import path from 'path';
+import cors from 'cors';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -83,7 +84,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   });
 
   // Assets
-  app.get('/assets/*', async (req, res) => {
+  app.get('/assets/*', cors({ origin: DEV_ORIGIN }), async (req, res) => {
     // Extract the query-parameter
     const widthString = (req.query.width as string) || undefined;
     const heightString = (req.query.height as string) || undefined;

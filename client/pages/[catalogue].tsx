@@ -6,22 +6,43 @@ import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { UserContextProvider } from '../context/userContext';
 import Title from '../components/Title/Title';
 import Inner from '../components/Inner/Inner';
-import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
+import {
+  GetCatalogueRubricQueryResult,
+  InitialSiteQueryQueryResult,
+} from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
+import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
+import RequestError from '../components/RequestError/RequestError';
 
 interface CatalogueInterface {
   initialApolloState: InitialSiteQueryQueryResult['data'];
+  rubricData: GetCatalogueRubricQueryResult['data'];
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricData }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
+
+  if (!rubricData) {
+    return (
+      <SiteContextProvider value={initialApolloState}>
+        <SiteLayout>
+          <Inner>
+            <RequestError />
+          </Inner>
+        </SiteLayout>
+      </SiteContextProvider>
+    );
+  }
+
+  const rubric = rubricData.getRubric;
 
   return (
     <UserContextProvider me={myData}>
       <SiteContextProvider value={initialApolloState}>
         <SiteLayout>
           <Inner>
-            <Title>Catalogue</Title>
+            <Title>{rubric.catalogueName}</Title>
+            <code>{JSON.stringify(rubricData, null, 2)}</code>
           </Inner>
         </SiteLayout>
       </SiteContextProvider>
@@ -30,7 +51,7 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState }) => {
 };
 
 // noinspection JSUnusedGlobalSymbols
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   const apolloClient = initializeApollo();
   const initialApolloState = await apolloClient.query({
     query: INITIAL_SITE_QUERY,
@@ -39,9 +60,23 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     },
   });
 
+  const rubricData = await apolloClient.query({
+    query: CATALOGUE_RUBRIC_QUERY,
+    context: {
+      headers: req.headers,
+    },
+    variables: {
+      id: query.id,
+      productsInput: {
+        active: true,
+      },
+    },
+  });
+
   return {
     props: {
       initialApolloState: initialApolloState.data,
+      rubricData: rubricData.data,
     },
   };
 };

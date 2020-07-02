@@ -421,6 +421,7 @@ type RubricPayloadType {
 }
 
 input RubricProductPaginateInput {
+  active: Boolean
   limit: Int = 100
   notInRubric: ID
   page: Int = 1

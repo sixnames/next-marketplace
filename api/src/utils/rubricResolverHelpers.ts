@@ -14,7 +14,7 @@ interface GetRubricCountersInterface {
   city: string;
 }
 
-async function getRubricNestedIds({
+export async function getRubricNestedIds({
   rubric,
   city,
 }: GetRubricNestedIdsInterface): Promise<string[]> {

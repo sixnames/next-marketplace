@@ -385,6 +385,7 @@ export type RubricProductPaginateInput = {
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
+  active?: Maybe<Scalars['Boolean']>;
 };
 
 export type RubricCity = {
@@ -1522,6 +1523,31 @@ export type UpdateRubricVariantMutation = (
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
     )> }
+  ) }
+);
+
+export type GetCatalogueRubricQueryVariables = {
+  id: Scalars['ID'];
+  products?: Maybe<RubricProductPaginateInput>;
+};
+
+
+export type GetCatalogueRubricQuery = (
+  { __typename?: 'Query' }
+  & { getRubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'id' | 'name' | 'level' | 'activeProductsCount' | 'catalogueName'>
+    & { variant?: Maybe<(
+      { __typename?: 'RubricVariant' }
+      & Pick<RubricVariant, 'id' | 'nameString'>
+    )>, products: (
+      { __typename?: 'PaginatedProductsResponse' }
+      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+      & { docs: Array<(
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
+      )> }
+    ) }
   ) }
 );
 
@@ -3111,6 +3137,61 @@ export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export const GetCatalogueRubricDocument = gql`
+    query GetCatalogueRubric($id: ID!, $products: RubricProductPaginateInput) {
+  getRubric(id: $id) {
+    id
+    name
+    level
+    variant {
+      id
+      nameString
+    }
+    activeProductsCount
+    catalogueName
+    products(input: $products) {
+      totalDocs
+      page
+      totalPages
+      docs {
+        id
+        itemId
+        name
+        price
+        slug
+        mainImage
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatalogueRubricQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueRubricQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueRubricQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      products: // value for 'products'
+ *   },
+ * });
+ */
+export function useGetCatalogueRubricQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
+      }
+export function useGetCatalogueRubricLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
+        }
+export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
+export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
+export type GetCatalogueRubricQueryResult = ApolloReactCommon.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
 export const GetAllAttributesGroupsDocument = gql`
     query GetAllAttributesGroups {
   getAllAttributesGroups {

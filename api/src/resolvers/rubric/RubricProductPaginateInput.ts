@@ -9,4 +9,7 @@ export class RubricProductPaginateInput extends PaginateInput {
 
   @Field((_type) => ID, { nullable: true })
   notInRubric?: string;
+
+  @Field((_type) => Boolean, { nullable: true })
+  active?: boolean;
 }

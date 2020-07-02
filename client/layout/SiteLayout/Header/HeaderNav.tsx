@@ -50,10 +50,13 @@ function HeaderNav() {
                   <li key={id}>
                     <Link
                       href={{
-                        pathname: '[catalogue]',
+                        pathname: `/[catalogue]`,
                         query: { id: `${id}` },
                       }}
-                      as={slug}
+                      as={{
+                        pathname: `/${slug}`,
+                        query: { id: `${id}` },
+                      }}
                     >
                       <a
                         onClick={hideRubricsHandler}
@@ -73,10 +76,13 @@ function HeaderNav() {
                 <div key={id}>
                   <Link
                     href={{
-                      pathname: '[catalogue]',
+                      pathname: `/[catalogue]`,
                       query: { id: `${id}` },
                     }}
-                    as={slug}
+                    as={{
+                      pathname: `/${slug}`,
+                      query: { id: `${id}` },
+                    }}
                   >
                     <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
                       {name}
@@ -90,10 +96,13 @@ function HeaderNav() {
                           <li className={classes.subRubricsItem} key={id}>
                             <Link
                               href={{
-                                pathname: '[catalogue]',
+                                pathname: `/[catalogue]`,
                                 query: { id: `${id}` },
                               }}
-                              as={slug}
+                              as={{
+                                pathname: `/${slug}`,
+                                query: { id: `${id}` },
+                              }}
                             >
                               <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
                                 {name}

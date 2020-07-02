@@ -45,6 +45,11 @@ export function getProductsFilter(
         return acc;
       }
 
+      if (key === 'rubrics') {
+        const query = alwaysArray(value);
+        return { ...acc, 'node.rubrics': { $in: query } };
+      }
+
       if (key === 'rubric') {
         const query = alwaysArray(value);
         return { ...acc, 'node.rubrics': { $in: query } };

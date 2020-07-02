@@ -33,7 +33,7 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import { getRubricCounters } from '../../utils/rubricResolverHelpers';
+import { getRubricCounters, getRubricNestedIds } from '../../utils/rubricResolverHelpers';
 import {
   addAttributesGroupToRubricInputSchema,
   addProductToRubricInputSchema,
@@ -779,7 +779,8 @@ export class RubricResolver {
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const query = getProductsFilter({ ...args, rubric: rubric._id }, city);
+    const rubricsIds = await getRubricNestedIds({ rubric, city });
+    const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
     const { options } = generatePaginationOptions({
       limit,
       page,

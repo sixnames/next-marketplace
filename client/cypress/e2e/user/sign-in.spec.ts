@@ -12,7 +12,6 @@ describe('Authorization', () => {
 
   it('Should have a sign in page', () => {
     cy.getByCy(`sign-in-link`).click();
-    cy.location('pathname').should('include', '/sign-in');
 
     // Should show sign in validation errors
     cy.getByCy(`sign-in-email`).type(fakeEmail).blur();
@@ -23,8 +22,8 @@ describe('Authorization', () => {
 
     // User should sign in
     cy.visit(signInPath);
-    cy.getByCy(`sign-in-email`).type(ME_AS_ADMIN.email);
-    cy.getByCy(`sign-in-password`).type(ME_AS_ADMIN.password);
+    cy.getByCy(`sign-in-email`).clear().type(ME_AS_ADMIN.email);
+    cy.getByCy(`sign-in-password`).clear().type(ME_AS_ADMIN.password);
     cy.getByCy(`sign-in-submit`).click();
     cy.location('pathname').should('eq', '/');
 

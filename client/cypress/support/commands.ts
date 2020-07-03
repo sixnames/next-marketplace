@@ -26,11 +26,6 @@ import 'cypress-file-upload';
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-const apiURI = 'http://localhost:4000';
-const createTestDataURI = `${apiURI}/create-test-data`;
-const clearTestDataURI = `${apiURI}/clear-test-data`;
-const authRoute = '/app/sign-in';
-
 Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);
 });
@@ -74,18 +69,15 @@ Cypress.Commands.add('closeNotification', () => {
 });
 
 Cypress.Commands.add('createTestData', () => {
+  const createTestDataURI = `${Cypress.env('CYPRESS_API_HOST')}/create-test-data`;
   cy.request('GET', createTestDataURI);
 });
 
 Cypress.Commands.add('clearTestData', () => {
+  const clearTestDataURI = `${Cypress.env('CYPRESS_API_HOST')}/clear-test-data`;
   cy.request('GET', clearTestDataURI);
 });
 
 Cypress.Commands.add('auth', ({ email, password, redirect }) => {
-  cy.visit(`${authRoute}`);
-  cy.get(`[data-cy="sign-in-email"]`).type(email);
-  cy.get(`[data-cy="sign-in-password"]`).type(password);
-  cy.get(`[data-cy="sign-in-submit"]`).click();
-  cy.get(`[data-cy="close-notification"]`).click();
-  cy.visit(redirect);
+  cy.visit(`/test-sign-in?email=${email}&password=${password}&redirect=${redirect}`);
 });

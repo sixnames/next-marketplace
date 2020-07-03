@@ -14,7 +14,8 @@ const useSignIn = () => {
     hideModal,
     showErrorNotification,
   } = useMutationCallbacks({});
-  const [signInHandler] = useSignInMutation({
+
+  const [signInMutation, mutationData] = useSignInMutation({
     onCompleted: (data) => {
       if (data.signIn && data.signIn.success && data.signIn.user) {
         setMeIn(data.signIn.user);
@@ -35,12 +36,13 @@ const useSignIn = () => {
       hideModal();
     },
   });
-  // console.log(errors);
+
   return {
     errors,
+    mutationData,
     signInHandler: (values: SignInInput) => {
       showLoading();
-      return signInHandler({
+      return signInMutation({
         variables: {
           input: values,
         },

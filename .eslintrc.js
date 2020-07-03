@@ -50,7 +50,7 @@ module.exports = {
     'no-console': 'off',
     '@typescript-eslint/no-unused-vars': [2, { args: 'none' }],
     'cypress/no-assigning-return-values': 'error',
-    'cypress/no-unnecessary-waiting': 'error',
+    'cypress/no-unnecessary-waiting': 'off',
     'cypress/assertion-before-screenshot': 'warn',
     'cypress/no-force': 'warn',
   },

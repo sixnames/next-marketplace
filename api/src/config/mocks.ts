@@ -435,3 +435,19 @@ export const MOCK_PRODUCT_NEW_PRODUCT = {
     { key: 'en', value: 'bar-en' },
   ],
 };
+
+export const MOCK_PRODUCT_CREATE_PRODUCT = {
+  name: [
+    { key: 'ru', value: 'cy-test-create-product' },
+    { key: 'en', value: 'cy-test-create-product-en' },
+  ],
+  cardName: [
+    { key: 'ru', value: 'cy-test-create-product' },
+    { key: 'en', value: 'cy-test-create-product-en' },
+  ],
+  price: 2000,
+  description: [
+    { key: 'ru', value: 'create description' },
+    { key: 'en', value: 'bar-en' },
+  ],
+};

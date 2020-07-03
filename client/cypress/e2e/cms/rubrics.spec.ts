@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_TWO,
@@ -24,18 +22,8 @@ const mockRubricVariantName = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
 
 describe('Rubrics', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -56,7 +44,6 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogue-name`).type(mockRubricLevelOneName);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`rubric-submit`).click();
-    cy.closeNotification();
 
     // Should create a new rubric
     cy.getByCy(`create-rubric`).click();
@@ -65,7 +52,6 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`tree-link-${mockNewRubricA}`).should('exist');
-    cy.closeNotification();
 
     // Shouldn't create a new rubric if exists on second level
     cy.getByCy(`create-rubric`).click();
@@ -73,7 +59,6 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogue-name`).type(mockRubricLevelTwoName);
     cy.selectOptionByTestId(`parent`, mockRubricLevelOneName);
     cy.getByCy(`rubric-submit`).click();
-    cy.closeNotification();
 
     // Should create a new rubric on second level
     cy.getByCy(`create-rubric`).click();
@@ -83,7 +68,6 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`tree-link-${mockNewRubricB}`).should('exist');
-    cy.closeNotification();
 
     // Shouldn't create a new rubric if exists on third level
     cy.getByCy(`create-rubric`).click();
@@ -94,7 +78,6 @@ describe('Rubrics', () => {
     cy.getByCy(`rubric-name`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`error-notification`).should('exist');
-    cy.closeNotification();
 
     // Should create a new rubric on third level
     cy.getByCy(`create-rubric`).click();

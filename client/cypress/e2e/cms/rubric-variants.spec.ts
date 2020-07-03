@@ -1,10 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
-import {
-  ME_AS_ADMIN,
-  MOCK_RUBRIC_TYPE_EQUIPMENT,
-  MOCK_RUBRIC_TYPE_STAGE,
-} from '../../../../api/src/config';
+import { MOCK_RUBRIC_TYPE_EQUIPMENT, MOCK_RUBRIC_TYPE_STAGE } from '../../../../api/src/config';
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
@@ -13,18 +8,8 @@ const mockNewRubricVariantName = 'cy-test-new-variant';
 
 describe('Rubric variants', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -43,7 +28,6 @@ describe('Rubric variants', () => {
     cy.getByCy('update-name-submit').click();
     cy.getByCy('rubric-variant-modal').should('not.exist');
     cy.getByCy(`error-notification`).should('exist');
-    cy.closeNotification();
 
     // Should create new rubric type
     cy.getByCy('rubric-variant-create').click();
@@ -51,7 +35,6 @@ describe('Rubric variants', () => {
     cy.getByCy('update-name-submit').click();
     cy.getByCy('rubric-variant-modal').should('not.exist');
     cy.getByCy(`${mockNewRubricVariantName}`).should('exist');
-    cy.closeNotification();
 
     // Should update rubric type name
     const mockUpdatedRubricTypeName = 'cy-test-updated-type';
@@ -61,14 +44,12 @@ describe('Rubric variants', () => {
     cy.getByCy('update-name-submit').click();
     cy.getByCy(`${mockNewRubricVariantName}`).should('not.exist');
     cy.getByCy(`${mockUpdatedRubricTypeName}`).should('exist');
-    cy.closeNotification();
 
     // Shouldn't delete rubric type connected to the rubric
     cy.getByCy(`${mockRubricVariantName}-delete`).click();
     cy.getByCy('rubric-variant-delete-modal').should('exist');
     cy.getByCy('confirm').click();
     cy.getByCy(`${mockRubricVariantName}`).should('exist');
-    cy.closeNotification();
 
     // Should delete rubric type
     cy.getByCy(`${mockRubricVariantNameForDelete}-delete`).click();

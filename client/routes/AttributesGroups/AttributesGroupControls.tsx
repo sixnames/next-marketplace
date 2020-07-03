@@ -3,7 +3,6 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import {
   AddAttributeToGroupInput,
   AttributesGroup,
-  GetAllAttributesGroupsQuery,
   useAddAttributeToGroupMutation,
   useDeleteAttributesGroupMutation,
   useUpdateAttributesGroupMutation,
@@ -29,27 +28,11 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
   });
 
   const [deleteAttributesGroupMutation] = useDeleteAttributesGroupMutation({
-    update: (cache, { data }) => {
+    refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
+    awaitRefetchQueries: true,
+    update: (_cache, { data }) => {
       if (data && data.deleteAttributesGroup && data.deleteAttributesGroup.success) {
-        const cacheData: GetAllAttributesGroupsQuery | null = cache.readQuery({
-          query: ATTRIBUTES_GROUPS_QUERY,
-        });
-        if (cacheData) {
-          const { getAllAttributesGroups } = cacheData;
-
-          const filteredGroups = getAllAttributesGroups.filter(({ id: groupId }) => {
-            return id !== groupId;
-          });
-
-          cache.writeQuery({
-            query: ATTRIBUTES_GROUPS_QUERY,
-            data: {
-              getAllAttributesGroups: filteredGroups,
-            },
-          });
-
-          removeQuery({ key: 'group' });
-        }
+        removeQuery({ key: 'group' });
       }
     },
     onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroup),
@@ -86,10 +69,11 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
     showModal({
       type: CONFIRM_MODAL,
       props: {
-        testId: 'delete-attributes-group',
+        testId: 'delete-attributes-group-modal',
         message: `Вы уверенны, что хотите удалить группу атрибутов ${nameString}?`,
         confirm: () => {
           showLoading();
+          console.log('delete ============', id);
           return deleteAttributesGroupMutation({ variables: { id } });
         },
       },

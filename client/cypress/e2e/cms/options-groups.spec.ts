@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_OPTIONS,
   MOCK_OPTIONS_GROUP,
   MOCK_OPTIONS_GROUP_FOR_DELETE,
@@ -23,17 +21,8 @@ const optionNewColor = 'fafafa';
 
 describe('Options Groups', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
     cy.createTestData();
-    cy.visit(`/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -53,7 +42,6 @@ describe('Options Groups', () => {
     cy.getByCy(`update-name-submit`).click();
     cy.getByCy(`create-options-group-modal`).should('not.exist');
     cy.getByCy(`group-${createdGroupName}`).should('exist');
-    cy.closeNotification();
 
     // Should update group title on groups filter click
     cy.getByCy(`group-${createdGroupName}`).click();
@@ -67,7 +55,6 @@ describe('Options Groups', () => {
       .type(groupNewName);
     cy.getByCy(`update-name-submit`).click();
     cy.contains(groupNewName).should('exist');
-    cy.closeNotification();
 
     // Shouldn't delete options group connected to the attribute
     cy.getByCy(`group-${mockGroupName}`).click();
@@ -76,7 +63,6 @@ describe('Options Groups', () => {
     cy.getByCy(`confirm`).click();
     cy.contains(mockGroupName).should('exist');
     cy.getByCy(`group-${mockGroupName}`).should('exist');
-    cy.closeNotification();
 
     // Should delete options group
     cy.getByCy(`group-${mockGroupForDeleteName}`).click();
@@ -84,9 +70,8 @@ describe('Options Groups', () => {
     cy.getByCy(`confirm`).click();
     cy.contains(mockGroupForDeleteName).should('not.exist');
     cy.getByCy(`group-${mockGroupForDeleteName}`).should('not.exist');
-  });
 
-  it('Should CRUD option in group', () => {
+    // Should CRUD option in group
     // Shouldn't create option in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`options-group-create`).click();
@@ -101,7 +86,6 @@ describe('Options Groups', () => {
     cy.getByCy(`option-color`).clear().type(mockOptionColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${mockOptionName}`).should('have.length', 1);
-    cy.closeNotification();
 
     //Should create option in group
     cy.getByCy(`options-group-create`).click();
@@ -109,7 +93,6 @@ describe('Options Groups', () => {
     cy.getByCy(`option-color`).type(optionColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('exist');
-    cy.closeNotification();
 
     // Should update option in group
     cy.getByCy(`${optionName}-option-update`).click();
@@ -118,7 +101,6 @@ describe('Options Groups', () => {
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('not.exist');
     cy.getByCy(`${optionNewName}`).should('exist');
-    cy.closeNotification();
 
     // Should delete option from group
     cy.getByCy(`${optionNewName}-option-delete`).click();

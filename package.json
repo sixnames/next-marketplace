@@ -25,10 +25,10 @@
 
     "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
     "test:api": "cd api && yarn test",
-    "test:app": "cd app && yarn test",
+    "test:client": "cd client && yarn test",
 
     "install:api": "cd api && yarn",
-    "install:app": "cd app && yarn",
+    "install:client": "cd client && yarn",
 
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",

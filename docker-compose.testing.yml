@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile.testing
       context: ./nginx
     ports:
-      - 80:80
+      - 3000:3000
     depends_on:
       - app
   api:
@@ -37,15 +37,6 @@ services:
       - ./api/assets:/app/assets
     depends_on:
       - mongo
-  app:
-    container_name: app
-    restart: always
-    build:
-      dockerfile: Dockerfile.testing
-      context: ./app
-    stdin_open: true
-    depends_on:
-      - api
   site:
     container_name: site
     restart: always

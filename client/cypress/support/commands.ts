@@ -1,5 +1,6 @@
 import '@iam4x/cypress-graphql-mock';
 import 'cypress-file-upload';
+import { ME_AS_ADMIN } from '../../../api/src/config';
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -27,6 +28,7 @@ import 'cypress-file-upload';
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('getByCy', (testId) => {
+  cy.wait(50);
   cy.get(`[data-cy="${testId}"]`);
 });
 
@@ -69,15 +71,18 @@ Cypress.Commands.add('closeNotification', () => {
 });
 
 Cypress.Commands.add('createTestData', () => {
-  const createTestDataURI = `${Cypress.env('CYPRESS_API_HOST')}/create-test-data`;
+  const createTestDataURI = `${Cypress.env('api-host')}/create-test-data`;
   cy.request('GET', createTestDataURI);
 });
 
 Cypress.Commands.add('clearTestData', () => {
-  const clearTestDataURI = `${Cypress.env('CYPRESS_API_HOST')}/clear-test-data`;
+  const clearTestDataURI = `${Cypress.env('api-host')}/clear-test-data`;
   cy.request('GET', clearTestDataURI);
 });
 
-Cypress.Commands.add('auth', ({ email, password, redirect }) => {
-  cy.visit(`/test-sign-in?email=${email}&password=${password}&redirect=${redirect}`);
-});
+Cypress.Commands.add(
+  'auth',
+  ({ email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password, redirect }) => {
+    cy.visit(`/test-sign-in?email=${email}&password=${password}&redirect=${redirect}`);
+  },
+);

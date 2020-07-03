@@ -105,9 +105,6 @@ export const UPDATE_RUBRIC = gql`
     updateRubric(input: $input) {
       success
       message
-      rubric {
-        ...RubricFragment
-      }
     }
   }
 

@@ -9,8 +9,8 @@ declare namespace Cypress {
   }
 
   interface AuthInterface {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
     redirect: string;
   }
 

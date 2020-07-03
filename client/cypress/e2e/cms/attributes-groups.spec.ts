@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_GROUP,
@@ -19,18 +17,8 @@ const fakeName = 'f';
 
 describe('Attributes Groups', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -49,10 +37,8 @@ describe('Attributes Groups', () => {
     // Should create a new attributes group
     cy.getByCy(`update-name-input`).clear().type(createdGroupName);
     cy.getByCy(`update-name-submit`).click();
-    cy.getByCy(`group-${createdGroupName}`).should('exist');
     cy.getByCy(`group-${createdGroupName}`).click();
     cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
-    cy.closeNotification();
 
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-update`).click();
@@ -64,27 +50,23 @@ describe('Attributes Groups', () => {
     cy.getByCy(`update-name-input`).clear().type(updatedGroupName);
     cy.getByCy(`update-name-submit`).click();
     cy.contains(updatedGroupName).should('exist');
-    cy.closeNotification();
 
     // Shouldn't delete attributes group connected to the rubric
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`attributes-group-delete`).click();
-    cy.getByCy(`delete-attributes-group`).should('exist');
+    cy.getByCy(`delete-attributes-group-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.contains(mockGroupName).should('exist');
     cy.getByCy(`group-${mockGroupName}`).should('exist');
-    cy.closeNotification();
 
     // Should delete attributes group
     cy.getByCy(`group-${mockGroupForDeleteName}`).click();
     cy.getByCy(`attributes-group-delete`).click();
-    cy.getByCy(`delete-attributes-group`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.contains(mockGroupForDeleteName).should('not.exist');
     cy.getByCy(`group-${mockGroupForDeleteName}`).should('not.exist');
-  });
 
-  it(`Should CRUD attribute in group`, () => {
+    // Should CRUD attribute in group
     // Shouldn't create attribute in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`attributes-group-create`).click();
@@ -103,7 +85,6 @@ describe('Attributes Groups', () => {
     cy.selectOptionByTestId(`attribute-options`, mockOptionsGroupName);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('exist');
-    cy.closeNotification();
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();

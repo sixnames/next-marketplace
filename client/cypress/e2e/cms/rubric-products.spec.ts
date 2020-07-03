@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTE_SELECT,
   MOCK_ATTRIBUTE_STRING,
@@ -42,18 +40,8 @@ const modal = 'add-product-to-rubric-modal';
 
 describe('Rubric products', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -84,14 +72,13 @@ describe('Rubric products', () => {
     cy.getByCy(`confirm`).click();
     cy.getByCy('rubric-products').should('not.contain', mockProductForDelete);
     cy.getByCy(`${mockRubricLevelThreeName}-total`).should('contain', '1');
-    cy.closeNotification();
 
     // Should display not in rubric products and should delete product from DB
     cy.getByCy(QUERY_DATA_LAYOUT_NO_RUBRIC).click();
     cy.getByCy(mockProductForDelete).should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.closeNotification();
+
     cy.getByCy('delete-product-modal').should('not.exist');
     cy.getByCy(mockProductForDelete).should('not.exist');
 
@@ -103,20 +90,18 @@ describe('Rubric products', () => {
     cy.getByCy(`${mockProductB}-create`).click();
     cy.getByCy(mockProductB).should('exist');
     cy.getByCy(`${mockRubricLevelThreeName}-total`).should('contain', '2');
-    cy.closeNotification();
+
     cy.getByCy(`${mockProduct}-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.closeNotification();
 
     // Should add product from not in rubric list to the rubric
     cy.getByCy('product-create').click();
     cy.get(`[data-cy=${modal}] [data-cy=${QUERY_DATA_LAYOUT_NO_RUBRIC}]`).click();
     cy.getByCy(`${mockProduct}-create`).click();
     cy.getByCy(mockProduct).should('exist');
-    cy.closeNotification();
+
     cy.getByCy(`${mockProduct}-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.closeNotification();
 
     // Should add product from search result to the rubric
     cy.getByCy('product-create').click();
@@ -127,7 +112,6 @@ describe('Rubric products', () => {
     cy.getByCy('product-search-submit').click();
     cy.getByCy(`${mockProduct}-create`).click();
     cy.getByCy(mockProduct).should('exist');
-    cy.closeNotification();
 
     // Shouldn't create product on validation error
     cy.getByCy('product-create').click();
@@ -139,30 +123,9 @@ describe('Rubric products', () => {
     cy.getByCy('cardName[0].value-error').should('exist');
     cy.getByCy('price-error').should('exist');
     cy.getByCy('description[0].value-error').should('exist');
-  });
-});
+    cy.getByCy('close-modal').click();
 
-// Used separate describe block for file upload mutation
-// cypress-graphql-mock module throws error on file upload
-describe('Rubric products creation', () => {
-  beforeEach(() => {
-    cy.createTestData();
-  });
-
-  after(() => {
-    cy.clearTestData();
-  });
-
-  it('Should create product and add it to the rubric', () => {
-    // sign in as admin
-    cy.auth({
-      email: ME_AS_ADMIN.email,
-      password: ME_AS_ADMIN.password,
-      redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
-    });
-
-    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
-    cy.visitMoreNavLink('products');
+    // Should create product and add it to the rubric
     cy.getByCy('product-create').click();
     cy.getByCy('create-new-product').click();
 

@@ -80,6 +80,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   const { data, loading, error } = useGetAttributesGroupQuery({
     skip: !group,
     variables: { id: group },
+    fetchPolicy: 'network-only',
   });
 
   if (!group) {

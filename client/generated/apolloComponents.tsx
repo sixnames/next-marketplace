@@ -1032,10 +1032,6 @@ export type UpdateRubricMutation = (
   & { updateRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & RubricFragmentFragment
-    )> }
   ) }
 );
 
@@ -2078,12 +2074,9 @@ export const UpdateRubricDocument = gql`
   updateRubric(input: $input) {
     success
     message
-    rubric {
-      ...RubricFragment
-    }
   }
 }
-    ${RubricFragmentFragmentDoc}`;
+    `;
 export type UpdateRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateRubricMutation, UpdateRubricMutationVariables>;
 
 /**

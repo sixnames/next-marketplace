@@ -2,7 +2,6 @@ import React from 'react';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import {
   AddOptionToGroupInput,
-  GetAllOptionsGroupsQuery,
   useAddOptionToGroupMutation,
   useDeleteOptionsGroupMutation,
   useUpdateOptionsGroupMutation,
@@ -30,27 +29,11 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   const [deleteOptionsGroupMutation] = useDeleteOptionsGroupMutation({
-    update: (cache, { data }) => {
+    refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
+    awaitRefetchQueries: true,
+    update: (_cache, { data }) => {
       if (data && data.deleteOptionsGroup.success) {
-        const cacheData: GetAllOptionsGroupsQuery | null = cache.readQuery({
-          query: OPTIONS_GROUPS_QUERY,
-        });
-        if (cacheData && cacheData.getAllOptionsGroups) {
-          const { getAllOptionsGroups } = cacheData;
-
-          const filteredGroups = getAllOptionsGroups.filter(({ id: groupId }) => {
-            return id !== groupId;
-          });
-
-          cache.writeQuery({
-            query: OPTIONS_GROUPS_QUERY,
-            data: {
-              getAllOptionsGroups: filteredGroups,
-            },
-          });
-
-          removeQuery({ key: 'group' });
-        }
+        removeQuery({ key: 'group' });
       }
     },
     onCompleted: (data) => onCompleteCallback(data.deleteOptionsGroup),

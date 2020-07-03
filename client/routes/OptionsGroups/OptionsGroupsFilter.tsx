@@ -14,7 +14,9 @@ import { LangInterface } from '../../types';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 
 const OptionsGroupsFilter: React.FC = () => {
-  const { data, loading, error } = useGetAllOptionsGroupsQuery();
+  const { data, loading, error } = useGetAllOptionsGroupsQuery({
+    fetchPolicy: 'network-only',
+  });
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });

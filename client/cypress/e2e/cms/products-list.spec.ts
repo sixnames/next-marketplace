@@ -1,12 +1,11 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTE_SELECT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_OPTIONS,
   MOCK_PRODUCT_B_PRODUCT,
+  MOCK_PRODUCT_CREATE_PRODUCT,
   MOCK_PRODUCT_FOR_DELETE,
   MOCK_PRODUCT_NEW_PRODUCT,
   MOCK_RUBRIC_LEVEL_ONE,
@@ -32,6 +31,11 @@ const mockProductNewCardName = MOCK_PRODUCT_NEW_PRODUCT.cardName[0].value;
 const mockProductNewCardPrice = MOCK_PRODUCT_NEW_PRODUCT.price;
 const mockProductNewCarDescription = MOCK_PRODUCT_NEW_PRODUCT.description[0].value;
 
+const mockProductCreateName = MOCK_PRODUCT_CREATE_PRODUCT.name[0].value;
+const mockProductCreateCardName = MOCK_PRODUCT_CREATE_PRODUCT.cardName[0].value;
+const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE_PRODUCT.price;
+const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE_PRODUCT.description[0].value;
+
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 
@@ -44,51 +48,22 @@ const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 
 describe('Products list', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
     cy.clearTestData();
   });
 
-  it('Should delete product from city or DB', () => {
+  it('Should CRUD products', () => {
+    // Should delete product from city or DB
     cy.getByCy(`products-list`).should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(mockProductForDelete).should('not.exist');
-    cy.closeNotification();
-  });
-});
 
-// Used separate describe block for file upload mutation
-// cypress-graphql-mock module throws error on file upload
-describe('New products creation', () => {
-  beforeEach(() => {
-    cy.createTestData();
-    // sign in as admin
-    cy.auth({
-      email: ME_AS_ADMIN.email,
-      password: ME_AS_ADMIN.password,
-      redirect: `/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
-    });
-  });
-
-  after(() => {
-    cy.clearTestData();
-  });
-
-  it('Should open product details', () => {
+    // Should open product details
     cy.getByCy(`${mockProductB}-update`).click();
     cy.getByCy(`product-details`).should('exist');
 
@@ -122,19 +97,19 @@ describe('New products creation', () => {
     cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
     cy.getByCy('submit-product').click();
     cy.getByCy(`success-notification`).should('exist');
-  });
 
-  it('Should create product and add it to the rubric', () => {
+    // Should create new product
+    cy.visit(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
     cy.getByCy(`product-create`).click();
 
     // attach images
     cy.getByCy('product-images').attachFile('test-image-3.jpg', { subjectType: 'drag-n-drop' });
 
     // fill inputs
-    cy.getByCy('product-name').type(mockProductNewName);
-    cy.getByCy('product-card-name').type(mockProductNewCardName);
-    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('product-description').type(mockProductNewCarDescription);
+    cy.getByCy('product-name').type(mockProductCreateName);
+    cy.getByCy('product-card-name').type(mockProductCreateCardName);
+    cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
+    cy.getByCy('product-description').type(mockProductCreateCarDescription);
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
     cy.selectOptionByTestId(`attributesSource`, `${mockRubricLevelOne}_>_${mockRubricLevelTwo}`);
@@ -157,6 +132,6 @@ describe('New products creation', () => {
     cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
 
     cy.getByCy('submit-new-product').click();
-    cy.getByCy(mockProductNewName).should('exist');
+    cy.getByCy(mockProductCreateName).should('exist');
   });
 });

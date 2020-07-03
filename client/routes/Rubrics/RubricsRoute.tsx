@@ -89,7 +89,7 @@ const RubricsRoute: React.FC = () => {
       },
     ],
   });
-  console.log(filterResultNavConfig);
+
   const contentControlsConfig = {
     deleteHandler: deleteRubricHandler,
     deleteTitle: 'Удалить рубрику',

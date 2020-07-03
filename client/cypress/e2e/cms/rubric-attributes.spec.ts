@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
-import schema from '../../../generated/introspectionSchema.json';
 import {
-  ME_AS_ADMIN,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_RUBRIC_LEVEL_ONE,
@@ -19,18 +17,8 @@ const mockAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].va
 
 describe('Rubric attributes', () => {
   beforeEach(() => {
-    cy.server();
-    cy.mockGraphql({
-      schema,
-      operations: {
-        Initial: {
-          me: ME_AS_ADMIN,
-        },
-      },
-    });
-
     cy.createTestData();
-    cy.visit(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.auth({ redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
   });
 
   after(() => {
@@ -46,7 +34,6 @@ describe('Rubric attributes', () => {
     cy.getByCy(`attributes-group-delete-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.getByCy(`${mockAttributesGroup}-delete`).should('not.exist');
-    cy.closeNotification();
 
     // Shouldn't contain deleted attribute group on first and second levels
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
@@ -68,7 +55,6 @@ describe('Rubric attributes', () => {
     cy.selectOptionByTestId('attributes-groups', mockAttributesGroupForDelete);
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy('rubric-attributes').should('contain', mockAttributesGroupForDelete);
-    cy.closeNotification();
 
     // Should have new attribute group on first and third levels
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();

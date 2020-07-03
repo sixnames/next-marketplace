@@ -33,7 +33,7 @@ const ModalFrame: React.FC<ModalFrameInterface> = ({
       }`}
     >
       <div>{children}</div>
-      <ButtonCross onClick={hideModal} className={classes.close} />
+      <ButtonCross onClick={hideModal} className={classes.close} testId={'close-modal'} />
 
       <div className={classes.closeLeft} onClick={hideModal} />
       <div className={classes.closeRight} onClick={hideModal} />

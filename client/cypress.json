@@ -2,6 +2,6 @@
   "baseUrl": "http://localhost:3000",
   "integrationFolder": "cypress/e2e",
   "viewportWidth": 1440,
-  "defaultCommandTimeout": 6000,
+  "defaultCommandTimeout": 8000,
   "video": false
 }

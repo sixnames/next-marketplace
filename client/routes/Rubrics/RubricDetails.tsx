@@ -17,6 +17,7 @@ import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
 import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
+import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
@@ -25,6 +26,17 @@ interface RubricDetailsInterface {
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: {
+            noRubrics: true,
+          },
+        },
+      },
+    ],
     onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });

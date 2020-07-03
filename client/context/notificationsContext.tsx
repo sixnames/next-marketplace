@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { SnackbarProvider, useSnackbar } from 'notistack';
-// import Notification from '../components/Notification/Notification';
+import Notification from '../components/Notification/Notification';
 import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from '../config';
 
 const NotificationsContext = createContext({});
@@ -26,7 +26,7 @@ const NotificationsProvider: React.FC = ({ children }) => {
       maxSnack={8}
       preventDuplicate
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'right',
       }}
     >
@@ -42,10 +42,7 @@ interface SuccessNotificationInterface {
 
 function useNotificationsContext() {
   const context = useContext(NotificationsContext);
-  const {
-    enqueueSnackbar,
-    // closeSnackbar
-  } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   if (!context) {
     throw new Error('useNotificationsContext must be used within a NotificationsProvider');
@@ -54,15 +51,15 @@ function useNotificationsContext() {
   const showNotification = useCallback(
     ({
       key = '',
-      // title = '',
+      title = '',
       message = '',
-      // path,
-      // icon = 'Error',
-      // type,
+      path,
+      icon = 'Error',
+      type,
       autoHideDuration = NOTIFICATION_TIMEOUT,
-      // playSound = false,
+      playSound = false,
       persist = false,
-      // testId = '',
+      testId = '',
     }) => {
       enqueueSnackbar(message, {
         key,
@@ -70,7 +67,7 @@ function useNotificationsContext() {
         autoHideDuration: autoHideDuration,
         content: (
           <div>
-            {/*<Notification
+            <Notification
               title={title}
               message={message}
               path={path}
@@ -79,12 +76,12 @@ function useNotificationsContext() {
               testId={testId}
               playSound={playSound}
               closeHandler={() => closeSnackbar(key)}
-            />*/}
+            />
           </div>
         ),
       });
     },
-    [enqueueSnackbar],
+    [closeSnackbar, enqueueSnackbar],
   );
 
   function showErrorNotification({

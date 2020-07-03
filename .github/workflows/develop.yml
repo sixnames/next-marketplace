@@ -41,15 +41,15 @@ jobs:
     - run: yarn up:testing
     - run: yarn test:client
 
-  deploy:
-    needs: [apiTest, clientTest]
-    runs-on: ubuntu-latest
-    steps:
-      - name: deploy
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: cd www && git pull && docker-compose -f docker-compose.stage.yml up --build -d
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          privateKey: ${{ secrets.DEV_PRIVATE_KEY}}
+#  deploy:
+#    needs: [apiTest, clientTest]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: deploy
+#        uses: garygrossgarten/github-action-ssh@release
+#        with:
+#          command: cd www && git pull && docker-compose -f docker-compose.stage.yml up --build -d
+#          host: ${{ secrets.DEV_HOST }}
+#          username: ${{ secrets.DEV_USERNAME }}
+#          privateKey: ${{ secrets.DEV_PRIVATE_KEY}}
 

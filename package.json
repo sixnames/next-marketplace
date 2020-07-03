@@ -19,9 +19,10 @@
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
     "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
 
-    "dev": "concurrently -n api,client \"yarn dev:api\" \"yarn dev:client\"",
+    "dev": "concurrently -n api,client,watchConfig \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\"",
     "dev:api": "cd api && yarn dev",
     "dev:client": "cd client && yarn dev",
+    "watch-config": "cd api && yarn watch-config",
 
     "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
     "test:api": "cd api && yarn test",

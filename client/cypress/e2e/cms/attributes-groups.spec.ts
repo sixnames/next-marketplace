@@ -1,10 +1,11 @@
 /// <reference types="cypress" />
 import {
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_GROUP,
-} from '../../../../api/src/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED, ATTRIBUTE_TYPE_MULTIPLE_SELECT } from '../../../config';
+} from '../../../config';
 
 const mockGroupName = MOCK_ATTRIBUTES_GROUP.name[0].value;
 const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;

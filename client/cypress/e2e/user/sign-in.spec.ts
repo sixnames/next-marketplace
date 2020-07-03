@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
-import { ME_AS_ADMIN } from '../../../../api/src/config';
+
+import { ME_AS_ADMIN } from '../../../config';
 
 const signInPath = '/sign-in';
 const fakeEmail = 'fake@gm';

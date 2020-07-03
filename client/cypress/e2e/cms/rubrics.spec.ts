@@ -5,8 +5,8 @@ import {
   MOCK_RUBRIC_LEVEL_TWO,
   MOCK_RUBRIC_TYPE_EQUIPMENT,
   MOCK_RUBRIC_TYPE_STAGE,
-} from '../../../../api/src/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+} from '../../../config';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;

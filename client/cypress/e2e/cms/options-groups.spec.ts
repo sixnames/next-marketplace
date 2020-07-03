@@ -3,8 +3,8 @@ import {
   MOCK_OPTIONS,
   MOCK_OPTIONS_GROUP,
   MOCK_OPTIONS_GROUP_FOR_DELETE,
-} from '../../../../api/src/config';
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+} from '../../../config';
 
 const mockGroupName = MOCK_OPTIONS_GROUP.name[0].value;
 const mockOptionName = MOCK_OPTIONS[0].name[0].value;

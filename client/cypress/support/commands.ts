@@ -1,6 +1,6 @@
 import '@iam4x/cypress-graphql-mock';
 import 'cypress-file-upload';
-import { ME_AS_ADMIN } from '../../../api/src/config';
+import { ME_AS_ADMIN } from '../../config';
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

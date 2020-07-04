@@ -11,12 +11,8 @@ services:
     volumes:
       - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
       - ./data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=secret
-      - MONGO_INITDB_DATABASE=winepoint-db
-      - DB_USERNAME=admin
-      - DB_PASSWORD=secret
+    env_file:
+      - .env.testing
   nginx:
     container_name: nginx
     restart: always
@@ -24,9 +20,9 @@ services:
       dockerfile: Dockerfile.testing
       context: ./nginx
     ports:
-      - 3000:3000
+      - '3000:3000'
     depends_on:
-      - site
+      - api
   api:
     container_name: api
     restart: always
@@ -34,9 +30,11 @@ services:
       dockerfile: Dockerfile.testing
       context: ./api
     volumes:
-      - ./api/assets:/app/assets
+      - ./api/assets:/api/assets
     depends_on:
       - mongo
+    env_file:
+      - .env.testing
   site:
     container_name: site
     restart: always
@@ -45,3 +43,5 @@ services:
       context: client
     depends_on:
       - api
+    env_file:
+      - .env.testing

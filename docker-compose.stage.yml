@@ -27,19 +27,6 @@ services:
       - .env
     depends_on:
       - mongo
-  app:
-    container_name: app
-    restart: always
-    build:
-      dockerfile: Dockerfile.stage
-      context: ./app
-    stdin_open: true
-    ports:
-      - '3001:3001'
-    env_file:
-      - .env
-    depends_on:
-      - api
   site:
     container_name: site
     restart: always

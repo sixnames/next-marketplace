@@ -6,16 +6,16 @@
     "url": "https://github.com/ya-gu/winepoint.git"
   },
   "scripts": {
-    "up": "docker-compose -f docker-compose.local.yml up -d",
-    "stop": "docker-compose -f docker-compose.local.yml stop",
-    "down": "docker-compose -f docker-compose.local.yml down && rm -rf data/*",
+    "up": "docker-compose -f docker-compose.dev.yml up -d",
+    "stop": "docker-compose -f docker-compose.dev.yml stop",
+    "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
     "postup": "yarn dev",
 
     "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
     "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
     "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
 
-    "up:testing": "docker-compose -f docker-compose.testing.yml up -d --build",
+    "up:testing": "docker-compose -f docker-compose.testing.yml up --build",
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
     "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
 

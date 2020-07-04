@@ -4,14 +4,17 @@ import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { createUploadLink } from 'apollo-upload-client';
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-// TODO make dynamic uri
-
+// TODO make dynamic uri=
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: createUploadLink({
-      // uri: process.browser ? 'http://localhost/api/graphql' : 'http://api:4000/graphql',
-      uri: 'http://localhost:4000/graphql',
+      uri: process.env.API_HOST || 'http://localhost:4000/graphql',
+      // uri: process.env.API_BROWSER_HOST || 'http://localhost:4000/graphql',
+      // uri: 'http://localhost:3000/graphql',
+      /*uri: process.browser
+        ? process.env.API_BROWSER_HOST
+        : process.env.API_HOST || 'http://localhost:4000/graphql',*/
       credentials: 'include',
     }),
     cache: new InMemoryCache(),

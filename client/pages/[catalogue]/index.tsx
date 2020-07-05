@@ -1,18 +1,18 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
-import { initializeApollo } from '../apollo/client';
-import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
-import SiteLayout from '../layout/SiteLayout/SiteLayout';
-import { UserContextProvider } from '../context/userContext';
-import Inner from '../components/Inner/Inner';
+import { initializeApollo } from '../../apollo/client';
+import { INITIAL_SITE_QUERY } from '../../graphql/query/initialQuery';
+import SiteLayout from '../../layout/SiteLayout/SiteLayout';
+import { UserContextProvider } from '../../context/userContext';
+import Inner from '../../components/Inner/Inner';
 import {
   GetCatalogueRubricQueryResult,
   InitialSiteQueryQueryResult,
-} from '../generated/apolloComponents';
-import { SiteContextProvider } from '../context/siteContext';
-import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
-import RequestError from '../components/RequestError/RequestError';
-import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
+} from '../../generated/apolloComponents';
+import { SiteContextProvider } from '../../context/siteContext';
+import { CATALOGUE_RUBRIC_QUERY } from '../../graphql/query/catalogueQuery';
+import RequestError from '../../components/RequestError/RequestError';
+import CatalogueRoute from '../../routes/CatalogueRoute/CatalogueRoute';
 
 export type CatalogueData = GetCatalogueRubricQueryResult['data'];
 

@@ -5,9 +5,10 @@ import { ASSETS_URL } from '../../config';
 
 interface CatalogueProductInterface {
   product: any;
+  rubricSlug: string;
 }
 
-const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product }) => {
+const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product, rubricSlug }) => {
   const { slug, name, itemId, mainImage, price, id } = product;
   const imageWidth = 218;
 
@@ -31,7 +32,16 @@ const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product }) => {
         <div className={classes.Art}>Артикул: {itemId}</div>
       </div>
 
-      <Link href={slug}>
+      <Link
+        href={{
+          pathname: `[catalogue]/[card]`,
+          query: { id: `${id}` },
+        }}
+        as={{
+          pathname: `${rubricSlug}/${slug}`,
+          query: { id: `${id}` },
+        }}
+      >
         <a className={classes.Link}>{name}</a>
       </Link>
     </div>

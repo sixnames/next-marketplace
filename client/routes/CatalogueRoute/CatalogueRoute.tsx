@@ -32,7 +32,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
         <div className={classes.List}>
           {rubric.products.docs.map((product: any) => (
-            <CatalogueProduct product={product} key={product.id} />
+            <CatalogueProduct product={product} rubricSlug={rubric.slug} key={product.id} />
           ))}
         </div>
       </div>

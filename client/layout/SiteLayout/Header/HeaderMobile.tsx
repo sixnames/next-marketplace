@@ -3,6 +3,7 @@ import HeaderMobileItem from './HeaderMobileItem';
 import useScrollPosition from '../../../hooks/useScrollPosition';
 import Icon from '../../../components/Icon/Icon';
 import AnimateOpacity from '../../../components/AnimateOpacity/AnimateOpacity';
+import { useSiteContext } from '../../../context/siteContext';
 import classes from './HeaderMobile.module.css';
 
 interface HeaderMobileInterface {
@@ -12,11 +13,7 @@ interface HeaderMobileInterface {
 const HeaderMobile: React.FC<HeaderMobileInterface> = ({ headerRef }) => {
   const { isScrolled } = useScrollPosition(headerRef, 88);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const data = {
-    api: {
-      getRubricsTree: [],
-    },
-  };
+  const { getRubricsTree } = useSiteContext();
 
   function toggleNavHandler() {
     setIsNavOpen((prevState) => !prevState);
@@ -25,10 +22,6 @@ const HeaderMobile: React.FC<HeaderMobileInterface> = ({ headerRef }) => {
   function hideNavHandler() {
     setIsNavOpen(false);
   }
-
-  const {
-    api: { getRubricsTree },
-  } = data;
 
   useEffect(() => {
     if (isScrolled) {

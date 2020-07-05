@@ -49,6 +49,26 @@
   margin-bottom: 10px;
 }
 
+.Image:before {
+  position: relative;
+  z-index: 1;
+  display: block;
+  content: '';
+  width: 100%;
+  padding-top: 100%;
+}
+
+.Image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 .Name {
   font-size: 15px;
   font-weight: bold;

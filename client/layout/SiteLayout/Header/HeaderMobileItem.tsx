@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/Icon/Icon';
-import Link from '../../../components/Link/Link';
 import classes from './HeaderMobileItem.module.css';
+import Link from 'next/link';
 
 interface RubricInterface {
   id: string;
@@ -15,9 +15,10 @@ interface HeaderMobileItemInterface {
   hideNav: () => void;
 }
 
+// TODO active class
 const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { name, slug, children = [] } = rubric;
+  const { name, slug, children = [], id } = rubric;
 
   function toggleDropdownHandler() {
     setIsOpen((prevState) => !prevState);
@@ -26,13 +27,20 @@ const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav
   return (
     <li className={classes.frame}>
       <Link
-        href={slug}
-        onClick={hideNav}
-        activeClassName={classes.linkCurrent}
-        className={classes.link}
+        href={{
+          pathname: `/[catalogue]`,
+          query: { id: `${id}` },
+        }}
+        as={{
+          pathname: `/${slug}`,
+          query: { id: `${id}` },
+        }}
       >
-        {name}
+        <a onClick={hideNav} className={classes.link}>
+          {name}
+        </a>
       </Link>
+
       <div
         onClick={toggleDropdownHandler}
         className={`${classes.trigger} ${isOpen ? classes.triggerActive : ''}`}
@@ -45,12 +53,18 @@ const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav
           {children.map(({ name, slug, id }) => (
             <li className={classes.dropdownItem} key={id}>
               <Link
-                href={slug}
-                onClick={hideNav}
-                activeClassName={classes.linkCurrent}
-                className={classes.dropdownLink}
+                href={{
+                  pathname: `/[catalogue]`,
+                  query: { id: `${id}` },
+                }}
+                as={{
+                  pathname: `/${slug}`,
+                  query: { id: `${id}` },
+                }}
               >
-                {name}
+                <a onClick={hideNav} className={`${classes.mainRubricsItem}`}>
+                  {name}
+                </a>
               </Link>
             </li>
           ))}

@@ -23,7 +23,7 @@ const HeaderUi: React.FC = () => {
   return (
     <div className={classes.frame}>
       <div className={classes.item}>
-        <Link
+        {/*<Link
           activeClassName={classes.linkCurrent}
           className={classes.link}
           href={'/favorite'}
@@ -33,11 +33,18 @@ const HeaderUi: React.FC = () => {
             <Icon className={classes.icon} name={'FavoriteBorderOutlined'} />
           </span>
           <span className={classes.label}>Избранное</span>
-        </Link>
+        </Link>*/}
+
+        <div className={classes.link}>
+          <span className={classes.iconHolder}>
+            <Icon className={classes.icon} name={'FavoriteBorderOutlined'} />
+          </span>
+          <span className={classes.label}>Избранное</span>
+        </div>
       </div>
 
       <div className={classes.item}>
-        <Link
+        {/*<Link
           activeClassName={classes.linkCurrent}
           className={classes.link}
           href={'/viewed'}
@@ -47,11 +54,18 @@ const HeaderUi: React.FC = () => {
             <Icon className={classes.icon} name={'VisibilityOutlined'} />
           </span>
           <span className={classes.label}>Просмотры</span>
-        </Link>
+        </Link>*/}
+
+        <div className={classes.link}>
+          <span className={classes.iconHolder}>
+            <Icon className={classes.icon} name={'VisibilityOutlined'} />
+          </span>
+          <span className={classes.label}>Просмотры</span>
+        </div>
       </div>
 
       <div className={classes.item}>
-        <Link
+        {/*<Link
           activeClassName={classes.linkCurrent}
           className={classes.link}
           href={'/cart'}
@@ -62,7 +76,15 @@ const HeaderUi: React.FC = () => {
             {countCartItems > 0 && <span className={`header__ui-counter`}>{countCartItems}</span>}
           </span>
           <span className={classes.label}>Корзина</span>
-        </Link>
+        </Link>*/}
+
+        <div className={classes.link}>
+          <span className={classes.iconHolder}>
+            <Icon className={classes.icon} name={'ShoppingCartOutlined'} />
+            {countCartItems > 0 && <span className={`header__ui-counter`}>{countCartItems}</span>}
+          </span>
+          <span className={classes.label}>Корзина</span>
+        </div>
       </div>
 
       <div className={classes.item}>

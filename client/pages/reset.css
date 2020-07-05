@@ -287,7 +287,7 @@
   --primaryBackground: #ffffff;
   --primaryBackgroundDark: #f3f3f3;
 
-  --secndaryBackground: #ebebeb;
+  --secondaryBackground: #ebebeb;
   --modalFrameBackground: #ffffff;
   --backdropBackground: #666666;
   --backdropBackgroundTransparent: rgba(102, 102, 102, 0.5);
@@ -363,7 +363,7 @@
   --primaryBackground: #ffffff;
   --primaryBackgroundDark: #f3f3f3;
 
-  --secndaryBackground: #ebebeb;
+  --secondaryBackground: #ebebeb;
 
   --modalFrameBackground: #ffffff;
   --backdropBackground: #666666;
@@ -388,7 +388,7 @@
   --primaryBackground: #24292c;
   --primaryBackgroundDark: #191e21;
 
-  --secndaryBackground: #363d40;
+  --secondaryBackground: #363d40;
 
   --modalFrameBackground: #363d40;
   --backdropBackground: #25292b;

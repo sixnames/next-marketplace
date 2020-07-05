@@ -6,7 +6,12 @@ import { ProductAttributesGroupType } from './ProductAttributesList';
 import classes from './ProductAttributesItem.module.css';
 import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
 import InputLine from '../../FormElements/Input/InputLine';
-import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING, ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_MULTIPLE_SELECT } from '../../../config';
+import {
+  ATTRIBUTE_TYPE_NUMBER,
+  ATTRIBUTE_TYPE_STRING,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+} from '../../../config';
 
 export type AttributeType = ProductAttributesGroupType['node']['attributes'][0];
 

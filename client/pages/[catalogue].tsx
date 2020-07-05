@@ -4,7 +4,6 @@ import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { UserContextProvider } from '../context/userContext';
-import Title from '../components/Title/Title';
 import Inner from '../components/Inner/Inner';
 import {
   GetCatalogueRubricQueryResult,
@@ -13,10 +12,13 @@ import {
 import { SiteContextProvider } from '../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
 import RequestError from '../components/RequestError/RequestError';
+import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
+
+export type CatalogueData = GetCatalogueRubricQueryResult['data'];
 
 interface CatalogueInterface {
   initialApolloState: InitialSiteQueryQueryResult['data'];
-  rubricData: GetCatalogueRubricQueryResult['data'];
+  rubricData: CatalogueData;
 }
 
 const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricData }) => {
@@ -34,16 +36,11 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricDat
     );
   }
 
-  const rubric = rubricData.getRubric;
-
   return (
     <UserContextProvider me={myData}>
       <SiteContextProvider value={initialApolloState}>
         <SiteLayout>
-          <Inner>
-            <Title>{rubric.catalogueName}</Title>
-            <code>{JSON.stringify(rubricData, null, 2)}</code>
-          </Inner>
+          <CatalogueRoute rubricData={rubricData} />
         </SiteLayout>
       </SiteContextProvider>
     </UserContextProvider>

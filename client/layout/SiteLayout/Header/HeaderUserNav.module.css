@@ -56,7 +56,7 @@
 }
 
 [data-theme='dark'] .holder {
-  background-color: var(--secndaryBackground);
+  background-color: var(--secondaryBackground);
 }
 
 [data-theme='dark'] .item:not(:first-child) {

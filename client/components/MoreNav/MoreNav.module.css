@@ -90,7 +90,7 @@
 }
 
 [data-theme='dark'] .listContent {
-  background-color: var(--secndaryBackground);
+  background-color: var(--secondaryBackground);
 }
 
 [data-theme='dark'] .item:not(:first-child) {

@@ -6,8 +6,11 @@
     "predev": "rimraf ./dist",
     "dev": "ts-node-dev --poll --transpileOnly --no-notify src",
     "watch-config": "copy-and-watch --watch src/config/{mocks,common}.ts ../client/config",
+
     "start": "node ./dist/src/index.js",
+
     "build": "rimraf ./dist && tsc",
+
     "test": "jest --runInBand --detectOpenHandles --coverage --forceExit",
     "test:watch": "jest --watch --runInBand --detectOpenHandles"
   },
@@ -35,7 +38,8 @@
     "sharp": "^0.25.3",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
-    "yup": "^0.29.1"
+    "yup": "^0.29.1",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

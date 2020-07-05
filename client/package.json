@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3001",
+    "start": "next start",
     "cy:open": "cypress open --env api-host=http://localhost:4000",
-    "cy:start": "cypress run --env api-host=http://localhost:3000/api",
+    "cy:start": "cypress run --env api-host=http://localhost:4000",
     "test": "npm run cy:start"
   },
   "dependencies": {

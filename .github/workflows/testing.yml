@@ -5,11 +5,11 @@ on:
     branches: [ develop ]
 
 jobs:
-  apiTest:
+  testing:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
+      strategy:
+        matrix:
+          node-version: [12.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -18,22 +18,45 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: yarn up
       - run: yarn install:api
-      - run: yarn test:api
-
-  clientTest:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Development
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
       - run: yarn install:client
-      - run: yarn up:testing
+      - run: yarn build:api
+      - run: yarn build:client
+      - run: yarn start:api
+      - run: yarn start:client
+      - run: yarn test:api
       - run: yarn test:client
+
+#  apiTest:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [12.x]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Development
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - run: yarn install:api
+#      - run: yarn test:api
+#
+#  clientTest:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [12.x]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Development
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - run: yarn install:client
+#      - run: yarn up:testing
+#      - run: yarn test:client

@@ -28,7 +28,7 @@ import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
 import path from 'path';
-// import cors from 'cors';
+import cors from 'cors';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -58,6 +58,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   const app = express();
   app.disable('x-powered-by');
+  // app.use(cors());
 
   const sessionHandler = session({
     store,
@@ -86,7 +87,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   // Assets
   // app.get('/assets/*', cors({ origin: DEV_ORIGIN }), async (req, res) => {
-  app.get('/assets/*', async (req, res) => {
+  app.get('/assets/*', cors({ origin: new RegExp('/*/') }), async (req, res) => {
     // Extract the query-parameter
     const widthString = (req.query.width as string) || undefined;
     const heightString = (req.query.height as string) || undefined;
@@ -125,11 +126,13 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   server.applyMiddleware({
     app,
-    cors: false,
-    /*cors: {
-      origin: IN_DEV ? DEV_ORIGIN : undefined,
+    // cors: false,
+    cors: {
+      // origin: IN_DEV ? DEV_ORIGIN : undefined,
+      // origin: DEV_ORIGIN,
+      origin: new RegExp('/*/'),
       credentials: true,
-    },*/
+    },
   });
 
   return {

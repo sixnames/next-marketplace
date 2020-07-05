@@ -9,6 +9,9 @@ const buildEnv = process.env.NEXT_NODE_ENV;
 const testingApiUri = isBrowser ? process.env.API_BROWSER_HOST : process.env.API_HOST;
 const apiUri = buildEnv === 'testing' ? testingApiUri : process.env.PRODUCTION_API_HOST;
 
+console.log('=========== apiURI ========== ', process.env.PRODUCTION_API_HOST);
+console.log(JSON.stringify(process.env, null, 2));
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: !isBrowser,

@@ -2,15 +2,7 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import {
-  APOLLO_OPTIONS,
-  SESS_OPTIONS,
-  DEFAULT_CITY,
-  DEFAULT_LANG,
-  MONGO_URL,
-  // DEV_ORIGIN,
-  // IN_DEV,
-} from './config';
+import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -58,7 +50,6 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   const app = express();
   app.disable('x-powered-by');
-  // app.use(cors());
 
   const sessionHandler = session({
     store,
@@ -86,7 +77,6 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   });
 
   // Assets
-  // app.get('/assets/*', cors({ origin: DEV_ORIGIN }), async (req, res) => {
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), async (req, res) => {
     // Extract the query-parameter
     const widthString = (req.query.width as string) || undefined;

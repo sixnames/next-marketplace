@@ -72,7 +72,7 @@ export class RubricResolver {
   @Query(() => [Rubric])
   async getRubricsTree(
     @Ctx() ctx: ContextInterface,
-    @Arg('excluded', (_type) => ID, { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
@@ -748,7 +748,7 @@ export class RubricResolver {
   async children(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-    @Arg('excluded', (_type) => ID, { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({

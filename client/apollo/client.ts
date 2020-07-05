@@ -25,13 +25,15 @@ export function initializeApollo(
 ): ApolloClient<NormalizedCacheObject> {
   const _apolloClient = apolloClient ?? createApolloClient();
 
-  // If your page has Next.js data fetching methods that use Apollo Client, the INITIAL_QUERY state
-  // get hydrated here
+  // If your page has Next.js data fetching methods that use Apollo Client,
+  // the INITIAL_QUERY state get hydrated here
   if (initialState) {
     _apolloClient.cache.restore(initialState);
   }
+
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === 'undefined') return _apolloClient;
+  if (!isBrowser) return _apolloClient;
+
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;
 

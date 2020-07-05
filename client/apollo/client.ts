@@ -2,21 +2,14 @@ import { useMemo } from 'react';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { createUploadLink } from 'apollo-upload-client';
+import { GRAPHQL_API_PATH, IS_BROWSER, API_URI } from '../config';
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-
-const isBrowser = typeof window !== 'undefined';
-const buildEnv = process.env.NEXT_NODE_ENV;
-const testingApiUri = isBrowser ? process.env.API_BROWSER_HOST : process.env.API_HOST;
-const apiUri = buildEnv === 'testing' ? testingApiUri : process.env.PRODUCTION_API_HOST;
-
-console.log('=========== apiURI ========== ', process.env.PRODUCTION_API_HOST);
-console.log(JSON.stringify(process.env, null, 2));
 
 function createApolloClient() {
   return new ApolloClient({
-    ssrMode: !isBrowser,
+    ssrMode: !IS_BROWSER,
     link: createUploadLink({
-      uri: apiUri || 'http://localhost:4000/graphql',
+      uri: API_URI || GRAPHQL_API_PATH,
       credentials: 'include',
     }),
     cache: new InMemoryCache(),
@@ -35,7 +28,7 @@ export function initializeApollo(
   }
 
   // For SSG and SSR always create a new Apollo Client
-  if (!isBrowser) return _apolloClient;
+  if (!IS_BROWSER) return _apolloClient;
 
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { isBrowser } from '../config';
+import { IS_BROWSER } from '../config';
 import { Theme } from '../types';
 
 type DefaultValue = () => Theme;
 
 const useLocalStorage = (key: string, defaultValue: DefaultValue) => {
   const [value, setValue] = useState(() => {
-    if (isBrowser) {
+    if (IS_BROWSER) {
       const storedValue = localStorage.getItem(key);
       const result = typeof defaultValue === 'function' ? defaultValue() : defaultValue;
       return storedValue === null ? result : JSON.parse(storedValue);
@@ -15,7 +15,7 @@ const useLocalStorage = (key: string, defaultValue: DefaultValue) => {
   });
 
   useEffect(() => {
-    if (isBrowser) {
+    if (IS_BROWSER) {
       const listener = (e: StorageEvent) => {
         if (e.storageArea === localStorage && e.key === key) {
           setValue(JSON.parse(`${e.newValue}`));

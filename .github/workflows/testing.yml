@@ -19,9 +19,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install pm2 -g
 #      - run: yarn up:testing
-#      - run: yarn install:api
+      - run: yarn install:api
 #      - run: yarn install:client
-#      - run: yarn build:api
+      - run: yarn build:api
+      - run: pm2 start ./api/dist/src/index.js
 #      - run: yarn build:client
 #      - run: yarn start:api
 #      - run: yarn start:client

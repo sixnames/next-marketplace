@@ -1,0 +1,8 @@
+FROM node:12.18-alpine
+WORKDIR /app
+COPY ./package.json ./
+RUN yarn
+COPY . .
+RUN yarn build:stage
+EXPOSE 3001
+CMD ["yarn", "start:stage"]

@@ -44,6 +44,7 @@ export class AttributesGroupResolver {
     return AttributesGroupModel.findById(id);
   }
 
+  //
   @Query(() => [AttributesGroup])
   async getAllAttributesGroups(
     @Arg('exclude', (_type) => [ID], {

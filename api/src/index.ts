@@ -18,6 +18,7 @@ import createInitialData from './utils/createInitialData';
       console.log(`http://localhost:${HTTP_PORT}${server.graphqlPath}`);
     });
   } catch (e) {
+    console.log('============ API FAILED ON START ============');
     console.error(e);
   }
 })();

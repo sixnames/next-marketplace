@@ -268,8 +268,8 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signOut(@Ctx() ctx: ContextInterface) {
     try {
-      const isSignedOut = await attemptSignOut(ctx.req);
       const lang = ctx.req.session!.lang;
+      const isSignedOut = await attemptSignOut(ctx.req);
 
       if (!isSignedOut) {
         return {

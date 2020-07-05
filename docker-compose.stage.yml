@@ -13,16 +13,6 @@ services:
       - ./data:/data/db
     env_file:
       - .env
-#  nginx:
-#    container_name: nginx
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.stage
-#      context: ./nginx
-#    ports:
-#      - 80:80
-#    depends_on:
-#      - app
   api:
     container_name: api
     restart: always
@@ -37,25 +27,12 @@ services:
       - .env
     depends_on:
       - mongo
-  app:
-    container_name: app
-    restart: always
-    build:
-      dockerfile: Dockerfile.stage
-      context: ./app
-    stdin_open: true
-    ports:
-      - '3001:3001'
-    env_file:
-      - .env
-    depends_on:
-      - api
   site:
     container_name: site
     restart: always
     build:
       dockerfile: Dockerfile.stage
-      context: ./site
+      context: client
     ports:
       - '3000:3000'
     env_file:

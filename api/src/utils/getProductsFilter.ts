@@ -40,9 +40,14 @@ export function getProductsFilter(
 
   const additionalQuery = Object.keys(args).reduce((acc, key) => {
     const value = args[key];
-    if (!!value) {
+    if (value) {
       if (key === 'search') {
         return acc;
+      }
+
+      if (key === 'rubrics') {
+        const query = alwaysArray(value);
+        return { ...acc, 'node.rubrics': { $in: query } };
       }
 
       if (key === 'rubric') {

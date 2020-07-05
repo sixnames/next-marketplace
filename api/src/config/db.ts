@@ -3,8 +3,8 @@ import { ConnectionOptions } from 'mongoose';
 export const {
   DB_USERNAME = 'admin',
   DB_PASSWORD = 'secret',
-  DB_HOST = 'mongo',
-  // DB_HOST = 'localhost',
+  // DB_HOST = 'mongo',
+  DB_HOST = 'localhost',
   DB_PORT = 27017,
   DB_NAME = 'winepoint-db',
 
@@ -20,7 +20,7 @@ export const {
     `${DB_PASSWORD}`,
   )}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
 } = process.env;
-console.log(MONGO_URL);
+
 export const DB_OPTIONS: ConnectionOptions = {
   useNewUrlParser: true,
   useFindAndModify: false,

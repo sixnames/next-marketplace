@@ -4,7 +4,7 @@ import { IN_PROD } from './app';
 const ONE_HOUR = 1000 * 60 * 60;
 const SIX_HOURS = ONE_HOUR * 6;
 
-const { env } = process;
+const { env } = process || { env: {} };
 
 export const { SESS_SECRET = 'please keep this secret, mate', SESS_NAME = 'sid' } = env;
 

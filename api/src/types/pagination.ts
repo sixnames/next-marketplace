@@ -12,5 +12,5 @@ export interface GetPaginationOptionsPayload {
     page: number;
     sort: string;
   };
-  searchOptions: {};
+  searchOptions: Record<string, unknown>;
 }

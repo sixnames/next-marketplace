@@ -33,17 +33,20 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import { getRubricCounters } from '../../utils/rubricResolverHelpers';
+import { getRubricCounters, getRubricNestedIds } from '../../utils/rubricResolverHelpers';
 import {
   addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema, createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema, deleteProductFromRubricInputSchema,
+  addProductToRubricInputSchema,
+  createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
   updateRubricInputSchema,
 } from '../../validation';
 import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO,
+  RUBRIC_LEVEL_THREE,
+  RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 
@@ -69,7 +72,7 @@ export class RubricResolver {
   @Query(() => [Rubric])
   async getRubricsTree(
     @Ctx() ctx: ContextInterface,
-    @Arg('excluded', (_type) => ID, { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
@@ -745,7 +748,7 @@ export class RubricResolver {
   async children(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-    @Arg('excluded', (_type) => ID, { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
@@ -776,7 +779,8 @@ export class RubricResolver {
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const query = getProductsFilter({ ...args, rubric: rubric._id }, city);
+    const rubricsIds = await getRubricNestedIds({ rubric, city });
+    const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
     const { options } = generatePaginationOptions({
       limit,
       page,

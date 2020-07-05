@@ -9,7 +9,7 @@
     "up": "docker-compose -f docker-compose.dev.yml up -d",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
-    "postup": "wait-on data && yarn dev",
+    "postup": "yarn dev",
 
     "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
     "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
@@ -19,16 +19,23 @@
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
     "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
 
-    "dev": "concurrently -n api,app \"yarn dev:api\" \"yarn dev:app\"",
+    "dev": "concurrently -n api,client,watchConfig \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\"",
+
+    "install:api": "cd api && yarn",
     "dev:api": "cd api && yarn dev",
-    "dev:app": "cd app && yarn dev",
+    "build:api": "cd api && yarn build",
+    "start:api": "cd api && yarn start",
+
+    "install:client": "cd client && yarn",
+    "dev:client": "cd client && yarn dev",
+    "build:client": "cd client && yarn build",
+    "start:client": "cd client && yarn start",
+
+    "watch-config": "cd api && yarn watch-config",
 
     "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
     "test:api": "cd api && yarn test",
-    "test:app": "cd app && yarn test",
-
-    "install:api": "cd api && yarn",
-    "install:app": "cd app && yarn",
+    "test:client": "cd client && yarn test",
 
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
@@ -45,7 +52,21 @@
     "prettier": "^2.0.5",
     "wait-on": "^5.0.0",
     "graphql": "^15.1.0",
-    "concurrently": "^5.2.0"
+    "concurrently": "^5.2.0",
+    "@typescript-eslint/eslint-plugin": "^3.5.0",
+    "@typescript-eslint/parser": "^3.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-app": "^6.2.2",
+    "eslint-plugin-react-hooks": "^4.0.5",
+    "typescript": "^3.9.5"
   },
   "husky": {
     "hooks": {

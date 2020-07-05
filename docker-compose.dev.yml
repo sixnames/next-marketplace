@@ -1,9 +1,11 @@
 version: '3'
 
 services:
-  db:
+  mongo:
+    container_name: mongo
     image: mongo
-    container_name: winepoint-db
+    logging:
+      driver: none
     ports:
       - '27017:27017'
     environment:

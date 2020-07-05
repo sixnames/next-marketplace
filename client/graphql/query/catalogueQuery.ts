@@ -6,6 +6,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
       id
       name
       level
+      slug
       variant {
         id
         nameString

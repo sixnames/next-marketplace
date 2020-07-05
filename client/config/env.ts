@@ -5,7 +5,7 @@ export const IN_PROD = process.env.NODE_ENV === 'production';
 export const IN_TEST = process.env.NODE_ENV === 'test';
 
 export const DEV_API_URL = `http://localhost:4000`;
-export const ASSETS_URL = IN_PROD ? '' : `${DEV_API_URL}`;
+export const ASSETS_URL = process.env.ASSETS_HOST ? `${process.env.ASSETS_HOST}` : '';
 export const GRAPHQL_API_PATH = `${DEV_API_URL}/graphql`;
 
 const buildEnv = process.env.NEXT_NODE_ENV;

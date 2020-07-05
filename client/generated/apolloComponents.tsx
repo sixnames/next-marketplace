@@ -1522,6 +1522,34 @@ export type UpdateRubricVariantMutation = (
   ) }
 );
 
+export type GetCatalogueCardQueryQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetCatalogueCardQueryQuery = (
+  { __typename?: 'Query' }
+  & { getProduct: (
+    { __typename?: 'Product' }
+    & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'price' | 'slug' | 'mainImage' | 'description'>
+    & { attributesGroups: Array<(
+      { __typename?: 'ProductAttributesGroup' }
+      & Pick<ProductAttributesGroup, 'showInCard'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+      ), attributes: Array<(
+        { __typename?: 'ProductAttribute' }
+        & Pick<ProductAttribute, 'showInCard' | 'value'>
+        & { node: (
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString'>
+        ) }
+      )> }
+    )> }
+  ) }
+);
+
 export type GetCatalogueRubricQueryVariables = {
   id: Scalars['ID'];
   productsInput?: Maybe<RubricProductPaginateInput>;
@@ -1532,7 +1560,7 @@ export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'level' | 'activeProductsCount' | 'catalogueName'>
+    & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'activeProductsCount' | 'catalogueName'>
     & { variant?: Maybe<(
       { __typename?: 'RubricVariant' }
       & Pick<RubricVariant, 'id' | 'nameString'>
@@ -3149,12 +3177,68 @@ export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.Mu
 export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export const GetCatalogueCardQueryDocument = gql`
+    query GetCatalogueCardQuery($id: ID!) {
+  getProduct(id: $id) {
+    id
+    itemId
+    name
+    cardName
+    price
+    slug
+    mainImage
+    description
+    attributesGroups {
+      showInCard
+      node {
+        id
+        nameString
+      }
+      attributes {
+        showInCard
+        node {
+          id
+          nameString
+        }
+        value
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatalogueCardQueryQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueCardQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueCardQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueCardQueryQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCatalogueCardQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
+      }
+export function useGetCatalogueCardQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
+        }
+export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryQuery>;
+export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
+export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
     query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
   getRubric(id: $id) {
     id
     name
     level
+    slug
     variant {
       id
       nameString

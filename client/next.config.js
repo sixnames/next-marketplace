@@ -7,6 +7,7 @@ module.exports = (phase) => {
       PRODUCTION_API_HOST: process.env.PRODUCTION_API_HOST,
       NEXT_NODE_ENV: process.env.NEXT_NODE_ENV,
       API_HOST: process.env.API_HOST,
+      ASSETS_HOST: process.env.ASSETS_HOST,
       API_BROWSER_HOST: process.env.API_BROWSER_HOST,
       IN_PROD: phase === 'phase-production-build',
     },

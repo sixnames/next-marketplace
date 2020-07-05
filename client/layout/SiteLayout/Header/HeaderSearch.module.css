@@ -5,7 +5,7 @@
 
 .holder {
   display: flex;
-  background-color: var(--secndaryBackground);
+  background-color: var(--secondaryBackground);
   border: 1px solid var(--lighterGray);
   border-radius: 15px;
 }

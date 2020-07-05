@@ -35,5 +35,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: yarn install:client
-      - run: yarn up:testing
+      - run: docker-compose -f docker-compose.testing.yml up -d --build
       - run: yarn test:client

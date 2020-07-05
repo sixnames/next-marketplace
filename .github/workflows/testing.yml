@@ -17,8 +17,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
-       - run: npm install pm2 -g
+      - run: npm install pm2 -g
 #      - run: yarn up:testing
 #      - run: yarn install:api
 #      - run: yarn install:client

@@ -1531,7 +1531,22 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProduct: (
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
+    & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'price' | 'slug' | 'mainImage' | 'description'>
+    & { attributesGroups: Array<(
+      { __typename?: 'ProductAttributesGroup' }
+      & Pick<ProductAttributesGroup, 'showInCard'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+      ), attributes: Array<(
+        { __typename?: 'ProductAttribute' }
+        & Pick<ProductAttribute, 'showInCard' | 'value'>
+        & { node: (
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString'>
+        ) }
+      )> }
+    )> }
   ) }
 );
 
@@ -3168,9 +3183,26 @@ export const GetCatalogueCardQueryDocument = gql`
     id
     itemId
     name
+    cardName
     price
     slug
     mainImage
+    description
+    attributesGroups {
+      showInCard
+      node {
+        id
+        nameString
+      }
+      attributes {
+        showInCard
+        node {
+          id
+          nameString
+        }
+        value
+      }
+    }
   }
 }
     `;

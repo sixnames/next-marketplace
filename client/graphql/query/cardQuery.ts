@@ -6,9 +6,34 @@ export const CATALOGUE_CARD_QUERY = gql`
       id
       itemId
       name
+      cardName
       price
       slug
       mainImage
+      description
+      attributesGroups {
+        showInCard
+        node {
+          id
+          nameString
+        }
+        attributes {
+          showInCard
+          node {
+            id
+            nameString
+            options {
+              id
+              nameString
+              options {
+                id
+                nameString
+              }
+            }
+          }
+          value
+        }
+      }
     }
   }
 `;

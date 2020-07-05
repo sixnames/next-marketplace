@@ -3,6 +3,6 @@ WORKDIR /app
 COPY ./package.json ./
 RUN yarn
 COPY . .
-RUN yarn build:stage
-EXPOSE 3001
-CMD ["yarn", "start:stage"]
+RUN yarn build
+EXPOSE 3000
+CMD ["yarn", "start"]

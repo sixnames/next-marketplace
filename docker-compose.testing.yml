@@ -8,12 +8,8 @@ services:
       driver: none
     ports:
       - '27017:27017'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=secret
-      - MONGO_INITDB_DATABASE=winepoint-db
-      - DB_USERNAME=admin
-      - DB_PASSWORD=secret
+    env_file:
+      - .env.testing
     volumes:
       - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
       - ./data:/data/db
@@ -27,25 +23,29 @@ services:
 #      - '3000:3000'
 #    depends_on:
 #      - api
-#  api:
-#    container_name: api
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.testing
-#      context: ./api
-#    volumes:
-#      - ./api/assets:/api/assets
-#    depends_on:
-#      - mongo
-#    env_file:
-#      - .env.testing
-#  site:
-#    container_name: site
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.testing
-#      context: client
-#    depends_on:
-#      - api
-#    env_file:
-#      - .env.testing
+  api:
+    container_name: api
+    restart: always
+    build:
+      dockerfile: Dockerfile.testing
+      context: ./api
+    volumes:
+      - ./api/assets:/api/assets
+    depends_on:
+      - mongo
+    ports:
+    - '4000:4000'
+    env_file:
+      - .env.testing
+  site:
+    container_name: site
+    restart: always
+    build:
+      dockerfile: Dockerfile.testing
+      context: client
+    depends_on:
+      - api
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.testing

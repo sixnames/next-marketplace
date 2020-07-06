@@ -4,7 +4,7 @@ import { ASSETS_URL } from '../config';
 export async function getImageBlobFromUrl(url: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${ASSETS_URL}${url}`, true);
+    xhr.open('GET', `${ASSETS_URL}${url}?format=jpeg`, true);
     xhr.responseType = 'blob';
     xhr.onload = function () {
       if (this.status === 200) {

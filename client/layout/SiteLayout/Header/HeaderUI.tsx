@@ -18,8 +18,6 @@ const HeaderUi: React.FC = () => {
     setIsDropdownOpen(false);
   }
 
-  const countCartItems = 0;
-
   return (
     <div className={classes.frame}>
       <div className={classes.item}>
@@ -64,8 +62,8 @@ const HeaderUi: React.FC = () => {
         </div>
       </div>
 
-      <div className={classes.item}>
-        {/*<Link
+      {/*<div className={classes.item}>
+        <Link
           activeClassName={classes.linkCurrent}
           className={classes.link}
           href={'/cart'}
@@ -76,7 +74,7 @@ const HeaderUi: React.FC = () => {
             {countCartItems > 0 && <span className={`header__ui-counter`}>{countCartItems}</span>}
           </span>
           <span className={classes.label}>Корзина</span>
-        </Link>*/}
+        </Link>
 
         <div className={classes.link}>
           <span className={classes.iconHolder}>
@@ -85,7 +83,7 @@ const HeaderUi: React.FC = () => {
           </span>
           <span className={classes.label}>Корзина</span>
         </div>
-      </div>
+      </div>*/}
 
       <div className={classes.item}>
         {me ? (

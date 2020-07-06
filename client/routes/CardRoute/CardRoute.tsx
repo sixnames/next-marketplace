@@ -2,9 +2,9 @@ import React from 'react';
 import { CardData } from '../../pages/[catalogue]/[card]';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import classes from './CardRoute.module.css';
-import { ASSETS_URL } from '../../config';
 import Title from '../../components/Title/Title';
+import Image from '../../components/Image/Image';
+import classes from './CardRoute.module.css';
 
 interface CardRouteInterface {
   cardData: CardData;
@@ -25,13 +25,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     <Inner>
       <div className={classes.frame}>
         <div className={classes.image}>
-          <img
-            src={`${ASSETS_URL}${mainImage}?width=${imageWidth}`}
-            width={imageWidth}
-            alt={name}
-            title={name}
-            // loading={'lazy'}
-          />
+          <Image url={mainImage} alt={name} title={name} width={imageWidth} />
         </div>
 
         <div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from './TableRowImage.module.css';
-import { ASSETS_URL, TABLE_IMAGE_WIDTH } from '../../config';
+import { TABLE_IMAGE_WIDTH } from '../../config';
+import Image from '../Image/Image';
 
 interface TableRowImageInterface {
   url: string;
@@ -17,13 +18,7 @@ const TableRowImage: React.FC<TableRowImageInterface> = ({
 }) => {
   return (
     <div className={classes.frame}>
-      <img
-        src={`${ASSETS_URL}${url}?width=${width}`}
-        width={width}
-        alt={alt}
-        title={title}
-        loading={'lazy'}
-      />
+      <Image url={url} alt={alt} title={title} width={width} />
     </div>
   );
 };

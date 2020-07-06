@@ -2,6 +2,7 @@ import React from 'react';
 import classes from './CatalogueProduct.module.css';
 import Link from 'next/link';
 import { ASSETS_URL } from '../../config';
+import Image from '../../components/Image/Image';
 
 interface CatalogueProductInterface {
   product: any;
@@ -16,13 +17,7 @@ const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product, rubric
     <div className={classes.Frame} data-id={id}>
       <div className={classes.Top}>
         <div className={classes.Image}>
-          <img
-            src={`${ASSETS_URL}${mainImage}?width=${imageWidth}`}
-            width={imageWidth}
-            alt={name}
-            title={name}
-            loading={'lazy'}
-          />
+          <Image url={mainImage} alt={name} title={name} width={imageWidth} />
         </div>
 
         <div className={classes.Name}>{name}</div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import classes from './CatalogueProduct.module.css';
 import Link from 'next/link';
-import { ASSETS_URL } from '../../config';
 import Image from '../../components/Image/Image';
 
 interface CatalogueProductInterface {

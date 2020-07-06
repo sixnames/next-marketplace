@@ -1,6 +1,8 @@
 import React from 'react';
 import {
+  AddAttributesGroupToRubricInput,
   GetRubricQuery,
+  RubricAttributesGroup,
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useGetRubricAttributesQuery,
@@ -14,6 +16,7 @@ import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import { RUBRIC_LEVEL_TWO } from '../../config';
+import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 
 interface AttributesGroupInterface {
   id: string;
@@ -23,6 +26,8 @@ interface AttributesGroupInterface {
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
 }
+
+export type AddAttributesGroupToRubricValues = Omit<AddAttributesGroupToRubricInput, 'rubricId'>;
 
 const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const isNotSecondLevel = rubric.level !== RUBRIC_LEVEL_TWO;
@@ -85,12 +90,12 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       props: {
         testId: 'add-attributes-group-to-rubric-modal',
         exclude: attributesGroups?.map((group) => (group ? group.node.id : '')) ?? [],
-        confirm: (attributesGroupId: string) => {
+        confirm: (values: AddAttributesGroupToRubricValues) => {
           showLoading();
           return addAttributesGroupToRubricMutation({
             variables: {
               input: {
-                attributesGroupId,
+                ...values,
                 rubricId: rubric.id,
               },
             },
@@ -105,6 +110,19 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       key: 'node.nameString',
       title: 'Название',
       render: (name: string) => name,
+    },
+    {
+      key: 'showInCatalogueFilter',
+      title: 'Показывать в фильтре',
+      render: (value: boolean, { node: { nameString } }: RubricAttributesGroup) => (
+        <Checkbox
+          testId={`${nameString}-show-in-catalogue`}
+          checked={value}
+          value={value}
+          name={'showInCatalogueFilter'}
+          onChange={(val: any) => console.log(val.target.checked)}
+        />
+      ),
     },
     {
       key: 'node.id',

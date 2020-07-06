@@ -9,11 +9,13 @@ import FormikSelect from '../../FormElements/Select/FormikSelect';
 import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
 import { addAttributesGroupToRubricClientSchema } from '../../../validation';
+import { AddAttributesGroupToRubricValues } from '../../../routes/Rubrics/RubricAttributes';
+import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
 
 interface AddAttributesGroupToRubricModalInterface {
   testId: string;
   exclude: string[] | [];
-  confirm: (attributesGroupId: string) => void;
+  confirm: (values: AddAttributesGroupToRubricValues) => void;
 }
 
 const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalInterface> = ({
@@ -45,9 +47,12 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
       <ModalTitle>Выберите группу атрибутов</ModalTitle>
       <Formik
         validationSchema={addAttributesGroupToRubricClientSchema}
-        initialValues={{ attributesGroupId: null }}
-        onSubmit={(values) => {
-          confirm(`${values.attributesGroupId}`);
+        initialValues={{ attributesGroupId: null, showInCatalogueFilter: null }}
+        onSubmit={({ attributesGroupId, showInCatalogueFilter }) => {
+          confirm({
+            showInCatalogueFilter,
+            attributesGroupId: `${attributesGroupId}`,
+          });
         }}
       >
         {() => (
@@ -60,6 +65,12 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
               testId={'attributes-groups'}
               firstOption={'Не выбрано'}
             />
+
+            <FormikCheckboxLine
+              label={'Показывать группу атрибутов в фильтре каталога'}
+              name={'showInCatalogueFilter'}
+            />
+
             <ModalButtons>
               <Button type={'submit'} testId={'attributes-group-submit'}>
                 Добавить

@@ -11,8 +11,8 @@ export class RubricAttributesGroup {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => Boolean)
-  @Property({ required: true, default: false })
+  @Field(() => Boolean, { nullable: true })
+  @Property({ type: Boolean })
   showInCatalogueFilter: boolean;
 
   @Field(() => AttributesGroup)

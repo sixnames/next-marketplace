@@ -62,6 +62,20 @@ const rubricTranslations = {
         en: 'Attributes group added to the rubric.',
       },
     },
+    updateAttributesGroup: {
+      notFound: {
+        ru: 'Группа атрибутов или Рубрика не найдены.',
+        en: 'Rubric or attributes group not found.',
+      },
+      error: {
+        ru: 'Ошибка обновления Группы атрибутов в рубрике.',
+        en: 'Update attributes group error.',
+      },
+      success: {
+        ru: 'Группа атрибутов обновлена.',
+        en: 'Attributes group updated.',
+      },
+    },
     deleteAttributesGroup: {
       notFound: {
         ru: 'Группа атрибутов или Рубрика не найдены.',

@@ -213,6 +213,7 @@ describe.only('Rubrics', () => {
           input: {
             rubricId: "${rubricLevelTwo.id}"
             attributesGroupId: "${attributesGroup.id}"
+            showInCatalogueFilter: true
           }
         ) {
           success
@@ -234,6 +235,43 @@ describe.only('Rubrics', () => {
     const { attributesGroups } = rubric;
     expect(success).toBeTruthy();
     expect(attributesGroups.length).toEqual(2);
+
+    // Should update attributes group in rubric
+    const {
+      data: { updateAttributesGroupInRubric },
+    } = await mutate(`
+      mutation {
+        updateAttributesGroupInRubric(
+          input: {
+            rubricId: "${rubricLevelTwo.id}"
+            attributesGroupId: "${attributesGroup.id}"
+            showInCatalogueFilter: false
+          }
+        ) {
+          success
+          message
+          rubric {
+            id
+            name
+            level
+            attributesGroups {
+              showInCatalogueFilter
+              node {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      }
+    `);
+    expect(updateAttributesGroupInRubric.success).toBeTruthy();
+    const updatedGroup: any = updateAttributesGroupInRubric.rubric.attributesGroups.find(
+      ({ node }: any) => {
+        return node.id === attributesGroup.id;
+      },
+    );
+    expect(updatedGroup.showInCatalogueFilter).toBeFalsy();
 
     // Should delete attributes group from rubric
     const {

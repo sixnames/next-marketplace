@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { get } from 'lodash';
 import RequestError from '../RequestError/RequestError';
 import classes from './Table.module.css';
@@ -8,7 +8,7 @@ interface Column {
   fix?: boolean;
   style?: any;
   colSpan?: number;
-  render?: (cellData: any, dataItem: any, index: number) => ReactNode;
+  render?: (cellData: any, dataItem: any, index: number) => any;
   sortBy?: string;
   title?: string;
   hidden?: boolean;

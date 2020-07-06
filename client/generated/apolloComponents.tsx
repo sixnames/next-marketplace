@@ -841,6 +841,7 @@ export type UpdateRubricInput = {
 export type AddAttributesGroupToRubricInput = {
   rubricId: Scalars['ID'];
   attributesGroupId: Scalars['ID'];
+  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
 };
 
 export type DeleteAttributesGroupFromRubricInput = {
@@ -1544,6 +1545,14 @@ export type GetCatalogueCardQueryQuery = (
         & { node: (
           { __typename?: 'Attribute' }
           & Pick<Attribute, 'id' | 'nameString'>
+          & { options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+            & { options: Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, 'id' | 'nameString'>
+            )> }
+          )> }
         ) }
       )> }
     )> }
@@ -3199,6 +3208,14 @@ export const GetCatalogueCardQueryDocument = gql`
         node {
           id
           nameString
+          options {
+            id
+            nameString
+            options {
+              id
+              nameString
+            }
+          }
         }
         value
       }

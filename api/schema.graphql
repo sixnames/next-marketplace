@@ -6,6 +6,7 @@
 input AddAttributesGroupToRubricInput {
   attributesGroupId: ID!
   rubricId: ID!
+  showInCatalogueFilter: Boolean
 }
 
 input AddAttributeToGroupInput {
@@ -187,6 +188,7 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayloadType!
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
+  updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -395,7 +397,7 @@ type Rubric {
 type RubricAttributesGroup {
   id: ID!
   node: AttributesGroup!
-  showInCatalogueFilter: Boolean!
+  showInCatalogueFilter: Boolean
 }
 
 type RubricCity {
@@ -473,6 +475,12 @@ input UpdateAttributeInGroupInput {
 input UpdateAttributesGroupInput {
   id: ID!
   name: [LangInput!]!
+}
+
+input UpdateAttributesGroupInRubricInput {
+  attributesGroupId: ID!
+  rubricId: ID!
+  showInCatalogueFilter: Boolean
 }
 
 input UpdateMetricInput {

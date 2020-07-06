@@ -23,6 +23,7 @@
   bottom: 0;
   border: none;
   opacity: 0;
+  cursor: pointer;
   /*clip: rect(0 0 0 0);*/
   /*overflow: hidden;*/
 }

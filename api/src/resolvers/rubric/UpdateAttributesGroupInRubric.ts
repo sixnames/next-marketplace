@@ -1,7 +1,7 @@
 import { Field, InputType, ID } from 'type-graphql';
 
 @InputType()
-export class AddAttributesGroupToRubricInput {
+export class UpdateAttributesGroupInRubricInput {
   @Field(() => ID)
   rubricId: string;
 

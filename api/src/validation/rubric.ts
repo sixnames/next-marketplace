@@ -34,15 +34,18 @@ export const updateRubricInputSchema = Yup.object().shape({
 export const addAttributesGroupToRubricInputSchema = Yup.object().shape({
   rubricId,
   attributesGroupId,
-});
-
-export const addAttributesGroupToRubricClientSchema = Yup.object().shape({
-  attributesGroupId,
+  showInCatalogueFilter: Yup.boolean().nullable(),
 });
 
 export const deleteAttributesGroupFromRubricInputSchema = Yup.object().shape({
   rubricId,
   attributesGroupId,
+});
+
+export const updateAttributesGroupInRubricInputSchema = Yup.object().shape({
+  rubricId,
+  attributesGroupId,
+  showInCatalogueFilter: Yup.boolean().nullable(),
 });
 
 export const addProductToRubricInputSchema = Yup.object().shape({

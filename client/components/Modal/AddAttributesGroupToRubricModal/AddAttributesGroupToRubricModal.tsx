@@ -67,6 +67,7 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
             />
 
             <FormikCheckboxLine
+              testId={'show-in-filter'}
               label={'Показывать группу атрибутов в фильтре каталога'}
               name={'showInCatalogueFilter'}
             />

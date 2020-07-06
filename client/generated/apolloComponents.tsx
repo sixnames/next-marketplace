@@ -374,7 +374,7 @@ export type RubricProductsArgs = {
 export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
-  showInCatalogueFilter: Scalars['Boolean'];
+  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
   node: AttributesGroup;
 };
 
@@ -452,6 +452,7 @@ export type Mutation = {
   updateRubric: RubricPayloadType;
   deleteRubric: RubricPayloadType;
   addAttributesGroupToRubric: RubricPayloadType;
+  updateAttributesGroupInRubric: RubricPayloadType;
   deleteAttributesGroupFromRubric: RubricPayloadType;
   addProductToRubric: RubricPayloadType;
   deleteProductFromRubric: RubricPayloadType;
@@ -605,6 +606,11 @@ export type MutationDeleteRubricArgs = {
 
 export type MutationAddAttributesGroupToRubricArgs = {
   input: AddAttributesGroupToRubricInput;
+};
+
+
+export type MutationUpdateAttributesGroupInRubricArgs = {
+  input: UpdateAttributesGroupInRubricInput;
 };
 
 
@@ -839,6 +845,12 @@ export type UpdateRubricInput = {
 };
 
 export type AddAttributesGroupToRubricInput = {
+  rubricId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdateAttributesGroupInRubricInput = {
   rubricId: Scalars['ID'];
   attributesGroupId: Scalars['ID'];
   showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
@@ -1461,6 +1473,19 @@ export type UpdateAttributesGroupMutation = (
       { __typename?: 'AttributesGroup' }
       & Pick<AttributesGroup, 'id' | 'nameString'>
     )> }
+  ) }
+);
+
+export type UpdateAttributesGroupInRubricMutationVariables = {
+  input: UpdateAttributesGroupInRubricInput;
+};
+
+
+export type UpdateAttributesGroupInRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributesGroupInRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -3065,6 +3090,39 @@ export function useUpdateAttributesGroupMutation(baseOptions?: ApolloReactHooks.
 export type UpdateAttributesGroupMutationHookResult = ReturnType<typeof useUpdateAttributesGroupMutation>;
 export type UpdateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupMutation>;
 export type UpdateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
+export const UpdateAttributesGroupInRubricDocument = gql`
+    mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
+  updateAttributesGroupInRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributesGroupInRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
+
+/**
+ * __useUpdateAttributesGroupInRubricMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributesGroupInRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributesGroupInRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributesGroupInRubricMutation, { data, loading, error }] = useUpdateAttributesGroupInRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributesGroupInRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>(UpdateAttributesGroupInRubricDocument, baseOptions);
+      }
+export type UpdateAttributesGroupInRubricMutationHookResult = ReturnType<typeof useUpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
 export const UpdateOptionInGroupDocument = gql`
     mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
   updateOptionInGroup(input: $input) {

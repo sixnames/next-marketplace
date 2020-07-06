@@ -29,7 +29,17 @@ describe('Rubric attributes', () => {
     cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
     cy.visitMoreNavLink('attributes');
 
+    // Should update attributes group only in one rubric
+    cy.getByCy(`${mockAttributesGroup}-checkbox`).click();
+    cy.getByCy('success-notification').should('exist');
+    cy.getByCy(`${mockAttributesGroup}-checkbox`).should('be.checked');
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.visitMoreNavLink('attributes');
+    cy.getByCy(`${mockAttributesGroup}-checkbox`).should('not.be.checked');
+
     // Should delete attributes group from list
+    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
+    cy.visitMoreNavLink('attributes');
     cy.getByCy(`${mockAttributesGroup}-delete`).click();
     cy.getByCy(`attributes-group-delete-modal`).should('exist');
     cy.getByCy(`confirm`).click();
@@ -53,8 +63,10 @@ describe('Rubric attributes', () => {
 
     // Should add attributes group to the list
     cy.selectOptionByTestId('attributes-groups', mockAttributesGroupForDelete);
+    cy.getByCy(`show-in-filter-checkbox`).click();
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy('rubric-attributes').should('contain', mockAttributesGroupForDelete);
+    cy.getByCy(`${mockAttributesGroupForDelete}-checkbox`).should('be.checked');
 
     // Should have new attribute group on first and third levels
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();

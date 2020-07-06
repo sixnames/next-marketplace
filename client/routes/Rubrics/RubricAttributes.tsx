@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
   AddAttributesGroupToRubricInput,
   GetRubricQuery,
@@ -6,6 +6,7 @@ import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useGetRubricAttributesQuery,
+  useUpdateAttributesGroupInRubricMutation,
 } from '../../generated/apolloComponents';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import Spinner from '../../components/Spinner/Spinner';
@@ -17,6 +18,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import { RUBRIC_LEVEL_TWO } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
+import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
 
 interface AttributesGroupInterface {
   id: string;
@@ -50,6 +52,20 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
     onError: onErrorCallback,
+  });
+
+  const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateAttributesGroupInRubric),
+    onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRIC_ATTRIBUTES_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
+    ],
   });
 
   if (!data && !loading && !error) {
@@ -114,13 +130,23 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     {
       key: 'showInCatalogueFilter',
       title: 'Показывать в фильтре',
-      render: (value: boolean, { node: { nameString } }: RubricAttributesGroup) => (
+      render: (value: boolean, { node: { id, nameString } }: RubricAttributesGroup) => (
         <Checkbox
-          testId={`${nameString}-show-in-catalogue`}
+          testId={`${nameString}`}
           checked={value}
           value={value}
           name={'showInCatalogueFilter'}
-          onChange={(val: any) => console.log(val.target.checked)}
+          onChange={(event: ChangeEvent<any>) => {
+            updateAttributesGroupInRubricMutation({
+              variables: {
+                input: {
+                  showInCatalogueFilter: event.target.checked,
+                  rubricId: rubric.id,
+                  attributesGroupId: id,
+                },
+              },
+            });
+          }}
         />
       ),
     },

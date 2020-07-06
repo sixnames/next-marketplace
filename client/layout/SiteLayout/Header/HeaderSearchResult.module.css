@@ -1,0 +1,38 @@
+.frame {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: calc(100% - 36px);
+}
+
+.list {
+  position: relative;
+  z-index: 2;
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--white);
+  box-shadow: 0 0 10px 2px var(--lightGray);
+  border-radius: 4px;
+}
+
+.empty {
+  font-weight: bold;
+  padding-left: 1.125rem;
+  padding-right: 1.125rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.section {
+  padding-top: 1.125rem;
+  padding-bottom: 1rem;
+}
+
+.sectionTitle {
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+  padding-left: 1.125rem;
+  padding-right: 1.125rem;
+}

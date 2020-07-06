@@ -1,0 +1,41 @@
+.frame {
+  position: relative;
+  flex-grow: 1;
+}
+
+.holder {
+  display: flex;
+  background-color: var(--secondaryBackground);
+  border: 1px solid var(--lighterGray);
+  border-radius: 15px;
+}
+
+.line {
+  width: calc(100% - 30px);
+}
+
+.frame .input {
+  height: 30px;
+  border: none;
+  background: none;
+  padding-left: 15px;
+}
+
+.frame .butn {
+  width: 30px;
+  height: 30px;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 15px;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.frame .butn svg {
+  margin-right: 0;
+  fill: var(--textColor);
+}
+
+[data-theme='dark'] .holder {
+  border: 1px solid var(--midGray);
+}

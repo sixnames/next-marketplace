@@ -1,34 +1,46 @@
 {
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ya-gu/winenot.git"
+    "url": "https://github.com/ya-gu/winepoint.git"
   },
   "scripts": {
     "up": "docker-compose -f docker-compose.dev.yml up -d",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
-    "postup": "wait-on data && npm run dev",
+    "postup": "yarn dev",
 
-    "up:serve": "docker-compose -f docker-compose.serve.yml up --build",
-    "stop:serve": "docker-compose -f docker-compose.serve.yml stop",
-    "down:serve": "docker-compose -f docker-compose.serve.yml down && rm -rf data/*",
+    "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
+    "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
+    "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
 
-    "dev": "lerna run --parallel dev",
-    "test": "lerna run --parallel test",
+    "up:testing": "docker-compose -f docker-compose.testing.yml up --build",
+    "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
+    "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
+
+    "dev": "concurrently -n api,client,watchConfig \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\"",
+
+    "install:api": "cd api && yarn",
+    "dev:api": "cd api && yarn dev",
+    "build:api": "cd api && yarn build",
+    "start:api": "cd api && yarn start",
+
+    "install:client": "cd client && yarn",
+    "dev:client": "cd client && yarn dev",
+    "build:client": "cd client && yarn build",
+    "start:client": "cd client && yarn start",
+
+    "watch-config": "cd api && yarn watch-config",
+
+    "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
+    "test:api": "cd api && yarn test",
+    "test:client": "cd client && yarn test",
 
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
-    "lerna:bootstrap": "lerna bootstrap",
 
-    "generate": "graphql-codegen --config codegen.yml",
-    "build:utils": "lerna exec --scope @rg/validation --scope @rg/config --scope @rg/utils -- npm run build"
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.13.5",
@@ -37,23 +49,24 @@
     "@graphql-codegen/introspection": "^1.13.5",
     "@graphql-codegen/typescript-operations": "1.13.5",
     "@graphql-codegen/typescript-react-apollo": "1.13.5",
-    "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.0.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.10.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-cypress": "^2.10.3",
-    "eslint-plugin-react-hooks": "^4.0.0",
     "prettier": "^2.0.5",
-    "typescript": "^3.9.2",
     "wait-on": "^5.0.0",
-    "lerna": "^3.20.2"
+    "graphql": "^15.1.0",
+    "concurrently": "^5.2.0",
+    "@typescript-eslint/eslint-plugin": "^3.5.0",
+    "@typescript-eslint/parser": "^3.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-app": "^6.2.2",
+    "eslint-plugin-react-hooks": "^4.0.5",
+    "typescript": "^3.9.5"
   },
   "husky": {
     "hooks": {

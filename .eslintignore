@@ -7,3 +7,7 @@ public
 dist
 build
 coverage
+assets
+.next
+data
+generated

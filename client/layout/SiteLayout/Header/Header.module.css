@@ -1,0 +1,88 @@
+.frame {
+  position: relative;
+  z-index: 70;
+  background-color: var(--primaryBackground);
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  display: block;
+  height: 42px;
+  width: 150px;
+  margin-right: 20px;
+  background-color: var(--midGray);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.top {
+  background-color: var(--secondaryBackground);
+}
+
+.top a {
+  color: var(--textColor);
+}
+
+.topNav {
+  display: flex;
+  align-items: center;
+}
+
+.topNavItem:not(:first-child) {
+  margin-left: 15px;
+}
+
+.topLink {
+  cursor: pointer;
+  color: var(--textColor);
+}
+
+.topLink:hover {
+  text-decoration: underline;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.frame .middle {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .topNav {
+    display: none;
+  }
+
+  .topRight {
+    width: 100%;
+  }
+
+  .topRight .topNavItem {
+    margin-left: auto;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .logo {
+    height: 28px;
+    width: 130px;
+    margin-right: 10px;
+  }
+
+  .frame .middle {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}

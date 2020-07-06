@@ -30,7 +30,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             width={imageWidth}
             alt={name}
             title={name}
-            loading={'lazy'}
+            // loading={'lazy'}
           />
         </div>
 

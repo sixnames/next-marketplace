@@ -75,13 +75,13 @@ const RubricsRoute: React.FC = () => {
   const filterResultNavConfig = generateTabsConfig({
     config: [
       {
-        name: 'Детали',
-        testId: 'details',
-      },
-      {
         name: 'Товары',
         hidden: notLastLevelRubric,
         testId: 'products',
+      },
+      {
+        name: 'Детали',
+        testId: 'details',
       },
       {
         name: 'Атрибуты',

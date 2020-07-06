@@ -29,8 +29,8 @@ const RubricsContent: React.FC<RubricsContentInterface> = ({ queryResult = {} })
   return (
     <DataLayoutContentFrame>
       <TabsContent className={classes.content}>
-        <RubricDetails rubric={getRubric} />
         <RubricProducts rubric={getRubric} />
+        <RubricDetails rubric={getRubric} />
         <RubricAttributes rubric={getRubric} />
       </TabsContent>
     </DataLayoutContentFrame>

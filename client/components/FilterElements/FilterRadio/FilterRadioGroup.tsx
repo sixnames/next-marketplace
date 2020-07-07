@@ -1,5 +1,5 @@
 import React from 'react';
-import FilterRadio from './FilterRadio';
+import FilterRadio, { FilterRadioInterface } from './FilterRadio';
 import classes from './FilterRadioGroup.module.css';
 
 interface FilterRadioGroupItem {
@@ -7,9 +7,8 @@ interface FilterRadioGroupItem {
   id: string;
 }
 
-interface FilterRadioGroupInterface {
+interface FilterRadioGroupInterface extends Omit<FilterRadioInterface, 'id'> {
   radioItems: FilterRadioGroupItem[];
-  queryKey: string;
   className?: string;
   radioClassName?: string;
   label?: string;
@@ -21,6 +20,8 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
   className,
   queryKey,
   radioClassName,
+  asPath,
+  ...props
 }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`}>
@@ -34,7 +35,9 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
             queryKey={queryKey}
             testId={key}
             key={key}
+            asPath={asPath}
             className={`${classes.item} ${radioClassName ? radioClassName : ''}`}
+            {...props}
           />
         );
       })}

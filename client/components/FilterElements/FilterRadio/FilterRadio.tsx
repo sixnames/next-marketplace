@@ -12,6 +12,8 @@ export interface FilterRadioInterface {
   testId?: string;
   className?: string;
   additionalQuery?: ParsedUrlQueryInput;
+  asPath?: string;
+  excludedQueries?: string[];
 }
 
 const FilterRadio: React.FC<FilterRadioInterface> = ({
@@ -21,18 +23,26 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
   testId,
   className,
   additionalQuery = {},
+  asPath,
+  excludedQueries = [],
 }) => {
   const { pathname = '', query = {} } = useRouter();
   const queryValue = query[queryKey];
   const isCurrent = queryValue && queryValue === id;
+  const filteredQuery = Object.keys(query).reduce((acc: ObjectType, key: string) => {
+    if (excludedQueries?.includes(key)) {
+      return acc;
+    }
+    return { ...acc, [key]: query[key] };
+  }, {});
 
   let nextQuery = {
-    ...query,
+    ...filteredQuery,
     [queryKey]: id,
   };
 
   if (isCurrent) {
-    nextQuery = Object.keys(query).reduce((acc: ObjectType, key: string) => {
+    nextQuery = Object.keys(filteredQuery).reduce((acc: ObjectType, key: string) => {
       if (key === queryKey) {
         return acc;
       }
@@ -50,6 +60,14 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
           pathname,
           query: { ...nextQuery, ...additionalQuery },
         }}
+        as={
+          asPath
+            ? {
+                pathname: asPath,
+                query: { ...nextQuery, ...additionalQuery },
+              }
+            : {}
+        }
       >
         <a
           data-cy={testId}

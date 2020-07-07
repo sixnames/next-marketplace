@@ -57,20 +57,6 @@ export const RUBRIC_QUERY = gql`
     getRubric(id: $id) {
       ...RubricFragment
       catalogueName
-      parent {
-        id
-        name
-        parent {
-          id
-          name
-        }
-      }
-      children {
-        ...RubricFragment
-        children {
-          ...RubricFragment
-        }
-      }
     }
   }
 

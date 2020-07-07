@@ -16,7 +16,7 @@ import {
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { attributeInGroupSchema } from '../../../validation';
-import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING, ATTRIBUTE_TYPE_NUMBER } from '../../../config';
+import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../../config';
 
 interface AddAttributeToGroupModalInterface {
   attribute?: Attribute;
@@ -116,15 +116,13 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 />
               )}
 
-              {(variant === ATTRIBUTE_TYPE_STRING || variant === ATTRIBUTE_TYPE_NUMBER) && (
-                <FormikSelect
-                  firstOption={'Не выбрано'}
-                  label={'Единица измерения'}
-                  name={'metric'}
-                  options={getAllMetrics || []}
-                  testId={'attribute-metrics'}
-                />
-              )}
+              <FormikSelect
+                firstOption={'Не выбрано'}
+                label={'Единица измерения'}
+                name={'metric'}
+                options={getAllMetrics || []}
+                testId={'attribute-metrics'}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

@@ -12,15 +12,12 @@ services:
       - .testing.env
     volumes:
       - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
-      - ./data:/data/db
   api:
     container_name: api
     restart: always
     build:
       dockerfile: Dockerfile.testing
       context: ./api
-    volumes:
-      - ./api/assets:/api/assets
     depends_on:
       - mongo
     ports:

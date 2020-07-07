@@ -28,7 +28,7 @@ import { ME_AS_ADMIN } from '../../config';
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('getByCy', (testId) => {
-  cy.wait(50);
+  cy.wait(100);
   cy.get(`[data-cy="${testId}"]`);
 });
 
@@ -70,13 +70,15 @@ Cypress.Commands.add('closeNotification', () => {
   });
 });
 
+const apiHost = 'http://localhost:4000';
+
 Cypress.Commands.add('createTestData', () => {
-  const createTestDataURI = `${Cypress.env('api-host')}/create-test-data`;
+  const createTestDataURI = `${apiHost}/create-test-data`;
   cy.request('GET', createTestDataURI);
 });
 
 Cypress.Commands.add('clearTestData', () => {
-  const clearTestDataURI = `${Cypress.env('api-host')}/clear-test-data`;
+  const clearTestDataURI = `${apiHost}/clear-test-data`;
   cy.request('GET', clearTestDataURI);
 });
 

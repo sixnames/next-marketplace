@@ -5,6 +5,7 @@ export const QUERY_DATA_LAYOUT_FILTER_ENABLED = `?${QUERY_DATA_LAYOUT_FILTER}=${
 export const QUERY_DATA_LAYOUT_PREVIEW = 'isPreviewVisible';
 export const QUERY_DATA_LAYOUT_NO_RUBRIC = 'no-rubric';
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
+export const QUERY_FILTER_PAGE = 'page';
 
 // Routes
 export const ROUTE_SIGN_IN = '/sign-in';

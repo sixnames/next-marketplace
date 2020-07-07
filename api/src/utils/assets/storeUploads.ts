@@ -63,9 +63,9 @@ const storeUploads = async ({
     files.map(async (file, index) => {
       const { createReadStream } = await file;
       const fileName = `${slug}-${index}`;
-
-      const finalPath = `${filesPath}/${fileName}.jpg`;
-      const resolvePath = `${filesResolvePath}/${fileName}.jpg`;
+      const fileFormat = 'webp';
+      const finalPath = `${filesPath}/${fileName}.${fileFormat}`;
+      const resolvePath = `${filesResolvePath}/${fileName}.${fileFormat}`;
 
       // Attempting to save file in fs
       return new Promise<AssetInterface>(async (resolve, reject) => {
@@ -75,7 +75,7 @@ const storeUploads = async ({
 
         // Save file to the FS
         sharp(buffer)
-          .jpeg()
+          .webp()
           .toFile(finalPath)
           .then(() => {
             resolve({

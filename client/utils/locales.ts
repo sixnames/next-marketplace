@@ -1,3 +1,10 @@
+import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_NUMBER,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPE_STRING,
+} from '../config';
+
 export const localeString = (value: string | number) => {
   const finalValue = typeof value === 'string' ? parseInt(value) : value;
   return value ? finalValue.toLocaleString('ru-RU') : 0;
@@ -5,13 +12,13 @@ export const localeString = (value: string | number) => {
 
 export const getAttributeVariant = (variant: string) => {
   switch (variant) {
-    case 'select':
+    case ATTRIBUTE_TYPE_SELECT:
       return 'Селект';
-    case 'multipleSelect':
+    case ATTRIBUTE_TYPE_MULTIPLE_SELECT:
       return 'Мульти-селект';
-    case 'string':
+    case ATTRIBUTE_TYPE_STRING:
       return 'Строка';
-    case 'number':
+    case ATTRIBUTE_TYPE_NUMBER:
       return 'Число';
     default:
       return 'Тип не определён';

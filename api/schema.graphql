@@ -187,6 +187,7 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayloadType!
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
+  updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -395,7 +396,7 @@ type Rubric {
 type RubricAttributesGroup {
   id: ID!
   node: AttributesGroup!
-  showInCatalogueFilter: Boolean!
+  showInCatalogueFilter: [ID!]!
 }
 
 type RubricCity {
@@ -420,8 +421,14 @@ type RubricPayloadType {
   success: Boolean!
 }
 
+input RubricProductAttributesFilterInput {
+  key: String!
+  value: [String!]!
+}
+
 input RubricProductPaginateInput {
   active: Boolean
+  attributes: [RubricProductAttributesFilterInput!]
   limit: Int = 100
   notInRubric: ID
   page: Int = 1
@@ -473,6 +480,12 @@ input UpdateAttributeInGroupInput {
 input UpdateAttributesGroupInput {
   id: ID!
   name: [LangInput!]!
+}
+
+input UpdateAttributesGroupInRubricInput {
+  attributeId: ID!
+  attributesGroupId: ID!
+  rubricId: ID!
 }
 
 input UpdateMetricInput {

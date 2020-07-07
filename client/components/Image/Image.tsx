@@ -14,7 +14,7 @@ const Image: React.FC<ImageInterface> = ({ url, alt, title, width }) => {
   return (
     <picture>
       <source srcSet={src} type={'image/webp'} />
-      <source srcSet={`${src}&format=jpeg`} type={'image/jpeg'} />
+      <source srcSet={`${src}&format=png`} type={'image/png'} />
       <img src={src} width={width} alt={alt} title={title} loading={'lazy'} />
     </picture>
   );

@@ -40,15 +40,21 @@ import {
   createRubricInputSchema,
   deleteAttributesGroupFromRubricInputSchema,
   deleteProductFromRubricInputSchema,
+  updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '../../validation';
 import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_SELECT,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
+import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
+import toggleItemInArray from '../../utils/toggleItemInArray';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -168,8 +174,17 @@ export class RubricResolver {
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
       await updateRubricInputSchema.validate(input);
-
       const { id, ...values } = input;
+      const rubric = await RubricModel.findById(id).lean().exec();
+
+      if (!rubric) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.update.notFound.${lang}`),
+        };
+      }
+      const currentCity = getCityData(rubric.cities, city);
+
       const { catalogueName, parent, variant, name } = values;
 
       const nameValues = name.map(({ value }) => value);
@@ -188,13 +203,14 @@ export class RubricResolver {
       }
 
       const withNewLink = {
+        ...currentCity!.node,
         ...values,
         parent: Types.ObjectId(parent),
         variant: Types.ObjectId(variant),
         slug: generateDefaultLangSlug(catalogueName),
       };
 
-      const rubric = await RubricModel.findOneAndUpdate(
+      const updatedRubric = await RubricModel.findOneAndUpdate(
         {
           _id: id,
           'cities.key': city,
@@ -209,7 +225,7 @@ export class RubricResolver {
         },
       );
 
-      if (!rubric) {
+      if (!updatedRubric) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.update.error.${lang}`),
@@ -219,7 +235,7 @@ export class RubricResolver {
       return {
         success: true,
         message: getMessageTranslation(`rubric.update.success.${lang}`),
-        rubric,
+        rubric: updatedRubric,
       };
     } catch (e) {
       return {
@@ -361,6 +377,19 @@ export class RubricResolver {
           message: getMessageTranslation(`rubric.addAttributesGroup.notFound.${lang}`),
         };
       }
+      const groupAttributes = await AttributeModel.find({
+        _id: { $in: attributesGroup.attributes },
+      });
+      const showInCatalogueAttributes = groupAttributes.reduce(
+        (acc: string[], attribute: Attribute) => {
+          const { id, variant } = attribute;
+          if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT || variant === ATTRIBUTE_TYPE_SELECT) {
+            return [...acc, id];
+          }
+          return acc;
+        },
+        [],
+      );
 
       const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
       const currentRubricLevel = currentRubricCityNode.level;
@@ -398,12 +427,13 @@ export class RubricResolver {
         {
           $addToSet: {
             'cities.$.node.attributesGroups': {
-              showInCatalogueFilter: false,
+              showInCatalogueFilter: showInCatalogueAttributes,
               node: attributesGroupId,
             },
           },
         },
       );
+
       if (!updatedRubrics.ok) {
         return {
           success: false,
@@ -416,6 +446,99 @@ export class RubricResolver {
       return {
         success: true,
         message: getMessageTranslation(`rubric.addAttributesGroup.success.${lang}`),
+        rubric: updatedRubric,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => RubricPayloadType)
+  async updateAttributesGroupInRubric(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: UpdateAttributesGroupInRubricInput,
+  ): Promise<RubricPayloadType> {
+    try {
+      const city = ctx.req.session!.city;
+      const lang = ctx.req.session!.lang;
+      await updateAttributesGroupInRubricInputSchema.validate(input);
+
+      const { rubricId, attributesGroupId, attributeId } = input;
+      const rubric = await RubricModel.findOne({
+        'cities.key': city,
+        _id: rubricId,
+      });
+
+      const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
+
+      if (!rubric || !attributesGroup) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+        };
+      }
+
+      const currentCityData = getCityData(rubric.cities, city);
+
+      if (!currentCityData) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+        };
+      }
+
+      const currentAttributesGroup = currentCityData.node.attributesGroups.find(
+        (group: RubricAttributesGroup) => {
+          return group.node === attributesGroupId;
+        },
+      );
+
+      if (!currentAttributesGroup) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+        };
+      }
+
+      const updatedShowInCatalogueFilter = toggleItemInArray(
+        currentAttributesGroup.showInCatalogueFilter,
+        attributeId,
+      );
+
+      const isUpdated = await RubricModel.updateOne(
+        {
+          _id: rubricId,
+          'cities.key': city,
+        },
+        {
+          $set: {
+            'cities.$.node.attributesGroups.$[element].showInCatalogueFilter': updatedShowInCatalogueFilter,
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              'element.node': attributesGroupId,
+            },
+          ],
+        },
+      );
+
+      if (!isUpdated.ok) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.error.${lang}`),
+        };
+      }
+
+      const updatedRubric = await RubricModel.findById(rubricId);
+
+      return {
+        success: true,
+        message: getMessageTranslation(`rubric.updateAttributesGroup.success.${lang}`),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -781,6 +904,7 @@ export class RubricResolver {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
     const rubricsIds = await getRubricNestedIds({ rubric, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
+
     const { options } = generatePaginationOptions({
       limit,
       page,

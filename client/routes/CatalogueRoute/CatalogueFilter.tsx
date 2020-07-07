@@ -7,9 +7,9 @@ import {
   OptionsGroup,
   RubricAttributesGroup,
 } from '../../generated/apolloComponents';
+import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../config';
+import FilterCheckboxGroup from '../../components/FilterElements/FilterCheckbox/FilterCheckboxGroup';
 import classes from './CatalogueFilter.module.css';
-import { ATTRIBUTE_TYPE_MULTIPLE_SELECT } from '../../config';
-import FilterRadioGroup from '../../components/FilterElements/FilterRadio/FilterRadioGroup';
 
 type RubricAttributesGroupType = Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'> & {
   node: Pick<AttributesGroup, 'id' | 'nameString'> & {
@@ -49,18 +49,20 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 }) => {
   const { nameString, variant, options, itemId } = attribute;
 
-  if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT && options) {
-    return (
-      <div className={classes.attribute}>
-        <FilterRadioGroup
-          radioItems={options.options}
-          queryKey={`${itemId}`}
-          label={nameString}
-          excludedQueries={['catalogue']}
-          asPath={`/${rubricSlug}`}
-        />
-      </div>
-    );
+  if (options) {
+    if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT || variant === ATTRIBUTE_TYPE_SELECT) {
+      return (
+        <div className={classes.attribute}>
+          <FilterCheckboxGroup
+            checkboxItems={options.options}
+            queryKey={`${itemId}`}
+            label={nameString}
+            excludedQueries={['catalogue']}
+            asPath={`/${rubricSlug}`}
+          />
+        </div>
+      );
+    }
   }
 
   return <div className={classes.attribute}>{nameString}</div>;

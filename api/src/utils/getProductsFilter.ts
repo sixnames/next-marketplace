@@ -47,18 +47,29 @@ export function getProductsFilter(
       }
 
       if (key === 'attributes') {
-        const attributesQuery = value.map(({ key, value }: RubricProductAttributesFilterInput) => ({
-          key,
-          value: { $in: value },
-        }));
+        const attributesQuery = value.map(({ key, value }: RubricProductAttributesFilterInput) => {
+          return {
+            'node.attributesGroups.attributes': {
+              $elemMatch: {
+                key,
+                value: { $in: value },
+              },
+            },
+          };
+          /*return {
+            key,
+            value: { $in: value },
+          };*/
+        });
 
         return {
           ...acc,
-          'node.attributesGroups.attributes': {
+          $and: attributesQuery,
+          /*'node.attributesGroups.attributes': {
             $elemMatch: {
               $and: attributesQuery,
             },
-          },
+          },*/
         };
       }
 

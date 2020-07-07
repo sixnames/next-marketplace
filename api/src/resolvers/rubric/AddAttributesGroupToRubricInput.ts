@@ -7,7 +7,4 @@ export class AddAttributesGroupToRubricInput {
 
   @Field(() => ID)
   attributesGroupId: string;
-
-  @Field(() => Boolean, { nullable: true })
-  showInCatalogueFilter?: boolean;
 }

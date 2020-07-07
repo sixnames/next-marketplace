@@ -40,9 +40,12 @@ import {
   createRubricInputSchema,
   deleteAttributesGroupFromRubricInputSchema,
   deleteProductFromRubricInputSchema,
+  updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '../../validation';
 import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_SELECT,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
@@ -50,6 +53,8 @@ import {
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
+import toggleItemInArray from '../../utils/toggleItemInArray';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -359,7 +364,7 @@ export class RubricResolver {
       await addAttributesGroupToRubricInputSchema.validate(input);
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
-      const { rubricId, attributesGroupId, showInCatalogueFilter } = input;
+      const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
         _id: rubricId,
@@ -372,6 +377,19 @@ export class RubricResolver {
           message: getMessageTranslation(`rubric.addAttributesGroup.notFound.${lang}`),
         };
       }
+      const groupAttributes = await AttributeModel.find({
+        _id: { $in: attributesGroup.attributes },
+      });
+      const showInCatalogueAttributes = groupAttributes.reduce(
+        (acc: string[], attribute: Attribute) => {
+          const { id, variant } = attribute;
+          if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT || variant === ATTRIBUTE_TYPE_SELECT) {
+            return [...acc, id];
+          }
+          return acc;
+        },
+        [],
+      );
 
       const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
       const currentRubricLevel = currentRubricCityNode.level;
@@ -409,12 +427,13 @@ export class RubricResolver {
         {
           $addToSet: {
             'cities.$.node.attributesGroups': {
-              showInCatalogueFilter,
+              showInCatalogueFilter: showInCatalogueAttributes,
               node: attributesGroupId,
             },
           },
         },
       );
+
       if (!updatedRubrics.ok) {
         return {
           success: false,
@@ -445,9 +464,9 @@ export class RubricResolver {
     try {
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
-      await deleteAttributesGroupFromRubricInputSchema.validate(input);
+      await updateAttributesGroupInRubricInputSchema.validate(input);
 
-      const { rubricId, attributesGroupId, showInCatalogueFilter } = input;
+      const { rubricId, attributesGroupId, attributeId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
         _id: rubricId,
@@ -462,6 +481,33 @@ export class RubricResolver {
         };
       }
 
+      const currentCityData = getCityData(rubric.cities, city);
+
+      if (!currentCityData) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+        };
+      }
+
+      const currentAttributesGroup = currentCityData.node.attributesGroups.find(
+        (group: RubricAttributesGroup) => {
+          return group.node === attributesGroupId;
+        },
+      );
+
+      if (!currentAttributesGroup) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+        };
+      }
+
+      const updatedShowInCatalogueFilter = toggleItemInArray(
+        currentAttributesGroup.showInCatalogueFilter,
+        attributeId,
+      );
+
       const isUpdated = await RubricModel.updateOne(
         {
           _id: rubricId,
@@ -469,7 +515,7 @@ export class RubricResolver {
         },
         {
           $set: {
-            'cities.$.node.attributesGroups.$[element].showInCatalogueFilter': showInCatalogueFilter,
+            'cities.$.node.attributesGroups.$[element].showInCatalogueFilter': updatedShowInCatalogueFilter,
           },
         },
         {

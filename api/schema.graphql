@@ -6,7 +6,6 @@
 input AddAttributesGroupToRubricInput {
   attributesGroupId: ID!
   rubricId: ID!
-  showInCatalogueFilter: Boolean
 }
 
 input AddAttributeToGroupInput {
@@ -397,7 +396,7 @@ type Rubric {
 type RubricAttributesGroup {
   id: ID!
   node: AttributesGroup!
-  showInCatalogueFilter: Boolean
+  showInCatalogueFilter: [ID!]!
 }
 
 type RubricCity {
@@ -484,9 +483,9 @@ input UpdateAttributesGroupInput {
 }
 
 input UpdateAttributesGroupInRubricInput {
+  attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
-  showInCatalogueFilter: Boolean
 }
 
 input UpdateMetricInput {

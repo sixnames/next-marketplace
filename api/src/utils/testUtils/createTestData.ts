@@ -51,7 +51,7 @@ interface GetRubricCitiesInterface {
   variant?: string;
   parent?: Types.ObjectId | null;
   attributesGroups: {
-    showInCatalogueFilter: boolean;
+    showInCatalogueFilter: string[];
     node: string;
   }[];
 }
@@ -218,7 +218,12 @@ const createTestData = async () => {
 
     await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-      attributes: [],
+      attributes: [
+        attributeMultiple.id,
+        attributeSelect.id,
+        attributeString.id,
+        attributeNumber.id,
+      ],
     });
 
     const attributesGroup = await AttributesGroupModel.create({
@@ -243,14 +248,14 @@ const createTestData = async () => {
     // Rubrics
     const rubricAttributesGroups = [
       {
-        showInCatalogueFilter: true,
+        showInCatalogueFilter: [attributeMultiple.id, attributeSelect.id],
         node: attributesGroup.id,
       },
     ];
 
     const rubricAttributesGroupsB = [
       {
-        showInCatalogueFilter: true,
+        showInCatalogueFilter: [],
         node: attributesGroupB.id,
       },
     ];

@@ -213,7 +213,6 @@ describe.only('Rubrics', () => {
           input: {
             rubricId: "${rubricLevelTwo.id}"
             attributesGroupId: "${attributesGroup.id}"
-            showInCatalogueFilter: true
           }
         ) {
           success
@@ -223,18 +222,28 @@ describe.only('Rubrics', () => {
             name
             level
             attributesGroups {
+              showInCatalogueFilter
               node {
                 id
                 nameString
+                attributes {
+                  id
+                }
               }
             }
           }
         }
       }
     `);
+
     const { attributesGroups } = rubric;
+    const addedAttributesGroup = attributesGroups.find((group: any) => {
+      return group.node.id === attributesGroup.id;
+    });
     expect(success).toBeTruthy();
     expect(attributesGroups.length).toEqual(2);
+    expect(addedAttributesGroup.node.attributes).toHaveLength(4);
+    expect(addedAttributesGroup.showInCatalogueFilter).toHaveLength(2);
 
     // Should update attributes group in rubric
     const {
@@ -245,7 +254,7 @@ describe.only('Rubrics', () => {
           input: {
             rubricId: "${rubricLevelTwo.id}"
             attributesGroupId: "${attributesGroup.id}"
-            showInCatalogueFilter: false
+            attributeId: "${addedAttributesGroup.showInCatalogueFilter[0]}"
           }
         ) {
           success
@@ -271,7 +280,7 @@ describe.only('Rubrics', () => {
         return node.id === attributesGroup.id;
       },
     );
-    expect(updatedGroup.showInCatalogueFilter).toBeFalsy();
+    expect(updatedGroup.showInCatalogueFilter).toHaveLength(1);
 
     // Should delete attributes group from rubric
     const {

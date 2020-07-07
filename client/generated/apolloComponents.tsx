@@ -374,7 +374,7 @@ export type RubricProductsArgs = {
 export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
-  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
+  showInCatalogueFilter: Array<Scalars['ID']>;
   node: AttributesGroup;
 };
 

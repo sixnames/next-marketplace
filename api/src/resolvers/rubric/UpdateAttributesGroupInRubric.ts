@@ -8,6 +8,6 @@ export class UpdateAttributesGroupInRubricInput {
   @Field(() => ID)
   attributesGroupId: string;
 
-  @Field(() => Boolean, { nullable: true })
-  showInCatalogueFilter?: boolean;
+  @Field(() => ID)
+  attributeId: string;
 }

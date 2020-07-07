@@ -5,13 +5,17 @@ import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import { CatalogueData } from '../../pages/[catalogue]';
+import Pager from '../../components/Pager/Pager';
+import useFilterMethods from '../../hooks/useFilterMethods';
+import getBooleanFromArray from '../../utils/getBooleanFromArray';
+import CatalogueFilter from './CatalogueFilter';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueData;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
-  const isFilterVisible = false;
+  const { page, setPage } = useFilterMethods();
 
   if (!rubricData) {
     return (
@@ -21,20 +25,29 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const rubric = rubricData.getRubric;
+  const { catalogueName, slug, products, attributesGroups } = rubricData.getRubric;
+  const { docs, totalPages } = products;
+  const isFilterVisible = getBooleanFromArray(
+    attributesGroups,
+    (group) => !!group.showInCatalogueFilter,
+  );
 
   return (
     <Inner>
-      <Title>{rubric.catalogueName}</Title>
+      <Title>{catalogueName}</Title>
 
       <div className={classes.Frame}>
-        {isFilterVisible && <div className={classes.Filter}>filter</div>}
+        {isFilterVisible && (
+          <CatalogueFilter rubricSlug={slug} attributesGroups={attributesGroups} />
+        )}
 
-        <div className={classes.List}>
-          {rubric.products.docs.map((product: any) => (
-            <CatalogueProduct product={product} rubricSlug={rubric.slug} key={product.id} />
+        <div className={`${classes.List} ${isFilterVisible ? classes.ListWithFilter : ''}`}>
+          {docs.map((product: any) => (
+            <CatalogueProduct product={product} rubricSlug={slug} key={product.id} />
           ))}
         </div>
+
+        <Pager page={page} setPage={setPage} totalPages={totalPages} />
       </div>
     </Inner>
   );

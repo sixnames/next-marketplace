@@ -169,8 +169,17 @@ export class RubricResolver {
       const city = ctx.req.session!.city;
       const lang = ctx.req.session!.lang;
       await updateRubricInputSchema.validate(input);
-
       const { id, ...values } = input;
+      const rubric = await RubricModel.findById(id).lean().exec();
+
+      if (!rubric) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.update.notFound.${lang}`),
+        };
+      }
+      const currentCity = getCityData(rubric.cities, city);
+
       const { catalogueName, parent, variant, name } = values;
 
       const nameValues = name.map(({ value }) => value);
@@ -189,13 +198,14 @@ export class RubricResolver {
       }
 
       const withNewLink = {
+        ...currentCity!.node,
         ...values,
         parent: Types.ObjectId(parent),
         variant: Types.ObjectId(variant),
         slug: generateDefaultLangSlug(catalogueName),
       };
 
-      const rubric = await RubricModel.findOneAndUpdate(
+      const updatedRubric = await RubricModel.findOneAndUpdate(
         {
           _id: id,
           'cities.key': city,
@@ -210,7 +220,7 @@ export class RubricResolver {
         },
       );
 
-      if (!rubric) {
+      if (!updatedRubric) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.update.error.${lang}`),
@@ -220,7 +230,7 @@ export class RubricResolver {
       return {
         success: true,
         message: getMessageTranslation(`rubric.update.success.${lang}`),
-        rubric,
+        rubric: updatedRubric,
       };
     } catch (e) {
       return {
@@ -847,6 +857,7 @@ export class RubricResolver {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
     const rubricsIds = await getRubricNestedIds({ rubric, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
+
     const { options } = generatePaginationOptions({
       limit,
       page,

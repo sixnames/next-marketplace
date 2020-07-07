@@ -3,6 +3,15 @@ import { Field, ID, InputType } from 'type-graphql';
 import { ProductSortByEnum } from '../product/ProductPaginateInput';
 
 @InputType()
+export class RubricProductAttributesFilterInput {
+  @Field((_type) => String)
+  key: string;
+
+  @Field((_type) => [String])
+  value: string[];
+}
+
+@InputType()
 export class RubricProductPaginateInput extends PaginateInput {
   @Field((_type) => ProductSortByEnum, { defaultValue: 'createdAt' })
   sortBy?: ProductSortByEnum;
@@ -12,4 +21,7 @@ export class RubricProductPaginateInput extends PaginateInput {
 
   @Field((_type) => Boolean, { nullable: true })
   active?: boolean;
+
+  @Field((_type) => [RubricProductAttributesFilterInput], { nullable: true })
+  attributes?: RubricProductAttributesFilterInput[];
 }

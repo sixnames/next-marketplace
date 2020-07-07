@@ -17,6 +17,10 @@ const rubricTranslations = {
       },
     },
     update: {
+      notFound: {
+        ru: 'Рубрика не найдена.',
+        en: 'Rubric not found.',
+      },
       duplicate: {
         ru: 'Рубрика с таким именем уже существует.',
         en: 'Rubric with same name is already exists.',

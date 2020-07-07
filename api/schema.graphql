@@ -422,8 +422,14 @@ type RubricPayloadType {
   success: Boolean!
 }
 
+input RubricProductAttributesFilterInput {
+  key: String!
+  value: [String!]!
+}
+
 input RubricProductPaginateInput {
   active: Boolean
+  attributes: [RubricProductAttributesFilterInput!]
   limit: Int = 100
   notInRubric: ID
   page: Int = 1

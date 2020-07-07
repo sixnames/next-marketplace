@@ -1,4 +1,5 @@
 import { alwaysArray } from './alwaysArray';
+import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
 
 interface InArrayInterface {
   $in: any[];
@@ -43,6 +44,22 @@ export function getProductsFilter(
     if (value) {
       if (key === 'search') {
         return acc;
+      }
+
+      if (key === 'attributes') {
+        const attributesQuery = value.map(({ key, value }: RubricProductAttributesFilterInput) => ({
+          key,
+          value: { $in: value },
+        }));
+
+        return {
+          ...acc,
+          'node.attributesGroups.attributes': {
+            $elemMatch: {
+              $and: attributesQuery,
+            },
+          },
+        };
       }
 
       if (key === 'rubrics') {

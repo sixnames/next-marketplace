@@ -386,6 +386,12 @@ export type RubricProductPaginateInput = {
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
   active?: Maybe<Scalars['Boolean']>;
+  attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
+};
+
+export type RubricProductAttributesFilterInput = {
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 export type RubricCity = {
@@ -1612,7 +1618,7 @@ export type GetCatalogueRubricQuery = (
             & Pick<OptionsGroup, 'id' | 'nameString'>
             & { options: Array<(
               { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString'>
+              & Pick<Option, 'id' | 'nameString' | 'color'>
             )> }
           )> }
         )> }
@@ -3337,6 +3343,7 @@ export const GetCatalogueRubricDocument = gql`
             options {
               id
               nameString
+              color
             }
           }
         }

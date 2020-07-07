@@ -15,9 +15,7 @@ export const productAttributesGroupSchema = Yup.object().shape({
     'Поле Показывать группу атрибутов в карточке товара обязательно к заполнению',
   ),
   node: Yup.string().required('Поле ID группы атрибутов обязательно к заполнению'),
-  attributes: Yup.array()
-    .of(productAttributeSchema)
-    .required('Поле Атрибуты в группе обязательно к заполнению'),
+  attributes: Yup.array().of(productAttributeSchema),
 });
 
 const productCommonFields = {

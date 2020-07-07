@@ -29,7 +29,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const { docs, totalPages } = products;
   const isFilterVisible = getBooleanFromArray(
     attributesGroups,
-    (group) => !!group.showInCatalogueFilter,
+    (group) => !!group.showInCatalogueFilter.length,
   );
 
   return (

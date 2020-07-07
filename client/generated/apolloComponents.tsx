@@ -853,13 +853,12 @@ export type UpdateRubricInput = {
 export type AddAttributesGroupToRubricInput = {
   rubricId: Scalars['ID'];
   attributesGroupId: Scalars['ID'];
-  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateAttributesGroupInRubricInput = {
   rubricId: Scalars['ID'];
   attributesGroupId: Scalars['ID'];
-  showInCatalogueFilter?: Maybe<Scalars['Boolean']>;
+  attributeId: Scalars['ID'];
 };
 
 export type DeleteAttributesGroupFromRubricInput = {
@@ -994,21 +993,6 @@ export type GetRubricQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, 'catalogueName'>
-    & { parent?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name'>
-      & { parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name'>
-      )> }
-    )>, children: Array<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & RubricFragmentFragment
-      )> }
-      & RubricFragmentFragment
-    )> }
     & RubricFragmentFragment
   ) }
 );
@@ -1793,6 +1777,17 @@ export type GetRubricAttributesQuery = (
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+          & { metric?: Maybe<(
+            { __typename?: 'Metric' }
+            & Pick<Metric, 'id' | 'nameString'>
+          )>, options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+          )> }
+        )> }
       ) }
     )> }
   ) }
@@ -2049,20 +2044,6 @@ export const GetRubricDocument = gql`
   getRubric(id: $id) {
     ...RubricFragment
     catalogueName
-    parent {
-      id
-      name
-      parent {
-        id
-        name
-      }
-    }
-    children {
-      ...RubricFragment
-      children {
-        ...RubricFragment
-      }
-    }
   }
 }
     ${RubricFragmentFragmentDoc}`;
@@ -3725,6 +3706,19 @@ export const GetRubricAttributesDocument = gql`
       node {
         id
         nameString
+        attributes {
+          id
+          nameString
+          variant
+          metric {
+            id
+            nameString
+          }
+          options {
+            id
+            nameString
+          }
+        }
       }
     }
   }

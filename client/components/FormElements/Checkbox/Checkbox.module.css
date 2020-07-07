@@ -44,3 +44,12 @@
 .error svg {
   fill: var(--red);
 }
+
+.disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.disabled input {
+  cursor: default;
+}

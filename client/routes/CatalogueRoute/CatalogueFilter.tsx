@@ -34,7 +34,7 @@ interface CatalogueFilterInterface {
 }
 
 interface CatalogueFilterItemInterface {
-  group: RubricAttributesGroupType['node'];
+  group: RubricAttributesGroupType;
   rubricSlug: string;
 }
 
@@ -70,32 +70,35 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 const CatalogueFilterGroup: React.FC<CatalogueFilterItemInterface> = ({ group, rubricSlug }) => {
-  const { attributes } = group;
+  const { node, showInCatalogueFilter } = group;
+  const { attributes } = node;
 
   return (
     <div className={classes.group}>
       <div>
-        {attributes.map((attribute) => (
-          <CatalogueFilterAttribute
-            attribute={attribute}
-            key={attribute.id}
-            rubricSlug={rubricSlug}
-          />
-        ))}
+        {attributes.map((attribute) => {
+          if (!showInCatalogueFilter.includes(attribute.id)) {
+            return null;
+          }
+
+          return (
+            <CatalogueFilterAttribute
+              attribute={attribute}
+              key={attribute.id}
+              rubricSlug={rubricSlug}
+            />
+          );
+        })}
       </div>
     </div>
   );
 };
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({ attributesGroups, rubricSlug }) => {
-  const visibleGroups = attributesGroups.filter(
-    ({ showInCatalogueFilter }) => showInCatalogueFilter,
-  );
-
   return (
     <div className={classes.filter}>
-      {visibleGroups.map(({ node, id }) => {
-        return <CatalogueFilterGroup group={node} key={id} rubricSlug={rubricSlug} />;
+      {attributesGroups.map((group) => {
+        return <CatalogueFilterGroup group={group} key={group.id} rubricSlug={rubricSlug} />;
       })}
     </div>
   );

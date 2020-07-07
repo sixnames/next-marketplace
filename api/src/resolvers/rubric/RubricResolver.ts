@@ -473,6 +473,7 @@ export class RubricResolver {
       });
 
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
+      console.log(JSON.stringify({ attributesGroup, rubric }, null, 2));
 
       if (!rubric || !attributesGroup) {
         return {
@@ -535,6 +536,7 @@ export class RubricResolver {
       }
 
       const updatedRubric = await RubricModel.findById(rubricId);
+
       return {
         success: true,
         message: getMessageTranslation(`rubric.updateAttributesGroup.success.${lang}`),

@@ -1,7 +1,9 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import {
   AddAttributesGroupToRubricInput,
   GetRubricQuery,
+  Metric,
+  OptionsGroup,
   RubricAttributesGroup,
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
@@ -16,9 +18,12 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
-import { RUBRIC_LEVEL_TWO } from '../../config';
+import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING, RUBRIC_LEVEL_TWO } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
+import Accordion from '../../components/Accordion/Accordion';
+import Inner from '../../components/Inner/Inner';
+import { getAttributeVariant } from '../../utils/locales';
 
 interface AttributesGroupInterface {
   id: string;
@@ -29,7 +34,13 @@ interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
 }
 
+interface AttributesColumnsInterface {
+  groupId: string;
+  showInCatalogueFilter: string[];
+}
+
 export type AddAttributesGroupToRubricValues = Omit<AddAttributesGroupToRubricInput, 'rubricId'>;
+type RubricAttribute = RubricAttributesGroup['node']['attributes'][0];
 
 const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const isNotSecondLevel = rubric.level !== RUBRIC_LEVEL_TWO;
@@ -121,48 +132,52 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  const columns = [
+  const columns = ({ groupId, showInCatalogueFilter }: AttributesColumnsInterface) => [
     {
-      key: 'node.nameString',
+      key: 'nameString',
       title: 'Название',
       render: (name: string) => name,
     },
     {
-      key: 'showInCatalogueFilter',
-      title: 'Показывать в фильтре',
-      render: (value: boolean, { node: { id, nameString } }: RubricAttributesGroup) => (
-        <Checkbox
-          testId={`${nameString}`}
-          checked={value}
-          value={value}
-          name={'showInCatalogueFilter'}
-          onChange={(event: ChangeEvent<any>) => {
-            updateAttributesGroupInRubricMutation({
-              variables: {
-                input: {
-                  showInCatalogueFilter: event.target.checked,
-                  rubricId: rubric.id,
-                  attributesGroupId: id,
-                },
-              },
-            });
-          }}
-        />
-      ),
+      key: 'variant',
+      title: 'Тип',
+      render: (variant: string) => getAttributeVariant(variant),
     },
     {
-      key: 'node.id',
-      title: '',
-      textAlign: 'right',
-      render: (_: string, attributesGroup: { node: { nameString: string; id: string } }) => {
-        const { node } = attributesGroup;
+      key: 'options',
+      title: 'Опции',
+      render: (options: OptionsGroup) => (options ? options.nameString : null),
+    },
+    {
+      key: 'metric',
+      title: 'Единица измерения',
+      render: (metric: Metric) => (metric ? metric.nameString : null),
+    },
+    {
+      key: 'id',
+      title: 'Показывать в фильтре',
+      render: (id: string, { nameString, variant }: RubricAttribute) => {
+        const isDisabled = variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING;
+
         return (
-          <ContentItemControls
-            disabled={isNotSecondLevel}
-            justifyContent={'flex-end'}
-            deleteTitle={'Удалить группу атрибутов из рубрики'}
-            deleteHandler={() => deleteAttributesGroupHandler(node)}
-            testId={node.nameString}
+          <Checkbox
+            testId={`${nameString}`}
+            disabled={isDisabled}
+            checked={showInCatalogueFilter.includes(id)}
+            value={id}
+            name={'showInCatalogueFilter'}
+            onChange={() => {
+              showLoading();
+              updateAttributesGroupInRubricMutation({
+                variables: {
+                  input: {
+                    attributeId: id,
+                    rubricId: rubric.id,
+                    attributesGroupId: groupId,
+                  },
+                },
+              });
+            }}
           />
         );
       },
@@ -185,12 +200,34 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         {rubric.name}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table
-          data={attributesGroups}
-          columns={columns}
-          emptyMessage={'Список пуст'}
-          testIdKey={'name'}
-        />
+        <Inner>
+          {attributesGroups.map(({ node, id, showInCatalogueFilter }) => {
+            const { nameString, attributes } = node;
+            return (
+              <Accordion
+                isOpen
+                key={id}
+                title={nameString}
+                titleRight={
+                  <ContentItemControls
+                    disabled={isNotSecondLevel}
+                    justifyContent={'flex-end'}
+                    deleteTitle={'Удалить группу атрибутов из рубрики'}
+                    deleteHandler={() => deleteAttributesGroupHandler(node)}
+                    testId={node.nameString}
+                  />
+                }
+              >
+                <Table
+                  data={attributes}
+                  columns={columns({ groupId: node.id, showInCatalogueFilter })}
+                  emptyMessage={'Список атрибутов пуст'}
+                  testIdKey={'nameString'}
+                />
+              </Accordion>
+            );
+          })}
+        </Inner>
       </DataLayoutContentFrame>
     </div>
   );

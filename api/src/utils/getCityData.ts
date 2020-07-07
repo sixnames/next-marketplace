@@ -1,6 +1,7 @@
 interface CityInterface<T> {
   key: string;
   node: T;
+  [key: string]: any;
 }
 
 function getCityData<T>(cities: CityInterface<T>[], chosenCity: string) {

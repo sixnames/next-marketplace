@@ -76,7 +76,6 @@ const RubricsRoute: React.FC = () => {
     config: [
       {
         name: 'Товары',
-        hidden: notLastLevelRubric,
         testId: 'products',
       },
       {

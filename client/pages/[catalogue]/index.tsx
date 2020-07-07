@@ -13,6 +13,7 @@ import { SiteContextProvider } from '../../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../../graphql/query/catalogueQuery';
 import RequestError from '../../components/RequestError/RequestError';
 import CatalogueRoute from '../../routes/CatalogueRoute/CatalogueRoute';
+import { alwaysArray } from '../../utils/alwaysArray';
 
 export type CatalogueData = GetCatalogueRubricQueryResult['data'];
 
@@ -49,33 +50,49 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricDat
 
 // noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  const apolloClient = initializeApollo();
-  const initialApolloState = await apolloClient.query({
-    query: INITIAL_SITE_QUERY,
-    context: {
-      headers: req.headers,
-    },
-  });
-
-  const rubricData = await apolloClient.query({
-    query: CATALOGUE_RUBRIC_QUERY,
-    context: {
-      headers: req.headers,
-    },
-    variables: {
-      id: query.id,
-      productsInput: {
-        active: true,
+  try {
+    const apolloClient = initializeApollo();
+    const initialApolloState = await apolloClient.query({
+      query: INITIAL_SITE_QUERY,
+      context: {
+        headers: req.headers,
       },
-    },
-  });
+    });
+    const { catalogue, id, ...restQuery } = query;
 
-  return {
-    props: {
-      initialApolloState: initialApolloState.data,
-      rubricData: rubricData.data,
-    },
-  };
+    console.log(catalogue);
+
+    const processedQuery = Object.keys(restQuery).map((key) => {
+      return {
+        key: key,
+        value: alwaysArray(restQuery[key]),
+      };
+    });
+
+    const rubricData = await apolloClient.query({
+      query: CATALOGUE_RUBRIC_QUERY,
+      context: {
+        headers: req.headers,
+      },
+      variables: {
+        id,
+        productsInput: {
+          active: true,
+          attributes: processedQuery.length ? processedQuery : null,
+        },
+      },
+    });
+
+    return {
+      props: {
+        initialApolloState: initialApolloState.data,
+        rubricData: rubricData.data,
+      },
+    };
+  } catch (e) {
+    console.log(JSON.stringify(e, null, 2));
+    return { props: {} };
+  }
 };
 
 // noinspection JSUnusedGlobalSymbols

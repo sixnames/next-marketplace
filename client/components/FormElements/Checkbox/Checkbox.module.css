@@ -23,8 +23,7 @@
   bottom: 0;
   border: none;
   opacity: 0;
-  /*clip: rect(0 0 0 0);*/
-  /*overflow: hidden;*/
+  cursor: pointer;
 }
 
 .frame svg {
@@ -44,4 +43,13 @@
 
 .error svg {
   fill: var(--red);
+}
+
+.disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.disabled input {
+  cursor: default;
 }

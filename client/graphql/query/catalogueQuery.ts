@@ -30,6 +30,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
               options {
                 id
                 nameString
+                color
               }
             }
           }

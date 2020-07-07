@@ -32,8 +32,8 @@ class ErrorBoundary extends Component<ObjectType, ErrorBoundaryStateInterface> {
           style={{
             paddingLeft: 10,
             paddingRight: 10,
-            marginTop: 40,
-            marginBottom: 40,
+            paddingTop: 40,
+            paddingBottom: 40,
             textAlign: 'center',
             fontWeight: 'bold',
             fontSize: '1.25em',

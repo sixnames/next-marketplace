@@ -3,38 +3,45 @@
   margin-bottom: 50px;
 }
 
-.Filter {
-  width: 280px;
-  margin-right: 20px;
-}
-
 .List {
   display: grid;
+  align-items: start;
   grid-template-columns: repeat(6, 1fr);
   grid-column-gap: 20px;
   grid-row-gap: 20px;
   flex-grow: 1;
 }
 
+.ListWithFilter {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 @media only screen and (max-width: 1024px) {
   .List {
     grid-template-columns: repeat(5, 1fr);
   }
+
+  .ListWithFilter {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @media only screen and (max-width: 768px) {
+  .ListWithFilter,
   .List {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media only screen and (max-width: 640px) {
+  .ListWithFilter,
   .List {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media only screen and (max-width: 480px) {
+  .ListWithFilter,
   .List {
     grid-template-columns: repeat(2, 1fr);
   }

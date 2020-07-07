@@ -261,8 +261,8 @@ export const MOCK_ATTRIBUTE_NUMBER = {
 };
 export const MOCK_ATTRIBUTES_GROUP = {
   name: [
-    { key: 'ru', value: 'cy-test-chair-features' },
-    { key: 'en', value: 'cy-test-chair-features-en' },
+    { key: 'ru', value: 'cy-test-wine-features' },
+    { key: 'en', value: 'cy-test-wine-features-en' },
   ],
 };
 export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
@@ -281,91 +281,91 @@ export const MOCK_ATTRIBUTES_GROUP_B = {
 // Rubrics
 export const MOCK_RUBRIC_TYPE_EQUIPMENT = {
   name: [
-    { key: 'ru', value: 'cy-test-equipment' },
-    { key: 'en', value: 'cy-test-equipment-en' },
+    { key: 'ru', value: 'cy-test-alcohol' },
+    { key: 'en', value: 'cy-test-alcohol-en' },
   ],
 };
 export const MOCK_RUBRIC_TYPE_STAGE = {
   name: [
-    { key: 'ru', value: 'cy-test-stage' },
-    { key: 'en', value: 'cy-test-stage-en' },
+    { key: 'ru', value: 'cy-test-light' },
+    { key: 'en', value: 'cy-test-light-en' },
   ],
 };
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [
-    { key: 'ru', value: 'cy-test-furniture' },
-    { key: 'en', value: 'cy-test-furniture-en' },
+    { key: 'ru', value: 'cy-test-wine' },
+    { key: 'en', value: 'cy-test-wine-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'furniture' },
-    { key: 'en', value: 'furniture-en' },
+    { key: 'ru', value: 'wine' },
+    { key: 'en', value: 'wine-en' },
   ],
   level: 1,
   parent: null,
 };
 export const MOCK_RUBRIC_LEVEL_TWO = {
   name: [
-    { key: 'ru', value: 'cy-test-chairs' },
-    { key: 'en', value: 'cy-test-chairs-en' },
+    { key: 'ru', value: 'cy-test-light-wine' },
+    { key: 'en', value: 'cy-test-light-wine-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'chairs' },
-    { key: 'en', value: 'chairs-en' },
+    { key: 'ru', value: 'light wine' },
+    { key: 'en', value: 'light wine-en' },
   ],
   level: 2,
 };
 export const MOCK_RUBRIC_LEVEL_TWO_TABLES = {
   name: [
-    { key: 'ru', value: 'cy-test-tables' },
-    { key: 'en', value: 'cy-test-tables-en' },
+    { key: 'ru', value: 'cy-test-port' },
+    { key: 'en', value: 'cy-test-port-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'tables' },
-    { key: 'en', value: 'tables-en' },
+    { key: 'ru', value: 'port' },
+    { key: 'en', value: 'port-en' },
   ],
   level: 2,
 };
 export const MOCK_RUBRIC_LEVEL_THREE = {
   name: [
-    { key: 'ru', value: 'cy-test-chairs-loft' },
-    { key: 'en', value: 'cy-test-chairs-loft-en' },
+    { key: 'ru', value: 'cy-test-light-loft' },
+    { key: 'en', value: 'cy-test-light-loft-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'loft' },
+    { key: 'ru', value: 'light loft' },
     { key: 'en', value: 'loft-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_B = {
   name: [
-    { key: 'ru', value: 'cy-test-chairs-bar' },
-    { key: 'en', value: 'cy-test-chairs-bar-en' },
+    { key: 'ru', value: 'cy-test-light-bar' },
+    { key: 'en', value: 'cy-test-light-bar-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'bar' },
+    { key: 'ru', value: 'light bar' },
     { key: 'en', value: 'bar-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES = {
   name: [
-    { key: 'ru', value: 'cy-test-tables-loft' },
-    { key: 'en', value: 'cy-test-tables-loft-en' },
+    { key: 'ru', value: 'cy-test-port-loft' },
+    { key: 'en', value: 'cy-test-port-loft-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'loft' },
+    { key: 'ru', value: 'tables loft' },
     { key: 'en', value: 'loft-en' },
   ],
   level: 3,
 };
 export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
   name: [
-    { key: 'ru', value: 'cy-test-tables-bar' },
-    { key: 'en', value: 'cy-test-tables-bar-en' },
+    { key: 'ru', value: 'cy-test-port-bar' },
+    { key: 'en', value: 'cy-test-port-bar-en' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'bar' },
+    { key: 'ru', value: 'port bar' },
     { key: 'en', value: 'bar-en' },
   ],
   level: 3,
@@ -415,7 +415,7 @@ export const MOCK_PRODUCT_B_PRODUCT = {
   ],
   price: 100,
   description: [
-    { key: 'ru', value: 'B description' },
+    { key: 'ru', value: 'description B' },
     { key: 'en', value: 'bar-en' },
   ],
 };

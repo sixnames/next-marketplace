@@ -70,7 +70,7 @@ describe('Products list', () => {
     // Should update product main image
     cy.getByCy('file-preview-remove-0').click();
     cy.getByCy('remove-image-confirm').click();
-    cy.getByCy('product-images').attachFile('test-image-1.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
     cy.getByCy('submit-product').click();
     cy.getByCy(`success-notification`).should('exist');
 
@@ -103,7 +103,7 @@ describe('Products list', () => {
     cy.getByCy(`product-create`).click();
 
     // attach images
-    cy.getByCy('product-images').attachFile('test-image-3.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('product-images').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
 
     // fill inputs
     cy.getByCy('product-name').type(mockProductCreateName);

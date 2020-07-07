@@ -1,5 +1,4 @@
 import React from 'react';
-import AppLayout from '../../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
 import { UserContextProvider } from '../../../context/userContext';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
@@ -10,9 +9,7 @@ const Product: NextPage<AppPageInterface> = ({ initialApolloState }) => {
 
   return (
     <UserContextProvider me={myData}>
-      <AppLayout title={'Группы опций'}>
-        <ProductRoute />
-      </AppLayout>
+      <ProductRoute />
     </UserContextProvider>
   );
 };

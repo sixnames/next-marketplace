@@ -4,3 +4,9 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
+.frame img {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+}

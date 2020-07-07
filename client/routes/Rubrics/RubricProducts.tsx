@@ -118,6 +118,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   return (
     <div data-cy={'rubric-products'}>
       <DataLayoutTitle
+        testId={'rubric-title'}
         titleRight={
           <ContentItemControls
             testId={'product'}
@@ -126,7 +127,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           />
         }
       >
-        Товары
+        {rubric.name}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />

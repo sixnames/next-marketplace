@@ -50,24 +50,9 @@ describe('Rubric products', () => {
   });
 
   it('Should CRUD products in rubric', () => {
-    // Should have products on third level rubric only
-    cy.getByCy('more-nav-trigger').should('not.exist');
-
-    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
-    cy.openMoreNav();
-    cy.getByCy('more-nav-list').should('not.contain', 'Товары');
-    cy.closeMoreNav();
-
-    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
-    cy.openMoreNav();
-    cy.getByCy('more-nav-list').should('not.contain', 'Товары');
-    cy.closeMoreNav();
-
-    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
-    cy.visitMoreNavLink('products');
-    cy.getByCy('rubric-products').should('exist');
-
     // Should delete product from rubric
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
+    cy.getByCy('rubric-products').should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy('delete-product-from-rubric-modal').should('exist');
     cy.getByCy(`confirm`).click();
@@ -85,7 +70,6 @@ describe('Rubric products', () => {
 
     // Should add product from tree to the rubric
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
-    cy.visitMoreNavLink('products');
     cy.getByCy('product-create').click();
     cy.get(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`).click();
     cy.getByCy(`${mockProductB}-create`).click();
@@ -130,11 +114,11 @@ describe('Rubric products', () => {
     cy.getByCy('product-create').click();
     cy.getByCy('create-new-product').click();
 
-    cy.getByCy('product-images').attachFile('test-image-1.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
     cy.getByCy('file-preview-0').should('exist');
-    cy.getByCy('product-images').attachFile('test-image-2.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('product-images').attachFile('test-image-2.png', { subjectType: 'drag-n-drop' });
     cy.getByCy('file-preview-1').should('exist');
-    cy.getByCy('product-images').attachFile('test-image-3.jpg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('product-images').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
     cy.getByCy('file-preview-2').should('exist');
 
     // remove last added image

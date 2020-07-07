@@ -92,7 +92,7 @@ interface MutateInterface {
 }
 
 async function getTestStreams() {
-  const fileNames = ['test-image-0.jpg', 'test-image-1.jpg', 'test-image-2.jpg'];
+  const fileNames = ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'];
   return fileNames.map((filename) => {
     const file = fs.createReadStream(path.resolve(`./test/${filename}`));
     return new Promise<Upload>((resolve) =>

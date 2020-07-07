@@ -374,7 +374,7 @@ export type RubricProductsArgs = {
 export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
-  showInCatalogueFilter: Scalars['Boolean'];
+  showInCatalogueFilter: Array<Scalars['ID']>;
   node: AttributesGroup;
 };
 
@@ -386,6 +386,12 @@ export type RubricProductPaginateInput = {
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
   active?: Maybe<Scalars['Boolean']>;
+  attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
+};
+
+export type RubricProductAttributesFilterInput = {
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 export type RubricCity = {
@@ -452,6 +458,7 @@ export type Mutation = {
   updateRubric: RubricPayloadType;
   deleteRubric: RubricPayloadType;
   addAttributesGroupToRubric: RubricPayloadType;
+  updateAttributesGroupInRubric: RubricPayloadType;
   deleteAttributesGroupFromRubric: RubricPayloadType;
   addProductToRubric: RubricPayloadType;
   deleteProductFromRubric: RubricPayloadType;
@@ -605,6 +612,11 @@ export type MutationDeleteRubricArgs = {
 
 export type MutationAddAttributesGroupToRubricArgs = {
   input: AddAttributesGroupToRubricInput;
+};
+
+
+export type MutationUpdateAttributesGroupInRubricArgs = {
+  input: UpdateAttributesGroupInRubricInput;
 };
 
 
@@ -843,6 +855,12 @@ export type AddAttributesGroupToRubricInput = {
   attributesGroupId: Scalars['ID'];
 };
 
+export type UpdateAttributesGroupInRubricInput = {
+  rubricId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+};
+
 export type DeleteAttributesGroupFromRubricInput = {
   rubricId: Scalars['ID'];
   attributesGroupId: Scalars['ID'];
@@ -975,21 +993,6 @@ export type GetRubricQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, 'catalogueName'>
-    & { parent?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name'>
-      & { parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id' | 'name'>
-      )> }
-    )>, children: Array<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & RubricFragmentFragment
-      )> }
-      & RubricFragmentFragment
-    )> }
     & RubricFragmentFragment
   ) }
 );
@@ -1463,6 +1466,19 @@ export type UpdateAttributesGroupMutation = (
   ) }
 );
 
+export type UpdateAttributesGroupInRubricMutationVariables = {
+  input: UpdateAttributesGroupInRubricInput;
+};
+
+
+export type UpdateAttributesGroupInRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributesGroupInRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateOptionInGroupMutationVariables = {
   input: UpdateOptionInGroupInput;
 };
@@ -1544,6 +1560,14 @@ export type GetCatalogueCardQueryQuery = (
         & { node: (
           { __typename?: 'Attribute' }
           & Pick<Attribute, 'id' | 'nameString'>
+          & { options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+            & { options: Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, 'id' | 'nameString'>
+            )> }
+          )> }
         ) }
       )> }
     )> }
@@ -1578,7 +1602,7 @@ export type GetCatalogueRubricQuery = (
             & Pick<OptionsGroup, 'id' | 'nameString'>
             & { options: Array<(
               { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString'>
+              & Pick<Option, 'id' | 'nameString' | 'color'>
             )> }
           )> }
         )> }
@@ -1753,6 +1777,17 @@ export type GetRubricAttributesQuery = (
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+          & { metric?: Maybe<(
+            { __typename?: 'Metric' }
+            & Pick<Metric, 'id' | 'nameString'>
+          )>, options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+          )> }
+        )> }
       ) }
     )> }
   ) }
@@ -2009,20 +2044,6 @@ export const GetRubricDocument = gql`
   getRubric(id: $id) {
     ...RubricFragment
     catalogueName
-    parent {
-      id
-      name
-      parent {
-        id
-        name
-      }
-    }
-    children {
-      ...RubricFragment
-      children {
-        ...RubricFragment
-      }
-    }
   }
 }
     ${RubricFragmentFragmentDoc}`;
@@ -3056,6 +3077,39 @@ export function useUpdateAttributesGroupMutation(baseOptions?: ApolloReactHooks.
 export type UpdateAttributesGroupMutationHookResult = ReturnType<typeof useUpdateAttributesGroupMutation>;
 export type UpdateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupMutation>;
 export type UpdateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
+export const UpdateAttributesGroupInRubricDocument = gql`
+    mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
+  updateAttributesGroupInRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributesGroupInRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
+
+/**
+ * __useUpdateAttributesGroupInRubricMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributesGroupInRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributesGroupInRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributesGroupInRubricMutation, { data, loading, error }] = useUpdateAttributesGroupInRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributesGroupInRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>(UpdateAttributesGroupInRubricDocument, baseOptions);
+      }
+export type UpdateAttributesGroupInRubricMutationHookResult = ReturnType<typeof useUpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
 export const UpdateOptionInGroupDocument = gql`
     mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
   updateOptionInGroup(input: $input) {
@@ -3199,6 +3253,14 @@ export const GetCatalogueCardQueryDocument = gql`
         node {
           id
           nameString
+          options {
+            id
+            nameString
+            options {
+              id
+              nameString
+            }
+          }
         }
         value
       }
@@ -3262,6 +3324,7 @@ export const GetCatalogueRubricDocument = gql`
             options {
               id
               nameString
+              color
             }
           }
         }
@@ -3643,6 +3706,19 @@ export const GetRubricAttributesDocument = gql`
       node {
         id
         nameString
+        attributes {
+          id
+          nameString
+          variant
+          metric {
+            id
+            nameString
+          }
+          options {
+            id
+            nameString
+          }
+        }
       }
     }
   }

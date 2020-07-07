@@ -20,12 +20,14 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   value,
   checked,
   testId,
+  disabled,
   ...props
 }) => {
   const checkedClassName = checked ? classes.checked : '';
   const additionalClassName = className ? className : '';
   const errorClassName = notValid ? classes.error : '';
-  const checkboxClassName = `${classes.frame} ${checkedClassName} ${additionalClassName} ${errorClassName}`;
+  const disabledClassName = disabled ? classes.disabled : '';
+  const checkboxClassName = `${classes.frame} ${checkedClassName} ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
   const iconName = checked ? 'CheckBox' : 'CheckBoxOutlineBlank';
 
@@ -36,6 +38,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
         {...props}
         value={value ? value : ''}
         checked={checked}
+        disabled={disabled}
         data-cy={`${testId}-checkbox`}
       />
       <Icon name={iconName} />

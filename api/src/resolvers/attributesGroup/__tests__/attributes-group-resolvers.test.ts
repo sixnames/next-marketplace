@@ -191,10 +191,13 @@ describe('Attributes Groups', () => {
         },
       },
     } = await mutate(addAttributeToGroupMutation(group.id));
-    const addedAttribute = attributes[0];
+    const addedAttribute = attributes.find((attribute: any) => {
+      return attribute.nameString === attributeForGroup.name[0].value;
+    });
+
     expect(success).toBeTruthy();
-    expect(attributes.length).toEqual(1);
-    expect(addedAttribute.nameString).toEqual(attributeForGroup.name[0].value);
+    expect(attributes.length).toEqual(5);
+    expect(addedAttribute).toBeDefined();
     expect(addedAttribute.variant).toEqual(attributeForGroup.variant);
 
     // Should update attribute in the group.
@@ -267,7 +270,7 @@ describe('Attributes Groups', () => {
         }
       `);
     expect(successAfterAttributeDelete).toBeTruthy();
-    expect(groupAfterAttributeDelete.attributes.length).toEqual(0);
+    expect(groupAfterAttributeDelete.attributes.length).toEqual(4);
 
     // Should delete attributes group.
     const {

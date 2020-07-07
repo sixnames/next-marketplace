@@ -1,0 +1,18 @@
+.filter {
+  width: 280px;
+  margin-right: 20px;
+}
+
+.group {
+  margin-bottom: 1.75rem;
+}
+
+.attributeTitle,
+.groupTitle {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.attribute {
+  margin-bottom: 0.125rem;
+}

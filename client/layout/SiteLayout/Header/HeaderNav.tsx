@@ -5,12 +5,17 @@ import Link from 'next/link';
 import classes from './HeaderNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
 import { useSiteContext } from '../../../context/siteContext';
+import { SiteRubricFragmentFragment } from '../../../generated/apolloComponents';
+
+interface SubRubricInterface extends SiteRubricFragmentFragment {
+  children: SiteRubricFragmentFragment[];
+}
 
 function HeaderNav() {
   const { getRubricsTree } = useSiteContext();
   const [isRubricsOpen, setIsRubricsOpen] = useState(false);
   const [currentRubric, setCurrentRubric] = useState<string | null>(null);
-  const [subRubrics, setSubRubrics] = useState<any[]>([]);
+  const [subRubrics, setSubRubrics] = useState<SubRubricInterface[]>([]);
 
   function toggleRubricsHandler() {
     setIsRubricsOpen((prevState) => !prevState);
@@ -44,7 +49,7 @@ function HeaderNav() {
         <div className={`${classes.rubrics} ${isRubricsOpen ? classes.rubricsActive : ''}`}>
           <div className={classes.rubricsFrame}>
             <ul className={classes.mainRubrics}>
-              {getRubricsTree.map(({ name, id, slug }) => {
+              {getRubricsTree.map(({ catalogueName, id, slug }) => {
                 const isCurrent = id === currentRubric;
                 return (
                   <li key={id}>
@@ -63,7 +68,7 @@ function HeaderNav() {
                         onMouseEnter={() => setCurrentRubricHandler(id)}
                         className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
                       >
-                        {name}
+                        {catalogueName}
                       </a>
                     </Link>
                   </li>
@@ -72,7 +77,7 @@ function HeaderNav() {
             </ul>
 
             <div className={classes.subRubrics}>
-              {subRubrics.map(({ name, id, slug, children = [] }) => (
+              {subRubrics.map(({ catalogueName, id, slug, children = [] }) => (
                 <div key={id}>
                   <Link
                     href={{
@@ -85,32 +90,30 @@ function HeaderNav() {
                     }}
                   >
                     <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
-                      {name}
+                      {catalogueName}
                     </a>
                   </Link>
 
                   {!!children && (
                     <ul>
-                      {children.map(
-                        ({ name, id, slug }: { name: string; id: string; slug: string }) => (
-                          <li className={classes.subRubricsItem} key={id}>
-                            <Link
-                              href={{
-                                pathname: `/[catalogue]`,
-                                query: { id: `${id}` },
-                              }}
-                              as={{
-                                pathname: `/${slug}`,
-                                query: { id: `${id}` },
-                              }}
-                            >
-                              <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
-                                {name}
-                              </a>
-                            </Link>
-                          </li>
-                        ),
-                      )}
+                      {children.map(({ catalogueName, id, slug }) => (
+                        <li className={classes.subRubricsItem} key={id}>
+                          <Link
+                            href={{
+                              pathname: `/[catalogue]`,
+                              query: { id: `${id}` },
+                            }}
+                            as={{
+                              pathname: `/${slug}`,
+                              query: { id: `${id}` },
+                            }}
+                          >
+                            <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
+                              {catalogueName}
+                            </a>
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </div>

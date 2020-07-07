@@ -14,6 +14,7 @@ const rubricId = Yup.string().nullable().required('ID рубрики обяза�
 const attributesGroupId = Yup.string()
   .nullable()
   .required('ID группы атрибутов обязательно к заполнению.');
+const attributeId = Yup.string().nullable().required('ID атрибута обязательно к заполнению.');
 const productId = Yup.string().nullable().required('ID товара обязательно к заполнению.');
 
 export const createRubricInputSchema = Yup.object().shape({
@@ -36,13 +37,15 @@ export const addAttributesGroupToRubricInputSchema = Yup.object().shape({
   attributesGroupId,
 });
 
-export const addAttributesGroupToRubricClientSchema = Yup.object().shape({
-  attributesGroupId,
-});
-
 export const deleteAttributesGroupFromRubricInputSchema = Yup.object().shape({
   rubricId,
   attributesGroupId,
+});
+
+export const updateAttributesGroupInRubricInputSchema = Yup.object().shape({
+  rubricId,
+  attributesGroupId,
+  attributeId,
 });
 
 export const addProductToRubricInputSchema = Yup.object().shape({

@@ -31,5 +31,4 @@ export const updateRubricInputSchema = Yup.object().shape({
 
 export const addAttributesGroupToRubricClientSchema = Yup.object().shape({
   attributesGroupId,
-  showInCatalogueFilter: Yup.boolean().nullable(),
 });

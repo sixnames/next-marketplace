@@ -70,11 +70,10 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 const CatalogueFilterGroup: React.FC<CatalogueFilterItemInterface> = ({ group, rubricSlug }) => {
-  const { nameString, attributes } = group;
+  const { attributes } = group;
 
   return (
     <div className={classes.group}>
-      <div className={classes.groupTitle}>{nameString}</div>
       <div>
         {attributes.map((attribute) => (
           <CatalogueFilterAttribute

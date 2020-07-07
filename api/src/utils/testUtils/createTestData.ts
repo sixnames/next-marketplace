@@ -243,14 +243,14 @@ const createTestData = async () => {
     // Rubrics
     const rubricAttributesGroups = [
       {
-        showInCatalogueFilter: false,
+        showInCatalogueFilter: true,
         node: attributesGroup.id,
       },
     ];
 
     const rubricAttributesGroupsB = [
       {
-        showInCatalogueFilter: false,
+        showInCatalogueFilter: true,
         node: attributesGroupB.id,
       },
     ];

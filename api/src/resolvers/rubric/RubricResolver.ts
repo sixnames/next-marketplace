@@ -473,7 +473,6 @@ export class RubricResolver {
       });
 
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
-      console.log(JSON.stringify({ attributesGroup, rubric }, null, 2));
 
       if (!rubric || !attributesGroup) {
         return {

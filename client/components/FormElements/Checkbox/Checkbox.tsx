@@ -38,6 +38,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
         {...props}
         value={value ? value : ''}
         checked={checked}
+        disabled={disabled}
         data-cy={`${testId}-checkbox`}
       />
       <Icon name={iconName} />

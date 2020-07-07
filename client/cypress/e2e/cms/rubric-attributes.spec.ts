@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 import {
+  MOCK_ATTRIBUTE_MULTIPLE,
+  MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_RUBRIC_LEVEL_ONE,
@@ -13,6 +15,8 @@ const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 
 const mockAttributesGroup = MOCK_ATTRIBUTES_GROUP.name[0].value;
+const mockMultipleSelectAttribute = MOCK_ATTRIBUTE_MULTIPLE.name[0].value;
+const mockStringAttribute = MOCK_ATTRIBUTE_STRING.name[0].value;
 const mockAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
 
 describe('Rubric attributes', () => {
@@ -30,12 +34,13 @@ describe('Rubric attributes', () => {
     cy.visitMoreNavLink('attributes');
 
     // Should update attributes group only in one rubric
-    cy.getByCy(`${mockAttributesGroup}-checkbox`).click();
+    cy.getByCy(`${mockStringAttribute}-checkbox`).should('be.disabled');
+    cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).click();
     cy.getByCy('success-notification').should('exist');
-    cy.getByCy(`${mockAttributesGroup}-checkbox`).should('be.checked');
+    cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).should('not.be.checked');
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.visitMoreNavLink('attributes');
-    cy.getByCy(`${mockAttributesGroup}-checkbox`).should('not.be.checked');
+    cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).should('be.checked');
 
     // Should delete attributes group from list
     cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
@@ -63,10 +68,10 @@ describe('Rubric attributes', () => {
 
     // Should add attributes group to the list
     cy.selectOptionByTestId('attributes-groups', mockAttributesGroupForDelete);
-    cy.getByCy(`show-in-filter-checkbox`).click();
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy('rubric-attributes').should('contain', mockAttributesGroupForDelete);
-    cy.getByCy(`${mockAttributesGroupForDelete}-checkbox`).should('be.checked');
+    cy.getByCy(`${mockStringAttribute}-checkbox`).should('be.disabled');
+    cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).should('be.checked');
 
     // Should have new attribute group on first and third levels
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();

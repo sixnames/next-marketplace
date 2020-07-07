@@ -43,7 +43,7 @@ interface FormikDropZoneConsumerInterface {
 }
 
 const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
-  format = 'image/jpeg',
+  format = 'image/png',
   name,
   label,
   isRequired,

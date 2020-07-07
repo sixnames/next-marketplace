@@ -20,7 +20,7 @@
     "down:testing": "docker-compose -f docker-compose.testing.yml down",
 
     "dev": "concurrently -n api,client,watchConfig \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\"",
-    "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
+    "test": "concurrently -n api,client \"yarn test:api\" \"yarn test:client\"",
 
     "install:api": "cd api && yarn",
     "dev:api": "cd api && yarn dev",

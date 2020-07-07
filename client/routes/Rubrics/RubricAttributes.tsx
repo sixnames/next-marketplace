@@ -22,8 +22,8 @@ import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING, RUBRIC_LEVEL_TWO } from '
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
 import Accordion from '../../components/Accordion/Accordion';
-import Inner from '../../components/Inner/Inner';
 import { getAttributeVariant } from '../../utils/locales';
+import InnerWide from '../../components/Inner/InnerWide';
 
 interface AttributesGroupInterface {
   id: string;
@@ -63,6 +63,15 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRIC_ATTRIBUTES_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
+    ],
   });
 
   const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
@@ -158,7 +167,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       title: 'Показывать в фильтре',
       render: (id: string, { nameString, variant }: RubricAttribute) => {
         const isDisabled = variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING;
-
+        console.log(isDisabled);
         return (
           <Checkbox
             testId={`${nameString}`}
@@ -200,7 +209,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         {rubric.name}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Inner>
+        <InnerWide>
           {attributesGroups.map(({ node, id, showInCatalogueFilter }) => {
             const { nameString, attributes } = node;
             return (
@@ -227,7 +236,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
               </Accordion>
             );
           })}
-        </Inner>
+        </InnerWide>
       </DataLayoutContentFrame>
     </div>
   );

@@ -274,12 +274,12 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: getMessageTranslation(`user.signOut.notAuthorized.error.${lang}`),
+          message: getMessageTranslation(`user.signOut.error.${lang}`),
         };
       }
       return {
         success: true,
-        message: getMessageTranslation(`user.signOut.notAuthorized.success.${lang}`),
+        message: getMessageTranslation(`user.signOut.success.${lang}`),
       };
     } catch (e) {
       return {

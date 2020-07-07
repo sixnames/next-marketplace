@@ -91,16 +91,20 @@ describe('Rubrics', () => {
 
     // Should have rubric details tab and have rubric variant select on first level only
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.visitMoreNavLink('details');
     cy.getByCy('rubric-name').should('exist');
     cy.getByCy('catalogue-name').should('exist');
     cy.getByCy('rubric-variant').should('exist');
     cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
+    cy.visitMoreNavLink('details');
     cy.getByCy('rubric-variant').should('not.exist');
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
+    cy.visitMoreNavLink('details');
     cy.getByCy('rubric-variant').should('not.exist');
 
     // Should update rubric
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
+    cy.visitMoreNavLink('details');
     cy.getByCy('rubric-name').clear().type(mockNewRubric);
     cy.getByCy('catalogue-name').clear().type(mockNewRubric);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);

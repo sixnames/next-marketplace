@@ -8,8 +8,8 @@
     "build:testing": "env-cmd -f .testing.env next build",
     "start": "next start",
     "start:testing": "env-cmd -f .testing.env next start",
-    "cy:open": "cypress open --env api-host=http://localhost:4000",
-    "cy:start": "cypress run --env api-host=http://localhost:4000",
+    "cy:open": "cypress open",
+    "cy:start": "cypress run",
     "test": "npm run cy:start"
   },
   "dependencies": {

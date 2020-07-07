@@ -18,6 +18,7 @@ import Accordion from '../../components/Accordion/Accordion';
 import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
 import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
@@ -60,81 +61,85 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
   const isFirstLevel = level === RUBRIC_LEVEL_ONE;
 
   return (
-    <InnerWide>
-      <Formik
-        validationSchema={updateRubricInputSchema}
-        initialValues={initialValues}
-        enableReinitialize
-        onSubmit={(values) => {
-          showLoading();
+    <div data-cy={'rubric-details'}>
+      <DataLayoutTitle testId={'rubric-title'}>{rubric.name}</DataLayoutTitle>
 
-          return updateRubricMutation({
-            variables: {
-              input: values,
-            },
-          });
-        }}
-      >
-        {({ values }) => {
-          return (
-            <Form>
-              <div className={classes.section}>
-                <Accordion title={'Основная информация'} isOpen>
-                  <div className={classes.content}>
-                    {values.name.map((_, index) => {
-                      return (
-                        <FormikInput
-                          key={index}
-                          name={`name[${index}].value`}
-                          label={'Название'}
-                          testId={'rubric-name'}
-                          showInlineError
+      <InnerWide>
+        <Formik
+          validationSchema={updateRubricInputSchema}
+          initialValues={initialValues}
+          enableReinitialize
+          onSubmit={(values) => {
+            showLoading();
+
+            return updateRubricMutation({
+              variables: {
+                input: values,
+              },
+            });
+          }}
+        >
+          {({ values }) => {
+            return (
+              <Form>
+                <div className={classes.section}>
+                  <Accordion title={'Основная информация'} isOpen>
+                    <div className={classes.content}>
+                      {values.name.map((_, index) => {
+                        return (
+                          <FormikInput
+                            key={index}
+                            name={`name[${index}].value`}
+                            label={'Название'}
+                            testId={'rubric-name'}
+                            showInlineError
+                            isRequired
+                            isHorizontal
+                          />
+                        );
+                      })}
+
+                      {values.catalogueName.map((_, index) => {
+                        return (
+                          <FormikInput
+                            key={index}
+                            name={`catalogueName[${index}].value`}
+                            label={'Название каталога'}
+                            testId={'catalogue-name'}
+                            showInlineError
+                            isRequired
+                            isHorizontal
+                          />
+                        );
+                      })}
+
+                      {isFirstLevel && (
+                        <FormikSelect
                           isRequired
                           isHorizontal
-                        />
-                      );
-                    })}
-
-                    {values.catalogueName.map((_, index) => {
-                      return (
-                        <FormikInput
-                          key={index}
-                          name={`catalogueName[${index}].value`}
-                          label={'Название каталога'}
-                          testId={'catalogue-name'}
                           showInlineError
-                          isRequired
-                          isHorizontal
+                          firstOption={'Не выбран'}
+                          label={'Тип рубрики'}
+                          name={'variant'}
+                          testId={'rubric-variant'}
+                          options={data?.getAllRubricVariants || []}
                         />
-                      );
-                    })}
+                      )}
+                    </div>
+                  </Accordion>
+                </div>
 
-                    {isFirstLevel && (
-                      <FormikSelect
-                        isRequired
-                        isHorizontal
-                        showInlineError
-                        firstOption={'Не выбран'}
-                        label={'Тип рубрики'}
-                        name={'variant'}
-                        testId={'rubric-variant'}
-                        options={data?.getAllRubricVariants || []}
-                      />
-                    )}
-                  </div>
-                </Accordion>
-              </div>
-
-              <FixedButtons>
-                <Button size={'small'} type={'submit'} testId={'rubric-submit'}>
-                  Сохранить
-                </Button>
-              </FixedButtons>
-            </Form>
-          );
-        }}
-      </Formik>
-    </InnerWide>
+                <FixedButtons>
+                  <Button size={'small'} type={'submit'} testId={'rubric-submit'}>
+                    Сохранить
+                  </Button>
+                </FixedButtons>
+              </Form>
+            );
+          }}
+        </Formik>
+      </InnerWide>
+    </div>
   );
 };
 

@@ -105,7 +105,7 @@ async function getProductCities(
   active = true,
 ): Promise<ProductCity[]> {
   const cities = [DEFAULT_CITY, 'spb'];
-  const initialFilePath = './test/test-image-0.jpg';
+  const initialFilePath = './test/test-image-0.png';
   const slug = generateDefaultLangSlug(node.cardName);
   const productName = node.name[0].value;
 
@@ -114,8 +114,9 @@ async function getProductCities(
       const filesPath = `./assets/${city}/${slug}`;
       const filesResolvePath = `/assets/${city}/${slug}`;
       const fileName = `${slug}-${0}`;
-      const resolvePath = `${filesResolvePath}/${fileName}.jpg`;
-      const finalPath = `${filesPath}/${fileName}.jpg`;
+      const fileFormat = 'webp';
+      const resolvePath = `${filesResolvePath}/${fileName}.${fileFormat}`;
+      const finalPath = `${filesPath}/${fileName}.${fileFormat}`;
 
       const resolveObject = {
         key: city,
@@ -156,7 +157,7 @@ async function getProductCities(
 
       return new Promise<ProductCity>((resolve, reject) => {
         sharp(initialFilePath)
-          .jpeg()
+          .webp()
           .toFile(finalPath)
           .then(() => {
             resolve(resolveObject);

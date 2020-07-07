@@ -172,6 +172,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   return (
     <div data-cy={'rubric-attributes'}>
       <DataLayoutTitle
+        testId={'rubric-title'}
         titleRight={
           <ContentItemControls
             disabled={isNotSecondLevel}
@@ -181,7 +182,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           />
         }
       >
-        Атрибуты
+        {rubric.name}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <Table

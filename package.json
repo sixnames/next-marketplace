@@ -17,25 +17,24 @@
 
     "up:testing": "docker-compose -f docker-compose.testing.yml up --build",
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
-    "down:testing": "docker-compose -f docker-compose.testing.yml down && rm -rf data/*",
+    "down:testing": "docker-compose -f docker-compose.testing.yml down",
 
     "dev": "concurrently -n api,client,watchConfig \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\"",
+    "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
 
     "install:api": "cd api && yarn",
     "dev:api": "cd api && yarn dev",
     "build:api": "cd api && yarn build",
     "start:api": "cd api && yarn start",
+    "test:api": "cd api && yarn test",
 
     "install:client": "cd client && yarn",
     "dev:client": "cd client && yarn dev",
     "build:client": "cd client && yarn build",
     "start:client": "cd client && yarn start",
+    "test:client": "cd client && yarn test",
 
     "watch-config": "cd api && yarn watch-config",
-
-    "test": "concurrently -n api,app \"yarn test:api\" \"yarn test:app\"",
-    "test:api": "cd api && yarn test",
-    "test:client": "cd client && yarn test",
 
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",

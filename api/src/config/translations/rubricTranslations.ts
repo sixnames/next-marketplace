@@ -1,4 +1,4 @@
-import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '../common';
+import { RUBRIC_LEVEL_THREE } from '../common';
 
 const rubricTranslations = {
   rubric: {
@@ -53,10 +53,6 @@ const rubricTranslations = {
         ru: 'Группа атрибутов или Рубрика не найдены.',
         en: 'Rubric or attributes group not found.',
       },
-      levelError: {
-        ru: `В рубрику не ${RUBRIC_LEVEL_TWO}-го уровня нельзя добавить группу атрибутов.`,
-        en: `You can't add attributes group to rubric with level other than ${RUBRIC_LEVEL_TWO}.`,
-      },
       error: {
         ru: 'Ошибка добавления Группы атрибутов в рубрику.',
         en: 'Add attributes group to rubric error.',
@@ -85,9 +81,9 @@ const rubricTranslations = {
         ru: 'Группа атрибутов или Рубрика не найдены.',
         en: 'Rubric or attributes group not found.',
       },
-      levelError: {
-        ru: `Из рубрики не ${RUBRIC_LEVEL_TWO}-го уровня нельзя удалить группу атрибутов.`,
-        en: `You can't delete attributes group from rubric with level other than ${RUBRIC_LEVEL_TWO}.`,
+      ownerError: {
+        ru: `Группу атрибутов нельзя удалить т.к. рубрика не является владельцем.`,
+        en: `You can't delete attributes group from not owner rubric`,
       },
       error: {
         ru: 'Ошибка удаления Группы атрибутов из рубрики.',

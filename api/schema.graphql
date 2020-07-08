@@ -395,6 +395,7 @@ type Rubric {
 
 type RubricAttributesGroup {
   id: ID!
+  isOwner: Boolean!
   node: AttributesGroup!
   showInCatalogueFilter: [ID!]!
 }

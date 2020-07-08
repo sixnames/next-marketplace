@@ -49,7 +49,6 @@ import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
-  RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
@@ -391,17 +390,6 @@ export class RubricResolver {
         [],
       );
 
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
-
-      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.addAttributesGroup.levelError.${lang}`),
-          rubric,
-        };
-      }
-
       const children = await RubricModel.find({
         'cities.key': city,
         'cities.node.parent': rubric.id,
@@ -410,43 +398,51 @@ export class RubricResolver {
         .lean()
         .exec();
       const childrenIds = children.map(({ _id }) => _id);
-      const parentId = currentRubricCityNode.parent;
 
-      const updatedRubrics = await RubricModel.updateMany(
+      const updatedOwnerRubric = await RubricModel.findOneAndUpdate(
         {
-          _id: { $in: [...childrenIds, parentId, rubricId] },
+          _id: { $in: [rubricId] },
           'cities.key': city,
-          'cities.node.attributesGroups': {
-            $not: {
-              $elemMatch: {
-                node: attributesGroupId,
-              },
-            },
-          },
         },
         {
           $addToSet: {
             'cities.$.node.attributesGroups': {
               showInCatalogueFilter: showInCatalogueAttributes,
               node: attributesGroupId,
+              isOwner: true,
+            },
+          },
+        },
+        { new: true },
+      );
+
+      const updatedChildrenRubrics = await RubricModel.updateMany(
+        {
+          _id: { $in: childrenIds },
+          'cities.key': city,
+        },
+        {
+          $addToSet: {
+            'cities.$.node.attributesGroups': {
+              showInCatalogueFilter: showInCatalogueAttributes,
+              node: attributesGroupId,
+              isOwner: false,
             },
           },
         },
       );
 
-      if (!updatedRubrics.ok) {
+      if (!updatedChildrenRubrics.ok || !updatedOwnerRubric) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.addAttributesGroup.error.${lang}`),
         };
       }
 
-      const updatedRubric = await RubricModel.findById(rubricId);
-
       return {
         success: true,
         message: getMessageTranslation(`rubric.addAttributesGroup.success.${lang}`),
-        rubric: updatedRubric,
+        rubric: updatedOwnerRubric,
       };
     } catch (e) {
       return {
@@ -575,12 +571,14 @@ export class RubricResolver {
       }
 
       const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
+      const currentGroup = currentRubricCityNode.attributesGroups.find(
+        ({ node }) => node === attributesGroupId,
+      );
 
-      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
+      if (!currentGroup || !currentGroup.isOwner) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteAttributesGroup.levelError.${lang}`),
+          message: getMessageTranslation(`rubric.deleteAttributesGroup.ownerError.${lang}`),
         };
       }
 
@@ -592,11 +590,10 @@ export class RubricResolver {
         .lean()
         .exec();
       const childrenIds = children.map(({ _id }) => _id);
-      const parentId = currentRubricCityNode.parent;
 
       const updatedRubrics = await RubricModel.updateMany(
         {
-          _id: { $in: [...childrenIds, parentId, rubricId] },
+          _id: { $in: [...childrenIds, rubricId] },
           'cities.key': city,
         },
         {

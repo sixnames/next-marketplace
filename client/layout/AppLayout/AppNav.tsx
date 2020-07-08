@@ -16,14 +16,13 @@ import { NavItemInterface } from '../../types';
 const AppNav: React.FC = () => {
   const { pathname } = useRouter();
   const navItems = useAppNavItems();
-  const { toggleTheme, isDark } = useThemeContext();
+  const { toggleTheme, isDark, themeTooltip } = useThemeContext();
   const { isCompact, toggleCompactHandler, setCompactOn, setCompactOff } = useCompact();
   const signOutHandler = useSignOut();
 
   const mobileNavHandler = useCallback(toggleCompactHandler, [toggleCompactHandler]);
   const closeNavHandler = useCallback(setCompactOn, [setCompactOn]);
   const openNavHandler = useCallback(setCompactOff, [setCompactOff]);
-  const themeTooltip = isDark ? 'Светлая тема' : 'Тёмная тема';
 
   return (
     <nav className={classes.frame}>

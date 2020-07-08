@@ -2,18 +2,23 @@ import React, { createContext, useContext, useEffect, useMemo, useRef } from 're
 import { THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '../config';
 import { Theme } from '../types';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { IconType } from '../components/Icon/Icon';
 
 interface ThemeContextInterface {
   theme: Theme;
   isDark: boolean;
   isLight: boolean;
   toggleTheme?: () => void;
+  themeTooltip: string;
+  themeIcon: IconType;
 }
 
 const ThemeContext = createContext<ThemeContextInterface>({
   theme: THEME_LIGHT,
   isDark: false,
   isLight: true,
+  themeTooltip: '',
+  themeIcon: 'Brightness4',
 });
 
 const ThemeContextProvider: React.FC = ({ children }) => {
@@ -41,9 +46,15 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   }, [ref, theme]);
 
   const value = useMemo(() => {
+    const isDark = theme === THEME_DARK;
+    const themeTooltip = isDark ? 'Светлая тема' : 'Тёмная тема';
+    const themeIcon: IconType = isDark ? 'Brightness7' : 'Brightness4';
+
     return {
       theme,
-      isDark: theme === THEME_DARK,
+      isDark,
+      themeTooltip,
+      themeIcon,
       isLight: theme === THEME_LIGHT,
       toggleTheme: () => {
         if (theme === THEME_DARK) {

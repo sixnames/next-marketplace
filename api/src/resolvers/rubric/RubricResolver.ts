@@ -33,7 +33,11 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import { getRubricCounters, getRubricNestedIds } from '../../utils/rubricResolverHelpers';
+import {
+  getDeepRubricChildrenIds,
+  getRubricCounters,
+  getRubricsTreeIds,
+} from '../../utils/rubricResolverHelpers';
 import {
   addAttributesGroupToRubricInputSchema,
   addProductToRubricInputSchema,
@@ -266,14 +270,7 @@ export class RubricResolver {
         };
       }
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': id,
-      })
-        .select({ id: 1 })
-        .lean()
-        .exec();
-      const allRubrics = [rubric, ...children].map(({ _id }) => _id);
+      const allRubrics = await getRubricsTreeIds({ rubricId: rubric._id, city });
 
       // If rubric exists in one city
       if (rubric.cities.length === 1) {
@@ -390,14 +387,7 @@ export class RubricResolver {
         [],
       );
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': rubric.id,
-      })
-        .select({ _id: 1 })
-        .lean()
-        .exec();
-      const childrenIds = children.map(({ _id }) => _id);
+      const childrenIds = await getDeepRubricChildrenIds({ rubricId, city });
 
       const updatedOwnerRubric = await RubricModel.findOneAndUpdate(
         {
@@ -582,15 +572,7 @@ export class RubricResolver {
         };
       }
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': rubric.id,
-      })
-        .select({ _id: 1 })
-        .lean()
-        .exec();
-      const childrenIds = children.map(({ _id }) => _id);
-
+      const childrenIds = await getRubricsTreeIds({ rubricId, city });
       const updatedRubrics = await RubricModel.updateMany(
         {
           _id: { $in: [...childrenIds, rubricId] },
@@ -655,32 +637,21 @@ export class RubricResolver {
         };
       }
 
-      const exists = await ProductModel.exists({
-        _id: productId,
-        cities: {
-          $elemMatch: {
-            key: city,
-            'node.rubrics': {
-              $in: [rubricId],
-            },
-          },
-        },
-      });
+      const productCity = getCityData(product.cities, city);
+
+      if (!productCity) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+        };
+      }
+
+      const exists = productCity.node.rubrics.includes(rubricId);
 
       if (exists) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.addProduct.exists.${lang}`),
-        };
-      }
-
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
-
-      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
         };
       }
 
@@ -899,7 +870,7 @@ export class RubricResolver {
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const rubricsIds = await getRubricNestedIds({ rubric, city });
+    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
 
     const { options } = generatePaginationOptions({

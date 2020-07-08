@@ -67,10 +67,6 @@ export class ProductNode {
   @prop({ type: String, required: true })
   rubrics: string[];
 
-  @Field(() => ID)
-  @prop({ required: true })
-  attributesSource: string;
-
   @Field(() => [ProductAttributesGroup])
   @prop({ type: ProductAttributesGroup, required: true })
   attributesGroups: ProductAttributesGroup[];

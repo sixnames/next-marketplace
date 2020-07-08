@@ -87,7 +87,6 @@ interface GetProductCitiesInterface {
   cardName: LangInterface[];
   description: LangInterface[];
   rubrics: string[];
-  attributesSource: string;
   attributesGroups: {
     showInCard: boolean;
     node: string;
@@ -326,7 +325,6 @@ const createTestData = async () => {
 
     // Products
     const productAttributes = {
-      attributesSource: rubricLevelTwo.id,
       attributesGroups: [
         {
           node: attributesGroup.id,

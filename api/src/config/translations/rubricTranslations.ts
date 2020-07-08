@@ -1,5 +1,3 @@
-import { RUBRIC_LEVEL_THREE } from '../common';
-
 const rubricTranslations = {
   rubric: {
     create: {
@@ -103,10 +101,6 @@ const rubricTranslations = {
         ru: 'Товар уже присутствует в группе.',
         en: 'Product already exists in this group.',
       },
-      levelError: {
-        ru: `В рубрику не ${RUBRIC_LEVEL_THREE}-го уровня нельзя добавить товар.`,
-        en: `You can't add product to rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
-      },
       addToProductError: {
         ru: 'Ошибка добавления товара в рубрику.',
         en: 'Add product to rubric error.',
@@ -120,10 +114,6 @@ const rubricTranslations = {
       notFound: {
         ru: 'Товар или Рубрика не найдены.',
         en: 'Rubric or product not found.',
-      },
-      levelError: {
-        ru: `Из рубрики не ${RUBRIC_LEVEL_THREE}-го уровня нельзя удалить товар.`,
-        en: `You can't delete product from rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
       },
       deleteFromProductError: {
         ru: 'Ошибка удаления товара из рубрики.',

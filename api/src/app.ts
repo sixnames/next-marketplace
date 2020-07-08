@@ -15,7 +15,6 @@ import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantRe
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
 import { ProductResolver } from './resolvers/product/ProductResolver';
-import { FeaturesASTOptionResolver } from './resolvers/featuresASTOption/FeaturesASTOptionResolver';
 import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
@@ -33,7 +32,6 @@ const createApp = (): { app: Express; server: ApolloServer } => {
       AttributeVariantResolver,
       AttributesGroupResolver,
       RubricVariantResolver,
-      FeaturesASTOptionResolver,
       RubricResolver,
       ProductResolver,
     ],

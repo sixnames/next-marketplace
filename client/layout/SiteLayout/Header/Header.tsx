@@ -7,8 +7,12 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import HeaderMobile from './HeaderMobile';
 import Link from 'next/link';
 import classes from './Header.module.css';
+import { useThemeContext } from '../../../context/themeContext';
+import Icon from '../../../components/Icon/Icon';
+import TTip from '../../../components/TTip/TTip';
 
 const Header: React.FC = () => {
+  const { toggleTheme, themeIcon, themeTooltip } = useThemeContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
 
@@ -30,13 +34,22 @@ const Header: React.FC = () => {
             <div className={classes.topNavItem}>
               <div className={classes.topLink}>Заказать звонок</div>
             </div>
+
+            <TTip
+              onClick={toggleTheme}
+              tooltipPlacement={'bottom'}
+              title={themeTooltip}
+              className={`${classes.topNavItem}`}
+            >
+              <Icon className={classes.topNavItemIcon} name={themeIcon} />
+            </TTip>
           </div>
         </Inner>
       </div>
 
       <Inner className={classes.middle} lowTop lowBottom>
         <Link href={'/'}>
-          <a className={classes.logo} />
+          <a className={classes.logo} aria-label={'Company logo'} />
         </Link>
 
         <HeaderSearch />

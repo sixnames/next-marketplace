@@ -223,6 +223,7 @@ describe.only('Rubrics', () => {
             level
             attributesGroups {
               showInCatalogueFilter
+              isOwner
               node {
                 id
                 nameString

@@ -375,6 +375,7 @@ export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
   showInCatalogueFilter: Array<Scalars['ID']>;
+  isOwner: Scalars['Boolean'];
   node: AttributesGroup;
 };
 
@@ -1773,7 +1774,7 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
+      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -3702,6 +3703,7 @@ export const GetRubricAttributesDocument = gql`
     level
     attributesGroups {
       id
+      isOwner
       showInCatalogueFilter
       node {
         id

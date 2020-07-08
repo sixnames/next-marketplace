@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: var(--fullHeight, 100vh);
   min-width: 320px;
 }
 
@@ -23,7 +23,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-height: 100vh;
+  max-height: var(--fullHeight, 100vh);
   padding-left: var(--innerBlockHorizontalPadding);
   padding-right: var(--innerBlockHorizontalPadding);
   overflow-x: hidden;

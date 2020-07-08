@@ -7,7 +7,7 @@
   left: 60px;
   z-index: 9999;
   width: calc(100vw - 60px);
-  height: 100vh;
+  height: var(--fullHeight, 100vh);
   background-color: rgba(50, 50, 50, 0.3);
 }
 
@@ -34,7 +34,7 @@
   .frame {
     left: 0;
     bottom: 40px;
-    height: calc(100vh - 76px);
+    height: calc(var(--fullHeight, 100vh) - 76px);
     width: 100vw;
   }
 }

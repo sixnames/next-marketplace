@@ -1,7 +1,7 @@
 .frame {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  min-height: var(--fullHeight, 100vh);
   color: var(--textColor);
   background-color: var(--primaryBackground);
 }
@@ -9,7 +9,7 @@
 .content {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  min-height: var(--fullHeight, 100vh);
   padding-left: 60px;
 }
 

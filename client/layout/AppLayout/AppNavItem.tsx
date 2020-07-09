@@ -5,6 +5,7 @@ import Link from '../../components/Link/Link';
 import { ROUTE_SIGN_OUT } from '../../config';
 import { NavItemInterface } from '../../types';
 import classes from './AppNavItem.module.css';
+import useCompact from '../../hooks/useCompact';
 
 interface AppNavItemInterface {
   item: NavItemInterface;
@@ -20,11 +21,10 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
   compact,
   signOutHandler,
   openNavHandler,
-  closeNavHandler,
   pathname,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, counter, path, children } = item;
 
   useEffect(() => {
@@ -50,9 +50,9 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
   function dropdownNavHandler() {
     if (compact) {
       openNavHandler();
-      setIsOpen(true);
+      setCompactOn();
     } else {
-      setIsOpen((prevState) => !prevState);
+      toggleCompactHandler();
     }
   }
 
@@ -78,7 +78,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
         </TTip>
 
         <ul
-          className={`${classes.dropdown} ${isOpen ? classes.dropdownActive : ''} ${
+          className={`${classes.dropdown} ${isCompact ? classes.dropdownActive : ''} ${
             compact ? classes.dropdownCompact : ''
           }`}
         >
@@ -86,7 +86,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
             const { name, path } = dropdownItem;
 
             return (
-              <li className={classes.item} onClick={closeNavHandler} key={name}>
+              <li className={classes.item} key={name}>
                 <Link
                   href={path}
                   className={`${classes.complexLink}`}
@@ -129,7 +129,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
   }
 
   return (
-    <li className={classes.item} onClick={closeNavHandler}>
+    <li className={classes.item}>
       <TTip tooltipPlacement={'right'} title={compact ? name : ''}>
         <Link
           href={`${path}`}

@@ -1,7 +1,18 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-function useCompact(initial = true) {
+export interface UseCompactReturnInterface {
+  toggleCompactHandler: () => void;
+  setCompactOn: () => void;
+  setCompactOff: () => void;
+  isCompact: boolean;
+}
+
+function useCompact(initial = true): UseCompactReturnInterface {
   const [isCompact, setIsCompact] = useState(() => initial);
+
+  useEffect(() => {
+    setIsCompact(initial);
+  }, [initial]);
 
   const toggleCompactHandler = useCallback(() => {
     setIsCompact((prevState) => !prevState);

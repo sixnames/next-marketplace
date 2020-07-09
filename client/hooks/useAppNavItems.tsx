@@ -1,9 +1,5 @@
 import { useUserContext } from '../context/userContext';
-import {
-  // ROUTE_APP,
-  ROUTE_CMS,
-  ROUTE_SIGN_OUT,
-} from '../config';
+import { ROUTE_CMS } from '../config';
 import { NavItemInterface } from '../types';
 import useWithFilterQuery from './useWithFilterQuery';
 
@@ -14,15 +10,6 @@ const useAppNavItems = (): NavItemInterface[] => {
   if (!me) return [];
 
   const { isAdmin } = me;
-
-  // const ordersCounter = 0;
-
-  /*const ordersRoute: NavItemInterface = {
-    name: `Заказы`,
-    icon: `ShoppingCart`,
-    counter: ordersCounter,
-    path: `${ROUTE_APP}/orders`,
-  };*/
 
   const cmsRoute: NavItemInterface = {
     name: 'CMS',
@@ -63,27 +50,10 @@ const useAppNavItems = (): NavItemInterface[] => {
     ],
   };
 
-  /*const userSettingsRoute: NavItemInterface = {
-    icon: `Person`,
-    name: `Профиль`,
-    path: `${ROUTE_APP}/profile`,
-  };*/
-
-  const constantRoutes: NavItemInterface[] = [
-    {
-      icon: `ExitToApp`,
-      name: `Выход`,
-      path: ROUTE_SIGN_OUT,
-    },
-  ];
+  const constantRoutes: NavItemInterface[] = [];
 
   if (isAdmin) {
-    return [
-      // ordersRoute,
-      // userSettingsRoute,
-      cmsRoute,
-      ...constantRoutes,
-    ];
+    return [cmsRoute, ...constantRoutes];
   }
 
   return [];

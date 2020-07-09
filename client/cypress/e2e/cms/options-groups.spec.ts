@@ -26,7 +26,7 @@ describe('Options Groups', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should CRUD options group', () => {
@@ -94,13 +94,19 @@ describe('Options Groups', () => {
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('exist');
 
-    // Should update option in group
+    // Should update option name in group
     cy.getByCy(`${optionName}-option-update`).click();
     cy.getByCy(`option-name`).should('have.value', optionName).clear().type(optionNewName);
-    cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('not.exist');
     cy.getByCy(`${optionNewName}`).should('exist');
+
+    // Should update option color in group
+    cy.getByCy(`${optionNewName}-option-update`).click();
+    cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);
+    cy.getByCy(`option-submit`).click();
+    cy.getByCy(`${optionNewName}`).should('exist');
+    cy.getByCy(`${optionNewName}-${optionNewColor}`).should('exist');
 
     // Should delete option from group
     cy.getByCy(`${optionNewName}-option-delete`).click();

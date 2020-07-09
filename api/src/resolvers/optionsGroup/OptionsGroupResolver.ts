@@ -282,7 +282,7 @@ export class OptionsGroupResolver {
 
       const nameValues = name.map(({ value }) => value);
       const existingOptions = await OptionModel.exists({
-        _id: { $in: group.options },
+        $and: [{ _id: { $in: group.options } }, { _id: { $ne: optionId } }],
         'name.value': {
           $in: nameValues,
         },

@@ -126,9 +126,6 @@ export class Product extends TimeStamps {
   @Field(() => [ID])
   readonly rubrics: string[];
 
-  @Field(() => ID, { nullable: true })
-  readonly attributesSource: string;
-
   @Field(() => [ProductAttributesGroup])
   readonly attributesGroups: ProductAttributesGroup[];
 

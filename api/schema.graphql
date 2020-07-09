@@ -83,7 +83,6 @@ input CreateOptionsGroupInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  attributesSource: ID!
   cardName: [LangInput!]!
   description: [LangInput!]!
   name: [LangInput!]!
@@ -248,7 +247,6 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
-  attributesSource: ID
   cardName: String!
   cities: [ProductCity!]!
   createdAt: Timestamp!
@@ -356,6 +354,7 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
+  getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
@@ -501,7 +500,6 @@ input UpdateOptionsGroupInput {
 input UpdateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  attributesSource: ID!
   cardName: [LangInput!]!
   description: [LangInput!]!
   id: ID!

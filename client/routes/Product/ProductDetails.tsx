@@ -52,7 +52,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     description: [{ key: 'ru', value: product.description }],
     assets: files,
     rubrics: product.rubrics,
-    attributesSource: product.attributesSource,
     attributesGroups: product.attributesGroups.map((group) => {
       return {
         showInCard: group.showInCard,
@@ -87,7 +86,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 price: values.price,
                 assets: values.assets,
                 rubrics: values.rubrics || [],
-                attributesSource: `${values.attributesSource}`,
                 attributesGroups: values.attributesGroups.map((group) => {
                   return {
                     ...group,
@@ -105,7 +103,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
         }}
       >
         {({ values }) => {
-          const { rubrics, attributesSource } = values;
+          const { rubrics } = values;
           const showFeatures = rubrics.length > 0;
 
           return (
@@ -173,7 +171,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                     low
                     isLastDisabled
                     tree={data.getRubricsTree}
-                    lastTitleLeft={(id, testId) => (
+                    titleLeft={(id, testId) => (
                       <FormikArrayCheckbox
                         className={classes.rubricCheckbox}
                         name={'rubrics'}
@@ -185,7 +183,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 </InputLine>
               )}
 
-              {showFeatures && <ProductAttributes disabled={Boolean(attributesSource)} />}
+              {showFeatures && <ProductAttributes rubrics={rubrics} />}
 
               <Button testId={'submit-product'} type={'submit'}>
                 Сохранить

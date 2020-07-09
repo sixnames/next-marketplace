@@ -1,108 +1,98 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import classes from './ProductAttributes.module.css';
+import ProductAttributesItem from './ProductAttributesItem';
+import { useFormikContext } from 'formik';
+import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
+import { get } from 'lodash';
+import { GetFeaturesAstQuery, useGetFeaturesAstQuery } from '../../../generated/apolloComponents';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
-import FormikSelect from '../../FormElements/Select/FormikSelect';
-import ProductAttributesList from './ProductAttributesList';
-import InputLine from '../../FormElements/Input/InputLine';
-import Button from '../../Buttons/Button';
-import { useFormikContext } from 'formik';
-import { ObjectType } from '../../../types';
-import { get } from 'lodash';
-import {
-  GetFeaturesAstOptionsQuery,
-  useGetFeaturesAstOptionsQuery,
-} from '../../../generated/apolloComponents';
 
-interface CreateNewProductAttributesSelectInterface {
-  disabled?: boolean;
+// TODO group type
+interface ProductAttributesGroupInterface {
+  group: GetFeaturesAstQuery['getFeaturesAst'][0];
+  index: number;
 }
 
-interface ProductAttributesConsumerInterface {
-  featuresASTOptions: GetFeaturesAstOptionsQuery['getFeaturesASTOptions'];
-}
+const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ group, index }) => {
+  const { setFieldValue, values } = useFormikContext();
+  const inputName = `attributesGroups[${index}]`;
+  const { id, nameString, attributes } = group;
 
-const ProductAttributesConsumer: React.FC<ProductAttributesConsumerInterface> = ({
-  featuresASTOptions,
-}) => {
-  const { setFieldValue, values } = useFormikContext<ObjectType>();
-  const sourceName = 'attributesSource';
-  const groupsName = 'attributesGroups';
-  const { attributesSource } = values;
+  const groupAttributesValue = useMemo(
+    () =>
+      group.attributes.map(({ id, itemId }) => ({
+        node: id,
+        showInCard: false,
+        key: itemId,
+        value: [],
+      })),
+    [group],
+  );
 
   useEffect(() => {
-    const source = get(values, sourceName);
-    const featuresASTIds = featuresASTOptions.map(({ id }) => id);
-
-    if (source && !featuresASTIds.includes(source)) {
-      setFieldValue(sourceName, null);
-      setFieldValue(groupsName, []);
+    const currentGroupValue = get(values, inputName);
+    if (!currentGroupValue) {
+      setFieldValue(inputName, {
+        node: id,
+        showInCard: true,
+        attributes: groupAttributesValue,
+      });
     }
-  }, [setFieldValue, values, featuresASTOptions]);
-
-  if (!featuresASTOptions) {
-    return null;
-  }
-
-  const currentAST = featuresASTOptions.find(({ id }) => id === attributesSource);
-
-  if (!currentAST) {
-    return null;
-  }
-  return <ProductAttributesList attributesGroups={currentAST.attributesGroups} />;
-};
-
-const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = ({ disabled }) => {
-  const { setFieldValue, values } = useFormikContext<ObjectType>();
-  const sourceName = 'attributesSource';
-  const groupsName = 'attributesGroups';
-  const sourceResetName = 'attributes-source-reset';
-  const { rubrics } = values;
-
-  const { data, loading, error } = useGetFeaturesAstOptionsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      selected: rubrics,
-    },
-  });
-
-  if (loading) return <Spinner />;
-  if (error || !data) return <RequestError />;
-
-  const { getFeaturesASTOptions } = data;
-
-  function attributesSourceResetHandler() {
-    setFieldValue(sourceName, null);
-    setFieldValue(groupsName, []);
-  }
+  }, [values, id, inputName, setFieldValue, groupAttributesValue]);
 
   return (
-    <Fragment>
-      <FormikSelect
-        options={getFeaturesASTOptions}
-        name={sourceName}
-        testId={sourceName}
-        label={'Источник атрибутов'}
-        firstOption={'Не выбран'}
-        disabled={disabled}
-        isRequired
+    <div className={classes.frame}>
+      <div className={classes.title}>{nameString}</div>
+      <FormikCheckboxLine
+        label={'Показать группу в карточке товара'}
+        name={`${inputName}.showInCard`}
+        inList
       />
 
-      {disabled && (
-        <InputLine name={sourceResetName}>
-          <Button
-            title={
-              'Внимание! При нажатии данной кнопки разблокируется селект "Источник атрибутов" и будут стёрты все ранее заполненные поля атрибутов.'
-            }
-            testId={sourceResetName}
-            onClick={attributesSourceResetHandler}
-          >
-            Изменить источник атрибутов
-          </Button>
-        </InputLine>
-      )}
+      <div className={classes.list}>
+        {attributes.map((attribute, index) => {
+          const attributeInputName = `${inputName}.attributes[${index}]`;
+          return (
+            <ProductAttributesItem
+              attribute={attribute}
+              inputName={attributeInputName}
+              key={index}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
-      <ProductAttributesConsumer featuresASTOptions={getFeaturesASTOptions} />
-    </Fragment>
+interface CreateNewProductAttributesSelectInterface {
+  rubrics: string[];
+}
+
+const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = ({ rubrics }) => {
+  const { data, loading, error } = useGetFeaturesAstQuery({
+    variables: {
+      selectedRubrics: rubrics,
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (!data || error) {
+    return <RequestError />;
+  }
+
+  const { getFeaturesAst } = data;
+  return (
+    <div>
+      {getFeaturesAst.map((group, index) => {
+        return <ProductAttributesGroup key={index} group={group} index={index} />;
+      })}
+    </div>
   );
 };
 

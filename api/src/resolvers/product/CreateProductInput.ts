@@ -18,9 +18,6 @@ export class CreateProductInput {
   @Field(() => [ID])
   rubrics: string[];
 
-  @Field(() => ID)
-  attributesSource: string;
-
   @Field(() => Int)
   price: number;
 

@@ -134,17 +134,17 @@ describe('Rubric products', () => {
     cy.getByCy('product-description').type(mockProductNewCarDescription);
 
     // fill attributes
-    cy.getByCy(`${mockAttributeMultipleSelectValueA}-checkbox`).check();
-    cy.getByCy(`${mockAttributeMultipleSelectValueB}-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueB}-0-checkbox`).check();
 
-    cy.selectOptionByTestId(mockAttributeSelectName, mockAttributeSelectValue);
-    cy.getByCy(`${mockAttributeSelectName}-showInCard-checkbox`).check();
+    cy.selectOptionByTestId(`${mockAttributeSelectName}-0`, mockAttributeSelectValue);
+    cy.getByCy(`${mockAttributeSelectName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeStringName).type('string');
-    cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
+    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeNumberName).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
+    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
 
     cy.getByCy('submit-new-product').click();
     cy.getByCy(mockProductNewName).should('exist');

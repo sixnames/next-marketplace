@@ -18,6 +18,7 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };
@@ -47,6 +48,8 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: () => {
           showLoading();
           return deleteAttributeFromGroupMutation({
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: { input: { groupId: group, attributeId: id } },
           });
         },
@@ -64,6 +67,8 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: (input: Omit<UpdateAttributeInGroupInput, 'groupId' | 'attributeId'>) => {
           showLoading();
           return updateAttributeInGroupMutation({
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: {
               input: {
                 groupId: group,

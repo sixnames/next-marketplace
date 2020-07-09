@@ -15,6 +15,8 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { LangInterface, ObjectType } from '../../types';
+import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
+import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
 
 interface OptionsGroupsContentInterface {
   query?: ObjectType;
@@ -50,6 +52,8 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
         confirm: () => {
           showLoading();
           return deleteOptionFromGroupMutation({
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
             variables: { input: { groupId: group, optionId: id } },
           });
         },
@@ -66,6 +70,8 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
         confirm: ({ name, color }: { name: LangInterface[]; color?: string }) => {
           showLoading();
           return updateOptionInGroupMutation({
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: OPTIONS_GROUP_QUERY, variables: { id: group } }],
             variables: { input: { groupId: group, optionId: id, name, color } },
           });
         },

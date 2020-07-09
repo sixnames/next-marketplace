@@ -24,6 +24,8 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   const [updateOptionsGroupMutation] = useUpdateOptionsGroupMutation({
+    refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateOptionsGroup),
     onError: onErrorCallback,
   });

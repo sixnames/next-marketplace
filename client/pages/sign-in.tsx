@@ -3,12 +3,13 @@ import { GetServerSideProps, NextPage } from 'next';
 import SignInRoute from '../routes/SignInRoute/SignInRoute';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { initializeApollo } from '../apollo/client';
-import { INITIAL_QUERY } from '../graphql/query/initialQuery';
+import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
 import { UserContextProvider } from '../context/userContext';
-import { InitialQueryResult } from '../generated/apolloComponents';
+import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
+import { SiteContextProvider } from '../context/siteContext';
 
 interface SignInInterface {
-  initialApolloState: InitialQueryResult['data'];
+  initialApolloState: InitialSiteQueryQueryResult['data'];
 }
 
 const SignIn: NextPage<SignInInterface> = ({ initialApolloState }) => {
@@ -16,9 +17,11 @@ const SignIn: NextPage<SignInInterface> = ({ initialApolloState }) => {
 
   return (
     <UserContextProvider me={myData}>
-      <SiteLayout>
-        <SignInRoute />
-      </SiteLayout>
+      <SiteContextProvider value={initialApolloState}>
+        <SiteLayout>
+          <SignInRoute />
+        </SiteLayout>
+      </SiteContextProvider>
     </UserContextProvider>
   );
 };
@@ -28,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const apolloClient = initializeApollo();
 
   const initialApolloState = await apolloClient.query({
-    query: INITIAL_QUERY,
+    query: INITIAL_SITE_QUERY,
     context: {
       headers: req.headers,
     },

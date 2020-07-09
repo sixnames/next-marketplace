@@ -14,7 +14,9 @@ import { UPDATE_NAME_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
 
 const AttributesGroupsFilter: React.FC = () => {
-  const { data, loading, error } = useGetAllAttributesGroupsQuery();
+  const { data, loading, error } = useGetAllAttributesGroupsQuery({
+    fetchPolicy: 'network-only',
+  });
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });

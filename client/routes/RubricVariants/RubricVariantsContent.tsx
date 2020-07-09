@@ -70,6 +70,8 @@ const RubricVariantsContent: React.FC = () => {
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return createRubricVariantMutation({
+            refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
+            awaitRefetchQueries: true,
             variables: {
               input: {
                 name: values.name,
@@ -91,6 +93,8 @@ const RubricVariantsContent: React.FC = () => {
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return updateRubricVariantMutation({
+            refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
+            awaitRefetchQueries: true,
             variables: {
               input: {
                 name: values.name,

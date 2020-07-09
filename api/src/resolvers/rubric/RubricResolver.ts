@@ -33,7 +33,11 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import { getRubricCounters, getRubricNestedIds } from '../../utils/rubricResolverHelpers';
+import {
+  getDeepRubricChildrenIds,
+  getRubricCounters,
+  getRubricsTreeIds,
+} from '../../utils/rubricResolverHelpers';
 import {
   addAttributesGroupToRubricInputSchema,
   addProductToRubricInputSchema,
@@ -49,7 +53,6 @@ import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
-  RUBRIC_LEVEL_TWO,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
@@ -267,14 +270,7 @@ export class RubricResolver {
         };
       }
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': id,
-      })
-        .select({ id: 1 })
-        .lean()
-        .exec();
-      const allRubrics = [rubric, ...children].map(({ _id }) => _id);
+      const allRubrics = await getRubricsTreeIds({ rubricId: rubric._id, city });
 
       // If rubric exists in one city
       if (rubric.cities.length === 1) {
@@ -391,62 +387,52 @@ export class RubricResolver {
         [],
       );
 
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
+      const childrenIds = await getDeepRubricChildrenIds({ rubricId, city });
 
-      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.addAttributesGroup.levelError.${lang}`),
-          rubric,
-        };
-      }
-
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': rubric.id,
-      })
-        .select({ _id: 1 })
-        .lean()
-        .exec();
-      const childrenIds = children.map(({ _id }) => _id);
-      const parentId = currentRubricCityNode.parent;
-
-      const updatedRubrics = await RubricModel.updateMany(
+      const updatedOwnerRubric = await RubricModel.findOneAndUpdate(
         {
-          _id: { $in: [...childrenIds, parentId, rubricId] },
+          _id: { $in: [rubricId] },
           'cities.key': city,
-          'cities.node.attributesGroups': {
-            $not: {
-              $elemMatch: {
-                node: attributesGroupId,
-              },
-            },
-          },
         },
         {
           $addToSet: {
             'cities.$.node.attributesGroups': {
               showInCatalogueFilter: showInCatalogueAttributes,
               node: attributesGroupId,
+              isOwner: true,
+            },
+          },
+        },
+        { new: true },
+      );
+
+      const updatedChildrenRubrics = await RubricModel.updateMany(
+        {
+          _id: { $in: childrenIds },
+          'cities.key': city,
+        },
+        {
+          $addToSet: {
+            'cities.$.node.attributesGroups': {
+              showInCatalogueFilter: showInCatalogueAttributes,
+              node: attributesGroupId,
+              isOwner: false,
             },
           },
         },
       );
 
-      if (!updatedRubrics.ok) {
+      if (!updatedChildrenRubrics.ok || !updatedOwnerRubric) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.addAttributesGroup.error.${lang}`),
         };
       }
 
-      const updatedRubric = await RubricModel.findById(rubricId);
-
       return {
         success: true,
         message: getMessageTranslation(`rubric.addAttributesGroup.success.${lang}`),
-        rubric: updatedRubric,
+        rubric: updatedOwnerRubric,
       };
     } catch (e) {
       return {
@@ -575,28 +561,21 @@ export class RubricResolver {
       }
 
       const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
+      const currentGroup = currentRubricCityNode.attributesGroups.find(
+        ({ node }) => node === attributesGroupId,
+      );
 
-      if (currentRubricLevel !== RUBRIC_LEVEL_TWO) {
+      if (!currentGroup || !currentGroup.isOwner) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteAttributesGroup.levelError.${lang}`),
+          message: getMessageTranslation(`rubric.deleteAttributesGroup.ownerError.${lang}`),
         };
       }
 
-      const children = await RubricModel.find({
-        'cities.key': city,
-        'cities.node.parent': rubric.id,
-      })
-        .select({ _id: 1 })
-        .lean()
-        .exec();
-      const childrenIds = children.map(({ _id }) => _id);
-      const parentId = currentRubricCityNode.parent;
-
+      const childrenIds = await getRubricsTreeIds({ rubricId, city });
       const updatedRubrics = await RubricModel.updateMany(
         {
-          _id: { $in: [...childrenIds, parentId, rubricId] },
+          _id: { $in: [...childrenIds, rubricId] },
           'cities.key': city,
         },
         {
@@ -658,32 +637,21 @@ export class RubricResolver {
         };
       }
 
-      const exists = await ProductModel.exists({
-        _id: productId,
-        cities: {
-          $elemMatch: {
-            key: city,
-            'node.rubrics': {
-              $in: [rubricId],
-            },
-          },
-        },
-      });
+      const productCity = getCityData(product.cities, city);
+
+      if (!productCity) {
+        return {
+          success: false,
+          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+        };
+      }
+
+      const exists = productCity.node.rubrics.includes(rubricId);
 
       if (exists) {
         return {
           success: false,
           message: getMessageTranslation(`rubric.addProduct.exists.${lang}`),
-        };
-      }
-
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
-
-      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.addProduct.levelError.${lang}`),
         };
       }
 
@@ -902,7 +870,7 @@ export class RubricResolver {
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const rubricsIds = await getRubricNestedIds({ rubric, city });
+    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
 
     const { options } = generatePaginationOptions({

@@ -18,12 +18,13 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
-import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING, RUBRIC_LEVEL_TWO } from '../../config';
+import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
 import Accordion from '../../components/Accordion/Accordion';
 import { getAttributeVariant } from '../../utils/locales';
 import InnerWide from '../../components/Inner/InnerWide';
+import classes from './RubricAttributes.module.css';
 
 interface AttributesGroupInterface {
   id: string;
@@ -43,8 +44,6 @@ export type AddAttributesGroupToRubricValues = Omit<AddAttributesGroupToRubricIn
 type RubricAttribute = RubricAttributesGroup['node']['attributes'][0];
 
 const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
-  const isNotSecondLevel = rubric.level !== RUBRIC_LEVEL_TWO;
-
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
   });
@@ -167,7 +166,6 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       title: 'Показывать в фильтре',
       render: (id: string, { nameString, variant }: RubricAttribute) => {
         const isDisabled = variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING;
-        console.log(isDisabled);
         return (
           <Checkbox
             testId={`${nameString}`}
@@ -199,7 +197,6 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         testId={'rubric-title'}
         titleRight={
           <ContentItemControls
-            disabled={isNotSecondLevel}
             createTitle={'Добавить группу атрибутов в рубрику'}
             testId={rubric.name}
             createHandler={addAttributesGroupToRubricHandler}
@@ -210,30 +207,31 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <InnerWide>
-          {attributesGroups.map(({ node, id, showInCatalogueFilter }) => {
+          {attributesGroups.map(({ node, id, showInCatalogueFilter, isOwner }) => {
             const { nameString, attributes } = node;
             return (
-              <Accordion
-                isOpen
-                key={id}
-                title={nameString}
-                titleRight={
-                  <ContentItemControls
-                    disabled={isNotSecondLevel}
-                    justifyContent={'flex-end'}
-                    deleteTitle={'Удалить группу атрибутов из рубрики'}
-                    deleteHandler={() => deleteAttributesGroupHandler(node)}
-                    testId={node.nameString}
+              <div key={id} className={classes.attributesGroup}>
+                <Accordion
+                  isOpen
+                  title={nameString}
+                  titleRight={
+                    <ContentItemControls
+                      disabled={!isOwner}
+                      justifyContent={'flex-end'}
+                      deleteTitle={'Удалить группу атрибутов из рубрики'}
+                      deleteHandler={() => deleteAttributesGroupHandler(node)}
+                      testId={node.nameString}
+                    />
+                  }
+                >
+                  <Table
+                    data={attributes}
+                    columns={columns({ groupId: node.id, showInCatalogueFilter })}
+                    emptyMessage={'Список атрибутов пуст'}
+                    testIdKey={'nameString'}
                   />
-                }
-              >
-                <Table
-                  data={attributes}
-                  columns={columns({ groupId: node.id, showInCatalogueFilter })}
-                  emptyMessage={'Список атрибутов пуст'}
-                  testIdKey={'nameString'}
-                />
-              </Accordion>
+                </Accordion>
+              </div>
             );
           })}
         </InnerWide>

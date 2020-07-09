@@ -11,13 +11,11 @@ import {
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_THREE_B,
-  MOCK_RUBRIC_LEVEL_TWO,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
   QUERY_DATA_LAYOUT_NO_RUBRIC,
 } from '../../../config';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_B.name[0].value;
 
@@ -111,6 +109,7 @@ describe('Rubric products', () => {
     cy.getByCy('close-modal').click();
 
     // Should create product and add it to the rubric
+    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.getByCy('product-create').click();
     cy.getByCy('create-new-product').click();
 
@@ -135,24 +134,20 @@ describe('Rubric products', () => {
     cy.getByCy('product-description').type(mockProductNewCarDescription);
 
     // fill attributes
-    cy.selectOptionByTestId(
-      `attributesSource`,
-      `${mockRubricLevelOneName}_>_${mockRubricLevelTwoName}`,
-    );
-    cy.getByCy(`${mockAttributeMultipleSelectValueA}-checkbox`).check();
-    cy.getByCy(`${mockAttributeMultipleSelectValueB}-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueB}-0-checkbox`).check();
 
-    cy.selectOptionByTestId(mockAttributeSelectName, mockAttributeSelectValue);
-    cy.getByCy(`${mockAttributeSelectName}-showInCard-checkbox`).check();
+    cy.selectOptionByTestId(`${mockAttributeSelectName}-0`, mockAttributeSelectValue);
+    cy.getByCy(`${mockAttributeSelectName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeStringName).type('string');
-    cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
+    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeNumberName).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
+    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
 
     cy.getByCy('submit-new-product').click();
     cy.getByCy(mockProductNewName).should('exist');
-    cy.getByCy(`${mockRubricLevelThreeName}-total`).should('contain', '3');
+    cy.getByCy(`${mockRubricLevelOneName}-total`).should('contain', '3');
   });
 });

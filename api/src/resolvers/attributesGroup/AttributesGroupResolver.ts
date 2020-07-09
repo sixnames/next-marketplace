@@ -305,7 +305,7 @@ export class AttributesGroupResolver {
 
       const nameValues = input.name.map(({ value }) => value);
       const existingAttributes = await AttributeModel.exists({
-        _id: { $in: group.attributes },
+        $and: [{ _id: { $in: group.attributes } }, { _id: { $ne: attributeId } }],
         'name.value': {
           $in: nameValues,
         },

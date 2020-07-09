@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--secondaryBackground);
-  height: 100vh;
+  height: var(--fullHeight, 100vh);
 }
 
 .Inner {
@@ -10,7 +10,7 @@
   flex-grow: 1;
   width: 100%;
   padding-bottom: 1rem;
-  height: calc(100vh - 100px);
+  height: calc(var(--fullHeight, 100vh) - 100px);
 }
 
 .Title {
@@ -116,7 +116,7 @@
   .Frame {
     display: block;
     height: auto;
-    min-height: calc(100vh - 36px);
+    min-height: calc(var(--fullHeight, 100vh) - 36px);
   }
 
   .Inner {

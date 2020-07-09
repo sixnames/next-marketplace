@@ -83,7 +83,6 @@ input CreateOptionsGroupInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  attributesSource: ID!
   cardName: [LangInput!]!
   description: [LangInput!]!
   name: [LangInput!]!
@@ -129,12 +128,6 @@ input DeleteOptionFromGroupInput {
 input DeleteProductFromRubricInput {
   productId: ID!
   rubricId: ID!
-}
-
-type FeaturesASTOption {
-  attributesGroups: [RubricAttributesGroup!]!
-  id: ID!
-  nameString: String!
 }
 
 input LangInput {
@@ -254,7 +247,6 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
-  attributesSource: ID
   cardName: String!
   cities: [ProductCity!]!
   createdAt: Timestamp!
@@ -306,7 +298,6 @@ type ProductNode {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
-  attributesSource: ID!
   cardName: [LanguageType!]!
   description: [LanguageType!]!
   name: [LanguageType!]!
@@ -363,7 +354,7 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
-  getFeaturesASTOptions(selected: [ID!]!): [FeaturesASTOption!]!
+  getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
@@ -395,6 +386,7 @@ type Rubric {
 
 type RubricAttributesGroup {
   id: ID!
+  isOwner: Boolean!
   node: AttributesGroup!
   showInCatalogueFilter: [ID!]!
 }
@@ -508,7 +500,6 @@ input UpdateOptionsGroupInput {
 input UpdateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  attributesSource: ID!
   cardName: [LangInput!]!
   description: [LangInput!]!
   id: ID!

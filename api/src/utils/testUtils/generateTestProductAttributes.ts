@@ -14,7 +14,6 @@ export function generateTestProductAttributes({
   rubricLevelTwo,
 }: GenerateTestProductAttributesInterface) {
   return {
-    attributesSource: rubricLevelTwo.id,
     attributesGroups: rubricLevelTwo.attributesGroups.map(({ node }: { [key: string]: any }) => {
       const { id, attributes } = node;
       return {

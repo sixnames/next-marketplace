@@ -22,6 +22,12 @@ interface OptionsGroupsContentInterface {
 
 const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query = {} }) => {
   const { group } = query;
+  const { data, loading, error } = useGetOptionsGroupQuery({
+    skip: !group,
+    variables: { id: group },
+    fetchPolicy: 'network-only',
+  });
+
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -67,11 +73,6 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     });
   }
 
-  const { data, loading, error } = useGetOptionsGroupQuery({
-    skip: !group,
-    variables: { id: group },
-  });
-
   if (!group) {
     return <DataLayoutTitle>Выберите группу</DataLayoutTitle>;
   }
@@ -91,7 +92,9 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     {
       key: 'color',
       title: 'Цвет',
-      render: (color: string) => <ColorPreview color={color} />,
+      render: (color: string, { nameString }: { nameString: string }) => (
+        <ColorPreview color={color} testId={nameString} />
+      ),
     },
     {
       key: 'id',

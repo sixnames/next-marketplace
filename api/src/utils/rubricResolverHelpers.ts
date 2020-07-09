@@ -3,8 +3,19 @@ import { DocumentType } from '@typegoose/typegoose';
 import { getProductsFilter } from './getProductsFilter';
 import { ProductModel } from '../entities/Product';
 
-interface GetRubricNestedIdsInterface {
-  rubric: DocumentType<Rubric>;
+interface GetRubricChildrenIdsInterface {
+  rubricId: string;
+  city: string;
+}
+
+interface GetRubricsTreeIdsInterface {
+  rubricId: string;
+  city: string;
+  acc?: string[];
+}
+
+interface GetDeepRubricChildrenIdsInterface {
+  rubricId: string;
   city: string;
 }
 
@@ -14,41 +25,55 @@ interface GetRubricCountersInterface {
   city: string;
 }
 
-export async function getRubricNestedIds({
-  rubric,
+export async function getRubricChildrenIds({
+  rubricId,
   city,
-}: GetRubricNestedIdsInterface): Promise<string[]> {
+}: GetRubricChildrenIdsInterface): Promise<string[]> {
   const rubricChildren = await RubricModel.find({
     cities: {
       $elemMatch: {
         key: city,
-        'node.parent': rubric.id,
+        'node.parent': rubricId,
       },
     },
   })
     .select({ id: 1 })
     .lean()
     .exec();
-  const secondLevel = rubricChildren.map(({ _id }) => _id);
+  return rubricChildren.map(({ _id }) => _id);
+}
 
-  const thirdLevelChildren = await RubricModel.find({
-    cities: {
-      $elemMatch: {
-        key: city,
-        'node.parent': { $in: secondLevel },
-      },
-    },
-  })
-    .select({ id: 1 })
-    .lean()
-    .exec();
-  const thirdLevel = thirdLevelChildren.map(({ _id }) => _id);
+export async function getRubricsTreeIds({ rubricId, city, acc = [] }: GetRubricsTreeIdsInterface) {
+  const childrenIds = await getRubricChildrenIds({ rubricId, city });
+  const newAcc = [...acc, rubricId];
+  if (childrenIds.length === 0) {
+    return newAcc;
+  }
 
-  return [rubric.id, ...secondLevel, ...thirdLevel];
+  const array: Promise<string[][]> = Promise.all(
+    childrenIds.map(async (rubricId) => {
+      return getRubricsTreeIds({ rubricId, city, acc: newAcc });
+    }),
+  );
+  const set = new Set((await array).flat());
+  const result = [];
+  for (const setItem of set.values()) {
+    result.push(setItem);
+  }
+
+  return result;
+}
+
+export async function getDeepRubricChildrenIds({
+  rubricId,
+  city,
+}: GetDeepRubricChildrenIdsInterface) {
+  const treeIds = await getRubricsTreeIds({ rubricId, city });
+  return treeIds.filter((id) => id !== rubricId);
 }
 
 export async function getRubricCounters({ rubric, args = {}, city }: GetRubricCountersInterface) {
-  const rubricsIds = await getRubricNestedIds({ rubric, city });
+  const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
   const query = getProductsFilter({ ...args, rubric: rubricsIds }, city);
 
   return ProductModel.countDocuments({

@@ -67,10 +67,6 @@ export class ProductNode {
   @prop({ type: String, required: true })
   rubrics: string[];
 
-  @Field(() => ID)
-  @prop({ required: true })
-  attributesSource: string;
-
   @Field(() => [ProductAttributesGroup])
   @prop({ type: ProductAttributesGroup, required: true })
   attributesGroups: ProductAttributesGroup[];
@@ -129,9 +125,6 @@ export class Product extends TimeStamps {
 
   @Field(() => [ID])
   readonly rubrics: string[];
-
-  @Field(() => ID, { nullable: true })
-  readonly attributesSource: string;
 
   @Field(() => [ProductAttributesGroup])
   readonly attributesGroups: ProductAttributesGroup[];

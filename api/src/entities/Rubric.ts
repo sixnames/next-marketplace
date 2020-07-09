@@ -15,6 +15,10 @@ export class RubricAttributesGroup {
   @Property({ type: String })
   showInCatalogueFilter: string[];
 
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  isOwner: boolean;
+
   @Field(() => AttributesGroup)
   @Property({ ref: AttributesGroup })
   node: string;

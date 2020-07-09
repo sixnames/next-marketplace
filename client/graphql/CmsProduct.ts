@@ -14,7 +14,6 @@ const productFragment = gql`
       index
     }
     rubrics
-    attributesSource
     attributesGroups {
       showInCard
       node {

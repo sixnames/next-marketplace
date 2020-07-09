@@ -22,7 +22,6 @@ describe('Product', () => {
             slug
             description
             rubrics
-            attributesSource
             attributesGroups {
               showInCard
               node {
@@ -112,8 +111,33 @@ describe('Product', () => {
     const rubricLevelTree = rubricLevelTwo.children[0];
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.name).toEqual(currentProduct.name);
-
     const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+
+    // Should return features AST
+    const {
+      data: { getFeaturesAst },
+    } = await query(`
+      query {
+        getFeaturesAst(selectedRubrics: ["${rubricLevelOne.id}"]) {
+          id
+          nameString
+          attributes {
+            id
+            nameString
+            options {
+              id
+              nameString
+              options {
+                id
+                nameString
+                color
+              }
+            }
+          }
+        }
+      }
+    `);
+    expect(getFeaturesAst).toHaveLength(1);
 
     // Should create product.
     const {
@@ -132,7 +156,6 @@ describe('Product', () => {
                 slug
                 description
                 rubrics
-                attributesSource
                 attributesGroups {
                   showInCard
                   node {
@@ -197,7 +220,6 @@ describe('Product', () => {
                 slug
                 description
                 rubrics
-                attributesSource
                 attributesGroups {
                   showInCard
                   node {

@@ -7,6 +7,7 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
       level
       attributesGroups {
         id
+        isOwner
         showInCatalogueFilter
         node {
           id

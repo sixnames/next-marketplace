@@ -36,6 +36,8 @@ import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { createProductSchema, updateProductSchema } from '../../validation';
+import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
+import { RubricModel } from '../../entities/Rubric';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -103,6 +105,41 @@ export class ProductResolver {
       activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),
       totalProductsCount: await ProductModel.countDocuments(allProductsQuery),
     };
+  }
+
+  @Query(() => [AttributesGroup])
+  async getFeaturesAst(
+    @Ctx() ctx: ContextInterface,
+    @Arg('selectedRubrics', (_type) => [ID]) selectedRubrics: string[],
+  ): Promise<AttributesGroup[]> {
+    try {
+      const city = ctx.req.session!.city;
+      const rubrics = await RubricModel.find({
+        _id: { $in: selectedRubrics },
+        'cities.key': city,
+      })
+        .select({ 'cities.node.attributesGroups': 1, 'cities.key': 1 })
+        .lean()
+        .exec();
+      const attributesGroups = rubrics.reduce((acc: string[], rubric) => {
+        const currentCity = getCityData(rubric.cities, city);
+        if (!currentCity) {
+          return acc;
+        }
+
+        const {
+          node: { attributesGroups = [] },
+        } = currentCity;
+
+        const groups = attributesGroups.map((group) => group.node);
+
+        return [...acc, ...groups];
+      }, []);
+
+      return AttributesGroupModel.find({ _id: { $in: attributesGroups } });
+    } catch (e) {
+      return [];
+    }
   }
 
   @Mutation(() => ProductPayloadType)
@@ -405,18 +442,6 @@ export class ProductResolver {
       return [];
     }
     return city.node.rubrics;
-  }
-
-  @FieldResolver()
-  async attributesSource(
-    @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
-  ): Promise<string | null> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
-    if (!city) {
-      return null;
-    }
-    return city.node.attributesSource;
   }
 
   @FieldResolver()

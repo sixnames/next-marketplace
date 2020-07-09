@@ -24,7 +24,9 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ query = '',
   const emptyResult = (
     <AnimateOpacity className={classes.frame}>
       <div className={`${classes.list} ${classes.empty} `}>
-        По запросу `&quot;`{query}`&quot;` ничего не найдено.
+        По запросу {'"'}
+        {query}
+        {'"'} ничего не найдено.
       </div>
       <Backdrop onClick={clearSearch} />
     </AnimateOpacity>

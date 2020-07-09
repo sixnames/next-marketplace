@@ -72,7 +72,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     description: [{ key: 'ru', value: '' }],
     assets: [],
     rubrics: rubricId ? [rubricId] : [],
-    attributesSource: '',
     attributesGroups: [],
   };
 
@@ -93,7 +92,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 price: values.price,
                 assets: values.assets,
                 rubrics: values.rubrics || [],
-                attributesSource: `${values.attributesSource}`,
                 attributesGroups: values.attributesGroups.map((group) => {
                   return {
                     ...group,
@@ -179,7 +177,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                     low
                     isLastDisabled
                     tree={data.getRubricsTree}
-                    lastTitleLeft={(id, testId) => (
+                    titleLeft={(id, testId) => (
                       <FormikArrayCheckbox
                         className={classes.rubricCheckbox}
                         name={'rubrics'}
@@ -191,7 +189,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 </InputLine>
               )}
 
-              {showFeatures && <ProductAttributes />}
+              {showFeatures && <ProductAttributes rubrics={rubrics} />}
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-new-product'}>

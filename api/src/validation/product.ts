@@ -23,7 +23,6 @@ const productCommonFields = {
   cardName: langInput(notNullableName('Название карточки товара')),
   description: langInput(notNullableName('Описание товара')),
   rubrics: Yup.array().of(Yup.string().required('Рубрики обязательны к заполнению')),
-  attributesSource: Yup.string().required('Источник аттрибутов обязателен к заполнению'),
   price: Yup.number()
     .min(minPrice, `Цена должна быть выше ${minPrice}`)
     .required('Цена обязательна к заполнению'),

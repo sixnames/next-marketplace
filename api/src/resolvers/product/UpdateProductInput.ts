@@ -21,9 +21,6 @@ export class UpdateProductInput {
   @Field(() => [ID])
   rubrics: string[];
 
-  @Field(() => ID)
-  attributesSource: string;
-
   @Field(() => Int)
   price: number;
 

@@ -334,6 +334,8 @@
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
 
+  --fullHeight: 100vh;
+
   /*inputs*/
   --inputTextColor: var(--textColor);
   --inputBackground: var(--md-blue-gray-50);

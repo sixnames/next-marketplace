@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
-import { THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '../config';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { IS_BROWSER, THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '../config';
 import { Theme } from '../types';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { IconType } from '../components/Icon/Icon';
@@ -22,6 +22,7 @@ const ThemeContext = createContext<ThemeContextInterface>({
 });
 
 const ThemeContextProvider: React.FC = ({ children }) => {
+  const [vh, setVh] = useState(() => (IS_BROWSER ? window.innerHeight * 0.01 : 0));
   const [theme, setTheme] = useLocalStorage(THEME_KEY, () => {
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -38,6 +39,17 @@ const ThemeContextProvider: React.FC = ({ children }) => {
     return THEME_LIGHT;
   });
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function resizeHandler() {
+      setVh(window.innerHeight * 0.01);
+    }
+    window.addEventListener('resize', resizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, []);
 
   useEffect(() => {
     if (ref && ref.current) {
@@ -69,6 +81,12 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   return (
     <ThemeContext.Provider value={value}>
       <div ref={ref}>{children}</div>
+      <style jsx global>{`
+        :root {
+          --vh: ${vh}px;
+          --fullHeight: calc(${vh}px * 100);
+        }
+      `}</style>
     </ThemeContext.Provider>
   );
 };

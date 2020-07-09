@@ -29,6 +29,7 @@ export type Query = {
   getProduct: Product;
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
+  getFeaturesAst: Array<AttributesGroup>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
@@ -36,7 +37,6 @@ export type Query = {
   getRubric: Rubric;
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
-  getFeaturesASTOptions: Array<FeaturesAstOption>;
 };
 
 
@@ -85,6 +85,11 @@ export type QueryGetProductsCountersArgs = {
 };
 
 
+export type QueryGetFeaturesAstArgs = {
+  selectedRubrics: Array<Scalars['ID']>;
+};
+
+
 export type QueryGetAttributesGroupArgs = {
   id: Scalars['ID'];
 };
@@ -107,11 +112,6 @@ export type QueryGetRubricArgs = {
 
 export type QueryGetRubricsTreeArgs = {
   excluded?: Maybe<Array<Scalars['ID']>>;
-};
-
-
-export type QueryGetFeaturesAstOptionsArgs = {
-  selected: Array<Scalars['ID']>;
 };
 
 export type User = {
@@ -230,7 +230,6 @@ export type Product = {
   slug: Scalars['String'];
   description: Scalars['String'];
   rubrics: Array<Scalars['ID']>;
-  attributesSource?: Maybe<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
   mainImage: Scalars['String'];
@@ -284,7 +283,6 @@ export type ProductNode = {
   slug: Scalars['String'];
   description: Array<LanguageType>;
   rubrics: Array<Scalars['ID']>;
-  attributesSource: Scalars['ID'];
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
   price: Scalars['Int'];
@@ -375,6 +373,7 @@ export type RubricAttributesGroup = {
    __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
   showInCatalogueFilter: Array<Scalars['ID']>;
+  isOwner: Scalars['Boolean'];
   node: AttributesGroup;
 };
 
@@ -416,13 +415,6 @@ export type AttributeVariant = {
    __typename?: 'AttributeVariant';
   id: Scalars['ID'];
   nameString: Scalars['String'];
-};
-
-export type FeaturesAstOption = {
-   __typename?: 'FeaturesASTOption';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  attributesGroups: Array<RubricAttributesGroup>;
 };
 
 export type Mutation = {
@@ -741,7 +733,6 @@ export type CreateProductInput = {
   cardName: Array<LangInput>;
   description: Array<LangInput>;
   rubrics: Array<Scalars['ID']>;
-  attributesSource: Scalars['ID'];
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
@@ -768,7 +759,6 @@ export type UpdateProductInput = {
   cardName: Array<LangInput>;
   description: Array<LangInput>;
   rubrics: Array<Scalars['ID']>;
-  attributesSource: Scalars['ID'];
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
@@ -878,7 +868,7 @@ export type DeleteProductFromRubricInput = {
 
 export type ProductFragmentFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics' | 'attributesSource'>
+  & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics'>
   & { assets: Array<(
     { __typename?: 'AssetType' }
     & Pick<AssetType, 'url' | 'index'>
@@ -1692,37 +1682,30 @@ export type GetAttributesGroupsForRubricQuery = (
   )> }
 );
 
-export type GetFeaturesAstOptionsQueryVariables = {
-  selected: Array<Scalars['ID']>;
+export type GetFeaturesAstQueryVariables = {
+  selectedRubrics: Array<Scalars['ID']>;
 };
 
 
-export type GetFeaturesAstOptionsQuery = (
+export type GetFeaturesAstQuery = (
   { __typename?: 'Query' }
-  & { getFeaturesASTOptions: Array<(
-    { __typename?: 'FeaturesASTOption' }
-    & Pick<FeaturesAstOption, 'id' | 'nameString'>
-    & { attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
-          & { metric?: Maybe<(
-            { __typename?: 'Metric' }
-            & Pick<Metric, 'id' | 'nameString'>
-          )>, options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-            & { options: Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString' | 'color'>
-            )> }
-          )> }
+  & { getFeaturesAst: Array<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+    & { attributes: Array<(
+      { __typename?: 'Attribute' }
+      & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+      & { metric?: Maybe<(
+        { __typename?: 'Metric' }
+        & Pick<Metric, 'id' | 'nameString'>
+      )>, options?: Maybe<(
+        { __typename?: 'OptionsGroup' }
+        & Pick<OptionsGroup, 'id' | 'nameString'>
+        & { options: Array<(
+          { __typename?: 'Option' }
+          & Pick<Option, 'id' | 'nameString' | 'color'>
         )> }
-      ) }
+      )> }
     )> }
   )> }
 );
@@ -1773,7 +1756,7 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
+      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
       & { node: (
         { __typename?: 'AttributesGroup' }
         & Pick<AttributesGroup, 'id' | 'nameString'>
@@ -1849,7 +1832,6 @@ export const ProductFragmentFragmentDoc = gql`
     index
   }
   rubrics
-  attributesSource
   attributesGroups {
     showInCard
     node {
@@ -3556,33 +3538,27 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: ApolloRea
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
-export const GetFeaturesAstOptionsDocument = gql`
-    query GetFeaturesASTOptions($selected: [ID!]!) {
-  getFeaturesASTOptions(selected: $selected) {
+export const GetFeaturesAstDocument = gql`
+    query GetFeaturesAST($selectedRubrics: [ID!]!) {
+  getFeaturesAst(selectedRubrics: $selectedRubrics) {
     id
     nameString
-    attributesGroups {
-      node {
+    attributes {
+      id
+      itemId
+      nameString
+      variant
+      metric {
         id
         nameString
-        attributes {
+      }
+      options {
+        id
+        nameString
+        options {
           id
-          itemId
           nameString
-          variant
-          metric {
-            id
-            nameString
-          }
-          options {
-            id
-            nameString
-            options {
-              id
-              nameString
-              color
-            }
-          }
+          color
         }
       }
     }
@@ -3591,30 +3567,30 @@ export const GetFeaturesAstOptionsDocument = gql`
     `;
 
 /**
- * __useGetFeaturesAstOptionsQuery__
+ * __useGetFeaturesAstQuery__
  *
- * To run a query within a React component, call `useGetFeaturesAstOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFeaturesAstOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetFeaturesAstQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeaturesAstQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetFeaturesAstOptionsQuery({
+ * const { data, loading, error } = useGetFeaturesAstQuery({
  *   variables: {
- *      selected: // value for 'selected'
+ *      selectedRubrics: // value for 'selectedRubrics'
  *   },
  * });
  */
-export function useGetFeaturesAstOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>(GetFeaturesAstOptionsDocument, baseOptions);
+export function useGetFeaturesAstQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
       }
-export function useGetFeaturesAstOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>(GetFeaturesAstOptionsDocument, baseOptions);
+export function useGetFeaturesAstLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
         }
-export type GetFeaturesAstOptionsQueryHookResult = ReturnType<typeof useGetFeaturesAstOptionsQuery>;
-export type GetFeaturesAstOptionsLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstOptionsLazyQuery>;
-export type GetFeaturesAstOptionsQueryResult = ApolloReactCommon.QueryResult<GetFeaturesAstOptionsQuery, GetFeaturesAstOptionsQueryVariables>;
+export type GetFeaturesAstQueryHookResult = ReturnType<typeof useGetFeaturesAstQuery>;
+export type GetFeaturesAstLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstLazyQuery>;
+export type GetFeaturesAstQueryResult = ApolloReactCommon.QueryResult<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>;
 export const GetNewAttributeOptionsDocument = gql`
     query GetNewAttributeOptions {
   getAllOptionsGroups {
@@ -3702,6 +3678,7 @@ export const GetRubricAttributesDocument = gql`
     level
     attributesGroups {
       id
+      isOwner
       showInCatalogueFilter
       node {
         id

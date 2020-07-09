@@ -56,20 +56,11 @@ export function getProductsFilter(
               },
             },
           };
-          /*return {
-            key,
-            value: { $in: value },
-          };*/
         });
 
         return {
           ...acc,
           $and: attributesQuery,
-          /*'node.attributesGroups.attributes': {
-            $elemMatch: {
-              $and: attributesQuery,
-            },
-          },*/
         };
       }
 

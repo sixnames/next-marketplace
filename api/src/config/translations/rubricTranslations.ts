@@ -1,5 +1,3 @@
-import { RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_TWO } from '../common';
-
 const rubricTranslations = {
   rubric: {
     create: {
@@ -53,10 +51,6 @@ const rubricTranslations = {
         ru: 'Группа атрибутов или Рубрика не найдены.',
         en: 'Rubric or attributes group not found.',
       },
-      levelError: {
-        ru: `В рубрику не ${RUBRIC_LEVEL_TWO}-го уровня нельзя добавить группу атрибутов.`,
-        en: `You can't add attributes group to rubric with level other than ${RUBRIC_LEVEL_TWO}.`,
-      },
       error: {
         ru: 'Ошибка добавления Группы атрибутов в рубрику.',
         en: 'Add attributes group to rubric error.',
@@ -85,9 +79,9 @@ const rubricTranslations = {
         ru: 'Группа атрибутов или Рубрика не найдены.',
         en: 'Rubric or attributes group not found.',
       },
-      levelError: {
-        ru: `Из рубрики не ${RUBRIC_LEVEL_TWO}-го уровня нельзя удалить группу атрибутов.`,
-        en: `You can't delete attributes group from rubric with level other than ${RUBRIC_LEVEL_TWO}.`,
+      ownerError: {
+        ru: `Группу атрибутов нельзя удалить т.к. рубрика не является владельцем.`,
+        en: `You can't delete attributes group from not owner rubric`,
       },
       error: {
         ru: 'Ошибка удаления Группы атрибутов из рубрики.',
@@ -107,10 +101,6 @@ const rubricTranslations = {
         ru: 'Товар уже присутствует в группе.',
         en: 'Product already exists in this group.',
       },
-      levelError: {
-        ru: `В рубрику не ${RUBRIC_LEVEL_THREE}-го уровня нельзя добавить товар.`,
-        en: `You can't add product to rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
-      },
       addToProductError: {
         ru: 'Ошибка добавления товара в рубрику.',
         en: 'Add product to rubric error.',
@@ -124,10 +114,6 @@ const rubricTranslations = {
       notFound: {
         ru: 'Товар или Рубрика не найдены.',
         en: 'Rubric or product not found.',
-      },
-      levelError: {
-        ru: `Из рубрики не ${RUBRIC_LEVEL_THREE}-го уровня нельзя удалить товар.`,
-        en: `You can't delete product from rubric with level other than ${RUBRIC_LEVEL_THREE}.`,
       },
       deleteFromProductError: {
         ru: 'Ошибка удаления товара из рубрики.',

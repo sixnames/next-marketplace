@@ -53,6 +53,7 @@ interface GetRubricCitiesInterface {
   attributesGroups: {
     showInCatalogueFilter: string[];
     node: string;
+    isOwner: boolean;
   }[];
 }
 
@@ -86,7 +87,6 @@ interface GetProductCitiesInterface {
   cardName: LangInterface[];
   description: LangInterface[];
   rubrics: string[];
-  attributesSource: string;
   attributesGroups: {
     showInCard: boolean;
     node: string;
@@ -207,13 +207,11 @@ const createTestData = async () => {
     const attributeString = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_STRING,
       variant: MOCK_ATTRIBUTE_STRING.variant as AttributeVariantEnum,
-      options: optionsGroup.id,
     });
 
     const attributeNumber = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_NUMBER,
       variant: MOCK_ATTRIBUTE_NUMBER.variant as AttributeVariantEnum,
-      options: optionsGroup.id,
     });
 
     await AttributesGroupModel.create({
@@ -246,17 +244,19 @@ const createTestData = async () => {
     await RubricVariantModel.create(MOCK_RUBRIC_TYPE_STAGE);
 
     // Rubrics
-    const rubricAttributesGroups = [
+    const rubricAttributesGroups = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [attributeMultiple.id, attributeSelect.id],
         node: attributesGroup.id,
+        isOwner,
       },
     ];
 
-    const rubricAttributesGroupsB = [
+    const rubricAttributesGroupsB = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [],
         node: attributesGroupB.id,
+        isOwner,
       },
     ];
 
@@ -265,7 +265,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_ONE,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName),
         variant: equipmentRubricVariant.id,
-        attributesGroups: rubricAttributesGroups,
+        attributesGroups: rubricAttributesGroups(true),
       }),
     });
 
@@ -274,7 +274,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_TWO,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName),
         parent: rubricLevelOne.id,
-        attributesGroups: rubricAttributesGroups,
+        attributesGroups: rubricAttributesGroups(false),
       }),
     });
 
@@ -283,7 +283,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_TWO_TABLES,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName),
         parent: rubricLevelOne.id,
-        attributesGroups: rubricAttributesGroupsB,
+        attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
       }),
     });
 
@@ -292,7 +292,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_THREE_TABLES,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName),
         parent: rubricLevelTwoTables.id,
-        attributesGroups: rubricAttributesGroupsB,
+        attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
       }),
     });
 
@@ -301,7 +301,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName),
         parent: rubricLevelTwoTables.id,
-        attributesGroups: rubricAttributesGroupsB,
+        attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
       }),
     });
 
@@ -310,7 +310,7 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_THREE,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
         parent: rubricLevelTwo.id,
-        attributesGroups: rubricAttributesGroups,
+        attributesGroups: rubricAttributesGroups(false),
       }),
     });
 
@@ -319,13 +319,12 @@ const createTestData = async () => {
         ...MOCK_RUBRIC_LEVEL_THREE_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName),
         parent: rubricLevelTwo.id,
-        attributesGroups: rubricAttributesGroups,
+        attributesGroups: rubricAttributesGroups(false),
       }),
     });
 
     // Products
     const productAttributes = {
-      attributesSource: rubricLevelTwo.id,
       attributesGroups: [
         {
           node: attributesGroup.id,

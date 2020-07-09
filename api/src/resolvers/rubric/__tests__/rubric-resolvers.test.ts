@@ -76,18 +76,35 @@ describe.only('Rubrics', () => {
     expect(rubricLevelOne.children.length).toEqual(2);
     expect(rubricLevelTwo.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO.name, DEFAULT_LANG));
 
-    // Should return current rubric
+    // Should return current rubric and it's products
     const { data } = await query(`
       query {
         getRubric(id: "${rubricLevelOne.id}") {
           id
           name
           catalogueName
+          products {
+            totalDocs
+            page
+            totalPages
+            activeProductsCount
+            docs {
+              id
+              rubrics
+              itemId
+              name
+              price
+              slug
+              mainImage
+              active
+            }
+          }
         }
       }
     `);
     expect(data.getRubric.id).toEqual(rubricLevelOne.id);
     expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(data.getRubric.products.docs).toHaveLength(3);
     expect(data.getRubric.catalogueName).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.catalogueName, DEFAULT_LANG),
     );
@@ -223,6 +240,7 @@ describe.only('Rubrics', () => {
             level
             attributesGroups {
               showInCatalogueFilter
+              isOwner
               node {
                 id
                 nameString
@@ -373,6 +391,27 @@ describe.only('Rubrics', () => {
       rubricLevelThree.products.docs.length + 1,
     );
 
+    // Should return added product to third level rubric on first level
+    const { data: firstLevelRubricProducts } = await query(`
+      query {
+        getRubric(id: "${rubricLevelOne.id}") {
+          id
+          products {
+            docs {
+              id
+            }
+          }
+        }
+      }
+    `);
+    const firstLevelRubricProductsIds = firstLevelRubricProducts.getRubric.products.docs.map(
+      (product: any) => product.id,
+    );
+    const productOnFirstLevelRubric = firstLevelRubricProductsIds.find(
+      (id: string) => id === createdProduct.id,
+    );
+    expect(productOnFirstLevelRubric).toBeDefined();
+
     // Should delete product from third level rubric
     const {
       data: { deleteProductFromRubric },
@@ -403,47 +442,6 @@ describe.only('Rubrics', () => {
     expect(deleteProductFromRubric.rubric.products.docs.length).toEqual(
       rubricLevelThree.products.docs.length,
     );
-
-    // Should return features AST for current rubric
-    const {
-      data: { getFeaturesASTOptions },
-    } = await query(`
-      query {
-        getFeaturesASTOptions(selected: ["${rubricLevelThree.id}"]) {
-          id
-          nameString
-          attributesGroups {
-            node {
-              id
-              nameString
-              attributes {
-                id
-                itemId
-                nameString
-                variant
-                metric {
-                  id
-                  nameString
-                }
-                options {
-                  id
-                  nameString
-                  options {
-                    id
-                    nameString
-                    color
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `);
-
-    expect(getFeaturesASTOptions[0].id).toEqual(rubricLevelTwo.id);
-    expect(getFeaturesASTOptions[0].attributesGroups).toHaveLength(1);
-    expect(getFeaturesASTOptions[0].attributesGroups[0].node.attributes).toHaveLength(4);
 
     // Should delete rubric
     const {

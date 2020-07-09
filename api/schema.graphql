@@ -361,6 +361,7 @@ type Query {
   getProduct(id: ID!): Product!
   getProductsCounters(input: ProductsCountersInput!): ProductsCounters!
   getRubric(id: ID!): Rubric!
+  getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
   getUser(id: ID!): User

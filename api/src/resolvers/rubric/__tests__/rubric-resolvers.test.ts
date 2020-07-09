@@ -81,6 +81,7 @@ describe.only('Rubrics', () => {
       query {
         getRubric(id: "${rubricLevelOne.id}") {
           id
+          slug
           name
           catalogueName
           products {
@@ -106,6 +107,24 @@ describe.only('Rubrics', () => {
     expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
     expect(data.getRubric.products.docs).toHaveLength(3);
     expect(data.getRubric.catalogueName).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_ONE.catalogueName, DEFAULT_LANG),
+    );
+
+    // Should return current rubric by slug
+    const {
+      data: { getRubricBySlug },
+    } = await query(`
+      query {
+        getRubricBySlug(slug: "${data.getRubric.slug}") {
+          id
+          name
+          catalogueName
+        }
+      }
+    `);
+    expect(getRubricBySlug.id).toEqual(rubricLevelOne.id);
+    expect(getRubricBySlug.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(getRubricBySlug.catalogueName).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.catalogueName, DEFAULT_LANG),
     );
 

@@ -78,6 +78,21 @@ export class RubricResolver {
     return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
+  @Query(() => Rubric)
+  async getRubricBySlug(
+    @Ctx() ctx: ContextInterface,
+    @Arg('slug', (_type) => String) slug: string,
+  ) {
+    return RubricModel.findOne({
+      cities: {
+        $elemMatch: {
+          key: ctx.req.session!.city,
+          'node.slug': slug,
+        },
+      },
+    });
+  }
+
   @Query(() => [Rubric])
   async getRubricsTree(
     @Ctx() ctx: ContextInterface,

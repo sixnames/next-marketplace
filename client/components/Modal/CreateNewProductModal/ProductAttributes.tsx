@@ -8,15 +8,18 @@ import { GetFeaturesAstQuery, useGetFeaturesAstQuery } from '../../../generated/
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 
-// TODO group type
+export type ProductAttributesGroupType = GetFeaturesAstQuery['getFeaturesAst'][0];
 interface ProductAttributesGroupInterface {
-  group: GetFeaturesAstQuery['getFeaturesAst'][0];
-  index: number;
+  group: ProductAttributesGroupType;
+  groupIndex: number;
 }
 
-const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ group, index }) => {
+const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
+  group,
+  groupIndex,
+}) => {
   const { setFieldValue, values } = useFormikContext();
-  const inputName = `attributesGroups[${index}]`;
+  const inputName = `attributesGroups[${groupIndex}]`;
   const { id, nameString, attributes } = group;
 
   const groupAttributesValue = useMemo(
@@ -55,6 +58,7 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({ gro
           const attributeInputName = `${inputName}.attributes[${index}]`;
           return (
             <ProductAttributesItem
+              groupIndex={groupIndex}
               attribute={attribute}
               inputName={attributeInputName}
               key={index}
@@ -90,7 +94,7 @@ const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = (
   return (
     <div>
       {getFeaturesAst.map((group, index) => {
-        return <ProductAttributesGroup key={index} group={group} index={index} />;
+        return <ProductAttributesGroup key={index} group={group} groupIndex={index} />;
       })}
     </div>
   );

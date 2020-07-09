@@ -8,22 +8,16 @@ import {
   MOCK_PRODUCT_CREATE_PRODUCT,
   MOCK_PRODUCT_FOR_DELETE,
   MOCK_PRODUCT_NEW_PRODUCT,
-  MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE,
   MOCK_RUBRIC_LEVEL_THREE_B,
   MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-  MOCK_RUBRIC_LEVEL_TWO,
-  MOCK_RUBRIC_LEVEL_TWO_TABLES,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '../../../config';
 
 const mockProductForDelete = MOCK_PRODUCT_FOR_DELETE.name[0].value;
 const mockProductB = MOCK_PRODUCT_B_PRODUCT.name[0].value;
-const mockRubricLevelOne = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-const mockRubricLevelTwo = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockRubricLevelThreeB = MOCK_RUBRIC_LEVEL_THREE_B.name[0].value;
-const mockTablesRubricLevelTwo = MOCK_RUBRIC_LEVEL_TWO_TABLES.name[0].value;
 const mockTablesRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_TABLES_B.name[0].value;
 
 const mockProductNewName = MOCK_PRODUCT_NEW_PRODUCT.name[0].value;
@@ -35,9 +29,6 @@ const mockProductCreateName = MOCK_PRODUCT_CREATE_PRODUCT.name[0].value;
 const mockProductCreateCardName = MOCK_PRODUCT_CREATE_PRODUCT.cardName[0].value;
 const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE_PRODUCT.price;
 const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE_PRODUCT.description[0].value;
-
-const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 
 const mockAttributeSelectName = MOCK_ATTRIBUTE_SELECT.name[0].value;
 const mockAttributeSelectValue = MOCK_OPTIONS[0].name[0].value;
@@ -85,16 +76,10 @@ describe('Products list', () => {
     // Should update product attributes
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockTablesRubricLevelThree}-checkbox`).check();
-    cy.getByCy(`attributesSource`).should('be.disabled');
-    cy.getByCy('attributes-source-reset').click();
-    cy.selectOptionByTestId(
-      `attributesSource`,
-      `${mockRubricLevelOneName}_>_${mockTablesRubricLevelTwo}`,
-    );
-    cy.getByCy(mockAttributeStringName).type('string');
-    cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
-    cy.getByCy(mockAttributeNumberName).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
+    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
+    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
     cy.getByCy('submit-product').click();
     cy.getByCy(`success-notification`).should('exist');
 
@@ -112,24 +97,19 @@ describe('Products list', () => {
     cy.getByCy('product-description').type(mockProductCreateCarDescription);
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
-    cy.selectOptionByTestId(`attributesSource`, `${mockRubricLevelOne}_>_${mockRubricLevelTwo}`);
 
     // fill attributes
-    cy.selectOptionByTestId(
-      `attributesSource`,
-      `${mockRubricLevelOneName}_>_${mockRubricLevelTwoName}`,
-    );
-    cy.getByCy(`${mockAttributeMultipleSelectValueA}-checkbox`).check();
-    cy.getByCy(`${mockAttributeMultipleSelectValueB}-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();
+    cy.getByCy(`${mockAttributeMultipleSelectValueB}-0-checkbox`).check();
 
-    cy.selectOptionByTestId(mockAttributeSelectName, mockAttributeSelectValue);
-    cy.getByCy(`${mockAttributeSelectName}-showInCard-checkbox`).check();
+    cy.selectOptionByTestId(`${mockAttributeSelectName}-0`, mockAttributeSelectValue);
+    cy.getByCy(`${mockAttributeSelectName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeStringName).type('string');
-    cy.getByCy(`${mockAttributeStringName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
+    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
 
-    cy.getByCy(mockAttributeNumberName).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
+    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
 
     cy.getByCy('submit-new-product').click();
     cy.getByCy(mockProductCreateName).should('exist');

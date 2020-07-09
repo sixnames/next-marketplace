@@ -2,7 +2,6 @@ import React from 'react';
 import FormikInput from '../../FormElements/Input/FormikInput';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
-import { ProductAttributesGroupType } from './ProductAttributesList';
 import classes from './ProductAttributesItem.module.css';
 import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
 import InputLine from '../../FormElements/Input/InputLine';
@@ -12,17 +11,20 @@ import {
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
 } from '../../../config';
+import { ProductAttributesGroupType } from './ProductAttributes';
 
-export type AttributeType = ProductAttributesGroupType['node']['attributes'][0];
+export type AttributeType = ProductAttributesGroupType['attributes'][0];
 
 interface ProductAttributesItemInterface {
   attribute: AttributeType;
   inputName: string;
+  groupIndex: number;
 }
 
 const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   attribute,
   inputName,
+  groupIndex,
 }) => {
   const { variant, options, nameString, metric } = attribute;
   const firstValueIndex = 0;
@@ -42,7 +44,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
           labelPostfix={labelPostfix}
           type={variant === ATTRIBUTE_TYPE_STRING ? 'text' : 'number'}
           name={singleValueInputName}
-          testId={nameString}
+          testId={`${nameString}-${groupIndex}`}
         />
       );
     }
@@ -55,7 +57,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
           options={optionsList}
           firstOption={'Не выбрано'}
           name={singleValueInputName}
-          testId={nameString}
+          testId={`${nameString}-${groupIndex}`}
         />
       );
     }
@@ -70,7 +72,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
                 value={id}
                 key={id}
                 label={nameString}
-                testId={nameString}
+                testId={`${nameString}-${groupIndex}`}
                 inList
               />
             );
@@ -89,7 +91,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
       <FormikCheckboxLine
         label={'Показать в карточке товара'}
         name={`${inputName}.showInCard`}
-        testId={`${nameString}-showInCard`}
+        testId={`${nameString}-${groupIndex}-showInCard`}
         low
       />
     </div>

@@ -1695,7 +1695,10 @@ export type GetFeaturesAstQuery = (
     & { attributes: Array<(
       { __typename?: 'Attribute' }
       & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
-      & { options?: Maybe<(
+      & { metric?: Maybe<(
+        { __typename?: 'Metric' }
+        & Pick<Metric, 'id' | 'nameString'>
+      )>, options?: Maybe<(
         { __typename?: 'OptionsGroup' }
         & Pick<OptionsGroup, 'id' | 'nameString'>
         & { options: Array<(
@@ -3545,6 +3548,10 @@ export const GetFeaturesAstDocument = gql`
       itemId
       nameString
       variant
+      metric {
+        id
+        nameString
+      }
       options {
         id
         nameString

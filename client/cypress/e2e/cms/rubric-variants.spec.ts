@@ -7,7 +7,7 @@ import {
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
-const mockNewRubricVariantName = 'cy-test-new-variant';
+const mockNewRubricVariantName = 'new_variant';
 
 describe('Rubric variants', () => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('Rubric variants', () => {
     cy.getByCy(`${mockNewRubricVariantName}`).should('exist');
 
     // Should update rubric type name
-    const mockUpdatedRubricTypeName = 'cy-test-updated-type';
+    const mockUpdatedRubricTypeName = 'updated_variant';
     cy.getByCy(`${mockNewRubricVariantName}-update`).click();
     cy.getByCy('rubric-variant-modal').should('exist');
     cy.getByCy('update-name-input').clear().type(mockUpdatedRubricTypeName);

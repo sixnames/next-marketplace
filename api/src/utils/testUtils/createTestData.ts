@@ -93,7 +93,7 @@ interface GetProductCitiesInterface {
     attributes: {
       showInCard: boolean;
       node: string;
-      key: number;
+      key: string;
       value: string[];
     }[];
   }[];
@@ -324,7 +324,7 @@ const createTestData = async () => {
     });
 
     // Products
-    const productAttributes = {
+    const productAttributes = (multipleAttributeOptions: string[]) => ({
       attributesGroups: [
         {
           node: attributesGroup.id,
@@ -333,38 +333,38 @@ const createTestData = async () => {
             {
               node: attributeMultiple.id,
               showInCard: true,
-              key: attributeMultiple.itemId,
-              value: optionsIds,
+              key: attributeMultiple.slug,
+              value: multipleAttributeOptions,
             },
             {
               node: attributeSelect.id,
               showInCard: true,
-              key: attributeSelect.itemId,
+              key: attributeSelect.slug,
               value: [optionsIds[0]],
             },
             {
               node: attributeString.id,
               showInCard: true,
-              key: attributeString.itemId,
+              key: attributeString.slug,
               value: ['string'],
             },
             {
               node: attributeNumber.id,
               showInCard: true,
-              key: attributeNumber.itemId,
+              key: attributeNumber.slug,
               value: ['123'],
             },
           ],
         },
       ],
-    };
+    });
 
     // for delete
     await ProductModel.create({
       cities: await getProductCities(
         {
           ...MOCK_PRODUCT_FOR_DELETE,
-          ...productAttributes,
+          ...productAttributes(optionsIds[0]),
           rubrics: [rubricLevelThree.id],
         },
         false,
@@ -375,7 +375,7 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT_B_PRODUCT,
-        ...productAttributes,
+        ...productAttributes(optionsIds[1]),
         rubrics: [rubricLevelThreeB.id],
       }),
     });
@@ -385,7 +385,7 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT,
-        ...productAttributes,
+        ...productAttributes(optionsIds[2]),
         rubrics: [rubricLevelThree.id],
       }),
     });

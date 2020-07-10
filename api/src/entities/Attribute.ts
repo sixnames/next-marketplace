@@ -1,10 +1,10 @@
-import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
-import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
 import { LanguageType } from './common';
-import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { ATTRIBUTE_TYPES_ENUMS } from '../config';
+import { prop as Property } from '@typegoose/typegoose/lib/prop';
 
 export enum AttributeVariantEnum {
   select = 'select',
@@ -19,16 +19,13 @@ registerEnumType(AttributeVariantEnum, {
 });
 
 @ObjectType()
-@plugin(autoIncrement, {
-  model: 'Attribute',
-  field: 'itemId',
-})
 export class Attribute {
   @Field((_type) => ID)
   readonly id: string;
 
-  @Field(() => Int)
-  readonly itemId: number;
+  @Field(() => String)
+  @Property({ required: true })
+  slug: string;
 
   @Field(() => LanguageType)
   @prop({ type: LanguageType, required: true })

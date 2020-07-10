@@ -41,7 +41,7 @@ describe.only('Rubrics', () => {
                 id
                 attributes {
                   id
-                  itemId
+                  slug
                   variant
                   options {
                     id

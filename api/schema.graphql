@@ -34,11 +34,11 @@ type AssetType {
 
 type Attribute {
   id: ID!
-  itemId: Int!
   metric: Metric
   name: [LanguageType!]!
   nameString: String!
   options: OptionsGroup
+  slug: String!
   variant: AttributeVariantEnum!
 }
 
@@ -195,6 +195,7 @@ type Option {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  slug: String!
 }
 
 type OptionsGroup {
@@ -262,16 +263,16 @@ type Product {
 }
 
 type ProductAttribute {
-  """Attribute reference via attribute itemId field"""
-  key: Int!
+  """Attribute reference via attribute slug field"""
+  key: String!
   node: Attribute!
   showInCard: Boolean!
   value: [String!]!
 }
 
 input ProductAttributeInput {
-  """Attribute reference via attribute itemId field"""
-  key: Int!
+  """Attribute reference via attribute slug field"""
+  key: String!
   node: ID!
   showInCard: Boolean!
   value: [String!]!

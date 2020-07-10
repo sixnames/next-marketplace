@@ -19,9 +19,9 @@ export class ProductAttribute {
   @prop({ ref: Attribute })
   node: string;
 
-  @Field(() => Int, { description: 'Attribute reference via attribute itemId field' })
+  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
   @prop({ required: true })
-  key: number;
+  key: string;
 
   @Field(() => [String])
   @prop({ type: String, required: true })

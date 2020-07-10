@@ -10,13 +10,13 @@ const mockGroupName = MOCK_OPTIONS_GROUP.name[0].value;
 const mockOptionName = MOCK_OPTIONS[0].name[0].value;
 const mockOptionColor = MOCK_OPTIONS[0].color;
 const mockGroupForDeleteName = MOCK_OPTIONS_GROUP_FOR_DELETE.name[0].value;
-const createdGroupName = 'cy-test-new-group';
-const groupNewName = 'cy-test-updated-name';
+const createdGroupName = 'new_group';
+const groupNewName = 'updated_name';
 const fakeName = 'f';
 const fakeColor = 'b';
-const optionName = 'cy-test-option';
+const optionName = 'option';
 const optionColor = '333333';
-const optionNewName = 'cy-test-new-option-name';
+const optionNewName = 'new_option_name';
 const optionNewColor = 'fafafa';
 
 describe('Options Groups', () => {

@@ -19,7 +19,7 @@ export function generateTestProductAttributes({
       return {
         node: id,
         showInCard: true,
-        attributes: attributes.map(({ id, itemId, variant, options }: { [key: string]: any }) => {
+        attributes: attributes.map(({ id, slug, variant, options }: { [key: string]: any }) => {
           let value = [];
 
           if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) {
@@ -41,7 +41,7 @@ export function generateTestProductAttributes({
           return {
             node: id,
             showInCard: true,
-            key: itemId,
+            key: slug,
             value,
           };
         }),

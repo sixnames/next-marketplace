@@ -58,18 +58,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         headers: req.headers,
       },
     });
-    const { catalogue, ...restQuery } = query;
+    const { catalogue } = query;
     const cataloguePath = alwaysArray(catalogue) || [];
     const [slug, ...restDynamic] = cataloguePath;
 
-    console.log(restDynamic);
-
-    const processedQuery = Object.keys(restQuery).map((key) => {
-      return {
-        key: key,
-        value: alwaysArray(restQuery[key]),
-      };
-    });
+    const processedQuery = restDynamic.reduce((acc, item) => {
+      const param = item.split('-');
+      return [...acc, { key: param[0], value: param[1] }];
+    }, []);
 
     const rubricData = await apolloClient.query({
       query: CATALOGUE_RUBRIC_QUERY,

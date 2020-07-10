@@ -2,10 +2,9 @@ import React, { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { ParsedUrlQueryInput } from 'querystring';
-import classes from './FilterCheckbox.module.css';
-import { ObjectType } from '../../../types';
 import { alwaysArray } from '../../../utils/alwaysArray';
 import Icon from '../../Icon/Icon';
+import classes from './FilterCheckbox.module.css';
 
 export interface FilterCheckboxInterface {
   name?: string;
@@ -24,66 +23,38 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   queryKey = '',
   testId,
   className,
-  additionalQuery = {},
-  asPath,
-  excludedQueries = [],
 }) => {
-  const { pathname = '', query = {} } = useRouter();
-  const queryValue = alwaysArray(query[queryKey]);
-  const isCurrent = queryValue && queryValue.includes(id);
-  const filteredQuery = Object.keys(query).reduce((acc: ObjectType, key: string) => {
-    if (excludedQueries?.includes(key) || !key || !query[key]) {
-      return acc;
-    }
+  const router = useRouter();
+  const { pathname = '', query = {}, asPath = '' } = router;
 
-    return { ...acc, [key]: query[key] };
-  }, {});
+  // TODO change id to slug and queryKey to slug
+  const currentQuery = alwaysArray(query.catalogue) || [];
+  const optionPath = `${queryKey}-${id}`;
+  const isChecked = currentQuery.includes(optionPath);
+  const iconName = isChecked ? 'CheckBox' : 'CheckBoxOutlineBlank';
 
-  let nextQuery = {
-    ...filteredQuery,
-    [queryKey]: [...queryValue, id],
-  };
+  let nextAsPath = `${asPath}/${optionPath}`;
 
-  if (isCurrent) {
-    nextQuery = Object.keys(filteredQuery).reduce((acc: ObjectType, key: string) => {
-      if (key === queryKey) {
-        if (queryValue.length === 1) {
-          return acc;
-        }
-
-        return {
-          ...acc,
-          [key]: queryValue.filter((value) => value !== id),
-        };
-      }
-      return {
-        ...acc,
-        [key]: query[key],
-      };
-    }, {});
+  if (isChecked) {
+    const filteredQuery = currentQuery.filter((item) => {
+      return item !== optionPath;
+    });
+    nextAsPath = `/${filteredQuery.join('/')}`;
   }
-
-  const iconName = isCurrent ? 'CheckBox' : 'CheckBoxOutlineBlank';
 
   return (
     <Fragment>
       <Link
         href={{
           pathname,
-          query: { ...nextQuery, ...additionalQuery },
         }}
-        as={
-          asPath
-            ? {
-                pathname: asPath,
-                query: { ...nextQuery, ...additionalQuery },
-              }
-            : {}
-        }
+        as={{
+          pathname: nextAsPath,
+        }}
       >
         <a
           data-cy={testId}
-          className={`${classes.frame} ${isCurrent ? classes.current : ''} ${
+          className={`${classes.frame} ${isChecked ? classes.current : ''} ${
             className ? className : ''
           }`}
         >

@@ -1,17 +1,20 @@
 import React from 'react';
-import FilterCheckbox, { FilterCheckboxInterface } from './FilterCheckbox';
+import FilterCheckbox from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
 
 interface FilterCheckboxGroupItem {
-  nameString: string;
   id: string;
+  color?: string | null;
+  nameString: string;
+  slug: string;
 }
 
-interface FilterCheckboxGroupInterface extends Omit<FilterCheckboxInterface, 'id'> {
+interface FilterCheckboxGroupInterface {
   checkboxItems: FilterCheckboxGroupItem[];
   className?: string;
   checkboxClassName?: string;
   label?: string;
+  queryKey: string;
 }
 
 const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
@@ -20,24 +23,20 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
   className,
   queryKey,
   checkboxClassName,
-  asPath,
-  ...props
 }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`}>
       {label && <div className={classes.label}>{label}</div>}
-      {checkboxItems.map(({ nameString, id }) => {
+      {checkboxItems.map(({ nameString, slug }) => {
         const key = `${queryKey}-${nameString}`;
         return (
           <FilterCheckbox
+            key={key}
             name={nameString}
-            id={id}
+            slug={slug}
             queryKey={queryKey}
             testId={key}
-            key={key}
-            asPath={asPath}
             className={`${classes.item} ${checkboxClassName ? checkboxClassName : ''}`}
-            {...props}
           />
         );
       })}

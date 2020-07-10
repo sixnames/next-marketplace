@@ -30,8 +30,7 @@ import {
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
 } from '../../validation';
-import { generateSlug } from '../../utils/slug';
-import { DEFAULT_LANG } from '../../config';
+import { generateDefaultLangSlug } from '../../utils/slug';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -248,7 +247,7 @@ export class AttributesGroupResolver {
         };
       }
 
-      const slug = generateSlug(getLangField(values.name, DEFAULT_LANG));
+      const slug = generateDefaultLangSlug(values.name);
       const attribute = await AttributeModel.create({ ...values, slug });
       if (!attribute) {
         return {

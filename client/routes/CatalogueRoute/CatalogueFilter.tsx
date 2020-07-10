@@ -14,10 +14,10 @@ import classes from './CatalogueFilter.module.css';
 type RubricAttributesGroupType = Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'> & {
   node: Pick<AttributesGroup, 'id' | 'nameString'> & {
     attributes: Array<
-      Pick<Attribute, 'id' | 'nameString' | 'variant' | 'itemId'> & {
+      Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'> & {
         options?: Maybe<
           Pick<OptionsGroup, 'id' | 'nameString'> & {
-            options: Array<Pick<Option, 'id' | 'nameString' | 'color'>>;
+            options: Array<Pick<Option, 'id' | 'nameString' | 'color' | 'slug'>>;
           }
         >;
       }
@@ -26,7 +26,6 @@ type RubricAttributesGroupType = Pick<RubricAttributesGroup, 'id' | 'showInCatal
 };
 
 type AttributeType = RubricAttributesGroupType['node']['attributes'][0];
-// type AttributeOptionsType = AttributeType['options'];
 
 interface CatalogueFilterInterface {
   attributesGroups: Array<RubricAttributesGroupType>;
@@ -43,11 +42,8 @@ interface CatalogueFilterAttributeInterface {
   rubricSlug: string;
 }
 
-const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
-  attribute,
-  rubricSlug,
-}) => {
-  const { nameString, variant, options, itemId } = attribute;
+const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
+  const { nameString, variant, options, slug } = attribute;
 
   if (
     options &&
@@ -57,10 +53,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
       <div className={classes.attribute}>
         <FilterCheckboxGroup
           checkboxItems={options.options}
-          queryKey={`${itemId}`}
+          queryKey={`${slug}`}
           label={nameString}
-          excludedQueries={['catalogue']}
-          asPath={`/${rubricSlug}`}
         />
       </div>
     );

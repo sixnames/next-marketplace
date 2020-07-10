@@ -62,9 +62,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     const cataloguePath = alwaysArray(catalogue) || [];
     const [slug, ...restDynamic] = cataloguePath;
 
-    const processedQuery = restDynamic.reduce((acc, item) => {
+    const processedQuery = restDynamic.reduce((acc: { key: string; value: string[] }[], item) => {
       const param = item.split('-');
-      return [...acc, { key: param[0], value: param[1] }];
+      const existingParam = acc.findIndex((item) => item.key === param[0]);
+      if (existingParam >= 0) {
+        acc[existingParam] = {
+          key: param[0],
+          value: [...acc[existingParam].value, param[1]],
+        };
+        return acc;
+      }
+      return [...acc, { key: param[0], value: [param[1]] }];
     }, []);
 
     const rubricData = await apolloClient.query({
@@ -89,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     };
   } catch (e) {
     console.log('====== catalogue getServerSideProps error ======');
-    // console.log(JSON.stringify(e, null, 2));
+    console.log(JSON.stringify(e, null, 2));
     return { props: {} };
   }
 };

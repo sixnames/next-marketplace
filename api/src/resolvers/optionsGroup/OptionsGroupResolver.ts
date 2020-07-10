@@ -31,8 +31,7 @@ import {
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '../../validation';
-import { generateSlug } from '../../utils/slug';
-import { DEFAULT_LANG } from '../../config';
+import { generateDefaultLangSlug } from '../../utils/slug';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -226,7 +225,7 @@ export class OptionsGroupResolver {
         };
       }
 
-      const slug = generateSlug(getLangField(values.name, DEFAULT_LANG));
+      const slug = generateDefaultLangSlug(values.name);
       const option = await OptionModel.create({ ...values, slug });
       if (!option) {
         return {

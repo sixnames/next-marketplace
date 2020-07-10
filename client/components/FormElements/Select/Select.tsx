@@ -5,6 +5,7 @@ import { PostfixType, SizeType } from '../../../types';
 
 export interface SelectOptionInterface {
   id: string;
+  slug: string;
   nameString?: string;
   name?: string;
   lastName?: string;
@@ -58,6 +59,7 @@ const Select: React.FC<SelectInterface> = ({
         {
           id: '',
           nameString: firstOption,
+          slug: '',
         },
         ...options,
       ]
@@ -100,16 +102,13 @@ const Select: React.FC<SelectInterface> = ({
           value={value || ''}
           {...props}
         >
-          {withFirstOptions.map(({ nameString, name, lastName, id }) => {
+          {withFirstOptions.map(({ nameString, name, lastName, id, slug }) => {
             const finalName = nameString ? nameString : name;
             const { optionName, optionTestIdName } = getOptionName(finalName, lastName);
+            const value = slug ? slug : setNameToValue ? optionName : id;
 
             return (
-              <option
-                key={id}
-                value={setNameToValue ? optionName : id}
-                data-cy={`option-${optionTestIdName}`}
-              >
+              <option key={id} value={value} data-cy={`option-${optionTestIdName}`}>
                 {optionName}
               </option>
             );

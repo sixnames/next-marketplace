@@ -181,6 +181,7 @@ const createTestData = async () => {
     // Options
     const options = await OptionModel.insertMany(MOCK_OPTIONS);
     const optionsIds = options.map(({ id }) => id);
+    const optionsSlugs = options.map(({ slug }) => slug);
 
     await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_FOR_DELETE,
@@ -324,7 +325,10 @@ const createTestData = async () => {
     });
 
     // Products
-    const productAttributes = (multipleAttributeOptions: string[]) => ({
+    const productAttributes = (
+      multipleAttributeOptions: string,
+      selectAttributeOptions: string,
+    ) => ({
       attributesGroups: [
         {
           node: attributesGroup.id,
@@ -334,13 +338,13 @@ const createTestData = async () => {
               node: attributeMultiple.id,
               showInCard: true,
               key: attributeMultiple.slug,
-              value: multipleAttributeOptions,
+              value: [multipleAttributeOptions],
             },
             {
               node: attributeSelect.id,
               showInCard: true,
               key: attributeSelect.slug,
-              value: [optionsIds[0]],
+              value: [selectAttributeOptions],
             },
             {
               node: attributeString.id,
@@ -364,7 +368,7 @@ const createTestData = async () => {
       cities: await getProductCities(
         {
           ...MOCK_PRODUCT_FOR_DELETE,
-          ...productAttributes(optionsIds[0]),
+          ...productAttributes(optionsSlugs[2], optionsSlugs[2]),
           rubrics: [rubricLevelThree.id],
         },
         false,
@@ -375,7 +379,7 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT_B_PRODUCT,
-        ...productAttributes(optionsIds[1]),
+        ...productAttributes(optionsSlugs[0], optionsSlugs[0]),
         rubrics: [rubricLevelThreeB.id],
       }),
     });
@@ -385,7 +389,7 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT,
-        ...productAttributes(optionsIds[2]),
+        ...productAttributes(optionsSlugs[1], optionsSlugs[1]),
         rubrics: [rubricLevelThree.id],
       }),
     });

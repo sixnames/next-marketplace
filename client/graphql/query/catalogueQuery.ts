@@ -23,12 +23,13 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
             id
             nameString
             variant
-            itemId
+            slug
             options {
               id
               nameString
               options {
                 id
+                slug
                 nameString
                 color
               }

@@ -195,6 +195,7 @@ export type LanguageType = {
 export type Option = {
    __typename?: 'Option';
   id: Scalars['ID'];
+  slug: Scalars['String'];
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
@@ -211,7 +212,7 @@ export type OptionsGroup = {
 export type Attribute = {
    __typename?: 'Attribute';
   id: Scalars['ID'];
-  itemId: Scalars['Int'];
+  slug: Scalars['String'];
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   variant: AttributeVariantEnum;
@@ -265,8 +266,8 @@ export type ProductAttribute = {
    __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
   node: Attribute;
-  /** Attribute reference via attribute itemId field */
-  key: Scalars['Int'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
 
@@ -753,8 +754,8 @@ export type ProductAttributesGroupInput = {
 export type ProductAttributeInput = {
   showInCard: Scalars['Boolean'];
   node: Scalars['ID'];
-  /** Attribute reference via attribute itemId field */
-  key: Scalars['Int'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
 
@@ -889,7 +890,7 @@ export type ProductFragmentFragment = (
       & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
       & { node: (
         { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+        & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
         & { metric?: Maybe<(
           { __typename?: 'Metric' }
           & Pick<Metric, 'id' | 'nameString'>
@@ -1592,13 +1593,13 @@ export type GetCatalogueRubricQuery = (
         & Pick<AttributesGroup, 'id' | 'nameString'>
         & { attributes: Array<(
           { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'itemId'>
+          & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
           & { options?: Maybe<(
             { __typename?: 'OptionsGroup' }
             & Pick<OptionsGroup, 'id' | 'nameString'>
             & { options: Array<(
               { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString' | 'color'>
+              & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
             )> }
           )> }
         )> }
@@ -1700,7 +1701,7 @@ export type GetFeaturesAstQuery = (
     & Pick<AttributesGroup, 'id' | 'nameString'>
     & { attributes: Array<(
       { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+      & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
       & { metric?: Maybe<(
         { __typename?: 'Metric' }
         & Pick<Metric, 'id' | 'nameString'>
@@ -1709,7 +1710,7 @@ export type GetFeaturesAstQuery = (
         & Pick<OptionsGroup, 'id' | 'nameString'>
         & { options: Array<(
           { __typename?: 'Option' }
-          & Pick<Option, 'id' | 'nameString' | 'color'>
+          & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
         )> }
       )> }
     )> }
@@ -1849,7 +1850,7 @@ export const ProductFragmentFragmentDoc = gql`
       key
       node {
         id
-        itemId
+        slug
         nameString
         variant
         metric {
@@ -3305,12 +3306,13 @@ export const GetCatalogueRubricDocument = gql`
           id
           nameString
           variant
-          itemId
+          slug
           options {
             id
             nameString
             options {
               id
+              slug
               nameString
               color
             }
@@ -3551,7 +3553,7 @@ export const GetFeaturesAstDocument = gql`
     nameString
     attributes {
       id
-      itemId
+      slug
       nameString
       variant
       metric {
@@ -3563,6 +3565,7 @@ export const GetFeaturesAstDocument = gql`
         nameString
         options {
           id
+          slug
           nameString
           color
         }

@@ -60,7 +60,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
           return {
             showInCard: attribute.showInCard,
             node: attribute.node.id,
-            key: attribute.node.itemId,
+            key: attribute.node.slug,
             value: attribute.value.map((value) => `${value}`),
           };
         }),

@@ -8,7 +8,7 @@ import classes from './FilterCheckbox.module.css';
 
 export interface FilterCheckboxInterface {
   name?: string;
-  id: string;
+  slug: string;
   queryKey: string;
   testId?: string;
   className?: string;
@@ -19,7 +19,7 @@ export interface FilterCheckboxInterface {
 
 const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   name = '',
-  id = '',
+  slug = '',
   queryKey = '',
   testId,
   className,
@@ -29,7 +29,7 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
 
   // TODO change id to slug and queryKey to slug
   const currentQuery = alwaysArray(query.catalogue) || [];
-  const optionPath = `${queryKey}-${id}`;
+  const optionPath = `${queryKey}-${slug}`;
   const isChecked = currentQuery.includes(optionPath);
   const iconName = isChecked ? 'CheckBox' : 'CheckBoxOutlineBlank';
 

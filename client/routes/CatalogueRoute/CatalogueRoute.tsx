@@ -4,11 +4,11 @@ import classes from './Catalogue.module.css';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import { CatalogueData } from '../../pages/[catalogue]';
 import Pager from '../../components/Pager/Pager';
 import useFilterMethods from '../../hooks/useFilterMethods';
 import getBooleanFromArray from '../../utils/getBooleanFromArray';
 import CatalogueFilter from './CatalogueFilter';
+import { CatalogueData } from '../../pages/[...catalogue]';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueData;
@@ -25,7 +25,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { catalogueName, slug, products, attributesGroups } = rubricData.getRubric;
+  const { catalogueName, slug, products, attributesGroups } = rubricData.getRubricBySlug;
   const { docs, totalPages } = products;
   const isFilterVisible = getBooleanFromArray(
     attributesGroups,

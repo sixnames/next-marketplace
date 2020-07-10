@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardData } from '../../pages/[catalogue]/[card]';
+import { CardData } from '../../pages/[...catalogue]/[card]';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import Title from '../../components/Title/Title';

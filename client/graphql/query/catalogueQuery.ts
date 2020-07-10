@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
-    getRubric(id: $id) {
+  query GetCatalogueRubric($slug: String!, $productsInput: RubricProductPaginateInput) {
+    getRubricBySlug(slug: $slug) {
       id
       name
       level

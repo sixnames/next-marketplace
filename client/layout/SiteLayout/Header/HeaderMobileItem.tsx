@@ -18,7 +18,7 @@ interface HeaderMobileItemInterface {
 // TODO active class
 const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { name, slug, children = [], id } = rubric;
+  const { name, slug, children = [] } = rubric;
 
   function toggleDropdownHandler() {
     setIsOpen((prevState) => !prevState);
@@ -28,12 +28,10 @@ const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav
     <li className={classes.frame}>
       <Link
         href={{
-          pathname: `/[catalogue]`,
-          query: { id: `${id}` },
+          pathname: `/[...catalogue]`,
         }}
         as={{
           pathname: `/${slug}`,
-          query: { id: `${id}` },
         }}
       >
         <a onClick={hideNav} className={classes.link}>
@@ -54,12 +52,10 @@ const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav
             <li className={classes.dropdownItem} key={id}>
               <Link
                 href={{
-                  pathname: `/[catalogue]`,
-                  query: { id: `${id}` },
+                  pathname: `/[...catalogue]`,
                 }}
                 as={{
                   pathname: `/${slug}`,
-                  query: { id: `${id}` },
                 }}
               >
                 <a onClick={hideNav} className={`${classes.mainRubricsItem}`}>

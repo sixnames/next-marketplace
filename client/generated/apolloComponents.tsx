@@ -35,6 +35,7 @@ export type Query = {
   getRubricVariant?: Maybe<RubricVariant>;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getRubric: Rubric;
+  getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
 };
@@ -107,6 +108,11 @@ export type QueryGetRubricVariantArgs = {
 
 export type QueryGetRubricArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetRubricBySlugArgs = {
+  slug: Scalars['String'];
 };
 
 
@@ -1565,14 +1571,14 @@ export type GetCatalogueCardQueryQuery = (
 );
 
 export type GetCatalogueRubricQueryVariables = {
-  id: Scalars['ID'];
+  slug: Scalars['String'];
   productsInput?: Maybe<RubricProductPaginateInput>;
 };
 
 
 export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
-  & { getRubric: (
+  & { getRubricBySlug: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'activeProductsCount' | 'catalogueName'>
     & { variant?: Maybe<(
@@ -3277,8 +3283,8 @@ export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
 export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
-  getRubric(id: $id) {
+    query GetCatalogueRubric($slug: String!, $productsInput: RubricProductPaginateInput) {
+  getRubricBySlug(slug: $slug) {
     id
     name
     level
@@ -3341,7 +3347,7 @@ export const GetCatalogueRubricDocument = gql`
  * @example
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      slug: // value for 'slug'
  *      productsInput: // value for 'productsInput'
  *   },
  * });

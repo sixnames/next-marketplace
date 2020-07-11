@@ -389,6 +389,7 @@ type Rubric {
   catalogueName: String!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
+  filterAttributes: [Attribute!]!
   id: ID!
   level: Int!
   name: String!

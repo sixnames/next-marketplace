@@ -899,6 +899,25 @@ export class RubricResolver {
   }
 
   @FieldResolver()
+  async filterAttributes(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<Attribute[]> {
+    const city = ctx.req.session!.city;
+    const currentCity = getCityData(rubric.cities, city);
+    if (!currentCity) {
+      return [];
+    }
+
+    // get all visible attributes id's
+    const visibleAttributes = currentCity.node.attributesGroups.reduce((acc: string[], group) => {
+      return [...acc, ...group.showInCatalogueFilter];
+    }, []);
+
+    return AttributeModel.find({ _id: { $in: visibleAttributes } });
+  }
+
+  @FieldResolver()
   async totalProductsCount(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,

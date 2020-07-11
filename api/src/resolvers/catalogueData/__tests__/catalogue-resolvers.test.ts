@@ -13,28 +13,14 @@ describe('Attributes', () => {
             rubric {
               id
               name
-              attributesGroups {
-                id
-                node {
-                  id
-                  nameString
-                  attributes {
-                    nameString
-                    filterOptions(
-                      filter: [
-                        "wine"
-                        "attribute_multiple-gray"
-                        "attribute_multiple-red"
-                      ]
-                    ) {
-                      option {
-                        id
-                      }
-                      counter
-                    }
+              filterAttributes {
+                nameString
+                filterOptions(filter: $catalogueFilter) {
+                  option {
+                    id
                   }
+                  counter
                 }
-                showInCatalogueFilter
               }
             }
             products {
@@ -53,9 +39,7 @@ describe('Attributes', () => {
         },
       },
     );
-
-    console.log(JSON.stringify(getCatalogueData, null, 2));
-
     expect(getCatalogueData.products.docs).toHaveLength(2);
+    expect(getCatalogueData.filterAttributes).toHaveLength(2);
   });
 });

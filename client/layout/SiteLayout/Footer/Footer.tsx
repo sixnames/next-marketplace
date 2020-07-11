@@ -53,9 +53,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <small className={classes.copyright}>
-          © 2010 - {new Date().getFullYear()} Site™. Все для мероприятий.
-        </small>
+        <small className={classes.copyright}>© 2010 - {new Date().getFullYear()} Site™.</small>
       </Inner>
     </footer>
   );

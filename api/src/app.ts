@@ -18,6 +18,7 @@ import { ProductResolver } from './resolvers/product/ProductResolver';
 import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
+import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataResolver';
 import path from 'path';
 import cors from 'cors';
 
@@ -34,6 +35,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
       RubricVariantResolver,
       RubricResolver,
       ProductResolver,
+      CatalogueDataResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),

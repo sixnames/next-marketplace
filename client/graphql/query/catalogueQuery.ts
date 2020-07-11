@@ -7,12 +7,12 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
       name
       level
       slug
+      catalogueName
       variant {
         id
         nameString
       }
       activeProductsCount
-      catalogueName
       attributesGroups {
         id
         showInCatalogueFilter

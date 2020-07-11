@@ -33,6 +33,8 @@ type AssetType {
 }
 
 type Attribute {
+  """list of options with products counter for catalogue filter"""
+  filterOptions(filter: [String!]!): [AttributeFilterOption!]!
   id: ID!
   metric: Metric
   name: [LanguageType!]!
@@ -40,6 +42,11 @@ type Attribute {
   options: OptionsGroup
   slug: String!
   variant: AttributeVariantEnum!
+}
+
+type AttributeFilterOption {
+  counter: Int!
+  option: Option!
 }
 
 type AttributesGroup {
@@ -66,6 +73,11 @@ enum AttributeVariantEnum {
   number
   select
   string
+}
+
+type CatalogueData {
+  products: PaginatedProductsResponse!
+  rubric: Rubric!
 }
 
 input CreateAttributesGroupInput {
@@ -355,6 +367,7 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
+  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option

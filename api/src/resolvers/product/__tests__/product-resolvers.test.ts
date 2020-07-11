@@ -87,7 +87,7 @@ describe('Product', () => {
                 id
                 attributes {
                   id
-                  itemId
+                  slug
                   variant
                   options {
                     id

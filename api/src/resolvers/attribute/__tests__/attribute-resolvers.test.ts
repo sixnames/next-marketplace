@@ -6,7 +6,7 @@ describe('Attributes', () => {
   it('Should return current attribute', async () => {
     const { query } = await getTestClientWithAuthenticatedUser();
     const attribute = await AttributeModel.create(stringAttribute);
-    //
+
     const { data } = await query(`
         query {
           getAttribute(id: "${attribute.id}") {

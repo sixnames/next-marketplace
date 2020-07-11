@@ -1,42 +1,35 @@
 import gql from 'graphql-tag';
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
-    getRubric(id: $id) {
-      id
-      name
-      level
-      slug
-      variant {
+  query GetCatalogueRubric($catalogueFilter: [String!]!) {
+    getCatalogueData(catalogueFilter: $catalogueFilter) {
+      rubric {
         id
-        nameString
-      }
-      activeProductsCount
-      catalogueName
-      attributesGroups {
-        id
-        showInCatalogueFilter
-        node {
+        name
+        level
+        slug
+        catalogueName
+        variant {
           id
           nameString
-          attributes {
-            id
-            nameString
-            variant
-            itemId
-            options {
+        }
+        filterAttributes {
+          id
+          nameString
+          variant
+          slug
+          filterOptions(filter: $catalogueFilter) {
+            option {
               id
+              slug
               nameString
-              options {
-                id
-                nameString
-                color
-              }
+              color
             }
+            counter
           }
         }
       }
-      products(input: $productsInput) {
+      products {
         totalDocs
         page
         totalPages

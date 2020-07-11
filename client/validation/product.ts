@@ -6,7 +6,7 @@ export const productAttributeSchema = Yup.object().shape({
     'Поле Показывать атрибут в карточке товара обязательно к заполнению',
   ),
   node: Yup.string().required('Поле ID атрибута обязательно к заполнению'),
-  key: Yup.number().required('Поле Ключ атрибута обязательно к заполнению'),
+  key: Yup.string().required('Поле Ключ атрибута обязательно к заполнению'),
   value: Yup.array().of(Yup.string().required('Поле Значение атрибута обязательно к заполнению')),
 });
 

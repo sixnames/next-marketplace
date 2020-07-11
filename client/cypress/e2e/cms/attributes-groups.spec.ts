@@ -10,10 +10,10 @@ import {
 const mockGroupName = MOCK_ATTRIBUTES_GROUP.name[0].value;
 const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
 const mockOptionsGroupName = MOCK_OPTIONS_GROUP.name[0].value;
-const mockAttributeNewName = 'cy-test-new-attribute';
-const createdGroupName = 'cy-test-new-group';
-const updatedGroupName = 'cy-test-updated-group';
-const updatedAttributeName = 'cy-test-updated-attribute';
+const mockAttributeNewName = 'new_attribute';
+const createdGroupName = 'new_group';
+const updatedGroupName = 'updated_group';
+const updatedAttributeName = 'updated_attribute';
 const fakeName = 'f';
 
 describe('Attributes Groups', () => {

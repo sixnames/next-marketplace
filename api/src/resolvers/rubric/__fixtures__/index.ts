@@ -1,21 +1,21 @@
 export const testRubric = {
-  name: 'cy-test-new-rubric',
+  name: 'new_rubric',
   catalogueName: 'name',
 };
 
 export const anotherRubric = {
-  name: 'cy-test-new-another-rubric',
-  catalogueName: 'another-name',
+  name: 'new_another_rubric',
+  catalogueName: 'another_name',
 };
 
 export const testProduct = {
   name: [
-    { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'cy-test-new-product' },
+    { key: 'ru', value: 'new_product' },
+    { key: 'en', value: 'new_product' },
   ],
   cardName: [
-    { key: 'ru', value: 'cy-test-new-product' },
-    { key: 'en', value: 'cy-test-new-product' },
+    { key: 'ru', value: 'new_product' },
+    { key: 'en', value: 'new_product' },
   ],
   price: 200,
   description: [

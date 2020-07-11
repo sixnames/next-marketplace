@@ -25,7 +25,7 @@ const productFragment = gql`
         key
         node {
           id
-          itemId
+          slug
           nameString
           variant
           metric {

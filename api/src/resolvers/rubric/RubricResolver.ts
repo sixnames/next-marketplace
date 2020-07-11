@@ -78,6 +78,21 @@ export class RubricResolver {
     return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
+  @Query(() => Rubric)
+  async getRubricBySlug(
+    @Ctx() ctx: ContextInterface,
+    @Arg('slug', (_type) => String) slug: string,
+  ) {
+    return RubricModel.findOne({
+      cities: {
+        $elemMatch: {
+          key: ctx.req.session!.city,
+          'node.slug': slug,
+        },
+      },
+    });
+  }
+
   @Query(() => [Rubric])
   async getRubricsTree(
     @Ctx() ctx: ContextInterface,
@@ -881,6 +896,25 @@ export class RubricResolver {
     });
 
     return ProductModel.paginate(query, options);
+  }
+
+  @FieldResolver()
+  async filterAttributes(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<Attribute[]> {
+    const city = ctx.req.session!.city;
+    const currentCity = getCityData(rubric.cities, city);
+    if (!currentCity) {
+      return [];
+    }
+
+    // get all visible attributes id's
+    const visibleAttributes = currentCity.node.attributesGroups.reduce((acc: string[], group) => {
+      return [...acc, ...group.showInCatalogueFilter];
+    }, []);
+
+    return AttributeModel.find({ _id: { $in: visibleAttributes } });
   }
 
   @FieldResolver()

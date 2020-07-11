@@ -12,10 +12,10 @@ const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
 const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
 const mockRubricType = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
-const mockNewRubric = 'cy-test-new-rubric-name';
-const mockNewRubricA = 'cy-test-new-rubric-a';
-const mockNewRubricB = 'cy-test-new-rubric-b';
-const mockNewRubricC = 'cy-test-new-rubric-c';
+const mockNewRubric = 'new_rubric_name';
+const mockNewRubricA = 'new_rubric_a';
+const mockNewRubricB = 'new_rubric_b';
+const mockNewRubricC = 'new_rubric_c';
 
 // Rubric variants
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_STAGE.name[0].value;

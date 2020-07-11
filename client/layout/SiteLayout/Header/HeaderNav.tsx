@@ -6,6 +6,7 @@ import classes from './HeaderNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
 import { useSiteContext } from '../../../context/siteContext';
 import { SiteRubricFragmentFragment } from '../../../generated/apolloComponents';
+import { useRouter } from 'next/router';
 
 interface SubRubricInterface extends SiteRubricFragmentFragment {
   children: SiteRubricFragmentFragment[];
@@ -13,9 +14,11 @@ interface SubRubricInterface extends SiteRubricFragmentFragment {
 
 function HeaderNav() {
   const { getRubricsTree } = useSiteContext();
+  const { query } = useRouter();
   const [isRubricsOpen, setIsRubricsOpen] = useState(false);
   const [currentRubric, setCurrentRubric] = useState<string | null>(null);
   const [subRubrics, setSubRubrics] = useState<SubRubricInterface[]>([]);
+  const { catalogue } = query;
 
   function toggleRubricsHandler() {
     setIsRubricsOpen((prevState) => !prevState);
@@ -50,17 +53,15 @@ function HeaderNav() {
           <div className={classes.rubricsFrame}>
             <ul className={classes.mainRubrics}>
               {getRubricsTree.map(({ catalogueName, id, slug }) => {
-                const isCurrent = id === currentRubric;
+                const isCurrent = slug === catalogue;
                 return (
-                  <li key={id}>
+                  <li key={slug}>
                     <Link
                       href={{
-                        pathname: `/[catalogue]`,
-                        query: { id: `${id}` },
+                        pathname: `/[...catalogue]`,
                       }}
                       as={{
                         pathname: `/${slug}`,
-                        query: { id: `${id}` },
                       }}
                     >
                       <a
@@ -81,12 +82,10 @@ function HeaderNav() {
                 <div key={id}>
                   <Link
                     href={{
-                      pathname: `/[catalogue]`,
-                      query: { id: `${id}` },
+                      pathname: `/[...catalogue]`,
                     }}
                     as={{
                       pathname: `/${slug}`,
-                      query: { id: `${id}` },
                     }}
                   >
                     <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
@@ -100,12 +99,10 @@ function HeaderNav() {
                         <li className={classes.subRubricsItem} key={id}>
                           <Link
                             href={{
-                              pathname: `/[catalogue]`,
-                              query: { id: `${id}` },
+                              pathname: `/[...catalogue]`,
                             }}
                             as={{
                               pathname: `/${slug}`,
-                              query: { id: `${id}` },
                             }}
                           >
                             <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>

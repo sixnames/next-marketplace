@@ -5,6 +5,7 @@ import { RubricVariant } from './RubricVariant';
 import { LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { RUBRIC_LEVEL_ONE } from '../config';
+import { Attribute } from './Attribute';
 
 @ObjectType()
 export class RubricAttributesGroup {
@@ -100,6 +101,9 @@ export class Rubric {
 
   @Field(() => [RubricAttributesGroup])
   readonly attributesGroups: RubricAttributesGroup[];
+
+  @Field(() => [Attribute])
+  readonly filterAttributes: Attribute[];
 
   @Field(() => RubricVariant, { nullable: true })
   readonly variant: RubricVariant | null;

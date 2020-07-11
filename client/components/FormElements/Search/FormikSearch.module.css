@@ -16,7 +16,7 @@
   width: calc(100% - 30px);
 }
 
-.input {
+.frame .input {
   height: 2rem;
   border: none;
   background: none;
@@ -24,7 +24,7 @@
   color: var(--textColor);
 }
 
-.butn {
+.frame .butn {
   width: 2rem;
   height: 2rem;
   padding-left: 0;

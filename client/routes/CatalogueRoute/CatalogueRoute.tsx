@@ -1,14 +1,13 @@
 import React from 'react';
 import CatalogueProduct from './CatalogueProduct';
-import classes from './Catalogue.module.css';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import Pager from '../../components/Pager/Pager';
 import useFilterMethods from '../../hooks/useFilterMethods';
-import getBooleanFromArray from '../../utils/getBooleanFromArray';
 import CatalogueFilter from './CatalogueFilter';
 import { CatalogueData } from '../../pages/[...catalogue]';
+import classes from './Catalogue.module.css';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueData;
@@ -17,7 +16,7 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const { page, setPage } = useFilterMethods();
 
-  if (!rubricData) {
+  if (!rubricData || !rubricData.getCatalogueData) {
     return (
       <Inner>
         <RequestError />
@@ -25,21 +24,17 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { catalogueName, slug, products, attributesGroups } = rubricData.getRubricBySlug;
+  const { rubric, products } = rubricData.getCatalogueData;
+  const { catalogueName, slug, filterAttributes } = rubric;
   const { docs, totalPages } = products;
-  const isFilterVisible = getBooleanFromArray(
-    attributesGroups,
-    (group) => !!group.showInCatalogueFilter.length,
-  );
+  const isFilterVisible = !!filterAttributes.length;
 
   return (
     <Inner>
       <Title>{catalogueName}</Title>
 
       <div className={classes.Frame}>
-        {isFilterVisible && (
-          <CatalogueFilter rubricSlug={slug} attributesGroups={attributesGroups} />
-        )}
+        {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}
 
         <div className={`${classes.List} ${isFilterVisible ? classes.ListWithFilter : ''}`}>
           {docs.map((product: any) => (

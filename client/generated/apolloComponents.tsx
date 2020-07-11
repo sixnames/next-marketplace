@@ -25,11 +25,11 @@ export type Query = {
   getOption?: Maybe<Option>;
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
-  getAttribute?: Maybe<Attribute>;
   getProduct: Product;
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
+  getAttribute?: Maybe<Attribute>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
@@ -38,6 +38,7 @@ export type Query = {
   getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
+  getCatalogueData?: Maybe<CatalogueData>;
 };
 
 
@@ -66,11 +67,6 @@ export type QueryGetOptionsGroupArgs = {
 };
 
 
-export type QueryGetAttributeArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type QueryGetProductArgs = {
   id: Scalars['ID'];
 };
@@ -88,6 +84,11 @@ export type QueryGetProductsCountersArgs = {
 
 export type QueryGetFeaturesAstArgs = {
   selectedRubrics: Array<Scalars['ID']>;
+};
+
+
+export type QueryGetAttributeArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -118,6 +119,12 @@ export type QueryGetRubricBySlugArgs = {
 
 export type QueryGetRubricsTreeArgs = {
   excluded?: Maybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryGetCatalogueDataArgs = {
+  productsInput?: Maybe<ProductPaginateInput>;
+  catalogueFilter: Array<Scalars['String']>;
 };
 
 export type User = {
@@ -209,25 +216,6 @@ export type OptionsGroup = {
   options: Array<Option>;
 };
 
-export type Attribute = {
-   __typename?: 'Attribute';
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  variant: AttributeVariantEnum;
-  options?: Maybe<OptionsGroup>;
-  metric?: Maybe<Metric>;
-};
-
-/** Attribute type enum */
-export enum AttributeVariantEnum {
-  Select = 'select',
-  MultipleSelect = 'multipleSelect',
-  String = 'string',
-  Number = 'number'
-}
-
 export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
@@ -260,6 +248,38 @@ export type AttributesGroup = {
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   attributes: Array<Attribute>;
+};
+
+export type Attribute = {
+   __typename?: 'Attribute';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  variant: AttributeVariantEnum;
+  options?: Maybe<OptionsGroup>;
+  /** list of options with products counter for catalogue filter */
+  filterOptions: Array<AttributeFilterOption>;
+  metric?: Maybe<Metric>;
+};
+
+
+export type AttributeFilterOptionsArgs = {
+  filter: Array<Scalars['String']>;
+};
+
+/** Attribute type enum */
+export enum AttributeVariantEnum {
+  Select = 'select',
+  MultipleSelect = 'multipleSelect',
+  String = 'string',
+  Number = 'number'
+}
+
+export type AttributeFilterOption = {
+   __typename?: 'AttributeFilterOption';
+  option: Option;
+  counter: Scalars['Int'];
 };
 
 export type ProductAttribute = {
@@ -359,6 +379,7 @@ export type Rubric = {
   parent?: Maybe<Rubric>;
   children: Array<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
+  filterAttributes: Array<Attribute>;
   variant?: Maybe<RubricVariant>;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
@@ -422,6 +443,12 @@ export type AttributeVariant = {
    __typename?: 'AttributeVariant';
   id: Scalars['ID'];
   nameString: Scalars['String'];
+};
+
+export type CatalogueData = {
+   __typename?: 'CatalogueData';
+  rubric: Rubric;
+  products: PaginatedProductsResponse;
 };
 
 export type Mutation = {
@@ -1572,39 +1599,33 @@ export type GetCatalogueCardQueryQuery = (
 );
 
 export type GetCatalogueRubricQueryVariables = {
-  slug: Scalars['String'];
-  productsInput?: Maybe<RubricProductPaginateInput>;
+  catalogueFilter: Array<Scalars['String']>;
 };
 
 
 export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
-  & { getRubricBySlug: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'activeProductsCount' | 'catalogueName'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )>, attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
-          & { options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-            & { options: Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
-            )> }
-          )> }
+  & { getCatalogueData?: Maybe<(
+    { __typename?: 'CatalogueData' }
+    & { rubric: (
+      { __typename?: 'Rubric' }
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'catalogueName'>
+      & { variant?: Maybe<(
+        { __typename?: 'RubricVariant' }
+        & Pick<RubricVariant, 'id' | 'nameString'>
+      )>, filterAttributes: Array<(
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
+        & { filterOptions: Array<(
+          { __typename?: 'AttributeFilterOption' }
+          & Pick<AttributeFilterOption, 'counter'>
+          & { option: (
+            { __typename?: 'Option' }
+            & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
+          ) }
         )> }
-      ) }
-    )>, products: (
+      )> }
+    ), products: (
       { __typename?: 'PaginatedProductsResponse' }
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
@@ -1612,7 +1633,7 @@ export type GetCatalogueRubricQuery = (
         & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
       )> }
     ) }
-  ) }
+  )> }
 );
 
 export type GetAllAttributesGroupsQueryVariables = {};
@@ -3284,43 +3305,35 @@ export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
 export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($slug: String!, $productsInput: RubricProductPaginateInput) {
-  getRubricBySlug(slug: $slug) {
-    id
-    name
-    level
-    slug
-    variant {
+    query GetCatalogueRubric($catalogueFilter: [String!]!) {
+  getCatalogueData(catalogueFilter: $catalogueFilter) {
+    rubric {
       id
-      nameString
-    }
-    activeProductsCount
-    catalogueName
-    attributesGroups {
-      id
-      showInCatalogueFilter
-      node {
+      name
+      level
+      slug
+      catalogueName
+      variant {
         id
         nameString
-        attributes {
-          id
-          nameString
-          variant
-          slug
-          options {
+      }
+      filterAttributes {
+        id
+        nameString
+        variant
+        slug
+        filterOptions(filter: $catalogueFilter) {
+          option {
             id
+            slug
             nameString
-            options {
-              id
-              slug
-              nameString
-              color
-            }
+            color
           }
+          counter
         }
       }
     }
-    products(input: $productsInput) {
+    products {
       totalDocs
       page
       totalPages
@@ -3349,8 +3362,7 @@ export const GetCatalogueRubricDocument = gql`
  * @example
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
- *      slug: // value for 'slug'
- *      productsInput: // value for 'productsInput'
+ *      catalogueFilter: // value for 'catalogueFilter'
  *   },
  * });
  */

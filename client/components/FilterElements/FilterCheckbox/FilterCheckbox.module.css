@@ -42,6 +42,11 @@
 
 .label {
   position: relative;
-  display: block;
+  display: flex;
+  justify-content: space-between;
   width: calc(100% - 30px);
+}
+
+.counter {
+  font-size: 0.875em;
 }

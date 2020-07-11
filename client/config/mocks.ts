@@ -395,12 +395,12 @@ export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
 // Products
 export const MOCK_PRODUCT = {
   name: [
-    { key: 'ru', value: 'product' },
-    { key: 'en', value: 'product_en' },
+    { key: 'ru', value: 'product-one' },
+    { key: 'en', value: 'product-one_en' },
   ],
   cardName: [
-    { key: 'ru', value: 'product' },
-    { key: 'en', value: 'product_en' },
+    { key: 'ru', value: 'product-one' },
+    { key: 'en', value: 'product-one_en' },
   ],
   price: 100,
   description: [

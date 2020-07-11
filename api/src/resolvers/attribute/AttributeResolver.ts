@@ -10,7 +10,7 @@ import { RubricModel } from '../../entities/Rubric';
 import getCityData from '../../utils/getCityData';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
-import { attributesReducer } from '../../utils/catalogueHelpers';
+// import { attributesReducer } from '../../utils/catalogueHelpers';
 import { ProductModel } from '../../entities/Product';
 
 @Resolver((_for) => Attribute)
@@ -53,7 +53,8 @@ export class AttributeResolver {
     const options = await OptionModel.find({ _id: { $in: optionsGroup.options } });
     const { slug } = attribute;
     const city = ctx.req.session!.city;
-    const [rubricSlug, ...attributes] = filter || [];
+    // const [rubricSlug, ...attributes] = filter || [];
+    const [rubricSlug] = filter || [];
 
     // get current rubric
     const rubric = await RubricModel.findOne({
@@ -86,12 +87,12 @@ export class AttributeResolver {
         },
       ];
 
-      const optionParam = `${slug}-${option.slug}`;
-      const optionFilter = [...attributes, optionParam];
-      const processedAttributes = optionFilter.reduce(attributesReducer, []);
+      // const optionParam = `${slug}-${option.slug}`;
+      // const optionFilter = [...attributes, optionParam];
+      // const processedAttributes = optionFilter.reduce(attributesReducer, []);
 
       // TODO ask about counter
-      console.log(processedAttributes);
+      // console.log(processedAttributes);
 
       // get products filter query
       const query = getProductsFilter(

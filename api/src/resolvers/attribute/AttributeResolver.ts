@@ -79,13 +79,23 @@ export class AttributeResolver {
 
     const result = options.map(async (option) => {
       // cast all filters from input with filter for current option
+      const test = [
+        {
+          key: slug,
+          value: [option.slug],
+        },
+      ];
+
       const optionParam = `${slug}-${option.slug}`;
       const optionFilter = [...attributes, optionParam];
       const processedAttributes = optionFilter.reduce(attributesReducer, []);
 
+      // TODO ask about counter
+      console.log(processedAttributes);
+
       // get products filter query
       const query = getProductsFilter(
-        { attributes: processedAttributes, rubrics: rubricsIds, active: true },
+        { attributes: test, rubrics: rubricsIds, active: true },
         city,
       );
 

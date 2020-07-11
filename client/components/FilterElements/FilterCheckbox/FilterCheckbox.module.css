@@ -43,10 +43,12 @@
 .label {
   position: relative;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: calc(100% - 30px);
 }
 
 .counter {
   font-size: 0.875em;
+  margin-left: 10px;
 }

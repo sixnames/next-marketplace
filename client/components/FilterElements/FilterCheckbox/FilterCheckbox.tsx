@@ -32,7 +32,6 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   const { pathname = '', query = {}, asPath = '' } = router;
   const { slug, nameString } = option;
 
-  // TODO change id to slug and queryKey to slug
   const currentQuery = alwaysArray(query.catalogue) || [];
   const optionPath = `${attributeSlug}-${slug}`;
   const isChecked = currentQuery.includes(optionPath);
@@ -69,7 +68,7 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
 
           <span className={classes.label}>
             <span>{nameString}</span>
-            <span>{counter}</span>
+            <span className={classes.counter}>{counter}</span>
           </span>
         </a>
       </Link>

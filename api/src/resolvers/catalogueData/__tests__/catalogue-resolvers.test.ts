@@ -40,6 +40,6 @@ describe('Attributes', () => {
       },
     );
     expect(getCatalogueData.products.docs).toHaveLength(2);
-    expect(getCatalogueData.filterAttributes).toHaveLength(2);
+    expect(getCatalogueData.rubric.filterAttributes).toHaveLength(2);
   });
 });

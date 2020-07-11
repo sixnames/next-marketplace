@@ -25,18 +25,20 @@ export type Query = {
   getOption?: Maybe<Option>;
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
-  getAttribute?: Maybe<Attribute>;
   getProduct: Product;
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
+  getAttribute?: Maybe<Attribute>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getRubricVariant?: Maybe<RubricVariant>;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getRubric: Rubric;
+  getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
+  getCatalogueData?: Maybe<CatalogueData>;
 };
 
 
@@ -65,11 +67,6 @@ export type QueryGetOptionsGroupArgs = {
 };
 
 
-export type QueryGetAttributeArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type QueryGetProductArgs = {
   id: Scalars['ID'];
 };
@@ -87,6 +84,11 @@ export type QueryGetProductsCountersArgs = {
 
 export type QueryGetFeaturesAstArgs = {
   selectedRubrics: Array<Scalars['ID']>;
+};
+
+
+export type QueryGetAttributeArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -110,8 +112,19 @@ export type QueryGetRubricArgs = {
 };
 
 
+export type QueryGetRubricBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
 export type QueryGetRubricsTreeArgs = {
   excluded?: Maybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryGetCatalogueDataArgs = {
+  productsInput?: Maybe<ProductPaginateInput>;
+  catalogueFilter: Array<Scalars['String']>;
 };
 
 export type User = {
@@ -189,6 +202,7 @@ export type LanguageType = {
 export type Option = {
    __typename?: 'Option';
   id: Scalars['ID'];
+  slug: Scalars['String'];
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
@@ -201,25 +215,6 @@ export type OptionsGroup = {
   nameString: Scalars['String'];
   options: Array<Option>;
 };
-
-export type Attribute = {
-   __typename?: 'Attribute';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  variant: AttributeVariantEnum;
-  options?: Maybe<OptionsGroup>;
-  metric?: Maybe<Metric>;
-};
-
-/** Attribute type enum */
-export enum AttributeVariantEnum {
-  Select = 'select',
-  MultipleSelect = 'multipleSelect',
-  String = 'string',
-  Number = 'number'
-}
 
 export type Product = {
    __typename?: 'Product';
@@ -255,12 +250,44 @@ export type AttributesGroup = {
   attributes: Array<Attribute>;
 };
 
+export type Attribute = {
+   __typename?: 'Attribute';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  variant: AttributeVariantEnum;
+  options?: Maybe<OptionsGroup>;
+  /** list of options with products counter for catalogue filter */
+  filterOptions: Array<AttributeFilterOption>;
+  metric?: Maybe<Metric>;
+};
+
+
+export type AttributeFilterOptionsArgs = {
+  filter: Array<Scalars['String']>;
+};
+
+/** Attribute type enum */
+export enum AttributeVariantEnum {
+  Select = 'select',
+  MultipleSelect = 'multipleSelect',
+  String = 'string',
+  Number = 'number'
+}
+
+export type AttributeFilterOption = {
+   __typename?: 'AttributeFilterOption';
+  option: Option;
+  counter: Scalars['Int'];
+};
+
 export type ProductAttribute = {
    __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
   node: Attribute;
-  /** Attribute reference via attribute itemId field */
-  key: Scalars['Int'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
 
@@ -352,6 +379,7 @@ export type Rubric = {
   parent?: Maybe<Rubric>;
   children: Array<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
+  filterAttributes: Array<Attribute>;
   variant?: Maybe<RubricVariant>;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
@@ -415,6 +443,12 @@ export type AttributeVariant = {
    __typename?: 'AttributeVariant';
   id: Scalars['ID'];
   nameString: Scalars['String'];
+};
+
+export type CatalogueData = {
+   __typename?: 'CatalogueData';
+  rubric: Rubric;
+  products: PaginatedProductsResponse;
 };
 
 export type Mutation = {
@@ -747,8 +781,8 @@ export type ProductAttributesGroupInput = {
 export type ProductAttributeInput = {
   showInCard: Scalars['Boolean'];
   node: Scalars['ID'];
-  /** Attribute reference via attribute itemId field */
-  key: Scalars['Int'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
 
@@ -883,7 +917,7 @@ export type ProductFragmentFragment = (
       & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
       & { node: (
         { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+        & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
         & { metric?: Maybe<(
           { __typename?: 'Metric' }
           & Pick<Metric, 'id' | 'nameString'>
@@ -1565,39 +1599,33 @@ export type GetCatalogueCardQueryQuery = (
 );
 
 export type GetCatalogueRubricQueryVariables = {
-  id: Scalars['ID'];
-  productsInput?: Maybe<RubricProductPaginateInput>;
+  catalogueFilter: Array<Scalars['String']>;
 };
 
 
 export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
-  & { getRubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'activeProductsCount' | 'catalogueName'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )>, attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'itemId'>
-          & { options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-            & { options: Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString' | 'color'>
-            )> }
-          )> }
+  & { getCatalogueData?: Maybe<(
+    { __typename?: 'CatalogueData' }
+    & { rubric: (
+      { __typename?: 'Rubric' }
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'catalogueName'>
+      & { variant?: Maybe<(
+        { __typename?: 'RubricVariant' }
+        & Pick<RubricVariant, 'id' | 'nameString'>
+      )>, filterAttributes: Array<(
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
+        & { filterOptions: Array<(
+          { __typename?: 'AttributeFilterOption' }
+          & Pick<AttributeFilterOption, 'counter'>
+          & { option: (
+            { __typename?: 'Option' }
+            & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
+          ) }
         )> }
-      ) }
-    )>, products: (
+      )> }
+    ), products: (
       { __typename?: 'PaginatedProductsResponse' }
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
@@ -1605,7 +1633,7 @@ export type GetCatalogueRubricQuery = (
         & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
       )> }
     ) }
-  ) }
+  )> }
 );
 
 export type GetAllAttributesGroupsQueryVariables = {};
@@ -1694,7 +1722,7 @@ export type GetFeaturesAstQuery = (
     & Pick<AttributesGroup, 'id' | 'nameString'>
     & { attributes: Array<(
       { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'itemId' | 'nameString' | 'variant'>
+      & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
       & { metric?: Maybe<(
         { __typename?: 'Metric' }
         & Pick<Metric, 'id' | 'nameString'>
@@ -1703,7 +1731,7 @@ export type GetFeaturesAstQuery = (
         & Pick<OptionsGroup, 'id' | 'nameString'>
         & { options: Array<(
           { __typename?: 'Option' }
-          & Pick<Option, 'id' | 'nameString' | 'color'>
+          & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
         )> }
       )> }
     )> }
@@ -1843,7 +1871,7 @@ export const ProductFragmentFragmentDoc = gql`
       key
       node {
         id
-        itemId
+        slug
         nameString
         variant
         metric {
@@ -3277,42 +3305,35 @@ export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
 export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($id: ID!, $productsInput: RubricProductPaginateInput) {
-  getRubric(id: $id) {
-    id
-    name
-    level
-    slug
-    variant {
+    query GetCatalogueRubric($catalogueFilter: [String!]!) {
+  getCatalogueData(catalogueFilter: $catalogueFilter) {
+    rubric {
       id
-      nameString
-    }
-    activeProductsCount
-    catalogueName
-    attributesGroups {
-      id
-      showInCatalogueFilter
-      node {
+      name
+      level
+      slug
+      catalogueName
+      variant {
         id
         nameString
-        attributes {
-          id
-          nameString
-          variant
-          itemId
-          options {
+      }
+      filterAttributes {
+        id
+        nameString
+        variant
+        slug
+        filterOptions(filter: $catalogueFilter) {
+          option {
             id
+            slug
             nameString
-            options {
-              id
-              nameString
-              color
-            }
+            color
           }
+          counter
         }
       }
     }
-    products(input: $productsInput) {
+    products {
       totalDocs
       page
       totalPages
@@ -3341,8 +3362,7 @@ export const GetCatalogueRubricDocument = gql`
  * @example
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
- *      id: // value for 'id'
- *      productsInput: // value for 'productsInput'
+ *      catalogueFilter: // value for 'catalogueFilter'
  *   },
  * });
  */
@@ -3545,7 +3565,7 @@ export const GetFeaturesAstDocument = gql`
     nameString
     attributes {
       id
-      itemId
+      slug
       nameString
       variant
       metric {
@@ -3557,6 +3577,7 @@ export const GetFeaturesAstDocument = gql`
         nameString
         options {
           id
+          slug
           nameString
           color
         }

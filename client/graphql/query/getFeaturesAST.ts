@@ -7,7 +7,7 @@ export const GET_FEATURES_AST_QUERY = gql`
       nameString
       attributes {
         id
-        itemId
+        slug
         nameString
         variant
         metric {
@@ -19,6 +19,7 @@ export const GET_FEATURES_AST_QUERY = gql`
           nameString
           options {
             id
+            slug
             nameString
             color
           }

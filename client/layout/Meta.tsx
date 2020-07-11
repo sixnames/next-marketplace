@@ -33,7 +33,7 @@ const Meta: React.FC<MetaInterface> = ({ title = 'SITE_DEFAULT_TITLE' }) => {
       <meta property='og:type' content='website' />
       <meta property='og:image' content='/site-preview.jpg' />
 
-      {/*TODO [Slava] pass trough current url*/}
+      {/*TODO pass trough current url*/}
       <meta property='og:url' content='url' />
       <meta
         property='og:description'

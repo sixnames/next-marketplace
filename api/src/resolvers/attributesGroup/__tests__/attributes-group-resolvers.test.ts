@@ -201,7 +201,7 @@ describe('Attributes Groups', () => {
     expect(addedAttribute.variant).toEqual(attributeForGroup.variant);
 
     // Should update attribute in the group.
-    const newName = 'cy-test-attributes-group-name-new';
+    const newName = 'attributes_group_name_new';
     const {
       data: {
         updateAttributeInGroup: { group: updatedGroup },

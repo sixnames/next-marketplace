@@ -24,10 +24,10 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
 
   const groupAttributesValue = useMemo(
     () =>
-      group.attributes.map(({ id, itemId }) => ({
+      group.attributes.map(({ id, slug }) => ({
         node: id,
         showInCard: false,
-        key: itemId,
+        key: slug,
         value: [],
       })),
     [group],

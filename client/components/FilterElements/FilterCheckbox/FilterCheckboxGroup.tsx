@@ -1,43 +1,40 @@
 import React from 'react';
-import FilterCheckbox, { FilterCheckboxInterface } from './FilterCheckbox';
+import FilterCheckbox, { FilterCheckboxItem } from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
 
-interface FilterCheckboxGroupItem {
-  nameString: string;
-  id: string;
+export interface FilterCheckboxGroupItem {
+  option: FilterCheckboxItem;
+  counter: number;
 }
 
-interface FilterCheckboxGroupInterface extends Omit<FilterCheckboxInterface, 'id'> {
+interface FilterCheckboxGroupInterface {
   checkboxItems: FilterCheckboxGroupItem[];
   className?: string;
   checkboxClassName?: string;
   label?: string;
+  attributeSlug: string;
 }
 
 const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
   label,
   checkboxItems,
   className,
-  queryKey,
+  attributeSlug,
   checkboxClassName,
-  asPath,
-  ...props
 }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`}>
       {label && <div className={classes.label}>{label}</div>}
-      {checkboxItems.map(({ nameString, id }) => {
-        const key = `${queryKey}-${nameString}`;
+      {checkboxItems.map(({ option, counter }) => {
+        const key = `${attributeSlug}-${option.nameString}`;
         return (
           <FilterCheckbox
-            name={nameString}
-            id={id}
-            queryKey={queryKey}
-            testId={key}
             key={key}
-            asPath={asPath}
+            option={option}
+            counter={counter}
+            attributeSlug={attributeSlug}
+            testId={key}
             className={`${classes.item} ${checkboxClassName ? checkboxClassName : ''}`}
-            {...props}
           />
         );
       })}

@@ -58,6 +58,10 @@ export function getProductsFilter(
           };
         });
 
+        if (!attributesQuery.length) {
+          return acc;
+        }
+
         return {
           ...acc,
           $and: attributesQuery,

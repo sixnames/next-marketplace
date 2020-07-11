@@ -5,7 +5,7 @@ import { PostfixType, SizeType } from '../../../types';
 
 export interface SelectOptionInterface {
   id: string;
-  slug: string;
+  slug?: string;
   nameString?: string;
   name?: string;
   lastName?: string;

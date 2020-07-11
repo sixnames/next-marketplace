@@ -1,10 +1,10 @@
 import React from 'react';
-import { CardData } from '../../pages/[...catalogue]/[card]';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import Title from '../../components/Title/Title';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
+import { CardData } from '../../pages/catalogue_res/[card]';
 
 interface CardRouteInterface {
   cardData: CardData;

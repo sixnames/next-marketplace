@@ -4,7 +4,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import Title from '../../components/Title/Title';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
-import { CardData } from '../../pages/catalogue_res/[card]';
+import { CardData } from '../../pages/product/[card]';
 
 interface CardRouteInterface {
   cardData: CardData;
@@ -18,6 +18,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       </Inner>
     );
   }
+
   const imageWidth = 450;
   const { mainImage, name, cardName, description, attributesGroups, price } = cardData.getProduct;
 

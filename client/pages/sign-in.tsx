@@ -4,44 +4,60 @@ import SignInRoute from '../routes/SignInRoute/SignInRoute';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
-import { UserContextProvider } from '../context/userContext';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
+import Inner from '../components/Inner/Inner';
+import RequestError from '../components/RequestError/RequestError';
+import cookie from 'cookie';
+import { DEFAULT_LANG } from '../config';
 
 interface SignInInterface {
   initialApolloState: InitialSiteQueryQueryResult['data'];
+  lang: string;
 }
 
-const SignIn: NextPage<SignInInterface> = ({ initialApolloState }) => {
-  const myData = initialApolloState ? initialApolloState.me : null;
+const SignIn: NextPage<SignInInterface> = ({ initialApolloState, lang }) => {
+  if (!initialApolloState) {
+    return (
+      <Inner>
+        <RequestError />
+      </Inner>
+    );
+  }
 
   return (
-    <UserContextProvider me={myData}>
-      <SiteContextProvider value={initialApolloState}>
-        <SiteLayout>
-          <SignInRoute />
-        </SiteLayout>
-      </SiteContextProvider>
-    </UserContextProvider>
+    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+      <SiteLayout>
+        <SignInRoute />
+      </SiteLayout>
+    </SiteContextProvider>
   );
 };
 
 // noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const apolloClient = initializeApollo();
+  try {
+    const apolloClient = initializeApollo();
+    const { lang } = cookie.parse(req.headers.cookie || '');
 
-  const initialApolloState = await apolloClient.query({
-    query: INITIAL_SITE_QUERY,
-    context: {
-      headers: req.headers,
-    },
-  });
+    const initialApolloState = await apolloClient.query({
+      query: INITIAL_SITE_QUERY,
+      context: {
+        headers: req.headers,
+      },
+    });
 
-  return {
-    props: {
-      initialApolloState: initialApolloState.data,
-    },
-  };
+    return {
+      props: {
+        initialApolloState: initialApolloState.data,
+        lang: lang || DEFAULT_LANG,
+      },
+    };
+  } catch (e) {
+    console.log('====== catalogue getServerSideProps error ======');
+    console.log(JSON.stringify(e, null, 2));
+    return { props: {} };
+  }
 };
 
 export default SignIn;

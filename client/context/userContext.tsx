@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { InitialQuery } from '../generated/apolloComponents';
 import { useRouter } from 'next/router';
+import { LanguageContextProvider } from './languageContext';
 
 export type MeType = InitialQuery['me'];
 
@@ -22,9 +23,10 @@ const UserContext = createContext<UserContext>({
 
 interface UserContextProviderInterface {
   me: MeType;
+  lang: string;
 }
 
-const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, me }) => {
+const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, me, lang }) => {
   const [state, setState] = useState<ContextState>({
     isAuthenticated: false,
   });
@@ -45,7 +47,11 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children,
     };
   }, [state]);
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return (
+    <LanguageContextProvider lang={lang}>
+      <UserContext.Provider value={value}>{children}</UserContext.Provider>
+    </LanguageContextProvider>
+  );
 };
 
 function useUserContext() {

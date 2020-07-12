@@ -1,19 +1,36 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
+import { InitialSiteQueryQuery } from '../generated/apolloComponents';
+import { UserContextProvider } from './userContext';
 
-const SiteContext = createContext<InitialSiteQueryQueryResult['data']>({
+interface SiteContextInterface {
+  getRubricsTree: InitialSiteQueryQuery['getRubricsTree'];
+}
+
+const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
 });
 
 interface SiteContextProviderInterface {
-  value: InitialSiteQueryQueryResult['data'];
+  initialApolloState: InitialSiteQueryQuery;
+  lang: string;
 }
 
-const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({ children, value }) => {
+const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
+  children,
+  initialApolloState,
+  lang,
+}) => {
   const initialValue = useMemo(() => {
-    return value;
-  }, [value]);
-  return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;
+    return {
+      getRubricsTree: initialApolloState.getRubricsTree || [],
+    };
+  }, [initialApolloState]);
+
+  return (
+    <UserContextProvider me={initialApolloState.me} lang={lang}>
+      <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>
+    </UserContextProvider>
+  );
 };
 
 function useSiteContext() {

@@ -19,6 +19,7 @@ import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
 import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataResolver';
+import cookie from 'cookie';
 import path from 'path';
 import cors from 'cors';
 
@@ -58,11 +59,13 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   app.use(sessionHandler);
 
-  // Get current city from subdomain name
+  // Get current city from subdomain name and language from cookie
   app.use((req, _, next) => {
     const city = req.headers['x-subdomain'];
+    const cookies = cookie.parse(req.headers.cookie || '');
+
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = DEFAULT_LANG;
+    req.session!.lang = cookies.lang || DEFAULT_LANG;
     next();
   });
 

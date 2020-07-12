@@ -5,11 +5,11 @@ import { UserContextProvider } from '../../../context/userContext';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
 import RubricsRoute from '../../../routes/Rubrics/RubricsRoute';
 
-const Rubrics: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const Rubrics: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
-    <UserContextProvider me={myData}>
+    <UserContextProvider me={myData} lang={lang}>
       <AppLayout title={'Рубрикатор'}>
         <RubricsRoute />
       </AppLayout>

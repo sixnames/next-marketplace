@@ -5,11 +5,11 @@ import { UserContextProvider } from '../../../context/userContext';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
 import AttributesGroupsRoute from '../../../routes/AttributesGroups/AttributesGroupsRoute';
 
-const AttributesGroups: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const AttributesGroups: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
-    <UserContextProvider me={myData}>
+    <UserContextProvider me={myData} lang={lang}>
       <AppLayout title={'Группы атрибутов'}>
         <AttributesGroupsRoute />
       </AppLayout>

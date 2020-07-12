@@ -1,16 +1,13 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { InitialSiteQueryQuery } from '../generated/apolloComponents';
-import { DEFAULT_LANG } from '../config';
 import { UserContextProvider } from './userContext';
 
 interface SiteContextInterface {
   getRubricsTree: InitialSiteQueryQuery['getRubricsTree'];
-  lang: string;
 }
 
 const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
-  lang: DEFAULT_LANG,
 });
 
 interface SiteContextProviderInterface {
@@ -26,12 +23,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const initialValue = useMemo(() => {
     return {
       getRubricsTree: initialApolloState.getRubricsTree || [],
-      lang,
     };
-  }, [initialApolloState, lang]);
+  }, [initialApolloState]);
 
   return (
-    <UserContextProvider me={initialApolloState.me}>
+    <UserContextProvider me={initialApolloState.me} lang={lang}>
       <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>
     </UserContextProvider>
   );
@@ -43,7 +39,6 @@ function useSiteContext() {
     ? context
     : {
         getRubricsTree: [],
-        lang: DEFAULT_LANG,
       };
 }
 

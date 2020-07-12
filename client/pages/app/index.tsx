@@ -6,11 +6,11 @@ import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import getAppServerSideProps, { AppPageInterface } from '../../utils/getAppServerSideProps';
 
-const App: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const App: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
-    <UserContextProvider me={myData}>
+    <UserContextProvider me={myData} lang={lang}>
       <AppLayout title={'Winepoint App'}>
         <Inner>
           <Title>Winepoint App</Title>

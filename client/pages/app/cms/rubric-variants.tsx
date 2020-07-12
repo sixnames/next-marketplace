@@ -5,11 +5,11 @@ import { UserContextProvider } from '../../../context/userContext';
 import RubricVariantsRoute from '../../../routes/RubricVariants/RubricVariantsRoute';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
 
-const RubricVariants: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const RubricVariants: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
   const myData = initialApolloState ? initialApolloState.me : null;
 
   return (
-    <UserContextProvider me={myData}>
+    <UserContextProvider me={myData} lang={lang}>
       <AppLayout title={'Типы рубрик'}>
         <RubricVariantsRoute />
       </AppLayout>

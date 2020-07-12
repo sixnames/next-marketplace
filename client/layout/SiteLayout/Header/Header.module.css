@@ -27,6 +27,29 @@
   color: var(--textColor);
 }
 
+.language {
+  display: flex;
+  text-transform: uppercase;
+}
+
+.languageItem {
+  cursor: pointer;
+}
+
+.languageItem:hover {
+  color: var(--theme);
+}
+
+.languageItem:not(:first-child) {
+  margin-left: 0.5rem;
+}
+
+.languageItemActive {
+  pointer-events: none;
+  cursor: default;
+  color: var(--theme);
+}
+
 .topNav {
   display: flex;
   align-items: center;

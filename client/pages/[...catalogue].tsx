@@ -3,7 +3,6 @@ import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
-import { UserContextProvider } from '../context/userContext';
 import Inner from '../components/Inner/Inner';
 import {
   GetCatalogueRubricQueryResult,
@@ -13,36 +12,32 @@ import { SiteContextProvider } from '../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
 import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
+import cookie from 'cookie';
+import { DEFAULT_LANG } from '../config';
 
 export type CatalogueData = GetCatalogueRubricQueryResult['data'];
 
 interface CatalogueInterface {
   initialApolloState: InitialSiteQueryQueryResult['data'];
   rubricData: CatalogueData;
+  lang: string;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricData }) => {
-  const myData = initialApolloState ? initialApolloState.me : null;
-  if (!rubricData) {
+const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricData, lang }) => {
+  if (!initialApolloState || !rubricData) {
     return (
-      <SiteContextProvider value={initialApolloState}>
-        <SiteLayout>
-          <Inner>
-            <RequestError />
-          </Inner>
-        </SiteLayout>
-      </SiteContextProvider>
+      <Inner>
+        <RequestError />
+      </Inner>
     );
   }
 
   return (
-    <UserContextProvider me={myData}>
-      <SiteContextProvider value={initialApolloState}>
-        <SiteLayout>
-          <CatalogueRoute rubricData={rubricData} />
-        </SiteLayout>
-      </SiteContextProvider>
-    </UserContextProvider>
+    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+      <SiteLayout>
+        <CatalogueRoute rubricData={rubricData} />
+      </SiteLayout>
+    </SiteContextProvider>
   );
 };
 
@@ -50,6 +45,8 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricDat
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {
     const apolloClient = initializeApollo();
+    const { lang } = cookie.parse(req.headers.cookie || '');
+
     const initialApolloState = await apolloClient.query({
       query: INITIAL_SITE_QUERY,
       context: {
@@ -72,6 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       props: {
         initialApolloState: initialApolloState.data,
         rubricData: rubricData.data,
+        lang: lang || DEFAULT_LANG,
       },
     };
   } catch (e) {

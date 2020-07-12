@@ -8,8 +8,8 @@ interface CatalogueProductInterface {
   rubricSlug: string;
 }
 
-const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product, rubricSlug }) => {
-  const { slug, name, itemId, mainImage, price, id } = product;
+const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product }) => {
+  const { name, itemId, mainImage, price, id } = product;
   const imageWidth = 218;
 
   return (
@@ -28,12 +28,10 @@ const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product, rubric
 
       <Link
         href={{
-          pathname: `[catalogue]/[card]`,
-          query: { id: `${id}` },
+          pathname: `/product/[card]`,
         }}
         as={{
-          pathname: `${rubricSlug}/${slug}`,
-          query: { id: `${id}` },
+          pathname: `/product/${id}`,
         }}
       >
         <a className={classes.Link}>{name}</a>

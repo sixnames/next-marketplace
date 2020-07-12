@@ -28,7 +28,7 @@ import { ME_AS_ADMIN } from '../../config';
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('getByCy', (testId) => {
-  cy.wait(150);
+  cy.wait(300);
   cy.get(`[data-cy="${testId}"]`);
 });
 

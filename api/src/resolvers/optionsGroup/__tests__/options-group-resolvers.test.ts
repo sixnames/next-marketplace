@@ -1,6 +1,6 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG, MOCK_OPTIONS, MOCK_OPTIONS_GROUP } from '../../../config';
+import { DEFAULT_LANG, MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP } from '../../../config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
 const addOptionToGroupMutation = (
@@ -248,8 +248,8 @@ describe('Options groups', () => {
     const { data: optionDuplicate } = await mutate(
       addOptionToGroupMutation(
         group.id,
-        getLangField(MOCK_OPTIONS[0].name, DEFAULT_LANG),
-        MOCK_OPTIONS[0].color,
+        getLangField(MOCK_OPTIONS_WINE_COLOR[0].name, DEFAULT_LANG),
+        MOCK_OPTIONS_WINE_COLOR[0].color,
       ),
     );
     expect(optionDuplicate.addOptionToGroup.success).toBeFalsy();

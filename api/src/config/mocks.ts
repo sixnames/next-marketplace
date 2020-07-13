@@ -3,29 +3,10 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_THREE,
+  RUBRIC_LEVEL_TWO,
 } from './common';
-
-export const ME_AS_ADMIN = {
-  id: 'adminBro',
-  email: 'admin@gmail.com',
-  password: 'admin',
-  name: 'Admin',
-  secondName: 'Secondname',
-  lastName: 'Lastname',
-  fullName: 'Admin Secondname Lastname',
-  shortName: 'A. Lastname',
-  phone: '+79990002233',
-  isAdmin: true,
-  isBookkeeper: false,
-  isContractor: false,
-  isDriver: false,
-  isHelper: false,
-  isLogistician: false,
-  isManager: false,
-  isStage: false,
-  isWarehouse: false,
-  isSuper: false,
-};
 
 export const MOCK_METRICS = [
   {
@@ -193,95 +174,119 @@ export const MOCK_METRICS = [
 ];
 
 // Options
-export const MOCK_OPTIONS = [
+export const MOCK_OPTIONS_WINE_COLOR = [
   {
     name: [
-      { key: 'ru', value: 'gray' },
-      { key: 'en', value: 'gray_en' },
+      { key: 'ru', value: 'Белый' },
+      { key: 'en', value: 'White' },
     ],
-    slug: 'gray',
-    color: '999999',
+    slug: 'beliy',
+    color: 'ffffff',
   },
   {
     name: [
-      { key: 'ru', value: 'red' },
-      { key: 'en', value: 'red_en' },
+      { key: 'ru', value: 'Красный' },
+      { key: 'en', value: 'Red' },
     ],
-    slug: 'red',
+    slug: 'krasniy',
     color: '99020b',
   },
   {
     name: [
-      { key: 'ru', value: 'green' },
-      { key: 'en', value: 'green_en' },
+      { key: 'ru', value: 'Розовый' },
+      { key: 'en', value: 'Pink' },
     ],
-    slug: 'green',
-    color: '1a9904',
+    slug: 'rozoviy',
+    color: 'db8ce0',
+  },
+];
+
+export const MOCK_OPTIONS_WINE_TYPE = [
+  {
+    name: [
+      { key: 'ru', value: 'Портвейн' },
+      { key: 'en', value: 'Port_wine' },
+    ],
+    slug: 'portvein',
+  },
+  {
+    name: [
+      { key: 'ru', value: 'Херес' },
+      { key: 'en', value: 'Heres' },
+    ],
+    slug: 'heres',
+  },
+  {
+    name: [
+      { key: 'ru', value: 'Вермут' },
+      { key: 'en', value: 'Vermut' },
+    ],
+    slug: 'varmut',
   },
 ];
 
 export const MOCK_OPTIONS_GROUP = {
   name: [
-    { key: 'ru', value: 'colors' },
-    { key: 'en', value: 'colors_en' },
+    { key: 'ru', value: 'Цвета_вина' },
+    { key: 'en', value: 'Wine_colors' },
   ],
 };
 
-export const MOCK_OPTIONS_GROUP_FOR_DELETE = {
+export const MOCK_OPTIONS_GROUP_WINE_TYPES = {
   name: [
-    { key: 'ru', value: 'group_for_delete' },
-    { key: 'en', value: 'group_for_delete_en' },
+    { key: 'ru', value: 'Типы_вина' },
+    { key: 'en', value: 'Wine_types' },
   ],
 };
 
 // Attributes
-export const MOCK_ATTRIBUTE_MULTIPLE = {
+export const MOCK_ATTRIBUTE_WINE_COLOR = {
   name: [
-    { key: 'ru', value: 'attribute_multiple' },
-    { key: 'en', value: 'attribute_multiple_en' },
+    { key: 'ru', value: 'Цвет_вина' },
+    { key: 'en', value: 'Wine_color' },
   ],
-  slug: 'attribute_multiple',
+  slug: 'tsvet_vina',
   variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
 };
 
-export const MOCK_ATTRIBUTE_SELECT = {
+export const MOCK_ATTRIBUTE_WINE_TYPE = {
   name: [
-    { key: 'ru', value: 'attribute_select' },
-    { key: 'en', value: 'attribute_select_en' },
+    { key: 'ru', value: 'Тип_вина' },
+    { key: 'en', value: 'Wine_type' },
   ],
-  slug: 'attribute_select',
+  slug: 'tip_vina',
   variant: ATTRIBUTE_TYPE_SELECT,
 };
 
 export const MOCK_ATTRIBUTE_STRING = {
   name: [
-    { key: 'ru', value: 'attribute_string' },
-    { key: 'en', value: 'attribute_string_en' },
+    { key: 'ru', value: 'Атрибут_строка' },
+    { key: 'en', value: 'Attribute_string' },
   ],
-  slug: 'attribute_string',
+  slug: 'attribute_stroka',
   variant: ATTRIBUTE_TYPE_STRING,
 };
 
 export const MOCK_ATTRIBUTE_NUMBER = {
   name: [
-    { key: 'ru', value: 'attribute_number' },
-    { key: 'en', value: 'attribute_number_en' },
+    { key: 'ru', value: 'Атрибут_число' },
+    { key: 'en', value: 'Attribute_number' },
   ],
-  slug: 'attribute_number',
+  slug: 'attribute_chislo',
   variant: ATTRIBUTE_TYPE_NUMBER,
 };
 
 export const MOCK_ATTRIBUTES_GROUP = {
   name: [
-    { key: 'ru', value: 'wine_features' },
-    { key: 'en', value: 'wine_features_en' },
+    { key: 'ru', value: 'Характеристики_вина' },
+    { key: 'en', value: 'Wine_features' },
   ],
 };
 
 export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
   name: [
-    { key: 'ru', value: 'group_for_delete' },
-    { key: 'en', value: 'group_for_delete_en' },
+    { key: 'ru', value: 'Группа_атрибутов_для_удаления' },
+    { key: 'en', value: 'Group_for_delete' },
   ],
 };
 
@@ -295,180 +300,180 @@ export const MOCK_ATTRIBUTES_GROUP_B = {
 // Rubrics
 export const MOCK_RUBRIC_TYPE_EQUIPMENT = {
   name: [
-    { key: 'ru', value: 'alcohol' },
-    { key: 'en', value: 'alcohol_en' },
+    { key: 'ru', value: 'Алкоголь' },
+    { key: 'en', value: 'Alcohol' },
   ],
 };
 
 export const MOCK_RUBRIC_TYPE_STAGE = {
   name: [
-    { key: 'ru', value: 'light' },
-    { key: 'en', value: 'light_en' },
+    { key: 'ru', value: 'Соки' },
+    { key: 'en', value: 'Juice' },
   ],
 };
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [
-    { key: 'ru', value: 'wine' },
-    { key: 'en', value: 'wine_en' },
+    { key: 'ru', value: 'Вино' },
+    { key: 'en', value: 'Wine' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'wine' },
-    { key: 'en', value: 'wine_en' },
+    { key: 'ru', value: 'Купить вино' },
+    { key: 'en', value: 'Buy a wine' },
   ],
-  level: 1,
+  level: RUBRIC_LEVEL_ONE,
   parent: null,
 };
 
-export const MOCK_RUBRIC_LEVEL_TWO = {
+export const MOCK_RUBRIC_LEVEL_TWO_A = {
   name: [
-    { key: 'ru', value: 'light_wine' },
-    { key: 'en', value: 'light_wine_en' },
+    { key: 'ru', value: 'Второй_уровень_1' },
+    { key: 'en', value: 'Second_level_1' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'light wine' },
-    { key: 'en', value: 'light wine_en' },
+    { key: 'ru', value: 'Второй_уровень_1' },
+    { key: 'en', value: 'Second_level_1' },
   ],
-  level: 2,
+  level: RUBRIC_LEVEL_TWO,
 };
 
-export const MOCK_RUBRIC_LEVEL_TWO_TABLES = {
+export const MOCK_RUBRIC_LEVEL_TWO_B = {
   name: [
-    { key: 'ru', value: 'port' },
-    { key: 'en', value: 'port_en' },
+    { key: 'ru', value: 'Второй_уровень_2' },
+    { key: 'en', value: 'Second_level_2' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'port' },
-    { key: 'en', value: 'port_en' },
+    { key: 'ru', value: 'Второй_уровень_2' },
+    { key: 'en', value: 'Second_level_2' },
   ],
-  level: 2,
+  level: RUBRIC_LEVEL_TWO,
 };
 
-export const MOCK_RUBRIC_LEVEL_THREE = {
+export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
   name: [
-    { key: 'ru', value: 'light_loft' },
-    { key: 'en', value: 'light_loft_en' },
+    { key: 'ru', value: 'Третий_уровень_1_1' },
+    { key: 'en', value: 'Third_level_1_1' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'light loft' },
-    { key: 'en', value: 'loft_en' },
+    { key: 'ru', value: 'Третий_уровень_1_1' },
+    { key: 'en', value: 'Third_level_1_1' },
   ],
-  level: 3,
+  level: RUBRIC_LEVEL_THREE,
 };
 
-export const MOCK_RUBRIC_LEVEL_THREE_B = {
+export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
   name: [
-    { key: 'ru', value: 'light_bar' },
-    { key: 'en', value: 'light_bar_en' },
+    { key: 'ru', value: 'Третий_уровень_1_2' },
+    { key: 'en', value: 'Third_level_1_2' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'light bar' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Третий_уровень_1_2' },
+    { key: 'en', value: 'Third_level_1_2' },
   ],
-  level: 3,
+  level: RUBRIC_LEVEL_THREE,
 };
 
-export const MOCK_RUBRIC_LEVEL_THREE_TABLES = {
+export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
   name: [
-    { key: 'ru', value: 'port_loft' },
-    { key: 'en', value: 'port_loft_en' },
+    { key: 'ru', value: 'Третий_уровень_2_1' },
+    { key: 'en', value: 'Third_level_2_1' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'tables loft' },
-    { key: 'en', value: 'loft_en' },
+    { key: 'ru', value: 'Третий_уровень_2_1' },
+    { key: 'en', value: 'Third_level_2_1' },
   ],
-  level: 3,
+  level: RUBRIC_LEVEL_THREE,
 };
 
-export const MOCK_RUBRIC_LEVEL_THREE_TABLES_B = {
+export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
   name: [
-    { key: 'ru', value: 'port_bar' },
-    { key: 'en', value: 'port_bar_en' },
+    { key: 'ru', value: 'Третий_уровень_2_2' },
+    { key: 'en', value: 'Third_level_2_2' },
   ],
   catalogueName: [
-    { key: 'ru', value: 'port bar' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Третий_уровень_2_2' },
+    { key: 'en', value: 'Third_level_2_2' },
   ],
-  level: 3,
+  level: RUBRIC_LEVEL_THREE,
 };
 
 // Products
-export const MOCK_PRODUCT = {
+export const MOCK_PRODUCT_A = {
   name: [
-    { key: 'ru', value: 'product-one' },
-    { key: 'en', value: 'product-one_en' },
+    { key: 'ru', value: 'Вино_Brancott_Estate' },
+    { key: 'en', value: 'Wine_Brancott_Estate' },
   ],
   cardName: [
-    { key: 'ru', value: 'product-one' },
-    { key: 'en', value: 'product-one_en' },
+    { key: 'ru', value: 'Вино Brancott Estate Marlborough Sauvignon Blanc' },
+    { key: 'en', value: 'Wine Brancott Estate Marlborough Sauvignon Blanc' },
   ],
   price: 100,
   description: [
-    { key: 'ru', value: 'very long item description' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Очень длинное описание товара' },
+    { key: 'en', value: 'Very long product description' },
   ],
 };
 
-export const MOCK_PRODUCT_FOR_DELETE = {
+export const MOCK_PRODUCT_B = {
   name: [
-    { key: 'ru', value: 'product_for_delete' },
-    { key: 'en', value: 'product_for_delete_en' },
+    { key: 'ru', value: 'Вино_Campo_Viejо' },
+    { key: 'en', value: 'Wine_Campo_Viejо' },
   ],
   cardName: [
-    { key: 'ru', value: 'product_for_delete' },
-    { key: 'en', value: 'product_for_delete_en' },
+    { key: 'ru', value: 'Вино Campo Viejо Tempranillo Rioja DOC' },
+    { key: 'en', value: 'Wine Campo Viejо Tempranillo Rioja DOC' },
   ],
   price: 200,
   description: [
-    { key: 'ru', value: 'very long item description' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Очень длинное описание товара' },
+    { key: 'en', value: 'Very long product description' },
   ],
 };
 
-export const MOCK_PRODUCT_B_PRODUCT = {
+export const MOCK_PRODUCT_C = {
   name: [
-    { key: 'ru', value: 'b_product' },
-    { key: 'en', value: 'b_product_en' },
+    { key: 'ru', value: 'Вино_Val_de_Vie' },
+    { key: 'en', value: 'Wine_Val_de_Vie' },
   ],
   cardName: [
-    { key: 'ru', value: 'b_product' },
-    { key: 'en', value: 'b_product_en' },
+    { key: 'ru', value: 'Вино Val de Vie, "Barista" Pinotage' },
+    { key: 'en', value: 'Wine Val de Vie, "Barista" Pinotage' },
   ],
-  price: 100,
+  price: 50,
   description: [
-    { key: 'ru', value: 'description B' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Очень длинное описание товара' },
+    { key: 'en', value: 'Very long product description' },
   ],
 };
 
-export const MOCK_PRODUCT_NEW_PRODUCT = {
+export const MOCK_PRODUCT_NEW = {
   name: [
-    { key: 'ru', value: 'new_product' },
-    { key: 'en', value: 'new_product_en' },
+    { key: 'ru', value: 'Вино_Sogrape_Vinhos' },
+    { key: 'en', value: 'Wine_Sogrape_Vinhos' },
   ],
   cardName: [
-    { key: 'ru', value: 'new_product' },
-    { key: 'en', value: 'new_product_en' },
+    { key: 'ru', value: 'Вино Sogrape Vinhos, Gazela Vinho Verde DOC' },
+    { key: 'en', value: 'Wine Sogrape Vinhos, Gazela Vinho Verde DOC' },
   ],
   price: 2000,
   description: [
-    { key: 'ru', value: 'new description' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Очень длинное описание товара' },
+    { key: 'en', value: 'Very long product description' },
   ],
 };
 
-export const MOCK_PRODUCT_CREATE_PRODUCT = {
+export const MOCK_PRODUCT_CREATE = {
   name: [
-    { key: 'ru', value: 'create_product' },
-    { key: 'en', value: 'create_product_en' },
+    { key: 'ru', value: 'Вино_Luis_Felipe_Edwards' },
+    { key: 'en', value: 'Wine_Luis_Felipe_Edwards' },
   ],
   cardName: [
-    { key: 'ru', value: 'create_product' },
-    { key: 'en', value: 'create_product_en' },
+    { key: 'ru', value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
+    { key: 'en', value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
   ],
   price: 2000,
   description: [
-    { key: 'ru', value: 'create description' },
-    { key: 'en', value: 'bar_en' },
+    { key: 'ru', value: 'Очень длинное описание товара' },
+    { key: 'en', value: 'Very long product description' },
   ],
 };

@@ -4,7 +4,7 @@ import {
   mutateWithImages,
 } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO } from '../../../config';
+import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '../../../config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 
@@ -74,7 +74,7 @@ describe.only('Rubrics', () => {
     expect(getRubricsTree.length).toEqual(1);
     expect(rubricLevelOne.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
     expect(rubricLevelOne.children.length).toEqual(2);
-    expect(rubricLevelTwo.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO.name, DEFAULT_LANG));
+    expect(rubricLevelTwo.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO_A.name, DEFAULT_LANG));
 
     // Should return current rubric and it's products
     const { data } = await query(`

@@ -12,7 +12,7 @@ export class Option {
   @Property({ required: true })
   slug: string;
 
-  @Field(() => LanguageType)
+  @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 

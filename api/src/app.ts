@@ -2,7 +2,14 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
+import {
+  APOLLO_OPTIONS,
+  SESS_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  MONGO_URL,
+  LANG_COOKIE_KEY,
+} from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -65,7 +72,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     const cookies = cookie.parse(req.headers.cookie || '');
 
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookies.lang || DEFAULT_LANG;
+    req.session!.lang = cookies[LANG_COOKIE_KEY] || DEFAULT_LANG;
     next();
   });
 

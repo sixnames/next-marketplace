@@ -9,26 +9,27 @@ import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import {
   DEFAULT_CITY,
-  MOCK_ATTRIBUTE_MULTIPLE,
+  MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTE_SELECT,
+  MOCK_ATTRIBUTE_WINE_TYPE,
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTES_GROUP,
   MOCK_ATTRIBUTES_GROUP_B,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS,
+  MOCK_OPTIONS_WINE_COLOR,
   MOCK_OPTIONS_GROUP,
-  MOCK_OPTIONS_GROUP_FOR_DELETE,
-  MOCK_PRODUCT,
-  MOCK_PRODUCT_B_PRODUCT,
-  MOCK_PRODUCT_FOR_DELETE,
+  MOCK_OPTIONS_GROUP_WINE_TYPES,
+  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_PRODUCT_A,
+  MOCK_PRODUCT_C,
+  MOCK_PRODUCT_B,
   MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE,
-  MOCK_RUBRIC_LEVEL_THREE_B,
-  MOCK_RUBRIC_LEVEL_THREE_TABLES,
-  MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-  MOCK_RUBRIC_LEVEL_TWO,
-  MOCK_RUBRIC_LEVEL_TWO_TABLES,
+  MOCK_RUBRIC_LEVEL_THREE_A_A,
+  MOCK_RUBRIC_LEVEL_THREE_A_B,
+  MOCK_RUBRIC_LEVEL_THREE_B_A,
+  MOCK_RUBRIC_LEVEL_THREE_B_B,
+  MOCK_RUBRIC_LEVEL_TWO_A,
+  MOCK_RUBRIC_LEVEL_TWO_B,
   MOCK_RUBRIC_TYPE_EQUIPMENT,
   MOCK_RUBRIC_TYPE_STAGE,
 } from '../../config';
@@ -179,13 +180,15 @@ const createTestData = async () => {
     await createInitialData();
 
     // Options
-    const options = await OptionModel.insertMany(MOCK_OPTIONS);
+    const options = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
+    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_TYPE);
     const optionsIds = options.map(({ id }) => id);
+    const optionsIdsWineType = optionsWineType.map(({ id }) => id);
     const optionsSlugs = options.map(({ slug }) => slug);
 
-    await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_FOR_DELETE,
-      options: optionsIds,
+    const optionsGroupWineTypes = await OptionsGroupModel.create({
+      ...MOCK_OPTIONS_GROUP_WINE_TYPES,
+      options: optionsIdsWineType,
     });
     const optionsGroup = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP,
@@ -194,14 +197,14 @@ const createTestData = async () => {
 
     // Attributes
     const attributeMultiple = await AttributeModel.create({
-      ...MOCK_ATTRIBUTE_MULTIPLE,
-      variant: MOCK_ATTRIBUTE_MULTIPLE.variant as AttributeVariantEnum,
+      ...MOCK_ATTRIBUTE_WINE_COLOR,
+      variant: MOCK_ATTRIBUTE_WINE_COLOR.variant as AttributeVariantEnum,
       options: optionsGroup.id,
     });
 
     const attributeSelect = await AttributeModel.create({
-      ...MOCK_ATTRIBUTE_SELECT,
-      variant: MOCK_ATTRIBUTE_SELECT.variant as AttributeVariantEnum,
+      ...MOCK_ATTRIBUTE_WINE_TYPE,
+      variant: MOCK_ATTRIBUTE_WINE_TYPE.variant as AttributeVariantEnum,
       options: optionsGroup.id,
     });
 
@@ -272,8 +275,8 @@ const createTestData = async () => {
 
     const rubricLevelTwo = await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_TWO,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_TWO_A,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroups(false),
       }),
@@ -281,8 +284,8 @@ const createTestData = async () => {
 
     const rubricLevelTwoTables = await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_TWO_TABLES,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_TABLES.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_TWO_B,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
       }),
@@ -290,8 +293,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE_TABLES,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_THREE_B_A,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueName),
         parent: rubricLevelTwoTables.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
       }),
@@ -299,8 +302,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE_TABLES_B,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_TABLES_B.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_THREE_B_B,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueName),
         parent: rubricLevelTwoTables.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
       }),
@@ -308,8 +311,8 @@ const createTestData = async () => {
 
     const rubricLevelThree = await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_THREE_A_A,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueName),
         parent: rubricLevelTwo.id,
         attributesGroups: rubricAttributesGroups(false),
       }),
@@ -317,8 +320,8 @@ const createTestData = async () => {
 
     const rubricLevelThreeB = await RubricModel.create({
       cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE_B,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B.catalogueName),
+        ...MOCK_RUBRIC_LEVEL_THREE_A_B,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueName),
         parent: rubricLevelTwo.id,
         attributesGroups: rubricAttributesGroups(false),
       }),
@@ -367,7 +370,7 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities(
         {
-          ...MOCK_PRODUCT_FOR_DELETE,
+          ...MOCK_PRODUCT_B,
           ...productAttributes(optionsSlugs[2], optionsSlugs[2]),
           rubrics: [rubricLevelThree.id],
         },
@@ -378,7 +381,7 @@ const createTestData = async () => {
     // for second rubric in third level
     await ProductModel.create({
       cities: await getProductCities({
-        ...MOCK_PRODUCT_B_PRODUCT,
+        ...MOCK_PRODUCT_C,
         ...productAttributes(optionsSlugs[0], optionsSlugs[0]),
         rubrics: [rubricLevelThreeB.id],
       }),
@@ -388,7 +391,7 @@ const createTestData = async () => {
     // const product = await ProductModel.create({
     await ProductModel.create({
       cities: await getProductCities({
-        ...MOCK_PRODUCT,
+        ...MOCK_PRODUCT_A,
         ...productAttributes(optionsSlugs[1], optionsSlugs[1]),
         rubrics: [rubricLevelThree.id],
       }),

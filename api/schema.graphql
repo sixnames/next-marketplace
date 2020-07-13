@@ -40,6 +40,7 @@ type Attribute {
   name: [LanguageType!]!
   nameString: String!
   options: OptionsGroup
+  positioningInTitle: [AttributePositioningInTitle!]!
   slug: String!
   variant: AttributeVariantEnum!
 }
@@ -47,6 +48,21 @@ type Attribute {
 type AttributeFilterOption {
   counter: Int!
   option: Option!
+}
+
+type AttributePositioningInTitle {
+  key: String!
+  value: AttributePositionInTitleEnum!
+}
+
+"""
+Instruction for positioning checked attribute values in catalogue title
+"""
+enum AttributePositionInTitleEnum {
+  afterKeyword
+  beforeKeyword
+  begin
+  end
 }
 
 type AttributesGroup {
@@ -67,7 +83,7 @@ type AttributeVariant {
   nameString: String!
 }
 
-"""Attribute type enum"""
+"""Attribute variant enum"""
 enum AttributeVariantEnum {
   multipleSelect
   number

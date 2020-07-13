@@ -3,6 +3,9 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  GENDER_HE,
+  GENDER_IT,
+  GENDER_SHE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
@@ -182,6 +185,29 @@ export const MOCK_OPTIONS_WINE_COLOR = [
     ],
     slug: 'beliy',
     color: 'ffffff',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: 'ru', value: 'Белая' },
+          { key: 'en', value: 'White' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: 'ru', value: 'Белый' },
+          { key: 'en', value: 'White' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: 'ru', value: 'Белое' },
+          { key: 'en', value: 'White' },
+        ],
+      },
+    ],
   },
   {
     name: [
@@ -190,6 +216,29 @@ export const MOCK_OPTIONS_WINE_COLOR = [
     ],
     slug: 'krasniy',
     color: '99020b',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: 'ru', value: 'Красная' },
+          { key: 'en', value: 'Red' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: 'ru', value: 'Красный' },
+          { key: 'en', value: 'Red' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: 'ru', value: 'Красное' },
+          { key: 'en', value: 'Red' },
+        ],
+      },
+    ],
   },
   {
     name: [
@@ -198,6 +247,29 @@ export const MOCK_OPTIONS_WINE_COLOR = [
     ],
     slug: 'rozoviy',
     color: 'db8ce0',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: 'ru', value: 'Розовая' },
+          { key: 'en', value: 'Pink' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: 'ru', value: 'Розовый' },
+          { key: 'en', value: 'Pink' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: 'ru', value: 'Розовое' },
+          { key: 'en', value: 'Pink' },
+        ],
+      },
+    ],
   },
 ];
 
@@ -225,10 +297,10 @@ export const MOCK_OPTIONS_WINE_TYPE = [
   },
 ];
 
-export const MOCK_OPTIONS_GROUP = {
+export const MOCK_OPTIONS_GROUP_COLORS = {
   name: [
-    { key: 'ru', value: 'Цвета_вина' },
-    { key: 'en', value: 'Wine_colors' },
+    { key: 'ru', value: 'Цвета' },
+    { key: 'en', value: 'Colors' },
   ],
 };
 
@@ -276,7 +348,7 @@ export const MOCK_ATTRIBUTE_NUMBER = {
   variant: ATTRIBUTE_TYPE_NUMBER,
 };
 
-export const MOCK_ATTRIBUTES_GROUP = {
+export const MOCK_ATTRIBUTES_GROUP_WINE_FEATURES = {
   name: [
     { key: 'ru', value: 'Характеристики_вина' },
     { key: 'en', value: 'Wine_features' },
@@ -290,22 +362,22 @@ export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
   ],
 };
 
-export const MOCK_ATTRIBUTES_GROUP_B = {
+export const MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES = {
   name: [
-    { key: 'ru', value: 'group_b' },
-    { key: 'en', value: 'group_b_en' },
+    { key: 'ru', value: 'Характеристики_виски' },
+    { key: 'en', value: 'Whiskey_features' },
   ],
 };
 
 // Rubrics
-export const MOCK_RUBRIC_TYPE_EQUIPMENT = {
+export const MOCK_RUBRIC_TYPE_ALCOHOL = {
   name: [
     { key: 'ru', value: 'Алкоголь' },
     { key: 'en', value: 'Alcohol' },
   ],
 };
 
-export const MOCK_RUBRIC_TYPE_STAGE = {
+export const MOCK_RUBRIC_TYPE_JUICE = {
   name: [
     { key: 'ru', value: 'Соки' },
     { key: 'en', value: 'Juice' },
@@ -321,6 +393,7 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
     { key: 'ru', value: 'Купить вино' },
     { key: 'en', value: 'Buy a wine' },
   ],
+  gender: GENDER_IT,
   level: RUBRIC_LEVEL_ONE,
   parent: null,
 };
@@ -334,6 +407,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_A = {
     { key: 'ru', value: 'Второй_уровень_1' },
     { key: 'en', value: 'Second_level_1' },
   ],
+  gender: GENDER_SHE,
   level: RUBRIC_LEVEL_TWO,
 };
 
@@ -346,6 +420,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_B = {
     { key: 'ru', value: 'Второй_уровень_2' },
     { key: 'en', value: 'Second_level_2' },
   ],
+  gender: GENDER_HE,
   level: RUBRIC_LEVEL_TWO,
 };
 
@@ -358,6 +433,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
     { key: 'ru', value: 'Третий_уровень_1_1' },
     { key: 'en', value: 'Third_level_1_1' },
   ],
+  gender: GENDER_IT,
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -370,6 +446,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
     { key: 'ru', value: 'Третий_уровень_1_2' },
     { key: 'en', value: 'Third_level_1_2' },
   ],
+  gender: GENDER_IT,
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -382,6 +459,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
     { key: 'ru', value: 'Третий_уровень_2_1' },
     { key: 'en', value: 'Third_level_2_1' },
   ],
+  gender: GENDER_IT,
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -394,6 +472,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
     { key: 'ru', value: 'Третий_уровень_2_2' },
     { key: 'en', value: 'Third_level_2_2' },
   ],
+  gender: GENDER_IT,
   level: RUBRIC_LEVEL_THREE,
 };
 

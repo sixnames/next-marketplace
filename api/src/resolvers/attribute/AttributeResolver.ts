@@ -53,7 +53,6 @@ export class AttributeResolver {
     const options = await OptionModel.find({ _id: { $in: optionsGroup.options } });
     const { slug } = attribute;
     const city = ctx.req.session!.city;
-    // const [rubricSlug, ...attributes] = filter || [];
     const [rubricSlug] = filter || [];
 
     // get current rubric
@@ -79,7 +78,7 @@ export class AttributeResolver {
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
 
     const result = options.map(async (option) => {
-      // cast all filters from input with filter for current option
+      // cast current option for products filter
       const test = [
         {
           key: slug,
@@ -87,19 +86,11 @@ export class AttributeResolver {
         },
       ];
 
-      // const optionParam = `${slug}-${option.slug}`;
-      // const optionFilter = [...attributes, optionParam];
-      // const processedAttributes = optionFilter.reduce(attributesReducer, []);
-
-      // TODO ask about counter
-      // console.log(processedAttributes);
-
       // get products filter query
       const query = getProductsFilter(
         { attributes: test, rubrics: rubricsIds, active: true },
         city,
       );
-
       // count products
       const counter = await ProductModel.countDocuments(query);
 

@@ -1,6 +1,6 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
-import { MOCK_ATTRIBUTES_GROUP } from '../../../config';
+import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '../../../config';
 
 const addAttributeToGroupMutation = (
   groupId: string,
@@ -113,7 +113,7 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: MOCK_ATTRIBUTES_GROUP.name,
+            name: MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name,
           },
         },
       },

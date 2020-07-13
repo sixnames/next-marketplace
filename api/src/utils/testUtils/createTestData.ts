@@ -2,7 +2,11 @@ import { clearTestDataHandler } from './clearTestData';
 import createInitialData from '../createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
-import { AttributeModel, AttributeVariantEnum } from '../../entities/Attribute';
+import {
+  AttributeModel,
+  AttributePositionInTitleEnum,
+  AttributeVariantEnum,
+} from '../../entities/Attribute';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
@@ -13,11 +17,11 @@ import {
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTE_WINE_TYPE,
   MOCK_ATTRIBUTE_STRING,
-  MOCK_ATTRIBUTES_GROUP,
-  MOCK_ATTRIBUTES_GROUP_B,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+  MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_WINE_COLOR,
-  MOCK_OPTIONS_GROUP,
+  MOCK_OPTIONS_GROUP_COLORS,
   MOCK_OPTIONS_GROUP_WINE_TYPES,
   MOCK_OPTIONS_WINE_TYPE,
   MOCK_PRODUCT_A,
@@ -30,14 +34,19 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_B_B,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_LEVEL_TWO_B,
-  MOCK_RUBRIC_TYPE_EQUIPMENT,
-  MOCK_RUBRIC_TYPE_STAGE,
+  MOCK_RUBRIC_TYPE_ALCOHOL,
+  MOCK_RUBRIC_TYPE_JUICE,
+  DEFAULT_LANG,
+  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
+  SECONDARY_LANG,
+  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
 } from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
 import sharp from 'sharp';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import { GenderEnum } from '../../entities/common';
 
 interface LangInterface {
   key: string;
@@ -49,6 +58,7 @@ interface GetRubricCitiesInterface {
   catalogueName: LangInterface[];
   level: number;
   slug: string;
+  gender: GenderEnum;
   variant?: string;
   parent?: Types.ObjectId | null;
   attributesGroups: {
@@ -180,32 +190,55 @@ const createTestData = async () => {
     await createInitialData();
 
     // Options
-    const options = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
+    const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
     const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_TYPE);
-    const optionsIds = options.map(({ id }) => id);
+    const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
-    const optionsSlugs = options.map(({ slug }) => slug);
+
+    const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
+    const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
 
     const optionsGroupWineTypes = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_WINE_TYPES,
       options: optionsIdsWineType,
     });
-    const optionsGroup = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP,
-      options: optionsIds,
+
+    const optionsGroupColors = await OptionsGroupModel.create({
+      ...MOCK_OPTIONS_GROUP_COLORS,
+      options: optionsIdsColor,
     });
 
     // Attributes
-    const attributeMultiple = await AttributeModel.create({
+    const attributeWineColor = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_COLOR,
       variant: MOCK_ATTRIBUTE_WINE_COLOR.variant as AttributeVariantEnum,
-      options: optionsGroup.id,
+      options: optionsGroupColors.id,
+      positioningInTitle: [
+        {
+          key: DEFAULT_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleEnum,
+        },
+        {
+          key: SECONDARY_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as AttributePositionInTitleEnum,
+        },
+      ],
     });
 
-    const attributeSelect = await AttributeModel.create({
+    const attributeWineType = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_TYPE,
       variant: MOCK_ATTRIBUTE_WINE_TYPE.variant as AttributeVariantEnum,
-      options: optionsGroup.id,
+      options: optionsGroupWineTypes.id,
+      positioningInTitle: [
+        {
+          key: DEFAULT_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleEnum,
+        },
+        {
+          key: SECONDARY_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD as AttributePositionInTitleEnum,
+        },
+      ],
     });
 
     const attributeString = await AttributeModel.create({
@@ -221,37 +254,37 @@ const createTestData = async () => {
     await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
       attributes: [
-        attributeMultiple.id,
-        attributeSelect.id,
+        attributeWineColor.id,
+        attributeWineType.id,
         attributeString.id,
         attributeNumber.id,
       ],
     });
 
-    const attributesGroup = await AttributesGroupModel.create({
-      ...MOCK_ATTRIBUTES_GROUP,
+    const attributesGroupWineFeatures = await AttributesGroupModel.create({
+      ...MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
       attributes: [
-        attributeMultiple.id,
-        attributeSelect.id,
+        attributeWineColor.id,
+        attributeWineType.id,
         attributeString.id,
         attributeNumber.id,
       ],
     });
 
-    const attributesGroupB = await AttributesGroupModel.create({
-      ...MOCK_ATTRIBUTES_GROUP_B,
+    const attributesGroupWhiskeyFeatures = await AttributesGroupModel.create({
+      ...MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
       attributes: [attributeString.id, attributeNumber.id],
     });
 
     // Rubric types
-    const equipmentRubricVariant = await RubricVariantModel.create(MOCK_RUBRIC_TYPE_EQUIPMENT);
-    await RubricVariantModel.create(MOCK_RUBRIC_TYPE_STAGE);
+    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_TYPE_ALCOHOL);
+    await RubricVariantModel.create(MOCK_RUBRIC_TYPE_JUICE);
 
     // Rubrics
     const rubricAttributesGroups = (isOwner: boolean) => [
       {
-        showInCatalogueFilter: [attributeMultiple.id, attributeSelect.id],
-        node: attributesGroup.id,
+        showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
+        node: attributesGroupWineFeatures.id,
         isOwner,
       },
     ];
@@ -259,7 +292,7 @@ const createTestData = async () => {
     const rubricAttributesGroupsB = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [],
-        node: attributesGroupB.id,
+        node: attributesGroupWhiskeyFeatures.id,
         isOwner,
       },
     ];
@@ -268,26 +301,49 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_ONE,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueName),
-        variant: equipmentRubricVariant.id,
+        variant: rubricVariantAlcohol.id,
         attributesGroups: rubricAttributesGroups(true),
+        gender: MOCK_RUBRIC_LEVEL_ONE.gender as GenderEnum,
       }),
     });
 
-    const rubricLevelTwo = await RubricModel.create({
+    const rubricLevelTwoA = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroups(false),
+        gender: MOCK_RUBRIC_LEVEL_TWO_A.gender as GenderEnum,
       }),
     });
 
-    const rubricLevelTwoTables = await RubricModel.create({
+    const rubricLevelThreeAA = await RubricModel.create({
+      cities: getRubricCities({
+        ...MOCK_RUBRIC_LEVEL_THREE_A_A,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueName),
+        parent: rubricLevelTwoA.id,
+        attributesGroups: rubricAttributesGroups(false),
+        gender: MOCK_RUBRIC_LEVEL_THREE_A_A.gender as GenderEnum,
+      }),
+    });
+
+    const rubricLevelThreeAB = await RubricModel.create({
+      cities: getRubricCities({
+        ...MOCK_RUBRIC_LEVEL_THREE_A_B,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueName),
+        parent: rubricLevelTwoA.id,
+        attributesGroups: rubricAttributesGroups(false),
+        gender: MOCK_RUBRIC_LEVEL_THREE_A_B.gender as GenderEnum,
+      }),
+    });
+
+    const rubricLevelTwoB = await RubricModel.create({
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueName),
         parent: rubricLevelOne.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
+        gender: MOCK_RUBRIC_LEVEL_TWO_B.gender as GenderEnum,
       }),
     });
 
@@ -295,8 +351,9 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueName),
-        parent: rubricLevelTwoTables.id,
+        parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
+        gender: MOCK_RUBRIC_LEVEL_THREE_B_A.gender as GenderEnum,
       }),
     });
 
@@ -304,50 +361,30 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueName),
-        parent: rubricLevelTwoTables.id,
+        parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
-      }),
-    });
-
-    const rubricLevelThree = await RubricModel.create({
-      cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE_A_A,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueName),
-        parent: rubricLevelTwo.id,
-        attributesGroups: rubricAttributesGroups(false),
-      }),
-    });
-
-    const rubricLevelThreeB = await RubricModel.create({
-      cities: getRubricCities({
-        ...MOCK_RUBRIC_LEVEL_THREE_A_B,
-        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueName),
-        parent: rubricLevelTwo.id,
-        attributesGroups: rubricAttributesGroups(false),
+        gender: MOCK_RUBRIC_LEVEL_THREE_B_B.gender as GenderEnum,
       }),
     });
 
     // Products
-    const productAttributes = (
-      multipleAttributeOptions: string,
-      selectAttributeOptions: string,
-    ) => ({
+    const productAttributes = (wineColorOptions: string, wineTypeOptions: string) => ({
       attributesGroups: [
         {
-          node: attributesGroup.id,
+          node: attributesGroupWineFeatures.id,
           showInCard: true,
           attributes: [
             {
-              node: attributeMultiple.id,
+              node: attributeWineColor.id,
               showInCard: true,
-              key: attributeMultiple.slug,
-              value: [multipleAttributeOptions],
+              key: attributeWineColor.slug,
+              value: [wineColorOptions],
             },
             {
-              node: attributeSelect.id,
+              node: attributeWineType.id,
               showInCard: true,
-              key: attributeSelect.slug,
-              value: [selectAttributeOptions],
+              key: attributeWineType.slug,
+              value: [wineTypeOptions],
             },
             {
               node: attributeString.id,
@@ -371,8 +408,8 @@ const createTestData = async () => {
       cities: await getProductCities(
         {
           ...MOCK_PRODUCT_B,
-          ...productAttributes(optionsSlugs[2], optionsSlugs[2]),
-          rubrics: [rubricLevelThree.id],
+          ...productAttributes(optionsSlugsColor[2], optionsSlugsWineType[2]),
+          rubrics: [rubricLevelThreeAA.id],
         },
         false,
       ),
@@ -382,8 +419,8 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT_C,
-        ...productAttributes(optionsSlugs[0], optionsSlugs[0]),
-        rubrics: [rubricLevelThreeB.id],
+        ...productAttributes(optionsSlugsColor[0], optionsSlugsWineType[0]),
+        rubrics: [rubricLevelThreeAB.id],
       }),
     });
 
@@ -392,8 +429,8 @@ const createTestData = async () => {
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT_A,
-        ...productAttributes(optionsSlugs[1], optionsSlugs[1]),
-        rubrics: [rubricLevelThree.id],
+        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        rubrics: [rubricLevelThreeAA.id],
       }),
     });
   } catch (e) {

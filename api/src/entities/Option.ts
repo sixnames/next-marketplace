@@ -1,7 +1,19 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { LanguageType } from './common';
+import { GenderEnum, LanguageType } from './common';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
+import { GENDER_ENUMS } from '../config';
+
+@ObjectType()
+export class OptionVariant {
+  @Field((_type) => GenderEnum)
+  @prop({ required: true, enum: GENDER_ENUMS, type: String })
+  key: GenderEnum;
+
+  @Field(() => [LanguageType])
+  @prop({ type: LanguageType, required: true })
+  value: LanguageType[];
+}
 
 @ObjectType()
 export class Option {
@@ -15,6 +27,10 @@ export class Option {
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
+
+  @Field(() => [OptionVariant], { nullable: true })
+  @prop({ type: OptionVariant })
+  variants?: OptionVariant[];
 
   @Field(() => String)
   readonly nameString: string;

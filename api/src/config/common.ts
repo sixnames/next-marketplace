@@ -33,6 +33,19 @@ export const ROLES_LIST = [
   },
 ];
 
+// GENDER
+export const GENDER_SHE = 'she';
+export const GENDER_HE = 'he';
+export const GENDER_IT = 'it';
+
+export const GENDER_ENUMS = [GENDER_SHE, GENDER_HE, GENDER_IT];
+
+export const GENDER_LIST = [
+  { id: GENDER_SHE, nameString: 'Женский' },
+  { id: GENDER_HE, nameString: 'Мужской' },
+  { id: GENDER_IT, nameString: 'Средний' },
+];
+
 // ATTRIBUTE VARIANTS
 export const ATTRIBUTE_TYPE_SELECT = 'select';
 export const ATTRIBUTE_TYPE_MULTIPLE_SELECT = 'multipleSelect';
@@ -58,12 +71,14 @@ export const ATTRIBUTE_POSITION_IN_TITLE_BEGIN = 'begin';
 export const ATTRIBUTE_POSITION_IN_TITLE_END = 'end';
 export const ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD = 'beforeKeyword';
 export const ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD = 'afterKeyword';
+export const ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD = 'replaceKeyword';
 
 export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
 ];
 
 export const ATTRIBUTE_POSITIONS_LIST = [
@@ -71,6 +86,7 @@ export const ATTRIBUTE_POSITIONS_LIST = [
   { id: ATTRIBUTE_POSITION_IN_TITLE_END, nameString: 'В конце предложения' },
   { id: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD, nameString: 'Перед ключевым словом' },
   { id: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD, nameString: 'После ключевого слова' },
+  { id: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD, nameString: 'После ключевое слово' },
 ];
 
 // RUBRICS

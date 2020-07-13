@@ -1,10 +1,10 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop as Property, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop, prop as Property, Ref } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { LanguageType } from './common';
+import { GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
-import { RUBRIC_LEVEL_ONE } from '../config';
+import { GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
 
 @ObjectType()
@@ -35,6 +35,10 @@ export class RubricNode {
   @Field(() => [LanguageType])
   @Property({ type: LanguageType, required: true })
   catalogueName: LanguageType[];
+
+  @Field((_type) => GenderEnum)
+  @prop({ required: true, enum: GENDER_ENUMS, type: String })
+  gender: GenderEnum;
 
   @Field(() => String)
   @Property({ required: true })

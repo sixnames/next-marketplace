@@ -1,6 +1,6 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG, MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP } from '../../../config';
+import { DEFAULT_LANG, MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP_COLORS } from '../../../config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
 const addOptionToGroupMutation = (
@@ -120,7 +120,10 @@ describe('Options groups', () => {
         mutation {
           createOptionsGroup(
             input: {
-              name: [{key: "ru", value: "${getLangField(MOCK_OPTIONS_GROUP.name, DEFAULT_LANG)}"}]
+              name: [{key: "ru", value: "${getLangField(
+                MOCK_OPTIONS_GROUP_COLORS.name,
+                DEFAULT_LANG,
+              )}"}]
             }
           ) {
             success

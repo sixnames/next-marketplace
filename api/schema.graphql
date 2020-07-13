@@ -40,7 +40,7 @@ type Attribute {
   name: [LanguageType!]!
   nameString: String!
   options: OptionsGroup
-  positioningInTitle: [AttributePositioningInTitle!]!
+  positioningInTitle: [AttributePositioningInTitle!]
   slug: String!
   variant: AttributeVariantEnum!
 }
@@ -63,6 +63,7 @@ enum AttributePositionInTitleEnum {
   beforeKeyword
   begin
   end
+  replaceKeyword
 }
 
 type AttributesGroup {
@@ -158,6 +159,13 @@ input DeleteProductFromRubricInput {
   rubricId: ID!
 }
 
+"""List of gender enums"""
+enum GenderEnum {
+  he
+  it
+  she
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -224,6 +232,7 @@ type Option {
   name: [LanguageType!]!
   nameString: String!
   slug: String!
+  variants: [OptionVariant!]
 }
 
 type OptionsGroup {
@@ -237,6 +246,11 @@ type OptionsGroupPayloadType {
   group: OptionsGroup
   message: String!
   success: Boolean!
+}
+
+type OptionVariant {
+  key: GenderEnum!
+  value: [LanguageType!]!
 }
 
 type PaginatedProductsResponse {
@@ -432,6 +446,7 @@ type RubricNode {
   active: Boolean
   attributesGroups: [RubricAttributesGroup!]!
   catalogueName: [LanguageType!]!
+  gender: GenderEnum!
   level: Int!
   name: [LanguageType!]!
   parent: Rubric

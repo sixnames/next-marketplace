@@ -93,6 +93,7 @@ enum AttributeVariantEnum {
 }
 
 type CatalogueData {
+  catalogueTitle: String!
   products: PaginatedProductsResponse!
   rubric: Rubric!
 }
@@ -120,7 +121,7 @@ input CreateProductInput {
 }
 
 input CreateRubricInput {
-  catalogueName: [LangInput!]!
+  catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
   parent: ID
   variant: ID
@@ -228,6 +229,7 @@ type Mutation {
 
 type Option {
   color: String
+  gender: GenderEnum
   id: ID!
   name: [LanguageType!]!
   nameString: String!
@@ -416,7 +418,6 @@ type Rubric {
   active: Boolean!
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueName: String!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [Attribute!]!
@@ -437,6 +438,20 @@ type RubricAttributesGroup {
   showInCatalogueFilter: [ID!]!
 }
 
+type RubricCatalogueTitle {
+  defaultTitle: [LanguageType!]!
+  gender: GenderEnum!
+  keyword: [LanguageType!]!
+  prefix: [LanguageType!]
+}
+
+input RubricCatalogueTitleInput {
+  defaultTitle: [LangInput!]!
+  gender: GenderEnum!
+  keyword: [LangInput!]!
+  prefix: [LangInput!]
+}
+
 type RubricCity {
   key: String!
   node: RubricNode!
@@ -445,8 +460,7 @@ type RubricCity {
 type RubricNode {
   active: Boolean
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueName: [LanguageType!]!
-  gender: GenderEnum!
+  catalogueTitle: RubricCatalogueTitle!
   level: Int!
   name: [LanguageType!]!
   parent: Rubric
@@ -556,7 +570,7 @@ input UpdateProductInput {
 }
 
 input UpdateRubricInput {
-  catalogueName: [LangInput!]!
+  catalogueTitle: RubricCatalogueTitleInput!
   id: ID!
   name: [LangInput!]!
   parent: ID

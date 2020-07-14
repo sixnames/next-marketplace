@@ -9,4 +9,7 @@ export class CatalogueData {
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;
+
+  @Field(() => String)
+  readonly catalogueTitle: string;
 }

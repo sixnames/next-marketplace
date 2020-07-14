@@ -1,17 +1,33 @@
 import { Field, ID, InputType } from 'type-graphql';
 import { LangInput } from '../common/LangInput';
+import { GenderEnum } from '../../entities/common';
+
+@InputType()
+export class RubricCatalogueTitleInput {
+  @Field((_type) => [LangInput])
+  defaultTitle: LangInput[];
+
+  @Field((_type) => [LangInput], { nullable: true })
+  prefix?: LangInput[] | null;
+
+  @Field((_type) => [LangInput])
+  keyword: LangInput[];
+
+  @Field((_type) => GenderEnum)
+  gender: GenderEnum;
+}
 
 @InputType()
 export class CreateRubricInput {
-  @Field(() => [LangInput])
+  @Field((_type) => [LangInput])
   name: LangInput[];
 
-  @Field(() => [LangInput])
-  catalogueName: LangInput[];
-
-  @Field(() => ID, { nullable: true })
+  @Field((_type) => ID, { nullable: true })
   parent?: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field((_type) => ID, { nullable: true })
   variant: string;
+
+  @Field((_type) => RubricCatalogueTitleInput)
+  catalogueTitle: RubricCatalogueTitleInput;
 }

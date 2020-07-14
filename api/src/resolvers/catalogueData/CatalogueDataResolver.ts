@@ -7,7 +7,7 @@ import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ProductModel } from '../../entities/Product';
 import getCityData from '../../utils/getCityData';
-import { attributesReducer } from '../../utils/catalogueHelpers';
+import { attributesReducer, getCatalogueTitle } from '../../utils/catalogueHelpers';
 import { ProductPaginateInput } from '../product/ProductPaginateInput';
 
 @Resolver((_of) => CatalogueData)
@@ -20,6 +20,8 @@ export class CatalogueDataResolver {
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput = {},
   ): Promise<CatalogueData | null> {
     const city = ctx.req.session!.city;
+    const lang = ctx.req.session!.lang;
+
     const [slug, ...attributes] = catalogueFilter;
     const {
       limit = 100,
@@ -55,6 +57,13 @@ export class CatalogueDataResolver {
     // cast all filters from input
     const processedAttributes = attributes.reduce(attributesReducer, []);
 
+    // get catalogue title
+    const catalogueTitle = await getCatalogueTitle({
+      processedAttributes,
+      lang,
+      rubric: rubricCity.node,
+    });
+
     // get products filter query
     const query = getProductsFilter(
       { ...args, attributes: processedAttributes, rubrics: rubricsIds, active: true },
@@ -74,6 +83,7 @@ export class CatalogueDataResolver {
     return {
       rubric,
       products,
+      catalogueTitle,
     };
   }
 }

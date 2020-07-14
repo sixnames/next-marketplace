@@ -154,8 +154,8 @@ export class RubricResolver {
             key: city,
             node: {
               name: input.name,
-              catalogueName: input.catalogueName,
-              slug: generateDefaultLangSlug(input.catalogueName),
+              catalogueTitle: input.catalogueTitle,
+              slug: generateDefaultLangSlug(input.catalogueTitle.defaultTitle),
               attributesGroups: [],
               ...parentRelatedData,
             },
@@ -203,7 +203,7 @@ export class RubricResolver {
       }
       const currentCity = getCityData(rubric.cities, city);
 
-      const { catalogueName, parent, variant, name } = values;
+      const { catalogueTitle, parent, variant, name } = values;
 
       const nameValues = name.map(({ value }) => value);
       const exists = await RubricModel.exists({
@@ -225,7 +225,7 @@ export class RubricResolver {
         ...values,
         parent: Types.ObjectId(parent),
         variant: Types.ObjectId(variant),
-        slug: generateDefaultLangSlug(catalogueName),
+        slug: generateDefaultLangSlug(catalogueTitle.defaultTitle),
       };
 
       const updatedRubric = await RubricModel.findOneAndUpdate(
@@ -780,18 +780,6 @@ export class RubricResolver {
       return '';
     }
     return getLangField(city!.node.name, ctx.req.session!.lang);
-  }
-
-  @FieldResolver()
-  async catalogueName(
-    @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
-  ): Promise<string> {
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
-    if (!city) {
-      return '';
-    }
-    return getLangField(city!.node.catalogueName, ctx.req.session!.lang);
   }
 
   @FieldResolver()

@@ -1,7 +1,10 @@
 // Internationalization
 export const LANG_COOKIE_KEY = 'lang';
+export const LANG_NOT_FOUND_FIELD_MESSAGE = 'Field not found';
 export const DEFAULT_LANG = 'ru';
 export const SECONDARY_LANG = 'en';
+export const LANG_DEFAULT_TITLE_SEPARATOR = ' или ';
+export const LANG_SECONDARY_TITLE_SEPARATOR = ' or ';
 
 // Cities
 export const DEFAULT_CITY = 'moscow';
@@ -68,10 +71,10 @@ export const ATTRIBUTE_TYPES_LIST = [
 
 // ATTRIBUTE POSITIONS IN TITLE
 export const ATTRIBUTE_POSITION_IN_TITLE_BEGIN = 'begin';
-export const ATTRIBUTE_POSITION_IN_TITLE_END = 'end';
 export const ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD = 'beforeKeyword';
-export const ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD = 'afterKeyword';
 export const ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD = 'replaceKeyword';
+export const ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD = 'afterKeyword';
+export const ATTRIBUTE_POSITION_IN_TITLE_END = 'end';
 
 export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,

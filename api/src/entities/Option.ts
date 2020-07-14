@@ -32,6 +32,10 @@ export class Option {
   @prop({ type: OptionVariant })
   variants?: OptionVariant[];
 
+  @Field((_type) => GenderEnum, { nullable: true })
+  @prop({ enum: GENDER_ENUMS, type: String })
+  gender?: GenderEnum | null;
+
   @Field(() => String)
   readonly nameString: string;
 

@@ -25,6 +25,25 @@ export class RubricAttributesGroup {
   node: string;
 }
 
+@ObjectType()
+export class RubricCatalogueTitle {
+  @Field(() => [LanguageType])
+  @Property({ type: LanguageType, required: true })
+  defaultTitle: LanguageType[];
+
+  @Field(() => [LanguageType], { nullable: true })
+  @Property({ type: LanguageType })
+  prefix?: LanguageType[];
+
+  @Field(() => [LanguageType])
+  @Property({ type: LanguageType, required: true })
+  keyword: LanguageType[];
+
+  @Field((_type) => GenderEnum)
+  @prop({ required: true, enum: GENDER_ENUMS, type: String })
+  gender: GenderEnum;
+}
+
 // Rubric data in current city
 @ObjectType()
 export class RubricNode {
@@ -32,13 +51,9 @@ export class RubricNode {
   @Property({ type: LanguageType, required: true })
   name: LanguageType[];
 
-  @Field(() => [LanguageType])
-  @Property({ type: LanguageType, required: true })
-  catalogueName: LanguageType[];
-
-  @Field((_type) => GenderEnum)
-  @prop({ required: true, enum: GENDER_ENUMS, type: String })
-  gender: GenderEnum;
+  @Field(() => RubricCatalogueTitle)
+  @Property({ type: RubricCatalogueTitle, required: true })
+  catalogueTitle: RubricCatalogueTitle;
 
   @Field(() => String)
   @Property({ required: true })
@@ -84,9 +99,6 @@ export class Rubric {
 
   @Field(() => String)
   readonly name: string;
-
-  @Field(() => String)
-  readonly catalogueName: string;
 
   @Field(() => String)
   readonly slug: string;

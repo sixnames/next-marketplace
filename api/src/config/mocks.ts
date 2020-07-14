@@ -280,6 +280,7 @@ export const MOCK_OPTIONS_WINE_TYPE = [
       { key: 'en', value: 'Port_wine' },
     ],
     slug: 'portvein',
+    gender: GENDER_HE,
   },
   {
     name: [
@@ -287,6 +288,7 @@ export const MOCK_OPTIONS_WINE_TYPE = [
       { key: 'en', value: 'Heres' },
     ],
     slug: 'heres',
+    gender: GENDER_HE,
   },
   {
     name: [
@@ -294,6 +296,15 @@ export const MOCK_OPTIONS_WINE_TYPE = [
       { key: 'en', value: 'Vermut' },
     ],
     slug: 'varmut',
+    gender: GENDER_HE,
+  },
+  {
+    name: [
+      { key: 'ru', value: 'Крепленое' },
+      { key: 'en', value: 'Hard' },
+    ],
+    slug: 'kreplenoe',
+    gender: GENDER_IT,
   },
 ];
 
@@ -389,11 +400,21 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
     { key: 'ru', value: 'Вино' },
     { key: 'en', value: 'Wine' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Купить вино' },
-    { key: 'en', value: 'Buy a wine' },
-  ],
-  gender: GENDER_IT,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Купить вино' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [
+      { key: 'ru', value: 'Купить' },
+      { key: 'en', value: 'Buy a' },
+    ],
+    keyword: [
+      { key: 'ru', value: 'вино' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_IT,
+  },
   level: RUBRIC_LEVEL_ONE,
   parent: null,
 };
@@ -403,11 +424,18 @@ export const MOCK_RUBRIC_LEVEL_TWO_A = {
     { key: 'ru', value: 'Второй_уровень_1' },
     { key: 'en', value: 'Second_level_1' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Второй_уровень_1' },
-    { key: 'en', value: 'Second_level_1' },
-  ],
-  gender: GENDER_SHE,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Второй уровень 1' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Второй уровень 1' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_SHE,
+  },
   level: RUBRIC_LEVEL_TWO,
 };
 
@@ -416,11 +444,18 @@ export const MOCK_RUBRIC_LEVEL_TWO_B = {
     { key: 'ru', value: 'Второй_уровень_2' },
     { key: 'en', value: 'Second_level_2' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Второй_уровень_2' },
-    { key: 'en', value: 'Second_level_2' },
-  ],
-  gender: GENDER_HE,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Второй уровень 2' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Второй уровень 2' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_HE,
+  },
   level: RUBRIC_LEVEL_TWO,
 };
 
@@ -429,11 +464,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
     { key: 'ru', value: 'Третий_уровень_1_1' },
     { key: 'en', value: 'Third_level_1_1' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Третий_уровень_1_1' },
-    { key: 'en', value: 'Third_level_1_1' },
-  ],
-  gender: GENDER_IT,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Третий уровень 1_1' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Третий уровень 1_1' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_IT,
+  },
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -442,11 +484,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
     { key: 'ru', value: 'Третий_уровень_1_2' },
     { key: 'en', value: 'Third_level_1_2' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Третий_уровень_1_2' },
-    { key: 'en', value: 'Third_level_1_2' },
-  ],
-  gender: GENDER_IT,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Третий уровень 1_2' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Третий уровень 1_2' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_IT,
+  },
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -455,11 +504,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
     { key: 'ru', value: 'Третий_уровень_2_1' },
     { key: 'en', value: 'Third_level_2_1' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Третий_уровень_2_1' },
-    { key: 'en', value: 'Third_level_2_1' },
-  ],
-  gender: GENDER_IT,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Третий уровень 2_1' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Третий уровень 2_1' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_IT,
+  },
   level: RUBRIC_LEVEL_THREE,
 };
 
@@ -468,11 +524,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
     { key: 'ru', value: 'Третий_уровень_2_2' },
     { key: 'en', value: 'Third_level_2_2' },
   ],
-  catalogueName: [
-    { key: 'ru', value: 'Третий_уровень_2_2' },
-    { key: 'en', value: 'Third_level_2_2' },
-  ],
-  gender: GENDER_IT,
+  catalogueTitle: {
+    defaultTitle: [
+      { key: 'ru', value: 'Третий уровень 2_2' },
+      { key: 'en', value: 'Buy a wine' },
+    ],
+    prefix: [],
+    keyword: [
+      { key: 'ru', value: 'Третий уровень 2_2' },
+      { key: 'en', value: 'wine' },
+    ],
+    gender: GENDER_IT,
+  },
   level: RUBRIC_LEVEL_THREE,
 };
 

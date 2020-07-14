@@ -10,6 +10,7 @@ describe('Attributes', () => {
       `
         query GetCatalogueData($catalogueFilter: [String!]!) {
           getCatalogueData(catalogueFilter: $catalogueFilter) {
+            catalogueTitle
             rubric {
               id
               name
@@ -35,11 +36,21 @@ describe('Attributes', () => {
       `,
       {
         variables: {
-          catalogueFilter: ['wine', 'attribute_multiple-gray', 'attribute_multiple-red'],
+          catalogueFilter: [
+            'kupit_vino',
+            'tsvet_vina-krasniy',
+            'tsvet_vina-beliy',
+            'tip_vina-portvein',
+            'tip_vina-kreplenoe',
+          ],
         },
       },
     );
-    expect(getCatalogueData.products.docs).toHaveLength(2);
+
+    expect(getCatalogueData.products.docs).toHaveLength(1);
     expect(getCatalogueData.rubric.filterAttributes).toHaveLength(2);
+    expect(getCatalogueData.catalogueTitle).toEqual(
+      'Купить белый или красный портвейн или крепленое',
+    );
   });
 });

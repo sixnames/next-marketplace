@@ -13,6 +13,7 @@ input AddAttributeToGroupInput {
   metric: ID
   name: [LangInput!]!
   options: ID
+  positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }
 
@@ -53,6 +54,11 @@ type AttributeFilterOption {
 }
 
 type AttributePositioningInTitle {
+  key: String!
+  value: AttributePositionInTitleEnum!
+}
+
+input AttributePositioningInTitleInput {
   key: String!
   value: AttributePositionInTitleEnum!
 }
@@ -542,6 +548,7 @@ input UpdateAttributeInGroupInput {
   metric: ID
   name: [LangInput!]!
   options: ID
+  positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }
 

@@ -1,21 +1,21 @@
 /// <reference types="cypress" />
 import {
-  MOCK_ATTRIBUTE_MULTIPLE,
+  MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_STRING,
-  MOCK_ATTRIBUTES_GROUP,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE,
-  MOCK_RUBRIC_LEVEL_TWO,
+  MOCK_RUBRIC_LEVEL_THREE_A_A,
+  MOCK_RUBRIC_LEVEL_TWO_A,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '../../../config';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO.name[0].value;
-const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
+const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO_A.name[0].value;
+const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
 
-const mockAttributesGroup = MOCK_ATTRIBUTES_GROUP.name[0].value;
-const mockMultipleSelectAttribute = MOCK_ATTRIBUTE_MULTIPLE.name[0].value;
+const mockAttributesGroup = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
+const mockMultipleSelectAttribute = MOCK_ATTRIBUTE_WINE_COLOR.name[0].value;
 const mockStringAttribute = MOCK_ATTRIBUTE_STRING.name[0].value;
 const mockAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
 

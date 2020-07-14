@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 import {
-  MOCK_RUBRIC_TYPE_EQUIPMENT,
-  MOCK_RUBRIC_TYPE_STAGE,
+  MOCK_RUBRIC_TYPE_ALCOHOL,
+  MOCK_RUBRIC_TYPE_JUICE,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '../../../config';
 
-const mockRubricVariantName = MOCK_RUBRIC_TYPE_EQUIPMENT.name[0].value;
-const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_STAGE.name[0].value;
+const mockRubricVariantName = MOCK_RUBRIC_TYPE_ALCOHOL.name[0].value;
+const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_JUICE.name[0].value;
 const mockNewRubricVariantName = 'new_variant';
 
 describe('Rubric variants', () => {

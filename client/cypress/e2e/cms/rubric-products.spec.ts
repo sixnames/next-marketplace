@@ -1,37 +1,38 @@
 /// <reference types="cypress" />
 import {
   MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTE_SELECT,
+  MOCK_ATTRIBUTE_WINE_TYPE,
   MOCK_ATTRIBUTE_STRING,
-  MOCK_OPTIONS,
-  MOCK_PRODUCT,
-  MOCK_PRODUCT_B_PRODUCT,
-  MOCK_PRODUCT_FOR_DELETE,
-  MOCK_PRODUCT_NEW_PRODUCT,
+  MOCK_OPTIONS_WINE_COLOR,
+  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_PRODUCT_A,
+  MOCK_PRODUCT_B,
+  MOCK_PRODUCT_C,
+  MOCK_PRODUCT_NEW,
   MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE,
-  MOCK_RUBRIC_LEVEL_THREE_B,
+  MOCK_RUBRIC_LEVEL_THREE_A_A,
+  MOCK_RUBRIC_LEVEL_THREE_A_B,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
   QUERY_DATA_LAYOUT_NO_RUBRIC,
 } from '../../../config';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE.name[0].value;
-const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_B.name[0].value;
+const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
+const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
 
-const mockProduct = MOCK_PRODUCT.name[0].value;
-const mockProductB = MOCK_PRODUCT_B_PRODUCT.name[0].value;
-const mockProductForDelete = MOCK_PRODUCT_FOR_DELETE.name[0].value;
+const mockProduct = MOCK_PRODUCT_A.name[0].value;
+const mockProductB = MOCK_PRODUCT_B.name[0].value;
+const mockProductForDelete = MOCK_PRODUCT_C.name[0].value;
 
-const mockProductNewName = MOCK_PRODUCT_NEW_PRODUCT.name[0].value;
-const mockProductNewCardName = MOCK_PRODUCT_NEW_PRODUCT.cardName[0].value;
-const mockProductNewCardPrice = MOCK_PRODUCT_NEW_PRODUCT.price;
-const mockProductNewCarDescription = MOCK_PRODUCT_NEW_PRODUCT.description[0].value;
+const mockProductNewName = MOCK_PRODUCT_NEW.name[0].value;
+const mockProductNewCardName = MOCK_PRODUCT_NEW.cardName[0].value;
+const mockProductNewCardPrice = MOCK_PRODUCT_NEW.price;
+const mockProductNewCarDescription = MOCK_PRODUCT_NEW.description[0].value;
 
-const mockAttributeSelectName = MOCK_ATTRIBUTE_SELECT.name[0].value;
-const mockAttributeSelectValue = MOCK_OPTIONS[0].name[0].value;
-const mockAttributeMultipleSelectValueA = MOCK_OPTIONS[0].name[0].value;
-const mockAttributeMultipleSelectValueB = MOCK_OPTIONS[1].name[0].value;
+const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_TYPE.name[0].value;
+const mockAttributeSelectValue = MOCK_OPTIONS_WINE_TYPE[0].name[0].value;
+const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
+const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
 const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
 const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 

@@ -1,15 +1,15 @@
 /// <reference types="cypress" />
 import {
-  MOCK_OPTIONS,
-  MOCK_OPTIONS_GROUP,
-  MOCK_OPTIONS_GROUP_FOR_DELETE,
+  MOCK_OPTIONS_WINE_COLOR,
+  MOCK_OPTIONS_GROUP_COLORS,
+  MOCK_OPTIONS_GROUP_WINE_TYPES,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '../../../config';
 
-const mockGroupName = MOCK_OPTIONS_GROUP.name[0].value;
-const mockOptionName = MOCK_OPTIONS[0].name[0].value;
-const mockOptionColor = MOCK_OPTIONS[0].color;
-const mockGroupForDeleteName = MOCK_OPTIONS_GROUP_FOR_DELETE.name[0].value;
+const mockGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
+const mockOptionName = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
+const mockOptionColor = MOCK_OPTIONS_WINE_COLOR[0].color;
+const mockGroupForDeleteName = MOCK_OPTIONS_GROUP_WINE_TYPES.name[0].value;
 const createdGroupName = 'new_group';
 const groupNewName = 'updated_name';
 const fakeName = 'f';

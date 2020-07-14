@@ -2,14 +2,14 @@
 import {
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  MOCK_ATTRIBUTES_GROUP,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS_GROUP,
+  MOCK_OPTIONS_GROUP_COLORS,
 } from '../../../config';
 
-const mockGroupName = MOCK_ATTRIBUTES_GROUP.name[0].value;
+const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
 const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
-const mockOptionsGroupName = MOCK_OPTIONS_GROUP.name[0].value;
+const mockOptionsGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
 const mockAttributeNewName = 'new_attribute';
 const createdGroupName = 'new_group';
 const updatedGroupName = 'updated_group';

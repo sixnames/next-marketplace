@@ -8,7 +8,7 @@ export class RubricCatalogueTitleInput {
   defaultTitle: LangInput[];
 
   @Field((_type) => [LangInput], { nullable: true })
-  prefix?: LangInput[] | null;
+  prefix?: LangInput[];
 
   @Field((_type) => [LangInput])
   keyword: LangInput[];

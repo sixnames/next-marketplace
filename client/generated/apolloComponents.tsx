@@ -204,9 +204,24 @@ export type Option = {
   id: Scalars['ID'];
   slug: Scalars['String'];
   name: Array<LanguageType>;
+  variants?: Maybe<Array<OptionVariant>>;
+  gender?: Maybe<GenderEnum>;
   nameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
 };
+
+export type OptionVariant = {
+   __typename?: 'OptionVariant';
+  key: GenderEnum;
+  value: Array<LanguageType>;
+};
+
+/** List of gender enums */
+export enum GenderEnum {
+  She = 'she',
+  He = 'he',
+  It = 'it'
+}
 
 export type OptionsGroup = {
    __typename?: 'OptionsGroup';
@@ -260,6 +275,7 @@ export type Attribute = {
   options?: Maybe<OptionsGroup>;
   /** list of options with products counter for catalogue filter */
   filterOptions: Array<AttributeFilterOption>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
   metric?: Maybe<Metric>;
 };
 
@@ -268,7 +284,7 @@ export type AttributeFilterOptionsArgs = {
   filter: Array<Scalars['String']>;
 };
 
-/** Attribute type enum */
+/** Attribute variant enum */
 export enum AttributeVariantEnum {
   Select = 'select',
   MultipleSelect = 'multipleSelect',
@@ -281,6 +297,21 @@ export type AttributeFilterOption = {
   option: Option;
   counter: Scalars['Int'];
 };
+
+export type AttributePositioningInTitle = {
+   __typename?: 'AttributePositioningInTitle';
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
+};
+
+/** Instruction for positioning checked attribute values in catalogue title */
+export enum AttributePositionInTitleEnum {
+  Begin = 'begin',
+  End = 'end',
+  BeforeKeyword = 'beforeKeyword',
+  AfterKeyword = 'afterKeyword',
+  ReplaceKeyword = 'replaceKeyword'
+}
 
 export type ProductAttribute = {
    __typename?: 'ProductAttribute';
@@ -372,7 +403,7 @@ export type Rubric = {
    __typename?: 'Rubric';
   id: Scalars['ID'];
   name: Scalars['String'];
-  catalogueName: Scalars['String'];
+  catalogueTitle: RubricCatalogueTitleField;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -395,6 +426,14 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+export type RubricCatalogueTitleField = {
+   __typename?: 'RubricCatalogueTitleField';
+  defaultTitle: Scalars['String'];
+  prefix?: Maybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  gender: GenderEnum;
 };
 
 export type RubricAttributesGroup = {
@@ -430,13 +469,21 @@ export type RubricCity = {
 export type RubricNode = {
    __typename?: 'RubricNode';
   name: Array<LanguageType>;
-  catalogueName: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active?: Maybe<Scalars['Boolean']>;
   parent?: Maybe<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
+};
+
+export type RubricCatalogueTitle = {
+   __typename?: 'RubricCatalogueTitle';
+  defaultTitle: Array<LanguageType>;
+  prefix?: Maybe<Array<LanguageType>>;
+  keyword: Array<LanguageType>;
+  gender: GenderEnum;
 };
 
 export type AttributeVariant = {
@@ -449,6 +496,7 @@ export type CatalogueData = {
    __typename?: 'CatalogueData';
   rubric: Rubric;
   products: PaginatedProductsResponse;
+  catalogueTitle: Scalars['String'];
 };
 
 export type Mutation = {
@@ -861,15 +909,22 @@ export type RubricPayloadType = {
 
 export type CreateRubricInput = {
   name: Array<LangInput>;
-  catalogueName: Array<LangInput>;
   parent?: Maybe<Scalars['ID']>;
   variant?: Maybe<Scalars['ID']>;
+  catalogueTitle: RubricCatalogueTitleInput;
+};
+
+export type RubricCatalogueTitleInput = {
+  defaultTitle: Array<LangInput>;
+  prefix?: Maybe<Array<LangInput>>;
+  keyword: Array<LangInput>;
+  gender: GenderEnum;
 };
 
 export type UpdateRubricInput = {
   id: Scalars['ID'];
   name: Array<LangInput>;
-  catalogueName: Array<LangInput>;
+  catalogueTitle: RubricCatalogueTitleInput;
   parent?: Maybe<Scalars['ID']>;
   variant?: Maybe<Scalars['ID']>;
 };
@@ -1016,7 +1071,10 @@ export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'catalogueName'>
+    & { catalogueTitle: (
+      { __typename?: 'RubricCatalogueTitleField' }
+      & Pick<RubricCatalogueTitleField, 'defaultTitle' | 'prefix' | 'keyword' | 'gender'>
+    ) }
     & RubricFragmentFragment
   ) }
 );
@@ -1607,9 +1665,10 @@ export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
   & { getCatalogueData?: Maybe<(
     { __typename?: 'CatalogueData' }
+    & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'catalogueName'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1817,7 +1876,7 @@ export type InitialQuery = (
 
 export type SiteRubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'slug' | 'catalogueName' | 'level'>
+  & Pick<Rubric, 'id' | 'name' | 'slug' | 'level'>
   & { variant?: Maybe<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1928,7 +1987,6 @@ export const SiteRubricFragmentFragmentDoc = gql`
   id
   name
   slug
-  catalogueName
   level
   variant {
     id
@@ -2053,7 +2111,12 @@ export const GetRubricDocument = gql`
     query GetRubric($id: ID!) {
   getRubric(id: $id) {
     ...RubricFragment
-    catalogueName
+    catalogueTitle {
+      defaultTitle
+      prefix
+      keyword
+      gender
+    }
   }
 }
     ${RubricFragmentFragmentDoc}`;
@@ -3307,12 +3370,12 @@ export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<Get
 export const GetCatalogueRubricDocument = gql`
     query GetCatalogueRubric($catalogueFilter: [String!]!) {
   getCatalogueData(catalogueFilter: $catalogueFilter) {
+    catalogueTitle
     rubric {
       id
       name
       level
       slug
-      catalogueName
       variant {
         id
         nameString

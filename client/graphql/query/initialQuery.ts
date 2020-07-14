@@ -24,7 +24,6 @@ const rubricFragment = gql`
     id
     name
     slug
-    catalogueName
     level
     variant {
       id

@@ -418,6 +418,7 @@ type Rubric {
   active: Boolean!
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
+  catalogueTitle: RubricCatalogueTitleField!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [Attribute!]!
@@ -443,6 +444,13 @@ type RubricCatalogueTitle {
   gender: GenderEnum!
   keyword: [LanguageType!]!
   prefix: [LanguageType!]
+}
+
+type RubricCatalogueTitleField {
+  defaultTitle: String!
+  gender: GenderEnum!
+  keyword: String!
+  prefix: String
 }
 
 input RubricCatalogueTitleInput {

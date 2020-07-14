@@ -44,6 +44,21 @@ export class RubricCatalogueTitle {
   gender: GenderEnum;
 }
 
+@ObjectType()
+export class RubricCatalogueTitleField {
+  @Field(() => String)
+  readonly defaultTitle: string;
+
+  @Field(() => String, { nullable: true })
+  readonly prefix?: string | null;
+
+  @Field(() => String)
+  readonly keyword: string;
+
+  @Field((_type) => GenderEnum)
+  readonly gender: GenderEnum;
+}
+
 // Rubric data in current city
 @ObjectType()
 export class RubricNode {
@@ -99,6 +114,9 @@ export class Rubric {
 
   @Field(() => String)
   readonly name: string;
+
+  @Field(() => RubricCatalogueTitleField)
+  readonly catalogueTitle: RubricCatalogueTitleField;
 
   @Field(() => String)
   readonly slug: string;

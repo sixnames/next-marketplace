@@ -56,7 +56,12 @@ export const RUBRIC_QUERY = gql`
   query GetRubric($id: ID!) {
     getRubric(id: $id) {
       ...RubricFragment
-      catalogueName
+      catalogueTitle {
+        defaultTitle
+        prefix
+        keyword
+        gender
+      }
     }
   }
 

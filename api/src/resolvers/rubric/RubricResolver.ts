@@ -10,7 +10,12 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
+import {
+  Rubric,
+  RubricAttributesGroup,
+  RubricCatalogueTitleField,
+  RubricModel,
+} from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
@@ -50,6 +55,8 @@ import {
 import {
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
   ATTRIBUTE_TYPE_SELECT,
+  GENDER_IT,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
@@ -58,6 +65,7 @@ import {
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
+import { GenderEnum } from '../../entities/common';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -780,6 +788,34 @@ export class RubricResolver {
       return '';
     }
     return getLangField(city!.node.name, ctx.req.session!.lang);
+  }
+
+  @FieldResolver()
+  async catalogueTitle(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<RubricCatalogueTitleField> {
+    const lang = ctx.req.session!.lang;
+    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    if (!city) {
+      return {
+        defaultTitle: LANG_NOT_FOUND_FIELD_MESSAGE,
+        prefix: LANG_NOT_FOUND_FIELD_MESSAGE,
+        keyword: LANG_NOT_FOUND_FIELD_MESSAGE,
+        gender: GENDER_IT as GenderEnum,
+      };
+    }
+
+    const {
+      catalogueTitle: { defaultTitle, prefix, keyword, gender },
+    } = city.node;
+
+    return {
+      defaultTitle: getLangField(defaultTitle, lang),
+      prefix: prefix ? getLangField(prefix, lang) : null,
+      keyword: getLangField(keyword, lang),
+      gender,
+    };
   }
 
   @FieldResolver()

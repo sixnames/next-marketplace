@@ -111,7 +111,6 @@ describe.only('Rubrics', () => {
     expect(data.getRubric.id).toEqual(rubricLevelOne.id);
     expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
     expect(data.getRubric.products.docs).toHaveLength(3);
-    expect(data.getRubric.catalogueTitle).toEqual(MOCK_RUBRIC_LEVEL_ONE.catalogueTitle);
 
     // Should return current rubric by slug
     const {
@@ -132,7 +131,6 @@ describe.only('Rubrics', () => {
     `);
     expect(getRubricBySlug.id).toEqual(rubricLevelOne.id);
     expect(getRubricBySlug.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
-    expect(getRubricBySlug.catalogueTitle).toEqual(MOCK_RUBRIC_LEVEL_ONE.catalogueTitle);
 
     // Should return duplicate rubric error on rubric create
     const { mutate } = await getTestClientWithAuthenticatedUser();
@@ -141,7 +139,12 @@ describe.only('Rubrics', () => {
         createRubric(
           input: {
             name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
-            catalogueTitle: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle}
+            catalogueTitle: {
+              defaultTitle: [{key: "ru", value: "test"}],
+              prefix: [],
+              keyword: [{key: "ru", value: "test"}],
+              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+            }
             variant: "${getAllRubricVariants[0].id}"
           }
         ) {
@@ -164,7 +167,12 @@ describe.only('Rubrics', () => {
         createRubric(
           input: {
             name: [{key: "ru", value: "${testRubric.name}"}]
-            catalogueTitle: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle}
+            catalogueTitle: {
+              defaultTitle: [{key: "ru", value: "test"}],
+              prefix: [],
+              keyword: [{key: "ru", value: "test"}],
+              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+            }
             variant: "${getAllRubricVariants[0].id}"
           }
         ) {
@@ -189,8 +197,6 @@ describe.only('Rubrics', () => {
     `);
     expect(createRubric.success).toBeTruthy();
     expect(createRubric.rubric.name).toEqual(testRubric.name);
-    // TODO
-    // expect(createRubric.rubric.catalogueTitle).toEqual(testRubric.catalogueName);
 
     // Should return duplicate rubric error on rubric update
     const {
@@ -201,7 +207,12 @@ describe.only('Rubrics', () => {
           input: {
             id: "${createRubric.rubric.id}"
             name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
-            catalogueTitle: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle}
+            catalogueTitle: {
+              defaultTitle: [{key: "ru", value: "test"}],
+              prefix: [],
+              keyword: [{key: "ru", value: "test"}],
+              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+            }
             variant: "${createRubric.rubric.variant.id}"
           }
         ) {
@@ -217,7 +228,6 @@ describe.only('Rubrics', () => {
     expect(falseUpdateRubric.success).toBeFalsy();
 
     // Should update rubric
-    // TODO catalogueTitle input
     const {
       data: { updateRubric },
     } = await mutate(`
@@ -226,7 +236,12 @@ describe.only('Rubrics', () => {
           input: {
             id: "${createRubric.rubric.id}"
             name: [{key: "ru", value: "${anotherRubric.name}"}]
-            catalogueTitle: ${anotherRubric}
+            catalogueTitle: {
+              defaultTitle: [{key: "ru", value: "test"}],
+              prefix: [],
+              keyword: [{key: "ru", value: "test"}],
+              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+            }
             variant: "${createRubric.rubric.variant.id}"
           }
         ) {
@@ -235,14 +250,18 @@ describe.only('Rubrics', () => {
           rubric {
             id
             name
-            catalogueName
+            catalogueTitle {
+              defaultTitle
+              prefix
+              keyword
+              gender
+            }
           }
         }
       }
     `);
     expect(updateRubric.success).toBeTruthy();
     expect(updateRubric.rubric.name).toEqual(anotherRubric.name);
-    expect(updateRubric.rubric.catalogueName).toEqual(anotherRubric.catalogueName);
 
     // Should add attributes group to the second level rubric
     const {

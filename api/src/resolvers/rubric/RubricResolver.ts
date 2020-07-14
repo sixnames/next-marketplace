@@ -812,7 +812,7 @@ export class RubricResolver {
 
     return {
       defaultTitle: getLangField(defaultTitle, lang),
-      prefix: prefix ? getLangField(prefix, lang) : null,
+      prefix: prefix && prefix.length ? getLangField(prefix, lang) : null,
       keyword: getLangField(keyword, lang),
       gender,
     };

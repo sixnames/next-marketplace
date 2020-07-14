@@ -1,21 +1,16 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/getLangField';
-import { DEFAULT_LANG, MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP_COLORS } from '../../../config';
+import {
+  DEFAULT_LANG,
+  MOCK_OPTIONS_WINE_COLOR,
+  MOCK_OPTIONS_GROUP_COLORS,
+  GENDER_IT,
+} from '../../../config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 
-const addOptionToGroupMutation = (
-  groupId: string,
-  name = optionForGroup.name,
-  color: string | null = optionForGroup.color,
-) => `
-        mutation {
-          addOptionToGroup(
-            input: {
-              groupId: "${groupId}"
-              name: [{key: "ru", value: "${name}"}],
-              color: ${color ? `"${color}"` : color},
-            }
-          ) {
+const addOptionToGroupMutation = () => `
+        mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
+          addOptionToGroup(input: $input) {
             success
             message
             group {
@@ -25,27 +20,23 @@ const addOptionToGroupMutation = (
                 id
                 nameString
                 color
+                gender
+                variants {
+                  key
+                  value {
+                    key
+                    value
+                  }
+                }
               }
             }
           }
         }
       `;
 
-const updateOptionInGroupMutation = (
-  groupId: string,
-  optionId: string,
-  name: string,
-  color: string | null,
-) => `
-        mutation {
-          updateOptionInGroup(
-            input: {
-              groupId: "${groupId}"
-              optionId: "${optionId}"
-              name: [{key: "ru", value: "${name}"}],
-              color: "${color}"
-            }
-          ) {
+const updateOptionInGroupMutation = () => `
+        mutation UpdateOptionToGroup($input: UpdateOptionInGroupInput!) {
+          updateOptionInGroup(input: $input) {
             message
             success
             group {
@@ -55,6 +46,14 @@ const updateOptionInGroupMutation = (
                 id
                 nameString
                 color
+                gender
+                variants {
+                  key
+                  value {
+                    key
+                    value
+                  }
+                }
               }
             }
           }
@@ -76,7 +75,9 @@ describe('Options groups', () => {
           }
         }
       `);
-    const group = getAllOptionsGroups[0];
+
+    const colorsGroupName = getLangField(MOCK_OPTIONS_GROUP_COLORS.name, DEFAULT_LANG);
+    const group = getAllOptionsGroups.find(({ nameString }: any) => nameString === colorsGroupName);
     expect(getAllOptionsGroups).not.toBeNull();
 
     // Should return current options group
@@ -244,23 +245,64 @@ describe('Options groups', () => {
       data: {
         addOptionToGroup: { success: addOptionToGroupValidationFail },
       },
-    } = await mutate(addOptionToGroupMutation(group.id, '', null));
+    } = await mutate(addOptionToGroupMutation(), {
+      variables: {
+        input: {
+          groupId: group.id,
+          name: [{ key: DEFAULT_LANG, value: '' }],
+          color: null,
+          gender: GENDER_IT,
+        },
+      },
+    });
     expect(addOptionToGroupValidationFail).toBeFalsy();
 
     // Should return duplicate options group error on option update
-    const { data: optionDuplicate } = await mutate(
-      addOptionToGroupMutation(
-        group.id,
-        getLangField(MOCK_OPTIONS_WINE_COLOR[0].name, DEFAULT_LANG),
-        MOCK_OPTIONS_WINE_COLOR[0].color,
-      ),
-    );
+    const { data: optionDuplicate } = await mutate(addOptionToGroupMutation(), {
+      variables: {
+        input: {
+          groupId: group.id,
+          name: [
+            {
+              key: DEFAULT_LANG,
+              value: getLangField(MOCK_OPTIONS_WINE_COLOR[0].name, DEFAULT_LANG),
+            },
+          ],
+          color: MOCK_OPTIONS_WINE_COLOR[0].color,
+          gender: GENDER_IT,
+        },
+      },
+    });
     expect(optionDuplicate.addOptionToGroup.success).toBeFalsy();
 
     // Should create option and add it to the options group
     const {
       data: { addOptionToGroup },
-    } = await mutate(addOptionToGroupMutation(group.id));
+    } = await mutate(addOptionToGroupMutation(), {
+      variables: {
+        input: {
+          groupId: group.id,
+          name: [
+            {
+              key: DEFAULT_LANG,
+              value: optionForGroup.name,
+            },
+          ],
+          color: optionForGroup.color,
+          variants: [
+            {
+              key: GENDER_IT,
+              value: [
+                {
+                  key: DEFAULT_LANG,
+                  value: optionForGroup.name,
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
     expect(addOptionToGroup.success).toBeTruthy();
     const addedOption = addOptionToGroup.group.options[0];
 
@@ -269,7 +311,22 @@ describe('Options groups', () => {
       data: {
         updateOptionInGroup: { success: updateOptionInGroupFalseSuccess },
       },
-    } = await mutate(updateOptionInGroupMutation(group.id, addedOption.id, 'f', 'b'));
+    } = await mutate(updateOptionInGroupMutation(), {
+      variables: {
+        input: {
+          groupId: group.id,
+          optionId: addedOption.id,
+          name: [
+            {
+              key: DEFAULT_LANG,
+              value: 'f',
+            },
+          ],
+          color: 'b',
+          gender: GENDER_IT,
+        },
+      },
+    });
     expect(updateOptionInGroupFalseSuccess).toBeFalsy();
 
     // Should update option in options group
@@ -282,12 +339,39 @@ describe('Options groups', () => {
           success: updateOptionInGroupSuccess,
         },
       },
-    } = await mutate(
-      updateOptionInGroupMutation(group.id, addedOption.id, newOptionName, newOptionColor),
-    );
+    } = await mutate(updateOptionInGroupMutation(), {
+      variables: {
+        input: {
+          groupId: group.id,
+          optionId: addedOption.id,
+          name: [
+            {
+              key: DEFAULT_LANG,
+              value: newOptionName,
+            },
+          ],
+          variants: [
+            {
+              key: GENDER_IT,
+              value: [
+                {
+                  key: DEFAULT_LANG,
+                  value: newOptionName,
+                },
+              ],
+            },
+          ],
+          color: newOptionColor,
+          gender: GENDER_IT,
+        },
+      },
+    });
+
     const updatedOption = updatedOptions.find(({ id }: { id: string }) => id === addedOption.id);
     expect(updateOptionInGroupSuccess).toBeTruthy();
     expect(updatedOption.nameString).toEqual(newOptionName);
+    expect(updatedOption.variants[0].value[0].value).toEqual(newOptionName);
+    expect(updatedOption.gender).toEqual(GENDER_IT);
     expect(updatedOption.color).toEqual(newOptionColor);
 
     // Should delete option from options group

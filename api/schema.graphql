@@ -18,8 +18,10 @@ input AddAttributeToGroupInput {
 
 input AddOptionToGroupInput {
   color: String
+  gender: GenderEnum
   groupId: ID!
   name: [LangInput!]!
+  variants: [OptionVariantInput!]
 }
 
 input AddProductToRubricInput {
@@ -253,6 +255,11 @@ type OptionsGroupPayloadType {
 type OptionVariant {
   key: GenderEnum!
   value: [LanguageType!]!
+}
+
+input OptionVariantInput {
+  key: GenderEnum!
+  value: [LangInput!]!
 }
 
 type PaginatedProductsResponse {
@@ -556,9 +563,11 @@ input UpdateMetricInput {
 
 input UpdateOptionInGroupInput {
   color: String
+  gender: GenderEnum
   groupId: ID!
   name: [LangInput!]!
   optionId: ID!
+  variants: [OptionVariantInput!]
 }
 
 input UpdateOptionsGroupInput {

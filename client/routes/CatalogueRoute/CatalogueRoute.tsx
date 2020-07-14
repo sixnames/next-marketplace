@@ -24,14 +24,14 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products } = rubricData.getCatalogueData;
-  const { catalogueName, slug, filterAttributes } = rubric;
+  const { rubric, products, catalogueTitle } = rubricData.getCatalogueData;
+  const { slug, filterAttributes } = rubric;
   const { docs, totalPages } = products;
   const isFilterVisible = !!filterAttributes.length;
 
   return (
     <Inner>
-      <Title>{catalogueName}</Title>
+      <Title>{catalogueTitle}</Title>
 
       <div className={classes.Frame}>
         {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}

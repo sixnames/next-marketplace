@@ -52,7 +52,7 @@ function HeaderNav() {
         <div className={`${classes.rubrics} ${isRubricsOpen ? classes.rubricsActive : ''}`}>
           <div className={classes.rubricsFrame}>
             <ul className={classes.mainRubrics}>
-              {getRubricsTree.map(({ catalogueName, id, slug }) => {
+              {getRubricsTree.map(({ name, id, slug }) => {
                 const isCurrent = slug === catalogue;
                 return (
                   <li key={slug}>
@@ -69,7 +69,7 @@ function HeaderNav() {
                         onMouseEnter={() => setCurrentRubricHandler(id)}
                         className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
                       >
-                        {catalogueName}
+                        {name}
                       </a>
                     </Link>
                   </li>
@@ -78,7 +78,7 @@ function HeaderNav() {
             </ul>
 
             <div className={classes.subRubrics}>
-              {subRubrics.map(({ catalogueName, id, slug, children = [] }) => (
+              {subRubrics.map(({ name, id, slug, children = [] }) => (
                 <div key={id}>
                   <Link
                     href={{
@@ -89,13 +89,13 @@ function HeaderNav() {
                     }}
                   >
                     <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
-                      {catalogueName}
+                      {name}
                     </a>
                   </Link>
 
                   {!!children && (
                     <ul>
-                      {children.map(({ catalogueName, id, slug }) => (
+                      {children.map(({ name, id, slug }) => (
                         <li className={classes.subRubricsItem} key={id}>
                           <Link
                             href={{
@@ -106,7 +106,7 @@ function HeaderNav() {
                             }}
                           >
                             <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
-                              {catalogueName}
+                              {name}
                             </a>
                           </Link>
                         </li>

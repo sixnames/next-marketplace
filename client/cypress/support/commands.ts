@@ -83,8 +83,18 @@ Cypress.Commands.add('clearTestData', () => {
 });
 
 Cypress.Commands.add(
-  'auth',
-  ({ email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password, redirect }) => {
-    cy.visit(`/test-sign-in?email=${email}&password=${password}&redirect=${redirect}`);
+  'testAuth',
+  (redirect = '/', email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password) => {
+    const testAuthURI = `${apiHost}/test-sign-in`;
+    cy.request({
+      method: 'GET',
+      url: testAuthURI,
+      qs: {
+        email,
+        password,
+      },
+    }).then(() => {
+      cy.visit(redirect);
+    });
   },
 );

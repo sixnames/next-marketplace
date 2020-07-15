@@ -9,6 +9,9 @@ import {
   DEFAULT_LANG,
   MONGO_URL,
   LANG_COOKIE_KEY,
+  ROLE_ADMIN,
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
@@ -29,6 +32,7 @@ import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataRe
 import cookie from 'cookie';
 import path from 'path';
 import cors from 'cors';
+import { attemptSignIn } from './utils/auth';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -77,14 +81,37 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   });
 
   // Test data
+  // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
     await createTestData();
     res.send('test data created');
   });
+
   app.get('/clear-test-data', async (_, res) => {
     await clearTestData();
     res.send('test data removed');
   });
+
+  app.get('/test-sign-in', async (req, res) => {
+    const lang = req.session!.lang;
+    const { email, password } = req.query;
+    const { user, message } = await attemptSignIn(`${email}`, `${password}`, lang);
+
+    if (!user) {
+      res.status(401);
+      res.send(message);
+      return;
+    }
+
+    req.session!.userId = user.id;
+    req.session!.userRole = user.role;
+    req.session!.isAdmin = user.role === ROLE_ADMIN;
+    req.session!.isCustomer = user.role === ROLE_CUSTOMER;
+    req.session!.isManager = user.role === ROLE_MANAGER;
+
+    res.send('signed in');
+  });
+  // end of Test data
 
   // Assets
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), async (req, res) => {

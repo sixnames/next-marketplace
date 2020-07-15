@@ -22,7 +22,7 @@ const optionNewColor = 'fafafa';
 describe('Options Groups', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

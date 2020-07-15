@@ -22,7 +22,7 @@ const mockAttributesGroupForDelete = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].va
 describe('Rubric attributes', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

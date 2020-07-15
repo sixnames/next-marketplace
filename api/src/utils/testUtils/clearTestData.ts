@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { ADMIN_NAME } from '../../config';
-// TODO make this method safe
+
 export const clearTestDataHandler = async () => {
   const models = mongoose.modelNames();
 

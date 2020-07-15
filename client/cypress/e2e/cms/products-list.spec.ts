@@ -40,7 +40,7 @@ const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 describe('Products list', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

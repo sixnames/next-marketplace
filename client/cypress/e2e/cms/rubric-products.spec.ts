@@ -41,7 +41,7 @@ const modal = 'add-product-to-rubric-modal';
 describe('Rubric products', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

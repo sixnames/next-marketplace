@@ -12,7 +12,7 @@ const mockNewRubricVariantName = 'new_variant';
 describe('Rubric variants', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

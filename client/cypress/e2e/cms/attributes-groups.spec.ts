@@ -19,7 +19,7 @@ const fakeName = 'f';
 describe('Attributes Groups', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {

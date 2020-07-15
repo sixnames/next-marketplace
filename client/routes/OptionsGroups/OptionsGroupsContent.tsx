@@ -7,6 +7,10 @@ import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutConten
 import Table from '../../components/Table/Table';
 import Spinner from '../../components/Spinner/Spinner';
 import {
+  LanguageType,
+  Maybe,
+  Option,
+  OptionVariant,
   useDeleteOptionFromGroupMutation,
   useGetOptionsGroupQuery,
   useUpdateOptionInGroupMutation,
@@ -14,13 +18,25 @@ import {
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { LangInterface, ObjectType } from '../../types';
+import { ObjectType } from '../../types';
 import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
 import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
+import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
 
 interface OptionsGroupsContentInterface {
   query?: ObjectType;
 }
+
+export type OptionInGroupType = Pick<Option, 'id' | 'nameString' | 'color' | 'gender'> & {
+  name: Array<Pick<LanguageType, 'key' | 'value'>>;
+  variants?: Maybe<
+    Array<
+      Pick<OptionVariant, 'key'> & {
+        value: Array<Pick<LanguageType, 'key' | 'value'>>;
+      }
+    >
+  >;
+};
 
 const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query = {} }) => {
   const { group } = query;
@@ -61,18 +77,17 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     });
   }
 
-  function updateOptionInGroupHandler(id: string, nameString: string, color?: string) {
-    showModal({
+  function updateOptionInGroupHandler(id: string, option: OptionInGroupType) {
+    showModal<OptionInGroupModalInterface>({
       type: OPTION_IN_GROUP_MODAL,
       props: {
-        oldName: nameString,
-        color,
-        confirm: ({ name, color }: { name: LangInterface[]; color?: string }) => {
+        option,
+        confirm: (values) => {
           showLoading();
           return updateOptionInGroupMutation({
             awaitRefetchQueries: true,
             refetchQueries: [{ query: OPTIONS_GROUP_QUERY, variables: { id: group } }],
-            variables: { input: { groupId: group, optionId: id, name, color } },
+            variables: { input: { ...values, optionId: id, groupId: group } },
           });
         },
       },
@@ -106,12 +121,14 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
       key: 'id',
       title: '',
       textAlign: 'right',
-      render: (id: string, { nameString, color }: { nameString: string; color?: string }) => {
+      render: (id: string, option: OptionInGroupType) => {
+        const { nameString } = option;
+
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать опцию'}
-            updateHandler={() => updateOptionInGroupHandler(id, nameString, color)}
+            updateHandler={() => updateOptionInGroupHandler(id, option)}
             deleteTitle={'Удалить опцию'}
             deleteHandler={() => deleteOptionFromGroupHandler(id, nameString)}
             testId={`${nameString}-option`}

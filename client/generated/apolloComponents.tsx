@@ -39,6 +39,7 @@ export type Query = {
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
   getCatalogueData?: Maybe<CatalogueData>;
+  getGenderOptions: Array<GenderOption>;
 };
 
 
@@ -497,6 +498,12 @@ export type CatalogueData = {
   rubric: Rubric;
   products: PaginatedProductsResponse;
   catalogueTitle: Scalars['String'];
+};
+
+export type GenderOption = {
+   __typename?: 'GenderOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
 };
 
 export type Mutation = {
@@ -1842,7 +1849,18 @@ export type GetOptionsGroupQuery = (
     & Pick<OptionsGroup, 'id' | 'nameString'>
     & { options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, 'id' | 'nameString' | 'color'>
+      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, variants?: Maybe<Array<(
+        { __typename?: 'OptionVariant' }
+        & Pick<OptionVariant, 'key'>
+        & { value: Array<(
+          { __typename?: 'LanguageType' }
+          & Pick<LanguageType, 'key' | 'value'>
+        )> }
+      )>> }
     )> }
   )> }
 );
@@ -1918,6 +1936,17 @@ export type InitialSiteQueryQuery = (
       & SiteRubricFragmentFragment
     )> }
     & SiteRubricFragmentFragment
+  )> }
+);
+
+export type GetGenderOptionsQueryVariables = {};
+
+
+export type GetGenderOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
   )> }
 );
 
@@ -3739,8 +3768,20 @@ export const GetOptionsGroupDocument = gql`
     nameString
     options {
       id
+      name {
+        key
+        value
+      }
       nameString
       color
+      gender
+      variants {
+        key
+        value {
+          key
+          value
+        }
+      }
     }
   }
 }
@@ -3922,3 +3963,36 @@ export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
 export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
 export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
+export const GetGenderOptionsDocument = gql`
+    query GetGenderOptions {
+  getGenderOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetGenderOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetGenderOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGenderOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGenderOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGenderOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+      }
+export function useGetGenderOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+        }
+export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
+export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
+export type GetGenderOptionsQueryResult = ApolloReactCommon.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;

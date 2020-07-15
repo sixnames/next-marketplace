@@ -41,7 +41,7 @@ export const GENDER_SHE = 'she';
 export const GENDER_HE = 'he';
 export const GENDER_IT = 'it';
 
-export const GENDER_ENUMS = [GENDER_SHE, GENDER_HE, GENDER_IT];
+export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT];
 
 export const GENDER_LIST = [
   { id: GENDER_SHE, nameString: 'Женский' },

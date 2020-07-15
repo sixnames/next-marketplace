@@ -175,6 +175,11 @@ enum GenderEnum {
   she
 }
 
+type GenderOption {
+  id: String!
+  nameString: String!
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -414,6 +419,7 @@ type Query {
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
+  getGenderOptions: [GenderOption!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup

@@ -789,6 +789,13 @@ export type AddOptionToGroupInput = {
   groupId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
+};
+
+export type OptionVariantInput = {
+  key: GenderEnum;
+  value: Array<LangInput>;
 };
 
 export type UpdateOptionInGroupInput = {
@@ -796,6 +803,8 @@ export type UpdateOptionInGroupInput = {
   optionId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
 };
 
 export type DeleteOptionFromGroupInput = {
@@ -868,6 +877,12 @@ export type AddAttributeToGroupInput = {
   variant: AttributeVariantEnum;
   options?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
+};
+
+export type AttributePositioningInTitleInput = {
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
 };
 
 export type UpdateAttributeInGroupInput = {
@@ -877,6 +892,7 @@ export type UpdateAttributeInGroupInput = {
   variant: AttributeVariantEnum;
   options?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
 };
 
 export type DeleteAttributeFromGroupInput = {

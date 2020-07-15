@@ -6,26 +6,48 @@ import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
-import { LangInterface } from '../../../types';
 import { optionInGroupSchema } from '../../../validation';
-
-interface ValuesInterface {
-  name: LangInterface[];
-  color?: string | null;
-}
+import {
+  AddOptionToGroupInput,
+  GenderEnum,
+  OptionVariantInput,
+} from '../../../generated/apolloComponents';
+import { DEFAULT_LANG, GENDER_ENUMS, GENDER_HE, GENDER_SHE } from '../../../config';
+import InputLine from '../../FormElements/Input/InputLine';
 
 interface OptionInGroupModalInterface {
-  confirm: (values: ValuesInterface) => void;
+  confirm: (values: Omit<AddOptionToGroupInput, 'groupId'>) => void;
   oldName?: string;
   color?: string;
+  variants?: OptionVariantInput[];
+  gender: GenderEnum;
 }
 
 const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
   confirm,
   oldName = '',
   color = '',
+  variants,
+  gender,
 }) => {
   const { hideModal } = useAppContext();
+
+  const variantsTemplate = GENDER_ENUMS.map((gender) => {
+    return {
+      key: gender as GenderEnum,
+      value: [{ key: DEFAULT_LANG, value: '' }],
+    };
+  });
+
+  function getGenderTranslation(gender: string) {
+    if (gender === GENDER_HE) {
+      return 'Мужской род';
+    }
+    if (gender === GENDER_SHE) {
+      return 'Женский род';
+    }
+    return 'Средний род';
+  }
 
   return (
     <ModalFrame>
@@ -41,12 +63,11 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
             },
           ],
           color,
+          variants: variants || variantsTemplate,
+          gender,
         }}
-        onSubmit={({ name, color }) => {
-          confirm({
-            name,
-            color: color ? color : null,
-          });
+        onSubmit={(values) => {
+          confirm(values);
         }}
       >
         {({ values }) => {
@@ -71,6 +92,22 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                 prefix={'hash'}
                 showInlineError
               />
+
+              <InputLine name={'variants'} label={'Склонение названия по родам'} labelTag={'div'}>
+                {values.variants.map(({ key, value }, variantIndex) => {
+                  return value.map((_, langIndex) => {
+                    return (
+                      <FormikInput
+                        key={`${key}-${langIndex}`}
+                        label={getGenderTranslation(key)}
+                        name={`variants[${variantIndex}].value[${langIndex}].value`}
+                        testId={`option-${key}`}
+                        showInlineError
+                      />
+                    );
+                  });
+                })}
+              </InputLine>
 
               <ModalButtons>
                 <Button type={'submit'} testId={'option-submit'}>

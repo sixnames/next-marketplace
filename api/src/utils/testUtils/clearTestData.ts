@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
-import { ADMIN_NAME } from '../../config';
+import createInitialData from '../createInitialData';
 
 export const clearTestDataHandler = async () => {
-  const models = mongoose.modelNames();
+  await mongoose.connection.db.dropDatabase();
+  await createInitialData();
+  /*const models = mongoose.modelNames();
 
   for await (const model of models) {
     if (model === 'User') {
@@ -14,7 +16,7 @@ export const clearTestDataHandler = async () => {
     } else {
       await mongoose.model(model).deleteMany({});
     }
-  }
+  }*/
 };
 
 const clearTestData = async () => {

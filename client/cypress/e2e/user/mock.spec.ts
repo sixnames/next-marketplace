@@ -5,7 +5,7 @@ describe('Mocks', () => {
     cy.createTestData();
   });
 
-  it.only('Smoke test', () => {
+  it('Smoke test', () => {
     cy.testAuth();
     cy.location('pathname').should('eq', '/');
     cy.getByCy(`user-nav-trigger`).should('exist');

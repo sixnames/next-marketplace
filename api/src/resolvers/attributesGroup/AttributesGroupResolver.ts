@@ -222,10 +222,8 @@ export class AttributesGroupResolver {
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      console.log('before lang');
       const lang = ctx.req.session!.lang;
       await addAttributeToGroupSchema.validate(input);
-      console.log('input destruct');
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
 
@@ -236,14 +234,16 @@ export class AttributesGroupResolver {
         };
       }
 
-      console.log('before nameValues');
       const nameValues = input.name.map(({ value }) => value);
+      console.log('before existingAttributes');
       const existingAttributes = await AttributeModel.exists({
         _id: { $in: group.attributes },
         'name.value': {
           $in: nameValues,
         },
       });
+      console.log('after existingAttributes');
+      console.log(JSON.stringify(group, null, 2));
       if (existingAttributes) {
         return {
           success: false,
@@ -252,7 +252,9 @@ export class AttributesGroupResolver {
       }
 
       const slug = generateDefaultLangSlug(values.name);
+      console.log('before attribute create');
       const attribute = await AttributeModel.create({ ...values, slug });
+      console.log('after attribute create');
       if (!attribute) {
         return {
           success: false,
@@ -260,6 +262,7 @@ export class AttributesGroupResolver {
         };
       }
 
+      console.log('before group update');
       const updatedGroup = await AttributesGroupModel.findByIdAndUpdate(
         groupId,
         {
@@ -269,7 +272,7 @@ export class AttributesGroupResolver {
         },
         { new: true },
       );
-
+      console.log('after group update');
       if (!updatedGroup) {
         return {
           success: false,

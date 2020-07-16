@@ -10,17 +10,27 @@ import Button from '../../Buttons/Button';
 import {
   AddAttributeToGroupInput,
   Attribute,
+  AttributePositionInTitleEnum,
   AttributeVariantEnum,
+  UpdateAttributeInGroupInput,
   useGetNewAttributeOptionsQuery,
 } from '../../../generated/apolloComponents';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { attributeInGroupSchema } from '../../../validation';
-import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../../config';
+import {
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_SELECT,
+  DEFAULT_LANG,
+} from '../../../config';
 
-interface AddAttributeToGroupModalInterface {
+export interface AddAttributeToGroupModalInterface {
   attribute?: Attribute;
-  confirm: (values: Omit<AddAttributeToGroupInput, 'groupId'>) => void;
+  confirm: (
+    values:
+      | Omit<AddAttributeToGroupInput, 'groupId'>
+      | Omit<UpdateAttributeInGroupInput, 'groupId' | 'attributeId'>,
+  ) => void;
 }
 
 const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
@@ -40,30 +50,50 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
     );
   }
 
-  const { getAllMetrics, getAllOptionsGroups, getAttributeVariants } = data;
+  const {
+    getAllMetrics,
+    getAllOptionsGroups,
+    getAttributeVariants,
+    getAttributePositioningOptions,
+  } = data;
 
   const initialValues = attribute
     ? {
-        name: [
-          {
-            key: 'ru',
-            value: attribute.nameString,
-          },
-        ],
+        name: attribute.name.map(({ key, value }) => ({
+          key,
+          value,
+        })),
         variant: attribute.variant,
         metric: attribute.metric ? attribute.metric.id : null,
         options: attribute.options ? attribute.options.id : null,
+        positioningInTitle: attribute.positioningInTitle
+          ? attribute.positioningInTitle.map(({ key, value }) => ({
+              key,
+              value,
+            }))
+          : [
+              {
+                key: DEFAULT_LANG,
+                value: '' as AttributePositionInTitleEnum,
+              },
+            ],
       }
     : {
         name: [
           {
-            key: 'ru',
+            key: DEFAULT_LANG,
             value: '',
           },
         ],
         variant: '' as AttributeVariantEnum,
         metric: null,
         options: null,
+        positioningInTitle: [
+          {
+            key: DEFAULT_LANG,
+            value: '' as AttributePositionInTitleEnum,
+          },
+        ],
       };
 
   return (
@@ -73,17 +103,28 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       <Formik
         validationSchema={attributeInGroupSchema}
         initialValues={initialValues}
-        onSubmit={(values) => confirm(values)}
+        onSubmit={(values) => {
+          const positioningInTitle =
+            values.variant === ATTRIBUTE_TYPE_SELECT ||
+            values.variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT
+              ? values.positioningInTitle
+              : null;
+
+          confirm({
+            ...values,
+            positioningInTitle,
+          });
+        }}
       >
         {({ values }) => {
-          const { variant } = values;
+          const { variant, positioningInTitle } = values;
 
           return (
             <Form>
-              {values.name.map((_, index) => {
+              {values.name.map(({ key }, index) => {
                 return (
                   <FormikInput
-                    key={index}
+                    key={key}
                     isRequired
                     label={'Название'}
                     name={`name[${index}].value`}
@@ -103,6 +144,14 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 showInlineError
               />
 
+              <FormikSelect
+                firstOption={'Не выбрано'}
+                label={'Единица измерения'}
+                name={'metric'}
+                options={getAllMetrics || []}
+                testId={'attribute-metrics'}
+              />
+
               {(variant === ATTRIBUTE_TYPE_SELECT ||
                 variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) && (
                 <FormikSelect
@@ -116,13 +165,21 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 />
               )}
 
-              <FormikSelect
-                firstOption={'Не выбрано'}
-                label={'Единица измерения'}
-                name={'metric'}
-                options={getAllMetrics || []}
-                testId={'attribute-metrics'}
-              />
+              {(variant === ATTRIBUTE_TYPE_SELECT || variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) &&
+                positioningInTitle.map(({ key }, index) => {
+                  return (
+                    <FormikSelect
+                      key={key}
+                      isRequired
+                      showInlineError
+                      firstOption={'Не выбрано'}
+                      label={'Позиционирование в заголовке'}
+                      name={`positioningInTitle[${index}].value`}
+                      options={getAttributePositioningOptions}
+                      testId={'attribute-position'}
+                    />
+                  );
+                })}
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

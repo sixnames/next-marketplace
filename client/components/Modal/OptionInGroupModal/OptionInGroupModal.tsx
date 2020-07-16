@@ -124,6 +124,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
 
               <FormikSelect
                 name={'gender'}
+                firstOption={'Не выбрано'}
                 options={getGenderOptions}
                 testId={`option-gender`}
                 label={'Род названия'}

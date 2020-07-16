@@ -27,7 +27,7 @@ describe('Options Groups', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should CRUD options group', () => {

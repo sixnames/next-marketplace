@@ -40,6 +40,7 @@ export type Query = {
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
   getCatalogueData?: Maybe<CatalogueData>;
   getGenderOptions: Array<GenderOption>;
+  getAttributePositioningOptions: Array<AttributePositioningOption>;
 };
 
 
@@ -502,6 +503,12 @@ export type CatalogueData = {
 
 export type GenderOption = {
    __typename?: 'GenderOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type AttributePositioningOption = {
+   __typename?: 'AttributePositioningOption';
   id: Scalars['String'];
   nameString: Scalars['String'];
 };
@@ -1768,7 +1775,13 @@ export type GetAttributesGroupQuery = (
     & { attributes: Array<(
       { __typename?: 'Attribute' }
       & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-      & { options?: Maybe<(
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, positioningInTitle?: Maybe<Array<(
+        { __typename?: 'AttributePositioningInTitle' }
+        & Pick<AttributePositioningInTitle, 'key' | 'value'>
+      )>>, options?: Maybe<(
         { __typename?: 'OptionsGroup' }
         & Pick<OptionsGroup, 'id' | 'nameString'>
       )>, metric?: Maybe<(
@@ -1834,7 +1847,10 @@ export type GetNewAttributeOptionsQuery = (
   )>>, getAttributeVariants?: Maybe<Array<(
     { __typename?: 'AttributeVariant' }
     & Pick<AttributeVariant, 'id' | 'nameString'>
-  )>> }
+  )>>, getAttributePositioningOptions: Array<(
+    { __typename?: 'AttributePositioningOption' }
+    & Pick<AttributePositioningOption, 'id' | 'nameString'>
+  )> }
 );
 
 export type GetOptionsGroupQueryVariables = {
@@ -3592,8 +3608,16 @@ export const GetAttributesGroupDocument = gql`
     nameString
     attributes {
       id
+      name {
+        key
+        value
+      }
       nameString
       variant
+      positioningInTitle {
+        key
+        value
+      }
       options {
         id
         nameString
@@ -3731,6 +3755,10 @@ export const GetNewAttributeOptionsDocument = gql`
     nameString
   }
   getAttributeVariants {
+    id
+    nameString
+  }
+  getAttributePositioningOptions {
     id
     nameString
   }

@@ -8,3 +8,12 @@ export class GenderOption {
   @Field((_type) => String)
   readonly nameString: string;
 }
+
+@ObjectType()
+export class AttributePositioningOption {
+  @Field((_type) => String)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly nameString: string;
+}

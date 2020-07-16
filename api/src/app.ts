@@ -33,7 +33,10 @@ import cookie from 'cookie';
 import path from 'path';
 import cors from 'cors';
 import { attemptSignIn } from './utils/auth';
-import { GendersListResolver } from './resolvers/selects/SelectsResolver';
+import {
+  AttributePositioningListResolver,
+  GendersListResolver,
+} from './resolvers/selects/SelectsResolver';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -50,6 +53,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
       ProductResolver,
       CatalogueDataResolver,
       GendersListResolver,
+      AttributePositioningListResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),

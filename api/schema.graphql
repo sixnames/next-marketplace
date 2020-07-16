@@ -63,6 +63,11 @@ input AttributePositioningInTitleInput {
   value: AttributePositionInTitleEnum!
 }
 
+type AttributePositioningOption {
+  id: String!
+  nameString: String!
+}
+
 """
 Instruction for positioning checked attribute values in catalogue title
 """
@@ -415,6 +420,7 @@ type Query {
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
+  getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData

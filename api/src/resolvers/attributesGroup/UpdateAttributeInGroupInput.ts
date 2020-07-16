@@ -1,6 +1,7 @@
 import { Field, ID, InputType } from 'type-graphql';
 import { AttributeVariantEnum } from '../../entities/Attribute';
 import { LangInput } from '../common/LangInput';
+import { AttributePositioningInTitleInput } from './AddAttributeToGroupInput';
 
 @InputType()
 export class UpdateAttributeInGroupInput {
@@ -21,4 +22,7 @@ export class UpdateAttributeInGroupInput {
 
   @Field((_type) => ID, { nullable: true })
   metric: string;
+
+  @Field((_type) => [AttributePositioningInTitleInput], { nullable: true })
+  positioningInTitle?: AttributePositioningInTitleInput[];
 }

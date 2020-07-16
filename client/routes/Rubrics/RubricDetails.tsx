@@ -15,7 +15,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
-import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
+import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE, DEFAULT_LANG } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
 import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
@@ -24,7 +24,7 @@ interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
     awaitRefetchQueries: true,
@@ -49,12 +49,17 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
     return <RequestError />;
   }
 
-  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, name, catalogueName } = rubric;
+  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, name, catalogueTitle } = rubric;
 
   const initialValues = {
     id,
-    name: [{ key: 'ru', value: name || '' }],
-    catalogueName: [{ key: 'ru', value: catalogueName || '' }],
+    name: [{ key: DEFAULT_LANG, value: name || '' }],
+    catalogueTitle: {
+      defaultTitle: [{ key: DEFAULT_LANG, value: catalogueTitle.defaultTitle }],
+      prefix: [{ key: DEFAULT_LANG, value: catalogueTitle.prefix || '' }],
+      keyword: [{ key: DEFAULT_LANG, value: catalogueTitle.keyword }],
+      gender: catalogueTitle.gender,
+    },
     variant: variant ? variant.id : null,
   };
 
@@ -85,10 +90,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
                 <div className={classes.section}>
                   <Accordion title={'Основная информация'} isOpen>
                     <div className={classes.content}>
-                      {values.name.map((_, index) => {
+                      {values.name.map(({ key }, index) => {
                         return (
                           <FormikInput
-                            key={index}
+                            key={key}
                             name={`name[${index}].value`}
                             label={'Название'}
                             testId={'rubric-name'}
@@ -99,19 +104,56 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric = {} }) => {
                         );
                       })}
 
-                      {values.catalogueName.map((_, index) => {
+                      {values.catalogueTitle.defaultTitle.map(({ key }, index) => {
                         return (
                           <FormikInput
-                            key={index}
-                            name={`catalogueName[${index}].value`}
-                            label={'Название каталога'}
-                            testId={'catalogue-name'}
+                            key={key}
+                            name={`catalogueTitle.defaultTitle[${index}].value`}
+                            label={'Заголовок каталога'}
+                            testId={'rubric-default-title'}
                             showInlineError
                             isRequired
                             isHorizontal
                           />
                         );
                       })}
+
+                      {values.catalogueTitle.prefix.map(({ key }, index) => {
+                        return (
+                          <FormikInput
+                            key={key}
+                            name={`catalogueTitle.prefix[${index}].value`}
+                            label={'Префикс заголовка каталога'}
+                            testId={'rubric-title-prefix'}
+                            isHorizontal
+                          />
+                        );
+                      })}
+
+                      {values.catalogueTitle.keyword.map(({ key }, index) => {
+                        return (
+                          <FormikInput
+                            key={key}
+                            name={`catalogueTitle.keyword[${index}].value`}
+                            label={'Ключевое слово заголовка каталога'}
+                            testId={'rubric-title-keyword'}
+                            showInlineError
+                            isRequired
+                            isHorizontal
+                          />
+                        );
+                      })}
+
+                      <FormikSelect
+                        firstOption={'Не назначено'}
+                        name={`catalogueTitle.gender`}
+                        label={'Род ключевого слова заголовка каталога'}
+                        testId={'rubric-title-gender'}
+                        showInlineError
+                        isRequired
+                        options={data.getGenderOptions || []}
+                        isHorizontal
+                      />
 
                       {isFirstLevel && (
                         <FormikSelect

@@ -3,10 +3,16 @@ import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
 import { LanguageType } from './common';
-import { ATTRIBUTE_TYPES_ENUMS } from '../config';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
+  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_TYPES_ENUMS,
+} from '../config';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { Option } from './Option';
 
+// Attribute variant
 export enum AttributeVariantEnum {
   select = 'select',
   multipleSelect = 'multipleSelect',
@@ -14,11 +20,37 @@ export enum AttributeVariantEnum {
   number = 'number',
 }
 
+// Attribute positioning in catalogue title
 registerEnumType(AttributeVariantEnum, {
   name: 'AttributeVariantEnum',
-  description: 'Attribute type enum',
+  description: 'Attribute variant enum',
 });
 
+export enum AttributePositionInTitleEnum {
+  begin = 'begin',
+  end = 'end',
+  beforeKeyword = 'beforeKeyword',
+  afterKeyword = 'afterKeyword',
+  replaceKeyword = 'replaceKeyword',
+}
+
+registerEnumType(AttributePositionInTitleEnum, {
+  name: 'AttributePositionInTitleEnum',
+  description: 'Instruction for positioning checked attribute values in catalogue title',
+});
+
+@ObjectType()
+export class AttributePositioningInTitle {
+  @Field(() => String)
+  @prop({ required: true })
+  public key: string;
+
+  @Field(() => AttributePositionInTitleEnum)
+  @prop({ required: true, enum: ATTRIBUTE_POSITION_IN_TITLE_ENUMS })
+  public value: AttributePositionInTitleEnum;
+}
+
+// Option catalogue filter form
 @ObjectType()
 export class AttributeFilterOption {
   @Field((_type) => Option)
@@ -37,7 +69,7 @@ export class Attribute {
   @Property({ required: true })
   slug: string;
 
-  @Field(() => LanguageType)
+  @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 
@@ -56,6 +88,17 @@ export class Attribute {
     description: 'list of options with products counter for catalogue filter',
   })
   readonly filterOptions: AttributeFilterOption[];
+
+  @Field((_type) => [AttributePositioningInTitle], { nullable: true })
+  @prop({
+    type: AttributePositioningInTitle,
+    required: function (this: Attribute) {
+      return (
+        this.variant === ATTRIBUTE_TYPE_SELECT || this.variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT
+      );
+    },
+  })
+  positioningInTitle?: AttributePositioningInTitle[];
 
   @Field((_type) => Metric, { nullable: true })
   @prop({ ref: Metric })

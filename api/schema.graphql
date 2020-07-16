@@ -13,13 +13,16 @@ input AddAttributeToGroupInput {
   metric: ID
   name: [LangInput!]!
   options: ID
+  positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }
 
 input AddOptionToGroupInput {
   color: String
+  gender: GenderEnum
   groupId: ID!
   name: [LangInput!]!
+  variants: [OptionVariantInput!]
 }
 
 input AddProductToRubricInput {
@@ -40,6 +43,7 @@ type Attribute {
   name: [LanguageType!]!
   nameString: String!
   options: OptionsGroup
+  positioningInTitle: [AttributePositioningInTitle!]
   slug: String!
   variant: AttributeVariantEnum!
 }
@@ -47,6 +51,32 @@ type Attribute {
 type AttributeFilterOption {
   counter: Int!
   option: Option!
+}
+
+type AttributePositioningInTitle {
+  key: String!
+  value: AttributePositionInTitleEnum!
+}
+
+input AttributePositioningInTitleInput {
+  key: String!
+  value: AttributePositionInTitleEnum!
+}
+
+type AttributePositioningOption {
+  id: String!
+  nameString: String!
+}
+
+"""
+Instruction for positioning checked attribute values in catalogue title
+"""
+enum AttributePositionInTitleEnum {
+  afterKeyword
+  beforeKeyword
+  begin
+  end
+  replaceKeyword
 }
 
 type AttributesGroup {
@@ -67,7 +97,7 @@ type AttributeVariant {
   nameString: String!
 }
 
-"""Attribute type enum"""
+"""Attribute variant enum"""
 enum AttributeVariantEnum {
   multipleSelect
   number
@@ -76,6 +106,7 @@ enum AttributeVariantEnum {
 }
 
 type CatalogueData {
+  catalogueTitle: String!
   products: PaginatedProductsResponse!
   rubric: Rubric!
 }
@@ -103,7 +134,7 @@ input CreateProductInput {
 }
 
 input CreateRubricInput {
-  catalogueName: [LangInput!]!
+  catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
   parent: ID
   variant: ID
@@ -140,6 +171,18 @@ input DeleteOptionFromGroupInput {
 input DeleteProductFromRubricInput {
   productId: ID!
   rubricId: ID!
+}
+
+"""List of gender enums"""
+enum GenderEnum {
+  he
+  it
+  she
+}
+
+type GenderOption {
+  id: String!
+  nameString: String!
 }
 
 input LangInput {
@@ -204,10 +247,12 @@ type Mutation {
 
 type Option {
   color: String
+  gender: GenderEnum
   id: ID!
   name: [LanguageType!]!
   nameString: String!
   slug: String!
+  variants: [OptionVariant!]
 }
 
 type OptionsGroup {
@@ -221,6 +266,16 @@ type OptionsGroupPayloadType {
   group: OptionsGroup
   message: String!
   success: Boolean!
+}
+
+type OptionVariant {
+  key: GenderEnum!
+  value: [LanguageType!]!
+}
+
+input OptionVariantInput {
+  key: GenderEnum!
+  value: [LangInput!]!
 }
 
 type PaginatedProductsResponse {
@@ -365,10 +420,12 @@ type Query {
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
+  getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
+  getGenderOptions: [GenderOption!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
@@ -386,7 +443,7 @@ type Rubric {
   active: Boolean!
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueName: String!
+  catalogueTitle: RubricCatalogueTitleField!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [Attribute!]!
@@ -407,6 +464,27 @@ type RubricAttributesGroup {
   showInCatalogueFilter: [ID!]!
 }
 
+type RubricCatalogueTitle {
+  defaultTitle: [LanguageType!]!
+  gender: GenderEnum!
+  keyword: [LanguageType!]!
+  prefix: [LanguageType!]
+}
+
+type RubricCatalogueTitleField {
+  defaultTitle: String!
+  gender: GenderEnum!
+  keyword: String!
+  prefix: String
+}
+
+input RubricCatalogueTitleInput {
+  defaultTitle: [LangInput!]!
+  gender: GenderEnum!
+  keyword: [LangInput!]!
+  prefix: [LangInput!]
+}
+
 type RubricCity {
   key: String!
   node: RubricNode!
@@ -415,7 +493,7 @@ type RubricCity {
 type RubricNode {
   active: Boolean
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueName: [LanguageType!]!
+  catalogueTitle: RubricCatalogueTitle!
   level: Int!
   name: [LanguageType!]!
   parent: Rubric
@@ -482,6 +560,7 @@ input UpdateAttributeInGroupInput {
   metric: ID
   name: [LangInput!]!
   options: ID
+  positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }
 
@@ -503,9 +582,11 @@ input UpdateMetricInput {
 
 input UpdateOptionInGroupInput {
   color: String
+  gender: GenderEnum
   groupId: ID!
   name: [LangInput!]!
   optionId: ID!
+  variants: [OptionVariantInput!]
 }
 
 input UpdateOptionsGroupInput {
@@ -525,7 +606,7 @@ input UpdateProductInput {
 }
 
 input UpdateRubricInput {
-  catalogueName: [LangInput!]!
+  catalogueTitle: RubricCatalogueTitleInput!
   id: ID!
   name: [LangInput!]!
   parent: ID

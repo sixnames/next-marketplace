@@ -1,10 +1,10 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop as Property, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop, prop as Property, Ref } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { LanguageType } from './common';
+import { GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
-import { RUBRIC_LEVEL_ONE } from '../config';
+import { GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
 
 @ObjectType()
@@ -25,6 +25,40 @@ export class RubricAttributesGroup {
   node: string;
 }
 
+@ObjectType()
+export class RubricCatalogueTitle {
+  @Field(() => [LanguageType])
+  @Property({ type: LanguageType, required: true })
+  defaultTitle: LanguageType[];
+
+  @Field(() => [LanguageType], { nullable: true })
+  @Property({ type: LanguageType })
+  prefix?: LanguageType[];
+
+  @Field(() => [LanguageType])
+  @Property({ type: LanguageType, required: true })
+  keyword: LanguageType[];
+
+  @Field((_type) => GenderEnum)
+  @prop({ required: true, enum: GENDER_ENUMS, type: String })
+  gender: GenderEnum;
+}
+
+@ObjectType()
+export class RubricCatalogueTitleField {
+  @Field(() => String)
+  readonly defaultTitle: string;
+
+  @Field(() => String, { nullable: true })
+  readonly prefix?: string | null;
+
+  @Field(() => String)
+  readonly keyword: string;
+
+  @Field((_type) => GenderEnum)
+  readonly gender: GenderEnum;
+}
+
 // Rubric data in current city
 @ObjectType()
 export class RubricNode {
@@ -32,9 +66,9 @@ export class RubricNode {
   @Property({ type: LanguageType, required: true })
   name: LanguageType[];
 
-  @Field(() => [LanguageType])
-  @Property({ type: LanguageType, required: true })
-  catalogueName: LanguageType[];
+  @Field(() => RubricCatalogueTitle)
+  @Property({ type: RubricCatalogueTitle, required: true })
+  catalogueTitle: RubricCatalogueTitle;
 
   @Field(() => String)
   @Property({ required: true })
@@ -81,8 +115,8 @@ export class Rubric {
   @Field(() => String)
   readonly name: string;
 
-  @Field(() => String)
-  readonly catalogueName: string;
+  @Field(() => RubricCatalogueTitleField)
+  readonly catalogueTitle: RubricCatalogueTitleField;
 
   @Field(() => String)
   readonly slug: string;

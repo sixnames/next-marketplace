@@ -1,7 +1,6 @@
 import React from 'react';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import {
-  AddOptionToGroupInput,
   useAddOptionToGroupMutation,
   useDeleteOptionsGroupMutation,
   useUpdateOptionsGroupMutation,
@@ -11,6 +10,8 @@ import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
 import useRouterQuery from '../../hooks/useRouterQuery';
+import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
+import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
 
 interface OptionsGroupControlsInterface {
   id: string;
@@ -43,6 +44,8 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   const [addOptionToGroupMutation] = useAddOptionToGroupMutation({
+    refetchQueries: [{ query: OPTIONS_GROUP_QUERY, variables: { id } }],
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.addOptionToGroup),
     onError: onErrorCallback,
   });
@@ -83,10 +86,10 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   }
 
   function addOptionToGroupHandler() {
-    showModal({
+    showModal<OptionInGroupModalInterface>({
       type: OPTION_IN_GROUP_MODAL,
       props: {
-        confirm: (input: Omit<AddOptionToGroupInput, 'groupId'>) => {
+        confirm: (input) => {
           showLoading();
           return addOptionToGroupMutation({
             variables: {

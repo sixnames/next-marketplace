@@ -1,5 +1,6 @@
 import { Field, ID, InputType } from 'type-graphql';
 import { LangInput } from '../common/LangInput';
+import { RubricCatalogueTitleInput } from './CreateRubricInput';
 
 @InputType()
 export class UpdateRubricInput {
@@ -9,8 +10,8 @@ export class UpdateRubricInput {
   @Field(() => [LangInput])
   name: LangInput[];
 
-  @Field(() => [LangInput])
-  catalogueName: LangInput[];
+  @Field((_type) => RubricCatalogueTitleInput)
+  catalogueTitle: RubricCatalogueTitleInput;
 
   @Field(() => ID, { nullable: true })
   parent: string;

@@ -10,7 +10,12 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Rubric, RubricAttributesGroup, RubricModel } from '../../entities/Rubric';
+import {
+  Rubric,
+  RubricAttributesGroup,
+  RubricCatalogueTitleField,
+  RubricModel,
+} from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/getLangField';
@@ -50,6 +55,8 @@ import {
 import {
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
   ATTRIBUTE_TYPE_SELECT,
+  GENDER_IT,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   RUBRIC_LEVEL_THREE,
@@ -58,6 +65,7 @@ import {
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
+import { GenderEnum } from '../../entities/common';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -154,8 +162,8 @@ export class RubricResolver {
             key: city,
             node: {
               name: input.name,
-              catalogueName: input.catalogueName,
-              slug: generateDefaultLangSlug(input.catalogueName),
+              catalogueTitle: input.catalogueTitle,
+              slug: generateDefaultLangSlug(input.catalogueTitle.defaultTitle),
               attributesGroups: [],
               ...parentRelatedData,
             },
@@ -203,7 +211,7 @@ export class RubricResolver {
       }
       const currentCity = getCityData(rubric.cities, city);
 
-      const { catalogueName, parent, variant, name } = values;
+      const { catalogueTitle, parent, variant, name } = values;
 
       const nameValues = name.map(({ value }) => value);
       const exists = await RubricModel.exists({
@@ -225,7 +233,7 @@ export class RubricResolver {
         ...values,
         parent: Types.ObjectId(parent),
         variant: Types.ObjectId(variant),
-        slug: generateDefaultLangSlug(catalogueName),
+        slug: generateDefaultLangSlug(catalogueTitle.defaultTitle),
       };
 
       const updatedRubric = await RubricModel.findOneAndUpdate(
@@ -783,15 +791,31 @@ export class RubricResolver {
   }
 
   @FieldResolver()
-  async catalogueName(
+  async catalogueTitle(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-  ): Promise<string> {
+  ): Promise<RubricCatalogueTitleField> {
+    const lang = ctx.req.session!.lang;
     const city = getCityData(rubric.cities, ctx.req.session!.city);
     if (!city) {
-      return '';
+      return {
+        defaultTitle: LANG_NOT_FOUND_FIELD_MESSAGE,
+        prefix: LANG_NOT_FOUND_FIELD_MESSAGE,
+        keyword: LANG_NOT_FOUND_FIELD_MESSAGE,
+        gender: GENDER_IT as GenderEnum,
+      };
     }
-    return getLangField(city!.node.catalogueName, ctx.req.session!.lang);
+
+    const {
+      catalogueTitle: { defaultTitle, prefix, keyword, gender },
+    } = city.node;
+
+    return {
+      defaultTitle: getLangField(defaultTitle, lang),
+      prefix: prefix && prefix.length ? getLangField(prefix, lang) : null,
+      keyword: getLangField(keyword, lang),
+      gender,
+    };
   }
 
   @FieldResolver()

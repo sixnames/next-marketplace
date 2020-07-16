@@ -8,12 +8,6 @@ declare namespace Cypress {
     subjectType?: string;
   }
 
-  interface AuthInterface {
-    email?: string;
-    password?: string;
-    redirect: string;
-  }
-
   interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
@@ -22,6 +16,7 @@ declare namespace Cypress {
     mockGraphql(args: MockGraphqlInterface): Chainable<Element>;
     mockGraphqlOps(args: MockGraphqlInterface): Chainable<Element>;
     getByCy(testId: string): Chainable<Element>;
+    getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;
     createTestData(): void;
@@ -31,6 +26,6 @@ declare namespace Cypress {
     openMoreNav(): void;
     closeMoreNav(): void;
     attachFile(path: string, options?: AttachFileOptionsInterface): Chainable<Element>;
-    auth(args: AuthInterface): void;
+    testAuth(redirect?: string, email?: string, password?: string): Chainable<Element>;
   }
 }

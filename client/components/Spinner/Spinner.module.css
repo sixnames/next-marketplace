@@ -11,6 +11,10 @@
   background-color: rgba(50, 50, 50, 0.3);
 }
 
+.transparent {
+  background-color: rgba(50, 50, 50, 0);
+}
+
 .frame svg {
   color: var(--theme);
   width: auto;

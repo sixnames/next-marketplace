@@ -27,6 +27,7 @@ import { getMessageTranslation } from '../../config/translations';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
+  deleteAttributeFromGroupSchema,
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
 } from '../../validation';
@@ -346,6 +347,8 @@ export class AttributesGroupResolver {
     @Arg('input') input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      await deleteAttributeFromGroupSchema.validate(input);
+
       const lang = ctx.req.session!.lang;
       const { groupId, attributeId } = input;
       const attribute = await AttributeModel.findByIdAndDelete(attributeId);

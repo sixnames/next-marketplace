@@ -13,6 +13,7 @@
   position: relative;
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   margin-right: 7px;
   border: 2px solid var(--borderColor);
   background-color: var(--inputBackground);

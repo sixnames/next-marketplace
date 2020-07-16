@@ -272,7 +272,7 @@ export class OptionsGroupResolver {
       const lang = ctx.req.session!.lang;
       await updateOptionInGroupSchema.validate(input);
 
-      const { groupId, optionId, color, name } = input;
+      const { groupId, optionId, color, name, gender, variants } = input;
       const group = await OptionsGroupModel.findById(groupId);
 
       if (!group) {
@@ -302,6 +302,8 @@ export class OptionsGroupResolver {
         {
           name,
           color,
+          gender,
+          variants,
         },
         { new: true },
       );

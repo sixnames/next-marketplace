@@ -6,5 +6,9 @@ export const GET_ALL_RUBRIC_VARIANTS = gql`
       id
       nameString
     }
+    getGenderOptions {
+      id
+      nameString
+    }
   }
 `;

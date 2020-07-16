@@ -2,14 +2,17 @@
 import {
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  MOCK_ATTRIBUTES_GROUP,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS_GROUP,
+  MOCK_OPTIONS_GROUP_COLORS,
+  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_POSITION_IN_TITLE_END,
 } from '../../../config';
 
-const mockGroupName = MOCK_ATTRIBUTES_GROUP.name[0].value;
+const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
 const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
-const mockOptionsGroupName = MOCK_OPTIONS_GROUP.name[0].value;
+const mockOptionsGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
 const mockAttributeNewName = 'new_attribute';
 const createdGroupName = 'new_group';
 const updatedGroupName = 'updated_group';
@@ -19,7 +22,7 @@ const fakeName = 'f';
 describe('Attributes Groups', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.auth({ redirect: `/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}` });
+    cy.testAuth(`/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {
@@ -66,8 +69,9 @@ describe('Attributes Groups', () => {
     cy.getByCy(`confirm`).click();
     cy.contains(mockGroupForDeleteName).should('not.exist');
     cy.getByCy(`group-${mockGroupForDeleteName}`).should('not.exist');
+  });
 
-    // Should CRUD attribute in group
+  it('Should CRUD attribute in group', () => {
     // Shouldn't create attribute in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`attributes-group-create`).click();
@@ -77,13 +81,15 @@ describe('Attributes Groups', () => {
     cy.getByCy(`variant-error`).should('exist');
 
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_MULTIPLE_SELECT);
+    cy.getByCy(`positioningInTitle[0].value-error`).should('exist');
+
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`options-error`).should('exist');
 
     // Should create attribute in group
-    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_MULTIPLE_SELECT);
     cy.getByCy(`attribute-name`).type(mockAttributeNewName);
     cy.selectOptionByTestId(`attribute-options`, mockOptionsGroupName);
+    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('exist');
 
@@ -94,8 +100,9 @@ describe('Attributes Groups', () => {
       .should('have.value', mockAttributeNewName)
       .clear()
       .type(updatedAttributeName);
-    cy.getByCy(`attribute-variant`).select('string');
+    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
+    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}`).should('exist');

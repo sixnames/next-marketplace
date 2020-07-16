@@ -36,10 +36,6 @@ const attributeCommonFields = {
   positioningInTitle: Yup.array().of(attributePositioningInTitle).required(),
 };
 
-export const attributeInGroupSchema = Yup.object().shape({
-  ...attributeCommonFields,
-});
-
 export const addAttributeToGroupSchema = Yup.object().shape({
   groupId: id,
   ...attributeCommonFields,

@@ -8,17 +8,19 @@ import FormikSelect from '../../FormElements/Select/FormikSelect';
 import Button from '../../Buttons/Button';
 import {
   CreateRubricInput,
+  GenderEnum,
+  GetRubricsTreeQuery,
   useGetAllRubricVariantsQuery,
 } from '../../../generated/apolloComponents';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { createRubricInputSchema } from '../../../validation';
-import { RUBRIC_LEVEL_TWO } from '../../../config';
+import { DEFAULT_LANG, RUBRIC_LEVEL_TWO } from '../../../config';
 
-interface CreateRubricModalInterface {
+export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
-  rubrics: any[];
+  rubrics: GetRubricsTreeQuery['getRubricsTree'];
 }
 
 const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubrics }) => {
@@ -47,15 +49,30 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
               value: '',
             },
           ],
-          catalogueName: [
-            {
-              key: 'ru',
-              value: '',
-            },
-          ],
           variant: null,
           parent: null,
           subParent: null,
+          catalogueTitle: {
+            defaultTitle: [
+              {
+                key: DEFAULT_LANG,
+                value: '',
+              },
+            ],
+            prefix: [
+              {
+                key: DEFAULT_LANG,
+                value: '',
+              },
+            ],
+            keyword: [
+              {
+                key: DEFAULT_LANG,
+                value: '',
+              },
+            ],
+            gender: '' as GenderEnum,
+          },
         }}
         onSubmit={(values) => {
           const { subParent, ...restValues } = values;
@@ -87,18 +104,52 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
                 );
               })}
 
-              {values.catalogueName.map((_, index) => {
+              {values.catalogueTitle.defaultTitle.map(({ key }, index) => {
                 return (
                   <FormikInput
-                    key={index}
-                    name={`catalogueName[${index}].value`}
-                    label={'Название каталога'}
-                    testId={'catalogue-name'}
+                    key={key}
+                    name={`catalogueTitle.defaultTitle[${index}].value`}
+                    label={'Заголовок каталога'}
+                    testId={'rubric-default-title'}
                     showInlineError
                     isRequired
                   />
                 );
               })}
+
+              {values.catalogueTitle.prefix.map(({ key }, index) => {
+                return (
+                  <FormikInput
+                    key={key}
+                    name={`catalogueTitle.prefix[${index}].value`}
+                    label={'Префикс заголовка каталога'}
+                    testId={'rubric-title-prefix'}
+                  />
+                );
+              })}
+
+              {values.catalogueTitle.keyword.map(({ key }, index) => {
+                return (
+                  <FormikInput
+                    key={key}
+                    name={`catalogueTitle.keyword[${index}].value`}
+                    label={'Ключевое слово заголовка каталога'}
+                    testId={'rubric-title-keyword'}
+                    showInlineError
+                    isRequired
+                  />
+                );
+              })}
+
+              <FormikSelect
+                firstOption={'Не назначено'}
+                name={`catalogueTitle.gender`}
+                label={'Род ключевого слова заголовка каталога'}
+                testId={'rubric-title-gender'}
+                showInlineError
+                isRequired
+                options={data.getGenderOptions || []}
+              />
 
               {!parent && (
                 <FormikSelect

@@ -16,6 +16,7 @@ declare namespace Cypress {
     mockGraphql(args: MockGraphqlInterface): Chainable<Element>;
     mockGraphqlOps(args: MockGraphqlInterface): Chainable<Element>;
     getByCy(testId: string): Chainable<Element>;
+    getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;
     createTestData(): void;

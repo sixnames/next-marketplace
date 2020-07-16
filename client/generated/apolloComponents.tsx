@@ -1759,7 +1759,10 @@ export type GetAllRubricVariantsQuery = (
   & { getAllRubricVariants?: Maybe<Array<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  )>> }
+  )>>, getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
+  )> }
 );
 
 export type GetAttributesGroupQueryVariables = {
@@ -3571,6 +3574,10 @@ export type GetAllOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetAl
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {
+    id
+    nameString
+  }
+  getGenderOptions {
     id
     nameString
   }

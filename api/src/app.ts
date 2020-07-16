@@ -2,7 +2,17 @@ import 'reflect-metadata';
 import session from 'express-session';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS, SESS_OPTIONS, DEFAULT_CITY, DEFAULT_LANG, MONGO_URL } from './config';
+import {
+  APOLLO_OPTIONS,
+  SESS_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  MONGO_URL,
+  LANG_COOKIE_KEY,
+  ROLE_ADMIN,
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+} from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { UserResolver } from './resolvers/user/UserResolver';
@@ -22,6 +32,11 @@ import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataRe
 import cookie from 'cookie';
 import path from 'path';
 import cors from 'cors';
+import { attemptSignIn } from './utils/auth';
+import {
+  AttributePositioningListResolver,
+  GendersListResolver,
+} from './resolvers/selects/SelectsResolver';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -37,6 +52,8 @@ const createApp = (): { app: Express; server: ApolloServer } => {
       RubricResolver,
       ProductResolver,
       CatalogueDataResolver,
+      GendersListResolver,
+      AttributePositioningListResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
@@ -65,19 +82,42 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     const cookies = cookie.parse(req.headers.cookie || '');
 
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookies.lang || DEFAULT_LANG;
+    req.session!.lang = cookies[LANG_COOKIE_KEY] || DEFAULT_LANG;
     next();
   });
 
   // Test data
+  // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
     await createTestData();
     res.send('test data created');
   });
+
   app.get('/clear-test-data', async (_, res) => {
     await clearTestData();
     res.send('test data removed');
   });
+
+  app.get('/test-sign-in', async (req, res) => {
+    const lang = req.session!.lang;
+    const { email, password } = req.query;
+    const { user, message } = await attemptSignIn(`${email}`, `${password}`, lang);
+
+    if (!user) {
+      res.status(401);
+      res.send(message);
+      return;
+    }
+
+    req.session!.userId = user.id;
+    req.session!.userRole = user.role;
+    req.session!.isAdmin = user.role === ROLE_ADMIN;
+    req.session!.isCustomer = user.role === ROLE_CUSTOMER;
+    req.session!.isManager = user.role === ROLE_MANAGER;
+
+    res.send('signed in');
+  });
+  // end of Test data
 
   // Assets
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), async (req, res) => {

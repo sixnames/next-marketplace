@@ -14,5 +14,9 @@ export const NEW_ATTRIBUTE_OPTIONS_QUERY = gql`
       id
       nameString
     }
+    getAttributePositioningOptions {
+      id
+      nameString
+    }
   }
 `;

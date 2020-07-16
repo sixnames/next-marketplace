@@ -1,7 +1,12 @@
 /// <reference types="cypress" />
+
 describe('Mocks', () => {
+  beforeEach(() => {
+    cy.createTestData();
+  });
+
   it('Smoke test', () => {
-    cy.auth({ redirect: '/' });
+    cy.testAuth();
     cy.location('pathname').should('eq', '/');
     cy.getByCy(`user-nav-trigger`).should('exist');
   });

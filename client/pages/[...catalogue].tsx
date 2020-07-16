@@ -32,9 +32,21 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricDat
     );
   }
 
+  const { getCatalogueData } = rubricData;
+
+  if (!getCatalogueData) {
+    return (
+      <Inner>
+        <RequestError />
+      </Inner>
+    );
+  }
+
+  const { catalogueTitle } = getCatalogueData;
+
   return (
     <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
-      <SiteLayout>
+      <SiteLayout title={catalogueTitle} description={catalogueTitle}>
         <CatalogueRoute rubricData={rubricData} />
       </SiteLayout>
     </SiteContextProvider>

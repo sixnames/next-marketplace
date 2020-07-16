@@ -8,7 +8,7 @@ import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
-import { addAttributesGroupToRubricClientSchema } from '../../../validation';
+import { addAttributesGroupToRubricSchema } from '../../../validation';
 import { AddAttributesGroupToRubricValues } from '../../../routes/Rubrics/RubricAttributes';
 
 interface AddAttributesGroupToRubricModalInterface {
@@ -45,7 +45,7 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
     <ModalFrame testId={testId}>
       <ModalTitle>Выберите группу атрибутов</ModalTitle>
       <Formik
-        validationSchema={addAttributesGroupToRubricClientSchema}
+        validationSchema={addAttributesGroupToRubricSchema}
         initialValues={{ attributesGroupId: null, showInCatalogueFilter: null }}
         onSubmit={({ attributesGroupId }) => {
           confirm({

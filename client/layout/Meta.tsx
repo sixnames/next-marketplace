@@ -3,9 +3,13 @@ import Head from 'next/head';
 
 interface MetaInterface {
   title?: string;
+  description?: string;
 }
 
-const Meta: React.FC<MetaInterface> = ({ title = 'SITE_DEFAULT_TITLE' }) => {
+const Meta: React.FC<MetaInterface> = ({
+  title = 'SITE_DEFAULT_TITLE',
+  description = 'SITE_DEFAULT_DESCRIPTION',
+}) => {
   return (
     <Head>
       <meta charSet='utf-8' />
@@ -15,15 +19,9 @@ const Meta: React.FC<MetaInterface> = ({ title = 'SITE_DEFAULT_TITLE' }) => {
       />
 
       <title>{title}</title>
-      <meta
-        name='description'
-        content='Аренда оборудования для мероприятия по доступным ценам. Большой выбор новейшего и качественного оборудования. Доставим вовремя и качественно произведем монтаж. Заходите!'
-      />
-      <meta name='author' content='Rent Division' />
-      <meta
-        name='copyright'
-        content={`© 2010 - ${new Date().getFullYear()} Site™. Все для мероприятий.`}
-      />
+      <meta name='description' content={description} />
+      <meta name='author' content='author' />
+      <meta name='copyright' content={`© 2010 - ${new Date().getFullYear()} Site™`} />
       <meta name='application-name' content='Personal Website' />
 
       <meta

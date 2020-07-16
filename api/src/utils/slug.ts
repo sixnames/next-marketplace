@@ -4,7 +4,8 @@ import { DEFAULT_LANG } from '../config';
 
 export const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();
-  return translit.transform(name ? `${name}` : '', '_');
+  const cleanString = name ? name.replace(/[$-/:-?{-~!"^_`\[\]]/g, '').toLocaleLowerCase() : '';
+  return translit.transform(cleanString, '_');
 };
 
 export const generateDefaultLangSlug = (languages: LanguageInterface[]) => {

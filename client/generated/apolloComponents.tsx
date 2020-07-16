@@ -39,6 +39,8 @@ export type Query = {
   getRubricsTree: Array<Rubric>;
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
   getCatalogueData?: Maybe<CatalogueData>;
+  getGenderOptions: Array<GenderOption>;
+  getAttributePositioningOptions: Array<AttributePositioningOption>;
 };
 
 
@@ -204,9 +206,24 @@ export type Option = {
   id: Scalars['ID'];
   slug: Scalars['String'];
   name: Array<LanguageType>;
+  variants?: Maybe<Array<OptionVariant>>;
+  gender?: Maybe<GenderEnum>;
   nameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
 };
+
+export type OptionVariant = {
+   __typename?: 'OptionVariant';
+  key: GenderEnum;
+  value: Array<LanguageType>;
+};
+
+/** List of gender enums */
+export enum GenderEnum {
+  She = 'she',
+  He = 'he',
+  It = 'it'
+}
 
 export type OptionsGroup = {
    __typename?: 'OptionsGroup';
@@ -260,6 +277,7 @@ export type Attribute = {
   options?: Maybe<OptionsGroup>;
   /** list of options with products counter for catalogue filter */
   filterOptions: Array<AttributeFilterOption>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
   metric?: Maybe<Metric>;
 };
 
@@ -268,7 +286,7 @@ export type AttributeFilterOptionsArgs = {
   filter: Array<Scalars['String']>;
 };
 
-/** Attribute type enum */
+/** Attribute variant enum */
 export enum AttributeVariantEnum {
   Select = 'select',
   MultipleSelect = 'multipleSelect',
@@ -281,6 +299,21 @@ export type AttributeFilterOption = {
   option: Option;
   counter: Scalars['Int'];
 };
+
+export type AttributePositioningInTitle = {
+   __typename?: 'AttributePositioningInTitle';
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
+};
+
+/** Instruction for positioning checked attribute values in catalogue title */
+export enum AttributePositionInTitleEnum {
+  Begin = 'begin',
+  End = 'end',
+  BeforeKeyword = 'beforeKeyword',
+  AfterKeyword = 'afterKeyword',
+  ReplaceKeyword = 'replaceKeyword'
+}
 
 export type ProductAttribute = {
    __typename?: 'ProductAttribute';
@@ -372,7 +405,7 @@ export type Rubric = {
    __typename?: 'Rubric';
   id: Scalars['ID'];
   name: Scalars['String'];
-  catalogueName: Scalars['String'];
+  catalogueTitle: RubricCatalogueTitleField;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -395,6 +428,14 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+export type RubricCatalogueTitleField = {
+   __typename?: 'RubricCatalogueTitleField';
+  defaultTitle: Scalars['String'];
+  prefix?: Maybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  gender: GenderEnum;
 };
 
 export type RubricAttributesGroup = {
@@ -430,13 +471,21 @@ export type RubricCity = {
 export type RubricNode = {
    __typename?: 'RubricNode';
   name: Array<LanguageType>;
-  catalogueName: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active?: Maybe<Scalars['Boolean']>;
   parent?: Maybe<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
+};
+
+export type RubricCatalogueTitle = {
+   __typename?: 'RubricCatalogueTitle';
+  defaultTitle: Array<LanguageType>;
+  prefix?: Maybe<Array<LanguageType>>;
+  keyword: Array<LanguageType>;
+  gender: GenderEnum;
 };
 
 export type AttributeVariant = {
@@ -449,6 +498,19 @@ export type CatalogueData = {
    __typename?: 'CatalogueData';
   rubric: Rubric;
   products: PaginatedProductsResponse;
+  catalogueTitle: Scalars['String'];
+};
+
+export type GenderOption = {
+   __typename?: 'GenderOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type AttributePositioningOption = {
+   __typename?: 'AttributePositioningOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
 };
 
 export type Mutation = {
@@ -741,6 +803,13 @@ export type AddOptionToGroupInput = {
   groupId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
+};
+
+export type OptionVariantInput = {
+  key: GenderEnum;
+  value: Array<LangInput>;
 };
 
 export type UpdateOptionInGroupInput = {
@@ -748,6 +817,8 @@ export type UpdateOptionInGroupInput = {
   optionId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
 };
 
 export type DeleteOptionFromGroupInput = {
@@ -820,6 +891,12 @@ export type AddAttributeToGroupInput = {
   variant: AttributeVariantEnum;
   options?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
+};
+
+export type AttributePositioningInTitleInput = {
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
 };
 
 export type UpdateAttributeInGroupInput = {
@@ -829,6 +906,7 @@ export type UpdateAttributeInGroupInput = {
   variant: AttributeVariantEnum;
   options?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
 };
 
 export type DeleteAttributeFromGroupInput = {
@@ -861,15 +939,22 @@ export type RubricPayloadType = {
 
 export type CreateRubricInput = {
   name: Array<LangInput>;
-  catalogueName: Array<LangInput>;
   parent?: Maybe<Scalars['ID']>;
   variant?: Maybe<Scalars['ID']>;
+  catalogueTitle: RubricCatalogueTitleInput;
+};
+
+export type RubricCatalogueTitleInput = {
+  defaultTitle: Array<LangInput>;
+  prefix?: Maybe<Array<LangInput>>;
+  keyword: Array<LangInput>;
+  gender: GenderEnum;
 };
 
 export type UpdateRubricInput = {
   id: Scalars['ID'];
   name: Array<LangInput>;
-  catalogueName: Array<LangInput>;
+  catalogueTitle: RubricCatalogueTitleInput;
   parent?: Maybe<Scalars['ID']>;
   variant?: Maybe<Scalars['ID']>;
 };
@@ -1016,7 +1101,10 @@ export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'catalogueName'>
+    & { catalogueTitle: (
+      { __typename?: 'RubricCatalogueTitleField' }
+      & Pick<RubricCatalogueTitleField, 'defaultTitle' | 'prefix' | 'keyword' | 'gender'>
+    ) }
     & RubricFragmentFragment
   ) }
 );
@@ -1607,9 +1695,10 @@ export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
   & { getCatalogueData?: Maybe<(
     { __typename?: 'CatalogueData' }
+    & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug' | 'catalogueName'>
+      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1670,7 +1759,10 @@ export type GetAllRubricVariantsQuery = (
   & { getAllRubricVariants?: Maybe<Array<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  )>> }
+  )>>, getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
+  )> }
 );
 
 export type GetAttributesGroupQueryVariables = {
@@ -1686,7 +1778,13 @@ export type GetAttributesGroupQuery = (
     & { attributes: Array<(
       { __typename?: 'Attribute' }
       & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-      & { options?: Maybe<(
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, positioningInTitle?: Maybe<Array<(
+        { __typename?: 'AttributePositioningInTitle' }
+        & Pick<AttributePositioningInTitle, 'key' | 'value'>
+      )>>, options?: Maybe<(
         { __typename?: 'OptionsGroup' }
         & Pick<OptionsGroup, 'id' | 'nameString'>
       )>, metric?: Maybe<(
@@ -1752,7 +1850,10 @@ export type GetNewAttributeOptionsQuery = (
   )>>, getAttributeVariants?: Maybe<Array<(
     { __typename?: 'AttributeVariant' }
     & Pick<AttributeVariant, 'id' | 'nameString'>
-  )>> }
+  )>>, getAttributePositioningOptions: Array<(
+    { __typename?: 'AttributePositioningOption' }
+    & Pick<AttributePositioningOption, 'id' | 'nameString'>
+  )> }
 );
 
 export type GetOptionsGroupQueryVariables = {
@@ -1767,7 +1868,18 @@ export type GetOptionsGroupQuery = (
     & Pick<OptionsGroup, 'id' | 'nameString'>
     & { options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, 'id' | 'nameString' | 'color'>
+      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, variants?: Maybe<Array<(
+        { __typename?: 'OptionVariant' }
+        & Pick<OptionVariant, 'key'>
+        & { value: Array<(
+          { __typename?: 'LanguageType' }
+          & Pick<LanguageType, 'key' | 'value'>
+        )> }
+      )>> }
     )> }
   )> }
 );
@@ -1817,7 +1929,7 @@ export type InitialQuery = (
 
 export type SiteRubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'slug' | 'catalogueName' | 'level'>
+  & Pick<Rubric, 'id' | 'name' | 'slug' | 'level'>
   & { variant?: Maybe<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1843,6 +1955,17 @@ export type InitialSiteQueryQuery = (
       & SiteRubricFragmentFragment
     )> }
     & SiteRubricFragmentFragment
+  )> }
+);
+
+export type GetGenderOptionsQueryVariables = {};
+
+
+export type GetGenderOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
   )> }
 );
 
@@ -1928,7 +2051,6 @@ export const SiteRubricFragmentFragmentDoc = gql`
   id
   name
   slug
-  catalogueName
   level
   variant {
     id
@@ -2053,7 +2175,12 @@ export const GetRubricDocument = gql`
     query GetRubric($id: ID!) {
   getRubric(id: $id) {
     ...RubricFragment
-    catalogueName
+    catalogueTitle {
+      defaultTitle
+      prefix
+      keyword
+      gender
+    }
   }
 }
     ${RubricFragmentFragmentDoc}`;
@@ -3307,12 +3434,12 @@ export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<Get
 export const GetCatalogueRubricDocument = gql`
     query GetCatalogueRubric($catalogueFilter: [String!]!) {
   getCatalogueData(catalogueFilter: $catalogueFilter) {
+    catalogueTitle
     rubric {
       id
       name
       level
       slug
-      catalogueName
       variant {
         id
         nameString
@@ -3450,6 +3577,10 @@ export const GetAllRubricVariantsDocument = gql`
     id
     nameString
   }
+  getGenderOptions {
+    id
+    nameString
+  }
 }
     `;
 
@@ -3484,8 +3615,16 @@ export const GetAttributesGroupDocument = gql`
     nameString
     attributes {
       id
+      name {
+        key
+        value
+      }
       nameString
       variant
+      positioningInTitle {
+        key
+        value
+      }
       options {
         id
         nameString
@@ -3626,6 +3765,10 @@ export const GetNewAttributeOptionsDocument = gql`
     id
     nameString
   }
+  getAttributePositioningOptions {
+    id
+    nameString
+  }
 }
     `;
 
@@ -3660,8 +3803,20 @@ export const GetOptionsGroupDocument = gql`
     nameString
     options {
       id
+      name {
+        key
+        value
+      }
       nameString
       color
+      gender
+      variants {
+        key
+        value {
+          key
+          value
+        }
+      }
     }
   }
 }
@@ -3843,3 +3998,36 @@ export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
 export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
 export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
+export const GetGenderOptionsDocument = gql`
+    query GetGenderOptions {
+  getGenderOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetGenderOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetGenderOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGenderOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGenderOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGenderOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+      }
+export function useGetGenderOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+        }
+export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
+export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
+export type GetGenderOptionsQueryResult = ApolloReactCommon.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;

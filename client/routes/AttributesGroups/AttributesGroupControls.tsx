@@ -12,6 +12,8 @@ import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL, UPDATE_NAME_MODAL } from '../.
 import { LangInterface } from '../../types';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
+import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
 
 const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString'>> = ({
   id,
@@ -25,6 +27,8 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
   const [updateAttributesGroupMutation] = useUpdateAttributesGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.updateAttributesGroup),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id } }],
   });
 
   const [deleteAttributesGroupMutation] = useDeleteAttributesGroupMutation({
@@ -42,6 +46,8 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
   const [addAttributeToGroupMutation] = useAddAttributeToGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributeToGroup),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id } }],
   });
 
   function updateAttributesGroupHandler() {
@@ -73,7 +79,6 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
         message: `Вы уверенны, что хотите удалить группу атрибутов ${nameString}?`,
         confirm: () => {
           showLoading();
-          console.log('delete ============', id);
           return deleteAttributesGroupMutation({ variables: { id } });
         },
       },
@@ -83,7 +88,7 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
   function addAttributeToGroupHandler() {
     const groupId = id;
 
-    showModal({
+    showModal<AddAttributeToGroupModalInterface>({
       type: ATTRIBUTE_IN_GROUP_MODAL,
       props: {
         confirm: (input: Omit<AddAttributeToGroupInput, 'groupId'>) => {

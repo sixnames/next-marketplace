@@ -1,5 +1,17 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
+
+// Gender enum
+export enum GenderEnum {
+  she = 'she',
+  he = 'he',
+  it = 'it',
+}
+
+registerEnumType(GenderEnum, {
+  name: 'GenderEnum',
+  description: 'List of gender enums',
+});
 
 @ObjectType()
 export class LanguageType {

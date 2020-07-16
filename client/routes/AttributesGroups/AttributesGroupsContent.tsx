@@ -19,6 +19,8 @@ import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
+import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
+import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };
@@ -33,11 +35,15 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
   });
 
   const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
   });
 
   function deleteAttributeFromGroupHandler(id: string, nameString: string) {
@@ -60,7 +66,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   function updateAttributeInGroupHandler(attribute: Attribute) {
     const { id: attributeId } = attribute;
 
-    showModal({
+    showModal<AddAttributeToGroupModalInterface>({
       type: ATTRIBUTE_IN_GROUP_MODAL,
       props: {
         attribute,

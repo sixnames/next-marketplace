@@ -11,14 +11,15 @@ import classes from './SiteLayout.module.css';
 
 interface SiteLayoutProps {
   title?: string;
+  description?: string;
 }
 
-const SiteLayout: React.FC<SiteLayoutProps> = ({ children, title }) => {
+const SiteLayout: React.FC<SiteLayoutProps> = ({ children, title, description }) => {
   const { isLoading, isModal } = useAppContext();
 
   return (
     <div className={classes.frame}>
-      <Meta title={title} />
+      <Meta title={title} description={description} />
 
       <Header />
 

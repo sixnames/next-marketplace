@@ -7,8 +7,16 @@ export const ATTRIBUTES_GROUP_QUERY = gql`
       nameString
       attributes {
         id
+        name {
+          key
+          value
+        }
         nameString
         variant
+        positioningInTitle {
+          key
+          value
+        }
         options {
           id
           nameString

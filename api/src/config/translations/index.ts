@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import selectsOptionsTranslations from './selectsOptionsTranslations';
 import userTranslations from './userTranslations';
 import metricTranslations from './metricTranslations';
 import rubricVariantTranslations from './rubricVariantTranslations';
@@ -8,6 +9,7 @@ import rubricTranslations from './rubricTranslations';
 import productTranslations from './productTranslations';
 
 export const translations = {
+  ...selectsOptionsTranslations,
   ...productTranslations,
   ...userTranslations,
   ...metricTranslations,

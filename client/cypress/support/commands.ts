@@ -32,15 +32,20 @@ Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);
 });
 
+Cypress.Commands.add('getBySelector', (selector) => {
+  cy.wait(300);
+  cy.get(selector);
+});
+
 Cypress.Commands.add('selectNthOption', (select, nth) => {
-  cy.get(`${select} option:nth-child(${nth})`).as('option');
+  cy.getBySelector(`${select} option:nth-child(${nth})`).as('option');
   cy.get('@option').then((option) => {
     cy.get(select).invoke('val', option.val()).trigger('change');
   });
 });
 
 Cypress.Commands.add('selectOptionByTestId', (select, testId) => {
-  cy.get(`select[data-cy="${select}"] option[data-cy="option-${testId}"]`).as('option');
+  cy.getBySelector(`select[data-cy="${select}"] option[data-cy="option-${testId}"]`).as('option');
   cy.get('@option').then((option) => {
     cy.get(`select[data-cy="${select}"]`).invoke('val', option.val()).trigger('change');
   });
@@ -83,8 +88,18 @@ Cypress.Commands.add('clearTestData', () => {
 });
 
 Cypress.Commands.add(
-  'auth',
-  ({ email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password, redirect }) => {
-    cy.visit(`/test-sign-in?email=${email}&password=${password}&redirect=${redirect}`);
+  'testAuth',
+  (redirect = '/', email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password) => {
+    const testAuthURI = `${apiHost}/test-sign-in`;
+    cy.request({
+      method: 'GET',
+      url: testAuthURI,
+      qs: {
+        email,
+        password,
+      },
+    }).then(() => {
+      cy.visit(redirect);
+    });
   },
 );

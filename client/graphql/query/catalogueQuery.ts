@@ -3,12 +3,12 @@ import gql from 'graphql-tag';
 export const CATALOGUE_RUBRIC_QUERY = gql`
   query GetCatalogueRubric($catalogueFilter: [String!]!) {
     getCatalogueData(catalogueFilter: $catalogueFilter) {
+      catalogueTitle
       rubric {
         id
         name
         level
         slug
-        catalogueName
         variant {
           id
           nameString

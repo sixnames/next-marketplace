@@ -7,7 +7,7 @@ export class Metric {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => LanguageType)
+  @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 

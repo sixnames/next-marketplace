@@ -1,6 +1,9 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
-import { MOCK_ATTRIBUTES_GROUP } from '../../../config';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+} from '../../../config';
 
 const addAttributeToGroupMutation = (
   groupId: string,
@@ -14,6 +17,7 @@ const addAttributeToGroupMutation = (
               groupId: "${groupId}"
               name: [{key: "ru", value: "${name}"}]
               variant: ${variant}
+              positioningInTitle: [{key: "ru", value: ${ATTRIBUTE_POSITION_IN_TITLE_BEGIN}}]
             }
           ) {
             success
@@ -25,6 +29,10 @@ const addAttributeToGroupMutation = (
                 id
                 nameString
                 variant
+                positioningInTitle {
+                 key
+                 value
+                }
                 options {
                   id
                   nameString
@@ -113,7 +121,7 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: MOCK_ATTRIBUTES_GROUP.name,
+            name: MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name,
           },
         },
       },
@@ -220,6 +228,10 @@ describe('Attributes Groups', () => {
               attributes {
                 id
                 nameString
+                positioningInTitle {
+                  key
+                  value
+                }
               }
             }
           }
@@ -232,6 +244,7 @@ describe('Attributes Groups', () => {
             attributeId: addedAttribute.id,
             name: [{ key: 'ru', value: newName }],
             variant: addedAttribute.variant,
+            positioningInTitle: [{ key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
           },
         },
       },
@@ -241,6 +254,9 @@ describe('Attributes Groups', () => {
     );
     expect(updateAttributeInGroup.success).toBeTruthy();
     expect(updatedAttribute.nameString).toEqual(newName);
+    expect(updatedAttribute.positioningInTitle).toEqual([
+      { key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
+    ]);
 
     // Should delete attribute from the group.
     const {

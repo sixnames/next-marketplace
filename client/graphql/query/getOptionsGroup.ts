@@ -7,8 +7,20 @@ export const OPTIONS_GROUP_QUERY = gql`
       nameString
       options {
         id
+        name {
+          key
+          value
+        }
         nameString
         color
+        gender
+        variants {
+          key
+          value {
+            key
+            value
+          }
+        }
       }
     }
   }

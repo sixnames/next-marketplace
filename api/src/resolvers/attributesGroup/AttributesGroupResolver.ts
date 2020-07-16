@@ -222,8 +222,10 @@ export class AttributesGroupResolver {
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
+      console.log('before lang');
       const lang = ctx.req.session!.lang;
       await addAttributeToGroupSchema.validate(input);
+      console.log('input destruct');
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
 
@@ -234,6 +236,7 @@ export class AttributesGroupResolver {
         };
       }
 
+      console.log('before nameValues');
       const nameValues = input.name.map(({ value }) => value);
       const existingAttributes = await AttributeModel.exists({
         _id: { $in: group.attributes },
@@ -280,6 +283,7 @@ export class AttributesGroupResolver {
         group: updatedGroup,
       };
     } catch (e) {
+      console.log(JSON.stringify(e, null, 2));
       return {
         success: false,
         message: getResolverErrorMessage(e),

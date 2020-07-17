@@ -37,6 +37,7 @@ import {
   AttributePositioningListResolver,
   GendersListResolver,
 } from './resolvers/selects/SelectsResolver';
+import { LANG_COOKIE_HEADER } from '../../client/config';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -78,11 +79,15 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   // Get current city from subdomain name and language from cookie
   app.use((req, _, next) => {
+    console.log(req.headers);
     const city = req.headers['x-subdomain'];
     const cookies = cookie.parse(req.headers.cookie || '');
 
+    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+    const cookieLang = cookies[LANG_COOKIE_KEY];
+
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookies[LANG_COOKIE_KEY] || DEFAULT_LANG;
+    req.session!.lang = cookieLang || systemLang || DEFAULT_LANG;
     next();
   });
 

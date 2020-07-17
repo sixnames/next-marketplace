@@ -5,7 +5,7 @@ import { INITIAL_QUERY } from '../graphql/query/initialQuery';
 import privateRouteHandler from './privateRouteHandler';
 import { InitialQueryResult } from '../generated/apolloComponents';
 import cookie from 'cookie';
-import { DEFAULT_LANG } from '../config';
+import { DEFAULT_LANG, LANG_COOKIE_HEADER } from '../config';
 
 export interface AppPageInterface {
   initialApolloState: InitialQueryResult['data'];
@@ -14,7 +14,9 @@ export interface AppPageInterface {
 
 async function getAppServerSideProps(context: GetServerSidePropsContext<ParsedUrlQuery>) {
   const { req, res } = context;
-  const { lang } = cookie.parse(req.headers.cookie || '');
+  const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+  const { lang: cookieLang } = cookie.parse(req.headers.cookie || '');
+  const lang = cookieLang || systemLang || DEFAULT_LANG;
 
   const apolloClient = initializeApollo();
 

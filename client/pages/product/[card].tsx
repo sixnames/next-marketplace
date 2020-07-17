@@ -15,7 +15,7 @@ import CardRoute from '../../routes/CardRoute/CardRoute';
 import { INITIAL_SITE_QUERY } from '../../graphql/query/initialQuery';
 import { CATALOGUE_CARD_QUERY } from '../../graphql/query/cardQuery';
 import cookie from 'cookie';
-import { DEFAULT_LANG } from '../../config';
+import { DEFAULT_LANG, LANG_COOKIE_HEADER } from '../../config';
 
 export type CardData = GetCatalogueCardQueryQueryResult['data'];
 
@@ -47,7 +47,9 @@ const Card: React.FC<CardInterface> = ({ initialApolloState, cardData, lang }) =
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {
     const apolloClient = initializeApollo();
-    const { lang } = cookie.parse(req.headers.cookie || '');
+    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+    const { lang: cookieLang } = cookie.parse(req.headers.cookie || '');
+    const lang = cookieLang || systemLang || DEFAULT_LANG;
 
     const initialApolloState = await apolloClient.query({
       query: INITIAL_SITE_QUERY,

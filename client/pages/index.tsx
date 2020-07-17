@@ -8,7 +8,7 @@ import Inner from '../components/Inner/Inner';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
 import cookie from 'cookie';
-import { DEFAULT_LANG } from '../config';
+import { DEFAULT_LANG, LANG_COOKIE_HEADER } from '../config';
 import RequestError from '../components/RequestError/RequestError';
 
 interface HomeInterface {
@@ -40,7 +40,9 @@ const Home: NextPage<HomeInterface> = ({ initialApolloState, lang }) => {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   try {
     const apolloClient = initializeApollo();
-    const { lang } = cookie.parse(req.headers.cookie || '');
+    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+    const { lang: cookieLang } = cookie.parse(req.headers.cookie || '');
+    const lang = cookieLang || systemLang || DEFAULT_LANG;
 
     const initialApolloState = await apolloClient.query({
       query: INITIAL_SITE_QUERY,

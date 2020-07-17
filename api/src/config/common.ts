@@ -1,5 +1,6 @@
 // Internationalization
 export const LANG_COOKIE_KEY = 'lang';
+export const LANG_COOKIE_HEADER = 'accept-language';
 export const LANG_NOT_FOUND_FIELD_MESSAGE = 'Field not found';
 export const DEFAULT_LANG = 'ru';
 export const SECONDARY_LANG = 'en';

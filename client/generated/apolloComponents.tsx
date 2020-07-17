@@ -26,6 +26,7 @@ export type Query = {
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
   getProduct: Product;
+  getProductBySlug: Product;
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
@@ -71,6 +72,11 @@ export type QueryGetOptionsGroupArgs = {
 
 export type QueryGetProductArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetProductBySlugArgs = {
+  slug: Scalars['String'];
 };
 
 
@@ -1651,13 +1657,13 @@ export type UpdateRubricVariantMutation = (
 );
 
 export type GetCatalogueCardQueryQueryVariables = {
-  id: Scalars['ID'];
+  slug: Scalars['String'];
 };
 
 
 export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
-  & { getProduct: (
+  & { getProductBySlug: (
     { __typename?: 'Product' }
     & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'price' | 'slug' | 'mainImage' | 'description'>
     & { attributesGroups: Array<(
@@ -3369,8 +3375,8 @@ export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateR
 export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
 export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
 export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($id: ID!) {
-  getProduct(id: $id) {
+    query GetCatalogueCardQuery($slug: String!) {
+  getProductBySlug(slug: $slug) {
     id
     itemId
     name
@@ -3418,7 +3424,7 @@ export const GetCatalogueCardQueryDocument = gql`
  * @example
  * const { data, loading, error } = useGetCatalogueCardQueryQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      slug: // value for 'slug'
  *   },
  * });
  */

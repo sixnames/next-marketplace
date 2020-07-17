@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Inner from '../../../components/Inner/Inner';
 import Icon from '../../../components/Icon/Icon';
-import Link from 'next/link';
 import classes from './HeaderNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
 import { useSiteContext } from '../../../context/siteContext';
 import { SiteRubricFragmentFragment } from '../../../generated/apolloComponents';
 import { useRouter } from 'next/router';
+import Link from '../../../components/Link/Link';
 
 interface SubRubricInterface extends SiteRubricFragmentFragment {
   children: SiteRubricFragmentFragment[];
@@ -19,6 +19,7 @@ function HeaderNav() {
   const [currentRubric, setCurrentRubric] = useState<string | null>(null);
   const [subRubrics, setSubRubrics] = useState<SubRubricInterface[]>([]);
   const { catalogue } = query;
+  const catalogueSlug = catalogue ? catalogue[0] : '';
 
   function toggleRubricsHandler() {
     setIsRubricsOpen((prevState) => !prevState);
@@ -44,16 +45,24 @@ function HeaderNav() {
   return (
     <Inner lowTop lowBottom>
       <nav className={classes.frame}>
-        <div onClick={toggleRubricsHandler} className={classes.trigger}>
+        <div
+          onClick={toggleRubricsHandler}
+          className={classes.trigger}
+          data-cy={'show-all-rubrics'}
+        >
           <Icon name={'Menu'} />
           Все разделы
         </div>
 
-        <div className={`${classes.rubrics} ${isRubricsOpen ? classes.rubricsActive : ''}`}>
+        <div
+          className={`${classes.rubrics} ${isRubricsOpen ? classes.rubricsActive : ''}`}
+          data-cy={'all-rubrics-nav'}
+        >
           <div className={classes.rubricsFrame}>
             <ul className={classes.mainRubrics}>
               {getRubricsTree.map(({ name, id, slug }) => {
-                const isCurrent = slug === catalogue;
+                const isCurrent = slug === catalogueSlug;
+
                 return (
                   <li key={slug}>
                     <Link
@@ -63,14 +72,12 @@ function HeaderNav() {
                       as={{
                         pathname: `/${slug}`,
                       }}
+                      testId={`main-rubric-${name}`}
+                      onClick={hideRubricsHandler}
+                      onMouseEnter={() => setCurrentRubricHandler(id)}
+                      className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
                     >
-                      <a
-                        onClick={hideRubricsHandler}
-                        onMouseEnter={() => setCurrentRubricHandler(id)}
-                        className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
-                      >
-                        {name}
-                      </a>
+                      {name}
                     </Link>
                   </li>
                 );
@@ -87,10 +94,11 @@ function HeaderNav() {
                     as={{
                       pathname: `/${slug}`,
                     }}
+                    testId={`second-level-${name}`}
+                    onClick={hideRubricsHandler}
+                    className={classes.subRubricsTitle}
                   >
-                    <a onClick={hideRubricsHandler} className={classes.subRubricsTitle}>
-                      {name}
-                    </a>
+                    {name}
                   </Link>
 
                   {!!children && (
@@ -104,10 +112,11 @@ function HeaderNav() {
                             as={{
                               pathname: `/${slug}`,
                             }}
+                            testId={`third-level-${name}`}
+                            onClick={hideRubricsHandler}
+                            className={classes.subRubricsLink}
                           >
-                            <a onClick={hideRubricsHandler} className={classes.subRubricsLink}>
-                              {name}
-                            </a>
+                            {name}
                           </Link>
                         </li>
                       ))}

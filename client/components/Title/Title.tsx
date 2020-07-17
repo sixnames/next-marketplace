@@ -9,6 +9,7 @@ interface TitlePropsInterface {
   low?: boolean;
   tag?: keyof JSX.IntrinsicElements;
   size?: 'small' | 'normal' | 'big';
+  testId?: string;
 }
 
 const Title: React.FC<TitlePropsInterface> = ({
@@ -19,6 +20,7 @@ const Title: React.FC<TitlePropsInterface> = ({
   low,
   tag = 'h1',
   size = 'normal',
+  testId,
 }) => {
   const TagName = tag;
   const sizeClassName = classes[size];
@@ -28,7 +30,7 @@ const Title: React.FC<TitlePropsInterface> = ({
     className ? className : ''
   }`;
   return (
-    <div className={titleClassName}>
+    <div className={titleClassName} data-cy={testId}>
       <TagName className={classes.text}>{children}</TagName>
       {subtitle && <div className={classes.subtitle}>{subtitle}</div>}
     </div>

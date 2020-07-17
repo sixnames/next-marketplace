@@ -5,6 +5,10 @@ describe('Mocks', () => {
     cy.createTestData();
   });
 
+  after(() => {
+    cy.clearTestData();
+  });
+
   it('Smoke test', () => {
     cy.testAuth();
     cy.location('pathname').should('eq', '/');

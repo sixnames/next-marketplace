@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import { isEqual } from 'lodash';
 
-interface LinkInterface extends LinkProps {
+interface LinkInterface extends LinkProps, PropsWithChildren<any> {
   className?: string;
   activeClassName?: string;
   testId?: string;
-  onClick?: () => void;
   exact?: boolean;
   isTab?: boolean;
 }
@@ -18,11 +17,11 @@ const Link: React.FC<LinkInterface> = ({
   href,
   children,
   testId,
-  onClick,
   exact = false,
   isTab = false,
   replace,
   as,
+  ...props
 }) => {
   const { pathname, query } = useRouter() || { pathname: '', query: '' };
   const currentPath = { pathname, query };
@@ -48,9 +47,9 @@ const Link: React.FC<LinkInterface> = ({
   return (
     <NextLink href={href} as={as} replace={replace}>
       <a
-        onClick={onClick}
         className={`${className ? className : ''} ${isCurrent ? activeClassName : ''}`}
         data-cy={testId}
+        {...props}
       >
         {children}
       </a>

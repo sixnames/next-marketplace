@@ -6,4 +6,5 @@ module.exports = {
   ...mongoPreset,
   testEnvironment: 'node',
   setupFilesAfterEnv: ['./test/setup.ts'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
 };

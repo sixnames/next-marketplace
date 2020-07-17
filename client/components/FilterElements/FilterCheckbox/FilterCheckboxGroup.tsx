@@ -26,7 +26,7 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
     <div className={`${classes.frame} ${className ? className : ''}`}>
       {label && <div className={classes.label}>{label}</div>}
       {checkboxItems.map(({ option, counter }) => {
-        const key = `${attributeSlug}-${option.nameString}`;
+        const key = `${attributeSlug}-${option.slug}`;
         return (
           <FilterCheckbox
             key={key}

@@ -58,10 +58,25 @@ export class ProductResolver {
     return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
+  @Query(() => Product)
+  async getProductBySlug(
+    @Ctx() ctx: ContextInterface,
+    @Arg('slug', (_type) => String) slug: string,
+  ) {
+    return ProductModel.findOne({
+      cities: {
+        $elemMatch: {
+          key: ctx.req.session!.city,
+          'node.slug': slug,
+        },
+      },
+    });
+  }
+
   @Query(() => PaginatedProductsResponse)
   async getAllProducts(
     @Ctx() ctx: ContextInterface,
-    @Arg('input', { nullable: true }) input: ProductPaginateInput = {},
+    @Arg('input', { nullable: true }) input: ProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
     const {
@@ -71,7 +86,7 @@ export class ProductResolver {
       sortDir = 'desc',
       countActiveProducts = false,
       ...args
-    } = input;
+    } = input || {};
     const query = getProductsFilter(args, city);
     const activeProductsQuery = getProductsFilter({ ...args, active: true }, city);
 

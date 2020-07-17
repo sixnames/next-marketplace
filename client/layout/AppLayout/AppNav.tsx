@@ -13,7 +13,6 @@ import classes from './AppNav.module.css';
 import { useThemeContext } from '../../context/themeContext';
 import { NavItemInterface } from '../../types';
 import useIsMobile from '../../hooks/useIsMobile';
-import { ROUTE_SIGN_OUT } from '../../config';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -50,7 +49,6 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                     key={item.name}
                     item={item}
                     pathname={pathname}
-                    signOutHandler={signOutHandler}
                     openNavHandler={openNavHandler}
                     closeNavHandler={closeNavHandler}
                   />
@@ -79,8 +77,8 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
 
               <li className={`${classes.bottom} ${classes.bottom}`}>
                 <TTip tooltipPlacement={'right'} title={isCompact ? 'Выйти из аккаунта' : ''}>
-                  <Link
-                    href={ROUTE_SIGN_OUT}
+                  <div
+                    onClick={signOutHandler}
                     className={`${classes.bottomLink} ${
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}
@@ -93,7 +91,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                     >
                       Выйти из аккаунта
                     </span>
-                  </Link>
+                  </div>
                 </TTip>
               </li>
 

@@ -12,6 +12,7 @@ import {
   ROLE_ADMIN,
   ROLE_CUSTOMER,
   ROLE_MANAGER,
+  LANG_COOKIE_HEADER,
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
@@ -37,7 +38,6 @@ import {
   AttributePositioningListResolver,
   GendersListResolver,
 } from './resolvers/selects/SelectsResolver';
-import { LANG_COOKIE_HEADER } from '../../client/config';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({

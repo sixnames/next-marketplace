@@ -20,7 +20,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   }
 
   const imageWidth = 450;
-  const { mainImage, name, cardName, description, attributesGroups, price } = cardData.getProduct;
+  const {
+    mainImage,
+    name,
+    cardName,
+    description,
+    attributesGroups,
+    price,
+  } = cardData.getProductBySlug;
 
   return (
     <Inner>

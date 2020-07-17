@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import TTip from '../../components/TTip/TTip';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
-import { ROUTE_SIGN_OUT } from '../../config';
 import { NavItemInterface } from '../../types';
 import classes from './AppNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
@@ -11,18 +10,11 @@ interface AppNavItemInterface {
   item: NavItemInterface;
   compact?: boolean;
   pathname: string;
-  signOutHandler: () => void;
   openNavHandler: () => void;
   closeNavHandler: () => void;
 }
 
-const AppNavItem: React.FC<AppNavItemInterface> = ({
-  item,
-  compact,
-  signOutHandler,
-  openNavHandler,
-  pathname,
-}) => {
+const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, counter, path, children } = item;
@@ -100,30 +92,6 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({
             );
           })}
         </ul>
-      </li>
-    );
-  }
-
-  if (path === ROUTE_SIGN_OUT) {
-    return (
-      <li className={classes.item}>
-        <TTip tooltipPlacement={'right'} title={compact ? name : ''}>
-          <div
-            className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
-            onClick={signOutHandler}
-          >
-            <span className={`${classes.linkIcon}`}>
-              {icon && (
-                <span className={`${classes.linkIcon}`}>
-                  <Icon name={icon} />
-                </span>
-              )}
-            </span>
-            <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-              {name}
-            </span>
-          </div>
-        </TTip>
       </li>
     );
   }

@@ -75,6 +75,7 @@ describe('Product', () => {
         getProduct(id: "${currentProduct.id}") {
           id
           name
+          slug
         }
         getRubricsTree {
           id
@@ -112,6 +113,20 @@ describe('Product', () => {
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.name).toEqual(currentProduct.name);
     const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+
+    // Should return current product by slug
+    const {
+      data: { getProductBySlug },
+    } = await query(`
+      query {
+        getProductBySlug(slug: "${currentProduct.slug}") {
+          id
+          name
+        }
+      }
+    `);
+    expect(getProductBySlug.id).toEqual(currentProduct.id);
+    expect(getProductBySlug.name).toEqual(currentProduct.name);
 
     // Should return features AST
     const {

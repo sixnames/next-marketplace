@@ -43,10 +43,11 @@ export const name = Yup.string()
   .trim()
   .required('Имя обязателено к заполнению.');
 
-export const color = Yup.string()
-  .nullable()
-  .trim()
-  .matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример 333333.');
+export const color = Yup.lazy((value?: string | null) => {
+  return !value
+    ? Yup.string().nullable()
+    : Yup.string().trim().matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример 333333.');
+});
 
 export const email = Yup.string()
   .email('Невалидный Email формат')

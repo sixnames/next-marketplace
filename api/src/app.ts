@@ -12,6 +12,7 @@ import {
   ROLE_ADMIN,
   ROLE_CUSTOMER,
   ROLE_MANAGER,
+  LANG_COOKIE_HEADER,
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
@@ -81,8 +82,11 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     const city = req.headers['x-subdomain'];
     const cookies = cookie.parse(req.headers.cookie || '');
 
+    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+    const cookieLang = cookies[LANG_COOKIE_KEY];
+
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookies[LANG_COOKIE_KEY] || DEFAULT_LANG;
+    req.session!.lang = cookieLang || systemLang || DEFAULT_LANG;
     next();
   });
 
@@ -90,6 +94,9 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
     await createTestData();
+
+    // set default lang for tests
+    res.cookie(LANG_COOKIE_KEY, DEFAULT_LANG);
     res.send('test data created');
   });
 

@@ -104,7 +104,10 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
         validationSchema={optionInGroupSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
-          confirm(values);
+          confirm({
+            ...values,
+            color: values.color ? values.color : null,
+          });
         }}
       >
         {({ values }) => {

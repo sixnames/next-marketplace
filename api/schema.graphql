@@ -430,6 +430,7 @@ type Query {
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
+  getProductBySlug(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput!): ProductsCounters!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!

@@ -9,11 +9,11 @@ interface CatalogueProductInterface {
 }
 
 const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product }) => {
-  const { name, itemId, mainImage, price, id } = product;
+  const { name, itemId, mainImage, price, slug } = product;
   const imageWidth = 218;
 
   return (
-    <div className={classes.Frame} data-id={id}>
+    <div className={classes.Frame} data-cy={`catalogue-product-${name}`}>
       <div className={classes.Top}>
         <div className={classes.Image}>
           <Image url={mainImage} alt={name} title={name} width={imageWidth} />
@@ -31,7 +31,7 @@ const CatalogueProduct: React.FC<CatalogueProductInterface> = ({ product }) => {
           pathname: `/product/[card]`,
         }}
         as={{
-          pathname: `/product/${id}`,
+          pathname: `/product/${slug}`,
         }}
       >
         <a className={classes.Link}>{name}</a>

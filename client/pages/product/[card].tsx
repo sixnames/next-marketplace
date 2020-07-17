@@ -55,14 +55,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         headers: req.headers,
       },
     });
-
     const cardData = await apolloClient.query({
       query: CATALOGUE_CARD_QUERY,
       context: {
         headers: req.headers,
       },
       variables: {
-        id: query.card,
+        slug: query.card,
       },
     });
 

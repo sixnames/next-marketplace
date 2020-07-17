@@ -17,19 +17,14 @@ export class CatalogueDataResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
-    @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput = {},
+    @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     const city = ctx.req.session!.city;
     const lang = ctx.req.session!.lang;
 
     const [slug, ...attributes] = catalogueFilter;
-    const {
-      limit = 100,
-      page = 1,
-      sortBy = 'createdAt',
-      sortDir = 'desc',
-      ...args
-    } = productsInput;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =
+      productsInput || {};
 
     // get current rubric
     const rubric = await RubricModel.findOne({

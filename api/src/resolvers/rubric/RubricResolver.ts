@@ -905,10 +905,10 @@ export class RubricResolver {
   async products(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-    @Arg('input', { nullable: true }) input: RubricProductPaginateInput = {},
+    @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const city = ctx.req.session!.city;
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
 

@@ -79,7 +79,6 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   // Get current city from subdomain name and language from cookie
   app.use((req, _, next) => {
-    console.log(req.headers);
     const city = req.headers['x-subdomain'];
     const cookies = cookie.parse(req.headers.cookie || '');
 

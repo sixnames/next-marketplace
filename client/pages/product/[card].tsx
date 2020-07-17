@@ -1,31 +1,25 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { initializeApollo } from '../../apollo/client';
-// import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
-// import { CATALOGUE_CARD_QUERY } from '../graphql/query/cardQuery';
-import {
-  GetCatalogueCardQueryQueryResult,
-  InitialSiteQueryQueryResult,
-} from '../../generated/apolloComponents';
+import { GetCatalogueCardQueryQueryResult } from '../../generated/apolloComponents';
 import { SiteContextProvider } from '../../context/siteContext';
 import SiteLayout from '../../layout/SiteLayout/SiteLayout';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import CardRoute from '../../routes/CardRoute/CardRoute';
-import { INITIAL_SITE_QUERY } from '../../graphql/query/initialQuery';
 import { CATALOGUE_CARD_QUERY } from '../../graphql/query/cardQuery';
-import cookie from 'cookie';
-import { DEFAULT_LANG, LANG_COOKIE_HEADER } from '../../config';
+import getSiteServerSideProps, { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 
 export type CardData = GetCatalogueCardQueryQueryResult['data'];
 
 interface CardInterface {
-  initialApolloState: InitialSiteQueryQueryResult['data'];
   cardData: CardData;
-  lang: string;
 }
 
-const Card: React.FC<CardInterface> = ({ initialApolloState, cardData, lang }) => {
+const Card: React.FC<SitePagePropsType<CardInterface>> = ({
+  initialApolloState,
+  cardData,
+  lang,
+}) => {
   if (!initialApolloState || !cardData) {
     return (
       <Inner>
@@ -44,42 +38,30 @@ const Card: React.FC<CardInterface> = ({ initialApolloState, cardData, lang }) =
 };
 
 // noinspection JSUnusedGlobalSymbols
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  try {
-    const apolloClient = initializeApollo();
-    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
-    const { lang: cookieLang } = cookie.parse(req.headers.cookie || '');
-    const lang = cookieLang || systemLang || DEFAULT_LANG;
+export const getServerSideProps: GetServerSideProps = async (context) =>
+  getSiteServerSideProps<CardInterface>({
+    context,
+    callback: async ({ initialProps, context, apolloClient }) => {
+      const { query, req } = context;
 
-    const initialApolloState = await apolloClient.query({
-      query: INITIAL_SITE_QUERY,
-      context: {
-        headers: req.headers,
-      },
-    });
-    const cardData = await apolloClient.query({
-      query: CATALOGUE_CARD_QUERY,
-      context: {
-        headers: req.headers,
-      },
-      variables: {
-        slug: query.card,
-      },
-    });
+      const cardData = await apolloClient.query({
+        query: CATALOGUE_CARD_QUERY,
+        context: {
+          headers: req.headers,
+        },
+        variables: {
+          slug: query.card,
+        },
+      });
 
-    return {
-      props: {
-        initialApolloState: initialApolloState.data,
-        lang: lang || DEFAULT_LANG,
-        cardData: cardData.data,
-      },
-    };
-  } catch (e) {
-    console.log('====== catalogue getServerSideProps error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
-};
+      return {
+        props: {
+          ...initialProps,
+          cardData: cardData.data,
+        },
+      };
+    },
+  });
 
 // noinspection JSUnusedGlobalSymbols
 export default Card;

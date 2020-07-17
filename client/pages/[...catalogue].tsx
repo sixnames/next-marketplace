@@ -1,29 +1,25 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
-import { initializeApollo } from '../apollo/client';
-import { INITIAL_SITE_QUERY } from '../graphql/query/initialQuery';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import Inner from '../components/Inner/Inner';
-import {
-  GetCatalogueRubricQueryResult,
-  InitialSiteQueryQueryResult,
-} from '../generated/apolloComponents';
+import { GetCatalogueRubricQueryResult } from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
 import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
-import cookie from 'cookie';
-import { DEFAULT_LANG, LANG_COOKIE_HEADER } from '../config';
+import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 
 export type CatalogueData = GetCatalogueRubricQueryResult['data'];
 
 interface CatalogueInterface {
-  initialApolloState: InitialSiteQueryQueryResult['data'];
   rubricData: CatalogueData;
-  lang: string;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricData, lang }) => {
+const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
+  initialApolloState,
+  rubricData,
+  lang,
+}) => {
   if (!initialApolloState || !rubricData) {
     return (
       <Inner>
@@ -54,44 +50,31 @@ const Catalogue: NextPage<CatalogueInterface> = ({ initialApolloState, rubricDat
 };
 
 // noinspection JSUnusedGlobalSymbols
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  try {
-    const apolloClient = initializeApollo();
-    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
-    const { lang: cookieLang } = cookie.parse(req.headers.cookie || '');
-    const lang = cookieLang || systemLang || DEFAULT_LANG;
+export const getServerSideProps: GetServerSideProps = async (context) =>
+  getSiteServerSideProps<CatalogueInterface>({
+    context,
+    callback: async ({ initialProps, context, apolloClient }) => {
+      const { query, req } = context;
+      const { catalogue } = query;
 
-    const initialApolloState = await apolloClient.query({
-      query: INITIAL_SITE_QUERY,
-      context: {
-        headers: req.headers,
-      },
-    });
-    const { catalogue } = query;
+      const rubricData = await apolloClient.query({
+        query: CATALOGUE_RUBRIC_QUERY,
+        context: {
+          headers: req.headers,
+        },
+        variables: {
+          catalogueFilter: catalogue,
+        },
+      });
 
-    const rubricData = await apolloClient.query({
-      query: CATALOGUE_RUBRIC_QUERY,
-      context: {
-        headers: req.headers,
-      },
-      variables: {
-        catalogueFilter: catalogue,
-      },
-    });
-
-    return {
-      props: {
-        initialApolloState: initialApolloState.data,
-        rubricData: rubricData.data,
-        lang: lang || DEFAULT_LANG,
-      },
-    };
-  } catch (e) {
-    console.log('====== catalogue getServerSideProps error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
-};
+      return {
+        props: {
+          ...initialProps,
+          rubricData: rubricData.data,
+        },
+      };
+    },
+  });
 
 // noinspection JSUnusedGlobalSymbols
 export default Catalogue;

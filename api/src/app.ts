@@ -38,10 +38,12 @@ import {
   AttributePositioningListResolver,
   GendersListResolver,
 } from './resolvers/selects/SelectsResolver';
+import { LanguageResolver } from './resolvers/languages/LanguageResolver';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
     resolvers: [
+      LanguageResolver,
       UserResolver,
       MetricResolver,
       OptionResolver,

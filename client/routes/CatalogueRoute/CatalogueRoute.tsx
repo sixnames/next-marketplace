@@ -30,8 +30,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const isFilterVisible = !!filterAttributes.length;
 
   return (
-    <Inner>
-      <Title>{catalogueTitle}</Title>
+    <Inner testId={'catalogue'}>
+      <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
 
       <div className={classes.Frame}>
         {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}

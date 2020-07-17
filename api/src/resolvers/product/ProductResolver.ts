@@ -58,6 +58,21 @@ export class ProductResolver {
     return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
   }
 
+  @Query(() => Product)
+  async getProductBySlug(
+    @Ctx() ctx: ContextInterface,
+    @Arg('slug', (_type) => String) slug: string,
+  ) {
+    return ProductModel.findOne({
+      cities: {
+        $elemMatch: {
+          key: ctx.req.session!.city,
+          'node.slug': slug,
+        },
+      },
+    });
+  }
+
   @Query(() => PaginatedProductsResponse)
   async getAllProducts(
     @Ctx() ctx: ContextInterface,

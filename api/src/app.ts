@@ -94,6 +94,9 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
     await createTestData();
+
+    // set default lang for tests
+    res.cookie(LANG_COOKIE_KEY, DEFAULT_LANG);
     res.send('test data created');
   });
 

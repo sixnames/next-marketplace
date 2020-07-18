@@ -1,7 +1,11 @@
 import { Ctx, Query, Resolver } from 'type-graphql';
 import { ContextInterface } from '../../types/context';
-import { GenderOption, AttributePositioningOption } from '../../entities/SelectsOptions';
-import { ATTRIBUTE_POSITION_IN_TITLE_ENUMS, GENDER_ENUMS } from '../../config';
+import {
+  GenderOption,
+  AttributePositioningOption,
+  ISOLanguage,
+} from '../../entities/SelectsOptions';
+import { ATTRIBUTE_POSITION_IN_TITLE_ENUMS, GENDER_ENUMS, ISO_LANGUAGES } from '../../config';
 import { getMessageTranslation } from '../../config/translations';
 
 @Resolver((_of) => GenderOption)
@@ -27,5 +31,13 @@ export class AttributePositioningListResolver {
       id: position,
       nameString: getMessageTranslation(`selectsOptions.attributePositioning.${position}.${lang}`),
     }));
+  }
+}
+
+@Resolver((_of) => ISOLanguage)
+export class ISOLanguagesListResolver {
+  @Query((_returns) => [ISOLanguage])
+  async getISOLanguagesList(): Promise<ISOLanguage[]> {
+    return ISO_LANGUAGES;
   }
 }

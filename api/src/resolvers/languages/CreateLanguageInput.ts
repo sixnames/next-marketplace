@@ -7,4 +7,7 @@ export class CreateLanguageInput {
 
   @Field(() => String)
   name: string;
+
+  @Field(() => String)
+  nativeName: string;
 }

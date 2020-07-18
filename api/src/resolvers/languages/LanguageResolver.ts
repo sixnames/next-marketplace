@@ -28,8 +28,7 @@ export class LanguageResolver {
 
   @Query(() => String)
   async getClientLanguage(@Ctx() ctx: ContextInterface): Promise<string> {
-    const { req } = ctx;
-    return req.lang;
+    return ctx.req.lang;
   }
 
   @Mutation(() => LanguagePayloadType)

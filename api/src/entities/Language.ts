@@ -14,6 +14,10 @@ export class Language {
   @prop({ type: String, required: true })
   name: string;
 
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  nativeName: string;
+
   @Field(() => Boolean)
   @prop({ type: Boolean, required: true, default: false })
   isDefault: boolean;

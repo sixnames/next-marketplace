@@ -1,9 +1,5 @@
 /// <reference types="cypress" />
-import {
-  MOCK_RUBRIC_TYPE_ALCOHOL,
-  MOCK_RUBRIC_TYPE_JUICE,
-  QUERY_DATA_LAYOUT_FILTER_ENABLED,
-} from '../../../config';
+import { MOCK_RUBRIC_TYPE_ALCOHOL, MOCK_RUBRIC_TYPE_JUICE } from '../../../config';
 
 const mockRubricVariantName = MOCK_RUBRIC_TYPE_ALCOHOL.name[0].value;
 const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_JUICE.name[0].value;
@@ -12,7 +8,7 @@ const mockNewRubricVariantName = 'new_variant';
 describe('Rubric variants', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`/app/cms/rubric-variants${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.testAuth(`/app/cms/rubric-variants`);
   });
 
   after(() => {

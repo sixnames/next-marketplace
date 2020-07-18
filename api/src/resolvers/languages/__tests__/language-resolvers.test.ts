@@ -79,6 +79,7 @@ describe('Language', () => {
           input: {
             name: '',
             key: '',
+            nativeName: '',
           },
         },
       },
@@ -106,6 +107,7 @@ describe('Language', () => {
           input: {
             name: currentLanguage.name,
             key: currentLanguage.key,
+            nativeName: currentLanguage.name,
           },
         },
       },
@@ -115,6 +117,8 @@ describe('Language', () => {
     // Should create language
     const newLanguageName = ISO_LANGUAGES[0].nameString;
     const newLanguageKey = ISO_LANGUAGES[0].id;
+    const newLanguageNativeName = ISO_LANGUAGES[0].nativeName;
+
     const {
       data: { createLanguage },
     } = await mutate(
@@ -137,6 +141,7 @@ describe('Language', () => {
           input: {
             name: newLanguageName,
             key: newLanguageKey,
+            nativeName: newLanguageNativeName,
           },
         },
       },
@@ -193,6 +198,7 @@ describe('Language', () => {
     // Should update language
     const languageNewName = 'new';
     const languageNewKey = 'ne';
+    const languageNewNativeName = 'native';
     const {
       data: { updateLanguage },
     } = await mutate(
@@ -216,6 +222,7 @@ describe('Language', () => {
             id: newDefaultLanguage.id,
             name: languageNewName,
             key: languageNewKey,
+            nativeName: languageNewNativeName,
           },
         },
       },

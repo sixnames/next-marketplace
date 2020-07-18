@@ -10,4 +10,7 @@ export class UpdateLanguageInput {
 
   @Field(() => String)
   name: string;
+
+  @Field(() => String)
+  nativeName: string;
 }

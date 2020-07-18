@@ -9,6 +9,9 @@ export const createLanguageSchema = Yup.object().shape({
     .min(languageKeyLength)
     .max(languageKeyLength)
     .required('Ключ языка обязателен к заполнению'),
+  nativeName: Yup.string()
+    .min(languageKeyLength)
+    .required('Нативное название языка обязателено к заполнению'),
 });
 
 export const updateLanguageSchema = Yup.object().shape({
@@ -18,4 +21,7 @@ export const updateLanguageSchema = Yup.object().shape({
     .min(languageKeyLength)
     .max(languageKeyLength)
     .required('Ключ языка обязателен к заполнению'),
+  nativeName: Yup.string()
+    .min(languageKeyLength)
+    .required('Нативное название языка обязателено к заполнению'),
 });

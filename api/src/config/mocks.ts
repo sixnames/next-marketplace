@@ -38,6 +38,7 @@ export const MOCK_LANGUAGES = [
   {
     key: DEFAULT_LANG,
     name: 'Русский',
+    nativeName: 'Русский',
     isDefault: true,
   },
 ];

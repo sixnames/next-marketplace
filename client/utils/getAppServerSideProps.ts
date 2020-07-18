@@ -24,7 +24,7 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
     // Redirect if user is not authorized
     if (!initialApolloState || !initialApolloState.data || !initialApolloState.data.me) {
       privateRouteHandler(res);
-      return { props: {} };
+      return { props: { initialApolloState: {} } };
     }
 
     return {

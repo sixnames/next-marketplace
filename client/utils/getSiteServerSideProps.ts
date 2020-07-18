@@ -48,7 +48,7 @@ async function getSiteServerSideProps<T>({
       isProtected
     ) {
       privateRouteHandler(res);
-      return { props: {} };
+      return { props: { initialApolloState: {} } };
     }
 
     return callback({

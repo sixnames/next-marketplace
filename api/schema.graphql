@@ -118,6 +118,7 @@ input CreateAttributesGroupInput {
 input CreateLanguageInput {
   key: String!
   name: String!
+  nativeName: String!
 }
 
 input CreateMetricInput {
@@ -206,6 +207,7 @@ type Language {
   isDefault: Boolean!
   key: String!
   name: String!
+  nativeName: String!
 }
 
 type LanguagePayloadType {
@@ -612,6 +614,7 @@ input UpdateLanguageInput {
   id: ID!
   key: String!
   name: String!
+  nativeName: String!
 }
 
 input UpdateMetricInput {

@@ -8,7 +8,6 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { GET_ALL_RUBRIC_VARIANTS } from '../../graphql/query/getAllRubricVariants';
 import {
-  GetAllRubricVariantsQuery,
   useCreateRubricVariantMutation,
   useDeleteRubricVariantMutation,
   useGetAllRubricVariantsQuery,
@@ -25,34 +24,22 @@ const RubricVariantsContent: React.FC = () => {
   const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   const [createRubricVariantMutation] = useCreateRubricVariantMutation({
+    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.createRubricVariant),
     onError: onErrorCallback,
-    update: (cache, { data }) => {
-      if (data && data.createRubricVariant && data.createRubricVariant.success) {
-        const cachedData: GetAllRubricVariantsQuery | null = cache.readQuery({
-          query: GET_ALL_RUBRIC_VARIANTS,
-        });
-        if (cachedData && cachedData.getAllRubricVariants) {
-          cache.writeQuery({
-            query: GET_ALL_RUBRIC_VARIANTS,
-            data: {
-              getAllRubricVariants: [
-                ...cachedData.getAllRubricVariants,
-                data.createRubricVariant.variant,
-              ],
-            },
-          });
-        }
-      }
-    },
   });
 
   const [updateRubricVariantMutation] = useUpdateRubricVariantMutation({
+    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateRubricVariant),
   });
 
   const [deleteRubricVariantMutation] = useDeleteRubricVariantMutation({
+    refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteRubricVariant),
   });
@@ -70,8 +57,6 @@ const RubricVariantsContent: React.FC = () => {
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return createRubricVariantMutation({
-            refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
-            awaitRefetchQueries: true,
             variables: {
               input: {
                 name: values.name,
@@ -93,8 +78,6 @@ const RubricVariantsContent: React.FC = () => {
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return updateRubricVariantMutation({
-            refetchQueries: [{ query: GET_ALL_RUBRIC_VARIANTS }],
-            awaitRefetchQueries: true,
             variables: {
               input: {
                 name: values.name,
@@ -118,24 +101,6 @@ const RubricVariantsContent: React.FC = () => {
           return deleteRubricVariantMutation({
             variables: {
               id,
-            },
-            update: (cache, { data }) => {
-              if (data && data.deleteRubricVariant && data.deleteRubricVariant.success) {
-                const cachedData: GetAllRubricVariantsQuery | null = cache.readQuery({
-                  query: GET_ALL_RUBRIC_VARIANTS,
-                });
-
-                if (cachedData && cachedData.getAllRubricVariants) {
-                  cache.writeQuery({
-                    query: GET_ALL_RUBRIC_VARIANTS,
-                    data: {
-                      getAllRubricVariants: cachedData.getAllRubricVariants.filter(
-                        ({ id: cachedId }) => cachedId !== id,
-                      ),
-                    },
-                  });
-                }
-              }
             },
           });
         },
@@ -182,7 +147,7 @@ const RubricVariantsContent: React.FC = () => {
       />
       <DataLayoutContentFrame>
         <Table
-          data={data?.getAllRubricVariants}
+          data={data.getAllRubricVariants}
           columns={columns}
           emptyMessage={'Список пуст'}
           testIdKey={'nameString'}

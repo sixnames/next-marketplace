@@ -47,6 +47,12 @@ const useAppNavItems = (): NavItemInterface[] => {
           query: { ...withFilterQuery },
         },
       },
+      {
+        name: 'Языки сайта',
+        path: {
+          pathname: `${ROUTE_CMS}/languages`,
+        },
+      },
     ],
   };
 

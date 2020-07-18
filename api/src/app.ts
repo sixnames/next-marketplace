@@ -39,6 +39,7 @@ import {
   GendersListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { LanguageResolver } from './resolvers/languages/LanguageResolver';
+import { LanguageModel } from './entities/Language';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
@@ -79,16 +80,28 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   app.use(sessionHandler);
 
-  // Get current city from subdomain name and language from cookie
-  app.use((req, _, next) => {
+  // Get current city from subdomain name and language from cookie or user accepted language
+  app.use(async (req, res, next) => {
     const city = req.headers['x-subdomain'];
     const cookies = cookie.parse(req.headers.cookie || '');
 
     const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
     const cookieLang = cookies[LANG_COOKIE_KEY];
+    const clientLanguage = cookieLang || systemLang;
+    const languageExists = await LanguageModel.exists({ key: clientLanguage });
+
+    if (languageExists) {
+      req.session!.lang = clientLanguage;
+    } else {
+      const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
+      const finalLang = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
+      res.cookie(LANG_COOKIE_KEY, finalLang);
+
+      req.session!.lang = finalLang;
+    }
 
     req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookieLang || systemLang || DEFAULT_LANG;
+
     next();
   });
 

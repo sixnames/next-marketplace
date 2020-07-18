@@ -26,6 +26,12 @@ export class LanguageResolver {
     return LanguageModel.find({});
   }
 
+  @Query(() => String)
+  async getClientLanguage(@Ctx() ctx: ContextInterface): Promise<string> {
+    const { req } = ctx;
+    return req.session!.lang;
+  }
+
   @Mutation(() => LanguagePayloadType)
   async setLanguageAsDefault(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {

@@ -453,6 +453,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getClientLanguage: String!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
   getISOLanguagesList: [ISOLanguage!]!

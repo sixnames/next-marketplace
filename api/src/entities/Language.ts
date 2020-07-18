@@ -13,6 +13,10 @@ export class Language {
   @Field(() => String)
   @prop({ type: String, required: true })
   name: string;
+
+  @Field(() => Boolean)
+  @prop({ type: Boolean, required: true, default: false })
+  isDefault: boolean;
 }
 
 export const LanguageModel = getModelForClass(Language);

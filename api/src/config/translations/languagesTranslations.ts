@@ -1,5 +1,15 @@
 const languagesTranslations = {
   languages: {
+    setLanguageAsDefault: {
+      error: {
+        ru: 'Ошибка назначения языка основным.',
+        en: 'Language creation error.',
+      },
+      success: {
+        ru: 'Язык назначен основным.',
+        en: 'Language created.',
+      },
+    },
     create: {
       duplicate: {
         ru: 'Язык с таким именем уже существует.',
@@ -29,6 +39,10 @@ const languagesTranslations = {
       },
     },
     delete: {
+      default: {
+        ru: 'Язык является основным, его нелья удалить.',
+        en: `You can't delete default language.`,
+      },
       error: {
         ru: 'Ошибка удаления языка.',
         en: 'Language delete error.',

@@ -27,6 +27,41 @@ export class LanguageResolver {
   }
 
   @Mutation(() => LanguagePayloadType)
+  async setLanguageAsDefault(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+    try {
+      const lang = ctx.req.session!.lang;
+
+      const setAllLanguagesAsNotDefault = await LanguageModel.updateMany({}, { isDefault: false });
+
+      if (!setAllLanguagesAsNotDefault.ok) {
+        return {
+          success: false,
+          message: getMessageTranslation(`languages.setLanguageAsDefault.error.${lang}`),
+        };
+      }
+
+      const language = await LanguageModel.findByIdAndUpdate(id, { isDefault: true }, { new: true });
+      if (!language) {
+        return {
+          success: false,
+          message: getMessageTranslation(`languages.setLanguageAsDefault.error.${lang}`),
+        };
+      }
+
+      return {
+        success: true,
+        message: getMessageTranslation(`languages.setLanguageAsDefault.success.${lang}`),
+        language,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => LanguagePayloadType)
   async createLanguage(
     @Ctx() ctx: ContextInterface,
     @Arg('input') input: CreateLanguageInput,
@@ -54,7 +89,10 @@ export class LanguageResolver {
         };
       }
 
-      const language = await LanguageModel.create(input);
+      const language = await LanguageModel.create({
+        ...input,
+        isDefault: false,
+      });
 
       if (!language) {
         return {
@@ -131,7 +169,19 @@ export class LanguageResolver {
   async deleteLanguage(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
       const lang = ctx.req.session!.lang;
-      const language = LanguageModel.findByIdAndDelete(id);
+      const isDefault = await LanguageModel.exists({
+        _id: id,
+        isDefault: true,
+      });
+
+      if (!isDefault) {
+        return {
+          success: false,
+          message: getMessageTranslation(`languages.delete.default.${lang}`),
+        };
+      }
+
+      const language = await LanguageModel.findByIdAndDelete(id);
 
       if (!language) {
         return {

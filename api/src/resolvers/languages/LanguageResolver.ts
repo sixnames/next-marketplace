@@ -178,7 +178,7 @@ export class LanguageResolver {
         isDefault: true,
       });
 
-      if (!isDefault) {
+      if (isDefault) {
         return {
           success: false,
           message: getMessageTranslation(`languages.delete.default.${lang}`),

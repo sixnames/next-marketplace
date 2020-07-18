@@ -190,6 +190,12 @@ type GenderOption {
   nameString: String!
 }
 
+type ISOLanguage {
+  id: String!
+  nameString: String!
+  nativeName: String!
+}
+
 input LangInput {
   key: String!
   value: String!
@@ -197,6 +203,7 @@ input LangInput {
 
 type Language {
   id: ID!
+  isDefault: Boolean!
   key: String!
   name: String!
 }
@@ -249,6 +256,7 @@ type Mutation {
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
+  setLanguageAsDefault(id: ID!): LanguagePayloadType!
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
@@ -447,6 +455,7 @@ type Query {
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
+  getISOLanguagesList: [ISOLanguage!]!
   getLanguage(id: ID!): Language
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option

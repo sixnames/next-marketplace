@@ -35,7 +35,7 @@ export class AttributeResolver {
     @Root() attribute: DocumentType<Attribute>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(attribute.name, ctx.req.session!.lang);
+    return getLangField(attribute.name, ctx.req.lang);
   }
 
   @FieldResolver((_of) => [AttributeFilterOption])
@@ -52,7 +52,7 @@ export class AttributeResolver {
 
     const options = await OptionModel.find({ _id: { $in: optionsGroup.options } });
     const { slug } = attribute;
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     const [rubricSlug] = filter || [];
 
     // get current rubric

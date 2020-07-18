@@ -57,7 +57,7 @@ export class OptionsGroupResolver {
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await createOptionsGroupSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -102,7 +102,7 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await updateOptionsGroupSchema.validate(input);
 
       const { id, ...values } = input;
@@ -151,7 +151,7 @@ export class OptionsGroupResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const connectedWithAttributes = await AttributeModel.exists({ options: id });
       if (connectedWithAttributes) {
         return {
@@ -197,7 +197,7 @@ export class OptionsGroupResolver {
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await addOptionToGroupSchema.validate(input);
 
       const { groupId, ...values } = input;
@@ -269,7 +269,7 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await updateOptionInGroupSchema.validate(input);
 
       const { groupId, optionId, color, name, gender, variants } = input;
@@ -334,7 +334,7 @@ export class OptionsGroupResolver {
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await deleteOptionFromGroupSchema.validate(input);
       const { groupId, optionId } = input;
       const option = await OptionModel.findByIdAndDelete(optionId);
@@ -377,7 +377,7 @@ export class OptionsGroupResolver {
     @Root() group: DocumentType<OptionsGroup>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(group.name, ctx.req.session!.lang);
+    return getLangField(group.name, ctx.req.lang);
   }
 
   @FieldResolver()

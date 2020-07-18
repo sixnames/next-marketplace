@@ -12,7 +12,7 @@ import { getMessageTranslation } from '../../config/translations';
 export class GendersListResolver {
   @Query((_returns) => [GenderOption])
   async getGenderOptions(@Ctx() ctx: ContextInterface): Promise<GenderOption[]> {
-    const { lang } = ctx.req.session!;
+    const { lang } = ctx.req;
     return GENDER_ENUMS.map((gender) => ({
       id: gender,
       nameString: getMessageTranslation(`selectsOptions.gender.${gender}.${lang}`),
@@ -26,7 +26,7 @@ export class AttributePositioningListResolver {
   async getAttributePositioningOptions(
     @Ctx() ctx: ContextInterface,
   ): Promise<AttributePositioningOption[]> {
-    const { lang } = ctx.req.session!;
+    const { lang } = ctx.req;
     return ATTRIBUTE_POSITION_IN_TITLE_ENUMS.map((position) => ({
       id: position,
       nameString: getMessageTranslation(`selectsOptions.attributePositioning.${position}.${lang}`),

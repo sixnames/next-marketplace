@@ -83,12 +83,14 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   app.use(sessionHandler);
 
-  // Get current city from subdomain name and language from cookie or user accepted language
+  // Get current city from subdomain name
+  // and language from cookie or user accepted language
   app.use(async (req, res, next) => {
     // City
     const city = req.headers['x-subdomain'];
-    req.session!.city = city ? city : DEFAULT_CITY;
-    res.cookie(CITY_COOKIE_KEY, city);
+    const currentCity = city ? city : DEFAULT_CITY;
+    req.city = `${currentCity}`;
+    res.cookie(CITY_COOKIE_KEY, currentCity);
 
     // Language
     const cookies = cookie.parse(req.headers.cookie || '');
@@ -98,12 +100,12 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     const languageExists = await LanguageModel.exists({ key: clientLanguage });
 
     if (languageExists) {
-      req.session!.lang = clientLanguage;
+      req.lang = clientLanguage;
     } else {
       const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
       const finalLang = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
       res.cookie(LANG_COOKIE_KEY, finalLang);
-      req.session!.lang = finalLang;
+      req.lang = finalLang;
     }
 
     next();
@@ -125,7 +127,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   });
 
   app.get('/test-sign-in', async (req, res) => {
-    const lang = req.session!.lang;
+    const lang = req.lang;
     const { email, password } = req.query;
     const { user, message } = await attemptSignIn(`${email}`, `${password}`, lang);
 

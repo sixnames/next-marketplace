@@ -29,13 +29,13 @@ export class LanguageResolver {
   @Query(() => String)
   async getClientLanguage(@Ctx() ctx: ContextInterface): Promise<string> {
     const { req } = ctx;
-    return req.session!.lang;
+    return req.lang;
   }
 
   @Mutation(() => LanguagePayloadType)
   async setLanguageAsDefault(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       const setAllLanguagesAsNotDefault = await LanguageModel.updateMany({}, { isDefault: false });
 
@@ -77,7 +77,7 @@ export class LanguageResolver {
     @Arg('input') input: CreateLanguageInput,
   ): Promise<LanguagePayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       await createLanguageSchema.validate(input);
 
@@ -130,7 +130,7 @@ export class LanguageResolver {
     @Arg('input') input: UpdateLanguageInput,
   ): Promise<LanguagePayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       await updateLanguageSchema.validate(input);
 
@@ -178,7 +178,7 @@ export class LanguageResolver {
   @Mutation(() => LanguagePayloadType)
   async deleteLanguage(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const isDefault = await LanguageModel.exists({
         _id: id,
         isDefault: true,

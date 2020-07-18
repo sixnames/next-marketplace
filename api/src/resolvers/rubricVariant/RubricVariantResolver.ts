@@ -46,7 +46,7 @@ export class RubricVariantResolver {
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await createRubricVariantInputSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -90,7 +90,7 @@ export class RubricVariantResolver {
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await updateRubricVariantSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -135,8 +135,8 @@ export class RubricVariantResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
 
       const isUsedInRubrics = await RubricModel.exists({
         'cities.key': city,
@@ -175,6 +175,6 @@ export class RubricVariantResolver {
     @Root() variant: DocumentType<RubricVariant>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(variant.name, ctx.req.session!.lang);
+    return getLangField(variant.name, ctx.req.lang);
   }
 }

@@ -16,6 +16,13 @@ export const INITIAL_QUERY = gql`
       isManager
       isCustomer
     }
+    getClientLanguage
+    getAllLanguages {
+      id
+      name
+      key
+      isDefault
+    }
   }
 `;
 
@@ -47,6 +54,13 @@ export const INITIAL_SITE_QUERY = gql`
       isAdmin
       isManager
       isCustomer
+    }
+    getClientLanguage
+    getAllLanguages {
+      id
+      name
+      key
+      isDefault
     }
     getRubricsTree {
       ...SiteRubricFragment

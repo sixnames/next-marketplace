@@ -42,6 +42,10 @@ export type Query = {
   getCatalogueData?: Maybe<CatalogueData>;
   getGenderOptions: Array<GenderOption>;
   getAttributePositioningOptions: Array<AttributePositioningOption>;
+  getISOLanguagesList: Array<IsoLanguage>;
+  getLanguage?: Maybe<Language>;
+  getAllLanguages?: Maybe<Array<Language>>;
+  getClientLanguage: Scalars['String'];
 };
 
 
@@ -133,6 +137,11 @@ export type QueryGetRubricsTreeArgs = {
 export type QueryGetCatalogueDataArgs = {
   productsInput?: Maybe<ProductPaginateInput>;
   catalogueFilter: Array<Scalars['String']>;
+};
+
+
+export type QueryGetLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 export type User = {
@@ -519,6 +528,21 @@ export type AttributePositioningOption = {
   nameString: Scalars['String'];
 };
 
+export type IsoLanguage = {
+   __typename?: 'ISOLanguage';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
 export type Mutation = {
    __typename?: 'Mutation';
   createUser: UserPayloadType;
@@ -556,6 +580,10 @@ export type Mutation = {
   deleteAttributesGroupFromRubric: RubricPayloadType;
   addProductToRubric: RubricPayloadType;
   deleteProductFromRubric: RubricPayloadType;
+  setLanguageAsDefault: LanguagePayloadType;
+  createLanguage: LanguagePayloadType;
+  updateLanguage: LanguagePayloadType;
+  deleteLanguage: LanguagePayloadType;
 };
 
 
@@ -726,6 +754,26 @@ export type MutationAddProductToRubricArgs = {
 
 export type MutationDeleteProductFromRubricArgs = {
   input: DeleteProductFromRubricInput;
+};
+
+
+export type MutationSetLanguageAsDefaultArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateLanguageArgs = {
+  input: CreateLanguageInput;
+};
+
+
+export type MutationUpdateLanguageArgs = {
+  input: UpdateLanguageInput;
+};
+
+
+export type MutationDeleteLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 export type UserPayloadType = {
@@ -989,6 +1037,24 @@ export type AddProductToRubricInput = {
 export type DeleteProductFromRubricInput = {
   rubricId: Scalars['ID'];
   productId: Scalars['ID'];
+};
+
+export type LanguagePayloadType = {
+   __typename?: 'LanguagePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  language?: Maybe<Language>;
+};
+
+export type CreateLanguageInput = {
+  key: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type UpdateLanguageInput = {
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type ProductFragmentFragment = (
@@ -1927,10 +1993,14 @@ export type InitialQueryVariables = {};
 
 export type InitialQuery = (
   { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )> }
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault'>
+  )>> }
 );
 
 export type SiteRubricFragmentFragment = (
@@ -1947,10 +2017,14 @@ export type InitialSiteQueryQueryVariables = {};
 
 export type InitialSiteQueryQuery = (
   { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getRubricsTree: Array<(
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault'>
+  )>>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & { children: Array<(
       { __typename?: 'Rubric' }
@@ -3925,6 +3999,13 @@ export const InitialDocument = gql`
     isManager
     isCustomer
   }
+  getClientLanguage
+  getAllLanguages {
+    id
+    name
+    key
+    isDefault
+  }
 }
     `;
 
@@ -3967,6 +4048,13 @@ export const InitialSiteQueryDocument = gql`
     isAdmin
     isManager
     isCustomer
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    name
+    key
+    isDefault
   }
   getRubricsTree {
     ...SiteRubricFragment

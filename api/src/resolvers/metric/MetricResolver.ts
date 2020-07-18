@@ -46,7 +46,7 @@ export class MetricResolver {
     @Arg('input') input: CreateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await createMetricInputSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -90,7 +90,7 @@ export class MetricResolver {
     @Arg('input') input: UpdateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       await updateMetricSchema.validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -135,7 +135,7 @@ export class MetricResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const isUsedInAttributes = await AttributeModel.exists({ metric: id });
       if (isUsedInAttributes) {
         return {
@@ -170,6 +170,6 @@ export class MetricResolver {
     @Root() metric: DocumentType<Metric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(metric.name, ctx.req.session!.lang);
+    return getLangField(metric.name, ctx.req.lang);
   }
 }

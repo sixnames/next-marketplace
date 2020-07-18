@@ -1,31 +1,37 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
-import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY, SECONDARY_LANG } from '../config';
+import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY } from '../config';
 import Cookies from 'js-cookie';
+import { Language } from '../generated/apolloComponents';
 
 interface LanguageContextInterface {
   lang: string;
+  languagesList: Language[];
 }
 
 interface UseLanguageContextInterface {
   lang: string;
   setLanguage: (lang: string) => void;
-  setRussianLanguage: () => void;
-  setEnglishLanguage: () => void;
-  languageIsRussian: boolean;
-  languageIsEnglish: boolean;
+  isCurrentLanguage: (key: string) => boolean;
+  languagesList: Language[];
 }
 
 const LanguageContext = createContext<LanguageContextInterface>({
   lang: DEFAULT_LANG,
+  languagesList: [],
 });
 
-const LanguageContextProvider: React.FC<LanguageContextInterface> = ({ lang, children }) => {
+const LanguageContextProvider: React.FC<LanguageContextInterface> = ({
+  lang,
+  children,
+  languagesList,
+}) => {
   const value = useMemo(() => {
     return {
-      lang: lang || DEFAULT_LANG,
+      lang: lang,
+      languagesList,
     };
-  }, [lang]);
+  }, [lang, languagesList]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
@@ -37,6 +43,8 @@ function useLanguageContext(): UseLanguageContextInterface {
     throw new Error('useLanguageContext must be used within a LanguageContextProvider');
   }
 
+  const { lang, languagesList } = context;
+
   const setLanguage = useCallback((lang: string) => {
     Cookies.set(LANG_COOKIE_KEY, lang);
     if (IS_BROWSER) {
@@ -44,23 +52,18 @@ function useLanguageContext(): UseLanguageContextInterface {
     }
   }, []);
 
-  const setRussianLanguage = useCallback(() => {
-    setLanguage(DEFAULT_LANG);
-  }, [setLanguage]);
-
-  const setEnglishLanguage = useCallback(() => {
-    setLanguage(SECONDARY_LANG);
-  }, [setLanguage]);
-
-  const { lang } = context;
+  const isCurrentLanguage = useCallback(
+    (key: string) => {
+      return key === lang;
+    },
+    [lang],
+  );
 
   return {
     lang,
     setLanguage,
-    languageIsRussian: lang === DEFAULT_LANG,
-    languageIsEnglish: lang === SECONDARY_LANG,
-    setRussianLanguage,
-    setEnglishLanguage,
+    languagesList,
+    isCurrentLanguage,
   };
 }
 

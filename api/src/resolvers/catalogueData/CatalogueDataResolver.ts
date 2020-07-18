@@ -19,8 +19,8 @@ export class CatalogueDataResolver {
     catalogueFilter: string[],
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
-    const city = ctx.req.session!.city;
-    const lang = ctx.req.session!.lang;
+    const city = ctx.req.city;
+    const lang = ctx.req.lang;
 
     const [slug, ...attributes] = catalogueFilter;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =

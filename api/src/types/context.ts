@@ -1,8 +1,4 @@
-import { Request as ExpressRequest, Response } from 'express';
-
-export interface Request extends ExpressRequest {
-  city: string;
-}
+import { Request, Response } from 'express';
 
 export interface ContextInterface {
   req: Request;

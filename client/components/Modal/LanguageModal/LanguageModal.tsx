@@ -38,7 +38,6 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
   }
 
   const { getISOLanguagesList } = data!;
-  console.log(confirm);
 
   const initialValues = language
     ? {

@@ -4,8 +4,10 @@ import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutConten
 import Table from '../../components/Table/Table';
 import {
   CreateLanguageInput,
+  Language,
   useCreateLanguageMutation,
   useGetAllLanguagesQueryQuery,
+  useSetLanguageAsDefaultMutation,
 } from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
@@ -14,6 +16,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { GET_ALL_LANGUAGES_QUERY } from '../../graphql/query/getAllLanguages';
 import { LANGUAGE_MODAL } from '../../config/modals';
 import { LanguageModalInterface } from '../../components/Modal/LanguageModal/LanguageModal';
+import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 
 const LanguagesContent: React.FC = () => {
   const { data, loading, error } = useGetAllLanguagesQueryQuery();
@@ -25,6 +28,13 @@ const LanguagesContent: React.FC = () => {
     refetchQueries: [{ query: GET_ALL_LANGUAGES_QUERY }],
     awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.createLanguage),
+    onError: onErrorCallback,
+  });
+
+  const [setLanguageAsDefaultMutation] = useSetLanguageAsDefaultMutation({
+    refetchQueries: [{ query: GET_ALL_LANGUAGES_QUERY }],
+    awaitRefetchQueries: true,
+    onCompleted: (data) => onCompleteCallback(data.setLanguageAsDefault),
     onError: onErrorCallback,
   });
 
@@ -62,7 +72,22 @@ const LanguagesContent: React.FC = () => {
     {
       key: 'isDefault',
       title: 'Основной',
-      render: (isDefault: boolean) => `${isDefault}`,
+      render: (isDefault: boolean, { id, name }: Language) => (
+        <Checkbox
+          testId={name}
+          disabled={isDefault}
+          name={'isDefault'}
+          checked={isDefault}
+          onChange={() => {
+            showLoading();
+            setLanguageAsDefaultMutation({
+              variables: {
+                id,
+              },
+            });
+          }}
+        />
+      ),
     },
   ];
 

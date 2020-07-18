@@ -3,6 +3,7 @@
 import { SECONDARY_LANG } from '../../../config';
 
 const mockNewLanguageName = 'English';
+const mockDefaultLanguageName = 'Русский';
 
 describe('Languages', () => {
   beforeEach(() => {
@@ -27,6 +28,13 @@ describe('Languages', () => {
     cy.getByCy('language-key').select(SECONDARY_LANG);
     cy.getByCy('language-submit').click();
     cy.getByCy('create-language-modal').should('not.exist');
+    cy.getByCy('success-notification').should('exist');
     cy.getByCy(mockNewLanguageName).should('exist');
+
+    // Should set new language as default
+    cy.getByCy(`${mockNewLanguageName}-checkbox`).click();
+    cy.getByCy(`${mockNewLanguageName}-checkbox`).should('be.checked');
+    cy.getByCy(`${mockDefaultLanguageName}-checkbox`).should('not.be.checked');
+    cy.getByCy('success-notification').should('exist');
   });
 });

@@ -5,14 +5,22 @@ import {
   ADMIN_PASSWORD,
   MOCK_METRICS,
   ROLE_ADMIN,
+  DEFAULT_LANG,
+  MOCK_LANGUAGES,
 } from '../config';
 import { MetricModel } from '../entities/Metric';
 import { UserModel } from '../entities/User';
 import { hash } from 'bcryptjs';
+import { LanguageModel } from '../entities/Language';
 
 async function createInitialData() {
-  const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
+  const languages = await LanguageModel.find({ key: DEFAULT_LANG });
   const metric = await MetricModel.find({});
+  const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
+
+  if (!languages.length) {
+    await LanguageModel.insertMany(MOCK_LANGUAGES);
+  }
 
   if (!metric.length) {
     await MetricModel.insertMany(MOCK_METRICS);

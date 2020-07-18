@@ -3,6 +3,7 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  DEFAULT_LANG,
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
@@ -32,6 +33,14 @@ export const ME_AS_ADMIN = {
   isWarehouse: false,
   isSuper: false,
 };
+
+export const MOCK_LANGUAGES = [
+  {
+    key: DEFAULT_LANG,
+    name: 'Русский',
+    isDefault: true,
+  },
+];
 
 export const MOCK_METRICS = [
   {

@@ -40,7 +40,11 @@ export class LanguageResolver {
         };
       }
 
-      const language = await LanguageModel.findByIdAndUpdate(id, { isDefault: true }, { new: true });
+      const language = await LanguageModel.findByIdAndUpdate(
+        id,
+        { isDefault: true },
+        { new: true },
+      );
       if (!language) {
         return {
           success: false,

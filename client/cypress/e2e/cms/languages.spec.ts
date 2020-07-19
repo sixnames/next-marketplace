@@ -1,8 +1,11 @@
 /// <reference types="cypress" />
 
-import { SECONDARY_LANG } from '../../../config';
+import { ISO_LANGUAGES } from '../../../config';
 
-const mockNewLanguageName = 'English';
+const mockNewLanguageName = ISO_LANGUAGES[0].nameString;
+const mockNewLanguageKey = ISO_LANGUAGES[0].id;
+const mockUpdatedLanguageName = ISO_LANGUAGES[1].nameString;
+const mockUpdatedLanguageKey = ISO_LANGUAGES[1].id;
 const mockDefaultLanguageName = 'Русский';
 
 describe('Languages', () => {
@@ -25,7 +28,7 @@ describe('Languages', () => {
 
     // Should create new language
     cy.getByCy('language-name').clear().type(mockNewLanguageName);
-    cy.getByCy('language-key').select(SECONDARY_LANG);
+    cy.getByCy('language-key').select(mockNewLanguageKey);
     cy.getByCy('language-submit').click();
     cy.getByCy('create-language-modal').should('not.exist');
     cy.getByCy('success-notification').should('exist');
@@ -33,8 +36,31 @@ describe('Languages', () => {
 
     // Should set new language as default
     cy.getByCy(`${mockNewLanguageName}-checkbox`).click();
+    cy.getByCy('set-language-as-default-modal').should('exist');
+    cy.getByCy('confirm').click();
     cy.getByCy(`${mockNewLanguageName}-checkbox`).should('be.checked');
     cy.getByCy(`${mockDefaultLanguageName}-checkbox`).should('not.be.checked');
     cy.getByCy('success-notification').should('exist');
+    cy.getByCy(`${mockDefaultLanguageName}-checkbox`).click();
+    cy.getByCy('confirm').click();
+
+    // Should update language
+    cy.getByCy(`${mockNewLanguageName}-update`).click();
+    cy.getByCy('update-language-modal').should('exist');
+    cy.getByCy('language-name').clear().type(mockUpdatedLanguageName);
+    cy.getByCy('language-key').select(mockUpdatedLanguageKey);
+    cy.getByCy('language-submit').click();
+    cy.getByCy('success-notification').should('exist');
+    cy.getByCy(mockUpdatedLanguageName).should('exist');
+
+    // Delete default language button should be disabled
+    cy.getByCy(`${mockDefaultLanguageName}-delete`).should('be.disabled');
+
+    // Should delete language
+    cy.getByCy(`${mockUpdatedLanguageName}-delete`).click();
+    cy.getByCy('delete-language-modal').should('exist');
+    cy.getByCy('confirm').click();
+    cy.getByCy('success-notification').should('exist');
+    cy.getByCy(mockUpdatedLanguageName).should('not.exist');
   });
 });

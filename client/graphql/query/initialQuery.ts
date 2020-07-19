@@ -58,8 +58,9 @@ export const INITIAL_SITE_QUERY = gql`
     getClientLanguage
     getAllLanguages {
       id
-      name
       key
+      name
+      nativeName
       isDefault
     }
     getRubricsTree {

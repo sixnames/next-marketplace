@@ -1606,12 +1606,12 @@ export type UpdateLanguageMutation = (
   ) }
 );
 
-export type DeleteteLanguageMutationVariables = {
+export type DeleteLanguageMutationVariables = {
   id: Scalars['ID'];
 };
 
 
-export type DeleteteLanguageMutation = (
+export type DeleteLanguageMutation = (
   { __typename?: 'Mutation' }
   & { deleteLanguage: (
     { __typename?: 'LanguagePayloadType' }
@@ -1870,7 +1870,7 @@ export type GetAllLanguagesQueryQuery = (
   { __typename?: 'Query' }
   & { getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault'>
+    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
   )>> }
 );
 
@@ -2089,7 +2089,7 @@ export type InitialSiteQueryQuery = (
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
   )>, getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault'>
+    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
   )>>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & { children: Array<(
@@ -3271,39 +3271,39 @@ export function useUpdateLanguageMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type UpdateLanguageMutationHookResult = ReturnType<typeof useUpdateLanguageMutation>;
 export type UpdateLanguageMutationResult = ApolloReactCommon.MutationResult<UpdateLanguageMutation>;
 export type UpdateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
-export const DeleteteLanguageDocument = gql`
-    mutation DeleteteLanguage($id: ID!) {
+export const DeleteLanguageDocument = gql`
+    mutation DeleteLanguage($id: ID!) {
   deleteLanguage(id: $id) {
     success
     message
   }
 }
     `;
-export type DeleteteLanguageMutationFn = ApolloReactCommon.MutationFunction<DeleteteLanguageMutation, DeleteteLanguageMutationVariables>;
+export type DeleteLanguageMutationFn = ApolloReactCommon.MutationFunction<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
 
 /**
- * __useDeleteteLanguageMutation__
+ * __useDeleteLanguageMutation__
  *
- * To run a mutation, you first call `useDeleteteLanguageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteteLanguageMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLanguageMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteteLanguageMutation, { data, loading, error }] = useDeleteteLanguageMutation({
+ * const [deleteLanguageMutation, { data, loading, error }] = useDeleteLanguageMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteteLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteteLanguageMutation, DeleteteLanguageMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteteLanguageMutation, DeleteteLanguageMutationVariables>(DeleteteLanguageDocument, baseOptions);
+export function useDeleteLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(DeleteLanguageDocument, baseOptions);
       }
-export type DeleteteLanguageMutationHookResult = ReturnType<typeof useDeleteteLanguageMutation>;
-export type DeleteteLanguageMutationResult = ApolloReactCommon.MutationResult<DeleteteLanguageMutation>;
-export type DeleteteLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteteLanguageMutation, DeleteteLanguageMutationVariables>;
+export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
+export type DeleteLanguageMutationResult = ApolloReactCommon.MutationResult<DeleteLanguageMutation>;
+export type DeleteLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
 export const SetLanguageAsDefaultDocument = gql`
     mutation SetLanguageAsDefault($id: ID!) {
   setLanguageAsDefault(id: $id) {
@@ -3831,6 +3831,7 @@ export const GetAllLanguagesQueryDocument = gql`
     name
     key
     isDefault
+    nativeName
   }
 }
     `;
@@ -4296,8 +4297,9 @@ export const InitialSiteQueryDocument = gql`
   getClientLanguage
   getAllLanguages {
     id
-    name
     key
+    name
+    nativeName
     isDefault
   }
   getRubricsTree {

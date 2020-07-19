@@ -16,8 +16,10 @@ import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { languageSchema } from '../../../validation';
 import FormikInput from '../../FormElements/Input/FormikInput';
 
+export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'id'>;
+
 export interface LanguageModalInterface {
-  confirm: (values: CreateLanguageInput | Omit<UpdateLanguageInput, 'id'>) => void;
+  confirm: (values: CreateLanguageInput | UpdateLanguageModalInput) => void;
   language?: Language;
   testId: string;
 }

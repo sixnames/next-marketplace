@@ -19,7 +19,7 @@ export const UPDATE_LANGUAGE_MUTATION = gql`
 `;
 
 export const DELETE_LANGUAGE_MUTATION = gql`
-  mutation DeleteteLanguage($id: ID!) {
+  mutation DeleteLanguage($id: ID!) {
     deleteLanguage(id: $id) {
       success
       message

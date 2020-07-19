@@ -7,6 +7,7 @@ export const GET_ALL_LANGUAGES_QUERY = gql`
       name
       key
       isDefault
+      nativeName
     }
   }
 `;

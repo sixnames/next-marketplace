@@ -24,7 +24,7 @@ const Header: React.FC = () => {
         <Inner lowTop lowBottom className={classes.inner}>
           {languagesList.length > 1 ? (
             <div className={classes.language}>
-              {languagesList.map(({ name, key }) => {
+              {languagesList.map(({ nativeName, key }) => {
                 return (
                   <div
                     key={key}
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
                       isCurrentLanguage(key) ? classes.languageItemActive : ''
                     }`}
                   >
-                    {name}
+                    {nativeName}
                   </div>
                 );
               })}

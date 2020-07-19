@@ -14,18 +14,20 @@ import { hash } from 'bcryptjs';
 import { LanguageModel } from '../entities/Language';
 
 async function createInitialData() {
+  // Create default language
   const languages = await LanguageModel.find({ key: DEFAULT_LANG });
-  const metric = await MetricModel.find({});
-  const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
-
   if (!languages.length) {
-    await LanguageModel.insertMany(MOCK_LANGUAGES);
+    await LanguageModel.create(MOCK_LANGUAGES[0]);
   }
 
+  // Create all metrics
+  const metric = await MetricModel.find({});
   if (!metric.length) {
     await MetricModel.insertMany(MOCK_METRICS);
   }
 
+  // Create admin user
+  const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
   if (!admin) {
     const password = await hash(ADMIN_PASSWORD, 10);
 

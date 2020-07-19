@@ -1,4 +1,4 @@
-import { clearTestDataHandler } from './clearTestData';
+import clearTestData from './clearTestData';
 import createInitialData from '../createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
@@ -40,6 +40,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  MOCK_LANGUAGES,
 } from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
@@ -47,6 +48,7 @@ import sharp from 'sharp';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { GenderEnum } from '../../entities/common';
+import { LanguageModel } from '../../entities/Language';
 
 interface LangInterface {
   key: string;
@@ -183,10 +185,15 @@ async function getProductCities(
 const createTestData = async () => {
   try {
     // Clear old test data
-    await clearTestDataHandler();
+    await clearTestData();
 
     // Metrics and admin user
     await createInitialData();
+
+    const languages = await LanguageModel.find({ key: DEFAULT_LANG });
+    if (languages.length !== MOCK_LANGUAGES.length) {
+      await LanguageModel.create(MOCK_LANGUAGES[1]);
+    }
 
     // Options
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);

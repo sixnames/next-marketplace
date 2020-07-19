@@ -1138,7 +1138,7 @@ export type RubricProductFragmentFragment = (
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active'>
+    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
   )> }
 );
 
@@ -2200,6 +2200,7 @@ export const RubricProductFragmentFragmentDoc = gql`
     slug
     mainImage
     active
+    rubrics
   }
 }
     `;

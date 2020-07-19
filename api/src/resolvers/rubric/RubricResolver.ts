@@ -59,7 +59,6 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
@@ -736,15 +735,6 @@ export class RubricResolver {
         return {
           success: false,
           message: getMessageTranslation(`rubric.deleteProduct.notFound.${lang}`),
-        };
-      }
-
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
-      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.deleteProduct.levelError.${lang}`),
         };
       }
 

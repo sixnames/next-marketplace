@@ -18,6 +18,7 @@
 
 .frame .input {
   height: 2rem;
+  width: 100%;
   border: none;
   background: none;
   padding-left: 1rem;

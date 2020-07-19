@@ -8,7 +8,7 @@ import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '..
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 
-describe.only('Rubrics', () => {
+describe('Rubrics', () => {
   it('Should rubrics CRUD', async () => {
     expect(true).toBeTruthy();
     const { query } = await getTestClientWithAuthenticatedUser();

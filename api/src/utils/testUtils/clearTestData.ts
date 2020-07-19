@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 import createInitialData from '../createInitialData';
 
-export const clearTestDataHandler = async () => {
-  await mongoose.connection.db.dropDatabase();
-  await createInitialData();
-};
-
 const clearTestData = async () => {
-  await clearTestDataHandler();
+  const modelsNames = mongoose.modelNames();
+  for await (const model of modelsNames) {
+    await mongoose.model(model).deleteMany({});
+  }
+  await createInitialData();
 };
 
 export default clearTestData;

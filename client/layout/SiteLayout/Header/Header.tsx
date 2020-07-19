@@ -10,43 +10,35 @@ import classes from './Header.module.css';
 import { useThemeContext } from '../../../context/themeContext';
 import Icon from '../../../components/Icon/Icon';
 import TTip from '../../../components/TTip/TTip';
-import { DEFAULT_LANG, SECONDARY_LANG } from '../../../config';
 import { useLanguageContext } from '../../../context/languageContext';
 
-// TODO set lang in getServerSideProps
 const Header: React.FC = () => {
   const { toggleTheme, themeIcon, themeTooltip } = useThemeContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
-  const {
-    languageIsRussian,
-    languageIsEnglish,
-    setEnglishLanguage,
-    setRussianLanguage,
-  } = useLanguageContext();
+  const { languagesList, setLanguage, isCurrentLanguage } = useLanguageContext();
 
   return (
     <header className={classes.frame} ref={headerRef}>
       <div className={classes.top}>
         <Inner lowTop lowBottom className={classes.inner}>
-          <div className={classes.language}>
-            <div
-              onClick={setRussianLanguage}
-              className={`${classes.languageItem} ${
-                languageIsRussian ? classes.languageItemActive : ''
-              }`}
-            >
-              {DEFAULT_LANG}
+          {languagesList.length > 1 ? (
+            <div className={classes.language}>
+              {languagesList.map(({ nativeName, key }) => {
+                return (
+                  <div
+                    key={key}
+                    onClick={() => setLanguage(key)}
+                    className={`${classes.languageItem} ${
+                      isCurrentLanguage(key) ? classes.languageItemActive : ''
+                    }`}
+                  >
+                    {nativeName}
+                  </div>
+                );
+              })}
             </div>
-            <div
-              onClick={setEnglishLanguage}
-              className={`${classes.languageItem} ${
-                languageIsEnglish ? classes.languageItemActive : ''
-              }`}
-            >
-              {SECONDARY_LANG}
-            </div>
-          </div>
+          ) : null}
 
           <ul className={classes.topNav}>
             {/*<li className={classes.topNavItem}>

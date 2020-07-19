@@ -10,6 +10,7 @@ export interface ProductsListItemInterface {
   slug: string;
   mainImage: string;
   active: boolean;
+  rubrics: string[];
 }
 
 export interface ProductColumnsInterface {
@@ -19,6 +20,10 @@ export interface ProductColumnsInterface {
   createHandler?: (product: ProductsListItemInterface) => void;
   updateHandler?: (product: ProductsListItemInterface) => void;
   deleteHandler?: (product: ProductsListItemInterface) => void;
+  disabled?: boolean;
+  isCreateDisabled?: (product: ProductsListItemInterface) => boolean;
+  isUpdateDisabled?: (product: ProductsListItemInterface) => boolean;
+  isDeleteDisabled?: (product: ProductsListItemInterface) => boolean;
 }
 
 const useProductsListColumns = ({
@@ -28,6 +33,10 @@ const useProductsListColumns = ({
   createHandler,
   updateHandler,
   deleteHandler,
+  disabled,
+  isCreateDisabled,
+  isUpdateDisabled,
+  isDeleteDisabled,
 }: ProductColumnsInterface) => {
   return [
     {
@@ -71,6 +80,10 @@ const useProductsListColumns = ({
             createHandler={createHandler ? () => createHandler(product) : undefined}
             updateHandler={updateHandler ? () => updateHandler(product) : undefined}
             deleteHandler={deleteHandler ? () => deleteHandler(product) : undefined}
+            disabled={disabled}
+            isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(product) : undefined}
+            isCreateDisabled={isCreateDisabled ? isCreateDisabled(product) : undefined}
+            isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(product) : undefined}
           />
         );
       },

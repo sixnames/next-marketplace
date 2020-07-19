@@ -28,6 +28,7 @@ const rubricProductsFragment = gql`
       slug
       mainImage
       active
+      rubrics
     }
   }
 `;

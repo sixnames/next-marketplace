@@ -4,7 +4,6 @@ import createApp from '../src/app';
 import { createTestClient } from 'apollo-server-integration-testing';
 import createTestData from '../src/utils/testUtils/createTestData';
 import clearTestData from '../src/utils/testUtils/clearTestData';
-import { UserModel } from '../src/entities/User';
 
 const { server } = createApp();
 
@@ -27,5 +26,4 @@ afterAll(async () => {
 
 afterEach(async () => {
   await clearTestData();
-  await UserModel.deleteMany({});
 });

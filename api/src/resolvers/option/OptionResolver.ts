@@ -16,6 +16,6 @@ export class OptionResolver {
     @Root() option: DocumentType<Option>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    return getLangField(option.name, ctx.req.session!.lang);
+    return getLangField(option.name, ctx.req.lang);
   }
 }

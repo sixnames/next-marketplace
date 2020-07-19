@@ -42,6 +42,10 @@ export type Query = {
   getCatalogueData?: Maybe<CatalogueData>;
   getGenderOptions: Array<GenderOption>;
   getAttributePositioningOptions: Array<AttributePositioningOption>;
+  getISOLanguagesList: Array<IsoLanguage>;
+  getLanguage?: Maybe<Language>;
+  getAllLanguages?: Maybe<Array<Language>>;
+  getClientLanguage: Scalars['String'];
 };
 
 
@@ -133,6 +137,11 @@ export type QueryGetRubricsTreeArgs = {
 export type QueryGetCatalogueDataArgs = {
   productsInput?: Maybe<ProductPaginateInput>;
   catalogueFilter: Array<Scalars['String']>;
+};
+
+
+export type QueryGetLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 export type User = {
@@ -519,6 +528,22 @@ export type AttributePositioningOption = {
   nameString: Scalars['String'];
 };
 
+export type IsoLanguage = {
+   __typename?: 'ISOLanguage';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
 export type Mutation = {
    __typename?: 'Mutation';
   createUser: UserPayloadType;
@@ -556,6 +581,10 @@ export type Mutation = {
   deleteAttributesGroupFromRubric: RubricPayloadType;
   addProductToRubric: RubricPayloadType;
   deleteProductFromRubric: RubricPayloadType;
+  setLanguageAsDefault: LanguagePayloadType;
+  createLanguage: LanguagePayloadType;
+  updateLanguage: LanguagePayloadType;
+  deleteLanguage: LanguagePayloadType;
 };
 
 
@@ -726,6 +755,26 @@ export type MutationAddProductToRubricArgs = {
 
 export type MutationDeleteProductFromRubricArgs = {
   input: DeleteProductFromRubricInput;
+};
+
+
+export type MutationSetLanguageAsDefaultArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateLanguageArgs = {
+  input: CreateLanguageInput;
+};
+
+
+export type MutationUpdateLanguageArgs = {
+  input: UpdateLanguageInput;
+};
+
+
+export type MutationDeleteLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 export type UserPayloadType = {
@@ -991,6 +1040,26 @@ export type DeleteProductFromRubricInput = {
   productId: Scalars['ID'];
 };
 
+export type LanguagePayloadType = {
+   __typename?: 'LanguagePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  language?: Maybe<Language>;
+};
+
+export type CreateLanguageInput = {
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type UpdateLanguageInput = {
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
 export type ProductFragmentFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics'>
@@ -1069,7 +1138,7 @@ export type RubricProductFragmentFragment = (
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active'>
+    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
   )> }
 );
 
@@ -1511,6 +1580,58 @@ export type DeleteRubricVariantMutation = (
   ) }
 );
 
+export type CreateLanguageMutationVariables = {
+  input: CreateLanguageInput;
+};
+
+
+export type CreateLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { createLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateLanguageMutationVariables = {
+  input: UpdateLanguageInput;
+};
+
+
+export type UpdateLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { updateLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteLanguageMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetLanguageAsDefaultMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type SetLanguageAsDefaultMutation = (
+  { __typename?: 'Mutation' }
+  & { setLanguageAsDefault: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type SignInMutationVariables = {
   input: SignInInput;
 };
@@ -1742,6 +1863,17 @@ export type GetAllAttributesGroupsQuery = (
   )> }
 );
 
+export type GetAllLanguagesQueryQueryVariables = {};
+
+
+export type GetAllLanguagesQueryQuery = (
+  { __typename?: 'Query' }
+  & { getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+  )>> }
+);
+
 export type GetAllOptionsGroupsQueryVariables = {};
 
 
@@ -1927,10 +2059,14 @@ export type InitialQueryVariables = {};
 
 export type InitialQuery = (
   { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )> }
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
+  )>> }
 );
 
 export type SiteRubricFragmentFragment = (
@@ -1947,10 +2083,14 @@ export type InitialSiteQueryQueryVariables = {};
 
 export type InitialSiteQueryQuery = (
   { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getRubricsTree: Array<(
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
+  )>>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & { children: Array<(
       { __typename?: 'Rubric' }
@@ -1972,6 +2112,17 @@ export type GetGenderOptionsQuery = (
   & { getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetIsoLanguagesListQueryVariables = {};
+
+
+export type GetIsoLanguagesListQuery = (
+  { __typename?: 'Query' }
+  & { getISOLanguagesList: Array<(
+    { __typename?: 'ISOLanguage' }
+    & Pick<IsoLanguage, 'id' | 'nameString' | 'nativeName'>
   )> }
 );
 
@@ -2049,6 +2200,7 @@ export const RubricProductFragmentFragmentDoc = gql`
     slug
     mainImage
     active
+    rubrics
   }
 }
     `;
@@ -3054,6 +3206,138 @@ export function useDeleteRubricVariantMutation(baseOptions?: ApolloReactHooks.Mu
 export type DeleteRubricVariantMutationHookResult = ReturnType<typeof useDeleteRubricVariantMutation>;
 export type DeleteRubricVariantMutationResult = ApolloReactCommon.MutationResult<DeleteRubricVariantMutation>;
 export type DeleteRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
+export const CreateLanguageDocument = gql`
+    mutation CreateLanguage($input: CreateLanguageInput!) {
+  createLanguage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateLanguageMutationFn = ApolloReactCommon.MutationFunction<CreateLanguageMutation, CreateLanguageMutationVariables>;
+
+/**
+ * __useCreateLanguageMutation__
+ *
+ * To run a mutation, you first call `useCreateLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLanguageMutation, { data, loading, error }] = useCreateLanguageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateLanguageMutation, CreateLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateLanguageMutation, CreateLanguageMutationVariables>(CreateLanguageDocument, baseOptions);
+      }
+export type CreateLanguageMutationHookResult = ReturnType<typeof useCreateLanguageMutation>;
+export type CreateLanguageMutationResult = ApolloReactCommon.MutationResult<CreateLanguageMutation>;
+export type CreateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateLanguageMutation, CreateLanguageMutationVariables>;
+export const UpdateLanguageDocument = gql`
+    mutation UpdateLanguage($input: UpdateLanguageInput!) {
+  updateLanguage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateLanguageMutationFn = ApolloReactCommon.MutationFunction<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+
+/**
+ * __useUpdateLanguageMutation__
+ *
+ * To run a mutation, you first call `useUpdateLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLanguageMutation, { data, loading, error }] = useUpdateLanguageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateLanguageMutation, UpdateLanguageMutationVariables>(UpdateLanguageDocument, baseOptions);
+      }
+export type UpdateLanguageMutationHookResult = ReturnType<typeof useUpdateLanguageMutation>;
+export type UpdateLanguageMutationResult = ApolloReactCommon.MutationResult<UpdateLanguageMutation>;
+export type UpdateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+export const DeleteLanguageDocument = gql`
+    mutation DeleteLanguage($id: ID!) {
+  deleteLanguage(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteLanguageMutationFn = ApolloReactCommon.MutationFunction<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+
+/**
+ * __useDeleteLanguageMutation__
+ *
+ * To run a mutation, you first call `useDeleteLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteLanguageMutation, { data, loading, error }] = useDeleteLanguageMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(DeleteLanguageDocument, baseOptions);
+      }
+export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
+export type DeleteLanguageMutationResult = ApolloReactCommon.MutationResult<DeleteLanguageMutation>;
+export type DeleteLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export const SetLanguageAsDefaultDocument = gql`
+    mutation SetLanguageAsDefault($id: ID!) {
+  setLanguageAsDefault(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type SetLanguageAsDefaultMutationFn = ApolloReactCommon.MutationFunction<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
+
+/**
+ * __useSetLanguageAsDefaultMutation__
+ *
+ * To run a mutation, you first call `useSetLanguageAsDefaultMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetLanguageAsDefaultMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setLanguageAsDefaultMutation, { data, loading, error }] = useSetLanguageAsDefaultMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSetLanguageAsDefaultMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>(SetLanguageAsDefaultDocument, baseOptions);
+      }
+export type SetLanguageAsDefaultMutationHookResult = ReturnType<typeof useSetLanguageAsDefaultMutation>;
+export type SetLanguageAsDefaultMutationResult = ApolloReactCommon.MutationResult<SetLanguageAsDefaultMutation>;
+export type SetLanguageAsDefaultMutationOptions = ApolloReactCommon.BaseMutationOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
 export const SignInDocument = gql`
     mutation SignIn($input: SignInInput!) {
   signIn(input: $input) {
@@ -3541,6 +3825,42 @@ export function useGetAllAttributesGroupsLazyQuery(baseOptions?: ApolloReactHook
 export type GetAllAttributesGroupsQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsQuery>;
 export type GetAllAttributesGroupsLazyQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsLazyQuery>;
 export type GetAllAttributesGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>;
+export const GetAllLanguagesQueryDocument = gql`
+    query GetAllLanguagesQuery {
+  getAllLanguages {
+    id
+    name
+    key
+    isDefault
+    nativeName
+  }
+}
+    `;
+
+/**
+ * __useGetAllLanguagesQueryQuery__
+ *
+ * To run a query within a React component, call `useGetAllLanguagesQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllLanguagesQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllLanguagesQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllLanguagesQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+      }
+export function useGetAllLanguagesQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+        }
+export type GetAllLanguagesQueryQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryQuery>;
+export type GetAllLanguagesQueryLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryLazyQuery>;
+export type GetAllLanguagesQueryQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>;
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {
@@ -3925,6 +4245,14 @@ export const InitialDocument = gql`
     isManager
     isCustomer
   }
+  getClientLanguage
+  getAllLanguages {
+    id
+    name
+    nativeName
+    key
+    isDefault
+  }
 }
     `;
 
@@ -3967,6 +4295,14 @@ export const InitialSiteQueryDocument = gql`
     isAdmin
     isManager
     isCustomer
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    key
+    name
+    nativeName
+    isDefault
   }
   getRubricsTree {
     ...SiteRubricFragment
@@ -4037,3 +4373,37 @@ export function useGetGenderOptionsLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
 export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
 export type GetGenderOptionsQueryResult = ApolloReactCommon.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;
+export const GetIsoLanguagesListDocument = gql`
+    query GetISOLanguagesList {
+  getISOLanguagesList {
+    id
+    nameString
+    nativeName
+  }
+}
+    `;
+
+/**
+ * __useGetIsoLanguagesListQuery__
+ *
+ * To run a query within a React component, call `useGetIsoLanguagesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIsoLanguagesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIsoLanguagesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetIsoLanguagesListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
+      }
+export function useGetIsoLanguagesListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
+        }
+export type GetIsoLanguagesListQueryHookResult = ReturnType<typeof useGetIsoLanguagesListQuery>;
+export type GetIsoLanguagesListLazyQueryHookResult = ReturnType<typeof useGetIsoLanguagesListLazyQuery>;
+export type GetIsoLanguagesListQueryResult = ApolloReactCommon.QueryResult<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>;

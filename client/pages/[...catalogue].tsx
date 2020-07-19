@@ -18,7 +18,6 @@ interface CatalogueInterface {
 const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   initialApolloState,
   rubricData,
-  lang,
 }) => {
   if (!initialApolloState || !rubricData) {
     return (
@@ -41,7 +40,7 @@ const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   const { catalogueTitle } = getCatalogueData;
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+    <SiteContextProvider initialApolloState={initialApolloState}>
       <SiteLayout title={catalogueTitle} description={catalogueTitle}>
         <CatalogueRoute rubricData={rubricData} />
       </SiteLayout>

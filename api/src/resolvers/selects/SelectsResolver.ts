@@ -1,14 +1,18 @@
 import { Ctx, Query, Resolver } from 'type-graphql';
 import { ContextInterface } from '../../types/context';
-import { GenderOption, AttributePositioningOption } from '../../entities/SelectsOptions';
-import { ATTRIBUTE_POSITION_IN_TITLE_ENUMS, GENDER_ENUMS } from '../../config';
+import {
+  GenderOption,
+  AttributePositioningOption,
+  ISOLanguage,
+} from '../../entities/SelectsOptions';
+import { ATTRIBUTE_POSITION_IN_TITLE_ENUMS, GENDER_ENUMS, ISO_LANGUAGES } from '../../config';
 import { getMessageTranslation } from '../../config/translations';
 
 @Resolver((_of) => GenderOption)
 export class GendersListResolver {
   @Query((_returns) => [GenderOption])
   async getGenderOptions(@Ctx() ctx: ContextInterface): Promise<GenderOption[]> {
-    const { lang } = ctx.req.session!;
+    const { lang } = ctx.req;
     return GENDER_ENUMS.map((gender) => ({
       id: gender,
       nameString: getMessageTranslation(`selectsOptions.gender.${gender}.${lang}`),
@@ -22,10 +26,18 @@ export class AttributePositioningListResolver {
   async getAttributePositioningOptions(
     @Ctx() ctx: ContextInterface,
   ): Promise<AttributePositioningOption[]> {
-    const { lang } = ctx.req.session!;
+    const { lang } = ctx.req;
     return ATTRIBUTE_POSITION_IN_TITLE_ENUMS.map((position) => ({
       id: position,
       nameString: getMessageTranslation(`selectsOptions.attributePositioning.${position}.${lang}`),
     }));
+  }
+}
+
+@Resolver((_of) => ISOLanguage)
+export class ISOLanguagesListResolver {
+  @Query((_returns) => [ISOLanguage])
+  async getISOLanguagesList(): Promise<ISOLanguage[]> {
+    return ISO_LANGUAGES;
   }
 }

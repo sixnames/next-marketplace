@@ -1,4 +1,5 @@
 export * from './templates';
+export * from './language';
 export * from './authorization';
 export * from './option';
 export * from './optionsGroup';

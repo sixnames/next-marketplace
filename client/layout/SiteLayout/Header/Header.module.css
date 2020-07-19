@@ -29,7 +29,6 @@
 
 .language {
   display: flex;
-  text-transform: uppercase;
 }
 
 .languageItem {

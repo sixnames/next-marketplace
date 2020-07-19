@@ -76,7 +76,7 @@ export class UserResolver {
     try {
       await createUserSchema.validate(input);
 
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -120,7 +120,7 @@ export class UserResolver {
   async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
     try {
       await updateUserSchema.validate(input);
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       const { id, ...values } = input;
       const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
@@ -155,7 +155,7 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async deleteUser(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const user = await UserModel.findByIdAndDelete(id);
 
       if (!user) {
@@ -181,7 +181,7 @@ export class UserResolver {
   async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
     try {
       await signUpValidationSchema.validate(input);
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
@@ -225,7 +225,7 @@ export class UserResolver {
   async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
     try {
       await signInValidationSchema.validate(input);
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
 
       const isSignedOut = ensureSignedOut(ctx.req);
 
@@ -268,7 +268,7 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signOut(@Ctx() ctx: ContextInterface) {
     try {
-      const lang = ctx.req.session!.lang;
+      const lang = ctx.req.lang;
       const isSignedOut = await attemptSignOut(ctx.req);
 
       if (!isSignedOut) {

@@ -55,7 +55,7 @@ class ProductPayloadType extends PayloadType() {
 export class ProductResolver {
   @Query(() => Product)
   async getProduct(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
-    return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
+    return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.city });
   }
 
   @Query(() => Product)
@@ -66,7 +66,7 @@ export class ProductResolver {
     return ProductModel.findOne({
       cities: {
         $elemMatch: {
-          key: ctx.req.session!.city,
+          key: ctx.req.city,
           'node.slug': slug,
         },
       },
@@ -78,7 +78,7 @@ export class ProductResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('input', { nullable: true }) input: ProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     const {
       limit = 100,
       page = 1,
@@ -112,7 +112,7 @@ export class ProductResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('input') input: ProductsCountersInput,
   ): Promise<ProductsCounters> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     const activeProductsQuery = getProductsFilter({ ...input, active: true }, city);
     const allProductsQuery = getProductsFilter(input, city);
 
@@ -128,7 +128,7 @@ export class ProductResolver {
     @Arg('selectedRubrics', (_type) => [ID]) selectedRubrics: string[],
   ): Promise<AttributesGroup[]> {
     try {
-      const city = ctx.req.session!.city;
+      const city = ctx.req.city;
       const rubrics = await RubricModel.find({
         _id: { $in: selectedRubrics },
         'cities.key': city,
@@ -165,8 +165,8 @@ export class ProductResolver {
     try {
       await createProductSchema.validate(input);
 
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -240,8 +240,8 @@ export class ProductResolver {
     try {
       await updateProductSchema.validate(input);
 
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
 
       const { id, assets, ...values } = input;
 
@@ -329,8 +329,8 @@ export class ProductResolver {
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
 
       const product = await ProductModel.findOne({
         _id: id,
@@ -404,11 +404,11 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return '';
     }
-    return getLangField(city.node.name, ctx.req.session!.lang);
+    return getLangField(city.node.name, ctx.req.lang);
   }
 
   @FieldResolver()
@@ -416,11 +416,11 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return '';
     }
-    return getLangField(city.node.cardName, ctx.req.session!.lang);
+    return getLangField(city.node.cardName, ctx.req.lang);
   }
 
   @FieldResolver()
@@ -428,7 +428,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return '';
     }
@@ -440,11 +440,11 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return '';
     }
-    return getLangField(city.node.description, ctx.req.session!.lang);
+    return getLangField(city.node.description, ctx.req.lang);
   }
 
   @FieldResolver()
@@ -452,7 +452,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string[]> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return [];
     }
@@ -475,7 +475,7 @@ export class ProductResolver {
           model: 'Attribute',
         })
         .execPopulate();
-      const city = getCityData(populated.cities, ctx.req.session!.city);
+      const city = getCityData(populated.cities, ctx.req.city);
 
       if (!city) {
         return [];
@@ -492,7 +492,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<AssetType[]> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return [];
     }
@@ -504,7 +504,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return '';
     }
@@ -521,7 +521,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return 0;
     }
@@ -533,7 +533,7 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<boolean> {
-    const city = getCityData(product.cities, ctx.req.session!.city);
+    const city = getCityData(product.cities, ctx.req.city);
     if (!city) {
       return false;
     }

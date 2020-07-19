@@ -13,6 +13,7 @@ import {
   ROLE_CUSTOMER,
   ROLE_MANAGER,
   LANG_COOKIE_HEADER,
+  CITY_COOKIE_KEY,
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
@@ -37,11 +38,16 @@ import { attemptSignIn } from './utils/auth';
 import {
   AttributePositioningListResolver,
   GendersListResolver,
+  ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
+import { LanguageResolver } from './resolvers/languages/LanguageResolver';
+import { LanguageModel } from './entities/Language';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
     resolvers: [
+      LanguageResolver,
+      ISOLanguagesListResolver,
       UserResolver,
       MetricResolver,
       OptionResolver,
@@ -77,16 +83,31 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   app.use(sessionHandler);
 
-  // Get current city from subdomain name and language from cookie
-  app.use((req, _, next) => {
+  // Get current city from subdomain name
+  // and language from cookie or user accepted language
+  app.use(async (req, res, next) => {
+    // City
     const city = req.headers['x-subdomain'];
-    const cookies = cookie.parse(req.headers.cookie || '');
+    const currentCity = city ? city : DEFAULT_CITY;
+    req.city = `${currentCity}`;
+    res.cookie(CITY_COOKIE_KEY, currentCity);
 
+    // Language
+    const cookies = cookie.parse(req.headers.cookie || '');
     const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
     const cookieLang = cookies[LANG_COOKIE_KEY];
+    const clientLanguage = cookieLang || systemLang;
+    const languageExists = await LanguageModel.exists({ key: clientLanguage });
 
-    req.session!.city = city ? city : DEFAULT_CITY;
-    req.session!.lang = cookieLang || systemLang || DEFAULT_LANG;
+    if (languageExists) {
+      req.lang = clientLanguage;
+    } else {
+      const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
+      const finalLang = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
+      res.cookie(LANG_COOKIE_KEY, finalLang);
+      req.lang = finalLang;
+    }
+
     next();
   });
 
@@ -106,7 +127,7 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   });
 
   app.get('/test-sign-in', async (req, res) => {
-    const lang = req.session!.lang;
+    const lang = req.lang;
     const { email, password } = req.query;
     const { user, message } = await attemptSignIn(`${email}`, `${password}`, lang);
 

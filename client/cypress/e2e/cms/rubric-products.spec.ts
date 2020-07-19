@@ -96,7 +96,7 @@ describe('Rubric products', () => {
     cy.getByCy(mockProduct).should('exist');
   });
 
-  it.only('Should create products in rubric', () => {
+  it('Should create products in rubric', () => {
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
 
     // Shouldn't create product on validation error

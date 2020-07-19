@@ -6,7 +6,7 @@ import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
 
-interface ConfirmModalInterface {
+export interface ConfirmModalInterface {
   confirm?: (args?: any) => void;
   message?: any;
   testId?: string;

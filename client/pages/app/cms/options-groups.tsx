@@ -5,11 +5,13 @@ import { UserContextProvider } from '../../../context/userContext';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
 import OptionsGroupsRoute from '../../../routes/OptionsGroups/OptionsGroupsRoute';
 
-const OptionsGroups: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
-  const myData = initialApolloState ? initialApolloState.me : null;
-
+const OptionsGroups: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (
-    <UserContextProvider me={myData} lang={lang}>
+    <UserContextProvider
+      me={initialApolloState.me}
+      lang={initialApolloState.getClientLanguage}
+      languagesList={initialApolloState.getAllLanguages || []}
+    >
       <AppLayout title={'Группы опций'}>
         <OptionsGroupsRoute />
       </AppLayout>

@@ -37,10 +37,9 @@ export async function getTestClientWithUser({
 
   setOptions({
     request: {
-      session: {
-        city,
-        lang,
-      },
+      city,
+      lang,
+      session: {},
     },
   });
 

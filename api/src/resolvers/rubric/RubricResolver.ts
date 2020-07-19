@@ -59,7 +59,6 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
-  RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_ZERO,
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
@@ -83,7 +82,7 @@ class RubricPayloadType extends PayloadType() {
 export class RubricResolver {
   @Query(() => Rubric)
   async getRubric(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
-    return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.session!.city });
+    return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.city });
   }
 
   @Query(() => Rubric)
@@ -94,7 +93,7 @@ export class RubricResolver {
     return RubricModel.findOne({
       cities: {
         $elemMatch: {
-          key: ctx.req.session!.city,
+          key: ctx.req.city,
           'node.slug': slug,
         },
       },
@@ -109,7 +108,7 @@ export class RubricResolver {
   ): Promise<Rubric[]> {
     return RubricModel.find({
       _id: { $nin: excluded },
-      'cities.key': ctx.req.session!.city,
+      'cities.key': ctx.req.city,
       'cities.node.level': RUBRIC_LEVEL_ONE,
     });
   }
@@ -120,8 +119,8 @@ export class RubricResolver {
     @Arg('input') input: CreateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       await createRubricInputSchema.validate(input);
 
       const { parent, name } = input;
@@ -197,8 +196,8 @@ export class RubricResolver {
     @Arg('input') input: UpdateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       await updateRubricInputSchema.validate(input);
       const { id, ...values } = input;
       const rubric = await RubricModel.findById(id).lean().exec();
@@ -277,8 +276,8 @@ export class RubricResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       const rubric = await RubricModel.findOne({
         _id: id,
         'cities.key': city,
@@ -381,8 +380,8 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       await addAttributesGroupToRubricInputSchema.validate(input);
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
@@ -471,8 +470,8 @@ export class RubricResolver {
     @Arg('input') input: UpdateAttributesGroupInRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       await updateAttributesGroupInRubricInputSchema.validate(input);
 
       const { rubricId, attributesGroupId, attributeId } = input;
@@ -564,8 +563,8 @@ export class RubricResolver {
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       await deleteAttributesGroupFromRubricInputSchema.validate(input);
 
       const { rubricId, attributesGroupId } = input;
@@ -639,8 +638,8 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       await addProductToRubricInputSchema.validate(input);
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
@@ -718,8 +717,8 @@ export class RubricResolver {
   ): Promise<RubricPayloadType> {
     try {
       await deleteProductFromRubricInputSchema.validate(input);
-      const city = ctx.req.session!.city;
-      const lang = ctx.req.session!.lang;
+      const city = ctx.req.city;
+      const lang = ctx.req.lang;
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
@@ -736,15 +735,6 @@ export class RubricResolver {
         return {
           success: false,
           message: getMessageTranslation(`rubric.deleteProduct.notFound.${lang}`),
-        };
-      }
-
-      const currentRubricCityNode = rubric.cities.find(({ key }) => key === city)!.node;
-      const currentRubricLevel = currentRubricCityNode.level;
-      if (currentRubricLevel !== RUBRIC_LEVEL_THREE) {
-        return {
-          success: false,
-          message: getMessageTranslation(`rubric.deleteProduct.levelError.${lang}`),
         };
       }
 
@@ -783,11 +773,11 @@ export class RubricResolver {
 
   @FieldResolver()
   async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return '';
     }
-    return getLangField(city!.node.name, ctx.req.session!.lang);
+    return getLangField(city!.node.name, ctx.req.lang);
   }
 
   @FieldResolver()
@@ -795,8 +785,8 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<RubricCatalogueTitleField> {
-    const lang = ctx.req.session!.lang;
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    const lang = ctx.req.lang;
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return {
         defaultTitle: LANG_NOT_FOUND_FIELD_MESSAGE,
@@ -820,7 +810,7 @@ export class RubricResolver {
 
   @FieldResolver()
   async slug(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return '';
     }
@@ -829,7 +819,7 @@ export class RubricResolver {
 
   @FieldResolver()
   async level(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<number> {
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return RUBRIC_LEVEL_ZERO;
     }
@@ -841,7 +831,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<boolean | null | undefined> {
-    const city = getCityData(rubric.cities, ctx.req.session!.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return false;
     }
@@ -854,7 +844,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<Rubric | null> {
     const populated = await rubric.populate('cities.node.parent').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.session!.city);
+    const city = getCityData(populated.cities, ctx.req.city);
     if (!city) {
       return null;
     }
@@ -867,7 +857,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<RubricVariant | null> {
     const populated = await rubric.populate('cities.node.variant').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.session!.city);
+    const city = getCityData(populated.cities, ctx.req.city);
     if (!city) {
       return null;
     }
@@ -883,7 +873,7 @@ export class RubricResolver {
   ): Promise<Rubric[]> {
     return RubricModel.find({
       _id: { $nin: excluded },
-      'cities.key': ctx.req.session!.city,
+      'cities.key': ctx.req.city,
       'cities.node.parent': rubric.id,
     });
   }
@@ -894,7 +884,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
   ): Promise<RubricAttributesGroup[]> {
     const populated = await rubric.populate('cities.node.attributesGroups.node').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.session!.city);
+    const city = getCityData(populated.cities, ctx.req.city);
     if (!city) {
       return [];
     }
@@ -907,7 +897,7 @@ export class RubricResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
@@ -927,7 +917,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<Attribute[]> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     const currentCity = getCityData(rubric.cities, city);
     if (!currentCity) {
       return [];
@@ -946,7 +936,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     return getRubricCounters({ city, rubric });
   }
 
@@ -955,7 +945,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<number> {
-    const city = ctx.req.session!.city;
+    const city = ctx.req.city;
     return getRubricCounters({ city, rubric, args: { active: true } });
   }
 }

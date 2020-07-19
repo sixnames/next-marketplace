@@ -1,6 +1,6 @@
 import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { Metric } from '../../../entities/Metric';
-import { MOCK_METRICS } from '../../../config';
+import { DEFAULT_LANG, MOCK_METRICS } from '../../../config';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
@@ -58,7 +58,7 @@ describe('Metric', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: '' }],
+            name: [{ key: DEFAULT_LANG, value: '' }],
           },
         },
       },
@@ -85,7 +85,7 @@ describe('Metric', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: newMetricName }],
+            name: [{ key: DEFAULT_LANG, value: newMetricName }],
           },
         },
       },
@@ -114,7 +114,7 @@ describe('Metric', () => {
         variables: {
           input: {
             id: createMetric.metric.id,
-            name: [{ key: 'ru', value: updatedMetricName }],
+            name: [{ key: DEFAULT_LANG, value: updatedMetricName }],
           },
         },
       },

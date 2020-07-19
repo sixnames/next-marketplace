@@ -7,7 +7,7 @@ import { SiteContextProvider } from '../context/siteContext';
 import RequestError from '../components/RequestError/RequestError';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 
-const Home: NextPage<SitePagePropsType> = ({ initialApolloState, lang }) => {
+const Home: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   if (!initialApolloState) {
     return (
       <Inner>
@@ -17,7 +17,7 @@ const Home: NextPage<SitePagePropsType> = ({ initialApolloState, lang }) => {
   }
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+    <SiteContextProvider initialApolloState={initialApolloState}>
       <SiteLayout>
         <Inner>
           <Title>Main page</Title>

@@ -115,6 +115,12 @@ input CreateAttributesGroupInput {
   name: [LangInput!]!
 }
 
+input CreateLanguageInput {
+  key: String!
+  name: String!
+  nativeName: String!
+}
+
 input CreateMetricInput {
   name: [LangInput!]!
 }
@@ -185,9 +191,29 @@ type GenderOption {
   nameString: String!
 }
 
+type ISOLanguage {
+  id: String!
+  nameString: String!
+  nativeName: String!
+}
+
 input LangInput {
   key: String!
   value: String!
+}
+
+type Language {
+  id: ID!
+  isDefault: Boolean!
+  key: String!
+  name: String!
+  nativeName: String!
+}
+
+type LanguagePayloadType {
+  language: Language
+  message: String!
+  success: Boolean!
 }
 
 type LanguageType {
@@ -213,6 +239,7 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createLanguage(input: CreateLanguageInput!): LanguagePayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
@@ -222,6 +249,7 @@ type Mutation {
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
+  deleteLanguage(id: ID!): LanguagePayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
@@ -230,12 +258,14 @@ type Mutation {
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
+  setLanguageAsDefault(id: ID!): LanguagePayloadType!
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
+  updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -414,6 +444,7 @@ type Query {
     """list of excluded groups id's"""
     exclude: [ID!]
   ): [AttributesGroup!]!
+  getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
   getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
@@ -424,8 +455,11 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getClientLanguage: String!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
+  getISOLanguagesList: [ISOLanguage!]!
+  getLanguage(id: ID!): Language
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
@@ -574,6 +608,13 @@ input UpdateAttributesGroupInRubricInput {
   attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input UpdateLanguageInput {
+  id: ID!
+  key: String!
+  name: String!
+  nativeName: String!
 }
 
 input UpdateMetricInput {

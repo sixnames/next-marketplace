@@ -12,13 +12,11 @@ const SiteContext = createContext<SiteContextInterface>({
 
 interface SiteContextProviderInterface {
   initialApolloState: InitialSiteQueryQuery;
-  lang: string;
 }
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   initialApolloState,
-  lang,
 }) => {
   const initialValue = useMemo(() => {
     return {
@@ -27,7 +25,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   }, [initialApolloState]);
 
   return (
-    <UserContextProvider me={initialApolloState.me} lang={lang}>
+    <UserContextProvider
+      me={initialApolloState.me}
+      lang={initialApolloState.getClientLanguage}
+      languagesList={initialApolloState.getAllLanguages || []}
+    >
       <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>
     </UserContextProvider>
   );

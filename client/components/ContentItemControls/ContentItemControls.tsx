@@ -16,6 +16,9 @@ export interface ContentItemControlsInterface {
   theme?: ButtonTheme;
   testId?: string;
   disabled?: boolean;
+  isCreateDisabled?: boolean;
+  isUpdateDisabled?: boolean;
+  isDeleteDisabled?: boolean;
 }
 
 const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
@@ -31,6 +34,9 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   theme = 'gray',
   testId,
   disabled,
+  isCreateDisabled,
+  isUpdateDisabled,
+  isDeleteDisabled,
 }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`} style={{ justifyContent }}>
@@ -44,7 +50,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={createHandler}
             theme={theme}
             testId={`${testId}-create`}
-            disabled={disabled}
+            disabled={disabled || isCreateDisabled}
           />
         </div>
       )}
@@ -59,7 +65,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={updateHandler}
             theme={theme}
             testId={`${testId}-update`}
-            disabled={disabled}
+            disabled={disabled || isUpdateDisabled}
           />
         </div>
       )}
@@ -74,7 +80,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
             onClick={deleteHandler}
             theme={theme}
             testId={`${testId}-delete`}
-            disabled={disabled}
+            disabled={disabled || isDeleteDisabled}
           />
         </div>
       )}

@@ -7,7 +7,7 @@ import Inner from '../components/Inner/Inner';
 import RequestError from '../components/RequestError/RequestError';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 
-const SignIn: NextPage<SitePagePropsType> = ({ initialApolloState, lang }) => {
+const SignIn: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   if (!initialApolloState) {
     return (
       <Inner>
@@ -17,7 +17,7 @@ const SignIn: NextPage<SitePagePropsType> = ({ initialApolloState, lang }) => {
   }
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+    <SiteContextProvider initialApolloState={initialApolloState}>
       <SiteLayout>
         <SignInRoute />
       </SiteLayout>

@@ -5,11 +5,13 @@ import { UserContextProvider } from '../../../context/userContext';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
 import ProductsRoute from '../../../routes/Products/ProductsRoute';
 
-const Products: NextPage<AppPageInterface> = ({ initialApolloState, lang }) => {
-  const myData = initialApolloState ? initialApolloState.me : null;
-
+const Products: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (
-    <UserContextProvider me={myData} lang={lang}>
+    <UserContextProvider
+      me={initialApolloState.me}
+      lang={initialApolloState.getClientLanguage}
+      languagesList={initialApolloState.getAllLanguages || []}
+    >
       <AppLayout title={'Товары'}>
         <ProductsRoute />
       </AppLayout>

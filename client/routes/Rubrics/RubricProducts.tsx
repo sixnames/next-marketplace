@@ -100,6 +100,9 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         pathname: `${ROUTE_CMS}/product`,
         query: { id },
       }),
+    isDeleteDisabled: ({ rubrics }) => {
+      return !rubrics.includes(rubric.id);
+    },
   });
 
   if (!data && !loading && !error) {

@@ -15,11 +15,7 @@ interface CardInterface {
   cardData: CardData;
 }
 
-const Card: React.FC<SitePagePropsType<CardInterface>> = ({
-  initialApolloState,
-  cardData,
-  lang,
-}) => {
+const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, cardData }) => {
   if (!initialApolloState || !cardData) {
     return (
       <Inner>
@@ -29,7 +25,7 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({
   }
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState} lang={lang}>
+    <SiteContextProvider initialApolloState={initialApolloState}>
       <SiteLayout>
         <CardRoute cardData={cardData} />
       </SiteLayout>

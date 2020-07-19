@@ -43,7 +43,7 @@ describe('Rubric products', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should delete product from rubric and db', () => {

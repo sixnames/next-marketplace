@@ -2065,7 +2065,7 @@ export type InitialQuery = (
     & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
   )>, getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault'>
+    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
   )>> }
 );
 
@@ -4249,6 +4249,7 @@ export const InitialDocument = gql`
   getAllLanguages {
     id
     name
+    nativeName
     key
     isDefault
   }

@@ -20,6 +20,7 @@ export const INITIAL_QUERY = gql`
     getAllLanguages {
       id
       name
+      nativeName
       key
       isDefault
     }

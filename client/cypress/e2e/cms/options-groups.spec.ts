@@ -34,14 +34,14 @@ describe('Options Groups', () => {
     cy.getByCy(`create-options-group`).click();
 
     // Should show validation error on not valid options group name
-    cy.getByCy(`update-name-input`).type(fakeName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`options-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should create group
-    cy.getByCy(`update-name-input`).clear().type(createdGroupName);
-    cy.getByCy(`update-name-submit`).click();
-    cy.getByCy(`create-options-group-modal`).should('not.exist');
+    cy.getByCy(`name-ru`).clear().type(createdGroupName);
+    cy.getByCy(`options-group-submit`).click();
+    cy.getByCy(`options-group-modal`).should('not.exist');
     cy.getByCy(`group-${createdGroupName}`).should('exist');
 
     // Should update group title on groups filter click
@@ -50,11 +50,10 @@ describe('Options Groups', () => {
 
     // Should update options group
     cy.getByCy(`options-group-update`).click();
-    cy.getByCy(`update-name-input`)
-      .should('have.value', createdGroupName)
-      .clear()
-      .type(groupNewName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).should('have.value', createdGroupName).clear().type(groupNewName);
+    cy.getByCy(`name-accordion-en`).click();
+    cy.getByCy(`name-en`).clear().type(groupNewName);
+    cy.getByCy(`options-group-submit`).click();
     cy.contains(groupNewName).should('exist');
 
     // Shouldn't delete options group connected to the attribute

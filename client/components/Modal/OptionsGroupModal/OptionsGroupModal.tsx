@@ -57,7 +57,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
                   {name ? 'Изменить' : 'Создать'}
                 </Button>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'update-name-decline'}>
+                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
                   Отмена
                 </Button>
               </ModalButtons>

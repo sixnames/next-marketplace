@@ -51,7 +51,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
             label={label}
             key={`${inputName}-${key}`}
             name={`${inputName}[${index}].value`}
-            testId={`${testId}-key`}
+            testId={`${testId}-${key}`}
           />
         ))}
       </div>
@@ -89,6 +89,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
 
         return (
           <Accordion
+            testId={`${testId}-accordion-${key}`}
             isOpen={isDefault}
             title={name}
             titleRight={
@@ -105,7 +106,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
               <FormikInput
                 {...props}
                 name={`${inputName}[${index}].value`}
-                testId={`${testId}-key`}
+                testId={`${testId}-${key}`}
                 low
               />
             </div>

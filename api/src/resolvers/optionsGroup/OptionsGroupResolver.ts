@@ -201,7 +201,8 @@ export class OptionsGroupResolver {
   ): Promise<OptionsGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await addOptionToGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await addOptionToGroupSchema(defaultLang).validate(input);
 
       const { groupId, ...values } = input;
       const group = await OptionsGroupModel.findById(groupId);
@@ -273,7 +274,8 @@ export class OptionsGroupResolver {
   ): Promise<OptionsGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateOptionInGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateOptionInGroupSchema(defaultLang).validate(input);
 
       const { groupId, optionId, color, name, gender, variants } = input;
       const group = await OptionsGroupModel.findById(groupId);

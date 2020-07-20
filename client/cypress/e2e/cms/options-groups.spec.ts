@@ -76,7 +76,7 @@ describe('Options Groups', () => {
     // Shouldn't create option in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`options-group-create`).click();
-    cy.getByCy(`option-name`).type(fakeName);
+    cy.getByCy(`name-ru`).type(fakeName);
     cy.getByCy(`option-color`).type(fakeColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
@@ -86,11 +86,11 @@ describe('Options Groups', () => {
     cy.getByCy(`color-error`).should('exist');
 
     //Shouldn't create option in group if there is an option with the same name
-    cy.getByCy(`option-name`).clear().type(mockOptionName);
+    cy.getByCy(`name-ru`).clear().type(mockOptionName);
     cy.getByCy(`option-gender`).select(GENDER_SHE);
-    cy.getByCy(`option-${GENDER_SHE}`).type(optionName);
-    cy.getByCy(`option-${GENDER_HE}`).type(optionName);
-    cy.getByCy(`option-${GENDER_IT}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_HE}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_IT}-ru`).type(optionName);
     cy.getByCy(`option-color`).clear().type(mockOptionColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${mockOptionName}`).should('have.length', 1);
@@ -101,18 +101,28 @@ describe('Options Groups', () => {
 
     //Should create option in group
     cy.getByCy(`options-group-create`).click();
-    cy.getByCy(`option-name`).type(optionName);
+    cy.getByCy(`name-ru`).type(optionName);
     cy.getByCy(`option-gender`).select(GENDER_IT);
     cy.getByCy(`option-color`).type(optionColor);
-    cy.getByCy(`option-${GENDER_SHE}`).type(optionName);
-    cy.getByCy(`option-${GENDER_HE}`).type(optionName);
-    cy.getByCy(`option-${GENDER_IT}`).type(optionName);
+
+    cy.getByCy(`variant-${GENDER_SHE}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-accordion-en`).click();
+    cy.getByCy(`variant-${GENDER_SHE}-en`).type(optionName);
+
+    cy.getByCy(`variant-${GENDER_HE}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_HE}-accordion-en`).click();
+    cy.getByCy(`variant-${GENDER_HE}-en`).type(optionName);
+
+    cy.getByCy(`variant-${GENDER_IT}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_IT}-accordion-en`).click();
+    cy.getByCy(`variant-${GENDER_IT}-en`).type(optionName);
+
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('exist');
 
     // Should update option name in group
     cy.getByCy(`${optionName}-option-update`).click();
-    cy.getByCy(`option-name`).should('have.value', optionName).clear().type(optionNewName);
+    cy.getByCy(`name-ru`).should('have.value', optionName).clear().type(optionNewName);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('not.exist');
     cy.getByCy(`${optionNewName}`).should('exist');
@@ -121,9 +131,18 @@ describe('Options Groups', () => {
     cy.getByCy(`${optionNewName}-option-update`).click();
     cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);
     cy.getByCy(`option-gender`).should('have.value', GENDER_IT).select(GENDER_SHE);
-    cy.getByCy(`option-${GENDER_SHE}`).should('have.value', optionName).type(optionNewName);
-    cy.getByCy(`option-${GENDER_HE}`).should('have.value', optionName).type(optionNewName);
-    cy.getByCy(`option-${GENDER_IT}`).should('have.value', optionName).type(optionNewName);
+    cy.getByCy(`variant-${GENDER_SHE}-ru`)
+      .should('have.value', optionName)
+      .clear()
+      .type(optionNewName);
+    cy.getByCy(`variant-${GENDER_HE}-ru`)
+      .should('have.value', optionName)
+      .clear()
+      .type(optionNewName);
+    cy.getByCy(`variant-${GENDER_IT}-ru`)
+      .should('have.value', optionName)
+      .clear()
+      .type(optionNewName);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionNewName}`).should('exist');
     cy.getByCy(`${optionNewName}-${optionNewColor}`).should('exist');

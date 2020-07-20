@@ -1,16 +1,17 @@
 import * as Yup from 'yup';
-import { color, id, langInput, notNullableName } from './templates';
+import { color, id, langStringInputSchema } from './templates';
 import { GENDER_ENUMS } from '../config';
 
-export const optionVariant = Yup.object().shape({
-  key: Yup.mixed().oneOf(GENDER_ENUMS).required('Род опции обязателен к заполнению.'),
-  value: langInput(notNullableName('Значение рода опции')),
-});
+export const optionVariant = (defaultLang: string) =>
+  Yup.object().shape({
+    key: Yup.mixed().oneOf(GENDER_ENUMS).required('Род опции обязателен к заполнению.'),
+    value: langStringInputSchema({ defaultLang, entityMessage: 'Значение рода опции' }),
+  });
 
-export const optionInGroupCommonSchema = {
-  name: langInput(notNullableName('Название опции')),
+export const optionInGroupCommonSchema = (defaultLang: string) => ({
+  name: langStringInputSchema({ defaultLang, entityMessage: 'Название опции' }),
   color,
-  variants: Yup.array().of(optionVariant),
+  variants: Yup.array().of(optionVariant(defaultLang)),
   gender: Yup.mixed()
     .oneOf(GENDER_ENUMS)
     .nullable()
@@ -21,22 +22,25 @@ export const optionInGroupCommonSchema = {
       then: Yup.mixed().oneOf(GENDER_ENUMS).required('Род опции обязателен к заполнению.'),
       otherwise: Yup.mixed().oneOf(GENDER_ENUMS).nullable(),
     }),
-};
-
-export const optionInGroupSchema = Yup.object().shape({
-  ...optionInGroupCommonSchema,
 });
 
-export const addOptionToGroupSchema = Yup.object().shape({
-  groupId: id,
-  ...optionInGroupCommonSchema,
-});
+export const optionInGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    ...optionInGroupCommonSchema(defaultLang),
+  });
 
-export const updateOptionInGroupSchema = Yup.object().shape({
-  groupId: id,
-  optionId: id,
-  ...optionInGroupCommonSchema,
-});
+export const addOptionToGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    groupId: id,
+    ...optionInGroupCommonSchema(defaultLang),
+  });
+
+export const updateOptionInGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    groupId: id,
+    optionId: id,
+    ...optionInGroupCommonSchema(defaultLang),
+  });
 
 export const deleteOptionFromGroupSchema = Yup.object().shape({
   groupId: id,

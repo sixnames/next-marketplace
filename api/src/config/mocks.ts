@@ -1260,6 +1260,7 @@ export const MOCK_OPTIONS_WINE_TYPE = [
   },
 ];
 
+// Options groups
 export const MOCK_OPTIONS_GROUP_COLORS = {
   name: [
     { key: 'ru', value: 'Цвета' },

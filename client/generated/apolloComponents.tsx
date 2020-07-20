@@ -2004,7 +2004,10 @@ export type GetOptionsGroupQuery = (
   & { getOptionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
     & Pick<OptionsGroup, 'id' | 'nameString'>
-    & { options: Array<(
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, options: Array<(
       { __typename?: 'Option' }
       & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
       & { name: Array<(
@@ -4126,6 +4129,10 @@ export const GetOptionsGroupDocument = gql`
     query GetOptionsGroup($id: ID!) {
   getOptionsGroup(id: $id) {
     id
+    name {
+      key
+      value
+    }
     nameString
     options {
       id

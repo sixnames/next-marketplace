@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
 import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY } from '../config';
 import Cookies from 'js-cookie';
-import { Language } from '../generated/apolloComponents';
+import { LangInput, Language, LanguageType } from '../generated/apolloComponents';
 
 interface LanguageContextInterface {
   lang: string;
@@ -14,6 +14,8 @@ interface UseLanguageContextInterface {
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
+  getLanguageFieldInitialValue: (field?: LanguageType[]) => LangInput[];
+  getLanguageFieldInputValue: (field: LangInput[]) => LangInput[];
 }
 
 const LanguageContext = createContext<LanguageContextInterface>({
@@ -59,11 +61,36 @@ function useLanguageContext(): UseLanguageContextInterface {
     [lang],
   );
 
+  const getLanguageFieldInitialValue = useCallback(
+    (field?: LanguageType[]) => {
+      if (!field || !field.length) {
+        return languagesList.reduce((acc: LangInput[], language) => {
+          return [...acc, { key: language.key, value: '' }];
+        }, []);
+      }
+
+      return languagesList.reduce((acc: LangInput[], language) => {
+        const fieldItem = field.find(({ key }) => language.key === key);
+        if (fieldItem) {
+          return [...acc, { key: language.key, value: fieldItem.value }];
+        }
+        return [...acc, { key: language.key, value: '' }];
+      }, []);
+    },
+    [languagesList],
+  );
+
+  const getLanguageFieldInputValue = useCallback((field: LangInput[]) => {
+    return field.filter(({ value }) => value);
+  }, []);
+
   return {
     lang,
     setLanguage,
     languagesList,
     isCurrentLanguage,
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
   };
 }
 

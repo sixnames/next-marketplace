@@ -1,11 +1,7 @@
 import * as Yup from 'yup';
-import { id, langInput, notNullableName } from './templates';
+import { langStringInputSchema } from './templates';
 
-export const createOptionsGroupSchema = Yup.object().shape({
-  name: langInput(notNullableName('Название группы опций')),
-});
-
-export const updateOptionsGroupSchema = Yup.object().shape({
-  id,
-  name: langInput(notNullableName('Название группы опций')),
-});
+export const optionsGroupModalSchema = (lang: string) =>
+  Yup.object().shape({
+    name: langStringInputSchema({ defaultLang: lang, entityMessage: 'Название группы опций' }),
+  });

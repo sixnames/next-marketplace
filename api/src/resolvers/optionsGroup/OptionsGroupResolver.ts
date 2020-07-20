@@ -109,6 +109,7 @@ export class OptionsGroupResolver {
 
       const nameValues = values.name.map(({ value }) => value);
       const isGroupExists = await OptionsGroupModel.exists({
+        _id: { $ne: input.id },
         'name.value': {
           $in: nameValues,
         },

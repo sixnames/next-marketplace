@@ -102,7 +102,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
   if (error || !data || !data.getOptionsGroup) return <RequestError />;
 
   const { getOptionsGroup } = data;
-  const { nameString, id, options } = getOptionsGroup;
+  const { nameString, id, options, name } = getOptionsGroup;
 
   const columns = [
     {
@@ -141,7 +141,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
   return (
     <Fragment>
       <DataLayoutTitle
-        titleRight={<OptionsGroupControls id={id} name={nameString} />}
+        titleRight={<OptionsGroupControls id={id} name={name} nameString={nameString} />}
         testId={'group-title'}
       >
         {nameString}

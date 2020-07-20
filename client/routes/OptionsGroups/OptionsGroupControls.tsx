@@ -1,24 +1,30 @@
 import React from 'react';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import {
+  LanguageType,
   useAddOptionToGroupMutation,
   useDeleteOptionsGroupMutation,
   useUpdateOptionsGroupMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
-import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
-import { LangInterface } from '../../types';
+import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, OPTIONS_GROUP_MODAL } from '../../config/modals';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
 import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
+import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
 
 interface OptionsGroupControlsInterface {
   id: string;
-  name: string;
+  name: LanguageType[];
+  nameString: string;
 }
 
-const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, name }) => {
+const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({
+  id,
+  name,
+  nameString,
+}) => {
   const { removeQuery } = useRouterQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
@@ -51,12 +57,11 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
   });
 
   function updateOptionsGroupHandler() {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+    showModal<OptionsGroupModalInterface>({
+      type: OPTIONS_GROUP_MODAL,
       props: {
-        oldName: name,
-        title: 'Введите новое название группы',
-        confirm: (values: { name: LangInterface[] }) => {
+        name,
+        confirm: (values) => {
           showLoading();
           return updateOptionsGroupMutation({
             variables: {
@@ -76,7 +81,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ id, nam
       type: CONFIRM_MODAL,
       props: {
         testId: 'delete-options-group',
-        message: `Вы уверенны, что хотите удалить группу опций ${name}?`,
+        message: `Вы уверенны, что хотите удалить группу опций ${nameString}?`,
         confirm: () => {
           showLoading();
           return deleteOptionsGroupMutation({ variables: { id } });

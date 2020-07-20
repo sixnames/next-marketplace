@@ -18,7 +18,7 @@ export const role = Yup.mixed().oneOf(ROLES_ENUM);
 export const langInput = (valueSchema: StringSchema) =>
   Yup.array().of(
     Yup.object({
-      key: Yup.string().trim().required('Язык обязателен к заполнению.'),
+      key: Yup.string().trim().required('Ключ зыка обязателен к заполнению.'),
       value: valueSchema,
     }),
   );
@@ -29,6 +29,37 @@ export const notNullableName = (nameTarget: string) =>
     .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
     .trim()
     .required(`${nameTarget} обязателено к заполнению.`);
+
+interface LangStringInputSchemaInterface {
+  defaultLang: string;
+  entityMessage: string;
+}
+
+export const langStringInputSchema = ({
+  defaultLang,
+  entityMessage,
+}: LangStringInputSchemaInterface) =>
+  Yup.array().of(
+    Yup.object({
+      key: Yup.string().trim().required('Ключ зыка обязателен к заполнению.'),
+      value: Yup.string()
+        .trim()
+        .when('key', (key: string, value: StringSchema) => {
+          return key === defaultLang
+            ? value
+                .min(
+                  minNameLength,
+                  `${entityMessage} должно состоять минимум из ${minNameLength} символов`,
+                )
+                .max(
+                  maxNameLength,
+                  `${entityMessage} должно состоять максимум из ${maxNameLength} символов`,
+                )
+                .required(`${entityMessage} обязателено к заполнению.`)
+            : value.min(0);
+        }),
+    }),
+  );
 
 export const nameLangSchema = (nameTarget: string) => {
   return Yup.object().shape({

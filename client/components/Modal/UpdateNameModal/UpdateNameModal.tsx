@@ -3,17 +3,20 @@ import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import ModalText from '../ModalText';
 import ModalButtons from '../ModalButtons';
-import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik, FormikValues } from 'formik';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
-import { nameLangSchema } from '../../../validation';
+import { langStringInputSchema } from '../../../validation';
+import { LanguageType } from '../../../generated/apolloComponents';
+import { useLanguageContext } from '../../../context/languageContext';
+import FormikLanguageInput from '../../FormElements/Input/FormikLanguageInput';
+import * as Yup from 'yup';
 
 interface UpdateNameModalInterface {
   title?: string;
   message?: string;
-  validationMessage?: string;
-  oldName?: string;
+  entityMessage?: string;
+  oldName?: LanguageType[];
   buttonText?: string;
   confirm: (values: FormikValues) => void;
   testId?: string;
@@ -22,13 +25,18 @@ interface UpdateNameModalInterface {
 const UpdateNameModal: React.FC<UpdateNameModalInterface> = ({
   title = '',
   message = '',
-  validationMessage = '',
-  oldName = '',
+  entityMessage = '',
+  oldName,
   buttonText = 'Изменить',
   confirm,
   testId,
 }) => {
+  const { getLanguageFieldInitialValue, lang } = useLanguageContext();
   const { hideModal } = useAppContext();
+
+  const schema = Yup.object().shape({
+    name: langStringInputSchema({ defaultLang: lang, entityMessage }),
+  });
 
   return (
     <ModalFrame testId={testId}>
@@ -42,40 +50,33 @@ const UpdateNameModal: React.FC<UpdateNameModalInterface> = ({
 
       <Formik
         initialValues={{
-          name: [
-            {
-              key: 'ru',
-              value: oldName,
-            },
-          ],
+          name: getLanguageFieldInitialValue(oldName),
         }}
-        onSubmit={confirm}
-        validationSchema={() => nameLangSchema(validationMessage)}
+        onSubmit={(values) => {
+          console.log(values);
+          console.log(confirm);
+        }}
+        // validationSchema={() => nameLangSchema(validationMessage, 1)}
+        validationSchema={schema}
       >
-        {({ values }) => {
+        {() => {
           return (
             <Form>
-              {values.name.map((_, index) => {
-                return (
-                  <FormikInput
-                    key={index}
-                    name={`name[${index}].value`}
-                    testId={'update-name-input'}
-                    showInlineError
-                  />
-                );
-              })}
+              <FormikLanguageInput
+                label={'Введите название'}
+                name={'name'}
+                testId={'name'}
+                showInlineError
+              />
 
               <ModalButtons>
-                <ModalButtons>
-                  <Button type={'submit'} testId={'update-name-submit'}>
-                    {buttonText}
-                  </Button>
+                <Button type={'submit'} testId={'update-name-submit'}>
+                  {buttonText}
+                </Button>
 
-                  <Button theme={'secondary'} onClick={hideModal} testId={'update-name-decline'}>
-                    Отмена
-                  </Button>
-                </ModalButtons>
+                <Button theme={'secondary'} onClick={hideModal} testId={'update-name-decline'}>
+                  Отмена
+                </Button>
               </ModalButtons>
             </Form>
           );

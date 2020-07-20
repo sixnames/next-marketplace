@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langInput, notNullableName } from './templates';
+import { langInput, notNullableName } from './templates';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
@@ -35,22 +35,6 @@ const attributeCommonFields = {
   options,
   positioningInTitle: Yup.array().of(attributePositioningInTitle).required(),
 };
-
-export const addAttributeToGroupSchema = Yup.object().shape({
-  groupId: id,
-  ...attributeCommonFields,
-});
-
-export const updateAttributeInGroupSchema = Yup.object().shape({
-  groupId: id,
-  attributeId: id,
-  ...attributeCommonFields,
-});
-
-export const deleteAttributeFromGroupSchema = Yup.object().shape({
-  groupId: id,
-  attributeId: id,
-});
 
 export const attributeInGroupSchema = Yup.object().shape({
   ...attributeCommonFields,

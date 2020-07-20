@@ -51,3 +51,7 @@ export const deleteAttributeFromGroupSchema = Yup.object().shape({
   groupId: id,
   attributeId: id,
 });
+
+export const attributeInGroupSchema = Yup.object().shape({
+  ...attributeCommonFields,
+});

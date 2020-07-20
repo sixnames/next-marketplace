@@ -65,3 +65,7 @@ export const deleteProductFromRubricInputSchema = Yup.object().shape({
   rubricId,
   productId,
 });
+
+export const addAttributesGroupToRubricSchema = Yup.object().shape({
+  attributesGroupId,
+});

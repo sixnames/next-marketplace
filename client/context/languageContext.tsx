@@ -11,6 +11,7 @@ interface LanguageContextInterface {
 
 interface UseLanguageContextInterface {
   lang: string;
+  defaultLang: string;
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
@@ -46,6 +47,9 @@ function useLanguageContext(): UseLanguageContextInterface {
   }
 
   const { lang, languagesList } = context;
+
+  const defaultLangItem = languagesList.find(({ isDefault }) => isDefault);
+  const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
 
   const setLanguage = useCallback((lang: string) => {
     Cookies.set(LANG_COOKIE_KEY, lang);
@@ -86,6 +90,7 @@ function useLanguageContext(): UseLanguageContextInterface {
 
   return {
     lang,
+    defaultLang,
     setLanguage,
     languagesList,
     isCurrentLanguage,

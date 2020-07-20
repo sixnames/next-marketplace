@@ -20,7 +20,11 @@ export interface OptionsGroupModalInterface {
 }
 
 const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm }) => {
-  const { getLanguageFieldInitialValue, getLanguageFieldInputValue, lang } = useLanguageContext();
+  const {
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    defaultLang,
+  } = useLanguageContext();
   const { hideModal } = useAppContext();
 
   return (
@@ -36,7 +40,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
             name: getLanguageFieldInputValue(name),
           });
         }}
-        validationSchema={optionsGroupModalSchema(lang)}
+        validationSchema={optionsGroupModalSchema(defaultLang)}
       >
         {() => {
           return (

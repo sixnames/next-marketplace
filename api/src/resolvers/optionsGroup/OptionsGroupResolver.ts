@@ -58,7 +58,8 @@ export class OptionsGroupResolver {
   ): Promise<OptionsGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await createOptionsGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await createOptionsGroupSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await OptionsGroupModel.exists({
@@ -103,7 +104,8 @@ export class OptionsGroupResolver {
   ): Promise<OptionsGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateOptionsGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateOptionsGroupSchema(defaultLang).validate(input);
 
       const { id, ...values } = input;
 

@@ -11,12 +11,9 @@ const variant = Yup.string()
     otherwise: Yup.string().required('Типа рубрики обязателен к заполнению.'),
   });
 
-const rubricId = Yup.string().nullable().required('ID рубрики обязательно к заполнению.');
 const attributesGroupId = Yup.string()
   .nullable()
   .required('ID группы атрибутов обязательно к заполнению.');
-const attributeId = Yup.string().nullable().required('ID атрибута обязательно к заполнению.');
-const productId = Yup.string().nullable().required('ID товара обязательно к заполнению.');
 
 const rubricCatalogueTitleSchema = Yup.object().shape({
   defaultTitle: langInput(notNullableName('Название каталога')),
@@ -38,32 +35,6 @@ export const updateRubricInputSchema = Yup.object().shape({
   catalogueTitle: rubricCatalogueTitleSchema,
   parent,
   variant,
-});
-
-export const addAttributesGroupToRubricInputSchema = Yup.object().shape({
-  rubricId,
-  attributesGroupId,
-});
-
-export const deleteAttributesGroupFromRubricInputSchema = Yup.object().shape({
-  rubricId,
-  attributesGroupId,
-});
-
-export const updateAttributesGroupInRubricInputSchema = Yup.object().shape({
-  rubricId,
-  attributesGroupId,
-  attributeId,
-});
-
-export const addProductToRubricInputSchema = Yup.object().shape({
-  rubricId,
-  productId,
-});
-
-export const deleteProductFromRubricInputSchema = Yup.object().shape({
-  rubricId,
-  productId,
 });
 
 export const addAttributesGroupToRubricSchema = Yup.object().shape({

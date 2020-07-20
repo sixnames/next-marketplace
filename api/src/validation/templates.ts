@@ -47,6 +47,37 @@ export const nameLangSchema = (
   });
 };
 
+interface LangStringInputSchemaInterface {
+  defaultLang: string;
+  entityMessage: string;
+}
+
+export const langStringInputSchema = ({
+  defaultLang,
+  entityMessage,
+}: LangStringInputSchemaInterface) =>
+  Yup.array().of(
+    Yup.object({
+      key: Yup.string().trim().required('Ключ языка обязателен к заполнению.'),
+      value: Yup.string()
+        .trim()
+        .when('key', (key: string, value: StringSchema) => {
+          return key === defaultLang
+            ? value
+                .min(
+                  minNameLength,
+                  `${entityMessage} должно состоять минимум из ${minNameLength} символов`,
+                )
+                .max(
+                  maxNameLength,
+                  `${entityMessage} должно состоять максимум из ${maxNameLength} символов`,
+                )
+                .required(`${entityMessage} обязателено к заполнению.`)
+            : value.min(0);
+        }),
+    }),
+  );
+
 export const name = Yup.string()
   .nullable()
   .min(minNameLength, `Имя должно состоять минимум из ${minNameLength} символов`)

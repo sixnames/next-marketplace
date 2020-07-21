@@ -4,11 +4,23 @@ const productFragment = gql`
   fragment ProductFragment on Product {
     id
     itemId
-    name
-    cardName
+    name {
+      key
+      value
+    }
+    nameString
+    cardName {
+      key
+      value
+    }
+    cardNameString
     slug
     price
-    description
+    description {
+      key
+      value
+    }
+    descriptionString
     assets {
       url
       index

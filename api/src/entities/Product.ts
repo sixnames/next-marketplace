@@ -112,16 +112,25 @@ export class Product extends TimeStamps {
   readonly itemId: number;
 
   @Field(() => String)
-  readonly name: string;
+  readonly nameString: string;
+
+  @Field(() => [LanguageType])
+  readonly name: LanguageType[];
 
   @Field(() => String)
-  readonly cardName: string;
-  //
+  readonly cardNameString: string;
+
+  @Field(() => [LanguageType])
+  readonly cardName: LanguageType[];
+
   @Field(() => String)
   readonly slug: string;
 
   @Field(() => String)
-  readonly description: string;
+  readonly descriptionString: string;
+
+  @Field(() => [LanguageType])
+  readonly description: LanguageType[];
 
   @Field(() => [ID])
   readonly rubrics: string[];

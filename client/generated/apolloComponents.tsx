@@ -252,10 +252,13 @@ export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
-  name: Scalars['String'];
-  cardName: Scalars['String'];
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  cardNameString: Scalars['String'];
+  cardName: Array<LanguageType>;
   slug: Scalars['String'];
-  description: Scalars['String'];
+  descriptionString: Scalars['String'];
+  description: Array<LanguageType>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
@@ -1378,8 +1381,17 @@ export type DeleteRubricVariantMutation = (
 
 export type ProductFragmentFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics'>
-  & { assets: Array<(
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'rubrics'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, cardName: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, description: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, assets: Array<(
     { __typename?: 'AssetType' }
     & Pick<AssetType, 'url' | 'index'>
   )>, attributesGroups: Array<(
@@ -1532,7 +1544,7 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProductBySlug: (
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'price' | 'slug' | 'mainImage' | 'description'>
+    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
     & { attributesGroups: Array<(
       { __typename?: 'ProductAttributesGroup' }
       & Pick<ProductAttributesGroup, 'showInCard'>
@@ -1592,7 +1604,7 @@ export type GetCatalogueRubricQuery = (
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
+        & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
       )> }
     ) }
   )> }
@@ -1842,7 +1854,11 @@ export type RubricProductFragmentFragment = (
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
   )> }
 );
 
@@ -2011,11 +2027,23 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   itemId
-  name
-  cardName
+  name {
+    key
+    value
+  }
+  nameString
+  cardName {
+    key
+    value
+  }
+  cardNameString
   slug
   price
-  description
+  description {
+    key
+    value
+  }
+  descriptionString
   assets {
     url
     index
@@ -2092,7 +2120,11 @@ export const RubricProductFragmentFragmentDoc = gql`
   docs {
     id
     itemId
-    name
+    name {
+      key
+      value
+    }
+    nameString
     price
     slug
     mainImage
@@ -3172,12 +3204,12 @@ export const GetCatalogueCardQueryDocument = gql`
   getProductBySlug(slug: $slug) {
     id
     itemId
-    name
-    cardName
+    nameString
+    cardNameString
     price
     slug
     mainImage
-    description
+    descriptionString
     attributesGroups {
       showInCard
       node {
@@ -3266,7 +3298,7 @@ export const GetCatalogueRubricDocument = gql`
       docs {
         id
         itemId
-        name
+        nameString
         price
         slug
         mainImage

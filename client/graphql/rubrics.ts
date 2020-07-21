@@ -27,7 +27,11 @@ const rubricProductsFragment = gql`
     docs {
       id
       itemId
-      name
+      name {
+        key
+        value
+      }
+      nameString
       price
       slug
       mainImage

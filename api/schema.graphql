@@ -345,14 +345,17 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
-  cardName: String!
+  cardName: [LanguageType!]!
+  cardNameString: String!
   cities: [ProductCity!]!
   createdAt: Timestamp!
-  description: String!
+  description: [LanguageType!]!
+  descriptionString: String!
   id: ID!
   itemId: Int!
   mainImage: String!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   price: Int!
   rubrics: [ID!]!
   slug: String!

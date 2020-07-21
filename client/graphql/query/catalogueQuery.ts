@@ -36,7 +36,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
         docs {
           id
           itemId
-          name
+          nameString
           price
           slug
           mainImage

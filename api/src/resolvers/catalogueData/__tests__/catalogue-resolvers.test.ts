@@ -27,7 +27,7 @@ describe('Attributes', () => {
             products {
               docs {
                 id
-                name
+                nameString
               }
               page
             }

@@ -102,7 +102,7 @@ describe('Rubrics', () => {
               id
               rubrics
               itemId
-              name
+              nameString
               price
               slug
               mainImage

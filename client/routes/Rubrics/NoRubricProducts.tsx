@@ -48,12 +48,12 @@ const NoRubricProducts: React.FC = () => {
     },
   });
 
-  function deleteProductHandler({ id, name }: { id: string; name: string }) {
+  function deleteProductHandler({ id, nameString }: { id: string; nameString: string }) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-modal',
-        message: `Вы уверенны, что хотите удалить товар ${name} из базы данных?`,
+        message: `Вы уверенны, что хотите удалить товар ${nameString} из базы данных?`,
         confirm: () => {
           showLoading();
           return deleteProductMutation({
@@ -66,7 +66,8 @@ const NoRubricProducts: React.FC = () => {
 
   const columns = useProductsListColumns({
     deleteTitle: 'Удалить товар из базы данных',
-    deleteHandler: (product) => deleteProductHandler({ id: product.id, name: product.name }),
+    deleteHandler: (product) =>
+      deleteProductHandler({ id: product.id, nameString: product.nameString }),
   });
 
   if (loading) return <Spinner isNested />;

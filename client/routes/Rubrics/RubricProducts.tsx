@@ -130,7 +130,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           />
         }
       >
-        {rubric.name}
+        {rubric.nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />

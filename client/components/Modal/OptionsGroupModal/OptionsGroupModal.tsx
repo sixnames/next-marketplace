@@ -50,6 +50,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
                 name={'name'}
                 testId={'name'}
                 showInlineError
+                isRequired
               />
 
               <ModalButtons>

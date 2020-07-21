@@ -5,7 +5,6 @@ import {
   useUpdateRubricMutation,
 } from '../../generated/apolloComponents';
 import { Formik, Form } from 'formik';
-import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikSelect from '../../components/FormElements/Select/FormikSelect';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
@@ -15,16 +14,23 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
-import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE, DEFAULT_LANG } from '../../config';
+import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
 import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
+import { useLanguageContext } from '../../context/languageContext';
+import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
+  const {
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    defaultLang,
+  } = useLanguageContext();
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
     awaitRefetchQueries: true,
@@ -49,15 +55,15 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     return <RequestError />;
   }
 
-  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, nameString, catalogueTitle } = rubric;
+  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, name, nameString, catalogueTitle } = rubric;
 
   const initialValues = {
     id,
-    name: [{ key: DEFAULT_LANG, value: nameString || '' }],
+    name: getLanguageFieldInitialValue(name),
     catalogueTitle: {
-      defaultTitle: catalogueTitle.defaultTitle,
-      prefix: catalogueTitle.prefix ? catalogueTitle.prefix : [],
-      keyword: catalogueTitle.keyword,
+      defaultTitle: getLanguageFieldInitialValue(catalogueTitle.defaultTitle),
+      prefix: getLanguageFieldInitialValue(catalogueTitle.prefix),
+      keyword: getLanguageFieldInitialValue(catalogueTitle.keyword),
       gender: catalogueTitle.gender,
     },
     variant: variant ? variant.id : null,
@@ -67,88 +73,73 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   return (
     <div data-cy={'rubric-details'}>
-      <DataLayoutTitle testId={'rubric-title'}>{rubric.name}</DataLayoutTitle>
+      <DataLayoutTitle testId={'rubric-title'}>{nameString}</DataLayoutTitle>
 
       <InnerWide>
         <Formik
-          validationSchema={updateRubricInputSchema}
+          validationSchema={() => updateRubricInputSchema(defaultLang)}
           initialValues={initialValues}
           enableReinitialize
           onSubmit={(values) => {
             showLoading();
-
+            const { catalogueTitle, ...restValues } = values;
             return updateRubricMutation({
               variables: {
-                input: values,
+                input: {
+                  ...restValues,
+                  name: getLanguageFieldInputValue(restValues.name),
+                  catalogueTitle: {
+                    ...catalogueTitle,
+                    defaultTitle: getLanguageFieldInputValue(catalogueTitle.defaultTitle),
+                    prefix: getLanguageFieldInputValue(catalogueTitle.prefix),
+                    keyword: getLanguageFieldInputValue(catalogueTitle.keyword),
+                  },
+                },
               },
             });
           }}
         >
-          {({ values }) => {
+          {() => {
             return (
               <Form>
                 <div className={classes.section}>
                   <Accordion title={'Основная информация'} isOpen>
                     <div className={classes.content}>
-                      {values.name.map(({ key }, index) => {
-                        return (
-                          <FormikInput
-                            key={key}
-                            name={`name[${index}].value`}
-                            label={'Название'}
-                            testId={'rubric-name'}
-                            showInlineError
-                            isRequired
-                            isHorizontal
-                          />
-                        );
-                      })}
+                      <FormikTranslationsInput
+                        label={'Название'}
+                        name={'name'}
+                        testId={'name'}
+                        showInlineError
+                        isRequired
+                      />
 
-                      {values.catalogueTitle.defaultTitle.map(({ key }, index) => {
-                        return (
-                          <FormikInput
-                            key={key}
-                            name={`catalogueTitle.defaultTitle[${index}].value`}
-                            label={'Заголовок каталога'}
-                            testId={'rubric-default-title'}
-                            showInlineError
-                            isRequired
-                            isHorizontal
-                          />
-                        );
-                      })}
+                      <FormikTranslationsInput
+                        label={'Заголовок каталога'}
+                        name={'catalogueTitle.defaultTitle'}
+                        testId={'catalogueTitle-defaultTitle'}
+                        showInlineError
+                        isRequired
+                      />
 
-                      {values.catalogueTitle.prefix.map(({ key }, index) => {
-                        return (
-                          <FormikInput
-                            key={key}
-                            name={`catalogueTitle.prefix[${index}].value`}
-                            label={'Префикс заголовка каталога'}
-                            testId={'rubric-title-prefix'}
-                            isHorizontal
-                          />
-                        );
-                      })}
+                      <FormikTranslationsInput
+                        label={'Префикс заголовка каталога'}
+                        name={'catalogueTitle.prefix'}
+                        testId={'catalogueTitle-prefix'}
+                      />
 
-                      {values.catalogueTitle.keyword.map(({ key }, index) => {
-                        return (
-                          <FormikInput
-                            key={key}
-                            name={`catalogueTitle.keyword[${index}].value`}
-                            label={'Ключевое слово заголовка каталога'}
-                            testId={'rubric-title-keyword'}
-                            showInlineError
-                            isRequired
-                            isHorizontal
-                          />
-                        );
-                      })}
+                      <FormikTranslationsInput
+                        label={'Ключевое слово заголовка каталога'}
+                        name={'catalogueTitle.keyword'}
+                        testId={'catalogueTitle-keyword'}
+                        showInlineError
+                        isRequired
+                      />
 
                       <FormikSelect
                         firstOption={'Не назначено'}
                         name={`catalogueTitle.gender`}
                         label={'Род ключевого слова заголовка каталога'}
-                        testId={'rubric-title-gender'}
+                        testId={'catalogueTitle-gender'}
                         showInlineError
                         isRequired
                         options={data.getGenderOptions || []}

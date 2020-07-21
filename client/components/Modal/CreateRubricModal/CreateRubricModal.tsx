@@ -2,7 +2,6 @@ import React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import ModalButtons from '../ModalButtons';
-import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import Button from '../../Buttons/Button';
@@ -16,7 +15,9 @@ import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { createRubricInputSchema } from '../../../validation';
-import { DEFAULT_LANG, RUBRIC_LEVEL_TWO } from '../../../config';
+import { RUBRIC_LEVEL_TWO } from '../../../config';
+import { useLanguageContext } from '../../../context/languageContext';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
@@ -25,6 +26,11 @@ export interface CreateRubricModalInterface {
 
 const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubrics }) => {
   const { hideModal } = useAppContext();
+  const {
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    defaultLang,
+  } = useLanguageContext();
   const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   if (loading) return <Spinner />;
@@ -41,48 +47,33 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
       <ModalTitle>Добавление рубрики</ModalTitle>
 
       <Formik
-        validationSchema={createRubricInputSchema}
+        validationSchema={() => createRubricInputSchema(defaultLang)}
         initialValues={{
-          name: [
-            {
-              key: 'ru',
-              value: '',
-            },
-          ],
+          name: getLanguageFieldInitialValue(),
           variant: null,
           parent: null,
           subParent: null,
           catalogueTitle: {
-            defaultTitle: [
-              {
-                key: DEFAULT_LANG,
-                value: '',
-              },
-            ],
-            prefix: [
-              {
-                key: DEFAULT_LANG,
-                value: '',
-              },
-            ],
-            keyword: [
-              {
-                key: DEFAULT_LANG,
-                value: '',
-              },
-            ],
+            defaultTitle: getLanguageFieldInitialValue(),
+            prefix: getLanguageFieldInitialValue(),
+            keyword: getLanguageFieldInitialValue(),
             gender: '' as GenderEnum,
           },
         }}
         onSubmit={(values) => {
-          const { subParent, ...restValues } = values;
-          const result = { ...restValues };
+          const { subParent, parent, catalogueTitle, ...restValues } = values;
 
-          if (subParent) {
-            result.parent = subParent;
-          }
-
-          confirm(result);
+          confirm({
+            ...restValues,
+            name: getLanguageFieldInputValue(restValues.name),
+            parent: subParent ? subParent : parent,
+            catalogueTitle: {
+              ...catalogueTitle,
+              defaultTitle: getLanguageFieldInputValue(catalogueTitle.defaultTitle),
+              prefix: getLanguageFieldInputValue(catalogueTitle.prefix),
+              keyword: getLanguageFieldInputValue(catalogueTitle.keyword),
+            },
+          });
         }}
       >
         {({ values }) => {
@@ -91,61 +82,41 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
 
           return (
             <Form>
-              {values.name.map((_, index) => {
-                return (
-                  <FormikInput
-                    key={index}
-                    name={`name[${index}].value`}
-                    label={'Название'}
-                    testId={'rubric-name'}
-                    showInlineError
-                    isRequired
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'name'}
+                testId={'name'}
+                showInlineError
+                isRequired
+              />
 
-              {values.catalogueTitle.defaultTitle.map(({ key }, index) => {
-                return (
-                  <FormikInput
-                    key={key}
-                    name={`catalogueTitle.defaultTitle[${index}].value`}
-                    label={'Заголовок каталога'}
-                    testId={'rubric-default-title'}
-                    showInlineError
-                    isRequired
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Заголовок каталога'}
+                name={'catalogueTitle.defaultTitle'}
+                testId={'catalogueTitle-defaultTitle'}
+                showInlineError
+                isRequired
+              />
 
-              {values.catalogueTitle.prefix.map(({ key }, index) => {
-                return (
-                  <FormikInput
-                    key={key}
-                    name={`catalogueTitle.prefix[${index}].value`}
-                    label={'Префикс заголовка каталога'}
-                    testId={'rubric-title-prefix'}
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Префикс заголовка каталога'}
+                name={'catalogueTitle.prefix'}
+                testId={'catalogueTitle-prefix'}
+              />
 
-              {values.catalogueTitle.keyword.map(({ key }, index) => {
-                return (
-                  <FormikInput
-                    key={key}
-                    name={`catalogueTitle.keyword[${index}].value`}
-                    label={'Ключевое слово заголовка каталога'}
-                    testId={'rubric-title-keyword'}
-                    showInlineError
-                    isRequired
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Ключевое слово заголовка каталога'}
+                name={'catalogueTitle.keyword'}
+                testId={'catalogueTitle-keyword'}
+                showInlineError
+                isRequired
+              />
 
               <FormikSelect
                 firstOption={'Не назначено'}
                 name={`catalogueTitle.gender`}
-                label={'Род ключевого слова заголовка каталога'}
-                testId={'rubric-title-gender'}
+                label={'Род ключевого слова'}
+                testId={'catalogueTitle-gender'}
                 showInlineError
                 isRequired
                 options={data.getGenderOptions || []}

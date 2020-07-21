@@ -22,14 +22,14 @@ interface UseLanguageContextInterface {
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
-  getLanguageFieldTranslation: (field?: LanguageType[]) => string;
-  getLanguageFieldInitialValue: (field?: LanguageType[]) => LangInput[];
-  getLanguageFieldInputValue: (field: LangInput[]) => LangInput[];
+  getLanguageFieldTranslation: (field?: LanguageType[] | null) => string;
+  getLanguageFieldInitialValue: (field?: LanguageType[] | null) => LangInput[];
+  getLanguageFieldInputValue: (field: LangInput[] | null) => LangInput[];
   getAttributePositionInTitleInitialValue: (
-    field?: AttributePositioningInTitle[],
+    field?: AttributePositioningInTitle[] | null,
   ) => AttributePositioningInTitleInput[];
   getAttributePositionInTitleInputValue: (
-    field: AttributePositioningInTitleInput[],
+    field: AttributePositioningInTitleInput[] | null,
   ) => AttributePositioningInTitleInput[];
 }
 
@@ -66,7 +66,7 @@ function useLanguageContext(): UseLanguageContextInterface {
   const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
 
   const getLanguageFieldTranslation = useCallback(
-    (field?: LanguageType[]) => {
+    (field?: LanguageType[] | null) => {
       if (!field) {
         return LANG_NOT_FOUND_FIELD_MESSAGE;
       }
@@ -92,7 +92,7 @@ function useLanguageContext(): UseLanguageContextInterface {
   );
 
   const getLanguageFieldInitialValue = useCallback(
-    (field?: LanguageType[]) => {
+    (field?: LanguageType[] | null) => {
       if (!field || !field.length) {
         return languagesList.reduce((acc: LangInput[], language) => {
           return [...acc, { key: language.key, value: '' }];
@@ -110,12 +110,16 @@ function useLanguageContext(): UseLanguageContextInterface {
     [languagesList],
   );
 
-  const getLanguageFieldInputValue = useCallback((field: LangInput[]) => {
+  const getLanguageFieldInputValue = useCallback((field: LangInput[] | null) => {
+    if (!field) {
+      return [];
+    }
+
     return field.filter(({ value }) => value);
   }, []);
 
   const getAttributePositionInTitleInitialValue = useCallback(
-    (field?: AttributePositioningInTitle[]) => {
+    (field?: AttributePositioningInTitle[] | null) => {
       if (!field || !field.length) {
         return languagesList.reduce((acc: AttributePositioningInTitle[], language) => {
           return [...acc, { key: language.key, value: '' as AttributePositionInTitleEnum }];
@@ -137,7 +141,11 @@ function useLanguageContext(): UseLanguageContextInterface {
   );
 
   const getAttributePositionInTitleInputValue = useCallback(
-    (field: AttributePositioningInTitleInput[]) => {
+    (field: AttributePositioningInTitleInput[] | null) => {
+      if (!field) {
+        return [];
+      }
+
       return field.filter(({ value }) => value);
     },
     [],

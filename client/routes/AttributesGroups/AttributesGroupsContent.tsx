@@ -19,7 +19,7 @@ import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
+import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/attributes';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };
@@ -32,17 +32,17 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   });
 
   const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
-    onError: onErrorCallback,
     awaitRefetchQueries: true,
     refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
+    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
+    onError: onErrorCallback,
   });
 
   const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
-    onError: onErrorCallback,
     awaitRefetchQueries: true,
     refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
+    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
+    onError: onErrorCallback,
   });
 
   function deleteAttributeFromGroupHandler(id: string, nameString: string) {
@@ -53,8 +53,6 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: () => {
           showLoading();
           return deleteAttributeFromGroupMutation({
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: { input: { groupId: group, attributeId: id } },
           });
         },
@@ -72,8 +70,6 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: (input: Omit<UpdateAttributeInGroupInput, 'groupId' | 'attributeId'>) => {
           showLoading();
           return updateAttributeInGroupMutation({
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: {
               input: {
                 groupId: group,

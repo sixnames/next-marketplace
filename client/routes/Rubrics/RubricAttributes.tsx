@@ -48,43 +48,40 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     withModal: true,
   });
   const { data, error, loading } = useGetRubricAttributesQuery({
+    fetchPolicy: 'network-only',
     variables: {
       id: rubric.id,
     },
-    fetchPolicy: 'network-only',
   });
+
+  const refetchConfig = {
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRIC_ATTRIBUTES_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
+    ],
+  };
 
   const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromRubric),
     onError: onErrorCallback,
+    ...refetchConfig,
   });
 
   const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRIC_ATTRIBUTES_QUERY,
-        variables: {
-          id: rubric.id,
-        },
-      },
-    ],
+    ...refetchConfig,
   });
 
   const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateAttributesGroupInRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRIC_ATTRIBUTES_QUERY,
-        variables: {
-          id: rubric.id,
-        },
-      },
-    ],
+    ...refetchConfig,
   });
 
   if (!data && !loading && !error) {

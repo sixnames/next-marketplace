@@ -163,10 +163,10 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      await createProductSchema.validate(input);
-
       const city = ctx.req.city;
       const lang = ctx.req.lang;
+      const defaultLang = ctx.req.defaultLang;
+      await createProductSchema(defaultLang).validate(input);
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -238,10 +238,10 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      await updateProductSchema.validate(input);
-
       const city = ctx.req.city;
       const lang = ctx.req.lang;
+      const defaultLang = ctx.req.defaultLang;
+      await updateProductSchema(defaultLang).validate(input);
 
       const { id, assets, ...values } = input;
 

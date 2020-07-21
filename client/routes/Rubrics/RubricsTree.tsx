@@ -2,19 +2,16 @@ import React from 'react';
 import Accordion from '../../components/Accordion/Accordion';
 import classes from './RubricsTree.module.css';
 import RubricsTreeCounters from './RubricsTreeCounters';
-import { RUBRIC_LEVEL_THREE } from '../../config';
+import { GetRubricsTreeQuery } from '../../generated/apolloComponents';
 
-export interface RubricsTreeItemInterface {
-  id: string;
-  name: string;
-  level: number;
-  totalProductsCount: number;
-  activeProductsCount: number;
+type TreeItemType = Omit<GetRubricsTreeQuery['getRubricsTree'][0], 'children'>;
+
+export interface RubricsTreeItemInterface extends TreeItemType {
   children?: RubricsTreeItemInterface[];
 }
 
 interface RubricsTreeInterface {
-  tree: RubricsTreeItemInterface[];
+  tree: GetRubricsTreeQuery['getRubricsTree'];
   render?: (id: string) => any;
   isLastDisabled?: boolean;
   titleLeft?: (id: string, testId?: string) => any;
@@ -31,29 +28,30 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
   low = false,
 }) => {
   function renderChildren(item: RubricsTreeItemInterface, isFirst?: boolean) {
-    const { id, activeProductsCount = 0, totalProductsCount = 0, name, children, level } = item;
-    const isLast = level === RUBRIC_LEVEL_THREE;
+    const { id, activeProductsCount = 0, totalProductsCount = 0, nameString, children } = item;
 
-    const titleLeftContent = titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null;
+    const isLast = !children || !children.length;
+
+    const titleLeftContent = titleLeft ? () => titleLeft(id, `tree-link-${nameString}`) : null;
 
     if (isLast) {
       return (
         <Accordion
           // isOpen={true}
           titleLeft={
-            lastTitleLeft ? () => lastTitleLeft(id, `tree-link-${name}`) : titleLeftContent
+            lastTitleLeft ? () => lastTitleLeft(id, `tree-link-${nameString}`) : titleLeftContent
           }
           disabled={totalProductsCount === 0 || isLastDisabled}
           titleRight={
             <RubricsTreeCounters
               activeProductsCount={activeProductsCount}
               totalProductsCount={totalProductsCount}
-              testId={name}
+              testId={nameString}
             />
           }
-          title={name}
+          title={nameString}
           key={id}
-          testId={`tree-${name}`}
+          testId={`tree-${nameString}`}
         >
           {render ? render(id) : null}
         </Accordion>
@@ -63,26 +61,28 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
         <Accordion
           // isOpen={isFirst}
           isOpen={true}
-          titleLeft={titleLeft ? () => titleLeft(id, `tree-link-${name}`) : null}
+          titleLeft={titleLeft ? () => titleLeft(id, `tree-link-${nameString}`) : null}
           titleClassName={isFirst ? classes.first : ''}
           titleRight={
             <RubricsTreeCounters
-              testId={name}
+              testId={nameString}
               activeProductsCount={activeProductsCount}
               totalProductsCount={totalProductsCount}
             />
           }
-          title={name}
+          title={nameString}
           key={id}
-          testId={`tree-${name}`}
+          testId={`tree-${nameString}`}
         >
-          <div className={classes.nested}>
-            {children
-              ? children.map((item: RubricsTreeItemInterface) => {
-                  return renderChildren(item);
-                })
-              : null}
-          </div>
+          {children
+            ? children.map((item, index) => {
+                return (
+                  <div key={index} className={classes.nested}>
+                    {renderChildren(item)}
+                  </div>
+                );
+              })
+            : null}
         </Accordion>
       );
     }

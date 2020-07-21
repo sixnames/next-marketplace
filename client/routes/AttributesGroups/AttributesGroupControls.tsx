@@ -7,7 +7,6 @@ import {
   useDeleteAttributesGroupMutation,
   useUpdateAttributesGroupMutation,
 } from '../../generated/apolloComponents';
-import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
 import {
   ATTRIBUTE_IN_GROUP_MODAL,
   ATTRIBUTES_GROUP_MODAL,
@@ -16,8 +15,8 @@ import {
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
 import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
+import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
 
 interface AttributesGroupControlsInterface {
   group: Pick<AttributesGroup, 'id' | 'nameString' | 'name'>;

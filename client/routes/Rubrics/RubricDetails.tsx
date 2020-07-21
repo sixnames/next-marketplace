@@ -17,7 +17,7 @@ import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
 import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE, DEFAULT_LANG } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
-import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 
 interface RubricDetailsInterface {
@@ -49,15 +49,15 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     return <RequestError />;
   }
 
-  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, name, catalogueTitle } = rubric;
+  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, nameString, catalogueTitle } = rubric;
 
   const initialValues = {
     id,
-    name: [{ key: DEFAULT_LANG, value: name || '' }],
+    name: [{ key: DEFAULT_LANG, value: nameString || '' }],
     catalogueTitle: {
-      defaultTitle: [{ key: DEFAULT_LANG, value: catalogueTitle.defaultTitle }],
-      prefix: [{ key: DEFAULT_LANG, value: catalogueTitle.prefix || '' }],
-      keyword: [{ key: DEFAULT_LANG, value: catalogueTitle.keyword }],
+      defaultTitle: catalogueTitle.defaultTitle,
+      prefix: catalogueTitle.prefix ? catalogueTitle.prefix : [],
+      keyword: catalogueTitle.keyword,
       gender: catalogueTitle.gender,
     },
     variant: variant ? variant.id : null,

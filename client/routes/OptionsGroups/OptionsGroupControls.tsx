@@ -7,12 +7,11 @@ import {
   useUpdateOptionsGroupMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, OPTIONS_GROUP_MODAL } from '../../config/modals';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
-import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
 import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
+import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
 
 interface OptionsGroupControlsInterface {
   id: string;

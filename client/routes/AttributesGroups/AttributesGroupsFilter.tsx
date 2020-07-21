@@ -8,9 +8,9 @@ import RequestError from '../../components/RequestError/RequestError';
 import FilterRadioGroup from '../../components/FilterElements/FilterRadio/FilterRadioGroup';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
 import { ATTRIBUTES_GROUP_MODAL } from '../../config/modals';
 import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
+import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
 
 const AttributesGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllAttributesGroupsQuery({

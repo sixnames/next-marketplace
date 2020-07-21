@@ -19,9 +19,8 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ObjectType } from '../../types';
-import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
-import { OPTIONS_GROUP_QUERY } from '../../graphql/query/getOptionsGroup';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
+import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
 
 interface OptionsGroupsContentInterface {
   query?: ObjectType;

@@ -6,7 +6,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import Table from '../../components/Table/Table';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { GET_ALL_RUBRIC_VARIANTS } from '../../graphql/query/getAllRubricVariants';
+import { GET_ALL_RUBRIC_VARIANTS } from '../../graphql/query/rubricVariants';
 import {
   RubricVariant,
   useCreateRubricVariantMutation,

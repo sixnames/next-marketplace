@@ -18,9 +18,8 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
+import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };

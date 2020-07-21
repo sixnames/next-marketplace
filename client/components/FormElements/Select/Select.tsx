@@ -2,13 +2,16 @@ import React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import classes from './Select.module.css';
 import { InputType, OnOffType, SizeType } from '../../../types';
+import { LanguageType } from '../../../generated/apolloComponents';
+import { useLanguageContext } from '../../../context/languageContext';
 
 export interface SelectOptionInterface {
   id: string;
   slug?: string;
   nameString?: string;
-  name?: string;
+  name?: LanguageType[];
   lastName?: string;
+  [key: string]: any;
 }
 
 export interface SelectInterface extends InputLinePropsInterface {
@@ -49,6 +52,7 @@ const Select: React.FC<SelectInterface> = ({
   testId,
   ...props
 }) => {
+  const { getLanguageFieldTranslation } = useLanguageContext();
   const withFirstOptions: SelectOptionInterface[] = firstOption
     ? [
         {
@@ -98,7 +102,7 @@ const Select: React.FC<SelectInterface> = ({
           {...props}
         >
           {withFirstOptions.map(({ nameString, name, lastName, id, slug }) => {
-            const finalName = nameString ? nameString : name;
+            const finalName = nameString ? nameString : getLanguageFieldTranslation(name);
             const { optionName, optionTestIdName } = getOptionName(finalName, lastName);
             const value = slug ? slug : setNameToValue ? optionName : id;
 

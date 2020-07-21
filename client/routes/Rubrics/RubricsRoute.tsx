@@ -8,7 +8,7 @@ import { QUERY_DATA_LAYOUT_NO_RUBRIC, RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_THREE } fr
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CONFIRM_MODAL } from '../../config/modals';
-import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import useTabsConfig from '../../hooks/useTabsConfig';
 
 const RubricsRoute: React.FC = () => {

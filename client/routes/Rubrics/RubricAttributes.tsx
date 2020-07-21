@@ -20,7 +20,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
-import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
+import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/rubrics';
 import Accordion from '../../components/Accordion/Accordion';
 import { getAttributeVariant } from '../../utils/locales';
 import InnerWide from '../../components/Inner/InnerWide';
@@ -198,12 +198,12 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         titleRight={
           <ContentItemControls
             createTitle={'Добавить группу атрибутов в рубрику'}
-            testId={rubric.name}
+            testId={rubric.nameString}
             createHandler={addAttributesGroupToRubricHandler}
           />
         }
       >
-        {rubric.name}
+        {rubric.nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <InnerWide>

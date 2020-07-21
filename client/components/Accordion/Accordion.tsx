@@ -3,7 +3,7 @@ import AnimateOpacity from '../AnimateOpacity/AnimateOpacity';
 import Icon from '../Icon/Icon';
 import classes from './Accordion.module.css';
 
-interface AccordionInterface {
+export interface AccordionInterface {
   titleClassName?: string;
   className?: string;
   isOpen?: boolean;

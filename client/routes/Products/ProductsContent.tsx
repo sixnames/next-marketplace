@@ -11,7 +11,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import { CONFIRM_MODAL } from '../../config/modals';
-import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/rubrics';
 import { useRouter } from 'next/router';
 import { ROUTE_CMS } from '../../config';
 

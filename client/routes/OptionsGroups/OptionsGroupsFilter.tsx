@@ -8,10 +8,10 @@ import {
   useGetAllOptionsGroupsQuery,
 } from '../../generated/apolloComponents';
 import { OPTIONS_GROUP_MODAL } from '../../config/modals';
-import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
 import { LangInterface } from '../../types';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
+import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
 
 const OptionsGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllOptionsGroupsQuery({

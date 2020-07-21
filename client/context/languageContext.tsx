@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
-import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY } from '../config';
+import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY, LANG_NOT_FOUND_FIELD_MESSAGE } from '../config';
 import Cookies from 'js-cookie';
 import {
   AttributePositioningInTitle,
@@ -22,6 +22,7 @@ interface UseLanguageContextInterface {
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
+  getLanguageFieldTranslation: (field?: LanguageType[]) => string;
   getLanguageFieldInitialValue: (field?: LanguageType[]) => LangInput[];
   getLanguageFieldInputValue: (field: LangInput[]) => LangInput[];
   getAttributePositionInTitleInitialValue: (
@@ -63,6 +64,18 @@ function useLanguageContext(): UseLanguageContextInterface {
 
   const defaultLangItem = languagesList.find(({ isDefault }) => isDefault);
   const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
+
+  const getLanguageFieldTranslation = useCallback(
+    (field?: LanguageType[]) => {
+      if (!field) {
+        return LANG_NOT_FOUND_FIELD_MESSAGE;
+      }
+
+      const translation = field.find(({ key }) => key === lang);
+      return translation ? translation.value : LANG_NOT_FOUND_FIELD_MESSAGE;
+    },
+    [lang],
+  );
 
   const setLanguage = useCallback((lang: string) => {
     Cookies.set(LANG_COOKIE_KEY, lang);
@@ -140,6 +153,7 @@ function useLanguageContext(): UseLanguageContextInterface {
     getLanguageFieldInputValue,
     getAttributePositionInTitleInitialValue,
     getAttributePositionInTitleInputValue,
+    getLanguageFieldTranslation,
   };
 }
 

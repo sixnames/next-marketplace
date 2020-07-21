@@ -26,33 +26,35 @@ describe('Attributes Groups', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
-  it('Should CRUD attributes group', () => {
+  it.only('Should CRUD attributes group', () => {
     cy.getByCy(`create-attributes-group`).click();
-    cy.getByCy(`create-attributes-group-modal`).should('exist');
+    cy.getByCy(`attributes-group-modal`).should('exist');
 
     // Should show validation error on not valid attributes group name
-    cy.getByCy(`update-name-input`).type(fakeName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should create a new attributes group
-    cy.getByCy(`update-name-input`).clear().type(createdGroupName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).clear().type(createdGroupName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`group-${createdGroupName}`).click();
     cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
 
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-update`).click();
-    cy.getByCy(`update-name-input`).should('have.value', createdGroupName).clear().type(fakeName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-accordion-en`).click();
+    cy.getByCy(`name-ru`).should('have.value', createdGroupName).clear().type(fakeName);
+    cy.getByCy(`name-en`).type(fakeName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should update attributes group
-    cy.getByCy(`update-name-input`).clear().type(updatedGroupName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).clear().type(updatedGroupName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.contains(updatedGroupName).should('exist');
 
     // Shouldn't delete attributes group connected to the rubric

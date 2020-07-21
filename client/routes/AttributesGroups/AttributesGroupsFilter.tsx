@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import {
-  GetAllAttributesGroupsQuery,
   useCreateAttributesGroupMutation,
   useGetAllAttributesGroupsQuery,
 } from '../../generated/apolloComponents';
@@ -10,8 +9,8 @@ import FilterRadioGroup from '../../components/FilterElements/FilterRadio/Filter
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
-import { UPDATE_NAME_MODAL } from '../../config/modals';
-import { LangInterface } from '../../types';
+import { ATTRIBUTES_GROUP_MODAL } from '../../config/modals';
+import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
 
 const AttributesGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllAttributesGroupsQuery({
@@ -22,36 +21,17 @@ const AttributesGroupsFilter: React.FC = () => {
   });
 
   const [createAttributesGroupMutation] = useCreateAttributesGroupMutation({
-    update: (cache, { data }) => {
-      if (data) {
-        const { createAttributesGroup } = data;
-        const cachedData: GetAllAttributesGroupsQuery | null = cache.readQuery({
-          query: ATTRIBUTES_GROUPS_QUERY,
-        });
-
-        if (cachedData) {
-          const { getAllAttributesGroups } = cachedData;
-          cache.writeQuery({
-            query: ATTRIBUTES_GROUPS_QUERY,
-            data: {
-              getAllAttributesGroups: [...getAllAttributesGroups, createAttributesGroup.group],
-            },
-          });
-        }
-      }
-    },
+    refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.createAttributesGroup),
     onError: onErrorCallback,
   });
 
   function createAttributesGroupHandler() {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+    showModal<AttributesGroupModalInterface>({
+      type: ATTRIBUTES_GROUP_MODAL,
       props: {
-        title: 'Введите название группы',
-        buttonText: 'Добавить',
-        testId: 'create-attributes-group-modal',
-        confirm: (values: { name: LangInterface[] }) => {
+        confirm: (values) => {
           showLoading();
           return createAttributesGroupMutation({ variables: { input: values } });
         },

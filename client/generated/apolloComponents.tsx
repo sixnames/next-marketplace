@@ -1913,7 +1913,10 @@ export type GetAttributesGroupQuery = (
   & { getAttributesGroup?: Maybe<(
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, 'id' | 'nameString'>
-    & { attributes: Array<(
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, attributes: Array<(
       { __typename?: 'Attribute' }
       & Pick<Attribute, 'id' | 'nameString' | 'variant'>
       & { name: Array<(
@@ -3941,6 +3944,10 @@ export const GetAttributesGroupDocument = gql`
     query GetAttributesGroup($id: ID!) {
   getAttributesGroup(id: $id) {
     id
+    name {
+      key
+      value
+    }
     nameString
     attributes {
       id

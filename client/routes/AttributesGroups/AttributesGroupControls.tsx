@@ -8,17 +8,23 @@ import {
   useUpdateAttributesGroupMutation,
 } from '../../generated/apolloComponents';
 import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
-import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
-import { LangInterface } from '../../types';
+import {
+  ATTRIBUTE_IN_GROUP_MODAL,
+  ATTRIBUTES_GROUP_MODAL,
+  CONFIRM_MODAL,
+} from '../../config/modals';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
 import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
+import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
 
-const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString'>> = ({
-  id,
-  nameString,
-}) => {
+interface AttributesGroupControlsInterface {
+  group: Pick<AttributesGroup, 'id' | 'nameString' | 'name'>;
+}
+const AttributesGroupControls: React.FC<AttributesGroupControlsInterface> = ({ group }) => {
+  const { id, nameString, name } = group;
+
   const { removeQuery } = useRouterQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
@@ -51,18 +57,17 @@ const AttributesGroupControls: React.FC<Pick<AttributesGroup, 'id' | 'nameString
   });
 
   function updateAttributesGroupHandler() {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+    showModal<AttributesGroupModalInterface>({
+      type: ATTRIBUTES_GROUP_MODAL,
       props: {
-        oldName: nameString,
-        title: 'Введите новое название группы',
-        confirm: (values: { name: LangInterface[] }) => {
+        name,
+        confirm: ({ name }) => {
           showLoading();
           return updateAttributesGroupMutation({
             variables: {
               input: {
                 id,
-                name: values.name,
+                name,
               },
             },
           });

@@ -148,7 +148,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   return (
     <Fragment>
       <DataLayoutTitle
-        titleRight={<AttributesGroupControls id={id} nameString={nameString} />}
+        titleRight={<AttributesGroupControls group={getAttributesGroup} />}
         testId={'group-title'}
       >
         {nameString}

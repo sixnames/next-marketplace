@@ -8,6 +8,7 @@ import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
   ADD_PRODUCT_TO_RUBRIC_MODAL,
   ATTRIBUTE_IN_GROUP_MODAL,
+  ATTRIBUTES_GROUP_MODAL,
   CONFIRM_MODAL,
   CREATE_NEW_PRODUCT_MODAL,
   CREATE_RUBRIC_MODAL,
@@ -20,6 +21,9 @@ import {
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
 const LanguageModal = React.lazy(() => import('./LanguageModal/LanguageModal'));
 const OptionsGroupModal = React.lazy(() => import('./OptionsGroupModal/OptionsGroupModal'));
+const AttributesGroupModal = React.lazy(() =>
+  import('./AttributesGroupModal/AttributesGroupModal'),
+);
 const UpdateNameModal = React.lazy(() => import('./UpdateNameModal/UpdateNameModal'));
 const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = React.lazy(() => import('./CreateRubricModal/CreateRubricModal'));
@@ -53,6 +57,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === LANGUAGE_MODAL && <LanguageModal {...modalProps} />}
 
           {modalType === OPTIONS_GROUP_MODAL && <OptionsGroupModal {...modalProps} />}
+
+          {modalType === ATTRIBUTES_GROUP_MODAL && <AttributesGroupModal {...modalProps} />}
 
           {modalType === UPDATE_NAME_MODAL && <UpdateNameModal {...modalProps} />}
 

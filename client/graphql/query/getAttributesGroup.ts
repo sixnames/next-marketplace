@@ -4,6 +4,10 @@ export const ATTRIBUTES_GROUP_QUERY = gql`
   query GetAttributesGroup($id: ID!) {
     getAttributesGroup(id: $id) {
       id
+      name {
+        key
+        value
+      }
       nameString
       attributes {
         id

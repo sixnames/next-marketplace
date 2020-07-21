@@ -1,11 +1,18 @@
 import * as Yup from 'yup';
-import { id, langInput, notNullableName } from './templates';
+import { id, langStringInputSchema } from './templates';
 
-export const createAttributesGroupSchema = Yup.object().shape({
-  name: langInput(notNullableName('Название группы атрибутов')),
-});
+export const attributesGroupModalSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    name: langStringInputSchema({ defaultLang, entityMessage: 'Название группы атрибутов' }),
+  });
 
-export const updateAttributesGroupSchema = Yup.object().shape({
-  id,
-  name: langInput(notNullableName('Название группы атрибутов')),
-});
+export const createAttributesGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    name: langStringInputSchema({ defaultLang, entityMessage: 'Название группы атрибутов' }),
+  });
+
+export const updateAttributesGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    id,
+    name: langStringInputSchema({ defaultLang, entityMessage: 'Название группы атрибутов' }),
+  });

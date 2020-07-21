@@ -79,10 +79,10 @@ describe('Product', () => {
         }
         getRubricsTree {
           id
-          name
+          nameString
           children {
             id
-            name
+            nameString
             attributesGroups {
               node {
                 id
@@ -101,7 +101,7 @@ describe('Product', () => {
             }
             children {
               id
-              name
+              nameString
             }
           }
         }

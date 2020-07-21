@@ -13,7 +13,7 @@ describe('Attributes', () => {
             catalogueTitle
             rubric {
               id
-              name
+              nameString
               filterAttributes {
                 nameString
                 filterOptions(filter: $catalogueFilter) {

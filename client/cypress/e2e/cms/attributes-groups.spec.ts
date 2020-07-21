@@ -8,6 +8,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_END,
+  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
 } from '../../../config';
 
 const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
@@ -26,10 +27,10 @@ describe('Attributes Groups', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
-  it.only('Should CRUD attributes group', () => {
+  it('Should CRUD attributes group', () => {
     cy.getByCy(`create-attributes-group`).click();
     cy.getByCy(`attributes-group-modal`).should('exist');
 
@@ -89,22 +90,26 @@ describe('Attributes Groups', () => {
     cy.getByCy(`options-error`).should('exist');
 
     // Should create attribute in group
-    cy.getByCy(`attribute-name`).type(mockAttributeNewName);
+    cy.getByCy(`name-accordion-en`).click();
+    cy.getByCy(`name-ru`).type(mockAttributeNewName);
+    cy.getByCy(`name-en`).type(mockAttributeNewName);
     cy.selectOptionByTestId(`attribute-options`, mockOptionsGroupName);
-    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
+    cy.getByCy(`positioningInTitle-accordion-en`).click();
+    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
+    cy.getByCy(`positioningInTitle-en`).select(ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('exist');
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
 
-    cy.getByCy(`attribute-name`)
+    cy.getByCy(`name-ru`)
       .should('have.value', mockAttributeNewName)
       .clear()
       .type(updatedAttributeName);
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
-    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
+    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}`).should('exist');

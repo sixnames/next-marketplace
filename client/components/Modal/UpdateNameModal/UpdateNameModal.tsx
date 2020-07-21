@@ -9,7 +9,7 @@ import { useAppContext } from '../../../context/appContext';
 import { langStringInputSchema } from '../../../validation';
 import { LanguageType } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
-import FormikLanguageInput from '../../FormElements/Input/FormikLanguageInput';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import * as Yup from 'yup';
 
 interface UpdateNameModalInterface {
@@ -62,7 +62,7 @@ const UpdateNameModal: React.FC<UpdateNameModalInterface> = ({
         {() => {
           return (
             <Form>
-              <FormikLanguageInput
+              <FormikTranslationsInput
                 label={'Введите название'}
                 name={'name'}
                 testId={'name'}

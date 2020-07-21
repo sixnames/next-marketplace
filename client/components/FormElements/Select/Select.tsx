@@ -1,7 +1,7 @@
 import React from 'react';
-import InputLine from '../Input/InputLine';
+import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import classes from './Select.module.css';
-import { PostfixType, SizeType } from '../../../types';
+import { InputType, OnOffType, SizeType } from '../../../types';
 
 export interface SelectOptionInterface {
   id: string;
@@ -11,21 +11,16 @@ export interface SelectOptionInterface {
   lastName?: string;
 }
 
-interface SelectInterface {
+export interface SelectInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  wide?: boolean;
-  labelPostfix?: any;
-  isHorizontal?: boolean;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
   size?: SizeType;
   value?: any;
   notValid?: boolean;
+  type?: InputType;
+  autoComplete?: OnOffType;
+  min?: number;
+  placeholder?: string;
   firstOption?: string;
   setNameToValue?: boolean;
   options: SelectOptionInterface[];

@@ -2,7 +2,14 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
 import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY } from '../config';
 import Cookies from 'js-cookie';
-import { LangInput, Language, LanguageType } from '../generated/apolloComponents';
+import {
+  AttributePositioningInTitle,
+  AttributePositioningInTitleInput,
+  AttributePositionInTitleEnum,
+  LangInput,
+  Language,
+  LanguageType,
+} from '../generated/apolloComponents';
 
 interface LanguageContextInterface {
   lang: string;
@@ -17,6 +24,12 @@ interface UseLanguageContextInterface {
   languagesList: Language[];
   getLanguageFieldInitialValue: (field?: LanguageType[]) => LangInput[];
   getLanguageFieldInputValue: (field: LangInput[]) => LangInput[];
+  getAttributePositionInTitleInitialValue: (
+    field?: AttributePositioningInTitle[],
+  ) => AttributePositioningInTitleInput[];
+  getAttributePositionInTitleInputValue: (
+    field: AttributePositioningInTitleInput[],
+  ) => AttributePositioningInTitleInput[];
 }
 
 const LanguageContext = createContext<LanguageContextInterface>({
@@ -88,6 +101,35 @@ function useLanguageContext(): UseLanguageContextInterface {
     return field.filter(({ value }) => value);
   }, []);
 
+  const getAttributePositionInTitleInitialValue = useCallback(
+    (field?: AttributePositioningInTitle[]) => {
+      if (!field || !field.length) {
+        return languagesList.reduce((acc: AttributePositioningInTitle[], language) => {
+          return [...acc, { key: language.key, value: '' as AttributePositionInTitleEnum }];
+        }, []);
+      }
+
+      return languagesList.reduce((acc: AttributePositioningInTitle[], language) => {
+        const fieldItem = field.find(({ key }) => language.key === key);
+        if (fieldItem) {
+          return [
+            ...acc,
+            { key: language.key, value: fieldItem.value as AttributePositionInTitleEnum },
+          ];
+        }
+        return [...acc, { key: language.key, value: '' as AttributePositionInTitleEnum }];
+      }, []);
+    },
+    [languagesList],
+  );
+
+  const getAttributePositionInTitleInputValue = useCallback(
+    (field: AttributePositioningInTitleInput[]) => {
+      return field.filter(({ value }) => value);
+    },
+    [],
+  );
+
   return {
     lang,
     defaultLang,
@@ -96,6 +138,8 @@ function useLanguageContext(): UseLanguageContextInterface {
     isCurrentLanguage,
     getLanguageFieldInitialValue,
     getLanguageFieldInputValue,
+    getAttributePositionInTitleInitialValue,
+    getAttributePositionInTitleInputValue,
   };
 }
 

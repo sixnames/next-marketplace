@@ -11,7 +11,7 @@ import {
   UpdateAttributesGroupInput,
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
-import FormikLanguageInput from '../../FormElements/Input/FormikLanguageInput';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import { attributesGroupModalSchema } from '../../../validation';
 
 export interface AttributesGroupModalInterface {
@@ -45,11 +45,12 @@ const AttributesGroupModal: React.FC<AttributesGroupModalInterface> = ({ name, c
         {() => {
           return (
             <Form>
-              <FormikLanguageInput
+              <FormikTranslationsInput
                 label={'Введите название'}
                 name={'name'}
                 testId={'name'}
                 showInlineError
+                isRequired
               />
 
               <ModalButtons>

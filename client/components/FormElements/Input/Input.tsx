@@ -15,6 +15,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   testId?: string;
   min?: number;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 const Input: React.FC<InputPropsInterface> = ({

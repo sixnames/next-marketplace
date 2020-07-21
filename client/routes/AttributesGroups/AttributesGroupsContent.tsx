@@ -102,7 +102,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   if (error || !data || !data.getAttributesGroup) return <RequestError />;
 
   const { getAttributesGroup } = data;
-  const { nameString, id, attributes } = getAttributesGroup;
+  const { nameString, attributes } = getAttributesGroup;
 
   const columns = [
     {

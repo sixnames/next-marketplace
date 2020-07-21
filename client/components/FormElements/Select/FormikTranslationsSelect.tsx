@@ -1,16 +1,16 @@
 import React from 'react';
-import FormikInput, { FormikInputPropsInterface } from './FormikInput';
+import FormikSelect, { FormikSelectInterface } from './FormikSelect';
 import { LangInput } from '../../../generated/apolloComponents';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import { useLanguageContext } from '../../../context/languageContext';
 import Accordion from '../../Accordion/Accordion';
-import InputLine from './InputLine';
-import classes from './FormikLanguageInput.module.css';
+import InputLine from '../Input/InputLine';
+import classes from './FormikTranslationsSelect.module.css';
 import Icon from '../../Icon/Icon';
 import TTip from '../../TTip/TTip';
 
-const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
+const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   name: inputName,
   testId,
   label,
@@ -24,6 +24,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
   isRequired,
   isHorizontal,
   labelTag,
+  options,
   ...props
 }) => {
   const { languagesList } = useLanguageContext();
@@ -36,7 +37,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
     return (
       <div>
         {currentField.map(({ key }, index) => (
-          <FormikInput
+          <FormikSelect
             {...props}
             lineClass={lineClass}
             low={low}
@@ -52,6 +53,7 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
             key={`${inputName}-${key}`}
             name={`${inputName}[${index}].value`}
             testId={`${testId}-${key}`}
+            options={options}
           />
         ))}
       </div>
@@ -103,8 +105,9 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
             key={`${inputName}-${key}`}
           >
             <div className={classes.languageInput}>
-              <FormikInput
+              <FormikSelect
                 {...props}
+                options={options}
                 name={`${inputName}[${index}].value`}
                 testId={`${testId}-${key}`}
                 low
@@ -117,4 +120,4 @@ const FormikLanguageInput: React.FC<FormikInputPropsInterface> = ({
   );
 };
 
-export default FormikLanguageInput;
+export default FormikTranslationsSelect;

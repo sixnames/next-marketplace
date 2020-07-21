@@ -11,7 +11,7 @@ import {
   UpdateOptionsGroupInput,
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
-import FormikLanguageInput from '../../FormElements/Input/FormikLanguageInput';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import { optionsGroupModalSchema } from '../../../validation';
 
 export interface OptionsGroupModalInterface {
@@ -45,7 +45,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
         {() => {
           return (
             <Form>
-              <FormikLanguageInput
+              <FormikTranslationsInput
                 label={'Введите название'}
                 name={'name'}
                 testId={'name'}

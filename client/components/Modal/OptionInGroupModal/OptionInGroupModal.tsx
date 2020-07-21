@@ -20,7 +20,7 @@ import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { OptionInGroupType } from '../../../routes/OptionsGroups/OptionsGroupsContent';
 import { useLanguageContext } from '../../../context/languageContext';
-import FormikLanguageInput from '../../FormElements/Input/FormikLanguageInput';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 
 export interface OptionInGroupModalInterface {
   confirm: (
@@ -112,11 +112,12 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
         {({ values }) => {
           return (
             <Form>
-              <FormikLanguageInput
+              <FormikTranslationsInput
                 name={'name'}
                 testId={'name'}
                 showInlineError
                 label={'Название'}
+                isRequired
               />
 
               <FormikSelect
@@ -138,7 +139,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
               <InputLine name={'variants'} label={'Склонение названия по родам'} labelTag={'div'}>
                 {values.variants.map(({ key }, variantIndex) => {
                   return (
-                    <FormikLanguageInput
+                    <FormikTranslationsInput
                       key={key}
                       name={`variants[${variantIndex}].value`}
                       label={getGenderTranslation(key)}

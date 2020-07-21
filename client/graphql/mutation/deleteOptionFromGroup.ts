@@ -5,15 +5,6 @@ export const DELETE_OPTION_FROM_GROUP_MUTATION = gql`
     deleteOptionFromGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-        options {
-          id
-          nameString
-          color
-        }
-      }
     }
   }
 `;

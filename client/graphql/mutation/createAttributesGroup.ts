@@ -5,10 +5,6 @@ export const CREATE_ATTRIBUTES_GROUP = gql`
     createAttributesGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-      }
     }
   }
 `;

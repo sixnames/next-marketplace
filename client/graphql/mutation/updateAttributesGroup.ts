@@ -5,10 +5,6 @@ export const UPDATE_ATTRIBUTES_GROUP_MUTATION = gql`
     updateAttributesGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-      }
     }
   }
 `;

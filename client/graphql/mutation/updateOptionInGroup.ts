@@ -5,15 +5,6 @@ export const UPDATE_OPTION_MUTATION = gql`
     updateOptionInGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-        options {
-          id
-          nameString
-          color
-        }
-      }
     }
   }
 `;

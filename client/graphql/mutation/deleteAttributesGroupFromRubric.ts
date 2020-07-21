@@ -5,17 +5,6 @@ export const DELETE_ATTRIBUTES_GROUP_FROM_RUBRIC = gql`
     deleteAttributesGroupFromRubric(input: $input) {
       success
       message
-      rubric {
-        id
-        attributesGroups {
-          id
-          showInCatalogueFilter
-          node {
-            id
-            nameString
-          }
-        }
-      }
     }
   }
 `;

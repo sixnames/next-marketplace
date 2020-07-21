@@ -5,23 +5,6 @@ export const ADD_ATTRIBUTE_MUTATION = gql`
     addAttributeToGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          options {
-            id
-            nameString
-          }
-          metric {
-            id
-            nameString
-          }
-        }
-      }
     }
   }
 `;

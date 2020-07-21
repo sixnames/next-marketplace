@@ -478,13 +478,15 @@ type Rubric {
   active: Boolean!
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueTitle: RubricCatalogueTitleField!
+  catalogueTitle: RubricCatalogueTitle!
+  catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [Attribute!]!
   id: ID!
   level: Int!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   parent: Rubric
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!

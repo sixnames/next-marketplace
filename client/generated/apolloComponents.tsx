@@ -419,8 +419,10 @@ export type RubricVariant = {
 export type Rubric = {
    __typename?: 'Rubric';
   id: Scalars['ID'];
-  name: Scalars['String'];
-  catalogueTitle: RubricCatalogueTitleField;
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
+  catalogueTitleString: RubricCatalogueTitleField;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -443,6 +445,14 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+export type RubricCatalogueTitle = {
+   __typename?: 'RubricCatalogueTitle';
+  defaultTitle: Array<LanguageType>;
+  prefix?: Maybe<Array<LanguageType>>;
+  keyword: Array<LanguageType>;
+  gender: GenderEnum;
 };
 
 export type RubricCatalogueTitleField = {
@@ -493,14 +503,6 @@ export type RubricNode = {
   parent?: Maybe<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
-};
-
-export type RubricCatalogueTitle = {
-   __typename?: 'RubricCatalogueTitle';
-  defaultTitle: Array<LanguageType>;
-  prefix?: Maybe<Array<LanguageType>>;
-  keyword: Array<LanguageType>;
-  gender: GenderEnum;
 };
 
 export type AttributeVariant = {
@@ -1126,8 +1128,11 @@ export type UpdateProductMutation = (
 
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-  & { variant?: Maybe<(
+  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, variant?: Maybe<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
   )> }
@@ -1177,8 +1182,18 @@ export type GetRubricQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & { catalogueTitle: (
-      { __typename?: 'RubricCatalogueTitleField' }
-      & Pick<RubricCatalogueTitleField, 'defaultTitle' | 'prefix' | 'keyword' | 'gender'>
+      { __typename?: 'RubricCatalogueTitle' }
+      & Pick<RubricCatalogueTitle, 'gender'>
+      & { defaultTitle: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, prefix?: Maybe<Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>>, keyword: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )> }
     ) }
     & RubricFragmentFragment
   ) }
@@ -1194,21 +1209,6 @@ export type CreateRubricMutation = (
   & { createRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & { children: Array<(
-          { __typename?: 'Rubric' }
-          & RubricFragmentFragment
-        )> }
-        & RubricFragmentFragment
-      )>, parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id'>
-      )> }
-      & RubricFragmentFragment
-    )> }
   ) }
 );
 
@@ -1318,21 +1318,6 @@ export type AddAttributeToGroupMutation = (
   & { addAttributeToGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
     & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
   ) }
 );
 
@@ -1346,18 +1331,6 @@ export type AddAttributesGroupToRubricMutation = (
   & { addAttributesGroupToRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id'>
-      & { attributesGroups: Array<(
-        { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-        & { node: (
-          { __typename?: 'AttributesGroup' }
-          & Pick<AttributesGroup, 'id' | 'nameString'>
-        ) }
-      )> }
-    )> }
   ) }
 );
 
@@ -1371,14 +1344,6 @@ export type AddOptionToGroupMutation = (
   & { addOptionToGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
   ) }
 );
 
@@ -1392,10 +1357,6 @@ export type CreateAttributesGroupMutation = (
   & { createAttributesGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
     & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    )> }
   ) }
 );
 
@@ -1409,14 +1370,6 @@ export type CreateOptionsGroupMutation = (
   & { createOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id'>
-      )> }
-    )> }
   ) }
 );
 
@@ -1430,10 +1383,6 @@ export type CreateProductMutation = (
   & { createProduct: (
     { __typename?: 'ProductPayloadType' }
     & Pick<ProductPayloadType, 'success' | 'message'>
-    & { product?: Maybe<(
-      { __typename?: 'Product' }
-      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
-    )> }
   ) }
 );
 
@@ -1447,10 +1396,6 @@ export type CreateRubricVariantMutation = (
   & { createRubricVariant: (
     { __typename?: 'RubricVariantPayloadType' }
     & Pick<RubricVariantPayloadType, 'success' | 'message'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )> }
   ) }
 );
 
@@ -1464,21 +1409,6 @@ export type DeleteAttributeFromGroupMutation = (
   & { deleteAttributeFromGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
     & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
   ) }
 );
 
@@ -1505,18 +1435,6 @@ export type DeleteAttributesGroupFromRubricMutation = (
   & { deleteAttributesGroupFromRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id'>
-      & { attributesGroups: Array<(
-        { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-        & { node: (
-          { __typename?: 'AttributesGroup' }
-          & Pick<AttributesGroup, 'id' | 'nameString'>
-        ) }
-      )> }
-    )> }
   ) }
 );
 
@@ -1530,14 +1448,6 @@ export type DeleteOptionFromGroupMutation = (
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
   ) }
 );
 
@@ -1670,21 +1580,6 @@ export type UpdateAttributeInGroupMutation = (
   & { updateAttributeInGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
     & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
   ) }
 );
 
@@ -1698,10 +1593,6 @@ export type UpdateAttributesGroupMutation = (
   & { updateAttributesGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
     & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    )> }
   ) }
 );
 
@@ -1728,14 +1619,6 @@ export type UpdateOptionInGroupMutation = (
   & { updateOptionInGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
   ) }
 );
 
@@ -1749,14 +1632,6 @@ export type UpdateOptionsGroupMutation = (
   & { updateOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
   ) }
 );
 
@@ -1770,10 +1645,6 @@ export type UpdateRubricVariantMutation = (
   & { updateRubricVariant: (
     { __typename?: 'RubricVariantPayloadType' }
     & Pick<RubricVariantPayloadType, 'success' | 'message'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )> }
   ) }
 );
 
@@ -1825,7 +1696,7 @@ export type GetCatalogueRubricQuery = (
     & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug'>
+      & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
       & { variant?: Maybe<(
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
@@ -1897,6 +1768,10 @@ export type GetAllRubricVariantsQuery = (
   & { getAllRubricVariants?: Maybe<Array<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
   )>>, getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
@@ -2077,7 +1952,7 @@ export type InitialQuery = (
 
 export type SiteRubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'slug' | 'level'>
+  & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
   & { variant?: Maybe<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
@@ -2182,7 +2057,11 @@ export const ProductFragmentFragmentDoc = gql`
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
-  name
+  name {
+    key
+    value
+  }
+  nameString
   level
   variant {
     id
@@ -2213,7 +2092,7 @@ export const RubricProductFragmentFragmentDoc = gql`
 export const SiteRubricFragmentFragmentDoc = gql`
     fragment SiteRubricFragment on Rubric {
   id
-  name
+  nameString
   slug
   level
   variant {
@@ -2340,9 +2219,18 @@ export const GetRubricDocument = gql`
   getRubric(id: $id) {
     ...RubricFragment
     catalogueTitle {
-      defaultTitle
-      prefix
-      keyword
+      defaultTitle {
+        key
+        value
+      }
+      prefix {
+        key
+        value
+      }
+      keyword {
+        key
+        value
+      }
       gender
     }
   }
@@ -2379,21 +2267,9 @@ export const CreateRubricDocument = gql`
   createRubric(input: $input) {
     success
     message
-    rubric {
-      ...RubricFragment
-      children {
-        ...RubricFragment
-        children {
-          ...RubricFragment
-        }
-      }
-      parent {
-        id
-      }
-    }
   }
 }
-    ${RubricFragmentFragmentDoc}`;
+    `;
 export type CreateRubricMutationFn = ApolloReactCommon.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
 
 /**
@@ -2659,23 +2535,6 @@ export const AddAttributeToGroupDocument = gql`
   addAttributeToGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
   }
 }
     `;
@@ -2709,17 +2568,6 @@ export const AddAttributesGroupToRubricDocument = gql`
   addAttributesGroupToRubric(input: $input) {
     success
     message
-    rubric {
-      id
-      attributesGroups {
-        id
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-        }
-      }
-    }
   }
 }
     `;
@@ -2753,15 +2601,6 @@ export const AddOptionToGroupDocument = gql`
   addOptionToGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
   }
 }
     `;
@@ -2795,10 +2634,6 @@ export const CreateAttributesGroupDocument = gql`
   createAttributesGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-    }
   }
 }
     `;
@@ -2832,13 +2667,6 @@ export const CreateOptionsGroupDocument = gql`
   createOptionsGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      options {
-        id
-      }
-    }
   }
 }
     `;
@@ -2872,13 +2700,6 @@ export const CreateProductDocument = gql`
   createProduct(input: $input) {
     success
     message
-    product {
-      id
-      itemId
-      name
-      price
-      slug
-    }
   }
 }
     `;
@@ -2912,10 +2733,6 @@ export const CreateRubricVariantDocument = gql`
   createRubricVariant(input: $input) {
     success
     message
-    variant {
-      id
-      nameString
-    }
   }
 }
     `;
@@ -2949,23 +2766,6 @@ export const DeleteAttributeFromGroupDocument = gql`
   deleteAttributeFromGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
   }
 }
     `;
@@ -3032,17 +2832,6 @@ export const DeleteAttributesGroupFromRubricDocument = gql`
   deleteAttributesGroupFromRubric(input: $input) {
     success
     message
-    rubric {
-      id
-      attributesGroups {
-        id
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-        }
-      }
-    }
   }
 }
     `;
@@ -3076,15 +2865,6 @@ export const DeleteOptionFromGroupDocument = gql`
   deleteOptionFromGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
   }
 }
     `;
@@ -3428,23 +3208,6 @@ export const UpdateAttributeInGroupDocument = gql`
   updateAttributeInGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
   }
 }
     `;
@@ -3478,10 +3241,6 @@ export const UpdateAttributesGroupDocument = gql`
   updateAttributesGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-    }
   }
 }
     `;
@@ -3548,15 +3307,6 @@ export const UpdateOptionInGroupDocument = gql`
   updateOptionInGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
   }
 }
     `;
@@ -3590,15 +3340,6 @@ export const UpdateOptionsGroupDocument = gql`
   updateOptionsGroup(input: $input) {
     success
     message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
   }
 }
     `;
@@ -3632,10 +3373,6 @@ export const UpdateRubricVariantDocument = gql`
   updateRubricVariant(input: $input) {
     success
     message
-    variant {
-      id
-      nameString
-    }
   }
 }
     `;
@@ -3733,7 +3470,7 @@ export const GetCatalogueRubricDocument = gql`
     catalogueTitle
     rubric {
       id
-      name
+      nameString
       level
       slug
       variant {
@@ -3908,6 +3645,10 @@ export const GetAllRubricVariantsDocument = gql`
   getAllRubricVariants {
     id
     nameString
+    name {
+      key
+      value
+    }
   }
   getGenderOptions {
     id

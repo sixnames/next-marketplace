@@ -15,6 +15,7 @@ import {
   RubricAttributesGroup,
   RubricCatalogueTitleField,
   RubricModel,
+  RubricCatalogueTitle,
 } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
@@ -64,7 +65,7 @@ import {
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
-import { GenderEnum } from '../../entities/common';
+import { GenderEnum, LanguageType } from '../../entities/common';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -121,7 +122,8 @@ export class RubricResolver {
     try {
       const city = ctx.req.city;
       const lang = ctx.req.lang;
-      await createRubricInputSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await createRubricInputSchema(defaultLang).validate(input);
 
       const { parent, name } = input;
 
@@ -198,7 +200,8 @@ export class RubricResolver {
     try {
       const city = ctx.req.city;
       const lang = ctx.req.lang;
-      await updateRubricInputSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateRubricInputSchema(defaultLang).validate(input);
       const { id, ...values } = input;
       const rubric = await RubricModel.findById(id).lean().exec();
 
@@ -772,7 +775,22 @@ export class RubricResolver {
   }
 
   @FieldResolver()
-  async name(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
+  async name(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<LanguageType[]> {
+    const city = getCityData(rubric.cities, ctx.req.city);
+    if (!city) {
+      return [];
+    }
+    return city!.node.name;
+  }
+
+  @FieldResolver()
+  async nameString(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
     const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return '';
@@ -782,6 +800,24 @@ export class RubricResolver {
 
   @FieldResolver()
   async catalogueTitle(
+    @Root() rubric: DocumentType<Rubric>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<RubricCatalogueTitle> {
+    const city = getCityData(rubric.cities, ctx.req.city);
+    if (!city) {
+      return {
+        defaultTitle: [],
+        prefix: [],
+        keyword: [],
+        gender: GENDER_IT as GenderEnum,
+      };
+    }
+
+    return city.node.catalogueTitle;
+  }
+
+  @FieldResolver()
+  async catalogueTitleString(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<RubricCatalogueTitleField> {
@@ -928,6 +964,7 @@ export class RubricResolver {
       return [...acc, ...group.showInCatalogueFilter];
     }, []);
 
+    // TODO return attribute options with rubric title gender
     return AttributeModel.find({ _id: { $in: visibleAttributes } });
   }
 

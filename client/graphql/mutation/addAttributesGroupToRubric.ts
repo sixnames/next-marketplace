@@ -5,17 +5,6 @@ export const ADD_ATTRIBUTES_GROUP_TO_RUBRIC = gql`
     addAttributesGroupToRubric(input: $input) {
       success
       message
-      rubric {
-        id
-        attributesGroups {
-          id
-          showInCatalogueFilter
-          node {
-            id
-            nameString
-          }
-        }
-      }
     }
   }
 `;

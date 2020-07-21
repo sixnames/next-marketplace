@@ -5,23 +5,6 @@ export const DELETE_ATTRIBUTE_FROM_GROUP_MUTATION = gql`
     deleteAttributeFromGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          options {
-            id
-            nameString
-          }
-          metric {
-            id
-            nameString
-          }
-        }
-      }
     }
   }
 `;

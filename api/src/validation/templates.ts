@@ -36,12 +36,14 @@ export const notNullableName = (
 
 interface LangStringInputSchemaInterface {
   defaultLang: string;
-  entityMessage: string;
+  entityMessage?: string;
+  required?: boolean;
 }
 
 export const langStringInputSchema = ({
   defaultLang,
   entityMessage,
+  required = true,
 }: LangStringInputSchemaInterface) =>
   Yup.array().of(
     Yup.object({
@@ -49,7 +51,7 @@ export const langStringInputSchema = ({
       value: Yup.string()
         .trim()
         .when('key', (key: string, value: StringSchema) => {
-          return key === defaultLang
+          return key === defaultLang && required
             ? value
                 .min(
                   minNameLength,

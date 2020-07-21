@@ -5,10 +5,6 @@ export const CREATE_RUBRIC_VARIANT = gql`
     createRubricVariant(input: $input) {
       success
       message
-      variant {
-        id
-        nameString
-      }
     }
   }
 `;

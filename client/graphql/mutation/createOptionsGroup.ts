@@ -5,13 +5,6 @@ export const createOptionsGroup = gql`
     createOptionsGroup(input: $input) {
       success
       message
-      group {
-        id
-        nameString
-        options {
-          id
-        }
-      }
     }
   }
 `;

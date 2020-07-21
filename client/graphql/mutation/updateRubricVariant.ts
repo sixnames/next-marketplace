@@ -5,10 +5,6 @@ export const UPDATE_RUBRIC_VARIANT = gql`
     updateRubricVariant(input: $input) {
       success
       message
-      variant {
-        id
-        nameString
-      }
     }
   }
 `;

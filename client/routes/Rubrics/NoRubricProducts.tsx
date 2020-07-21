@@ -81,7 +81,12 @@ const NoRubricProducts: React.FC = () => {
     <div>
       <DataLayoutTitle>Товары вне рубрик</DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />
+        <Table
+          data={docs}
+          columns={columns}
+          emptyMessage={'Список пуст'}
+          testIdKey={'nameString'}
+        />
         <Pager page={page} setPage={setPage} totalPages={totalPages} />
       </DataLayoutContentFrame>
     </div>

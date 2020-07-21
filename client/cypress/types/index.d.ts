@@ -13,8 +13,6 @@ declare namespace Cypress {
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')
      */
-    mockGraphql(args: MockGraphqlInterface): Chainable<Element>;
-    mockGraphqlOps(args: MockGraphqlInterface): Chainable<Element>;
     getByCy(testId: string): Chainable<Element>;
     getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;

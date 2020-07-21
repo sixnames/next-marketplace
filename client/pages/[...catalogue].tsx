@@ -2,17 +2,15 @@ import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import Inner from '../components/Inner/Inner';
-import { GetCatalogueRubricQueryResult } from '../generated/apolloComponents';
+import { GetCatalogueRubricQuery } from '../generated/apolloComponents';
 import { SiteContextProvider } from '../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
 import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 
-export type CatalogueData = GetCatalogueRubricQueryResult['data'];
-
 interface CatalogueInterface {
-  rubricData: CatalogueData;
+  rubricData: GetCatalogueRubricQuery;
 }
 
 const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({

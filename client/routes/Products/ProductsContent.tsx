@@ -77,7 +77,7 @@ const ProductsContent: React.FC = () => {
 
   return (
     <DataLayoutContentFrame testId={'products-list'}>
-      <Table columns={columns} data={docs} testIdKey={'name'} />
+      <Table columns={columns} data={docs} testIdKey={'nameString'} />
       <Pager page={page} setPage={setPage} totalPages={totalPages} />
     </DataLayoutContentFrame>
   );

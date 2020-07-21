@@ -6,11 +6,11 @@ import RequestError from '../../components/RequestError/RequestError';
 import Pager from '../../components/Pager/Pager';
 import useFilterMethods from '../../hooks/useFilterMethods';
 import CatalogueFilter from './CatalogueFilter';
-import { CatalogueData } from '../../pages/[...catalogue]';
 import classes from './Catalogue.module.css';
+import { GetCatalogueRubricQuery } from '../../generated/apolloComponents';
 
 interface CatalogueRouteInterface {
-  rubricData: CatalogueData;
+  rubricData: GetCatalogueRubricQuery;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {

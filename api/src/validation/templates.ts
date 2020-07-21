@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
-import { NotRequiredArraySchema, ObjectSchema, Shape, StringSchema } from 'yup';
+import { NotRequiredArraySchema, StringSchema } from 'yup';
 import { ROLES_ENUM } from '../config';
 
 export const minPasswordLength = 5;
@@ -33,19 +33,6 @@ export const notNullableName = (
     .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
     .trim()
     .required(`${nameTarget} обязателено к заполнению.`);
-
-export const nameLangSchema = (
-  nameTarget: string,
-): ObjectSchema<
-  Shape<
-    Record<string, unknown> | undefined,
-    { name: ({ key: string; value: string | undefined } | undefined)[] | undefined }
-  >
-> => {
-  return Yup.object().shape({
-    name: langInput(notNullableName(nameTarget)),
-  });
-};
 
 interface LangStringInputSchemaInterface {
   defaultLang: string;

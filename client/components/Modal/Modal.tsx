@@ -15,7 +15,7 @@ import {
   LANGUAGE_MODAL,
   OPTION_IN_GROUP_MODAL,
   OPTIONS_GROUP_MODAL,
-  UPDATE_NAME_MODAL,
+  RUBRIC_VARIANT_MODAL,
 } from '../../config/modals';
 
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
@@ -24,7 +24,7 @@ const OptionsGroupModal = React.lazy(() => import('./OptionsGroupModal/OptionsGr
 const AttributesGroupModal = React.lazy(() =>
   import('./AttributesGroupModal/AttributesGroupModal'),
 );
-const UpdateNameModal = React.lazy(() => import('./UpdateNameModal/UpdateNameModal'));
+const RubricVariantModal = React.lazy(() => import('./RubricVariantModal/RubricVariantModal'));
 const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = React.lazy(() => import('./CreateRubricModal/CreateRubricModal'));
 const AddAttributesGroupToRubricModal = React.lazy(() =>
@@ -60,11 +60,11 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === ATTRIBUTES_GROUP_MODAL && <AttributesGroupModal {...modalProps} />}
 
-          {modalType === UPDATE_NAME_MODAL && <UpdateNameModal {...modalProps} />}
-
           {modalType === OPTION_IN_GROUP_MODAL && <OptionInGroupModal {...modalProps} />}
 
           {modalType === ATTRIBUTE_IN_GROUP_MODAL && <AttributeInGroupModal {...modalProps} />}
+
+          {modalType === RUBRIC_VARIANT_MODAL && <RubricVariantModal {...modalProps} />}
 
           {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
 

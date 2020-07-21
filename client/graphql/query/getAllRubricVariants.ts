@@ -5,6 +5,10 @@ export const GET_ALL_RUBRIC_VARIANTS = gql`
     getAllRubricVariants {
       id
       nameString
+      name {
+        key
+        value
+      }
     }
     getGenderOptions {
       id

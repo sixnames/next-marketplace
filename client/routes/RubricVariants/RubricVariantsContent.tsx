@@ -8,13 +8,15 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { GET_ALL_RUBRIC_VARIANTS } from '../../graphql/query/getAllRubricVariants';
 import {
+  RubricVariant,
   useCreateRubricVariantMutation,
   useDeleteRubricVariantMutation,
   useGetAllRubricVariantsQuery,
   useUpdateRubricVariantMutation,
 } from '../../generated/apolloComponents';
-import { CONFIRM_MODAL, UPDATE_NAME_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
+import { RubricVariantModalInterface } from '../../components/Modal/RubricVariantModal/RubricVariantModal';
 
 const RubricVariantsContent: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
@@ -48,13 +50,10 @@ const RubricVariantsContent: React.FC = () => {
   if (error || !data) return <RequestError />;
 
   function createRubricVariantHandler() {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+    showModal<RubricVariantModalInterface>({
+      type: RUBRIC_VARIANT_MODAL,
       props: {
-        title: 'Название типа рубрики',
-        buttonText: 'Создать',
-        testId: 'rubric-variant-modal',
-        confirm: (values: { name: LangInterface[] }) => {
+        confirm: (values) => {
           showLoading();
           return createRubricVariantMutation({
             variables: {
@@ -68,13 +67,11 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  function updateRubricVariantHandler({ nameString, id }: { id: string; nameString: string }) {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+  function updateRubricVariantHandler({ name, id }: RubricVariant) {
+    showModal<RubricVariantModalInterface>({
+      type: RUBRIC_VARIANT_MODAL,
       props: {
-        title: 'Название типа рубрики',
-        testId: 'rubric-variant-modal',
-        oldName: nameString,
+        name,
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return updateRubricVariantMutation({
@@ -90,7 +87,7 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  function deleteRubricVariantHandler({ nameString, id }: { id: string; nameString: string }) {
+  function deleteRubricVariantHandler({ nameString, id }: RubricVariant) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
@@ -115,18 +112,18 @@ const RubricVariantsContent: React.FC = () => {
       render: (name: string) => name,
     },
     {
-      key: 'id',
+      key: '',
       title: '',
       textAlign: 'right',
-      render: (id: string, { nameString }: { nameString: string }) => {
+      render: (_: any, rubricVariant: RubricVariant) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать тип рубрики'}
-            updateHandler={() => updateRubricVariantHandler({ id, nameString })}
+            updateHandler={() => updateRubricVariantHandler(rubricVariant)}
             deleteTitle={'Удалить тип рубрики'}
-            deleteHandler={() => deleteRubricVariantHandler({ id, nameString })}
-            testId={nameString}
+            deleteHandler={() => deleteRubricVariantHandler(rubricVariant)}
+            testId={rubricVariant.nameString}
           />
         );
       },

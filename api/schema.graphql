@@ -352,7 +352,7 @@ type Product {
   description: [LanguageType!]!
   descriptionString: String!
   id: ID!
-  itemId: Int!
+  itemId: String!
   mainImage: String!
   name: [LanguageType!]!
   nameString: String!
@@ -686,7 +686,7 @@ type User {
   isAdmin: Boolean!
   isCustomer: Boolean!
   isManager: Boolean!
-  itemId: Int!
+  itemId: String!
   lastName: String
   name: String!
   phone: String!

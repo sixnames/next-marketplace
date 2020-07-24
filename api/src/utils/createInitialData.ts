@@ -32,6 +32,7 @@ async function createInitialData() {
     const password = await hash(ADMIN_PASSWORD, 10);
 
     await UserModel.create({
+      itemId: '1',
       name: ADMIN_NAME,
       email: ADMIN_EMAIL,
       phone: ADMIN_PHONE,

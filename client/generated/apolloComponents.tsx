@@ -147,7 +147,7 @@ export type QueryGetLanguageArgs = {
 export type User = {
    __typename?: 'User';
   id: Scalars['ID'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   name: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
@@ -251,7 +251,7 @@ export type OptionsGroup = {
 export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   nameString: Scalars['String'];
   name: Array<LanguageType>;
   cardNameString: Scalars['String'];

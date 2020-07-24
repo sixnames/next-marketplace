@@ -1,7 +1,6 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
+import { DocumentType, getModelForClass, index, plugin, pre, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { AssetType, LanguageType } from './common';
@@ -99,17 +98,21 @@ export class ProductCity {
 // Product schema
 @ObjectType()
 @plugin(mongoosePaginate)
-@plugin(autoIncrement, {
-  model: 'Product',
-  field: 'itemId',
+@pre<Product>('save', async function (this: DocumentType<Product>) {
+  const lastItem = await ProductModel.find({}).sort({ itemId: -1 }).limit(1);
+  const itemId = lastItem && lastItem[0] ? `${+lastItem[0].itemId + 1}` : '1';
+  if (this.isNew) {
+    this.itemId = itemId;
+  }
 })
 @index({ '$**': 'text' })
 export class Product extends TimeStamps {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => Int)
-  readonly itemId: number;
+  @Field(() => String)
+  @prop({ required: true, trim: true, default: '1' })
+  itemId: string;
 
   @Field(() => String)
   readonly nameString: string;

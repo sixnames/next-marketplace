@@ -47,7 +47,8 @@ export class MetricResolver {
   ): Promise<MetricPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await createMetricInputSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await createMetricInputSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
@@ -91,7 +92,8 @@ export class MetricResolver {
   ): Promise<MetricPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateMetricSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateMetricSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({

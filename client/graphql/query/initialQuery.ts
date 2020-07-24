@@ -30,7 +30,7 @@ export const INITIAL_QUERY = gql`
 const rubricFragment = gql`
   fragment SiteRubricFragment on Rubric {
     id
-    name
+    nameString
     slug
     level
     variant {

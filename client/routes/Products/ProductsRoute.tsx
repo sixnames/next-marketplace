@@ -6,7 +6,7 @@ import { useAppContext } from '../../context/appContext';
 import { CreateNewProductModalInterface } from '../../components/Modal/CreateNewProductModal/CreateNewProductModal';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../config/modals';
-import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/rubrics';
 
 const ProductsRoute: React.FC = () => {
   const { showModal } = useAppContext();

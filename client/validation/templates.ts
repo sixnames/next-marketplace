@@ -8,33 +8,45 @@ export const maxPasswordLength = 30;
 export const minDescriptionLength = 15;
 export const maxDescriptionLength = 300;
 export const minNameLength = 2;
-export const minShortNameLength = 1;
+// export const minShortNameLength = 1;
 export const maxNameLength = 70;
 export const minPrice = 1;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
 export const role = Yup.mixed().oneOf(ROLES_ENUM);
 
-export const langInput = (valueSchema: StringSchema) =>
+interface LangStringInputSchemaInterface {
+  defaultLang: string;
+  entityMessage?: string;
+  required?: boolean;
+}
+
+export const langStringInputSchema = ({
+  defaultLang,
+  entityMessage,
+  required = true,
+}: LangStringInputSchemaInterface) =>
   Yup.array().of(
     Yup.object({
-      key: Yup.string().trim().required('Язык обязателен к заполнению.'),
-      value: valueSchema,
+      key: Yup.string().trim().required('Ключ языка обязателен к заполнению.'),
+      value: Yup.string()
+        .trim()
+        .when('key', (key: string, value: StringSchema) => {
+          return key === defaultLang && required
+            ? value
+                .min(
+                  minNameLength,
+                  `${entityMessage} должно состоять минимум из ${minNameLength} символов`,
+                )
+                .max(
+                  maxNameLength,
+                  `${entityMessage} должно состоять максимум из ${maxNameLength} символов`,
+                )
+                .required(`${entityMessage} обязателено к заполнению.`)
+            : value.min(0);
+        }),
     }),
   );
-
-export const notNullableName = (nameTarget: string) =>
-  Yup.string()
-    .min(minNameLength, `${nameTarget} должно состоять минимум из ${minNameLength} символов`)
-    .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
-    .trim()
-    .required(`${nameTarget} обязателено к заполнению.`);
-
-export const nameLangSchema = (nameTarget: string) => {
-  return Yup.object().shape({
-    name: langInput(notNullableName(nameTarget)),
-  });
-};
 
 export const name = Yup.string()
   .nullable()

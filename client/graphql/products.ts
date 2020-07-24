@@ -4,11 +4,23 @@ const productFragment = gql`
   fragment ProductFragment on Product {
     id
     itemId
-    name
-    cardName
+    name {
+      key
+      value
+    }
+    nameString
+    cardName {
+      key
+      value
+    }
+    cardNameString
     slug
     price
-    description
+    description {
+      key
+      value
+    }
+    descriptionString
     assets {
       url
       index
@@ -68,4 +80,22 @@ export const UPDATE_PRODUCT_MUTATION = gql`
     }
   }
   ${productFragment}
+`;
+
+export const CREATE_PRODUCT_MUTATION = gql`
+  mutation CreateProduct($input: CreateProductInput!) {
+    createProduct(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_PRODUCT_MUTATION = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id) {
+      success
+      message
+    }
+  }
 `;

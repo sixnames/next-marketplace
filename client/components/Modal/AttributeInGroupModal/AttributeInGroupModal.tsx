@@ -2,7 +2,6 @@ import React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import ModalButtons from '../ModalButtons';
-import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import Spinner from '../../Spinner/Spinner';
@@ -10,7 +9,6 @@ import Button from '../../Buttons/Button';
 import {
   AddAttributeToGroupInput,
   Attribute,
-  AttributePositionInTitleEnum,
   AttributeVariantEnum,
   UpdateAttributeInGroupInput,
   useGetNewAttributeOptionsQuery,
@@ -18,11 +16,10 @@ import {
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { attributeInGroupSchema } from '../../../validation';
-import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_SELECT,
-  DEFAULT_LANG,
-} from '../../../config';
+import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../../config';
+import { useLanguageContext } from '../../../context/languageContext';
+import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
+import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslationsSelect';
 
 export interface AddAttributeToGroupModalInterface {
   attribute?: Attribute;
@@ -37,6 +34,13 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   confirm,
   attribute,
 }) => {
+  const {
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    getAttributePositionInTitleInitialValue,
+    getAttributePositionInTitleInputValue,
+    defaultLang,
+  } = useLanguageContext();
   const { hideModal } = useAppContext();
   const { data, loading, error } = useGetNewAttributeOptionsQuery();
 
@@ -59,41 +63,20 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
 
   const initialValues = attribute
     ? {
-        name: attribute.name.map(({ key, value }) => ({
-          key,
-          value,
-        })),
+        name: getLanguageFieldInitialValue(attribute.name),
         variant: attribute.variant,
         metric: attribute.metric ? attribute.metric.id : null,
         options: attribute.options ? attribute.options.id : null,
         positioningInTitle: attribute.positioningInTitle
-          ? attribute.positioningInTitle.map(({ key, value }) => ({
-              key,
-              value,
-            }))
-          : [
-              {
-                key: DEFAULT_LANG,
-                value: '' as AttributePositionInTitleEnum,
-              },
-            ],
+          ? getAttributePositionInTitleInitialValue(attribute.positioningInTitle)
+          : getAttributePositionInTitleInitialValue(),
       }
     : {
-        name: [
-          {
-            key: DEFAULT_LANG,
-            value: '',
-          },
-        ],
+        name: getLanguageFieldInitialValue(),
         variant: '' as AttributeVariantEnum,
         metric: null,
         options: null,
-        positioningInTitle: [
-          {
-            key: DEFAULT_LANG,
-            value: '' as AttributePositionInTitleEnum,
-          },
-        ],
+        positioningInTitle: getAttributePositionInTitleInitialValue(),
       };
 
   return (
@@ -101,38 +84,28 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       <ModalTitle>{attribute ? 'Редактирование атрибута' : 'Создание атрибута'}</ModalTitle>
 
       <Formik
-        validationSchema={attributeInGroupSchema}
+        validationSchema={attributeInGroupSchema(defaultLang)}
         initialValues={initialValues}
         onSubmit={(values) => {
-          const positioningInTitle =
-            values.variant === ATTRIBUTE_TYPE_SELECT ||
-            values.variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT
-              ? values.positioningInTitle
-              : null;
-
           confirm({
             ...values,
-            positioningInTitle,
+            name: getLanguageFieldInputValue(values.name),
+            positioningInTitle: getAttributePositionInTitleInputValue(values.positioningInTitle),
           });
         }}
       >
         {({ values }) => {
-          const { variant, positioningInTitle } = values;
+          const { variant } = values;
 
           return (
             <Form>
-              {values.name.map(({ key }, index) => {
-                return (
-                  <FormikInput
-                    key={key}
-                    isRequired
-                    label={'Название'}
-                    name={`name[${index}].value`}
-                    testId={'attribute-name'}
-                    showInlineError
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'name'}
+                testId={'name'}
+                showInlineError
+                isRequired
+              />
 
               <FormikSelect
                 isRequired
@@ -165,21 +138,18 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 />
               )}
 
-              {(variant === ATTRIBUTE_TYPE_SELECT || variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) &&
-                positioningInTitle.map(({ key }, index) => {
-                  return (
-                    <FormikSelect
-                      key={key}
-                      isRequired
-                      showInlineError
-                      firstOption={'Не выбрано'}
-                      label={'Позиционирование в заголовке'}
-                      name={`positioningInTitle[${index}].value`}
-                      options={getAttributePositioningOptions}
-                      testId={'attribute-position'}
-                    />
-                  );
-                })}
+              {(variant === ATTRIBUTE_TYPE_SELECT ||
+                variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) && (
+                <FormikTranslationsSelect
+                  name={'positioningInTitle'}
+                  testId={'positioningInTitle'}
+                  options={getAttributePositioningOptions}
+                  label={'Позиционирование в заголовке'}
+                  isRequired
+                  showInlineError
+                  firstOption={'Не выбрано'}
+                />
+              )}
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

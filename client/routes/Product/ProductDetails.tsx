@@ -9,7 +9,6 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import { Form, Formik } from 'formik';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
-import FormikTextarea from '../../components/FormElements/Textarea/FormikTextarea';
 import InputLine from '../../components/FormElements/Input/InputLine';
 import RubricsTree from '../Rubrics/RubricsTree';
 import FormikArrayCheckbox from '../../components/FormElements/Checkbox/FormikArrayCheckbox';
@@ -20,6 +19,8 @@ import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone'
 import useUrlFiles from '../../hooks/useUrlFiles';
 import classes from './ProductDetails.module.css';
 import { updateProductSchema } from '../../validation';
+import { useLanguageContext } from '../../context/languageContext';
+import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
 
 interface ProductDetailsInterface {
   product: GetProductQuery['getProduct'];
@@ -27,6 +28,11 @@ interface ProductDetailsInterface {
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   const files = useUrlFiles(product.assets);
+  const {
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    defaultLang,
+  } = useLanguageContext();
   const { data, loading, error } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -46,10 +52,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
   const initialValues = {
     id: product.id,
-    name: [{ key: 'ru', value: product.name }],
-    cardName: [{ key: 'ru', value: product.cardName }],
+    name: getLanguageFieldInitialValue(product.name),
+    cardName: getLanguageFieldInitialValue(product.cardName),
     price: product.price,
-    description: [{ key: 'ru', value: product.description }],
+    description: getLanguageFieldInitialValue(product.description),
     assets: files,
     rubrics: product.rubrics,
     attributesGroups: product.attributesGroups.map((group) => {
@@ -72,19 +78,17 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     <InnerWide testId={'product-details'}>
       <Formik
         enableReinitialize
-        validationSchema={updateProductSchema}
+        validationSchema={() => updateProductSchema(defaultLang)}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
           return updateProductMutation({
             variables: {
               input: {
-                id: values.id,
-                name: values.name,
-                cardName: values.cardName,
-                description: values.description,
-                price: values.price,
-                assets: values.assets,
+                ...values,
+                name: getLanguageFieldInputValue(values.name),
+                cardName: getLanguageFieldInputValue(values.cardName),
+                description: getLanguageFieldInputValue(values.description),
                 rubrics: values.rubrics || [],
                 attributesGroups: values.attributesGroups.map((group) => {
                   return {
@@ -117,31 +121,21 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 showInlineError
               />
 
-              {values.name.map((_, index) => {
-                return (
-                  <FormikInput
-                    isRequired
-                    key={index}
-                    label={'Название'}
-                    name={`name[${index}].value`}
-                    testId={'product-name'}
-                    showInlineError
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Название'}
+                name={'name'}
+                testId={'name'}
+                showInlineError
+                isRequired
+              />
 
-              {values.cardName.map((_, index) => {
-                return (
-                  <FormikInput
-                    isRequired
-                    key={index}
-                    label={'Название страницы товара'}
-                    name={`cardName[${index}].value`}
-                    testId={'product-card-name'}
-                    showInlineError
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Название страницы товара'}
+                name={'cardName'}
+                testId={'cardName'}
+                showInlineError
+                isRequired
+              />
 
               <FormikInput
                 isRequired
@@ -152,18 +146,13 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 showInlineError
               />
 
-              {values.description.map((_, index) => {
-                return (
-                  <FormikTextarea
-                    isRequired
-                    key={index}
-                    label={'Описание'}
-                    name={`description[${index}].value`}
-                    testId={'product-description'}
-                    showInlineError
-                  />
-                );
-              })}
+              <FormikTranslationsInput
+                label={'Описание'}
+                name={'description'}
+                testId={'description'}
+                showInlineError
+                isRequired
+              />
 
               {data && data.getRubricsTree && (
                 <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>

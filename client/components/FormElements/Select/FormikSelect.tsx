@@ -1,30 +1,12 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
-import Select, { SelectOptionInterface } from './Select';
+import Select, { SelectInterface } from './Select';
 import { get } from 'lodash';
 import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
-import { PostfixType, SizeType } from '../../../types';
 
-interface FormikSelectInterface {
-  name: string;
-  className?: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  wide?: boolean;
-  isHorizontal?: boolean;
-  labelPostfix?: any;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
-  size?: SizeType;
-  value?: any;
-  firstOption?: string;
-  setNameToValue?: boolean;
-  options: SelectOptionInterface[];
-  testId?: string;
+export interface FormikSelectInterface extends SelectInterface {
+  frameClass?: string;
   showInlineError?: boolean;
-  disabled?: boolean;
 }
 
 const FormikSelect: React.FC<FormikSelectInterface> = ({

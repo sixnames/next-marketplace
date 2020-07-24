@@ -69,7 +69,8 @@ export class AttributesGroupResolver {
   ): Promise<AttributesGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await createAttributesGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await createAttributesGroupSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await AttributesGroupModel.exists({
@@ -114,7 +115,8 @@ export class AttributesGroupResolver {
   ): Promise<AttributesGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateAttributesGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateAttributesGroupSchema(defaultLang).validate(input);
 
       const { id, ...values } = input;
 
@@ -223,7 +225,8 @@ export class AttributesGroupResolver {
   ): Promise<AttributesGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await addAttributeToGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await addAttributeToGroupSchema(defaultLang).validate(input);
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
 
@@ -294,7 +297,8 @@ export class AttributesGroupResolver {
   ): Promise<AttributesGroupPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateAttributeInGroupSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateAttributeInGroupSchema(defaultLang).validate(input);
 
       const { groupId, attributeId, ...values } = input;
 

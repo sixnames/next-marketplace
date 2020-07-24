@@ -1,31 +1,29 @@
 import React from 'react';
-import InputLine from '../Input/InputLine';
+import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import classes from './Select.module.css';
-import { PostfixType, SizeType } from '../../../types';
+import { InputType, OnOffType, SizeType } from '../../../types';
+import { LanguageType } from '../../../generated/apolloComponents';
+import { useLanguageContext } from '../../../context/languageContext';
 
 export interface SelectOptionInterface {
   id: string;
   slug?: string;
   nameString?: string;
-  name?: string;
+  name?: LanguageType[];
   lastName?: string;
+  [key: string]: any;
 }
 
-interface SelectInterface {
+export interface SelectInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  wide?: boolean;
-  labelPostfix?: any;
-  isHorizontal?: boolean;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
   size?: SizeType;
   value?: any;
   notValid?: boolean;
+  type?: InputType;
+  autoComplete?: OnOffType;
+  min?: number;
+  placeholder?: string;
   firstOption?: string;
   setNameToValue?: boolean;
   options: SelectOptionInterface[];
@@ -54,6 +52,7 @@ const Select: React.FC<SelectInterface> = ({
   testId,
   ...props
 }) => {
+  const { getLanguageFieldTranslation } = useLanguageContext();
   const withFirstOptions: SelectOptionInterface[] = firstOption
     ? [
         {
@@ -103,7 +102,7 @@ const Select: React.FC<SelectInterface> = ({
           {...props}
         >
           {withFirstOptions.map(({ nameString, name, lastName, id, slug }) => {
-            const finalName = nameString ? nameString : name;
+            const finalName = nameString ? nameString : getLanguageFieldTranslation(name);
             const { optionName, optionTestIdName } = getOptionName(finalName, lastName);
             const value = slug ? slug : setNameToValue ? optionName : id;
 

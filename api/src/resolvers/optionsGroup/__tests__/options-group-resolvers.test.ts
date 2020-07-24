@@ -101,7 +101,7 @@ describe('Options groups', () => {
         mutation {
           createOptionsGroup(
             input: {
-              name: [{key: "ru", value: "f"}]
+              name: [{key: "${DEFAULT_LANG}", value: "f"}]
             }
           ) {
             success

@@ -1,9 +1,22 @@
 import gql from 'graphql-tag';
 
+export const ATTRIBUTES_GROUPS_QUERY = gql`
+  query GetAllAttributesGroups {
+    getAllAttributesGroups {
+      id
+      nameString
+    }
+  }
+`;
+
 export const ATTRIBUTES_GROUP_QUERY = gql`
   query GetAttributesGroup($id: ID!) {
     getAttributesGroup(id: $id) {
       id
+      name {
+        key
+        value
+      }
       nameString
       attributes {
         id
@@ -26,6 +39,15 @@ export const ATTRIBUTES_GROUP_QUERY = gql`
           nameString
         }
       }
+    }
+  }
+`;
+
+export const ATTRIBUTES_GROUPS_FOR_RUBRIC_QUERY = gql`
+  query GetAttributesGroupsForRubric($exclude: [ID!]) {
+    getAllAttributesGroups(exclude: $exclude) {
+      id
+      nameString
     }
   }
 `;

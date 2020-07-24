@@ -28,12 +28,12 @@ describe('Rubrics', () => {
         }
         getRubricsTree {
           id
-          name
+          nameString
           totalProductsCount
           activeProductsCount
           children {
             id
-            name
+            nameString
             totalProductsCount
             activeProductsCount
             attributesGroups {
@@ -54,7 +54,7 @@ describe('Rubrics', () => {
             }
             children {
               id
-              name
+              nameString
               totalProductsCount
               activeProductsCount
               products {
@@ -72,9 +72,13 @@ describe('Rubrics', () => {
     const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
     expect(getRubricsTree.length).toEqual(1);
-    expect(rubricLevelOne.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(rubricLevelOne.nameString).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+    );
     expect(rubricLevelOne.children.length).toEqual(2);
-    expect(rubricLevelTwo.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_TWO_A.name, DEFAULT_LANG));
+    expect(rubricLevelTwo.nameString).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_TWO_A.name, DEFAULT_LANG),
+    );
 
     // Should return current rubric and it's products
     const { data } = await query(`
@@ -82,8 +86,8 @@ describe('Rubrics', () => {
         getRubric(id: "${rubricLevelOne.id}") {
           id
           slug
-          name
-          catalogueTitle {
+          nameString
+          catalogueTitleString {
             defaultTitle
             prefix
             keyword
@@ -98,7 +102,7 @@ describe('Rubrics', () => {
               id
               rubrics
               itemId
-              name
+              nameString
               price
               slug
               mainImage
@@ -109,7 +113,9 @@ describe('Rubrics', () => {
       }
     `);
     expect(data.getRubric.id).toEqual(rubricLevelOne.id);
-    expect(data.getRubric.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(data.getRubric.nameString).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+    );
     expect(data.getRubric.products.docs).toHaveLength(3);
 
     // Should return current rubric by slug
@@ -119,8 +125,8 @@ describe('Rubrics', () => {
       query {
         getRubricBySlug(slug: "${data.getRubric.slug}") {
           id
-          name
-          catalogueTitle {
+          nameString
+          catalogueTitleString {
             defaultTitle
             prefix
             keyword
@@ -130,7 +136,9 @@ describe('Rubrics', () => {
       }
     `);
     expect(getRubricBySlug.id).toEqual(rubricLevelOne.id);
-    expect(getRubricBySlug.name).toEqual(getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG));
+    expect(getRubricBySlug.nameString).toEqual(
+      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+    );
 
     // Should return duplicate rubric error on rubric create
     const { mutate } = await getTestClientWithAuthenticatedUser();
@@ -138,11 +146,14 @@ describe('Rubrics', () => {
       mutation {
         createRubric(
           input: {
-            name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${getLangField(
+      MOCK_RUBRIC_LEVEL_ONE.name,
+      DEFAULT_LANG,
+    )}"}]
             catalogueTitle: {
-              defaultTitle: [{key: "ru", value: "test"}],
+              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
-              keyword: [{key: "ru", value: "test"}],
+              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
               gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
             }
             variant: "${getAllRubricVariants[0].id}"
@@ -152,7 +163,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
           }
         }
       }
@@ -166,11 +177,11 @@ describe('Rubrics', () => {
       mutation {
         createRubric(
           input: {
-            name: [{key: "ru", value: "${testRubric.name}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${testRubric.name}"}]
             catalogueTitle: {
-              defaultTitle: [{key: "ru", value: "test"}],
+              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
-              keyword: [{key: "ru", value: "test"}],
+              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
               gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
             }
             variant: "${getAllRubricVariants[0].id}"
@@ -180,8 +191,8 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
-            catalogueTitle {
+            nameString
+            catalogueTitleString {
               defaultTitle
               prefix
               keyword
@@ -196,7 +207,7 @@ describe('Rubrics', () => {
       }
     `);
     expect(createRubric.success).toBeTruthy();
-    expect(createRubric.rubric.name).toEqual(testRubric.name);
+    expect(createRubric.rubric.nameString).toEqual(testRubric.name);
 
     // Should return duplicate rubric error on rubric update
     const {
@@ -206,11 +217,14 @@ describe('Rubrics', () => {
         updateRubric(
           input: {
             id: "${createRubric.rubric.id}"
-            name: [{key: "ru", value: "${getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG)}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${getLangField(
+      MOCK_RUBRIC_LEVEL_ONE.name,
+      DEFAULT_LANG,
+    )}"}]
             catalogueTitle: {
-              defaultTitle: [{key: "ru", value: "test"}],
+              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
-              keyword: [{key: "ru", value: "test"}],
+              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
               gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
             }
             variant: "${createRubric.rubric.variant.id}"
@@ -220,7 +234,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
           }
         }
       }
@@ -235,11 +249,11 @@ describe('Rubrics', () => {
         updateRubric(
           input: {
             id: "${createRubric.rubric.id}"
-            name: [{key: "ru", value: "${anotherRubric.name}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${anotherRubric.name}"}]
             catalogueTitle: {
-              defaultTitle: [{key: "ru", value: "test"}],
+              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
-              keyword: [{key: "ru", value: "test"}],
+              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
               gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
             }
             variant: "${createRubric.rubric.variant.id}"
@@ -249,8 +263,8 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
-            catalogueTitle {
+            nameString
+            catalogueTitleString {
               defaultTitle
               prefix
               keyword
@@ -261,7 +275,7 @@ describe('Rubrics', () => {
       }
     `);
     expect(updateRubric.success).toBeTruthy();
-    expect(updateRubric.rubric.name).toEqual(anotherRubric.name);
+    expect(updateRubric.rubric.nameString).toEqual(anotherRubric.name);
 
     // Should add attributes group to the second level rubric
     const {
@@ -280,7 +294,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
             level
             attributesGroups {
               showInCatalogueFilter
@@ -323,7 +337,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
             level
             attributesGroups {
               showInCatalogueFilter
@@ -359,7 +373,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
             level
             attributesGroups {
               node {
@@ -419,7 +433,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
             level
             products {
               docs {
@@ -471,7 +485,7 @@ describe('Rubrics', () => {
           message
           rubric {
             id
-            name
+            nameString
             level
             products {
               docs {

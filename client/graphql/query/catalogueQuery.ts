@@ -6,7 +6,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
       catalogueTitle
       rubric {
         id
-        name
+        nameString
         level
         slug
         variant {
@@ -36,7 +36,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
         docs {
           id
           itemId
-          name
+          nameString
           price
           slug
           mainImage

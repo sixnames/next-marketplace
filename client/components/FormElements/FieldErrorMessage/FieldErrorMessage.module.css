@@ -2,4 +2,5 @@
   font-weight: bold;
   color: var(--red);
   margin-bottom: var(--lineGap);
+  margin-top: var(--lineGap);
 }

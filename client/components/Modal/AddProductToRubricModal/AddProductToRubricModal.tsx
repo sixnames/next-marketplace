@@ -18,7 +18,7 @@ import { useAppContext } from '../../../context/appContext';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/CmsRubricsAndProducts';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
 import useProductsListColumns from '../../../hooks/useProductsListColumns';
 import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';

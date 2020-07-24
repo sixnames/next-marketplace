@@ -10,7 +10,7 @@ import { CREATE_RUBRIC_MODAL } from '../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../config';
 import classes from './RubricsFilter.module.css';
 import RubricsTreeCounters from './RubricsTreeCounters';
-import { RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import { CreateRubricModalInterface } from '../../components/Modal/CreateRubricModal/CreateRubricModal';
 
 const RubricsFilter: React.FC = () => {

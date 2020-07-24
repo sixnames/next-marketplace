@@ -345,14 +345,17 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
-  cardName: String!
+  cardName: [LanguageType!]!
+  cardNameString: String!
   cities: [ProductCity!]!
   createdAt: Timestamp!
-  description: String!
+  description: [LanguageType!]!
+  descriptionString: String!
   id: ID!
   itemId: Int!
   mainImage: String!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   price: Int!
   rubrics: [ID!]!
   slug: String!
@@ -478,13 +481,15 @@ type Rubric {
   active: Boolean!
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueTitle: RubricCatalogueTitleField!
+  catalogueTitle: RubricCatalogueTitle!
+  catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [Attribute!]!
   id: ID!
   level: Int!
-  name: String!
+  name: [LanguageType!]!
+  nameString: String!
   parent: Rubric
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!

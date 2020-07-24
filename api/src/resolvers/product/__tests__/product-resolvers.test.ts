@@ -17,10 +17,10 @@ describe('Product', () => {
           docs {
             id
             itemId
-            name
-            cardName
+            nameString
+            cardNameString
             slug
-            description
+            descriptionString
             rubrics
             attributesGroups {
               showInCard
@@ -74,15 +74,15 @@ describe('Product', () => {
       query {
         getProduct(id: "${currentProduct.id}") {
           id
-          name
+          nameString
           slug
         }
         getRubricsTree {
           id
-          name
+          nameString
           children {
             id
-            name
+            nameString
             attributesGroups {
               node {
                 id
@@ -101,7 +101,7 @@ describe('Product', () => {
             }
             children {
               id
-              name
+              nameString
             }
           }
         }
@@ -111,7 +111,7 @@ describe('Product', () => {
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelTree = rubricLevelTwo.children[0];
     expect(getProduct.id).toEqual(currentProduct.id);
-    expect(getProduct.name).toEqual(currentProduct.name);
+    expect(getProduct.nameString).toEqual(currentProduct.nameString);
     const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
 
     // Should return current product by slug
@@ -121,12 +121,12 @@ describe('Product', () => {
       query {
         getProductBySlug(slug: "${currentProduct.slug}") {
           id
-          name
+          nameString
         }
       }
     `);
     expect(getProductBySlug.id).toEqual(currentProduct.id);
-    expect(getProductBySlug.name).toEqual(currentProduct.name);
+    expect(getProductBySlug.nameString).toEqual(currentProduct.nameString);
 
     // Should return features AST
     const {
@@ -166,10 +166,10 @@ describe('Product', () => {
               product {
                 id
                 itemId
-                name
-                cardName
+                nameString
+                cardNameString
                 slug
-                description
+                descriptionString
                 rubrics
                 attributesGroups {
                   showInCard
@@ -211,9 +211,9 @@ describe('Product', () => {
     const { product: createdProduct, success: createSuccess } = createProduct;
 
     expect(createSuccess).toBeTruthy();
-    expect(createdProduct.name).toEqual(testProduct.name[0].value);
-    expect(createdProduct.cardName).toEqual(testProduct.cardName[0].value);
-    expect(createdProduct.description).toEqual(testProduct.description[0].value);
+    expect(createdProduct.nameString).toEqual(testProduct.name[0].value);
+    expect(createdProduct.cardNameString).toEqual(testProduct.cardName[0].value);
+    expect(createdProduct.descriptionString).toEqual(testProduct.description[0].value);
     expect(createdProduct.price).toEqual(testProduct.price);
     expect(createdProduct.rubrics).toEqual([rubricLevelTree.id]);
     expect(createdProduct.assets).toHaveLength(3);
@@ -230,10 +230,10 @@ describe('Product', () => {
               product {
                 id
                 itemId
-                name
-                cardName
+                nameString
+                cardNameString
                 slug
-                description
+                descriptionString
                 rubrics
                 attributesGroups {
                   showInCard
@@ -276,9 +276,9 @@ describe('Product', () => {
     const { product: updatedProduct, success: updateSuccess } = updateProduct;
 
     expect(updateSuccess).toBeTruthy();
-    expect(updatedProduct.name).toEqual(anotherProduct.name[0].value);
-    expect(updatedProduct.cardName).toEqual(anotherProduct.cardName[0].value);
-    expect(updatedProduct.description).toEqual(anotherProduct.description[0].value);
+    expect(updatedProduct.nameString).toEqual(anotherProduct.name[0].value);
+    expect(updatedProduct.cardNameString).toEqual(anotherProduct.cardName[0].value);
+    expect(updatedProduct.descriptionString).toEqual(anotherProduct.description[0].value);
     expect(updatedProduct.price).toEqual(anotherProduct.price);
     expect(updatedProduct.rubrics).toEqual([rubricLevelTree.id]);
     expect(updatedProduct.assets).toHaveLength(3);

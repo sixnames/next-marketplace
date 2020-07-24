@@ -20,7 +20,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
-import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/getRubricAttributes';
+import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/rubrics';
 import Accordion from '../../components/Accordion/Accordion';
 import { getAttributeVariant } from '../../utils/locales';
 import InnerWide from '../../components/Inner/InnerWide';
@@ -48,43 +48,40 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     withModal: true,
   });
   const { data, error, loading } = useGetRubricAttributesQuery({
+    fetchPolicy: 'network-only',
     variables: {
       id: rubric.id,
     },
-    fetchPolicy: 'network-only',
   });
+
+  const refetchConfig = {
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRIC_ATTRIBUTES_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
+    ],
+  };
 
   const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromRubric),
     onError: onErrorCallback,
+    ...refetchConfig,
   });
 
   const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRIC_ATTRIBUTES_QUERY,
-        variables: {
-          id: rubric.id,
-        },
-      },
-    ],
+    ...refetchConfig,
   });
 
   const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateAttributesGroupInRubric),
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRIC_ATTRIBUTES_QUERY,
-        variables: {
-          id: rubric.id,
-        },
-      },
-    ],
+    ...refetchConfig,
   });
 
   if (!data && !loading && !error) {
@@ -198,12 +195,12 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         titleRight={
           <ContentItemControls
             createTitle={'Добавить группу атрибутов в рубрику'}
-            testId={rubric.name}
+            testId={rubric.nameString}
             createHandler={addAttributesGroupToRubricHandler}
           />
         }
       >
-        {rubric.name}
+        {rubric.nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <InnerWide>

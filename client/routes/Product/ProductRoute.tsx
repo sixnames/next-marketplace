@@ -50,10 +50,10 @@ const ProductRoute: React.FC = () => {
   });
 
   return (
-    <AppLayout title={product.name}>
+    <AppLayout title={product.nameString}>
       <DataLayout
         filterResultNavConfig={navConfig}
-        title={product.name}
+        title={product.nameString}
         filterResult={() => (
           <TabsContent>
             <ProductDetails product={product} />

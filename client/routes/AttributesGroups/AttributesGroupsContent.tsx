@@ -18,9 +18,8 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import { getAttributeVariant } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/getAllAttributesGroups';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/getAttributesGroup';
+import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/attributes';
 
 interface AttributesGroupsContentInterface {
   query?: { [key: string]: any };
@@ -33,17 +32,17 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   });
 
   const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
-    onError: onErrorCallback,
     awaitRefetchQueries: true,
     refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
+    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
+    onError: onErrorCallback,
   });
 
   const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
-    onError: onErrorCallback,
     awaitRefetchQueries: true,
     refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { id: group } }],
+    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
+    onError: onErrorCallback,
   });
 
   function deleteAttributeFromGroupHandler(id: string, nameString: string) {
@@ -54,8 +53,6 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: () => {
           showLoading();
           return deleteAttributeFromGroupMutation({
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: { input: { groupId: group, attributeId: id } },
           });
         },
@@ -73,8 +70,6 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: (input: Omit<UpdateAttributeInGroupInput, 'groupId' | 'attributeId'>) => {
           showLoading();
           return updateAttributeInGroupMutation({
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: ATTRIBUTES_GROUPS_QUERY }],
             variables: {
               input: {
                 groupId: group,
@@ -102,7 +97,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   if (error || !data || !data.getAttributesGroup) return <RequestError />;
 
   const { getAttributesGroup } = data;
-  const { nameString, id, attributes } = getAttributesGroup;
+  const { nameString, attributes } = getAttributesGroup;
 
   const columns = [
     {
@@ -148,7 +143,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   return (
     <Fragment>
       <DataLayoutTitle
-        titleRight={<AttributesGroupControls id={id} nameString={nameString} />}
+        titleRight={<AttributesGroupControls group={getAttributesGroup} />}
         testId={'group-title'}
       >
         {nameString}

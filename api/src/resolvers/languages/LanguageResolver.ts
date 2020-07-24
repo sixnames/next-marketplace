@@ -23,7 +23,7 @@ export class LanguageResolver {
 
   @Query(() => [Language], { nullable: true })
   async getAllLanguages(): Promise<Language[]> {
-    return LanguageModel.find({});
+    return LanguageModel.find({}).sort({ isDefault: -1 });
   }
 
   @Query(() => String)

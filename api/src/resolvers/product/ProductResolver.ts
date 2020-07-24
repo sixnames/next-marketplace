@@ -25,7 +25,7 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getCityData from '../../utils/getCityData';
 import getLangField from '../../utils/getLangField';
-import { AssetType } from '../../entities/common';
+import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
@@ -163,10 +163,10 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      await createProductSchema.validate(input);
-
       const city = ctx.req.city;
       const lang = ctx.req.lang;
+      const defaultLang = ctx.req.defaultLang;
+      await createProductSchema(defaultLang).validate(input);
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -238,10 +238,10 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      await updateProductSchema.validate(input);
-
       const city = ctx.req.city;
       const lang = ctx.req.lang;
+      const defaultLang = ctx.req.defaultLang;
+      await updateProductSchema(defaultLang).validate(input);
 
       const { id, assets, ...values } = input;
 
@@ -400,7 +400,7 @@ export class ProductResolver {
   }
 
   @FieldResolver()
-  async name(
+  async nameString(
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
@@ -412,7 +412,19 @@ export class ProductResolver {
   }
 
   @FieldResolver()
-  async cardName(
+  async name(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<LanguageType[]> {
+    const city = getCityData(product.cities, ctx.req.city);
+    if (!city) {
+      return [];
+    }
+    return city.node.name;
+  }
+
+  @FieldResolver()
+  async cardNameString(
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
@@ -421,6 +433,18 @@ export class ProductResolver {
       return '';
     }
     return getLangField(city.node.cardName, ctx.req.lang);
+  }
+
+  @FieldResolver()
+  async cardName(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<LanguageType[]> {
+    const city = getCityData(product.cities, ctx.req.city);
+    if (!city) {
+      return [];
+    }
+    return city.node.cardName;
   }
 
   @FieldResolver()
@@ -436,7 +460,7 @@ export class ProductResolver {
   }
 
   @FieldResolver()
-  async description(
+  async descriptionString(
     @Root() product: DocumentType<Product>,
     @Ctx() ctx: ContextInterface,
   ): Promise<string> {
@@ -445,6 +469,18 @@ export class ProductResolver {
       return '';
     }
     return getLangField(city.node.description, ctx.req.lang);
+  }
+
+  @FieldResolver()
+  async description(
+    @Root() product: DocumentType<Product>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<LanguageType[]> {
+    const city = getCityData(product.cities, ctx.req.city);
+    if (!city) {
+      return [];
+    }
+    return city.node.description;
   }
 
   @FieldResolver()

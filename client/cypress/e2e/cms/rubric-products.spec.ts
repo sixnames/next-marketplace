@@ -131,10 +131,16 @@ describe('Rubric products', () => {
     cy.getByCy('file-preview-2').should('not.exist');
 
     // fill inputs
-    cy.getByCy('product-name').type(mockProductNewName);
-    cy.getByCy('product-card-name').type(mockProductNewCardName);
+    cy.getByCy('name-accordion-en').click();
+    cy.getByCy('cardName-accordion-en').click();
+    cy.getByCy('description-accordion-en').click();
+    cy.getByCy('name-ru').type(mockProductNewName);
+    cy.getByCy('name-en').type(mockProductNewName);
+    cy.getByCy('cardName-ru').type(mockProductNewCardName);
+    cy.getByCy('cardName-en').type(mockProductNewCardName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('product-description').type(mockProductNewCarDescription);
+    cy.getByCy('description-ru').type(mockProductNewCarDescription);
+    cy.getByCy('description-en').type(mockProductNewCarDescription);
 
     // fill attributes
     cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();

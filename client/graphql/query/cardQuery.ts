@@ -5,12 +5,12 @@ export const CATALOGUE_CARD_QUERY = gql`
     getProductBySlug(slug: $slug) {
       id
       itemId
-      name
-      cardName
+      nameString
+      cardNameString
       price
       slug
       mainImage
-      description
+      descriptionString
       attributesGroups {
         showInCard
         node {

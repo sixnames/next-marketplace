@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langInput, minPrice, notNullableName } from './templates';
+import { id, langStringInputSchema, minPrice } from './templates';
 
 export const productAttributeSchema = Yup.object().shape({
   showInCard: Yup.boolean().required(
@@ -18,10 +18,10 @@ export const productAttributesGroupSchema = Yup.object().shape({
   attributes: Yup.array().of(productAttributeSchema),
 });
 
-const productCommonFields = {
-  name: langInput(notNullableName('Название товара')),
-  cardName: langInput(notNullableName('Название карточки товара')),
-  description: langInput(notNullableName('Описание товара')),
+const productCommonFields = (defaultLang: string) => ({
+  name: langStringInputSchema({ defaultLang, entityMessage: 'Название товара' }),
+  cardName: langStringInputSchema({ defaultLang, entityMessage: 'Название карточки товара' }),
+  description: langStringInputSchema({ defaultLang, entityMessage: 'Описание товара' }),
   rubrics: Yup.array().of(Yup.string().required('Рубрики обязательны к заполнению')),
   price: Yup.number()
     .min(minPrice, `Цена должна быть выше ${minPrice}`)
@@ -30,13 +30,15 @@ const productCommonFields = {
     .of(productAttributesGroupSchema)
     .required('Поле Группы атрибутов обязательно к заполнению'),
   assets: Yup.array().of(Yup.mixed()).required('Поле Изображения товара обязательно к заполнению'),
-};
-
-export const createProductSchema = Yup.object().shape({
-  ...productCommonFields,
 });
 
-export const updateProductSchema = Yup.object().shape({
-  id,
-  ...productCommonFields,
-});
+export const createProductSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    ...productCommonFields(defaultLang),
+  });
+
+export const updateProductSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    id,
+    ...productCommonFields(defaultLang),
+  });

@@ -1,24 +1,27 @@
-import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
+import { getModelForClass, index, plugin, prop, pre, DocumentType } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { ROLES_ENUM } from '../config';
 
 @ObjectType()
 @plugin(mongoosePaginate)
-@plugin(autoIncrement, {
-  model: 'User',
-  field: 'itemId',
+@pre<User>('save', async function (this: DocumentType<User>) {
+  const lastItem = await UserModel.find({}).sort({ itemId: -1 }).limit(1);
+  const itemId = lastItem && lastItem[0] ? `${+lastItem[0].itemId + 1}` : '1';
+  if (this.isNew) {
+    this.itemId = itemId;
+  }
 })
 @index({ '$**': 'text' })
 export class User extends TimeStamps {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => Int)
-  readonly itemId: number;
+  @Field(() => String)
+  @prop({ required: true, trim: true, default: '1' })
+  itemId: string;
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })

@@ -199,6 +199,7 @@ export class ProductResolver {
       }
 
       const product = await ProductModel.create({
+        itemId: '1',
         cities: [
           {
             key: city,

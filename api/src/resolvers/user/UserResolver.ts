@@ -92,6 +92,7 @@ export class UserResolver {
       const { role, ...values } = input;
       const user = await UserModel.create({
         ...values,
+        itemId: '1',
         password,
         role: role || ROLE_CUSTOMER,
       });
@@ -195,6 +196,7 @@ export class UserResolver {
 
       const user = await UserModel.create({
         ...input,
+        itemId: '1',
         password,
         role: ROLE_CUSTOMER,
       });

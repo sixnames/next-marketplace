@@ -5,7 +5,7 @@ import { LanguageType } from '../generated/apolloComponents';
 
 export interface ProductsListItemInterface {
   id: string;
-  itemId: number;
+  itemId: string;
   name: LanguageType[];
   nameString: string;
   price: number;
@@ -44,7 +44,7 @@ const useProductsListColumns = ({
     {
       key: 'itemId',
       title: 'Арт.',
-      render: (itemID: number) => itemID,
+      render: (itemID: string) => itemID,
     },
     {
       key: 'mainImage',

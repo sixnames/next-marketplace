@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
-import { NotRequiredArraySchema, StringSchema } from 'yup';
+import { StringSchema } from 'yup';
 import { ROLES_ENUM } from '../config';
 
 export const minPasswordLength = 5;
@@ -14,25 +14,6 @@ export const minPrice = 1;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
 export const role = Yup.mixed().oneOf(ROLES_ENUM);
-
-export const langInput = (
-  valueSchema: StringSchema,
-): NotRequiredArraySchema<{ key: string; value: string | undefined } | undefined> =>
-  Yup.array().of(
-    Yup.object({
-      key: Yup.string().trim().required('Язык обязателен к заполнению.'),
-      value: valueSchema,
-    }),
-  );
-
-export const notNullableName = (
-  nameTarget: string,
-): StringSchema<Exclude<string | undefined, undefined | null>> =>
-  Yup.string()
-    .min(minNameLength, `${nameTarget} должно состоять минимум из ${minNameLength} символов`)
-    .max(maxNameLength, `${nameTarget} должно состоять максимум из ${maxNameLength} символов`)
-    .trim()
-    .required(`${nameTarget} обязателено к заполнению.`);
 
 interface LangStringInputSchemaInterface {
   defaultLang: string;

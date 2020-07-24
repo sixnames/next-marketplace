@@ -22,9 +22,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const imageWidth = 450;
   const {
     mainImage,
-    name,
-    cardName,
-    description,
+    nameString,
+    cardNameString,
+    descriptionString,
     attributesGroups,
     price,
   } = cardData.getProductBySlug;
@@ -33,13 +33,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     <Inner>
       <div className={classes.frame}>
         <div className={classes.image}>
-          <Image url={mainImage} alt={name} title={name} width={imageWidth} />
+          <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
         </div>
 
         <div>
-          <Title>{cardName}</Title>
+          <Title>{cardNameString}</Title>
           <div style={{ marginBottom: 15 }}>{price} р.</div>
-          <div style={{ marginBottom: 30 }}>{description}</div>
+          <div style={{ marginBottom: 30 }}>{descriptionString}</div>
 
           <ul>
             {attributesGroups.map((group) => (

@@ -39,6 +39,7 @@ export async function getTestClientWithUser({
     request: {
       city,
       lang,
+      defaultLang: DEFAULT_LANG,
       session: {},
     },
   });

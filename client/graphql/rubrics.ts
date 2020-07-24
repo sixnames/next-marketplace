@@ -3,7 +3,11 @@ import gql from 'graphql-tag';
 const rubricFragment = gql`
   fragment RubricFragment on Rubric {
     id
-    name
+    name {
+      key
+      value
+    }
+    nameString
     level
     variant {
       id
@@ -23,7 +27,11 @@ const rubricProductsFragment = gql`
     docs {
       id
       itemId
-      name
+      name {
+        key
+        value
+      }
+      nameString
       price
       slug
       mainImage
@@ -58,9 +66,18 @@ export const RUBRIC_QUERY = gql`
     getRubric(id: $id) {
       ...RubricFragment
       catalogueTitle {
-        defaultTitle
-        prefix
-        keyword
+        defaultTitle {
+          key
+          value
+        }
+        prefix {
+          key
+          value
+        }
+        keyword {
+          key
+          value
+        }
         gender
       }
     }
@@ -74,18 +91,6 @@ export const CREATE_RUBRIC_MUTATION = gql`
     createRubric(input: $input) {
       success
       message
-      rubric {
-        ...RubricFragment
-        children {
-          ...RubricFragment
-          children {
-            ...RubricFragment
-          }
-        }
-        parent {
-          id
-        }
-      }
     }
   }
 

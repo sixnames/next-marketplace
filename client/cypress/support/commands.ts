@@ -1,4 +1,3 @@
-import '@iam4x/cypress-graphql-mock';
 import 'cypress-file-upload';
 import { ME_AS_ADMIN } from '../../config';
 // ***********************************************

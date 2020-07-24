@@ -11,6 +11,13 @@ import { useThemeContext } from '../../../context/themeContext';
 import Icon from '../../../components/Icon/Icon';
 import TTip from '../../../components/TTip/TTip';
 import { useLanguageContext } from '../../../context/languageContext';
+import { InitialSiteQueryQuery } from '../../../generated/apolloComponents';
+
+export type HeaderRubricType = Omit<InitialSiteQueryQuery['getRubricsTree'][0], 'children'>;
+
+export interface HeaderRubricInterface extends HeaderRubricType {
+  children?: HeaderRubricType[];
+}
 
 const Header: React.FC = () => {
   const { toggleTheme, themeIcon, themeTooltip } = useThemeContext();

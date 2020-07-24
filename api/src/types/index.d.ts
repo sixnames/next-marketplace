@@ -5,6 +5,7 @@ declare global {
     interface Request {
       lang: string;
       city: string;
+      defaultLang: string;
     }
   }
 }

@@ -1,11 +1,13 @@
 import ContentItemControls from '../components/ContentItemControls/ContentItemControls';
 import React from 'react';
 import TableRowImage from '../components/Table/TableRowImage';
+import { LanguageType } from '../generated/apolloComponents';
 
 export interface ProductsListItemInterface {
   id: string;
   itemId: number;
-  name: string;
+  name: LanguageType[];
+  nameString: string;
   price: number;
   slug: string;
   mainImage: string;
@@ -48,13 +50,15 @@ const useProductsListColumns = ({
       key: 'mainImage',
       title: 'Фото',
       render: (mainImage: string, product: ProductsListItemInterface) => {
-        return <TableRowImage url={mainImage} alt={product.name} title={product.name} />;
+        return (
+          <TableRowImage url={mainImage} alt={product.nameString} title={product.nameString} />
+        );
       },
     },
     {
-      key: 'name',
+      key: 'nameString',
       title: 'Название',
-      render: (name: string) => name,
+      render: (nameString: string) => nameString,
     },
     {
       key: 'price',
@@ -73,7 +77,7 @@ const useProductsListColumns = ({
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
-            testId={product.name}
+            testId={product.nameString}
             createTitle={createTitle}
             updateTitle={updateTitle}
             deleteTitle={deleteTitle}

@@ -1,8 +1,15 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
-import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY } from '../config';
+import { DEFAULT_LANG, IS_BROWSER, LANG_COOKIE_KEY, LANG_NOT_FOUND_FIELD_MESSAGE } from '../config';
 import Cookies from 'js-cookie';
-import { Language } from '../generated/apolloComponents';
+import {
+  AttributePositioningInTitle,
+  AttributePositioningInTitleInput,
+  AttributePositionInTitleEnum,
+  LangInput,
+  Language,
+  LanguageType,
+} from '../generated/apolloComponents';
 
 interface LanguageContextInterface {
   lang: string;
@@ -11,9 +18,19 @@ interface LanguageContextInterface {
 
 interface UseLanguageContextInterface {
   lang: string;
+  defaultLang: string;
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
+  getLanguageFieldTranslation: (field?: LanguageType[] | null) => string;
+  getLanguageFieldInitialValue: (field?: LanguageType[] | null) => LangInput[];
+  getLanguageFieldInputValue: (field: LangInput[] | null) => LangInput[];
+  getAttributePositionInTitleInitialValue: (
+    field?: AttributePositioningInTitle[] | null,
+  ) => AttributePositioningInTitleInput[];
+  getAttributePositionInTitleInputValue: (
+    field: AttributePositioningInTitleInput[] | null,
+  ) => AttributePositioningInTitleInput[];
 }
 
 const LanguageContext = createContext<LanguageContextInterface>({
@@ -45,6 +62,21 @@ function useLanguageContext(): UseLanguageContextInterface {
 
   const { lang, languagesList } = context;
 
+  const defaultLangItem = languagesList.find(({ isDefault }) => isDefault);
+  const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
+
+  const getLanguageFieldTranslation = useCallback(
+    (field?: LanguageType[] | null) => {
+      if (!field) {
+        return LANG_NOT_FOUND_FIELD_MESSAGE;
+      }
+
+      const translation = field.find(({ key }) => key === lang);
+      return translation ? translation.value : LANG_NOT_FOUND_FIELD_MESSAGE;
+    },
+    [lang],
+  );
+
   const setLanguage = useCallback((lang: string) => {
     Cookies.set(LANG_COOKIE_KEY, lang);
     if (IS_BROWSER) {
@@ -59,11 +91,77 @@ function useLanguageContext(): UseLanguageContextInterface {
     [lang],
   );
 
+  const getLanguageFieldInitialValue = useCallback(
+    (field?: LanguageType[] | null) => {
+      if (!field || !field.length) {
+        return languagesList.reduce((acc: LangInput[], language) => {
+          return [...acc, { key: language.key, value: '' }];
+        }, []);
+      }
+
+      return languagesList.reduce((acc: LangInput[], language) => {
+        const fieldItem = field.find(({ key }) => language.key === key);
+        if (fieldItem) {
+          return [...acc, { key: language.key, value: fieldItem.value }];
+        }
+        return [...acc, { key: language.key, value: '' }];
+      }, []);
+    },
+    [languagesList],
+  );
+
+  const getLanguageFieldInputValue = useCallback((field: LangInput[] | null) => {
+    if (!field) {
+      return [];
+    }
+
+    return field.filter(({ value }) => value);
+  }, []);
+
+  const getAttributePositionInTitleInitialValue = useCallback(
+    (field?: AttributePositioningInTitle[] | null) => {
+      if (!field || !field.length) {
+        return languagesList.reduce((acc: AttributePositioningInTitle[], language) => {
+          return [...acc, { key: language.key, value: '' as AttributePositionInTitleEnum }];
+        }, []);
+      }
+
+      return languagesList.reduce((acc: AttributePositioningInTitle[], language) => {
+        const fieldItem = field.find(({ key }) => language.key === key);
+        if (fieldItem) {
+          return [
+            ...acc,
+            { key: language.key, value: fieldItem.value as AttributePositionInTitleEnum },
+          ];
+        }
+        return [...acc, { key: language.key, value: '' as AttributePositionInTitleEnum }];
+      }, []);
+    },
+    [languagesList],
+  );
+
+  const getAttributePositionInTitleInputValue = useCallback(
+    (field: AttributePositioningInTitleInput[] | null) => {
+      if (!field) {
+        return [];
+      }
+
+      return field.filter(({ value }) => value);
+    },
+    [],
+  );
+
   return {
     lang,
+    defaultLang,
     setLanguage,
     languagesList,
     isCurrentLanguage,
+    getLanguageFieldInitialValue,
+    getLanguageFieldInputValue,
+    getAttributePositionInTitleInitialValue,
+    getAttributePositionInTitleInputValue,
+    getLanguageFieldTranslation,
   };
 }
 

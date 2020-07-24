@@ -1,22 +1,12 @@
 import React from 'react';
-import InputLine from './InputLine';
+import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
-import { InputType, OnOffType, PostfixType, SizeType } from '../../../types';
+import { InputType, OnOffType, SizeType } from '../../../types';
 import classes from './Input.module.css';
 
-interface InputPropsInterface {
+export interface InputPropsInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  wide?: boolean;
-  labelPostfix?: any;
-  isHorizontal?: boolean;
-  postfix?: PostfixType;
-  prefix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
   size?: SizeType;
   value?: any;
   notValid?: boolean;
@@ -24,6 +14,8 @@ interface InputPropsInterface {
   autoComplete?: OnOffType;
   testId?: string;
   min?: number;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
 const Input: React.FC<InputPropsInterface> = ({
@@ -44,6 +36,7 @@ const Input: React.FC<InputPropsInterface> = ({
   notValid,
   type = 'text',
   testId,
+  labelTag,
   ...props
 }) => {
   const sizeClass = classes[size];
@@ -58,6 +51,7 @@ const Input: React.FC<InputPropsInterface> = ({
       name={name}
       lineClass={lineClass}
       label={label}
+      labelTag={labelTag}
       isHorizontal={isHorizontal}
       labelPostfix={labelPostfix}
       labelLink={labelLink}

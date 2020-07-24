@@ -67,10 +67,16 @@ describe('Products list', () => {
     cy.getByCy(`success-notification`).should('exist');
 
     // Should update product main fields
-    cy.getByCy('product-name').clear().type(mockProductNewName);
-    cy.getByCy('product-card-name').clear().type(mockProductNewCardName);
-    cy.getByCy('product-price').clear().clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('product-description').clear().type(mockProductNewCarDescription);
+    cy.getByCy('name-accordion-en').click();
+    cy.getByCy('cardName-accordion-en').click();
+    cy.getByCy('description-accordion-en').click();
+    cy.getByCy('name-ru').clear().type(mockProductNewName);
+    cy.getByCy('name-en').clear().type(mockProductNewName);
+    cy.getByCy('cardName-ru').clear().type(mockProductNewCardName);
+    cy.getByCy('cardName-en').clear().type(mockProductNewCardName);
+    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
+    cy.getByCy('description-ru').clear().type(mockProductNewCarDescription);
+    cy.getByCy('description-en').clear().type(mockProductNewCarDescription);
     cy.getByCy('submit-product').click();
     cy.getByCy(`success-notification`).should('exist');
 
@@ -92,10 +98,16 @@ describe('Products list', () => {
     cy.getByCy('product-images').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
 
     // fill inputs
-    cy.getByCy('product-name').type(mockProductCreateName);
-    cy.getByCy('product-card-name').type(mockProductCreateCardName);
+    cy.getByCy('name-accordion-en').click();
+    cy.getByCy('cardName-accordion-en').click();
+    cy.getByCy('description-accordion-en').click();
+    cy.getByCy('name-ru').type(mockProductCreateName);
+    cy.getByCy('name-en').type(mockProductCreateName);
+    cy.getByCy('cardName-ru').type(mockProductCreateCardName);
+    cy.getByCy('cardName-en').type(mockProductCreateCardName);
     cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
-    cy.getByCy('product-description').type(mockProductCreateCarDescription);
+    cy.getByCy('description-ru').type(mockProductCreateCarDescription);
+    cy.getByCy('description-en').type(mockProductCreateCarDescription);
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
 

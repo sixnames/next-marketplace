@@ -113,10 +113,16 @@ export class Rubric {
   readonly id: string;
 
   @Field(() => String)
-  readonly name: string;
+  readonly nameString: string;
+
+  @Field(() => [LanguageType])
+  readonly name: LanguageType[];
+
+  @Field(() => RubricCatalogueTitle)
+  readonly catalogueTitle: RubricCatalogueTitle;
 
   @Field(() => RubricCatalogueTitleField)
-  readonly catalogueTitle: RubricCatalogueTitleField;
+  readonly catalogueTitleString: RubricCatalogueTitleField;
 
   @Field(() => String)
   readonly slug: string;

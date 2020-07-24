@@ -4,14 +4,14 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import FilterRadioGroup from '../../components/FilterElements/FilterRadio/FilterRadioGroup';
 import {
-  GetAllOptionsGroupsQuery,
   useCreateOptionsGroupMutation,
   useGetAllOptionsGroupsQuery,
 } from '../../generated/apolloComponents';
-import { UPDATE_NAME_MODAL } from '../../config/modals';
-import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/getAllOptionsGroups';
+import { OPTIONS_GROUP_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
+import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
 
 const OptionsGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllOptionsGroupsQuery({
@@ -22,35 +22,16 @@ const OptionsGroupsFilter: React.FC = () => {
   });
 
   const [createOptionsGroupMutation] = useCreateOptionsGroupMutation({
-    update: (cache, { data }) => {
-      if (data) {
-        const { createOptionsGroup } = data;
-        const cachedData: GetAllOptionsGroupsQuery | null = cache.readQuery({
-          query: OPTIONS_GROUPS_QUERY,
-        });
-
-        if (cachedData) {
-          const { getAllOptionsGroups } = cachedData;
-          cache.writeQuery({
-            query: OPTIONS_GROUPS_QUERY,
-            data: {
-              getAllOptionsGroups: [...getAllOptionsGroups, createOptionsGroup.group],
-            },
-          });
-        }
-      }
-    },
+    refetchQueries: [{ query: OPTIONS_GROUPS_QUERY }],
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.createOptionsGroup),
     onError: onErrorCallback,
   });
 
   function createOptionsGroupHandler() {
-    showModal({
-      type: UPDATE_NAME_MODAL,
+    showModal<OptionsGroupModalInterface>({
+      type: OPTIONS_GROUP_MODAL,
       props: {
-        title: 'Введите название группы',
-        buttonText: 'Добавить',
-        testId: 'create-options-group-modal',
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();
           return createOptionsGroupMutation({ variables: { input: values } });

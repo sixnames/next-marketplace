@@ -97,15 +97,18 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
     const cookieLang = cookies[LANG_COOKIE_KEY];
     const clientLanguage = cookieLang || systemLang;
+
     const languageExists = await LanguageModel.exists({ key: clientLanguage });
+    const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
+    const defaultLanguageKey = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
+
+    req.defaultLang = defaultLanguageKey;
 
     if (languageExists) {
       req.lang = clientLanguage;
     } else {
-      const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
-      const finalLang = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
-      res.cookie(LANG_COOKIE_KEY, finalLang);
-      req.lang = finalLang;
+      res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
+      req.lang = defaultLanguageKey;
     }
 
     next();

@@ -252,10 +252,13 @@ export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
-  name: Scalars['String'];
-  cardName: Scalars['String'];
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  cardNameString: Scalars['String'];
+  cardName: Array<LanguageType>;
   slug: Scalars['String'];
-  description: Scalars['String'];
+  descriptionString: Scalars['String'];
+  description: Array<LanguageType>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
@@ -419,8 +422,10 @@ export type RubricVariant = {
 export type Rubric = {
    __typename?: 'Rubric';
   id: Scalars['ID'];
-  name: Scalars['String'];
-  catalogueTitle: RubricCatalogueTitleField;
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
+  catalogueTitleString: RubricCatalogueTitleField;
   slug: Scalars['String'];
   level: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -443,6 +448,14 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+export type RubricCatalogueTitle = {
+   __typename?: 'RubricCatalogueTitle';
+  defaultTitle: Array<LanguageType>;
+  prefix?: Maybe<Array<LanguageType>>;
+  keyword: Array<LanguageType>;
+  gender: GenderEnum;
 };
 
 export type RubricCatalogueTitleField = {
@@ -493,14 +506,6 @@ export type RubricNode = {
   parent?: Maybe<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
   variant?: Maybe<RubricVariant>;
-};
-
-export type RubricCatalogueTitle = {
-   __typename?: 'RubricCatalogueTitle';
-  defaultTitle: Array<LanguageType>;
-  prefix?: Maybe<Array<LanguageType>>;
-  keyword: Array<LanguageType>;
-  gender: GenderEnum;
 };
 
 export type AttributeVariant = {
@@ -1060,10 +1065,333 @@ export type UpdateLanguageInput = {
   nativeName: Scalars['String'];
 };
 
+export type CreateAttributesGroupMutationVariables = {
+  input: CreateAttributesGroupInput;
+};
+
+
+export type CreateAttributesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { createAttributesGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateAttributesGroupMutationVariables = {
+  input: UpdateAttributesGroupInput;
+};
+
+
+export type UpdateAttributesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributesGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteAttributesGroupMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteAttributesGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAttributesGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type AddAttributeToGroupMutationVariables = {
+  input: AddAttributeToGroupInput;
+};
+
+
+export type AddAttributeToGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { addAttributeToGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateAttributeInGroupMutationVariables = {
+  input: UpdateAttributeInGroupInput;
+};
+
+
+export type UpdateAttributeInGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributeInGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteAttributeFromGroupMutationVariables = {
+  input: DeleteAttributeFromGroupInput;
+};
+
+
+export type DeleteAttributeFromGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAttributeFromGroup: (
+    { __typename?: 'AttributesGroupPayloadType' }
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type AddAttributesGroupToRubricMutationVariables = {
+  input: AddAttributesGroupToRubricInput;
+};
+
+
+export type AddAttributesGroupToRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { addAttributesGroupToRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateAttributesGroupInRubricMutationVariables = {
+  input: UpdateAttributesGroupInRubricInput;
+};
+
+
+export type UpdateAttributesGroupInRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAttributesGroupInRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteAttributesGroupFromRubricMutationVariables = {
+  input: DeleteAttributesGroupFromRubricInput;
+};
+
+
+export type DeleteAttributesGroupFromRubricMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAttributesGroupFromRubric: (
+    { __typename?: 'RubricPayloadType' }
+    & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SignInMutationVariables = {
+  input: SignInInput;
+};
+
+
+export type SignInMutation = (
+  { __typename?: 'Mutation' }
+  & { signIn: (
+    { __typename?: 'UserPayloadType' }
+    & Pick<UserPayloadType, 'success' | 'message'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
+    )> }
+  ) }
+);
+
+export type SignOutMutationVariables = {};
+
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & { signOut: (
+    { __typename?: 'UserPayloadType' }
+    & Pick<UserPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CreateLanguageMutationVariables = {
+  input: CreateLanguageInput;
+};
+
+
+export type CreateLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { createLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateLanguageMutationVariables = {
+  input: UpdateLanguageInput;
+};
+
+
+export type UpdateLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { updateLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteLanguageMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteLanguageMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteLanguage: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetLanguageAsDefaultMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type SetLanguageAsDefaultMutation = (
+  { __typename?: 'Mutation' }
+  & { setLanguageAsDefault: (
+    { __typename?: 'LanguagePayloadType' }
+    & Pick<LanguagePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CreateOptionsGroupMutationVariables = {
+  input: CreateOptionsGroupInput;
+};
+
+
+export type CreateOptionsGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { createOptionsGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateOptionsGroupMutationVariables = {
+  input: UpdateOptionsGroupInput;
+};
+
+
+export type UpdateOptionsGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOptionsGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteOptionsGroupMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteOptionsGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteOptionsGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type AddOptionToGroupMutationVariables = {
+  input: AddOptionToGroupInput;
+};
+
+
+export type AddOptionToGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { addOptionToGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateOptionInGroupMutationVariables = {
+  input: UpdateOptionInGroupInput;
+};
+
+
+export type UpdateOptionInGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOptionInGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteOptionFromGroupMutationVariables = {
+  input: DeleteOptionFromGroupInput;
+};
+
+
+export type DeleteOptionFromGroupMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteOptionFromGroup: (
+    { __typename?: 'OptionsGroupPayloadType' }
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CreateRubricVariantMutationVariables = {
+  input: CreateRubricVariantInput;
+};
+
+
+export type CreateRubricVariantMutation = (
+  { __typename?: 'Mutation' }
+  & { createRubricVariant: (
+    { __typename?: 'RubricVariantPayloadType' }
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateRubricVariantMutationVariables = {
+  input: UpdateRubricVariantInput;
+};
+
+
+export type UpdateRubricVariantMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRubricVariant: (
+    { __typename?: 'RubricVariantPayloadType' }
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteRubricVariantMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRubricVariantMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRubricVariant: (
+    { __typename?: 'RubricVariantPayloadType' }
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type ProductFragmentFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'slug' | 'price' | 'description' | 'rubrics'>
-  & { assets: Array<(
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'rubrics'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, cardName: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, description: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, assets: Array<(
     { __typename?: 'AssetType' }
     & Pick<AssetType, 'url' | 'index'>
   )>, attributesGroups: Array<(
@@ -1124,10 +1452,398 @@ export type UpdateProductMutation = (
   ) }
 );
 
+export type CreateProductMutationVariables = {
+  input: CreateProductInput;
+};
+
+
+export type CreateProductMutation = (
+  { __typename?: 'Mutation' }
+  & { createProduct: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteProductMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteProductMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProduct: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type GetAllAttributesGroupsQueryVariables = {};
+
+
+export type GetAllAttributesGroupsQuery = (
+  { __typename?: 'Query' }
+  & { getAllAttributesGroups: Array<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetAttributesGroupQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetAttributesGroupQuery = (
+  { __typename?: 'Query' }
+  & { getAttributesGroup?: Maybe<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, attributes: Array<(
+      { __typename?: 'Attribute' }
+      & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, positioningInTitle?: Maybe<Array<(
+        { __typename?: 'AttributePositioningInTitle' }
+        & Pick<AttributePositioningInTitle, 'key' | 'value'>
+      )>>, options?: Maybe<(
+        { __typename?: 'OptionsGroup' }
+        & Pick<OptionsGroup, 'id' | 'nameString'>
+      )>, metric?: Maybe<(
+        { __typename?: 'Metric' }
+        & Pick<Metric, 'id' | 'nameString'>
+      )> }
+    )> }
+  )> }
+);
+
+export type GetAttributesGroupsForRubricQueryVariables = {
+  exclude?: Maybe<Array<Scalars['ID']>>;
+};
+
+
+export type GetAttributesGroupsForRubricQuery = (
+  { __typename?: 'Query' }
+  & { getAllAttributesGroups: Array<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetCatalogueCardQueryQueryVariables = {
+  slug: Scalars['String'];
+};
+
+
+export type GetCatalogueCardQueryQuery = (
+  { __typename?: 'Query' }
+  & { getProductBySlug: (
+    { __typename?: 'Product' }
+    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
+    & { attributesGroups: Array<(
+      { __typename?: 'ProductAttributesGroup' }
+      & Pick<ProductAttributesGroup, 'showInCard'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+      ), attributes: Array<(
+        { __typename?: 'ProductAttribute' }
+        & Pick<ProductAttribute, 'showInCard' | 'value'>
+        & { node: (
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString'>
+          & { options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+            & { options: Array<(
+              { __typename?: 'Option' }
+              & Pick<Option, 'id' | 'nameString'>
+            )> }
+          )> }
+        ) }
+      )> }
+    )> }
+  ) }
+);
+
+export type GetCatalogueRubricQueryVariables = {
+  catalogueFilter: Array<Scalars['String']>;
+};
+
+
+export type GetCatalogueRubricQuery = (
+  { __typename?: 'Query' }
+  & { getCatalogueData?: Maybe<(
+    { __typename?: 'CatalogueData' }
+    & Pick<CatalogueData, 'catalogueTitle'>
+    & { rubric: (
+      { __typename?: 'Rubric' }
+      & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
+      & { variant?: Maybe<(
+        { __typename?: 'RubricVariant' }
+        & Pick<RubricVariant, 'id' | 'nameString'>
+      )>, filterAttributes: Array<(
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
+        & { filterOptions: Array<(
+          { __typename?: 'AttributeFilterOption' }
+          & Pick<AttributeFilterOption, 'counter'>
+          & { option: (
+            { __typename?: 'Option' }
+            & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
+          ) }
+        )> }
+      )> }
+    ), products: (
+      { __typename?: 'PaginatedProductsResponse' }
+      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
+      & { docs: Array<(
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
+      )> }
+    ) }
+  )> }
+);
+
+export type InitialQueryVariables = {};
+
+
+export type InitialQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
+  )>> }
+);
+
+export type SiteRubricFragmentFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
+  & { variant?: Maybe<(
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+  )> }
+);
+
+export type InitialSiteQueryQueryVariables = {};
+
+
+export type InitialSiteQueryQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
+  )>, getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
+  )>>, getRubricsTree: Array<(
+    { __typename?: 'Rubric' }
+    & { children: Array<(
+      { __typename?: 'Rubric' }
+      & { children: Array<(
+        { __typename?: 'Rubric' }
+        & SiteRubricFragmentFragment
+      )> }
+      & SiteRubricFragmentFragment
+    )> }
+    & SiteRubricFragmentFragment
+  )> }
+);
+
+export type GetAllLanguagesQueryQueryVariables = {};
+
+
+export type GetAllLanguagesQueryQuery = (
+  { __typename?: 'Query' }
+  & { getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+  )>> }
+);
+
+export type GetAllOptionsGroupsQueryVariables = {};
+
+
+export type GetAllOptionsGroupsQuery = (
+  { __typename?: 'Query' }
+  & { getAllOptionsGroups: Array<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+    & { options: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, 'id'>
+    )> }
+  )> }
+);
+
+export type GetOptionsGroupQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetOptionsGroupQuery = (
+  { __typename?: 'Query' }
+  & { getOptionsGroup?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, options: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+      & { name: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, variants?: Maybe<Array<(
+        { __typename?: 'OptionVariant' }
+        & Pick<OptionVariant, 'key'>
+        & { value: Array<(
+          { __typename?: 'LanguageType' }
+          & Pick<LanguageType, 'key' | 'value'>
+        )> }
+      )>> }
+    )> }
+  )> }
+);
+
+export type GetAllRubricVariantsQueryVariables = {};
+
+
+export type GetAllRubricVariantsQuery = (
+  { __typename?: 'Query' }
+  & { getAllRubricVariants?: Maybe<Array<(
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )>>, getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetRubricAttributesQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetRubricAttributesQuery = (
+  { __typename?: 'Query' }
+  & { getRubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'id' | 'level'>
+    & { attributesGroups: Array<(
+      { __typename?: 'RubricAttributesGroup' }
+      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+          & { metric?: Maybe<(
+            { __typename?: 'Metric' }
+            & Pick<Metric, 'id' | 'nameString'>
+          )>, options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+          )> }
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
+export type GetGenderOptionsQueryVariables = {};
+
+
+export type GetGenderOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getGenderOptions: Array<(
+    { __typename?: 'GenderOption' }
+    & Pick<GenderOption, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetIsoLanguagesListQueryVariables = {};
+
+
+export type GetIsoLanguagesListQuery = (
+  { __typename?: 'Query' }
+  & { getISOLanguagesList: Array<(
+    { __typename?: 'ISOLanguage' }
+    & Pick<IsoLanguage, 'id' | 'nameString' | 'nativeName'>
+  )> }
+);
+
+export type GetNewAttributeOptionsQueryVariables = {};
+
+
+export type GetNewAttributeOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getAllOptionsGroups: Array<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+  )>, getAllMetrics?: Maybe<Array<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
+  )>>, getAttributeVariants?: Maybe<Array<(
+    { __typename?: 'AttributeVariant' }
+    & Pick<AttributeVariant, 'id' | 'nameString'>
+  )>>, getAttributePositioningOptions: Array<(
+    { __typename?: 'AttributePositioningOption' }
+    & Pick<AttributePositioningOption, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetFeaturesAstQueryVariables = {
+  selectedRubrics: Array<Scalars['ID']>;
+};
+
+
+export type GetFeaturesAstQuery = (
+  { __typename?: 'Query' }
+  & { getFeaturesAst: Array<(
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+    & { attributes: Array<(
+      { __typename?: 'Attribute' }
+      & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
+      & { metric?: Maybe<(
+        { __typename?: 'Metric' }
+        & Pick<Metric, 'id' | 'nameString'>
+      )>, options?: Maybe<(
+        { __typename?: 'OptionsGroup' }
+        & Pick<OptionsGroup, 'id' | 'nameString'>
+        & { options: Array<(
+          { __typename?: 'Option' }
+          & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
+        )> }
+      )> }
+    )> }
+  )> }
+);
+
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
-  & { variant?: Maybe<(
+  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, variant?: Maybe<(
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
   )> }
@@ -1138,7 +1854,11 @@ export type RubricProductFragmentFragment = (
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
   )> }
 );
 
@@ -1177,8 +1897,18 @@ export type GetRubricQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & { catalogueTitle: (
-      { __typename?: 'RubricCatalogueTitleField' }
-      & Pick<RubricCatalogueTitleField, 'defaultTitle' | 'prefix' | 'keyword' | 'gender'>
+      { __typename?: 'RubricCatalogueTitle' }
+      & Pick<RubricCatalogueTitle, 'gender'>
+      & { defaultTitle: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>, prefix?: Maybe<Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )>>, keyword: Array<(
+        { __typename?: 'LanguageType' }
+        & Pick<LanguageType, 'key' | 'value'>
+      )> }
     ) }
     & RubricFragmentFragment
   ) }
@@ -1194,21 +1924,6 @@ export type CreateRubricMutation = (
   & { createRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & { children: Array<(
-          { __typename?: 'Rubric' }
-          & RubricFragmentFragment
-        )> }
-        & RubricFragmentFragment
-      )>, parent?: Maybe<(
-        { __typename?: 'Rubric' }
-        & Pick<Rubric, 'id'>
-      )> }
-      & RubricFragmentFragment
-    )> }
   ) }
 );
 
@@ -1308,833 +2023,27 @@ export type GetAllProductsQuery = (
   ) }
 );
 
-export type AddAttributeToGroupMutationVariables = {
-  input: AddAttributeToGroupInput;
-};
-
-
-export type AddAttributeToGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { addAttributeToGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
-  ) }
-);
-
-export type AddAttributesGroupToRubricMutationVariables = {
-  input: AddAttributesGroupToRubricInput;
-};
-
-
-export type AddAttributesGroupToRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { addAttributesGroupToRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id'>
-      & { attributesGroups: Array<(
-        { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-        & { node: (
-          { __typename?: 'AttributesGroup' }
-          & Pick<AttributesGroup, 'id' | 'nameString'>
-        ) }
-      )> }
-    )> }
-  ) }
-);
-
-export type AddOptionToGroupMutationVariables = {
-  input: AddOptionToGroupInput;
-};
-
-
-export type AddOptionToGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { addOptionToGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
-  ) }
-);
-
-export type CreateAttributesGroupMutationVariables = {
-  input: CreateAttributesGroupInput;
-};
-
-
-export type CreateAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { createAttributesGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    )> }
-  ) }
-);
-
-export type CreateOptionsGroupMutationVariables = {
-  input: CreateOptionsGroupInput;
-};
-
-
-export type CreateOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { createOptionsGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id'>
-      )> }
-    )> }
-  ) }
-);
-
-export type CreateProductMutationVariables = {
-  input: CreateProductInput;
-};
-
-
-export type CreateProductMutation = (
-  { __typename?: 'Mutation' }
-  & { createProduct: (
-    { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, 'success' | 'message'>
-    & { product?: Maybe<(
-      { __typename?: 'Product' }
-      & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug'>
-    )> }
-  ) }
-);
-
-export type CreateRubricVariantMutationVariables = {
-  input: CreateRubricVariantInput;
-};
-
-
-export type CreateRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { createRubricVariant: (
-    { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, 'success' | 'message'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )> }
-  ) }
-);
-
-export type DeleteAttributeFromGroupMutationVariables = {
-  input: DeleteAttributeFromGroupInput;
-};
-
-
-export type DeleteAttributeFromGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributeFromGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
-  ) }
-);
-
-export type DeleteAttributesGroupMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributesGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteAttributesGroupFromRubricMutationVariables = {
-  input: DeleteAttributesGroupFromRubricInput;
-};
-
-
-export type DeleteAttributesGroupFromRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributesGroupFromRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
-    & { rubric?: Maybe<(
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id'>
-      & { attributesGroups: Array<(
-        { __typename?: 'RubricAttributesGroup' }
-        & Pick<RubricAttributesGroup, 'id' | 'showInCatalogueFilter'>
-        & { node: (
-          { __typename?: 'AttributesGroup' }
-          & Pick<AttributesGroup, 'id' | 'nameString'>
-        ) }
-      )> }
-    )> }
-  ) }
-);
-
-export type DeleteOptionFromGroupMutationVariables = {
-  input: DeleteOptionFromGroupInput;
-};
-
-
-export type DeleteOptionFromGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteOptionFromGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
-  ) }
-);
-
-export type DeleteOptionsGroupMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteOptionsGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteProductMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteProductMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteProduct: (
-    { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteRubricVariantMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRubricVariant: (
-    { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type CreateLanguageMutationVariables = {
-  input: CreateLanguageInput;
-};
-
-
-export type CreateLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { createLanguage: (
-    { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateLanguageMutationVariables = {
-  input: UpdateLanguageInput;
-};
-
-
-export type UpdateLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { updateLanguage: (
-    { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteLanguageMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type DeleteLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteLanguage: (
-    { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type SetLanguageAsDefaultMutationVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type SetLanguageAsDefaultMutation = (
-  { __typename?: 'Mutation' }
-  & { setLanguageAsDefault: (
-    { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type SignInMutationVariables = {
-  input: SignInInput;
-};
-
-
-export type SignInMutation = (
-  { __typename?: 'Mutation' }
-  & { signIn: (
-    { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, 'success' | 'message'>
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-    )> }
-  ) }
-);
-
-export type SignOutMutationVariables = {};
-
-
-export type SignOutMutation = (
-  { __typename?: 'Mutation' }
-  & { signOut: (
-    { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateAttributeInGroupMutationVariables = {
-  input: UpdateAttributeInGroupInput;
-};
-
-
-export type UpdateAttributeInGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributeInGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-      & { attributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-        & { options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-        )>, metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )> }
-      )> }
-    )> }
-  ) }
-);
-
-export type UpdateAttributesGroupMutationVariables = {
-  input: UpdateAttributesGroupInput;
-};
-
-
-export type UpdateAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributesGroup: (
-    { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    )> }
-  ) }
-);
-
-export type UpdateAttributesGroupInRubricMutationVariables = {
-  input: UpdateAttributesGroupInRubricInput;
-};
-
-
-export type UpdateAttributesGroupInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributesGroupInRubric: (
-    { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateOptionInGroupMutationVariables = {
-  input: UpdateOptionInGroupInput;
-};
-
-
-export type UpdateOptionInGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOptionInGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
-  ) }
-);
-
-export type UpdateOptionsGroupMutationVariables = {
-  input: UpdateOptionsGroupInput;
-};
-
-
-export type UpdateOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOptionsGroup: (
-    { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
-    & { group?: Maybe<(
-      { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, 'id' | 'nameString'>
-      & { options: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, 'id' | 'nameString' | 'color'>
-      )> }
-    )> }
-  ) }
-);
-
-export type UpdateRubricVariantMutationVariables = {
-  input: UpdateRubricVariantInput;
-};
-
-
-export type UpdateRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubricVariant: (
-    { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, 'success' | 'message'>
-    & { variant?: Maybe<(
-      { __typename?: 'RubricVariant' }
-      & Pick<RubricVariant, 'id' | 'nameString'>
-    )> }
-  ) }
-);
-
-export type GetCatalogueCardQueryQueryVariables = {
-  slug: Scalars['String'];
-};
-
-
-export type GetCatalogueCardQueryQuery = (
-  { __typename?: 'Query' }
-  & { getProductBySlug: (
-    { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'name' | 'cardName' | 'price' | 'slug' | 'mainImage' | 'description'>
-    & { attributesGroups: Array<(
-      { __typename?: 'ProductAttributesGroup' }
-      & Pick<ProductAttributesGroup, 'showInCard'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-      ), attributes: Array<(
-        { __typename?: 'ProductAttribute' }
-        & Pick<ProductAttribute, 'showInCard' | 'value'>
-        & { node: (
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString'>
-          & { options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-            & { options: Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString'>
-            )> }
-          )> }
-        ) }
-      )> }
-    )> }
-  ) }
-);
-
-export type GetCatalogueRubricQueryVariables = {
-  catalogueFilter: Array<Scalars['String']>;
-};
-
-
-export type GetCatalogueRubricQuery = (
-  { __typename?: 'Query' }
-  & { getCatalogueData?: Maybe<(
-    { __typename?: 'CatalogueData' }
-    & Pick<CatalogueData, 'catalogueTitle'>
-    & { rubric: (
-      { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'name' | 'level' | 'slug'>
-      & { variant?: Maybe<(
-        { __typename?: 'RubricVariant' }
-        & Pick<RubricVariant, 'id' | 'nameString'>
-      )>, filterAttributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
-        & { filterOptions: Array<(
-          { __typename?: 'AttributeFilterOption' }
-          & Pick<AttributeFilterOption, 'counter'>
-          & { option: (
-            { __typename?: 'Option' }
-            & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
-          ) }
-        )> }
-      )> }
-    ), products: (
-      { __typename?: 'PaginatedProductsResponse' }
-      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
-      & { docs: Array<(
-        { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'itemId' | 'name' | 'price' | 'slug' | 'mainImage'>
-      )> }
-    ) }
-  )> }
-);
-
-export type GetAllAttributesGroupsQueryVariables = {};
-
-
-export type GetAllAttributesGroupsQuery = (
-  { __typename?: 'Query' }
-  & { getAllAttributesGroups: Array<(
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
-  )> }
-);
-
-export type GetAllLanguagesQueryQueryVariables = {};
-
-
-export type GetAllLanguagesQueryQuery = (
-  { __typename?: 'Query' }
-  & { getAllLanguages?: Maybe<Array<(
-    { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
-  )>> }
-);
-
-export type GetAllOptionsGroupsQueryVariables = {};
-
-
-export type GetAllOptionsGroupsQuery = (
-  { __typename?: 'Query' }
-  & { getAllOptionsGroups: Array<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, 'id' | 'nameString'>
-    & { options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, 'id'>
-    )> }
-  )> }
-);
-
-export type GetAllRubricVariantsQueryVariables = {};
-
-
-export type GetAllRubricVariantsQuery = (
-  { __typename?: 'Query' }
-  & { getAllRubricVariants?: Maybe<Array<(
-    { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, 'id' | 'nameString'>
-  )>>, getGenderOptions: Array<(
-    { __typename?: 'GenderOption' }
-    & Pick<GenderOption, 'id' | 'nameString'>
-  )> }
-);
-
-export type GetAttributesGroupQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetAttributesGroupQuery = (
-  { __typename?: 'Query' }
-  & { getAttributesGroup?: Maybe<(
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
-    & { attributes: Array<(
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, positioningInTitle?: Maybe<Array<(
-        { __typename?: 'AttributePositioningInTitle' }
-        & Pick<AttributePositioningInTitle, 'key' | 'value'>
-      )>>, options?: Maybe<(
-        { __typename?: 'OptionsGroup' }
-        & Pick<OptionsGroup, 'id' | 'nameString'>
-      )>, metric?: Maybe<(
-        { __typename?: 'Metric' }
-        & Pick<Metric, 'id' | 'nameString'>
-      )> }
-    )> }
-  )> }
-);
-
-export type GetAttributesGroupsForRubricQueryVariables = {
-  exclude?: Maybe<Array<Scalars['ID']>>;
-};
-
-
-export type GetAttributesGroupsForRubricQuery = (
-  { __typename?: 'Query' }
-  & { getAllAttributesGroups: Array<(
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
-  )> }
-);
-
-export type GetFeaturesAstQueryVariables = {
-  selectedRubrics: Array<Scalars['ID']>;
-};
-
-
-export type GetFeaturesAstQuery = (
-  { __typename?: 'Query' }
-  & { getFeaturesAst: Array<(
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
-    & { attributes: Array<(
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
-      & { metric?: Maybe<(
-        { __typename?: 'Metric' }
-        & Pick<Metric, 'id' | 'nameString'>
-      )>, options?: Maybe<(
-        { __typename?: 'OptionsGroup' }
-        & Pick<OptionsGroup, 'id' | 'nameString'>
-        & { options: Array<(
-          { __typename?: 'Option' }
-          & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
-        )> }
-      )> }
-    )> }
-  )> }
-);
-
-export type GetNewAttributeOptionsQueryVariables = {};
-
-
-export type GetNewAttributeOptionsQuery = (
-  { __typename?: 'Query' }
-  & { getAllOptionsGroups: Array<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, 'id' | 'nameString'>
-  )>, getAllMetrics?: Maybe<Array<(
-    { __typename?: 'Metric' }
-    & Pick<Metric, 'id' | 'nameString'>
-  )>>, getAttributeVariants?: Maybe<Array<(
-    { __typename?: 'AttributeVariant' }
-    & Pick<AttributeVariant, 'id' | 'nameString'>
-  )>>, getAttributePositioningOptions: Array<(
-    { __typename?: 'AttributePositioningOption' }
-    & Pick<AttributePositioningOption, 'id' | 'nameString'>
-  )> }
-);
-
-export type GetOptionsGroupQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetOptionsGroupQuery = (
-  { __typename?: 'Query' }
-  & { getOptionsGroup?: Maybe<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, 'id' | 'nameString'>
-    & { options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, variants?: Maybe<Array<(
-        { __typename?: 'OptionVariant' }
-        & Pick<OptionVariant, 'key'>
-        & { value: Array<(
-          { __typename?: 'LanguageType' }
-          & Pick<LanguageType, 'key' | 'value'>
-        )> }
-      )>> }
-    )> }
-  )> }
-);
-
-export type GetRubricAttributesQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetRubricAttributesQuery = (
-  { __typename?: 'Query' }
-  & { getRubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'level'>
-    & { attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-          & { metric?: Maybe<(
-            { __typename?: 'Metric' }
-            & Pick<Metric, 'id' | 'nameString'>
-          )>, options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-          )> }
-        )> }
-      ) }
-    )> }
-  ) }
-);
-
-export type InitialQueryVariables = {};
-
-
-export type InitialQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getAllLanguages?: Maybe<Array<(
-    { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
-  )>> }
-);
-
-export type SiteRubricFragmentFragment = (
-  { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'name' | 'slug' | 'level'>
-  & { variant?: Maybe<(
-    { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, 'id' | 'nameString'>
-  )> }
-);
-
-export type InitialSiteQueryQueryVariables = {};
-
-
-export type InitialSiteQueryQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getAllLanguages?: Maybe<Array<(
-    { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
-  )>>, getRubricsTree: Array<(
-    { __typename?: 'Rubric' }
-    & { children: Array<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & SiteRubricFragmentFragment
-      )> }
-      & SiteRubricFragmentFragment
-    )> }
-    & SiteRubricFragmentFragment
-  )> }
-);
-
-export type GetGenderOptionsQueryVariables = {};
-
-
-export type GetGenderOptionsQuery = (
-  { __typename?: 'Query' }
-  & { getGenderOptions: Array<(
-    { __typename?: 'GenderOption' }
-    & Pick<GenderOption, 'id' | 'nameString'>
-  )> }
-);
-
-export type GetIsoLanguagesListQueryVariables = {};
-
-
-export type GetIsoLanguagesListQuery = (
-  { __typename?: 'Query' }
-  & { getISOLanguagesList: Array<(
-    { __typename?: 'ISOLanguage' }
-    & Pick<IsoLanguage, 'id' | 'nameString' | 'nativeName'>
-  )> }
-);
-
 export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   itemId
-  name
-  cardName
+  name {
+    key
+    value
+  }
+  nameString
+  cardName {
+    key
+    value
+  }
+  cardNameString
   slug
   price
-  description
+  description {
+    key
+    value
+  }
+  descriptionString
   assets {
     url
     index
@@ -2173,10 +2082,26 @@ export const ProductFragmentFragmentDoc = gql`
   }
 }
     `;
+export const SiteRubricFragmentFragmentDoc = gql`
+    fragment SiteRubricFragment on Rubric {
+  id
+  nameString
+  slug
+  level
+  variant {
+    id
+    nameString
+  }
+}
+    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
-  name
+  name {
+    key
+    value
+  }
+  nameString
   level
   variant {
     id
@@ -2195,7 +2120,11 @@ export const RubricProductFragmentFragmentDoc = gql`
   docs {
     id
     itemId
-    name
+    name {
+      key
+      value
+    }
+    nameString
     price
     slug
     mainImage
@@ -2204,18 +2133,811 @@ export const RubricProductFragmentFragmentDoc = gql`
   }
 }
     `;
-export const SiteRubricFragmentFragmentDoc = gql`
-    fragment SiteRubricFragment on Rubric {
-  id
-  name
-  slug
-  level
-  variant {
-    id
-    nameString
+export const CreateAttributesGroupDocument = gql`
+    mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
+  createAttributesGroup(input: $input) {
+    success
+    message
   }
 }
     `;
+export type CreateAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
+
+/**
+ * __useCreateAttributesGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateAttributesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAttributesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAttributesGroupMutation, { data, loading, error }] = useCreateAttributesGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>(CreateAttributesGroupDocument, baseOptions);
+      }
+export type CreateAttributesGroupMutationHookResult = ReturnType<typeof useCreateAttributesGroupMutation>;
+export type CreateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<CreateAttributesGroupMutation>;
+export type CreateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
+export const UpdateAttributesGroupDocument = gql`
+    mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
+  updateAttributesGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
+
+/**
+ * __useUpdateAttributesGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributesGroupMutation, { data, loading, error }] = useUpdateAttributesGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>(UpdateAttributesGroupDocument, baseOptions);
+      }
+export type UpdateAttributesGroupMutationHookResult = ReturnType<typeof useUpdateAttributesGroupMutation>;
+export type UpdateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupMutation>;
+export type UpdateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
+export const DeleteAttributesGroupDocument = gql`
+    mutation DeleteAttributesGroup($id: ID!) {
+  deleteAttributesGroup(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
+
+/**
+ * __useDeleteAttributesGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteAttributesGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAttributesGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAttributesGroupMutation, { data, loading, error }] = useDeleteAttributesGroupMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>(DeleteAttributesGroupDocument, baseOptions);
+      }
+export type DeleteAttributesGroupMutationHookResult = ReturnType<typeof useDeleteAttributesGroupMutation>;
+export type DeleteAttributesGroupMutationResult = ApolloReactCommon.MutationResult<DeleteAttributesGroupMutation>;
+export type DeleteAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
+export const AddAttributeToGroupDocument = gql`
+    mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
+  addAttributeToGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddAttributeToGroupMutationFn = ApolloReactCommon.MutationFunction<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
+
+/**
+ * __useAddAttributeToGroupMutation__
+ *
+ * To run a mutation, you first call `useAddAttributeToGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAttributeToGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAttributeToGroupMutation, { data, loading, error }] = useAddAttributeToGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddAttributeToGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>(AddAttributeToGroupDocument, baseOptions);
+      }
+export type AddAttributeToGroupMutationHookResult = ReturnType<typeof useAddAttributeToGroupMutation>;
+export type AddAttributeToGroupMutationResult = ApolloReactCommon.MutationResult<AddAttributeToGroupMutation>;
+export type AddAttributeToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
+export const UpdateAttributeInGroupDocument = gql`
+    mutation UpdateAttributeInGroup($input: UpdateAttributeInGroupInput!) {
+  updateAttributeInGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributeInGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>;
+
+/**
+ * __useUpdateAttributeInGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributeInGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributeInGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributeInGroupMutation, { data, loading, error }] = useUpdateAttributeInGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributeInGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>(UpdateAttributeInGroupDocument, baseOptions);
+      }
+export type UpdateAttributeInGroupMutationHookResult = ReturnType<typeof useUpdateAttributeInGroupMutation>;
+export type UpdateAttributeInGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributeInGroupMutation>;
+export type UpdateAttributeInGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>;
+export const DeleteAttributeFromGroupDocument = gql`
+    mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
+  deleteAttributeFromGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteAttributeFromGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>;
+
+/**
+ * __useDeleteAttributeFromGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteAttributeFromGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAttributeFromGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAttributeFromGroupMutation, { data, loading, error }] = useDeleteAttributeFromGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteAttributeFromGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>(DeleteAttributeFromGroupDocument, baseOptions);
+      }
+export type DeleteAttributeFromGroupMutationHookResult = ReturnType<typeof useDeleteAttributeFromGroupMutation>;
+export type DeleteAttributeFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteAttributeFromGroupMutation>;
+export type DeleteAttributeFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>;
+export const AddAttributesGroupToRubricDocument = gql`
+    mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
+  addAttributesGroupToRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddAttributesGroupToRubricMutationFn = ApolloReactCommon.MutationFunction<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
+
+/**
+ * __useAddAttributesGroupToRubricMutation__
+ *
+ * To run a mutation, you first call `useAddAttributesGroupToRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAttributesGroupToRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAttributesGroupToRubricMutation, { data, loading, error }] = useAddAttributesGroupToRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddAttributesGroupToRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>(AddAttributesGroupToRubricDocument, baseOptions);
+      }
+export type AddAttributesGroupToRubricMutationHookResult = ReturnType<typeof useAddAttributesGroupToRubricMutation>;
+export type AddAttributesGroupToRubricMutationResult = ApolloReactCommon.MutationResult<AddAttributesGroupToRubricMutation>;
+export type AddAttributesGroupToRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
+export const UpdateAttributesGroupInRubricDocument = gql`
+    mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
+  updateAttributesGroupInRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAttributesGroupInRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
+
+/**
+ * __useUpdateAttributesGroupInRubricMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttributesGroupInRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttributesGroupInRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttributesGroupInRubricMutation, { data, loading, error }] = useUpdateAttributesGroupInRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAttributesGroupInRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>(UpdateAttributesGroupInRubricDocument, baseOptions);
+      }
+export type UpdateAttributesGroupInRubricMutationHookResult = ReturnType<typeof useUpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupInRubricMutation>;
+export type UpdateAttributesGroupInRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
+export const DeleteAttributesGroupFromRubricDocument = gql`
+    mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
+  deleteAttributesGroupFromRubric(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteAttributesGroupFromRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+
+/**
+ * __useDeleteAttributesGroupFromRubricMutation__
+ *
+ * To run a mutation, you first call `useDeleteAttributesGroupFromRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAttributesGroupFromRubricMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAttributesGroupFromRubricMutation, { data, loading, error }] = useDeleteAttributesGroupFromRubricMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>(DeleteAttributesGroupFromRubricDocument, baseOptions);
+      }
+export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
+export type DeleteAttributesGroupFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteAttributesGroupFromRubricMutation>;
+export type DeleteAttributesGroupFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+export const SignInDocument = gql`
+    mutation SignIn($input: SignInInput!) {
+  signIn(input: $input) {
+    success
+    message
+    user {
+      id
+      email
+      name
+      secondName
+      lastName
+      fullName
+      shortName
+      phone
+      role
+      isAdmin
+      isManager
+      isCustomer
+    }
+  }
+}
+    `;
+export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation, SignInMutationVariables>;
+
+/**
+ * __useSignInMutation__
+ *
+ * To run a mutation, you first call `useSignInMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignInMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signInMutation, { data, loading, error }] = useSignInMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
+      }
+export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
+export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
+export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export const SignOutDocument = gql`
+    mutation SignOut {
+  signOut {
+    success
+    message
+  }
+}
+    `;
+export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
+
+/**
+ * __useSignOutMutation__
+ *
+ * To run a mutation, you first call `useSignOutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignOutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signOutMutation, { data, loading, error }] = useSignOutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
+      }
+export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
+export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
+export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
+export const CreateLanguageDocument = gql`
+    mutation CreateLanguage($input: CreateLanguageInput!) {
+  createLanguage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateLanguageMutationFn = ApolloReactCommon.MutationFunction<CreateLanguageMutation, CreateLanguageMutationVariables>;
+
+/**
+ * __useCreateLanguageMutation__
+ *
+ * To run a mutation, you first call `useCreateLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLanguageMutation, { data, loading, error }] = useCreateLanguageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateLanguageMutation, CreateLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateLanguageMutation, CreateLanguageMutationVariables>(CreateLanguageDocument, baseOptions);
+      }
+export type CreateLanguageMutationHookResult = ReturnType<typeof useCreateLanguageMutation>;
+export type CreateLanguageMutationResult = ApolloReactCommon.MutationResult<CreateLanguageMutation>;
+export type CreateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateLanguageMutation, CreateLanguageMutationVariables>;
+export const UpdateLanguageDocument = gql`
+    mutation UpdateLanguage($input: UpdateLanguageInput!) {
+  updateLanguage(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateLanguageMutationFn = ApolloReactCommon.MutationFunction<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+
+/**
+ * __useUpdateLanguageMutation__
+ *
+ * To run a mutation, you first call `useUpdateLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLanguageMutation, { data, loading, error }] = useUpdateLanguageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateLanguageMutation, UpdateLanguageMutationVariables>(UpdateLanguageDocument, baseOptions);
+      }
+export type UpdateLanguageMutationHookResult = ReturnType<typeof useUpdateLanguageMutation>;
+export type UpdateLanguageMutationResult = ApolloReactCommon.MutationResult<UpdateLanguageMutation>;
+export type UpdateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+export const DeleteLanguageDocument = gql`
+    mutation DeleteLanguage($id: ID!) {
+  deleteLanguage(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteLanguageMutationFn = ApolloReactCommon.MutationFunction<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+
+/**
+ * __useDeleteLanguageMutation__
+ *
+ * To run a mutation, you first call `useDeleteLanguageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLanguageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteLanguageMutation, { data, loading, error }] = useDeleteLanguageMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(DeleteLanguageDocument, baseOptions);
+      }
+export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
+export type DeleteLanguageMutationResult = ApolloReactCommon.MutationResult<DeleteLanguageMutation>;
+export type DeleteLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export const SetLanguageAsDefaultDocument = gql`
+    mutation SetLanguageAsDefault($id: ID!) {
+  setLanguageAsDefault(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type SetLanguageAsDefaultMutationFn = ApolloReactCommon.MutationFunction<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
+
+/**
+ * __useSetLanguageAsDefaultMutation__
+ *
+ * To run a mutation, you first call `useSetLanguageAsDefaultMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetLanguageAsDefaultMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setLanguageAsDefaultMutation, { data, loading, error }] = useSetLanguageAsDefaultMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSetLanguageAsDefaultMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>(SetLanguageAsDefaultDocument, baseOptions);
+      }
+export type SetLanguageAsDefaultMutationHookResult = ReturnType<typeof useSetLanguageAsDefaultMutation>;
+export type SetLanguageAsDefaultMutationResult = ApolloReactCommon.MutationResult<SetLanguageAsDefaultMutation>;
+export type SetLanguageAsDefaultMutationOptions = ApolloReactCommon.BaseMutationOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
+export const CreateOptionsGroupDocument = gql`
+    mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
+  createOptionsGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
+
+/**
+ * __useCreateOptionsGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateOptionsGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOptionsGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOptionsGroupMutation, { data, loading, error }] = useCreateOptionsGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>(CreateOptionsGroupDocument, baseOptions);
+      }
+export type CreateOptionsGroupMutationHookResult = ReturnType<typeof useCreateOptionsGroupMutation>;
+export type CreateOptionsGroupMutationResult = ApolloReactCommon.MutationResult<CreateOptionsGroupMutation>;
+export type CreateOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
+export const UpdateOptionsGroupDocument = gql`
+    mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
+  updateOptionsGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
+
+/**
+ * __useUpdateOptionsGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateOptionsGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOptionsGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOptionsGroupMutation, { data, loading, error }] = useUpdateOptionsGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>(UpdateOptionsGroupDocument, baseOptions);
+      }
+export type UpdateOptionsGroupMutationHookResult = ReturnType<typeof useUpdateOptionsGroupMutation>;
+export type UpdateOptionsGroupMutationResult = ApolloReactCommon.MutationResult<UpdateOptionsGroupMutation>;
+export type UpdateOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
+export const DeleteOptionsGroupDocument = gql`
+    mutation DeleteOptionsGroup($id: ID!) {
+  deleteOptionsGroup(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
+
+/**
+ * __useDeleteOptionsGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteOptionsGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOptionsGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOptionsGroupMutation, { data, loading, error }] = useDeleteOptionsGroupMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>(DeleteOptionsGroupDocument, baseOptions);
+      }
+export type DeleteOptionsGroupMutationHookResult = ReturnType<typeof useDeleteOptionsGroupMutation>;
+export type DeleteOptionsGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionsGroupMutation>;
+export type DeleteOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
+export const AddOptionToGroupDocument = gql`
+    mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
+  addOptionToGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddOptionToGroupMutationFn = ApolloReactCommon.MutationFunction<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
+
+/**
+ * __useAddOptionToGroupMutation__
+ *
+ * To run a mutation, you first call `useAddOptionToGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddOptionToGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addOptionToGroupMutation, { data, loading, error }] = useAddOptionToGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddOptionToGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>(AddOptionToGroupDocument, baseOptions);
+      }
+export type AddOptionToGroupMutationHookResult = ReturnType<typeof useAddOptionToGroupMutation>;
+export type AddOptionToGroupMutationResult = ApolloReactCommon.MutationResult<AddOptionToGroupMutation>;
+export type AddOptionToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
+export const UpdateOptionInGroupDocument = gql`
+    mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
+  updateOptionInGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateOptionInGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
+
+/**
+ * __useUpdateOptionInGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateOptionInGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOptionInGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOptionInGroupMutation, { data, loading, error }] = useUpdateOptionInGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOptionInGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>(UpdateOptionInGroupDocument, baseOptions);
+      }
+export type UpdateOptionInGroupMutationHookResult = ReturnType<typeof useUpdateOptionInGroupMutation>;
+export type UpdateOptionInGroupMutationResult = ApolloReactCommon.MutationResult<UpdateOptionInGroupMutation>;
+export type UpdateOptionInGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
+export const DeleteOptionFromGroupDocument = gql`
+    mutation DeleteOptionFromGroup($input: DeleteOptionFromGroupInput!) {
+  deleteOptionFromGroup(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteOptionFromGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+
+/**
+ * __useDeleteOptionFromGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteOptionFromGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOptionFromGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOptionFromGroupMutation, { data, loading, error }] = useDeleteOptionFromGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteOptionFromGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>(DeleteOptionFromGroupDocument, baseOptions);
+      }
+export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
+export type DeleteOptionFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionFromGroupMutation>;
+export type DeleteOptionFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const CreateRubricVariantDocument = gql`
+    mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
+  createRubricVariant(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateRubricVariantMutationFn = ApolloReactCommon.MutationFunction<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
+
+/**
+ * __useCreateRubricVariantMutation__
+ *
+ * To run a mutation, you first call `useCreateRubricVariantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRubricVariantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRubricVariantMutation, { data, loading, error }] = useCreateRubricVariantMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>(CreateRubricVariantDocument, baseOptions);
+      }
+export type CreateRubricVariantMutationHookResult = ReturnType<typeof useCreateRubricVariantMutation>;
+export type CreateRubricVariantMutationResult = ApolloReactCommon.MutationResult<CreateRubricVariantMutation>;
+export type CreateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
+export const UpdateRubricVariantDocument = gql`
+    mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
+  updateRubricVariant(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRubricVariantMutationFn = ApolloReactCommon.MutationFunction<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+
+/**
+ * __useUpdateRubricVariantMutation__
+ *
+ * To run a mutation, you first call `useUpdateRubricVariantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRubricVariantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRubricVariantMutation, { data, loading, error }] = useUpdateRubricVariantMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>(UpdateRubricVariantDocument, baseOptions);
+      }
+export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
+export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
+export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export const DeleteRubricVariantDocument = gql`
+    mutation DeleteRubricVariant($id: ID!) {
+  deleteRubricVariant(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRubricVariantMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
+
+/**
+ * __useDeleteRubricVariantMutation__
+ *
+ * To run a mutation, you first call `useDeleteRubricVariantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRubricVariantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRubricVariantMutation, { data, loading, error }] = useDeleteRubricVariantMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>(DeleteRubricVariantDocument, baseOptions);
+      }
+export type DeleteRubricVariantMutationHookResult = ReturnType<typeof useDeleteRubricVariantMutation>;
+export type DeleteRubricVariantMutationResult = ApolloReactCommon.MutationResult<DeleteRubricVariantMutation>;
+export type DeleteRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
 export const GetProductDocument = gql`
     query GetProduct($id: ID!) {
   getProduct(id: $id) {
@@ -2285,6 +3007,833 @@ export function useUpdateProductMutation(baseOptions?: ApolloReactHooks.Mutation
 export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
 export type UpdateProductMutationResult = ApolloReactCommon.MutationResult<UpdateProductMutation>;
 export type UpdateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($input: CreateProductInput!) {
+  createProduct(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, baseOptions);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = ApolloReactCommon.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const DeleteProductDocument = gql`
+    mutation DeleteProduct($id: ID!) {
+  deleteProduct(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteProductMutationFn = ApolloReactCommon.MutationFunction<DeleteProductMutation, DeleteProductMutationVariables>;
+
+/**
+ * __useDeleteProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductMutation, { data, loading, error }] = useDeleteProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteProductMutation, DeleteProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteProductMutation, DeleteProductMutationVariables>(DeleteProductDocument, baseOptions);
+      }
+export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
+export type DeleteProductMutationResult = ApolloReactCommon.MutationResult<DeleteProductMutation>;
+export type DeleteProductMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
+export const GetAllAttributesGroupsDocument = gql`
+    query GetAllAttributesGroups {
+  getAllAttributesGroups {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAllAttributesGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAttributesGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAttributesGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAttributesGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAttributesGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
+      }
+export function useGetAllAttributesGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
+        }
+export type GetAllAttributesGroupsQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsQuery>;
+export type GetAllAttributesGroupsLazyQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsLazyQuery>;
+export type GetAllAttributesGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>;
+export const GetAttributesGroupDocument = gql`
+    query GetAttributesGroup($id: ID!) {
+  getAttributesGroup(id: $id) {
+    id
+    name {
+      key
+      value
+    }
+    nameString
+    attributes {
+      id
+      name {
+        key
+        value
+      }
+      nameString
+      variant
+      positioningInTitle {
+        key
+        value
+      }
+      options {
+        id
+        nameString
+      }
+      metric {
+        id
+        nameString
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttributesGroupQuery__
+ *
+ * To run a query within a React component, call `useGetAttributesGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttributesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttributesGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetAttributesGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
+      }
+export function useGetAttributesGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
+        }
+export type GetAttributesGroupQueryHookResult = ReturnType<typeof useGetAttributesGroupQuery>;
+export type GetAttributesGroupLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupLazyQuery>;
+export type GetAttributesGroupQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>;
+export const GetAttributesGroupsForRubricDocument = gql`
+    query GetAttributesGroupsForRubric($exclude: [ID!]) {
+  getAllAttributesGroups(exclude: $exclude) {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAttributesGroupsForRubricQuery__
+ *
+ * To run a query within a React component, call `useGetAttributesGroupsForRubricQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttributesGroupsForRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
+ *   variables: {
+ *      exclude: // value for 'exclude'
+ *   },
+ * });
+ */
+export function useGetAttributesGroupsForRubricQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>(GetAttributesGroupsForRubricDocument, baseOptions);
+      }
+export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>(GetAttributesGroupsForRubricDocument, baseOptions);
+        }
+export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
+export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
+export type GetAttributesGroupsForRubricQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
+export const GetCatalogueCardQueryDocument = gql`
+    query GetCatalogueCardQuery($slug: String!) {
+  getProductBySlug(slug: $slug) {
+    id
+    itemId
+    nameString
+    cardNameString
+    price
+    slug
+    mainImage
+    descriptionString
+    attributesGroups {
+      showInCard
+      node {
+        id
+        nameString
+      }
+      attributes {
+        showInCard
+        node {
+          id
+          nameString
+          options {
+            id
+            nameString
+            options {
+              id
+              nameString
+            }
+          }
+        }
+        value
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatalogueCardQueryQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueCardQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueCardQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueCardQueryQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetCatalogueCardQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
+      }
+export function useGetCatalogueCardQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
+        }
+export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryQuery>;
+export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
+export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
+export const GetCatalogueRubricDocument = gql`
+    query GetCatalogueRubric($catalogueFilter: [String!]!) {
+  getCatalogueData(catalogueFilter: $catalogueFilter) {
+    catalogueTitle
+    rubric {
+      id
+      nameString
+      level
+      slug
+      variant {
+        id
+        nameString
+      }
+      filterAttributes {
+        id
+        nameString
+        variant
+        slug
+        filterOptions(filter: $catalogueFilter) {
+          option {
+            id
+            slug
+            nameString
+            color
+          }
+          counter
+        }
+      }
+    }
+    products {
+      totalDocs
+      page
+      totalPages
+      docs {
+        id
+        itemId
+        nameString
+        price
+        slug
+        mainImage
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCatalogueRubricQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueRubricQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueRubricQuery({
+ *   variables: {
+ *      catalogueFilter: // value for 'catalogueFilter'
+ *   },
+ * });
+ */
+export function useGetCatalogueRubricQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
+      }
+export function useGetCatalogueRubricLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
+        }
+export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
+export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
+export type GetCatalogueRubricQueryResult = ApolloReactCommon.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const InitialDocument = gql`
+    query Initial {
+  me {
+    id
+    email
+    name
+    secondName
+    lastName
+    fullName
+    shortName
+    phone
+    role
+    isAdmin
+    isManager
+    isCustomer
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    name
+    nativeName
+    key
+    isDefault
+  }
+}
+    `;
+
+/**
+ * __useInitialQuery__
+ *
+ * To run a query within a React component, call `useInitialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitialQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitialQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialQuery, InitialQueryVariables>) {
+        return ApolloReactHooks.useQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
+      }
+export function useInitialLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialQuery, InitialQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
+        }
+export type InitialQueryHookResult = ReturnType<typeof useInitialQuery>;
+export type InitialLazyQueryHookResult = ReturnType<typeof useInitialLazyQuery>;
+export type InitialQueryResult = ApolloReactCommon.QueryResult<InitialQuery, InitialQueryVariables>;
+export const InitialSiteQueryDocument = gql`
+    query InitialSiteQuery {
+  me {
+    id
+    email
+    name
+    secondName
+    lastName
+    fullName
+    shortName
+    phone
+    role
+    isAdmin
+    isManager
+    isCustomer
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    key
+    name
+    nativeName
+    isDefault
+  }
+  getRubricsTree {
+    ...SiteRubricFragment
+    children {
+      ...SiteRubricFragment
+      children {
+        ...SiteRubricFragment
+      }
+    }
+  }
+}
+    ${SiteRubricFragmentFragmentDoc}`;
+
+/**
+ * __useInitialSiteQueryQuery__
+ *
+ * To run a query within a React component, call `useInitialSiteQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitialSiteQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitialSiteQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitialSiteQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+      }
+export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+        }
+export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
+export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
+export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
+export const GetAllLanguagesQueryDocument = gql`
+    query GetAllLanguagesQuery {
+  getAllLanguages {
+    id
+    name
+    key
+    isDefault
+    nativeName
+  }
+}
+    `;
+
+/**
+ * __useGetAllLanguagesQueryQuery__
+ *
+ * To run a query within a React component, call `useGetAllLanguagesQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllLanguagesQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllLanguagesQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllLanguagesQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+      }
+export function useGetAllLanguagesQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+        }
+export type GetAllLanguagesQueryQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryQuery>;
+export type GetAllLanguagesQueryLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryLazyQuery>;
+export type GetAllLanguagesQueryQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>;
+export const GetAllOptionsGroupsDocument = gql`
+    query GetAllOptionsGroups {
+  getAllOptionsGroups {
+    id
+    nameString
+    options {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllOptionsGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllOptionsGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllOptionsGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllOptionsGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
+      }
+export function useGetAllOptionsGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
+        }
+export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
+export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
+export type GetAllOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;
+export const GetOptionsGroupDocument = gql`
+    query GetOptionsGroup($id: ID!) {
+  getOptionsGroup(id: $id) {
+    id
+    name {
+      key
+      value
+    }
+    nameString
+    options {
+      id
+      name {
+        key
+        value
+      }
+      nameString
+      color
+      gender
+      variants {
+        key
+        value {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOptionsGroupQuery__
+ *
+ * To run a query within a React component, call `useGetOptionsGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOptionsGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOptionsGroupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetOptionsGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
+      }
+export function useGetOptionsGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
+        }
+export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
+export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
+export type GetOptionsGroupQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
+export const GetAllRubricVariantsDocument = gql`
+    query GetAllRubricVariants {
+  getAllRubricVariants {
+    id
+    nameString
+    name {
+      key
+      value
+    }
+  }
+  getGenderOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAllRubricVariantsQuery__
+ *
+ * To run a query within a React component, call `useGetAllRubricVariantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRubricVariantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllRubricVariantsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllRubricVariantsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>(GetAllRubricVariantsDocument, baseOptions);
+      }
+export function useGetAllRubricVariantsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>(GetAllRubricVariantsDocument, baseOptions);
+        }
+export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRubricVariantsQuery>;
+export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
+export type GetAllRubricVariantsQueryResult = ApolloReactCommon.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
+export const GetRubricAttributesDocument = gql`
+    query GetRubricAttributes($id: ID!) {
+  getRubric(id: $id) {
+    id
+    level
+    attributesGroups {
+      id
+      isOwner
+      showInCatalogueFilter
+      node {
+        id
+        nameString
+        attributes {
+          id
+          nameString
+          variant
+          metric {
+            id
+            nameString
+          }
+          options {
+            id
+            nameString
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRubricAttributesQuery__
+ *
+ * To run a query within a React component, call `useGetRubricAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRubricAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRubricAttributesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRubricAttributesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
+      }
+export function useGetRubricAttributesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
+        }
+export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
+export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
+export type GetRubricAttributesQueryResult = ApolloReactCommon.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
+export const GetGenderOptionsDocument = gql`
+    query GetGenderOptions {
+  getGenderOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetGenderOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetGenderOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGenderOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGenderOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGenderOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+      }
+export function useGetGenderOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
+        }
+export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
+export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
+export type GetGenderOptionsQueryResult = ApolloReactCommon.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;
+export const GetIsoLanguagesListDocument = gql`
+    query GetISOLanguagesList {
+  getISOLanguagesList {
+    id
+    nameString
+    nativeName
+  }
+}
+    `;
+
+/**
+ * __useGetIsoLanguagesListQuery__
+ *
+ * To run a query within a React component, call `useGetIsoLanguagesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIsoLanguagesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIsoLanguagesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetIsoLanguagesListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
+      }
+export function useGetIsoLanguagesListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
+        }
+export type GetIsoLanguagesListQueryHookResult = ReturnType<typeof useGetIsoLanguagesListQuery>;
+export type GetIsoLanguagesListLazyQueryHookResult = ReturnType<typeof useGetIsoLanguagesListLazyQuery>;
+export type GetIsoLanguagesListQueryResult = ApolloReactCommon.QueryResult<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>;
+export const GetNewAttributeOptionsDocument = gql`
+    query GetNewAttributeOptions {
+  getAllOptionsGroups {
+    id
+    nameString
+  }
+  getAllMetrics {
+    id
+    nameString
+  }
+  getAttributeVariants {
+    id
+    nameString
+  }
+  getAttributePositioningOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetNewAttributeOptionsQuery__
+ *
+ * To run a query within a React component, call `useGetNewAttributeOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewAttributeOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewAttributeOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNewAttributeOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>(GetNewAttributeOptionsDocument, baseOptions);
+      }
+export function useGetNewAttributeOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>(GetNewAttributeOptionsDocument, baseOptions);
+        }
+export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsQuery>;
+export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
+export type GetNewAttributeOptionsQueryResult = ApolloReactCommon.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
+export const GetFeaturesAstDocument = gql`
+    query GetFeaturesAST($selectedRubrics: [ID!]!) {
+  getFeaturesAst(selectedRubrics: $selectedRubrics) {
+    id
+    nameString
+    attributes {
+      id
+      slug
+      nameString
+      variant
+      metric {
+        id
+        nameString
+      }
+      options {
+        id
+        nameString
+        options {
+          id
+          slug
+          nameString
+          color
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFeaturesAstQuery__
+ *
+ * To run a query within a React component, call `useGetFeaturesAstQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeaturesAstQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFeaturesAstQuery({
+ *   variables: {
+ *      selectedRubrics: // value for 'selectedRubrics'
+ *   },
+ * });
+ */
+export function useGetFeaturesAstQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
+      }
+export function useGetFeaturesAstLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
+        }
+export type GetFeaturesAstQueryHookResult = ReturnType<typeof useGetFeaturesAstQuery>;
+export type GetFeaturesAstLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstLazyQuery>;
+export type GetFeaturesAstQueryResult = ApolloReactCommon.QueryResult<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>;
 export const GetRubricsTreeDocument = gql`
     query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {
@@ -2334,9 +3883,18 @@ export const GetRubricDocument = gql`
   getRubric(id: $id) {
     ...RubricFragment
     catalogueTitle {
-      defaultTitle
-      prefix
-      keyword
+      defaultTitle {
+        key
+        value
+      }
+      prefix {
+        key
+        value
+      }
+      keyword {
+        key
+        value
+      }
       gender
     }
   }
@@ -2373,21 +3931,9 @@ export const CreateRubricDocument = gql`
   createRubric(input: $input) {
     success
     message
-    rubric {
-      ...RubricFragment
-      children {
-        ...RubricFragment
-        children {
-          ...RubricFragment
-        }
-      }
-      parent {
-        id
-      }
-    }
   }
 }
-    ${RubricFragmentFragmentDoc}`;
+    `;
 export type CreateRubricMutationFn = ApolloReactCommon.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
 
 /**
@@ -2648,1762 +4194,3 @@ export function useGetAllProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQu
 export type GetAllProductsQueryHookResult = ReturnType<typeof useGetAllProductsQuery>;
 export type GetAllProductsLazyQueryHookResult = ReturnType<typeof useGetAllProductsLazyQuery>;
 export type GetAllProductsQueryResult = ApolloReactCommon.QueryResult<GetAllProductsQuery, GetAllProductsQueryVariables>;
-export const AddAttributeToGroupDocument = gql`
-    mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
-  addAttributeToGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
-  }
-}
-    `;
-export type AddAttributeToGroupMutationFn = ApolloReactCommon.MutationFunction<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
-
-/**
- * __useAddAttributeToGroupMutation__
- *
- * To run a mutation, you first call `useAddAttributeToGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddAttributeToGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addAttributeToGroupMutation, { data, loading, error }] = useAddAttributeToGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddAttributeToGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>(AddAttributeToGroupDocument, baseOptions);
-      }
-export type AddAttributeToGroupMutationHookResult = ReturnType<typeof useAddAttributeToGroupMutation>;
-export type AddAttributeToGroupMutationResult = ApolloReactCommon.MutationResult<AddAttributeToGroupMutation>;
-export type AddAttributeToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
-export const AddAttributesGroupToRubricDocument = gql`
-    mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
-  addAttributesGroupToRubric(input: $input) {
-    success
-    message
-    rubric {
-      id
-      attributesGroups {
-        id
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-        }
-      }
-    }
-  }
-}
-    `;
-export type AddAttributesGroupToRubricMutationFn = ApolloReactCommon.MutationFunction<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-
-/**
- * __useAddAttributesGroupToRubricMutation__
- *
- * To run a mutation, you first call `useAddAttributesGroupToRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddAttributesGroupToRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addAttributesGroupToRubricMutation, { data, loading, error }] = useAddAttributesGroupToRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddAttributesGroupToRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>(AddAttributesGroupToRubricDocument, baseOptions);
-      }
-export type AddAttributesGroupToRubricMutationHookResult = ReturnType<typeof useAddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationResult = ApolloReactCommon.MutationResult<AddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-export const AddOptionToGroupDocument = gql`
-    mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
-  addOptionToGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
-  }
-}
-    `;
-export type AddOptionToGroupMutationFn = ApolloReactCommon.MutationFunction<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
-
-/**
- * __useAddOptionToGroupMutation__
- *
- * To run a mutation, you first call `useAddOptionToGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddOptionToGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addOptionToGroupMutation, { data, loading, error }] = useAddOptionToGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddOptionToGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>(AddOptionToGroupDocument, baseOptions);
-      }
-export type AddOptionToGroupMutationHookResult = ReturnType<typeof useAddOptionToGroupMutation>;
-export type AddOptionToGroupMutationResult = ApolloReactCommon.MutationResult<AddOptionToGroupMutation>;
-export type AddOptionToGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
-export const CreateAttributesGroupDocument = gql`
-    mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
-  createAttributesGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-    }
-  }
-}
-    `;
-export type CreateAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
-
-/**
- * __useCreateAttributesGroupMutation__
- *
- * To run a mutation, you first call `useCreateAttributesGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAttributesGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAttributesGroupMutation, { data, loading, error }] = useCreateAttributesGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>(CreateAttributesGroupDocument, baseOptions);
-      }
-export type CreateAttributesGroupMutationHookResult = ReturnType<typeof useCreateAttributesGroupMutation>;
-export type CreateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<CreateAttributesGroupMutation>;
-export type CreateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
-export const CreateOptionsGroupDocument = gql`
-    mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
-  createOptionsGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      options {
-        id
-      }
-    }
-  }
-}
-    `;
-export type CreateOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
-
-/**
- * __useCreateOptionsGroupMutation__
- *
- * To run a mutation, you first call `useCreateOptionsGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOptionsGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOptionsGroupMutation, { data, loading, error }] = useCreateOptionsGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>(CreateOptionsGroupDocument, baseOptions);
-      }
-export type CreateOptionsGroupMutationHookResult = ReturnType<typeof useCreateOptionsGroupMutation>;
-export type CreateOptionsGroupMutationResult = ApolloReactCommon.MutationResult<CreateOptionsGroupMutation>;
-export type CreateOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
-export const CreateProductDocument = gql`
-    mutation CreateProduct($input: CreateProductInput!) {
-  createProduct(input: $input) {
-    success
-    message
-    product {
-      id
-      itemId
-      name
-      price
-      slug
-    }
-  }
-}
-    `;
-export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
-
-/**
- * __useCreateProductMutation__
- *
- * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, baseOptions);
-      }
-export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
-export type CreateProductMutationResult = ApolloReactCommon.MutationResult<CreateProductMutation>;
-export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
-export const CreateRubricVariantDocument = gql`
-    mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
-  createRubricVariant(input: $input) {
-    success
-    message
-    variant {
-      id
-      nameString
-    }
-  }
-}
-    `;
-export type CreateRubricVariantMutationFn = ApolloReactCommon.MutationFunction<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
-
-/**
- * __useCreateRubricVariantMutation__
- *
- * To run a mutation, you first call `useCreateRubricVariantMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateRubricVariantMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createRubricVariantMutation, { data, loading, error }] = useCreateRubricVariantMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>(CreateRubricVariantDocument, baseOptions);
-      }
-export type CreateRubricVariantMutationHookResult = ReturnType<typeof useCreateRubricVariantMutation>;
-export type CreateRubricVariantMutationResult = ApolloReactCommon.MutationResult<CreateRubricVariantMutation>;
-export type CreateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
-export const DeleteAttributeFromGroupDocument = gql`
-    mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
-  deleteAttributeFromGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
-  }
-}
-    `;
-export type DeleteAttributeFromGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>;
-
-/**
- * __useDeleteAttributeFromGroupMutation__
- *
- * To run a mutation, you first call `useDeleteAttributeFromGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAttributeFromGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteAttributeFromGroupMutation, { data, loading, error }] = useDeleteAttributeFromGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteAttributeFromGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>(DeleteAttributeFromGroupDocument, baseOptions);
-      }
-export type DeleteAttributeFromGroupMutationHookResult = ReturnType<typeof useDeleteAttributeFromGroupMutation>;
-export type DeleteAttributeFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteAttributeFromGroupMutation>;
-export type DeleteAttributeFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributeFromGroupMutation, DeleteAttributeFromGroupMutationVariables>;
-export const DeleteAttributesGroupDocument = gql`
-    mutation DeleteAttributesGroup($id: ID!) {
-  deleteAttributesGroup(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
-
-/**
- * __useDeleteAttributesGroupMutation__
- *
- * To run a mutation, you first call `useDeleteAttributesGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAttributesGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteAttributesGroupMutation, { data, loading, error }] = useDeleteAttributesGroupMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>(DeleteAttributesGroupDocument, baseOptions);
-      }
-export type DeleteAttributesGroupMutationHookResult = ReturnType<typeof useDeleteAttributesGroupMutation>;
-export type DeleteAttributesGroupMutationResult = ApolloReactCommon.MutationResult<DeleteAttributesGroupMutation>;
-export type DeleteAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
-export const DeleteAttributesGroupFromRubricDocument = gql`
-    mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
-  deleteAttributesGroupFromRubric(input: $input) {
-    success
-    message
-    rubric {
-      id
-      attributesGroups {
-        id
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-        }
-      }
-    }
-  }
-}
-    `;
-export type DeleteAttributesGroupFromRubricMutationFn = ApolloReactCommon.MutationFunction<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-
-/**
- * __useDeleteAttributesGroupFromRubricMutation__
- *
- * To run a mutation, you first call `useDeleteAttributesGroupFromRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAttributesGroupFromRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteAttributesGroupFromRubricMutation, { data, loading, error }] = useDeleteAttributesGroupFromRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>(DeleteAttributesGroupFromRubricDocument, baseOptions);
-      }
-export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-export const DeleteOptionFromGroupDocument = gql`
-    mutation DeleteOptionFromGroup($input: DeleteOptionFromGroupInput!) {
-  deleteOptionFromGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
-  }
-}
-    `;
-export type DeleteOptionFromGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
-
-/**
- * __useDeleteOptionFromGroupMutation__
- *
- * To run a mutation, you first call `useDeleteOptionFromGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteOptionFromGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteOptionFromGroupMutation, { data, loading, error }] = useDeleteOptionFromGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteOptionFromGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>(DeleteOptionFromGroupDocument, baseOptions);
-      }
-export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
-export type DeleteOptionFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionFromGroupMutation>;
-export type DeleteOptionFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
-export const DeleteOptionsGroupDocument = gql`
-    mutation DeleteOptionsGroup($id: ID!) {
-  deleteOptionsGroup(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
-
-/**
- * __useDeleteOptionsGroupMutation__
- *
- * To run a mutation, you first call `useDeleteOptionsGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteOptionsGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteOptionsGroupMutation, { data, loading, error }] = useDeleteOptionsGroupMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>(DeleteOptionsGroupDocument, baseOptions);
-      }
-export type DeleteOptionsGroupMutationHookResult = ReturnType<typeof useDeleteOptionsGroupMutation>;
-export type DeleteOptionsGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionsGroupMutation>;
-export type DeleteOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
-export const DeleteProductDocument = gql`
-    mutation DeleteProduct($id: ID!) {
-  deleteProduct(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteProductMutationFn = ApolloReactCommon.MutationFunction<DeleteProductMutation, DeleteProductMutationVariables>;
-
-/**
- * __useDeleteProductMutation__
- *
- * To run a mutation, you first call `useDeleteProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProductMutation, { data, loading, error }] = useDeleteProductMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteProductMutation, DeleteProductMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteProductMutation, DeleteProductMutationVariables>(DeleteProductDocument, baseOptions);
-      }
-export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
-export type DeleteProductMutationResult = ApolloReactCommon.MutationResult<DeleteProductMutation>;
-export type DeleteProductMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
-export const DeleteRubricVariantDocument = gql`
-    mutation DeleteRubricVariant($id: ID!) {
-  deleteRubricVariant(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteRubricVariantMutationFn = ApolloReactCommon.MutationFunction<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
-
-/**
- * __useDeleteRubricVariantMutation__
- *
- * To run a mutation, you first call `useDeleteRubricVariantMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRubricVariantMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteRubricVariantMutation, { data, loading, error }] = useDeleteRubricVariantMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>(DeleteRubricVariantDocument, baseOptions);
-      }
-export type DeleteRubricVariantMutationHookResult = ReturnType<typeof useDeleteRubricVariantMutation>;
-export type DeleteRubricVariantMutationResult = ApolloReactCommon.MutationResult<DeleteRubricVariantMutation>;
-export type DeleteRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
-export const CreateLanguageDocument = gql`
-    mutation CreateLanguage($input: CreateLanguageInput!) {
-  createLanguage(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type CreateLanguageMutationFn = ApolloReactCommon.MutationFunction<CreateLanguageMutation, CreateLanguageMutationVariables>;
-
-/**
- * __useCreateLanguageMutation__
- *
- * To run a mutation, you first call `useCreateLanguageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateLanguageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createLanguageMutation, { data, loading, error }] = useCreateLanguageMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateLanguageMutation, CreateLanguageMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateLanguageMutation, CreateLanguageMutationVariables>(CreateLanguageDocument, baseOptions);
-      }
-export type CreateLanguageMutationHookResult = ReturnType<typeof useCreateLanguageMutation>;
-export type CreateLanguageMutationResult = ApolloReactCommon.MutationResult<CreateLanguageMutation>;
-export type CreateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateLanguageMutation, CreateLanguageMutationVariables>;
-export const UpdateLanguageDocument = gql`
-    mutation UpdateLanguage($input: UpdateLanguageInput!) {
-  updateLanguage(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateLanguageMutationFn = ApolloReactCommon.MutationFunction<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
-
-/**
- * __useUpdateLanguageMutation__
- *
- * To run a mutation, you first call `useUpdateLanguageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateLanguageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateLanguageMutation, { data, loading, error }] = useUpdateLanguageMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateLanguageMutation, UpdateLanguageMutationVariables>(UpdateLanguageDocument, baseOptions);
-      }
-export type UpdateLanguageMutationHookResult = ReturnType<typeof useUpdateLanguageMutation>;
-export type UpdateLanguageMutationResult = ApolloReactCommon.MutationResult<UpdateLanguageMutation>;
-export type UpdateLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
-export const DeleteLanguageDocument = gql`
-    mutation DeleteLanguage($id: ID!) {
-  deleteLanguage(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteLanguageMutationFn = ApolloReactCommon.MutationFunction<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
-
-/**
- * __useDeleteLanguageMutation__
- *
- * To run a mutation, you first call `useDeleteLanguageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteLanguageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteLanguageMutation, { data, loading, error }] = useDeleteLanguageMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteLanguageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(DeleteLanguageDocument, baseOptions);
-      }
-export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
-export type DeleteLanguageMutationResult = ApolloReactCommon.MutationResult<DeleteLanguageMutation>;
-export type DeleteLanguageMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
-export const SetLanguageAsDefaultDocument = gql`
-    mutation SetLanguageAsDefault($id: ID!) {
-  setLanguageAsDefault(id: $id) {
-    success
-    message
-  }
-}
-    `;
-export type SetLanguageAsDefaultMutationFn = ApolloReactCommon.MutationFunction<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
-
-/**
- * __useSetLanguageAsDefaultMutation__
- *
- * To run a mutation, you first call `useSetLanguageAsDefaultMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSetLanguageAsDefaultMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [setLanguageAsDefaultMutation, { data, loading, error }] = useSetLanguageAsDefaultMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useSetLanguageAsDefaultMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>) {
-        return ApolloReactHooks.useMutation<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>(SetLanguageAsDefaultDocument, baseOptions);
-      }
-export type SetLanguageAsDefaultMutationHookResult = ReturnType<typeof useSetLanguageAsDefaultMutation>;
-export type SetLanguageAsDefaultMutationResult = ApolloReactCommon.MutationResult<SetLanguageAsDefaultMutation>;
-export type SetLanguageAsDefaultMutationOptions = ApolloReactCommon.BaseMutationOptions<SetLanguageAsDefaultMutation, SetLanguageAsDefaultMutationVariables>;
-export const SignInDocument = gql`
-    mutation SignIn($input: SignInInput!) {
-  signIn(input: $input) {
-    success
-    message
-    user {
-      id
-      email
-      name
-      secondName
-      lastName
-      fullName
-      shortName
-      phone
-      role
-      isAdmin
-      isManager
-      isCustomer
-    }
-  }
-}
-    `;
-export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation, SignInMutationVariables>;
-
-/**
- * __useSignInMutation__
- *
- * To run a mutation, you first call `useSignInMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignInMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [signInMutation, { data, loading, error }] = useSignInMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
-      }
-export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
-export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
-export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
-export const SignOutDocument = gql`
-    mutation SignOut {
-  signOut {
-    success
-    message
-  }
-}
-    `;
-export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
-
-/**
- * __useSignOutMutation__
- *
- * To run a mutation, you first call `useSignOutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignOutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [signOutMutation, { data, loading, error }] = useSignOutMutation({
- *   variables: {
- *   },
- * });
- */
-export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
-      }
-export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
-export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
-export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
-export const UpdateAttributeInGroupDocument = gql`
-    mutation UpdateAttributeInGroup($input: UpdateAttributeInGroupInput!) {
-  updateAttributeInGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      attributes {
-        id
-        nameString
-        variant
-        options {
-          id
-          nameString
-        }
-        metric {
-          id
-          nameString
-        }
-      }
-    }
-  }
-}
-    `;
-export type UpdateAttributeInGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>;
-
-/**
- * __useUpdateAttributeInGroupMutation__
- *
- * To run a mutation, you first call `useUpdateAttributeInGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttributeInGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttributeInGroupMutation, { data, loading, error }] = useUpdateAttributeInGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAttributeInGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>(UpdateAttributeInGroupDocument, baseOptions);
-      }
-export type UpdateAttributeInGroupMutationHookResult = ReturnType<typeof useUpdateAttributeInGroupMutation>;
-export type UpdateAttributeInGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributeInGroupMutation>;
-export type UpdateAttributeInGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributeInGroupMutation, UpdateAttributeInGroupMutationVariables>;
-export const UpdateAttributesGroupDocument = gql`
-    mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
-  updateAttributesGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-    }
-  }
-}
-    `;
-export type UpdateAttributesGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
-
-/**
- * __useUpdateAttributesGroupMutation__
- *
- * To run a mutation, you first call `useUpdateAttributesGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttributesGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttributesGroupMutation, { data, loading, error }] = useUpdateAttributesGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAttributesGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>(UpdateAttributesGroupDocument, baseOptions);
-      }
-export type UpdateAttributesGroupMutationHookResult = ReturnType<typeof useUpdateAttributesGroupMutation>;
-export type UpdateAttributesGroupMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupMutation>;
-export type UpdateAttributesGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
-export const UpdateAttributesGroupInRubricDocument = gql`
-    mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
-  updateAttributesGroupInRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateAttributesGroupInRubricMutationFn = ApolloReactCommon.MutationFunction<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
-
-/**
- * __useUpdateAttributesGroupInRubricMutation__
- *
- * To run a mutation, you first call `useUpdateAttributesGroupInRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttributesGroupInRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttributesGroupInRubricMutation, { data, loading, error }] = useUpdateAttributesGroupInRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAttributesGroupInRubricMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>(UpdateAttributesGroupInRubricDocument, baseOptions);
-      }
-export type UpdateAttributesGroupInRubricMutationHookResult = ReturnType<typeof useUpdateAttributesGroupInRubricMutation>;
-export type UpdateAttributesGroupInRubricMutationResult = ApolloReactCommon.MutationResult<UpdateAttributesGroupInRubricMutation>;
-export type UpdateAttributesGroupInRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
-export const UpdateOptionInGroupDocument = gql`
-    mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
-  updateOptionInGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
-  }
-}
-    `;
-export type UpdateOptionInGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
-
-/**
- * __useUpdateOptionInGroupMutation__
- *
- * To run a mutation, you first call `useUpdateOptionInGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOptionInGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateOptionInGroupMutation, { data, loading, error }] = useUpdateOptionInGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateOptionInGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>(UpdateOptionInGroupDocument, baseOptions);
-      }
-export type UpdateOptionInGroupMutationHookResult = ReturnType<typeof useUpdateOptionInGroupMutation>;
-export type UpdateOptionInGroupMutationResult = ApolloReactCommon.MutationResult<UpdateOptionInGroupMutation>;
-export type UpdateOptionInGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
-export const UpdateOptionsGroupDocument = gql`
-    mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
-  updateOptionsGroup(input: $input) {
-    success
-    message
-    group {
-      id
-      nameString
-      options {
-        id
-        nameString
-        color
-      }
-    }
-  }
-}
-    `;
-export type UpdateOptionsGroupMutationFn = ApolloReactCommon.MutationFunction<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
-
-/**
- * __useUpdateOptionsGroupMutation__
- *
- * To run a mutation, you first call `useUpdateOptionsGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOptionsGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateOptionsGroupMutation, { data, loading, error }] = useUpdateOptionsGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateOptionsGroupMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>(UpdateOptionsGroupDocument, baseOptions);
-      }
-export type UpdateOptionsGroupMutationHookResult = ReturnType<typeof useUpdateOptionsGroupMutation>;
-export type UpdateOptionsGroupMutationResult = ApolloReactCommon.MutationResult<UpdateOptionsGroupMutation>;
-export type UpdateOptionsGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
-export const UpdateRubricVariantDocument = gql`
-    mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
-  updateRubricVariant(input: $input) {
-    success
-    message
-    variant {
-      id
-      nameString
-    }
-  }
-}
-    `;
-export type UpdateRubricVariantMutationFn = ApolloReactCommon.MutationFunction<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
-
-/**
- * __useUpdateRubricVariantMutation__
- *
- * To run a mutation, you first call `useUpdateRubricVariantMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateRubricVariantMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateRubricVariantMutation, { data, loading, error }] = useUpdateRubricVariantMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateRubricVariantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>(UpdateRubricVariantDocument, baseOptions);
-      }
-export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
-export type UpdateRubricVariantMutationResult = ApolloReactCommon.MutationResult<UpdateRubricVariantMutation>;
-export type UpdateRubricVariantMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
-export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($slug: String!) {
-  getProductBySlug(slug: $slug) {
-    id
-    itemId
-    name
-    cardName
-    price
-    slug
-    mainImage
-    description
-    attributesGroups {
-      showInCard
-      node {
-        id
-        nameString
-      }
-      attributes {
-        showInCard
-        node {
-          id
-          nameString
-          options {
-            id
-            nameString
-            options {
-              id
-              nameString
-            }
-          }
-        }
-        value
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCatalogueCardQueryQuery__
- *
- * To run a query within a React component, call `useGetCatalogueCardQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueCardQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueCardQueryQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *   },
- * });
- */
-export function useGetCatalogueCardQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
-      }
-export function useGetCatalogueCardQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
-        }
-export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryQuery>;
-export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
-export type GetCatalogueCardQueryQueryResult = ApolloReactCommon.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
-export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($catalogueFilter: [String!]!) {
-  getCatalogueData(catalogueFilter: $catalogueFilter) {
-    catalogueTitle
-    rubric {
-      id
-      name
-      level
-      slug
-      variant {
-        id
-        nameString
-      }
-      filterAttributes {
-        id
-        nameString
-        variant
-        slug
-        filterOptions(filter: $catalogueFilter) {
-          option {
-            id
-            slug
-            nameString
-            color
-          }
-          counter
-        }
-      }
-    }
-    products {
-      totalDocs
-      page
-      totalPages
-      docs {
-        id
-        itemId
-        name
-        price
-        slug
-        mainImage
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetCatalogueRubricQuery__
- *
- * To run a query within a React component, call `useGetCatalogueRubricQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCatalogueRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCatalogueRubricQuery({
- *   variables: {
- *      catalogueFilter: // value for 'catalogueFilter'
- *   },
- * });
- */
-export function useGetCatalogueRubricQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
-      }
-export function useGetCatalogueRubricLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
-        }
-export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
-export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
-export type GetCatalogueRubricQueryResult = ApolloReactCommon.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
-export const GetAllAttributesGroupsDocument = gql`
-    query GetAllAttributesGroups {
-  getAllAttributesGroups {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetAllAttributesGroupsQuery__
- *
- * To run a query within a React component, call `useGetAllAttributesGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllAttributesGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllAttributesGroupsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllAttributesGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
-      }
-export function useGetAllAttributesGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>(GetAllAttributesGroupsDocument, baseOptions);
-        }
-export type GetAllAttributesGroupsQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsQuery>;
-export type GetAllAttributesGroupsLazyQueryHookResult = ReturnType<typeof useGetAllAttributesGroupsLazyQuery>;
-export type GetAllAttributesGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllAttributesGroupsQuery, GetAllAttributesGroupsQueryVariables>;
-export const GetAllLanguagesQueryDocument = gql`
-    query GetAllLanguagesQuery {
-  getAllLanguages {
-    id
-    name
-    key
-    isDefault
-    nativeName
-  }
-}
-    `;
-
-/**
- * __useGetAllLanguagesQueryQuery__
- *
- * To run a query within a React component, call `useGetAllLanguagesQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllLanguagesQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllLanguagesQueryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllLanguagesQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
-      }
-export function useGetAllLanguagesQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
-        }
-export type GetAllLanguagesQueryQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryQuery>;
-export type GetAllLanguagesQueryLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryLazyQuery>;
-export type GetAllLanguagesQueryQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>;
-export const GetAllOptionsGroupsDocument = gql`
-    query GetAllOptionsGroups {
-  getAllOptionsGroups {
-    id
-    nameString
-    options {
-      id
-    }
-  }
-}
-    `;
-
-/**
- * __useGetAllOptionsGroupsQuery__
- *
- * To run a query within a React component, call `useGetAllOptionsGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllOptionsGroupsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllOptionsGroupsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
-      }
-export function useGetAllOptionsGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, baseOptions);
-        }
-export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
-export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
-export type GetAllOptionsGroupsQueryResult = ApolloReactCommon.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;
-export const GetAllRubricVariantsDocument = gql`
-    query GetAllRubricVariants {
-  getAllRubricVariants {
-    id
-    nameString
-  }
-  getGenderOptions {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetAllRubricVariantsQuery__
- *
- * To run a query within a React component, call `useGetAllRubricVariantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllRubricVariantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllRubricVariantsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllRubricVariantsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>(GetAllRubricVariantsDocument, baseOptions);
-      }
-export function useGetAllRubricVariantsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>(GetAllRubricVariantsDocument, baseOptions);
-        }
-export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRubricVariantsQuery>;
-export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
-export type GetAllRubricVariantsQueryResult = ApolloReactCommon.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
-export const GetAttributesGroupDocument = gql`
-    query GetAttributesGroup($id: ID!) {
-  getAttributesGroup(id: $id) {
-    id
-    nameString
-    attributes {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      variant
-      positioningInTitle {
-        key
-        value
-      }
-      options {
-        id
-        nameString
-      }
-      metric {
-        id
-        nameString
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetAttributesGroupQuery__
- *
- * To run a query within a React component, call `useGetAttributesGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAttributesGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAttributesGroupQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetAttributesGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
-      }
-export function useGetAttributesGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
-        }
-export type GetAttributesGroupQueryHookResult = ReturnType<typeof useGetAttributesGroupQuery>;
-export type GetAttributesGroupLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupLazyQuery>;
-export type GetAttributesGroupQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>;
-export const GetAttributesGroupsForRubricDocument = gql`
-    query GetAttributesGroupsForRubric($exclude: [ID!]) {
-  getAllAttributesGroups(exclude: $exclude) {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetAttributesGroupsForRubricQuery__
- *
- * To run a query within a React component, call `useGetAttributesGroupsForRubricQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAttributesGroupsForRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
- *   variables: {
- *      exclude: // value for 'exclude'
- *   },
- * });
- */
-export function useGetAttributesGroupsForRubricQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>(GetAttributesGroupsForRubricDocument, baseOptions);
-      }
-export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>(GetAttributesGroupsForRubricDocument, baseOptions);
-        }
-export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
-export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
-export type GetAttributesGroupsForRubricQueryResult = ApolloReactCommon.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
-export const GetFeaturesAstDocument = gql`
-    query GetFeaturesAST($selectedRubrics: [ID!]!) {
-  getFeaturesAst(selectedRubrics: $selectedRubrics) {
-    id
-    nameString
-    attributes {
-      id
-      slug
-      nameString
-      variant
-      metric {
-        id
-        nameString
-      }
-      options {
-        id
-        nameString
-        options {
-          id
-          slug
-          nameString
-          color
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetFeaturesAstQuery__
- *
- * To run a query within a React component, call `useGetFeaturesAstQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFeaturesAstQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetFeaturesAstQuery({
- *   variables: {
- *      selectedRubrics: // value for 'selectedRubrics'
- *   },
- * });
- */
-export function useGetFeaturesAstQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
-      }
-export function useGetFeaturesAstLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
-        }
-export type GetFeaturesAstQueryHookResult = ReturnType<typeof useGetFeaturesAstQuery>;
-export type GetFeaturesAstLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstLazyQuery>;
-export type GetFeaturesAstQueryResult = ApolloReactCommon.QueryResult<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>;
-export const GetNewAttributeOptionsDocument = gql`
-    query GetNewAttributeOptions {
-  getAllOptionsGroups {
-    id
-    nameString
-  }
-  getAllMetrics {
-    id
-    nameString
-  }
-  getAttributeVariants {
-    id
-    nameString
-  }
-  getAttributePositioningOptions {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetNewAttributeOptionsQuery__
- *
- * To run a query within a React component, call `useGetNewAttributeOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetNewAttributeOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNewAttributeOptionsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetNewAttributeOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>(GetNewAttributeOptionsDocument, baseOptions);
-      }
-export function useGetNewAttributeOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>(GetNewAttributeOptionsDocument, baseOptions);
-        }
-export type GetNewAttributeOptionsQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsQuery>;
-export type GetNewAttributeOptionsLazyQueryHookResult = ReturnType<typeof useGetNewAttributeOptionsLazyQuery>;
-export type GetNewAttributeOptionsQueryResult = ApolloReactCommon.QueryResult<GetNewAttributeOptionsQuery, GetNewAttributeOptionsQueryVariables>;
-export const GetOptionsGroupDocument = gql`
-    query GetOptionsGroup($id: ID!) {
-  getOptionsGroup(id: $id) {
-    id
-    nameString
-    options {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      color
-      gender
-      variants {
-        key
-        value {
-          key
-          value
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetOptionsGroupQuery__
- *
- * To run a query within a React component, call `useGetOptionsGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOptionsGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetOptionsGroupQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetOptionsGroupQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
-      }
-export function useGetOptionsGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
-        }
-export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
-export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
-export type GetOptionsGroupQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
-export const GetRubricAttributesDocument = gql`
-    query GetRubricAttributes($id: ID!) {
-  getRubric(id: $id) {
-    id
-    level
-    attributesGroups {
-      id
-      isOwner
-      showInCatalogueFilter
-      node {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          metric {
-            id
-            nameString
-          }
-          options {
-            id
-            nameString
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetRubricAttributesQuery__
- *
- * To run a query within a React component, call `useGetRubricAttributesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricAttributesQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetRubricAttributesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
-      }
-export function useGetRubricAttributesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
-        }
-export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
-export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
-export type GetRubricAttributesQueryResult = ApolloReactCommon.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
-export const InitialDocument = gql`
-    query Initial {
-  me {
-    id
-    email
-    name
-    secondName
-    lastName
-    fullName
-    shortName
-    phone
-    role
-    isAdmin
-    isManager
-    isCustomer
-  }
-  getClientLanguage
-  getAllLanguages {
-    id
-    name
-    nativeName
-    key
-    isDefault
-  }
-}
-    `;
-
-/**
- * __useInitialQuery__
- *
- * To run a query within a React component, call `useInitialQuery` and pass it any options that fit your needs.
- * When your component renders, `useInitialQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInitialQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInitialQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialQuery, InitialQueryVariables>) {
-        return ApolloReactHooks.useQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
-      }
-export function useInitialLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialQuery, InitialQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
-        }
-export type InitialQueryHookResult = ReturnType<typeof useInitialQuery>;
-export type InitialLazyQueryHookResult = ReturnType<typeof useInitialLazyQuery>;
-export type InitialQueryResult = ApolloReactCommon.QueryResult<InitialQuery, InitialQueryVariables>;
-export const InitialSiteQueryDocument = gql`
-    query InitialSiteQuery {
-  me {
-    id
-    email
-    name
-    secondName
-    lastName
-    fullName
-    shortName
-    phone
-    role
-    isAdmin
-    isManager
-    isCustomer
-  }
-  getClientLanguage
-  getAllLanguages {
-    id
-    key
-    name
-    nativeName
-    isDefault
-  }
-  getRubricsTree {
-    ...SiteRubricFragment
-    children {
-      ...SiteRubricFragment
-      children {
-        ...SiteRubricFragment
-      }
-    }
-  }
-}
-    ${SiteRubricFragmentFragmentDoc}`;
-
-/**
- * __useInitialSiteQueryQuery__
- *
- * To run a query within a React component, call `useInitialSiteQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useInitialSiteQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInitialSiteQueryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInitialSiteQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
-        return ApolloReactHooks.useQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
-      }
-export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
-        }
-export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
-export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
-export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
-export const GetGenderOptionsDocument = gql`
-    query GetGenderOptions {
-  getGenderOptions {
-    id
-    nameString
-  }
-}
-    `;
-
-/**
- * __useGetGenderOptionsQuery__
- *
- * To run a query within a React component, call `useGetGenderOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetGenderOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetGenderOptionsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetGenderOptionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
-      }
-export function useGetGenderOptionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>(GetGenderOptionsDocument, baseOptions);
-        }
-export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
-export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
-export type GetGenderOptionsQueryResult = ApolloReactCommon.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;
-export const GetIsoLanguagesListDocument = gql`
-    query GetISOLanguagesList {
-  getISOLanguagesList {
-    id
-    nameString
-    nativeName
-  }
-}
-    `;
-
-/**
- * __useGetIsoLanguagesListQuery__
- *
- * To run a query within a React component, call `useGetIsoLanguagesListQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetIsoLanguagesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetIsoLanguagesListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetIsoLanguagesListQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
-      }
-export function useGetIsoLanguagesListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>(GetIsoLanguagesListDocument, baseOptions);
-        }
-export type GetIsoLanguagesListQueryHookResult = ReturnType<typeof useGetIsoLanguagesListQuery>;
-export type GetIsoLanguagesListLazyQueryHookResult = ReturnType<typeof useGetIsoLanguagesListLazyQuery>;
-export type GetIsoLanguagesListQueryResult = ApolloReactCommon.QueryResult<GetIsoLanguagesListQuery, GetIsoLanguagesListQueryVariables>;

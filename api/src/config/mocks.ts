@@ -948,6 +948,15 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+export const INITIAL_LANGUAGES = [
+  {
+    key: DEFAULT_LANG,
+    name: 'Русский',
+    nativeName: 'Русский',
+    isDefault: true,
+  },
+];
+
 export const MOCK_LANGUAGES = [
   {
     key: DEFAULT_LANG,
@@ -1260,6 +1269,7 @@ export const MOCK_OPTIONS_WINE_TYPE = [
   },
 ];
 
+// Options groups
 export const MOCK_OPTIONS_GROUP_COLORS = {
   name: [
     { key: 'ru', value: 'Цвета' },

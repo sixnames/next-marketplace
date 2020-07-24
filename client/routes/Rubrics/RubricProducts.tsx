@@ -16,7 +16,7 @@ import { ADD_PRODUCT_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals'
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/CmsRubricsAndProducts';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import { useRouter } from 'next/router';
 import { ROUTE_CMS } from '../../config';
 
@@ -130,10 +130,15 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           />
         }
       >
-        {rubric.name}
+        {rubric.nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />
+        <Table
+          data={docs}
+          columns={columns}
+          emptyMessage={'Список пуст'}
+          testIdKey={'nameString'}
+        />
         <Pager page={page} setPage={setPage} totalPages={totalPages} />
       </DataLayoutContentFrame>
     </div>

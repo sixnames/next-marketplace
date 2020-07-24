@@ -4,20 +4,16 @@ import Icon from '../../../components/Icon/Icon';
 import classes from './HeaderNav.module.css';
 import Backdrop from '../../../components/Backdrop/Backdrop';
 import { useSiteContext } from '../../../context/siteContext';
-import { SiteRubricFragmentFragment } from '../../../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
-
-interface SubRubricInterface extends SiteRubricFragmentFragment {
-  children: SiteRubricFragmentFragment[];
-}
+import { HeaderRubricInterface } from './Header';
 
 function HeaderNav() {
   const { getRubricsTree } = useSiteContext();
   const { query } = useRouter();
   const [isRubricsOpen, setIsRubricsOpen] = useState(false);
   const [currentRubric, setCurrentRubric] = useState<string | null>(null);
-  const [subRubrics, setSubRubrics] = useState<SubRubricInterface[]>([]);
+  const [subRubrics, setSubRubrics] = useState<HeaderRubricInterface[]>([]);
   const { catalogue } = query;
   const catalogueSlug = catalogue ? catalogue[0] : '';
 
@@ -60,7 +56,7 @@ function HeaderNav() {
         >
           <div className={classes.rubricsFrame}>
             <ul className={classes.mainRubrics}>
-              {getRubricsTree.map(({ name, id, slug }) => {
+              {getRubricsTree.map(({ nameString, id, slug }) => {
                 const isCurrent = slug === catalogueSlug;
 
                 return (
@@ -72,12 +68,12 @@ function HeaderNav() {
                       as={{
                         pathname: `/${slug}`,
                       }}
-                      testId={`main-rubric-${name}`}
+                      testId={`main-rubric-${nameString}`}
                       onClick={hideRubricsHandler}
                       onMouseEnter={() => setCurrentRubricHandler(id)}
                       className={`${classes.mainRubricsItem} ${isCurrent ? classes.current : ''}`}
                     >
-                      {name}
+                      {nameString}
                     </Link>
                   </li>
                 );
@@ -85,7 +81,7 @@ function HeaderNav() {
             </ul>
 
             <div className={classes.subRubrics}>
-              {subRubrics.map(({ name, id, slug, children = [] }) => (
+              {subRubrics.map(({ nameString, id, slug, children = [] }) => (
                 <div key={id}>
                   <Link
                     href={{
@@ -94,16 +90,16 @@ function HeaderNav() {
                     as={{
                       pathname: `/${slug}`,
                     }}
-                    testId={`second-level-${name}`}
+                    testId={`second-level-${nameString}`}
                     onClick={hideRubricsHandler}
                     className={classes.subRubricsTitle}
                   >
-                    {name}
+                    {nameString}
                   </Link>
 
                   {!!children && (
                     <ul>
-                      {children.map(({ name, id, slug }) => (
+                      {children.map(({ nameString, id, slug }) => (
                         <li className={classes.subRubricsItem} key={id}>
                           <Link
                             href={{
@@ -112,11 +108,11 @@ function HeaderNav() {
                             as={{
                               pathname: `/${slug}`,
                             }}
-                            testId={`third-level-${name}`}
+                            testId={`third-level-${nameString}`}
                             onClick={hideRubricsHandler}
                             className={classes.subRubricsLink}
                           >
-                            {name}
+                            {nameString}
                           </Link>
                         </li>
                       ))}

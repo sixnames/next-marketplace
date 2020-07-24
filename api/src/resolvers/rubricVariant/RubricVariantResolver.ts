@@ -47,7 +47,8 @@ export class RubricVariantResolver {
   ): Promise<RubricVariantPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await createRubricVariantInputSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await createRubricVariantInputSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
@@ -91,7 +92,8 @@ export class RubricVariantResolver {
   ): Promise<RubricVariantPayloadType> {
     try {
       const lang = ctx.req.lang;
-      await updateRubricVariantSchema.validate(input);
+      const defaultLang = ctx.req.defaultLang;
+      await updateRubricVariantSchema(defaultLang).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({

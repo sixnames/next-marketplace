@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langInput, notNullableName } from './templates';
+import { id, langStringInputSchema } from './templates';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
@@ -26,28 +26,35 @@ const attributePositioningInTitle = Yup.object().shape({
     .required('Позиционирование атрибута в заголовке каталога обязательно к заполнению.'),
 });
 
-const attributeCommonFields = {
-  name: langInput(notNullableName('Название атрибута')),
+const attributeCommonFields = (defaultLang: string) => ({
+  name: langStringInputSchema({ defaultLang, entityMessage: 'Название атрибута' }),
   variant: Yup.mixed()
     .oneOf(ATTRIBUTE_TYPES_ENUMS)
     .required('Тип атрибута обязателен к заполнению.'),
   metric,
   options,
   positioningInTitle: Yup.array().of(attributePositioningInTitle).required(),
-};
-
-export const addAttributeToGroupSchema = Yup.object().shape({
-  groupId: id,
-  ...attributeCommonFields,
 });
 
-export const updateAttributeInGroupSchema = Yup.object().shape({
-  groupId: id,
-  attributeId: id,
-  ...attributeCommonFields,
-});
+export const addAttributeToGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    groupId: id,
+    ...attributeCommonFields(defaultLang),
+  });
+
+export const updateAttributeInGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    groupId: id,
+    attributeId: id,
+    ...attributeCommonFields(defaultLang),
+  });
 
 export const deleteAttributeFromGroupSchema = Yup.object().shape({
   groupId: id,
   attributeId: id,
 });
+
+export const attributeInGroupSchema = (defaultLang: string) =>
+  Yup.object().shape({
+    ...attributeCommonFields(defaultLang),
+  });

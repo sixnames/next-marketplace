@@ -2,15 +2,15 @@ import React from 'react';
 import { PostfixType } from '../../../types';
 import classes from './InputLine.module.css';
 
-interface InputLinePropsInterface {
+export interface InputLinePropsInterface {
   name: string;
   lineClass?: string;
+  labelClass?: string;
   label?: string;
   low?: boolean;
-  children: any;
-  isHorizontal?: boolean;
   wide?: boolean;
   labelPostfix?: any;
+  isHorizontal?: boolean;
   postfix?: PostfixType;
   prefix?: PostfixType;
   labelLink?: any;
@@ -23,15 +23,16 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   lineClass,
   label,
   low,
-  children,
   wide,
   labelPostfix,
+  labelClass,
   postfix,
   prefix,
   labelLink,
   isRequired,
   isHorizontal,
   labelTag = 'label',
+  children,
 }) => {
   const TagName = labelTag;
   const labelTagProps =
@@ -75,7 +76,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   return (
     <div className={inputLineClassName}>
       {label && (
-        <TagName {...labelTagProps} className={classes.label}>
+        <TagName {...labelTagProps} className={`${classes.label} ${labelClass ? labelClass : ''}`}>
           {label}
           {labelPostfix && <span className={classes.labelPostfix}>{labelPostfix}</span>}
           {labelLink && <span className={classes.labelLink}>{labelLink}</span>}

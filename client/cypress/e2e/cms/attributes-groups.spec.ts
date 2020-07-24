@@ -8,6 +8,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_END,
+  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
 } from '../../../config';
 
 const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
@@ -31,28 +32,30 @@ describe('Attributes Groups', () => {
 
   it('Should CRUD attributes group', () => {
     cy.getByCy(`create-attributes-group`).click();
-    cy.getByCy(`create-attributes-group-modal`).should('exist');
+    cy.getByCy(`attributes-group-modal`).should('exist');
 
     // Should show validation error on not valid attributes group name
-    cy.getByCy(`update-name-input`).type(fakeName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should create a new attributes group
-    cy.getByCy(`update-name-input`).clear().type(createdGroupName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).clear().type(createdGroupName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`group-${createdGroupName}`).click();
     cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
 
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-update`).click();
-    cy.getByCy(`update-name-input`).should('have.value', createdGroupName).clear().type(fakeName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-accordion-en`).click();
+    cy.getByCy(`name-ru`).should('have.value', createdGroupName).clear().type(fakeName);
+    cy.getByCy(`name-en`).type(fakeName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should update attributes group
-    cy.getByCy(`update-name-input`).clear().type(updatedGroupName);
-    cy.getByCy(`update-name-submit`).click();
+    cy.getByCy(`name-ru`).clear().type(updatedGroupName);
+    cy.getByCy(`attributes-group-submit`).click();
     cy.contains(updatedGroupName).should('exist');
 
     // Shouldn't delete attributes group connected to the rubric
@@ -87,22 +90,26 @@ describe('Attributes Groups', () => {
     cy.getByCy(`options-error`).should('exist');
 
     // Should create attribute in group
-    cy.getByCy(`attribute-name`).type(mockAttributeNewName);
+    cy.getByCy(`name-accordion-en`).click();
+    cy.getByCy(`name-ru`).type(mockAttributeNewName);
+    cy.getByCy(`name-en`).type(mockAttributeNewName);
     cy.selectOptionByTestId(`attribute-options`, mockOptionsGroupName);
-    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
+    cy.getByCy(`positioningInTitle-accordion-en`).click();
+    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
+    cy.getByCy(`positioningInTitle-en`).select(ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('exist');
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
 
-    cy.getByCy(`attribute-name`)
+    cy.getByCy(`name-ru`)
       .should('have.value', mockAttributeNewName)
       .clear()
       .type(updatedAttributeName);
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
-    cy.getByCy(`attribute-position`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
+    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}`).should('exist');

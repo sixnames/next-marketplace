@@ -12,12 +12,20 @@ import { MetricModel } from '../entities/Metric';
 import { UserModel } from '../entities/User';
 import { hash } from 'bcryptjs';
 import { LanguageModel } from '../entities/Language';
+import { MessageModel } from '../entities/Message';
+import apiMessages from '../config/apiMessages';
 
 async function createInitialData() {
   // Create default language
   const languages = await LanguageModel.find({ key: DEFAULT_LANG });
   if (!languages || !languages.length) {
     await LanguageModel.create(INITIAL_LANGUAGES[0]);
+  }
+
+  // Create api messages
+  const messages = await MessageModel.find({});
+  if (!messages || !messages.length || messages.length < apiMessages.length) {
+    await MessageModel.insertMany(apiMessages);
   }
 
   // Create all metrics

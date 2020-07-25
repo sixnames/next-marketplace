@@ -9,7 +9,7 @@ import {
   GENDER_SHE,
 } from '../common';
 
-const metricTranslations = {
+const selectsOptionsTranslations = {
   selectsOptions: {
     gender: {
       [GENDER_SHE]: {
@@ -50,4 +50,4 @@ const metricTranslations = {
   },
 };
 
-export default metricTranslations;
+export default selectsOptionsTranslations;

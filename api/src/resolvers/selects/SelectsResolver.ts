@@ -6,7 +6,7 @@ import {
   ISOLanguage,
 } from '../../entities/SelectsOptions';
 import { ATTRIBUTE_POSITION_IN_TITLE_ENUMS, GENDER_ENUMS, ISO_LANGUAGES } from '../../config';
-import { getMessageTranslation } from '../../config/translations';
+import { getFieldTranslation } from '../../config/translations';
 
 @Resolver((_of) => GenderOption)
 export class GendersListResolver {
@@ -15,7 +15,7 @@ export class GendersListResolver {
     const { lang } = ctx.req;
     return GENDER_ENUMS.map((gender) => ({
       id: gender,
-      nameString: getMessageTranslation(`selectsOptions.gender.${gender}.${lang}`),
+      nameString: getFieldTranslation(`selectsOptions.gender.${gender}.${lang}`),
     }));
   }
 }
@@ -29,7 +29,7 @@ export class AttributePositioningListResolver {
     const { lang } = ctx.req;
     return ATTRIBUTE_POSITION_IN_TITLE_ENUMS.map((position) => ({
       id: position,
-      nameString: getMessageTranslation(`selectsOptions.attributePositioning.${position}.${lang}`),
+      nameString: getFieldTranslation(`selectsOptions.attributePositioning.${position}.${lang}`),
     }));
   }
 }

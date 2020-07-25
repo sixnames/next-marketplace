@@ -25,7 +25,6 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import { getMessageTranslation } from '../../config/translations';
 import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '../../config';
 import {
   createUserSchema,
@@ -33,6 +32,7 @@ import {
   signUpValidationSchema,
   updateUserSchema,
 } from '../../validation';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -81,7 +81,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
         };
       }
 
@@ -100,13 +100,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.error.${lang}`),
+          message: await getApiMessage({ key: `users.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.create.success.${lang}`),
+        message: await getApiMessage({ key: `users.create.success`, lang }),
         user,
       };
     } catch (e) {
@@ -129,20 +129,20 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.update.duplicate`, lang }),
         };
       }
 
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.update.error.${lang}`),
+          message: await getApiMessage({ key: `users.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.update.success.${lang}`),
+        message: await getApiMessage({ key: `users.update.success`, lang }),
         user,
       };
     } catch (e) {
@@ -162,13 +162,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.delete.error.${lang}`),
+          message: await getApiMessage({ key: `users.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.delete.success.${lang}`),
+        message: await getApiMessage({ key: `users.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -188,7 +188,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
         };
       }
 
@@ -204,7 +204,7 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.error.${lang}`),
+          message: await getApiMessage({ key: `users.create.error`, lang }),
         };
       }
 
@@ -212,7 +212,7 @@ export class UserResolver {
 
       return {
         success: true,
-        message: getMessageTranslation(`user.create.success.${lang}`),
+        message: await getApiMessage({ key: `users.create.success`, lang }),
         user,
       };
     } catch (e) {
@@ -234,7 +234,7 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: getMessageTranslation(`user.signIn.authorized.${lang}`),
+          message: await getApiMessage({ key: `users.signIn.authorized`, lang }),
         };
       }
 
@@ -276,12 +276,12 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: getMessageTranslation(`user.signOut.error.${lang}`),
+          message: await getApiMessage({ key: `users.signOut.error`, lang }),
         };
       }
       return {
         success: true,
-        message: getMessageTranslation(`user.signOut.success.${lang}`),
+        message: await getApiMessage({ key: `users.signOut.success`, lang }),
       };
     } catch (e) {
       return {

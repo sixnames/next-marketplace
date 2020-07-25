@@ -5,8 +5,8 @@ import { CreateLanguageInput } from './CreateLanguageInput';
 import { createLanguageSchema, updateLanguageSchema } from '../../validation';
 import { UpdateLanguageInput } from './UpdateLanguageInput';
 import { ContextInterface } from '../../types/context';
-import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class LanguagePayloadType extends PayloadType() {
@@ -41,7 +41,7 @@ export class LanguageResolver {
       if (!setAllLanguagesAsNotDefault.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.setLanguageAsDefault.error.${lang}`),
+          message: await getApiMessage({ key: `languages.setLanguageAsDefault.error`, lang }),
         };
       }
 
@@ -53,13 +53,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.setLanguageAsDefault.error.${lang}`),
+          message: await getApiMessage({ key: `languages.setLanguageAsDefault.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`languages.setLanguageAsDefault.success.${lang}`),
+        message: await getApiMessage({ key: `languages.setLanguageAsDefault.success`, lang }),
         language,
       };
     } catch (e) {
@@ -94,7 +94,7 @@ export class LanguageResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `languages.create.duplicate`, lang }),
         };
       }
 
@@ -106,13 +106,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.create.error.${lang}`),
+          message: await getApiMessage({ key: `languages.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`languages.create.success.${lang}`),
+        message: await getApiMessage({ key: `languages.create.success`, lang }),
         language,
       };
     } catch (e) {
@@ -148,7 +148,7 @@ export class LanguageResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `languages.update.duplicate`, lang }),
         };
       }
 
@@ -157,13 +157,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.update.error.${lang}`),
+          message: await getApiMessage({ key: `languages.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`languages.update.success.${lang}`),
+        message: await getApiMessage({ key: `languages.update.success`, lang }),
         language,
       };
     } catch (e) {
@@ -186,7 +186,7 @@ export class LanguageResolver {
       if (isDefault) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.delete.default.${lang}`),
+          message: await getApiMessage({ key: `languages.delete.default`, lang }),
         };
       }
 
@@ -195,13 +195,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: getMessageTranslation(`languages.delete.error.${lang}`),
+          message: await getApiMessage({ key: `languages.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`languages.delete.success.${lang}`),
+        message: await getApiMessage({ key: `languages.delete.success`, lang }),
         language,
       };
     } catch (e) {

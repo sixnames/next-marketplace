@@ -32,12 +32,12 @@ import storeUploads from '../../utils/assets/storeUploads';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
-import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { createProductSchema, updateProductSchema } from '../../validation';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -194,7 +194,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`product.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `products.create.duplicate`, lang }),
         };
       }
 
@@ -216,13 +216,13 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.create.error.${lang}`),
+          message: await getApiMessage({ key: `products.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.create.success.${lang}`),
+        message: await getApiMessage({ key: `products.create.success`, lang }),
         product,
       };
     } catch (e) {
@@ -270,7 +270,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `products.update.duplicate`, lang }),
         };
       }
 
@@ -278,7 +278,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.notFound.${lang}`),
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
         };
       }
 
@@ -307,13 +307,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.updateError.${lang}`),
+          message: await getApiMessage({ key: `products.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.update.success.${lang}`),
+        message: await getApiMessage({ key: `products.update.success`, lang }),
         product: updatedProduct,
       };
     } catch (e) {
@@ -341,7 +341,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.delete.notFound.${lang}`),
+          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
         };
       }
 
@@ -355,13 +355,13 @@ export class ProductResolver {
         if (!removed || !removedAssets) {
           return {
             success: false,
-            message: getMessageTranslation(`product.delete.error.${lang}`),
+            message: await getApiMessage({ key: `products.delete.error`, lang }),
           };
         }
 
         return {
           success: true,
-          message: getMessageTranslation(`product.delete.success.${lang}`),
+          message: await getApiMessage({ key: `products.delete.success`, lang }),
         };
       }
 
@@ -384,13 +384,13 @@ export class ProductResolver {
       if (!removed.ok || !removedAssets) {
         return {
           success: false,
-          message: getMessageTranslation(`product.delete.error.${lang}`),
+          message: await getApiMessage({ key: `products.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.delete.success.${lang}`),
+        message: await getApiMessage({ key: `products.delete.success`, lang }),
       };
     } catch (e) {
       return {

@@ -2,7 +2,7 @@ import { DEFAULT_LANG, SECONDARY_LANG } from '../common';
 
 const attributesGroupsMessages = [
   {
-    key: 'attributesGroup.create.duplicate',
+    key: 'attributesGroups.create.duplicate',
     message: [
       {
         key: DEFAULT_LANG,
@@ -15,7 +15,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.create.error',
+    key: 'attributesGroups.create.error',
     message: [
       {
         key: DEFAULT_LANG,
@@ -28,7 +28,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.create.success',
+    key: 'attributesGroups.create.success',
     message: [
       {
         key: DEFAULT_LANG,
@@ -41,7 +41,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.update.duplicate',
+    key: 'attributesGroups.update.duplicate',
     message: [
       {
         key: DEFAULT_LANG,
@@ -54,7 +54,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.update.error',
+    key: 'attributesGroups.update.error',
     message: [
       {
         key: DEFAULT_LANG,
@@ -67,7 +67,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.update.success',
+    key: 'attributesGroups.update.success',
     message: [
       {
         key: DEFAULT_LANG,
@@ -80,7 +80,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.delete.used',
+    key: 'attributesGroups.delete.used',
     message: [
       {
         key: DEFAULT_LANG,
@@ -93,7 +93,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.delete.notFound',
+    key: 'attributesGroups.delete.notFound',
     message: [
       {
         key: DEFAULT_LANG,
@@ -106,7 +106,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.delete.attributesError',
+    key: 'attributesGroups.delete.attributesError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -119,7 +119,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.delete.error',
+    key: 'attributesGroups.delete.error',
     message: [
       {
         key: DEFAULT_LANG,
@@ -132,7 +132,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.delete.success',
+    key: 'attributesGroups.delete.success',
     message: [
       {
         key: DEFAULT_LANG,
@@ -145,7 +145,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.addAttribute.groupError',
+    key: 'attributesGroups.addAttribute.groupError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -158,7 +158,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.addAttribute.attributeError',
+    key: 'attributesGroups.addAttribute.attributeError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -171,7 +171,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.addAttribute.duplicate',
+    key: 'attributesGroups.addAttribute.duplicate',
     message: [
       {
         key: DEFAULT_LANG,
@@ -184,7 +184,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.addAttribute.addError',
+    key: 'attributesGroups.addAttribute.addError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -197,7 +197,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.addAttribute.success',
+    key: 'attributesGroups.addAttribute.success',
     message: [
       {
         key: DEFAULT_LANG,
@@ -210,7 +210,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.updateAttribute.groupError',
+    key: 'attributesGroups.updateAttribute.groupError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -223,7 +223,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.updateAttribute.duplicate',
+    key: 'attributesGroups.updateAttribute.duplicate',
     message: [
       {
         key: DEFAULT_LANG,
@@ -236,7 +236,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.updateAttribute.updateError',
+    key: 'attributesGroups.updateAttribute.updateError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -249,7 +249,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.updateAttribute.success',
+    key: 'attributesGroups.updateAttribute.success',
     message: [
       {
         key: DEFAULT_LANG,
@@ -262,7 +262,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.deleteAttribute.deleteError',
+    key: 'attributesGroups.deleteAttribute.deleteError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -275,7 +275,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.deleteAttribute.groupError',
+    key: 'attributesGroups.deleteAttribute.groupError',
     message: [
       {
         key: DEFAULT_LANG,
@@ -288,7 +288,7 @@ const attributesGroupsMessages = [
     ],
   },
   {
-    key: 'attributesGroup.deleteAttribute.success',
+    key: 'attributesGroups.deleteAttribute.success',
     message: [
       {
         key: DEFAULT_LANG,

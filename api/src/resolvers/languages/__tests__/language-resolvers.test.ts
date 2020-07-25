@@ -192,6 +192,7 @@ describe('Language', () => {
     );
     const newDefaultLanguage = setLanguageAsDefault.language;
     expect(setLanguageAsDefault.success).toBeTruthy();
+    expect(setLanguageAsDefault.message).toEqual('Язык назначен основным.');
     expect(oldDefaultLanguage.isDefault).toBeFalsy();
     expect(newDefaultLanguage.isDefault).toBeTruthy();
 

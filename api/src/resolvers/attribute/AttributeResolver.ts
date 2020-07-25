@@ -10,7 +10,6 @@ import { RubricModel } from '../../entities/Rubric';
 import getCityData from '../../utils/getCityData';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
-// import { attributesReducer } from '../../utils/catalogueHelpers';
 import { ProductModel } from '../../entities/Product';
 
 @Resolver((_for) => Attribute)

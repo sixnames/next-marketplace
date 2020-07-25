@@ -5,6 +5,6 @@ export const translations = {
   ...selectsOptionsTranslations,
 };
 
-export const getMessageTranslation = (path: string): string => {
+export const getFieldTranslation = (path: string): string => {
   return `${get(translations, path)}`;
 };

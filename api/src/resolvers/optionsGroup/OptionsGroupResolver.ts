@@ -23,7 +23,6 @@ import { AttributeModel } from '../../entities/Attribute';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
-import { getMessageTranslation } from '../../config/translations';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -32,6 +31,7 @@ import {
   updateOptionsGroupSchema,
 } from '../../validation';
 import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -71,7 +71,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.create.duplicate`, lang }),
         };
       }
 
@@ -80,13 +80,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.create.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.create.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.create.success`, lang }),
         group,
       };
     } catch (e) {
@@ -120,7 +120,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.update.duplicate`, lang }),
         };
       }
 
@@ -131,13 +131,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.update.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.update.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.update.success`, lang }),
         group,
       };
     } catch (e) {
@@ -159,7 +159,7 @@ export class OptionsGroupResolver {
       if (connectedWithAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.used.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.used`, lang }),
         };
       }
 
@@ -170,7 +170,7 @@ export class OptionsGroupResolver {
       if (!removedOptions.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.optionsError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
         };
       }
 
@@ -178,13 +178,13 @@ export class OptionsGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.delete.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -210,7 +210,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.groupError`, lang }),
         };
       }
 
@@ -225,7 +225,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.duplicate`, lang }),
         };
       }
 
@@ -234,7 +234,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.optionError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
         };
       }
 
@@ -250,13 +250,13 @@ export class OptionsGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.addError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.addOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.addOption.success`, lang }),
         group: updatedGroup,
       };
     } catch (e) {
@@ -283,7 +283,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.groupError`, lang }),
         };
       }
 
@@ -298,7 +298,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.duplicate`, lang }),
         };
       }
 
@@ -316,13 +316,13 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.updateError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.updateOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.updateOption.success`, lang }),
         group,
       };
     } catch (e) {
@@ -347,7 +347,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.deleteOption.deleteError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.deleteOption.error`, lang }),
         };
       }
 
@@ -360,13 +360,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.deleteOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.deleteOption.groupError`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.deleteOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.deleteOption.success`, lang }),
         group,
       };
     } catch (e) {

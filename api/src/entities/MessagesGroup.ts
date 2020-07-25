@@ -1,19 +1,19 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { LanguageType } from './common';
+import { Message } from './Message';
 
 @ObjectType()
-export class Message {
+export class MessagesGroup {
   @Field(() => ID)
   readonly id: string;
 
   @Field((_type) => String)
   @prop({ type: String, required: true })
-  key: string;
+  name: string;
 
-  @Field(() => [LanguageType])
-  @prop({ required: true, type: LanguageType })
-  message: LanguageType[];
+  @Field((_type) => [Message])
+  @prop({ ref: Message })
+  messages: string[];
 }
 
-export const MessageModel = getModelForClass(Message);
+export const MessagesGroupModel = getModelForClass(MessagesGroup);

@@ -7,13 +7,12 @@ import {
   ROLE_ADMIN,
   DEFAULT_LANG,
   INITIAL_LANGUAGES,
-} from '../config';
-import { MetricModel } from '../entities/Metric';
-import { UserModel } from '../entities/User';
+} from '../../config';
+import { MetricModel } from '../../entities/Metric';
+import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
-import { LanguageModel } from '../entities/Language';
-import { MessageModel } from '../entities/Message';
-import apiMessages from '../config/apiMessages';
+import { LanguageModel } from '../../entities/Language';
+import createInitialApiMessages from './createInitialApiMessages';
 
 async function createInitialData() {
   // Create default language
@@ -23,10 +22,7 @@ async function createInitialData() {
   }
 
   // Create api messages
-  const messages = await MessageModel.find({});
-  if (!messages || !messages.length || messages.length < apiMessages.length) {
-    await MessageModel.insertMany(apiMessages);
-  }
+  await createInitialApiMessages();
 
   // Create all metrics
   const metric = await MetricModel.find({});

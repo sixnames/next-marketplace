@@ -100,7 +100,7 @@ async function getTestStreams() {
         createReadStream: () => file,
         filename: filename,
         encoding: 'UTF-8',
-        mimetype: `image/jpg`,
+        mimetype: `image/png`,
       }),
     );
   });

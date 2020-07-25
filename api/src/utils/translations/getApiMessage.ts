@@ -1,9 +1,10 @@
 import { MessageModel } from '../../entities/Message';
 import { LANG_NOT_FOUND_FIELD_MESSAGE } from '../../config';
 import getLangField from './getLangField';
+import { MessageKey } from '../../config/apiMessages/messagesKeys';
 
 interface GetApiMessageInterface {
-  key: string;
+  key: MessageKey;
   lang: string;
 }
 

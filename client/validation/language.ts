@@ -1,35 +1,143 @@
 import * as Yup from 'yup';
 import { id } from './templates';
+import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
 
 const languageKeyLength = 2;
 
-export const createLanguageSchema = Yup.object().shape({
-  name: Yup.string().required('Название языка обязательно к заполнению'),
-  key: Yup.string()
-    .min(languageKeyLength)
-    .max(languageKeyLength)
-    .required('Ключ языка обязателен к заполнению'),
-  nativeName: Yup.string()
-    .min(languageKeyLength)
-    .required('Нативное название языка обязателено к заполнению'),
-});
+export const createLanguageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.object().shape({
+    name: Yup.string().required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.name',
+      }),
+    ),
+    key: Yup.string()
+      .min(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.min',
+        }) + ` ${languageKeyLength}`,
+      )
+      .max(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.max',
+        }) + ` ${languageKeyLength}`,
+      )
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.key',
+        }),
+      ),
+    nativeName: Yup.string()
+      .min(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.min',
+        }) + ` ${languageKeyLength}`,
+      )
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.nativeName',
+        }),
+      ),
+  });
 
-export const updateLanguageSchema = Yup.object().shape({
-  id,
-  name: Yup.string().required('Название языка обязательно к заполнению'),
-  key: Yup.string()
-    .min(languageKeyLength)
-    .max(languageKeyLength)
-    .required('Ключ языка обязателен к заполнению'),
-  nativeName: Yup.string()
-    .min(languageKeyLength)
-    .required('Нативное название языка обязателено к заполнению'),
-});
+export const updateLanguageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.object().shape({
+    id,
+    name: Yup.string().required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.name',
+      }),
+    ),
+    key: Yup.string()
+      .min(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.min',
+        }) + ` ${languageKeyLength}`,
+      )
+      .max(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.max',
+        }) + ` ${languageKeyLength}`,
+      )
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.key',
+        }) + ` ${languageKeyLength}`,
+      ),
+    nativeName: Yup.string()
+      .min(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.min',
+        }) + ` ${languageKeyLength}`,
+      )
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.nativeName',
+        }),
+      ),
+  });
 
-export const languageSchema = Yup.object().shape({
-  name: Yup.string().required('Название языка обязательно к заполнению'),
-  key: Yup.string()
-    .min(languageKeyLength)
-    .max(languageKeyLength)
-    .required('Ключ языка обязателен к заполнению'),
-});
+export const languageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.object().shape({
+    name: Yup.string().required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.name',
+      }),
+    ),
+    key: Yup.string()
+      .min(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.min',
+        }) + ` ${languageKeyLength}`,
+      )
+      .max(
+        languageKeyLength,
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.max',
+        }) + ` ${languageKeyLength}`,
+      )
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'languages.validation.key',
+        }),
+      ),
+  });

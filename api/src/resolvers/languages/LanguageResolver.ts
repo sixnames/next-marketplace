@@ -7,6 +7,7 @@ import { UpdateLanguageInput } from './UpdateLanguageInput';
 import { ContextInterface } from '../../types/context';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class LanguagePayloadType extends PayloadType() {
@@ -77,8 +78,14 @@ export class LanguageResolver {
   ): Promise<LanguagePayloadType> {
     try {
       const lang = ctx.req.lang;
-
-      await createLanguageSchema.validate(input);
+      const validationMessages = await getMessagesByKeys([
+        'languages.validation.name',
+        'languages.validation.key',
+        'languages.validation.nativeName',
+        'languages.validation.min',
+        'languages.validation.max',
+      ]);
+      await createLanguageSchema({ messages: validationMessages, lang }).validate(input);
 
       const exists = await LanguageModel.exists({
         $or: [
@@ -130,8 +137,14 @@ export class LanguageResolver {
   ): Promise<LanguagePayloadType> {
     try {
       const lang = ctx.req.lang;
-
-      await updateLanguageSchema.validate(input);
+      const validationMessages = await getMessagesByKeys([
+        'languages.validation.name',
+        'languages.validation.key',
+        'languages.validation.nativeName',
+        'languages.validation.min',
+        'languages.validation.max',
+      ]);
+      await updateLanguageSchema({ messages: validationMessages, lang }).validate(input);
 
       const { id, ...values } = input;
       const exists = await LanguageModel.exists({

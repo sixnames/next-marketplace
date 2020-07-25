@@ -18,7 +18,7 @@ import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
 import { RubricModel } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import { getMessageTranslation } from '../../config/translations';
 import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
 

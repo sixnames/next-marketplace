@@ -19,7 +19,7 @@ import {
 } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import getCityData from '../../utils/getCityData';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';

@@ -24,7 +24,7 @@ import { ContextInterface } from '../../types/context';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getCityData from '../../utils/getCityData';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';

@@ -1,7 +1,7 @@
 import { newOption } from '../__fixtures__';
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
 import { OptionModel } from '../../../entities/Option';
-import getLangField from '../../../utils/getLangField';
+import getLangField from '../../../utils/translations/getLangField';
 import { DEFAULT_LANG } from '../../../config';
 
 describe('Options', () => {

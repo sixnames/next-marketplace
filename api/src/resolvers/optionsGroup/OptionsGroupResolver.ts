@@ -14,7 +14,7 @@ import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';

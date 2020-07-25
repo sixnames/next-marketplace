@@ -1,5 +1,5 @@
 import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
-import getLangField from '../../../utils/getLangField';
+import getLangField from '../../../utils/translations/getLangField';
 import {
   DEFAULT_LANG,
   MOCK_OPTIONS_WINE_COLOR,

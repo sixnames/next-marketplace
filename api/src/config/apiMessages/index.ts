@@ -1,3 +1,4 @@
+import commonMessages from './commonMessages';
 import attributesGroupsMessages from './attributesGroupsMessages';
 import languagesMessages from './languagesMessages';
 import productsMessages from './productsMessages';
@@ -8,6 +9,7 @@ import optionsGroupsMessages from './optionsGroupsMessages';
 import rubricsMessages from './rubricsMessages';
 
 const apiMessages = [
+  ...commonMessages,
   ...languagesMessages,
   ...usersMessages,
   ...optionsGroupsMessages,

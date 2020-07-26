@@ -78,14 +78,14 @@ export class LanguageResolver {
   ): Promise<LanguagePayloadType> {
     try {
       const lang = ctx.req.lang;
-      const validationMessages = await getMessagesByKeys([
-        'languages.validation.name',
-        'languages.validation.key',
-        'languages.validation.nativeName',
-        'languages.validation.min',
-        'languages.validation.max',
+      const messages = await getMessagesByKeys([
+        'validation.languages.name',
+        'validation.languages.key',
+        'validation.languages.nativeName',
+        'validation.string.min',
+        'validation.string.max',
       ]);
-      await createLanguageSchema({ messages: validationMessages, lang }).validate(input);
+      await createLanguageSchema({ messages, lang }).validate(input);
 
       const exists = await LanguageModel.exists({
         $or: [
@@ -137,14 +137,14 @@ export class LanguageResolver {
   ): Promise<LanguagePayloadType> {
     try {
       const lang = ctx.req.lang;
-      const validationMessages = await getMessagesByKeys([
-        'languages.validation.name',
-        'languages.validation.key',
-        'languages.validation.nativeName',
-        'languages.validation.min',
-        'languages.validation.max',
+      const messages = await getMessagesByKeys([
+        'validation.languages.name',
+        'validation.languages.key',
+        'validation.languages.nativeName',
+        'validation.string.min',
+        'validation.string.max',
       ]);
-      await updateLanguageSchema({ messages: validationMessages, lang }).validate(input);
+      await updateLanguageSchema({ messages, lang }).validate(input);
 
       const { id, ...values } = input;
       const exists = await LanguageModel.exists({

@@ -1,5 +1,5 @@
 import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../../config';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLE_CUSTOMER } from '../../../config';
 import { max, alex } from '../__fixtures__';
 
 const { email, password, phone, name } = max;
@@ -131,9 +131,11 @@ describe('User', () => {
                 email: "${alex.email}",
                 name: "${alex.name}",
                 phone: "${alex.phone}",
+                role: "${ROLE_CUSTOMER}",
               }
             ) {
              success
+             message
              user {
                id
                email

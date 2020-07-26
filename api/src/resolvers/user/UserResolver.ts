@@ -33,6 +33,7 @@ import {
   updateUserSchema,
 } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -74,9 +75,20 @@ export class UserResolver {
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
-      await createUserSchema.validate(input);
-
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.password',
+        'validation.users.role',
+      ]);
+      await createUserSchema({ messages, lang }).validate(input);
+
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -120,8 +132,19 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
     try {
-      await updateUserSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.users.id',
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.role',
+      ]);
+      await updateUserSchema({ messages, lang }).validate(input);
 
       const { id, ...values } = input;
       const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
@@ -181,8 +204,18 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
     try {
-      await signUpValidationSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.password',
+      ]);
+      await signUpValidationSchema({ messages, lang }).validate(input);
 
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
@@ -226,8 +259,13 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
     try {
-      await signInValidationSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.users.password',
+      ]);
+      await signInValidationSchema({ messages, lang }).validate(input);
 
       const isSignedOut = ensureSignedOut(ctx.req);
 

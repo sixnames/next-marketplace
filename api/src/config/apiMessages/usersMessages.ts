@@ -184,6 +184,84 @@ const usersMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.users.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID пользоывателя обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Имя пользоывателя обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.lastName',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Фамилия пользоывателя обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User Last name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.secondName',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Отчество пользоывателя обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User Second name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.role',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Роль пользоывателя обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User Role is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.password',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Пароль пользоывателя обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'User Password is required.',
+      },
+    ],
+  },
 ];
 
 export default usersMessages;

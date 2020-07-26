@@ -1,19 +1,17 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
 import { StringSchema } from 'yup';
-import { ROLES_ENUM } from '../config';
+import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
 
-export const minPasswordLength = 5;
-export const maxPasswordLength = 30;
+export const minLongNameLength = 5;
+export const maxLongNameLength = 150;
 export const minDescriptionLength = 15;
 export const maxDescriptionLength = 300;
 export const minNameLength = 2;
-// export const minShortNameLength = 1;
 export const maxNameLength = 70;
 export const minPrice = 1;
 
 export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
-export const role = Yup.mixed().oneOf(ROLES_ENUM);
 
 interface LangStringInputSchemaInterface {
   defaultLang: string;
@@ -48,48 +46,38 @@ export const langStringInputSchema = ({
     }),
   );
 
-export const name = Yup.string()
-  .nullable()
-  .min(minNameLength, `Имя должно состоять минимум из ${minNameLength} символов`)
-  .max(maxNameLength, `Имя должно состоять максимум из ${maxNameLength} символов`)
-  .trim()
-  .required('Имя обязателено к заполнению.');
-
 export const color = Yup.lazy((value?: string | null) => {
   return !value
     ? Yup.string().nullable()
     : Yup.string().trim().matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример 333333.');
 });
 
-export const email = Yup.string()
-  .email('Невалидный Email формат')
-  .trim()
-  .required('Email обязателен к заполнению.');
-
-export const password = Yup.string()
-  .min(minPasswordLength, `Пароль должен состоять минимум из ${minPasswordLength} символов`)
-  .max(maxPasswordLength, `Пароль должен состоять максимум из ${maxPasswordLength} символов`)
-  .trim()
-  .required('Пароль обязателен к заполнению.');
-
-export const lastName = Yup.string().max(
-  maxNameLength,
-  `Фамилия должна содержать не больше ${maxNameLength} символов`,
-);
-
-export const secondName = Yup.string().max(
-  maxNameLength,
-  `Отчество должно содержать не больше ${maxNameLength} символов`,
-);
+export const emailSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.string()
+    .email(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'validation.email',
+      }),
+    )
+    .trim()
+    .required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'validation.email.required',
+      }),
+    );
 
 export const cardName = Yup.string()
   .min(
     minNameLength,
-    `Имя карточки товара должно состоять минимум из ${minPasswordLength} символов`,
+    `Имя карточки товара должно состоять минимум из ${minLongNameLength} символов`,
   )
   .max(
     maxNameLength,
-    `Имя карточки товара должно состоять максимум из ${maxPasswordLength} символов`,
+    `Имя карточки товара должно состоять максимум из ${maxLongNameLength} символов`,
   )
   .trim()
   .required('Имя карточки товара обязателено к заполнению.');
@@ -97,14 +85,31 @@ export const cardName = Yup.string()
 export const price = Yup.number().min(minPrice).integer().required();
 
 export const description = Yup.string()
-  .min(minDescriptionLength, `Описание должно состоять минимум из ${minPasswordLength} символов`)
-  .max(maxDescriptionLength, `Описание должно состоять максимум из ${maxPasswordLength} символов`)
+  .min(minDescriptionLength, `Описание должно состоять минимум из ${minDescriptionLength} символов`)
+  .max(
+    maxDescriptionLength,
+    `Описание должно состоять максимум из ${maxDescriptionLength} символов`,
+  )
   .trim()
   .required('Описание обязателено к заполнению.');
 
-export const phone = Yup.string()
-  .matches(phoneRegEx, 'Не валидный телефон')
-  .required('Телефон обязателен к заполнению.');
+export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.string()
+    .matches(
+      phoneRegEx,
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'validation.phone',
+      }),
+    )
+    .required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'validation.phone.required',
+      }),
+    );
 
 // export const role = Yup.string();
 /*

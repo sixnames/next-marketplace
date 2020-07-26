@@ -146,33 +146,7 @@ const languagesMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'languages.validation.min',
-    message: [
-      {
-        key: DEFAULT_LANG,
-        value: 'Минимальное количество символов',
-      },
-      {
-        key: SECONDARY_LANG,
-        value: 'Minimal length is',
-      },
-    ],
-  },
-  {
-    key: 'languages.validation.max',
-    message: [
-      {
-        key: DEFAULT_LANG,
-        value: 'Максимальное количество символов',
-      },
-      {
-        key: SECONDARY_LANG,
-        value: 'Maximum length is',
-      },
-    ],
-  },
-  {
-    key: 'languages.validation.name',
+    key: 'validation.languages.name',
     message: [
       {
         key: DEFAULT_LANG,
@@ -185,7 +159,7 @@ const languagesMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'languages.validation.key',
+    key: 'validation.languages.key',
     message: [
       {
         key: DEFAULT_LANG,
@@ -198,7 +172,7 @@ const languagesMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'languages.validation.nativeName',
+    key: 'validation.languages.nativeName',
     message: [
       {
         key: DEFAULT_LANG,

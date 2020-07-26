@@ -1,5 +1,13 @@
 const messagesKeys = [
-  // Languages
+  // Common validation ----------
+  'validation.string.min',
+  'validation.string.max',
+  'validation.email',
+  'validation.email.required',
+  'validation.phone',
+  'validation.phone.required',
+
+  // Languages ----------
   'languages.setLanguageAsDefault.error',
   'languages.setLanguageAsDefault.success',
   'languages.create.duplicate',
@@ -11,13 +19,12 @@ const messagesKeys = [
   'languages.delete.default',
   'languages.delete.error',
   'languages.delete.success',
-  'languages.validation.min',
-  'languages.validation.max',
-  'languages.validation.name',
-  'languages.validation.key',
-  'languages.validation.nativeName',
+  // Languages validation
+  'validation.languages.name',
+  'validation.languages.key',
+  'validation.languages.nativeName',
 
-  // Users
+  // Users ----------
   'users.create.duplicate',
   'users.create.error',
   'users.create.success',
@@ -32,8 +39,15 @@ const messagesKeys = [
   'users.signIn.success',
   'users.signOut.error',
   'users.signOut.success',
+  // Users validation
+  'validation.users.id',
+  'validation.users.name',
+  'validation.users.lastName',
+  'validation.users.secondName',
+  'validation.users.role',
+  'validation.users.password',
 
-  // Options groups
+  // Options groups ----------
   'optionsGroups.create.duplicate',
   'optionsGroups.create.error',
   'optionsGroups.create.success',
@@ -57,7 +71,7 @@ const messagesKeys = [
   'optionsGroups.deleteOption.error',
   'optionsGroups.deleteOption.success',
 
-  // Attributes groups
+  // Attributes groups ----------
   'attributesGroups.create.duplicate',
   'attributesGroups.create.error',
   'attributesGroups.create.success',
@@ -82,7 +96,7 @@ const messagesKeys = [
   'attributesGroups.deleteAttribute.groupError',
   'attributesGroups.deleteAttribute.success',
 
-  // Rubric variants
+  // Rubric variants ----------
   'rubricVariants.create.duplicate',
   'rubricVariants.create.error',
   'rubricVariants.create.success',
@@ -93,7 +107,7 @@ const messagesKeys = [
   'rubricVariants.delete.error',
   'rubricVariants.delete.success',
 
-  // Rubrics
+  // Rubrics ----------
   'rubrics.create.duplicate',
   'rubrics.create.error',
   'rubrics.create.success',
@@ -122,7 +136,7 @@ const messagesKeys = [
   'rubrics.deleteProduct.error',
   'rubrics.deleteProduct.success',
 
-  // Products
+  // Products ----------
   'products.create.duplicate',
   'products.create.error',
   'products.create.success',
@@ -134,7 +148,7 @@ const messagesKeys = [
   'products.delete.error',
   'products.delete.success',
 
-  // Metrics
+  // Metrics ----------
   'metrics.create.duplicate',
   'metrics.create.error',
   'metrics.create.success',

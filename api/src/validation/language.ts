@@ -9,7 +9,7 @@ const name = ({ messages, lang }: SchemaMessagesInterface) =>
     getValidationFieldMessage({
       messages,
       lang,
-      key: 'languages.validation.name',
+      key: 'validation.languages.name',
     }),
   );
 
@@ -20,7 +20,7 @@ const key = ({ messages, lang }: SchemaMessagesInterface) =>
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.min',
+        key: 'validation.string.min',
       }) + ` ${languageKeyLength}`,
     )
     .max(
@@ -28,14 +28,14 @@ const key = ({ messages, lang }: SchemaMessagesInterface) =>
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.max',
+        key: 'validation.string.max',
       }) + ` ${languageKeyLength}`,
     )
     .required(
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.key',
+        key: 'validation.languages.key',
       }),
     );
 
@@ -46,14 +46,14 @@ const nativeName = ({ messages, lang }: SchemaMessagesInterface) =>
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.min',
+        key: 'validation.string.min',
       }) + ` ${languageKeyLength}`,
     )
     .required(
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.nativeName',
+        key: 'validation.languages.nativeName',
       }),
     );
 

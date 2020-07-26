@@ -49,8 +49,6 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       'validation.attributes.name',
       'validation.attributes.variant',
       'validation.attributes.position',
-      'validation.string.min',
-      'validation.string.max',
     ],
   });
   const { hideModal } = useAppContext();

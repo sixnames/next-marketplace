@@ -17,13 +17,7 @@ const SignInRoute: React.FC = () => {
   const { signInHandler } = useSignIn();
   const validationSchema = useValidationSchema({
     schema: signInValidationSchema,
-    messagesKeys: [
-      'validation.email',
-      'validation.email.required',
-      'validation.users.password',
-      'validation.string.min',
-      'validation.string.max',
-    ],
+    messagesKeys: ['validation.email', 'validation.email.required', 'validation.users.password'],
   });
 
   const initialValues: SignInInput = {

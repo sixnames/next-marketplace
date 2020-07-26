@@ -45,8 +45,6 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
       'validation.option.variantKey',
       'validation.option.variantValue',
       'validation.option.gender',
-      'validation.string.min',
-      'validation.string.max',
     ],
   });
 

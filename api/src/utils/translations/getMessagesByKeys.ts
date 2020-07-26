@@ -1,8 +1,9 @@
 import { MessageModel } from '../../entities/Message';
 import { MessageInterface, MessageKey } from '../../config/apiMessages/messagesKeys';
+import { CONSTANT_VALIDATION_KEYS } from '../../validation';
 
 async function getMessagesByKeys(keys: MessageKey[]): Promise<MessageInterface[]> {
-  const messages = await MessageModel.find({ key: { $in: keys } })
+  const messages = await MessageModel.find({ key: { $in: [...CONSTANT_VALIDATION_KEYS, ...keys] } })
     .lean()
     .exec();
 

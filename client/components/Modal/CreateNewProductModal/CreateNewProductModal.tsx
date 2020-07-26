@@ -25,6 +25,7 @@ import classes from './CreateNewProductModal.module.css';
 import { createProductSchema } from '../../../validation';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface CreateNewProductModalInterface {
   rubricId?: string;
@@ -37,11 +38,22 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   update,
   refetchQueries,
 }) => {
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: createProductSchema,
+    messagesKeys: [
+      'validation.products.attributeId',
+      'validation.products.attributeKey',
+      'validation.products.attributesGroupId',
+      'validation.products.name',
+      'validation.products.cardName',
+      'validation.products.description',
+      'validation.products.rubrics',
+      'validation.products.price',
+      'validation.products.assets',
+    ],
+  });
+
   const { data, loading, error } = useGetRubricsTreeQuery({
     skip: Boolean(rubricId),
     fetchPolicy: 'network-only',
@@ -85,7 +97,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     <ModalFrame testId={'create-new-product-modal'}>
       <ModalTitle>Создание товара</ModalTitle>
       <Formik
-        validationSchema={() => createProductSchema(defaultLang)}
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();

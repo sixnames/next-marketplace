@@ -34,8 +34,6 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
       'validation.languages.name',
       'validation.languages.key',
       'validation.languages.nativeName',
-      'validation.string.min',
-      'validation.string.max',
     ],
   });
 

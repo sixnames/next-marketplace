@@ -25,12 +25,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: optionsGroupModalSchema,
-    messagesKeys: [
-      'validation.optionsGroup.id',
-      'validation.optionsGroup.name',
-      'validation.string.min',
-      'validation.string.max',
-    ],
+    messagesKeys: ['validation.optionsGroup.id', 'validation.optionsGroup.name'],
   });
 
   return (

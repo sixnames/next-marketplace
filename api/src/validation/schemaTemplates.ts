@@ -22,6 +22,14 @@ interface LangStringInputSchemaInterface extends MultiLangSchemaMessagesInterfac
   max?: number;
 }
 
+export const CONSTANT_VALIDATION_KEYS = [
+  'validation.translation.key',
+  'validation.string.min',
+  'validation.string.max',
+  'validation.number.min',
+  'validation.number.max',
+];
+
 export const langStringInputSchema = ({
   defaultLang,
   requiredMessageKey,
@@ -47,12 +55,12 @@ export const langStringInputSchema = ({
                 .min(
                   minLength,
                   getValidationFieldMessage({ messages, lang, key: 'validation.string.min' }) +
-                    `${minLength}`,
+                    ` ${minLength}`,
                 )
                 .max(
                   maxLength,
                   getValidationFieldMessage({ messages, lang, key: 'validation.string.max' }) +
-                    `${maxLength}`,
+                    ` ${maxLength}`,
                 )
                 .required(getValidationFieldMessage({ messages, lang, key: requiredMessageKey }))
             : value.min(0);

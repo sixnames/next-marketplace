@@ -4,140 +4,76 @@ import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidat
 
 const languageKeyLength = 2;
 
-export const createLanguageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
-  Yup.object().shape({
-    name: Yup.string().required(
+const name = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.string().required(
+    getValidationFieldMessage({
+      messages,
+      lang,
+      key: 'languages.validation.name',
+    }),
+  );
+
+const key = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.string()
+    .min(
+      languageKeyLength,
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'languages.validation.name',
+        key: 'languages.validation.min',
+      }) + ` ${languageKeyLength}`,
+    )
+    .max(
+      languageKeyLength,
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.max',
+      }) + ` ${languageKeyLength}`,
+    )
+    .required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.key',
       }),
-    ),
-    key: Yup.string()
-      .min(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.min',
-        }) + ` ${languageKeyLength}`,
-      )
-      .max(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.max',
-        }) + ` ${languageKeyLength}`,
-      )
-      .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.key',
-        }),
-      ),
-    nativeName: Yup.string()
-      .min(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.min',
-        }) + ` ${languageKeyLength}`,
-      )
-      .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.nativeName',
-        }),
-      ),
+    );
+
+const nativeName = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.string()
+    .min(
+      languageKeyLength,
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.min',
+      }) + ` ${languageKeyLength}`,
+    )
+    .required(
+      getValidationFieldMessage({
+        messages,
+        lang,
+        key: 'languages.validation.nativeName',
+      }),
+    );
+
+export const createLanguageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.object().shape({
+    name: name({ messages, lang }),
+    key: key({ messages, lang }),
+    nativeName: nativeName({ messages, lang }),
   });
 
 export const updateLanguageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({
     id,
-    name: Yup.string().required(
-      getValidationFieldMessage({
-        messages,
-        lang,
-        key: 'languages.validation.name',
-      }),
-    ),
-    key: Yup.string()
-      .min(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.min',
-        }) + ` ${languageKeyLength}`,
-      )
-      .max(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.max',
-        }) + ` ${languageKeyLength}`,
-      )
-      .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.key',
-        }) + ` ${languageKeyLength}`,
-      ),
-    nativeName: Yup.string()
-      .min(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.min',
-        }) + ` ${languageKeyLength}`,
-      )
-      .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.nativeName',
-        }),
-      ),
+    name: name({ messages, lang }),
+    key: key({ messages, lang }),
+    nativeName: nativeName({ messages, lang }),
   });
 
 export const languageSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({
-    name: Yup.string().required(
-      getValidationFieldMessage({
-        messages,
-        lang,
-        key: 'languages.validation.name',
-      }),
-    ),
-    key: Yup.string()
-      .min(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.min',
-        }) + ` ${languageKeyLength}`,
-      )
-      .max(
-        languageKeyLength,
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.max',
-        }) + ` ${languageKeyLength}`,
-      )
-      .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
-          key: 'languages.validation.key',
-        }),
-      ),
+    name: name({ messages, lang }),
+    key: key({ messages, lang }),
   });

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { colorSchema, id, langStringInputSchema } from './schemaTemplates';
+import { colorSchema, langStringInputSchema } from './schemaTemplates';
 import { GENDER_ENUMS } from '../config';
 import getValidationFieldMessage, {
   MultiLangSchemaMessagesInterface,
@@ -126,6 +126,6 @@ export const createOptionsGroupSchema = (args: MultiLangSchemaMessagesInterface)
 
 export const updateOptionsGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id,
+    id: optionsGroupIdSchema(args),
     name: optionsGroupNameSchema(args),
   });

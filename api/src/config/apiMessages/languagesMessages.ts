@@ -111,7 +111,7 @@ const languagesMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Язык является основным, его нелья удалить.',
+        value: 'Язык является основным, его нельзя удалить.',
       },
       {
         key: SECONDARY_LANG,
@@ -146,6 +146,19 @@ const languagesMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.languages.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID обязательно к заполнению',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Language ID is required',
+      },
+    ],
+  },
+  {
     key: 'validation.languages.name',
     message: [
       {
@@ -176,7 +189,7 @@ const languagesMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Нативное название языка обязателено к заполнению',
+        value: 'Нативное название языка обязательно к заполнению',
       },
       {
         key: SECONDARY_LANG,

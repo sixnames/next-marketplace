@@ -2,6 +2,8 @@ const messagesKeys = [
   // Common validation ----------
   'validation.string.min',
   'validation.string.max',
+  'validation.number.min',
+  'validation.number.max',
   'validation.email',
   'validation.email.required',
   'validation.phone',
@@ -23,6 +25,7 @@ const messagesKeys = [
   'languages.delete.error',
   'languages.delete.success',
   // Languages validation
+  'validation.languages.id',
   'validation.languages.name',
   'validation.languages.key',
   'validation.languages.nativeName',
@@ -165,6 +168,17 @@ const messagesKeys = [
   'products.delete.notFound',
   'products.delete.error',
   'products.delete.success',
+  // Products validation
+  'validation.products.id',
+  'validation.products.name',
+  'validation.products.cardName',
+  'validation.products.description',
+  'validation.products.rubrics',
+  'validation.products.price',
+  'validation.products.attributesGroupId',
+  'validation.products.attributeId',
+  'validation.products.attributeKey',
+  'validation.products.assets',
 
   // Metrics ----------
   'metrics.create.duplicate',

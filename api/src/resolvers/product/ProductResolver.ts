@@ -38,6 +38,7 @@ import { createProductSchema, updateProductSchema } from '../../validation';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -163,10 +164,20 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createProductSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.products.name',
+        'validation.products.cardName',
+        'validation.products.description',
+        'validation.products.rubrics',
+        'validation.products.price',
+        'validation.number.min',
+        'validation.products.assets',
+        'validation.products.attributesGroupId',
+        'validation.products.attributeId',
+        'validation.products.attributeKey',
+      ]);
+      await createProductSchema({ lang, messages, defaultLang }).validate(input);
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -239,10 +250,21 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateProductSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.products.id',
+        'validation.products.name',
+        'validation.products.cardName',
+        'validation.products.description',
+        'validation.products.rubrics',
+        'validation.products.price',
+        'validation.number.min',
+        'validation.products.assets',
+        'validation.products.attributesGroupId',
+        'validation.products.attributeId',
+        'validation.products.attributeKey',
+      ]);
+      await updateProductSchema({ lang, messages, defaultLang }).validate(input);
 
       const { id, assets, ...values } = input;
 

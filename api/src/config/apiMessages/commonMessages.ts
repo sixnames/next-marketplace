@@ -29,6 +29,32 @@ const commonMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.number.min',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Минимальное значение',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Minimal value is',
+      },
+    ],
+  },
+  {
+    key: 'validation.number.max',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Максимальное значение',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Maximum value is',
+      },
+    ],
+  },
+  {
     key: 'validation.email',
     message: [
       {

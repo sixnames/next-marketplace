@@ -11,25 +11,25 @@ import getValidationFieldMessage, {
   SchemaMessagesInterface,
 } from './getValidationFieldMessage';
 
-const attributesGroupIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const attributesGroupIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'validation.attributesGroup.id',
+        key: 'validation.attributesGroups.id',
       }),
     );
 
-const attributeIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const attributeIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'validation.attribute.id',
+        key: 'validation.attributes.id',
       }),
     );
 
@@ -42,7 +42,7 @@ const attributesGroupNameSchema = ({
     defaultLang,
     messages,
     lang,
-    requiredMessageKey: 'validation.attributesGroup.name',
+    requiredMessageKey: 'validation.attributesGroups.name',
   });
 
 const options = Yup.string()
@@ -72,7 +72,7 @@ const attributePositioningInTitleSchema = ({ messages, lang }: SchemaMessagesInt
         getValidationFieldMessage({
           messages,
           lang,
-          key: 'validation.attribute.position',
+          key: 'validation.attributes.position',
         }),
       ),
   });
@@ -84,7 +84,7 @@ const attributeVariantSchema = ({ messages, lang }: SchemaMessagesInterface) =>
       getValidationFieldMessage({
         messages,
         lang,
-        key: 'validation.attribute.variant',
+        key: 'validation.attributes.variant',
       }),
     );
 
@@ -97,7 +97,7 @@ const attributeCommonFields = ({
     defaultLang,
     messages,
     lang,
-    requiredMessageKey: 'validation.attribute.name',
+    requiredMessageKey: 'validation.attributes.name',
   }),
   variant: attributeVariantSchema({ lang, messages }),
   metric,

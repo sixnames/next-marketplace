@@ -6,7 +6,7 @@ import { ROLES_ENUM } from '../config';
 const minPasswordLength = 5;
 const maxPasswordLength = 30;
 
-const id = ({ messages, lang }: SchemaMessagesInterface) =>
+const userIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
@@ -17,7 +17,7 @@ const id = ({ messages, lang }: SchemaMessagesInterface) =>
       }),
     );
 
-const name = ({ messages, lang }: SchemaMessagesInterface) =>
+const userNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
@@ -45,7 +45,7 @@ const name = ({ messages, lang }: SchemaMessagesInterface) =>
       }),
     );
 
-const lastName = ({ messages, lang }: SchemaMessagesInterface) =>
+const userLastNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .trim()
@@ -58,7 +58,7 @@ const lastName = ({ messages, lang }: SchemaMessagesInterface) =>
       }) + ` ${maxNameLength}`,
     );
 
-const secondName = ({ messages, lang }: SchemaMessagesInterface) =>
+const userSecondNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .trim()
@@ -98,7 +98,7 @@ const passwordSchema = ({ messages, lang }: SchemaMessagesInterface) =>
       }),
     );
 
-const roleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userRoleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.mixed()
     .oneOf(ROLES_ENUM)
     .required(
@@ -111,23 +111,23 @@ const roleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
 
 export const updateUserSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({
-    id: id({ messages, lang }),
+    id: userIdSchema({ messages, lang }),
     email: emailSchema({ messages, lang }),
-    name: name({ messages, lang }),
-    lastName: lastName({ messages, lang }),
-    secondName: secondName({ messages, lang }),
+    name: userNameSchema({ messages, lang }),
+    lastName: userLastNameSchema({ messages, lang }),
+    secondName: userSecondNameSchema({ messages, lang }),
     phone: phoneSchema({ messages, lang }),
-    role: roleSchema({ messages, lang }),
+    role: userRoleSchema({ messages, lang }),
   });
 
 export const createUserSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({
     email: emailSchema({ messages, lang }),
-    name: name({ messages, lang }),
-    lastName: lastName({ messages, lang }),
-    secondName: secondName({ messages, lang }),
+    name: userNameSchema({ messages, lang }),
+    lastName: userLastNameSchema({ messages, lang }),
+    secondName: userSecondNameSchema({ messages, lang }),
     phone: phoneSchema({ messages, lang }),
-    role: roleSchema({ messages, lang }),
+    role: userRoleSchema({ messages, lang }),
   });
 
 export const signInValidationSchema = ({ messages, lang }: SchemaMessagesInterface) =>
@@ -139,9 +139,9 @@ export const signInValidationSchema = ({ messages, lang }: SchemaMessagesInterfa
 export const signUpValidationSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({
     email: emailSchema({ messages, lang }),
-    name: name({ messages, lang }),
-    lastName: lastName({ messages, lang }),
-    secondName: secondName({ messages, lang }),
+    name: userNameSchema({ messages, lang }),
+    lastName: userLastNameSchema({ messages, lang }),
+    secondName: userSecondNameSchema({ messages, lang }),
     phone: phoneSchema({ messages, lang }),
     password: passwordSchema({ messages, lang }),
   });

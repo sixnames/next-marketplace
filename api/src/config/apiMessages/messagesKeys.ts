@@ -110,12 +110,12 @@ const messagesKeys = [
   'attributesGroups.deleteAttribute.groupError',
   'attributesGroups.deleteAttribute.success',
   // Attributes groups validation
-  'validation.attributesGroup.id',
-  'validation.attributesGroup.name',
-  'validation.attribute.id',
-  'validation.attribute.name',
-  'validation.attribute.variant',
-  'validation.attribute.position',
+  'validation.attributesGroups.id',
+  'validation.attributesGroups.name',
+  'validation.attributes.id',
+  'validation.attributes.name',
+  'validation.attributes.variant',
+  'validation.attributes.position',
 
   // Rubric variants ----------
   'rubricVariants.create.duplicate',
@@ -156,6 +156,13 @@ const messagesKeys = [
   'rubrics.deleteProduct.notFound',
   'rubrics.deleteProduct.error',
   'rubrics.deleteProduct.success',
+  // Rubric validation
+  'validation.rubrics.id',
+  'validation.rubrics.name',
+  'validation.rubrics.variant',
+  'validation.rubrics.defaultTitle',
+  'validation.rubrics.keyword',
+  'validation.rubrics.gender',
 
   // Products ----------
   'products.create.duplicate',
@@ -193,6 +200,9 @@ const messagesKeys = [
   // Metrics validation
   'validation.metrics.id',
   'validation.metrics.name',
+
+  // Fallback for empty key
+  'none',
 ] as const;
 
 export type MessageKey = typeof messagesKeys[number];

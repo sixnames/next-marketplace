@@ -66,6 +66,7 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
 import { GenderEnum, LanguageType } from '../../entities/common';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -120,10 +121,15 @@ export class RubricResolver {
     @Arg('input') input: CreateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createRubricInputSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.name',
+        'validation.rubrics.variant',
+        'validation.rubrics.defaultTitle',
+        'validation.rubrics.keyword',
+        'validation.rubrics.gender',
+      ]);
+      await createRubricInputSchema({ messages, defaultLang, lang }).validate(input);
 
       const { parent, name } = input;
 
@@ -198,10 +204,17 @@ export class RubricResolver {
     @Arg('input') input: UpdateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateRubricInputSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.rubrics.name',
+        'validation.rubrics.variant',
+        'validation.rubrics.defaultTitle',
+        'validation.rubrics.keyword',
+        'validation.rubrics.gender',
+      ]);
+      await updateRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { id, ...values } = input;
       const rubric = await RubricModel.findById(id).lean().exec();
 
@@ -382,9 +395,13 @@ export class RubricResolver {
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await addAttributesGroupToRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+      ]);
+      await addAttributesGroupToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
@@ -473,9 +490,15 @@ export class RubricResolver {
     @Arg('input') input: UpdateAttributesGroupInRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      await updateAttributesGroupInRubricInputSchema.validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
+      ]);
+      await updateAttributesGroupInRubricInputSchema({ messages, defaultLang, lang }).validate(
+        input,
+      );
 
       const { rubricId, attributesGroupId, attributeId } = input;
       const rubric = await RubricModel.findOne({
@@ -566,9 +589,14 @@ export class RubricResolver {
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      await deleteAttributesGroupFromRubricInputSchema.validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+      ]);
+      await deleteAttributesGroupFromRubricInputSchema({ messages, defaultLang, lang }).validate(
+        input,
+      );
 
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
@@ -640,9 +668,10 @@ export class RubricResolver {
     @Arg('input') input: AddProductToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await addProductToRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
+      await addProductToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
@@ -719,9 +748,10 @@ export class RubricResolver {
     @Arg('input') input: DeleteProductFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await deleteProductFromRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
+      await deleteProductFromRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({

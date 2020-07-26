@@ -302,7 +302,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attributesGroup.id',
+    key: 'validation.attributesGroups.id',
     message: [
       {
         key: DEFAULT_LANG,
@@ -315,7 +315,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attributesGroup.name',
+    key: 'validation.attributesGroups.name',
     message: [
       {
         key: DEFAULT_LANG,
@@ -328,7 +328,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attribute.id',
+    key: 'validation.attributes.id',
     message: [
       {
         key: DEFAULT_LANG,
@@ -341,7 +341,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attribute.name',
+    key: 'validation.attributes.name',
     message: [
       {
         key: DEFAULT_LANG,
@@ -354,7 +354,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attribute.variant',
+    key: 'validation.attributes.variant',
     message: [
       {
         key: DEFAULT_LANG,
@@ -367,7 +367,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.attribute.position',
+    key: 'validation.attributes.position',
     message: [
       {
         key: DEFAULT_LANG,

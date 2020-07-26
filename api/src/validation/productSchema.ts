@@ -6,7 +6,7 @@ import {
 } from './getValidationFieldMessage';
 import getValidationFieldMessage from '../../../client/validation/getValidationFieldMessage';
 
-const productIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const productIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(

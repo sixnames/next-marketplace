@@ -71,7 +71,7 @@ export class AttributesGroupResolver {
   ): Promise<AttributesGroupPayloadType> {
     try {
       const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.attributesGroup.name']);
+      const messages = await getMessagesByKeys(['validation.attributesGroups.name']);
       await createAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
@@ -118,8 +118,8 @@ export class AttributesGroupResolver {
     try {
       const { lang, defaultLang } = ctx.req;
       const messages = await getMessagesByKeys([
-        'validation.attributesGroup.id',
-        'validation.attributesGroup.name',
+        'validation.attributesGroups.id',
+        'validation.attributesGroups.name',
       ]);
       await updateAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
@@ -231,11 +231,11 @@ export class AttributesGroupResolver {
     try {
       const { lang, defaultLang } = ctx.req;
       const messages = await getMessagesByKeys([
-        'validation.attributesGroup.id',
+        'validation.attributesGroups.id',
         'validation.translation.key',
-        'validation.attribute.position',
-        'validation.attribute.name',
-        'validation.attribute.variant',
+        'validation.attributes.position',
+        'validation.attributes.name',
+        'validation.attributes.variant',
       ]);
       await addAttributeToGroupSchema({ defaultLang, lang, messages }).validate(input);
 
@@ -313,12 +313,12 @@ export class AttributesGroupResolver {
     try {
       const { lang, defaultLang } = ctx.req;
       const messages = await getMessagesByKeys([
-        'validation.attributesGroup.id',
-        'validation.attribute.id',
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
         'validation.translation.key',
-        'validation.attribute.position',
-        'validation.attribute.name',
-        'validation.attribute.variant',
+        'validation.attributes.position',
+        'validation.attributes.name',
+        'validation.attributes.variant',
       ]);
       await updateAttributeInGroupSchema({ defaultLang, lang, messages }).validate(input);
 
@@ -381,8 +381,8 @@ export class AttributesGroupResolver {
     try {
       const { lang, defaultLang } = ctx.req;
       const messages = await getMessagesByKeys([
-        'validation.attributesGroup.id',
-        'validation.attribute.id',
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
       ]);
       await deleteAttributeFromGroupSchema({ defaultLang, lang, messages }).validate(input);
 

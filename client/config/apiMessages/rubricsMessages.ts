@@ -353,6 +353,84 @@ const rubricsMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.rubrics.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID рубрики обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubrics.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название рубрики обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric Name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubrics.variant',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Тип рубрики обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric Variant is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubrics.defaultTitle',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Заголовок каталога обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric catalogue default title is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubrics.keyword',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ключевое слово рубрики обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric keyword is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubrics.gender',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Род ключевого слова обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric keyword gender is required.',
+      },
+    ],
+  },
 ];
 
 export default rubricsMessages;

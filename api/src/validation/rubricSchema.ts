@@ -10,8 +10,10 @@ import { productIdSchema } from './productSchema';
 
 const parent = Yup.string().nullable();
 
-const variant = (args: SchemaMessagesInterface) =>
-  Yup.string().required(getValidationFieldMessage({ ...args, key: 'validation.rubrics.variant' }));
+const rubricVariantSchema = (args: SchemaMessagesInterface) =>
+  Yup.string()
+    .nullable()
+    .required(getValidationFieldMessage({ ...args, key: 'validation.rubrics.variant' }));
 
 const rubricIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
@@ -45,7 +47,7 @@ const rubricCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   }),
   catalogueTitle: rubricCatalogueTitleSchema(args),
   parent,
-  variant: variant({ messages: args.messages, lang: args.lang }),
+  variant: rubricVariantSchema({ messages: args.messages, lang: args.lang }),
 });
 
 export const createRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>

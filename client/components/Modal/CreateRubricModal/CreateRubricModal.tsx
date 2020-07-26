@@ -18,6 +18,7 @@ import { createRubricInputSchema } from '../../../validation';
 import { RUBRIC_LEVEL_TWO } from '../../../config';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
@@ -26,11 +27,17 @@ export interface CreateRubricModalInterface {
 
 const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubrics }) => {
   const { hideModal } = useAppContext();
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: createRubricInputSchema,
+    messagesKeys: [
+      'validation.rubrics.name',
+      'validation.rubrics.variant',
+      'validation.rubrics.defaultTitle',
+      'validation.rubrics.keyword',
+      'validation.rubrics.gender',
+    ],
+  });
   const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   if (loading) return <Spinner />;
@@ -47,7 +54,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
       <ModalTitle>Добавление рубрики</ModalTitle>
 
       <Formik
-        validationSchema={() => createRubricInputSchema(defaultLang)}
+        validationSchema={validationSchema}
         initialValues={{
           name: getLanguageFieldInitialValue(),
           variant: null,
@@ -122,17 +129,15 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
                 options={data.getGenderOptions || []}
               />
 
-              {!parent && (
-                <FormikSelect
-                  isRequired
-                  showInlineError
-                  firstOption={'Не выбран'}
-                  label={'Тип рубрики'}
-                  name={'variant'}
-                  testId={'rubric-variant'}
-                  options={data?.getAllRubricVariants || []}
-                />
-              )}
+              <FormikSelect
+                isRequired
+                showInlineError
+                firstOption={'Не выбран'}
+                label={'Тип рубрики'}
+                name={'variant'}
+                testId={'rubric-variant'}
+                options={data?.getAllRubricVariants || []}
+              />
 
               <FormikSelect
                 firstOption={'Не выбрано'}

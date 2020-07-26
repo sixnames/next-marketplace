@@ -1,14 +1,11 @@
 import { MessageKey } from '../config/apiMessages/messagesKeys';
 import { useGetMessagesByKeysQuery } from '../generated/apolloComponents';
-import {
-  MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
-} from '../validation/getValidationFieldMessage';
+import { MultiLangSchemaMessagesInterface } from '../validation/getValidationFieldMessage';
 import { useLanguageContext } from '../context/languageContext';
 import * as Yup from 'yup';
 
 interface UseValidationSchemaInterface {
-  schema: (args: SchemaMessagesInterface | MultiLangSchemaMessagesInterface) => Yup.ObjectSchema;
+  schema: (args: MultiLangSchemaMessagesInterface) => Yup.ObjectSchema;
   messagesKeys: MessageKey[];
 }
 

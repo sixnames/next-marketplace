@@ -21,6 +21,7 @@ import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { OptionInGroupType } from '../../../routes/OptionsGroups/OptionsGroupsContent';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface OptionInGroupModalInterface {
   confirm: (
@@ -33,12 +34,21 @@ export interface OptionInGroupModalInterface {
 
 const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, option }) => {
   const { data, loading, error } = useGetGenderOptionsQuery();
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
   const { hideModal } = useAppContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: optionInGroupSchema,
+    messagesKeys: [
+      'validation.optionsGroup.id',
+      'validation.option.id',
+      'validation.option.name',
+      'validation.option.variantKey',
+      'validation.option.variantValue',
+      'validation.option.gender',
+      'validation.string.min',
+      'validation.string.max',
+    ],
+  });
 
   if (error || (!loading && !data)) {
     return (
@@ -95,7 +105,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
       <ModalTitle>{option ? 'Редактирование опции' : 'Создание опции'}</ModalTitle>
 
       <Formik
-        validationSchema={() => optionInGroupSchema(defaultLang)}
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           confirm({

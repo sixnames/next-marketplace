@@ -948,6 +948,15 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+export const INITIAL_LANGUAGES = [
+  {
+    key: DEFAULT_LANG,
+    name: 'Русский',
+    nativeName: 'Русский',
+    isDefault: true,
+  },
+];
+
 export const MOCK_LANGUAGES = [
   {
     key: DEFAULT_LANG,

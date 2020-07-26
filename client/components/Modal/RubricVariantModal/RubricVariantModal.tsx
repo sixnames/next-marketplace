@@ -12,7 +12,8 @@ import {
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
-import { optionsGroupModalSchema } from '../../../validation';
+import { rubricVariantModalSchema } from '../../../validation';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface RubricVariantModalInterface {
   name?: LanguageType[];
@@ -20,11 +21,11 @@ export interface RubricVariantModalInterface {
 }
 
 const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ name, confirm }) => {
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: rubricVariantModalSchema,
+    messagesKeys: ['validation.rubricVariants.id', 'validation.rubricVariants.name'],
+  });
   const { hideModal } = useAppContext();
 
   return (
@@ -40,7 +41,7 @@ const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ name, confi
             name: getLanguageFieldInputValue(name),
           });
         }}
-        validationSchema={optionsGroupModalSchema(defaultLang)}
+        validationSchema={validationSchema}
       >
         {() => {
           return (

@@ -6,6 +6,7 @@
     "predev": "rimraf ./dist",
     "dev": "ts-node-dev --poll --transpileOnly --no-notify src",
     "watch-config": "copy-and-watch --watch src/config/{mocks,common}.ts ../client/config",
+    "watch-messages": "copy-and-watch --watch src/config/apiMessages/** ../client/config/apiMessages",
     "watch-validation": "copy-and-watch --watch src/validation/** ../client/validation",
     "start": "node ./dist/src/index.js",
     "build": "rimraf ./dist && tsc",

@@ -13,6 +13,7 @@ import {
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import { attributesGroupModalSchema } from '../../../validation';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface AttributesGroupModalInterface {
   name?: LanguageType[];
@@ -20,11 +21,11 @@ export interface AttributesGroupModalInterface {
 }
 
 const AttributesGroupModal: React.FC<AttributesGroupModalInterface> = ({ name, confirm }) => {
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: attributesGroupModalSchema,
+    messagesKeys: ['validation.attributesGroups.id', 'validation.attributesGroups.name'],
+  });
   const { hideModal } = useAppContext();
 
   return (
@@ -40,7 +41,7 @@ const AttributesGroupModal: React.FC<AttributesGroupModalInterface> = ({ name, c
             name: getLanguageFieldInputValue(name),
           });
         }}
-        validationSchema={attributesGroupModalSchema(defaultLang)}
+        validationSchema={validationSchema}
       >
         {() => {
           return (

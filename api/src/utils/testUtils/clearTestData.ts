@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import createInitialData from '../createInitialData';
+import createInitialData from '../initialData/createInitialData';
 
 const clearTestData = async () => {
   const modelsNames = mongoose.modelNames();

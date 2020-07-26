@@ -25,7 +25,6 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import { getMessageTranslation } from '../../config/translations';
 import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '../../config';
 import {
   createUserSchema,
@@ -33,6 +32,8 @@ import {
   signUpValidationSchema,
   updateUserSchema,
 } from '../../validation';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -74,14 +75,25 @@ export class UserResolver {
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
-      await createUserSchema.validate(input);
-
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.password',
+        'validation.users.role',
+      ]);
+      await createUserSchema({ messages, lang }).validate(input);
+
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
         };
       }
 
@@ -100,13 +112,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.error.${lang}`),
+          message: await getApiMessage({ key: `users.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.create.success.${lang}`),
+        message: await getApiMessage({ key: `users.create.success`, lang }),
         user,
       };
     } catch (e) {
@@ -120,8 +132,19 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
     try {
-      await updateUserSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.users.id',
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.role',
+      ]);
+      await updateUserSchema({ messages, lang }).validate(input);
 
       const { id, ...values } = input;
       const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
@@ -129,20 +152,20 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.update.duplicate`, lang }),
         };
       }
 
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.update.error.${lang}`),
+          message: await getApiMessage({ key: `users.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.update.success.${lang}`),
+        message: await getApiMessage({ key: `users.update.success`, lang }),
         user,
       };
     } catch (e) {
@@ -162,13 +185,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.delete.error.${lang}`),
+          message: await getApiMessage({ key: `users.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`user.delete.success.${lang}`),
+        message: await getApiMessage({ key: `users.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -181,14 +204,24 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
     try {
-      await signUpValidationSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.string.min',
+        'validation.string.max',
+        'validation.users.name',
+        'validation.phone',
+        'validation.phone.required',
+        'validation.users.password',
+      ]);
+      await signUpValidationSchema({ messages, lang }).validate(input);
 
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
         };
       }
 
@@ -204,7 +237,7 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: getMessageTranslation(`user.create.error.${lang}`),
+          message: await getApiMessage({ key: `users.create.error`, lang }),
         };
       }
 
@@ -212,7 +245,7 @@ export class UserResolver {
 
       return {
         success: true,
-        message: getMessageTranslation(`user.create.success.${lang}`),
+        message: await getApiMessage({ key: `users.create.success`, lang }),
         user,
       };
     } catch (e) {
@@ -226,15 +259,20 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
     try {
-      await signInValidationSchema.validate(input);
       const lang = ctx.req.lang;
+      const messages = await getMessagesByKeys([
+        'validation.email',
+        'validation.email.required',
+        'validation.users.password',
+      ]);
+      await signInValidationSchema({ messages, lang }).validate(input);
 
       const isSignedOut = ensureSignedOut(ctx.req);
 
       if (!isSignedOut) {
         return {
           success: false,
-          message: getMessageTranslation(`user.signIn.authorized.${lang}`),
+          message: await getApiMessage({ key: `users.signIn.authorized`, lang }),
         };
       }
 
@@ -276,12 +314,12 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: getMessageTranslation(`user.signOut.error.${lang}`),
+          message: await getApiMessage({ key: `users.signOut.error`, lang }),
         };
       }
       return {
         success: true,
-        message: getMessageTranslation(`user.signOut.success.${lang}`),
+        message: await getApiMessage({ key: `users.signOut.success`, lang }),
       };
     } catch (e) {
       return {

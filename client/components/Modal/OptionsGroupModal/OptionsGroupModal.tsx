@@ -13,6 +13,7 @@ import {
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import { optionsGroupModalSchema } from '../../../validation';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface OptionsGroupModalInterface {
   name?: LanguageType[];
@@ -20,12 +21,12 @@ export interface OptionsGroupModalInterface {
 }
 
 const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm }) => {
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const { hideModal } = useAppContext();
+  const validationSchema = useValidationSchema({
+    schema: optionsGroupModalSchema,
+    messagesKeys: ['validation.optionsGroup.id', 'validation.optionsGroup.name'],
+  });
 
   return (
     <ModalFrame testId={'options-group-modal'}>
@@ -40,7 +41,7 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ name, confirm
             name: getLanguageFieldInputValue(name),
           });
         }}
-        validationSchema={optionsGroupModalSchema(defaultLang)}
+        validationSchema={validationSchema}
       >
         {() => {
           return (

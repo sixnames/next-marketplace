@@ -19,7 +19,7 @@ import {
 } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import getCityData from '../../utils/getCityData';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -31,7 +31,6 @@ import { Types } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
-import { getMessageTranslation } from '../../config/translations';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToRubricInput } from './AddProductToRubricInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
@@ -66,6 +65,8 @@ import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRub
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
 import { GenderEnum, LanguageType } from '../../entities/common';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 interface ParentRelatedDataInterface {
   variant: null | undefined | string;
@@ -120,10 +121,15 @@ export class RubricResolver {
     @Arg('input') input: CreateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createRubricInputSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.name',
+        'validation.rubrics.variant',
+        'validation.rubrics.defaultTitle',
+        'validation.rubrics.keyword',
+        'validation.rubrics.gender',
+      ]);
+      await createRubricInputSchema({ messages, defaultLang, lang }).validate(input);
 
       const { parent, name } = input;
 
@@ -138,7 +144,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `rubrics.create.duplicate`, lang }),
         };
       }
 
@@ -175,13 +181,13 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.create.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.create.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.create.success`, lang }),
         rubric,
       };
     } catch (e) {
@@ -198,17 +204,24 @@ export class RubricResolver {
     @Arg('input') input: UpdateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateRubricInputSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.rubrics.name',
+        'validation.rubrics.variant',
+        'validation.rubrics.defaultTitle',
+        'validation.rubrics.keyword',
+        'validation.rubrics.gender',
+      ]);
+      await updateRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { id, ...values } = input;
       const rubric = await RubricModel.findById(id).lean().exec();
 
       if (!rubric) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.update.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.update.notFound`, lang }),
         };
       }
       const currentCity = getCityData(rubric.cities, city);
@@ -226,7 +239,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `rubrics.update.duplicate`, lang }),
         };
       }
 
@@ -256,13 +269,13 @@ export class RubricResolver {
       if (!updatedRubric) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.update.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.update.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.update.success`, lang }),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -291,7 +304,7 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.delete.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.delete.notFound`, lang }),
         };
       }
 
@@ -318,13 +331,13 @@ export class RubricResolver {
         if (!removed.ok || !updatedProducts.ok) {
           return {
             success: false,
-            message: getMessageTranslation(`rubric.delete.error.${lang}`),
+            message: await getApiMessage({ key: `rubrics.delete.error`, lang }),
           };
         }
 
         return {
           success: true,
-          message: getMessageTranslation(`rubric.delete.success.${lang}`),
+          message: await getApiMessage({ key: `rubrics.delete.success`, lang }),
         };
       }
 
@@ -360,13 +373,13 @@ export class RubricResolver {
       if (!removed.ok || !updatedProducts.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.delete.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.delete.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -382,9 +395,13 @@ export class RubricResolver {
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await addAttributesGroupToRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+      ]);
+      await addAttributesGroupToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
         'cities.key': city,
@@ -395,7 +412,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addAttributesGroup.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addAttributesGroup.notFound`, lang }),
         };
       }
       const groupAttributes = await AttributeModel.find({
@@ -450,13 +467,13 @@ export class RubricResolver {
       if (!updatedChildrenRubrics.ok || !updatedOwnerRubric) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addAttributesGroup.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addAttributesGroup.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.addAttributesGroup.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.addAttributesGroup.success`, lang }),
         rubric: updatedOwnerRubric,
       };
     } catch (e) {
@@ -473,9 +490,15 @@ export class RubricResolver {
     @Arg('input') input: UpdateAttributesGroupInRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      await updateAttributesGroupInRubricInputSchema.validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
+      ]);
+      await updateAttributesGroupInRubricInputSchema({ messages, defaultLang, lang }).validate(
+        input,
+      );
 
       const { rubricId, attributesGroupId, attributeId } = input;
       const rubric = await RubricModel.findOne({
@@ -488,7 +511,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.notFound`, lang }),
         };
       }
 
@@ -497,7 +520,7 @@ export class RubricResolver {
       if (!currentCityData) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.notFound`, lang }),
         };
       }
 
@@ -510,7 +533,7 @@ export class RubricResolver {
       if (!currentAttributesGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.updateAttributesGroup.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.notFound`, lang }),
         };
       }
 
@@ -541,7 +564,7 @@ export class RubricResolver {
       if (!isUpdated.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.updateAttributesGroup.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.error`, lang }),
         };
       }
 
@@ -549,7 +572,7 @@ export class RubricResolver {
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.updateAttributesGroup.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.updateAttributesGroup.success`, lang }),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -566,9 +589,14 @@ export class RubricResolver {
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      await deleteAttributesGroupFromRubricInputSchema.validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubrics.id',
+        'validation.attributesGroups.id',
+      ]);
+      await deleteAttributesGroupFromRubricInputSchema({ messages, defaultLang, lang }).validate(
+        input,
+      );
 
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
@@ -581,7 +609,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteAttributesGroup.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.notFound`, lang }),
         };
       }
 
@@ -593,7 +621,7 @@ export class RubricResolver {
       if (!currentGroup || !currentGroup.isOwner) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteAttributesGroup.ownerError.${lang}`),
+          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.ownerError`, lang }),
         };
       }
 
@@ -615,7 +643,7 @@ export class RubricResolver {
       if (!updatedRubrics.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteAttributesGroup.error.${lang}`),
+          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.error`, lang }),
         };
       }
 
@@ -623,7 +651,7 @@ export class RubricResolver {
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.deleteAttributesGroup.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.success`, lang }),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -640,9 +668,10 @@ export class RubricResolver {
     @Arg('input') input: AddProductToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await addProductToRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
+      await addProductToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
@@ -658,7 +687,7 @@ export class RubricResolver {
       if (!rubric || !product) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addProduct.notFound`, lang }),
         };
       }
 
@@ -667,7 +696,7 @@ export class RubricResolver {
       if (!productCity) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addProduct.notFound`, lang }),
         };
       }
 
@@ -676,7 +705,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.exists.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addProduct.exists`, lang }),
         };
       }
 
@@ -695,14 +724,14 @@ export class RubricResolver {
       if (!updatedProduct.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.addProduct.addToProductError.${lang}`),
+          message: await getApiMessage({ key: `rubrics.addProduct.error`, lang }),
           rubric,
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.addProduct.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.addProduct.success`, lang }),
         rubric,
       };
     } catch (e) {
@@ -719,9 +748,10 @@ export class RubricResolver {
     @Arg('input') input: DeleteProductFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      await deleteProductFromRubricInputSchema.validate(input);
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
+      await deleteProductFromRubricInputSchema({ messages, defaultLang, lang }).validate(input);
+
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
@@ -737,7 +767,7 @@ export class RubricResolver {
       if (!rubric || !product) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteProduct.notFound.${lang}`),
+          message: await getApiMessage({ key: `rubrics.deleteProduct.notFound`, lang }),
         };
       }
 
@@ -756,14 +786,14 @@ export class RubricResolver {
       if (!updatedProduct.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`rubric.deleteProduct.deleteFromProductError.${lang}`),
+          message: await getApiMessage({ key: `rubrics.deleteProduct.error`, lang }),
           rubric,
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubric.deleteProduct.success.${lang}`),
+        message: await getApiMessage({ key: `rubrics.deleteProduct.success`, lang }),
         rubric,
       };
     } catch (e) {

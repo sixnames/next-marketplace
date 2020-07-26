@@ -21,6 +21,7 @@ import classes from './ProductDetails.module.css';
 import { updateProductSchema } from '../../validation';
 import { useLanguageContext } from '../../context/languageContext';
 import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
+import useValidationSchema from '../../hooks/useValidationSchema';
 
 interface ProductDetailsInterface {
   product: GetProductQuery['getProduct'];
@@ -28,11 +29,23 @@ interface ProductDetailsInterface {
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   const files = useUrlFiles(product.assets);
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: updateProductSchema,
+    messagesKeys: [
+      'validation.products.id',
+      'validation.products.attributeId',
+      'validation.products.attributeKey',
+      'validation.products.attributesGroupId',
+      'validation.products.name',
+      'validation.products.cardName',
+      'validation.products.description',
+      'validation.products.rubrics',
+      'validation.products.price',
+      'validation.products.assets',
+    ],
+  });
+
   const { data, loading, error } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -78,7 +91,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     <InnerWide testId={'product-details'}>
       <Formik
         enableReinitialize
-        validationSchema={() => updateProductSchema(defaultLang)}
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();

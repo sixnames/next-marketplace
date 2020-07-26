@@ -221,6 +221,12 @@ type LanguageType {
   value: String!
 }
 
+type Message {
+  id: ID!
+  key: String!
+  message: [LanguageType!]!
+}
+
 type Metric {
   id: ID!
   name: [LanguageType!]!
@@ -463,6 +469,8 @@ type Query {
   getGenderOptions: [GenderOption!]!
   getISOLanguagesList: [ISOLanguage!]!
   getLanguage(id: ID!): Language
+  getMessage(key: String!): Message!
+  getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup

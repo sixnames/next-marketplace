@@ -14,7 +14,7 @@ import { AttributesGroup, AttributesGroupModel } from '../../entities/Attributes
 import { DocumentType } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -23,7 +23,7 @@ import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
 import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
-import { getMessageTranslation } from '../../config/translations';
+
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
@@ -32,6 +32,8 @@ import {
   updateAttributesGroupSchema,
 } from '../../validation';
 import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -68,9 +70,9 @@ export class AttributesGroupResolver {
     @Arg('input') input: CreateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createAttributesGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.attributesGroups.name']);
+      await createAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await AttributesGroupModel.exists({
@@ -82,7 +84,7 @@ export class AttributesGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.create.duplicate`, lang }),
         };
       }
 
@@ -91,13 +93,13 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.create.error.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.create.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.create.success`, lang }),
         group,
       };
     } catch (e) {
@@ -114,9 +116,12 @@ export class AttributesGroupResolver {
     @Arg('input') input: UpdateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateAttributesGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroups.id',
+        'validation.attributesGroups.name',
+      ]);
+      await updateAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { id, ...values } = input;
 
@@ -129,7 +134,7 @@ export class AttributesGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.update.duplicate`, lang }),
         };
       }
 
@@ -140,13 +145,13 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.update.error.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.update.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.update.success`, lang }),
         group,
       };
     } catch (e) {
@@ -174,7 +179,7 @@ export class AttributesGroupResolver {
       if (connectedWithRubrics) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.delete.used.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.delete.used`, lang }),
         };
       }
 
@@ -182,7 +187,7 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.delete.notFound.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.delete.notFound`, lang }),
         };
       }
 
@@ -193,7 +198,7 @@ export class AttributesGroupResolver {
       if (!removedAttributes.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.delete.attributesError.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.delete.attributesError`, lang }),
         };
       }
 
@@ -202,13 +207,13 @@ export class AttributesGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.delete.error.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.delete.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -224,16 +229,23 @@ export class AttributesGroupResolver {
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await addAttributeToGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroups.id',
+        'validation.translation.key',
+        'validation.attributes.position',
+        'validation.attributes.name',
+        'validation.attributes.variant',
+      ]);
+      await addAttributeToGroupSchema({ defaultLang, lang, messages }).validate(input);
+
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
 
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.addAttribute.groupError.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.addAttribute.groupError`, lang }),
         };
       }
 
@@ -247,7 +259,7 @@ export class AttributesGroupResolver {
       if (existingAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.addAttribute.duplicate.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.addAttribute.duplicate`, lang }),
         };
       }
 
@@ -256,7 +268,10 @@ export class AttributesGroupResolver {
       if (!attribute) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.addAttribute.attributeError.${lang}`),
+          message: await getApiMessage({
+            key: `attributesGroups.addAttribute.attributeError`,
+            lang,
+          }),
         };
       }
 
@@ -273,13 +288,13 @@ export class AttributesGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.addAttribute.addError.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.addAttribute.addError`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.addAttribute.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.addAttribute.success`, lang }),
         group: updatedGroup,
       };
     } catch (e) {
@@ -296,9 +311,16 @@ export class AttributesGroupResolver {
     @Arg('input') input: UpdateAttributeInGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateAttributeInGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
+        'validation.translation.key',
+        'validation.attributes.position',
+        'validation.attributes.name',
+        'validation.attributes.variant',
+      ]);
+      await updateAttributeInGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, attributeId, ...values } = input;
 
@@ -306,7 +328,10 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.updateAttribute.groupError.${lang}`),
+          message: await getApiMessage({
+            key: `attributesGroups.updateAttribute.groupError`,
+            lang,
+          }),
         };
       }
 
@@ -320,7 +345,7 @@ export class AttributesGroupResolver {
       if (existingAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.updateAttribute.duplicate.${lang}`),
+          message: await getApiMessage({ key: `attributesGroups.updateAttribute.duplicate`, lang }),
         };
       }
 
@@ -328,13 +353,16 @@ export class AttributesGroupResolver {
       if (!attribute) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.updateAttribute.updateError.${lang}`),
+          message: await getApiMessage({
+            key: `attributesGroups.updateAttribute.updateError`,
+            lang,
+          }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.updateAttribute.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.updateAttribute.success`, lang }),
         group,
       };
     } catch (e) {
@@ -351,15 +379,22 @@ export class AttributesGroupResolver {
     @Arg('input') input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      await deleteAttributeFromGroupSchema.validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroups.id',
+        'validation.attributes.id',
+      ]);
+      await deleteAttributeFromGroupSchema({ defaultLang, lang, messages }).validate(input);
 
-      const lang = ctx.req.lang;
       const { groupId, attributeId } = input;
       const attribute = await AttributeModel.findByIdAndDelete(attributeId);
       if (!attribute) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.deleteAttribute.deleteError.${lang}`),
+          message: await getApiMessage({
+            key: `attributesGroups.deleteAttribute.deleteError`,
+            lang,
+          }),
         };
       }
 
@@ -371,13 +406,16 @@ export class AttributesGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`attributesGroup.deleteAttribute.groupError.${lang}`),
+          message: await getApiMessage({
+            key: `attributesGroups.deleteAttribute.groupError`,
+            lang,
+          }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`attributesGroup.deleteAttribute.success.${lang}`),
+        message: await getApiMessage({ key: `attributesGroups.deleteAttribute.success`, lang }),
         group,
       };
     } catch (e) {

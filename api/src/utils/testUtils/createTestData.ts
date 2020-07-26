@@ -1,5 +1,5 @@
 import clearTestData from './clearTestData';
-import createInitialData from '../createInitialData';
+import createInitialData from '../initialData/createInitialData';
 import { OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import {
@@ -187,7 +187,7 @@ const createTestData = async () => {
     // Clear old test data
     await clearTestData();
 
-    // Metrics and admin user
+    // Initial data
     await createInitialData();
 
     const languages = await LanguageModel.find({ key: DEFAULT_LANG });

@@ -287,6 +287,97 @@ const optionsGroupsMessages = [
       },
     ],
   },
+  {
+    key: 'validation.optionsGroup.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID группы опций обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Options group ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.optionsGroup.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название группы опций обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Options group name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.option.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID опции обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Option ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.option.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название опции обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Option name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.option.variantKey',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ключ рода опции обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Option variant gender key is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.option.variantValue',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Значение рода опции',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Option variant value is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.option.gender',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Значение рода опции',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Option gender is required.',
+      },
+    ],
+  },
 ];
 
 export default optionsGroupsMessages;

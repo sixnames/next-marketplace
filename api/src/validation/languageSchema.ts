@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id } from './templates';
+import { id } from './schemaTemplates';
 import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
 
 const languageKeyLength = 2;

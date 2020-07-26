@@ -72,11 +72,50 @@ const commonMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Телефон пользоывателя обязателен к заполнению.',
+        value: 'Телефон пользователя обязателен к заполнению.',
       },
       {
         key: SECONDARY_LANG,
         value: 'User Phone is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.color',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Цвет должен быть в HEX формате. Пример fafafa.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Invalid color format. Example fafafa',
+      },
+    ],
+  },
+  {
+    key: 'validation.color.required',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Цвет обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Color is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.translation.key',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ключ языка обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Language key is required.',
       },
     ],
   },

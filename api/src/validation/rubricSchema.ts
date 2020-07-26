@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema } from './templates';
+import { id, langStringInputSchema } from './schemaTemplates';
 import { GENDER_ENUMS } from '../config';
 
 const parent = Yup.string().nullable();

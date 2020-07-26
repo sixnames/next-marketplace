@@ -32,6 +32,7 @@ import {
 } from '../../validation';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -57,9 +58,9 @@ export class OptionsGroupResolver {
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createOptionsGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.optionsGroup.name']);
+      await createOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await OptionsGroupModel.exists({
@@ -103,9 +104,12 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateOptionsGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.optionsGroup.name',
+        'validation.optionsGroup.id',
+      ]);
+      await updateOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { id, ...values } = input;
 
@@ -200,9 +204,17 @@ export class OptionsGroupResolver {
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await addOptionToGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.name',
+        'validation.option.gender',
+        'validation.option.variantKey',
+        'validation.option.variantValue',
+        'validation.color',
+        'validation.color.required',
+        'validation.optionsGroup.id',
+      ]);
+      await addOptionToGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, ...values } = input;
       const group = await OptionsGroupModel.findById(groupId);
@@ -273,9 +285,18 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateOptionInGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.name',
+        'validation.option.gender',
+        'validation.option.variantKey',
+        'validation.option.variantValue',
+        'validation.color',
+        'validation.color.required',
+        'validation.option.id',
+        'validation.optionsGroup.id',
+      ]);
+      await updateOptionInGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, optionId, color, name, gender, variants } = input;
       const group = await OptionsGroupModel.findById(groupId);
@@ -339,8 +360,13 @@ export class OptionsGroupResolver {
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      await deleteOptionFromGroupSchema.validate(input);
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.id',
+        'validation.optionsGroup.id',
+      ]);
+      await deleteOptionFromGroupSchema({ lang, messages }).validate(input);
+
       const { groupId, optionId } = input;
       const option = await OptionModel.findByIdAndDelete(optionId);
 

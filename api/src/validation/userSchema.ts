@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './templates';
+import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './schemaTemplates';
 import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
 import { ROLES_ENUM } from '../config';
 

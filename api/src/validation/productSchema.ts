@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema, minPrice } from './templates';
+import { id, langStringInputSchema, minPrice } from './schemaTemplates';
 
 export const productAttributeSchema = Yup.object().shape({
   showInCard: Yup.boolean().required(

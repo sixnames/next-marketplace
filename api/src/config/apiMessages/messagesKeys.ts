@@ -6,6 +6,9 @@ const messagesKeys = [
   'validation.email.required',
   'validation.phone',
   'validation.phone.required',
+  'validation.color',
+  'validation.color.required',
+  'validation.translation.key',
 
   // Languages ----------
   'languages.setLanguageAsDefault.error',
@@ -70,6 +73,14 @@ const messagesKeys = [
   'optionsGroups.deleteOption.groupError',
   'optionsGroups.deleteOption.error',
   'optionsGroups.deleteOption.success',
+  // Options groups validation
+  'validation.optionsGroup.id',
+  'validation.optionsGroup.name',
+  'validation.option.id',
+  'validation.option.name',
+  'validation.option.variantKey',
+  'validation.option.variantValue',
+  'validation.option.gender',
 
   // Attributes groups ----------
   'attributesGroups.create.duplicate',

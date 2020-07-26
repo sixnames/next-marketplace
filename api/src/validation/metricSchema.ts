@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema } from './templates';
+import { id, langStringInputSchema } from './schemaTemplates';
 
 export const createMetricInputSchema = (defaultLang: string) =>
   Yup.object().shape({

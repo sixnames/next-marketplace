@@ -6,6 +6,10 @@ export interface SchemaMessagesInterface {
   messages: MessageInterface[];
 }
 
+export interface MultiLangSchemaMessagesInterface extends SchemaMessagesInterface {
+  defaultLang: string;
+}
+
 interface GetValidationFieldMessageInterface {
   messages: MessageInterface[];
   key: MessageKey;

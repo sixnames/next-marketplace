@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema } from './templates';
+import { id, langStringInputSchema } from './schemaTemplates';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,

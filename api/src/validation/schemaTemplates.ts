@@ -1,7 +1,11 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
 import { StringSchema } from 'yup';
-import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
+import getValidationFieldMessage, {
+  MultiLangSchemaMessagesInterface,
+  SchemaMessagesInterface,
+} from './getValidationFieldMessage';
+import { MessageKey } from '../config/apiMessages/messagesKeys';
 
 export const minLongNameLength = 5;
 export const maxLongNameLength = 150;
@@ -11,22 +15,25 @@ export const minNameLength = 2;
 export const maxNameLength = 70;
 export const minPrice = 1;
 
-export const id = Yup.string().nullable().required('ID обязателено к заполнению.');
+export const id = Yup.string().nullable().required('ID обязательно к заполнению.');
 
-interface LangStringInputSchemaInterface {
-  defaultLang: string;
-  entityMessage?: string;
+interface LangStringInputSchemaInterface extends MultiLangSchemaMessagesInterface {
+  requiredMessageKey: MessageKey;
   required?: boolean;
 }
 
 export const langStringInputSchema = ({
   defaultLang,
-  entityMessage,
+  requiredMessageKey,
   required = true,
+  messages,
+  lang,
 }: LangStringInputSchemaInterface) =>
   Yup.array().of(
     Yup.object({
-      key: Yup.string().trim().required('Ключ языка обязателен к заполнению.'),
+      key: Yup.string()
+        .trim()
+        .required(getValidationFieldMessage({ messages, lang, key: 'validation.translation.key' })),
       value: Yup.string()
         .trim()
         .when('key', (key: string, value: StringSchema) => {
@@ -34,23 +41,35 @@ export const langStringInputSchema = ({
             ? value
                 .min(
                   minNameLength,
-                  `${entityMessage} должно состоять минимум из ${minNameLength} символов`,
+                  getValidationFieldMessage({ messages, lang, key: 'validation.string.min' }) +
+                    `${minNameLength}`,
                 )
                 .max(
                   maxNameLength,
-                  `${entityMessage} должно состоять максимум из ${maxNameLength} символов`,
+                  getValidationFieldMessage({ messages, lang, key: 'validation.string.max' }) +
+                    `${maxNameLength}`,
                 )
-                .required(`${entityMessage} обязателено к заполнению.`)
+                .required(getValidationFieldMessage({ messages, lang, key: requiredMessageKey }))
             : value.min(0);
         }),
     }),
   );
 
-export const color = Yup.lazy((value?: string | null) => {
-  return !value
-    ? Yup.string().nullable()
-    : Yup.string().trim().matches(colorRegEx, 'Цвет должен быть в HEX формате. Пример 333333.');
-});
+export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+  Yup.lazy((value?: string | null) => {
+    return !value
+      ? Yup.string().nullable()
+      : Yup.string()
+          .trim()
+          .matches(
+            colorRegEx,
+            getValidationFieldMessage({
+              messages,
+              lang,
+              key: 'validation.color',
+            }),
+          );
+  });
 
 export const emailSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
@@ -80,7 +99,7 @@ export const cardName = Yup.string()
     `Имя карточки товара должно состоять максимум из ${maxLongNameLength} символов`,
   )
   .trim()
-  .required('Имя карточки товара обязателено к заполнению.');
+  .required('Имя карточки товара обязательно к заполнению.');
 
 export const price = Yup.number().min(minPrice).integer().required();
 
@@ -91,7 +110,7 @@ export const description = Yup.string()
     `Описание должно состоять максимум из ${maxDescriptionLength} символов`,
   )
   .trim()
-  .required('Описание обязателено к заполнению.');
+  .required('Описание обязательно к заполнению.');
 
 export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
@@ -110,15 +129,3 @@ export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
         key: 'validation.phone.required',
       }),
     );
-
-// export const role = Yup.string();
-/*
-
-export const startDate = Yup.date().min(new Date(), 'Дата начала должна быть позже текущего времени.').required();
-export const endDate = Yup.date().min(new Date(), 'Дата окончания должна быть позже текущего времени.').required();
-export const title = Yup.string().min(3).max(50).required('Заголовок обязателен к заполнению.');
-export const arrayOfIds = Yup.array().of(Yup.string());
-export const description = Yup.string().min(2).max(300);
-export const image = Yup.object();
-export const quantity = Yup.number().min(0).integer().required();
-export const selfDelivery = Yup.boolean();*/

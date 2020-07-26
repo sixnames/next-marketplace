@@ -33,6 +33,7 @@ import {
 } from '../../validation';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -69,9 +70,9 @@ export class AttributesGroupResolver {
     @Arg('input') input: CreateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createAttributesGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.attributesGroup.name']);
+      await createAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await AttributesGroupModel.exists({
@@ -115,9 +116,12 @@ export class AttributesGroupResolver {
     @Arg('input') input: UpdateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateAttributesGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroup.id',
+        'validation.attributesGroup.name',
+      ]);
+      await updateAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { id, ...values } = input;
 
@@ -225,9 +229,16 @@ export class AttributesGroupResolver {
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await addAttributeToGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroup.id',
+        'validation.translation.key',
+        'validation.attribute.position',
+        'validation.attribute.name',
+        'validation.attribute.variant',
+      ]);
+      await addAttributeToGroupSchema({ defaultLang, lang, messages }).validate(input);
+
       const { groupId, ...values } = input;
       const group = await AttributesGroupModel.findById(groupId);
 
@@ -300,9 +311,16 @@ export class AttributesGroupResolver {
     @Arg('input') input: UpdateAttributeInGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateAttributeInGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroup.id',
+        'validation.attribute.id',
+        'validation.translation.key',
+        'validation.attribute.position',
+        'validation.attribute.name',
+        'validation.attribute.variant',
+      ]);
+      await updateAttributeInGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, attributeId, ...values } = input;
 
@@ -361,9 +379,13 @@ export class AttributesGroupResolver {
     @Arg('input') input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      await deleteAttributeFromGroupSchema.validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.attributesGroup.id',
+        'validation.attribute.id',
+      ]);
+      await deleteAttributeFromGroupSchema({ defaultLang, lang, messages }).validate(input);
 
-      const lang = ctx.req.lang;
       const { groupId, attributeId } = input;
       const attribute = await AttributeModel.findByIdAndDelete(attributeId);
       if (!attribute) {

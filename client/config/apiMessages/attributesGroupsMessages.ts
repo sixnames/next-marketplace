@@ -7,7 +7,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов с таким именем уже существует.',
+        value: 'Группа атрибутов с таким именем уже существует.',
       },
       {
         key: SECONDARY_LANG,
@@ -46,7 +46,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов с таким именем уже существует.',
+        value: 'Группа атрибутов с таким именем уже существует.',
       },
       {
         key: SECONDARY_LANG,
@@ -59,7 +59,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка обновления группы аттрибутов.',
+        value: 'Ошибка обновления группы атрибутов.',
       },
       {
         key: SECONDARY_LANG,
@@ -72,7 +72,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов обновлена.',
+        value: 'Группа атрибутов обновлена.',
       },
       {
         key: SECONDARY_LANG,
@@ -85,7 +85,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов используется в рубриках, её нельзя удалить.',
+        value: 'Группа атрибутов используется в рубриках, её нельзя удалить.',
       },
       {
         key: SECONDARY_LANG,
@@ -98,7 +98,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов не найдена.',
+        value: 'Группа атрибутов не найдена.',
       },
       {
         key: SECONDARY_LANG,
@@ -124,7 +124,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка удаления группы аттрибутов.',
+        value: 'Ошибка удаления группы атрибутов.',
       },
       {
         key: SECONDARY_LANG,
@@ -137,7 +137,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов удалена.',
+        value: 'Группа атрибутов удалена.',
       },
       {
         key: SECONDARY_LANG,
@@ -150,7 +150,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов не найдена.',
+        value: 'Группа атрибутов не найдена.',
       },
       {
         key: SECONDARY_LANG,
@@ -163,7 +163,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка создания аттрибута.',
+        value: 'Ошибка создания атрибута.',
       },
       {
         key: SECONDARY_LANG,
@@ -189,7 +189,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка привязки аттрибута к группе.',
+        value: 'Ошибка привязки атрибута к группе.',
       },
       {
         key: SECONDARY_LANG,
@@ -215,7 +215,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов не найдена.',
+        value: 'Группа атрибутов не найдена.',
       },
       {
         key: SECONDARY_LANG,
@@ -241,7 +241,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка обновления аттрибута.',
+        value: 'Ошибка обновления атрибута.',
       },
       {
         key: SECONDARY_LANG,
@@ -267,7 +267,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Ошибка удаления аттрибута.',
+        value: 'Ошибка удаления атрибута.',
       },
       {
         key: SECONDARY_LANG,
@@ -280,7 +280,7 @@ const attributesGroupsMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Группа аттрибутов не найдена.',
+        value: 'Группа атрибутов не найдена.',
       },
       {
         key: SECONDARY_LANG,
@@ -298,6 +298,84 @@ const attributesGroupsMessages: MessageInterface[] = [
       {
         key: SECONDARY_LANG,
         value: 'Attribute updated.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attributesGroup.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID группы атрибутов обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attributes group ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attributesGroup.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название группы атрибутов обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attributes group Name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attribute.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID атрибута обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attribute.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название атрибута обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute Name is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attribute.variant',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Тип атрибута обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute Variant is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.attribute.position',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Позиционирование атрибута в заголовке каталога обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute position in catalogue title is required.',
       },
     ],
   },

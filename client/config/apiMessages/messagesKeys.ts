@@ -106,6 +106,13 @@ const messagesKeys = [
   'attributesGroups.deleteAttribute.deleteError',
   'attributesGroups.deleteAttribute.groupError',
   'attributesGroups.deleteAttribute.success',
+  // Attributes groups validation
+  'validation.attributesGroup.id',
+  'validation.attributesGroup.name',
+  'validation.attribute.id',
+  'validation.attribute.name',
+  'validation.attribute.variant',
+  'validation.attribute.position',
 
   // Rubric variants ----------
   'rubricVariants.create.duplicate',

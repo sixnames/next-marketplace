@@ -1,10 +1,14 @@
 import * as Yup from 'yup';
-import { langStringInputSchema, minPrice } from './schemaTemplates';
 import {
+  langStringInputSchema,
+  maxDescriptionLength,
+  minDescriptionLength,
+  minPrice,
+} from './schemaTemplates';
+import getValidationFieldMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
 } from './getValidationFieldMessage';
-import getValidationFieldMessage from '../../../client/validation/getValidationFieldMessage';
 
 export const productIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
@@ -71,6 +75,8 @@ const productCommonFields = ({
     defaultLang,
     messages,
     lang,
+    min: minDescriptionLength,
+    max: maxDescriptionLength,
     requiredMessageKey: 'validation.products.description',
   }),
   rubrics: Yup.array().of(

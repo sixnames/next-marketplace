@@ -1,18 +1,32 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema } from './schemaTemplates';
+import { langStringInputSchema } from './schemaTemplates';
+import getValidationFieldMessage, {
+  MultiLangSchemaMessagesInterface,
+} from './getValidationFieldMessage';
 
-export const rubricVariantModalSchema = (defaultLang: string) =>
+const rubricVariantNameSchema = (args: MultiLangSchemaMessagesInterface) =>
+  langStringInputSchema({ ...args, requiredMessageKey: 'validation.rubricVariants.name' });
+
+export const rubricVariantModalSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    name: langStringInputSchema({ defaultLang, entityMessage: 'Название типа рубрики' }),
+    name: rubricVariantNameSchema(args),
   });
 
-export const createRubricVariantInputSchema = (defaultLang: string) =>
+export const createRubricVariantInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    name: langStringInputSchema({ defaultLang, entityMessage: 'Название типа рубрики' }),
+    name: rubricVariantNameSchema(args),
   });
 
-export const updateRubricVariantSchema = (defaultLang: string) =>
+export const updateRubricVariantSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id,
-    name: langStringInputSchema({ defaultLang, entityMessage: 'Название типа рубрики' }),
+    id: Yup.string()
+      .nullable()
+      .required(
+        getValidationFieldMessage({
+          messages: args.messages,
+          lang: args.lang,
+          key: 'validation.rubrics.id',
+        }),
+      ),
+    name: rubricVariantNameSchema(args),
   });

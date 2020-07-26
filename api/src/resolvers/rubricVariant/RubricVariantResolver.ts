@@ -21,6 +21,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
 import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {
@@ -46,9 +47,9 @@ export class RubricVariantResolver {
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createRubricVariantInputSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubricVariants.name']);
+      await createRubricVariantInputSchema({ defaultLang, messages, lang }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
@@ -91,9 +92,12 @@ export class RubricVariantResolver {
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateRubricVariantSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubricVariants.name',
+        'validation.rubricVariants.id',
+      ]);
+      await updateRubricVariantSchema({ defaultLang, messages, lang }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({

@@ -119,6 +119,32 @@ const rubricVariantsMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.rubricVariants.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'ID типа рубрики обязательно для заполнения.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric variant ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.rubricVariants.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название типа рубрики обязательно для заполнения.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Rubric variant Name is required.',
+      },
+    ],
+  },
 ];
 
 export default rubricVariantsMessages;

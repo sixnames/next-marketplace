@@ -15,11 +15,11 @@ export const minNameLength = 2;
 export const maxNameLength = 70;
 export const minPrice = 1;
 
-export const id = Yup.string().nullable().required('ID обязательно к заполнению.');
-
 interface LangStringInputSchemaInterface extends MultiLangSchemaMessagesInterface {
   requiredMessageKey: MessageKey;
   required?: boolean;
+  min?: number;
+  max?: number;
 }
 
 export const langStringInputSchema = ({
@@ -28,8 +28,13 @@ export const langStringInputSchema = ({
   required = true,
   messages,
   lang,
-}: LangStringInputSchemaInterface) =>
-  Yup.array().of(
+  min,
+  max,
+}: LangStringInputSchemaInterface) => {
+  const minLength = min || minNameLength;
+  const maxLength = max || maxNameLength;
+
+  return Yup.array().of(
     Yup.object({
       key: Yup.string()
         .trim()
@@ -40,20 +45,21 @@ export const langStringInputSchema = ({
           return key === defaultLang && required
             ? value
                 .min(
-                  minNameLength,
+                  minLength,
                   getValidationFieldMessage({ messages, lang, key: 'validation.string.min' }) +
-                    `${minNameLength}`,
+                    `${minLength}`,
                 )
                 .max(
-                  maxNameLength,
+                  maxLength,
                   getValidationFieldMessage({ messages, lang, key: 'validation.string.max' }) +
-                    `${maxNameLength}`,
+                    `${maxLength}`,
                 )
                 .required(getValidationFieldMessage({ messages, lang, key: requiredMessageKey }))
             : value.min(0);
         }),
     }),
   );
+};
 
 export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.lazy((value?: string | null) => {
@@ -88,29 +94,6 @@ export const emailSchema = ({ messages, lang }: SchemaMessagesInterface) =>
         key: 'validation.email.required',
       }),
     );
-
-export const cardName = Yup.string()
-  .min(
-    minNameLength,
-    `Имя карточки товара должно состоять минимум из ${minLongNameLength} символов`,
-  )
-  .max(
-    maxNameLength,
-    `Имя карточки товара должно состоять максимум из ${maxLongNameLength} символов`,
-  )
-  .trim()
-  .required('Имя карточки товара обязательно к заполнению.');
-
-export const price = Yup.number().min(minPrice).integer().required();
-
-export const description = Yup.string()
-  .min(minDescriptionLength, `Описание должно состоять минимум из ${minDescriptionLength} символов`)
-  .max(
-    maxDescriptionLength,
-    `Описание должно состоять максимум из ${maxDescriptionLength} символов`,
-  )
-  .trim()
-  .required('Описание обязательно к заполнению.');
 
 export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()

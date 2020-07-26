@@ -127,6 +127,9 @@ const messagesKeys = [
   'rubricVariants.delete.used',
   'rubricVariants.delete.error',
   'rubricVariants.delete.success',
+  // Rubric variants validation
+  'validation.rubricVariants.id',
+  'validation.rubricVariants.name',
 
   // Rubrics ----------
   'rubrics.create.duplicate',

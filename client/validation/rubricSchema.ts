@@ -55,7 +55,7 @@ export const createRubricInputSchema = (args: MultiLangSchemaMessagesInterface) 
 
 export const updateRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    rubricId: rubricIdSchema(args),
+    id: rubricIdSchema(args),
     ...rubricCommonFields(args),
   });
 

@@ -12,27 +12,27 @@ services:
       - .testing.env
     volumes:
       - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
-#  api:
-#    container_name: api
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.testing
-#      context: ./api
-#    depends_on:
-#      - mongo
-#    ports:
-#    - '4000:4000'
-#    env_file:
-#      - .testing.env
-#  site:
-#    container_name: site
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.testing
-#      context: client
-#    depends_on:
-#      - api
-#    ports:
-#      - '3000:3000'
-#    env_file:
-#      - .testing.env
+  api:
+    container_name: api
+    restart: always
+    build:
+      dockerfile: Dockerfile.testing
+      context: ./api
+    depends_on:
+      - mongo
+    ports:
+    - '4000:4000'
+    env_file:
+      - .testing.env
+  site:
+    container_name: site
+    restart: always
+    build:
+      dockerfile: Dockerfile.testing
+      context: client
+    depends_on:
+      - api
+    ports:
+      - '3000:3000'
+    env_file:
+      - .testing.env

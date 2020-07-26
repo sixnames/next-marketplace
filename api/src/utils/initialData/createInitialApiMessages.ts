@@ -9,6 +9,7 @@ import rubricVariantsMessages from '../../config/apiMessages/rubricVariantsMessa
 import rubricsMessages from '../../config/apiMessages/rubricsMessages';
 import productsMessages from '../../config/apiMessages/productsMessages';
 import metricsMessages from '../../config/apiMessages/metricsMessages';
+import commonMessages from '../../config/apiMessages/commonMessages';
 
 interface MessageInterface {
   key: string;
@@ -31,6 +32,7 @@ async function createInitialApiMessagesGroup({ name, messages }: CreateInitialAp
 
 async function createInitialApiMessages() {
   const config = [
+    { name: 'Общее', messages: commonMessages },
     { name: 'Языки', messages: languagesMessages },
     { name: 'Пользователи', messages: usersMessages },
     { name: 'Группы опций', messages: optionsGroupsMessages },

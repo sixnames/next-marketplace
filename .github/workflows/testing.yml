@@ -5,7 +5,24 @@ on:
     branches: [ develop ]
 
 jobs:
-  apiTest:
+#  apiTest:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        node-version: [12.x]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Development
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#
+#      - run: yarn install:api
+#      - run: yarn test:api
+
+#  clientTest:
+  tesiting:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,22 +35,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: docker-compose -f docker-compose.testing.yml up -d
       - run: yarn install:api
       - run: yarn test:api
-
-  clientTest:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Development
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
+      - run: yarn build:api:testing
+      - run: yarn start:api:testing
       - run: yarn install:client
-      - run: docker-compose -f docker-compose.testing.yml up -d --build
+      - run: yarn build:client:testing
+      - run: yarn start:client:testing
       - run: yarn test:client

@@ -9,7 +9,9 @@
     "watch-messages": "copy-and-watch --watch src/config/apiMessages/** ../client/config/apiMessages",
     "watch-validation": "copy-and-watch --watch src/validation/** ../client/validation",
     "start": "node ./dist/src/index.js",
+    "start:testing": "env-cmd -f .testing.env node ./dist/src/index.js",
     "build": "rimraf ./dist && tsc",
+    "build:testing": "rimraf ./dist && env-cmd -f .testing.env tsc",
     "test": "jest --runInBand --detectOpenHandles --coverage --forceExit",
     "test:watch": "jest --watch --runInBand --detectOpenHandles"
   },
@@ -73,6 +75,7 @@
     "jest": "^26.0.1",
     "ts-jest": "^26.1.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "env-cmd": "^10.1.0"
   }
 }

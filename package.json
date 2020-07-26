@@ -25,13 +25,17 @@
     "install:api": "cd api && yarn",
     "dev:api": "cd api && yarn dev",
     "build:api": "cd api && yarn build",
+    "build:api:testing": "cd api && yarn build:testing",
     "start:api": "cd api && yarn start",
+    "start:api:testing": "cd api && yarn start:testing",
     "test:api": "cd api && yarn test",
 
     "install:client": "cd client && yarn",
     "dev:client": "cd client && yarn dev",
     "build:client": "cd client && yarn build",
+    "build:client:testing": "cd client && yarn build:testing",
     "start:client": "cd client && yarn start",
+    "start:client:testing": "cd client && yarn start:testing",
     "test:client": "cd client && yarn test",
 
     "watch-config": "cd api && yarn watch-config",

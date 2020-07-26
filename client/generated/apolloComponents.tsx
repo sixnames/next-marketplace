@@ -46,6 +46,8 @@ export type Query = {
   getLanguage?: Maybe<Language>;
   getAllLanguages?: Maybe<Array<Language>>;
   getClientLanguage: Scalars['String'];
+  getMessage: Message;
+  getMessagesByKeys: Array<Message>;
 };
 
 
@@ -142,6 +144,16 @@ export type QueryGetCatalogueDataArgs = {
 
 export type QueryGetLanguageArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetMessageArgs = {
+  key: Scalars['String'];
+};
+
+
+export type QueryGetMessagesByKeysArgs = {
+  keys: Array<Scalars['String']>;
 };
 
 export type User = {
@@ -547,6 +559,13 @@ export type Language = {
   name: Scalars['String'];
   nativeName: Scalars['String'];
   isDefault: Scalars['Boolean'];
+};
+
+export type Message = {
+   __typename?: 'Message';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  message: Array<LanguageType>;
 };
 
 export type Mutation = {
@@ -1669,6 +1688,23 @@ export type GetAllLanguagesQueryQuery = (
     { __typename?: 'Language' }
     & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
   )>> }
+);
+
+export type GetMessagesByKeysQueryVariables = {
+  keys: Array<Scalars['String']>;
+};
+
+
+export type GetMessagesByKeysQuery = (
+  { __typename?: 'Query' }
+  & { getMessagesByKeys: Array<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'key'>
+    & { message: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )> }
 );
 
 export type GetAllOptionsGroupsQueryVariables = {};
@@ -3480,6 +3516,43 @@ export function useGetAllLanguagesQueryLazyQuery(baseOptions?: ApolloReactHooks.
 export type GetAllLanguagesQueryQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryQuery>;
 export type GetAllLanguagesQueryLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryLazyQuery>;
 export type GetAllLanguagesQueryQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>;
+export const GetMessagesByKeysDocument = gql`
+    query GetMessagesByKeys($keys: [String!]!) {
+  getMessagesByKeys(keys: $keys) {
+    key
+    message {
+      key
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMessagesByKeysQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesByKeysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesByKeysQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesByKeysQuery({
+ *   variables: {
+ *      keys: // value for 'keys'
+ *   },
+ * });
+ */
+export function useGetMessagesByKeysQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>(GetMessagesByKeysDocument, baseOptions);
+      }
+export function useGetMessagesByKeysLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>(GetMessagesByKeysDocument, baseOptions);
+        }
+export type GetMessagesByKeysQueryHookResult = ReturnType<typeof useGetMessagesByKeysQuery>;
+export type GetMessagesByKeysLazyQueryHookResult = ReturnType<typeof useGetMessagesByKeysLazyQuery>;
+export type GetMessagesByKeysQueryResult = ApolloReactCommon.QueryResult<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>;
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {

@@ -189,7 +189,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'ID пользоывателя обязательно к заполнению.',
+        value: 'ID пользователя обязательно к заполнению.',
       },
       {
         key: SECONDARY_LANG,
@@ -202,7 +202,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Имя пользоывателя обязательно к заполнению.',
+        value: 'Имя пользователя обязательно к заполнению.',
       },
       {
         key: SECONDARY_LANG,
@@ -215,7 +215,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Фамилия пользоывателя обязательна к заполнению.',
+        value: 'Фамилия пользователя обязательна к заполнению.',
       },
       {
         key: SECONDARY_LANG,
@@ -228,7 +228,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Отчество пользоывателя обязательно к заполнению.',
+        value: 'Отчество пользователя обязательно к заполнению.',
       },
       {
         key: SECONDARY_LANG,
@@ -241,7 +241,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Роль пользоывателя обязательна к заполнению.',
+        value: 'Роль пользователя обязательна к заполнению.',
       },
       {
         key: SECONDARY_LANG,
@@ -254,7 +254,7 @@ const usersMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Пароль пользоывателя обязателен к заполнению.',
+        value: 'Пароль пользователя обязателен к заполнению.',
       },
       {
         key: SECONDARY_LANG,

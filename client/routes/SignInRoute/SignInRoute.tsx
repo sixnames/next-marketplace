@@ -10,10 +10,21 @@ import Inner from '../../components/Inner/Inner';
 import classes from './SignInRoute.module.css';
 import useSignIn from '../../hooks/useSignIn';
 import { signInValidationSchema } from '../../validation';
+import useValidationSchema from '../../hooks/useValidationSchema';
 
 const SignInRoute: React.FC = () => {
   const { me } = useUserContext();
   const { signInHandler } = useSignIn();
+  const validationSchema = useValidationSchema({
+    schema: signInValidationSchema,
+    messagesKeys: [
+      'validation.email',
+      'validation.email.required',
+      'validation.users.password',
+      'validation.string.min',
+      'validation.string.max',
+    ],
+  });
 
   const initialValues: SignInInput = {
     email: '',
@@ -30,7 +41,7 @@ const SignInRoute: React.FC = () => {
     <Formik
       validateOnBlur={false}
       validateOnChange={false}
-      validationSchema={signInValidationSchema}
+      validationSchema={validationSchema}
       onSubmit={signInHandler}
       initialValues={initialValues}
     >

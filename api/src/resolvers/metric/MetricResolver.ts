@@ -21,6 +21,7 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
 import { createMetricInputSchema, updateMetricSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {
@@ -46,9 +47,9 @@ export class MetricResolver {
     @Arg('input') input: CreateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createMetricInputSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.metrics.name']);
+      await createMetricInputSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
@@ -91,9 +92,12 @@ export class MetricResolver {
     @Arg('input') input: UpdateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateMetricSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.metrics.name',
+        'validation.metrics.id',
+      ]);
+      await updateMetricSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({

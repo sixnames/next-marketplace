@@ -176,6 +176,9 @@ const messagesKeys = [
   'metrics.delete.used',
   'metrics.delete.error',
   'metrics.delete.success',
+  // Metrics validation
+  'validation.metrics.id',
+  'validation.metrics.name',
 ] as const;
 
 export type MessageKey = typeof messagesKeys[number];

@@ -119,6 +119,32 @@ const metricsMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.metrics.id',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Id метрики обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Metric ID is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.metrics.name',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Название метрики обязательно к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Metric Name is required.',
+      },
+    ],
+  },
 ];
 
 export default metricsMessages;

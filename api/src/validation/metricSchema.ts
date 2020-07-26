@@ -1,13 +1,34 @@
 import * as Yup from 'yup';
-import { id, langStringInputSchema } from './schemaTemplates';
+import { langStringInputSchema } from './schemaTemplates';
+import getValidationFieldMessage, {
+  MultiLangSchemaMessagesInterface,
+} from './getValidationFieldMessage';
 
-export const createMetricInputSchema = (defaultLang: string) =>
-  Yup.object().shape({
-    name: langStringInputSchema({ defaultLang, entityMessage: 'Название типа измерения' }),
+const metricNameSchema = (args: MultiLangSchemaMessagesInterface) =>
+  langStringInputSchema({
+    ...args,
+    requiredMessageKey: 'validation.metrics.name',
   });
 
-export const updateMetricSchema = (defaultLang: string) =>
+export const createMetricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id,
-    name: langStringInputSchema({ defaultLang, entityMessage: 'Название типа измерения' }),
+    name: metricNameSchema(args),
+  });
+
+export const updateMetricSchema = ({
+  lang,
+  messages,
+  defaultLang,
+}: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    id: Yup.string()
+      .nullable()
+      .required(
+        getValidationFieldMessage({
+          messages,
+          lang,
+          key: 'validation.metrics.id',
+        }),
+      ),
+    name: metricNameSchema({ defaultLang, lang, messages }),
   });

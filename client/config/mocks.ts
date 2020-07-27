@@ -3,6 +3,7 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  DEFAULT_CURRENCY,
   DEFAULT_LANG,
   GENDER_HE,
   GENDER_IT,
@@ -947,6 +948,9 @@ export const ISO_LANGUAGES = [
     nativeName: 'Saɯ cueŋƅ, Saw cuengh',
   },
 ];
+
+export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
+export const MOCK_CURRENCIES = [{ nameString: 'руб.' }, { nameString: 'USD' }];
 
 export const INITIAL_LANGUAGES = [
   {

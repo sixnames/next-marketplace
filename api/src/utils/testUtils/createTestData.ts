@@ -41,6 +41,7 @@ import {
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   MOCK_LANGUAGES,
+  MOCK_CURRENCIES,
 } from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
@@ -49,6 +50,7 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
+import { CurrencyModel } from '../../entities/Currency';
 
 interface LangInterface {
   key: string;
@@ -190,7 +192,14 @@ const createTestData = async () => {
     // Initial data
     await createInitialData();
 
-    const languages = await LanguageModel.find({ key: DEFAULT_LANG });
+    // Currencies
+    const currencies = await CurrencyModel.find();
+    if (currencies.length !== MOCK_CURRENCIES.length) {
+      await CurrencyModel.create(MOCK_CURRENCIES[1]);
+    }
+
+    // Languages
+    const languages = await LanguageModel.find();
     if (languages.length !== MOCK_LANGUAGES.length) {
       await LanguageModel.create(MOCK_LANGUAGES[1]);
     }

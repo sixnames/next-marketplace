@@ -7,14 +7,23 @@ import {
   ROLE_ADMIN,
   DEFAULT_LANG,
   INITIAL_LANGUAGES,
+  DEFAULT_CURRENCY,
+  INITIAL_CURRENCIES,
 } from '../../config';
 import { MetricModel } from '../../entities/Metric';
 import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import { LanguageModel } from '../../entities/Language';
 import createInitialApiMessages from './createInitialApiMessages';
+import { CurrencyModel } from '../../entities/Currency';
 
 async function createInitialData() {
+  // Create initial currencies
+  const currencies = await CurrencyModel.find({ nameString: DEFAULT_CURRENCY });
+  if (!currencies || !currencies.length) {
+    await CurrencyModel.create(INITIAL_CURRENCIES[0]);
+  }
+
   // Create default language
   const languages = await LanguageModel.find({ key: DEFAULT_LANG });
   if (!languages || !languages.length) {

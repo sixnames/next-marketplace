@@ -2,7 +2,7 @@ import { Arg, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 
 @Resolver((_of) => Option)
 export class OptionResolver {

@@ -4,13 +4,12 @@ import { DocumentType } from '@typegoose/typegoose';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Metric, MetricModel } from '../../entities/Metric';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import { OptionModel } from '../../entities/Option';
 import { RubricModel } from '../../entities/Rubric';
 import getCityData from '../../utils/getCityData';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
-// import { attributesReducer } from '../../utils/catalogueHelpers';
 import { ProductModel } from '../../entities/Product';
 
 @Resolver((_for) => Attribute)

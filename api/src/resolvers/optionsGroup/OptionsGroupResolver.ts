@@ -14,7 +14,7 @@ import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -23,7 +23,6 @@ import { AttributeModel } from '../../entities/Attribute';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
-import { getMessageTranslation } from '../../config/translations';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -32,6 +31,8 @@ import {
   updateOptionsGroupSchema,
 } from '../../validation';
 import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -57,9 +58,9 @@ export class OptionsGroupResolver {
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createOptionsGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.optionsGroup.name']);
+      await createOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await OptionsGroupModel.exists({
@@ -71,7 +72,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.create.duplicate`, lang }),
         };
       }
 
@@ -80,13 +81,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.create.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.create.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.create.success`, lang }),
         group,
       };
     } catch (e) {
@@ -103,9 +104,12 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateOptionsGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.optionsGroup.name',
+        'validation.optionsGroup.id',
+      ]);
+      await updateOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { id, ...values } = input;
 
@@ -120,7 +124,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.update.duplicate`, lang }),
         };
       }
 
@@ -131,13 +135,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.update.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.update.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.update.success`, lang }),
         group,
       };
     } catch (e) {
@@ -159,7 +163,7 @@ export class OptionsGroupResolver {
       if (connectedWithAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.used.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.used`, lang }),
         };
       }
 
@@ -170,7 +174,7 @@ export class OptionsGroupResolver {
       if (!removedOptions.ok) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.optionsError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
         };
       }
 
@@ -178,13 +182,13 @@ export class OptionsGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.delete.error.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.delete.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.delete.success`, lang }),
       };
     } catch (e) {
       return {
@@ -200,9 +204,17 @@ export class OptionsGroupResolver {
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await addOptionToGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.name',
+        'validation.option.gender',
+        'validation.option.variantKey',
+        'validation.option.variantValue',
+        'validation.color',
+        'validation.color.required',
+        'validation.optionsGroup.id',
+      ]);
+      await addOptionToGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, ...values } = input;
       const group = await OptionsGroupModel.findById(groupId);
@@ -210,7 +222,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.groupError`, lang }),
         };
       }
 
@@ -225,7 +237,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.duplicate`, lang }),
         };
       }
 
@@ -234,7 +246,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.optionError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
         };
       }
 
@@ -250,13 +262,13 @@ export class OptionsGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.addOption.addError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.addOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.addOption.success`, lang }),
         group: updatedGroup,
       };
     } catch (e) {
@@ -273,9 +285,18 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateOptionInGroupSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.name',
+        'validation.option.gender',
+        'validation.option.variantKey',
+        'validation.option.variantValue',
+        'validation.color',
+        'validation.color.required',
+        'validation.option.id',
+        'validation.optionsGroup.id',
+      ]);
+      await updateOptionInGroupSchema({ defaultLang, lang, messages }).validate(input);
 
       const { groupId, optionId, color, name, gender, variants } = input;
       const group = await OptionsGroupModel.findById(groupId);
@@ -283,7 +304,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.groupError`, lang }),
         };
       }
 
@@ -298,7 +319,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.duplicate.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.duplicate`, lang }),
         };
       }
 
@@ -316,13 +337,13 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.updateOption.updateError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.updateOption.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.updateOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.updateOption.success`, lang }),
         group,
       };
     } catch (e) {
@@ -339,15 +360,20 @@ export class OptionsGroupResolver {
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      await deleteOptionFromGroupSchema.validate(input);
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.option.id',
+        'validation.optionsGroup.id',
+      ]);
+      await deleteOptionFromGroupSchema({ lang, messages }).validate(input);
+
       const { groupId, optionId } = input;
       const option = await OptionModel.findByIdAndDelete(optionId);
 
       if (!option) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.deleteOption.deleteError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.deleteOption.error`, lang }),
         };
       }
 
@@ -360,13 +386,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: getMessageTranslation(`optionsGroup.deleteOption.groupError.${lang}`),
+          message: await getApiMessage({ key: `optionsGroups.deleteOption.groupError`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`optionsGroup.deleteOption.success.${lang}`),
+        message: await getApiMessage({ key: `optionsGroups.deleteOption.success`, lang }),
         group,
       };
     } catch (e) {

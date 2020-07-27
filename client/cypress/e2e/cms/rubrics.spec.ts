@@ -61,6 +61,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-prefix-ru`).type(mockRubricLevelTwoName);
     cy.getByCy(`catalogueTitle-keyword-ru`).type(mockRubricLevelTwoName);
     cy.selectOptionByTestId(`parent`, mockRubricLevelOneName);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`error-notification`).should('exist');
@@ -72,6 +73,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockRubricLevelThreeName);
     cy.getByCy(`catalogueTitle-prefix-ru`).type(mockRubricLevelThreeName);
     cy.getByCy(`catalogueTitle-keyword-ru`).type(mockRubricLevelThreeName);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_IT);
     cy.getByCy(`name-ru`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
@@ -95,6 +97,7 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric-modal`).should('exist');
     cy.getByCy(`name-ru`).type(mockNewRubricB);
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockNewRubricB);
     cy.getByCy(`catalogueTitle-prefix-ru`).type(mockNewRubricB);
     cy.getByCy(`catalogueTitle-keyword-ru`).type(mockNewRubricB);
@@ -107,6 +110,7 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric-modal`).should('exist');
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
     cy.getByCy(`name-ru`).type(mockNewRubricC);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.selectOptionByTestId(`subParent`, mockNewRubricB);
     cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockNewRubricC);
     cy.getByCy(`catalogueTitle-prefix-ru`).type(mockNewRubricC);
@@ -116,19 +120,8 @@ describe('Rubrics', () => {
     cy.getByCy(`tree-link-${mockNewRubricC}`).should('exist');
   });
 
-  it('Should have rubric details tab', () => {
-    // Should have rubric details tab and have rubric variant select on first level only
-    cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
-    cy.visitMoreNavLink('details');
-    cy.getByCy('rubric-variant').should('exist');
-    cy.getByCy(`tree-link-${mockRubricLevelTwoName}`).click();
-    cy.visitMoreNavLink('details');
-    cy.getByCy('rubric-variant').should('not.exist');
-    cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
-    cy.visitMoreNavLink('details');
-    cy.getByCy('rubric-variant').should('not.exist');
-
-    // Should update rubric
+  it.only('Should have rubric details tab', () => {
+    // Should have rubric details tab and should update rubric
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.visitMoreNavLink('details');
     cy.getByCy('name-accordion-en').click();

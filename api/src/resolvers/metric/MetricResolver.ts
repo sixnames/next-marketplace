@@ -18,9 +18,10 @@ import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/getLangField';
-import { getMessageTranslation } from '../../config/translations';
+import getLangField from '../../utils/translations/getLangField';
 import { createMetricInputSchema, updateMetricSchema } from '../../validation';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {
@@ -46,9 +47,9 @@ export class MetricResolver {
     @Arg('input') input: CreateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createMetricInputSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.metrics.name']);
+      await createMetricInputSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
@@ -59,7 +60,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `metrics.create.duplicate`, lang }),
         };
       }
 
@@ -68,13 +69,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.create.error.${lang}`),
+          message: await getApiMessage({ key: `metrics.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`metric.create.success.${lang}`),
+        message: await getApiMessage({ key: `metrics.create.success`, lang }),
         metric,
       };
     } catch (e) {
@@ -91,9 +92,12 @@ export class MetricResolver {
     @Arg('input') input: UpdateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateMetricSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.metrics.name',
+        'validation.metrics.id',
+      ]);
+      await updateMetricSchema({ defaultLang, lang, messages }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
@@ -104,7 +108,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `metrics.update.duplicate`, lang }),
         };
       }
 
@@ -114,13 +118,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.update.error.${lang}`),
+          message: await getApiMessage({ key: `metrics.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`metric.update.success.${lang}`),
+        message: await getApiMessage({ key: `metrics.update.success`, lang }),
         metric,
       };
     } catch (e) {
@@ -142,7 +146,7 @@ export class MetricResolver {
       if (isUsedInAttributes) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.delete.used.${lang}`),
+          message: await getApiMessage({ key: `metrics.delete.used`, lang }),
         };
       }
 
@@ -151,13 +155,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: getMessageTranslation(`metric.delete.error.${lang}`),
+          message: await getApiMessage({ key: `metrics.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`metric.delete.success.${lang}`),
+        message: await getApiMessage({ key: `metrics.delete.success`, lang }),
       };
     } catch (e) {
       return {

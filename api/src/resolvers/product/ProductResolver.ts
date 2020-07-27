@@ -24,7 +24,7 @@ import { ContextInterface } from '../../types/context';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getCityData from '../../utils/getCityData';
-import getLangField from '../../utils/getLangField';
+import getLangField from '../../utils/translations/getLangField';
 import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
@@ -32,12 +32,13 @@ import storeUploads from '../../utils/assets/storeUploads';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
-import { getMessageTranslation } from '../../config/translations';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { createProductSchema, updateProductSchema } from '../../validation';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -163,10 +164,20 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createProductSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.products.name',
+        'validation.products.cardName',
+        'validation.products.description',
+        'validation.products.rubrics',
+        'validation.products.price',
+        'validation.number.min',
+        'validation.products.assets',
+        'validation.products.attributesGroupId',
+        'validation.products.attributeId',
+        'validation.products.attributeKey',
+      ]);
+      await createProductSchema({ lang, messages, defaultLang }).validate(input);
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
@@ -194,7 +205,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`product.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `products.create.duplicate`, lang }),
         };
       }
 
@@ -216,13 +227,13 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.create.error.${lang}`),
+          message: await getApiMessage({ key: `products.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.create.success.${lang}`),
+        message: await getApiMessage({ key: `products.create.success`, lang }),
         product,
       };
     } catch (e) {
@@ -239,10 +250,21 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateProductSchema(defaultLang).validate(input);
+      const { city, lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.products.id',
+        'validation.products.name',
+        'validation.products.cardName',
+        'validation.products.description',
+        'validation.products.rubrics',
+        'validation.products.price',
+        'validation.number.min',
+        'validation.products.assets',
+        'validation.products.attributesGroupId',
+        'validation.products.attributeId',
+        'validation.products.attributeKey',
+      ]);
+      await updateProductSchema({ lang, messages, defaultLang }).validate(input);
 
       const { id, assets, ...values } = input;
 
@@ -270,7 +292,7 @@ export class ProductResolver {
       if (exists) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `products.update.duplicate`, lang }),
         };
       }
 
@@ -278,7 +300,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.notFound.${lang}`),
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
         };
       }
 
@@ -307,13 +329,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: getMessageTranslation(`product.update.updateError.${lang}`),
+          message: await getApiMessage({ key: `products.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.update.success.${lang}`),
+        message: await getApiMessage({ key: `products.update.success`, lang }),
         product: updatedProduct,
       };
     } catch (e) {
@@ -341,7 +363,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: getMessageTranslation(`product.delete.notFound.${lang}`),
+          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
         };
       }
 
@@ -355,13 +377,13 @@ export class ProductResolver {
         if (!removed || !removedAssets) {
           return {
             success: false,
-            message: getMessageTranslation(`product.delete.error.${lang}`),
+            message: await getApiMessage({ key: `products.delete.error`, lang }),
           };
         }
 
         return {
           success: true,
-          message: getMessageTranslation(`product.delete.success.${lang}`),
+          message: await getApiMessage({ key: `products.delete.success`, lang }),
         };
       }
 
@@ -384,13 +406,13 @@ export class ProductResolver {
       if (!removed.ok || !removedAssets) {
         return {
           success: false,
-          message: getMessageTranslation(`product.delete.error.${lang}`),
+          message: await getApiMessage({ key: `products.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`product.delete.success.${lang}`),
+        message: await getApiMessage({ key: `products.delete.success`, lang }),
       };
     } catch (e) {
       return {

@@ -15,6 +15,7 @@ import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { languageSchema } from '../../../validation';
 import FormikInput from '../../FormElements/Input/FormikInput';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'id'>;
 
@@ -26,6 +27,15 @@ export interface LanguageModalInterface {
 
 const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, language }) => {
   const { data, loading, error } = useGetIsoLanguagesListQuery();
+  const validationSchema = useValidationSchema({
+    schema: languageSchema,
+    messagesKeys: [
+      'validation.languages.id',
+      'validation.languages.name',
+      'validation.languages.key',
+      'validation.languages.nativeName',
+    ],
+  });
 
   if (error || (!loading && !data)) {
     return (
@@ -56,7 +66,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
       <ModalTitle>{language ? 'Редактирование ' : 'Создание '} языка</ModalTitle>
 
       <Formik
-        validationSchema={languageSchema}
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           const languageTemplate = getISOLanguagesList.find(({ id }) => id === values.key);

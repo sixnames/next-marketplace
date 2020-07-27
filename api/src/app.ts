@@ -42,11 +42,13 @@ import {
 } from './resolvers/selects/SelectsResolver';
 import { LanguageResolver } from './resolvers/languages/LanguageResolver';
 import { LanguageModel } from './entities/Language';
+import { MessagesResolver } from './resolvers/messages/MessagesResolver';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
     resolvers: [
       LanguageResolver,
+      MessagesResolver,
       ISOLanguagesListResolver,
       UserResolver,
       MetricResolver,

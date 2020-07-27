@@ -18,9 +18,10 @@ import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
 import { RubricModel } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/getLangField';
-import { getMessageTranslation } from '../../config/translations';
+import getLangField from '../../utils/translations/getLangField';
 import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {
@@ -46,9 +47,9 @@ export class RubricVariantResolver {
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await createRubricVariantInputSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.rubricVariants.name']);
+      await createRubricVariantInputSchema({ defaultLang, messages, lang }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
@@ -59,7 +60,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.create.duplicate.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.create.duplicate`, lang }),
         };
       }
 
@@ -68,13 +69,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.create.error.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.create.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubricVariant.create.success.${lang}`),
+        message: await getApiMessage({ key: `rubricVariants.create.success`, lang }),
         variant,
       };
     } catch (e) {
@@ -91,9 +92,12 @@ export class RubricVariantResolver {
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const defaultLang = ctx.req.defaultLang;
-      await updateRubricVariantSchema(defaultLang).validate(input);
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.rubricVariants.name',
+        'validation.rubricVariants.id',
+      ]);
+      await updateRubricVariantSchema({ defaultLang, messages, lang }).validate(input);
 
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
@@ -104,7 +108,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.update.duplicate.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.update.duplicate`, lang }),
         };
       }
 
@@ -114,13 +118,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.update.error.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubricVariant.update.success.${lang}`),
+        message: await getApiMessage({ key: `rubricVariants.update.success`, lang }),
         variant,
       };
     } catch (e) {
@@ -147,7 +151,7 @@ export class RubricVariantResolver {
       if (isUsedInRubrics) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.delete.used.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.delete.used`, lang }),
         };
       }
 
@@ -156,13 +160,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: getMessageTranslation(`rubricVariant.delete.error.${lang}`),
+          message: await getApiMessage({ key: `rubricVariants.delete.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: getMessageTranslation(`rubricVariant.delete.success.${lang}`),
+        message: await getApiMessage({ key: `rubricVariants.delete.success`, lang }),
       };
     } catch (e) {
       return {

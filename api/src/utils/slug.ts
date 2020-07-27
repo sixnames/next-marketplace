@@ -1,5 +1,5 @@
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
-import { LanguageInterface } from './getLangField';
+import { LanguageInterface } from './translations/getLangField';
 import { DEFAULT_LANG } from '../config';
 
 export const generateSlug = (name: string) => {

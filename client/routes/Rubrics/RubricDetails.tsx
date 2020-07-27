@@ -20,17 +20,25 @@ import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import { useLanguageContext } from '../../context/languageContext';
 import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
+import useValidationSchema from '../../hooks/useValidationSchema';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
-  const {
-    getLanguageFieldInitialValue,
-    getLanguageFieldInputValue,
-    defaultLang,
-  } = useLanguageContext();
+  const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: updateRubricInputSchema,
+    messagesKeys: [
+      'validation.rubrics.id',
+      'validation.rubrics.name',
+      'validation.rubrics.variant',
+      'validation.rubrics.defaultTitle',
+      'validation.rubrics.keyword',
+      'validation.rubrics.gender',
+    ],
+  });
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({
     awaitRefetchQueries: true,
@@ -77,7 +85,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
       <InnerWide>
         <Formik
-          validationSchema={() => updateRubricInputSchema(defaultLang)}
+          validationSchema={validationSchema}
           initialValues={initialValues}
           enableReinitialize
           onSubmit={(values) => {

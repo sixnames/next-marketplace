@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import http from 'http';
 import createApp from './app';
 import { DB_OPTIONS, HTTP_PORT, MONGO_URL } from './config';
-import createInitialData from './utils/createInitialData';
+import createInitialData from './utils/initialData/createInitialData';
 
 (async () => {
   try {

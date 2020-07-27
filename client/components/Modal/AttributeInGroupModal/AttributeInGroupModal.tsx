@@ -20,6 +20,7 @@ import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../../
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslationsSelect';
+import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface AddAttributeToGroupModalInterface {
   attribute?: Attribute;
@@ -39,8 +40,17 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
     getLanguageFieldInputValue,
     getAttributePositionInTitleInitialValue,
     getAttributePositionInTitleInputValue,
-    defaultLang,
   } = useLanguageContext();
+  const validationSchema = useValidationSchema({
+    schema: attributeInGroupSchema,
+    messagesKeys: [
+      'validation.attributesGroups.id',
+      'validation.attributes.id',
+      'validation.attributes.name',
+      'validation.attributes.variant',
+      'validation.attributes.position',
+    ],
+  });
   const { hideModal } = useAppContext();
   const { data, loading, error } = useGetNewAttributeOptionsQuery();
 
@@ -84,7 +94,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
       <ModalTitle>{attribute ? 'Редактирование атрибута' : 'Создание атрибута'}</ModalTitle>
 
       <Formik
-        validationSchema={attributeInGroupSchema(defaultLang)}
+        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           confirm({

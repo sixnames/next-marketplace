@@ -3,7 +3,7 @@ import {
   getTestClientWithAuthenticatedUser,
   mutateWithImages,
 } from '../../../utils/testUtils/testHelpers';
-import getLangField from '../../../utils/getLangField';
+import getLangField from '../../../utils/translations/getLangField';
 import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '../../../config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';

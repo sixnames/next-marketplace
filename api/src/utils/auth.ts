@@ -3,7 +3,7 @@ import { ContextInterface } from '../types/context';
 import { User, UserModel } from '../entities/User';
 import { compare } from 'bcryptjs';
 import { IN_TEST } from '../config';
-import { getMessageTranslation } from '../config/translations';
+import getApiMessage from './translations/getApiMessage';
 
 type Request = ContextInterface['req'];
 
@@ -16,8 +16,8 @@ export const attemptSignIn = async (
   password: User['password'],
   lang: string,
 ) => {
-  const emailErrorMessage = getMessageTranslation(`user.signIn.emailError.${lang}`);
-  const passwordErrorMessage = getMessageTranslation(`user.signIn.passwordError.${lang}`);
+  const emailErrorMessage = await getApiMessage({ key: `users.signIn.emailError`, lang });
+  const passwordErrorMessage = await getApiMessage({ key: `users.signIn.passwordError`, lang });
 
   const user = await UserModel.findOne({ email });
 
@@ -39,7 +39,7 @@ export const attemptSignIn = async (
 
   return {
     user,
-    message: getMessageTranslation(`user.signIn.success.${lang}`),
+    message: await getApiMessage({ key: `users.signIn.success`, lang }),
   };
 };
 

@@ -14,7 +14,6 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
-import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_ONE } from '../../config';
 import { updateRubricInputSchema } from '../../validation';
 import { RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
@@ -63,7 +62,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     return <RequestError />;
   }
 
-  const { id = '', level = RUBRIC_LEVEL_ZERO, variant, name, nameString, catalogueTitle } = rubric;
+  const { id = '', variant, name, nameString, catalogueTitle } = rubric;
 
   const initialValues = {
     id,
@@ -74,10 +73,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       keyword: getLanguageFieldInitialValue(catalogueTitle.keyword),
       gender: catalogueTitle.gender,
     },
-    variant: variant ? variant.id : null,
+    variant: variant.id,
   };
-
-  const isFirstLevel = level === RUBRIC_LEVEL_ONE;
 
   return (
     <div data-cy={'rubric-details'}>
@@ -154,18 +151,16 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                         isHorizontal
                       />
 
-                      {isFirstLevel && (
-                        <FormikSelect
-                          isRequired
-                          isHorizontal
-                          showInlineError
-                          firstOption={'Не выбран'}
-                          label={'Тип рубрики'}
-                          name={'variant'}
-                          testId={'rubric-variant'}
-                          options={data?.getAllRubricVariants || []}
-                        />
-                      )}
+                      <FormikSelect
+                        isRequired
+                        isHorizontal
+                        showInlineError
+                        firstOption={'Не выбран'}
+                        label={'Тип рубрики'}
+                        name={'variant'}
+                        testId={'rubric-variant'}
+                        options={data?.getAllRubricVariants || []}
+                      />
                     </div>
                   </Accordion>
                 </div>

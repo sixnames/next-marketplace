@@ -60,7 +60,7 @@ interface GetRubricCitiesInterface {
   catalogueTitle: RubricCatalogueTitle;
   level: number;
   slug: string;
-  variant?: string;
+  variant: string;
   parent?: Types.ObjectId | null;
   attributesGroups: {
     showInCatalogueFilter: string[];
@@ -320,6 +320,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -333,6 +334,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_A_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoA.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -346,6 +348,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_A_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoA.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -359,6 +362,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelOne.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
         catalogueTitle: {
@@ -372,6 +376,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
         catalogueTitle: {
@@ -385,6 +390,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
         catalogueTitle: {

@@ -143,7 +143,7 @@ input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
   parent: ID
-  variant: ID
+  variant: ID!
 }
 
 input CreateRubricVariantInput {
@@ -515,7 +515,7 @@ type Rubric {
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
-  variant: RubricVariant
+  variant: RubricVariant!
 }
 
 type RubricAttributesGroup {
@@ -559,7 +559,7 @@ type RubricNode {
   name: [LanguageType!]!
   parent: Rubric
   slug: String!
-  variant: RubricVariant
+  variant: RubricVariant!
 }
 
 type RubricPayloadType {
@@ -678,7 +678,7 @@ input UpdateRubricInput {
   id: ID!
   name: [LangInput!]!
   parent: ID
-  variant: ID
+  variant: ID!
 }
 
 input UpdateRubricVariantInput {

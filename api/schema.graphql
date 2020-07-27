@@ -227,6 +227,12 @@ type Message {
   message: [LanguageType!]!
 }
 
+type MessagesGroup {
+  id: ID!
+  messages: [Message!]!
+  name: String!
+}
+
 type Metric {
   id: ID!
   name: [LanguageType!]!
@@ -339,6 +345,13 @@ type PaginatedUsersResponse {
   prevPage: Int
   totalDocs: Int!
   totalPages: Int!
+}
+
+input PaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortDir: PaginateSortDirectionEnum = desc
 }
 
 """Pagination sortDir enum"""

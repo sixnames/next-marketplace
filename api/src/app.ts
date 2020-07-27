@@ -17,53 +17,18 @@ import {
 } from './config';
 import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
-import { UserResolver } from './resolvers/user/UserResolver';
-import { MetricResolver } from './resolvers/metric/MetricResolver';
-import { OptionResolver } from './resolvers/option/OptionResolver';
-import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
-import { AttributeResolver } from './resolvers/attribute/AttributeResolver';
-import { AttributesGroupResolver } from './resolvers/attributesGroup/AttributesGroupResolver';
-import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
-import { RubricResolver } from './resolvers/rubric/RubricResolver';
-import { AttributeVariantResolver } from './resolvers/attributeVariant/AttributeVariantResolver';
-import { ProductResolver } from './resolvers/product/ProductResolver';
 import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
-import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataResolver';
 import cookie from 'cookie';
 import path from 'path';
 import cors from 'cors';
 import { attemptSignIn } from './utils/auth';
-import {
-  AttributePositioningListResolver,
-  GendersListResolver,
-  ISOLanguagesListResolver,
-} from './resolvers/selects/SelectsResolver';
-import { LanguageResolver } from './resolvers/languages/LanguageResolver';
 import { LanguageModel } from './entities/Language';
-import { MessagesResolver } from './resolvers/messages/MessagesResolver';
 
 const createApp = (): { app: Express; server: ApolloServer } => {
   const schema = buildSchemaSync({
-    resolvers: [
-      LanguageResolver,
-      MessagesResolver,
-      ISOLanguagesListResolver,
-      UserResolver,
-      MetricResolver,
-      OptionResolver,
-      OptionsGroupResolver,
-      AttributeResolver,
-      AttributeVariantResolver,
-      AttributesGroupResolver,
-      RubricVariantResolver,
-      RubricResolver,
-      ProductResolver,
-      CatalogueDataResolver,
-      GendersListResolver,
-      AttributePositioningListResolver,
-    ],
+    resolvers: [path.resolve(__dirname, 'resolvers', '**', '*Resolver.ts')],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,

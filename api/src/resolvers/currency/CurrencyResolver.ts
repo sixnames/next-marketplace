@@ -1,9 +1,13 @@
-import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Currency, CurrencyModel } from '../../entities/Currency';
 import PayloadType from '../common/PayloadType';
 import { CreateCurrencyInput } from './CreateCurrencyInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCurrencyInput } from './UpdateCurrencyInput';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { ContextInterface } from '../../types/context';
+import { createCurrencySchema, updateCurrencySchema } from '../../validation/currencySchema';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class CurrencyPayloadType extends PayloadType() {
@@ -23,15 +27,21 @@ export class CurrencyResolver {
     return CurrencyModel.findById(id);
   }
 
-  // TODO messages and validation
   @Mutation((_returns) => CurrencyPayloadType)
-  async createCurrency(@Arg('input') input: CreateCurrencyInput): Promise<CurrencyPayloadType> {
+  async createCurrency(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: CreateCurrencyInput,
+  ): Promise<CurrencyPayloadType> {
     try {
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.currencies.nameString']);
+      await createCurrencySchema({ messages, lang }).validate(input);
+
       const exists = await CurrencyModel.exists({ nameString: input.nameString });
       if (exists) {
         return {
           success: false,
-          message: 'exists',
+          message: await getApiMessage({ key: 'currencies.create.duplicate', lang }),
         };
       }
 
@@ -40,13 +50,13 @@ export class CurrencyResolver {
       if (!currency) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'currencies.create.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'currencies.create.success', lang }),
         currency,
       };
     } catch (e) {
@@ -58,14 +68,24 @@ export class CurrencyResolver {
   }
 
   @Mutation((_returns) => CurrencyPayloadType)
-  async updateCurrency(@Arg('input') input: UpdateCurrencyInput): Promise<CurrencyPayloadType> {
+  async updateCurrency(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: UpdateCurrencyInput,
+  ): Promise<CurrencyPayloadType> {
     try {
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.currencies.nameString',
+        'validation.currencies.id',
+      ]);
+      await updateCurrencySchema({ messages, lang }).validate(input);
+
       const { id, ...restInput } = input;
       const exists = await CurrencyModel.exists({ nameString: input.nameString });
       if (exists) {
         return {
           success: false,
-          message: 'exists',
+          message: await getApiMessage({ key: 'currencies.update.duplicate', lang }),
         };
       }
 
@@ -74,13 +94,13 @@ export class CurrencyResolver {
       if (!currency) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'currencies.update.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'currencies.update.success', lang }),
         currency,
       };
     } catch (e) {
@@ -92,21 +112,25 @@ export class CurrencyResolver {
   }
 
   @Mutation((_returns) => CurrencyPayloadType)
-  async deleteCurrency(@Arg('id', (_type) => ID) id: string): Promise<CurrencyPayloadType> {
+  async deleteCurrency(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<CurrencyPayloadType> {
     try {
+      const { lang } = ctx.req;
       // TODO check if used in Countries
       const currency = await CurrencyModel.findByIdAndDelete(id);
 
       if (!currency) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'currencies.delete.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'currencies.delete.success', lang }),
       };
     } catch (e) {
       return {

@@ -12,6 +12,20 @@ const messagesKeys = [
   'validation.color.required',
   'validation.translation.key',
 
+  // Currencies ----------
+  'currencies.create.duplicate',
+  'currencies.create.error',
+  'currencies.create.success',
+  'currencies.update.duplicate',
+  'currencies.update.error',
+  'currencies.update.success',
+  'currencies.delete.used',
+  'currencies.delete.error',
+  'currencies.delete.success',
+  // Currencies validation
+  'validation.currencies.id',
+  'validation.currencies.nameString',
+
   // Languages ----------
   'languages.setLanguageAsDefault.error',
   'languages.setLanguageAsDefault.success',

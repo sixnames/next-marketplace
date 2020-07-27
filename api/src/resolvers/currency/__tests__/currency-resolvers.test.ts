@@ -50,7 +50,7 @@ describe('Currency', () => {
     `,
       {
         variables: {
-          input: { nameString: ' ' },
+          input: { nameString: '' },
         },
       },
     );

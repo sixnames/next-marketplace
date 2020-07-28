@@ -42,6 +42,8 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   MOCK_LANGUAGES,
   MOCK_CURRENCIES,
+  MOCK_CITIES,
+  MOCK_COUNTRIES,
 } from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
@@ -51,6 +53,8 @@ import mkdirp from 'mkdirp';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
+import { CityModel } from '../../entities/City';
+import { CountryModel } from '../../entities/Country';
 
 interface LangInterface {
   key: string;
@@ -78,17 +82,17 @@ function getRubricCities(node: GetRubricCitiesInterface) {
       node,
     },
     {
-      key: 'spb',
+      key: 'ny',
       node: {
         ...node,
         name: [
           {
             key: 'ru',
-            value: `${node.name[0].value}-spb`,
+            value: `${node.name[0].value}-ny`,
           },
           {
             key: 'en',
-            value: `${node.name[1].value}-spb`,
+            value: `${node.name[1].value}-ny`,
           },
         ],
       },
@@ -118,7 +122,7 @@ async function getProductCities(
   node: GetProductCitiesInterface,
   active = true,
 ): Promise<ProductCity[]> {
-  const cities = [DEFAULT_CITY, 'spb'];
+  const cities = [DEFAULT_CITY, 'ny'];
   const initialFilePath = './test/test-image-0.png';
   const slug = generateDefaultLangSlug(node.cardName);
   const productName = node.name[0].value;
@@ -192,17 +196,17 @@ const createTestData = async () => {
     // Initial data
     await createInitialData();
 
-    // Currencies
-    const currencies = await CurrencyModel.find();
-    if (currencies.length !== MOCK_CURRENCIES.length) {
-      await CurrencyModel.create(MOCK_CURRENCIES[1]);
-    }
+    // Currencies, countries and cities
+    const secondaryCurrency = await CurrencyModel.create(MOCK_CURRENCIES[1]);
+    const secondaryCity = await CityModel.create(MOCK_CITIES[1]);
+    await CountryModel.create({
+      ...MOCK_COUNTRIES[1],
+      cities: [secondaryCity.id],
+      currency: secondaryCurrency.nameString,
+    });
 
     // Languages
-    const languages = await LanguageModel.find();
-    if (languages.length !== MOCK_LANGUAGES.length) {
-      await LanguageModel.create(MOCK_LANGUAGES[1]);
-    }
+    await LanguageModel.create(MOCK_LANGUAGES[1]);
 
     // Options
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);

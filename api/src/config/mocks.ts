@@ -3,6 +3,7 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
   DEFAULT_LANG,
   GENDER_HE,
@@ -952,6 +953,30 @@ export const ISO_LANGUAGES = [
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
 export const MOCK_CURRENCIES = [{ nameString: 'руб.' }, { nameString: 'USD' }];
 
+export const INITIAL_COUNTRIES = [{ name: DEFAULT_COUNTRY }];
+export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { name: 'USA' }];
+
+export const INITIAL_CITIES = [
+  {
+    name: [
+      { key: 'ru', value: 'Москва' },
+      { key: 'en', value: 'Moscow' },
+    ],
+    key: 'moscow',
+  },
+];
+
+export const MOCK_CITIES = [
+  ...INITIAL_CITIES,
+  {
+    name: [
+      { key: 'ru', value: 'Нью Йорк' },
+      { key: 'en', value: 'New York' },
+    ],
+    key: 'ny',
+  },
+];
+
 export const INITIAL_LANGUAGES = [
   {
     key: DEFAULT_LANG,
@@ -962,12 +987,7 @@ export const INITIAL_LANGUAGES = [
 ];
 
 export const MOCK_LANGUAGES = [
-  {
-    key: DEFAULT_LANG,
-    name: 'Русский',
-    nativeName: 'Русский',
-    isDefault: true,
-  },
+  ...INITIAL_LANGUAGES,
   {
     key: SECONDARY_LANG,
     name: 'Английский',

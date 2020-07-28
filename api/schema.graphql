@@ -111,6 +111,21 @@ type CatalogueData {
   rubric: Rubric!
 }
 
+type City {
+  id: ID!
+  key: String!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type Country {
+  cities: [City!]!
+  currency: Currency!
+  id: ID!
+  name: String!
+  nameString: String!
+}
+
 input CreateAttributesGroupInput {
   name: [LangInput!]!
 }

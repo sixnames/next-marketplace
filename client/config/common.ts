@@ -3,14 +3,15 @@ export const LANG_COOKIE_KEY = 'lang';
 export const CITY_COOKIE_KEY = 'city';
 export const LANG_COOKIE_HEADER = 'accept-language';
 export const LANG_NOT_FOUND_FIELD_MESSAGE = 'Field not found';
-export const DEFAULT_CURRENCY = 'руб.';
 export const DEFAULT_LANG = 'ru';
 export const SECONDARY_LANG = 'en';
 export const LANG_DEFAULT_TITLE_SEPARATOR = ' или ';
 export const LANG_SECONDARY_TITLE_SEPARATOR = ' or ';
 
 // Cities
+export const DEFAULT_COUNTRY = 'Россия';
 export const DEFAULT_CITY = 'moscow';
+export const DEFAULT_CURRENCY = 'руб.';
 
 // ROLES
 export const ROLE_ADMIN = 'ADMIN';

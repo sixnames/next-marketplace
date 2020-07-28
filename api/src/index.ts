@@ -1,17 +1,29 @@
-import mongoose from 'mongoose';
 import http from 'http';
 import createApp from './app';
-import { DB_OPTIONS, HTTP_PORT, MONGO_URL } from './config';
+import { HTTP_PORT, MONGO_URL, SESS_OPTIONS } from './config';
 import createInitialData from './utils/initialData/createInitialData';
+import connectMongoDBStore from 'connect-mongodb-session';
+import session from 'express-session';
 
 (async () => {
   try {
-    await mongoose.connect(MONGO_URL, DB_OPTIONS);
+    const { app, server } = await createApp();
 
-    const { app, server } = createApp();
+    // Session
+    const MongoDBStore = connectMongoDBStore(session);
+    const store = new MongoDBStore({
+      uri: MONGO_URL,
+      collection: 'sessions',
+    });
+    const sessionHandler = session({
+      store,
+      ...SESS_OPTIONS,
+    });
+    app.use(sessionHandler);
 
     const httpServer = http.createServer(app);
 
+    // Site initial data
     await createInitialData();
 
     httpServer.listen(HTTP_PORT, () => {

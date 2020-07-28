@@ -1,10 +1,8 @@
 import 'reflect-metadata';
-import session from 'express-session';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import {
   APOLLO_OPTIONS,
-  SESS_OPTIONS,
   DEFAULT_CITY,
   DEFAULT_LANG,
   MONGO_URL,
@@ -14,8 +12,8 @@ import {
   ROLE_MANAGER,
   LANG_COOKIE_HEADER,
   CITY_COOKIE_KEY,
+  DB_OPTIONS,
 } from './config';
-import connectMongoDBStore from 'connect-mongodb-session';
 import { buildSchemaSync } from 'type-graphql';
 import { getSharpImage } from './utils/assets/getSharpImage';
 import createTestData from './utils/testUtils/createTestData';
@@ -25,8 +23,18 @@ import path from 'path';
 import cors from 'cors';
 import { attemptSignIn } from './utils/auth';
 import { LanguageModel } from './entities/Language';
+import mongoose from 'mongoose';
 
-const createApp = (): { app: Express; server: ApolloServer } => {
+interface CreateAppInterface {
+  app: Express;
+  server: ApolloServer;
+}
+
+const createApp = async (): Promise<CreateAppInterface> => {
+  // Mongoose connection
+  await mongoose.connect(MONGO_URL, DB_OPTIONS);
+
+  // GQL Schema
   const schema = buildSchemaSync({
     resolvers: [path.resolve(__dirname, 'resolvers', '**', '*Resolver.ts')],
     dateScalarMode: 'timestamp',
@@ -34,21 +42,8 @@ const createApp = (): { app: Express; server: ApolloServer } => {
     validate: false,
   });
 
-  const MongoDBStore = connectMongoDBStore(session);
-  const store = new MongoDBStore({
-    uri: MONGO_URL,
-    collection: 'sessions',
-  });
-
   const app = express();
   app.disable('x-powered-by');
-
-  const sessionHandler = session({
-    store,
-    ...SESS_OPTIONS,
-  });
-
-  app.use(sessionHandler);
 
   // Test data
   // TODO make this methods safe

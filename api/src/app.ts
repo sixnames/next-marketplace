@@ -13,6 +13,7 @@ import {
   LANG_COOKIE_HEADER,
   CITY_COOKIE_KEY,
   DB_OPTIONS,
+  SESS_OPTIONS,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import { getSharpImage } from './utils/assets/getSharpImage';
@@ -24,6 +25,8 @@ import cors from 'cors';
 import { attemptSignIn } from './utils/auth';
 import { LanguageModel } from './entities/Language';
 import mongoose from 'mongoose';
+import connectMongoDBStore from 'connect-mongodb-session';
+import session from 'express-session';
 
 interface CreateAppInterface {
   app: Express;
@@ -112,6 +115,18 @@ const createApp = async (): Promise<CreateAppInterface> => {
     }
   });
 
+  // Session
+  const MongoDBStore = connectMongoDBStore(session);
+  const store = new MongoDBStore({
+    uri: MONGO_URL,
+    collection: 'sessions',
+  });
+  const sessionHandler = session({
+    store,
+    ...SESS_OPTIONS,
+  });
+  app.use(sessionHandler);
+
   const server = new ApolloServer({
     ...APOLLO_OPTIONS,
     schema,
@@ -144,6 +159,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
         req.lang = defaultLanguageKey;
       }
 
+      // Return apollo context
       return connection ? connection.context : { req, res };
     },
   });

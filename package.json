@@ -46,12 +46,10 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^1.13.5",
     "@graphql-codegen/typescript": "1.13.5",
-    "@graphql-codegen/typescript-resolvers": "^1.13.5",
     "@graphql-codegen/introspection": "^1.13.5",
     "@graphql-codegen/typescript-operations": "1.13.5",
     "@graphql-codegen/typescript-react-apollo": "1.13.5",
     "prettier": "^2.0.5",
-    "wait-on": "^5.0.0",
     "graphql": "^15.1.0",
     "concurrently": "^5.2.0",
     "@typescript-eslint/eslint-plugin": "^3.5.0",

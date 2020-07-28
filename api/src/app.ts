@@ -50,37 +50,6 @@ const createApp = (): { app: Express; server: ApolloServer } => {
 
   app.use(sessionHandler);
 
-  // Get current city from subdomain name
-  // and language from cookie or user accepted language
-  app.use(async (req, res, next) => {
-    // City
-    const city = req.headers['x-subdomain'];
-    const currentCity = city ? city : DEFAULT_CITY;
-    req.city = `${currentCity}`;
-    res.cookie(CITY_COOKIE_KEY, currentCity);
-
-    // Language
-    const cookies = cookie.parse(req.headers.cookie || '');
-    const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
-    const cookieLang = cookies[LANG_COOKIE_KEY];
-    const clientLanguage = cookieLang || systemLang;
-
-    const languageExists = await LanguageModel.exists({ key: clientLanguage });
-    const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
-    const defaultLanguageKey = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
-
-    req.defaultLang = defaultLanguageKey;
-
-    if (languageExists) {
-      req.lang = clientLanguage;
-    } else {
-      res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
-      req.lang = defaultLanguageKey;
-    }
-
-    next();
-  });
-
   // Test data
   // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
@@ -151,16 +120,43 @@ const createApp = (): { app: Express; server: ApolloServer } => {
   const server = new ApolloServer({
     ...APOLLO_OPTIONS,
     schema,
-    context: ({ req, res, connection }) => (connection ? connection.context : { req, res }),
     introspection: true,
+    context: async ({ req, res, connection }) => {
+      // Get current city from subdomain name
+      // and language from cookie or user accepted language
+      // City
+      const city = req.headers['x-subdomain'];
+      const currentCity = city ? city : DEFAULT_CITY;
+      req.city = `${currentCity}`;
+      res.cookie(CITY_COOKIE_KEY, currentCity);
+
+      // Language
+      const cookies = cookie.parse(req.headers.cookie || '');
+      const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+      const cookieLang = cookies[LANG_COOKIE_KEY];
+      const clientLanguage = cookieLang || systemLang;
+
+      const languageExists = await LanguageModel.exists({ key: clientLanguage });
+      const defaultLanguage = await LanguageModel.findOne({ isDefault: true });
+      const defaultLanguageKey = defaultLanguage ? defaultLanguage.key : DEFAULT_LANG;
+
+      req.defaultLang = defaultLanguageKey;
+
+      if (languageExists) {
+        req.lang = clientLanguage;
+      } else {
+        res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
+        req.lang = defaultLanguageKey;
+      }
+
+      return connection ? connection.context : { req, res };
+    },
   });
 
   server.applyMiddleware({
     app,
-    // cors: false,
     cors: {
       // origin: IN_DEV ? DEV_ORIGIN : undefined,
-      // origin: DEV_ORIGIN,
       origin: new RegExp('/*/'),
       credentials: true,
     },

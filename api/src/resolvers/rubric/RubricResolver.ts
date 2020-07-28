@@ -907,8 +907,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<Rubric | null> {
-    const populated = await rubric.populate('cities.node.parent').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return null;
     }

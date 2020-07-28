@@ -18,8 +18,6 @@ beforeAll(async () => {
   testClient = createTestClient({
     apolloServer: server,
   });
-
-  // await mongoose.connect(`${process.env.MONGO_URL}`, DB_OPTIONS);
 });
 
 beforeEach(async () => {

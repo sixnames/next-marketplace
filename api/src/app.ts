@@ -48,6 +48,18 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const app = express();
   app.disable('x-powered-by');
 
+  // Session
+  const MongoDBStore = connectMongoDBStore(session);
+  const store = new MongoDBStore({
+    uri: MONGO_URL,
+    collection: 'sessions',
+  });
+  const sessionHandler = session({
+    store,
+    ...SESS_OPTIONS,
+  });
+  app.use(sessionHandler);
+
   // Test data
   // TODO make this methods safe
   app.get('/create-test-data', async (_, res) => {
@@ -114,18 +126,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
       res.send();
     }
   });
-
-  // Session
-  const MongoDBStore = connectMongoDBStore(session);
-  const store = new MongoDBStore({
-    uri: MONGO_URL,
-    collection: 'sessions',
-  });
-  const sessionHandler = session({
-    store,
-    ...SESS_OPTIONS,
-  });
-  app.use(sessionHandler);
 
   const server = new ApolloServer({
     ...APOLLO_OPTIONS,

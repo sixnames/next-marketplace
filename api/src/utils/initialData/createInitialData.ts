@@ -12,6 +12,7 @@ import {
   DEFAULT_COUNTRY,
   INITIAL_COUNTRIES,
   INITIAL_CITIES,
+  DEFAULT_CITY,
 } from '../../config';
 import { MetricModel } from '../../entities/Metric';
 import { UserModel } from '../../entities/User';
@@ -32,7 +33,7 @@ async function createInitialData() {
   }
 
   // Create initial cities
-  const cities = await CurrencyModel.find({ name: DEFAULT_COUNTRY });
+  const cities = await CityModel.find({ key: DEFAULT_CITY });
   const citiesIds = [];
   if (!cities || !cities.length) {
     const initialCity = await CityModel.create(INITIAL_CITIES[0]);
@@ -55,7 +56,7 @@ async function createInitialData() {
     await LanguageModel.create(INITIAL_LANGUAGES[0]);
   }
 
-  // Create api messages
+  // Create api message
   await createInitialApiMessages();
 
   // Create all metrics

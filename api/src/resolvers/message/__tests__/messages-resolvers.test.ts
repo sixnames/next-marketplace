@@ -6,7 +6,7 @@ describe('Language', () => {
     const { query } = await getTestClientWithUser({});
     const keys = ['validation.string.min', 'validation.string.max'];
 
-    // Should return messages list
+    // Should return message list
     const {
       data: { getMessagesByKeys },
     } = await query(

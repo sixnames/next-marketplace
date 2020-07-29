@@ -41,7 +41,7 @@ async function createInitialData() {
   }
 
   // Create initial countries
-  const countries = await CurrencyModel.find({ name: DEFAULT_COUNTRY });
+  const countries = await CountryModel.find({ nameString: DEFAULT_COUNTRY });
   if (!countries || !countries.length) {
     await CountryModel.create({
       ...INITIAL_COUNTRIES[0],

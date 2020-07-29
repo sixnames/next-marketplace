@@ -17,6 +17,12 @@ input AddAttributeToGroupInput {
   variant: AttributeVariantEnum!
 }
 
+input AddCityToCountryInput {
+  countryId: ID!
+  key: String!
+  name: [LangInput!]!
+}
+
 input AddOptionToGroupInput {
   color: String
   gender: GenderEnum
@@ -120,10 +126,15 @@ type City {
 
 type Country {
   cities: [City!]!
-  currency: Currency!
+  currency: String!
   id: ID!
-  name: String!
   nameString: String!
+}
+
+type CountryPayloadType {
+  country: Country
+  message: String!
+  success: Boolean!
 }
 
 input CreateAttributesGroupInput {
@@ -278,6 +289,7 @@ type MetricPayloadType {
 type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
+  addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
@@ -500,6 +512,7 @@ type Query {
     exclude: [ID!]
   ): [AttributesGroup!]!
   getAllCities: [City!]!
+  getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
@@ -514,6 +527,7 @@ type Query {
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCity(id: ID!): City!
   getClientLanguage: String!
+  getCountry(id: ID!): Country!
   getCurrency(id: ID!): Currency!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!

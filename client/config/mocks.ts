@@ -3,6 +3,7 @@ import {
   ATTRIBUTE_TYPE_NUMBER,
   ATTRIBUTE_TYPE_SELECT,
   ATTRIBUTE_TYPE_STRING,
+  DEFAULT_CITY,
   DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
   DEFAULT_LANG,
@@ -12,6 +13,9 @@ import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
+  SECONDARY_CITY,
+  SECONDARY_COUNTRY,
+  SECONDARY_CURRENCY,
   SECONDARY_LANG,
 } from './common';
 
@@ -234,7 +238,7 @@ export const ISO_LANGUAGES = [
     nativeName: 'Nederlands, Vlaams',
   },
   {
-    id: 'en',
+    id: SECONDARY_LANG,
     nameString: 'English',
     nativeName: 'English',
   },
@@ -699,7 +703,7 @@ export const ISO_LANGUAGES = [
     nativeName: 'română',
   },
   {
-    id: 'ru',
+    id: DEFAULT_LANG,
     nameString: 'Russian',
     nativeName: 'русский язык',
   },
@@ -951,18 +955,18 @@ export const ISO_LANGUAGES = [
 ];
 
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
-export const MOCK_CURRENCIES = [{ nameString: 'руб.' }, { nameString: 'USD' }];
+export const MOCK_CURRENCIES = [...INITIAL_CURRENCIES, { nameString: SECONDARY_CURRENCY }];
 
-export const INITIAL_COUNTRIES = [{ name: DEFAULT_COUNTRY }];
-export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { name: 'USA' }];
+export const INITIAL_COUNTRIES = [{ nameString: DEFAULT_COUNTRY }];
+export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { nameString: SECONDARY_COUNTRY }];
 
 export const INITIAL_CITIES = [
   {
     name: [
-      { key: 'ru', value: 'Москва' },
-      { key: 'en', value: 'Moscow' },
+      { key: DEFAULT_LANG, value: 'Москва' },
+      { key: SECONDARY_LANG, value: 'Moscow' },
     ],
-    key: 'moscow',
+    key: DEFAULT_CITY,
   },
 ];
 
@@ -970,10 +974,10 @@ export const MOCK_CITIES = [
   ...INITIAL_CITIES,
   {
     name: [
-      { key: 'ru', value: 'Нью Йорк' },
-      { key: 'en', value: 'New York' },
+      { key: DEFAULT_LANG, value: 'Нью Йорк' },
+      { key: SECONDARY_LANG, value: 'New York' },
     ],
-    key: 'ny',
+    key: SECONDARY_CITY,
   },
 ];
 
@@ -999,164 +1003,164 @@ export const MOCK_LANGUAGES = [
 export const MOCK_METRICS = [
   {
     name: [
-      { key: 'ru', value: 'км/ч' },
-      { key: 'en', value: 'km/h' },
+      { key: DEFAULT_LANG, value: 'км/ч' },
+      { key: SECONDARY_LANG, value: 'km/h' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'мм' },
-      { key: 'en', value: 'mm' },
+      { key: DEFAULT_LANG, value: 'мм' },
+      { key: SECONDARY_LANG, value: 'mm' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'шт.' },
-      { key: 'en', value: 'units' },
+      { key: DEFAULT_LANG, value: 'шт.' },
+      { key: SECONDARY_LANG, value: 'units' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'м2' },
-      { key: 'en', value: 'm2' },
+      { key: DEFAULT_LANG, value: 'м2' },
+      { key: SECONDARY_LANG, value: 'm2' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'мест' },
-      { key: 'en', value: 'places' },
+      { key: DEFAULT_LANG, value: 'мест' },
+      { key: SECONDARY_LANG, value: 'places' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'км' },
-      { key: 'en', value: 'km' },
+      { key: DEFAULT_LANG, value: 'км' },
+      { key: SECONDARY_LANG, value: 'km' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'кВт' },
-      { key: 'en', value: 'kw' },
+      { key: DEFAULT_LANG, value: 'кВт' },
+      { key: SECONDARY_LANG, value: 'kw' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'руб.' },
-      { key: 'en', value: 'rub.' },
+      { key: DEFAULT_LANG, value: 'руб.' },
+      { key: SECONDARY_LANG, value: 'rub.' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'лет' },
-      { key: 'en', value: 'years' },
+      { key: DEFAULT_LANG, value: 'лет' },
+      { key: SECONDARY_LANG, value: 'years' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'см' },
-      { key: 'en', value: 'cm' },
+      { key: DEFAULT_LANG, value: 'см' },
+      { key: SECONDARY_LANG, value: 'cm' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: '%' },
-      { key: 'en', value: '%' },
+      { key: DEFAULT_LANG, value: '%' },
+      { key: SECONDARY_LANG, value: '%' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'м' },
-      { key: 'en', value: 'm' },
+      { key: DEFAULT_LANG, value: 'м' },
+      { key: SECONDARY_LANG, value: 'm' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'часов' },
-      { key: 'en', value: 'hours' },
+      { key: DEFAULT_LANG, value: 'часов' },
+      { key: SECONDARY_LANG, value: 'hours' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'кг' },
-      { key: 'en', value: 'kg' },
+      { key: DEFAULT_LANG, value: 'кг' },
+      { key: SECONDARY_LANG, value: 'kg' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'чел.' },
-      { key: 'en', value: 'people' },
+      { key: DEFAULT_LANG, value: 'чел.' },
+      { key: SECONDARY_LANG, value: 'people' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'м/с' },
-      { key: 'en', value: 'm/s' },
+      { key: DEFAULT_LANG, value: 'м/с' },
+      { key: SECONDARY_LANG, value: 'm/s' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'год' },
-      { key: 'en', value: 'year' },
+      { key: DEFAULT_LANG, value: 'год' },
+      { key: SECONDARY_LANG, value: 'year' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'мин.' },
-      { key: 'en', value: 'minutes' },
+      { key: DEFAULT_LANG, value: 'мин.' },
+      { key: SECONDARY_LANG, value: 'minutes' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'ед.' },
-      { key: 'en', value: 'units' },
+      { key: DEFAULT_LANG, value: 'ед.' },
+      { key: SECONDARY_LANG, value: 'units' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'мл.' },
-      { key: 'en', value: 'ml' },
+      { key: DEFAULT_LANG, value: 'мл.' },
+      { key: SECONDARY_LANG, value: 'ml' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'л/ч.' },
-      { key: 'en', value: 'p/h' },
+      { key: DEFAULT_LANG, value: 'л/ч.' },
+      { key: SECONDARY_LANG, value: 'p/h' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'Hz' },
-      { key: 'en', value: 'Hz' },
+      { key: DEFAULT_LANG, value: 'Hz' },
+      { key: SECONDARY_LANG, value: 'Hz' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'Вт' },
-      { key: 'en', value: 'Wt' },
+      { key: DEFAULT_LANG, value: 'Вт' },
+      { key: SECONDARY_LANG, value: 'Wt' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: '°' },
-      { key: 'en', value: '°' },
+      { key: DEFAULT_LANG, value: '°' },
+      { key: SECONDARY_LANG, value: '°' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: '°C' },
-      { key: 'en', value: '°C' },
+      { key: DEFAULT_LANG, value: '°C' },
+      { key: SECONDARY_LANG, value: '°C' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'кд/м2' },
-      { key: 'en', value: 'kd/m2' },
+      { key: DEFAULT_LANG, value: 'кд/м2' },
+      { key: SECONDARY_LANG, value: 'kd/m2' },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'м3/ч' },
-      { key: 'en', value: 'm3/h' },
+      { key: DEFAULT_LANG, value: 'м3/ч' },
+      { key: SECONDARY_LANG, value: 'm3/h' },
     ],
   },
 ];
@@ -1165,8 +1169,8 @@ export const MOCK_METRICS = [
 export const MOCK_OPTIONS_WINE_COLOR = [
   {
     name: [
-      { key: 'ru', value: 'Белый' },
-      { key: 'en', value: 'White' },
+      { key: DEFAULT_LANG, value: 'Белый' },
+      { key: SECONDARY_LANG, value: 'White' },
     ],
     slug: 'beliy',
     color: 'ffffff',
@@ -1174,30 +1178,30 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       {
         key: GENDER_SHE,
         value: [
-          { key: 'ru', value: 'Белая' },
-          { key: 'en', value: 'White' },
+          { key: DEFAULT_LANG, value: 'Белая' },
+          { key: SECONDARY_LANG, value: 'White' },
         ],
       },
       {
         key: GENDER_HE,
         value: [
-          { key: 'ru', value: 'Белый' },
-          { key: 'en', value: 'White' },
+          { key: DEFAULT_LANG, value: 'Белый' },
+          { key: SECONDARY_LANG, value: 'White' },
         ],
       },
       {
         key: GENDER_IT,
         value: [
-          { key: 'ru', value: 'Белое' },
-          { key: 'en', value: 'White' },
+          { key: DEFAULT_LANG, value: 'Белое' },
+          { key: SECONDARY_LANG, value: 'White' },
         ],
       },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'Красный' },
-      { key: 'en', value: 'Red' },
+      { key: DEFAULT_LANG, value: 'Красный' },
+      { key: SECONDARY_LANG, value: 'Red' },
     ],
     slug: 'krasniy',
     color: '99020b',
@@ -1205,30 +1209,30 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       {
         key: GENDER_SHE,
         value: [
-          { key: 'ru', value: 'Красная' },
-          { key: 'en', value: 'Red' },
+          { key: DEFAULT_LANG, value: 'Красная' },
+          { key: SECONDARY_LANG, value: 'Red' },
         ],
       },
       {
         key: GENDER_HE,
         value: [
-          { key: 'ru', value: 'Красный' },
-          { key: 'en', value: 'Red' },
+          { key: DEFAULT_LANG, value: 'Красный' },
+          { key: SECONDARY_LANG, value: 'Red' },
         ],
       },
       {
         key: GENDER_IT,
         value: [
-          { key: 'ru', value: 'Красное' },
-          { key: 'en', value: 'Red' },
+          { key: DEFAULT_LANG, value: 'Красное' },
+          { key: SECONDARY_LANG, value: 'Red' },
         ],
       },
     ],
   },
   {
     name: [
-      { key: 'ru', value: 'Розовый' },
-      { key: 'en', value: 'Pink' },
+      { key: DEFAULT_LANG, value: 'Розовый' },
+      { key: SECONDARY_LANG, value: 'Pink' },
     ],
     slug: 'rozoviy',
     color: 'db8ce0',
@@ -1236,22 +1240,22 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       {
         key: GENDER_SHE,
         value: [
-          { key: 'ru', value: 'Розовая' },
-          { key: 'en', value: 'Pink' },
+          { key: DEFAULT_LANG, value: 'Розовая' },
+          { key: SECONDARY_LANG, value: 'Pink' },
         ],
       },
       {
         key: GENDER_HE,
         value: [
-          { key: 'ru', value: 'Розовый' },
-          { key: 'en', value: 'Pink' },
+          { key: DEFAULT_LANG, value: 'Розовый' },
+          { key: SECONDARY_LANG, value: 'Pink' },
         ],
       },
       {
         key: GENDER_IT,
         value: [
-          { key: 'ru', value: 'Розовое' },
-          { key: 'en', value: 'Pink' },
+          { key: DEFAULT_LANG, value: 'Розовое' },
+          { key: SECONDARY_LANG, value: 'Pink' },
         ],
       },
     ],
@@ -1261,32 +1265,32 @@ export const MOCK_OPTIONS_WINE_COLOR = [
 export const MOCK_OPTIONS_WINE_TYPE = [
   {
     name: [
-      { key: 'ru', value: 'Портвейн' },
-      { key: 'en', value: 'Port_wine' },
+      { key: DEFAULT_LANG, value: 'Портвейн' },
+      { key: SECONDARY_LANG, value: 'Port_wine' },
     ],
     slug: 'portvein',
     gender: GENDER_HE,
   },
   {
     name: [
-      { key: 'ru', value: 'Херес' },
-      { key: 'en', value: 'Heres' },
+      { key: DEFAULT_LANG, value: 'Херес' },
+      { key: SECONDARY_LANG, value: 'Heres' },
     ],
     slug: 'heres',
     gender: GENDER_HE,
   },
   {
     name: [
-      { key: 'ru', value: 'Вермут' },
-      { key: 'en', value: 'Vermut' },
+      { key: DEFAULT_LANG, value: 'Вермут' },
+      { key: SECONDARY_LANG, value: 'Vermut' },
     ],
     slug: 'varmut',
     gender: GENDER_HE,
   },
   {
     name: [
-      { key: 'ru', value: 'Крепленое' },
-      { key: 'en', value: 'Hard' },
+      { key: DEFAULT_LANG, value: 'Крепленое' },
+      { key: SECONDARY_LANG, value: 'Hard' },
     ],
     slug: 'kreplenoe',
     gender: GENDER_IT,
@@ -1296,23 +1300,23 @@ export const MOCK_OPTIONS_WINE_TYPE = [
 // Options groups
 export const MOCK_OPTIONS_GROUP_COLORS = {
   name: [
-    { key: 'ru', value: 'Цвета' },
-    { key: 'en', value: 'Colors' },
+    { key: DEFAULT_LANG, value: 'Цвета' },
+    { key: SECONDARY_LANG, value: 'Colors' },
   ],
 };
 
 export const MOCK_OPTIONS_GROUP_WINE_TYPES = {
   name: [
-    { key: 'ru', value: 'Типы_вина' },
-    { key: 'en', value: 'Wine_types' },
+    { key: DEFAULT_LANG, value: 'Типы_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_types' },
   ],
 };
 
 // Attributes
 export const MOCK_ATTRIBUTE_WINE_COLOR = {
   name: [
-    { key: 'ru', value: 'Цвет_вина' },
-    { key: 'en', value: 'Wine_color' },
+    { key: DEFAULT_LANG, value: 'Цвет_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_color' },
   ],
   slug: 'tsvet_vina',
   variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
@@ -1320,8 +1324,8 @@ export const MOCK_ATTRIBUTE_WINE_COLOR = {
 
 export const MOCK_ATTRIBUTE_WINE_TYPE = {
   name: [
-    { key: 'ru', value: 'Тип_вина' },
-    { key: 'en', value: 'Wine_type' },
+    { key: DEFAULT_LANG, value: 'Тип_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_type' },
   ],
   slug: 'tip_vina',
   variant: ATTRIBUTE_TYPE_SELECT,
@@ -1329,8 +1333,8 @@ export const MOCK_ATTRIBUTE_WINE_TYPE = {
 
 export const MOCK_ATTRIBUTE_STRING = {
   name: [
-    { key: 'ru', value: 'Атрибут_строка' },
-    { key: 'en', value: 'Attribute_string' },
+    { key: DEFAULT_LANG, value: 'Атрибут_строка' },
+    { key: SECONDARY_LANG, value: 'Attribute_string' },
   ],
   slug: 'attribute_stroka',
   variant: ATTRIBUTE_TYPE_STRING,
@@ -1338,8 +1342,8 @@ export const MOCK_ATTRIBUTE_STRING = {
 
 export const MOCK_ATTRIBUTE_NUMBER = {
   name: [
-    { key: 'ru', value: 'Атрибут_число' },
-    { key: 'en', value: 'Attribute_number' },
+    { key: DEFAULT_LANG, value: 'Атрибут_число' },
+    { key: SECONDARY_LANG, value: 'Attribute_number' },
   ],
   slug: 'attribute_chislo',
   variant: ATTRIBUTE_TYPE_NUMBER,
@@ -1347,57 +1351,57 @@ export const MOCK_ATTRIBUTE_NUMBER = {
 
 export const MOCK_ATTRIBUTES_GROUP_WINE_FEATURES = {
   name: [
-    { key: 'ru', value: 'Характеристики_вина' },
-    { key: 'en', value: 'Wine_features' },
+    { key: DEFAULT_LANG, value: 'Характеристики_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_features' },
   ],
 };
 
 export const MOCK_ATTRIBUTES_GROUP_FOR_DELETE = {
   name: [
-    { key: 'ru', value: 'Группа_атрибутов_для_удаления' },
-    { key: 'en', value: 'Group_for_delete' },
+    { key: DEFAULT_LANG, value: 'Группа_атрибутов_для_удаления' },
+    { key: SECONDARY_LANG, value: 'Group_for_delete' },
   ],
 };
 
 export const MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES = {
   name: [
-    { key: 'ru', value: 'Характеристики_виски' },
-    { key: 'en', value: 'Whiskey_features' },
+    { key: DEFAULT_LANG, value: 'Характеристики_виски' },
+    { key: SECONDARY_LANG, value: 'Whiskey_features' },
   ],
 };
 
 // Rubrics
 export const MOCK_RUBRIC_TYPE_ALCOHOL = {
   name: [
-    { key: 'ru', value: 'Алкоголь' },
-    { key: 'en', value: 'Alcohol' },
+    { key: DEFAULT_LANG, value: 'Алкоголь' },
+    { key: SECONDARY_LANG, value: 'Alcohol' },
   ],
 };
 
 export const MOCK_RUBRIC_TYPE_JUICE = {
   name: [
-    { key: 'ru', value: 'Соки' },
-    { key: 'en', value: 'Juice' },
+    { key: DEFAULT_LANG, value: 'Соки' },
+    { key: SECONDARY_LANG, value: 'Juice' },
   ],
 };
 
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [
-    { key: 'ru', value: 'Вино' },
-    { key: 'en', value: 'Wine' },
+    { key: DEFAULT_LANG, value: 'Вино' },
+    { key: SECONDARY_LANG, value: 'Wine' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Купить вино' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Купить вино' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [
-      { key: 'ru', value: 'Купить' },
-      { key: 'en', value: 'Buy a' },
+      { key: DEFAULT_LANG, value: 'Купить' },
+      { key: SECONDARY_LANG, value: 'Buy a' },
     ],
     keyword: [
-      { key: 'ru', value: 'вино' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'вино' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
   },
@@ -1407,18 +1411,18 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
 
 export const MOCK_RUBRIC_LEVEL_TWO_A = {
   name: [
-    { key: 'ru', value: 'Второй_уровень_1' },
-    { key: 'en', value: 'Second_level_1' },
+    { key: DEFAULT_LANG, value: 'Второй_уровень_1' },
+    { key: SECONDARY_LANG, value: 'Second_level_1' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Второй уровень 1' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Второй уровень 1' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Второй уровень 1' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Второй уровень 1' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_SHE,
   },
@@ -1427,18 +1431,18 @@ export const MOCK_RUBRIC_LEVEL_TWO_A = {
 
 export const MOCK_RUBRIC_LEVEL_TWO_B = {
   name: [
-    { key: 'ru', value: 'Второй_уровень_2' },
-    { key: 'en', value: 'Second_level_2' },
+    { key: DEFAULT_LANG, value: 'Второй_уровень_2' },
+    { key: SECONDARY_LANG, value: 'Second_level_2' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Второй уровень 2' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Второй уровень 2' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Второй уровень 2' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Второй уровень 2' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_HE,
   },
@@ -1447,18 +1451,18 @@ export const MOCK_RUBRIC_LEVEL_TWO_B = {
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
   name: [
-    { key: 'ru', value: 'Третий_уровень_1_1' },
-    { key: 'en', value: 'Third_level_1_1' },
+    { key: DEFAULT_LANG, value: 'Третий_уровень_1_1' },
+    { key: SECONDARY_LANG, value: 'Third_level_1_1' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Третий уровень 1_1' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 1_1' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Третий уровень 1_1' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 1_1' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
   },
@@ -1467,18 +1471,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
   name: [
-    { key: 'ru', value: 'Третий_уровень_1_2' },
-    { key: 'en', value: 'Third_level_1_2' },
+    { key: DEFAULT_LANG, value: 'Третий_уровень_1_2' },
+    { key: SECONDARY_LANG, value: 'Third_level_1_2' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Третий уровень 1_2' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 1_2' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Третий уровень 1_2' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 1_2' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
   },
@@ -1487,18 +1491,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
   name: [
-    { key: 'ru', value: 'Третий_уровень_2_1' },
-    { key: 'en', value: 'Third_level_2_1' },
+    { key: DEFAULT_LANG, value: 'Третий_уровень_2_1' },
+    { key: SECONDARY_LANG, value: 'Third_level_2_1' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Третий уровень 2_1' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 2_1' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Третий уровень 2_1' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 2_1' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
   },
@@ -1507,18 +1511,18 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
   name: [
-    { key: 'ru', value: 'Третий_уровень_2_2' },
-    { key: 'en', value: 'Third_level_2_2' },
+    { key: DEFAULT_LANG, value: 'Третий_уровень_2_2' },
+    { key: SECONDARY_LANG, value: 'Third_level_2_2' },
   ],
   catalogueTitle: {
     defaultTitle: [
-      { key: 'ru', value: 'Третий уровень 2_2' },
-      { key: 'en', value: 'Buy a wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 2_2' },
+      { key: SECONDARY_LANG, value: 'Buy a wine' },
     ],
     prefix: [],
     keyword: [
-      { key: 'ru', value: 'Третий уровень 2_2' },
-      { key: 'en', value: 'wine' },
+      { key: DEFAULT_LANG, value: 'Третий уровень 2_2' },
+      { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
   },
@@ -1528,80 +1532,80 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
 // Products
 export const MOCK_PRODUCT_A = {
   name: [
-    { key: 'ru', value: 'Вино_Brancott_Estate' },
-    { key: 'en', value: 'Wine_Brancott_Estate' },
+    { key: DEFAULT_LANG, value: 'Вино_Brancott_Estate' },
+    { key: SECONDARY_LANG, value: 'Wine_Brancott_Estate' },
   ],
   cardName: [
-    { key: 'ru', value: 'Вино Brancott Estate Marlborough Sauvignon Blanc' },
-    { key: 'en', value: 'Wine Brancott Estate Marlborough Sauvignon Blanc' },
+    { key: DEFAULT_LANG, value: 'Вино Brancott Estate Marlborough Sauvignon Blanc' },
+    { key: SECONDARY_LANG, value: 'Wine Brancott Estate Marlborough Sauvignon Blanc' },
   ],
   price: 100,
   description: [
-    { key: 'ru', value: 'Очень длинное описание товара' },
-    { key: 'en', value: 'Very long product description' },
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
   ],
 };
 
 export const MOCK_PRODUCT_B = {
   name: [
-    { key: 'ru', value: 'Вино_Campo_Viejо' },
-    { key: 'en', value: 'Wine_Campo_Viejо' },
+    { key: DEFAULT_LANG, value: 'Вино_Campo_Viejо' },
+    { key: SECONDARY_LANG, value: 'Wine_Campo_Viejо' },
   ],
   cardName: [
-    { key: 'ru', value: 'Вино Campo Viejо Tempranillo Rioja DOC' },
-    { key: 'en', value: 'Wine Campo Viejо Tempranillo Rioja DOC' },
+    { key: DEFAULT_LANG, value: 'Вино Campo Viejо Tempranillo Rioja DOC' },
+    { key: SECONDARY_LANG, value: 'Wine Campo Viejо Tempranillo Rioja DOC' },
   ],
   price: 200,
   description: [
-    { key: 'ru', value: 'Очень длинное описание товара' },
-    { key: 'en', value: 'Very long product description' },
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
   ],
 };
 
 export const MOCK_PRODUCT_C = {
   name: [
-    { key: 'ru', value: 'Вино_Val_de_Vie' },
-    { key: 'en', value: 'Wine_Val_de_Vie' },
+    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie' },
   ],
   cardName: [
-    { key: 'ru', value: 'Вино Val de Vie, "Barista" Pinotage' },
-    { key: 'en', value: 'Wine Val de Vie, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
   ],
   price: 50,
   description: [
-    { key: 'ru', value: 'Очень длинное описание товара' },
-    { key: 'en', value: 'Very long product description' },
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
   ],
 };
 
 export const MOCK_PRODUCT_NEW = {
   name: [
-    { key: 'ru', value: 'Вино_Sogrape_Vinhos' },
-    { key: 'en', value: 'Wine_Sogrape_Vinhos' },
+    { key: DEFAULT_LANG, value: 'Вино_Sogrape_Vinhos' },
+    { key: SECONDARY_LANG, value: 'Wine_Sogrape_Vinhos' },
   ],
   cardName: [
-    { key: 'ru', value: 'Вино Sogrape Vinhos, Gazela Vinho Verde DOC' },
-    { key: 'en', value: 'Wine Sogrape Vinhos, Gazela Vinho Verde DOC' },
+    { key: DEFAULT_LANG, value: 'Вино Sogrape Vinhos, Gazela Vinho Verde DOC' },
+    { key: SECONDARY_LANG, value: 'Wine Sogrape Vinhos, Gazela Vinho Verde DOC' },
   ],
   price: 2000,
   description: [
-    { key: 'ru', value: 'Очень длинное описание товара' },
-    { key: 'en', value: 'Very long product description' },
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
   ],
 };
 
 export const MOCK_PRODUCT_CREATE = {
   name: [
-    { key: 'ru', value: 'Вино_Luis_Felipe_Edwards' },
-    { key: 'en', value: 'Wine_Luis_Felipe_Edwards' },
+    { key: DEFAULT_LANG, value: 'Вино_Luis_Felipe_Edwards' },
+    { key: SECONDARY_LANG, value: 'Wine_Luis_Felipe_Edwards' },
   ],
   cardName: [
-    { key: 'ru', value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
-    { key: 'en', value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
+    { key: DEFAULT_LANG, value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
+    { key: SECONDARY_LANG, value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
   ],
   price: 2000,
   description: [
-    { key: 'ru', value: 'Очень длинное описание товара' },
-    { key: 'en', value: 'Very long product description' },
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
   ],
 };

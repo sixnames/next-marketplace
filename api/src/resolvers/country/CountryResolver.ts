@@ -17,6 +17,7 @@ import { AddCityToCountryInput } from './AddCityToCountryInput';
 import { UpdateCityInCountryInput } from './UpdateCityInCountryInput';
 import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { CreateCountryInput } from './CreateCountryInput';
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -39,6 +40,49 @@ export class CountryResolver {
     }
 
     return country;
+  }
+
+  // TODO messages and validation
+  @Mutation((_returns) => CountryPayloadType)
+  async createCountry(
+    @Arg('input', (_type) => CreateCountryInput) input: CreateCountryInput,
+  ): Promise<CountryPayloadType> {
+    try {
+      const { nameString } = input;
+
+      const existingCountries = await CountryModel.exists({
+        nameString,
+      });
+      if (existingCountries) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const country = await CountryModel.create({
+        ...input,
+        cities: [],
+      });
+
+      if (!country) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        country,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
   }
 
   // TODO messages and validation

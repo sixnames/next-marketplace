@@ -60,6 +60,74 @@ describe('Country', () => {
     expect(getCountry.id).toEqual(currentCountry.id);
     expect(getCountry.nameString).toEqual(currentCountry.nameString);
 
+    // Shouldn't create country on duplicate error
+    const {
+      data: { createCountry: createCountryDuplicateError },
+    } = await mutate(
+      `
+        mutation CreateCountry($input: CreateCountryInput!) {
+          createCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            nameString: currentCountry.nameString,
+            currency: currentCountry.currency,
+          },
+        },
+      },
+    );
+    expect(createCountryDuplicateError.success).toBeFalsy();
+
+    // Should create country
+    const newCountryName = 'country';
+    const newCountryCurrency = 'currency';
+    const {
+      data: { createCountry },
+    } = await mutate(
+      `
+        mutation CreateCountry($input: CreateCountryInput!) {
+          createCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            nameString: newCountryName,
+            currency: newCountryCurrency,
+          },
+        },
+      },
+    );
+    expect(createCountry.success).toBeTruthy();
+    expect(createCountry.country.nameString).toEqual(newCountryName);
+    expect(createCountry.country.currency).toEqual(newCountryCurrency);
+
     // Shouldn't create city on duplicate error
     const {
       data: { addCityToCountry: addCityToCountryDuplicate },

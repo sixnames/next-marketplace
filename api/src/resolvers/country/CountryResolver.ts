@@ -144,6 +144,42 @@ export class CountryResolver {
 
   // TODO messages and validation
   @Mutation((_returns) => CountryPayloadType)
+  async deleteCountry(@Arg('id', (_type) => ID) id: string): Promise<CountryPayloadType> {
+    try {
+      const country = await CountryModel.findById(id);
+      if (!country) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
+
+      const removedCountry = await CountryModel.deleteOne({ _id: id });
+
+      // TODO remove cities data from all entities?
+      const removedCities = await CityModel.deleteMany({ _id: { $in: country.cities } });
+
+      if (!removedCountry.ok || !removedCities.ok) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO messages and validation
+  @Mutation((_returns) => CountryPayloadType)
   async addCityToCountry(
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {

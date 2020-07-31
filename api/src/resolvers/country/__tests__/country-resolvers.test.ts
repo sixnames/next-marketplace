@@ -29,7 +29,9 @@ describe('Country', () => {
       `,
     );
     const currentCountry = getAllCountries[0];
+    const countryForDelete = getAllCountries[1];
     const currentCountryCity = currentCountry.cities[0];
+    const countryForDeleteCity = countryForDelete.cities[0];
     expect(getAllCountries).toHaveLength(MOCK_COUNTRIES.length);
     expect(currentCountry.cities).toHaveLength(1);
 
@@ -164,6 +166,41 @@ describe('Country', () => {
     expect(updateCountry.success).toBeTruthy();
     expect(updateCountry.country.nameString).toEqual(updatedCountryName);
     expect(updateCountry.country.currency).toEqual(updatedCountryCurrency);
+
+    // Should delete country
+    const {
+      data: { deleteCountry },
+    } = await mutate(
+      `
+        mutation deleteCountry($id: ID!) {
+          deleteCountry(id: $id) {
+            success
+            message
+          }
+        }
+      `,
+      {
+        variables: {
+          id: countryForDelete.id,
+        },
+      },
+    );
+    const { errors } = await mutate(
+      `
+        query GetCity($id: ID!) {
+          getCity(id: $id) {
+            id
+          }
+        }
+      `,
+      {
+        variables: {
+          id: countryForDeleteCity.id,
+        },
+      },
+    );
+    expect(deleteCountry.success).toBeTruthy();
+    expect(errors).toBeDefined();
 
     // Shouldn't create city on duplicate error
     const {

@@ -316,6 +316,7 @@ type Mutation {
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
+  deleteCountry(id: ID!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
   deleteMetric(id: ID!): MetricPayloadType!

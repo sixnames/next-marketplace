@@ -25,7 +25,6 @@ const messagesKeys = [
   // Currencies validation
   'validation.currencies.id',
   'validation.currencies.nameString',
-  'validation.currencies.currency',
 
   // Cities ----------
   'cities.create.duplicate',
@@ -38,10 +37,26 @@ const messagesKeys = [
   'cities.delete.notFound',
   'cities.delete.error',
   'cities.delete.success',
-  // Currencies validation
+  // Cities validation
   'validation.cities.id',
   'validation.cities.name',
   'validation.cities.key',
+
+  // Countries ----------
+  'countries.create.duplicate',
+  'countries.create.error',
+  'countries.create.success',
+  'countries.update.notFound',
+  'countries.update.duplicate',
+  'countries.update.error',
+  'countries.update.success',
+  'countries.delete.notFound',
+  'countries.delete.error',
+  'countries.delete.success',
+  // Countries validation
+  'validation.countries.id',
+  'validation.countries.nameString',
+  'validation.countries.currency',
 
   // Languages ----------
   'languages.setLanguageAsDefault.error',

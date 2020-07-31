@@ -69,7 +69,7 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: 'country not found',
+          message: 'error',
         };
       }
 
@@ -126,7 +126,7 @@ export class CountryResolver {
       if (!updatedCountry) {
         return {
           success: false,
-          message: 'country not found',
+          message: 'error',
         };
       }
 
@@ -163,7 +163,7 @@ export class CountryResolver {
       if (!removedCountry.ok || !removedCities.ok) {
         return {
           success: false,
-          message: 'country not found',
+          message: 'error',
         };
       }
 

@@ -7,7 +7,7 @@ const citiesMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Город с таким именем уже существует в данной стране.',
+        value: 'Город с таким названием уже существует в данной стране.',
       },
       {
         key: SECONDARY_LANG,
@@ -59,7 +59,7 @@ const citiesMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Город с таким именем уже существует в данной стране.',
+        value: 'Город с таким названием уже существует в данной стране.',
       },
       {
         key: SECONDARY_LANG,

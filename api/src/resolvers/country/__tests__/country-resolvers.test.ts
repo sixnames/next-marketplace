@@ -62,6 +62,38 @@ describe('Country', () => {
     expect(getCountry.id).toEqual(currentCountry.id);
     expect(getCountry.nameString).toEqual(currentCountry.nameString);
 
+    // Shouldn't create country on validation error
+    const {
+      data: { createCountry: createCountryValidationError },
+    } = await mutate(
+      `
+        mutation CreateCountry($input: CreateCountryInput!) {
+          createCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            nameString: 'f',
+            currency: 'b',
+          },
+        },
+      },
+    );
+    expect(createCountryValidationError.success).toBeFalsy();
+
     // Shouldn't create country on duplicate error
     const {
       data: { createCountry: createCountryDuplicateError },
@@ -130,7 +162,40 @@ describe('Country', () => {
     expect(createCountry.country.nameString).toEqual(newCountryName);
     expect(createCountry.country.currency).toEqual(newCountryCurrency);
 
-    // Should create country
+    // Shouldn't update country on validation error
+    const {
+      data: { updateCountry: updateCountryValidationError },
+    } = await mutate(
+      `
+        mutation UpdateCountry($input: UpdateCountryInput!) {
+          updateCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: getCountry.id,
+            nameString: 'f',
+            currency: 'b',
+          },
+        },
+      },
+    );
+    expect(updateCountryValidationError.success).toBeFalsy();
+
+    // Should update country
     const updatedCountryName = 'new country';
     const updatedCountryCurrency = 'new currency';
     const {
@@ -201,6 +266,39 @@ describe('Country', () => {
     );
     expect(deleteCountry.success).toBeTruthy();
     expect(errors).toBeDefined();
+
+    // Shouldn't create city on validation error
+    const {
+      data: { addCityToCountry: addCityToCountryValidation },
+    } = await mutate(
+      `
+        mutation AddCityToCountry($input: AddCityToCountryInput!) {
+          addCityToCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            countryId: currentCountry.id,
+            key: 'f',
+            name: [{ key: DEFAULT_LANG, value: 'b' }],
+          },
+        },
+      },
+    );
+    expect(addCityToCountryValidation.success).toBeFalsy();
 
     // Shouldn't create city on duplicate error
     const {
@@ -275,6 +373,41 @@ describe('Country', () => {
     expect(createdCity.nameString).toEqual(newCityName);
     expect(createdCity.key).toEqual(newCityKey);
 
+    // Shouldn't update city in country on validation error
+    const {
+      data: { updateCityInCountry: updateCityInCountryValidationError },
+    } = await mutate(
+      `
+        mutation UpdateCityInCountry($input: UpdateCityInCountryInput!) {
+          updateCityInCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+                key
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            countryId: currentCountry.id,
+            cityId: createdCity.id,
+            key: 'f',
+            name: [{ key: DEFAULT_LANG, value: 'f' }],
+          },
+        },
+      },
+    );
+    expect(updateCityInCountryValidationError.success).toBeFalsy();
+
     // Should update city in country
     const updatedCityKey = 'updated';
     const updatedCityName = 'updated';
@@ -317,7 +450,40 @@ describe('Country', () => {
     expect(updatedCity.nameString).toEqual(updatedCityName);
     expect(updatedCity.key).toEqual(updatedCityKey);
 
-    // Should update city in country
+    // Shouldn't delete city from country on validation error
+    const {
+      data: { deleteCityFromCountry: deleteCityFromCountryValidationError },
+    } = await mutate(
+      `
+        mutation DeleteCityFromCountry($input: DeleteCityFromCountryInput!) {
+          deleteCityFromCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+                key
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            countryId: '',
+            cityId: '',
+          },
+        },
+      },
+    );
+    expect(deleteCityFromCountryValidationError.success).toBeFalsy();
+
+    // Should delete city from country
     const {
       data: { deleteCityFromCountry },
     } = await mutate(

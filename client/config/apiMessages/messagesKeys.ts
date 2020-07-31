@@ -27,6 +27,7 @@ const messagesKeys = [
   'validation.currencies.nameString',
 
   // Cities ----------
+  'cities.create.notFound',
   'cities.create.duplicate',
   'cities.create.error',
   'cities.create.success',

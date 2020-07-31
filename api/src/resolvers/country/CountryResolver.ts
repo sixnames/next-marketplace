@@ -22,6 +22,14 @@ import { CreateCountryInput } from './CreateCountryInput';
 import { UpdateCountryInput } from './UpdateCountryInput';
 import { ContextInterface } from '../../types/context';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import {
+  addCityToCountrySchema,
+  createCountrySchema,
+  deleteCityFromCountrySchema,
+  updateCityInCountrySchema,
+  updateCountrySchema,
+} from '../../validation/countrySchema';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -46,7 +54,6 @@ export class CountryResolver {
     return country;
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async createCountry(
     @Ctx() ctx: ContextInterface,
@@ -54,6 +61,12 @@ export class CountryResolver {
   ): Promise<CountryPayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.countries.nameString',
+        'validation.countries.currency',
+      ]);
+      await createCountrySchema({ lang, messages }).validate(input);
+
       const { nameString } = input;
 
       const existingCountries = await CountryModel.exists({
@@ -91,7 +104,6 @@ export class CountryResolver {
     }
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async updateCountry(
     @Ctx() ctx: ContextInterface,
@@ -99,6 +111,13 @@ export class CountryResolver {
   ): Promise<CountryPayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.countries.id',
+        'validation.countries.nameString',
+        'validation.countries.currency',
+      ]);
+      await updateCountrySchema({ lang, messages }).validate(input);
+
       const { id, nameString } = input;
 
       const country = await CountryModel.findById(id);
@@ -150,7 +169,6 @@ export class CountryResolver {
     }
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async deleteCountry(
     @Ctx() ctx: ContextInterface,
@@ -190,14 +208,21 @@ export class CountryResolver {
     }
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async addCityToCountry(
     @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.countries.id',
+        'validation.cities.name',
+        'validation.cities.key',
+      ]);
+      await addCityToCountrySchema({ lang, messages, defaultLang }).validate(input);
+
       const { countryId, ...values } = input;
       const country = await CountryModel.findById(countryId);
 
@@ -268,7 +293,15 @@ export class CountryResolver {
     @Arg('input', (_type) => UpdateCityInCountryInput) input: UpdateCityInCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.countries.id',
+        'validation.cities.id',
+        'validation.cities.name',
+        'validation.cities.key',
+      ]);
+      await updateCityInCountrySchema({ lang, messages, defaultLang }).validate(input);
+
       const { countryId, cityId, ...values } = input;
       const country = await CountryModel.findById(countryId);
       const city = await CityModel.findById(cityId);
@@ -328,6 +361,9 @@ export class CountryResolver {
   ): Promise<CountryPayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.countries.id', 'validation.cities.id']);
+      await deleteCityFromCountrySchema({ lang, messages }).validate(input);
+
       const { countryId, cityId } = input;
       const country = await CountryModel.findById(countryId);
       const city = await CityModel.findById(cityId);

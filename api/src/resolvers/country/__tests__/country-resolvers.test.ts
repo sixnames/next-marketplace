@@ -128,6 +128,43 @@ describe('Country', () => {
     expect(createCountry.country.nameString).toEqual(newCountryName);
     expect(createCountry.country.currency).toEqual(newCountryCurrency);
 
+    // Should create country
+    const updatedCountryName = 'new country';
+    const updatedCountryCurrency = 'new currency';
+    const {
+      data: { updateCountry },
+    } = await mutate(
+      `
+        mutation UpdateCountry($input: UpdateCountryInput!) {
+          updateCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: getCountry.id,
+            nameString: updatedCountryName,
+            currency: updatedCountryCurrency,
+          },
+        },
+      },
+    );
+    expect(updateCountry.success).toBeTruthy();
+    expect(updateCountry.country.nameString).toEqual(updatedCountryName);
+    expect(updateCountry.country.currency).toEqual(updatedCountryCurrency);
+
     // Shouldn't create city on duplicate error
     const {
       data: { addCityToCountry: addCityToCountryDuplicate },

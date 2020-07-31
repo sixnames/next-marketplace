@@ -18,6 +18,7 @@ import { UpdateCityInCountryInput } from './UpdateCityInCountryInput';
 import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateCountryInput } from './CreateCountryInput';
+import { UpdateCountryInput } from './UpdateCountryInput';
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -76,6 +77,62 @@ export class CountryResolver {
         success: true,
         message: 'success',
         country,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO messages and validation
+  @Mutation((_returns) => CountryPayloadType)
+  async updateCountry(
+    @Arg('input', (_type) => UpdateCountryInput) input: UpdateCountryInput,
+  ): Promise<CountryPayloadType> {
+    try {
+      const { id, nameString } = input;
+
+      const country = await CountryModel.findById(id);
+
+      if (!country) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
+
+      const existingCountries = await CountryModel.exists({
+        nameString,
+      });
+      if (existingCountries) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const updatedCountry = await CountryModel.findByIdAndUpdate(
+        id,
+        {
+          ...input,
+          cities: country.cities,
+        },
+        { new: true },
+      );
+
+      if (!updatedCountry) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        country: updatedCountry,
       };
     } catch (e) {
       return {

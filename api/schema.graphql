@@ -141,6 +141,11 @@ input CreateAttributesGroupInput {
   name: [LangInput!]!
 }
 
+input CreateCountryInput {
+  currency: String!
+  nameString: String!
+}
+
 input CreateCurrencyInput {
   nameString: String!
 }
@@ -298,6 +303,7 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createCountry(input: CreateCountryInput!): CountryPayloadType!
   createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!
   createLanguage(input: CreateLanguageInput!): LanguagePayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
@@ -328,6 +334,7 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
@@ -699,6 +706,12 @@ input UpdateCityInCountryInput {
   countryId: ID!
   key: String!
   name: [LangInput!]!
+}
+
+input UpdateCountryInput {
+  currency: String!
+  id: ID!
+  nameString: String!
 }
 
 input UpdateCurrencyInput {

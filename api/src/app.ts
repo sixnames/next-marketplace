@@ -27,6 +27,25 @@ import { LanguageModel } from './entities/Language';
 import mongoose from 'mongoose';
 import connectMongoDBStore from 'connect-mongodb-session';
 import session from 'express-session';
+import { UserResolver } from './resolvers/user/UserResolver';
+import { CityResolver } from './resolvers/city/CityResolver';
+import { CountryResolver } from './resolvers/country/CountryResolver';
+import { LanguageResolver } from './resolvers/languages/LanguageResolver';
+import { CurrencyResolver } from './resolvers/currency/CurrencyResolver';
+import { AttributeResolver } from './resolvers/attribute/AttributeResolver';
+import { AttributesGroupResolver } from './resolvers/attributesGroup/AttributesGroupResolver';
+import { CatalogueDataResolver } from './resolvers/catalogueData/CatalogueDataResolver';
+import { MessageResolver } from './resolvers/message/MessageResolver';
+import { MetricResolver } from './resolvers/metric/MetricResolver';
+import { OptionResolver } from './resolvers/option/OptionResolver';
+import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
+import { ProductResolver } from './resolvers/product/ProductResolver';
+import { RubricResolver } from './resolvers/rubric/RubricResolver';
+import {
+  AttributePositioningListResolver,
+  GendersListResolver,
+  ISOLanguagesListResolver,
+} from './resolvers/selects/SelectsResolver';
 
 interface CreateAppInterface {
   app: Express;
@@ -39,7 +58,25 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
   // GQL Schema
   const schema = buildSchemaSync({
-    resolvers: [path.resolve(__dirname, 'resolvers', '**', '*Resolver.ts')],
+    resolvers: [
+      AttributeResolver,
+      AttributesGroupResolver,
+      CatalogueDataResolver,
+      CityResolver,
+      CountryResolver,
+      CurrencyResolver,
+      LanguageResolver,
+      MessageResolver,
+      MetricResolver,
+      OptionResolver,
+      OptionsGroupResolver,
+      ProductResolver,
+      RubricResolver,
+      UserResolver,
+      GendersListResolver,
+      AttributePositioningListResolver,
+      ISOLanguagesListResolver,
+    ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,

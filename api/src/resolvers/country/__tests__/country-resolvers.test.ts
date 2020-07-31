@@ -61,7 +61,6 @@ describe('Country', () => {
     expect(getCountry.nameString).toEqual(currentCountry.nameString);
 
     // Shouldn't create city on duplicate error
-    // const newCityKey = 'key';
     const {
       data: { addCityToCountry: addCityToCountryDuplicate },
     } = await mutate(
@@ -128,10 +127,52 @@ describe('Country', () => {
         },
       },
     );
-
     const createdCity = addCityToCountry.country.cities.find(({ key }: any) => key === newCityKey);
     expect(addCityToCountry.success).toBeTruthy();
     expect(addCityToCountry.country.cities).toHaveLength(2);
     expect(createdCity.nameString).toEqual(newCityName);
+    expect(createdCity.key).toEqual(newCityKey);
+
+    // Should update city in country
+    const updatedCityKey = 'updated';
+    const updatedCityName = 'updated';
+    const {
+      data: { updateCityInCountry },
+    } = await mutate(
+      `
+        mutation UpdateCityInCountry($input: UpdateCityInCountryInput!) {
+          updateCityInCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+                key
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            countryId: currentCountry.id,
+            cityId: createdCity.id,
+            key: updatedCityKey,
+            name: [{ key: DEFAULT_LANG, value: updatedCityName }],
+          },
+        },
+      },
+    );
+    const updatedCity = updateCityInCountry.country.cities.find(
+      ({ id }: any) => id === createdCity.id,
+    );
+    expect(addCityToCountry.success).toBeTruthy();
+    expect(updatedCity.nameString).toEqual(updatedCityName);
+    expect(updatedCity.key).toEqual(updatedCityKey);
   });
 });

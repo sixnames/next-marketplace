@@ -1,6 +1,8 @@
 import commonMessages from './commonMessages';
 import currenciesMessages from './currenciesMessages';
 import languagesMessages from './languagesMessages';
+import citiesMessages from './citiesMessages';
+import countriesMessages from './countriesMessages';
 import attributesGroupsMessages from './attributesGroupsMessages';
 import productsMessages from './productsMessages';
 import metricsMessages from './metricsMessages';
@@ -13,6 +15,8 @@ const apiMessages = [
   ...commonMessages,
   ...currenciesMessages,
   ...languagesMessages,
+  ...citiesMessages,
+  ...countriesMessages,
   ...usersMessages,
   ...optionsGroupsMessages,
   ...attributesGroupsMessages,

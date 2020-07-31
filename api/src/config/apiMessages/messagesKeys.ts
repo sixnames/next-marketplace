@@ -25,6 +25,23 @@ const messagesKeys = [
   // Currencies validation
   'validation.currencies.id',
   'validation.currencies.nameString',
+  'validation.currencies.currency',
+
+  // Cities ----------
+  'cities.create.duplicate',
+  'cities.create.error',
+  'cities.create.success',
+  'cities.update.notFound',
+  'cities.update.duplicate',
+  'cities.update.error',
+  'cities.update.success',
+  'cities.delete.notFound',
+  'cities.delete.error',
+  'cities.delete.success',
+  // Currencies validation
+  'validation.cities.id',
+  'validation.cities.name',
+  'validation.cities.key',
 
   // Languages ----------
   'languages.setLanguageAsDefault.error',

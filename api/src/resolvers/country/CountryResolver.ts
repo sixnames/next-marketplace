@@ -104,6 +104,7 @@ export class CountryResolver {
       }
 
       const existingCountries = await CountryModel.exists({
+        _id: { $ne: id },
         nameString,
       });
       if (existingCountries) {

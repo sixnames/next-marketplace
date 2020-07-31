@@ -98,11 +98,6 @@ type AttributesGroupPayloadType {
   success: Boolean!
 }
 
-type AttributeVariant {
-  id: ID!
-  nameString: String!
-}
-
 """Attribute variant enum"""
 enum AttributeVariantEnum {
   multipleSelect
@@ -278,12 +273,6 @@ type Message {
   message: [LanguageType!]!
 }
 
-type MessagesGroup {
-  id: ID!
-  messages: [Message!]!
-  name: String!
-}
-
 type Metric {
   id: ID!
   name: [LanguageType!]!
@@ -405,13 +394,6 @@ type PaginatedUsersResponse {
   prevPage: Int
   totalDocs: Int!
   totalPages: Int!
-}
-
-input PaginateInput {
-  limit: Int = 100
-  page: Int = 1
-  search: String
-  sortDir: PaginateSortDirectionEnum = desc
 }
 
 """Pagination sortDir enum"""
@@ -538,7 +520,6 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
-  getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCity(id: ID!): City!
   getClientLanguage: String!

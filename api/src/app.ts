@@ -46,6 +46,7 @@ import {
   GendersListResolver,
   ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
+import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 
 interface CreateAppInterface {
   app: Express;
@@ -72,6 +73,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       OptionsGroupResolver,
       ProductResolver,
       RubricResolver,
+      RubricVariantResolver,
       UserResolver,
       GendersListResolver,
       AttributePositioningListResolver,

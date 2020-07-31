@@ -15,6 +15,8 @@ import { DocumentType } from '@typegoose/typegoose';
 import PayloadType from '../common/PayloadType';
 import { AddCityToCountryInput } from './AddCityToCountryInput';
 import { UpdateCityInCountryInput } from './UpdateCityInCountryInput';
+import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -44,61 +46,68 @@ export class CountryResolver {
   async addCityToCountry(
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {
-    const { countryId, ...values } = input;
-    const country = await CountryModel.findById(countryId);
+    try {
+      const { countryId, ...values } = input;
+      const country = await CountryModel.findById(countryId);
 
-    if (!country) {
-      return {
-        success: false,
-        message: 'country not found',
-      };
-    }
+      if (!country) {
+        return {
+          success: false,
+          message: 'country not found',
+        };
+      }
 
-    const nameValues = input.name.map(({ value }) => value);
-    const existingCities = await CityModel.exists({
-      _id: { $in: country.cities },
-      'name.value': {
-        $in: nameValues,
-      },
-    });
-    if (existingCities) {
-      return {
-        success: false,
-        message: 'duplicate',
-      };
-    }
-
-    const city = await CityModel.create(values);
-    if (!city) {
-      return {
-        success: false,
-        message: 'error',
-      };
-    }
-
-    const updatedCountry = await CountryModel.findByIdAndUpdate(
-      countryId,
-      {
-        $push: {
-          cities: city.id,
+      const nameValues = input.name.map(({ value }) => value);
+      const existingCities = await CityModel.exists({
+        _id: { $in: country.cities },
+        'name.value': {
+          $in: nameValues,
         },
-      },
-      {
-        new: true,
-      },
-    );
-    if (!updatedCountry) {
+      });
+      if (existingCities) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const city = await CityModel.create(values);
+      if (!city) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      const updatedCountry = await CountryModel.findByIdAndUpdate(
+        countryId,
+        {
+          $push: {
+            cities: city.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedCountry) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        country: updatedCountry,
+      };
+    } catch (e) {
       return {
         success: false,
-        message: 'error',
+        message: getResolverErrorMessage(e),
       };
     }
-
-    return {
-      success: true,
-      message: 'success',
-      country: updatedCountry,
-    };
   }
 
   // TODO messages and validation
@@ -106,49 +115,95 @@ export class CountryResolver {
   async updateCityInCountry(
     @Arg('input', (_type) => UpdateCityInCountryInput) input: UpdateCityInCountryInput,
   ): Promise<CountryPayloadType> {
-    const { countryId, cityId, ...values } = input;
-    const country = await CountryModel.findById(countryId);
-    const city = await CityModel.findById(cityId);
+    try {
+      const { countryId, cityId, ...values } = input;
+      const country = await CountryModel.findById(countryId);
+      const city = await CityModel.findById(cityId);
 
-    if (!country || !city) {
+      if (!country || !city) {
+        return {
+          success: false,
+          message: 'country or city not found',
+        };
+      }
+
+      const nameValues = input.name.map(({ value }) => value);
+      const existingCities = await CityModel.exists({
+        _id: { $in: country.cities },
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+      if (existingCities) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const updatedCity = await CityModel.updateOne(
+        {
+          _id: cityId,
+        },
+        values,
+      );
+      if (!updatedCity.ok) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        country,
+      };
+    } catch (e) {
       return {
         success: false,
-        message: 'country or city not found',
+        message: getResolverErrorMessage(e),
       };
     }
+  }
 
-    const nameValues = input.name.map(({ value }) => value);
-    const existingCities = await CityModel.exists({
-      _id: { $in: country.cities },
-      'name.value': {
-        $in: nameValues,
-      },
-    });
-    if (existingCities) {
+  // TODO messages and validation
+  @Mutation((_returns) => CountryPayloadType)
+  async deleteCityFromCountry(
+    @Arg('input', (_type) => DeleteCityFromCountryInput) input: DeleteCityFromCountryInput,
+  ): Promise<CountryPayloadType> {
+    try {
+      const { countryId, cityId } = input;
+      const country = await CountryModel.findById(countryId);
+      const city = await CityModel.findById(cityId);
+
+      if (!country || !city) {
+        return {
+          success: false,
+          message: 'country or city not found',
+        };
+      }
+
+      // TODO remove city data from all entities?
+      const updatedCity = await CityModel.findByIdAndDelete(cityId);
+      if (!updatedCity) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        country,
+      };
+    } catch (e) {
       return {
         success: false,
-        message: 'duplicate',
+        message: getResolverErrorMessage(e),
       };
     }
-
-    const updatedCity = await CityModel.updateOne(
-      {
-        _id: cityId,
-      },
-      values,
-    );
-    if (!updatedCity.ok) {
-      return {
-        success: false,
-        message: 'error',
-      };
-    }
-
-    return {
-      success: true,
-      message: 'success',
-      country,
-    };
   }
 
   @FieldResolver(() => [City])

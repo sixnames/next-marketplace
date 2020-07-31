@@ -174,5 +174,39 @@ describe('Country', () => {
     expect(addCityToCountry.success).toBeTruthy();
     expect(updatedCity.nameString).toEqual(updatedCityName);
     expect(updatedCity.key).toEqual(updatedCityKey);
+
+    // Should update city in country
+    const {
+      data: { deleteCityFromCountry },
+    } = await mutate(
+      `
+        mutation DeleteCityFromCountry($input: DeleteCityFromCountryInput!) {
+          deleteCityFromCountry(input: $input) {
+            success
+            message
+            country {
+              id
+              nameString
+              currency
+              cities {
+                id
+                nameString
+                key
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            countryId: currentCountry.id,
+            cityId: updatedCity.id,
+          },
+        },
+      },
+    );
+    expect(deleteCityFromCountry.success).toBeTruthy();
+    expect(deleteCityFromCountry.country.cities).toHaveLength(1);
   });
 });

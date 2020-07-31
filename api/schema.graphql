@@ -210,6 +210,11 @@ input DeleteAttributesGroupFromRubricInput {
   rubricId: ID!
 }
 
+input DeleteCityFromCountryInput {
+  cityId: ID!
+  countryId: ID!
+}
+
 input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
@@ -304,6 +309,7 @@ type Mutation {
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
+  deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
@@ -321,6 +327,7 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
+  updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
@@ -685,6 +692,13 @@ input UpdateAttributesGroupInRubricInput {
   attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input UpdateCityInCountryInput {
+  cityId: ID!
+  countryId: ID!
+  key: String!
+  name: [LangInput!]!
 }
 
 input UpdateCurrencyInput {

@@ -3,6 +3,19 @@ import { DEFAULT_LANG, SECONDARY_LANG } from '../common';
 
 const citiesMessages: MessageInterface[] = [
   {
+    key: 'cities.create.notFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Страна не найдена.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Country not found.',
+      },
+    ],
+  },
+  {
     key: 'cities.create.duplicate',
     message: [
       {

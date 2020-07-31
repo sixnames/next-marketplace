@@ -1,5 +1,6 @@
 import {
   Arg,
+  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -19,6 +20,8 @@ import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateCountryInput } from './CreateCountryInput';
 import { UpdateCountryInput } from './UpdateCountryInput';
+import { ContextInterface } from '../../types/context';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -43,12 +46,14 @@ export class CountryResolver {
     return country;
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async createCountry(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => CreateCountryInput) input: CreateCountryInput,
   ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const { nameString } = input;
 
       const existingCountries = await CountryModel.exists({
@@ -57,7 +62,7 @@ export class CountryResolver {
       if (existingCountries) {
         return {
           success: false,
-          message: 'duplicate',
+          message: await getApiMessage({ key: 'countries.create.duplicate', lang }),
         };
       }
 
@@ -69,13 +74,13 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'countries.create.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'countries.create.success', lang }),
         country,
       };
     } catch (e) {
@@ -86,12 +91,14 @@ export class CountryResolver {
     }
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async updateCountry(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => UpdateCountryInput) input: UpdateCountryInput,
   ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const { id, nameString } = input;
 
       const country = await CountryModel.findById(id);
@@ -99,7 +106,7 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: 'country not found',
+          message: await getApiMessage({ key: 'countries.update.notFound', lang }),
         };
       }
 
@@ -110,7 +117,7 @@ export class CountryResolver {
       if (existingCountries) {
         return {
           success: false,
-          message: 'duplicate',
+          message: await getApiMessage({ key: 'countries.update.duplicate', lang }),
         };
       }
 
@@ -126,13 +133,13 @@ export class CountryResolver {
       if (!updatedCountry) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'countries.update.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'countries.update.success', lang }),
         country: updatedCountry,
       };
     } catch (e) {
@@ -143,15 +150,19 @@ export class CountryResolver {
     }
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
-  async deleteCountry(@Arg('id', (_type) => ID) id: string): Promise<CountryPayloadType> {
+  async deleteCountry(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const country = await CountryModel.findById(id);
       if (!country) {
         return {
           success: false,
-          message: 'country not found',
+          message: await getApiMessage({ key: 'countries.delete.notFound', lang }),
         };
       }
 
@@ -163,13 +174,13 @@ export class CountryResolver {
       if (!removedCountry.ok || !removedCities.ok) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'countries.delete.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'countries.delete.success', lang }),
       };
     } catch (e) {
       return {
@@ -182,16 +193,18 @@ export class CountryResolver {
   // TODO messages and validation
   @Mutation((_returns) => CountryPayloadType)
   async addCityToCountry(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const { countryId, ...values } = input;
       const country = await CountryModel.findById(countryId);
 
       if (!country) {
         return {
           success: false,
-          message: 'country not found',
+          message: await getApiMessage({ key: 'cities.create.notFound', lang }),
         };
       }
 
@@ -205,7 +218,7 @@ export class CountryResolver {
       if (existingCities) {
         return {
           success: false,
-          message: 'duplicate',
+          message: await getApiMessage({ key: 'cities.create.duplicate', lang }),
         };
       }
 
@@ -213,7 +226,7 @@ export class CountryResolver {
       if (!city) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'cities.create.error', lang }),
         };
       }
 
@@ -231,13 +244,13 @@ export class CountryResolver {
       if (!updatedCountry) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'cities.create.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'cities.create.success', lang }),
         country: updatedCountry,
       };
     } catch (e) {
@@ -248,12 +261,14 @@ export class CountryResolver {
     }
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async updateCityInCountry(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => UpdateCityInCountryInput) input: UpdateCityInCountryInput,
   ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const { countryId, cityId, ...values } = input;
       const country = await CountryModel.findById(countryId);
       const city = await CityModel.findById(cityId);
@@ -261,7 +276,7 @@ export class CountryResolver {
       if (!country || !city) {
         return {
           success: false,
-          message: 'country or city not found',
+          message: await getApiMessage({ key: 'cities.update.notFound', lang }),
         };
       }
 
@@ -275,7 +290,7 @@ export class CountryResolver {
       if (existingCities) {
         return {
           success: false,
-          message: 'duplicate',
+          message: await getApiMessage({ key: 'cities.update.duplicate', lang }),
         };
       }
 
@@ -288,13 +303,13 @@ export class CountryResolver {
       if (!updatedCity.ok) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'cities.update.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'cities.update.success', lang }),
         country,
       };
     } catch (e) {
@@ -305,12 +320,14 @@ export class CountryResolver {
     }
   }
 
-  // TODO messages and validation
+  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async deleteCityFromCountry(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => DeleteCityFromCountryInput) input: DeleteCityFromCountryInput,
   ): Promise<CountryPayloadType> {
     try {
+      const { lang } = ctx.req;
       const { countryId, cityId } = input;
       const country = await CountryModel.findById(countryId);
       const city = await CityModel.findById(cityId);
@@ -318,7 +335,7 @@ export class CountryResolver {
       if (!country || !city) {
         return {
           success: false,
-          message: 'country or city not found',
+          message: await getApiMessage({ key: 'cities.delete.notFound', lang }),
         };
       }
 
@@ -327,13 +344,13 @@ export class CountryResolver {
       if (!updatedCity) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ key: 'cities.delete.error', lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: 'cities.delete.success', lang }),
         country,
       };
     } catch (e) {

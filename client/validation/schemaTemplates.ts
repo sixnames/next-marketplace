@@ -69,6 +69,21 @@ export const langStringInputSchema = ({
   );
 };
 
+export interface IdSchemaInterface {
+  args: SchemaMessagesInterface;
+  key: MessageKey;
+}
+
+export const idSchema = ({ args, key }: IdSchemaInterface) =>
+  Yup.string()
+    .nullable()
+    .required(
+      getValidationFieldMessage({
+        ...args,
+        key,
+      }),
+    );
+
 export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.lazy((value?: string | null) => {
     return !value

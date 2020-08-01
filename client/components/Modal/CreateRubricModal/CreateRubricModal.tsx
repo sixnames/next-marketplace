@@ -57,7 +57,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
         validationSchema={validationSchema}
         initialValues={{
           name: getLanguageFieldInitialValue(),
-          variant: null,
+          variant: '',
           parent: null,
           subParent: null,
           catalogueTitle: {

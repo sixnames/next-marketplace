@@ -90,9 +90,9 @@ export class RubricNode {
   @Property({ type: RubricAttributesGroup })
   attributesGroups: RubricAttributesGroup[];
 
-  @Field(() => RubricVariant, { nullable: true })
+  @Field(() => RubricVariant)
   @Property({ ref: RubricVariant })
-  variant?: string | null;
+  variant: string;
 }
 
 // Rubric current city
@@ -145,8 +145,8 @@ export class Rubric {
   @Field(() => [Attribute])
   readonly filterAttributes: Attribute[];
 
-  @Field(() => RubricVariant, { nullable: true })
-  readonly variant: RubricVariant | null;
+  @Field(() => RubricVariant)
+  readonly variant: RubricVariant;
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;

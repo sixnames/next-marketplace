@@ -55,6 +55,7 @@ import {
 import {
   ATTRIBUTE_TYPE_MULTIPLE_SELECT,
   ATTRIBUTE_TYPE_SELECT,
+  DEFAULT_LANG,
   GENDER_IT,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
@@ -69,7 +70,7 @@ import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 
 interface ParentRelatedDataInterface {
-  variant: null | undefined | string;
+  variant: string;
   level: number;
   parent?: Types.ObjectId | null;
 }
@@ -158,7 +159,6 @@ export class RubricResolver {
 
       if (parentRubric) {
         const parentCity = getCityData(parentRubric.cities, city);
-        parentRelatedData.variant = parentCity!.node.variant;
         parentRelatedData.level = parentCity!.node.level + RUBRIC_LEVEL_STEP;
         parentRelatedData.parent = Types.ObjectId(parent);
       }
@@ -226,7 +226,7 @@ export class RubricResolver {
       }
       const currentCity = getCityData(rubric.cities, city);
 
-      const { catalogueTitle, parent, variant, name } = values;
+      const { catalogueTitle, parent, name } = values;
 
       const nameValues = name.map(({ value }) => value);
       const exists = await RubricModel.exists({
@@ -246,8 +246,6 @@ export class RubricResolver {
       const withNewLink = {
         ...currentCity!.node,
         ...values,
-        parent: Types.ObjectId(parent),
-        variant: Types.ObjectId(variant),
         slug: generateDefaultLangSlug(catalogueTitle.defaultTitle),
       };
 
@@ -909,8 +907,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
   ): Promise<Rubric | null> {
-    const populated = await rubric.populate('cities.node.parent').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.city);
+    const city = getCityData(rubric.cities, ctx.req.city);
     if (!city) {
       return null;
     }
@@ -921,13 +918,17 @@ export class RubricResolver {
   async variant(
     @Root() rubric: DocumentType<Rubric>,
     @Ctx() ctx: ContextInterface,
-  ): Promise<RubricVariant | null> {
-    const populated = await rubric.populate('cities.node.variant').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.city);
-    if (!city) {
-      return null;
+  ): Promise<RubricVariant> {
+    const city = getCityData(rubric.cities, ctx.req.city);
+    const variant = await RubricVariantModel.findById(city.node.variant);
+    if (!variant) {
+      return {
+        id: 'defaultVariant',
+        name: [{ key: DEFAULT_LANG, value: 'defaultVariant' }],
+        nameString: 'defaultVariant',
+      };
     }
-    return RubricVariantModel.findById(city.node.variant);
+    return variant;
   }
 
   @FieldResolver()

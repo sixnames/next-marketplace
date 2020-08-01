@@ -124,6 +124,24 @@ type City {
   nameString: String!
 }
 
+type Config {
+  description: String!
+  id: ID!
+  nameString: String!
+  slug: String!
+  value: [String!]!
+  variant: ConfigVariantEnum!
+}
+
+"""Config variant enum"""
+enum ConfigVariantEnum {
+  asset
+  email
+  number
+  string
+  tel
+}
+
 type Country {
   cities: [City!]!
   currency: String!
@@ -514,6 +532,7 @@ type Query {
     exclude: [ID!]
   ): [AttributesGroup!]!
   getAllCities: [City!]!
+  getAllConfigs: [Config!]!
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
@@ -529,6 +548,8 @@ type Query {
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCity(id: ID!): City!
   getClientLanguage: String!
+  getConfigBySlug(slug: String!): Config!
+  getConfigValueBySlug(slug: String!): [String!]!
   getCountry(id: ID!): Country!
   getCurrency(id: ID!): Currency!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!

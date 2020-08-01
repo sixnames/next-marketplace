@@ -48,6 +48,7 @@ import {
   ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
+import { ConfigResolver } from './resolvers/config/ConfigResolver';
 
 interface CreateAppInterface {
   app: Express;
@@ -61,6 +62,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   // GQL Schema
   const schema = buildSchemaSync({
     resolvers: [
+      ConfigResolver,
       AttributeResolver,
       AttributesGroupResolver,
       CatalogueDataResolver,

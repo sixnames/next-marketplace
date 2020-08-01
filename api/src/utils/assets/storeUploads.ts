@@ -71,6 +71,9 @@ const storeUploads = async ({
       return new Promise<AssetInterface>(async (resolve, reject) => {
         // Read file into stream.Readable
         const fileStream = createReadStream();
+
+        // TODO check here if file is svg and save it to finalPath
+
         const buffer = await getBufferFromFileStream(fileStream);
 
         // Save file to the FS

@@ -10,9 +10,8 @@ import {
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
-import { RubricCatalogueTitle, RubricModel } from '../../entities/Rubric';
+import { RubricModel } from '../../entities/Rubric';
 import {
-  DEFAULT_CITY,
   MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTE_WINE_VARIANT,
@@ -45,148 +44,14 @@ import {
   MOCK_CITIES,
   MOCK_COUNTRIES,
 } from '../../config';
-import { ProductCity, ProductModel } from '../../entities/Product';
-import { Types } from 'mongoose';
-import sharp from 'sharp';
-import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ProductModel } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
 import { CityModel } from '../../entities/City';
 import { CountryModel } from '../../entities/Country';
-
-interface LangInterface {
-  key: string;
-  value: string;
-}
-
-interface GetRubricCitiesInterface {
-  name: LangInterface[];
-  catalogueTitle: RubricCatalogueTitle;
-  level: number;
-  slug: string;
-  variant: string;
-  parent?: Types.ObjectId | null;
-  attributesGroups: {
-    showInCatalogueFilter: string[];
-    node: string;
-    isOwner: boolean;
-  }[];
-}
-
-function getRubricCities(node: GetRubricCitiesInterface) {
-  return [
-    {
-      key: DEFAULT_CITY,
-      node,
-    },
-    {
-      key: 'ny',
-      node: {
-        ...node,
-        name: [
-          {
-            key: 'ru',
-            value: `${node.name[0].value}-ny`,
-          },
-          {
-            key: 'en',
-            value: `${node.name[1].value}-ny`,
-          },
-        ],
-      },
-    },
-  ];
-}
-
-interface GetProductCitiesInterface {
-  name: LangInterface[];
-  cardName: LangInterface[];
-  description: LangInterface[];
-  rubrics: string[];
-  attributesGroups: {
-    showInCard: boolean;
-    node: string;
-    attributes: {
-      showInCard: boolean;
-      node: string;
-      key: string;
-      value: string[];
-    }[];
-  }[];
-  price: number;
-}
-
-async function getProductCities(
-  node: GetProductCitiesInterface,
-  active = true,
-): Promise<ProductCity[]> {
-  const cities = [DEFAULT_CITY, 'ny'];
-  const initialFilePath = './test/test-image-0.png';
-  const slug = generateDefaultLangSlug(node.cardName);
-  const productName = node.name[0].value;
-
-  return Promise.all(
-    cities.map(async (city) => {
-      const filesPath = `./assets/${city}/${slug}`;
-      const filesResolvePath = `/assets/${city}/${slug}`;
-      const fileName = `${slug}-${0}`;
-      const fileFormat = 'webp';
-      const resolvePath = `${filesResolvePath}/${fileName}.${fileFormat}`;
-      const finalPath = `${filesPath}/${fileName}.${fileFormat}`;
-
-      const resolveObject = {
-        key: city,
-        node: {
-          ...node,
-          name:
-            city === DEFAULT_CITY
-              ? node.name
-              : [
-                  {
-                    key: 'ru',
-                    value: `${productName}-${city}`,
-                  },
-                  {
-                    key: 'en',
-                    value: `${productName}-${city}`,
-                  },
-                ],
-          slug,
-          assets: [
-            {
-              index: 0,
-              url: resolvePath,
-            },
-          ],
-          active,
-        },
-      };
-
-      const exists = fs.existsSync(filesPath);
-      if (!exists) {
-        await mkdirp(filesPath);
-      } else {
-        return new Promise<ProductCity>((resolve) => {
-          resolve(resolveObject);
-        });
-      }
-
-      return new Promise<ProductCity>((resolve, reject) => {
-        sharp(initialFilePath)
-          .webp()
-          .toFile(finalPath)
-          .then(() => {
-            resolve(resolveObject);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    }),
-  );
-}
+import { getProductCities } from './getProductCities';
+import { getRubricCities } from './getRubricCities';
 
 const createTestData = async () => {
   try {

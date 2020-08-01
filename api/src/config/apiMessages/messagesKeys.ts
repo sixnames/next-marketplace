@@ -12,6 +12,53 @@ const messagesKeys = [
   'validation.color.required',
   'validation.translation.key',
 
+  // Currencies ----------
+  'currencies.create.duplicate',
+  'currencies.create.error',
+  'currencies.create.success',
+  'currencies.update.duplicate',
+  'currencies.update.error',
+  'currencies.update.success',
+  'currencies.delete.used',
+  'currencies.delete.error',
+  'currencies.delete.success',
+  // Currencies validation
+  'validation.currencies.id',
+  'validation.currencies.nameString',
+
+  // Cities ----------
+  'cities.create.notFound',
+  'cities.create.duplicate',
+  'cities.create.error',
+  'cities.create.success',
+  'cities.update.notFound',
+  'cities.update.duplicate',
+  'cities.update.error',
+  'cities.update.success',
+  'cities.delete.notFound',
+  'cities.delete.error',
+  'cities.delete.success',
+  // Cities validation
+  'validation.cities.id',
+  'validation.cities.name',
+  'validation.cities.key',
+
+  // Countries ----------
+  'countries.create.duplicate',
+  'countries.create.error',
+  'countries.create.success',
+  'countries.update.notFound',
+  'countries.update.duplicate',
+  'countries.update.error',
+  'countries.update.success',
+  'countries.delete.notFound',
+  'countries.delete.error',
+  'countries.delete.success',
+  // Countries validation
+  'validation.countries.id',
+  'validation.countries.nameString',
+  'validation.countries.currency',
+
   // Languages ----------
   'languages.setLanguageAsDefault.error',
   'languages.setLanguageAsDefault.success',

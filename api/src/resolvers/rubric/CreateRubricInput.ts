@@ -25,7 +25,7 @@ export class CreateRubricInput {
   @Field((_type) => ID, { nullable: true })
   parent?: string;
 
-  @Field((_type) => ID, { nullable: true })
+  @Field((_type) => ID)
   variant: string;
 
   @Field((_type) => RubricCatalogueTitleInput)

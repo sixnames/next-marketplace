@@ -120,7 +120,7 @@ describe('Rubrics', () => {
     cy.getByCy(`tree-link-${mockNewRubricC}`).should('exist');
   });
 
-  it.only('Should have rubric details tab', () => {
+  it('Should have rubric details tab', () => {
     // Should have rubric details tab and should update rubric
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.visitMoreNavLink('details');

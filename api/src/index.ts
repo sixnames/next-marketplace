@@ -1,17 +1,15 @@
-import mongoose from 'mongoose';
 import http from 'http';
 import createApp from './app';
-import { DB_OPTIONS, HTTP_PORT, MONGO_URL } from './config';
+import { HTTP_PORT } from './config';
 import createInitialData from './utils/initialData/createInitialData';
 
 (async () => {
   try {
-    await mongoose.connect(MONGO_URL, DB_OPTIONS);
-
-    const { app, server } = createApp();
+    const { app, server } = await createApp();
 
     const httpServer = http.createServer(app);
 
+    // Site initial data
     await createInitialData();
 
     httpServer.listen(HTTP_PORT, () => {

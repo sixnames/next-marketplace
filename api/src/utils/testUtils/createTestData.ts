@@ -41,6 +41,9 @@ import {
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   MOCK_LANGUAGES,
+  MOCK_CURRENCIES,
+  MOCK_CITIES,
+  MOCK_COUNTRIES,
 } from '../../config';
 import { ProductCity, ProductModel } from '../../entities/Product';
 import { Types } from 'mongoose';
@@ -49,6 +52,9 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
+import { CurrencyModel } from '../../entities/Currency';
+import { CityModel } from '../../entities/City';
+import { CountryModel } from '../../entities/Country';
 
 interface LangInterface {
   key: string;
@@ -60,7 +66,7 @@ interface GetRubricCitiesInterface {
   catalogueTitle: RubricCatalogueTitle;
   level: number;
   slug: string;
-  variant?: string;
+  variant: string;
   parent?: Types.ObjectId | null;
   attributesGroups: {
     showInCatalogueFilter: string[];
@@ -76,17 +82,17 @@ function getRubricCities(node: GetRubricCitiesInterface) {
       node,
     },
     {
-      key: 'spb',
+      key: 'ny',
       node: {
         ...node,
         name: [
           {
             key: 'ru',
-            value: `${node.name[0].value}-spb`,
+            value: `${node.name[0].value}-ny`,
           },
           {
             key: 'en',
-            value: `${node.name[1].value}-spb`,
+            value: `${node.name[1].value}-ny`,
           },
         ],
       },
@@ -116,7 +122,7 @@ async function getProductCities(
   node: GetProductCitiesInterface,
   active = true,
 ): Promise<ProductCity[]> {
-  const cities = [DEFAULT_CITY, 'spb'];
+  const cities = [DEFAULT_CITY, 'ny'];
   const initialFilePath = './test/test-image-0.png';
   const slug = generateDefaultLangSlug(node.cardName);
   const productName = node.name[0].value;
@@ -190,10 +196,17 @@ const createTestData = async () => {
     // Initial data
     await createInitialData();
 
-    const languages = await LanguageModel.find({ key: DEFAULT_LANG });
-    if (languages.length !== MOCK_LANGUAGES.length) {
-      await LanguageModel.create(MOCK_LANGUAGES[1]);
-    }
+    // Currencies, countries and cities
+    const secondaryCurrency = await CurrencyModel.create(MOCK_CURRENCIES[1]);
+    const secondaryCity = await CityModel.create(MOCK_CITIES[1]);
+    await CountryModel.create({
+      ...MOCK_COUNTRIES[1],
+      cities: [secondaryCity.id],
+      currency: secondaryCurrency.nameString,
+    });
+
+    // Languages
+    await LanguageModel.create(MOCK_LANGUAGES[1]);
 
     // Options
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
@@ -320,6 +333,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelOne.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -333,6 +347,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_A_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoA.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -346,6 +361,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_A_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoA.id,
         attributesGroups: rubricAttributesGroups(false),
         catalogueTitle: {
@@ -359,6 +375,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_TWO_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelOne.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
         catalogueTitle: {
@@ -372,6 +389,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_A,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
         catalogueTitle: {
@@ -385,6 +403,7 @@ const createTestData = async () => {
       cities: getRubricCities({
         ...MOCK_RUBRIC_LEVEL_THREE_B_B,
         slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
         parent: rubricLevelTwoB.id,
         attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
         catalogueTitle: {

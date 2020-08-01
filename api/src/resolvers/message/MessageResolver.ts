@@ -2,7 +2,7 @@ import { Arg, Query, Resolver } from 'type-graphql';
 import { Message, MessageModel } from '../../entities/Message';
 
 @Resolver((_of) => Message)
-export class MessagesResolver {
+export class MessageResolver {
   @Query((_returns) => Message)
   async getMessage(@Arg('key', (_type) => String) key: string): Promise<Message | null> {
     return MessageModel.findOne({ key });

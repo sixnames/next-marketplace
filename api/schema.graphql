@@ -17,6 +17,12 @@ input AddAttributeToGroupInput {
   variant: AttributeVariantEnum!
 }
 
+input AddCityToCountryInput {
+  countryId: ID!
+  key: String!
+  name: [LangInput!]!
+}
+
 input AddOptionToGroupInput {
   color: String
   gender: GenderEnum
@@ -92,11 +98,6 @@ type AttributesGroupPayloadType {
   success: Boolean!
 }
 
-type AttributeVariant {
-  id: ID!
-  nameString: String!
-}
-
 """Attribute variant enum"""
 enum AttributeVariantEnum {
   multipleSelect
@@ -111,8 +112,37 @@ type CatalogueData {
   rubric: Rubric!
 }
 
+type City {
+  id: ID!
+  key: String!
+  name: [LanguageType!]!
+  nameString: String!
+}
+
+type Country {
+  cities: [City!]!
+  currency: String!
+  id: ID!
+  nameString: String!
+}
+
+type CountryPayloadType {
+  country: Country
+  message: String!
+  success: Boolean!
+}
+
 input CreateAttributesGroupInput {
   name: [LangInput!]!
+}
+
+input CreateCountryInput {
+  currency: String!
+  nameString: String!
+}
+
+input CreateCurrencyInput {
+  nameString: String!
 }
 
 input CreateLanguageInput {
@@ -143,7 +173,7 @@ input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
   parent: ID
-  variant: ID
+  variant: ID!
 }
 
 input CreateRubricVariantInput {
@@ -159,6 +189,17 @@ input CreateUserInput {
   secondName: String
 }
 
+type Currency {
+  id: ID!
+  nameString: String!
+}
+
+type CurrencyPayloadType {
+  currency: Currency
+  message: String!
+  success: Boolean!
+}
+
 input DeleteAttributeFromGroupInput {
   attributeId: ID!
   groupId: ID!
@@ -167,6 +208,11 @@ input DeleteAttributeFromGroupInput {
 input DeleteAttributesGroupFromRubricInput {
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input DeleteCityFromCountryInput {
+  cityId: ID!
+  countryId: ID!
 }
 
 input DeleteOptionFromGroupInput {
@@ -242,9 +288,12 @@ type MetricPayloadType {
 type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
+  addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createCountry(input: CreateCountryInput!): CountryPayloadType!
+  createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!
   createLanguage(input: CreateLanguageInput!): LanguagePayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
@@ -255,6 +304,9 @@ type Mutation {
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
+  deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
+  deleteCountry(id: ID!): CountryPayloadType!
+  deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
@@ -271,6 +323,9 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
+  updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateCountry(input: UpdateCountryInput!): CountryPayloadType!
+  updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
@@ -453,6 +508,9 @@ type Query {
     """list of excluded groups id's"""
     exclude: [ID!]
   ): [AttributesGroup!]!
+  getAllCities: [City!]!
+  getAllCountries: [Country!]!
+  getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
@@ -462,9 +520,11 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
-  getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getCity(id: ID!): City!
   getClientLanguage: String!
+  getCountry(id: ID!): Country!
+  getCurrency(id: ID!): Currency!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
   getISOLanguagesList: [ISOLanguage!]!
@@ -502,7 +562,7 @@ type Rubric {
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
-  variant: RubricVariant
+  variant: RubricVariant!
 }
 
 type RubricAttributesGroup {
@@ -546,7 +606,7 @@ type RubricNode {
   name: [LanguageType!]!
   parent: Rubric
   slug: String!
-  variant: RubricVariant
+  variant: RubricVariant!
 }
 
 type RubricPayloadType {
@@ -623,6 +683,24 @@ input UpdateAttributesGroupInRubricInput {
   rubricId: ID!
 }
 
+input UpdateCityInCountryInput {
+  cityId: ID!
+  countryId: ID!
+  key: String!
+  name: [LangInput!]!
+}
+
+input UpdateCountryInput {
+  currency: String!
+  id: ID!
+  nameString: String!
+}
+
+input UpdateCurrencyInput {
+  id: ID!
+  nameString: String!
+}
+
 input UpdateLanguageInput {
   id: ID!
   key: String!
@@ -665,7 +743,7 @@ input UpdateRubricInput {
   id: ID!
   name: [LangInput!]!
   parent: ID
-  variant: ID
+  variant: ID!
 }
 
 input UpdateRubricVariantInput {

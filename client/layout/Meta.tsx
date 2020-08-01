@@ -19,35 +19,29 @@ const Meta: React.FC<MetaInterface> = ({
       />
 
       <title>{title}</title>
-      <meta name='description' content={description} />
+      <meta name={'description'} content={description} />
+
+      {/*TODO pass trough site name to Author and Copyright*/}
       <meta name='author' content='author' />
       <meta name='copyright' content={`© 2010 - ${new Date().getFullYear()} Site™`} />
       <meta name='application-name' content='Personal Website' />
 
-      <meta
-        property='og:title'
-        content='Аренда оборудования для мероприятий. Тут все прокатные компании!'
-      />
+      <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
+
+      {/*TODO pass trough current preview image*/}
       <meta property='og:image' content='/site-preview.jpg' />
 
       {/*TODO pass trough current url*/}
       <meta property='og:url' content='url' />
-      <meta
-        property='og:description'
-        content='Аренда оборудования для мероприятия по доступным ценам. Большой выбор новейшего и качественного оборудования. Доставим вовремя и качественно произведем монтаж. Заходите!'
-      />
+      <meta property='og:description' content={description} />
 
-      <meta
-        name='twitter:title'
-        content='Аренда оборудования для мероприятий. Тут все прокатные компании!'
-      />
+      <meta name='twitter:title' content={title} />
       <meta name='twitter:card' content='summary' />
+
+      {/*TODO pass trough current preview image*/}
       <meta name='twitter:image' content='/site-preview.jpg' />
-      <meta
-        name='twitter:description'
-        content='Аренда оборудования для мероприятия по доступным ценам. Большой выбор новейшего и качественного оборудования. Доставим вовремя и качественно произведем монтаж. Заходите!'
-      />
+      <meta name='twitter:description' content={description} />
 
       <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
       <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />

@@ -954,9 +954,91 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+// Site config
+export const SITE_CONFIGS_LOGO = {
+  slug: 'siteLogo',
+  nameString: 'Логотип сайта',
+  description: 'Полное изображение логотипа в формате SVG',
+  variant: 'asset',
+};
+export const SITE_CONFIGS_LOGO_ICON = {
+  slug: 'siteLogoIcon',
+  nameString: 'Иконка логотипа сайта',
+  description: 'Иконка логотипа в формате SVG',
+  variant: 'asset',
+};
+export const SITE_CONFIGS_LOGO_NAME = {
+  slug: 'siteLogoName',
+  nameString: 'Текст логотипа сайта',
+  description: 'Текст логотипа в формате SVG',
+  variant: 'asset',
+};
+export const SITE_CONFIGS_PREVIEW_IMAGE = {
+  slug: 'pageDefaultPreviewImage',
+  nameString: 'Дефолтное превью изображение',
+  description:
+    'Данное поле будет добавлено в атрибуты og:image и twitter:image если страница не имеет таковых. Нужно для корректного отображения ссылки при отправке в соцсетях и чатах.',
+  variant: 'asset',
+};
+
+export const SITE_CONFIGS_INITIAL = [
+  {
+    slug: 'siteName',
+    nameString: 'Название сайта',
+    description: '',
+    variant: 'string',
+    value: ['Site'],
+  },
+  {
+    slug: 'contactEmail',
+    nameString: 'Контактный Email',
+    description: 'Контактный Email. Можно добавить несколько.',
+    variant: 'email',
+    value: ['email@email.com'],
+  },
+  {
+    slug: 'contactPhone',
+    nameString: 'Контактный телефон',
+    description: 'Контактный телефон. Можно добавить несколько.',
+    variant: 'tel',
+    value: ['+79998887766'],
+  },
+  {
+    slug: 'siteFoundationYear',
+    nameString: 'Год основания сайта',
+    description: '',
+    variant: 'number',
+    value: ['2020'],
+  },
+  {
+    slug: 'pageDefaultTitle',
+    nameString: 'Дефолтный title страницы',
+    description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
+    variant: 'string',
+    value: ['Page default title'],
+  },
+  {
+    slug: 'pageDefaultDescription',
+    nameString: 'Дефолтный description страницы',
+    description:
+      'Данное поле будет добавлено в атрибут description если страница не имеет такового',
+    variant: 'string',
+    value: ['Page default description'],
+  },
+  {
+    slug: 'siteThemeColor',
+    nameString: 'Акцент цвет сайта',
+    description: 'Данный цвет будет использован для акцента ключевых элементов сайта.',
+    variant: 'string',
+    value: ['#DB5360'],
+  },
+];
+
+// Currency
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
 export const MOCK_CURRENCIES = [...INITIAL_CURRENCIES, { nameString: SECONDARY_CURRENCY }];
 
+// Countries and cities
 export const INITIAL_COUNTRIES = [{ nameString: DEFAULT_COUNTRY }];
 export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { nameString: SECONDARY_COUNTRY }];
 
@@ -981,6 +1063,7 @@ export const MOCK_CITIES = [
   },
 ];
 
+// Languages
 export const INITIAL_LANGUAGES = [
   {
     key: DEFAULT_LANG,

@@ -550,6 +550,12 @@ body {
   background-color: var(--primaryBackground);
 }
 
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-color: #191e21;
+  }
+}
+
 blockquote,
 q {
   quotes: none;

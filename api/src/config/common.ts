@@ -56,6 +56,29 @@ export const GENDER_LIST = [
   { id: GENDER_IT, nameString: 'Средний' },
 ];
 
+// CONFIG VARIANTS
+export const CONFIG_VARIANT_STRING = 'string';
+export const CONFIG_VARIANT_NUMBER = 'number';
+export const CONFIG_VARIANT_PHONE = 'tel';
+export const CONFIG_VARIANT_EMAIL = 'email';
+export const CONFIG_VARIANT_ASSET = 'asset';
+
+export const CONFIG_VARIANTS_ENUMS = [
+  CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_NUMBER,
+  CONFIG_VARIANT_PHONE,
+  CONFIG_VARIANT_EMAIL,
+  CONFIG_VARIANT_ASSET,
+];
+
+export const CONFIG_VARIANTS_LIST = [
+  { id: CONFIG_VARIANT_STRING, nameString: 'Строка' },
+  { id: CONFIG_VARIANT_NUMBER, nameString: 'Число' },
+  { id: CONFIG_VARIANT_PHONE, nameString: 'Телефон' },
+  { id: CONFIG_VARIANT_EMAIL, nameString: 'Email' },
+  { id: CONFIG_VARIANT_ASSET, nameString: 'Изображение' },
+];
+
 // ATTRIBUTE VARIANTS
 export const ATTRIBUTE_VARIANT_SELECT = 'select';
 export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect';

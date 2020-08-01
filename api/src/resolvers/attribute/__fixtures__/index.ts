@@ -1,12 +1,12 @@
 import { AttributeVariantEnum } from '../../../entities/Attribute';
-import { ATTRIBUTE_TYPE_SELECT, ATTRIBUTE_TYPE_STRING } from '../../../config';
+import { ATTRIBUTE_VARIANT_SELECT, ATTRIBUTE_VARIANT_STRING } from '../../../config';
 
 export const stringAttribute = {
   name: [
     { key: 'ru', value: 'string attribute' },
     { key: 'en', value: 'string attribute' },
   ],
-  variant: ATTRIBUTE_TYPE_STRING as AttributeVariantEnum,
+  variant: ATTRIBUTE_VARIANT_STRING as AttributeVariantEnum,
   slug: 'string attribute',
 };
 
@@ -15,7 +15,7 @@ export const selectAttribute = {
     { key: 'ru', value: 'select attribute' },
     { key: 'en', value: 'select attribute' },
   ],
-  variant: ATTRIBUTE_TYPE_SELECT,
+  variant: ATTRIBUTE_VARIANT_SELECT,
 };
 
 export const optionsGroupForAttribute = {

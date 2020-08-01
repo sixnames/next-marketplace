@@ -2,9 +2,9 @@ import * as Yup from 'yup';
 import { langStringInputSchema } from './schemaTemplates';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPES_ENUMS,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANTS_ENUMS,
 } from '../config';
 import getValidationFieldMessage, {
   MultiLangSchemaMessagesInterface,
@@ -49,7 +49,7 @@ const options = Yup.string()
   .nullable()
   .when('variant', {
     is: (variant: string) => {
-      return variant === ATTRIBUTE_TYPE_SELECT || variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT;
+      return variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
     },
     then: Yup.string().required('Группа опций обязательна к заполнению.'),
     otherwise: Yup.string(),
@@ -79,7 +79,7 @@ const attributePositioningInTitleSchema = ({ messages, lang }: SchemaMessagesInt
 
 const attributeVariantSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.mixed()
-    .oneOf(ATTRIBUTE_TYPES_ENUMS)
+    .oneOf(ATTRIBUTE_VARIANTS_ENUMS)
     .required(
       getValidationFieldMessage({
         messages,

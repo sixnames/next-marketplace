@@ -1,9 +1,9 @@
 import { Rubric } from '../../entities/Rubric';
 import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
 } from '../../config';
 
 interface GenerateTestProductAttributesInterface {
@@ -22,19 +22,19 @@ export function generateTestProductAttributes({
         attributes: attributes.map(({ id, slug, variant, options }: { [key: string]: any }) => {
           let value = [];
 
-          if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) {
+          if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
             value = options.options.map(({ id }: { id: string }) => id);
           }
 
-          if (variant === ATTRIBUTE_TYPE_SELECT) {
+          if (variant === ATTRIBUTE_VARIANT_SELECT) {
             value = options.options[0].id;
           }
 
-          if (variant === ATTRIBUTE_TYPE_STRING) {
+          if (variant === ATTRIBUTE_VARIANT_STRING) {
             value = ['string'];
           }
 
-          if (variant === ATTRIBUTE_TYPE_NUMBER) {
+          if (variant === ATTRIBUTE_VARIANT_NUMBER) {
             value = ['123'];
           }
 

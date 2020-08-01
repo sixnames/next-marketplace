@@ -98,6 +98,11 @@ type AttributesGroupPayloadType {
   success: Boolean!
 }
 
+type AttributeVariant {
+  id: ID!
+  nameString: String!
+}
+
 """Attribute variant enum"""
 enum AttributeVariantEnum {
   multipleSelect
@@ -520,6 +525,7 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
+  getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCity(id: ID!): City!
   getClientLanguage: String!

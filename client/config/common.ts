@@ -57,23 +57,23 @@ export const GENDER_LIST = [
 ];
 
 // ATTRIBUTE VARIANTS
-export const ATTRIBUTE_TYPE_SELECT = 'select';
-export const ATTRIBUTE_TYPE_MULTIPLE_SELECT = 'multipleSelect';
-export const ATTRIBUTE_TYPE_STRING = 'string';
-export const ATTRIBUTE_TYPE_NUMBER = 'number';
+export const ATTRIBUTE_VARIANT_SELECT = 'select';
+export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect';
+export const ATTRIBUTE_VARIANT_STRING = 'string';
+export const ATTRIBUTE_VARIANT_NUMBER = 'number';
 
-export const ATTRIBUTE_TYPES_ENUMS = [
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
-  ATTRIBUTE_TYPE_NUMBER,
+export const ATTRIBUTE_VARIANTS_ENUMS = [
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VARIANT_NUMBER,
 ];
 
-export const ATTRIBUTE_TYPES_LIST = [
-  { id: ATTRIBUTE_TYPE_SELECT, nameString: 'Селект' },
-  { id: ATTRIBUTE_TYPE_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
-  { id: ATTRIBUTE_TYPE_STRING, nameString: 'Строка' },
-  { id: ATTRIBUTE_TYPE_NUMBER, nameString: 'Число' },
+export const ATTRIBUTE_VARIANTS_LIST = [
+  { id: ATTRIBUTE_VARIANT_SELECT, nameString: 'Селект' },
+  { id: ATTRIBUTE_VARIANT_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
+  { id: ATTRIBUTE_VARIANT_STRING, nameString: 'Строка' },
+  { id: ATTRIBUTE_VARIANT_NUMBER, nameString: 'Число' },
 ];
 
 // ATTRIBUTE POSITIONS IN TITLE

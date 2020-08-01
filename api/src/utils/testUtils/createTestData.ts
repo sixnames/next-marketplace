@@ -15,15 +15,15 @@ import {
   DEFAULT_CITY,
   MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTE_WINE_TYPE,
+  MOCK_ATTRIBUTE_WINE_VARIANT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_WINE_COLOR,
   MOCK_OPTIONS_GROUP_COLORS,
-  MOCK_OPTIONS_GROUP_WINE_TYPES,
-  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_OPTIONS_GROUP_WINE_VARIANTS,
+  MOCK_OPTIONS_WINE_VARIANT,
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_B,
@@ -34,8 +34,8 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_B_B,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_LEVEL_TWO_B,
-  MOCK_RUBRIC_TYPE_ALCOHOL,
-  MOCK_RUBRIC_TYPE_JUICE,
+  MOCK_RUBRIC_VARIANT_ALCOHOL,
+  MOCK_RUBRIC_VARIANT_JUICE,
   DEFAULT_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   SECONDARY_LANG,
@@ -210,7 +210,7 @@ const createTestData = async () => {
 
     // Options
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
-    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_TYPE);
+    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
     const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
 
@@ -218,7 +218,7 @@ const createTestData = async () => {
     const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
 
     const optionsGroupWineTypes = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_WINE_TYPES,
+      ...MOCK_OPTIONS_GROUP_WINE_VARIANTS,
       options: optionsIdsWineType,
     });
 
@@ -245,8 +245,8 @@ const createTestData = async () => {
     });
 
     const attributeWineType = await AttributeModel.create({
-      ...MOCK_ATTRIBUTE_WINE_TYPE,
-      variant: MOCK_ATTRIBUTE_WINE_TYPE.variant as AttributeVariantEnum,
+      ...MOCK_ATTRIBUTE_WINE_VARIANT,
+      variant: MOCK_ATTRIBUTE_WINE_VARIANT.variant as AttributeVariantEnum,
       options: optionsGroupWineTypes.id,
       positioningInTitle: [
         {
@@ -296,8 +296,8 @@ const createTestData = async () => {
     });
 
     // Rubric types
-    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_TYPE_ALCOHOL);
-    await RubricVariantModel.create(MOCK_RUBRIC_TYPE_JUICE);
+    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_ALCOHOL);
+    await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_JUICE);
 
     // Rubrics
     const rubricAttributesGroups = (isOwner: boolean) => [

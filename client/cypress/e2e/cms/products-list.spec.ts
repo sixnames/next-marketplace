@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import {
   MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTE_WINE_TYPE,
+  MOCK_ATTRIBUTE_WINE_VARIANT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_OPTIONS_WINE_COLOR,
   MOCK_PRODUCT_B,
@@ -12,7 +12,7 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_A_B,
   MOCK_RUBRIC_LEVEL_THREE_B_A,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
-  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_OPTIONS_WINE_VARIANT,
 } from '../../../config';
 
 const mockProductForDelete = MOCK_PRODUCT_B.name[0].value;
@@ -33,8 +33,8 @@ const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE.description[0].value
 
 const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
 const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
-const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_TYPE.name[0].value;
-const mockAttributeSelectValue = MOCK_OPTIONS_WINE_TYPE[0].name[0].value;
+const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
+const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
 const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
 const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 

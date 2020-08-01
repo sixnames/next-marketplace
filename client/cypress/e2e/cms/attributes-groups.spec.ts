@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 import {
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_GROUP_COLORS,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
-  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
 } from '../../../config';
@@ -83,7 +83,7 @@ describe('Attributes Groups', () => {
     cy.getByCy(`name[0].value-error`).should('exist');
     cy.getByCy(`variant-error`).should('exist');
 
-    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_MULTIPLE_SELECT);
+    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_MULTIPLE_SELECT);
     cy.getByCy(`positioningInTitle[0].value-error`).should('exist');
 
     cy.getByCy(`attribute-submit`).click();
@@ -107,7 +107,7 @@ describe('Attributes Groups', () => {
       .should('have.value', mockAttributeNewName)
       .clear()
       .type(updatedAttributeName);
-    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_TYPE_SELECT);
+    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
     cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();

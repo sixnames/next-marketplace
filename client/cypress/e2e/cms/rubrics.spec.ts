@@ -6,22 +6,22 @@ import {
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE_A_A,
   MOCK_RUBRIC_LEVEL_TWO_A,
-  MOCK_RUBRIC_TYPE_ALCOHOL,
-  MOCK_RUBRIC_TYPE_JUICE,
+  MOCK_RUBRIC_VARIANT_ALCOHOL,
+  MOCK_RUBRIC_VARIANT_JUICE,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '../../../config';
 
 const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO_A.name[0].value;
 const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-const mockRubricType = MOCK_RUBRIC_TYPE_ALCOHOL.name[0].value;
+const mockRubricType = MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value;
 const mockNewRubric = 'new_rubric_name';
 const mockNewRubricA = 'new_rubric_a';
 const mockNewRubricB = 'new_rubric_b';
 const mockNewRubricC = 'new_rubric_c';
 
 // Rubric variants
-const mockRubricVariantName = MOCK_RUBRIC_TYPE_JUICE.name[0].value;
+const mockRubricVariantName = MOCK_RUBRIC_VARIANT_JUICE.name[0].value;
 
 describe('Rubrics', () => {
   beforeEach(() => {

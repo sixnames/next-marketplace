@@ -53,8 +53,8 @@ import {
   updateRubricInputSchema,
 } from '../../validation';
 import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_LANG,
   GENDER_IT,
   LANG_NOT_FOUND_FIELD_MESSAGE,
@@ -419,7 +419,10 @@ export class RubricResolver {
       const showInCatalogueAttributes = groupAttributes.reduce(
         (acc: string[], attribute: Attribute) => {
           const { id, variant } = attribute;
-          if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT || variant === ATTRIBUTE_TYPE_SELECT) {
+          if (
+            variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+            variant === ATTRIBUTE_VARIANT_SELECT
+          ) {
             return [...acc, id];
           }
           return acc;

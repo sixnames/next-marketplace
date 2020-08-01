@@ -2,19 +2,19 @@
 
 import {
   MOCK_ATTRIBUTE_WINE_COLOR,
-  MOCK_ATTRIBUTE_WINE_TYPE,
+  MOCK_ATTRIBUTE_WINE_VARIANT,
   MOCK_OPTIONS_WINE_COLOR,
-  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_OPTIONS_WINE_VARIANT,
   MOCK_RUBRIC_LEVEL_ONE,
 } from '../../../config';
 
 const mockRubricLevelOne = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
 const mockAttributeWineColor = MOCK_ATTRIBUTE_WINE_COLOR.slug;
-const mockAttributeWineType = MOCK_ATTRIBUTE_WINE_TYPE.slug;
+const mockAttributeWineType = MOCK_ATTRIBUTE_WINE_VARIANT.slug;
 const mockAttributeWineColorValueWhite = MOCK_OPTIONS_WINE_COLOR[0].slug;
 const mockAttributeWineColorValueRed = MOCK_OPTIONS_WINE_COLOR[1].slug;
-const mockAttributeWineTypeValuePortvein = MOCK_OPTIONS_WINE_TYPE[0].slug;
-const mockAttributeWineTypeValueHeres = MOCK_OPTIONS_WINE_TYPE[1].slug;
+const mockAttributeWineTypeValuePortvein = MOCK_OPTIONS_WINE_VARIANT[0].slug;
+const mockAttributeWineTypeValueHeres = MOCK_OPTIONS_WINE_VARIANT[1].slug;
 
 describe('Catalogue filter', () => {
   beforeEach(() => {

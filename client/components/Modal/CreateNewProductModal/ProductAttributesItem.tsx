@@ -6,10 +6,10 @@ import classes from './ProductAttributesItem.module.css';
 import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
 import InputLine from '../../FormElements/Input/InputLine';
 import {
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_STRING,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 } from '../../../config';
 import { ProductAttributesGroupType } from './ProductAttributes';
 
@@ -36,20 +36,20 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   const multipleValueInputName = `${inputName}.value`;
 
   function getAttributeInput() {
-    if (variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING) {
+    if (variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING) {
       return (
         <FormikInput
           min={variant === 'string' ? undefined : 0}
           label={nameString}
           labelPostfix={labelPostfix}
-          type={variant === ATTRIBUTE_TYPE_STRING ? 'text' : 'number'}
+          type={variant === ATTRIBUTE_VARIANT_STRING ? 'text' : 'number'}
           name={singleValueInputName}
           testId={`${nameString}-${groupIndex}`}
         />
       );
     }
 
-    if (variant === ATTRIBUTE_TYPE_SELECT) {
+    if (variant === ATTRIBUTE_VARIANT_SELECT) {
       return (
         <FormikSelect
           label={nameString}
@@ -62,7 +62,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
       );
     }
 
-    if (variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT && options) {
+    if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && options) {
       return (
         <InputLine name={multipleValueInputName} label={nameString}>
           {optionsList.map(({ id, nameString }) => {

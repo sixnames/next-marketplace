@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
-import { MOCK_RUBRIC_TYPE_ALCOHOL, MOCK_RUBRIC_TYPE_JUICE } from '../../../config';
+import { MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '../../../config';
 
-const mockRubricVariantName = MOCK_RUBRIC_TYPE_ALCOHOL.name[0].value;
-const mockRubricVariantNameForDelete = MOCK_RUBRIC_TYPE_JUICE.name[0].value;
+const mockRubricVariantName = MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value;
+const mockRubricVariantNameForDelete = MOCK_RUBRIC_VARIANT_JUICE.name[0].value;
 const mockNewRubricVariantName = 'new_variant';
 
 describe('Rubric variants', () => {

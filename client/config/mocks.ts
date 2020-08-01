@@ -1,8 +1,8 @@
 import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
   DEFAULT_CITY,
   DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
@@ -1262,7 +1262,7 @@ export const MOCK_OPTIONS_WINE_COLOR = [
   },
 ];
 
-export const MOCK_OPTIONS_WINE_TYPE = [
+export const MOCK_OPTIONS_WINE_VARIANT = [
   {
     name: [
       { key: DEFAULT_LANG, value: 'Портвейн' },
@@ -1305,7 +1305,7 @@ export const MOCK_OPTIONS_GROUP_COLORS = {
   ],
 };
 
-export const MOCK_OPTIONS_GROUP_WINE_TYPES = {
+export const MOCK_OPTIONS_GROUP_WINE_VARIANTS = {
   name: [
     { key: DEFAULT_LANG, value: 'Типы_вина' },
     { key: SECONDARY_LANG, value: 'Wine_types' },
@@ -1319,16 +1319,16 @@ export const MOCK_ATTRIBUTE_WINE_COLOR = {
     { key: SECONDARY_LANG, value: 'Wine_color' },
   ],
   slug: 'tsvet_vina',
-  variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 };
 
-export const MOCK_ATTRIBUTE_WINE_TYPE = {
+export const MOCK_ATTRIBUTE_WINE_VARIANT = {
   name: [
     { key: DEFAULT_LANG, value: 'Тип_вина' },
     { key: SECONDARY_LANG, value: 'Wine_type' },
   ],
   slug: 'tip_vina',
-  variant: ATTRIBUTE_TYPE_SELECT,
+  variant: ATTRIBUTE_VARIANT_SELECT,
 };
 
 export const MOCK_ATTRIBUTE_STRING = {
@@ -1337,7 +1337,7 @@ export const MOCK_ATTRIBUTE_STRING = {
     { key: SECONDARY_LANG, value: 'Attribute_string' },
   ],
   slug: 'attribute_stroka',
-  variant: ATTRIBUTE_TYPE_STRING,
+  variant: ATTRIBUTE_VARIANT_STRING,
 };
 
 export const MOCK_ATTRIBUTE_NUMBER = {
@@ -1346,7 +1346,7 @@ export const MOCK_ATTRIBUTE_NUMBER = {
     { key: SECONDARY_LANG, value: 'Attribute_number' },
   ],
   slug: 'attribute_chislo',
-  variant: ATTRIBUTE_TYPE_NUMBER,
+  variant: ATTRIBUTE_VARIANT_NUMBER,
 };
 
 export const MOCK_ATTRIBUTES_GROUP_WINE_FEATURES = {
@@ -1371,14 +1371,14 @@ export const MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES = {
 };
 
 // Rubrics
-export const MOCK_RUBRIC_TYPE_ALCOHOL = {
+export const MOCK_RUBRIC_VARIANT_ALCOHOL = {
   name: [
     { key: DEFAULT_LANG, value: 'Алкоголь' },
     { key: SECONDARY_LANG, value: 'Alcohol' },
   ],
 };
 
-export const MOCK_RUBRIC_TYPE_JUICE = {
+export const MOCK_RUBRIC_VARIANT_JUICE = {
   name: [
     { key: DEFAULT_LANG, value: 'Соки' },
     { key: SECONDARY_LANG, value: 'Juice' },

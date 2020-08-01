@@ -43,6 +43,7 @@ import { ProductResolver } from './resolvers/product/ProductResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
+  AttributeVariantResolver,
   GendersListResolver,
   ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
@@ -76,6 +77,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       RubricVariantResolver,
       UserResolver,
       GendersListResolver,
+      AttributeVariantResolver,
       AttributePositioningListResolver,
       ISOLanguagesListResolver,
     ],

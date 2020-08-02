@@ -1033,6 +1033,13 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['#DB5360'],
   },
 ];
+export const SITE_CONFIGS_All = [
+  SITE_CONFIGS_LOGO,
+  SITE_CONFIGS_LOGO_ICON,
+  SITE_CONFIGS_LOGO_NAME,
+  SITE_CONFIGS_PREVIEW_IMAGE,
+  ...SITE_CONFIGS_INITIAL,
+];
 
 // Currency
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];

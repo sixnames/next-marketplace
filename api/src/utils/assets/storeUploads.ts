@@ -7,7 +7,8 @@ import del from 'del';
 export interface StoreUploadsInterface {
   files: Upload[];
   slug: string;
-  city: string;
+  dist: string;
+  outputFormat?: string;
 }
 
 export interface AssetInterface {
@@ -45,10 +46,11 @@ function getBufferFromFileStream(stream: ReadStream) {
 const storeUploads = async ({
   files,
   slug,
-  city,
+  dist,
+  outputFormat = 'webp',
 }: StoreUploadsInterface): Promise<AssetInterface[]> => {
-  const filesPath = `./assets/${city}/${slug}`;
-  const filesResolvePath = `/assets/${city}/${slug}`;
+  const filesPath = `./assets/${dist}/${slug}`;
+  const filesResolvePath = `/assets/${dist}/${slug}`;
   const exists = fs.existsSync(filesPath);
   if (!exists) {
     // Create directory if not exists
@@ -61,24 +63,34 @@ const storeUploads = async ({
 
   return await Promise.all(
     files.map(async (file, index) => {
-      const { createReadStream } = await file;
+      const { createReadStream, mimetype } = await file;
+
       const fileName = `${slug}-${index}`;
-      const fileFormat = 'webp';
-      const finalPath = `${filesPath}/${fileName}.${fileFormat}`;
-      const resolvePath = `${filesResolvePath}/${fileName}.${fileFormat}`;
+      const finalPath = `${filesPath}/${fileName}.${outputFormat}`;
+      const resolvePath = `${filesResolvePath}/${fileName}.${outputFormat}`;
 
       // Attempting to save file in fs
       return new Promise<AssetInterface>(async (resolve, reject) => {
         // Read file into stream.Readable
         const fileStream = createReadStream();
-
-        // TODO check here if file is svg and save it to finalPath
-
         const buffer = await getBufferFromFileStream(fileStream);
+
+        if (mimetype === `image/svg+xml` || mimetype === `image/svg`) {
+          await fs.writeFile(finalPath, buffer.toString(), (error) => {
+            if (error) {
+              reject(error);
+            }
+            resolve({
+              url: resolvePath,
+              index,
+            });
+          });
+          return;
+        }
 
         // Save file to the FS
         sharp(buffer)
-          .webp()
+          .toFormat(outputFormat)
           .toFile(finalPath)
           .then(() => {
             resolve({

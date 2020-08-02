@@ -133,6 +133,12 @@ type Config {
   variant: ConfigVariantEnum!
 }
 
+type ConfigPayloadType {
+  configs: [Config!]!
+  message: String!
+  success: Boolean!
+}
+
 """Config variant enum"""
 enum ConfigVariantEnum {
   asset
@@ -343,10 +349,12 @@ type Mutation {
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
+  updateAssetConfig(input: UpdateAssetConfigInput!): ConfigPayloadType!
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateConfigs(input: [UpdateConfigInput!]!): ConfigPayloadType!
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
@@ -689,6 +697,11 @@ The javascript `Date` as integer. Type represents date and time as number of mil
 """
 scalar Timestamp
 
+input UpdateAssetConfigInput {
+  id: ID!
+  value: [Upload!]!
+}
+
 input UpdateAttributeInGroupInput {
   attributeId: ID!
   groupId: ID!
@@ -715,6 +728,11 @@ input UpdateCityInCountryInput {
   countryId: ID!
   key: String!
   name: [LangInput!]!
+}
+
+input UpdateConfigInput {
+  id: ID!
+  value: [String!]!
 }
 
 input UpdateCountryInput {

@@ -8,7 +8,6 @@ import { useGetProductQuery } from '../../generated/apolloComponents';
 import { NavItemInterface } from '../../types';
 import DataLayout from '../../components/DataLayout/DataLayout';
 import useTabsConfig from '../../hooks/useTabsConfig';
-import AppLayout from '../../layout/AppLayout/AppLayout';
 
 const ProductRoute: React.FC = () => {
   const { query } = useRouterQuery();
@@ -50,19 +49,17 @@ const ProductRoute: React.FC = () => {
   });
 
   return (
-    <AppLayout title={product.nameString}>
-      <DataLayout
-        filterResultNavConfig={navConfig}
-        title={product.nameString}
-        filterResult={() => (
-          <TabsContent>
-            <ProductDetails product={product} />
-            <div>Tab 1</div>
-            <div>Tab 2</div>
-          </TabsContent>
-        )}
-      />
-    </AppLayout>
+    <DataLayout
+      filterResultNavConfig={navConfig}
+      title={product.nameString}
+      filterResult={() => (
+        <TabsContent>
+          <ProductDetails product={product} />
+          <div>Tab 1</div>
+          <div>Tab 2</div>
+        </TabsContent>
+      )}
+    />
   );
 };
 

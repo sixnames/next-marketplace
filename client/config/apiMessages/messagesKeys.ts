@@ -12,6 +12,15 @@ const messagesKeys = [
   'validation.color.required',
   'validation.translation.key',
 
+  // Configs ----------
+  'configs.update.success',
+  'configs.updateAsset.notFound',
+  'configs.updateAsset.error',
+  'configs.updateAsset.success',
+  // Configs validation
+  'validation.configs.id',
+  'validation.configs.value',
+
   // Currencies ----------
   'currencies.create.duplicate',
   'currencies.create.error',

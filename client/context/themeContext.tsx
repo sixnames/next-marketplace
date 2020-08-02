@@ -11,6 +11,7 @@ interface ThemeContextInterface {
   toggleTheme?: () => void;
   themeTooltip: string;
   themeIcon: IconType;
+  logoSlug: string;
 }
 
 const ThemeContext = createContext<ThemeContextInterface>({
@@ -19,10 +20,12 @@ const ThemeContext = createContext<ThemeContextInterface>({
   isLight: true,
   themeTooltip: '',
   themeIcon: 'Brightness4',
+  logoSlug: 'siteLogo',
 });
 
 const ThemeContextProvider: React.FC = ({ children }) => {
   const [vh, setVh] = useState(() => (IS_BROWSER ? window.innerHeight * 0.01 : 0));
+  const [logoSlug, setLogoSlug] = useState('siteLogo');
   const [theme, setTheme] = useLocalStorage(THEME_KEY, () => {
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -54,6 +57,11 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (ref && ref.current) {
       ref.current.setAttribute('data-theme', theme);
+
+      setLogoSlug(() => {
+        const isDark = theme === THEME_DARK;
+        return isDark ? 'siteLogo' : 'siteLogoDark';
+      });
     }
   }, [ref, theme]);
 
@@ -67,6 +75,7 @@ const ThemeContextProvider: React.FC = ({ children }) => {
       isDark,
       themeTooltip,
       themeIcon,
+      logoSlug,
       isLight: theme === THEME_LIGHT,
       toggleTheme: () => {
         if (theme === THEME_DARK) {
@@ -76,7 +85,7 @@ const ThemeContextProvider: React.FC = ({ children }) => {
         }
       },
     };
-  }, [theme, setTheme]);
+  }, [theme, logoSlug, setTheme]);
 
   return (
     <ThemeContext.Provider value={value}>

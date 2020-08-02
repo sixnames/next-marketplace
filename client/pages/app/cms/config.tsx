@@ -1,13 +1,12 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import getAppServerSideProps, { AppPageInterface } from '../../../utils/getAppServerSideProps';
-import ProductRoute from '../../../routes/Product/ProductRoute';
 import AppLayout from '../../../layout/AppLayout/AppLayout';
 
-const Product: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const Config: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (
-    <AppLayout title={'Товар'} initialApolloState={initialApolloState}>
-      <ProductRoute />
+    <AppLayout title={'Настройки сайта'} initialApolloState={initialApolloState}>
+      <div data-cy={'site-configs'} />
     </AppLayout>
   );
 };
@@ -16,4 +15,4 @@ const Product: NextPage<AppPageInterface> = ({ initialApolloState }) => {
 export const getServerSideProps: GetServerSideProps = getAppServerSideProps;
 
 // noinspection JSUnusedGlobalSymbols
-export default Product;
+export default Config;

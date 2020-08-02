@@ -957,7 +957,13 @@ export const ISO_LANGUAGES = [
 // Site config
 export const SITE_CONFIGS_LOGO = {
   slug: 'siteLogo',
-  nameString: 'Логотип сайта',
+  nameString: 'Логотип сайта для тёмной темы',
+  description: 'Полное изображение логотипа в формате SVG',
+  variant: 'asset',
+};
+export const SITE_CONFIGS_LOGO_DARK = {
+  slug: 'siteLogoDark',
+  nameString: 'Логотип сайта для светлой темы',
   description: 'Полное изображение логотипа в формате SVG',
   variant: 'asset',
 };

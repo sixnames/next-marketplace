@@ -1,15 +1,29 @@
 import React from 'react';
 import Head from 'next/head';
+import { useConfigContext } from '../context/configContext';
+import { ASSETS_URL } from '../config';
 
 interface MetaInterface {
   title?: string;
   description?: string;
+  previewImage?: string;
 }
 
-const Meta: React.FC<MetaInterface> = ({
-  title = 'SITE_DEFAULT_TITLE',
-  description = 'SITE_DEFAULT_DESCRIPTION',
-}) => {
+const Meta: React.FC<MetaInterface> = ({ title, description, previewImage }) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
+
+  const configTitle = getSiteConfigSingleValue('pageDefaultTitle');
+  const pageTitle = title || configTitle;
+
+  const configDescription = getSiteConfigSingleValue('pageDefaultDescription');
+  const pageDescription = description || configDescription;
+
+  const configPreviewImage = getSiteConfigSingleValue('pageDefaultPreviewImage');
+  const pagePreviewImage = `${ASSETS_URL}${previewImage || configPreviewImage}?format=jpg`;
+
+  const configSiteName = getSiteConfigSingleValue('siteName');
+  const configFoundationYear = getSiteConfigSingleValue('siteFoundationYear');
+
   return (
     <Head>
       <meta charSet='utf-8' />
@@ -18,30 +32,28 @@ const Meta: React.FC<MetaInterface> = ({
         content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
       />
 
-      <title>{title}</title>
-      <meta name={'description'} content={description} />
+      <title>{pageTitle}</title>
+      <meta name={'description'} content={pageDescription} />
 
-      {/*TODO pass trough site name to Author and Copyright*/}
-      <meta name='author' content='author' />
-      <meta name='copyright' content={`© 2010 - ${new Date().getFullYear()} Site™`} />
+      <meta name='author' content={configSiteName} />
+      <meta
+        name='copyright'
+        content={`© ${configFoundationYear} - ${new Date().getFullYear()} Site™`}
+      />
       <meta name='application-name' content='Personal Website' />
 
       <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
-
-      {/*TODO pass trough current preview image*/}
-      <meta property='og:image' content='/site-preview.jpg' />
+      <meta property='og:image' content={pagePreviewImage} />
 
       {/*TODO pass trough current url*/}
       <meta property='og:url' content='url' />
-      <meta property='og:description' content={description} />
+      <meta property='og:description' content={pageDescription} />
 
       <meta name='twitter:title' content={title} />
       <meta name='twitter:card' content='summary' />
-
-      {/*TODO pass trough current preview image*/}
-      <meta name='twitter:image' content='/site-preview.jpg' />
-      <meta name='twitter:description' content={description} />
+      <meta name='twitter:image' content={pagePreviewImage} />
+      <meta name='twitter:description' content={pageDescription} />
 
       <link rel='apple-touch-icon' sizes='180x180' href={'/apple-touch-icon.png'} />
       <link rel='icon' type='image/png' sizes='32x32' href={'/favicon-32x32.png'} />

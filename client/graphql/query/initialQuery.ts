@@ -24,6 +24,14 @@ export const INITIAL_QUERY = gql`
       key
       isDefault
     }
+    getAllConfigs {
+      id
+      slug
+      value
+      nameString
+      description
+      variant
+    }
   }
 `;
 
@@ -63,6 +71,14 @@ export const INITIAL_SITE_QUERY = gql`
       name
       nativeName
       isDefault
+    }
+    getAllConfigs {
+      id
+      slug
+      value
+      nameString
+      description
+      variant
     }
     getRubricsTree {
       ...SiteRubricFragment

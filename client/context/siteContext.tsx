@@ -28,6 +28,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     <UserContextProvider
       me={initialApolloState.me}
       lang={initialApolloState.getClientLanguage}
+      configs={initialApolloState.getAllConfigs}
       languagesList={initialApolloState.getAllLanguages || []}
     >
       <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>
@@ -36,12 +37,14 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 };
 
 function useSiteContext() {
-  const context = useContext(SiteContext);
-  return context
-    ? context
-    : {
-        getRubricsTree: [],
-      };
+  const context = useContext(SiteContext) || {
+    getRubricsTree: [],
+    getAllConfigs: [],
+  };
+
+  return {
+    ...context,
+  };
 }
 
 export { SiteContextProvider, useSiteContext };

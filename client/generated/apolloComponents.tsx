@@ -15,715 +15,6 @@ export type Scalars = {
   Upload: any;
 };
 
-export type LanguageType = {
-   __typename?: 'LanguageType';
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type AssetType = {
-   __typename?: 'AssetType';
-  url: Scalars['String'];
-  index: Scalars['Int'];
-};
-
-export type Metric = {
-   __typename?: 'Metric';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-};
-
-export type User = {
-   __typename?: 'User';
-  id: Scalars['ID'];
-  itemId: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  role: Scalars['String'];
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
-  isAdmin: Scalars['Boolean'];
-  isCustomer: Scalars['Boolean'];
-  isManager: Scalars['Boolean'];
-};
-
-
-export type Language = {
-   __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Message = {
-   __typename?: 'Message';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  message: Array<LanguageType>;
-};
-
-export type MessagesGroup = {
-   __typename?: 'MessagesGroup';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  messages: Array<Message>;
-};
-
-export type OptionVariant = {
-   __typename?: 'OptionVariant';
-  key: GenderEnum;
-  value: Array<LanguageType>;
-};
-
-/** List of gender enums */
-export enum GenderEnum {
-  She = 'she',
-  He = 'he',
-  It = 'it'
-}
-
-export type Option = {
-   __typename?: 'Option';
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  name: Array<LanguageType>;
-  variants?: Maybe<Array<OptionVariant>>;
-  gender?: Maybe<GenderEnum>;
-  nameString: Scalars['String'];
-  color?: Maybe<Scalars['String']>;
-};
-
-export type OptionsGroup = {
-   __typename?: 'OptionsGroup';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  options: Array<Option>;
-};
-
-export type AttributePositioningInTitle = {
-   __typename?: 'AttributePositioningInTitle';
-  key: Scalars['String'];
-  value: AttributePositionInTitleEnum;
-};
-
-/** Instruction for positioning checked attribute values in catalogue title */
-export enum AttributePositionInTitleEnum {
-  Begin = 'begin',
-  End = 'end',
-  BeforeKeyword = 'beforeKeyword',
-  AfterKeyword = 'afterKeyword',
-  ReplaceKeyword = 'replaceKeyword'
-}
-
-export type AttributeFilterOption = {
-   __typename?: 'AttributeFilterOption';
-  option: Option;
-  counter: Scalars['Int'];
-};
-
-export type Attribute = {
-   __typename?: 'Attribute';
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  variant: AttributeVariantEnum;
-  options?: Maybe<OptionsGroup>;
-  /** list of options with products counter for catalogue filter */
-  filterOptions: Array<AttributeFilterOption>;
-  positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
-  metric?: Maybe<Metric>;
-};
-
-
-export type AttributeFilterOptionsArgs = {
-  filter: Array<Scalars['String']>;
-};
-
-/** Attribute variant enum */
-export enum AttributeVariantEnum {
-  Select = 'select',
-  MultipleSelect = 'multipleSelect',
-  String = 'string',
-  Number = 'number'
-}
-
-export type AttributesGroup = {
-   __typename?: 'AttributesGroup';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  attributes: Array<Attribute>;
-};
-
-export type RubricVariant = {
-   __typename?: 'RubricVariant';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-};
-
-export type ProductAttribute = {
-   __typename?: 'ProductAttribute';
-  showInCard: Scalars['Boolean'];
-  node: Attribute;
-  /** Attribute reference via attribute slug field */
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-export type ProductAttributesGroup = {
-   __typename?: 'ProductAttributesGroup';
-  showInCard: Scalars['Boolean'];
-  node: AttributesGroup;
-  attributes: Array<ProductAttribute>;
-};
-
-export type ProductNode = {
-   __typename?: 'ProductNode';
-  name: Array<LanguageType>;
-  cardName: Array<LanguageType>;
-  slug: Scalars['String'];
-  description: Array<LanguageType>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<AssetType>;
-  price: Scalars['Int'];
-  active: Scalars['Boolean'];
-};
-
-export type ProductCity = {
-   __typename?: 'ProductCity';
-  key: Scalars['String'];
-  node: ProductNode;
-};
-
-export type Product = {
-   __typename?: 'Product';
-  id: Scalars['ID'];
-  itemId: Scalars['String'];
-  nameString: Scalars['String'];
-  name: Array<LanguageType>;
-  cardNameString: Scalars['String'];
-  cardName: Array<LanguageType>;
-  slug: Scalars['String'];
-  descriptionString: Scalars['String'];
-  description: Array<LanguageType>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<AssetType>;
-  mainImage: Scalars['String'];
-  price: Scalars['Int'];
-  active: Scalars['Boolean'];
-  cities: Array<ProductCity>;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
-};
-
-export type ProductsCounters = {
-   __typename?: 'ProductsCounters';
-  totalProductsCount: Scalars['Int'];
-  activeProductsCount: Scalars['Int'];
-};
-
-export type PaginatedProductsResponse = {
-   __typename?: 'PaginatedProductsResponse';
-  docs: Array<Product>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-  activeProductsCount?: Maybe<Scalars['Int']>;
-};
-
-export type ProductPayloadType = {
-   __typename?: 'ProductPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  product?: Maybe<Product>;
-};
-
-export type RubricAttributesGroup = {
-   __typename?: 'RubricAttributesGroup';
-  id: Scalars['ID'];
-  showInCatalogueFilter: Array<Scalars['ID']>;
-  isOwner: Scalars['Boolean'];
-  node: AttributesGroup;
-};
-
-export type RubricCatalogueTitle = {
-   __typename?: 'RubricCatalogueTitle';
-  defaultTitle: Array<LanguageType>;
-  prefix?: Maybe<Array<LanguageType>>;
-  keyword: Array<LanguageType>;
-  gender: GenderEnum;
-};
-
-export type RubricCatalogueTitleField = {
-   __typename?: 'RubricCatalogueTitleField';
-  defaultTitle: Scalars['String'];
-  prefix?: Maybe<Scalars['String']>;
-  keyword: Scalars['String'];
-  gender: GenderEnum;
-};
-
-export type RubricNode = {
-   __typename?: 'RubricNode';
-  name: Array<LanguageType>;
-  catalogueTitle: RubricCatalogueTitle;
-  slug: Scalars['String'];
-  level: Scalars['Int'];
-  active?: Maybe<Scalars['Boolean']>;
-  parent?: Maybe<Rubric>;
-  attributesGroups: Array<RubricAttributesGroup>;
-  variant: RubricVariant;
-};
-
-export type RubricCity = {
-   __typename?: 'RubricCity';
-  key: Scalars['String'];
-  node: RubricNode;
-};
-
-export type Rubric = {
-   __typename?: 'Rubric';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  name: Array<LanguageType>;
-  catalogueTitle: RubricCatalogueTitle;
-  catalogueTitleString: RubricCatalogueTitleField;
-  slug: Scalars['String'];
-  level: Scalars['Int'];
-  active: Scalars['Boolean'];
-  parent?: Maybe<Rubric>;
-  children: Array<Rubric>;
-  attributesGroups: Array<RubricAttributesGroup>;
-  filterAttributes: Array<Attribute>;
-  variant: RubricVariant;
-  products: PaginatedProductsResponse;
-  totalProductsCount: Scalars['Int'];
-  activeProductsCount: Scalars['Int'];
-  cities: Array<RubricCity>;
-};
-
-
-export type RubricChildrenArgs = {
-  excluded?: Maybe<Array<Scalars['ID']>>;
-};
-
-
-export type RubricProductsArgs = {
-  input?: Maybe<RubricProductPaginateInput>;
-};
-
-export type AttributesGroupPayloadType = {
-   __typename?: 'AttributesGroupPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  group?: Maybe<AttributesGroup>;
-};
-
-export type AttributeVariant = {
-   __typename?: 'AttributeVariant';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-};
-
-export type CatalogueData = {
-   __typename?: 'CatalogueData';
-  rubric: Rubric;
-  products: PaginatedProductsResponse;
-  catalogueTitle: Scalars['String'];
-};
-
-export type LanguagePayloadType = {
-   __typename?: 'LanguagePayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  language?: Maybe<Language>;
-};
-
-export type MetricPayloadType = {
-   __typename?: 'MetricPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  metric?: Maybe<Metric>;
-};
-
-export type OptionsGroupPayloadType = {
-   __typename?: 'OptionsGroupPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  group?: Maybe<OptionsGroup>;
-};
-
-export type RubricPayloadType = {
-   __typename?: 'RubricPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  rubric?: Maybe<Rubric>;
-};
-
-export type RubricVariantPayloadType = {
-   __typename?: 'RubricVariantPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  variant?: Maybe<RubricVariant>;
-};
-
-export type GenderOption = {
-   __typename?: 'GenderOption';
-  id: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type AttributePositioningOption = {
-   __typename?: 'AttributePositioningOption';
-  id: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type IsoLanguage = {
-   __typename?: 'ISOLanguage';
-  id: Scalars['String'];
-  nameString: Scalars['String'];
-  nativeName: Scalars['String'];
-};
-
-export type PaginatedUsersResponse = {
-   __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPayloadType = {
-   __typename?: 'UserPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  user?: Maybe<User>;
-};
-
-export type PaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-};
-
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-export type ProductPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<ProductSortByEnum>;
-  rubric?: Maybe<Scalars['ID']>;
-  notInRubric?: Maybe<Scalars['ID']>;
-  noRubrics?: Maybe<Scalars['Boolean']>;
-  countActiveProducts?: Maybe<Scalars['Boolean']>;
-};
-
-/** Product pagination sortBy enum */
-export enum ProductSortByEnum {
-  Price = 'price',
-  CreatedAt = 'createdAt'
-}
-
-export type LangInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type ProductAttributeInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  /** Attribute reference via attribute slug field */
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-export type ProductAttributesGroupInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  attributes: Array<ProductAttributeInput>;
-};
-
-export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
-
-export type UpdateProductInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
-export type ProductsCountersInput = {
-  rubric?: Maybe<Scalars['ID']>;
-  notInRubric?: Maybe<Scalars['ID']>;
-  noRubrics?: Maybe<Scalars['Boolean']>;
-};
-
-export type CreateAttributesGroupInput = {
-  name: Array<LangInput>;
-};
-
-export type UpdateAttributesGroupInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-};
-
-export type AttributePositioningInTitleInput = {
-  key: Scalars['String'];
-  value: AttributePositionInTitleEnum;
-};
-
-export type AddAttributeToGroupInput = {
-  groupId: Scalars['ID'];
-  name: Array<LangInput>;
-  variant: AttributeVariantEnum;
-  options?: Maybe<Scalars['ID']>;
-  metric?: Maybe<Scalars['ID']>;
-  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
-};
-
-export type UpdateAttributeInGroupInput = {
-  groupId: Scalars['ID'];
-  attributeId: Scalars['ID'];
-  name: Array<LangInput>;
-  variant: AttributeVariantEnum;
-  options?: Maybe<Scalars['ID']>;
-  metric?: Maybe<Scalars['ID']>;
-  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
-};
-
-export type DeleteAttributeFromGroupInput = {
-  groupId: Scalars['ID'];
-  attributeId: Scalars['ID'];
-};
-
-export type CreateLanguageInput = {
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-};
-
-export type UpdateLanguageInput = {
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-};
-
-export type CreateMetricInput = {
-  name: Array<LangInput>;
-};
-
-export type UpdateMetricInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-};
-
-export type CreateOptionsGroupInput = {
-  name: Array<LangInput>;
-};
-
-export type UpdateOptionsGroupInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-};
-
-export type OptionVariantInput = {
-  key: GenderEnum;
-  value: Array<LangInput>;
-};
-
-export type AddOptionToGroupInput = {
-  groupId: Scalars['ID'];
-  name: Array<LangInput>;
-  color?: Maybe<Scalars['String']>;
-  variants?: Maybe<Array<OptionVariantInput>>;
-  gender?: Maybe<GenderEnum>;
-};
-
-export type UpdateOptionInGroupInput = {
-  groupId: Scalars['ID'];
-  optionId: Scalars['ID'];
-  name: Array<LangInput>;
-  color?: Maybe<Scalars['String']>;
-  variants?: Maybe<Array<OptionVariantInput>>;
-  gender?: Maybe<GenderEnum>;
-};
-
-export type DeleteOptionFromGroupInput = {
-  groupId: Scalars['ID'];
-  optionId: Scalars['ID'];
-};
-
-export type RubricCatalogueTitleInput = {
-  defaultTitle: Array<LangInput>;
-  prefix?: Maybe<Array<LangInput>>;
-  keyword: Array<LangInput>;
-  gender: GenderEnum;
-};
-
-export type CreateRubricInput = {
-  name: Array<LangInput>;
-  parent?: Maybe<Scalars['ID']>;
-  variant: Scalars['ID'];
-  catalogueTitle: RubricCatalogueTitleInput;
-};
-
-export type UpdateRubricInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-  catalogueTitle: RubricCatalogueTitleInput;
-  parent?: Maybe<Scalars['ID']>;
-  variant: Scalars['ID'];
-};
-
-export type AddAttributesGroupToRubricInput = {
-  rubricId: Scalars['ID'];
-  attributesGroupId: Scalars['ID'];
-};
-
-export type DeleteAttributesGroupFromRubricInput = {
-  rubricId: Scalars['ID'];
-  attributesGroupId: Scalars['ID'];
-};
-
-export type AddProductToRubricInput = {
-  rubricId: Scalars['ID'];
-  productId: Scalars['ID'];
-};
-
-export type RubricProductAttributesFilterInput = {
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-export type RubricProductPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<ProductSortByEnum>;
-  notInRubric?: Maybe<Scalars['ID']>;
-  active?: Maybe<Scalars['Boolean']>;
-  attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
-};
-
-export type DeleteProductFromRubricInput = {
-  rubricId: Scalars['ID'];
-  productId: Scalars['ID'];
-};
-
-export type UpdateAttributesGroupInRubricInput = {
-  rubricId: Scalars['ID'];
-  attributesGroupId: Scalars['ID'];
-  attributeId: Scalars['ID'];
-};
-
-export type CreateRubricVariantInput = {
-  name: Array<LangInput>;
-};
-
-export type UpdateRubricVariantInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-};
-
-export type CreateUserInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone: Scalars['String'];
-  role?: Maybe<Scalars['String']>;
-};
-
-export type UpdateUserInput = {
-  id: Scalars['ID'];
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone: Scalars['String'];
-  role: Scalars['String'];
-};
-
-export type SignUpInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  password: Scalars['String'];
-};
-
-export type SignInInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
 export type Query = {
    __typename?: 'Query';
   getProduct: Product;
@@ -731,14 +22,22 @@ export type Query = {
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
-  getAttribute?: Maybe<Attribute>;
-  getAttributesGroup?: Maybe<AttributesGroup>;
-  getAllAttributesGroups: Array<AttributesGroup>;
-  getAttributeVariants?: Maybe<Array<AttributeVariant>>;
-  getCatalogueData?: Maybe<CatalogueData>;
+  me?: Maybe<User>;
+  getUser?: Maybe<User>;
+  getAllUsers: PaginatedUsersResponse;
+  getAllCities: Array<City>;
+  getCity: City;
+  getAllCountries: Array<Country>;
+  getCountry: Country;
   getLanguage?: Maybe<Language>;
   getAllLanguages?: Maybe<Array<Language>>;
   getClientLanguage: Scalars['String'];
+  getAllCurrencies: Array<Currency>;
+  getCurrency: Currency;
+  getAttribute?: Maybe<Attribute>;
+  getAttributesGroup?: Maybe<AttributesGroup>;
+  getAllAttributesGroups: Array<AttributesGroup>;
+  getCatalogueData?: Maybe<CatalogueData>;
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
   getMetric?: Maybe<Metric>;
@@ -749,14 +48,15 @@ export type Query = {
   getRubric: Rubric;
   getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
-  getRubricVariant?: Maybe<RubricVariant>;
-  getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getGenderOptions: Array<GenderOption>;
+  getAttributeVariants?: Maybe<Array<AttributeVariant>>;
   getAttributePositioningOptions: Array<AttributePositioningOption>;
   getISOLanguagesList: Array<IsoLanguage>;
-  me?: Maybe<User>;
-  getUser?: Maybe<User>;
-  getAllUsers: PaginatedUsersResponse;
+  getRubricVariant?: Maybe<RubricVariant>;
+  getAllRubricVariants?: Maybe<Array<RubricVariant>>;
+  getAllConfigs: Array<Config>;
+  getConfigBySlug: Config;
+  getConfigValueBySlug: Array<Scalars['String']>;
 };
 
 
@@ -785,6 +85,36 @@ export type QueryGetFeaturesAstArgs = {
 };
 
 
+export type QueryGetUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllUsersArgs = {
+  input: UserPaginateInput;
+};
+
+
+export type QueryGetCityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCountryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetLanguageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCurrencyArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryGetAttributeArgs = {
   id: Scalars['ID'];
 };
@@ -803,11 +133,6 @@ export type QueryGetAllAttributesGroupsArgs = {
 export type QueryGetCatalogueDataArgs = {
   productsInput?: Maybe<ProductPaginateInput>;
   catalogueFilter: Array<Scalars['String']>;
-};
-
-
-export type QueryGetLanguageArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -856,30 +181,498 @@ export type QueryGetRubricVariantArgs = {
 };
 
 
-export type QueryGetUserArgs = {
+export type QueryGetConfigBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetConfigValueBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+export type Product = {
+   __typename?: 'Product';
   id: Scalars['ID'];
+  itemId: Scalars['String'];
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  cardNameString: Scalars['String'];
+  cardName: Array<LanguageType>;
+  slug: Scalars['String'];
+  descriptionString: Scalars['String'];
+  description: Array<LanguageType>;
+  rubrics: Array<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<AssetType>;
+  mainImage: Scalars['String'];
+  price: Scalars['Int'];
+  active: Scalars['Boolean'];
+  cities: Array<ProductCity>;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type LanguageType = {
+   __typename?: 'LanguageType';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type ProductAttributesGroup = {
+   __typename?: 'ProductAttributesGroup';
+  showInCard: Scalars['Boolean'];
+  node: AttributesGroup;
+  attributes: Array<ProductAttribute>;
+};
+
+export type AttributesGroup = {
+   __typename?: 'AttributesGroup';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  attributes: Array<Attribute>;
+};
+
+export type Attribute = {
+   __typename?: 'Attribute';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  variant: AttributeVariantEnum;
+  options?: Maybe<OptionsGroup>;
+  /** list of options with products counter for catalogue filter */
+  filterOptions: Array<AttributeFilterOption>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
+  metric?: Maybe<Metric>;
 };
 
 
-export type QueryGetAllUsersArgs = {
-  input: UserPaginateInput;
+export type AttributeFilterOptionsArgs = {
+  filter: Array<Scalars['String']>;
 };
+
+/** Attribute variant enum */
+export enum AttributeVariantEnum {
+  Select = 'select',
+  MultipleSelect = 'multipleSelect',
+  String = 'string',
+  Number = 'number'
+}
+
+export type OptionsGroup = {
+   __typename?: 'OptionsGroup';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  options: Array<Option>;
+};
+
+export type Option = {
+   __typename?: 'Option';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Array<LanguageType>;
+  variants?: Maybe<Array<OptionVariant>>;
+  gender?: Maybe<GenderEnum>;
+  nameString: Scalars['String'];
+  color?: Maybe<Scalars['String']>;
+};
+
+export type OptionVariant = {
+   __typename?: 'OptionVariant';
+  key: GenderEnum;
+  value: Array<LanguageType>;
+};
+
+/** List of gender enums */
+export enum GenderEnum {
+  She = 'she',
+  He = 'he',
+  It = 'it'
+}
+
+export type AttributeFilterOption = {
+   __typename?: 'AttributeFilterOption';
+  option: Option;
+  counter: Scalars['Int'];
+};
+
+export type AttributePositioningInTitle = {
+   __typename?: 'AttributePositioningInTitle';
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
+};
+
+/** Instruction for positioning checked attribute values in catalogue title */
+export enum AttributePositionInTitleEnum {
+  Begin = 'begin',
+  End = 'end',
+  BeforeKeyword = 'beforeKeyword',
+  AfterKeyword = 'afterKeyword',
+  ReplaceKeyword = 'replaceKeyword'
+}
+
+export type Metric = {
+   __typename?: 'Metric';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+};
+
+export type ProductAttribute = {
+   __typename?: 'ProductAttribute';
+  showInCard: Scalars['Boolean'];
+  node: Attribute;
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+export type AssetType = {
+   __typename?: 'AssetType';
+  url: Scalars['String'];
+  index: Scalars['Int'];
+};
+
+export type ProductCity = {
+   __typename?: 'ProductCity';
+  key: Scalars['String'];
+  node: ProductNode;
+};
+
+export type ProductNode = {
+   __typename?: 'ProductNode';
+  name: Array<LanguageType>;
+  cardName: Array<LanguageType>;
+  slug: Scalars['String'];
+  description: Array<LanguageType>;
+  rubrics: Array<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<AssetType>;
+  price: Scalars['Int'];
+  active: Scalars['Boolean'];
+};
+
+
+export type PaginatedProductsResponse = {
+   __typename?: 'PaginatedProductsResponse';
+  docs: Array<Product>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+  activeProductsCount?: Maybe<Scalars['Int']>;
+};
+
+export type ProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ProductSortByEnum>;
+  rubric?: Maybe<Scalars['ID']>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  noRubrics?: Maybe<Scalars['Boolean']>;
+  countActiveProducts?: Maybe<Scalars['Boolean']>;
+};
+
+/** Pagination sortDir enum */
+export enum PaginateSortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+/** Product pagination sortBy enum */
+export enum ProductSortByEnum {
+  Price = 'price',
+  CreatedAt = 'createdAt'
+}
+
+export type ProductsCounters = {
+   __typename?: 'ProductsCounters';
+  totalProductsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+};
+
+export type ProductsCountersInput = {
+  rubric?: Maybe<Scalars['ID']>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  noRubrics?: Maybe<Scalars['Boolean']>;
+};
+
+export type User = {
+   __typename?: 'User';
+  id: Scalars['ID'];
+  itemId: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  role: Scalars['String'];
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+  isAdmin: Scalars['Boolean'];
+  isCustomer: Scalars['Boolean'];
+  isManager: Scalars['Boolean'];
+};
+
+export type PaginatedUsersResponse = {
+   __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type City = {
+   __typename?: 'City';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  key: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type Country = {
+   __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
+export type Currency = {
+   __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type CatalogueData = {
+   __typename?: 'CatalogueData';
+  rubric: Rubric;
+  products: PaginatedProductsResponse;
+  catalogueTitle: Scalars['String'];
+};
+
+export type Rubric = {
+   __typename?: 'Rubric';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  name: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
+  catalogueTitleString: RubricCatalogueTitleField;
+  slug: Scalars['String'];
+  level: Scalars['Int'];
+  active: Scalars['Boolean'];
+  parent?: Maybe<Rubric>;
+  children: Array<Rubric>;
+  attributesGroups: Array<RubricAttributesGroup>;
+  filterAttributes: Array<Attribute>;
+  variant: RubricVariant;
+  products: PaginatedProductsResponse;
+  totalProductsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+  cities: Array<RubricCity>;
+};
+
+
+export type RubricChildrenArgs = {
+  excluded?: Maybe<Array<Scalars['ID']>>;
+};
+
+
+export type RubricProductsArgs = {
+  input?: Maybe<RubricProductPaginateInput>;
+};
+
+export type RubricCatalogueTitle = {
+   __typename?: 'RubricCatalogueTitle';
+  defaultTitle: Array<LanguageType>;
+  prefix?: Maybe<Array<LanguageType>>;
+  keyword: Array<LanguageType>;
+  gender: GenderEnum;
+};
+
+export type RubricCatalogueTitleField = {
+   __typename?: 'RubricCatalogueTitleField';
+  defaultTitle: Scalars['String'];
+  prefix?: Maybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  gender: GenderEnum;
+};
+
+export type RubricAttributesGroup = {
+   __typename?: 'RubricAttributesGroup';
+  id: Scalars['ID'];
+  showInCatalogueFilter: Array<Scalars['ID']>;
+  isOwner: Scalars['Boolean'];
+  node: AttributesGroup;
+};
+
+export type RubricVariant = {
+   __typename?: 'RubricVariant';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+};
+
+export type RubricProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ProductSortByEnum>;
+  notInRubric?: Maybe<Scalars['ID']>;
+  active?: Maybe<Scalars['Boolean']>;
+  attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
+};
+
+export type RubricProductAttributesFilterInput = {
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+export type RubricCity = {
+   __typename?: 'RubricCity';
+  key: Scalars['String'];
+  node: RubricNode;
+};
+
+export type RubricNode = {
+   __typename?: 'RubricNode';
+  name: Array<LanguageType>;
+  catalogueTitle: RubricCatalogueTitle;
+  slug: Scalars['String'];
+  level: Scalars['Int'];
+  active?: Maybe<Scalars['Boolean']>;
+  parent?: Maybe<Rubric>;
+  attributesGroups: Array<RubricAttributesGroup>;
+  variant: RubricVariant;
+};
+
+export type Message = {
+   __typename?: 'Message';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  message: Array<LanguageType>;
+};
+
+export type GenderOption = {
+   __typename?: 'GenderOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type AttributeVariant = {
+   __typename?: 'AttributeVariant';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type AttributePositioningOption = {
+   __typename?: 'AttributePositioningOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type IsoLanguage = {
+   __typename?: 'ISOLanguage';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type Config = {
+   __typename?: 'Config';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+  description: Scalars['String'];
+  variant: ConfigVariantEnum;
+  value: Array<Scalars['String']>;
+};
+
+/** Config variant enum */
+export enum ConfigVariantEnum {
+  String = 'string',
+  Number = 'number',
+  Email = 'email',
+  Tel = 'tel',
+  Asset = 'asset'
+}
 
 export type Mutation = {
    __typename?: 'Mutation';
   createProduct: ProductPayloadType;
   updateProduct: ProductPayloadType;
   deleteProduct: ProductPayloadType;
+  createUser: UserPayloadType;
+  updateUser: UserPayloadType;
+  deleteUser: UserPayloadType;
+  signUp: UserPayloadType;
+  signIn: UserPayloadType;
+  signOut: UserPayloadType;
+  createCountry: CountryPayloadType;
+  updateCountry: CountryPayloadType;
+  deleteCountry: CountryPayloadType;
+  addCityToCountry: CountryPayloadType;
+  updateCityInCountry: CountryPayloadType;
+  deleteCityFromCountry: CountryPayloadType;
+  setLanguageAsDefault: LanguagePayloadType;
+  createLanguage: LanguagePayloadType;
+  updateLanguage: LanguagePayloadType;
+  deleteLanguage: LanguagePayloadType;
+  createCurrency: CurrencyPayloadType;
+  updateCurrency: CurrencyPayloadType;
+  deleteCurrency: CurrencyPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
   addAttributeToGroup: AttributesGroupPayloadType;
   updateAttributeInGroup: AttributesGroupPayloadType;
   deleteAttributeFromGroup: AttributesGroupPayloadType;
-  setLanguageAsDefault: LanguagePayloadType;
-  createLanguage: LanguagePayloadType;
-  updateLanguage: LanguagePayloadType;
-  deleteLanguage: LanguagePayloadType;
   createMetric: MetricPayloadType;
   updateMetric: MetricPayloadType;
   deleteMetric: MetricPayloadType;
@@ -900,12 +693,8 @@ export type Mutation = {
   createRubricVariant: RubricVariantPayloadType;
   updateRubricVariant: RubricVariantPayloadType;
   deleteRubricVariant: RubricVariantPayloadType;
-  createUser: UserPayloadType;
-  updateUser: UserPayloadType;
-  deleteUser: UserPayloadType;
-  signUp: UserPayloadType;
-  signIn: UserPayloadType;
-  signOut: UserPayloadType;
+  updateConfigs: ConfigPayloadType;
+  updateAssetConfig: ConfigPayloadType;
 };
 
 
@@ -920,6 +709,96 @@ export type MutationUpdateProductArgs = {
 
 
 export type MutationDeleteProductArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSignUpArgs = {
+  input: SignUpInput;
+};
+
+
+export type MutationSignInArgs = {
+  input: SignInInput;
+};
+
+
+export type MutationCreateCountryArgs = {
+  input: CreateCountryInput;
+};
+
+
+export type MutationUpdateCountryArgs = {
+  input: UpdateCountryInput;
+};
+
+
+export type MutationDeleteCountryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddCityToCountryArgs = {
+  input: AddCityToCountryInput;
+};
+
+
+export type MutationUpdateCityInCountryArgs = {
+  input: UpdateCityInCountryInput;
+};
+
+
+export type MutationDeleteCityFromCountryArgs = {
+  input: DeleteCityFromCountryInput;
+};
+
+
+export type MutationSetLanguageAsDefaultArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateLanguageArgs = {
+  input: CreateLanguageInput;
+};
+
+
+export type MutationUpdateLanguageArgs = {
+  input: UpdateLanguageInput;
+};
+
+
+export type MutationDeleteLanguageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateCurrencyArgs = {
+  input: CreateCurrencyInput;
+};
+
+
+export type MutationUpdateCurrencyArgs = {
+  input: UpdateCurrencyInput;
+};
+
+
+export type MutationDeleteCurrencyArgs = {
   id: Scalars['ID'];
 };
 
@@ -951,26 +830,6 @@ export type MutationUpdateAttributeInGroupArgs = {
 
 export type MutationDeleteAttributeFromGroupArgs = {
   input: DeleteAttributeFromGroupInput;
-};
-
-
-export type MutationSetLanguageAsDefaultArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationCreateLanguageArgs = {
-  input: CreateLanguageInput;
-};
-
-
-export type MutationUpdateLanguageArgs = {
-  input: UpdateLanguageInput;
-};
-
-
-export type MutationDeleteLanguageArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -1074,28 +933,365 @@ export type MutationDeleteRubricVariantArgs = {
 };
 
 
-export type MutationCreateUserArgs = {
-  input: CreateUserInput;
+export type MutationUpdateConfigsArgs = {
+  input: Array<UpdateConfigInput>;
 };
 
 
-export type MutationUpdateUserArgs = {
-  input: UpdateUserInput;
+export type MutationUpdateAssetConfigArgs = {
+  input: UpdateAssetConfigInput;
+};
+
+export type ProductPayloadType = {
+   __typename?: 'ProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<Product>;
+};
+
+export type CreateProductInput = {
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
+export type LangInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type ProductAttributesGroupInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  attributes: Array<ProductAttributeInput>;
+};
+
+export type ProductAttributeInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 
-export type MutationDeleteUserArgs = {
+export type UpdateProductInput = {
   id: Scalars['ID'];
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
 };
 
-
-export type MutationSignUpArgs = {
-  input: SignUpInput;
+export type UserPayloadType = {
+   __typename?: 'UserPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  user?: Maybe<User>;
 };
 
+export type CreateUserInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
+  role?: Maybe<Scalars['String']>;
+};
 
-export type MutationSignInArgs = {
-  input: SignInInput;
+export type UpdateUserInput = {
+  id: Scalars['ID'];
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
+  role: Scalars['String'];
+};
+
+export type SignUpInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  password: Scalars['String'];
+};
+
+export type SignInInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type CountryPayloadType = {
+   __typename?: 'CountryPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  country?: Maybe<Country>;
+};
+
+export type CreateCountryInput = {
+  nameString: Scalars['String'];
+  currency: Scalars['String'];
+};
+
+export type UpdateCountryInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  currency: Scalars['String'];
+};
+
+export type AddCityToCountryInput = {
+  countryId: Scalars['ID'];
+  name: Array<LangInput>;
+  key: Scalars['String'];
+};
+
+export type UpdateCityInCountryInput = {
+  countryId: Scalars['ID'];
+  cityId: Scalars['ID'];
+  name: Array<LangInput>;
+  key: Scalars['String'];
+};
+
+export type DeleteCityFromCountryInput = {
+  countryId: Scalars['ID'];
+  cityId: Scalars['ID'];
+};
+
+export type LanguagePayloadType = {
+   __typename?: 'LanguagePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  language?: Maybe<Language>;
+};
+
+export type CreateLanguageInput = {
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type UpdateLanguageInput = {
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type CurrencyPayloadType = {
+   __typename?: 'CurrencyPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  currency?: Maybe<Currency>;
+};
+
+export type CreateCurrencyInput = {
+  nameString: Scalars['String'];
+};
+
+export type UpdateCurrencyInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type AttributesGroupPayloadType = {
+   __typename?: 'AttributesGroupPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  group?: Maybe<AttributesGroup>;
+};
+
+export type CreateAttributesGroupInput = {
+  name: Array<LangInput>;
+};
+
+export type UpdateAttributesGroupInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+};
+
+export type AddAttributeToGroupInput = {
+  groupId: Scalars['ID'];
+  name: Array<LangInput>;
+  variant: AttributeVariantEnum;
+  options?: Maybe<Scalars['ID']>;
+  metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
+};
+
+export type AttributePositioningInTitleInput = {
+  key: Scalars['String'];
+  value: AttributePositionInTitleEnum;
+};
+
+export type UpdateAttributeInGroupInput = {
+  groupId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+  name: Array<LangInput>;
+  variant: AttributeVariantEnum;
+  options?: Maybe<Scalars['ID']>;
+  metric?: Maybe<Scalars['ID']>;
+  positioningInTitle?: Maybe<Array<AttributePositioningInTitleInput>>;
+};
+
+export type DeleteAttributeFromGroupInput = {
+  groupId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+};
+
+export type MetricPayloadType = {
+   __typename?: 'MetricPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  metric?: Maybe<Metric>;
+};
+
+export type CreateMetricInput = {
+  name: Array<LangInput>;
+};
+
+export type UpdateMetricInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+};
+
+export type OptionsGroupPayloadType = {
+   __typename?: 'OptionsGroupPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  group?: Maybe<OptionsGroup>;
+};
+
+export type CreateOptionsGroupInput = {
+  name: Array<LangInput>;
+};
+
+export type UpdateOptionsGroupInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+};
+
+export type AddOptionToGroupInput = {
+  groupId: Scalars['ID'];
+  name: Array<LangInput>;
+  color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
+};
+
+export type OptionVariantInput = {
+  key: GenderEnum;
+  value: Array<LangInput>;
+};
+
+export type UpdateOptionInGroupInput = {
+  groupId: Scalars['ID'];
+  optionId: Scalars['ID'];
+  name: Array<LangInput>;
+  color?: Maybe<Scalars['String']>;
+  variants?: Maybe<Array<OptionVariantInput>>;
+  gender?: Maybe<GenderEnum>;
+};
+
+export type DeleteOptionFromGroupInput = {
+  groupId: Scalars['ID'];
+  optionId: Scalars['ID'];
+};
+
+export type RubricPayloadType = {
+   __typename?: 'RubricPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  rubric?: Maybe<Rubric>;
+};
+
+export type CreateRubricInput = {
+  name: Array<LangInput>;
+  parent?: Maybe<Scalars['ID']>;
+  variant: Scalars['ID'];
+  catalogueTitle: RubricCatalogueTitleInput;
+};
+
+export type RubricCatalogueTitleInput = {
+  defaultTitle: Array<LangInput>;
+  prefix?: Maybe<Array<LangInput>>;
+  keyword: Array<LangInput>;
+  gender: GenderEnum;
+};
+
+export type UpdateRubricInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  catalogueTitle: RubricCatalogueTitleInput;
+  parent?: Maybe<Scalars['ID']>;
+  variant: Scalars['ID'];
+};
+
+export type AddAttributesGroupToRubricInput = {
+  rubricId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+};
+
+export type UpdateAttributesGroupInRubricInput = {
+  rubricId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+};
+
+export type DeleteAttributesGroupFromRubricInput = {
+  rubricId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+};
+
+export type AddProductToRubricInput = {
+  rubricId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
+export type DeleteProductFromRubricInput = {
+  rubricId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
+export type RubricVariantPayloadType = {
+   __typename?: 'RubricVariantPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  variant?: Maybe<RubricVariant>;
+};
+
+export type CreateRubricVariantInput = {
+  name: Array<LangInput>;
+};
+
+export type UpdateRubricVariantInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+};
+
+export type ConfigPayloadType = {
+   __typename?: 'ConfigPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  configs: Array<Config>;
+};
+
+export type UpdateConfigInput = {
+  id: Scalars['ID'];
+  value: Array<Scalars['String']>;
+};
+
+export type UpdateAssetConfigInput = {
+  id: Scalars['ID'];
+  value: Array<Scalars['Upload']>;
 };
 
 export type CreateAttributesGroupMutationVariables = {
@@ -1655,7 +1851,10 @@ export type InitialQuery = (
   )>, getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
     & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
-  )>> }
+  )>>, getAllConfigs: Array<(
+    { __typename?: 'Config' }
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+  )> }
 );
 
 export type SiteRubricFragmentFragment = (
@@ -1679,7 +1878,10 @@ export type InitialSiteQueryQuery = (
   )>, getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
     & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
-  )>>, getRubricsTree: Array<(
+  )>>, getAllConfigs: Array<(
+    { __typename?: 'Config' }
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+  )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & { children: Array<(
       { __typename?: 'Rubric' }
@@ -3407,6 +3609,14 @@ export const InitialDocument = gql`
     key
     isDefault
   }
+  getAllConfigs {
+    id
+    slug
+    value
+    nameString
+    description
+    variant
+  }
 }
     `;
 
@@ -3457,6 +3667,14 @@ export const InitialSiteQueryDocument = gql`
     name
     nativeName
     isDefault
+  }
+  getAllConfigs {
+    id
+    slug
+    value
+    nameString
+    description
+    variant
   }
   getRubricsTree {
     ...SiteRubricFragment

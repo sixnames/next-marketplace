@@ -21,6 +21,7 @@ import createTestData from './utils/testUtils/createTestData';
 import clearTestData from './utils/testUtils/clearTestData';
 import cookie from 'cookie';
 import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import { attemptSignIn } from './utils/auth';
 import { LanguageModel } from './entities/Language';
@@ -145,7 +146,20 @@ const createApp = async (): Promise<CreateAppInterface> => {
     const widthString = (req.query.width as string) || undefined;
     const heightString = (req.query.height as string) || undefined;
     const format = (req.query.format as string) || 'webp';
-    const path = req.path;
+    let filePath = req.path;
+
+    if (format === 'svg') {
+      filePath = path.resolve(`.${req.path}`);
+      const stat = fs.statSync(filePath);
+      res.writeHead(200, {
+        'Content-Type': 'image/svg+xml',
+        'Content-Length': stat.size,
+      });
+
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+      return;
+    }
 
     // Parse to integer if possible
     let width, height;
@@ -160,7 +174,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     res.type(`image/${format}`);
 
     // Get the processed image
-    const file = await getSharpImage({ path, format, width, height });
+    const file = await getSharpImage({ path: filePath, format, width, height });
 
     if (file) {
       file.pipe(res);

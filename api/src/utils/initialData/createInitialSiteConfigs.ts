@@ -3,6 +3,7 @@ import { Config, ConfigModel, ConfigVariantEnum } from '../../entities/Config';
 import {
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
+  SITE_CONFIGS_LOGO_DARK,
   SITE_CONFIGS_LOGO_ICON,
   SITE_CONFIGS_LOGO_NAME,
   SITE_CONFIGS_PREVIEW_IMAGE,
@@ -88,39 +89,48 @@ export async function createInitialSiteConfigs(): Promise<boolean> {
   try {
     await storeConfigWithAsset({
       sourceImage: './site-config/logo.svg',
-      slug: 'logo',
+      slug: SITE_CONFIGS_LOGO.slug,
+      format: 'svg',
       configTemplate: {
         ...SITE_CONFIGS_LOGO,
         variant: SITE_CONFIGS_LOGO.variant as ConfigVariantEnum,
       },
+    });
+    await storeConfigWithAsset({
+      sourceImage: './site-config/logo-dark.svg',
+      slug: SITE_CONFIGS_LOGO_DARK.slug,
       format: 'svg',
+      configTemplate: {
+        ...SITE_CONFIGS_LOGO_DARK,
+        variant: SITE_CONFIGS_LOGO_DARK.variant as ConfigVariantEnum,
+      },
     });
     await storeConfigWithAsset({
       sourceImage: './site-config/logo-icon.svg',
-      slug: 'logo-icon',
+      slug: SITE_CONFIGS_LOGO_ICON.slug,
+      format: 'svg',
       configTemplate: {
         ...SITE_CONFIGS_LOGO_ICON,
         variant: SITE_CONFIGS_LOGO_ICON.variant as ConfigVariantEnum,
       },
-      format: 'svg',
     });
     await storeConfigWithAsset({
       sourceImage: './site-config/logo-name.svg',
-      slug: 'logo-name',
+      slug: SITE_CONFIGS_LOGO_NAME.slug,
+      format: 'svg',
       configTemplate: {
         ...SITE_CONFIGS_LOGO_NAME,
         variant: SITE_CONFIGS_LOGO_NAME.variant as ConfigVariantEnum,
       },
-      format: 'svg',
     });
     await storeConfigWithAsset({
       sourceImage: './site-config/og-image.jpg',
-      slug: 'og-image',
+      slug: SITE_CONFIGS_PREVIEW_IMAGE.slug,
+      format: 'jpg',
       configTemplate: {
         ...SITE_CONFIGS_PREVIEW_IMAGE,
         variant: SITE_CONFIGS_PREVIEW_IMAGE.variant as ConfigVariantEnum,
       },
-      format: 'jpg',
     });
 
     await createManyConfigs(

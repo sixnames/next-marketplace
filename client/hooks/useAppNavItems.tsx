@@ -53,6 +53,12 @@ const useAppNavItems = (): NavItemInterface[] => {
           pathname: `${ROUTE_CMS}/languages`,
         },
       },
+      {
+        name: 'Настройки сайта',
+        path: {
+          pathname: `${ROUTE_CMS}/config`,
+        },
+      },
     ],
   };
 

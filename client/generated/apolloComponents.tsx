@@ -1839,6 +1839,17 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type GetAllConfigsQueryVariables = {};
+
+
+export type GetAllConfigsQuery = (
+  { __typename?: 'Query' }
+  & { getAllConfigs: Array<(
+    { __typename?: 'Config' }
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+  )> }
+);
+
 export type InitialQueryVariables = {};
 
 
@@ -1895,10 +1906,10 @@ export type InitialSiteQueryQuery = (
   )> }
 );
 
-export type GetAllLanguagesQueryQueryVariables = {};
+export type GetAllLanguagesQueryVariables = {};
 
 
-export type GetAllLanguagesQueryQuery = (
+export type GetAllLanguagesQuery = (
   { __typename?: 'Query' }
   & { getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
@@ -3585,6 +3596,43 @@ export function useGetCatalogueRubricLazyQuery(baseOptions?: ApolloReactHooks.La
 export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
 export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
 export type GetCatalogueRubricQueryResult = ApolloReactCommon.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const GetAllConfigsDocument = gql`
+    query GetAllConfigs {
+  getAllConfigs {
+    id
+    slug
+    value
+    nameString
+    description
+    variant
+  }
+}
+    `;
+
+/**
+ * __useGetAllConfigsQuery__
+ *
+ * To run a query within a React component, call `useGetAllConfigsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllConfigsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllConfigsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllConfigsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllConfigsQuery, GetAllConfigsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllConfigsQuery, GetAllConfigsQueryVariables>(GetAllConfigsDocument, baseOptions);
+      }
+export function useGetAllConfigsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllConfigsQuery, GetAllConfigsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllConfigsQuery, GetAllConfigsQueryVariables>(GetAllConfigsDocument, baseOptions);
+        }
+export type GetAllConfigsQueryHookResult = ReturnType<typeof useGetAllConfigsQuery>;
+export type GetAllConfigsLazyQueryHookResult = ReturnType<typeof useGetAllConfigsLazyQuery>;
+export type GetAllConfigsQueryResult = ApolloReactCommon.QueryResult<GetAllConfigsQuery, GetAllConfigsQueryVariables>;
 export const InitialDocument = gql`
     query Initial {
   me {
@@ -3712,8 +3760,8 @@ export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
 export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
 export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
-export const GetAllLanguagesQueryDocument = gql`
-    query GetAllLanguagesQuery {
+export const GetAllLanguagesDocument = gql`
+    query GetAllLanguages {
   getAllLanguages {
     id
     name
@@ -3725,29 +3773,29 @@ export const GetAllLanguagesQueryDocument = gql`
     `;
 
 /**
- * __useGetAllLanguagesQueryQuery__
+ * __useGetAllLanguagesQuery__
  *
- * To run a query within a React component, call `useGetAllLanguagesQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllLanguagesQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllLanguagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllLanguagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAllLanguagesQueryQuery({
+ * const { data, loading, error } = useGetAllLanguagesQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetAllLanguagesQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+export function useGetAllLanguagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllLanguagesQuery, GetAllLanguagesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllLanguagesQuery, GetAllLanguagesQueryVariables>(GetAllLanguagesDocument, baseOptions);
       }
-export function useGetAllLanguagesQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>(GetAllLanguagesQueryDocument, baseOptions);
+export function useGetAllLanguagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllLanguagesQuery, GetAllLanguagesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllLanguagesQuery, GetAllLanguagesQueryVariables>(GetAllLanguagesDocument, baseOptions);
         }
-export type GetAllLanguagesQueryQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryQuery>;
-export type GetAllLanguagesQueryLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesQueryLazyQuery>;
-export type GetAllLanguagesQueryQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQueryQuery, GetAllLanguagesQueryQueryVariables>;
+export type GetAllLanguagesQueryHookResult = ReturnType<typeof useGetAllLanguagesQuery>;
+export type GetAllLanguagesLazyQueryHookResult = ReturnType<typeof useGetAllLanguagesLazyQuery>;
+export type GetAllLanguagesQueryResult = ApolloReactCommon.QueryResult<GetAllLanguagesQuery, GetAllLanguagesQueryVariables>;
 export const GetMessagesByKeysDocument = gql`
     query GetMessagesByKeys($keys: [String!]!) {
   getMessagesByKeys(keys: $keys) {

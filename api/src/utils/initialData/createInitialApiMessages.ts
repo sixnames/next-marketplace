@@ -13,6 +13,7 @@ import commonMessages from '../../config/apiMessages/commonMessages';
 import currenciesMessages from '../../config/apiMessages/currenciesMessages';
 import citiesMessages from '../../config/apiMessages/citiesMessages';
 import countriesMessages from '../../config/apiMessages/countriesMessages';
+import configsMessages from '../../config/apiMessages/configsMessages';
 
 interface MessageInterface {
   key: string;
@@ -36,6 +37,7 @@ async function createInitialApiMessagesGroup({ name, messages }: CreateInitialAp
 async function createInitialApiMessages() {
   const config = [
     { name: 'Общее', messages: commonMessages },
+    { name: 'Настройки сайта', messages: configsMessages },
     { name: 'Валюта', messages: currenciesMessages },
     { name: 'Языки', messages: languagesMessages },
     { name: 'Города', messages: citiesMessages },

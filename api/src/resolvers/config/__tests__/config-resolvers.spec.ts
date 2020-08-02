@@ -103,11 +103,41 @@ describe('Config', () => {
     const updatedAssetConfig = updateAssetConfig.configs.find(
       ({ slug }: any) => slug === getConfigBySlug.slug,
     );
+
     expect(updateAssetConfig.success).toBeTruthy();
     expect(updatedAssetConfig.value).toEqual([
       '/assets/config/siteLogo/siteLogo-0.svg',
       '/assets/config/siteLogo/siteLogo-1.svg',
     ]);
+
+    // Shouldn't update non asset configs on validation error
+    const {
+      data: { updateConfigs: updateConfigsValidationError },
+    } = await mutate(
+      `
+      mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
+        updateConfigs(input: $input) {
+          success
+          message
+          configs {
+            id
+            nameString
+            value
+            slug
+          }
+        }
+      }
+      `,
+      {
+        variables: {
+          input: getAllConfigs.map(({ id }: any) => ({
+            id,
+            value: [],
+          })),
+        },
+      },
+    );
+    expect(updateConfigsValidationError.success).toBeFalsy();
 
     // Should update non asset configs
     const {

@@ -1,4 +1,4 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Config, ConfigModel } from '../../entities/Config';
 import { UpdateConfigInput } from './UpdateConfigInput';
 import PayloadType from '../common/PayloadType';
@@ -6,6 +6,10 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
+import { ContextInterface } from '../../types/context';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { updateAssetConfigSchema, updateConfigsSchema } from '../../validation/configSchema';
+import getApiMessage from '../../utils/translations/getApiMessage';
 
 @ObjectType()
 class ConfigPayloadType extends PayloadType() {
@@ -44,16 +48,24 @@ export class ConfigResolver {
 
   @Mutation((_returns) => ConfigPayloadType)
   async updateConfigs(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => [UpdateConfigInput]) input: UpdateConfigInput[],
   ): Promise<ConfigPayloadType> {
     try {
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.configs.id',
+        'validation.configs.value',
+      ]);
+      await updateConfigsSchema({ lang, messages }).validate(input);
+
       for await (const { id, value } of input) {
         await ConfigModel.findByIdAndUpdate(id, { value });
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ lang, key: 'configs.update.success' }),
         configs: await ConfigModel.find({}),
       };
     } catch (e) {
@@ -67,16 +79,26 @@ export class ConfigResolver {
 
   @Mutation((_returns) => ConfigPayloadType)
   async updateAssetConfig(
+    @Ctx() ctx: ContextInterface,
     @Arg('input', (_type) => UpdateAssetConfigInput) input: UpdateAssetConfigInput,
   ): Promise<ConfigPayloadType> {
     try {
+      const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'configs.updateAsset.error',
+        'configs.updateAsset.success',
+        'validation.configs.id',
+        'validation.configs.value',
+      ]);
+      await updateAssetConfigSchema({ lang, messages }).validate(input);
+
       const { id, value } = input;
       const config = await ConfigModel.findById(id);
 
       if (!config) {
         return {
           success: false,
-          message: 'notFound',
+          message: await getApiMessage({ lang, key: 'configs.updateAsset.notFound' }),
           configs: await ConfigModel.find({}),
         };
       }
@@ -98,14 +120,14 @@ export class ConfigResolver {
       if (!updatedConfig) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage({ lang, key: 'configs.updateAsset.error' }),
           configs: await ConfigModel.find({}),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ lang, key: 'configs.updateAsset.success' }),
         configs: await ConfigModel.find({}),
       };
     } catch (e) {

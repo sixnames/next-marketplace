@@ -12,9 +12,21 @@ import TTip from '../../TTip/TTip';
 
 interface FormikConfigInputInterface extends FormikInputPropsInterface {
   description?: string;
+  onRemoveHandler?: (values: any) => void;
+  index: number;
+  values: {
+    inputs: any[];
+  };
 }
 
-const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ label, name, description }) => {
+const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({
+  label,
+  name,
+  description,
+  onRemoveHandler,
+  values,
+  index,
+}) => {
   const { showModal } = useAppContext();
   const [field, meta, { setValue }] = useField(name);
 
@@ -25,17 +37,30 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ label, name, 
     });
   }
 
-  function removeFieldHandler(index: number) {
+  function removeFieldHandler(removeIndex: number) {
     showModal<ConfirmModalInterface>({
       type: CONFIRM_MODAL,
       props: {
         testId: 'remove-field-modal',
         message: 'Вы уверены, что хотите удалить поле настройки?',
         confirm: () => {
-          setValue({
-            ...meta.value,
-            value: meta.value.value.filter((_: string, fieldIndex: number) => fieldIndex !== index),
-          });
+          const newValue = meta.value.value.filter(
+            (_: string, fieldIndex: number) => fieldIndex !== removeIndex,
+          );
+
+          if (onRemoveHandler) {
+            onRemoveHandler({
+              inputs: values.inputs.map((input, inputIndex) => {
+                if (inputIndex === index) {
+                  return {
+                    ...input,
+                    value: newValue,
+                  };
+                }
+                return input;
+              }),
+            });
+          }
         },
       },
     });

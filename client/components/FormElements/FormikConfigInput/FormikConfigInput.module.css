@@ -1,0 +1,71 @@
+.frame {
+  margin-bottom: var(--lineGap);
+}
+
+.label {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--textSecondaryColor);
+}
+
+.label > span {
+  flex: 1;
+}
+
+.inputsHolder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inputsHolderWithGap {
+  margin-top: var(--lineGap);
+}
+
+.input {
+  width: calc(100% - 40px);
+}
+
+.inputControl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 40px;
+}
+
+.description {
+  display: inline-block;
+  cursor: pointer;
+  width: 2rem;
+}
+
+.description svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media only screen and (min-width: 769px) {
+  .frame {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .frame .label {
+    width: 220px;
+    padding-top: 0.3rem;
+    white-space: unset;
+    text-overflow: unset;
+    text-align: right;
+  }
+
+  .frame .holder {
+    width: calc(100% - 235px);
+  }
+}

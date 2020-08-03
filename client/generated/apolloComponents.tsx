@@ -1439,6 +1439,32 @@ export type SignOutMutation = (
   ) }
 );
 
+export type UpdateConfigsMutationVariables = {
+  input: Array<UpdateConfigInput>;
+};
+
+
+export type UpdateConfigsMutation = (
+  { __typename?: 'Mutation' }
+  & { updateConfigs: (
+    { __typename?: 'ConfigPayloadType' }
+    & Pick<ConfigPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateAssetConfigMutationVariables = {
+  input: UpdateAssetConfigInput;
+};
+
+
+export type UpdateAssetConfigMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAssetConfig: (
+    { __typename?: 'ConfigPayloadType' }
+    & Pick<ConfigPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type CreateLanguageMutationVariables = {
   input: CreateLanguageInput;
 };
@@ -2772,6 +2798,72 @@ export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOp
 export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
 export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
 export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
+export const UpdateConfigsDocument = gql`
+    mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
+  updateConfigs(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateConfigsMutationFn = ApolloReactCommon.MutationFunction<UpdateConfigsMutation, UpdateConfigsMutationVariables>;
+
+/**
+ * __useUpdateConfigsMutation__
+ *
+ * To run a mutation, you first call `useUpdateConfigsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateConfigsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateConfigsMutation, { data, loading, error }] = useUpdateConfigsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateConfigsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateConfigsMutation, UpdateConfigsMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateConfigsMutation, UpdateConfigsMutationVariables>(UpdateConfigsDocument, baseOptions);
+      }
+export type UpdateConfigsMutationHookResult = ReturnType<typeof useUpdateConfigsMutation>;
+export type UpdateConfigsMutationResult = ApolloReactCommon.MutationResult<UpdateConfigsMutation>;
+export type UpdateConfigsMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateConfigsMutation, UpdateConfigsMutationVariables>;
+export const UpdateAssetConfigDocument = gql`
+    mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
+  updateAssetConfig(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateAssetConfigMutationFn = ApolloReactCommon.MutationFunction<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
+
+/**
+ * __useUpdateAssetConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateAssetConfigMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAssetConfigMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAssetConfigMutation, { data, loading, error }] = useUpdateAssetConfigMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAssetConfigMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>(UpdateAssetConfigDocument, baseOptions);
+      }
+export type UpdateAssetConfigMutationHookResult = ReturnType<typeof useUpdateAssetConfigMutation>;
+export type UpdateAssetConfigMutationResult = ApolloReactCommon.MutationResult<UpdateAssetConfigMutation>;
+export type UpdateAssetConfigMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAssetConfigMutation, UpdateAssetConfigMutationVariables>;
 export const CreateLanguageDocument = gql`
     mutation CreateLanguage($input: CreateLanguageInput!) {
   createLanguage(input: $input) {

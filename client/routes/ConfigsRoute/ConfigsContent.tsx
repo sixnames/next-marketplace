@@ -1,16 +1,28 @@
 import React from 'react';
-import { useGetAllConfigsQuery } from '../../generated/apolloComponents';
+import { useGetAllConfigsQuery, useUpdateConfigsMutation } from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
-import { CONFIG_VARIANT_ASSET } from '../../config';
+import { CONFIG_VARIANT_ASSET, IS_BROWSER } from '../../config';
 import InnerWide from '../../components/Inner/InnerWide';
 import FormikConfigInput from '../../components/FormElements/FormikConfigInput/FormikConfigInput';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateConfigsClientSchema } from '../../validation/configSchema';
+import Button from '../../components/Buttons/Button';
+import classes from './ConfigsContent.module.css';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 
 const ConfigsContent: React.FC = () => {
   const { data, loading, error } = useGetAllConfigsQuery();
+  const { onErrorCallback } = useMutationCallbacks({});
+  const [updateConfigsMutation] = useUpdateConfigsMutation({
+    onError: onErrorCallback,
+    onCompleted: () => {
+      if (IS_BROWSER) {
+        window.location.reload();
+      }
+    },
+  });
   const notAssetSchema = useValidationSchema({
     schema: updateConfigsClientSchema,
     messagesKeys: ['validation.configs.id', 'validation.configs.value'],
@@ -29,8 +41,16 @@ const ConfigsContent: React.FC = () => {
       <Formik
         validationSchema={notAssetSchema}
         initialValues={{ inputs: notAssetConfigs }}
-        onSubmit={(values) => {
-          console.log(values);
+        onSubmit={({ inputs }) => {
+          const mutationInput = inputs.map(({ id, value }) => ({
+            id,
+            value,
+          }));
+          return updateConfigsMutation({
+            variables: {
+              input: mutationInput,
+            },
+          });
         }}
       >
         {({ values }) => {
@@ -46,6 +66,10 @@ const ConfigsContent: React.FC = () => {
                   />
                 );
               })}
+
+              <div className={classes.buttons}>
+                <Button type={'submit'}>Сохранить настройки</Button>
+              </div>
             </Form>
           );
         }}

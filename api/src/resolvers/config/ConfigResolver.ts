@@ -17,11 +17,13 @@ class ConfigPayloadType extends PayloadType() {
   configs: Config[];
 }
 
+const configsSortOrder = { order: 1 };
+
 @Resolver((_for) => Config)
 export class ConfigResolver {
   @Query((_returns) => [Config])
   async getAllConfigs(): Promise<Config[]> {
-    return ConfigModel.find({});
+    return ConfigModel.find({}).sort(configsSortOrder);
   }
 
   @Query((_returns) => Config)
@@ -66,13 +68,13 @@ export class ConfigResolver {
       return {
         success: true,
         message: await getApiMessage({ lang, key: 'configs.update.success' }),
-        configs: await ConfigModel.find({}),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     } catch (e) {
       return {
         success: false,
         message: getResolverErrorMessage(e),
-        configs: await ConfigModel.find({}),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     }
   }
@@ -99,7 +101,7 @@ export class ConfigResolver {
         return {
           success: false,
           message: await getApiMessage({ lang, key: 'configs.updateAsset.notFound' }),
-          configs: await ConfigModel.find({}),
+          configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
 
@@ -121,20 +123,20 @@ export class ConfigResolver {
         return {
           success: false,
           message: await getApiMessage({ lang, key: 'configs.updateAsset.error' }),
-          configs: await ConfigModel.find({}),
+          configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
 
       return {
         success: true,
         message: await getApiMessage({ lang, key: 'configs.updateAsset.success' }),
-        configs: await ConfigModel.find({}),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     } catch (e) {
       return {
         success: false,
         message: getResolverErrorMessage(e),
-        configs: await ConfigModel.find({}),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     }
   }

@@ -68,7 +68,9 @@ const ConfigsContent: React.FC = () => {
               })}
 
               <div className={classes.buttons}>
-                <Button type={'submit'}>Сохранить настройки</Button>
+                <Button type={'submit'} testId={'site-configs-submit'}>
+                  Сохранить настройки
+                </Button>
               </div>
             </Form>
           );

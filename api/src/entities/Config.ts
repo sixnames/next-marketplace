@@ -32,6 +32,10 @@ export class Config {
   @prop({ type: String })
   description: string;
 
+  @Field((_type) => Number)
+  @prop({ type: Number })
+  order: number;
+
   @Field((_type) => ConfigVariantEnum)
   @prop({ required: true, enum: CONFIG_VARIANTS_ENUMS })
   variant: ConfigVariantEnum;

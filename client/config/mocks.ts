@@ -960,24 +960,28 @@ export const SITE_CONFIGS_LOGO = {
   nameString: 'Логотип сайта для тёмной темы',
   description: 'Полное изображение логотипа в формате SVG',
   variant: 'asset',
+  order: 1,
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
   nameString: 'Логотип сайта для светлой темы',
   description: 'Полное изображение логотипа в формате SVG',
   variant: 'asset',
+  order: 2,
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
   nameString: 'Иконка логотипа сайта',
   description: 'Иконка логотипа в формате SVG',
   variant: 'asset',
+  order: 3,
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
   nameString: 'Текст логотипа сайта',
   description: 'Текст логотипа в формате SVG',
   variant: 'asset',
+  order: 4,
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -985,6 +989,7 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   description:
     'Данное поле будет добавлено в атрибуты og:image и twitter:image если страница не имеет таковых. Нужно для корректного отображения ссылки при отправке в соцсетях и чатах.',
   variant: 'asset',
+  order: 5,
 };
 
 export const SITE_CONFIGS_INITIAL = [
@@ -994,6 +999,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: '',
     variant: 'string',
     value: ['Site'],
+    order: 6,
   },
   {
     slug: 'contactEmail',
@@ -1001,6 +1007,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: 'Контактный Email. Можно добавить несколько.',
     variant: 'email',
     value: ['email@email.com'],
+    order: 7,
   },
   {
     slug: 'contactPhone',
@@ -1008,6 +1015,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: 'Контактный телефон. Можно добавить несколько.',
     variant: 'tel',
     value: ['+79998887766'],
+    order: 8,
   },
   {
     slug: 'siteFoundationYear',
@@ -1015,6 +1023,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: '',
     variant: 'number',
     value: ['2020'],
+    order: 9,
   },
   {
     slug: 'pageDefaultTitle',
@@ -1022,6 +1031,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
     variant: 'string',
     value: ['Page default title'],
+    order: 10,
   },
   {
     slug: 'pageDefaultDescription',
@@ -1030,6 +1040,7 @@ export const SITE_CONFIGS_INITIAL = [
       'Данное поле будет добавлено в атрибут description если страница не имеет такового',
     variant: 'string',
     value: ['Page default description'],
+    order: 11,
   },
   {
     slug: 'siteThemeColor',
@@ -1037,6 +1048,7 @@ export const SITE_CONFIGS_INITIAL = [
     description: 'Данный цвет будет использован для акцента ключевых элементов сайта.',
     variant: 'string',
     value: ['#DB5360'],
+    order: 12,
   },
 ];
 export const SITE_CONFIGS_All = [

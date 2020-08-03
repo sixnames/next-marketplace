@@ -128,6 +128,7 @@ type Config {
   description: String!
   id: ID!
   nameString: String!
+  order: Float!
   slug: String!
   value: [String!]!
   variant: ConfigVariantEnum!

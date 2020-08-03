@@ -93,23 +93,25 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({
                 <FormikInput name={fieldName} testId={fieldName} low />
               </div>
 
-              <div className={classes.inputControl}>
-                {isFirst ? (
-                  <Button
-                    onClick={addFieldHandler}
-                    size={'small'}
-                    theme={'gray'}
-                    icon={'Add'}
-                    testId={`${fieldName}-add`}
-                    circle
-                  />
-                ) : (
-                  <ButtonCross
-                    testId={`${fieldName}-remove`}
-                    onClick={() => removeFieldHandler(index)}
-                  />
-                )}
-              </div>
+              {field.value.multi && (
+                <div className={classes.inputControl}>
+                  {isFirst ? (
+                    <Button
+                      onClick={addFieldHandler}
+                      size={'small'}
+                      theme={'gray'}
+                      icon={'Add'}
+                      testId={`${fieldName}-add`}
+                      circle
+                    />
+                  ) : (
+                    <ButtonCross
+                      testId={`${fieldName}-remove`}
+                      onClick={() => removeFieldHandler(index)}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           );
         })}

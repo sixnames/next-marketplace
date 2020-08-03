@@ -31,6 +31,7 @@ export const INITIAL_QUERY = gql`
       nameString
       description
       variant
+      multi
     }
   }
 `;
@@ -79,6 +80,7 @@ export const INITIAL_SITE_QUERY = gql`
       nameString
       description
       variant
+      multi
     }
     getRubricsTree {
       ...SiteRubricFragment

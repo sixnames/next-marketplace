@@ -127,6 +127,7 @@ type City {
 type Config {
   description: String!
   id: ID!
+  multi: Boolean!
   nameString: String!
   order: Float!
   slug: String!

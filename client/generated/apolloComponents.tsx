@@ -630,6 +630,8 @@ export type Config = {
   slug: Scalars['String'];
   nameString: Scalars['String'];
   description: Scalars['String'];
+  order: Scalars['Float'];
+  multi: Scalars['Boolean'];
   variant: ConfigVariantEnum;
   value: Array<Scalars['String']>;
 };
@@ -1890,7 +1892,7 @@ export type InitialQuery = (
     & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi'>
   )> }
 );
 
@@ -1917,7 +1919,7 @@ export type InitialSiteQueryQuery = (
     & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi'>
   )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & { children: Array<(
@@ -3756,6 +3758,7 @@ export const InitialDocument = gql`
     nameString
     description
     variant
+    multi
   }
 }
     `;
@@ -3815,6 +3818,7 @@ export const InitialSiteQueryDocument = gql`
     nameString
     description
     variant
+    multi
   }
   getRubricsTree {
     ...SiteRubricFragment

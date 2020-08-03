@@ -961,6 +961,7 @@ export const SITE_CONFIGS_LOGO = {
   description: 'Полное изображение логотипа в формате SVG',
   variant: 'asset',
   order: 1,
+  multi: false,
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
@@ -968,6 +969,7 @@ export const SITE_CONFIGS_LOGO_DARK = {
   description: 'Полное изображение логотипа в формате SVG',
   variant: 'asset',
   order: 2,
+  multi: false,
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
@@ -975,6 +977,7 @@ export const SITE_CONFIGS_LOGO_ICON = {
   description: 'Иконка логотипа в формате SVG',
   variant: 'asset',
   order: 3,
+  multi: false,
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
@@ -982,6 +985,7 @@ export const SITE_CONFIGS_LOGO_NAME = {
   description: 'Текст логотипа в формате SVG',
   variant: 'asset',
   order: 4,
+  multi: false,
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -990,6 +994,7 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
     'Данное поле будет добавлено в атрибуты og:image и twitter:image если страница не имеет таковых. Нужно для корректного отображения ссылки при отправке в соцсетях и чатах.',
   variant: 'asset',
   order: 5,
+  multi: false,
 };
 
 export const SITE_CONFIGS_INITIAL = [
@@ -1000,6 +1005,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     value: ['Site'],
     order: 6,
+    multi: false,
   },
   {
     slug: 'contactEmail',
@@ -1008,6 +1014,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'email',
     value: ['email@email.com'],
     order: 7,
+    multi: true,
   },
   {
     slug: 'contactPhone',
@@ -1016,6 +1023,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'tel',
     value: ['+79998887766'],
     order: 8,
+    multi: true,
   },
   {
     slug: 'siteFoundationYear',
@@ -1024,6 +1032,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'number',
     value: ['2020'],
     order: 9,
+    multi: false,
   },
   {
     slug: 'pageDefaultTitle',
@@ -1032,6 +1041,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     value: ['Page default title'],
     order: 10,
+    multi: false,
   },
   {
     slug: 'pageDefaultDescription',
@@ -1041,6 +1051,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     value: ['Page default description'],
     order: 11,
+    multi: false,
   },
   {
     slug: 'siteThemeColor',
@@ -1049,6 +1060,7 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     value: ['#DB5360'],
     order: 12,
+    multi: false,
   },
 ];
 export const SITE_CONFIGS_All = [

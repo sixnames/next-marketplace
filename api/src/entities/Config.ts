@@ -36,6 +36,10 @@ export class Config {
   @prop({ type: Number })
   order: number;
 
+  @Field((_type) => Boolean)
+  @prop({ type: Boolean })
+  multi: boolean;
+
   @Field((_type) => ConfigVariantEnum)
   @prop({ required: true, enum: CONFIG_VARIANTS_ENUMS })
   variant: ConfigVariantEnum;

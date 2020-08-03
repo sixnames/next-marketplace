@@ -1011,6 +1011,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['Site'],
     order: 6,
     multi: false,
+    acceptedFormats: [],
   },
   {
     slug: 'contactEmail',
@@ -1020,6 +1021,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['email@email.com'],
     order: 7,
     multi: true,
+    acceptedFormats: [],
   },
   {
     slug: 'contactPhone',
@@ -1029,6 +1031,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['+79998887766'],
     order: 8,
     multi: true,
+    acceptedFormats: [],
   },
   {
     slug: 'siteFoundationYear',
@@ -1038,6 +1041,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['2020'],
     order: 9,
     multi: false,
+    acceptedFormats: [],
   },
   {
     slug: 'pageDefaultTitle',
@@ -1047,6 +1051,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['Page default title'],
     order: 10,
     multi: false,
+    acceptedFormats: [],
   },
   {
     slug: 'pageDefaultDescription',
@@ -1057,6 +1062,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['Page default description'],
     order: 11,
     multi: false,
+    acceptedFormats: [],
   },
   {
     slug: 'siteThemeColor',
@@ -1066,6 +1072,7 @@ export const SITE_CONFIGS_INITIAL = [
     value: ['#DB5360'],
     order: 12,
     multi: false,
+    acceptedFormats: [],
   },
 ];
 export const SITE_CONFIGS_All = [

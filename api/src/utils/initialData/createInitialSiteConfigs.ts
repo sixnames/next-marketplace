@@ -16,7 +16,10 @@ function sendErrorCode(error: string) {
 }
 
 interface StoreConfigWithAssetInterface {
-  configTemplate: Pick<Config, 'slug' | 'nameString' | 'description' | 'variant'>;
+  configTemplate: Pick<
+    Config,
+    'slug' | 'nameString' | 'description' | 'variant' | 'order' | 'multi' | 'acceptedFormats'
+  >;
   sourceImage: string;
   slug: string;
   format: StoreFileFormat;
@@ -24,7 +27,14 @@ interface StoreConfigWithAssetInterface {
 
 type FindOrCreateConfigTemplate = Pick<
   Config,
-  'slug' | 'nameString' | 'description' | 'variant' | 'value'
+  | 'slug'
+  | 'nameString'
+  | 'description'
+  | 'variant'
+  | 'value'
+  | 'order'
+  | 'multi'
+  | 'acceptedFormats'
 >;
 
 async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): Promise<boolean> {

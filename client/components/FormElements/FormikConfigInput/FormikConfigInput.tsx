@@ -57,6 +57,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ label, name, 
       <div className={classes.holder}>
         {field.value.value.map((_: any, index: number) => {
           const isFirst = index === 0;
+          const fieldName = `${name}.value[${index}]`;
 
           return (
             <div
@@ -64,7 +65,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ label, name, 
               key={index}
             >
               <div className={classes.input}>
-                <FormikInput name={`${name}.value[${index}]`} low />
+                <FormikInput name={fieldName} testId={fieldName} low />
               </div>
 
               <div className={classes.inputControl}>
@@ -74,10 +75,14 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ label, name, 
                     size={'small'}
                     theme={'gray'}
                     icon={'Add'}
+                    testId={`${fieldName}-add`}
                     circle
                   />
                 ) : (
-                  <ButtonCross onClick={() => removeFieldHandler(index)} />
+                  <ButtonCross
+                    testId={`${fieldName}-remove`}
+                    onClick={() => removeFieldHandler(index)}
+                  />
                 )}
               </div>
             </div>

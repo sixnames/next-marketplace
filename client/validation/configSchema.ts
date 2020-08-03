@@ -28,3 +28,8 @@ export const updateAssetConfigSchema = (args: SchemaMessagesInterface) =>
       .of(Yup.mixed())
       .required(getValidationFieldMessage({ ...args, key: 'validation.configs.value' })),
   });
+
+export const updateConfigsClientSchema = (args: SchemaMessagesInterface) =>
+  Yup.object().shape({
+    inputs: updateConfigsSchema(args),
+  });

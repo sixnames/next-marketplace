@@ -6,9 +6,15 @@ import { CONFIG_VARIANT_ASSET } from '../../config';
 import InnerWide from '../../components/Inner/InnerWide';
 import FormikConfigInput from '../../components/FormElements/FormikConfigInput/FormikConfigInput';
 import { Form, Formik } from 'formik';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateConfigsClientSchema } from '../../validation/configSchema';
 
 const ConfigsContent: React.FC = () => {
   const { data, loading, error } = useGetAllConfigsQuery();
+  const notAssetSchema = useValidationSchema({
+    schema: updateConfigsClientSchema,
+    messagesKeys: ['validation.configs.id', 'validation.configs.value'],
+  });
 
   if (loading) return <Spinner isNested />;
   if (error || !data) return <RequestError />;
@@ -21,6 +27,7 @@ const ConfigsContent: React.FC = () => {
   return (
     <InnerWide testId={'site-configs'}>
       <Formik
+        validationSchema={notAssetSchema}
         initialValues={{ inputs: notAssetConfigs }}
         onSubmit={(values) => {
           console.log(values);

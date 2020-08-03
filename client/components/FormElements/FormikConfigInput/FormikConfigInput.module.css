@@ -4,7 +4,6 @@
 
 .label {
   display: flex;
-  justify-content: flex-end;
   align-items: flex-start;
   margin-bottom: 5px;
   font-weight: bold;
@@ -12,10 +11,6 @@
   white-space: nowrap;
   overflow: hidden;
   color: var(--textSecondaryColor);
-}
-
-.label > span {
-  flex: 1;
 }
 
 .inputsHolder {
@@ -42,7 +37,8 @@
 .description {
   display: inline-block;
   cursor: pointer;
-  width: 2rem;
+  margin-top: -2px;
+  margin-left: 0.75rem;
 }
 
 .description svg {
@@ -67,5 +63,20 @@
 
   .frame .holder {
     width: calc(100% - 235px);
+  }
+
+
+  .label {
+    justify-content: flex-end;
+  }
+
+  .label > span {
+    flex: 1;
+  }
+
+  .description {
+    margin-top: 0;
+    margin-left: 0;
+    width: 2rem;
   }
 }

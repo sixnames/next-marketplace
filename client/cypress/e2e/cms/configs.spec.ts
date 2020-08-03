@@ -11,7 +11,18 @@ describe('Site configs', () => {
     cy.clearTestData();
   });
 
-  it('Should save site non asset configs', () => {
+  it('Should save site configs', () => {
+    // Should update asset configs
+    cy.getByCy('siteLogo-remove').click();
+    cy.getByCy('siteLogo').attachFile('test-logo.svg', { subjectType: 'drag-n-drop' });
+    cy.getByCy('siteLogo-image').should('exist');
+    cy.getByCy('pageDefaultPreviewImage-remove').click();
+    cy.getByCy('pageDefaultPreviewImage').attachFile('test-image.jpg', {
+      subjectType: 'drag-n-drop',
+    });
+    cy.getByCy('pageDefaultPreviewImage-image').should('exist');
+
+    // Should update not asset configs
     cy.getByCy(`site-configs`).should('exist');
     cy.getByCy('inputs[0].value[0]').clear().type(newSiteName);
 

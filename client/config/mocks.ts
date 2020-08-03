@@ -962,6 +962,7 @@ export const SITE_CONFIGS_LOGO = {
   variant: 'asset',
   order: 1,
   multi: false,
+  acceptedFormats: ['image/svg+xml'],
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
@@ -970,6 +971,7 @@ export const SITE_CONFIGS_LOGO_DARK = {
   variant: 'asset',
   order: 2,
   multi: false,
+  acceptedFormats: ['image/svg+xml'],
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
@@ -978,6 +980,7 @@ export const SITE_CONFIGS_LOGO_ICON = {
   variant: 'asset',
   order: 3,
   multi: false,
+  acceptedFormats: ['image/svg+xml'],
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
@@ -986,6 +989,7 @@ export const SITE_CONFIGS_LOGO_NAME = {
   variant: 'asset',
   order: 4,
   multi: false,
+  acceptedFormats: ['image/svg+xml'],
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -995,6 +999,7 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   variant: 'asset',
   order: 5,
   multi: false,
+  acceptedFormats: ['image/jpeg'],
 };
 
 export const SITE_CONFIGS_INITIAL = [

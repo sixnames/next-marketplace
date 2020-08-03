@@ -11,6 +11,7 @@ interface TTipInterface extends StyledComponentProps {
   children: any;
   className?: string;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 const custom = {
@@ -31,6 +32,7 @@ const TTip: React.FC<TTipInterface> = ({
   children,
   className,
   classes: tooltipClasses,
+  style = {},
   ...props
 }) => {
   return (
@@ -43,7 +45,9 @@ const TTip: React.FC<TTipInterface> = ({
       placement={tooltipPlacement}
       {...props}
     >
-      <div className={`${styles.tooltipHolder} ${className ? className : ''}`}>{children}</div>
+      <div className={`${styles.tooltipHolder} ${className ? className : ''}`} style={style}>
+        {children}
+      </div>
     </Tooltip>
   );
 };

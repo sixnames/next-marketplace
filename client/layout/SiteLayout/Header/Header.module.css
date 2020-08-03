@@ -53,11 +53,6 @@
   color: var(--theme);
 }
 
-.topNav {
-  display: flex;
-  align-items: center;
-}
-
 .topNavItem:not(:first-child) {
   margin-left: 15px;
 }
@@ -92,10 +87,6 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .topNav {
-    display: none;
-  }
-
   .topRight {
     width: 100%;
   }

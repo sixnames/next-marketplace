@@ -101,9 +101,15 @@ const storeUploads = async ({
           .catch((error) => {
             reject(error);
           });
+      }).catch((e) => {
+        console.log(e);
+        return { index, url: '' };
       });
     }),
-  );
+  ).catch((e) => {
+    console.log(e);
+    return [];
+  });
 };
 
 export default storeUploads;

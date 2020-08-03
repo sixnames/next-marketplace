@@ -45,6 +45,10 @@ export class Config {
   variant: ConfigVariantEnum;
 
   @Field((_type) => [String])
+  @prop({ type: String })
+  acceptedFormats: string[];
+
+  @Field((_type) => [String])
   @prop({ type: String, required: true })
   value: string[];
 }

@@ -113,7 +113,7 @@ export class ConfigResolver {
         files: value,
         slug: config.slug,
         dist: 'config',
-        outputFormat: 'svg',
+        outputFormat: 'jpg',
       });
       const updatedConfig = await ConfigModel.findByIdAndUpdate(id, {
         value: assetsResult.map(({ url }) => url),

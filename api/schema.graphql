@@ -125,6 +125,7 @@ type City {
 }
 
 type Config {
+  acceptedFormats: [String!]!
   description: String!
   id: ID!
   multi: Boolean!

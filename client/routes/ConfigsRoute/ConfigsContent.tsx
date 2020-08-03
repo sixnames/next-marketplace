@@ -10,6 +10,8 @@ import Button from '../../components/Buttons/Button';
 import classes from './ConfigsContent.module.css';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { useConfigContext } from '../../context/configContext';
+import ConfigsAssetForm from './ConfigsAssetForm';
+import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 
 const ConfigsContent: React.FC = () => {
   const { configs } = useConfigContext();
@@ -27,7 +29,7 @@ const ConfigsContent: React.FC = () => {
     messagesKeys: ['validation.configs.id', 'validation.configs.value'],
   });
 
-  // const assetConfigs = configs.filter(({ variant }) => variant === CONFIG_VARIANT_ASSET);
+  const assetConfigs = configs.filter(({ variant }) => variant === CONFIG_VARIANT_ASSET);
   const notAssetConfigs = configs.filter(({ variant }) => variant !== CONFIG_VARIANT_ASSET);
 
   // console.log({ assetConfigs });
@@ -47,39 +49,53 @@ const ConfigsContent: React.FC = () => {
   }
 
   return (
-    <InnerWide testId={'site-configs'}>
-      <Formik
-        validationSchema={notAssetSchema}
-        initialValues={configsInitialValue}
-        onSubmit={(values) => updateConfigsHandler(values)}
-      >
-        {({ values }) => {
+    <DataLayoutContentFrame>
+      <InnerWide testId={'site-configs'}>
+        {assetConfigs.map((config) => {
+          const { slug } = config;
+          const isSvg = slug !== 'pageDefaultPreviewImage';
           return (
-            <Form>
-              {values.inputs.map(({ id, nameString, description }, index) => {
-                return (
-                  <FormikConfigInput
-                    key={id}
-                    values={values}
-                    index={index}
-                    name={`inputs[${index}]`}
-                    label={nameString}
-                    description={description}
-                    onRemoveHandler={updateConfigsHandler}
-                  />
-                );
-              })}
-
-              <div className={classes.buttons}>
-                <Button type={'submit'} testId={'site-configs-submit'}>
-                  Сохранить настройки
-                </Button>
-              </div>
-            </Form>
+            <ConfigsAssetForm
+              key={config.id}
+              config={config}
+              isSvg={isSvg}
+              format={isSvg ? 'svg' : 'jpg'}
+            />
           );
-        }}
-      </Formik>
-    </InnerWide>
+        })}
+        <Formik
+          validationSchema={notAssetSchema}
+          initialValues={configsInitialValue}
+          onSubmit={(values) => updateConfigsHandler(values)}
+        >
+          {({ values }) => {
+            return (
+              <Form>
+                {values.inputs.map(({ id, nameString, description }, index) => {
+                  return (
+                    <FormikConfigInput
+                      key={id}
+                      values={values}
+                      index={index}
+                      name={`inputs[${index}]`}
+                      label={nameString}
+                      description={description}
+                      onRemoveHandler={updateConfigsHandler}
+                    />
+                  );
+                })}
+
+                <div className={classes.buttons}>
+                  <Button type={'submit'} testId={'site-configs-submit'}>
+                    Сохранить настройки
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </InnerWide>
+    </DataLayoutContentFrame>
   );
 };
 

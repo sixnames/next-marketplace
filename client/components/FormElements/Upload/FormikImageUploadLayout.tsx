@@ -1,19 +1,9 @@
 import React from 'react';
 import FormikImageUpload from './FormikImageUpload';
 import classes from './FormikImageUploadLayout.module.css';
-import { PostfixType } from '../../../types';
+import { FormikInputPropsInterface } from '../Input/FormikInput';
 
-interface FormikImageUploadLayoutInterface {
-  name: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  children: any;
-  wide?: boolean;
-  labelPostfix?: any;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
+interface FormikImageUploadLayoutInterface extends FormikInputPropsInterface {
   tooltip?: any;
 }
 

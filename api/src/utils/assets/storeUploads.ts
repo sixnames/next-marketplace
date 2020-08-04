@@ -76,7 +76,7 @@ const storeUploads = async ({
         const buffer = await getBufferFromFileStream(fileStream);
 
         if (mimetype === `image/svg+xml` || mimetype === `image/svg`) {
-          await fs.writeFile(finalPath, buffer.toString(), (error) => {
+          await fs.writeFile(`${filesPath}/${fileName}.svg`, buffer.toString(), (error) => {
             if (error) {
               reject(error);
             }

@@ -1,8 +1,8 @@
 import {
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_NUMBER,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
   DEFAULT_CITY,
   DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
@@ -954,9 +954,141 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+// Site config
+export const SITE_CONFIGS_LOGO = {
+  slug: 'siteLogo',
+  nameString: 'Логотип сайта для тёмной темы',
+  description: 'Полное изображение логотипа в формате SVG',
+  variant: 'asset',
+  order: 1,
+  multi: false,
+  acceptedFormats: ['image/svg+xml'],
+};
+export const SITE_CONFIGS_LOGO_DARK = {
+  slug: 'siteLogoDark',
+  nameString: 'Логотип сайта для светлой темы',
+  description: 'Полное изображение логотипа в формате SVG',
+  variant: 'asset',
+  order: 2,
+  multi: false,
+  acceptedFormats: ['image/svg+xml'],
+};
+export const SITE_CONFIGS_LOGO_ICON = {
+  slug: 'siteLogoIcon',
+  nameString: 'Иконка логотипа сайта',
+  description: 'Иконка логотипа в формате SVG',
+  variant: 'asset',
+  order: 3,
+  multi: false,
+  acceptedFormats: ['image/svg+xml'],
+};
+export const SITE_CONFIGS_LOGO_NAME = {
+  slug: 'siteLogoName',
+  nameString: 'Текст логотипа сайта',
+  description: 'Текст логотипа в формате SVG',
+  variant: 'asset',
+  order: 4,
+  multi: false,
+  acceptedFormats: ['image/svg+xml'],
+};
+export const SITE_CONFIGS_PREVIEW_IMAGE = {
+  slug: 'pageDefaultPreviewImage',
+  nameString: 'Дефолтное превью изображение',
+  description:
+    'Данное поле будет добавлено в атрибуты og:image и twitter:image если страница не имеет таковых. Нужно для корректного отображения ссылки при отправке в соцсетях и чатах.',
+  variant: 'asset',
+  order: 5,
+  multi: false,
+  acceptedFormats: ['image/jpeg'],
+};
+
+export const SITE_CONFIGS_INITIAL = [
+  {
+    slug: 'siteName',
+    nameString: 'Название сайта',
+    description: '',
+    variant: 'string',
+    value: ['Site'],
+    order: 6,
+    multi: false,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'contactEmail',
+    nameString: 'Контактный Email',
+    description: 'Контактный Email. Можно добавить несколько.',
+    variant: 'email',
+    value: ['email@email.com'],
+    order: 7,
+    multi: true,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'contactPhone',
+    nameString: 'Контактный телефон',
+    description: 'Контактный телефон. Можно добавить несколько.',
+    variant: 'tel',
+    value: ['+79998887766'],
+    order: 8,
+    multi: true,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'siteFoundationYear',
+    nameString: 'Год основания сайта',
+    description: '',
+    variant: 'number',
+    value: ['2020'],
+    order: 9,
+    multi: false,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'pageDefaultTitle',
+    nameString: 'Дефолтный title страницы',
+    description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
+    variant: 'string',
+    value: ['Page default title'],
+    order: 10,
+    multi: false,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'pageDefaultDescription',
+    nameString: 'Дефолтный description страницы',
+    description:
+      'Данное поле будет добавлено в атрибут description если страница не имеет такового',
+    variant: 'string',
+    value: ['Page default description'],
+    order: 11,
+    multi: false,
+    acceptedFormats: [],
+  },
+  {
+    slug: 'siteThemeColor',
+    nameString: 'Акцент цвет сайта',
+    description: 'Данный цвет будет использован для акцента ключевых элементов сайта.',
+    variant: 'string',
+    value: ['#DB5360'],
+    order: 12,
+    multi: false,
+    acceptedFormats: [],
+  },
+];
+export const SITE_CONFIGS_All = [
+  SITE_CONFIGS_LOGO,
+  SITE_CONFIGS_LOGO_DARK,
+  SITE_CONFIGS_LOGO_ICON,
+  SITE_CONFIGS_LOGO_NAME,
+  SITE_CONFIGS_PREVIEW_IMAGE,
+  ...SITE_CONFIGS_INITIAL,
+];
+
+// Currency
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
 export const MOCK_CURRENCIES = [...INITIAL_CURRENCIES, { nameString: SECONDARY_CURRENCY }];
 
+// Countries and cities
 export const INITIAL_COUNTRIES = [{ nameString: DEFAULT_COUNTRY }];
 export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { nameString: SECONDARY_COUNTRY }];
 
@@ -981,6 +1113,7 @@ export const MOCK_CITIES = [
   },
 ];
 
+// Languages
 export const INITIAL_LANGUAGES = [
   {
     key: DEFAULT_LANG,
@@ -1262,7 +1395,7 @@ export const MOCK_OPTIONS_WINE_COLOR = [
   },
 ];
 
-export const MOCK_OPTIONS_WINE_TYPE = [
+export const MOCK_OPTIONS_WINE_VARIANT = [
   {
     name: [
       { key: DEFAULT_LANG, value: 'Портвейн' },
@@ -1305,7 +1438,7 @@ export const MOCK_OPTIONS_GROUP_COLORS = {
   ],
 };
 
-export const MOCK_OPTIONS_GROUP_WINE_TYPES = {
+export const MOCK_OPTIONS_GROUP_WINE_VARIANTS = {
   name: [
     { key: DEFAULT_LANG, value: 'Типы_вина' },
     { key: SECONDARY_LANG, value: 'Wine_types' },
@@ -1319,16 +1452,16 @@ export const MOCK_ATTRIBUTE_WINE_COLOR = {
     { key: SECONDARY_LANG, value: 'Wine_color' },
   ],
   slug: 'tsvet_vina',
-  variant: ATTRIBUTE_TYPE_MULTIPLE_SELECT,
+  variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 };
 
-export const MOCK_ATTRIBUTE_WINE_TYPE = {
+export const MOCK_ATTRIBUTE_WINE_VARIANT = {
   name: [
     { key: DEFAULT_LANG, value: 'Тип_вина' },
     { key: SECONDARY_LANG, value: 'Wine_type' },
   ],
   slug: 'tip_vina',
-  variant: ATTRIBUTE_TYPE_SELECT,
+  variant: ATTRIBUTE_VARIANT_SELECT,
 };
 
 export const MOCK_ATTRIBUTE_STRING = {
@@ -1337,7 +1470,7 @@ export const MOCK_ATTRIBUTE_STRING = {
     { key: SECONDARY_LANG, value: 'Attribute_string' },
   ],
   slug: 'attribute_stroka',
-  variant: ATTRIBUTE_TYPE_STRING,
+  variant: ATTRIBUTE_VARIANT_STRING,
 };
 
 export const MOCK_ATTRIBUTE_NUMBER = {
@@ -1346,7 +1479,7 @@ export const MOCK_ATTRIBUTE_NUMBER = {
     { key: SECONDARY_LANG, value: 'Attribute_number' },
   ],
   slug: 'attribute_chislo',
-  variant: ATTRIBUTE_TYPE_NUMBER,
+  variant: ATTRIBUTE_VARIANT_NUMBER,
 };
 
 export const MOCK_ATTRIBUTES_GROUP_WINE_FEATURES = {
@@ -1371,14 +1504,14 @@ export const MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES = {
 };
 
 // Rubrics
-export const MOCK_RUBRIC_TYPE_ALCOHOL = {
+export const MOCK_RUBRIC_VARIANT_ALCOHOL = {
   name: [
     { key: DEFAULT_LANG, value: 'Алкоголь' },
     { key: SECONDARY_LANG, value: 'Alcohol' },
   ],
 };
 
-export const MOCK_RUBRIC_TYPE_JUICE = {
+export const MOCK_RUBRIC_VARIANT_JUICE = {
   name: [
     { key: DEFAULT_LANG, value: 'Соки' },
     { key: SECONDARY_LANG, value: 'Juice' },

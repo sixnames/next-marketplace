@@ -2,8 +2,10 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { InitialQuery, Language } from '../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import { LanguageContextProvider } from './languageContext';
+import { ConfigContextProvider } from './configContext';
 
 export type MeType = InitialQuery['me'];
+export type ConfigsType = InitialQuery['getAllConfigs'];
 
 interface ContextState {
   isAuthenticated: boolean;
@@ -25,6 +27,7 @@ interface UserContextProviderInterface {
   me: MeType;
   lang: string;
   languagesList: Language[];
+  configs: ConfigsType;
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({
@@ -32,6 +35,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
   me,
   lang,
   languagesList,
+  configs,
 }) => {
   const [state, setState] = useState<ContextState>({
     isAuthenticated: false,
@@ -55,7 +59,9 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
 
   return (
     <LanguageContextProvider lang={lang} languagesList={languagesList}>
-      <UserContext.Provider value={value}>{children}</UserContext.Provider>
+      <ConfigContextProvider configs={configs}>
+        <UserContext.Provider value={value}>{children}</UserContext.Provider>
+      </ConfigContextProvider>
     </LanguageContextProvider>
   );
 };

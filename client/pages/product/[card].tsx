@@ -1,7 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { GetCatalogueCardQueryQueryResult } from '../../generated/apolloComponents';
-import { SiteContextProvider } from '../../context/siteContext';
 import SiteLayout from '../../layout/SiteLayout/SiteLayout';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
@@ -16,20 +15,20 @@ interface CardInterface {
 }
 
 const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, cardData }) => {
-  if (!initialApolloState || !cardData) {
+  if (!cardData) {
     return (
-      <Inner>
-        <RequestError />
-      </Inner>
+      <SiteLayout initialApolloState={initialApolloState}>
+        <Inner>
+          <RequestError />
+        </Inner>
+      </SiteLayout>
     );
   }
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState}>
-      <SiteLayout>
-        <CardRoute cardData={cardData} />
-      </SiteLayout>
-    </SiteContextProvider>
+    <SiteLayout initialApolloState={initialApolloState}>
+      <CardRoute cardData={cardData} />
+    </SiteLayout>
   );
 };
 

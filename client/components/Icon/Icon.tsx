@@ -31,6 +31,7 @@ import {
   Brightness4,
   Brightness7,
   CheckBox,
+  Help,
   CheckBoxOutlineBlank,
 } from '@material-ui/icons';
 import { ObjectType } from '../../types';
@@ -67,6 +68,7 @@ export type IconType =
   | 'Brightness7'
   | 'CheckBox'
   | 'CheckBoxOutlineBlank'
+  | 'Help'
   | 'Check';
 
 interface IconPropsInterface {
@@ -77,6 +79,8 @@ interface IconPropsInterface {
 
 const Icon: React.FC<IconPropsInterface> = ({ name, className, ...props }) => {
   switch (name) {
+    case 'Help':
+      return <Help className={className} {...props} />;
     case 'Add':
       return <Add className={className} {...props} />;
     case 'ExpandLess':

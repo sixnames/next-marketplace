@@ -56,24 +56,47 @@ export const GENDER_LIST = [
   { id: GENDER_IT, nameString: 'Средний' },
 ];
 
-// ATTRIBUTE VARIANTS
-export const ATTRIBUTE_TYPE_SELECT = 'select';
-export const ATTRIBUTE_TYPE_MULTIPLE_SELECT = 'multipleSelect';
-export const ATTRIBUTE_TYPE_STRING = 'string';
-export const ATTRIBUTE_TYPE_NUMBER = 'number';
+// CONFIG VARIANTS
+export const CONFIG_VARIANT_STRING = 'string';
+export const CONFIG_VARIANT_NUMBER = 'number';
+export const CONFIG_VARIANT_PHONE = 'tel';
+export const CONFIG_VARIANT_EMAIL = 'email';
+export const CONFIG_VARIANT_ASSET = 'asset';
 
-export const ATTRIBUTE_TYPES_ENUMS = [
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_STRING,
-  ATTRIBUTE_TYPE_NUMBER,
+export const CONFIG_VARIANTS_ENUMS = [
+  CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_NUMBER,
+  CONFIG_VARIANT_PHONE,
+  CONFIG_VARIANT_EMAIL,
+  CONFIG_VARIANT_ASSET,
 ];
 
-export const ATTRIBUTE_TYPES_LIST = [
-  { id: ATTRIBUTE_TYPE_SELECT, nameString: 'Селект' },
-  { id: ATTRIBUTE_TYPE_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
-  { id: ATTRIBUTE_TYPE_STRING, nameString: 'Строка' },
-  { id: ATTRIBUTE_TYPE_NUMBER, nameString: 'Число' },
+export const CONFIG_VARIANTS_LIST = [
+  { id: CONFIG_VARIANT_STRING, nameString: 'Строка' },
+  { id: CONFIG_VARIANT_NUMBER, nameString: 'Число' },
+  { id: CONFIG_VARIANT_PHONE, nameString: 'Телефон' },
+  { id: CONFIG_VARIANT_EMAIL, nameString: 'Email' },
+  { id: CONFIG_VARIANT_ASSET, nameString: 'Изображение' },
+];
+
+// ATTRIBUTE VARIANTS
+export const ATTRIBUTE_VARIANT_SELECT = 'select';
+export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect';
+export const ATTRIBUTE_VARIANT_STRING = 'string';
+export const ATTRIBUTE_VARIANT_NUMBER = 'number';
+
+export const ATTRIBUTE_VARIANTS_ENUMS = [
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VARIANT_NUMBER,
+];
+
+export const ATTRIBUTE_VARIANTS_LIST = [
+  { id: ATTRIBUTE_VARIANT_SELECT, nameString: 'Селект' },
+  { id: ATTRIBUTE_VARIANT_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
+  { id: ATTRIBUTE_VARIANT_STRING, nameString: 'Строка' },
+  { id: ATTRIBUTE_VARIANT_NUMBER, nameString: 'Число' },
 ];
 
 // ATTRIBUTE POSITIONS IN TITLE

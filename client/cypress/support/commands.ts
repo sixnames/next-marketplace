@@ -1,5 +1,4 @@
 import 'cypress-file-upload';
-import { ME_AS_ADMIN } from '../../config';
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -86,9 +85,19 @@ Cypress.Commands.add('clearTestData', () => {
   cy.request('GET', clearTestDataURI);
 });
 
+Cypress.Commands.add('getMockData', (callback) => {
+  const testAuthURI = `${apiHost}/get-mock-data`;
+  cy.request({
+    method: 'GET',
+    url: testAuthURI,
+  }).then(({ body }) => {
+    callback(body);
+  });
+});
+
 Cypress.Commands.add(
   'testAuth',
-  (redirect = '/', email = ME_AS_ADMIN.email, password = ME_AS_ADMIN.password) => {
+  (redirect = '/', email = 'admin@gmail.com', password = 'admin') => {
     const testAuthURI = `${apiHost}/test-sign-in`;
     cy.request({
       method: 'GET',

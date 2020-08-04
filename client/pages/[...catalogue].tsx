@@ -3,7 +3,6 @@ import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import Inner from '../components/Inner/Inner';
 import { GetCatalogueRubricQuery } from '../generated/apolloComponents';
-import { SiteContextProvider } from '../context/siteContext';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
 import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
@@ -17,32 +16,27 @@ const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   initialApolloState,
   rubricData,
 }) => {
-  if (!initialApolloState || !rubricData) {
+  if (!rubricData || !rubricData.getCatalogueData) {
     return (
-      <Inner>
-        <RequestError />
-      </Inner>
+      <SiteLayout initialApolloState={initialApolloState}>
+        <Inner>
+          <RequestError />
+        </Inner>
+      </SiteLayout>
     );
   }
 
   const { getCatalogueData } = rubricData;
-
-  if (!getCatalogueData) {
-    return (
-      <Inner>
-        <RequestError />
-      </Inner>
-    );
-  }
-
   const { catalogueTitle } = getCatalogueData;
 
   return (
-    <SiteContextProvider initialApolloState={initialApolloState}>
-      <SiteLayout title={catalogueTitle} description={catalogueTitle}>
-        <CatalogueRoute rubricData={rubricData} />
-      </SiteLayout>
-    </SiteContextProvider>
+    <SiteLayout
+      title={catalogueTitle}
+      description={catalogueTitle}
+      initialApolloState={initialApolloState}
+    >
+      <CatalogueRoute rubricData={rubricData} />
+    </SiteLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const GET_ALL_LANGUAGES_QUERY = gql`
-  query GetAllLanguagesQuery {
+  query GetAllLanguages {
     getAllLanguages {
       id
       name

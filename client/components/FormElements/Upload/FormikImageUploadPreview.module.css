@@ -45,8 +45,8 @@
 
 .frame .remove {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0.5rem;
+  right: 0.5rem;
   z-index: 2;
 }
 

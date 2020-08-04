@@ -181,7 +181,7 @@ export class ProductResolver {
 
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug, city });
+      const assetsResult = await storeUploads({ files: assets, slug, dist: city });
 
       const nameValues = input.name.map(({ value }) => value);
       const cardNameValues = input.cardName.map(({ value }) => value);
@@ -305,7 +305,7 @@ export class ProductResolver {
       }
 
       const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug, city });
+      const assetsResult = await storeUploads({ files: assets, slug, dist: city });
 
       const updatedProduct = await ProductModel.findOneAndUpdate(
         {

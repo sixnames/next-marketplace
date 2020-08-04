@@ -5,9 +5,9 @@ import { Metric } from './Metric';
 import { LanguageType } from './common';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
-  ATTRIBUTE_TYPE_MULTIPLE_SELECT,
-  ATTRIBUTE_TYPE_SELECT,
-  ATTRIBUTE_TYPES_ENUMS,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANTS_ENUMS,
 } from '../config';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { Option } from './Option';
@@ -77,7 +77,7 @@ export class Attribute {
   readonly nameString: string;
 
   @Field((_type) => AttributeVariantEnum)
-  @prop({ required: true, enum: ATTRIBUTE_TYPES_ENUMS })
+  @prop({ required: true, enum: ATTRIBUTE_VARIANTS_ENUMS })
   variant: AttributeVariantEnum;
 
   @Field((_type) => OptionsGroup, { nullable: true })
@@ -94,7 +94,8 @@ export class Attribute {
     type: AttributePositioningInTitle,
     required: function (this: Attribute) {
       return (
-        this.variant === ATTRIBUTE_TYPE_SELECT || this.variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT
+        this.variant === ATTRIBUTE_VARIANT_SELECT ||
+        this.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT
       );
     },
   })

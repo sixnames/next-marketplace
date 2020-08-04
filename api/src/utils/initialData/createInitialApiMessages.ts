@@ -10,6 +10,10 @@ import rubricsMessages from '../../config/apiMessages/rubricsMessages';
 import productsMessages from '../../config/apiMessages/productsMessages';
 import metricsMessages from '../../config/apiMessages/metricsMessages';
 import commonMessages from '../../config/apiMessages/commonMessages';
+import currenciesMessages from '../../config/apiMessages/currenciesMessages';
+import citiesMessages from '../../config/apiMessages/citiesMessages';
+import countriesMessages from '../../config/apiMessages/countriesMessages';
+import configsMessages from '../../config/apiMessages/configsMessages';
 
 interface MessageInterface {
   key: string;
@@ -33,10 +37,14 @@ async function createInitialApiMessagesGroup({ name, messages }: CreateInitialAp
 async function createInitialApiMessages() {
   const config = [
     { name: 'Общее', messages: commonMessages },
+    { name: 'Настройки сайта', messages: configsMessages },
+    { name: 'Валюта', messages: currenciesMessages },
     { name: 'Языки', messages: languagesMessages },
+    { name: 'Города', messages: citiesMessages },
+    { name: 'Страны', messages: countriesMessages },
     { name: 'Пользователи', messages: usersMessages },
     { name: 'Группы опций', messages: optionsGroupsMessages },
-    { name: 'Сообщения', messages: attributesGroupsMessages },
+    { name: 'Группы атрибутов', messages: attributesGroupsMessages },
     { name: 'Типы рубрик', messages: rubricVariantsMessages },
     { name: 'Рубрики', messages: rubricsMessages },
     { name: 'Товары', messages: productsMessages },

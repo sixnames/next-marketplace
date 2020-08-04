@@ -7,10 +7,14 @@
 
 .logo {
   display: block;
-  height: 42px;
-  width: 150px;
+  height: 27px;
+  width: 166px;
   margin-right: 20px;
-  background-color: var(--midGray);
+}
+
+.logo img {
+  height: 27px;
+  width: 166px;
 }
 
 .inner {
@@ -49,11 +53,6 @@
   color: var(--theme);
 }
 
-.topNav {
-  display: flex;
-  align-items: center;
-}
-
 .topNavItem:not(:first-child) {
   margin-left: 15px;
 }
@@ -88,10 +87,6 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .topNav {
-    display: none;
-  }
-
   .topRight {
     width: 100%;
   }

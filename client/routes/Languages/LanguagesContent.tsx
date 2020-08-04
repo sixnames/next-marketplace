@@ -7,7 +7,7 @@ import {
   Language,
   useCreateLanguageMutation,
   useDeleteLanguageMutation,
-  useGetAllLanguagesQueryQuery,
+  useGetAllLanguagesQuery,
   useSetLanguageAsDefaultMutation,
   useUpdateLanguageMutation,
 } from '../../generated/apolloComponents';
@@ -25,7 +25,7 @@ import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 
 const LanguagesContent: React.FC = () => {
-  const { data, loading, error } = useGetAllLanguagesQueryQuery();
+  const { data, loading, error } = useGetAllLanguagesQuery();
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     withModal: true,
   });

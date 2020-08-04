@@ -3,27 +3,15 @@ import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import Title from '../components/Title/Title';
 import Inner from '../components/Inner/Inner';
-import { SiteContextProvider } from '../context/siteContext';
-import RequestError from '../components/RequestError/RequestError';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 
 const Home: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
-  if (!initialApolloState) {
-    return (
-      <Inner>
-        <RequestError />
-      </Inner>
-    );
-  }
-
   return (
-    <SiteContextProvider initialApolloState={initialApolloState}>
-      <SiteLayout>
-        <Inner>
-          <Title>Main page</Title>
-        </Inner>
-      </SiteLayout>
-    </SiteContextProvider>
+    <SiteLayout initialApolloState={initialApolloState}>
+      <Inner>
+        <Title>Main page</Title>
+      </Inner>
+    </SiteLayout>
   );
 };
 

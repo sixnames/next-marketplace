@@ -18,7 +18,7 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
-import { ATTRIBUTE_TYPE_NUMBER, ATTRIBUTE_TYPE_STRING } from '../../config';
+import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/query/rubrics';
 import Accordion from '../../components/Accordion/Accordion';
@@ -162,7 +162,8 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       key: 'id',
       title: 'Показывать в фильтре',
       render: (id: string, { nameString, variant }: RubricAttribute) => {
-        const isDisabled = variant === ATTRIBUTE_TYPE_NUMBER || variant === ATTRIBUTE_TYPE_STRING;
+        const isDisabled =
+          variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING;
         return (
           <Checkbox
             testId={`${nameString}`}

@@ -81,7 +81,7 @@ const storeUploads = async ({
               reject(error);
             }
             resolve({
-              url: resolvePath,
+              url: `${filesResolvePath}/${fileName}.svg`,
               index,
             });
           });

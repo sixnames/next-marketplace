@@ -1098,7 +1098,7 @@ export const INITIAL_CITIES = [
       { key: DEFAULT_LANG, value: 'Москва' },
       { key: SECONDARY_LANG, value: 'Moscow' },
     ],
-    key: DEFAULT_CITY,
+    slug: DEFAULT_CITY,
   },
 ];
 
@@ -1109,7 +1109,7 @@ export const MOCK_CITIES = [
       { key: DEFAULT_LANG, value: 'Нью Йорк' },
       { key: SECONDARY_LANG, value: 'New York' },
     ],
-    key: SECONDARY_CITY,
+    slug: SECONDARY_CITY,
   },
 ];
 

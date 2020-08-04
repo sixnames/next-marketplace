@@ -19,8 +19,8 @@ input AddAttributeToGroupInput {
 
 input AddCityToCountryInput {
   countryId: ID!
-  key: String!
   name: [LangInput!]!
+  slug: String!
 }
 
 input AddOptionToGroupInput {
@@ -119,9 +119,9 @@ type CatalogueData {
 
 type City {
   id: ID!
-  key: String!
   name: [LanguageType!]!
   nameString: String!
+  slug: String!
 }
 
 type Config {
@@ -558,6 +558,7 @@ type Query {
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCity(id: ID!): City!
+  getCityBySlug(slug: String!): City!
   getClientLanguage: String!
   getConfigBySlug(slug: String!): Config!
   getConfigValueBySlug(slug: String!): [String!]!
@@ -729,8 +730,8 @@ input UpdateAttributesGroupInRubricInput {
 input UpdateCityInCountryInput {
   cityId: ID!
   countryId: ID!
-  key: String!
   name: [LangInput!]!
+  slug: String!
 }
 
 input UpdateConfigInput {

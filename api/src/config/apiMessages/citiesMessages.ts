@@ -172,7 +172,7 @@ const citiesMessages: MessageInterface[] = [
     ],
   },
   {
-    key: 'validation.cities.key',
+    key: 'validation.cities.slug',
     message: [
       {
         key: DEFAULT_LANG,

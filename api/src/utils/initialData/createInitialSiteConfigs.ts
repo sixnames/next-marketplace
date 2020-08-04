@@ -75,6 +75,7 @@ async function storeConfigWithAsset({
     const assetExists = fs.existsSync(`${filesPath}/${slug}.svg`);
     if (format === 'svg' && !assetExists) {
       fs.copyFileSync(sourceImage, `./assets/${dist}/${slug}.svg`);
+      return true;
     }
 
     const logoPath = await setSharpImage({

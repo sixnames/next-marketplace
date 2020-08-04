@@ -13,5 +13,5 @@ export class UpdateCityInCountryInput {
   name: LangInput[];
 
   @Field(() => String)
-  key: string;
+  slug: string;
 }

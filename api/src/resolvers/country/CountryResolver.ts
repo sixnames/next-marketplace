@@ -208,7 +208,6 @@ export class CountryResolver {
     }
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async addCityToCountry(
     @Ctx() ctx: ContextInterface,
@@ -219,7 +218,7 @@ export class CountryResolver {
       const messages = await getMessagesByKeys([
         'validation.countries.id',
         'validation.cities.name',
-        'validation.cities.key',
+        'validation.cities.slug',
       ]);
       await addCityToCountrySchema({ lang, messages, defaultLang }).validate(input);
 
@@ -286,7 +285,6 @@ export class CountryResolver {
     }
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async updateCityInCountry(
     @Ctx() ctx: ContextInterface,
@@ -298,7 +296,7 @@ export class CountryResolver {
         'validation.countries.id',
         'validation.cities.id',
         'validation.cities.name',
-        'validation.cities.key',
+        'validation.cities.slug',
       ]);
       await updateCityInCountrySchema({ lang, messages, defaultLang }).validate(input);
 
@@ -353,7 +351,6 @@ export class CountryResolver {
     }
   }
 
-  // TODO validation
   @Mutation((_returns) => CountryPayloadType)
   async deleteCityFromCountry(
     @Ctx() ctx: ContextInterface,

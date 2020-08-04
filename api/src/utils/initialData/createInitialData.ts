@@ -37,7 +37,7 @@ async function createInitialData() {
   }
 
   // Create initial cities
-  const cities = await CityModel.find({ key: DEFAULT_CITY });
+  const cities = await CityModel.find({ slug: DEFAULT_CITY });
   const citiesIds = [];
   if (!cities || !cities.length) {
     const initialCity = await CityModel.create(INITIAL_CITIES[0]);

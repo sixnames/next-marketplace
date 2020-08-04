@@ -14,6 +14,7 @@ describe('City', () => {
         getAllCities {
           id
           nameString
+          slug
         }
       }
       `,
@@ -30,6 +31,7 @@ describe('City', () => {
         getCity(id: $id) {
           id
           nameString
+          slug
         }
       }
       `,
@@ -41,5 +43,27 @@ describe('City', () => {
     );
     expect(getCity.id).toEqual(currentCity.id);
     expect(getCity.nameString).toEqual(currentCity.nameString);
+
+    // Should return current city
+    const {
+      data: { getCityBySlug },
+    } = await query(
+      `
+      query GetCityBySlug($slug: String!) {
+        getCityBySlug(slug: $slug) {
+          id
+          nameString
+          slug
+        }
+      }
+      `,
+      {
+        variables: {
+          slug: currentCity.slug,
+        },
+      },
+    );
+    expect(getCityBySlug.id).toEqual(currentCity.id);
+    expect(getCityBySlug.nameString).toEqual(currentCity.nameString);
   });
 });

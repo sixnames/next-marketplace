@@ -13,7 +13,7 @@ export class City {
 
   @Field(() => String)
   @prop({ type: String, required: true })
-  key: string;
+  slug: string;
 
   @Field(() => String)
   readonly nameString: string;

@@ -21,6 +21,16 @@ export class CityResolver {
     return city;
   }
 
+  @Query((_returns) => City)
+  async getCityBySlug(@Arg('slug', (_type) => String) slug: string): Promise<City> {
+    const city = await CityModel.findOne({ slug });
+    if (!city) {
+      throw new Error('City not found');
+    }
+
+    return city;
+  }
+
   @FieldResolver((_returns) => String)
   async nameString(
     @Root() city: DocumentType<City>,

@@ -33,14 +33,14 @@ const cityNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     requiredMessageKey: 'validation.cities.name',
   });
 
-const cityKeySchema = (args: SchemaMessagesInterface) =>
+const citySlugSchema = (args: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minCityKeyLength,
       getValidationFieldMessage({ ...args, key: 'validation.string.min' }) + ` ${minCityKeyLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.cities.key' }));
+    .required(getValidationFieldMessage({ ...args, key: 'validation.cities.slug' }));
 
 export const createCountrySchema = (args: SchemaMessagesInterface) =>
   Yup.object().shape({
@@ -59,7 +59,7 @@ export const addCityToCountrySchema = (args: MultiLangSchemaMessagesInterface) =
   Yup.object().shape({
     countryId: idSchema({ args, key: 'validation.countries.id' }),
     name: cityNameSchema(args),
-    key: cityKeySchema(args),
+    slug: citySlugSchema(args),
   });
 
 export const updateCityInCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
@@ -67,7 +67,7 @@ export const updateCityInCountrySchema = (args: MultiLangSchemaMessagesInterface
     cityId: idSchema({ args, key: 'validation.cities.id' }),
     countryId: idSchema({ args, key: 'validation.countries.id' }),
     name: cityNameSchema(args),
-    key: cityKeySchema(args),
+    slug: citySlugSchema(args),
   });
 
 export const deleteCityFromCountrySchema = (args: SchemaMessagesInterface) =>

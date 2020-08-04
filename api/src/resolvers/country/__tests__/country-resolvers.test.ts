@@ -18,7 +18,7 @@ describe('Country', () => {
             cities {
               id
               nameString
-              key
+              slug
               name {
                 key
                 value
@@ -48,7 +48,7 @@ describe('Country', () => {
             cities {
               id
               nameString
-              key
+              slug
             }
           }
         }
@@ -292,7 +292,7 @@ describe('Country', () => {
         variables: {
           input: {
             countryId: currentCountry.id,
-            key: 'f',
+            slug: 'f',
             name: [{ key: DEFAULT_LANG, value: 'b' }],
           },
         },
@@ -325,7 +325,7 @@ describe('Country', () => {
         variables: {
           input: {
             countryId: currentCountry.id,
-            key: currentCountryCity.key,
+            slug: currentCountryCity.slug,
             name: currentCountryCity.name,
           },
         },
@@ -334,7 +334,7 @@ describe('Country', () => {
     expect(addCityToCountryDuplicate.success).toBeFalsy();
 
     // Should create city and add it to the country
-    const newCityKey = 'key';
+    const newCitySlug = 'slug';
     const newCityName = 'City';
     const {
       data: { addCityToCountry },
@@ -351,7 +351,7 @@ describe('Country', () => {
               cities {
                 id
                 nameString
-                key
+                slug
               }
             }
           }
@@ -361,17 +361,19 @@ describe('Country', () => {
         variables: {
           input: {
             countryId: currentCountry.id,
-            key: newCityKey,
+            slug: newCitySlug,
             name: [{ key: DEFAULT_LANG, value: newCityName }],
           },
         },
       },
     );
-    const createdCity = addCityToCountry.country.cities.find(({ key }: any) => key === newCityKey);
+    const createdCity = addCityToCountry.country.cities.find(
+      ({ slug }: any) => slug === newCitySlug,
+    );
     expect(addCityToCountry.success).toBeTruthy();
     expect(addCityToCountry.country.cities).toHaveLength(2);
     expect(createdCity.nameString).toEqual(newCityName);
-    expect(createdCity.key).toEqual(newCityKey);
+    expect(createdCity.slug).toEqual(newCitySlug);
 
     // Shouldn't update city in country on validation error
     const {
@@ -389,7 +391,7 @@ describe('Country', () => {
               cities {
                 id
                 nameString
-                key
+                slug
               }
             }
           }
@@ -400,7 +402,7 @@ describe('Country', () => {
           input: {
             countryId: currentCountry.id,
             cityId: createdCity.id,
-            key: 'f',
+            slug: 'f',
             name: [{ key: DEFAULT_LANG, value: 'f' }],
           },
         },
@@ -409,7 +411,7 @@ describe('Country', () => {
     expect(updateCityInCountryValidationError.success).toBeFalsy();
 
     // Should update city in country
-    const updatedCityKey = 'updated';
+    const updatedCitySlug = 'updated';
     const updatedCityName = 'updated';
     const {
       data: { updateCityInCountry },
@@ -426,7 +428,7 @@ describe('Country', () => {
               cities {
                 id
                 nameString
-                key
+                slug
               }
             }
           }
@@ -437,7 +439,7 @@ describe('Country', () => {
           input: {
             countryId: currentCountry.id,
             cityId: createdCity.id,
-            key: updatedCityKey,
+            slug: updatedCitySlug,
             name: [{ key: DEFAULT_LANG, value: updatedCityName }],
           },
         },
@@ -448,7 +450,7 @@ describe('Country', () => {
     );
     expect(addCityToCountry.success).toBeTruthy();
     expect(updatedCity.nameString).toEqual(updatedCityName);
-    expect(updatedCity.key).toEqual(updatedCityKey);
+    expect(updatedCity.slug).toEqual(updatedCitySlug);
 
     // Shouldn't delete city from country on validation error
     const {
@@ -466,7 +468,7 @@ describe('Country', () => {
               cities {
                 id
                 nameString
-                key
+                slug
               }
             }
           }
@@ -499,7 +501,7 @@ describe('Country', () => {
               cities {
                 id
                 nameString
-                key
+                slug
               }
             }
           }

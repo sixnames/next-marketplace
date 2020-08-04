@@ -50,7 +50,7 @@ const messagesKeys = [
   // Cities validation
   'validation.cities.id',
   'validation.cities.name',
-  'validation.cities.key',
+  'validation.cities.slug',
 
   // Countries ----------
   'countries.create.duplicate',

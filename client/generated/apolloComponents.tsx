@@ -17,16 +17,12 @@ export type Scalars = {
 
 export type Query = {
    __typename?: 'Query';
-  getProduct: Product;
-  getProductBySlug: Product;
-  getAllProducts: PaginatedProductsResponse;
-  getProductsCounters: ProductsCounters;
-  getFeaturesAst: Array<AttributesGroup>;
   me?: Maybe<User>;
   getUser?: Maybe<User>;
   getAllUsers: PaginatedUsersResponse;
   getAllCities: Array<City>;
   getCity: City;
+  getCityBySlug: City;
   getAllCountries: Array<Country>;
   getCountry: Country;
   getLanguage?: Maybe<Language>;
@@ -34,6 +30,11 @@ export type Query = {
   getClientLanguage: Scalars['String'];
   getAllCurrencies: Array<Currency>;
   getCurrency: Currency;
+  getProduct: Product;
+  getProductBySlug: Product;
+  getAllProducts: PaginatedProductsResponse;
+  getProductsCounters: ProductsCounters;
+  getFeaturesAst: Array<AttributesGroup>;
   getAttribute?: Maybe<Attribute>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
@@ -60,6 +61,41 @@ export type Query = {
 };
 
 
+export type QueryGetUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllUsersArgs = {
+  input: UserPaginateInput;
+};
+
+
+export type QueryGetCityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCityBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetCountryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetLanguageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCurrencyArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryGetProductArgs = {
   id: Scalars['ID'];
 };
@@ -82,36 +118,6 @@ export type QueryGetProductsCountersArgs = {
 
 export type QueryGetFeaturesAstArgs = {
   selectedRubrics: Array<Scalars['ID']>;
-};
-
-
-export type QueryGetUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetAllUsersArgs = {
-  input: UserPaginateInput;
-};
-
-
-export type QueryGetCityArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetCountryArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetLanguageArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetCurrencyArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -190,6 +196,102 @@ export type QueryGetConfigValueBySlugArgs = {
   slug: Scalars['String'];
 };
 
+export type User = {
+   __typename?: 'User';
+  id: Scalars['ID'];
+  itemId: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  role: Scalars['String'];
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+  isAdmin: Scalars['Boolean'];
+  isCustomer: Scalars['Boolean'];
+  isManager: Scalars['Boolean'];
+};
+
+
+export type PaginatedUsersResponse = {
+   __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** Pagination sortDir enum */
+export enum PaginateSortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type City = {
+   __typename?: 'City';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type LanguageType = {
+   __typename?: 'LanguageType';
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type Country = {
+   __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
+export type Currency = {
+   __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
 export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
@@ -210,12 +312,6 @@ export type Product = {
   cities: Array<ProductCity>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
-};
-
-export type LanguageType = {
-   __typename?: 'LanguageType';
-  key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type ProductAttributesGroup = {
@@ -354,7 +450,6 @@ export type ProductNode = {
   active: Scalars['Boolean'];
 };
 
-
 export type PaginatedProductsResponse = {
    __typename?: 'PaginatedProductsResponse';
   docs: Array<Product>;
@@ -382,12 +477,6 @@ export type ProductPaginateInput = {
   countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
 /** Product pagination sortBy enum */
 export enum ProductSortByEnum {
   Price = 'price',
@@ -404,89 +493,6 @@ export type ProductsCountersInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
-};
-
-export type User = {
-   __typename?: 'User';
-  id: Scalars['ID'];
-  itemId: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  role: Scalars['String'];
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
-  isAdmin: Scalars['Boolean'];
-  isCustomer: Scalars['Boolean'];
-  isManager: Scalars['Boolean'];
-};
-
-export type PaginatedUsersResponse = {
-   __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
-export type City = {
-   __typename?: 'City';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  key: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type Country = {
-   __typename?: 'Country';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
-};
-
-export type Language = {
-   __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Currency = {
-   __typename?: 'Currency';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
 };
 
 export type CatalogueData = {
@@ -648,9 +654,6 @@ export enum ConfigVariantEnum {
 
 export type Mutation = {
    __typename?: 'Mutation';
-  createProduct: ProductPayloadType;
-  updateProduct: ProductPayloadType;
-  deleteProduct: ProductPayloadType;
   createUser: UserPayloadType;
   updateUser: UserPayloadType;
   deleteUser: UserPayloadType;
@@ -670,6 +673,9 @@ export type Mutation = {
   createCurrency: CurrencyPayloadType;
   updateCurrency: CurrencyPayloadType;
   deleteCurrency: CurrencyPayloadType;
+  createProduct: ProductPayloadType;
+  updateProduct: ProductPayloadType;
+  deleteProduct: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -698,21 +704,6 @@ export type Mutation = {
   deleteRubricVariant: RubricVariantPayloadType;
   updateConfigs: ConfigPayloadType;
   updateAssetConfig: ConfigPayloadType;
-};
-
-
-export type MutationCreateProductArgs = {
-  input: CreateProductInput;
-};
-
-
-export type MutationUpdateProductArgs = {
-  input: UpdateProductInput;
-};
-
-
-export type MutationDeleteProductArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -802,6 +793,21 @@ export type MutationUpdateCurrencyArgs = {
 
 
 export type MutationDeleteCurrencyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+
+export type MutationDeleteProductArgs = {
   id: Scalars['ID'];
 };
 
@@ -945,54 +951,6 @@ export type MutationUpdateAssetConfigArgs = {
   input: UpdateAssetConfigInput;
 };
 
-export type ProductPayloadType = {
-   __typename?: 'ProductPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  product?: Maybe<Product>;
-};
-
-export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
-export type LangInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type ProductAttributesGroupInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  attributes: Array<ProductAttributeInput>;
-};
-
-export type ProductAttributeInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  /** Attribute reference via attribute slug field */
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-
-export type UpdateProductInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
 export type UserPayloadType = {
    __typename?: 'UserPayloadType';
   success: Scalars['Boolean'];
@@ -1054,14 +1012,19 @@ export type UpdateCountryInput = {
 export type AddCityToCountryInput = {
   countryId: Scalars['ID'];
   name: Array<LangInput>;
+  slug: Scalars['String'];
+};
+
+export type LangInput = {
   key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type UpdateCityInCountryInput = {
   countryId: Scalars['ID'];
   cityId: Scalars['ID'];
   name: Array<LangInput>;
-  key: Scalars['String'];
+  slug: Scalars['String'];
 };
 
 export type DeleteCityFromCountryInput = {
@@ -1103,6 +1066,49 @@ export type CreateCurrencyInput = {
 export type UpdateCurrencyInput = {
   id: Scalars['ID'];
   nameString: Scalars['String'];
+};
+
+export type ProductPayloadType = {
+   __typename?: 'ProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<Product>;
+};
+
+export type CreateProductInput = {
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
+export type ProductAttributesGroupInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  attributes: Array<ProductAttributeInput>;
+};
+
+export type ProductAttributeInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+
+export type UpdateProductInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
 };
 
 export type AttributesGroupPayloadType = {

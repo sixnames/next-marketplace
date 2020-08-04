@@ -7,7 +7,7 @@ import {
 } from '../../entities/SelectsOptions';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
-  ATTRIBUTE_TYPES_LIST,
+  ATTRIBUTE_VARIANTS_LIST,
   GENDER_ENUMS,
   ISO_LANGUAGES,
 } from '../../config';
@@ -30,7 +30,7 @@ export class GendersListResolver {
 export class AttributeVariantResolver {
   @Query((_type) => [AttributeVariant], { nullable: true })
   async getAttributeVariants(): Promise<AttributeVariant[]> {
-    return ATTRIBUTE_TYPES_LIST;
+    return ATTRIBUTE_VARIANTS_LIST;
   }
 }
 

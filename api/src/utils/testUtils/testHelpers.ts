@@ -4,6 +4,7 @@ import { testClient } from '../../../test/setup';
 import { TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, DEFAULT_CITY, DEFAULT_LANG } from '../../config';
 import { User, UserModel } from '../../entities/User';
+import mime from 'mime-types';
 import { Upload } from '../../types/upload';
 
 interface WithUserMutationInterface {
@@ -86,29 +87,44 @@ export async function getTestClientWithAuthenticatedUser(): Promise<
   return { mutate, query, user, setOptions };
 }
 
-interface MutateInterface {
+interface GetTestStreamsInterface {
+  dist?: string;
+  fileNames?: string[];
+}
+
+interface MutateInterface extends GetTestStreamsInterface {
   mutation: string;
   input: (files: Promise<Upload>[]) => void;
 }
 
-async function getTestStreams() {
-  const fileNames = ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'];
+async function getTestStreams({
+  fileNames = ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'],
+  dist = './test',
+}: GetTestStreamsInterface) {
   return fileNames.map((filename) => {
-    const file = fs.createReadStream(path.resolve(`./test/${filename}`));
+    const filePath = `${dist}/${filename}`;
+    const file = fs.createReadStream(path.resolve(filePath));
+    const mimetype = `${mime.lookup(filePath)}`;
+
     return new Promise<Upload>((resolve) =>
       resolve({
         createReadStream: () => file,
         filename: filename,
         encoding: 'UTF-8',
-        mimetype: `image/png`,
+        mimetype,
       }),
     );
   });
 }
 
-export async function mutateWithImages({ mutation, input }: MutateInterface): Promise<any> {
+export async function mutateWithImages({
+  mutation,
+  input,
+  dist,
+  fileNames,
+}: MutateInterface): Promise<any> {
   try {
-    const files = await getTestStreams();
+    const files = await getTestStreams({ dist, fileNames });
     const { mutate } = await getTestClientWithAuthenticatedUser();
 
     return await mutate(mutation, {

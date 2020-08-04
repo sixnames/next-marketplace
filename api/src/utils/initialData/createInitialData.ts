@@ -22,8 +22,12 @@ import { CurrencyModel } from '../../entities/Currency';
 import { CountryModel } from '../../entities/Country';
 import { CityModel } from '../../entities/City';
 import createInitialApiMessages from './createInitialApiMessages';
+import { createInitialSiteConfigs } from './createInitialSiteConfigs';
 
 async function createInitialData() {
+  // Create initial site config
+  await createInitialSiteConfigs();
+
   // Create initial currencies
   const currencies = await CurrencyModel.find({ nameString: DEFAULT_CURRENCY });
   let initialCurrencyName = DEFAULT_CURRENCY;

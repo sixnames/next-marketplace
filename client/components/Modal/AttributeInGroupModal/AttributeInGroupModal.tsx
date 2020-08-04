@@ -16,7 +16,7 @@ import {
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
 import { attributeInGroupSchema } from '../../../validation';
-import { ATTRIBUTE_TYPE_MULTIPLE_SELECT, ATTRIBUTE_TYPE_SELECT } from '../../../config';
+import { ATTRIBUTE_VARIANT_MULTIPLE_SELECT, ATTRIBUTE_VARIANT_SELECT } from '../../../config';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslationsSelect';
@@ -135,8 +135,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 testId={'attribute-metrics'}
               />
 
-              {(variant === ATTRIBUTE_TYPE_SELECT ||
-                variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) && (
+              {(variant === ATTRIBUTE_VARIANT_SELECT ||
+                variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) && (
                 <FormikSelect
                   isRequired
                   firstOption={'Не выбрано'}
@@ -148,8 +148,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 />
               )}
 
-              {(variant === ATTRIBUTE_TYPE_SELECT ||
-                variant === ATTRIBUTE_TYPE_MULTIPLE_SELECT) && (
+              {(variant === ATTRIBUTE_VARIANT_SELECT ||
+                variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) && (
                 <FormikTranslationsSelect
                   name={'positioningInTitle'}
                   testId={'positioningInTitle'}

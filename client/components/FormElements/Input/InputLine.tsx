@@ -1,10 +1,13 @@
 import React from 'react';
 import { PostfixType } from '../../../types';
 import classes from './InputLine.module.css';
+import Icon from '../../Icon/Icon';
+import TTip from '../../TTip/TTip';
 
 export interface InputLinePropsInterface {
   name: string;
   lineClass?: string;
+  lineContentClass?: string;
   labelClass?: string;
   label?: string;
   low?: boolean;
@@ -16,6 +19,7 @@ export interface InputLinePropsInterface {
   labelLink?: any;
   isRequired?: boolean;
   labelTag?: keyof JSX.IntrinsicElements;
+  description?: string;
 }
 
 const InputLine: React.FC<InputLinePropsInterface> = ({
@@ -33,6 +37,8 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   isHorizontal,
   labelTag = 'label',
   children,
+  description,
+  lineContentClass,
 }) => {
   const TagName = labelTag;
   const labelTagProps =
@@ -81,11 +87,18 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           {labelPostfix && <span className={classes.labelPostfix}>{labelPostfix}</span>}
           {labelLink && <span className={classes.labelLink}>{labelLink}</span>}
           {isRequired && <sup>*</sup>}
+          {description && (
+            <TTip title={description} className={classes.description}>
+              <Icon name={'Help'} />
+            </TTip>
+          )}
         </TagName>
       )}
       <div className={classes.holder}>
         {showInputPostfix(prefix, true)}
-        <div className={classes.content}>{children}</div>
+        <div className={`${classes.content} ${lineContentClass ? lineContentClass : ''}`}>
+          {children}
+        </div>
         {showInputPostfix(postfix)}
       </div>
     </div>

@@ -10,20 +10,19 @@ import {
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
-import { RubricCatalogueTitle, RubricModel } from '../../entities/Rubric';
+import { RubricModel } from '../../entities/Rubric';
 import {
-  DEFAULT_CITY,
   MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTE_WINE_TYPE,
+  MOCK_ATTRIBUTE_WINE_VARIANT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
   MOCK_OPTIONS_WINE_COLOR,
   MOCK_OPTIONS_GROUP_COLORS,
-  MOCK_OPTIONS_GROUP_WINE_TYPES,
-  MOCK_OPTIONS_WINE_TYPE,
+  MOCK_OPTIONS_GROUP_WINE_VARIANTS,
+  MOCK_OPTIONS_WINE_VARIANT,
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_B,
@@ -34,8 +33,8 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_B_B,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_LEVEL_TWO_B,
-  MOCK_RUBRIC_TYPE_ALCOHOL,
-  MOCK_RUBRIC_TYPE_JUICE,
+  MOCK_RUBRIC_VARIANT_ALCOHOL,
+  MOCK_RUBRIC_VARIANT_JUICE,
   DEFAULT_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   SECONDARY_LANG,
@@ -45,148 +44,14 @@ import {
   MOCK_CITIES,
   MOCK_COUNTRIES,
 } from '../../config';
-import { ProductCity, ProductModel } from '../../entities/Product';
-import { Types } from 'mongoose';
-import sharp from 'sharp';
-import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ProductModel } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
 import { CityModel } from '../../entities/City';
 import { CountryModel } from '../../entities/Country';
-
-interface LangInterface {
-  key: string;
-  value: string;
-}
-
-interface GetRubricCitiesInterface {
-  name: LangInterface[];
-  catalogueTitle: RubricCatalogueTitle;
-  level: number;
-  slug: string;
-  variant: string;
-  parent?: Types.ObjectId | null;
-  attributesGroups: {
-    showInCatalogueFilter: string[];
-    node: string;
-    isOwner: boolean;
-  }[];
-}
-
-function getRubricCities(node: GetRubricCitiesInterface) {
-  return [
-    {
-      key: DEFAULT_CITY,
-      node,
-    },
-    {
-      key: 'ny',
-      node: {
-        ...node,
-        name: [
-          {
-            key: 'ru',
-            value: `${node.name[0].value}-ny`,
-          },
-          {
-            key: 'en',
-            value: `${node.name[1].value}-ny`,
-          },
-        ],
-      },
-    },
-  ];
-}
-
-interface GetProductCitiesInterface {
-  name: LangInterface[];
-  cardName: LangInterface[];
-  description: LangInterface[];
-  rubrics: string[];
-  attributesGroups: {
-    showInCard: boolean;
-    node: string;
-    attributes: {
-      showInCard: boolean;
-      node: string;
-      key: string;
-      value: string[];
-    }[];
-  }[];
-  price: number;
-}
-
-async function getProductCities(
-  node: GetProductCitiesInterface,
-  active = true,
-): Promise<ProductCity[]> {
-  const cities = [DEFAULT_CITY, 'ny'];
-  const initialFilePath = './test/test-image-0.png';
-  const slug = generateDefaultLangSlug(node.cardName);
-  const productName = node.name[0].value;
-
-  return Promise.all(
-    cities.map(async (city) => {
-      const filesPath = `./assets/${city}/${slug}`;
-      const filesResolvePath = `/assets/${city}/${slug}`;
-      const fileName = `${slug}-${0}`;
-      const fileFormat = 'webp';
-      const resolvePath = `${filesResolvePath}/${fileName}.${fileFormat}`;
-      const finalPath = `${filesPath}/${fileName}.${fileFormat}`;
-
-      const resolveObject = {
-        key: city,
-        node: {
-          ...node,
-          name:
-            city === DEFAULT_CITY
-              ? node.name
-              : [
-                  {
-                    key: 'ru',
-                    value: `${productName}-${city}`,
-                  },
-                  {
-                    key: 'en',
-                    value: `${productName}-${city}`,
-                  },
-                ],
-          slug,
-          assets: [
-            {
-              index: 0,
-              url: resolvePath,
-            },
-          ],
-          active,
-        },
-      };
-
-      const exists = fs.existsSync(filesPath);
-      if (!exists) {
-        await mkdirp(filesPath);
-      } else {
-        return new Promise<ProductCity>((resolve) => {
-          resolve(resolveObject);
-        });
-      }
-
-      return new Promise<ProductCity>((resolve, reject) => {
-        sharp(initialFilePath)
-          .webp()
-          .toFile(finalPath)
-          .then(() => {
-            resolve(resolveObject);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    }),
-  );
-}
+import { getProductCities } from './getProductCities';
+import { getRubricCities } from './getRubricCities';
 
 const createTestData = async () => {
   try {
@@ -210,7 +75,7 @@ const createTestData = async () => {
 
     // Options
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
-    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_TYPE);
+    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
     const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
 
@@ -218,7 +83,7 @@ const createTestData = async () => {
     const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
 
     const optionsGroupWineTypes = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_WINE_TYPES,
+      ...MOCK_OPTIONS_GROUP_WINE_VARIANTS,
       options: optionsIdsWineType,
     });
 
@@ -245,8 +110,8 @@ const createTestData = async () => {
     });
 
     const attributeWineType = await AttributeModel.create({
-      ...MOCK_ATTRIBUTE_WINE_TYPE,
-      variant: MOCK_ATTRIBUTE_WINE_TYPE.variant as AttributeVariantEnum,
+      ...MOCK_ATTRIBUTE_WINE_VARIANT,
+      variant: MOCK_ATTRIBUTE_WINE_VARIANT.variant as AttributeVariantEnum,
       options: optionsGroupWineTypes.id,
       positioningInTitle: [
         {
@@ -296,8 +161,8 @@ const createTestData = async () => {
     });
 
     // Rubric types
-    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_TYPE_ALCOHOL);
-    await RubricVariantModel.create(MOCK_RUBRIC_TYPE_JUICE);
+    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_ALCOHOL);
+    await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_JUICE);
 
     // Rubrics
     const rubricAttributesGroups = (isOwner: boolean) => [

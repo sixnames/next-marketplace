@@ -1,4 +1,5 @@
 import commonMessages from './commonMessages';
+import configsMessages from './configsMessages';
 import currenciesMessages from './currenciesMessages';
 import languagesMessages from './languagesMessages';
 import citiesMessages from './citiesMessages';
@@ -13,6 +14,7 @@ import rubricsMessages from './rubricsMessages';
 
 const apiMessages = [
   ...commonMessages,
+  ...configsMessages,
   ...currenciesMessages,
   ...languagesMessages,
   ...citiesMessages,

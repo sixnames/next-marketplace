@@ -5,13 +5,15 @@ import HeaderUi from './HeaderUI';
 import HeaderNav from './HeaderNav';
 import useIsMobile from '../../../hooks/useIsMobile';
 import HeaderMobile from './HeaderMobile';
-import Link from 'next/link';
 import classes from './Header.module.css';
 import { useThemeContext } from '../../../context/themeContext';
 import Icon from '../../../components/Icon/Icon';
 import TTip from '../../../components/TTip/TTip';
 import { useLanguageContext } from '../../../context/languageContext';
 import { InitialSiteQueryQuery } from '../../../generated/apolloComponents';
+import { useConfigContext } from '../../../context/configContext';
+import Link from '../../../components/Link/Link';
+import { ASSETS_URL } from '../../../config';
 
 export type HeaderRubricType = Omit<InitialSiteQueryQuery['getRubricsTree'][0], 'children'>;
 
@@ -20,10 +22,17 @@ export interface HeaderRubricInterface extends HeaderRubricType {
 }
 
 const Header: React.FC = () => {
-  const { toggleTheme, themeIcon, themeTooltip } = useThemeContext();
+  const { toggleTheme, themeIcon, themeTooltip, logoSlug } = useThemeContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
   const { languagesList, setLanguage, isCurrentLanguage } = useLanguageContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+
+  const siteLogo = getSiteConfigSingleValue(logoSlug);
+  const siteLogoSrc = `${ASSETS_URL}${siteLogo}?format=svg`;
+
+  const configSiteName = getSiteConfigSingleValue('siteName');
+  const configContactPhone = getSiteConfigSingleValue('contactPhone');
 
   return (
     <header className={classes.frame} ref={headerRef}>
@@ -47,16 +56,8 @@ const Header: React.FC = () => {
             </div>
           ) : null}
 
-          <ul className={classes.topNav}>
-            {/*<li className={classes.topNavItem}>
-              <Link href={'/about'}>
-                <a>Наши кейсы</a>
-              </Link>
-            </li>*/}
-          </ul>
-
           <div className={classes.topRight}>
-            <a href={`tel:contactPhone`}>contactPhone</a>
+            <a href={`tel:${configContactPhone}`}>{configContactPhone}</a>
 
             <div className={classes.topNavItem}>
               <div className={classes.topLink}>Заказать звонок</div>
@@ -75,8 +76,8 @@ const Header: React.FC = () => {
       </div>
 
       <Inner className={classes.middle} lowTop lowBottom>
-        <Link href={'/'}>
-          <a className={classes.logo} aria-label={'Company logo'} />
+        <Link href={'/'} className={classes.logo} aria-label={'Главная страница'}>
+          <img src={siteLogoSrc} width='166' height='27' alt={configSiteName} />
         </Link>
 
         <HeaderSearch />

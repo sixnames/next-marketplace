@@ -1,6 +1,6 @@
 import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
-import { MOCK_RUBRIC_TYPE_ALCOHOL } from '../../../config';
+import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '../../../config';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
@@ -51,7 +51,7 @@ describe('Rubric type', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: MOCK_RUBRIC_TYPE_ALCOHOL.name[0].value }],
+            name: [{ key: 'ru', value: MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value }],
           },
         },
       },

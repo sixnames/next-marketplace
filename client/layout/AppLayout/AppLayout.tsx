@@ -9,19 +9,31 @@ import Modal from '../../components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from '../../hooks/useCompact';
 import useIsMobile from '../../hooks/useIsMobile';
+import { UserContextProvider } from '../../context/userContext';
+import { AppPageInterface } from '../../utils/getAppServerSideProps';
+import Inner from '../../components/Inner/Inner';
+import RequestError from '../../components/RequestError/RequestError';
+import { useConfigContext } from '../../context/configContext';
 
-interface AppLayoutInterface {
+interface AppLayoutInterface extends AppPageInterface {
   title?: string;
 }
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
+interface AppLayoutConsumerInterface {
+  title?: string;
+}
+
+const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, title }) => {
   const { isLoading, isModal } = useAppContext();
   const isMobile = useIsMobile();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const themeColor = getSiteConfigSingleValue('siteThemeColor');
+  const themeStyles = { '--theme': themeColor } as React.CSSProperties;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} style={themeStyles}>
       <Meta title={title} />
 
       <AppNav compact={compact} />
@@ -35,6 +47,29 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
       {isLoading && <Spinner />}
       {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
     </div>
+  );
+};
+
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApolloState }) => {
+  if (!initialApolloState) {
+    return (
+      <div className={classes.frame}>
+        <Inner>
+          <RequestError />
+        </Inner>
+      </div>
+    );
+  }
+
+  return (
+    <UserContextProvider
+      me={initialApolloState.me}
+      lang={initialApolloState.getClientLanguage}
+      languagesList={initialApolloState.getAllLanguages || []}
+      configs={initialApolloState.getAllConfigs}
+    >
+      <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
+    </UserContextProvider>
   );
 };
 

@@ -6,6 +6,7 @@ module.exports = {
     'cypress/globals': true,
   },
   extends: [
+    'plugin:css-modules/recommended',
     'plugin:cypress/recommended',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -29,13 +30,15 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'react-hooks'],
+  plugins: ['react', '@typescript-eslint', 'react-hooks', 'css-modules'],
   settings: {
     react: {
       version: 'latest',
     },
   },
   rules: {
+    'css-modules/no-unused-class': [2, { camelCase: true }],
+    'css-modules/no-undef-class': [2, { camelCase: true }],
     'react-app/jsx-a11y/anchor-is-valid': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',

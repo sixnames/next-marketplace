@@ -1,23 +1,20 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Field, FieldProps } from 'formik';
 import Icon from '../../Icon/Icon';
 import InputLine from '../Input/InputLine';
 import TTip from '../../TTip/TTip';
-import FormikImageUploadPreview from './FormikImageUploadPreview';
 import classes from './FormikImageUpload.module.css';
-import { PostfixType } from '../../../types';
+import { FormikInputPropsInterface } from '../Input/FormikInput';
+import { ASSETS_URL } from '../../../config';
+import ButtonCross from '../../Buttons/ButtonCross';
+import { useDropzone } from 'react-dropzone';
 
-interface FormikImageUploadInterface {
-  name: string;
-  lineClass?: string;
-  label?: string;
-  low?: boolean;
-  wide?: boolean;
-  labelPostfix?: any;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
+interface FormikImageUploadInterface extends FormikInputPropsInterface {
   tooltip?: any;
+  width?: string;
+  height?: string;
+  setImageHandler: (files: any) => void;
+  format?: string | string[];
 }
 
 const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
@@ -29,17 +26,26 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
   labelLink,
   low,
   tooltip,
+  testId,
+  isHorizontal,
+  description,
+  width = '6rem',
+  height = '6rem',
+  children,
+  lineContentClass,
+  setImageHandler,
+  format,
 }) => {
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: setImageHandler,
+    accept: format,
+  });
+
   return (
     <Field name={name}>
       {({ field, form }: FieldProps) => {
         const { setFieldValue } = form;
-
-        function setImageHandler(files: FileList | null) {
-          if (files) {
-            setFieldValue(name, files[0]);
-          }
-        }
+        const imageSrc = field.value ? `${ASSETS_URL}${field.value}?format=png` : null;
 
         function removeImageHandler() {
           setFieldValue(name, undefined);
@@ -54,25 +60,36 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
             labelPostfix={labelPostfix}
             labelLink={labelLink}
             low={low}
+            isHorizontal={isHorizontal}
+            description={description}
+            lineContentClass={lineContentClass}
           >
-            <TTip title={tooltip} className={classes.frame}>
-              <label className={classes.inputFrame}>
-                <input
-                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                    setImageHandler(event.target.files)
-                  }
-                  className={classes.input}
-                  type={'file'}
-                  name={name}
-                  id={name}
-                />
-              </label>
-              <Icon name={'Image'} className={classes.noImage} />
-              <FormikImageUploadPreview
-                removeImageHandler={removeImageHandler}
-                file={field.value}
-              />
+            <TTip title={tooltip} className={classes.frame} style={{ width, height }}>
+              <div className={classes.inputFrame} {...getRootProps()} data-cy={testId}>
+                <input {...getInputProps()} className={classes.input} name={name} id={name} />
+              </div>
+
+              {imageSrc ? (
+                <div className={classes.preview}>
+                  <img
+                    src={imageSrc}
+                    width='100'
+                    height='100'
+                    alt={''}
+                    data-cy={`${testId}-image`}
+                  />
+                  <ButtonCross
+                    onClick={removeImageHandler}
+                    testId={`${testId}-remove`}
+                    className={classes.remove}
+                  />
+                </div>
+              ) : (
+                <Icon name={'Image'} className={classes.noImage} />
+              )}
             </TTip>
+
+            {children}
           </InputLine>
         );
       }}

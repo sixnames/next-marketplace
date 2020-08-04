@@ -8,17 +8,34 @@ import Meta from '../Meta';
 import { useAppContext } from '../../context/appContext';
 import Modal from '../../components/Modal/Modal';
 import classes from './SiteLayout.module.css';
+import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
+import { SiteContextProvider } from '../../context/siteContext';
+import Inner from '../../components/Inner/Inner';
+import RequestError from '../../components/RequestError/RequestError';
+import { useConfigContext } from '../../context/configContext';
 
-interface SiteLayoutProps {
+interface SiteLayoutConsumerInterface {
   title?: string;
   description?: string;
 }
 
-const SiteLayout: React.FC<SiteLayoutProps> = ({ children, title, description }) => {
+interface SiteLayoutInterface extends SitePagePropsType {
+  title?: string;
+  description?: string;
+}
+
+const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
+  children,
+  title,
+  description,
+}) => {
   const { isLoading, isModal } = useAppContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const themeColor = getSiteConfigSingleValue('siteThemeColor');
+  const themeStyles = { '--theme': themeColor } as React.CSSProperties;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} style={themeStyles}>
       <Meta title={title} description={description} />
 
       <Header />
@@ -34,6 +51,31 @@ const SiteLayout: React.FC<SiteLayoutProps> = ({ children, title, description })
       {isLoading && <Spinner wide />}
       {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
     </div>
+  );
+};
+
+const SiteLayout: React.FC<SiteLayoutInterface> = ({
+  children,
+  title,
+  description,
+  initialApolloState,
+}) => {
+  if (!initialApolloState) {
+    return (
+      <div className={classes.frame}>
+        <Inner>
+          <RequestError />
+        </Inner>
+      </div>
+    );
+  }
+
+  return (
+    <SiteContextProvider initialApolloState={initialApolloState}>
+      <SiteLayoutConsumer title={title} description={description}>
+        {children}
+      </SiteLayoutConsumer>
+    </SiteContextProvider>
   );
 };
 

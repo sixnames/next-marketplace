@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './schemaTemplates';
 import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
-import { ROLES_ENUM } from '../config';
 
 const minPasswordLength = 5;
 const maxPasswordLength = 30;
@@ -99,15 +98,13 @@ const passwordSchema = ({ messages, lang }: SchemaMessagesInterface) =>
     );
 
 const userRoleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
-  Yup.mixed()
-    .oneOf(ROLES_ENUM)
-    .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
-        key: 'validation.users.role',
-      }),
-    );
+  Yup.string().required(
+    getValidationFieldMessage({
+      messages,
+      lang,
+      key: 'validation.users.role',
+    }),
+  );
 
 export const updateUserSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.object().shape({

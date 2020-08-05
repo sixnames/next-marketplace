@@ -217,7 +217,7 @@ input CreateUserInput {
   lastName: String
   name: String!
   phone: String!
-  role: String
+  role: ID!
   secondName: String
 }
 
@@ -584,6 +584,43 @@ type Query {
   me: User
 }
 
+type Role {
+  description: String!
+  id: String!
+  nameString: String!
+  rules: [RoleRule!]!
+  slug: String!
+}
+
+type RoleRule {
+  entity: String!
+  fields: [RoleRuleField!]!
+  id: String!
+  nameString: String!
+  operations: [RoleRuleOperation!]!
+}
+
+type RoleRuleField {
+  allowed: Boolean!
+  id: String!
+  nameString: String!
+}
+
+type RoleRuleOperation {
+  allowed: Boolean!
+  customFilter: String!
+  id: String!
+  operationType: RoleRuleOperationTypeEnum!
+}
+
+"""Role rule operation type enum"""
+enum RoleRuleOperationTypeEnum {
+  create
+  delete
+  read
+  update
+}
+
 type Rubric {
   active: Boolean!
   activeProductsCount: Int!
@@ -806,7 +843,7 @@ input UpdateUserInput {
   lastName: String
   name: String!
   phone: String!
-  role: String!
+  role: ID!
   secondName: String
 }
 
@@ -825,7 +862,7 @@ type User {
   lastName: String
   name: String!
   phone: String!
-  role: String!
+  role: Role!
   secondName: String
   shortName: String!
   updatedAt: Timestamp!

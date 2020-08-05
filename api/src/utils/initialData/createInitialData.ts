@@ -4,7 +4,6 @@ import {
   ADMIN_PHONE,
   ADMIN_PASSWORD,
   MOCK_METRICS,
-  ROLE_ADMIN,
   DEFAULT_LANG,
   INITIAL_LANGUAGES,
   DEFAULT_CURRENCY,
@@ -13,6 +12,10 @@ import {
   INITIAL_COUNTRIES,
   INITIAL_CITIES,
   DEFAULT_CITY,
+  ROLE_SLUG_ADMIN,
+  ROLE_TEMPLATE_ADMIN,
+  ROLE_SLUG_GUEST,
+  ROLE_TEMPLATE_GUEST,
 } from '../../config';
 import { MetricModel } from '../../entities/Metric';
 import { UserModel } from '../../entities/User';
@@ -23,6 +26,7 @@ import { CountryModel } from '../../entities/Country';
 import { CityModel } from '../../entities/City';
 import createInitialApiMessages from './createInitialApiMessages';
 import { createInitialSiteConfigs } from './createInitialSiteConfigs';
+import { RoleModel } from '../../entities/Role';
 
 async function createInitialData() {
   // Create initial site config
@@ -69,6 +73,21 @@ async function createInitialData() {
     await MetricModel.insertMany(MOCK_METRICS);
   }
 
+  // Roles
+  const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+  if (!guestRole) {
+    await RoleModel.create(ROLE_TEMPLATE_GUEST);
+  }
+
+  const adminRole = await RoleModel.findOne({ slug: ROLE_SLUG_ADMIN });
+  let adminRoleId;
+  if (!adminRole) {
+    const createdAdminRole = await RoleModel.create(ROLE_TEMPLATE_ADMIN);
+    adminRoleId = createdAdminRole.id;
+  } else {
+    adminRoleId = adminRole.id;
+  }
+
   // Create admin user
   const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
   if (!admin) {
@@ -80,7 +99,7 @@ async function createInitialData() {
       email: ADMIN_EMAIL,
       phone: ADMIN_PHONE,
       password,
-      role: ROLE_ADMIN,
+      role: adminRoleId,
     });
   }
 }

@@ -3,7 +3,7 @@ import { User } from '../../entities/User';
 
 @InputType()
 export class UpdateUserInput implements Partial<User> {
-  @Field(() => ID)
+  @Field((_type) => ID)
   id: string;
 
   @Field()
@@ -21,6 +21,6 @@ export class UpdateUserInput implements Partial<User> {
   @Field()
   phone: string;
 
-  @Field()
+  @Field((_type) => ID)
   role: string;
 }

@@ -45,15 +45,23 @@ const attributesGroupNameSchema = ({
     requiredMessageKey: 'validation.attributesGroups.name',
   });
 
-const options = Yup.string()
-  .nullable()
-  .when('variant', {
-    is: (variant: string) => {
-      return variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
-    },
-    then: Yup.string().required('Группа опций обязательна к заполнению.'),
-    otherwise: Yup.string(),
-  });
+const options = (args: SchemaMessagesInterface) =>
+  Yup.string()
+    .nullable()
+    .when('variant', {
+      is: (variant: string) => {
+        return (
+          variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+        );
+      },
+      then: Yup.string().required(
+        getValidationFieldMessage({
+          ...args,
+          key: 'validation.attributes.options',
+        }),
+      ),
+      otherwise: Yup.string(),
+    });
 
 const metric = Yup.string().nullable();
 
@@ -101,7 +109,7 @@ const attributeCommonFields = ({
   }),
   variant: attributeVariantSchema({ lang, messages }),
   metric,
-  options,
+  options: options({ lang, messages }),
   positioningInTitle: Yup.array()
     .of(attributePositioningInTitleSchema({ lang, messages }))
     .required(),

@@ -16,33 +16,6 @@ export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'руб.';
 export const SECONDARY_CURRENCY = '$';
 
-// ROLES
-export const ROLE_ADMIN = 'ADMIN';
-export const ROLE_CUSTOMER = 'CUSTOMER';
-export const ROLE_MANAGER = 'MANAGER';
-export const ROLE_SUPER = 'SUPER';
-
-export const ROLES_ENUM = [ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER, ROLE_SUPER];
-
-export const ROLES_LIST = [
-  {
-    id: ROLE_ADMIN,
-    name: 'Админ',
-  },
-  {
-    id: ROLE_CUSTOMER,
-    name: 'Клиент',
-  },
-  {
-    id: ROLE_MANAGER,
-    name: 'Менеджер',
-  },
-  {
-    id: ROLE_SUPER,
-    name: 'Супер-менеджер',
-  },
-];
-
 // GENDER
 export const GENDER_SHE = 'she';
 export const GENDER_HE = 'he';

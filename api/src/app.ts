@@ -11,6 +11,7 @@ import {
   CITY_COOKIE_KEY,
   DB_OPTIONS,
   SESS_OPTIONS,
+  ROLE_SLUG_GUEST,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import cookie from 'cookie';
@@ -49,6 +50,8 @@ import {
   testSignInRoute,
 } from '../routes/testingDataRoutes';
 import { assetsRoute } from '../routes/assetsRoutes';
+import { customAuthChecker } from './utils/auth/customAuthChecker';
+import { RoleModel } from './entities/Role';
 
 interface CreateAppInterface {
   app: Express;
@@ -86,6 +89,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
+    authChecker: customAuthChecker,
+    // authMode: 'null', // It will then return null instead of throwing an authorization error.
   });
 
   const app = express();
@@ -145,6 +150,10 @@ const createApp = async (): Promise<CreateAppInterface> => {
         res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
         req.lang = defaultLanguageKey;
       }
+
+      // Set default role
+      req.session!.userRole =
+        req.session!.userRole || (await RoleModel.findOne({ slug: ROLE_SLUG_GUEST }));
 
       // Return apollo context
       return connection ? connection.context : { req, res };

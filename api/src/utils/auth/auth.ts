@@ -1,9 +1,9 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { ContextInterface } from '../types/context';
-import { User, UserModel } from '../entities/User';
+import { ContextInterface } from '../../types/context';
+import { User, UserModel } from '../../entities/User';
 import { compare } from 'bcryptjs';
-import { IN_TEST } from '../config';
-import getApiMessage from './translations/getApiMessage';
+import { IN_TEST } from '../../config';
+import getApiMessage from '../translations/getApiMessage';
 
 type Request = ContextInterface['req'];
 

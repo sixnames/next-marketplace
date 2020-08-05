@@ -9,6 +9,7 @@ import {
   ObjectType,
   Ctx,
   ID,
+  Authorized,
 } from 'type-graphql';
 import { User, UserModel } from '../../entities/User';
 import { CreateUserInput } from './CreateUserInput';
@@ -18,14 +19,21 @@ import { UpdateUserInput } from './UpdateUserInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
-import { attemptSignIn, ensureSignedOut, attemptSignOut } from '../../utils/auth';
+import { attemptSignIn, ensureSignedOut, attemptSignOut } from '../../utils/auth/auth';
 import { hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '../../config';
+import {
+  OPERATION_TARGET_OPERATION,
+  OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_DELETE,
+  OPERATION_TYPE_READ,
+  OPERATION_TYPE_UPDATE,
+  ROLE_SLUG_GUEST,
+} from '../../config';
 import {
   createUserSchema,
   signInValidationSchema,
@@ -34,6 +42,8 @@ import {
 } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
+import { RoleModel } from '../../entities/Role';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -51,11 +61,25 @@ export class UserResolver {
     return UserModel.findById(ctx.req.session!.userId);
   }
 
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'User',
+      operationType: OPERATION_TYPE_READ,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
   @Query(() => User, { nullable: true })
   async getUser(@Arg('id', (_type) => ID) id: string): Promise<User | null> {
     return UserModel.findById(id);
   }
 
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'User',
+      operationType: OPERATION_TYPE_READ,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
   @Query(() => PaginatedUsersResponse)
   async getAllUsers(@Arg('input') input: UserPaginateInput): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
@@ -69,6 +93,13 @@ export class UserResolver {
     return UserModel.paginate(searchOptions, options);
   }
 
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'User',
+      operationType: OPERATION_TYPE_CREATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
   @Mutation(() => UserPayloadType)
   async createUser(
     @Ctx() ctx: ContextInterface,
@@ -106,7 +137,7 @@ export class UserResolver {
         ...values,
         itemId: '1',
         password,
-        role: role || ROLE_CUSTOMER,
+        role,
       });
 
       if (!user) {
@@ -129,6 +160,13 @@ export class UserResolver {
     }
   }
 
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'User',
+      operationType: OPERATION_TYPE_UPDATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
   @Mutation(() => UserPayloadType)
   async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
     try {
@@ -176,6 +214,13 @@ export class UserResolver {
     }
   }
 
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'User',
+      operationType: OPERATION_TYPE_DELETE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
   @Mutation(() => UserPayloadType)
   async deleteUser(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
     try {
@@ -226,12 +271,17 @@ export class UserResolver {
       }
 
       const password = await hash(input.password, 10);
+      let guestRoleId = ROLE_SLUG_GUEST;
+      const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+      if (guestRole) {
+        guestRoleId = guestRole.id;
+      }
 
       const user = await UserModel.create({
         ...input,
         itemId: '1',
         password,
-        role: ROLE_CUSTOMER,
+        role: guestRoleId,
       });
 
       if (!user) {
@@ -285,11 +335,11 @@ export class UserResolver {
         };
       }
 
+      const userRole = await RoleModel.findById(user.role);
+
+      ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
-      ctx.req.session!.userRole = user.role;
-      ctx.req.session!.isAdmin = user.role === ROLE_ADMIN;
-      ctx.req.session!.isCustomer = user.role === ROLE_CUSTOMER;
-      ctx.req.session!.isManager = user.role === ROLE_MANAGER;
+      ctx.req.session!.userRole = userRole;
       // req.session.cartId = user.cart;
 
       return {

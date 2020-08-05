@@ -172,6 +172,7 @@ const messagesKeys = [
   'validation.attributes.name',
   'validation.attributes.variant',
   'validation.attributes.position',
+  'validation.attributes.options',
 
   // Rubric variants ----------
   'rubricVariants.create.duplicate',

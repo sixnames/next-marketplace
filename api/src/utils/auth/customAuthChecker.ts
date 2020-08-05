@@ -1,6 +1,7 @@
 import { AuthChecker } from 'type-graphql';
 import { ContextInterface } from '../../types/context';
 import { RoleRule } from '../../entities/Role';
+import { OPERATION_TARGET_FIELD } from '../../config';
 
 export interface AuthCheckerConfigInterface {
   entity: string;
@@ -8,31 +9,35 @@ export interface AuthCheckerConfigInterface {
   target: 'operation' | 'field';
 }
 
-// TODO check if field
 // TODO check customFilter
 export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigInterface> = async (
   {
-    // info,
+    info,
     context: {
       req: { session },
     },
   },
   operationTypes,
 ): Promise<boolean> => {
-  // const { fieldName } = info;
   const operationConfig = operationTypes[0];
   const roleRules: RoleRule[] = session!.userRole.rules;
-  const operationRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
-  if (!operationRule) {
+  const entityRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
+  if (!entityRule) {
     return true;
   }
 
-  const operationTypeRule = operationRule.operations.find(
+  // Check if target is entity field
+  if (operationConfig.target === OPERATION_TARGET_FIELD) {
+    const restrictedField = entityRule.restrictedFields.includes(info.fieldName);
+    return !restrictedField;
+  }
+
+  const entityRuleOperation = entityRule.operations.find(
     ({ operationType }) => operationType === operationConfig.operationType,
   );
-  if (!operationTypeRule) {
+  if (!entityRuleOperation) {
     return true;
   }
 
-  return operationTypeRule.allowed;
+  return entityRuleOperation.allowed;
 };

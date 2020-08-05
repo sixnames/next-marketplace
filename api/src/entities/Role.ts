@@ -63,9 +63,9 @@ export class RoleRule {
   @prop({ type: RoleRuleOperation })
   operations: RoleRuleOperation[];
 
-  @Field((_type) => [RoleRuleField])
-  @prop({ type: RoleRuleField })
-  fields: RoleRuleField[];
+  @Field((_type) => String)
+  @prop({ type: String })
+  restrictedFields: string[];
 }
 
 @ObjectType()

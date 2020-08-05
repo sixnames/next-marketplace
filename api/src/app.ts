@@ -90,7 +90,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
     authChecker: customAuthChecker,
-    // authMode: 'null', // It will then return null instead of throwing an authorization error.
   });
 
   const app = express();

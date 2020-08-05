@@ -49,13 +49,13 @@ const guestRoleOperationsAndFields = {
   })),
   fields: [],
 };
-
+//
 const adminRoleOperationsAndFields = {
   operations: roleRuleOperationsTemplates.map((operation) => ({
     ...operation,
     allowed: true,
   })),
-  fields: [],
+  restrictedFields: [],
 };
 
 const guestRoleRules = [

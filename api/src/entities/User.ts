@@ -1,10 +1,8 @@
 import { getModelForClass, index, plugin, prop, pre, DocumentType } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { Authorized, Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { OPERATION_TARGET_FIELD, OPERATION_TYPE_READ } from '../config';
-import { AuthCheckerConfigInterface } from '../utils/auth/customAuthChecker';
 import { Role } from './Role';
 
 @ObjectType()
@@ -37,13 +35,6 @@ export class User extends TimeStamps {
   @prop({ trim: true })
   secondName?: string;
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_READ,
-      target: OPERATION_TARGET_FIELD,
-    },
-  ])
   @Field((_type) => String)
   @prop({ required: true, trim: true })
   email: string;

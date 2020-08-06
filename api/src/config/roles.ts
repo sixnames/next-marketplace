@@ -38,9 +38,9 @@ const guestRoleOperationsAndFields = {
     ...operation,
     allowed: false,
   })),
-  fields: [],
+  restrictedFields: [],
 };
-//
+
 const adminRoleOperationsAndFields = {
   operations: roleRuleOperationsTemplates.map((operation) => ({
     ...operation,

@@ -69,7 +69,25 @@ export async function getTestClientWithAuthenticatedUser(): Promise<
         name
         shortName
         fullName
-        role
+        role {
+          id
+          nameString
+          description
+          slug
+          isStuff
+          rules {
+            id
+            nameString
+            entity
+            restrictedFields
+            operations {
+              id
+              operationType
+              allowed
+              customFilter
+            }
+          }
+        }
       }
     }
   }

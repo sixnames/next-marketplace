@@ -1,10 +1,10 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { Metric } from '../../../entities/Metric';
 import { DEFAULT_LANG, MOCK_METRICS } from '../../../config';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext({});
 
     // Should return all metrics
     const { data: allMetrics } = await query(`

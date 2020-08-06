@@ -1,9 +1,9 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CITIES } from '../../../config';
 
 describe('City', () => {
   it('Should return cities', async () => {
-    const { query } = await getTestClientWithUser({});
+    const { query } = await testClientWithContext({});
 
     // Should return cities list
     const {

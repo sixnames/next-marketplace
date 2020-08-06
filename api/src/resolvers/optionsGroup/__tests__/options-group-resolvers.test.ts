@@ -1,4 +1,4 @@
-import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/translations/getLangField';
 import {
   DEFAULT_LANG,
@@ -62,7 +62,7 @@ const updateOptionInGroupMutation = () => `
 
 describe('Options groups', () => {
   it('Should CRUD options group', async () => {
-    const { query, mutate } = await getTestClientWithAuthenticatedUser();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all options groups
     const {

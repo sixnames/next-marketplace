@@ -3,14 +3,13 @@ import path from 'path';
 import { testClient } from '../../../test/setup';
 import { TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, DEFAULT_CITY, DEFAULT_LANG } from '../../config';
-import { User, UserModel } from '../../entities/User';
+import { User } from '../../entities/User';
 import mime from 'mime-types';
 import { Upload } from '../../types/upload';
 
 interface WithUserMutationInterface {
   mutate: TestQuery;
   query: TestQuery;
-  user: User | null;
   setOptions: TestSetOptions;
 }
 
@@ -26,14 +25,10 @@ interface GetTestClientWithUserInterface {
   lang?: string;
 }
 
-export async function getTestClientWithUser({
+export async function testClientWithContext({
   city = DEFAULT_CITY,
   lang = DEFAULT_LANG,
 }: GetTestClientWithUserInterface): Promise<WithUserMutationInterface> {
-  const user = await UserModel.findOne({
-    email: ADMIN_EMAIL,
-  });
-
   const { setOptions, mutate, query } = testClient;
 
   setOptions({
@@ -45,13 +40,11 @@ export async function getTestClientWithUser({
     },
   });
 
-  return { mutate, query, user, setOptions };
+  return { mutate, query, setOptions };
 }
 
-export async function getTestClientWithAuthenticatedUser(): Promise<
-  AuthenticatedUserMutationInterface
-> {
-  const { mutate, query, setOptions } = await getTestClientWithUser({});
+export async function authenticatedTestClient(): Promise<AuthenticatedUserMutationInterface> {
+  const { mutate, query, setOptions } = await testClientWithContext({});
 
   const {
     data: {
@@ -143,7 +136,7 @@ export async function mutateWithImages({
 }: MutateInterface): Promise<any> {
   try {
     const files = await getTestStreams({ dist, fileNames });
-    const { mutate } = await getTestClientWithAuthenticatedUser();
+    const { mutate } = await authenticatedTestClient();
 
     return await mutate(mutation, {
       variables: {

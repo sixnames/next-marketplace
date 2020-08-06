@@ -1,15 +1,21 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../../config';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLE_SLUG_GUEST } from '../../../config';
 import { max, alex } from '../__fixtures__';
+import { RoleModel } from '../../../entities/Role';
+import { UserModel } from '../../../entities/User';
 
 const { email, password, phone, name } = max;
 
 describe('User', () => {
   it('Should CRUD user', async () => {
-    const { mutate, query, user } = await getTestClientWithUser({});
+    const user = await UserModel.findOne({
+      email: ADMIN_EMAIL,
+    });
     if (!user) {
       throw Error('Test user not found');
     }
+
+    const { mutate, query } = await testClientWithContext({});
 
     // User should sign up
     const {
@@ -121,6 +127,10 @@ describe('User', () => {
     expect(success).toBeTruthy();
     expect(mutationUser.id).toEqual(user.id);
 
+    const role = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+    if (!role) {
+      throw Error('guest role not found');
+    }
     // Should create new user
     const {
       data: { createUser },
@@ -131,7 +141,7 @@ describe('User', () => {
                 email: "${alex.email}",
                 name: "${alex.name}",
                 phone: "${alex.phone}",
-                role: "",
+                role: "${role.id}",
               }
             ) {
              success
@@ -140,7 +150,6 @@ describe('User', () => {
                id
                email
                phone
-               role
              }
            }
           }
@@ -160,7 +169,7 @@ describe('User', () => {
                 email: "${alex.email}",
                 name: "${alex.name}",
                 phone: "${createdUser.phone}",
-                role: "${createdUser.role}",
+                role: "${role.id}",
               }
             ) {
               success
@@ -173,7 +182,6 @@ describe('User', () => {
            }
           }
         `);
-
     const updatedUser = updateUser.user;
     expect(success).toBeTruthy();
     expect(updatedUser.id).toEqual(createdUser.id);

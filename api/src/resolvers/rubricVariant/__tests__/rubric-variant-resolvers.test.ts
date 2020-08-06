@@ -1,10 +1,10 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
 import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '../../../config';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
-    const { mutate, query } = await getTestClientWithUser({});
+    const { mutate, query } = await testClientWithContext({});
 
     // Shouldn't create rubric types on validation error
     const {

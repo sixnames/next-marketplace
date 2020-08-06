@@ -1,9 +1,9 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, MOCK_COUNTRIES } from '../../../config';
 
 describe('Country', () => {
   it('Should CRUD countries and cities', async () => {
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext({});
 
     // Should return countries list with cities
     const {

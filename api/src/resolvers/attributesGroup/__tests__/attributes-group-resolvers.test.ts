@@ -1,4 +1,4 @@
-import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
@@ -46,7 +46,7 @@ const addAttributeToGroupMutation = (
 
 describe('Attributes Groups', () => {
   it('Should CRUD attributes groups.', async () => {
-    const { query, mutate } = await getTestClientWithAuthenticatedUser();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all attributes groups
     const {

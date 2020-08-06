@@ -1,9 +1,9 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CURRENCIES } from '../../../config';
 
 describe('Currency', () => {
   it('Should CRUD currency', async () => {
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext({});
 
     // Should return all currencies
     const {

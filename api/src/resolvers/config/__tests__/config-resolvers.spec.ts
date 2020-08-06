@@ -1,4 +1,4 @@
-import { getTestClientWithUser, mutateWithImages } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import {
   SITE_CONFIGS_All,
   SITE_CONFIGS_INITIAL,
@@ -10,7 +10,7 @@ import { Upload } from '../../../types/upload';
 describe('Config', () => {
   it('Should CRUD site config', async () => {
     const stringConfig = SITE_CONFIGS_INITIAL[0];
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext({});
 
     // Should return all site configs
     const {

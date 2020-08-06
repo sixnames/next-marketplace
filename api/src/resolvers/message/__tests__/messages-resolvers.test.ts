@@ -1,9 +1,9 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG } from '../../../config';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query } = await getTestClientWithUser({});
+    const { query } = await testClientWithContext({});
     const keys = ['validation.string.min', 'validation.string.max'];
 
     // Should return message list

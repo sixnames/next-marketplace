@@ -1,10 +1,10 @@
-import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { ROLE_SLUG_ADMIN } from '../../../config';
 import { Role } from '../../../entities/Role';
 
 describe('Roles', () => {
   it('Should CRUD role.', async () => {
-    const { query } = await getTestClientWithAuthenticatedUser();
+    const { query } = await authenticatedTestClient();
 
     // Should return all roles list
     const {

@@ -1,10 +1,10 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, ISO_LANGUAGES, MOCK_LANGUAGES } from '../../../config';
 import { Language } from '../../../entities/Language';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext({});
 
     // Should return client language stored in context
     const {

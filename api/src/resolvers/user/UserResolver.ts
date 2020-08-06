@@ -43,7 +43,7 @@ import {
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
-import { RoleModel } from '../../entities/Role';
+import { Role, RoleModel } from '../../entities/Role';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 
 @ObjectType()
@@ -74,7 +74,7 @@ export class UserResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<User | null> {
-    const customFiler = getRoleRuleCustomFilter({
+    const customFiler = getRoleRuleCustomFilter<User>({
       req: ctx.req,
       entity: 'User',
       operationType: OPERATION_TYPE_READ,
@@ -91,7 +91,10 @@ export class UserResolver {
     },
   ])
   @Query(() => PaginatedUsersResponse)
-  async getAllUsers(@Arg('input') input: UserPaginateInput): Promise<PaginatedUsersResponse> {
+  async getAllUsers(
+    @Ctx() ctx: ContextInterface,
+    @Arg('input') input: UserPaginateInput,
+  ): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
     const { searchOptions, options } = generatePaginationOptions({
       limit,
@@ -100,7 +103,14 @@ export class UserResolver {
       sortBy,
       search,
     });
-    return UserModel.paginate(searchOptions, options);
+
+    const customFiler = getRoleRuleCustomFilter<User>({
+      req: ctx.req,
+      entity: 'User',
+      operationType: OPERATION_TYPE_READ,
+    });
+
+    return UserModel.paginate({ ...searchOptions, ...customFiler }, options);
   }
 
   @Authorized<AuthCheckerConfigInterface>([
@@ -194,8 +204,14 @@ export class UserResolver {
       ]);
       await updateUserSchema({ messages, lang }).validate(input);
 
+      const customFiler = getRoleRuleCustomFilter<User>({
+        req: ctx.req,
+        entity: 'User',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
+
       const { id, ...values } = input;
-      const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
+
       const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
       if (exists) {
         return {
@@ -203,6 +219,10 @@ export class UserResolver {
           message: await getApiMessage({ key: `users.update.duplicate`, lang }),
         };
       }
+
+      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFiler }, values, {
+        new: true,
+      });
 
       if (!user) {
         return {
@@ -405,17 +425,11 @@ export class UserResolver {
   }
 
   @FieldResolver()
-  isAdmin(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isAdmin;
-  }
-
-  @FieldResolver()
-  isCustomer(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isCustomer;
-  }
-
-  @FieldResolver()
-  isManager(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isManager;
+  async role(@Root() user: DocumentType<User>): Promise<Role> {
+    const role = await RoleModel.findById(user.role);
+    if (!role) {
+      throw new Error('Role not found');
+    }
+    return role;
   }
 }

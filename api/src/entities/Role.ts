@@ -49,7 +49,7 @@ export class RoleRule {
   @prop({ type: RoleRuleOperation })
   operations: RoleRuleOperation[];
 
-  @Field((_type) => String)
+  @Field((_type) => [String])
   @prop({ type: String })
   restrictedFields: string[];
 }
@@ -70,6 +70,10 @@ export class Role {
   @Field((_type) => String)
   @prop({ type: String })
   slug: string;
+
+  @Field((_type) => Boolean)
+  @prop({ type: Boolean })
+  isStuff: boolean;
 
   @Field((_type) => [RoleRule])
   @prop({ type: RoleRule })

@@ -587,6 +587,7 @@ type Query {
 type Role {
   description: String!
   id: String!
+  isStuff: Boolean!
   nameString: String!
   rules: [RoleRule!]!
   slug: String!
@@ -597,7 +598,7 @@ type RoleRule {
   id: String!
   nameString: String!
   operations: [RoleRuleOperation!]!
-  restrictedFields: String!
+  restrictedFields: [String!]!
 }
 
 type RoleRuleOperation {
@@ -849,9 +850,6 @@ type User {
   email: String!
   fullName: String!
   id: ID!
-  isAdmin: Boolean!
-  isCustomer: Boolean!
-  isManager: Boolean!
   itemId: String!
   lastName: String
   name: String!

@@ -1,3 +1,22 @@
+// Roles
+export const OPERATION_TYPE_CREATE = 'create';
+export const OPERATION_TYPE_READ = 'read';
+export const OPERATION_TYPE_UPDATE = 'update';
+export const OPERATION_TYPE_DELETE = 'delete';
+export const OPERATION_TYPE_ENUM = [
+  OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_READ,
+  OPERATION_TYPE_UPDATE,
+  OPERATION_TYPE_DELETE,
+];
+
+export const OPERATION_TYPES_LIST = [
+  { id: OPERATION_TYPE_CREATE, nameString: 'Создание' },
+  { id: OPERATION_TYPE_READ, nameString: 'Чтение' },
+  { id: OPERATION_TYPE_UPDATE, nameString: 'Изменение' },
+  { id: OPERATION_TYPE_DELETE, nameString: 'Удаление' },
+];
+
 // Internationalization
 export const LANG_COOKIE_KEY = 'lang';
 export const CITY_COOKIE_KEY = 'city';
@@ -22,12 +41,6 @@ export const GENDER_HE = 'he';
 export const GENDER_IT = 'it';
 
 export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT];
-
-export const GENDER_LIST = [
-  { id: GENDER_SHE, nameString: 'Женский' },
-  { id: GENDER_HE, nameString: 'Мужской' },
-  { id: GENDER_IT, nameString: 'Средний' },
-];
 
 // CONFIG VARIANTS
 export const CONFIG_VARIANT_STRING = 'string';

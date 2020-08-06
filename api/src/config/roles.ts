@@ -1,15 +1,10 @@
 import { RoleRuleOperationTypeEnum } from '../entities/Role';
-
-export const OPERATION_TYPE_CREATE = 'create';
-export const OPERATION_TYPE_READ = 'read';
-export const OPERATION_TYPE_UPDATE = 'update';
-export const OPERATION_TYPE_DELETE = 'delete';
-export const OPERATION_TYPE_ENUM = [
+import {
   OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_DELETE,
   OPERATION_TYPE_READ,
   OPERATION_TYPE_UPDATE,
-  OPERATION_TYPE_DELETE,
-];
+} from './common';
 
 export const OPERATION_TARGET_OPERATION = 'operation';
 export const OPERATION_TARGET_FIELD = 'field';
@@ -18,12 +13,6 @@ export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
 
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
-
-export const ROLE_CUSTOM_FILTER_AUTHENTICATED_USER_ID = '__authenticatedUser';
-
-/*
- * customFilter: rule in JSON format
- */
 
 const roleRuleOperationsTemplates = [
   {
@@ -62,7 +51,7 @@ const adminRoleOperationsAndFields = {
 
 const guestRoleRules = [
   {
-    nameString: 'Атрибут',
+    nameString: 'Атрибуты',
     entity: 'Attribute',
   },
   {
@@ -78,55 +67,55 @@ const guestRoleRules = [
     entity: 'City',
   },
   {
-    nameString: 'Города',
+    nameString: 'Страны',
     entity: 'Country',
   },
   {
-    nameString: 'Города',
+    nameString: 'Валюта',
     entity: 'Currency',
   },
   {
-    nameString: 'Города',
+    nameString: 'Языки',
     entity: 'Language',
   },
   {
-    nameString: 'Города',
+    nameString: 'Сообщения системы',
     entity: 'Message',
   },
   {
-    nameString: 'Города',
+    nameString: 'Группы сообщений',
     entity: 'MessagesGroup',
   },
   {
-    nameString: 'Города',
+    nameString: 'Единицы измерения',
     entity: 'Metric',
   },
   {
-    nameString: 'Города',
+    nameString: 'Опции',
     entity: 'Option',
   },
   {
-    nameString: 'Города',
+    nameString: 'Группы опций',
     entity: 'OptionsGroup',
   },
   {
-    nameString: 'Города',
+    nameString: 'Товары',
     entity: 'Product',
   },
   {
-    nameString: 'Города',
+    nameString: 'Роли',
     entity: 'Role',
   },
   {
-    nameString: 'Города',
+    nameString: 'Рубрики',
     entity: 'Rubric',
   },
   {
-    nameString: 'Города',
+    nameString: 'Типы рубрик',
     entity: 'RubricVariant',
   },
   {
-    nameString: 'Пользователь',
+    nameString: 'Пользователи',
     entity: 'User',
   },
 ];
@@ -135,6 +124,7 @@ export const ROLE_TEMPLATE_GUEST = {
   nameString: 'Гость',
   description: 'Роль назначается новым или не авторизованным пользователям',
   slug: ROLE_SLUG_GUEST,
+  isStuff: false,
   rules: guestRoleRules.map((rule) => ({
     ...rule,
     ...guestRoleOperationsAndFields,
@@ -145,6 +135,7 @@ export const ROLE_TEMPLATE_ADMIN = {
   nameString: 'Админ',
   description: 'Админ',
   slug: ROLE_SLUG_ADMIN,
+  isStuff: true,
   rules: guestRoleRules.map((rule) => ({
     ...rule,
     ...adminRoleOperationsAndFields,

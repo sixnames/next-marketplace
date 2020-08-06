@@ -33,20 +33,6 @@ export class RoleRuleOperation {
 }
 
 @ObjectType()
-export class RoleRuleField {
-  @Field((_type) => String)
-  readonly id: string;
-
-  @Field((_type) => String)
-  @prop({ type: String })
-  nameString: string;
-
-  @Field((_type) => Boolean)
-  @prop({ type: Boolean })
-  allowed: boolean;
-}
-
-@ObjectType()
 export class RoleRule {
   @Field((_type) => String)
   readonly id: string;

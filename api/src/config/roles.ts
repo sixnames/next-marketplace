@@ -19,6 +19,8 @@ export const ROLE_SLUG_ADMIN = 'admin';
 
 export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
+export const ROLE_CUSTOM_FILTER_AUTHENTICATED_USER_ID = '__authenticatedUser';
+
 /*
  * customFilter: rule in JSON format
  */

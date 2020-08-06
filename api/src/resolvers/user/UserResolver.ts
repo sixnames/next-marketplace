@@ -44,6 +44,7 @@ import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { RoleModel } from '../../entities/Role';
+import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -69,8 +70,17 @@ export class UserResolver {
     },
   ])
   @Query(() => User, { nullable: true })
-  async getUser(@Arg('id', (_type) => ID) id: string): Promise<User | null> {
-    return UserModel.findById(id);
+  async getUser(
+    @Ctx() ctx: ContextInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<User | null> {
+    const customFiler = getRoleRuleCustomFilter({
+      req: ctx.req,
+      entity: 'User',
+      operationType: OPERATION_TYPE_READ,
+    });
+
+    return UserModel.findOne({ _id: id, ...customFiler });
   }
 
   @Authorized<AuthCheckerConfigInterface>([

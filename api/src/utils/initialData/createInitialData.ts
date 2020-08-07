@@ -1,75 +1,22 @@
-import {
-  ADMIN_NAME,
-  ADMIN_EMAIL,
-  ADMIN_PHONE,
-  ADMIN_PASSWORD,
-  MOCK_METRICS,
-  DEFAULT_LANG,
-  INITIAL_LANGUAGES,
-  DEFAULT_CURRENCY,
-  INITIAL_CURRENCIES,
-  DEFAULT_COUNTRY,
-  INITIAL_COUNTRIES,
-  INITIAL_CITIES,
-  DEFAULT_CITY,
-} from '../../config';
-import { MetricModel } from '../../entities/Metric';
+import { ADMIN_NAME, ADMIN_EMAIL, ADMIN_PHONE, ADMIN_PASSWORD } from '../../config';
 import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
-import { LanguageModel } from '../../entities/Language';
-import { CurrencyModel } from '../../entities/Currency';
-import { CountryModel } from '../../entities/Country';
-import { CityModel } from '../../entities/City';
 import createInitialApiMessages from './createInitialApiMessages';
 import { createInitialSiteConfigs } from './createInitialSiteConfigs';
 import { createInitialRoles } from './createInitialRoles';
+import { createInitialLocalizationData } from './createInitialLocalizationData';
 
 async function createInitialData() {
   // Create initial site config
   await createInitialSiteConfigs();
 
-  // Create all metrics
-  const metric = await MetricModel.find({});
-  if (!metric.length) {
-    await MetricModel.insertMany(MOCK_METRICS);
-  }
-
-  // Create initial currencies
-  const currencies = await CurrencyModel.find({ nameString: DEFAULT_CURRENCY });
-  let initialCurrencyName = DEFAULT_CURRENCY;
-  if (!currencies || !currencies.length) {
-    const initialCurrency = await CurrencyModel.create(INITIAL_CURRENCIES[0]);
-    initialCurrencyName = initialCurrency.nameString;
-  }
-
-  // Create initial cities
-  const cities = await CityModel.find({ slug: DEFAULT_CITY });
-  const citiesIds = [];
-  if (!cities || !cities.length) {
-    const initialCity = await CityModel.create(INITIAL_CITIES[0]);
-    citiesIds.push(initialCity.id);
-  }
-
-  // Create initial countries
-  const countries = await CountryModel.find({ nameString: DEFAULT_COUNTRY });
-  if (!countries || !countries.length) {
-    await CountryModel.create({
-      ...INITIAL_COUNTRIES[0],
-      cities: citiesIds,
-      currency: initialCurrencyName,
-    });
-  }
-
-  // Create default language
-  const languages = await LanguageModel.find({ key: DEFAULT_LANG });
-  if (!languages || !languages.length) {
-    await LanguageModel.create(INITIAL_LANGUAGES[0]);
-  }
+  // Create metrics, currencies, cities, countries, languages
+  await createInitialLocalizationData();
 
   // Create api message
   await createInitialApiMessages();
 
-  // Roles
+  // Create roles and get admin role
   const adminRoleId = await createInitialRoles();
 
   // Create admin user

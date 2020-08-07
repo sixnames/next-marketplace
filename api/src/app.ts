@@ -44,6 +44,7 @@ import {
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { ConfigResolver } from './resolvers/config/ConfigResolver';
 import { RoleResolver } from './resolvers/role/RoleResolver';
+import { NavItemResolver } from './resolvers/navItem/NavItemResolver';
 import {
   clearTestDataRoute,
   createTestDataRoute,
@@ -67,6 +68,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const schema = buildSchemaSync({
     resolvers: [
       ConfigResolver,
+      NavItemResolver,
       RoleResolver,
       AttributeResolver,
       AttributesGroupResolver,

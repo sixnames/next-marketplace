@@ -587,6 +587,7 @@ type Query {
 }
 
 type Role {
+  allowedNavigation: [String!]!
   description: String!
   id: String!
   isStuff: Boolean!

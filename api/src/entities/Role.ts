@@ -78,6 +78,10 @@ export class Role {
   @Field((_type) => [RoleRule])
   @prop({ type: RoleRule })
   rules: RoleRule[];
+
+  @Field((_type) => [String])
+  @prop({ type: String })
+  allowedNavigation: string[];
 }
 
 export const RoleModel = getModelForClass(Role);

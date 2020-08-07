@@ -69,7 +69,9 @@ function getIdsFromTree(tree: CreateInitialAppNavigationPayloadInterface[]) {
     return [...reducerAcc, id];
   };
 
-  return tree.reduce((acc: string[], item) => [...acc, ...reducer(item, [])], []);
+  return tree.reduce((acc: string[], item) => {
+    return [...acc, ...reducer(item, []), item.id];
+  }, []);
 }
 
 export async function createInitialRoles(): Promise<string> {
@@ -78,7 +80,7 @@ export async function createInitialRoles(): Promise<string> {
   if (!guestRole) {
     await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedNavigation: [] });
   }
-  //
+
   // Admin role
   const adminNavItems = await createInitialAppNavigation({
     navItems: INITIAL_APP_NAVIGATION,

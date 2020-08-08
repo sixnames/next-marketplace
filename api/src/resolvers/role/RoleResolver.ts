@@ -59,12 +59,15 @@ export class RoleResolver {
     return NavItemModel.find({
       _id: { $in: role.allowedAppNavigation },
       parent: null,
-    }).populate({
-      path: 'children',
-      model: NavItemModel,
-      match: {
-        _id: { $in: role.allowedAppNavigation },
-      },
-    });
+    })
+      .sort({ order: 1 })
+      .populate({
+        path: 'children',
+        model: NavItemModel,
+        sort: { order: 1 },
+        match: {
+          _id: { $in: role.allowedAppNavigation },
+        },
+      });
   }
 }

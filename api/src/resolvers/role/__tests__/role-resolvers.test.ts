@@ -2,7 +2,12 @@ import {
   authenticatedTestClient,
   testClientWithContext,
 } from '../../../utils/testUtils/testHelpers';
-import { DEFAULT_LANG, ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '../../../config';
+import {
+  DEFAULT_LANG,
+  // OPERATION_TYPE_READ,
+  ROLE_SLUG_ADMIN,
+  ROLE_SLUG_GUEST,
+} from '../../../config';
 import { Role, RoleModel } from '../../../entities/Role';
 
 describe('Roles', () => {
@@ -43,7 +48,7 @@ describe('Roles', () => {
             restrictedFields
             operations {
               operationType
-              allowed
+              allow
               customFilter
             }
           }
@@ -74,7 +79,7 @@ describe('Roles', () => {
             restrictedFields
             operations {
               operationType
-              allowed
+              allow
               customFilter
             }
           }
@@ -102,7 +107,7 @@ describe('Roles', () => {
             restrictedFields
             operations {
               operationType
-              allowed
+              allow
               customFilter
             }
           }
@@ -147,7 +152,7 @@ describe('Roles', () => {
             restrictedFields
             operations {
               operationType
-              allowed
+              allow
               customFilter
             }
           }
@@ -250,6 +255,53 @@ describe('Roles', () => {
     expect(updateRole.success).toBeTruthy();
     expect(updateRole.role.nameString).toEqual(updatedRoleName);
     expect(updateRole.role.description).toEqual(updatedRoleDescription);
+
+    // Should update role operation permission
+    /*const userEntity = 'User';
+    const {
+      data: { setRoleOperationPermission },
+    } = await mutate(
+      `
+      mutation SetRoleOperationPermission($input: SetRoleOperationPermissionInput!) {
+        setRoleOperationPermission(input: $input) {
+          success
+          message
+          role {
+            id
+            nameString
+            description
+            rules {
+              nameString
+              entity
+              restrictedFields
+              operations {
+                operationType
+                allow
+                customFilter
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            id: createdRole.id,
+            entity: userEntity,
+            operationType: OPERATION_TYPE_READ,
+            allow: true,
+          },
+        },
+      },
+    );
+    const { rules } = setRoleOperationPermission.rules;
+    const updatedRule = rules.find(({ entity }: RoleRule) => entity === userEntity);
+    const updatedOperation = updatedRule.operations.find(
+      ({ operationType }: RoleRuleOperation) => operationType === OPERATION_TYPE_READ,
+    );
+    expect(updatedOperation.allow).toBeTruthy();
+    expect(setRoleOperationPermission.success).toBeTruthy();*/
 
     // Should delete role
     const {

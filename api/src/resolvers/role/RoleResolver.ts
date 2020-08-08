@@ -32,6 +32,9 @@ import getLangField from '../../utils/translations/getLangField';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateRoleInput } from './UpdateRoleInput';
 import { UserModel } from '../../entities/User';
+import { generateDefaultLangSlug } from '../../utils/slug';
+import { RoleRule, RoleRuleModel } from '../../entities/RoleRule';
+// import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInput';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -83,7 +86,11 @@ export class RoleResolver {
 
   @Query((_returns) => Role)
   async getSessionRole(@Ctx() ctx: ContextInterface): Promise<Role> {
-    return ctx.req.session!.userRole;
+    const sessionRole = await RoleModel.findById(ctx.req.session!.userRole._id);
+    if (!sessionRole) {
+      throw new Error('Session role not found');
+    }
+    return sessionRole;
   }
 
   // TODO validation and messages
@@ -113,9 +120,11 @@ export class RoleResolver {
         };
       }
 
+      const slug = generateDefaultLangSlug(name);
       const role = await RoleModel.create({
         ...ROLE_TEMPLATE_GUEST,
         ...input,
+        slug,
         allowedAppNavigation: [],
       });
 
@@ -263,7 +272,82 @@ export class RoleResolver {
     }
   }
 
-  @FieldResolver()
+  // TODO validation and messages
+  /*@Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_UPDATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async setRoleOperationPermission(
+    @Arg('input', (_type) => SetRoleOperationPermissionInput)
+    input: SetRoleOperationPermissionInput,
+  ): Promise<RolePayloadType> {
+    try {
+      const { id, entity, operationType, allow } = input;
+      const role = await RoleModel.findById(id).exec();
+
+      if (!role) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const currentRule = role.rules.find(({ entity: ruleEntity }) => ruleEntity === entity);
+      if (!currentRule) {
+        return {
+          success: false,
+          message: 'ruleNotFound',
+        };
+      }
+      const updatedOperations = currentRule.operations.map((operation) => {
+        const { operationType: ruleOperationType } = operation;
+        if (ruleOperationType === operationType) {
+          return {
+            ...operation,
+            allow,
+          };
+        }
+        return operation;
+      });
+
+      const updatedRole = await RoleModel.updateOne(
+        {
+          _id: id,
+          'rules.entity': entity,
+        },
+        {
+          $set: {
+            'rules.$.operations': updatedOperations,
+          },
+        },
+      );
+
+      if (!updatedRole) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role: updatedRole,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }*/
+
+  @FieldResolver((_returns) => String)
   async nameString(
     @Root() role: DocumentType<Role>,
     @Ctx() ctx: ContextInterface,
@@ -271,7 +355,14 @@ export class RoleResolver {
     return getLangField(role.name, ctx.req.lang);
   }
 
-  @FieldResolver()
+  @FieldResolver((_returns) => [RoleRule])
+  async rules(@Root() role: DocumentType<Role>): Promise<RoleRule[]> {
+    return RoleRuleModel.find({
+      roleId: role.id,
+    });
+  }
+
+  @FieldResolver((_returns) => [NavItem])
   async appNavigation(@Root() role: DocumentType<Role>): Promise<NavItem[]> {
     return NavItemModel.find({
       _id: { $in: role.allowedAppNavigation },

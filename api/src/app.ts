@@ -54,6 +54,7 @@ import {
 import { assetsRoute } from '../routes/assetsRoutes';
 import { customAuthChecker } from './utils/auth/customAuthChecker';
 import { RoleModel } from './entities/Role';
+import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 
 interface CreateAppInterface {
   app: Express;
@@ -155,8 +156,22 @@ const createApp = async (): Promise<CreateAppInterface> => {
       }
 
       // Set default role
-      req.session!.userRole =
-        req.session!.userRole || (await RoleModel.findOne({ slug: ROLE_SLUG_GUEST }));
+      if (!req.session!.userRole) {
+        const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST }).lean().exec();
+        if (!guestRole) {
+          throw Error('Guest role not found');
+        }
+        const userRoleRules = await RoleRuleModel.find({
+          roleId: guestRole._id,
+        })
+          .populate({
+            path: 'operations',
+            model: RoleRuleOperationModel,
+          })
+          .lean()
+          .exec();
+        req.session!.userRole = { ...guestRole, rules: userRoleRules };
+      }
 
       // Return apollo context
       return connection ? connection.context : { req, res };

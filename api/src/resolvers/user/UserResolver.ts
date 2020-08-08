@@ -45,6 +45,7 @@ import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { Role, RoleModel } from '../../entities/Role';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
+import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -365,11 +366,20 @@ export class UserResolver {
         };
       }
 
-      const userRole = await RoleModel.findById(user.role);
+      const userRole = await RoleModel.findById(user.role).lean().exec();
+      const userRoleRules = await RoleRuleModel.find({
+        roleId: user.role,
+      })
+        .populate({
+          path: 'operations',
+          model: RoleRuleOperationModel,
+        })
+        .lean()
+        .exec();
 
       ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
-      ctx.req.session!.userRole = userRole;
+      ctx.req.session!.userRole = { ...userRole, rules: userRoleRules };
       // req.session.cartId = user.cart;
 
       return {

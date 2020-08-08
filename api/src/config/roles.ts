@@ -1,4 +1,3 @@
-import { RoleRuleOperationTypeEnum } from '../entities/Role';
 import {
   DEFAULT_LANG,
   OPERATION_TYPE_CREATE,
@@ -13,120 +12,6 @@ export const ROUTE_CMS = `${ROUTE_APP}/cms`;
 export const QUERY_DATA_LAYOUT_FILTER = 'isFilterVisible';
 export const QUERY_DATA_LAYOUT_FILTER_VALUE = '1';
 export const QUERY_DATA_LAYOUT_FILTER_ENABLED = `?${QUERY_DATA_LAYOUT_FILTER}=${QUERY_DATA_LAYOUT_FILTER_VALUE}`;
-
-export const OPERATION_TARGET_OPERATION = 'operation';
-export const OPERATION_TARGET_FIELD = 'field';
-
-export const ROLE_SLUG_GUEST = 'guest';
-export const ROLE_SLUG_ADMIN = 'admin';
-
-export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
-
-const roleRuleOperationsTemplates = [
-  {
-    operationType: OPERATION_TYPE_CREATE as RoleRuleOperationTypeEnum,
-    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
-  },
-  {
-    operationType: OPERATION_TYPE_READ as RoleRuleOperationTypeEnum,
-    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
-  },
-  {
-    operationType: OPERATION_TYPE_UPDATE as RoleRuleOperationTypeEnum,
-    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
-  },
-  {
-    operationType: OPERATION_TYPE_DELETE as RoleRuleOperationTypeEnum,
-    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
-  },
-];
-
-const guestRoleOperationsAndFields = {
-  operations: roleRuleOperationsTemplates.map((operation) => ({
-    ...operation,
-    allowed: false,
-  })),
-  restrictedFields: [],
-};
-
-const adminRoleOperationsAndFields = {
-  operations: roleRuleOperationsTemplates.map((operation) => ({
-    ...operation,
-    allowed: true,
-  })),
-  restrictedFields: [],
-};
-
-export const ROLE_RULES_TEMPLATE = [
-  {
-    nameString: 'Атрибуты',
-    entity: 'Attribute',
-  },
-  {
-    nameString: 'Группы атрибутов',
-    entity: 'AttributesGroup',
-  },
-  {
-    nameString: 'Типы атрибутов',
-    entity: 'AttributeVariant',
-  },
-  {
-    nameString: 'Города',
-    entity: 'City',
-  },
-  {
-    nameString: 'Страны',
-    entity: 'Country',
-  },
-  {
-    nameString: 'Валюта',
-    entity: 'Currency',
-  },
-  {
-    nameString: 'Языки',
-    entity: 'Language',
-  },
-  {
-    nameString: 'Сообщения системы',
-    entity: 'Message',
-  },
-  {
-    nameString: 'Группы сообщений',
-    entity: 'MessagesGroup',
-  },
-  {
-    nameString: 'Единицы измерения',
-    entity: 'Metric',
-  },
-  {
-    nameString: 'Опции',
-    entity: 'Option',
-  },
-  {
-    nameString: 'Группы опций',
-    entity: 'OptionsGroup',
-  },
-  {
-    nameString: 'Товары',
-    entity: 'Product',
-  },
-  {
-    nameString: 'Роли',
-    entity: 'Role',
-  },
-  {
-    nameString: 'Рубрики',
-    entity: 'Rubric',
-  },
-  {
-    nameString: 'Типы рубрик',
-    entity: 'RubricVariant',
-  },
-  {
-    nameString: 'Пользователи',
-    entity: 'User',
-  },
-];
 
 const cmsRoute = {
   slug: 'cms',
@@ -284,10 +169,103 @@ const cmsRoute = {
 
 export const INITIAL_APP_NAVIGATION = [cmsRoute];
 
-export const ROLE_RULES_TEMPLATE_GUEST = ROLE_RULES_TEMPLATE.map((rule) => ({
-  ...rule,
-  ...guestRoleOperationsAndFields,
-}));
+export const OPERATION_TARGET_OPERATION = 'operation';
+export const OPERATION_TARGET_FIELD = 'field';
+
+export const ROLE_SLUG_GUEST = 'guest';
+export const ROLE_SLUG_ADMIN = 'admin';
+
+export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
+
+export const ROLE_RULE_OPERATIONS_TEMPLATE = [
+  {
+    operationType: OPERATION_TYPE_CREATE,
+    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+  },
+  {
+    operationType: OPERATION_TYPE_READ,
+    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+  },
+  {
+    operationType: OPERATION_TYPE_UPDATE,
+    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+  },
+  {
+    operationType: OPERATION_TYPE_DELETE,
+    customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+  },
+];
+//
+export const ROLE_RULES_TEMPLATE = [
+  {
+    nameString: 'Атрибуты',
+    entity: 'Attribute',
+  },
+  {
+    nameString: 'Группы атрибутов',
+    entity: 'AttributesGroup',
+  },
+  {
+    nameString: 'Типы атрибутов',
+    entity: 'AttributeVariant',
+  },
+  {
+    nameString: 'Города',
+    entity: 'City',
+  },
+  {
+    nameString: 'Страны',
+    entity: 'Country',
+  },
+  {
+    nameString: 'Валюта',
+    entity: 'Currency',
+  },
+  {
+    nameString: 'Языки',
+    entity: 'Language',
+  },
+  {
+    nameString: 'Сообщения системы',
+    entity: 'Message',
+  },
+  {
+    nameString: 'Группы сообщений',
+    entity: 'MessagesGroup',
+  },
+  {
+    nameString: 'Единицы измерения',
+    entity: 'Metric',
+  },
+  {
+    nameString: 'Опции',
+    entity: 'Option',
+  },
+  {
+    nameString: 'Группы опций',
+    entity: 'OptionsGroup',
+  },
+  {
+    nameString: 'Товары',
+    entity: 'Product',
+  },
+  {
+    nameString: 'Роли',
+    entity: 'Role',
+  },
+  {
+    nameString: 'Рубрики',
+    entity: 'Rubric',
+  },
+  {
+    nameString: 'Типы рубрик',
+    entity: 'RubricVariant',
+  },
+  {
+    nameString: 'Пользователи',
+    entity: 'User',
+  },
+];
 
 export const ROLE_TEMPLATE_GUEST = {
   name: [
@@ -298,13 +276,7 @@ export const ROLE_TEMPLATE_GUEST = {
   description: 'Роль назначается новым или не авторизованным пользователям',
   slug: ROLE_SLUG_GUEST,
   isStuff: false,
-  rules: ROLE_RULES_TEMPLATE_GUEST,
 };
-
-export const ROLE_RULES_TEMPLATE_ADMIN = ROLE_RULES_TEMPLATE.map((rule) => ({
-  ...rule,
-  ...adminRoleOperationsAndFields,
-}));
 
 export const ROLE_TEMPLATE_ADMIN = {
   name: [
@@ -312,8 +284,7 @@ export const ROLE_TEMPLATE_ADMIN = {
     { key: SECONDARY_LANG, value: 'Admin' },
   ],
   nameString: '',
-  description: 'Админ',
+  description: 'Администратор сайта',
   slug: ROLE_SLUG_ADMIN,
   isStuff: true,
-  rules: ROLE_RULES_TEMPLATE_ADMIN,
 };

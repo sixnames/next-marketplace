@@ -5,11 +5,12 @@ import {
   ROLE_SLUG_GUEST,
   ROLE_TEMPLATE_ADMIN,
   ROLE_TEMPLATE_GUEST,
-  ROLE_RULES_TEMPLATE_GUEST,
-  ROLE_RULES_TEMPLATE_ADMIN,
+  ROLE_RULES_TEMPLATE,
+  ROLE_RULE_OPERATIONS_TEMPLATE,
 } from '../../config';
 import { NavItemModel } from '../../entities/NavItem';
 import { Types } from 'mongoose';
+import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 
 interface CreateInitialAppNavigationInterface {
   navItems: typeof INITIAL_APP_NAVIGATION;
@@ -91,6 +92,31 @@ function getIdsFromTree(tree: CreateInitialAppNavigationPayloadInterface[]) {
   }, []);
 }
 
+interface CreateRoleRulesInterface {
+  allow: boolean;
+  roleId: string;
+}
+
+async function createRoleRules({ allow, roleId }: CreateRoleRulesInterface) {
+  for await (const rule of ROLE_RULES_TEMPLATE) {
+    const existingRule = await RoleRuleModel.findOne({ entity: rule.entity, roleId });
+    if (!existingRule) {
+      const operationsTemplate = ROLE_RULE_OPERATIONS_TEMPLATE.map((operation) => ({
+        ...operation,
+        allow,
+      }));
+      const operations = await RoleRuleOperationModel.insertMany(operationsTemplate);
+      const operationsIds = operations.map(({ id }) => id);
+      await RoleRuleModel.create({
+        ...rule,
+        roleId,
+        operations: operationsIds,
+        restrictedFields: [],
+      });
+    }
+  }
+}
+
 export async function createInitialRoles(): Promise<string> {
   // Guest role
   let guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
@@ -98,19 +124,7 @@ export async function createInitialRoles(): Promise<string> {
     guestRole = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedAppNavigation: [] });
   }
   // check new rules
-  for await (const rule of ROLE_RULES_TEMPLATE_GUEST) {
-    const exitingRule = guestRole.rules.find(({ entity }) => entity === rule.entity);
-    if (!exitingRule) {
-      await RoleModel.findOneAndUpdate(
-        { slug: ROLE_SLUG_GUEST },
-        {
-          $push: {
-            rules: rule,
-          },
-        },
-      );
-    }
-  }
+  await createRoleRules({ allow: false, roleId: guestRole.id });
 
   // Admin role
   const adminNavItems = await createInitialAppNavigation({
@@ -118,42 +132,26 @@ export async function createInitialRoles(): Promise<string> {
   });
   const allowedAppNavigation = getIdsFromTree(adminNavItems);
 
-  const adminRole = await RoleModel.findOne({ slug: ROLE_SLUG_ADMIN });
-  let adminRoleId;
+  let adminRole = await RoleModel.findOne({ slug: ROLE_SLUG_ADMIN });
   if (!adminRole) {
-    const createdAdminRole = await RoleModel.create({
+    adminRole = await RoleModel.create({
       ...ROLE_TEMPLATE_ADMIN,
       allowedAppNavigation,
     });
-    adminRoleId = createdAdminRole.id;
-  } else {
-    // check new nav items
-    if (adminRole.allowedAppNavigation.length < allowedAppNavigation.length) {
-      await RoleModel.findOneAndUpdate(
-        { slug: ROLE_SLUG_ADMIN },
-        {
-          allowedAppNavigation,
-        },
-      );
-    }
-
-    // check new rules
-    for await (const rule of ROLE_RULES_TEMPLATE_ADMIN) {
-      const exitingRule = adminRole.rules.find(({ entity }) => entity === rule.entity);
-      if (!exitingRule) {
-        await RoleModel.findOneAndUpdate(
-          { slug: ROLE_SLUG_ADMIN },
-          {
-            $push: {
-              rules: rule,
-            },
-          },
-        );
-      }
-    }
-
-    adminRoleId = adminRole.id;
   }
 
-  return adminRoleId;
+  // check new nav items
+  if (adminRole.allowedAppNavigation.length < allowedAppNavigation.length) {
+    await RoleModel.findOneAndUpdate(
+      { slug: ROLE_SLUG_ADMIN },
+      {
+        allowedAppNavigation,
+      },
+    );
+  }
+
+  // check new rules
+  await createRoleRules({ allow: true, roleId: adminRole.id });
+
+  return adminRole.id;
 }

@@ -78,7 +78,7 @@ export async function authenticatedTestClient(): Promise<AuthenticatedUserMutati
             restrictedFields
             operations {
               operationType
-              allowed
+              allow
               customFilter
             }
           }

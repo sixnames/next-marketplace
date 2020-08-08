@@ -1,6 +1,5 @@
 import { AuthChecker } from 'type-graphql';
 import { ContextInterface } from '../../types/context';
-import { RoleRule } from '../../entities/Role';
 import { OPERATION_TARGET_FIELD } from '../../config';
 
 export interface AuthCheckerConfigInterface {
@@ -18,8 +17,9 @@ export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigI
   },
   operationTypes,
 ): Promise<boolean> => {
+  console.log(session!.userRole);
   const operationConfig = operationTypes[0];
-  const roleRules: RoleRule[] = session!.userRole.rules;
+  const roleRules: any[] = session!.userRole.rules;
   const entityRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
   if (!entityRule) {
     return true;
@@ -32,11 +32,11 @@ export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigI
   }
 
   const entityRuleOperation = entityRule.operations.find(
-    ({ operationType }) => operationType === operationConfig.operationType,
+    ({ operationType }: any) => operationType === operationConfig.operationType,
   );
   if (!entityRuleOperation) {
     return true;
   }
 
-  return entityRuleOperation.allowed;
+  return entityRuleOperation.allow;
 };

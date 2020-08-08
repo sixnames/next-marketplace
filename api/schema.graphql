@@ -352,6 +352,7 @@ type Mutation {
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
+  deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
@@ -372,6 +373,7 @@ type Mutation {
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateProduct(input: UpdateProductInput!): ProductPayloadType!
+  updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
@@ -606,7 +608,7 @@ type Query {
 }
 
 type Role {
-  allowedAppNavigation: [String!]!
+  allowedAppNavigation: [ID!]!
   appNavigation: [NavItem!]!
   description: String!
   id: String!
@@ -625,14 +627,17 @@ type RolePayloadType {
 
 type RoleRule {
   entity: String!
+  id: String!
   nameString: String!
   operations: [RoleRuleOperation!]!
   restrictedFields: [String!]!
+  roleId: ID!
 }
 
 type RoleRuleOperation {
-  allowed: Boolean!
+  allow: Boolean!
   customFilter: String!
+  id: String!
   operationType: RoleRuleOperationTypeEnum!
 }
 
@@ -845,6 +850,13 @@ input UpdateProductInput {
   name: [LangInput!]!
   price: Int!
   rubrics: [ID!]!
+}
+
+input UpdateRoleInput {
+  description: String!
+  id: ID!
+  isStuff: Boolean!
+  name: [LangInput!]!
 }
 
 input UpdateRubricInput {

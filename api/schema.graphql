@@ -201,6 +201,12 @@ input CreateProductInput {
   rubrics: [ID!]!
 }
 
+input CreateRoleInput {
+  description: String!
+  isStuff: Boolean!
+  name: [LangInput!]!
+}
+
 input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
@@ -330,6 +336,7 @@ type Mutation {
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
+  createRole(input: CreateRoleInput!): RolePayloadType!
   createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
   createUser(input: CreateUserInput!): UserPayloadType!
@@ -604,9 +611,16 @@ type Role {
   description: String!
   id: String!
   isStuff: Boolean!
+  name: [LanguageType!]!
   nameString: String!
   rules: [RoleRule!]!
   slug: String!
+}
+
+type RolePayloadType {
+  message: String!
+  role: Role
+  success: Boolean!
 }
 
 type RoleRule {

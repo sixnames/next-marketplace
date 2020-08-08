@@ -290,7 +290,11 @@ export const ROLE_RULES_TEMPLATE_GUEST = ROLE_RULES_TEMPLATE.map((rule) => ({
 }));
 
 export const ROLE_TEMPLATE_GUEST = {
-  nameString: 'Гость',
+  name: [
+    { key: DEFAULT_LANG, value: 'Гость' },
+    { key: SECONDARY_LANG, value: 'Guest' },
+  ],
+  nameString: '',
   description: 'Роль назначается новым или не авторизованным пользователям',
   slug: ROLE_SLUG_GUEST,
   isStuff: false,
@@ -303,7 +307,11 @@ export const ROLE_RULES_TEMPLATE_ADMIN = ROLE_RULES_TEMPLATE.map((rule) => ({
 }));
 
 export const ROLE_TEMPLATE_ADMIN = {
-  nameString: 'Админ',
+  name: [
+    { key: DEFAULT_LANG, value: 'Админ' },
+    { key: SECONDARY_LANG, value: 'Admin' },
+  ],
+  nameString: '',
   description: 'Админ',
   slug: ROLE_SLUG_ADMIN,
   isStuff: true,

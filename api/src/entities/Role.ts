@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OPERATION_TYPE_ENUM } from '../config';
 import { NavItem } from './NavItem';
+import { LanguageType } from './common';
 
 export enum RoleRuleOperationTypeEnum {
   create = 'create',
@@ -54,8 +55,11 @@ export class Role {
   @Field((_type) => String)
   readonly id: string;
 
+  @Field((_type) => [LanguageType])
+  @prop({ type: LanguageType })
+  name: LanguageType[];
+
   @Field((_type) => String)
-  @prop({ type: String })
   nameString: string;
 
   @Field((_type) => String)

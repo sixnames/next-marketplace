@@ -1,11 +1,38 @@
-import { Arg, Authorized, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Field,
+  FieldResolver,
+  ID,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
-import { OPERATION_TARGET_OPERATION, OPERATION_TYPE_READ } from '../../config';
+import {
+  OPERATION_TARGET_OPERATION,
+  OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_READ,
+  ROLE_TEMPLATE_GUEST,
+} from '../../config';
 import { ContextInterface } from '../../types/context';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
+import { CreateRoleInput } from './CreateRoleInput';
+import PayloadType from '../common/PayloadType';
+import getLangField from '../../utils/translations/getLangField';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+
+@ObjectType()
+class RolePayloadType extends PayloadType() {
+  @Field((_type) => Role, { nullable: true })
+  role?: Role | null;
+}
 
 @Resolver((_for) => Role)
 export class RoleResolver {
@@ -52,6 +79,67 @@ export class RoleResolver {
   @Query((_returns) => Role)
   async getSessionRole(@Ctx() ctx: ContextInterface): Promise<Role> {
     return ctx.req.session!.userRole;
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_CREATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async createRole(@Arg('input') input: CreateRoleInput): Promise<RolePayloadType> {
+    try {
+      const { name } = input;
+
+      const nameValues = name.map(({ value }) => value);
+      const exists = await RoleModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+
+      if (exists) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const role = await RoleModel.create({
+        ...ROLE_TEMPLATE_GUEST,
+        ...input,
+        allowedAppNavigation: [],
+      });
+
+      if (!role) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @FieldResolver()
+  async nameString(
+    @Root() role: DocumentType<Role>,
+    @Ctx() ctx: ContextInterface,
+  ): Promise<string> {
+    return getLangField(role.name, ctx.req.lang);
   }
 
   @FieldResolver()

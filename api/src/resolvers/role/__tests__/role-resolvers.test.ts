@@ -2,7 +2,7 @@ import {
   authenticatedTestClient,
   testClientWithContext,
 } from '../../../utils/testUtils/testHelpers';
-import { ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '../../../config';
+import { DEFAULT_LANG, ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '../../../config';
 import { Role, RoleModel } from '../../../entities/Role';
 
 describe('Roles', () => {
@@ -55,7 +55,7 @@ describe('Roles', () => {
   });
 
   it('Should CRUD role.', async () => {
-    const { query } = await authenticatedTestClient();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all roles list
     const {
@@ -156,5 +156,77 @@ describe('Roles', () => {
     `,
     );
     expect(getSessionRole.id).toEqual(adminRole.id);
+
+    // Shouldn't create role on duplicate error
+    const duplicateRoleName = adminRole.nameString;
+    const duplicateRoleDescription = 'newRoleDescription';
+    const {
+      data: { createRole: createRoleDuplicateError },
+    } = await mutate(
+      `
+      mutation CreateRole($input: CreateRoleInput!) {
+        createRole(input: $input) {
+          success
+          message
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            name: [{ key: DEFAULT_LANG, value: duplicateRoleName }],
+            description: duplicateRoleDescription,
+            isStuff: false,
+          },
+        },
+      },
+    );
+    expect(createRoleDuplicateError.success).toBeFalsy();
+
+    // Should create role
+    const newRoleName = 'newRoleName';
+    const newRoleDescription = 'newRoleDescription';
+    const {
+      data: { createRole },
+    } = await mutate(
+      `
+      mutation CreateRole($input: CreateRoleInput!) {
+        createRole(input: $input) {
+          success
+          message
+          role {
+            id
+            nameString
+            description
+            slug
+            isStuff
+            rules {
+              nameString
+              entity
+              restrictedFields
+              operations {
+                operationType
+                allowed
+                customFilter
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            name: [{ key: DEFAULT_LANG, value: newRoleName }],
+            description: newRoleDescription,
+            isStuff: false,
+          },
+        },
+      },
+    );
+
+    expect(createRole.success).toBeTruthy();
+    expect(createRole.role.nameString).toEqual(newRoleName);
+    expect(createRole.role.description).toEqual(newRoleDescription);
   });
 });

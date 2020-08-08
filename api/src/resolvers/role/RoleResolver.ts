@@ -16,7 +16,10 @@ import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import {
   OPERATION_TARGET_OPERATION,
   OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_DELETE,
   OPERATION_TYPE_READ,
+  OPERATION_TYPE_UPDATE,
+  ROLE_SLUG_GUEST,
   ROLE_TEMPLATE_GUEST,
 } from '../../config';
 import { ContextInterface } from '../../types/context';
@@ -28,6 +31,7 @@ import PayloadType from '../common/PayloadType';
 import getLangField from '../../utils/translations/getLangField';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateRoleInput } from './UpdateRoleInput';
+import { UserModel } from '../../entities/User';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -139,7 +143,7 @@ export class RoleResolver {
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
-      operationType: OPERATION_TYPE_CREATE,
+      operationType: OPERATION_TYPE_UPDATE,
       target: OPERATION_TARGET_OPERATION,
     },
   ])
@@ -184,6 +188,72 @@ export class RoleResolver {
         success: true,
         message: 'success',
         role: updatedRole,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_DELETE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async deleteRole(@Arg('id', (_type) => ID) id: string): Promise<RolePayloadType> {
+    try {
+      const role = await RoleModel.findById(id);
+
+      if (!role) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+
+      if (!guestRole) {
+        return {
+          success: false,
+          message: 'guestRoleNotFound',
+        };
+      }
+
+      const updatedUsers = await UserModel.updateMany(
+        {
+          role: role.id,
+        },
+        {
+          role: guestRole.id,
+        },
+      );
+
+      if (!updatedUsers) {
+        return {
+          success: false,
+          message: 'usersUpdateError',
+        };
+      }
+
+      const removedRole = await RoleModel.findByIdAndDelete(id);
+
+      if (!removedRole) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
       };
     } catch (e) {
       return {

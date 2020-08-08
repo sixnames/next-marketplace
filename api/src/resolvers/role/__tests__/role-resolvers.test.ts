@@ -217,7 +217,7 @@ describe('Roles', () => {
     expect(createdRole.nameString).toEqual(newRoleName);
     expect(createdRole.description).toEqual(newRoleDescription);
 
-    // Should create role
+    // Should update role main info
     const updatedRoleName = 'updatedRoleName';
     const updatedRoleDescription = 'updatedRoleDescription';
     const {
@@ -250,5 +250,25 @@ describe('Roles', () => {
     expect(updateRole.success).toBeTruthy();
     expect(updateRole.role.nameString).toEqual(updatedRoleName);
     expect(updateRole.role.description).toEqual(updatedRoleDescription);
+
+    // Should delete role
+    const {
+      data: { deleteRole },
+    } = await mutate(
+      `
+      mutation UpdateRole($id: ID!) {
+        deleteRole(id: $id) {
+          success
+          message
+        }
+      }
+    `,
+      {
+        variables: {
+          id: createdRole.id,
+        },
+      },
+    );
+    expect(deleteRole.success).toBeTruthy();
   });
 });

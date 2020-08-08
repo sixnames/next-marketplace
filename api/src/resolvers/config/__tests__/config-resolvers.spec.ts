@@ -10,7 +10,7 @@ import { Upload } from '../../../types/upload';
 describe('Config', () => {
   it('Should CRUD site config', async () => {
     const stringConfig = SITE_CONFIGS_INITIAL[0];
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return all site configs
     const {

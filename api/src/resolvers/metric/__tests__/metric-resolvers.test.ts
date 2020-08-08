@@ -4,7 +4,7 @@ import { DEFAULT_LANG, MOCK_METRICS } from '../../../config';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return all metrics
     const { data: allMetrics } = await query(`

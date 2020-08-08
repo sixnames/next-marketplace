@@ -4,7 +4,7 @@ import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '../../../config';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
-    const { mutate, query } = await testClientWithContext({});
+    const { mutate, query } = await testClientWithContext();
 
     // Shouldn't create rubric types on validation error
     const {

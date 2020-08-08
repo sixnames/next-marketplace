@@ -4,7 +4,7 @@ import { Language } from '../../../entities/Language';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return client language stored in context
     const {

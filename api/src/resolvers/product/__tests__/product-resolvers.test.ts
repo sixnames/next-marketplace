@@ -5,7 +5,7 @@ import { generateTestProductAttributes } from '../../../utils/testUtils/generate
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return paginated products.
     const {

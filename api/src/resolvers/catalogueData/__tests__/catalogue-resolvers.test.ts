@@ -2,7 +2,7 @@ import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 
 describe('Attributes', () => {
   it('Should return current attribute', async () => {
-    const { query } = await testClientWithContext({});
+    const { query } = await testClientWithContext();
 
     const {
       data: { getCatalogueData },

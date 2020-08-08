@@ -3,7 +3,7 @@ import { MOCK_CITIES } from '../../../config';
 
 describe('City', () => {
   it('Should return cities', async () => {
-    const { query } = await testClientWithContext({});
+    const { query } = await testClientWithContext();
 
     // Should return cities list
     const {

@@ -15,7 +15,7 @@ describe('User', () => {
       throw Error('Test user not found');
     }
 
-    const { mutate, query } = await testClientWithContext({});
+    const { mutate, query } = await testClientWithContext();
 
     // User should sign up
     const {

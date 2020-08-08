@@ -9,7 +9,6 @@ export interface AuthCheckerConfigInterface {
   target: 'operation' | 'field';
 }
 
-// TODO check customFilter
 export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigInterface> = async (
   {
     info,

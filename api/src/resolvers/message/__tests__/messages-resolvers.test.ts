@@ -3,7 +3,7 @@ import { DEFAULT_LANG } from '../../../config';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query } = await testClientWithContext({});
+    const { query } = await testClientWithContext();
     const keys = ['validation.string.min', 'validation.string.max'];
 
     // Should return message list

@@ -593,6 +593,7 @@ type Query {
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
+  getSessionRole: Role!
   getUser(id: ID!): User
   me: User
 }

@@ -49,6 +49,11 @@ export class RoleResolver {
     return RoleModel.find({ ...customFilter });
   }
 
+  @Query((_returns) => Role)
+  async getSessionRole(@Ctx() ctx: ContextInterface): Promise<Role> {
+    return ctx.req.session!.userRole;
+  }
+
   @FieldResolver()
   async appNavigation(@Root() role: DocumentType<Role>): Promise<NavItem[]> {
     return NavItemModel.find({

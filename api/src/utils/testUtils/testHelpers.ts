@@ -25,10 +25,14 @@ interface GetTestClientWithUserInterface {
   lang?: string;
 }
 
-export async function testClientWithContext({
-  city = DEFAULT_CITY,
-  lang = DEFAULT_LANG,
-}: GetTestClientWithUserInterface): Promise<WithUserMutationInterface> {
+export async function testClientWithContext(
+  args?: GetTestClientWithUserInterface,
+): Promise<WithUserMutationInterface> {
+  const { city = DEFAULT_CITY, lang = DEFAULT_LANG } = args || {
+    city: DEFAULT_CITY,
+    lang: DEFAULT_LANG,
+  };
+
   const { setOptions, mutate, query } = testClient;
 
   setOptions({
@@ -44,7 +48,7 @@ export async function testClientWithContext({
 }
 
 export async function authenticatedTestClient(): Promise<AuthenticatedUserMutationInterface> {
-  const { mutate, query, setOptions } = await testClientWithContext({});
+  const { mutate, query, setOptions } = await testClientWithContext();
 
   const {
     data: {
@@ -69,12 +73,10 @@ export async function authenticatedTestClient(): Promise<AuthenticatedUserMutati
           slug
           isStuff
           rules {
-            id
             nameString
             entity
             restrictedFields
             operations {
-              id
               operationType
               allowed
               customFilter

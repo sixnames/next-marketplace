@@ -3,7 +3,7 @@ import { MOCK_CURRENCIES } from '../../../config';
 
 describe('Currency', () => {
   it('Should CRUD currency', async () => {
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return all currencies
     const {

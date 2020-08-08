@@ -3,7 +3,7 @@ import { DEFAULT_LANG, MOCK_COUNTRIES } from '../../../config';
 
 describe('Country', () => {
   it('Should CRUD countries and cities', async () => {
-    const { query, mutate } = await testClientWithContext({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return countries list with cities
     const {

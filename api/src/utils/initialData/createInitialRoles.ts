@@ -11,7 +11,6 @@ import {
 import { NavItemModel } from '../../entities/NavItem';
 import { Types } from 'mongoose';
 
-// export async function createInitialAppNavigationChildren(parentId: string): Promise<string[]> {}
 interface CreateInitialAppNavigationInterface {
   navItems: typeof INITIAL_APP_NAVIGATION;
   parentId?: string;
@@ -37,6 +36,7 @@ export async function createInitialAppNavigation({
           slug,
           parent: parentId ? Types.ObjectId(parentId) : null,
           icon: icon ? icon : null,
+          children: [],
         });
 
         parentNavItemId = createdNavItem.id;

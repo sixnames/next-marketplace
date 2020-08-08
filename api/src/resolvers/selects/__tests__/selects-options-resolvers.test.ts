@@ -8,7 +8,7 @@ import {
 
 describe('Select options', () => {
   it('Should return select options', async () => {
-    const { query } = await testClientWithContext({});
+    const { query } = await testClientWithContext();
 
     // Should return gender options
     const {

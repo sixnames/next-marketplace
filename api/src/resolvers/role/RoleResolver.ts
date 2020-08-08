@@ -27,6 +27,7 @@ import { CreateRoleInput } from './CreateRoleInput';
 import PayloadType from '../common/PayloadType';
 import getLangField from '../../utils/translations/getLangField';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { UpdateRoleInput } from './UpdateRoleInput';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -125,6 +126,64 @@ export class RoleResolver {
         success: true,
         message: 'success',
         role,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_CREATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async updateRole(@Arg('input') input: UpdateRoleInput): Promise<RolePayloadType> {
+    try {
+      const { id, ...values } = input;
+
+      const role = await RoleModel.findById(id);
+
+      if (!role) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const nameValues = values.name.map(({ value }) => value);
+      const exists = await RoleModel.exists({
+        'name.value': {
+          $in: nameValues,
+        },
+      });
+
+      if (exists) {
+        return {
+          success: false,
+          message: 'duplicate',
+        };
+      }
+
+      const updatedRole = await RoleModel.findByIdAndUpdate(id, input, { new: true });
+
+      if (!updatedRole) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role: updatedRole,
       };
     } catch (e) {
       return {

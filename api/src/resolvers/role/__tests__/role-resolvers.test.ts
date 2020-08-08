@@ -198,18 +198,6 @@ describe('Roles', () => {
             id
             nameString
             description
-            slug
-            isStuff
-            rules {
-              nameString
-              entity
-              restrictedFields
-              operations {
-                operationType
-                allowed
-                customFilter
-              }
-            }
           }
         }
       }
@@ -224,9 +212,43 @@ describe('Roles', () => {
         },
       },
     );
-
+    const createdRole = createRole.role;
     expect(createRole.success).toBeTruthy();
-    expect(createRole.role.nameString).toEqual(newRoleName);
-    expect(createRole.role.description).toEqual(newRoleDescription);
+    expect(createdRole.nameString).toEqual(newRoleName);
+    expect(createdRole.description).toEqual(newRoleDescription);
+
+    // Should create role
+    const updatedRoleName = 'updatedRoleName';
+    const updatedRoleDescription = 'updatedRoleDescription';
+    const {
+      data: { updateRole },
+    } = await mutate(
+      `
+      mutation UpdateRole($input: UpdateRoleInput!) {
+        updateRole(input: $input) {
+          success
+          message
+          role {
+            id
+            nameString
+            description
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            id: createdRole.id,
+            name: [{ key: DEFAULT_LANG, value: updatedRoleName }],
+            description: updatedRoleDescription,
+            isStuff: false,
+          },
+        },
+      },
+    );
+    expect(updateRole.success).toBeTruthy();
+    expect(updateRole.role.nameString).toEqual(updatedRoleName);
+    expect(updateRole.role.description).toEqual(updatedRoleDescription);
   });
 });

@@ -16,9 +16,6 @@ registerEnumType(RoleRuleOperationTypeEnum, {
 
 @ObjectType()
 export class RoleRuleOperation {
-  @Field((_type) => String)
-  readonly id: string;
-
   @Field(() => RoleRuleOperationTypeEnum)
   @prop({ required: true, enum: OPERATION_TYPE_ENUM })
   public operationType: RoleRuleOperationTypeEnum;
@@ -34,9 +31,6 @@ export class RoleRuleOperation {
 
 @ObjectType()
 export class RoleRule {
-  @Field((_type) => String)
-  readonly id: string;
-
   @Field((_type) => String)
   @prop({ type: String })
   nameString: string;

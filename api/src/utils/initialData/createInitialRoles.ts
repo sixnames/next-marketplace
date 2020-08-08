@@ -5,6 +5,8 @@ import {
   ROLE_SLUG_GUEST,
   ROLE_TEMPLATE_ADMIN,
   ROLE_TEMPLATE_GUEST,
+  ROLE_RULES_TEMPLATE_GUEST,
+  ROLE_RULES_TEMPLATE_ADMIN,
 } from '../../config';
 import { NavItemModel } from '../../entities/NavItem';
 import { Types } from 'mongoose';
@@ -76,9 +78,23 @@ function getIdsFromTree(tree: CreateInitialAppNavigationPayloadInterface[]) {
 
 export async function createInitialRoles(): Promise<string> {
   // Guest role
-  const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+  let guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
   if (!guestRole) {
-    await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedNavigation: [] });
+    guestRole = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedNavigation: [] });
+  }
+  // check new rules
+  for await (const rule of ROLE_RULES_TEMPLATE_GUEST) {
+    const exitingRule = guestRole.rules.find(({ entity }) => entity === rule.entity);
+    if (!exitingRule) {
+      await RoleModel.findOneAndUpdate(
+        { slug: ROLE_SLUG_GUEST },
+        {
+          $push: {
+            rules: rule,
+          },
+        },
+      );
+    }
   }
 
   // Admin role
@@ -96,6 +112,7 @@ export async function createInitialRoles(): Promise<string> {
     });
     adminRoleId = createdAdminRole.id;
   } else {
+    // check new nav items
     if (adminRole.allowedNavigation.length < allowedNavigation.length) {
       await RoleModel.findOneAndUpdate(
         { slug: ROLE_SLUG_ADMIN },
@@ -104,6 +121,22 @@ export async function createInitialRoles(): Promise<string> {
         },
       );
     }
+
+    // check new rules
+    for await (const rule of ROLE_RULES_TEMPLATE_ADMIN) {
+      const exitingRule = adminRole.rules.find(({ entity }) => entity === rule.entity);
+      if (!exitingRule) {
+        await RoleModel.findOneAndUpdate(
+          { slug: ROLE_SLUG_ADMIN },
+          {
+            $push: {
+              rules: rule,
+            },
+          },
+        );
+      }
+    }
+
     adminRoleId = adminRole.id;
   }
 

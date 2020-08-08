@@ -598,7 +598,6 @@ type Role {
 
 type RoleRule {
   entity: String!
-  id: String!
   nameString: String!
   operations: [RoleRuleOperation!]!
   restrictedFields: [String!]!
@@ -607,7 +606,6 @@ type RoleRule {
 type RoleRuleOperation {
   allowed: Boolean!
   customFilter: String!
-  id: String!
   operationType: RoleRuleOperationTypeEnum!
 }
 

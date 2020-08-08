@@ -54,7 +54,7 @@ const adminRoleOperationsAndFields = {
   restrictedFields: [],
 };
 
-const guestRoleRules = [
+export const ROLE_RULES_TEMPLATE = [
   {
     nameString: 'Атрибуты',
     entity: 'Attribute',
@@ -281,24 +281,28 @@ const cmsRoute = {
 
 export const INITIAL_APP_NAVIGATION = [cmsRoute];
 
+export const ROLE_RULES_TEMPLATE_GUEST = ROLE_RULES_TEMPLATE.map((rule) => ({
+  ...rule,
+  ...guestRoleOperationsAndFields,
+}));
+
 export const ROLE_TEMPLATE_GUEST = {
   nameString: 'Гость',
   description: 'Роль назначается новым или не авторизованным пользователям',
   slug: ROLE_SLUG_GUEST,
   isStuff: false,
-  rules: guestRoleRules.map((rule) => ({
-    ...rule,
-    ...guestRoleOperationsAndFields,
-  })),
+  rules: ROLE_RULES_TEMPLATE_GUEST,
 };
+
+export const ROLE_RULES_TEMPLATE_ADMIN = ROLE_RULES_TEMPLATE.map((rule) => ({
+  ...rule,
+  ...adminRoleOperationsAndFields,
+}));
 
 export const ROLE_TEMPLATE_ADMIN = {
   nameString: 'Админ',
   description: 'Админ',
   slug: ROLE_SLUG_ADMIN,
   isStuff: true,
-  rules: guestRoleRules.map((rule) => ({
-    ...rule,
-    ...adminRoleOperationsAndFields,
-  })),
+  rules: ROLE_RULES_TEMPLATE_ADMIN,
 };

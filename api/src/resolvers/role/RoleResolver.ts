@@ -1,9 +1,11 @@
-import { Arg, Authorized, Ctx, ID, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { OPERATION_TARGET_OPERATION, OPERATION_TYPE_READ } from '../../config';
 import { ContextInterface } from '../../types/context';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
+import { DocumentType } from '@typegoose/typegoose';
+import { NavItem, NavItemModel } from '../../entities/NavItem';
 
 @Resolver((_for) => Role)
 export class RoleResolver {
@@ -45,5 +47,19 @@ export class RoleResolver {
     });
 
     return RoleModel.find({ ...customFilter });
+  }
+
+  @FieldResolver()
+  async appNavigation(@Root() role: DocumentType<Role>): Promise<NavItem[]> {
+    return NavItemModel.find({
+      _id: { $in: role.allowedAppNavigation },
+      parent: null,
+    }).populate({
+      path: 'children',
+      model: NavItemModel,
+      match: {
+        _id: { $in: role.allowedAppNavigation },
+      },
+    });
   }
 }

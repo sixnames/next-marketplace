@@ -10,6 +10,9 @@ import {
 
 export const ROUTE_APP = '/app';
 export const ROUTE_CMS = `${ROUTE_APP}/cms`;
+export const QUERY_DATA_LAYOUT_FILTER = 'isFilterVisible';
+export const QUERY_DATA_LAYOUT_FILTER_VALUE = '1';
+export const QUERY_DATA_LAYOUT_FILTER_ENABLED = `?${QUERY_DATA_LAYOUT_FILTER}=${QUERY_DATA_LAYOUT_FILTER_VALUE}`;
 
 export const OPERATION_TARGET_OPERATION = 'operation';
 export const OPERATION_TARGET_FIELD = 'field';
@@ -153,7 +156,7 @@ const cmsRoute = {
       ],
       order: 0,
       slug: 'cms-products',
-      path: `${ROUTE_CMS}/products`,
+      path: `${ROUTE_CMS}/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
     },
@@ -170,7 +173,7 @@ const cmsRoute = {
       ],
       order: 1,
       slug: 'cms-rubrics',
-      path: `${ROUTE_CMS}/rubrics`,
+      path: `${ROUTE_CMS}/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
     },
@@ -204,7 +207,7 @@ const cmsRoute = {
       ],
       order: 3,
       slug: 'cms-attributes-groups',
-      path: `${ROUTE_CMS}/attributes-groups`,
+      path: `${ROUTE_CMS}/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
     },
@@ -221,7 +224,7 @@ const cmsRoute = {
       ],
       order: 4,
       slug: 'cms-options-groups',
-      path: `${ROUTE_CMS}/options-groups`,
+      path: `${ROUTE_CMS}/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
     },
@@ -272,7 +275,7 @@ const cmsRoute = {
       ],
       order: 7,
       slug: 'cms-roles',
-      path: `${ROUTE_CMS}/roles`,
+      path: `${ROUTE_CMS}/roles${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
     },

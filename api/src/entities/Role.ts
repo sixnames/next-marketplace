@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OPERATION_TYPE_ENUM } from '../config';
+import { NavItem } from './NavItem';
 
 export enum RoleRuleOperationTypeEnum {
   create = 'create',
@@ -75,7 +76,10 @@ export class Role {
 
   @Field((_type) => [String])
   @prop({ type: String })
-  allowedNavigation: string[];
+  allowedAppNavigation: string[];
+
+  @Field((_type) => [NavItem])
+  readonly appNavigation: NavItem[];
 }
 
 export const RoleModel = getModelForClass(Role);

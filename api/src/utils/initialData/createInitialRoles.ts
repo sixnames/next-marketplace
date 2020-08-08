@@ -38,9 +38,24 @@ export async function createInitialAppNavigation({
           parent: parentId ? Types.ObjectId(parentId) : null,
           icon: icon ? icon : null,
         });
+
         parentNavItemId = createdNavItem.id;
+        if (parentId) {
+          await NavItemModel.findByIdAndUpdate(parentId, {
+            $addToSet: {
+              children: Types.ObjectId(createdNavItem.id),
+            },
+          });
+        }
       } else {
         parentNavItemId = existingNavItem.id;
+        if (parentId) {
+          await NavItemModel.findByIdAndUpdate(parentId, {
+            $addToSet: {
+              children: Types.ObjectId(existingNavItem.id),
+            },
+          });
+        }
       }
 
       let currentChildren: CreateInitialAppNavigationPayloadInterface[] = [];
@@ -80,7 +95,7 @@ export async function createInitialRoles(): Promise<string> {
   // Guest role
   let guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
   if (!guestRole) {
-    guestRole = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedNavigation: [] });
+    guestRole = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedAppNavigation: [] });
   }
   // check new rules
   for await (const rule of ROLE_RULES_TEMPLATE_GUEST) {
@@ -101,23 +116,23 @@ export async function createInitialRoles(): Promise<string> {
   const adminNavItems = await createInitialAppNavigation({
     navItems: INITIAL_APP_NAVIGATION,
   });
-  const allowedNavigation = getIdsFromTree(adminNavItems);
+  const allowedAppNavigation = getIdsFromTree(adminNavItems);
 
   const adminRole = await RoleModel.findOne({ slug: ROLE_SLUG_ADMIN });
   let adminRoleId;
   if (!adminRole) {
     const createdAdminRole = await RoleModel.create({
       ...ROLE_TEMPLATE_ADMIN,
-      allowedNavigation,
+      allowedAppNavigation,
     });
     adminRoleId = createdAdminRole.id;
   } else {
     // check new nav items
-    if (adminRole.allowedNavigation.length < allowedNavigation.length) {
+    if (adminRole.allowedAppNavigation.length < allowedAppNavigation.length) {
       await RoleModel.findOneAndUpdate(
         { slug: ROLE_SLUG_ADMIN },
         {
-          allowedNavigation,
+          allowedAppNavigation,
         },
       );
     }

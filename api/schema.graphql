@@ -370,6 +370,17 @@ type Mutation {
   updateUser(input: UpdateUserInput!): UserPayloadType!
 }
 
+type NavItem {
+  children: [NavItem!]
+  icon: String
+  id: String!
+  name: [LanguageType!]!
+  nameString: String!
+  order: Int!
+  parent: NavItem
+  path: String
+}
+
 type Option {
   color: String
   gender: GenderEnum
@@ -587,7 +598,8 @@ type Query {
 }
 
 type Role {
-  allowedNavigation: [String!]!
+  allowedAppNavigation: [String!]!
+  appNavigation: [NavItem!]!
   description: String!
   id: String!
   isStuff: Boolean!

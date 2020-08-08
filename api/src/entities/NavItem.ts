@@ -14,7 +14,7 @@ export class NavItem {
   @prop({ type: String })
   slug: string;
 
-  @Field((_type) => String)
+  @Field((_type) => String, { nullable: true })
   @prop({ type: String })
   path?: string;
 
@@ -34,7 +34,8 @@ export class NavItem {
   parent?: Ref<NavItem> | null;
 
   @Field((_type) => [NavItem], { nullable: true })
-  readonly children?: NavItem[];
+  @prop({ ref: NavItem })
+  children: Ref<NavItem>[];
 }
 
 export const NavItemModel = getModelForClass(NavItem);

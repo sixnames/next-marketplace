@@ -2,12 +2,12 @@ import { Arg, Ctx, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type
 import PayloadType from '../common/PayloadType';
 import { Language, LanguageModel } from '../../entities/Language';
 import { CreateLanguageInput } from './CreateLanguageInput';
-import { createLanguageSchema, updateLanguageSchema } from '../../validation';
 import { UpdateLanguageInput } from './UpdateLanguageInput';
 import { ContextInterface } from '../../types/context';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { createLanguageSchema, updateLanguageSchema } from '../../validation/languageSchema';
 
 @ObjectType()
 class LanguagePayloadType extends PayloadType() {

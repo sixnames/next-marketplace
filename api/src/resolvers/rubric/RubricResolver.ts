@@ -44,15 +44,6 @@ import {
   getRubricsTreeIds,
 } from '../../utils/rubricResolverHelpers';
 import {
-  addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  deleteProductFromRubricInputSchema,
-  updateAttributesGroupInRubricInputSchema,
-  updateRubricInputSchema,
-} from '../../validation';
-import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_LANG,
@@ -68,6 +59,15 @@ import toggleItemInArray from '../../utils/toggleItemInArray';
 import { GenderEnum, LanguageType } from '../../entities/common';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import {
+  addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
+  createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
+  updateAttributesGroupInRubricInputSchema,
+  updateRubricInputSchema,
+} from '../../validation/rubricSchema';
 
 interface ParentRelatedDataInterface {
   variant: string;

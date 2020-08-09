@@ -19,9 +19,9 @@ import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
-import { createMetricInputSchema, updateMetricSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { createMetricInputSchema, updateMetricSchema } from '../../validation/metricSchema';
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {

@@ -34,18 +34,18 @@ import {
   OPERATION_TYPE_UPDATE,
   ROLE_SLUG_GUEST,
 } from '../../config';
-import {
-  createUserSchema,
-  signInValidationSchema,
-  signUpValidationSchema,
-  updateUserSchema,
-} from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { Role, RoleModel } from '../../entities/Role';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
+import {
+  createUserSchema,
+  signInValidationSchema,
+  signUpValidationSchema,
+  updateUserSchema,
+} from '../../validation/userSchema';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}

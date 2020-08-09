@@ -19,9 +19,12 @@ import { RubricModel } from '../../entities/Rubric';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
-import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import {
+  createRubricVariantInputSchema,
+  updateRubricVariantSchema,
+} from '../../validation/rubricVariantSchema';
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {

@@ -34,11 +34,11 @@ import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
-import { createProductSchema, updateProductSchema } from '../../validation';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { createProductSchema, updateProductSchema } from '../../validation/productSchema';
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {

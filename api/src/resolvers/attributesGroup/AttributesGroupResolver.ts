@@ -23,17 +23,16 @@ import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
 import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
-
+import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
   deleteAttributeFromGroupSchema,
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
-} from '../../validation';
-import { generateDefaultLangSlug } from '../../utils/slug';
-import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+} from '../../validation/attributesGroupSchema';
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {

@@ -23,16 +23,16 @@ import { AttributeModel } from '../../entities/Attribute';
 import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
+import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
   deleteOptionFromGroupSchema,
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
-} from '../../validation';
-import { generateDefaultLangSlug } from '../../utils/slug';
-import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+} from '../../validation/optionsGroupSchema';
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {

@@ -8,6 +8,7 @@ import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { ContextInterface } from '../../types/context';
 import { createCurrencySchema, updateCurrencySchema } from '../../validation/currencySchema';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import { CountryModel } from '../../entities/Country';
 
 @ObjectType()
 class CurrencyPayloadType extends PayloadType() {
@@ -118,13 +119,21 @@ export class CurrencyResolver {
   ): Promise<CurrencyPayloadType> {
     try {
       const { lang } = ctx.req;
-      // TODO check if used in Countries
       const currency = await CurrencyModel.findByIdAndDelete(id);
 
       if (!currency) {
         return {
           success: false,
           message: await getApiMessage({ key: 'currencies.delete.error', lang }),
+        };
+      }
+
+      const usedInCountries = await CountryModel.exists({ currency: currency.nameString });
+
+      if (usedInCountries) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'currencies.delete.used', lang }),
         };
       }
 

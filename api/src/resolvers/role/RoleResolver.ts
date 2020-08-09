@@ -41,6 +41,15 @@ import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInp
 import toggleItemInArray from '../../utils/toggleItemInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import {
+  createRoleSchema,
+  setRoleAllowedNavItemSchema,
+  setRoleOperationCustomFilterSchema,
+  setRoleOperationPermissionSchema,
+  setRoleRuleRestrictedFieldSchema,
+  updateRoleSchema,
+} from '../../validation/roleSchema';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -99,7 +108,6 @@ export class RoleResolver {
     return sessionRole;
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -113,7 +121,12 @@ export class RoleResolver {
     @Arg('input') input: CreateRoleInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.roles.name',
+        'validation.roles.description',
+      ]);
+      await createRoleSchema({ messages, lang, defaultLang }).validate(input);
 
       const { name } = input;
 
@@ -161,7 +174,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -175,9 +187,15 @@ export class RoleResolver {
     @Arg('input') input: UpdateRoleInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
-      const { id, ...values } = input;
+      const { lang, defaultLang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.roles.id',
+        'validation.roles.name',
+        'validation.roles.description',
+      ]);
+      await updateRoleSchema({ messages, lang, defaultLang }).validate(input);
 
+      const { id, ...values } = input;
       const nameValues = values.name.map(({ value }) => value);
       const exists = await RoleModel.exists({
         _id: { $ne: id },
@@ -215,7 +233,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -311,7 +328,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -327,6 +343,12 @@ export class RoleResolver {
   ): Promise<RolePayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.roles.id',
+        'validation.roles.operationId',
+      ]);
+      await setRoleOperationPermissionSchema({ messages, lang }).validate(input);
+
       const { operationId, allow, roleId } = input;
 
       const role = await RoleModel.findById(roleId);
@@ -361,7 +383,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -377,8 +398,13 @@ export class RoleResolver {
   ): Promise<RolePayloadType> {
     try {
       const { lang } = ctx.req;
-      const { operationId, customFilter, roleId } = input;
+      const messages = await getMessagesByKeys([
+        'validation.roles.id',
+        'validation.roles.operationId',
+      ]);
+      await setRoleOperationCustomFilterSchema({ messages, lang }).validate(input);
 
+      const { operationId, customFilter, roleId } = input;
       const role = await RoleModel.findById(roleId);
       if (!role) {
         return {
@@ -411,7 +437,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation and messages
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -427,6 +452,8 @@ export class RoleResolver {
   ): Promise<RolePayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys(['validation.roles.id', 'validation.roles.ruleId']);
+      await setRoleRuleRestrictedFieldSchema({ messages, lang }).validate(input);
       const { ruleId, roleId, restrictedField } = input;
 
       const role = await RoleModel.findById(roleId);
@@ -469,7 +496,6 @@ export class RoleResolver {
     }
   }
 
-  // TODO validation
   @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
@@ -485,6 +511,12 @@ export class RoleResolver {
   ): Promise<RolePayloadType> {
     try {
       const { lang } = ctx.req;
+      const messages = await getMessagesByKeys([
+        'validation.roles.id',
+        'validation.roles.navItemId',
+      ]);
+      await setRoleAllowedNavItemSchema({ messages, lang }).validate(input);
+
       const { roleId, navItemId } = input;
 
       const role = await RoleModel.findById(roleId);

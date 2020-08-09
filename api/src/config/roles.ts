@@ -195,7 +195,7 @@ export const ROLE_RULE_OPERATIONS_TEMPLATE = [
     customFilter: ROLE_EMPTY_CUSTOM_FILTER,
   },
 ];
-//
+
 export const ROLE_RULES_TEMPLATE = [
   {
     nameString: 'Атрибуты',

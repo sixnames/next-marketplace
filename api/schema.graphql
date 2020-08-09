@@ -357,7 +357,9 @@ type Mutation {
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
+  setRoleOperationCustomFilter(input: SetRoleOperationCustomFilterInput!): RolePayloadType!
   setRoleOperationPermission(input: SetRoleOperationPermissionInput!): RolePayloadType!
+  setRoleRuleRestrictedField(input: SetRoleRuleRestrictedFieldInput!): RolePayloadType!
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
@@ -748,10 +750,22 @@ type RubricVariantPayloadType {
   variant: RubricVariant
 }
 
+input SetRoleOperationCustomFilterInput {
+  customFilter: String!
+  operationId: ID!
+  roleId: ID!
+}
+
 input SetRoleOperationPermissionInput {
   allow: Boolean!
   operationId: ID!
   roleId: ID!
+}
+
+input SetRoleRuleRestrictedFieldInput {
+  restrictedField: String!
+  roleId: ID!
+  ruleId: ID!
 }
 
 input SignInInput {

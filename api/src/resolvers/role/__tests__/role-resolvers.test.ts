@@ -292,6 +292,7 @@ describe('Roles', () => {
             nameString
             description
             rules {
+              id
               nameString
               entity
               restrictedFields
@@ -339,6 +340,7 @@ describe('Roles', () => {
             nameString
             description
             rules {
+              id
               nameString
               entity
               restrictedFields
@@ -370,6 +372,77 @@ describe('Roles', () => {
       );
     expect(updatedCustomFilterOperation.customFilter).toEqual(operationCustomFilter);
     expect(setRoleOperationPermission.success).toBeTruthy();
+
+    // Should set role rule restricted fields
+    const restrictedField = 'email';
+    const {
+      data: { setRoleRuleRestrictedField },
+    } = await mutate(
+      `
+      mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+        setRoleRuleRestrictedField(input: $input) {
+          success
+          message
+          role {
+            id
+            rules {
+              id
+              restrictedFields
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            roleId: createdRole.id,
+            ruleId: updatedRule.id,
+            restrictedField,
+          },
+        },
+      },
+    );
+    const ruleWithRestrictedField = setRoleRuleRestrictedField.role.rules.find(
+      ({ id }: RoleRule) => id === updatedRule.id,
+    );
+    expect(setRoleRuleRestrictedField.success).toBeTruthy();
+    expect(ruleWithRestrictedField.restrictedFields).toContain(restrictedField);
+
+    // Should unset role rule restricted fields
+    const {
+      data: { setRoleRuleRestrictedField: unsetRoleRuleRestrictedField },
+    } = await mutate(
+      `
+      mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+        setRoleRuleRestrictedField(input: $input) {
+          success
+          message
+          role {
+            id
+            rules {
+              id
+              restrictedFields
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            roleId: createdRole.id,
+            ruleId: updatedRule.id,
+            restrictedField,
+          },
+        },
+      },
+    );
+    const ruleWithoutRestrictedField = unsetRoleRuleRestrictedField.role.rules.find(
+      ({ id }: RoleRule) => id === updatedRule.id,
+    );
+    expect(unsetRoleRuleRestrictedField.success).toBeTruthy();
+    expect(ruleWithoutRestrictedField.restrictedFields).not.toContain(restrictedField);
 
     // Should delete role
     const {

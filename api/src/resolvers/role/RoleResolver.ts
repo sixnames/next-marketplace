@@ -37,6 +37,8 @@ import { RoleRule, RoleRuleModel, RoleRuleOperationModel } from '../../entities/
 import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInput';
 import { createRoleRules } from '../../utils/initialData/createInitialRoles';
 import { SetRoleOperationCustomFilterInput } from './SetRoleOperationCustomFilterInput';
+import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInput';
+import toggleItemInArray from '../../utils/toggleItemInArray';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -230,15 +232,41 @@ export class RoleResolver {
         };
       }
 
-      const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+      // Remove rules and operations
+      const rules = await RoleRuleModel.find({ roleId: role.id });
+      if (!rules) {
+        return {
+          success: false,
+          message: 'rulesNotFound',
+        };
+      }
+      const rulesIds = rules.map(({ id }) => id);
 
+      const operationsIds = rules.reduce((acc: string[], { operations = [] }) => {
+        return [...acc, ...operations.map((operation) => `${operation}`)];
+      }, []);
+
+      const removedOperations = await RoleRuleOperationModel.deleteMany({
+        _id: { $in: operationsIds },
+      });
+
+      const removedRules = await RoleRuleModel.deleteMany({ _id: { $in: rulesIds } });
+
+      if (!removedOperations || !removedRules) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      // Update users with guest role
+      const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
       if (!guestRole) {
         return {
           success: false,
           message: 'guestRoleNotFound',
         };
       }
-
       const updatedUsers = await UserModel.updateMany(
         {
           role: role.id,
@@ -353,6 +381,62 @@ export class RoleResolver {
       });
 
       if (!updatedOperation) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_UPDATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async setRoleRuleRestrictedField(
+    @Arg('input', (_type) => SetRoleRuleRestrictedFieldInput)
+    input: SetRoleRuleRestrictedFieldInput,
+  ): Promise<RolePayloadType> {
+    try {
+      const { ruleId, roleId, restrictedField } = input;
+
+      const role = await RoleModel.findById(roleId);
+      const rule = await RoleRuleModel.findById(ruleId);
+
+      if (!role || !rule) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const updatedFields = toggleItemInArray(rule.restrictedFields, restrictedField);
+
+      const updatedRule = await RoleRuleModel.findByIdAndUpdate(
+        ruleId,
+        {
+          restrictedFields: updatedFields,
+        },
+        { new: true },
+      );
+
+      if (!updatedRule) {
         return {
           success: false,
           message: 'error',

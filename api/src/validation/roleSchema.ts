@@ -5,6 +5,9 @@ import getValidationFieldMessage, {
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minDescriptionLength } from './schemaTemplates';
 
+const minCustomFilterValue = 2;
+const minRestrictedFieldValue = 2;
+
 const roleIdSchema = (args: SchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.roles.id' });
 
@@ -59,14 +62,14 @@ export const setRoleOperationCustomFilterSchema = (args: SchemaMessagesInterface
   Yup.object().shape({
     roleId: roleIdSchema(args),
     operationId: operationIdSchema(args),
-    customFilter: Yup.string().required(),
+    customFilter: Yup.string().min(minCustomFilterValue).required(),
   });
 
 export const setRoleRuleRestrictedFieldSchema = (args: SchemaMessagesInterface) =>
   Yup.object().shape({
     roleId: roleIdSchema(args),
     ruleId: ruleIdSchema(args),
-    restrictedField: Yup.string().required(),
+    restrictedField: Yup.string().min(minRestrictedFieldValue).required(),
   });
 
 export const setRoleAllowedNavItemSchema = (args: SchemaMessagesInterface) =>

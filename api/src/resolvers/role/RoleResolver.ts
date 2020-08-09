@@ -57,7 +57,6 @@ class RolePayloadType extends PayloadType() {
   role?: Role | null;
 }
 
-// TODO validation tests
 @Resolver((_for) => Role)
 export class RoleResolver {
   @Authorized<AuthCheckerConfigInterface>([

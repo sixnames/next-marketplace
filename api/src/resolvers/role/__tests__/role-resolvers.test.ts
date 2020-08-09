@@ -324,6 +324,53 @@ describe('Roles', () => {
     expect(updatedOperation.allow).toBeTruthy();
     expect(setRoleOperationPermission.success).toBeTruthy();
 
+    // Should update role operation customFilter
+    const operationCustomFilter = '{"_id": "__authenticatedUser"}';
+    const {
+      data: { setRoleOperationCustomFilter },
+    } = await mutate(
+      `
+      mutation SetRoleOperationCustomFilter($input: SetRoleOperationCustomFilterInput!) {
+        setRoleOperationCustomFilter(input: $input) {
+          success
+          message
+          role {
+            id
+            nameString
+            description
+            rules {
+              nameString
+              entity
+              restrictedFields
+              operations {
+                operationType
+                allow
+                customFilter
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            roleId: createdRole.id,
+            operationId: updateTargetOperation.id,
+            customFilter: operationCustomFilter,
+          },
+        },
+      },
+    );
+
+    const updatedCustomFilterOperation = setRoleOperationCustomFilter.role.rules
+      .find(({ entity }: RoleRule) => entity === userEntity)
+      .operations.find(
+        ({ operationType }: RoleRuleOperation) => operationType === OPERATION_TYPE_READ,
+      );
+    expect(updatedCustomFilterOperation.customFilter).toEqual(operationCustomFilter);
+    expect(setRoleOperationPermission.success).toBeTruthy();
+
     // Should delete role
     const {
       data: { deleteRole },

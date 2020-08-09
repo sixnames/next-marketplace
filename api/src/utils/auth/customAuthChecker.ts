@@ -9,7 +9,7 @@ export interface AuthCheckerConfigInterface {
   target: 'operation' | 'field';
 }
 
-interface RoleRuleInterface extends Omit<RoleRule, 'operations'> {
+export interface RoleRuleInterface extends Omit<RoleRule, 'operations'> {
   operations: RoleRuleOperation[];
 }
 

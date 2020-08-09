@@ -1,7 +1,6 @@
 import { ContextInterface } from '../../types/context';
-import { RoleRule, RoleRuleOperation } from '../../entities/Role';
 import { FilterQuery } from 'mongoose';
-import { AuthCheckerConfigInterface } from './customAuthChecker';
+import { AuthCheckerConfigInterface, RoleRuleInterface } from './customAuthChecker';
 
 interface GetRoleRuleCustomFilterInterface {
   req: ContextInterface['req'];
@@ -19,15 +18,15 @@ export function getRoleRuleCustomFilter<T>({
     userId,
   } = req.session!;
 
-  const entityRule: RoleRule | undefined = rules.find(
-    ({ entity: ruleEntity }: RoleRule) => ruleEntity === entity,
+  const entityRule: RoleRuleInterface | undefined = rules.find(
+    ({ entity: ruleEntity }: RoleRuleInterface) => ruleEntity === entity,
   );
 
   if (!entityRule) {
     return {};
   }
 
-  const entityRuleOperation: RoleRuleOperation | undefined = entityRule.operations.find(
+  const entityRuleOperation = entityRule.operations.find(
     ({ operationType: ruleOperationType }) => ruleOperationType === operationType,
   );
 

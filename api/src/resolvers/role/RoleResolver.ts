@@ -36,6 +36,7 @@ import { generateDefaultLangSlug } from '../../utils/slug';
 import { RoleRule, RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInput';
 import { createRoleRules } from '../../utils/initialData/createInitialRoles';
+import { SetRoleOperationCustomFilterInput } from './SetRoleOperationCustomFilterInput';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -301,6 +302,54 @@ export class RoleResolver {
 
       const updatedOperation = await RoleRuleOperationModel.findByIdAndUpdate(operationId, {
         allow,
+      });
+
+      if (!updatedOperation) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_UPDATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async setRoleOperationCustomFilter(
+    @Arg('input', (_type) => SetRoleOperationCustomFilterInput)
+    input: SetRoleOperationCustomFilterInput,
+  ): Promise<RolePayloadType> {
+    try {
+      const { operationId, customFilter, roleId } = input;
+
+      const role = await RoleModel.findById(roleId);
+      if (!role) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const updatedOperation = await RoleRuleOperationModel.findByIdAndUpdate(operationId, {
+        customFilter,
       });
 
       if (!updatedOperation) {

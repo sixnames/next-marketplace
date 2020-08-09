@@ -168,17 +168,9 @@ export class RoleResolver {
     try {
       const { id, ...values } = input;
 
-      const role = await RoleModel.findById(id);
-
-      if (!role) {
-        return {
-          success: false,
-          message: 'notFound',
-        };
-      }
-
       const nameValues = values.name.map(({ value }) => value);
       const exists = await RoleModel.exists({
+        _id: { $ne: id },
         'name.value': {
           $in: nameValues,
         },

@@ -33,8 +33,9 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateRoleInput } from './UpdateRoleInput';
 import { UserModel } from '../../entities/User';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import { RoleRule, RoleRuleModel } from '../../entities/RoleRule';
-// import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInput';
+import { RoleRule, RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
+import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInput';
+import { createRoleRules } from '../../utils/initialData/createInitialRoles';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -134,6 +135,8 @@ export class RoleResolver {
           message: 'error',
         };
       }
+
+      await createRoleRules({ allow: false, roleId: role.id });
 
       return {
         success: true,
@@ -273,7 +276,7 @@ export class RoleResolver {
   }
 
   // TODO validation and messages
-  /*@Authorized<AuthCheckerConfigInterface>([
+  @Authorized<AuthCheckerConfigInterface>([
     {
       entity: 'Role',
       operationType: OPERATION_TYPE_UPDATE,
@@ -286,9 +289,9 @@ export class RoleResolver {
     input: SetRoleOperationPermissionInput,
   ): Promise<RolePayloadType> {
     try {
-      const { id, entity, operationType, allow } = input;
-      const role = await RoleModel.findById(id).exec();
+      const { operationId, allow, roleId } = input;
 
+      const role = await RoleModel.findById(roleId);
       if (!role) {
         return {
           success: false,
@@ -296,37 +299,11 @@ export class RoleResolver {
         };
       }
 
-      const currentRule = role.rules.find(({ entity: ruleEntity }) => ruleEntity === entity);
-      if (!currentRule) {
-        return {
-          success: false,
-          message: 'ruleNotFound',
-        };
-      }
-      const updatedOperations = currentRule.operations.map((operation) => {
-        const { operationType: ruleOperationType } = operation;
-        if (ruleOperationType === operationType) {
-          return {
-            ...operation,
-            allow,
-          };
-        }
-        return operation;
+      const updatedOperation = await RoleRuleOperationModel.findByIdAndUpdate(operationId, {
+        allow,
       });
 
-      const updatedRole = await RoleModel.updateOne(
-        {
-          _id: id,
-          'rules.entity': entity,
-        },
-        {
-          $set: {
-            'rules.$.operations': updatedOperations,
-          },
-        },
-      );
-
-      if (!updatedRole) {
+      if (!updatedOperation) {
         return {
           success: false,
           message: 'error',
@@ -336,16 +313,15 @@ export class RoleResolver {
       return {
         success: true,
         message: 'success',
-        role: updatedRole,
+        role,
       };
     } catch (e) {
-      console.log(e);
       return {
         success: false,
         message: getResolverErrorMessage(e),
       };
     }
-  }*/
+  }
 
   @FieldResolver((_returns) => String)
   async nameString(

@@ -4,11 +4,12 @@ import {
 } from '../../../utils/testUtils/testHelpers';
 import {
   DEFAULT_LANG,
-  // OPERATION_TYPE_READ,
+  OPERATION_TYPE_READ,
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
 } from '../../../config';
 import { Role, RoleModel } from '../../../entities/Role';
+import { RoleRule, RoleRuleOperation } from '../../../entities/RoleRule';
 
 describe('Roles', () => {
   it('Should return session role', async () => {
@@ -147,10 +148,12 @@ describe('Roles', () => {
             }
           }
           rules {
+            id
             nameString
             entity
             restrictedFields
             operations {
+              id
               operationType
               allow
               customFilter
@@ -203,6 +206,18 @@ describe('Roles', () => {
             id
             nameString
             description
+            rules {
+              id
+              nameString
+              entity
+              restrictedFields
+              operations {
+                id
+                operationType
+                allow
+                customFilter
+              }
+            }
           }
         }
       }
@@ -257,7 +272,13 @@ describe('Roles', () => {
     expect(updateRole.role.description).toEqual(updatedRoleDescription);
 
     // Should update role operation permission
-    /*const userEntity = 'User';
+    const userEntity = 'User';
+    const updateTargetRule = createdRole.rules.find(
+      ({ entity }: RoleRule) => entity === userEntity,
+    );
+    const updateTargetOperation = updateTargetRule.operations.find(
+      ({ operationType }: RoleRuleOperation) => operationType === OPERATION_TYPE_READ,
+    );
     const {
       data: { setRoleOperationPermission },
     } = await mutate(
@@ -287,21 +308,21 @@ describe('Roles', () => {
       {
         variables: {
           input: {
-            id: createdRole.id,
-            entity: userEntity,
-            operationType: OPERATION_TYPE_READ,
+            roleId: createdRole.id,
+            operationId: updateTargetOperation.id,
             allow: true,
           },
         },
       },
     );
-    const { rules } = setRoleOperationPermission.rules;
+
+    const { rules } = setRoleOperationPermission.role;
     const updatedRule = rules.find(({ entity }: RoleRule) => entity === userEntity);
     const updatedOperation = updatedRule.operations.find(
       ({ operationType }: RoleRuleOperation) => operationType === OPERATION_TYPE_READ,
     );
     expect(updatedOperation.allow).toBeTruthy();
-    expect(setRoleOperationPermission.success).toBeTruthy();*/
+    expect(setRoleOperationPermission.success).toBeTruthy();
 
     // Should delete role
     const {

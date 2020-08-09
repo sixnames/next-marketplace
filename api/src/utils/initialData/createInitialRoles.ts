@@ -97,7 +97,7 @@ interface CreateRoleRulesInterface {
   roleId: string;
 }
 
-async function createRoleRules({ allow, roleId }: CreateRoleRulesInterface) {
+export async function createRoleRules({ allow, roleId }: CreateRoleRulesInterface) {
   for await (const rule of ROLE_RULES_TEMPLATE) {
     const existingRule = await RoleRuleModel.findOne({ entity: rule.entity, roleId });
     if (!existingRule) {

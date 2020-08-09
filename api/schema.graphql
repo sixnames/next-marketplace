@@ -357,6 +357,7 @@ type Mutation {
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
+  setRoleOperationPermission(input: SetRoleOperationPermissionInput!): RolePayloadType!
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
@@ -745,6 +746,12 @@ type RubricVariantPayloadType {
   message: String!
   success: Boolean!
   variant: RubricVariant
+}
+
+input SetRoleOperationPermissionInput {
+  allow: Boolean!
+  operationId: ID!
+  roleId: ID!
 }
 
 input SignInInput {

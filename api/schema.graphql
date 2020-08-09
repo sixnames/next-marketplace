@@ -627,7 +627,7 @@ type RolePayloadType {
 
 type RoleRule {
   entity: String!
-  id: String!
+  id: ID!
   nameString: String!
   operations: [RoleRuleOperation!]!
   restrictedFields: [String!]!
@@ -637,7 +637,7 @@ type RoleRule {
 type RoleRuleOperation {
   allow: Boolean!
   customFilter: String!
-  id: String!
+  id: ID!
   operationType: RoleRuleOperationTypeEnum!
 }
 

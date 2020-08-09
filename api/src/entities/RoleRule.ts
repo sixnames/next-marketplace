@@ -16,7 +16,7 @@ registerEnumType(RoleRuleOperationTypeEnum, {
 
 @ObjectType()
 export class RoleRuleOperation {
-  @Field((_type) => String)
+  @Field((_type) => ID)
   readonly id: string;
 
   @Field(() => RoleRuleOperationTypeEnum)
@@ -34,7 +34,7 @@ export class RoleRuleOperation {
 
 @ObjectType()
 export class RoleRule {
-  @Field((_type) => String)
+  @Field((_type) => ID)
   readonly id: string;
 
   @Field((_type) => ID)

@@ -55,6 +55,7 @@ import { assetsRoute } from '../routes/assetsRoutes';
 import { customAuthChecker } from './utils/auth/customAuthChecker';
 import { RoleModel } from './entities/Role';
 import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
+import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
 
 interface CreateAppInterface {
   app: Express;
@@ -71,6 +72,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       ConfigResolver,
       NavItemResolver,
       RoleResolver,
+      RoleRuleResolver,
       AttributeResolver,
       AttributesGroupResolver,
       CatalogueDataResolver,

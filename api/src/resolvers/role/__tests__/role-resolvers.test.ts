@@ -3,6 +3,7 @@ import {
   testClientWithContext,
 } from '../../../utils/testUtils/testHelpers';
 import {
+  cmsRoute,
   DEFAULT_LANG,
   OPERATION_TYPE_READ,
   ROLE_SLUG_ADMIN,
@@ -10,16 +11,16 @@ import {
 } from '../../../config';
 import { Role, RoleModel } from '../../../entities/Role';
 import { RoleRule, RoleRuleOperation } from '../../../entities/RoleRule';
+import { NavItemModel } from '../../../entities/NavItem';
 
 describe('Roles', () => {
-  it('Should return session role', async () => {
+  it('Should return guest session role', async () => {
     const { query } = await testClientWithContext();
     const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
     if (!guestRole) {
       throw new Error('Guest role not found');
     }
 
-    // Should return guest session role
     const {
       data: { getSessionRole },
     } = await query(
@@ -443,6 +444,67 @@ describe('Roles', () => {
     );
     expect(unsetRoleRuleRestrictedField.success).toBeTruthy();
     expect(ruleWithoutRestrictedField.restrictedFields).not.toContain(restrictedField);
+
+    // Should set role rule allowed nav item
+    const navItem = await NavItemModel.findOne({ slug: cmsRoute.slug });
+    if (!navItem) {
+      throw Error('Nav item not found');
+    }
+    const {
+      data: { setRoleAllowedNavItem },
+    } = await mutate(
+      `
+      mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+        setRoleAllowedNavItem(input: $input) {
+          success
+          message
+          role {
+            id
+            allowedAppNavigation
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            roleId: createdRole.id,
+            navItemId: navItem.id,
+          },
+        },
+      },
+    );
+    expect(setRoleAllowedNavItem.success).toBeTruthy();
+    expect(setRoleAllowedNavItem.role.allowedAppNavigation).toContain(navItem.id);
+
+    // Should unset role rule allowed nav item
+    const {
+      data: { setRoleAllowedNavItem: unsetRoleAllowedNavItem },
+    } = await mutate(
+      `
+      mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+        setRoleAllowedNavItem(input: $input) {
+          success
+          message
+          role {
+            id
+            allowedAppNavigation
+          }
+        }
+      }
+    `,
+      {
+        variables: {
+          input: {
+            roleId: createdRole.id,
+            navItemId: navItem.id,
+          },
+        },
+      },
+    );
+
+    expect(unsetRoleAllowedNavItem.success).toBeTruthy();
+    expect(unsetRoleAllowedNavItem.role.allowedAppNavigation).not.toContain(navItem.id);
 
     // Should delete role
     const {

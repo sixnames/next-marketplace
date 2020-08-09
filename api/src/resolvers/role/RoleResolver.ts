@@ -39,6 +39,7 @@ import { createRoleRules } from '../../utils/initialData/createInitialRoles';
 import { SetRoleOperationCustomFilterInput } from './SetRoleOperationCustomFilterInput';
 import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInput';
 import toggleItemInArray from '../../utils/toggleItemInArray';
+import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -447,6 +448,62 @@ export class RoleResolver {
         success: true,
         message: 'success',
         role,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  // TODO validation and messages
+  @Authorized<AuthCheckerConfigInterface>([
+    {
+      entity: 'Role',
+      operationType: OPERATION_TYPE_UPDATE,
+      target: OPERATION_TARGET_OPERATION,
+    },
+  ])
+  @Mutation(() => RolePayloadType)
+  async setRoleAllowedNavItem(
+    @Arg('input', (_type) => SetRoleAllowedNavItemInput)
+    input: SetRoleAllowedNavItemInput,
+  ): Promise<RolePayloadType> {
+    try {
+      const { roleId, navItemId } = input;
+
+      const role = await RoleModel.findById(roleId);
+      const navItem = await NavItemModel.findById(navItemId);
+
+      if (!role || !navItem) {
+        return {
+          success: false,
+          message: 'notFound',
+        };
+      }
+
+      const allowedAppNavigation = toggleItemInArray(role.allowedAppNavigation, navItemId);
+
+      const updatedRole = await RoleModel.findByIdAndUpdate(
+        roleId,
+        {
+          allowedAppNavigation,
+        },
+        { new: true },
+      );
+
+      if (!updatedRole) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        role: updatedRole,
       };
     } catch (e) {
       return {

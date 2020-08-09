@@ -13,7 +13,7 @@ export const QUERY_DATA_LAYOUT_FILTER = 'isFilterVisible';
 export const QUERY_DATA_LAYOUT_FILTER_VALUE = '1';
 export const QUERY_DATA_LAYOUT_FILTER_ENABLED = `?${QUERY_DATA_LAYOUT_FILTER}=${QUERY_DATA_LAYOUT_FILTER_VALUE}`;
 
-const cmsRoute = {
+export const cmsRoute = {
   slug: 'cms',
   name: [
     {

@@ -21,6 +21,7 @@ import {
   OPERATION_TYPE_UPDATE,
   ROLE_SLUG_GUEST,
   ROLE_TEMPLATE_GUEST,
+  ROUTE_APP_NAV_GROUP,
 } from '../../config';
 import { ContextInterface } from '../../types/context';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
@@ -579,14 +580,16 @@ export class RoleResolver {
     return NavItemModel.find({
       _id: { $in: role.allowedAppNavigation },
       parent: null,
+      navGroup: ROUTE_APP_NAV_GROUP,
     })
       .sort({ order: 1 })
       .populate({
         path: 'children',
         model: NavItemModel,
-        sort: { order: 1 },
+        options: { sort: { order: 1 } },
         match: {
           _id: { $in: role.allowedAppNavigation },
+          navGroup: ROUTE_APP_NAV_GROUP,
         },
       });
   }

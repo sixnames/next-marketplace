@@ -8,10 +8,30 @@ import {
 } from './common';
 
 export const ROUTE_APP = '/app';
+export const ROUTE_APP_NAV_GROUP = 'app';
 export const ROUTE_CMS = `${ROUTE_APP}/cms`;
 export const QUERY_DATA_LAYOUT_FILTER = 'isFilterVisible';
 export const QUERY_DATA_LAYOUT_FILTER_VALUE = '1';
 export const QUERY_DATA_LAYOUT_FILTER_ENABLED = `?${QUERY_DATA_LAYOUT_FILTER}=${QUERY_DATA_LAYOUT_FILTER_VALUE}`;
+
+export const appRoute = {
+  slug: 'app',
+  name: [
+    {
+      key: DEFAULT_LANG,
+      value: 'Главная',
+    },
+    {
+      key: SECONDARY_LANG,
+      value: 'Main',
+    },
+  ],
+  order: 0,
+  icon: 'ShoppingCart',
+  path: ROUTE_APP,
+  navGroup: ROUTE_APP_NAV_GROUP,
+  children: [],
+};
 
 export const cmsRoute = {
   slug: 'cms',
@@ -25,8 +45,9 @@ export const cmsRoute = {
       value: 'CMS',
     },
   ],
-  order: 0,
+  order: 999,
   icon: 'Settings',
+  navGroup: ROUTE_APP_NAV_GROUP,
   children: [
     {
       name: [
@@ -44,6 +65,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -61,6 +83,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -78,6 +101,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/rubric-variants`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -95,6 +119,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -112,6 +137,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -129,6 +155,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/languages`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -146,6 +173,7 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/config`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
     {
       name: [
@@ -163,11 +191,12 @@ export const cmsRoute = {
       path: `${ROUTE_CMS}/roles${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
     },
   ],
 };
 
-export const INITIAL_APP_NAVIGATION = [cmsRoute];
+export const INITIAL_APP_NAVIGATION = [appRoute, cmsRoute];
 
 export const OPERATION_TARGET_OPERATION = 'operation';
 export const OPERATION_TARGET_FIELD = 'field';

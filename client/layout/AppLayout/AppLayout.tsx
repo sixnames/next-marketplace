@@ -14,6 +14,9 @@ import { AppPageInterface } from '../../utils/getAppServerSideProps';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
+import PrivateRoute from '../PrivateRoute';
+import getFieldArrayFromTree from '../../utils/getFieldArrayFromTree';
+import { AppNavContextProvider } from '../../context/appNavContext';
 
 interface AppLayoutInterface extends AppPageInterface {
   title?: string;
@@ -61,15 +64,32 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
     );
   }
 
+  const { appNavigation } = initialApolloState.getSessionRole;
+
   return (
-    <UserContextProvider
-      me={initialApolloState.me}
-      lang={initialApolloState.getClientLanguage}
-      languagesList={initialApolloState.getAllLanguages || []}
-      configs={initialApolloState.getAllConfigs}
+    <PrivateRoute
+      condition={(pathname) => {
+        // Check nav permission
+        const allowedPaths = getFieldArrayFromTree({
+          tree: appNavigation,
+          field: 'path',
+        })
+          .filter((path) => path)
+          .map((path) => `${path}`.split('?')[0]);
+        return allowedPaths.includes(pathname);
+      }}
     >
-      <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
-    </UserContextProvider>
+      <AppNavContextProvider navItems={appNavigation}>
+        <UserContextProvider
+          me={initialApolloState.me}
+          lang={initialApolloState.getClientLanguage}
+          languagesList={initialApolloState.getAllLanguages || []}
+          configs={initialApolloState.getAllConfigs}
+        >
+          <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
+        </UserContextProvider>
+      </AppNavContextProvider>
+    </PrivateRoute>
   );
 };
 

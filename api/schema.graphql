@@ -389,6 +389,7 @@ type NavItem {
   id: String!
   name: [LanguageType!]!
   nameString: String!
+  navGroup: String!
   order: Int!
   parent: NavItem
   path: String

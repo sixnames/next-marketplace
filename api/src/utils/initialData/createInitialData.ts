@@ -5,6 +5,7 @@ import createInitialApiMessages from './createInitialApiMessages';
 import { createInitialSiteConfigs } from './createInitialSiteConfigs';
 import { createInitialRoles } from './createInitialRoles';
 import { createInitialLocalizationData } from './createInitialLocalizationData';
+import { Types } from 'mongoose';
 
 async function createInitialData() {
   // Create initial site config
@@ -20,11 +21,11 @@ async function createInitialData() {
   const adminRoleId = await createInitialRoles();
 
   // Create admin user
-  const admin = await UserModel.findOne({ email: ADMIN_EMAIL });
+  let admin = await UserModel.findOne({ email: ADMIN_EMAIL });
   if (!admin) {
     const password = await hash(ADMIN_PASSWORD, 10);
 
-    await UserModel.create({
+    admin = await UserModel.create({
       itemId: '1',
       name: ADMIN_NAME,
       email: ADMIN_EMAIL,
@@ -32,6 +33,9 @@ async function createInitialData() {
       password,
       role: adminRoleId,
     });
+  }
+  if (!Types.ObjectId.isValid(admin.role)) {
+    await UserModel.findByIdAndUpdate(admin.id, { role: adminRoleId });
   }
 }
 

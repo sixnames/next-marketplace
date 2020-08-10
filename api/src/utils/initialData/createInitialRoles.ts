@@ -82,13 +82,16 @@ function getIdsFromTree(tree: CreateInitialAppNavigationPayloadInterface[]) {
   ): string[] => {
     const { id, children } = item;
     if (children && children.length) {
-      return children.reduce((acc: string[], item) => [...acc, ...reducer(item, [])], reducerAcc);
+      return [...children, { ...item, children: [] }].reduce(
+        (acc: string[], item) => [...acc, ...reducer(item, [])],
+        reducerAcc,
+      );
     }
     return [...reducerAcc, id];
   };
 
   return tree.reduce((acc: string[], item) => {
-    return [...acc, ...reducer(item, []), item.id];
+    return [...acc, ...reducer(item, [])];
   }, []);
 }
 
@@ -141,7 +144,7 @@ export async function createInitialRoles(): Promise<string> {
   }
 
   // check new nav items
-  if (adminRole.allowedAppNavigation.length < allowedAppNavigation.length) {
+  if (adminRole.allowedAppNavigation.length !== allowedAppNavigation.length) {
     await RoleModel.findOneAndUpdate(
       { slug: ROLE_SLUG_ADMIN },
       {

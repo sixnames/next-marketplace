@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import TTip from '../../components/TTip/TTip';
-import Icon from '../../components/Icon/Icon';
+import Icon, { IconType } from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
-import { NavItemInterface } from '../../types';
 import classes from './AppNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
+import { NavItemType } from '../../context/appNavContext';
 
 interface AppNavItemInterface {
-  item: NavItemInterface;
+  item: NavItemType;
   compact?: boolean;
   pathname: string;
   openNavHandler: () => void;
@@ -17,17 +17,12 @@ interface AppNavItemInterface {
 const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
-  const { name, icon, counter, path, children } = item;
+  const { nameString, icon, path, children } = item;
+  const iconType = icon as IconType;
 
   useEffect(() => {
     if (children) {
-      const paths = children.map(({ path }) => {
-        if (typeof path === 'string') {
-          return path;
-        }
-        return path.pathname;
-      });
-
+      const paths = children.map(({ path }) => path).map((path) => `${path}`.split('?')[0]);
       const current = paths.includes(pathname);
       if (current) {
         setIsDropdownActive(true);
@@ -48,7 +43,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
     }
   }
 
-  if (children) {
+  if (children && children.length) {
     return (
       <li className={classes.item}>
         <TTip
@@ -57,15 +52,15 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
           }`}
           onClick={dropdownNavHandler}
           tooltipPlacement={'right'}
-          title={compact ? name : ''}
+          title={compact ? nameString : ''}
         >
           {icon && (
             <span className={`${classes.linkIcon}`}>
-              <Icon name={icon} />
+              <Icon name={iconType} />
             </span>
           )}
           <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-            {name}
+            {nameString}
           </span>
         </TTip>
 
@@ -75,17 +70,17 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
           }`}
         >
           {children.map((dropdownItem) => {
-            const { name, path } = dropdownItem;
+            const { nameString, path } = dropdownItem;
 
             return (
-              <li className={classes.item} key={name}>
+              <li className={classes.item} key={nameString}>
                 <Link
-                  href={path}
+                  href={`${path}`}
                   className={`${classes.complexLink}`}
                   activeClassName={classes.linkActive}
                 >
                   <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-                    {name}
+                    {nameString}
                   </span>
                 </Link>
               </li>
@@ -98,27 +93,22 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   return (
     <li className={classes.item}>
-      <TTip tooltipPlacement={'right'} title={compact ? name : ''}>
+      <TTip tooltipPlacement={'right'} title={compact ? nameString : ''}>
         <Link
           href={`${path}`}
           className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
-          activeClassName={classes.LinkActive}
+          activeClassName={classes.linkActive}
         >
           <span className={`${classes.linkIcon}`}>
             {icon && (
               <span className={`${classes.linkIcon}`}>
-                <Icon name={icon} />
+                <Icon name={iconType} />
               </span>
             )}
           </span>
           <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-            {name}
+            {nameString}
           </span>
-          {counter && counter > 0 ? (
-            <span className={`${classes.counter} ${compact ? classes.counterCompact : ''}`}>
-              {counter}
-            </span>
-          ) : null}
         </Link>
       </TTip>
     </li>

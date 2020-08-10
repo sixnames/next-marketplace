@@ -18,6 +18,10 @@ export class NavItem {
   @prop({ type: String })
   path?: string;
 
+  @Field((_type) => String)
+  @prop({ type: String })
+  navGroup: string;
+
   @Field((_type) => Int)
   @prop({ type: Number })
   order: number;

@@ -644,6 +644,7 @@ type RoleRuleOperation {
   customFilter: String!
   id: ID!
   operationType: RoleRuleOperationTypeEnum!
+  order: Int!
 }
 
 """Role rule operation type enum"""

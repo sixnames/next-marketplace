@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
 import { OPERATION_TYPE_ENUM } from '../config';
 
@@ -30,6 +30,10 @@ export class RoleRuleOperation {
   @Field((_type) => String)
   @prop({ type: String })
   customFilter: string;
+
+  @Field((_type) => Int)
+  @prop({ type: Number })
+  order: number;
 }
 
 @ObjectType()

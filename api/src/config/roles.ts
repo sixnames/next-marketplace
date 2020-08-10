@@ -210,18 +210,22 @@ export const ROLE_RULE_OPERATIONS_TEMPLATE = [
   {
     operationType: OPERATION_TYPE_CREATE,
     customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+    order: 0,
   },
   {
     operationType: OPERATION_TYPE_READ,
     customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+    order: 1,
   },
   {
     operationType: OPERATION_TYPE_UPDATE,
     customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+    order: 2,
   },
   {
     operationType: OPERATION_TYPE_DELETE,
     customFilter: ROLE_EMPTY_CUSTOM_FILTER,
+    order: 3,
   },
 ];
 

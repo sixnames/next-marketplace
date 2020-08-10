@@ -28,7 +28,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   const mobileNavHandler = useCallback(toggleCompactHandler, [toggleCompactHandler]);
   const closeNavHandler = useCallback(setCompactOn, [setCompactOn]);
   const openNavHandler = useCallback(setCompactOff, [setCompactOff]);
-  console.log(pathname);
+
   return (
     <nav className={classes.frame}>
       <div className={`${classes.collapse}`} onClick={mobileNavHandler}>

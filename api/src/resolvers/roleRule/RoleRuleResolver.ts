@@ -6,6 +6,6 @@ import { DocumentType } from '@typegoose/typegoose';
 export class RoleRuleResolver {
   @FieldResolver((_) => [RoleRuleOperation])
   async operations(@Root() roleRule: DocumentType<RoleRule>): Promise<RoleRuleOperation[]> {
-    return RoleRuleOperationModel.find({ _id: { $in: roleRule.operations } });
+    return RoleRuleOperationModel.find({ _id: { $in: roleRule.operations } }).sort({ order: 1 });
   }
 }

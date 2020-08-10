@@ -255,6 +255,7 @@ export type RoleRuleOperation = {
   operationType: RoleRuleOperationTypeEnum;
   allow: Scalars['Boolean'];
   customFilter: Scalars['String'];
+  order: Scalars['Int'];
 };
 
 /** Role rule operation type enum */
@@ -270,6 +271,7 @@ export type NavItem = {
   id: Scalars['String'];
   name: Array<LanguageType>;
   path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
   order: Scalars['Int'];
   nameString: Scalars['String'];
   icon?: Maybe<Scalars['String']>;
@@ -1825,6 +1827,19 @@ export type DeleteOptionFromGroupMutation = (
   ) }
 );
 
+export type CreateRoleMutationVariables = {
+  input: CreateRoleInput;
+};
+
+
+export type CreateRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { createRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type CreateRubricVariantMutationVariables = {
   input: CreateRubricVariantInput;
 };
@@ -2178,6 +2193,41 @@ export type GetOptionsGroupQuery = (
       )>> }
     )> }
   )> }
+);
+
+export type GetAllRolesQueryVariables = {};
+
+
+export type GetAllRolesQuery = (
+  { __typename?: 'Query' }
+  & { getAllRoles: Array<(
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetRoleQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetRoleQuery = (
+  { __typename?: 'Query' }
+  & { getRole: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, rules: Array<(
+      { __typename?: 'RoleRule' }
+      & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
+      & { operations: Array<(
+        { __typename?: 'RoleRuleOperation' }
+        & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
+      )> }
+    )> }
+  ) }
 );
 
 export type GetAllRubricVariantsQueryVariables = {};
@@ -3506,6 +3556,39 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: ApolloReactHooks.
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const CreateRoleDocument = gql`
+    mutation CreateRole($input: CreateRoleInput!) {
+  createRole(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateRoleMutationFn = ApolloReactCommon.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>;
+
+/**
+ * __useCreateRoleMutation__
+ *
+ * To run a mutation, you first call `useCreateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRoleMutation, { data, loading, error }] = useCreateRoleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, baseOptions);
+      }
+export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>;
+export type CreateRoleMutationResult = ApolloReactCommon.MutationResult<CreateRoleMutation>;
+export type CreateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {
@@ -4201,6 +4284,93 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
+export const GetAllRolesDocument = gql`
+    query GetAllRoles {
+  getAllRoles {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAllRolesQuery__
+ *
+ * To run a query within a React component, call `useGetAllRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllRolesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, baseOptions);
+      }
+export function useGetAllRolesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, baseOptions);
+        }
+export type GetAllRolesQueryHookResult = ReturnType<typeof useGetAllRolesQuery>;
+export type GetAllRolesLazyQueryHookResult = ReturnType<typeof useGetAllRolesLazyQuery>;
+export type GetAllRolesQueryResult = ApolloReactCommon.QueryResult<GetAllRolesQuery, GetAllRolesQueryVariables>;
+export const GetRoleDocument = gql`
+    query GetRole($id: ID!) {
+  getRole(id: $id) {
+    id
+    nameString
+    allowedAppNavigation
+    description
+    isStuff
+    name {
+      key
+      value
+    }
+    rules {
+      id
+      entity
+      nameString
+      nameString
+      restrictedFields
+      operations {
+        id
+        allow
+        customFilter
+        operationType
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRoleQuery__
+ *
+ * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRoleQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRoleQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
+      }
+export function useGetRoleLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
+        }
+export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
+export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
+export type GetRoleQueryResult = ApolloReactCommon.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

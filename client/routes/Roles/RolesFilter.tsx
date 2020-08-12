@@ -46,10 +46,11 @@ const RolesFilter: React.FC = () => {
   if (error || !data) return <RequestError />;
 
   const { getAllRoles } = data;
+  const initialTab = { tab: '0' };
 
   return (
     <Fragment>
-      <FilterRadioGroup radioItems={getAllRoles} queryKey={'role'} />
+      <FilterRadioGroup radioItems={getAllRoles} queryKey={'role'} additionalQuery={initialTab} />
       <Button size={'small'} onClick={createRoleHandler} testId={'create-role'}>
         Добавить роль
       </Button>

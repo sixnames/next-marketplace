@@ -69,7 +69,7 @@ export class RoleResolver {
   ])
   @Query((_returns) => Role)
   async getRole(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string): Promise<Role> {
-    const customFilter = getRoleRuleCustomFilter<Role>({
+    const customFilter = await getRoleRuleCustomFilter<Role>({
       req: ctx.req,
       entity: 'Role',
       operationType: OPERATION_TYPE_READ,
@@ -91,7 +91,7 @@ export class RoleResolver {
   ])
   @Query((_returns) => [Role])
   async getAllRoles(@Ctx() ctx: ContextInterface): Promise<Role[]> {
-    const customFilter = getRoleRuleCustomFilter<Role>({
+    const customFilter = await getRoleRuleCustomFilter<Role>({
       req: ctx.req,
       entity: 'Role',
       operationType: OPERATION_TYPE_READ,
@@ -102,7 +102,17 @@ export class RoleResolver {
 
   @Query((_returns) => Role)
   async getSessionRole(@Ctx() ctx: ContextInterface): Promise<Role> {
-    const sessionRole = await RoleModel.findById(ctx.req.session!.userRole._id);
+    const sessionRoleId = ctx.req.session!.roleId;
+
+    if (!sessionRoleId) {
+      const sessionRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+      if (!sessionRole) {
+        throw new Error('Guest session role not found');
+      }
+      return sessionRole;
+    }
+
+    const sessionRole = await RoleModel.findById(sessionRoleId);
     if (!sessionRole) {
       throw new Error('Session role not found');
     }

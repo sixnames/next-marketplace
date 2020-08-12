@@ -1,6 +1,13 @@
 import { ContextInterface } from '../../types/context';
 import { FilterQuery } from 'mongoose';
-import { AuthCheckerConfigInterface, RoleRuleInterface } from './customAuthChecker';
+import { AuthCheckerConfigInterface } from './customAuthChecker';
+import { RoleModel } from '../../entities/Role';
+import { ROLE_SLUG_GUEST } from '../../config';
+import {
+  RoleRuleModel,
+  RoleRuleOperationModel,
+  RoleRuleOperationTypeEnum,
+} from '../../entities/RoleRule';
 
 interface GetRoleRuleCustomFilterInterface {
   req: ContextInterface['req'];
@@ -8,27 +15,38 @@ interface GetRoleRuleCustomFilterInterface {
   operationType: AuthCheckerConfigInterface['operationType'];
 }
 
-export function getRoleRuleCustomFilter<T>({
+export async function getRoleRuleCustomFilter<T>({
   req,
   entity,
   operationType,
-}: GetRoleRuleCustomFilterInterface): FilterQuery<T> {
-  const {
-    userRole: { rules },
-    userId,
-  } = req.session!;
+}: GetRoleRuleCustomFilterInterface): Promise<FilterQuery<T>> {
+  let entityRule;
+  const { roleId, userId } = req.session!;
 
-  const entityRule: RoleRuleInterface | undefined = rules.find(
-    ({ entity: ruleEntity }: RoleRuleInterface) => ruleEntity === entity,
-  );
+  if (!roleId) {
+    const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+    if (!guestRole) {
+      throw Error('Guest role not found');
+    }
+    entityRule = await RoleRuleModel.findOne({
+      roleId: guestRole.id,
+      entity,
+    });
+  } else {
+    entityRule = await RoleRuleModel.findOne({
+      roleId: roleId,
+      entity,
+    });
+  }
 
   if (!entityRule) {
     return {};
   }
 
-  const entityRuleOperation = entityRule.operations.find(
-    ({ operationType: ruleOperationType }) => ruleOperationType === operationType,
-  );
+  const entityRuleOperation = await RoleRuleOperationModel.findOne({
+    _id: { $in: entityRule.operations },
+    operationType: operationType as RoleRuleOperationTypeEnum,
+  });
 
   if (!entityRuleOperation) {
     return {};

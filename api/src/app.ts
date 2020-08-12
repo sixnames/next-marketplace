@@ -11,7 +11,7 @@ import {
   CITY_COOKIE_KEY,
   DB_OPTIONS,
   SESS_OPTIONS,
-  ROLE_SLUG_GUEST,
+  // ROLE_SLUG_GUEST,
   SESSION_COLLECTION,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
@@ -54,8 +54,6 @@ import {
 } from '../routes/testingDataRoutes';
 import { assetsRoute } from '../routes/assetsRoutes';
 import { customAuthChecker } from './utils/auth/customAuthChecker';
-import { RoleModel } from './entities/Role';
-import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
 
 interface CreateAppInterface {
@@ -156,24 +154,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
       } else {
         res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
         req.lang = defaultLanguageKey;
-      }
-
-      // Set default role
-      if (!req.session!.userRole) {
-        const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST }).lean().exec();
-        if (!guestRole) {
-          throw Error('Guest role not found');
-        }
-        const userRoleRules = await RoleRuleModel.find({
-          roleId: guestRole._id,
-        })
-          .populate({
-            path: 'operations',
-            model: RoleRuleOperationModel,
-          })
-          .lean()
-          .exec();
-        req.session!.userRole = { ...guestRole, rules: userRoleRules };
       }
 
       // Return apollo context

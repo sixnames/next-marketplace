@@ -39,7 +39,6 @@ import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { Role, RoleModel } from '../../entities/Role';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
-import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 import {
   createUserSchema,
   signInValidationSchema,
@@ -75,7 +74,7 @@ export class UserResolver {
     @Ctx() ctx: ContextInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<User | null> {
-    const customFiler = getRoleRuleCustomFilter<User>({
+    const customFiler = await getRoleRuleCustomFilter<User>({
       req: ctx.req,
       entity: 'User',
       operationType: OPERATION_TYPE_READ,
@@ -105,7 +104,7 @@ export class UserResolver {
       search,
     });
 
-    const customFiler = getRoleRuleCustomFilter<User>({
+    const customFiler = await getRoleRuleCustomFilter<User>({
       req: ctx.req,
       entity: 'User',
       operationType: OPERATION_TYPE_READ,
@@ -205,7 +204,7 @@ export class UserResolver {
       ]);
       await updateUserSchema({ messages, lang }).validate(input);
 
-      const customFiler = getRoleRuleCustomFilter<User>({
+      const customFiler = await getRoleRuleCustomFilter<User>({
         req: ctx.req,
         entity: 'User',
         operationType: OPERATION_TYPE_UPDATE,
@@ -366,8 +365,8 @@ export class UserResolver {
         };
       }
 
-      const userRole = await RoleModel.findById(user.role).lean().exec();
-      const userRoleRules = await RoleRuleModel.find({
+      const userRole = await RoleModel.findById(user.role);
+      /*const userRoleRules = await RoleRuleModel.find({
         roleId: user.role,
       })
         .populate({
@@ -375,11 +374,11 @@ export class UserResolver {
           model: RoleRuleOperationModel,
         })
         .lean()
-        .exec();
+        .exec();*/
 
       ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
-      ctx.req.session!.userRole = { ...userRole, rules: userRoleRules };
+      ctx.req.session!.roleId = userRole ? userRole._id : null;
       // req.session.cartId = user.cart;
 
       return {

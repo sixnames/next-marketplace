@@ -1,16 +1,17 @@
 import { AuthChecker } from 'type-graphql';
 import { ContextInterface } from '../../types/context';
-import { OPERATION_TARGET_FIELD } from '../../config';
-import { RoleRule, RoleRuleOperation } from '../../entities/RoleRule';
+import { OPERATION_TARGET_FIELD, ROLE_SLUG_GUEST } from '../../config';
+import {
+  RoleRuleModel,
+  RoleRuleOperationModel,
+  RoleRuleOperationTypeEnum,
+} from '../../entities/RoleRule';
+import { RoleModel } from '../../entities/Role';
 
 export interface AuthCheckerConfigInterface {
   entity: string;
   operationType: 'create' | 'read' | 'update' | 'delete';
   target: 'operation' | 'field';
-}
-
-export interface RoleRuleInterface extends Omit<RoleRule, 'operations'> {
-  operations: RoleRuleOperation[];
 }
 
 export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigInterface> = async (
@@ -22,25 +23,43 @@ export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigI
   },
   operationTypes,
 ): Promise<boolean> => {
+  let currentRule;
+  const userRoleId = session!.roleId;
   const operationConfig = operationTypes[0];
-  const roleRules: RoleRuleInterface[] = session!.userRole.rules;
-  const entityRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
-  if (!entityRule) {
+
+  if (!userRoleId) {
+    const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+    if (!guestRole) {
+      throw Error('Guest role not found');
+    }
+    currentRule = await RoleRuleModel.findOne({
+      roleId: guestRole.id,
+      entity: operationConfig.entity,
+    });
+  } else {
+    currentRule = await RoleRuleModel.findOne({
+      roleId: userRoleId,
+      entity: operationConfig.entity,
+    });
+  }
+
+  if (!currentRule) {
     return true;
   }
 
   // Check if target is entity field
   if (operationConfig.target === OPERATION_TARGET_FIELD) {
-    const restrictedField = entityRule.restrictedFields.includes(info.fieldName);
+    const restrictedField = currentRule.restrictedFields.includes(info.fieldName);
     return !restrictedField;
   }
 
-  const entityRuleOperation = entityRule.operations.find(
-    ({ operationType }) => operationType === operationConfig.operationType,
-  );
-  if (!entityRuleOperation) {
+  const currentOperation = await RoleRuleOperationModel.findOne({
+    _id: { $in: currentRule.operations },
+    operationType: operationConfig.operationType as RoleRuleOperationTypeEnum,
+  });
+  if (!currentOperation) {
     return true;
   }
 
-  return entityRuleOperation.allow;
+  return currentOperation.allow;
 };

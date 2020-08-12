@@ -98,8 +98,9 @@ export async function testSignInRoute(req: Request, res: Response) {
     return;
   }
 
+  req.session!.user = user;
   req.session!.userId = user.id;
-  req.session!.userRole = user.role;
+  req.session!.roleId = user.role;
 
   res.send('signed in');
 }

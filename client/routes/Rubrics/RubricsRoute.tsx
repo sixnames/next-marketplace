@@ -36,6 +36,7 @@ const RubricsRoute: React.FC = () => {
       }
     },
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: RUBRICS_TREE_QUERY,

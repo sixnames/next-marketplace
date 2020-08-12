@@ -53,7 +53,7 @@ const Link: React.FC<LinkInterface> = ({
         data-cy={testId}
         {...props}
       >
-        {children}
+        {typeof children === 'function' ? children(isCurrent) : children}
       </a>
     </NextLink>
   );

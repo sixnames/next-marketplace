@@ -243,6 +243,10 @@ export const ROLE_RULES_TEMPLATE = [
     entity: 'AttributeVariant',
   },
   {
+    nameString: 'Настройки сайта',
+    entity: 'Config',
+  },
+  {
     nameString: 'Города',
     entity: 'City',
   },

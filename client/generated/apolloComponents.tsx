@@ -1840,6 +1840,84 @@ export type CreateRoleMutation = (
   ) }
 );
 
+export type UpdateRoleMutationVariables = {
+  input: UpdateRoleInput;
+};
+
+
+export type UpdateRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteRoleMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleOperationPermissionMutationVariables = {
+  input: SetRoleOperationPermissionInput;
+};
+
+
+export type SetRoleOperationPermissionMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleOperationPermission: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleOperationCustomFilterMutationVariables = {
+  input: SetRoleOperationCustomFilterInput;
+};
+
+
+export type SetRoleOperationCustomFilterMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleOperationCustomFilter: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleRuleRestrictedFieldMutationVariables = {
+  input: SetRoleRuleRestrictedFieldInput;
+};
+
+
+export type SetRoleRuleRestrictedFieldMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleRuleRestrictedField: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleAllowedNavItemMutationVariables = {
+  input: SetRoleAllowedNavItemInput;
+};
+
+
+export type SetRoleAllowedNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleAllowedNavItem: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type CreateRubricVariantMutationVariables = {
   input: CreateRubricVariantInput;
 };
@@ -3589,6 +3667,204 @@ export function useCreateRoleMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>;
 export type CreateRoleMutationResult = ApolloReactCommon.MutationResult<CreateRoleMutation>;
 export type CreateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>;
+export const UpdateRoleDocument = gql`
+    mutation UpdateRole($input: UpdateRoleInput!) {
+  updateRole(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleMutationFn = ApolloReactCommon.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>;
+
+/**
+ * __useUpdateRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleMutation, { data, loading, error }] = useUpdateRoleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, baseOptions);
+      }
+export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
+export type UpdateRoleMutationResult = ApolloReactCommon.MutationResult<UpdateRoleMutation>;
+export type UpdateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const DeleteRoleDocument = gql`
+    mutation DeleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRoleMutationFn = ApolloReactCommon.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>;
+
+/**
+ * __useDeleteRoleMutation__
+ *
+ * To run a mutation, you first call `useDeleteRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRoleMutation, { data, loading, error }] = useDeleteRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, baseOptions);
+      }
+export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
+export type DeleteRoleMutationResult = ApolloReactCommon.MutationResult<DeleteRoleMutation>;
+export type DeleteRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
+export const SetRoleOperationPermissionDocument = gql`
+    mutation SetRoleOperationPermission($input: SetRoleOperationPermissionInput!) {
+  setRoleOperationPermission(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleOperationPermissionMutationFn = ApolloReactCommon.MutationFunction<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>;
+
+/**
+ * __useSetRoleOperationPermissionMutation__
+ *
+ * To run a mutation, you first call `useSetRoleOperationPermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleOperationPermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleOperationPermissionMutation, { data, loading, error }] = useSetRoleOperationPermissionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleOperationPermissionMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>(SetRoleOperationPermissionDocument, baseOptions);
+      }
+export type SetRoleOperationPermissionMutationHookResult = ReturnType<typeof useSetRoleOperationPermissionMutation>;
+export type SetRoleOperationPermissionMutationResult = ApolloReactCommon.MutationResult<SetRoleOperationPermissionMutation>;
+export type SetRoleOperationPermissionMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>;
+export const SetRoleOperationCustomFilterDocument = gql`
+    mutation SetRoleOperationCustomFilter($input: SetRoleOperationCustomFilterInput!) {
+  setRoleOperationCustomFilter(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleOperationCustomFilterMutationFn = ApolloReactCommon.MutationFunction<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>;
+
+/**
+ * __useSetRoleOperationCustomFilterMutation__
+ *
+ * To run a mutation, you first call `useSetRoleOperationCustomFilterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleOperationCustomFilterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleOperationCustomFilterMutation, { data, loading, error }] = useSetRoleOperationCustomFilterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleOperationCustomFilterMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>(SetRoleOperationCustomFilterDocument, baseOptions);
+      }
+export type SetRoleOperationCustomFilterMutationHookResult = ReturnType<typeof useSetRoleOperationCustomFilterMutation>;
+export type SetRoleOperationCustomFilterMutationResult = ApolloReactCommon.MutationResult<SetRoleOperationCustomFilterMutation>;
+export type SetRoleOperationCustomFilterMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>;
+export const SetRoleRuleRestrictedFieldDocument = gql`
+    mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+  setRoleRuleRestrictedField(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleRuleRestrictedFieldMutationFn = ApolloReactCommon.MutationFunction<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>;
+
+/**
+ * __useSetRoleRuleRestrictedFieldMutation__
+ *
+ * To run a mutation, you first call `useSetRoleRuleRestrictedFieldMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleRuleRestrictedFieldMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleRuleRestrictedFieldMutation, { data, loading, error }] = useSetRoleRuleRestrictedFieldMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleRuleRestrictedFieldMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>(SetRoleRuleRestrictedFieldDocument, baseOptions);
+      }
+export type SetRoleRuleRestrictedFieldMutationHookResult = ReturnType<typeof useSetRoleRuleRestrictedFieldMutation>;
+export type SetRoleRuleRestrictedFieldMutationResult = ApolloReactCommon.MutationResult<SetRoleRuleRestrictedFieldMutation>;
+export type SetRoleRuleRestrictedFieldMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>;
+export const SetRoleAllowedNavItemDocument = gql`
+    mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+  setRoleAllowedNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleAllowedNavItemMutationFn = ApolloReactCommon.MutationFunction<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>;
+
+/**
+ * __useSetRoleAllowedNavItemMutation__
+ *
+ * To run a mutation, you first call `useSetRoleAllowedNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleAllowedNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleAllowedNavItemMutation, { data, loading, error }] = useSetRoleAllowedNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleAllowedNavItemMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>(SetRoleAllowedNavItemDocument, baseOptions);
+      }
+export type SetRoleAllowedNavItemMutationHookResult = ReturnType<typeof useSetRoleAllowedNavItemMutation>;
+export type SetRoleAllowedNavItemMutationResult = ApolloReactCommon.MutationResult<SetRoleAllowedNavItemMutation>;
+export type SetRoleAllowedNavItemMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {

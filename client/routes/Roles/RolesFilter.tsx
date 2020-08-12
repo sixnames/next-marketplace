@@ -32,7 +32,7 @@ const RolesFilter: React.FC = () => {
       props: {
         confirm: (values) => {
           showLoading();
-          createRoleMutation({
+          return createRoleMutation({
             variables: {
               input: values,
             },

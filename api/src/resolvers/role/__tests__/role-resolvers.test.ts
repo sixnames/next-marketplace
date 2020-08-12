@@ -560,7 +560,7 @@ describe('Roles', () => {
       data: { deleteRole },
     } = await mutate(
       `
-      mutation UpdateRole($id: ID!) {
+      mutation DeleteRole($id: ID!) {
         deleteRole(id: $id) {
           success
           message

@@ -68,13 +68,17 @@
   fill: var(--midGray);
 }
 
-.linkActive .link,
 .link:hover {
+  color: var(--theme);
+}
+
+.linkActive,
+.linkActive:hover {
   color: var(--theme);
   text-decoration: none;
 }
 
-.linkActive .link {
+.linkActive {
   cursor: default;
   pointer-events: none;
 }

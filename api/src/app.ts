@@ -12,6 +12,7 @@ import {
   DB_OPTIONS,
   SESS_OPTIONS,
   ROLE_SLUG_GUEST,
+  SESSION_COLLECTION,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import cookie from 'cookie';
@@ -106,7 +107,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const MongoDBStore = connectMongoDBStore(session);
   const store = new MongoDBStore({
     uri: MONGO_URL,
-    collection: 'sessions',
+    collection: SESSION_COLLECTION,
   });
   const sessionHandler = session({
     store,

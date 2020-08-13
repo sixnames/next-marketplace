@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap');
+/*noinspection CssUnknownTarget*/
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy/Gilroy-Regular.eot');
+  src: local('Gilroy Regular'), local('Gilroy-Regular'),
+  url('/fonts/Gilroy/Gilroy-Regular.eot?#iefix') format('embedded-opentype'),
+  url('/fonts/Gilroy/Gilroy-Regular.woff') format('woff'),
+  url('/fonts/Gilroy/Gilroy-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*noinspection CssUnknownTarget*/
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy/Gilroy-Bold.eot');
+  src: local('Gilroy Bold'), local('Gilroy-Bold'),
+  url('/fonts/Gilroy/Gilroy-Bold.eot?#iefix') format('embedded-opentype'),
+  url('/fonts/Gilroy/Gilroy-Bold.woff') format('woff'),
+  url('/fonts/Gilroy/Gilroy-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
 
 :root {
   --theme: #DB5360;
@@ -277,7 +299,7 @@
   --md-blue-gray-800: #37474f;
   --md-blue-gray-900: #263238;
 
-  --font: 'Roboto', sans-serif;
+  --font: 'Gilroy', sans-serif;
   --textColor: #1d2225;
   --textSecondaryColor: #666666;
 
@@ -546,6 +568,8 @@ body {
   min-width: 320px;
   font-family: var(--font);
   font-size: 1rem;
+  font-weight: normal;
+  font-style: normal;
   color: var(--textColor);
   background-color: var(--primaryBackground);
 }

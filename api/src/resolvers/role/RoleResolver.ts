@@ -25,7 +25,7 @@ import {
 } from '../../config';
 import { ContextInterface } from '../../types/context';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
-import { DocumentType } from '@typegoose/typegoose';
+import { DocumentType, mongoose } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
 import PayloadType from '../common/PayloadType';
@@ -117,6 +117,17 @@ export class RoleResolver {
       throw new Error('Session role not found');
     }
     return sessionRole;
+  }
+
+  @Query((_returns) => [String])
+  async getModelKeys(@Arg('entity') entity: string): Promise<string[]> {
+    const fields = mongoose.model(entity).schema.paths;
+    return Object.keys(fields)
+      .filter((key) => {
+        const excludedKeys = ['_id', '__v', 'password'];
+        return !excludedKeys.includes(key);
+      })
+      .sort();
   }
 
   @Authorized<AuthCheckerConfigInterface>([

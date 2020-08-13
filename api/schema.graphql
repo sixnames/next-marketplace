@@ -597,6 +597,7 @@ type Query {
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
+  getModelKeys(entity: String!): [String!]!
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!

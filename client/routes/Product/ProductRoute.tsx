@@ -12,11 +12,11 @@ import useTabsConfig from '../../hooks/useTabsConfig';
 const ProductRoute: React.FC = () => {
   const { query } = useRouterQuery();
   const { generateTabsConfig } = useTabsConfig();
-  const { id } = query;
+  const { productId } = query;
   const { data, loading, error } = useGetProductQuery({
-    skip: !id,
+    skip: !productId,
     variables: {
-      id: `${id}`,
+      id: `${productId}`,
     },
   });
 

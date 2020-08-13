@@ -8,7 +8,6 @@ import { GET_ALL_ROLES_QUERY } from '../../graphql/query/roles';
 import { ROLE_MODAL } from '../../config/modals';
 import { RoleModalInterface } from '../../components/Modal/RoleModal/RoleModal';
 import Button from '../../components/Buttons/Button';
-// import classes from './RolesFilter.module.css';
 
 const RolesFilter: React.FC = () => {
   const { data, loading, error } = useGetAllRolesQuery({

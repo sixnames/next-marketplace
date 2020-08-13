@@ -15,6 +15,7 @@ import {
   LANGUAGE_MODAL,
   OPTION_IN_GROUP_MODAL,
   OPTIONS_GROUP_MODAL,
+  ROLE_CUSTOM_FILTER_MODAL,
   ROLE_MODAL,
   RUBRIC_VARIANT_MODAL,
 } from '../../config/modals';
@@ -22,6 +23,9 @@ import {
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
 const LanguageModal = React.lazy(() => import('./LanguageModal/LanguageModal'));
 const RoleModal = React.lazy(() => import('./RoleModal/RoleModal'));
+const RoleCustomFilterModal = React.lazy(() =>
+  import('./RoleCustomFilterModal/RoleCustomFilterModal'),
+);
 const OptionsGroupModal = React.lazy(() => import('./OptionsGroupModal/OptionsGroupModal'));
 const AttributesGroupModal = React.lazy(() =>
   import('./AttributesGroupModal/AttributesGroupModal'),
@@ -71,6 +75,7 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
 
           {modalType === ROLE_MODAL && <RoleModal {...modalProps} />}
+          {modalType === ROLE_CUSTOM_FILTER_MODAL && <RoleCustomFilterModal {...modalProps} />}
 
           {modalType === ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL && (
             <AddAttributesGroupToRubricModal {...modalProps} />

@@ -30,6 +30,7 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "16.13.1",
     "react-dropzone": "^11.0.1",
+    "react-json-editor-ajrm": "^2.5.9",
     "react-masked-field": "^2.0.3",
     "react-paginate": "^6.3.2",
     "react-spring": "^8.0.27",

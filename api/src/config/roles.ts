@@ -4,6 +4,7 @@ import {
   OPERATION_TYPE_DELETE,
   OPERATION_TYPE_READ,
   OPERATION_TYPE_UPDATE,
+  ROLE_EMPTY_CUSTOM_FILTER,
   SECONDARY_LANG,
 } from './common';
 
@@ -203,8 +204,6 @@ export const OPERATION_TARGET_FIELD = 'field';
 
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
-
-export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
 
 export const ROLE_RULE_OPERATIONS_TEMPLATE = [
   {

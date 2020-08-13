@@ -10,6 +10,8 @@ export const OPERATION_TYPE_ENUM = [
   OPERATION_TYPE_DELETE,
 ];
 
+export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
+
 export const OPERATION_TYPES_LIST = [
   { id: OPERATION_TYPE_CREATE, nameString: 'Создание' },
   { id: OPERATION_TYPE_READ, nameString: 'Чтение' },

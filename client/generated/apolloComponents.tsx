@@ -62,6 +62,7 @@ export type Query = {
   getAllRoles: Array<Role>;
   getSessionRole: Role;
   getEntityFields: Array<Scalars['String']>;
+  getAllAppNavItems: Array<NavItem>;
 };
 
 
@@ -2322,6 +2323,21 @@ export type GetEntityFieldsQueryVariables = {
 export type GetEntityFieldsQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'getEntityFields'>
+);
+
+export type GetAllAppNavItemsQueryVariables = {};
+
+
+export type GetAllAppNavItemsQuery = (
+  { __typename?: 'Query' }
+  & { getAllAppNavItems: Array<(
+    { __typename?: 'NavItem' }
+    & Pick<NavItem, 'id' | 'nameString' | 'path'>
+    & { children?: Maybe<Array<(
+      { __typename?: 'NavItem' }
+      & Pick<NavItem, 'id' | 'nameString' | 'path'>
+    )>> }
+  )> }
 );
 
 export type GetAllRubricVariantsQueryVariables = {};
@@ -4694,6 +4710,45 @@ export function useGetEntityFieldsLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetEntityFieldsQueryHookResult = ReturnType<typeof useGetEntityFieldsQuery>;
 export type GetEntityFieldsLazyQueryHookResult = ReturnType<typeof useGetEntityFieldsLazyQuery>;
 export type GetEntityFieldsQueryResult = ApolloReactCommon.QueryResult<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>;
+export const GetAllAppNavItemsDocument = gql`
+    query GetAllAppNavItems {
+  getAllAppNavItems {
+    id
+    nameString
+    path
+    children {
+      id
+      nameString
+      path
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllAppNavItemsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAppNavItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAppNavItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAppNavItemsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAppNavItemsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>(GetAllAppNavItemsDocument, baseOptions);
+      }
+export function useGetAllAppNavItemsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>(GetAllAppNavItemsDocument, baseOptions);
+        }
+export type GetAllAppNavItemsQueryHookResult = ReturnType<typeof useGetAllAppNavItemsQuery>;
+export type GetAllAppNavItemsLazyQueryHookResult = ReturnType<typeof useGetAllAppNavItemsLazyQuery>;
+export type GetAllAppNavItemsQueryResult = ApolloReactCommon.QueryResult<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

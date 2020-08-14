@@ -5,9 +5,14 @@ import Spinner from '../components/Spinner/Spinner';
 
 interface PrivateRouteInterface {
   condition?: (pathname: string) => boolean;
+  redirectPath?: string;
 }
 
-const PrivateRoute: React.FC<PrivateRouteInterface> = ({ children, condition }) => {
+const PrivateRoute: React.FC<PrivateRouteInterface> = ({
+  children,
+  redirectPath = ROUTE_SIGN_IN,
+  condition,
+}) => {
   const [allow, setAllow] = useState<boolean>(false);
   const router = useRouter();
 
@@ -17,7 +22,7 @@ const PrivateRoute: React.FC<PrivateRouteInterface> = ({ children, condition }) 
     }
 
     if (condition && !condition(router.pathname)) {
-      router.replace(ROUTE_SIGN_IN);
+      router.replace(redirectPath);
     }
   }, [condition, router]);
 

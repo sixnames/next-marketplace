@@ -25,7 +25,7 @@ const RoleRestrictedFieldsModal: React.FC<RoleRestrictedFieldsModalInterface> = 
   ruleId,
   entity,
 }) => {
-  const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({});
+  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
   const { data: roleData, loading: roleLoading, error: roleError } = useGetRoleQuery({
     variables: {
       id: roleId,
@@ -110,6 +110,7 @@ const RoleRestrictedFieldsModal: React.FC<RoleRestrictedFieldsModalInterface> = 
             checked={restrictedFields.includes(field)}
             value={field}
             onChange={() => {
+              showLoading();
               setRoleRuleRestrictedFieldMutation({
                 variables: {
                   input: {

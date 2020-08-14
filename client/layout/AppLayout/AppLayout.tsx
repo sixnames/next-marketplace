@@ -68,6 +68,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
 
   return (
     <PrivateRoute
+      redirectPath={'/'}
       condition={(pathname) => {
         // Check nav permission
         const allowedPaths = getFieldArrayFromTree({

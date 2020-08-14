@@ -43,3 +43,18 @@ export const GET_ENTITY_FIELDS_QUERY = gql`
     getEntityFields(entity: $entity)
   }
 `;
+
+export const GET_ALL_APP_NAV_ITEMS_QUERY = gql`
+  query GetAllAppNavItems {
+    getAllAppNavItems {
+      id
+      nameString
+      path
+      children {
+        id
+        nameString
+        path
+      }
+    }
+  }
+`;

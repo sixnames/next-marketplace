@@ -21,6 +21,7 @@ export const customAuthChecker: AuthChecker<ContextInterface, AuthCheckerConfigI
       req: { session },
     },
   },
+
   operationTypes,
 ): Promise<boolean> => {
   let currentRule;

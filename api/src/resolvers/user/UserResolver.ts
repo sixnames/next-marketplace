@@ -9,7 +9,6 @@ import {
   ObjectType,
   Ctx,
   ID,
-  Authorized,
 } from 'type-graphql';
 import { User, UserModel } from '../../entities/User';
 import { CreateUserInput } from './CreateUserInput';
@@ -27,7 +26,6 @@ import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
 import {
-  OPERATION_TARGET_OPERATION,
   OPERATION_TYPE_CREATE,
   OPERATION_TYPE_DELETE,
   OPERATION_TYPE_READ,
@@ -36,7 +34,6 @@ import {
 } from '../../config';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
-import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import { Role, RoleModel } from '../../entities/Role';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 import {
@@ -49,7 +46,8 @@ import {
   Localization,
   LocalizationPayloadInterface,
   SessionUserId,
-} from '../../decorators/sessionDecorators';
+} from '../../decorators/parameterDecorators';
+import { AuthMethod } from '../../decorators/methodDecorators';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -67,13 +65,10 @@ export class UserResolver {
     return UserModel.findById(sessionUserId);
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_READ,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'User',
+    operationType: OPERATION_TYPE_READ,
+  })
   @Query(() => User, { nullable: true })
   async getUser(
     @Ctx() ctx: ContextInterface,
@@ -88,13 +83,10 @@ export class UserResolver {
     return UserModel.findOne({ _id: id, ...customFiler });
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_READ,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'User',
+    operationType: OPERATION_TYPE_READ,
+  })
   @Query(() => PaginatedUsersResponse)
   async getAllUsers(
     @Ctx() ctx: ContextInterface,
@@ -118,13 +110,10 @@ export class UserResolver {
     return UserModel.paginate({ ...searchOptions, ...customFiler }, options);
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_CREATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'User',
+    operationType: OPERATION_TYPE_CREATE,
+  })
   @Mutation(() => UserPayloadType)
   async createUser(
     @Localization() { lang }: LocalizationPayloadInterface,
@@ -184,13 +173,10 @@ export class UserResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'User',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => UserPayloadType)
   async updateUser(
     @Ctx() ctx: ContextInterface,
@@ -251,13 +237,10 @@ export class UserResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'User',
-      operationType: OPERATION_TYPE_DELETE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'User',
+    operationType: OPERATION_TYPE_DELETE,
+  })
   @Mutation(() => UserPayloadType)
   async deleteUser(
     @Localization() { lang }: LocalizationPayloadInterface,

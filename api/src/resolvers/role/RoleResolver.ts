@@ -25,7 +25,7 @@ import {
 } from '../../config';
 import { ContextInterface } from '../../types/context';
 import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
-import { DocumentType, mongoose } from '@typegoose/typegoose';
+import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
 import PayloadType from '../common/PayloadType';
@@ -43,6 +43,7 @@ import toggleItemInArray from '../../utils/toggleItemInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import fs from 'fs';
 import {
   createRoleSchema,
   setRoleAllowedNavItemSchema,
@@ -120,11 +121,23 @@ export class RoleResolver {
   }
 
   @Query((_returns) => [String])
-  async getModelKeys(@Arg('entity') entity: string): Promise<string[]> {
-    const fields = mongoose.model(entity).schema.paths;
-    return Object.keys(fields)
-      .filter((key) => {
-        const excludedKeys = ['_id', '__v', 'password'];
+  async getEntityFields(@Arg('entity') entity: string): Promise<string[]> {
+    const rawSchema = fs.readFileSync('./introspectionSchema.json');
+    const {
+      __schema: { types },
+    }: any = JSON.parse(rawSchema.toString());
+    const entitySchema = types.find(({ name }: any) => {
+      return name === entity;
+    });
+    if (!entitySchema) {
+      return [];
+    }
+
+    const entityFields = entitySchema.fields.map(({ name }: any) => name);
+
+    return entityFields
+      .filter((key: string) => {
+        const excludedKeys = ['id', 'password', 'children'];
         return !excludedKeys.includes(key);
       })
       .sort();

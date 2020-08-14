@@ -10,6 +10,7 @@ import {
 } from '../../config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import {
+  RoleRule,
   useSetRoleOperationCustomFilterMutation,
   useSetRoleOperationPermissionMutation,
 } from '../../generated/apolloComponents';
@@ -17,8 +18,9 @@ import { GET_ROLE_QUERY } from '../../graphql/query/roles';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import Button from '../../components/Buttons/Button';
 import classes from './RoleRules.module.css';
-import { ROLE_CUSTOM_FILTER_MODAL } from '../../config/modals';
+import { ROLE_CUSTOM_FILTER_MODAL, ROLE_RESTRICTED_FIELDS_MODAL } from '../../config/modals';
 import { RoleCustomFilterModalInterface } from '../../components/Modal/RoleCustomFilterModal/RoleCustomFilterModal';
+import { RoleRestrictedFieldsModalInterface } from '../../components/Modal/RoleRestrictedFieldsModal/RoleRestrictedFieldsModal';
 
 const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
   const { rules } = role;
@@ -149,8 +151,26 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       key: 'restrictedFields',
       title: 'Запрещённые поля',
-      render: (restrictedFields: string[]) => {
-        return `${restrictedFields}`;
+      render: (restrictedFields: string[], { entity, id: ruleId }: RoleRule) => {
+        const notEmpty = restrictedFields.length > 0;
+        return (
+          <Button
+            size={'small'}
+            theme={notEmpty ? 'primary' : 'gray'}
+            onClick={() => {
+              showModal<RoleRestrictedFieldsModalInterface>({
+                type: ROLE_RESTRICTED_FIELDS_MODAL,
+                props: {
+                  ruleId,
+                  roleId: role.id,
+                  entity,
+                },
+              });
+            }}
+          >
+            {notEmpty ? 'показать' : 'выбрать'}
+          </Button>
+        );
       },
     },
   ];

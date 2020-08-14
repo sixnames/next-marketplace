@@ -590,6 +590,7 @@ type Query {
   getConfigValueBySlug(slug: String!): [String!]!
   getCountry(id: ID!): Country!
   getCurrency(id: ID!): Currency!
+  getEntityFields(entity: String!): [String!]!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
   getISOLanguagesList: [ISOLanguage!]!
@@ -597,7 +598,6 @@ type Query {
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
-  getModelKeys(entity: String!): [String!]!
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!

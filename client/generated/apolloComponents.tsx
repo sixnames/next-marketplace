@@ -61,6 +61,7 @@ export type Query = {
   getRole: Role;
   getAllRoles: Array<Role>;
   getSessionRole: Role;
+  getEntityFields: Array<Scalars['String']>;
 };
 
 
@@ -202,6 +203,11 @@ export type QueryGetConfigValueBySlugArgs = {
 
 export type QueryGetRoleArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetEntityFieldsArgs = {
+  entity: Scalars['String'];
 };
 
 export type User = {
@@ -2306,6 +2312,16 @@ export type GetRoleQuery = (
       )> }
     )> }
   ) }
+);
+
+export type GetEntityFieldsQueryVariables = {
+  entity: Scalars['String'];
+};
+
+
+export type GetEntityFieldsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getEntityFields'>
 );
 
 export type GetAllRubricVariantsQueryVariables = {};
@@ -4647,6 +4663,37 @@ export function useGetRoleLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
 export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
 export type GetRoleQueryResult = ApolloReactCommon.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
+export const GetEntityFieldsDocument = gql`
+    query GetEntityFields($entity: String!) {
+  getEntityFields(entity: $entity)
+}
+    `;
+
+/**
+ * __useGetEntityFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetEntityFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEntityFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEntityFieldsQuery({
+ *   variables: {
+ *      entity: // value for 'entity'
+ *   },
+ * });
+ */
+export function useGetEntityFieldsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
+      }
+export function useGetEntityFieldsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
+        }
+export type GetEntityFieldsQueryHookResult = ReturnType<typeof useGetEntityFieldsQuery>;
+export type GetEntityFieldsLazyQueryHookResult = ReturnType<typeof useGetEntityFieldsLazyQuery>;
+export type GetEntityFieldsQueryResult = ApolloReactCommon.QueryResult<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {

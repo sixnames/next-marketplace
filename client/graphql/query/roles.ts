@@ -37,3 +37,9 @@ export const GET_ROLE_QUERY = gql`
     }
   }
 `;
+
+export const GET_ENTITY_FIELDS_QUERY = gql`
+  query GetEntityFields($entity: String!) {
+    getEntityFields(entity: $entity)
+  }
+`;

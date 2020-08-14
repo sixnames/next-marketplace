@@ -63,11 +63,11 @@ const RoleModal: React.FC<RoleModalInterface> = ({ role = {}, confirm }) => {
               <FormikCheckboxLine label={'Является персоналом'} name={'isStuff'} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <Button type={'submit'} testId={'role-submit'}>
                   {name ? 'Изменить' : 'Создать'}
                 </Button>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
+                <Button theme={'secondary'} onClick={hideModal} testId={'role-decline'}>
                   Отмена
                 </Button>
               </ModalButtons>

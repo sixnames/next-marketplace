@@ -266,10 +266,6 @@ export const ROLE_RULES_TEMPLATE = [
     entity: 'Message',
   },
   {
-    nameString: 'Группы сообщений',
-    entity: 'MessagesGroup',
-  },
-  {
     nameString: 'Единицы измерения',
     entity: 'Metric',
   },

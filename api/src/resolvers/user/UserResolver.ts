@@ -45,6 +45,11 @@ import {
   signUpValidationSchema,
   updateUserSchema,
 } from '../../validation/userSchema';
+import {
+  Localization,
+  LocalizationPayloadInterface,
+  SessionUserId,
+} from '../../decorators/sessionDecorators';
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -58,8 +63,8 @@ class UserPayloadType extends PayloadType() {
 @Resolver((_of) => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@Ctx() ctx: ContextInterface) {
-    return UserModel.findById(ctx.req.session!.userId);
+  async me(@SessionUserId() sessionUserId: string) {
+    return UserModel.findById(sessionUserId);
   }
 
   @Authorized<AuthCheckerConfigInterface>([
@@ -122,11 +127,10 @@ export class UserResolver {
   ])
   @Mutation(() => UserPayloadType)
   async createUser(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
-      const lang = ctx.req.lang;
       const messages = await getMessagesByKeys([
         'validation.email',
         'validation.email.required',
@@ -188,9 +192,12 @@ export class UserResolver {
     },
   ])
   @Mutation(() => UserPayloadType)
-  async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
+  async updateUser(
+    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: UpdateUserInput,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const messages = await getMessagesByKeys([
         'validation.users.id',
         'validation.email',
@@ -252,9 +259,11 @@ export class UserResolver {
     },
   ])
   @Mutation(() => UserPayloadType)
-  async deleteUser(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+  async deleteUser(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const user = await UserModel.findByIdAndDelete(id);
 
       if (!user) {
@@ -277,9 +286,11 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
+  async signUp(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: SignUpInput,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const messages = await getMessagesByKeys([
         'validation.email',
         'validation.email.required',
@@ -337,9 +348,12 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
+  async signIn(
+    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: SignInInput,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const messages = await getMessagesByKeys([
         'validation.email',
         'validation.email.required',
@@ -366,15 +380,6 @@ export class UserResolver {
       }
 
       const userRole = await RoleModel.findById(user.role);
-      /*const userRoleRules = await RoleRuleModel.find({
-        roleId: user.role,
-      })
-        .populate({
-          path: 'operations',
-          model: RoleRuleOperationModel,
-        })
-        .lean()
-        .exec();*/
 
       ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
@@ -395,9 +400,11 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signOut(@Ctx() ctx: ContextInterface) {
+  async signOut(
+    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const isSignedOut = await attemptSignOut(ctx.req);
 
       if (!isSignedOut) {

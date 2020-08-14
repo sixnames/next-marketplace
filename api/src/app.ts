@@ -13,6 +13,7 @@ import {
   SESS_OPTIONS,
   // ROLE_SLUG_GUEST,
   SESSION_COLLECTION,
+  ROLE_SLUG_GUEST,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import cookie from 'cookie';
@@ -53,8 +54,10 @@ import {
   testSignInRoute,
 } from '../routes/testingDataRoutes';
 import { assetsRoute } from '../routes/assetsRoutes';
-import { customAuthChecker } from './utils/auth/customAuthChecker';
 import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
+import { AuthField } from './decorators/methodDecorators';
+import { RoleModel } from './entities/Role';
+import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 
 interface CreateAppInterface {
   app: Express;
@@ -95,7 +98,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
-    authChecker: customAuthChecker,
+    globalMiddlewares: [AuthField],
   });
 
   const app = express();
@@ -154,6 +157,37 @@ const createApp = async (): Promise<CreateAppInterface> => {
       } else {
         res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
         req.lang = defaultLanguageKey;
+      }
+
+      // Set request role
+      if (req.session!.user) {
+        req.roleRules = await RoleRuleModel.find({
+          roleId: req.session!.user.role,
+        }).populate({
+          path: 'operations',
+          model: RoleRuleOperationModel,
+          options: {
+            sort: {
+              order: 1,
+            },
+          },
+        });
+      } else {
+        const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+        if (!guestRole) {
+          throw Error('Guest role not found');
+        }
+        req.roleRules = await RoleRuleModel.find({
+          roleId: guestRole.id,
+        }).populate({
+          path: 'operations',
+          model: RoleRuleOperationModel,
+          options: {
+            sort: {
+              order: 1,
+            },
+          },
+        });
       }
 
       // Return apollo context

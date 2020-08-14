@@ -1,6 +1,5 @@
 import {
   Arg,
-  Authorized,
   Ctx,
   Field,
   FieldResolver,
@@ -12,9 +11,7 @@ import {
   Root,
 } from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
-import { AuthCheckerConfigInterface } from '../../utils/auth/customAuthChecker';
 import {
-  OPERATION_TARGET_OPERATION,
   OPERATION_TYPE_CREATE,
   OPERATION_TYPE_DELETE,
   OPERATION_TYPE_READ,
@@ -52,6 +49,7 @@ import {
   setRoleRuleRestrictedFieldSchema,
   updateRoleSchema,
 } from '../../validation/roleSchema';
+import { AuthMethod } from '../../decorators/methodDecorators';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -61,13 +59,10 @@ class RolePayloadType extends PayloadType() {
 
 @Resolver((_for) => Role)
 export class RoleResolver {
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_READ,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_READ,
+  })
   @Query((_returns) => Role)
   async getRole(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string): Promise<Role> {
     const customFilter = await getRoleRuleCustomFilter<Role>({
@@ -83,13 +78,10 @@ export class RoleResolver {
     return role;
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_READ,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_READ,
+  })
   @Query((_returns) => [Role])
   async getAllRoles(@Ctx() ctx: ContextInterface): Promise<Role[]> {
     const customFilter = await getRoleRuleCustomFilter<Role>({
@@ -143,13 +135,10 @@ export class RoleResolver {
       .sort();
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_CREATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_CREATE,
+  })
   @Mutation(() => RolePayloadType)
   async createRole(
     @Ctx() ctx: ContextInterface,
@@ -209,13 +198,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => RolePayloadType)
   async updateRole(
     @Ctx() ctx: ContextInterface,
@@ -229,6 +215,11 @@ export class RoleResolver {
         'validation.roles.description',
       ]);
       await updateRoleSchema({ messages, lang, defaultLang }).validate(input);
+      const customFilter = await getRoleRuleCustomFilter<Role>({
+        req: ctx.req,
+        entity: 'Role',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
 
       const { id, ...values } = input;
       const nameValues = values.name.map(({ value }) => value);
@@ -246,7 +237,9 @@ export class RoleResolver {
         };
       }
 
-      const updatedRole = await RoleModel.findByIdAndUpdate(id, input, { new: true });
+      const updatedRole = await RoleModel.findOneAndUpdate({ _id: id, ...customFilter }, input, {
+        new: true,
+      });
 
       if (!updatedRole) {
         return {
@@ -268,13 +261,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_DELETE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_DELETE,
+  })
   @Mutation(() => RolePayloadType)
   async deleteRole(
     @Ctx() ctx: ContextInterface,
@@ -363,13 +353,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => RolePayloadType)
   async setRoleOperationPermission(
     @Ctx() ctx: ContextInterface,
@@ -383,6 +370,11 @@ export class RoleResolver {
         'validation.roles.operationId',
       ]);
       await setRoleOperationPermissionSchema({ messages, lang }).validate(input);
+      const customFilter = await getRoleRuleCustomFilter<Role>({
+        req: ctx.req,
+        entity: 'Role',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
 
       const { operationId, allow, roleId } = input;
 
@@ -394,9 +386,12 @@ export class RoleResolver {
         };
       }
 
-      const updatedOperation = await RoleRuleOperationModel.findByIdAndUpdate(operationId, {
-        allow,
-      });
+      const updatedOperation = await RoleRuleOperationModel.findOneAndUpdate(
+        { _id: operationId, ...customFilter },
+        {
+          allow,
+        },
+      );
 
       if (!updatedOperation) {
         return {
@@ -418,13 +413,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => RolePayloadType)
   async setRoleOperationCustomFilter(
     @Ctx() ctx: ContextInterface,
@@ -438,6 +430,11 @@ export class RoleResolver {
         'validation.roles.operationId',
       ]);
       await setRoleOperationCustomFilterSchema({ messages, lang }).validate(input);
+      const ruleCustomFilter = await getRoleRuleCustomFilter<Role>({
+        req: ctx.req,
+        entity: 'Role',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
 
       const { operationId, customFilter, roleId } = input;
       const role = await RoleModel.findById(roleId);
@@ -448,9 +445,12 @@ export class RoleResolver {
         };
       }
 
-      const updatedOperation = await RoleRuleOperationModel.findByIdAndUpdate(operationId, {
-        customFilter,
-      });
+      const updatedOperation = await RoleRuleOperationModel.findOneAndUpdate(
+        { _id: operationId, ...ruleCustomFilter },
+        {
+          customFilter,
+        },
+      );
 
       if (!updatedOperation) {
         return {
@@ -472,13 +472,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => RolePayloadType)
   async setRoleRuleRestrictedField(
     @Ctx() ctx: ContextInterface,
@@ -489,6 +486,12 @@ export class RoleResolver {
       const { lang } = ctx.req;
       const messages = await getMessagesByKeys(['validation.roles.id', 'validation.roles.ruleId']);
       await setRoleRuleRestrictedFieldSchema({ messages, lang }).validate(input);
+      const customFilter = await getRoleRuleCustomFilter<Role>({
+        req: ctx.req,
+        entity: 'Role',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
+
       const { ruleId, roleId, restrictedField } = input;
 
       const role = await RoleModel.findById(roleId);
@@ -503,8 +506,11 @@ export class RoleResolver {
 
       const updatedFields = toggleItemInArray(rule.restrictedFields, restrictedField);
 
-      const updatedRule = await RoleRuleModel.findByIdAndUpdate(
-        ruleId,
+      const updatedRule = await RoleRuleModel.findOneAndUpdate(
+        {
+          _id: ruleId,
+          ...customFilter,
+        },
         {
           restrictedFields: updatedFields,
         },
@@ -531,13 +537,10 @@ export class RoleResolver {
     }
   }
 
-  @Authorized<AuthCheckerConfigInterface>([
-    {
-      entity: 'Role',
-      operationType: OPERATION_TYPE_UPDATE,
-      target: OPERATION_TARGET_OPERATION,
-    },
-  ])
+  @AuthMethod({
+    entity: 'Role',
+    operationType: OPERATION_TYPE_UPDATE,
+  })
   @Mutation(() => RolePayloadType)
   async setRoleAllowedNavItem(
     @Ctx() ctx: ContextInterface,
@@ -551,6 +554,11 @@ export class RoleResolver {
         'validation.roles.navItemId',
       ]);
       await setRoleAllowedNavItemSchema({ messages, lang }).validate(input);
+      const customFilter = await getRoleRuleCustomFilter<Role>({
+        req: ctx.req,
+        entity: 'Role',
+        operationType: OPERATION_TYPE_UPDATE,
+      });
 
       const { roleId, navItemId } = input;
 
@@ -566,8 +574,11 @@ export class RoleResolver {
 
       const allowedAppNavigation = toggleItemInArray(role.allowedAppNavigation, navItemId);
 
-      const updatedRole = await RoleModel.findByIdAndUpdate(
-        roleId,
+      const updatedRole = await RoleModel.findOneAndUpdate(
+        {
+          _id: roleId,
+          ...customFilter,
+        },
         {
           allowedAppNavigation,
         },

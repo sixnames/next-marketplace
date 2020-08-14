@@ -1,6 +1,5 @@
 import { ContextInterface } from '../../types/context';
 import { FilterQuery } from 'mongoose';
-import { AuthCheckerConfigInterface } from './customAuthChecker';
 import { RoleModel } from '../../entities/Role';
 import { ROLE_SLUG_GUEST } from '../../config';
 import {
@@ -8,6 +7,12 @@ import {
   RoleRuleOperationModel,
   RoleRuleOperationTypeEnum,
 } from '../../entities/RoleRule';
+
+export interface AuthCheckerConfigInterface {
+  entity: string;
+  operationType: 'create' | 'read' | 'update' | 'delete';
+  target: 'operation' | 'field';
+}
 
 interface GetRoleRuleCustomFilterInterface {
   req: ContextInterface['req'];

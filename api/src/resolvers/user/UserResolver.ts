@@ -18,24 +18,21 @@ import { UpdateUserInput } from './UpdateUserInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
-import { attemptSignIn, ensureSignedOut, attemptSignOut } from '../../utils/auth/auth';
+import {
+  attemptSignIn,
+  ensureSignedOut,
+  attemptSignOut,
+  getOperationsConfigs,
+} from '../../utils/auth/auth';
 import { hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import {
-  OPERATION_TYPE_CREATE,
-  OPERATION_TYPE_DELETE,
-  OPERATION_TYPE_READ,
-  OPERATION_TYPE_UPDATE,
-  ROLE_SLUG_GUEST,
-} from '../../config';
+import { ROLE_SLUG_GUEST } from '../../config';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { Role, RoleModel } from '../../entities/Role';
-import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 import {
   createUserSchema,
   signInValidationSchema,
@@ -43,11 +40,20 @@ import {
   updateUserSchema,
 } from '../../validation/userSchema';
 import {
+  CustomFilter,
   Localization,
   LocalizationPayloadInterface,
   SessionUserId,
 } from '../../decorators/parameterDecorators';
-import { AuthMethod } from '../../decorators/methodDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(User.name);
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -65,31 +71,19 @@ export class UserResolver {
     return UserModel.findById(sessionUserId);
   }
 
-  @AuthMethod({
-    entity: 'User',
-    operationType: OPERATION_TYPE_READ,
-  })
   @Query(() => User, { nullable: true })
+  @AuthMethod(operationConfigRead)
   async getUser(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<User>,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<User | null> {
-    const customFiler = await getRoleRuleCustomFilter<User>({
-      req: ctx.req,
-      entity: 'User',
-      operationType: OPERATION_TYPE_READ,
-    });
-
-    return UserModel.findOne({ _id: id, ...customFiler });
+    return UserModel.findOne({ _id: id, ...customFilter });
   }
 
-  @AuthMethod({
-    entity: 'User',
-    operationType: OPERATION_TYPE_READ,
-  })
   @Query(() => PaginatedUsersResponse)
+  @AuthMethod(operationConfigRead)
   async getAllUsers(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<User>,
     @Arg('input') input: UserPaginateInput,
   ): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
@@ -101,38 +95,20 @@ export class UserResolver {
       search,
     });
 
-    const customFiler = await getRoleRuleCustomFilter<User>({
-      req: ctx.req,
-      entity: 'User',
-      operationType: OPERATION_TYPE_READ,
-    });
-
-    return UserModel.paginate({ ...searchOptions, ...customFiler }, options);
+    return UserModel.paginate({ ...searchOptions, ...customFilter }, options);
   }
 
-  @AuthMethod({
-    entity: 'User',
-    operationType: OPERATION_TYPE_CREATE,
-  })
   @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({
+    messages: ['validation.users.name', 'validation.users.password', 'validation.users.role'],
+    schema: createUserSchema,
+  })
   async createUser(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.password',
-        'validation.users.role',
-      ]);
-      await createUserSchema({ messages, lang }).validate(input);
-
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -173,36 +149,18 @@ export class UserResolver {
     }
   }
 
-  @AuthMethod({
-    entity: 'User',
-    operationType: OPERATION_TYPE_UPDATE,
-  })
   @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.users.id', 'validation.users.name', 'validation.users.role'],
+    schema: updateUserSchema,
+  })
   async updateUser(
-    @Ctx() ctx: ContextInterface,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateUserInput,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
   ) {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.users.id',
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.role',
-      ]);
-      await updateUserSchema({ messages, lang }).validate(input);
-
-      const customFiler = await getRoleRuleCustomFilter<User>({
-        req: ctx.req,
-        entity: 'User',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
-
       const { id, ...values } = input;
 
       const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
@@ -213,7 +171,7 @@ export class UserResolver {
         };
       }
 
-      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFiler }, values, {
+      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
         new: true,
       });
 
@@ -237,11 +195,8 @@ export class UserResolver {
     }
   }
 
-  @AuthMethod({
-    entity: 'User',
-    operationType: OPERATION_TYPE_DELETE,
-  })
   @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteUser(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
@@ -269,23 +224,15 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
+  @ValidateMethod({
+    messages: ['validation.users.name', 'validation.users.password'],
+    schema: signUpValidationSchema,
+  })
   async signUp(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: SignUpInput,
   ) {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.password',
-      ]);
-      await signUpValidationSchema({ messages, lang }).validate(input);
-
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -331,19 +278,16 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
+  @ValidateMethod({
+    messages: ['validation.users.password'],
+    schema: signInValidationSchema,
+  })
   async signIn(
     @Ctx() ctx: ContextInterface,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: SignInInput,
   ) {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.users.password',
-      ]);
-      await signInValidationSchema({ messages, lang }).validate(input);
-
       const isSignedOut = ensureSignedOut(ctx.req);
 
       if (!isSignedOut) {

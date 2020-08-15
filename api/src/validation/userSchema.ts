@@ -1,144 +1,136 @@
 import * as Yup from 'yup';
 import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './schemaTemplates';
-import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
+import getValidationFieldMessage, {
+  MultiLangSchemaMessagesInterface,
+} from './getValidationFieldMessage';
 
 const minPasswordLength = 5;
 const maxPasswordLength = 30;
 
-const userIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.users.id',
       }),
     );
 
-const userNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minNameLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.min',
       }) + ` ${minNameLength}`,
     )
     .max(
       maxNameLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
     )
     .trim()
     .required(
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.users.name',
       }),
     );
 
-const userLastNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userLastNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .trim()
     .max(
       maxNameLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
     );
 
-const userSecondNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userSecondNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .trim()
     .max(
       maxNameLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
     );
 
-const passwordSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const passwordSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .min(
       minPasswordLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.min',
       }) + ` ${minPasswordLength}`,
     )
     .max(
       maxPasswordLength,
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.string.max',
       }) + ` ${maxPasswordLength}`,
     )
     .trim()
     .required(
       getValidationFieldMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.users.password',
       }),
     );
 
-const userRoleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const userRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string().required(
     getValidationFieldMessage({
-      messages,
-      lang,
+      ...args,
       key: 'validation.users.role',
     }),
   );
 
-export const updateUserSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const updateUserSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id: userIdSchema({ messages, lang }),
-    email: emailSchema({ messages, lang }),
-    name: userNameSchema({ messages, lang }),
-    lastName: userLastNameSchema({ messages, lang }),
-    secondName: userSecondNameSchema({ messages, lang }),
-    phone: phoneSchema({ messages, lang }),
-    role: userRoleSchema({ messages, lang }),
+    id: userIdSchema(args),
+    email: emailSchema(args),
+    name: userNameSchema(args),
+    lastName: userLastNameSchema(args),
+    secondName: userSecondNameSchema(args),
+    phone: phoneSchema(args),
+    role: userRoleSchema(args),
   });
 
-export const createUserSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const createUserSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    email: emailSchema({ messages, lang }),
-    name: userNameSchema({ messages, lang }),
-    lastName: userLastNameSchema({ messages, lang }),
-    secondName: userSecondNameSchema({ messages, lang }),
-    phone: phoneSchema({ messages, lang }),
-    role: userRoleSchema({ messages, lang }),
+    email: emailSchema(args),
+    name: userNameSchema(args),
+    lastName: userLastNameSchema(args),
+    secondName: userSecondNameSchema(args),
+    phone: phoneSchema(args),
+    role: userRoleSchema(args),
   });
 
-export const signInValidationSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const signInValidationSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    email: emailSchema({ messages, lang }),
-    password: passwordSchema({ messages, lang }),
+    email: emailSchema(args),
+    password: passwordSchema(args),
   });
 
-export const signUpValidationSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const signUpValidationSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    email: emailSchema({ messages, lang }),
-    name: userNameSchema({ messages, lang }),
-    lastName: userLastNameSchema({ messages, lang }),
-    secondName: userSecondNameSchema({ messages, lang }),
-    phone: phoneSchema({ messages, lang }),
-    password: passwordSchema({ messages, lang }),
+    email: emailSchema(args),
+    name: userNameSchema(args),
+    lastName: userLastNameSchema(args),
+    secondName: userSecondNameSchema(args),
+    phone: phoneSchema(args),
+    password: passwordSchema(args),
   });

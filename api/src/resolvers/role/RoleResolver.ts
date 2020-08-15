@@ -47,18 +47,18 @@ import {
 import { FilterQuery } from 'mongoose';
 import { getOperationsConfigs } from '../../utils/auth/auth';
 
-@ObjectType()
-class RolePayloadType extends PayloadType() {
-  @Field((_type) => Role, { nullable: true })
-  role?: Role | null;
-}
-
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
 } = getOperationsConfigs(Role.name);
+
+@ObjectType()
+class RolePayloadType extends PayloadType() {
+  @Field((_type) => Role, { nullable: true })
+  role?: Role | null;
+}
 
 @Resolver((_for) => Role)
 export class RoleResolver {

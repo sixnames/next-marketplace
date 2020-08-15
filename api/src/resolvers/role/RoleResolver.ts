@@ -21,7 +21,6 @@ import {
   ROUTE_APP_NAV_GROUP,
 } from '../../config';
 import { ContextInterface } from '../../types/context';
-import { getRoleRuleCustomFilter } from '../../utils/auth/getRoleRuleCustomFilter';
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
@@ -50,6 +49,13 @@ import {
   updateRoleSchema,
 } from '../../validation/roleSchema';
 import { AuthMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+  SessionRole,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -57,20 +63,23 @@ class RolePayloadType extends PayloadType() {
   role?: Role | null;
 }
 
+const entity = Role.name;
+
 @Resolver((_for) => Role)
 export class RoleResolver {
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_READ,
   })
   @Query((_returns) => Role)
-  async getRole(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string): Promise<Role> {
-    const customFilter = await getRoleRuleCustomFilter<Role>({
-      req: ctx.req,
-      entity: 'Role',
+  async getRole(
+    @CustomFilter({
+      entity,
       operationType: OPERATION_TYPE_READ,
-    });
-
+    })
+    customFilter: FilterQuery<Role>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Role> {
     const role = await RoleModel.findOne({ _id: id, ...customFilter });
     if (!role) {
       throw new Error('Role not found');
@@ -79,36 +88,22 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_READ,
   })
   @Query((_returns) => [Role])
-  async getAllRoles(@Ctx() ctx: ContextInterface): Promise<Role[]> {
-    const customFilter = await getRoleRuleCustomFilter<Role>({
-      req: ctx.req,
-      entity: 'Role',
+  async getAllRoles(
+    @CustomFilter({
+      entity,
       operationType: OPERATION_TYPE_READ,
-    });
-
+    })
+    customFilter: FilterQuery<Role>,
+  ): Promise<Role[]> {
     return RoleModel.find({ ...customFilter });
   }
 
   @Query((_returns) => Role)
-  async getSessionRole(@Ctx() ctx: ContextInterface): Promise<Role> {
-    const sessionRoleId = ctx.req.session!.roleId;
-
-    if (!sessionRoleId) {
-      const sessionRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
-      if (!sessionRole) {
-        throw new Error('Guest session role not found');
-      }
-      return sessionRole;
-    }
-
-    const sessionRole = await RoleModel.findById(sessionRoleId);
-    if (!sessionRole) {
-      throw new Error('Session role not found');
-    }
+  async getSessionRole(@SessionRole() sessionRole: Role): Promise<Role> {
     return sessionRole;
   }
 
@@ -136,7 +131,7 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_CREATE,
   })
   @Mutation(() => RolePayloadType)
@@ -199,27 +194,26 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_UPDATE,
   })
   @Mutation(() => RolePayloadType)
   async updateRole(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter({
+      entity,
+      operationType: OPERATION_TYPE_UPDATE,
+    })
+    customFilter: FilterQuery<Role>,
+    @Localization() { lang, defaultLang }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateRoleInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
       const messages = await getMessagesByKeys([
         'validation.roles.id',
         'validation.roles.name',
         'validation.roles.description',
       ]);
       await updateRoleSchema({ messages, lang, defaultLang }).validate(input);
-      const customFilter = await getRoleRuleCustomFilter<Role>({
-        req: ctx.req,
-        entity: 'Role',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
 
       const { id, ...values } = input;
       const nameValues = values.name.map(({ value }) => value);
@@ -262,7 +256,7 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_DELETE,
   })
   @Mutation(() => RolePayloadType)
@@ -354,27 +348,26 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_UPDATE,
   })
   @Mutation(() => RolePayloadType)
   async setRoleOperationPermission(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter({
+      entity,
+      operationType: OPERATION_TYPE_UPDATE,
+    })
+    customFilter: FilterQuery<Role>,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationPermissionInput)
     input: SetRoleOperationPermissionInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
       const messages = await getMessagesByKeys([
         'validation.roles.id',
         'validation.roles.operationId',
       ]);
       await setRoleOperationPermissionSchema({ messages, lang }).validate(input);
-      const customFilter = await getRoleRuleCustomFilter<Role>({
-        req: ctx.req,
-        entity: 'Role',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
 
       const { operationId, allow, roleId } = input;
 
@@ -414,27 +407,26 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_UPDATE,
   })
   @Mutation(() => RolePayloadType)
   async setRoleOperationCustomFilter(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter({
+      entity,
+      operationType: OPERATION_TYPE_UPDATE,
+    })
+    ruleCustomFilter: FilterQuery<Role>,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationCustomFilterInput)
     input: SetRoleOperationCustomFilterInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
       const messages = await getMessagesByKeys([
         'validation.roles.id',
         'validation.roles.operationId',
       ]);
       await setRoleOperationCustomFilterSchema({ messages, lang }).validate(input);
-      const ruleCustomFilter = await getRoleRuleCustomFilter<Role>({
-        req: ctx.req,
-        entity: 'Role',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
 
       const { operationId, customFilter, roleId } = input;
       const role = await RoleModel.findById(roleId);
@@ -473,24 +465,23 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_UPDATE,
   })
   @Mutation(() => RolePayloadType)
   async setRoleRuleRestrictedField(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter({
+      entity,
+      operationType: OPERATION_TYPE_UPDATE,
+    })
+    customFilter: FilterQuery<Role>,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleRuleRestrictedFieldInput)
     input: SetRoleRuleRestrictedFieldInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
       const messages = await getMessagesByKeys(['validation.roles.id', 'validation.roles.ruleId']);
       await setRoleRuleRestrictedFieldSchema({ messages, lang }).validate(input);
-      const customFilter = await getRoleRuleCustomFilter<Role>({
-        req: ctx.req,
-        entity: 'Role',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
 
       const { ruleId, roleId, restrictedField } = input;
 
@@ -538,27 +529,26 @@ export class RoleResolver {
   }
 
   @AuthMethod({
-    entity: 'Role',
+    entity,
     operationType: OPERATION_TYPE_UPDATE,
   })
   @Mutation(() => RolePayloadType)
   async setRoleAllowedNavItem(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter({
+      entity,
+      operationType: OPERATION_TYPE_UPDATE,
+    })
+    customFilter: FilterQuery<Role>,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleAllowedNavItemInput)
     input: SetRoleAllowedNavItemInput,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
       const messages = await getMessagesByKeys([
         'validation.roles.id',
         'validation.roles.navItemId',
       ]);
       await setRoleAllowedNavItemSchema({ messages, lang }).validate(input);
-      const customFilter = await getRoleRuleCustomFilter<Role>({
-        req: ctx.req,
-        entity: 'Role',
-        operationType: OPERATION_TYPE_UPDATE,
-      });
 
       const { roleId, navItemId } = input;
 

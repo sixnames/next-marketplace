@@ -19,6 +19,40 @@ export function SessionRoleId() {
   });
 }
 
+export function SessionRole() {
+  return createParamDecorator<ContextInterface>(async ({ context }) => {
+    return context.req.role;
+  });
+}
+
+export interface CustomFilterConfigInterface {
+  entity: string;
+  operationType: 'create' | 'read' | 'update' | 'delete';
+}
+
+export function CustomFilter(operationConfig: CustomFilterConfigInterface) {
+  return createParamDecorator<ContextInterface>(async ({ context }) => {
+    const { roleRules, session } = context.req;
+    const currentRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
+
+    if (!currentRule) {
+      return {};
+    }
+
+    const currentOperation: any | undefined = currentRule.operations.find(
+      ({ operationType }: any) => operationType === operationConfig.operationType,
+    );
+
+    if (!currentOperation) {
+      return {};
+    }
+
+    const { customFilter = '{}' } = currentOperation;
+    const customFilterResult = customFilter.replace(/__authenticatedUser/gi, `${session!.userId}`);
+    return JSON.parse(customFilterResult);
+  });
+}
+
 export interface LocalizationPayloadInterface {
   lang: string;
   defaultLang: string;

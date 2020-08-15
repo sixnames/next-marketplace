@@ -160,34 +160,36 @@ const createApp = async (): Promise<CreateAppInterface> => {
       }
 
       // Set request role
-      if (req.session!.user) {
-        req.roleRules = await RoleRuleModel.find({
-          roleId: req.session!.user.role,
-        }).populate({
-          path: 'operations',
-          model: RoleRuleOperationModel,
-          options: {
-            sort: {
-              order: 1,
-            },
+      const roleRuleOperationsPopulate = {
+        path: 'operations',
+        model: RoleRuleOperationModel,
+        options: {
+          sort: {
+            order: 1,
           },
-        });
+        },
+      };
+
+      if (req.session!.user) {
+        const userRole = await RoleModel.findOne({ _id: req.session!.user.role });
+        if (!userRole) {
+          throw Error('User role not found');
+        }
+
+        req.role = userRole;
+        req.roleRules = await RoleRuleModel.find({
+          roleId: userRole.id,
+        }).populate(roleRuleOperationsPopulate);
       } else {
         const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
         if (!guestRole) {
           throw Error('Guest role not found');
         }
+
+        req.role = guestRole;
         req.roleRules = await RoleRuleModel.find({
           roleId: guestRole.id,
-        }).populate({
-          path: 'operations',
-          model: RoleRuleOperationModel,
-          options: {
-            sort: {
-              order: 1,
-            },
-          },
-        });
+        }).populate(roleRuleOperationsPopulate);
       }
 
       // Return apollo context

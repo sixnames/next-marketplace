@@ -1,6 +1,5 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
-import { RoleRuleOperation } from '../entities/RoleRule';
 
 export const AuthField: MiddlewareFn<ContextInterface> = async (
   { info, context: { req } },
@@ -39,8 +38,8 @@ export function AuthMethod(operationConfig: AuthMethodConfigInterface) {
       return next();
     }
 
-    const currentOperation = currentRule.operations.find(
-      ({ operationType }: RoleRuleOperation) => operationType === operationConfig.operationType,
+    const currentOperation: any | undefined = currentRule.operations.find(
+      ({ operationType }: any) => operationType === operationConfig.operationType,
     );
 
     if (!currentOperation) {

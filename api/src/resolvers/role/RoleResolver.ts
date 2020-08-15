@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -12,7 +11,6 @@ import {
 } from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
 import { ROLE_SLUG_GUEST, ROLE_TEMPLATE_GUEST, ROUTE_APP_NAV_GROUP } from '../../config';
-import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
@@ -530,9 +528,9 @@ export class RoleResolver {
   @FieldResolver((_returns) => String)
   async nameString(
     @Root() role: DocumentType<Role>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(role.name, ctx.req.lang);
+    return getLangField(role.name, lang);
   }
 
   @FieldResolver((_returns) => [RoleRule])

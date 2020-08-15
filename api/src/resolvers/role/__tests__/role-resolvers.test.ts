@@ -193,9 +193,7 @@ describe('Roles', () => {
     expect(createRoleDuplicateError.success).toBeFalsy();
 
     // Shouldn't update role on validation error
-    const {
-      data: { createRole: createRoleValidationError },
-    } = await mutate(
+    const { errors: createRoleErrors } = await mutate(
       `
       mutation CreateRole($input: CreateRoleInput!) {
         createRole(input: $input) {
@@ -214,7 +212,7 @@ describe('Roles', () => {
         },
       },
     );
-    expect(createRoleValidationError.success).toBeFalsy();
+    expect(createRoleErrors).toBeDefined();
 
     // Should create role
     const newRoleName = 'newRoleName';
@@ -263,9 +261,7 @@ describe('Roles', () => {
     expect(createdRole.description).toEqual(newRoleDescription);
 
     // Shouldn't update role main info on validation error
-    const {
-      data: { updateRole: updateRoleValidationError },
-    } = await mutate(
+    const { errors: updateRoleErrors } = await mutate(
       `
       mutation UpdateRole($input: UpdateRoleInput!) {
         updateRole(input: $input) {
@@ -285,7 +281,7 @@ describe('Roles', () => {
         },
       },
     );
-    expect(updateRoleValidationError.success).toBeFalsy();
+    expect(updateRoleErrors).toBeDefined();
 
     // Should update role main info
     const updatedRoleName = 'updatedRoleName';

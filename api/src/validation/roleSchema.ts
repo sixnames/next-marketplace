@@ -1,6 +1,5 @@
 import getValidationFieldMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
 } from './getValidationFieldMessage';
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minDescriptionLength } from './schemaTemplates';
@@ -8,16 +7,16 @@ import { idSchema, langStringInputSchema, minDescriptionLength } from './schemaT
 const minCustomFilterValue = 2;
 const minRestrictedFieldValue = 2;
 
-const roleIdSchema = (args: SchemaMessagesInterface) =>
+const roleIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.roles.id' });
 
-const ruleIdSchema = (args: SchemaMessagesInterface) =>
+const ruleIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.roles.ruleId' });
 
-const navItemIdSchema = (args: SchemaMessagesInterface) =>
+const navItemIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.roles.navItemId' });
 
-const operationIdSchema = (args: SchemaMessagesInterface) =>
+const operationIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.roles.operationId' });
 
 const roleNameSchema = (args: MultiLangSchemaMessagesInterface) =>
@@ -26,7 +25,7 @@ const roleNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     requiredMessageKey: 'validation.roles.name',
   });
 
-const roleDescriptionSchema = (args: SchemaMessagesInterface) =>
+const roleDescriptionSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
@@ -51,28 +50,28 @@ export const updateRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
     isStuff: Yup.boolean().required(),
   });
 
-export const setRoleOperationPermissionSchema = (args: SchemaMessagesInterface) =>
+export const setRoleOperationPermissionSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     roleId: roleIdSchema(args),
     operationId: operationIdSchema(args),
     allow: Yup.boolean().required(),
   });
 
-export const setRoleOperationCustomFilterSchema = (args: SchemaMessagesInterface) =>
+export const setRoleOperationCustomFilterSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     roleId: roleIdSchema(args),
     operationId: operationIdSchema(args),
     customFilter: Yup.string().min(minCustomFilterValue).required(),
   });
 
-export const setRoleRuleRestrictedFieldSchema = (args: SchemaMessagesInterface) =>
+export const setRoleRuleRestrictedFieldSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     roleId: roleIdSchema(args),
     ruleId: ruleIdSchema(args),
     restrictedField: Yup.string().min(minRestrictedFieldValue).required(),
   });
 
-export const setRoleAllowedNavItemSchema = (args: SchemaMessagesInterface) =>
+export const setRoleAllowedNavItemSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     roleId: roleIdSchema(args),
     navItemId: navItemIdSchema(args),

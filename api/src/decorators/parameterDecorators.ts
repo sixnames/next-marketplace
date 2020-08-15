@@ -1,5 +1,6 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
+import { AuthDecoratorConfigInterface } from './methodDecorators';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
@@ -25,12 +26,7 @@ export function SessionRole() {
   });
 }
 
-export interface CustomFilterConfigInterface {
-  entity: string;
-  operationType: 'create' | 'read' | 'update' | 'delete';
-}
-
-export function CustomFilter(operationConfig: CustomFilterConfigInterface) {
+export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
     const { roleRules, session } = context.req;
     const currentRule = roleRules.find(({ entity }) => entity === operationConfig.entity);

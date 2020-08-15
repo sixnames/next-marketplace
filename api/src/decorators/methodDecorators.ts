@@ -1,5 +1,9 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
+import { MessageKey } from '../config/apiMessages/messagesKeys';
+import { MultiLangSchemaMessagesInterface } from '../validation/getValidationFieldMessage';
+import { ObjectSchema } from 'yup';
+import getMessagesByKeys from '../utils/translations/getMessagesByKeys';
 
 export const AuthField: MiddlewareFn<ContextInterface> = async (
   { info, context: { req } },
@@ -25,11 +29,13 @@ export const AuthField: MiddlewareFn<ContextInterface> = async (
   return next();
 };
 
-export interface AuthMethodConfigInterface {
+export type DecoratorOperationType = 'create' | 'read' | 'update' | 'delete';
+
+export interface AuthDecoratorConfigInterface {
   entity: string;
-  operationType: 'create' | 'read' | 'update' | 'delete';
+  operationType: DecoratorOperationType;
 }
-export function AuthMethod(operationConfig: AuthMethodConfigInterface) {
+export function AuthMethod(operationConfig: AuthDecoratorConfigInterface) {
   return createMethodDecorator<ContextInterface>(async ({ context: { req }, info }, next) => {
     const { fieldName } = info;
     const currentRule = req.roleRules.find(({ entity }) => entity === operationConfig.entity);
@@ -49,6 +55,22 @@ export function AuthMethod(operationConfig: AuthMethodConfigInterface) {
     if (!currentOperation.allow) {
       throw Error(`Access denied! You don't have permission for ${fieldName} action.`);
     }
+
+    return next();
+  });
+}
+
+export interface ValidateMethodConfigInterface {
+  messages: MessageKey[];
+  schema: (args: MultiLangSchemaMessagesInterface) => ObjectSchema;
+}
+export function ValidateMethod(validationConfig: ValidateMethodConfigInterface) {
+  return createMethodDecorator<ContextInterface>(async ({ args, context }, next) => {
+    const { messages, schema } = validationConfig;
+    const { lang, defaultLang } = context.req;
+    const apiMessages = await getMessagesByKeys(messages);
+    const validationSchema = schema({ messages: apiMessages, defaultLang, lang });
+    await validationSchema.validate(args.input);
 
     return next();
   });

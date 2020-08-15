@@ -11,15 +11,7 @@ import {
   Root,
 } from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
-import {
-  OPERATION_TYPE_CREATE,
-  OPERATION_TYPE_DELETE,
-  OPERATION_TYPE_READ,
-  OPERATION_TYPE_UPDATE,
-  ROLE_SLUG_GUEST,
-  ROLE_TEMPLATE_GUEST,
-  ROUTE_APP_NAV_GROUP,
-} from '../../config';
+import { ROLE_SLUG_GUEST, ROLE_TEMPLATE_GUEST, ROUTE_APP_NAV_GROUP } from '../../config';
 import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
@@ -38,7 +30,6 @@ import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInp
 import toggleItemInArray from '../../utils/toggleItemInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import fs from 'fs';
 import {
   createRoleSchema,
@@ -48,7 +39,7 @@ import {
   setRoleRuleRestrictedFieldSchema,
   updateRoleSchema,
 } from '../../validation/roleSchema';
-import { AuthMethod } from '../../decorators/methodDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
   Localization,
@@ -56,6 +47,7 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { getOperationsConfigs } from '../../utils/auth/auth';
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {
@@ -63,21 +55,19 @@ class RolePayloadType extends PayloadType() {
   role?: Role | null;
 }
 
-const entity = Role.name;
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Role.name);
 
 @Resolver((_for) => Role)
 export class RoleResolver {
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_READ,
-  })
   @Query((_returns) => Role)
+  @AuthMethod(operationConfigRead)
   async getRole(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_READ,
-    })
-    customFilter: FilterQuery<Role>,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Role>,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<Role> {
     const role = await RoleModel.findOne({ _id: id, ...customFilter });
@@ -87,16 +77,10 @@ export class RoleResolver {
     return role;
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_READ,
-  })
   @Query((_returns) => [Role])
+  @AuthMethod(operationConfigRead)
   async getAllRoles(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_READ,
-    })
+    @CustomFilter(operationConfigRead)
     customFilter: FilterQuery<Role>,
   ): Promise<Role[]> {
     return RoleModel.find({ ...customFilter });
@@ -130,23 +114,17 @@ export class RoleResolver {
       .sort();
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_CREATE,
-  })
   @Mutation(() => RolePayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({
+    messages: ['validation.roles.name', 'validation.roles.description'],
+    schema: createRoleSchema,
+  })
   async createRole(
-    @Ctx() ctx: ContextInterface,
     @Arg('input') input: CreateRoleInput,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<RolePayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.roles.name',
-        'validation.roles.description',
-      ]);
-      await createRoleSchema({ messages, lang, defaultLang }).validate(input);
-
       const { name } = input;
 
       const nameValues = name.map(({ value }) => value);
@@ -193,28 +171,19 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_UPDATE,
-  })
   @Mutation(() => RolePayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.roles.id', 'validation.roles.name', 'validation.roles.description'],
+    schema: updateRoleSchema,
+  })
   async updateRole(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_UPDATE,
-    })
+    @CustomFilter(operationConfigUpdate)
     customFilter: FilterQuery<Role>,
-    @Localization() { lang, defaultLang }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateRoleInput,
   ): Promise<RolePayloadType> {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.roles.id',
-        'validation.roles.name',
-        'validation.roles.description',
-      ]);
-      await updateRoleSchema({ messages, lang, defaultLang }).validate(input);
-
       const { id, ...values } = input;
       const nameValues = values.name.map(({ value }) => value);
       const exists = await RoleModel.exists({
@@ -255,17 +224,13 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_DELETE,
-  })
   @Mutation(() => RolePayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteRole(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RolePayloadType> {
     try {
-      const { lang } = ctx.req;
       const role = await RoleModel.findById(id);
 
       if (!role) {
@@ -347,28 +312,19 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_UPDATE,
-  })
   @Mutation(() => RolePayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.roles.id', 'validation.roles.operationId'],
+    schema: setRoleOperationPermissionSchema,
+  })
   async setRoleOperationPermission(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_UPDATE,
-    })
-    customFilter: FilterQuery<Role>,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationPermissionInput)
     input: SetRoleOperationPermissionInput,
   ): Promise<RolePayloadType> {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.roles.id',
-        'validation.roles.operationId',
-      ]);
-      await setRoleOperationPermissionSchema({ messages, lang }).validate(input);
-
       const { operationId, allow, roleId } = input;
 
       const role = await RoleModel.findById(roleId);
@@ -406,28 +362,19 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_UPDATE,
-  })
   @Mutation(() => RolePayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.roles.id', 'validation.roles.operationId'],
+    schema: setRoleOperationCustomFilterSchema,
+  })
   async setRoleOperationCustomFilter(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_UPDATE,
-    })
-    ruleCustomFilter: FilterQuery<Role>,
+    @CustomFilter(operationConfigUpdate) ruleCustomFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationCustomFilterInput)
     input: SetRoleOperationCustomFilterInput,
   ): Promise<RolePayloadType> {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.roles.id',
-        'validation.roles.operationId',
-      ]);
-      await setRoleOperationCustomFilterSchema({ messages, lang }).validate(input);
-
       const { operationId, customFilter, roleId } = input;
       const role = await RoleModel.findById(roleId);
       if (!role) {
@@ -464,25 +411,19 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_UPDATE,
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.roles.id', 'validation.roles.ruleId'],
+    schema: setRoleRuleRestrictedFieldSchema,
   })
   @Mutation(() => RolePayloadType)
   async setRoleRuleRestrictedField(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_UPDATE,
-    })
-    customFilter: FilterQuery<Role>,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleRuleRestrictedFieldInput)
     input: SetRoleRuleRestrictedFieldInput,
   ): Promise<RolePayloadType> {
     try {
-      const messages = await getMessagesByKeys(['validation.roles.id', 'validation.roles.ruleId']);
-      await setRoleRuleRestrictedFieldSchema({ messages, lang }).validate(input);
-
       const { ruleId, roleId, restrictedField } = input;
 
       const role = await RoleModel.findById(roleId);
@@ -528,28 +469,19 @@ export class RoleResolver {
     }
   }
 
-  @AuthMethod({
-    entity,
-    operationType: OPERATION_TYPE_UPDATE,
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    messages: ['validation.roles.id', 'validation.roles.navItemId'],
+    schema: setRoleAllowedNavItemSchema,
   })
   @Mutation(() => RolePayloadType)
   async setRoleAllowedNavItem(
-    @CustomFilter({
-      entity,
-      operationType: OPERATION_TYPE_UPDATE,
-    })
-    customFilter: FilterQuery<Role>,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleAllowedNavItemInput)
     input: SetRoleAllowedNavItemInput,
   ): Promise<RolePayloadType> {
     try {
-      const messages = await getMessagesByKeys([
-        'validation.roles.id',
-        'validation.roles.navItemId',
-      ]);
-      await setRoleAllowedNavItemSchema({ messages, lang }).validate(input);
-
       const { roleId, navItemId } = input;
 
       const role = await RoleModel.findById(roleId);

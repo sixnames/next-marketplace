@@ -30,13 +30,6 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: createRubricInputSchema,
-    messagesKeys: [
-      'validation.rubrics.name',
-      'validation.rubrics.variant',
-      'validation.rubrics.defaultTitle',
-      'validation.rubrics.keyword',
-      'validation.rubrics.gender',
-    ],
   });
   const { data, loading, error } = useGetAllRubricVariantsQuery();
 

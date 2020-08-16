@@ -1,7 +1,7 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { MessageKey } from '../config/apiMessages/messagesKeys';
-import { MultiLangSchemaMessagesInterface } from '../validation/getValidationFieldMessage';
+import { MultiLangSchemaMessagesInterface } from '../validation/getFieldValidationMessage';
 import { ObjectSchema } from 'yup';
 import getMessagesByKeys from '../utils/translations/getMessagesByKeys';
 
@@ -61,12 +61,12 @@ export function AuthMethod(operationConfig: AuthDecoratorConfigInterface) {
 }
 
 export interface ValidateMethodConfigInterface {
-  messages: MessageKey[];
+  messages?: MessageKey[];
   schema: (args: MultiLangSchemaMessagesInterface) => ObjectSchema;
 }
 export function ValidateMethod(validationConfig: ValidateMethodConfigInterface) {
   return createMethodDecorator<ContextInterface>(async ({ args, context }, next) => {
-    const { messages, schema } = validationConfig;
+    const { messages = [], schema } = validationConfig;
     const { lang, defaultLang } = context.req;
     const apiMessages = await getMessagesByKeys(messages);
     const validationSchema = schema({ messages: apiMessages, defaultLang, lang });

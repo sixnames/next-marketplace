@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import { langStringInputSchema } from './schemaTemplates';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
 const metricNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({
@@ -24,7 +24,7 @@ export const updateMetricSchema = ({
     id: Yup.string()
       .nullable()
       .required(
-        getValidationFieldMessage({
+        getFieldValidationMessage({
           messages,
           lang,
           key: 'validation.metrics.id',

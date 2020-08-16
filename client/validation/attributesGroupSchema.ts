@@ -6,46 +6,37 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANTS_ENUMS,
 } from '../config';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
-export const attributesGroupIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const attributesGroupIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.attributesGroups.id',
       }),
     );
 
-export const attributeIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const attributeIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.attributes.id',
       }),
     );
 
-const attributesGroupNameSchema = ({
-  defaultLang,
-  messages,
-  lang,
-}: MultiLangSchemaMessagesInterface) =>
+const attributesGroupNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({
-    defaultLang,
-    messages,
-    lang,
+    ...args,
     requiredMessageKey: 'validation.attributesGroups.name',
   });
 
-const options = (args: SchemaMessagesInterface) =>
+const options = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .when('variant', {
@@ -55,7 +46,7 @@ const options = (args: SchemaMessagesInterface) =>
         );
       },
       then: Yup.string().required(
-        getValidationFieldMessage({
+        getFieldValidationMessage({
           ...args,
           key: 'validation.attributes.options',
         }),
@@ -65,54 +56,43 @@ const options = (args: SchemaMessagesInterface) =>
 
 const metric = Yup.string().nullable();
 
-const attributePositioningInTitleSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const attributePositioningInTitleSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     key: Yup.string().required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.translation.key',
       }),
     ),
     value: Yup.mixed()
       .oneOf(ATTRIBUTE_POSITION_IN_TITLE_ENUMS)
       .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
+        getFieldValidationMessage({
+          ...args,
           key: 'validation.attributes.position',
         }),
       ),
   });
 
-const attributeVariantSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const attributeVariantSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.mixed()
     .oneOf(ATTRIBUTE_VARIANTS_ENUMS)
     .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.attributes.variant',
       }),
     );
 
-const attributeCommonFields = ({
-  defaultLang,
-  messages,
-  lang,
-}: MultiLangSchemaMessagesInterface) => ({
+const attributeCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   name: langStringInputSchema({
-    defaultLang,
-    messages,
-    lang,
+    ...args,
     requiredMessageKey: 'validation.attributes.name',
   }),
-  variant: attributeVariantSchema({ lang, messages }),
+  variant: attributeVariantSchema(args),
   metric,
-  options: options({ lang, messages }),
-  positioningInTitle: Yup.array()
-    .of(attributePositioningInTitleSchema({ lang, messages }))
-    .required(),
+  options: options(args),
+  positioningInTitle: Yup.array().of(attributePositioningInTitleSchema(args)).required(),
 });
 
 export const addAttributeToGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
@@ -151,6 +131,6 @@ export const createAttributesGroupSchema = (args: MultiLangSchemaMessagesInterfa
 
 export const updateAttributesGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id: attributesGroupIdSchema({ messages: args.messages, lang: args.lang }),
+    id: attributesGroupIdSchema(args),
     name: attributesGroupNameSchema(args),
   });

@@ -1,6 +1,6 @@
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minDescriptionLength } from './schemaTemplates';
 
@@ -30,10 +30,10 @@ const roleDescriptionSchema = (args: MultiLangSchemaMessagesInterface) =>
     .nullable()
     .min(
       minDescriptionLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) +
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) +
         ` ${minDescriptionLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.roles.description' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.roles.description' }));
 
 export const createRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({

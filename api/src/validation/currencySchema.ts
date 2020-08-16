@@ -1,4 +1,4 @@
-import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
+import getFieldValidationMessage, { SchemaMessagesInterface } from './getFieldValidationMessage';
 import * as Yup from 'yup';
 
 const currencyNameMinLength = 1;
@@ -7,7 +7,7 @@ const currencyIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.currencies.id',
@@ -19,14 +19,14 @@ const currencyNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
     .trim()
     .min(
       currencyNameMinLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.string.min',
       }) + ` ${currencyNameMinLength}`,
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.currencies.nameString',

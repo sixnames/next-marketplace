@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
 import { colorSchema, langStringInputSchema } from './schemaTemplates';
 import { GENDER_ENUMS } from '../config';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
 export const optionVariantSchema = ({
   defaultLang,
@@ -15,7 +15,7 @@ export const optionVariantSchema = ({
     key: Yup.mixed()
       .oneOf(GENDER_ENUMS)
       .required(
-        getValidationFieldMessage({
+        getFieldValidationMessage({
           messages,
           lang,
           key: 'validation.option.variantKey',
@@ -52,7 +52,7 @@ export const optionInGroupCommonSchema = ({
       then: Yup.mixed()
         .oneOf(GENDER_ENUMS)
         .required(
-          getValidationFieldMessage({
+          getFieldValidationMessage({
             messages,
             lang,
             key: 'validation.option.gender',
@@ -72,7 +72,7 @@ const optionsGroupIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.optionsGroup.id',
@@ -83,7 +83,7 @@ const optionIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.option.id',

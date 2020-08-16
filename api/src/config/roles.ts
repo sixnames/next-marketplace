@@ -7,6 +7,23 @@ import {
   ROLE_EMPTY_CUSTOM_FILTER,
   SECONDARY_LANG,
 } from './common';
+import { Attribute } from '../entities/Attribute';
+import { AttributesGroup } from '../entities/AttributesGroup';
+import { AttributeVariant } from '../entities/AttributeVariant';
+import { Config } from '../entities/Config';
+import { City } from '../entities/City';
+import { Country } from '../entities/Country';
+import { Currency } from '../entities/Currency';
+import { Language } from '../entities/Language';
+import { Message } from '../entities/Message';
+import { Metric } from '../entities/Metric';
+import { Option } from '../entities/Option';
+import { OptionsGroup } from '../entities/OptionsGroup';
+import { Product } from '../entities/Product';
+import { Role } from '../entities/Role';
+import { Rubric } from '../entities/Rubric';
+import { RubricVariant } from '../entities/RubricVariant';
+import { User } from '../entities/User';
 
 export const ROUTE_APP = '/app';
 export const ROUTE_APP_NAV_GROUP = 'app';
@@ -199,9 +216,6 @@ export const cmsRoute = {
 
 export const INITIAL_APP_NAVIGATION = [appRoute, cmsRoute];
 
-export const OPERATION_TARGET_OPERATION = 'operation';
-export const OPERATION_TARGET_FIELD = 'field';
-
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
 
@@ -231,71 +245,71 @@ export const ROLE_RULE_OPERATIONS_TEMPLATE = [
 export const ROLE_RULES_TEMPLATE = [
   {
     nameString: 'Атрибуты',
-    entity: 'Attribute',
+    entity: Attribute.name,
   },
   {
     nameString: 'Группы атрибутов',
-    entity: 'AttributesGroup',
+    entity: AttributesGroup.name,
   },
   {
     nameString: 'Типы атрибутов',
-    entity: 'AttributeVariant',
+    entity: AttributeVariant.name,
   },
   {
     nameString: 'Настройки сайта',
-    entity: 'Config',
+    entity: Config.name,
   },
   {
     nameString: 'Города',
-    entity: 'City',
+    entity: City.name,
   },
   {
     nameString: 'Страны',
-    entity: 'Country',
+    entity: Country.name,
   },
   {
     nameString: 'Валюта',
-    entity: 'Currency',
+    entity: Currency.name,
   },
   {
     nameString: 'Языки',
-    entity: 'Language',
+    entity: Language.name,
   },
   {
     nameString: 'Сообщения системы',
-    entity: 'Message',
+    entity: Message.name,
   },
   {
     nameString: 'Единицы измерения',
-    entity: 'Metric',
+    entity: Metric.name,
   },
   {
     nameString: 'Опции',
-    entity: 'Option',
+    entity: Option.name,
   },
   {
     nameString: 'Группы опций',
-    entity: 'OptionsGroup',
+    entity: OptionsGroup.name,
   },
   {
     nameString: 'Товары',
-    entity: 'Product',
+    entity: Product.name,
   },
   {
     nameString: 'Роли',
-    entity: 'Role',
+    entity: Role.name,
   },
   {
     nameString: 'Рубрики',
-    entity: 'Rubric',
+    entity: Rubric.name,
   },
   {
     nameString: 'Типы рубрик',
-    entity: 'RubricVariant',
+    entity: RubricVariant.name,
   },
   {
     nameString: 'Пользователи',
-    entity: 'User',
+    entity: User.name,
   },
 ];
 

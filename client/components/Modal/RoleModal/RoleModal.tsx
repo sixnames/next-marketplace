@@ -23,7 +23,6 @@ const RoleModal: React.FC<RoleModalInterface> = ({ role = {}, confirm }) => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createRoleSchema,
-    messagesKeys: ['validation.roles.name', 'validation.roles.description'],
   });
 
   const { name, description = '', isStuff = false } = role;

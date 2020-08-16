@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
+import getFieldValidationMessage, { SchemaMessagesInterface } from './getFieldValidationMessage';
 
 const languageKeyLength = 2;
 
@@ -7,7 +7,7 @@ const languageIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.languages.id',
@@ -16,7 +16,7 @@ const languageIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
 
 const languageNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string().required(
-    getValidationFieldMessage({
+    getFieldValidationMessage({
       messages,
       lang,
       key: 'validation.languages.name',
@@ -27,7 +27,7 @@ const languageKeySchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .min(
       languageKeyLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.string.min',
@@ -35,14 +35,14 @@ const languageKeySchema = ({ messages, lang }: SchemaMessagesInterface) =>
     )
     .max(
       languageKeyLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.string.max',
       }) + ` ${languageKeyLength}`,
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.languages.key',
@@ -53,14 +53,14 @@ const languageNativeNameSchema = ({ messages, lang }: SchemaMessagesInterface) =
   Yup.string()
     .min(
       languageKeyLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.string.min',
       }) + ` ${languageKeyLength}`,
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.languages.nativeName',

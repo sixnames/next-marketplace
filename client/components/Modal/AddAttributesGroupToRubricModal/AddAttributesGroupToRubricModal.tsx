@@ -25,7 +25,6 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
 }) => {
   const validationSchema = useValidationSchema({
     schema: addAttributesGroupToRubricSchema,
-    messagesKeys: ['validation.attributesGroups.id', 'validation.rubrics.id'],
   });
   const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
     variables: {

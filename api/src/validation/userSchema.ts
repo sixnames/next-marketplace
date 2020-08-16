@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './schemaTemplates';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
 const minPasswordLength = 5;
 const maxPasswordLength = 30;
@@ -11,7 +11,7 @@ const userIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.users.id',
       }),
@@ -22,21 +22,21 @@ const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     .nullable()
     .min(
       minNameLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.min',
       }) + ` ${minNameLength}`,
     )
     .max(
       maxNameLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
     )
     .trim()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.users.name',
       }),
@@ -48,7 +48,7 @@ const userLastNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     .trim()
     .max(
       maxNameLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
@@ -60,7 +60,7 @@ const userSecondNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     .trim()
     .max(
       maxNameLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.max',
       }) + ` ${maxNameLength}`,
@@ -70,21 +70,21 @@ const passwordSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .min(
       minPasswordLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.min',
       }) + ` ${minPasswordLength}`,
     )
     .max(
       maxPasswordLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.string.max',
       }) + ` ${maxPasswordLength}`,
     )
     .trim()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key: 'validation.users.password',
       }),
@@ -92,7 +92,7 @@ const passwordSchema = (args: MultiLangSchemaMessagesInterface) =>
 
 const userRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string().required(
-    getValidationFieldMessage({
+    getFieldValidationMessage({
       ...args,
       key: 'validation.users.role',
     }),

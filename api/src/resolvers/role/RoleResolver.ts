@@ -115,7 +115,6 @@ export class RoleResolver {
   @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({
-    messages: ['validation.roles.name', 'validation.roles.description'],
     schema: createRoleSchema,
   })
   async createRole(
@@ -172,7 +171,6 @@ export class RoleResolver {
   @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.roles.id', 'validation.roles.name', 'validation.roles.description'],
     schema: updateRoleSchema,
   })
   async updateRole(
@@ -313,7 +311,6 @@ export class RoleResolver {
   @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.roles.id', 'validation.roles.operationId'],
     schema: setRoleOperationPermissionSchema,
   })
   async setRoleOperationPermission(
@@ -363,7 +360,6 @@ export class RoleResolver {
   @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.roles.id', 'validation.roles.operationId'],
     schema: setRoleOperationCustomFilterSchema,
   })
   async setRoleOperationCustomFilter(
@@ -409,12 +405,11 @@ export class RoleResolver {
     }
   }
 
+  @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.roles.id', 'validation.roles.ruleId'],
     schema: setRoleRuleRestrictedFieldSchema,
   })
-  @Mutation(() => RolePayloadType)
   async setRoleRuleRestrictedField(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,
@@ -467,12 +462,11 @@ export class RoleResolver {
     }
   }
 
+  @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.roles.id', 'validation.roles.navItemId'],
     schema: setRoleAllowedNavItemSchema,
   })
-  @Mutation(() => RolePayloadType)
   async setRoleAllowedNavItem(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
     @Localization() { lang }: LocalizationPayloadInterface,

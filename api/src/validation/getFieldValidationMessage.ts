@@ -16,7 +16,7 @@ interface GetValidationFieldMessageInterface {
   lang: string;
 }
 
-function getValidationFieldMessage({
+function getFieldValidationMessage({
   messages,
   key,
   lang,
@@ -56,4 +56,4 @@ function getValidationFieldMessage({
   return currentLang.value;
 }
 
-export default getValidationFieldMessage;
+export default getFieldValidationMessage;

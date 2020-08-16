@@ -5,16 +5,16 @@ import {
   minDescriptionLength,
   minPrice,
 } from './schemaTemplates';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
 export const productIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.products.id',
@@ -25,14 +25,14 @@ export const productAttributeSchema = ({ lang, messages }: SchemaMessagesInterfa
   Yup.object().shape({
     showInCard: Yup.boolean(),
     node: Yup.string().required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang: lang,
         messages: messages,
         key: 'validation.products.attributeId',
       }),
     ),
     key: Yup.string().required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang: lang,
         messages: messages,
         key: 'validation.products.attributeKey',
@@ -45,7 +45,7 @@ export const productAttributesGroupSchema = (args: SchemaMessagesInterface) =>
   Yup.object().shape({
     showInCard: Yup.boolean(),
     node: Yup.string().required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang: args.lang,
         messages: args.messages,
         key: 'validation.products.attributesGroupId',
@@ -81,7 +81,7 @@ const productCommonFields = ({
   }),
   rubrics: Yup.array().of(
     Yup.string().required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang,
         messages,
         key: 'validation.products.rubrics',
@@ -91,14 +91,14 @@ const productCommonFields = ({
   price: Yup.number()
     .min(
       minPrice,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang,
         messages,
         key: 'validation.number.min',
       }) + ` ${minPrice}`,
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang,
         messages,
         key: 'validation.products.price',
@@ -108,7 +108,7 @@ const productCommonFields = ({
   assets: Yup.array()
     .of(Yup.mixed())
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         lang,
         messages,
         key: 'validation.products.assets',

@@ -101,7 +101,6 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({
-    messages: ['validation.users.name', 'validation.users.password', 'validation.users.role'],
     schema: createUserSchema,
   })
   async createUser(
@@ -152,7 +151,6 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({
-    messages: ['validation.users.id', 'validation.users.name', 'validation.users.role'],
     schema: updateUserSchema,
   })
   async updateUser(
@@ -225,7 +223,6 @@ export class UserResolver {
 
   @Mutation(() => UserPayloadType)
   @ValidateMethod({
-    messages: ['validation.users.name', 'validation.users.password'],
     schema: signUpValidationSchema,
   })
   async signUp(
@@ -279,7 +276,6 @@ export class UserResolver {
 
   @Mutation(() => UserPayloadType)
   @ValidateMethod({
-    messages: ['validation.users.password'],
     schema: signInValidationSchema,
   })
   async signIn(

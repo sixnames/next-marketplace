@@ -19,7 +19,6 @@ const RoleDetails: React.FC<RoleContentInterface> = ({ role }) => {
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const validationSchema = useValidationSchema({
     schema: updateRoleSchema,
-    messagesKeys: ['validation.roles.id', 'validation.roles.name', 'validation.roles.description'],
   });
 
   const [updateRoleMutation] = useUpdateRoleMutation({

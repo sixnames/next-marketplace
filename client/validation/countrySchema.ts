@@ -1,7 +1,7 @@
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minNameLength } from './schemaTemplates';
 
@@ -13,19 +13,19 @@ const countryNameSchema = (args: SchemaMessagesInterface) =>
     .nullable()
     .min(
       minNameLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) + ` ${minNameLength}`,
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) + ` ${minNameLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.countries.nameString' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.countries.nameString' }));
 
 const countryCurrencySchema = (args: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minCurrencyLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) +
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) +
         ` ${minCurrencyLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.countries.currency' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.countries.currency' }));
 
 const cityNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({
@@ -38,9 +38,9 @@ const citySlugSchema = (args: SchemaMessagesInterface) =>
     .nullable()
     .min(
       minCityKeyLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) + ` ${minCityKeyLength}`,
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) + ` ${minCityKeyLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.cities.slug' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.cities.slug' }));
 
 export const createCountrySchema = (args: SchemaMessagesInterface) =>
   Yup.object().shape({

@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
 import { langStringInputSchema } from './schemaTemplates';
 import { GENDER_ENUMS } from '../config';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 import { attributeIdSchema, attributesGroupIdSchema } from './attributesGroupSchema';
 import { productIdSchema } from './productSchema';
 
@@ -13,13 +13,13 @@ const parent = Yup.string().nullable();
 const rubricVariantSchema = (args: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
-    .required(getValidationFieldMessage({ ...args, key: 'validation.rubrics.variant' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.rubrics.variant' }));
 
 const rubricIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.rubrics.id',

@@ -1,18 +1,18 @@
 import { MessageKey } from '../config/apiMessages/messagesKeys';
 import { useGetMessagesByKeysQuery } from '../generated/apolloComponents';
-import { MultiLangSchemaMessagesInterface } from '../validation/getValidationFieldMessage';
+import { MultiLangSchemaMessagesInterface } from '../validation/getFieldValidationMessage';
 import { useLanguageContext } from '../context/languageContext';
 import * as Yup from 'yup';
 import { CONSTANT_VALIDATION_KEYS } from '../validation';
 
 interface UseValidationSchemaInterface {
   schema: (args: MultiLangSchemaMessagesInterface) => Yup.ObjectSchema;
-  messagesKeys: MessageKey[];
+  messagesKeys?: MessageKey[];
 }
 
 function useValidationSchema({
   schema,
-  messagesKeys,
+  messagesKeys = [],
 }: UseValidationSchemaInterface): Yup.ObjectSchema {
   const { lang, defaultLang } = useLanguageContext();
   const { data, error } = useGetMessagesByKeysQuery({

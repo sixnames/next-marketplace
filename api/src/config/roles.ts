@@ -9,7 +9,6 @@ import {
 } from './common';
 import { Attribute } from '../entities/Attribute';
 import { AttributesGroup } from '../entities/AttributesGroup';
-import { AttributeVariant } from '../entities/AttributeVariant';
 import { Config } from '../entities/Config';
 import { City } from '../entities/City';
 import { Country } from '../entities/Country';
@@ -250,10 +249,6 @@ export const ROLE_RULES_TEMPLATE = [
   {
     nameString: 'Группы атрибутов',
     entity: AttributesGroup.name,
-  },
-  {
-    nameString: 'Типы атрибутов',
-    entity: AttributeVariant.name,
   },
   {
     nameString: 'Настройки сайта',

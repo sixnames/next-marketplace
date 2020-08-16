@@ -1,4 +1,4 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Config, ConfigModel } from '../../entities/Config';
 import { UpdateConfigInput } from './UpdateConfigInput';
 import PayloadType from '../common/PayloadType';
@@ -6,10 +6,18 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
-import { ContextInterface } from '../../types/context';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { updateAssetConfigSchema, updateConfigsSchema } from '../../validation/configSchema';
 import getApiMessage from '../../utils/translations/getApiMessage';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const { operationConfigUpdate } = getOperationsConfigs(Config.name);
 
 @ObjectType()
 class ConfigPayloadType extends PayloadType() {
@@ -49,20 +57,16 @@ export class ConfigResolver {
   }
 
   @Mutation((_returns) => ConfigPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateConfigsSchema })
   async updateConfigs(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
     @Arg('input', (_type) => [UpdateConfigInput]) input: UpdateConfigInput[],
   ): Promise<ConfigPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.configs.id',
-        'validation.configs.value',
-      ]);
-      await updateConfigsSchema({ lang, messages }).validate(input);
-
       for await (const { id, value } of input) {
-        await ConfigModel.findByIdAndUpdate(id, { value });
+        await ConfigModel.findOneAndUpdate({ _id: id, ...customFilter }, { value });
       }
 
       return {
@@ -80,22 +84,16 @@ export class ConfigResolver {
   }
 
   @Mutation((_returns) => ConfigPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateAssetConfigSchema })
   async updateAssetConfig(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
     @Arg('input', (_type) => UpdateAssetConfigInput) input: UpdateAssetConfigInput,
   ): Promise<ConfigPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'configs.updateAsset.error',
-        'configs.updateAsset.success',
-        'validation.configs.id',
-        'validation.configs.value',
-      ]);
-      await updateAssetConfigSchema({ lang, messages }).validate(input);
-
       const { id, value } = input;
-      const config = await ConfigModel.findById(id);
+      const config = await ConfigModel.findOne({ _id: id, ...customFilter });
 
       if (!config) {
         return {

@@ -1,14 +1,27 @@
-import { Arg, Ctx, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Currency, CurrencyModel } from '../../entities/Currency';
 import PayloadType from '../common/PayloadType';
 import { CreateCurrencyInput } from './CreateCurrencyInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCurrencyInput } from './UpdateCurrencyInput';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
-import { ContextInterface } from '../../types/context';
 import { createCurrencySchema, updateCurrencySchema } from '../../validation/currencySchema';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { CountryModel } from '../../entities/Country';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Currency.name);
 
 @ObjectType()
 class CurrencyPayloadType extends PayloadType() {
@@ -19,25 +32,30 @@ class CurrencyPayloadType extends PayloadType() {
 @Resolver((_of) => Currency)
 export class CurrencyResolver {
   @Query((_returns) => [Currency])
-  async getAllCurrencies(): Promise<Currency[]> {
-    return CurrencyModel.find({});
+  @AuthMethod(operationConfigRead)
+  async getAllCurrencies(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Currency>,
+  ): Promise<Currency[]> {
+    return CurrencyModel.find(customFilter);
   }
 
   @Query((_returns) => Currency)
-  async getCurrency(@Arg('id', (_type) => ID) id: string): Promise<Currency | null> {
-    return CurrencyModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getCurrency(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Currency>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Currency | null> {
+    return CurrencyModel.findOne({ _id: id, ...customFilter });
   }
 
   @Mutation((_returns) => CurrencyPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createCurrencySchema })
   async createCurrency(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateCurrencyInput,
   ): Promise<CurrencyPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.currencies.nameString']);
-      await createCurrencySchema({ messages, lang }).validate(input);
-
       const exists = await CurrencyModel.exists({ nameString: input.nameString });
       if (exists) {
         return {
@@ -69,18 +87,14 @@ export class CurrencyResolver {
   }
 
   @Mutation((_returns) => CurrencyPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateCurrencySchema })
   async updateCurrency(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Currency>,
     @Arg('input') input: UpdateCurrencyInput,
   ): Promise<CurrencyPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.currencies.nameString',
-        'validation.currencies.id',
-      ]);
-      await updateCurrencySchema({ messages, lang }).validate(input);
-
       const { id, ...restInput } = input;
       const exists = await CurrencyModel.exists({ nameString: input.nameString });
       if (exists) {
@@ -90,7 +104,11 @@ export class CurrencyResolver {
         };
       }
 
-      const currency = await CurrencyModel.findByIdAndUpdate(id, restInput, { new: true });
+      const currency = await CurrencyModel.findOneAndUpdate(
+        { _id: id, ...customFilter },
+        restInput,
+        { new: true },
+      );
 
       if (!currency) {
         return {
@@ -113,12 +131,12 @@ export class CurrencyResolver {
   }
 
   @Mutation((_returns) => CurrencyPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteCurrency(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<CurrencyPayloadType> {
     try {
-      const { lang } = ctx.req;
       const currency = await CurrencyModel.findByIdAndDelete(id);
 
       if (!currency) {

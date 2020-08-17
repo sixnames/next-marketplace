@@ -1,6 +1,5 @@
 import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
 } from './getFieldValidationMessage';
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minNameLength } from './schemaTemplates';
@@ -8,7 +7,7 @@ import { idSchema, langStringInputSchema, minNameLength } from './schemaTemplate
 const minCurrencyLength = 1;
 const minCityKeyLength = 1;
 
-const countryNameSchema = (args: SchemaMessagesInterface) =>
+const countryNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
@@ -17,7 +16,7 @@ const countryNameSchema = (args: SchemaMessagesInterface) =>
     )
     .required(getFieldValidationMessage({ ...args, key: 'validation.countries.nameString' }));
 
-const countryCurrencySchema = (args: SchemaMessagesInterface) =>
+const countryCurrencySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
@@ -33,7 +32,7 @@ const cityNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     requiredMessageKey: 'validation.cities.name',
   });
 
-const citySlugSchema = (args: SchemaMessagesInterface) =>
+const citySlugSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
@@ -42,13 +41,13 @@ const citySlugSchema = (args: SchemaMessagesInterface) =>
     )
     .required(getFieldValidationMessage({ ...args, key: 'validation.cities.slug' }));
 
-export const createCountrySchema = (args: SchemaMessagesInterface) =>
+export const createCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     nameString: countryNameSchema(args),
     currency: countryCurrencySchema(args),
   });
 
-export const updateCountrySchema = (args: SchemaMessagesInterface) =>
+export const updateCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: idSchema({ args, key: 'validation.countries.id' }),
     nameString: countryNameSchema(args),
@@ -70,7 +69,7 @@ export const updateCityInCountrySchema = (args: MultiLangSchemaMessagesInterface
     slug: citySlugSchema(args),
   });
 
-export const deleteCityFromCountrySchema = (args: SchemaMessagesInterface) =>
+export const deleteCityFromCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     cityId: idSchema({ args, key: 'validation.cities.id' }),
     countryId: idSchema({ args, key: 'validation.countries.id' }),

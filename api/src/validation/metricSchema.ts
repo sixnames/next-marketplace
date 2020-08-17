@@ -15,20 +15,15 @@ export const createMetricInputSchema = (args: MultiLangSchemaMessagesInterface) 
     name: metricNameSchema(args),
   });
 
-export const updateMetricSchema = ({
-  lang,
-  messages,
-  defaultLang,
-}: MultiLangSchemaMessagesInterface) =>
+export const updateMetricSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: Yup.string()
       .nullable()
       .required(
         getFieldValidationMessage({
-          messages,
-          lang,
+          ...args,
           key: 'validation.metrics.id',
         }),
       ),
-    name: metricNameSchema({ defaultLang, lang, messages }),
+    name: metricNameSchema(args),
   });

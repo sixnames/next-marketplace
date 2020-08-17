@@ -5,7 +5,6 @@ import {
   Resolver,
   Root,
   ID,
-  Ctx,
   ObjectType,
   Field,
   Mutation,
@@ -13,7 +12,6 @@ import {
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
-import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
@@ -25,7 +23,6 @@ import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -33,6 +30,27 @@ import {
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '../../validation/optionsGroupSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(OptionsGroup.name);
+
+const {
+  operationConfigCreate: operationConfigCreateOption,
+  operationConfigUpdate: operationConfigUpdateOption,
+  operationConfigDelete: operationConfigDeleteOption,
+} = getOperationsConfigs(Option.name);
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -43,25 +61,30 @@ class OptionsGroupPayloadType extends PayloadType() {
 @Resolver((_of) => OptionsGroup)
 export class OptionsGroupResolver {
   @Query(() => OptionsGroup, { nullable: true })
-  async getOptionsGroup(@Arg('id', (_type) => ID) id: string): Promise<OptionsGroup | null> {
-    return OptionsGroupModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getOptionsGroup(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<OptionsGroup>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<OptionsGroup | null> {
+    return OptionsGroupModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => [OptionsGroup])
-  async getAllOptionsGroups(): Promise<OptionsGroup[]> {
-    return OptionsGroupModel.find();
+  @AuthMethod(operationConfigRead)
+  async getAllOptionsGroups(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<OptionsGroup>,
+  ): Promise<OptionsGroup[]> {
+    return OptionsGroupModel.find(customFilter);
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createOptionsGroupSchema })
   async createOptionsGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.optionsGroup.name']);
-      await createOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await OptionsGroupModel.exists({
         'name.value': {
@@ -99,18 +122,14 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateOptionsGroupSchema })
   async updateOptionsGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<OptionsGroup>,
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.optionsGroup.name',
-        'validation.optionsGroup.id',
-      ]);
-      await updateOptionsGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { id, ...values } = input;
 
       const nameValues = values.name.map(({ value }) => value);
@@ -128,7 +147,7 @@ export class OptionsGroupResolver {
         };
       }
 
-      const group = await OptionsGroupModel.findByIdAndUpdate(id, values, {
+      const group = await OptionsGroupModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
         new: true,
       });
 
@@ -153,12 +172,12 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteOptionsGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
       const connectedWithAttributes = await AttributeModel.exists({ options: id });
       if (connectedWithAttributes) {
         return {
@@ -199,23 +218,13 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigCreateOption)
+  @ValidateMethod({ schema: addOptionToGroupSchema })
   async addOptionToGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.option.name',
-        'validation.option.gender',
-        'validation.option.variantKey',
-        'validation.option.variantValue',
-        'validation.color',
-        'validation.color.required',
-        'validation.optionsGroup.id',
-      ]);
-      await addOptionToGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { groupId, ...values } = input;
       const group = await OptionsGroupModel.findById(groupId);
 
@@ -280,24 +289,14 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigUpdateOption)
+  @ValidateMethod({ schema: updateOptionInGroupSchema })
   async updateOptionInGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdateOption) customFilter: FilterQuery<Option>,
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.option.name',
-        'validation.option.gender',
-        'validation.option.variantKey',
-        'validation.option.variantValue',
-        'validation.color',
-        'validation.color.required',
-        'validation.option.id',
-        'validation.optionsGroup.id',
-      ]);
-      await updateOptionInGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { groupId, optionId, color, name, gender, variants } = input;
       const group = await OptionsGroupModel.findById(groupId);
 
@@ -323,8 +322,8 @@ export class OptionsGroupResolver {
         };
       }
 
-      const option = await OptionModel.findByIdAndUpdate(
-        optionId,
+      const option = await OptionModel.findOneAndUpdate(
+        { _id: optionId, ...customFilter },
         {
           name,
           color,
@@ -355,18 +354,13 @@ export class OptionsGroupResolver {
   }
 
   @Mutation(() => OptionsGroupPayloadType)
+  @AuthMethod(operationConfigDeleteOption)
+  @ValidateMethod({ schema: deleteOptionFromGroupSchema })
   async deleteOptionFromGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.option.id',
-        'validation.optionsGroup.id',
-      ]);
-      await deleteOptionFromGroupSchema({ lang, messages }).validate(input);
-
       const { groupId, optionId } = input;
       const option = await OptionModel.findByIdAndDelete(optionId);
 
@@ -406,9 +400,9 @@ export class OptionsGroupResolver {
   @FieldResolver()
   async nameString(
     @Root() group: DocumentType<OptionsGroup>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(group.name, ctx.req.lang);
+    return getLangField(group.name, lang);
   }
 
   @FieldResolver()

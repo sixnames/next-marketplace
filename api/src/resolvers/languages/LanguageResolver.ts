@@ -1,13 +1,26 @@
-import { Arg, Ctx, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import PayloadType from '../common/PayloadType';
 import { Language, LanguageModel } from '../../entities/Language';
 import { CreateLanguageInput } from './CreateLanguageInput';
 import { UpdateLanguageInput } from './UpdateLanguageInput';
-import { ContextInterface } from '../../types/context';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
 import { createLanguageSchema, updateLanguageSchema } from '../../validation/languageSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Language.name);
 
 @ObjectType()
 class LanguagePayloadType extends PayloadType() {
@@ -18,26 +31,38 @@ class LanguagePayloadType extends PayloadType() {
 @Resolver((_of) => Language)
 export class LanguageResolver {
   @Query(() => Language, { nullable: true })
-  async getLanguage(@Arg('id', (_type) => ID) id: string): Promise<Language | null> {
-    return LanguageModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getLanguage(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Language>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Language | null> {
+    return LanguageModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => [Language], { nullable: true })
-  async getAllLanguages(): Promise<Language[]> {
-    return LanguageModel.find({}).sort({ isDefault: -1 });
+  @AuthMethod(operationConfigRead)
+  async getAllLanguages(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Language>,
+  ): Promise<Language[]> {
+    return LanguageModel.find(customFilter).sort({ isDefault: -1 });
   }
 
   @Query(() => String)
-  async getClientLanguage(@Ctx() ctx: ContextInterface): Promise<string> {
-    return ctx.req.lang;
+  async getClientLanguage(@Localization() { lang }: LocalizationPayloadInterface): Promise<string> {
+    return lang;
   }
 
   @Mutation(() => LanguagePayloadType)
-  async setLanguageAsDefault(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+  @AuthMethod(operationConfigUpdate)
+  async setLanguageAsDefault(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Language>,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
     try {
-      const lang = ctx.req.lang;
-
-      const setAllLanguagesAsNotDefault = await LanguageModel.updateMany({}, { isDefault: false });
+      const setAllLanguagesAsNotDefault = await LanguageModel.updateMany(customFilter, {
+        isDefault: false,
+      });
 
       if (!setAllLanguagesAsNotDefault.ok) {
         return {
@@ -46,8 +71,8 @@ export class LanguageResolver {
         };
       }
 
-      const language = await LanguageModel.findByIdAndUpdate(
-        id,
+      const language = await LanguageModel.findOneAndUpdate(
+        { _id: id, ...customFilter },
         { isDefault: true },
         { new: true },
       );
@@ -72,21 +97,13 @@ export class LanguageResolver {
   }
 
   @Mutation(() => LanguagePayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createLanguageSchema })
   async createLanguage(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateLanguageInput,
   ): Promise<LanguagePayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.languages.name',
-        'validation.languages.key',
-        'validation.languages.nativeName',
-        'validation.string.min',
-        'validation.string.max',
-      ]);
-      await createLanguageSchema({ messages, lang }).validate(input);
-
       const exists = await LanguageModel.exists({
         $or: [
           {
@@ -131,21 +148,14 @@ export class LanguageResolver {
   }
 
   @Mutation(() => LanguagePayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateLanguageSchema })
   async updateLanguage(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Language>,
     @Arg('input') input: UpdateLanguageInput,
   ): Promise<LanguagePayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.languages.name',
-        'validation.languages.key',
-        'validation.languages.nativeName',
-        'validation.string.min',
-        'validation.string.max',
-      ]);
-      await updateLanguageSchema({ messages, lang }).validate(input);
-
       const { id, ...values } = input;
       const exists = await LanguageModel.exists({
         $or: [
@@ -165,7 +175,9 @@ export class LanguageResolver {
         };
       }
 
-      const language = await LanguageModel.findByIdAndUpdate(id, values, { new: true });
+      const language = await LanguageModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
+        new: true,
+      });
 
       if (!language) {
         return {
@@ -188,9 +200,12 @@ export class LanguageResolver {
   }
 
   @Mutation(() => LanguagePayloadType)
-  async deleteLanguage(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+  @AuthMethod(operationConfigDelete)
+  async deleteLanguage(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const isDefault = await LanguageModel.exists({
         _id: id,
         isDefault: true,

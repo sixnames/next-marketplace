@@ -17,6 +17,11 @@ export type Scalars = {
 
 export type Query = {
    __typename?: 'Query';
+  getProduct: Product;
+  getProductBySlug: Product;
+  getAllProducts: PaginatedProductsResponse;
+  getProductsCounters: ProductsCounters;
+  getFeaturesAst: Array<AttributesGroup>;
   me?: Maybe<User>;
   getUser?: Maybe<User>;
   getAllUsers: PaginatedUsersResponse;
@@ -30,17 +35,13 @@ export type Query = {
   getClientLanguage: Scalars['String'];
   getAllCurrencies: Array<Currency>;
   getCurrency: Currency;
-  getProduct: Product;
-  getProductBySlug: Product;
-  getAllProducts: PaginatedProductsResponse;
-  getProductsCounters: ProductsCounters;
-  getFeaturesAst: Array<AttributesGroup>;
   getAttribute?: Maybe<Attribute>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
+  getValidationMessages: Array<Message>;
   getMetric?: Maybe<Metric>;
   getAllMetrics?: Maybe<Array<Metric>>;
   getOption?: Maybe<Option>;
@@ -63,6 +64,31 @@ export type Query = {
   getSessionRole: Role;
   getEntityFields: Array<Scalars['String']>;
   getAllAppNavItems: Array<NavItem>;
+};
+
+
+export type QueryGetProductArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetProductBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllProductsArgs = {
+  input?: Maybe<ProductPaginateInput>;
+};
+
+
+export type QueryGetProductsCountersArgs = {
+  input?: Maybe<ProductsCountersInput>;
+};
+
+
+export type QueryGetFeaturesAstArgs = {
+  selectedRubrics: Array<Scalars['ID']>;
 };
 
 
@@ -98,31 +124,6 @@ export type QueryGetLanguageArgs = {
 
 export type QueryGetCurrencyArgs = {
   id: Scalars['ID'];
-};
-
-
-export type QueryGetProductArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetProductBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllProductsArgs = {
-  input?: Maybe<ProductPaginateInput>;
-};
-
-
-export type QueryGetProductsCountersArgs = {
-  input: ProductsCountersInput;
-};
-
-
-export type QueryGetFeaturesAstArgs = {
-  selectedRubrics: Array<Scalars['ID']>;
 };
 
 
@@ -211,152 +212,6 @@ export type QueryGetEntityFieldsArgs = {
   entity: Scalars['String'];
 };
 
-export type User = {
-   __typename?: 'User';
-  id: Scalars['ID'];
-  itemId: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  role: Role;
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
-};
-
-export type Role = {
-   __typename?: 'Role';
-  id: Scalars['String'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
-  description: Scalars['String'];
-  slug: Scalars['String'];
-  isStuff: Scalars['Boolean'];
-  rules: Array<RoleRule>;
-  allowedAppNavigation: Array<Scalars['ID']>;
-  appNavigation: Array<NavItem>;
-};
-
-export type LanguageType = {
-   __typename?: 'LanguageType';
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type RoleRule = {
-   __typename?: 'RoleRule';
-  id: Scalars['ID'];
-  roleId: Scalars['ID'];
-  nameString: Scalars['String'];
-  entity: Scalars['String'];
-  operations: Array<RoleRuleOperation>;
-  restrictedFields: Array<Scalars['String']>;
-};
-
-export type RoleRuleOperation = {
-   __typename?: 'RoleRuleOperation';
-  id: Scalars['ID'];
-  operationType: RoleRuleOperationTypeEnum;
-  allow: Scalars['Boolean'];
-  customFilter: Scalars['String'];
-  order: Scalars['Int'];
-};
-
-/** Role rule operation type enum */
-export enum RoleRuleOperationTypeEnum {
-  Create = 'create',
-  Read = 'read',
-  Update = 'update',
-  Delete = 'delete'
-}
-
-export type NavItem = {
-   __typename?: 'NavItem';
-  id: Scalars['String'];
-  name: Array<LanguageType>;
-  path?: Maybe<Scalars['String']>;
-  navGroup: Scalars['String'];
-  order: Scalars['Int'];
-  nameString: Scalars['String'];
-  icon?: Maybe<Scalars['String']>;
-  parent?: Maybe<NavItem>;
-  children?: Maybe<Array<NavItem>>;
-};
-
-
-export type PaginatedUsersResponse = {
-   __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
-export type City = {
-   __typename?: 'City';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  slug: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type Country = {
-   __typename?: 'Country';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
-};
-
-export type Language = {
-   __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Currency = {
-   __typename?: 'Currency';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-};
-
 export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
@@ -377,6 +232,12 @@ export type Product = {
   cities: Array<ProductCity>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
+};
+
+export type LanguageType = {
+   __typename?: 'LanguageType';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type ProductAttributesGroup = {
@@ -515,6 +376,7 @@ export type ProductNode = {
   active: Scalars['Boolean'];
 };
 
+
 export type PaginatedProductsResponse = {
    __typename?: 'PaginatedProductsResponse';
   docs: Array<Product>;
@@ -542,6 +404,12 @@ export type ProductPaginateInput = {
   countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
+/** Pagination sortDir enum */
+export enum PaginateSortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
 /** Product pagination sortBy enum */
 export enum ProductSortByEnum {
   Price = 'price',
@@ -558,6 +426,139 @@ export type ProductsCountersInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+};
+
+export type User = {
+   __typename?: 'User';
+  id: Scalars['ID'];
+  itemId: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  role: Role;
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type Role = {
+   __typename?: 'Role';
+  id: Scalars['String'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  description: Scalars['String'];
+  slug: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+  rules: Array<RoleRule>;
+  allowedAppNavigation: Array<Scalars['ID']>;
+  appNavigation: Array<NavItem>;
+};
+
+export type RoleRule = {
+   __typename?: 'RoleRule';
+  id: Scalars['ID'];
+  roleId: Scalars['ID'];
+  nameString: Scalars['String'];
+  entity: Scalars['String'];
+  operations: Array<RoleRuleOperation>;
+  restrictedFields: Array<Scalars['String']>;
+};
+
+export type RoleRuleOperation = {
+   __typename?: 'RoleRuleOperation';
+  id: Scalars['ID'];
+  operationType: RoleRuleOperationTypeEnum;
+  allow: Scalars['Boolean'];
+  customFilter: Scalars['String'];
+  order: Scalars['Int'];
+};
+
+/** Role rule operation type enum */
+export enum RoleRuleOperationTypeEnum {
+  Create = 'create',
+  Read = 'read',
+  Update = 'update',
+  Delete = 'delete'
+}
+
+export type NavItem = {
+   __typename?: 'NavItem';
+  id: Scalars['String'];
+  name: Array<LanguageType>;
+  path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
+  order: Scalars['Int'];
+  nameString: Scalars['String'];
+  icon?: Maybe<Scalars['String']>;
+  parent?: Maybe<NavItem>;
+  children?: Maybe<Array<NavItem>>;
+};
+
+export type PaginatedUsersResponse = {
+   __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type City = {
+   __typename?: 'City';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type Country = {
+   __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
+export type Currency = {
+   __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
 };
 
 export type CatalogueData = {
@@ -719,6 +720,9 @@ export enum ConfigVariantEnum {
 
 export type Mutation = {
    __typename?: 'Mutation';
+  createProduct: ProductPayloadType;
+  updateProduct: ProductPayloadType;
+  deleteProduct: ProductPayloadType;
   createUser: UserPayloadType;
   updateUser: UserPayloadType;
   deleteUser: UserPayloadType;
@@ -738,9 +742,6 @@ export type Mutation = {
   createCurrency: CurrencyPayloadType;
   updateCurrency: CurrencyPayloadType;
   deleteCurrency: CurrencyPayloadType;
-  createProduct: ProductPayloadType;
-  updateProduct: ProductPayloadType;
-  deleteProduct: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -776,6 +777,21 @@ export type Mutation = {
   setRoleOperationCustomFilter: RolePayloadType;
   setRoleRuleRestrictedField: RolePayloadType;
   setRoleAllowedNavItem: RolePayloadType;
+};
+
+
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+
+export type MutationDeleteProductArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -865,21 +881,6 @@ export type MutationUpdateCurrencyArgs = {
 
 
 export type MutationDeleteCurrencyArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationCreateProductArgs = {
-  input: CreateProductInput;
-};
-
-
-export type MutationUpdateProductArgs = {
-  input: UpdateProductInput;
-};
-
-
-export type MutationDeleteProductArgs = {
   id: Scalars['ID'];
 };
 
@@ -1058,6 +1059,54 @@ export type MutationSetRoleAllowedNavItemArgs = {
   input: SetRoleAllowedNavItemInput;
 };
 
+export type ProductPayloadType = {
+   __typename?: 'ProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<Product>;
+};
+
+export type CreateProductInput = {
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
+export type LangInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type ProductAttributesGroupInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  attributes: Array<ProductAttributeInput>;
+};
+
+export type ProductAttributeInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+
+export type UpdateProductInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
 export type UserPayloadType = {
    __typename?: 'UserPayloadType';
   success: Scalars['Boolean'];
@@ -1122,11 +1171,6 @@ export type AddCityToCountryInput = {
   slug: Scalars['String'];
 };
 
-export type LangInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
 export type UpdateCityInCountryInput = {
   countryId: Scalars['ID'];
   cityId: Scalars['ID'];
@@ -1173,49 +1217,6 @@ export type CreateCurrencyInput = {
 export type UpdateCurrencyInput = {
   id: Scalars['ID'];
   nameString: Scalars['String'];
-};
-
-export type ProductPayloadType = {
-   __typename?: 'ProductPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  product?: Maybe<Product>;
-};
-
-export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
-export type ProductAttributesGroupInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  attributes: Array<ProductAttributeInput>;
-};
-
-export type ProductAttributeInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  /** Attribute reference via attribute slug field */
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-
-export type UpdateProductInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
 };
 
 export type AttributesGroupPayloadType = {
@@ -2225,6 +2226,21 @@ export type GetMessagesByKeysQueryVariables = {
 export type GetMessagesByKeysQuery = (
   { __typename?: 'Query' }
   & { getMessagesByKeys: Array<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'key'>
+    & { message: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )> }
+);
+
+export type GetValidationMessagesQueryVariables = {};
+
+
+export type GetValidationMessagesQuery = (
+  { __typename?: 'Query' }
+  & { getValidationMessages: Array<(
     { __typename?: 'Message' }
     & Pick<Message, 'key'>
     & { message: Array<(
@@ -4501,6 +4517,42 @@ export function useGetMessagesByKeysLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export type GetMessagesByKeysQueryHookResult = ReturnType<typeof useGetMessagesByKeysQuery>;
 export type GetMessagesByKeysLazyQueryHookResult = ReturnType<typeof useGetMessagesByKeysLazyQuery>;
 export type GetMessagesByKeysQueryResult = ApolloReactCommon.QueryResult<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>;
+export const GetValidationMessagesDocument = gql`
+    query GetValidationMessages {
+  getValidationMessages {
+    key
+    message {
+      key
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetValidationMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetValidationMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetValidationMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetValidationMessagesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetValidationMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>(GetValidationMessagesDocument, baseOptions);
+      }
+export function useGetValidationMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>(GetValidationMessagesDocument, baseOptions);
+        }
+export type GetValidationMessagesQueryHookResult = ReturnType<typeof useGetValidationMessagesQuery>;
+export type GetValidationMessagesLazyQueryHookResult = ReturnType<typeof useGetValidationMessagesLazyQuery>;
+export type GetValidationMessagesQueryResult = ApolloReactCommon.QueryResult<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>;
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {

@@ -40,11 +40,8 @@ export class LanguageResolver {
   }
 
   @Query(() => [Language], { nullable: true })
-  @AuthMethod(operationConfigRead)
-  async getAllLanguages(
-    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Language>,
-  ): Promise<Language[]> {
-    return LanguageModel.find(customFilter).sort({ isDefault: -1 });
+  async getAllLanguages(): Promise<Language[]> {
+    return LanguageModel.find({}).sort({ isDefault: -1 });
   }
 
   @Query(() => String)

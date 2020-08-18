@@ -603,7 +603,7 @@ type Query {
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
-  getProductsCounters(input: ProductsCountersInput!): ProductsCounters!
+  getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!

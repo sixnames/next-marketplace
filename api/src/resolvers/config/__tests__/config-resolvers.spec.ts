@@ -111,9 +111,7 @@ describe('Config', () => {
     ]);
 
     // Shouldn't update non asset configs on validation error
-    const {
-      data: { updateConfigs: updateConfigsValidationError },
-    } = await mutate(
+    const { errors: updateConfigsValidationError } = await mutate(
       `
       mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
         updateConfigs(input: $input) {
@@ -137,7 +135,7 @@ describe('Config', () => {
         },
       },
     );
-    expect(updateConfigsValidationError.success).toBeFalsy();
+    expect(updateConfigsValidationError).toBeDefined();
 
     // Should update non asset configs
     const {

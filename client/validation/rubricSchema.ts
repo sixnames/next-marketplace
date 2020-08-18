@@ -47,7 +47,7 @@ const rubricCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   }),
   catalogueTitle: rubricCatalogueTitleSchema(args),
   parent,
-  variant: rubricVariantSchema({ messages: args.messages, lang: args.lang }),
+  variant: rubricVariantSchema(args),
 });
 
 export const createRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
@@ -64,7 +64,7 @@ export const updateRubricInputSchema = (args: MultiLangSchemaMessagesInterface) 
 export const addAttributesGroupToRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema({ messages: args.messages, lang: args.lang }),
+    attributesGroupId: attributesGroupIdSchema(args),
   });
 
 export const deleteAttributesGroupFromRubricInputSchema = (
@@ -72,29 +72,29 @@ export const deleteAttributesGroupFromRubricInputSchema = (
 ) =>
   Yup.object().shape({
     rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema({ messages: args.messages, lang: args.lang }),
+    attributesGroupId: attributesGroupIdSchema(args),
   });
 
 export const updateAttributesGroupInRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema({ messages: args.messages, lang: args.lang }),
-    attributeId: attributeIdSchema({ messages: args.messages, lang: args.lang }),
+    attributesGroupId: attributesGroupIdSchema(args),
+    attributeId: attributeIdSchema(args),
   });
 
 export const addProductToRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     rubricId: rubricIdSchema(args),
-    productId: productIdSchema({ messages: args.messages, lang: args.lang }),
+    productId: productIdSchema(args),
   });
 
 export const deleteProductFromRubricInputSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     rubricId: rubricIdSchema(args),
-    productId: productIdSchema({ messages: args.messages, lang: args.lang }),
+    productId: productIdSchema(args),
   });
 
 export const addAttributesGroupToRubricSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    attributesGroupId: attributesGroupIdSchema({ messages: args.messages, lang: args.lang }),
+    attributesGroupId: attributesGroupIdSchema(args),
   });

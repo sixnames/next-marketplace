@@ -1,9 +1,9 @@
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CURRENCIES } from '../../../config';
 
 describe('Currency', () => {
   it('Should CRUD currency', async () => {
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all currencies
     const {
@@ -33,9 +33,7 @@ describe('Currency', () => {
     expect(getCurrency.nameString).toEqual(currentCurrency.nameString);
 
     // Shouldn't create new currency on validation error
-    const {
-      data: { createCurrency: createCurrencyValidationError },
-    } = await mutate(
+    const { errors: createCurrencyErrors } = await mutate(
       `
       mutation CreateCurrency($input: CreateCurrencyInput!) {
         createCurrency(input: $input) {
@@ -54,7 +52,7 @@ describe('Currency', () => {
         },
       },
     );
-    expect(createCurrencyValidationError.success).toBeFalsy();
+    expect(createCurrencyErrors).toBeDefined();
 
     // Shouldn't create new currency on duplicate error
     const {

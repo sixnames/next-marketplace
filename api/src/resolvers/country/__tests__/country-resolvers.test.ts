@@ -1,9 +1,9 @@
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, MOCK_COUNTRIES } from '../../../config';
 
 describe('Country', () => {
   it('Should CRUD countries and cities', async () => {
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return countries list with cities
     const {
@@ -63,9 +63,7 @@ describe('Country', () => {
     expect(getCountry.nameString).toEqual(currentCountry.nameString);
 
     // Shouldn't create country on validation error
-    const {
-      data: { createCountry: createCountryValidationError },
-    } = await mutate(
+    const { errors: createCountryErrors } = await mutate(
       `
         mutation CreateCountry($input: CreateCountryInput!) {
           createCountry(input: $input) {
@@ -92,7 +90,7 @@ describe('Country', () => {
         },
       },
     );
-    expect(createCountryValidationError.success).toBeFalsy();
+    expect(createCountryErrors).toBeDefined();
 
     // Shouldn't create country on duplicate error
     const {
@@ -163,9 +161,7 @@ describe('Country', () => {
     expect(createCountry.country.currency).toEqual(newCountryCurrency);
 
     // Shouldn't update country on validation error
-    const {
-      data: { updateCountry: updateCountryValidationError },
-    } = await mutate(
+    const { errors: updateCountryErrors } = await mutate(
       `
         mutation UpdateCountry($input: UpdateCountryInput!) {
           updateCountry(input: $input) {
@@ -193,7 +189,7 @@ describe('Country', () => {
         },
       },
     );
-    expect(updateCountryValidationError.success).toBeFalsy();
+    expect(updateCountryErrors).toBeDefined();
 
     // Should update country
     const updatedCountryName = 'new country';
@@ -268,9 +264,7 @@ describe('Country', () => {
     expect(errors).toBeDefined();
 
     // Shouldn't create city on validation error
-    const {
-      data: { addCityToCountry: addCityToCountryValidation },
-    } = await mutate(
+    const { errors: addCityToCountryErrors } = await mutate(
       `
         mutation AddCityToCountry($input: AddCityToCountryInput!) {
           addCityToCountry(input: $input) {
@@ -298,7 +292,7 @@ describe('Country', () => {
         },
       },
     );
-    expect(addCityToCountryValidation.success).toBeFalsy();
+    expect(addCityToCountryErrors).toBeDefined();
 
     // Shouldn't create city on duplicate error
     const {
@@ -376,9 +370,7 @@ describe('Country', () => {
     expect(createdCity.slug).toEqual(newCitySlug);
 
     // Shouldn't update city in country on validation error
-    const {
-      data: { updateCityInCountry: updateCityInCountryValidationError },
-    } = await mutate(
+    const { errors: updateCityInCountryErrors } = await mutate(
       `
         mutation UpdateCityInCountry($input: UpdateCityInCountryInput!) {
           updateCityInCountry(input: $input) {
@@ -408,7 +400,7 @@ describe('Country', () => {
         },
       },
     );
-    expect(updateCityInCountryValidationError.success).toBeFalsy();
+    expect(updateCityInCountryErrors).toBeDefined();
 
     // Should update city in country
     const updatedCitySlug = 'updated';
@@ -453,9 +445,7 @@ describe('Country', () => {
     expect(updatedCity.slug).toEqual(updatedCitySlug);
 
     // Shouldn't delete city from country on validation error
-    const {
-      data: { deleteCityFromCountry: deleteCityFromCountryValidationError },
-    } = await mutate(
+    const { errors: deleteCityFromCountryErrors } = await mutate(
       `
         mutation DeleteCityFromCountry($input: DeleteCityFromCountryInput!) {
           deleteCityFromCountry(input: $input) {
@@ -483,7 +473,7 @@ describe('Country', () => {
         },
       },
     );
-    expect(deleteCityFromCountryValidationError.success).toBeFalsy();
+    expect(deleteCityFromCountryErrors).toBeDefined();
 
     // Should delete city from country
     const {

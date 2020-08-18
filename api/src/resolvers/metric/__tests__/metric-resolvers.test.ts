@@ -1,10 +1,10 @@
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { Metric } from '../../../entities/Metric';
 import { DEFAULT_LANG, MOCK_METRICS } from '../../../config';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all metrics
     const { data: allMetrics } = await query(`
@@ -40,9 +40,7 @@ describe('Metric', () => {
     expect(getMetric.id).toEqual(currentMetric.id);
 
     // Shouldn't create metric on validation error
-    const {
-      data: { createMetric: createMetricWithError },
-    } = await mutate(
+    const { errors: createMetricErrors } = await mutate(
       `
       mutation CreateMetric($input: CreateMetricInput!){
         createMetric(input: $input) {
@@ -63,7 +61,7 @@ describe('Metric', () => {
         },
       },
     );
-    expect(createMetricWithError.success).toBeFalsy();
+    expect(createMetricErrors).toBeDefined();
 
     // Should create metric
     const newMetricName = 'new';

@@ -58,11 +58,7 @@ describe('User', () => {
     expect(signInNotFoundSuccess).toBeFalsy();
 
     // User shouldn't signIn on Email validation error
-    const {
-      data: {
-        signIn: { success: signInEmailFakeSuccess },
-      },
-    } = await mutate(`
+    const { errors: signInEmailErrors } = await mutate(`
           mutation {
             signIn(
               input: {
@@ -73,14 +69,10 @@ describe('User', () => {
             { success }
           }
         `);
-    expect(signInEmailFakeSuccess).toBeDefined();
+    expect(signInEmailErrors).toBeDefined();
 
     // User shouldn't signIn if is wrong Password
-    const {
-      data: {
-        signIn: { success: signInPasswordFakeSuccess },
-      },
-    } = await mutate(`
+    const { errors: signInPasswordErrors } = await mutate(`
           mutation {
             signIn(
               input: {
@@ -91,7 +83,7 @@ describe('User', () => {
             { success }
           }
         `);
-    expect(signInPasswordFakeSuccess).toBeFalsy();
+    expect(signInPasswordErrors).toBeDefined();
 
     // User should sign in
     const {

@@ -93,11 +93,7 @@ describe('Options groups', () => {
     expect(getOptionsGroup.id).toEqual(group.id);
 
     // Shouldn't create options group on validation error
-    const {
-      data: {
-        createOptionsGroup: { success: createOptionsGroupFailSuccess },
-      },
-    } = await mutate(`
+    const { errors: createOptionsGroupFailSuccess } = await mutate(`
         mutation {
           createOptionsGroup(
             input: {
@@ -112,7 +108,7 @@ describe('Options groups', () => {
           }
         }
       `);
-    expect(createOptionsGroupFailSuccess).toBeFalsy();
+    expect(createOptionsGroupFailSuccess).toBeDefined();
 
     // Should return duplicate options group error on group create
     const {
@@ -162,11 +158,7 @@ describe('Options groups', () => {
     expect(createdGroup.nameString).toEqual(optionsGroup.name);
 
     // Shouldn't update options group if new name is not valid
-    const {
-      data: {
-        updateOptionsGroup: { success: updateOptionsGroupFailSuccess },
-      },
-    } = await mutate(`
+    const { errors: updateOptionsGroupFailSuccess } = await mutate(`
         mutation {
           updateOptionsGroup(
             input: {
@@ -183,7 +175,7 @@ describe('Options groups', () => {
           }
         }
       `);
-    expect(updateOptionsGroupFailSuccess).toBeFalsy();
+    expect(updateOptionsGroupFailSuccess).toBeDefined();
 
     // Should return duplicate options group error on group update
     const {
@@ -241,11 +233,7 @@ describe('Options groups', () => {
     expect(data.deleteOptionsGroup.success).toBeTruthy();
 
     // Shouldn't create option on validation error
-    const {
-      data: {
-        addOptionToGroup: { success: addOptionToGroupValidationFail },
-      },
-    } = await mutate(addOptionToGroupMutation(), {
+    const { errors: addOptionToGroupValidationFail } = await mutate(addOptionToGroupMutation(), {
       variables: {
         input: {
           groupId: group.id,
@@ -255,7 +243,7 @@ describe('Options groups', () => {
         },
       },
     });
-    expect(addOptionToGroupValidationFail).toBeFalsy();
+    expect(addOptionToGroupValidationFail).toBeDefined();
 
     // Should return duplicate options group error on option update
     const { data: optionDuplicate } = await mutate(addOptionToGroupMutation(), {
@@ -307,27 +295,26 @@ describe('Options groups', () => {
     const addedOption = addOptionToGroup.group.options[0];
 
     // Should return validation error on option update
-    const {
-      data: {
-        updateOptionInGroup: { success: updateOptionInGroupFalseSuccess },
-      },
-    } = await mutate(updateOptionInGroupMutation(), {
-      variables: {
-        input: {
-          groupId: group.id,
-          optionId: addedOption.id,
-          name: [
-            {
-              key: DEFAULT_LANG,
-              value: 'f',
-            },
-          ],
-          color: 'b',
-          gender: GENDER_IT,
+    const { errors: updateOptionInGroupFalseSuccess } = await mutate(
+      updateOptionInGroupMutation(),
+      {
+        variables: {
+          input: {
+            groupId: group.id,
+            optionId: addedOption.id,
+            name: [
+              {
+                key: DEFAULT_LANG,
+                value: 'f',
+              },
+            ],
+            color: 'b',
+            gender: GENDER_IT,
+          },
         },
       },
-    });
-    expect(updateOptionInGroupFalseSuccess).toBeFalsy();
+    );
+    expect(updateOptionInGroupFalseSuccess).toBeDefined();
 
     // Should update option in options group
     const newOptionName = 'newOptionName';

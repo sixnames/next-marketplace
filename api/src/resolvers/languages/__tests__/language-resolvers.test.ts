@@ -1,10 +1,10 @@
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, ISO_LANGUAGES, MOCK_LANGUAGES } from '../../../config';
 import { Language } from '../../../entities/Language';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return client language stored in context
     const {
@@ -59,9 +59,7 @@ describe('Language', () => {
     expect(getLanguage.id).toEqual(currentLanguage.id);
 
     // Shouldn't create language on validation error
-    const {
-      data: { createLanguage: createLanguageWithError },
-    } = await mutate(
+    const { errors: createLanguageErrors } = await mutate(
       `
       mutation CreateLanguage($input: CreateLanguageInput!){
         createLanguage(input: $input) {
@@ -84,7 +82,7 @@ describe('Language', () => {
         },
       },
     );
-    expect(createLanguageWithError.success).toBeFalsy();
+    expect(createLanguageErrors).toBeDefined();
 
     // Shouldn't create language on duplicate error
     const {

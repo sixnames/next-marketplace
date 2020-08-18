@@ -13,7 +13,6 @@ const { operationConfigRead } = getOperationsConfigs(City.name);
 @Resolver((_for) => City)
 export class CityResolver {
   @Query((_returns) => [City])
-  @AuthMethod(operationConfigRead)
   async getAllCities(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<City>,
   ): Promise<City[]> {
@@ -35,7 +34,6 @@ export class CityResolver {
   }
 
   @Query((_returns) => City)
-  @AuthMethod(operationConfigRead)
   async getCityBySlug(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<City>,
     @Arg('slug', (_type) => String) slug: string,

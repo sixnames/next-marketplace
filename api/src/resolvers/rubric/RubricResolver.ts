@@ -288,7 +288,6 @@ export class RubricResolver {
 
   @Mutation(() => RubricPayloadType)
   @AuthMethod(operationConfigDelete)
-  @ValidateMethod({ schema: updateRubricInputSchema })
   async deleteRubric(
     @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,

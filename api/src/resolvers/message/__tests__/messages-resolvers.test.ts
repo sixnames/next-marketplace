@@ -48,5 +48,23 @@ describe('Language', () => {
     );
     const defaultLangMassage = getMessage.message.find(({ key }: any) => key === DEFAULT_LANG);
     expect(defaultLangMassage.value).toEqual('Не валидный формат Email адреса.');
+
+    // Should return validation messages
+    const {
+      data: { getValidationMessages },
+    } = await query(
+      `
+      query GetValidationMessages {
+        getValidationMessages {
+          key
+          message {
+            key
+            value
+          }
+        }
+      }
+    `,
+    );
+    expect(getValidationMessages).toBeDefined();
   });
 });

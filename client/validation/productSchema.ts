@@ -7,74 +7,59 @@ import {
 } from './schemaTemplates';
 import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
 } from './getFieldValidationMessage';
 
-export const productIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+export const productIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
       getFieldValidationMessage({
-        messages,
-        lang,
+        ...args,
         key: 'validation.products.id',
       }),
     );
 
-export const productAttributeSchema = ({ lang, messages }: SchemaMessagesInterface) =>
+export const productAttributeSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     showInCard: Yup.boolean(),
     node: Yup.string().required(
       getFieldValidationMessage({
-        lang: lang,
-        messages: messages,
+        ...args,
         key: 'validation.products.attributeId',
       }),
     ),
     key: Yup.string().required(
       getFieldValidationMessage({
-        lang: lang,
-        messages: messages,
+        ...args,
         key: 'validation.products.attributeKey',
       }),
     ),
     value: Yup.array().of(Yup.string()),
   });
 
-export const productAttributesGroupSchema = (args: SchemaMessagesInterface) =>
+export const productAttributesGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     showInCard: Yup.boolean(),
     node: Yup.string().required(
       getFieldValidationMessage({
-        lang: args.lang,
-        messages: args.messages,
+        ...args,
         key: 'validation.products.attributesGroupId',
       }),
     ),
     attributes: Yup.array().of(productAttributeSchema(args)),
   });
 
-const productCommonFields = ({
-  defaultLang,
-  messages,
-  lang,
-}: MultiLangSchemaMessagesInterface) => ({
+const productCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   name: langStringInputSchema({
-    defaultLang,
-    messages,
-    lang,
+    ...args,
     requiredMessageKey: 'validation.products.name',
   }),
   cardName: langStringInputSchema({
-    defaultLang,
-    messages,
-    lang,
+    ...args,
     requiredMessageKey: 'validation.products.cardName',
   }),
   description: langStringInputSchema({
-    defaultLang,
-    messages,
-    lang,
+    ...args,
     min: minDescriptionLength,
     max: maxDescriptionLength,
     requiredMessageKey: 'validation.products.description',
@@ -82,8 +67,7 @@ const productCommonFields = ({
   rubrics: Yup.array().of(
     Yup.string().required(
       getFieldValidationMessage({
-        lang,
-        messages,
+        ...args,
         key: 'validation.products.rubrics',
       }),
     ),
@@ -92,25 +76,22 @@ const productCommonFields = ({
     .min(
       minPrice,
       getFieldValidationMessage({
-        lang,
-        messages,
+        ...args,
         key: 'validation.number.min',
       }) + ` ${minPrice}`,
     )
     .required(
       getFieldValidationMessage({
-        lang,
-        messages,
+        ...args,
         key: 'validation.products.price',
       }),
     ),
-  attributesGroups: Yup.array().of(productAttributesGroupSchema({ messages, lang })),
+  attributesGroups: Yup.array().of(productAttributesGroupSchema(args)),
   assets: Yup.array()
     .of(Yup.mixed())
     .required(
       getFieldValidationMessage({
-        lang,
-        messages,
+        ...args,
         key: 'validation.products.assets',
       }),
     ),
@@ -123,6 +104,6 @@ export const createProductSchema = (args: MultiLangSchemaMessagesInterface) =>
 
 export const updateProductSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    id: productIdSchema({ messages: args.messages, lang: args.lang }),
+    id: productIdSchema(args),
     ...productCommonFields(args),
   });

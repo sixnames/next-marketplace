@@ -611,6 +611,7 @@ type Query {
   getRubricVariant(id: ID!): RubricVariant
   getSessionRole: Role!
   getUser(id: ID!): User
+  getValidationMessages: [Message!]!
   me: User
 }
 

@@ -13,7 +13,7 @@ describe('User roles', () => {
     cy.clearTestData();
   });
 
-  it.only('Should create role and show it rules', () => {
+  it('Should create role and show it rules', () => {
     // Shouldn't create role on validation error
     cy.getByCy('create-role').click();
     cy.getByCy('role-modal').should('exist');

@@ -21,7 +21,7 @@ const RoleCustomFilterModal: React.FC<RoleCustomFilterModalInterface> = ({
   const notValid = !state;
 
   return (
-    <ModalFrame testId={'options-group-modal'}>
+    <ModalFrame testId={'role-custom-filter-modal'}>
       <ModalTitle>Введите фильтр в формате JSON</ModalTitle>
       <ModalText>
         <p>

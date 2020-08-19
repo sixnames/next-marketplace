@@ -93,7 +93,7 @@ const RoleRestrictedFieldsModal: React.FC<RoleRestrictedFieldsModalInterface> = 
   }
 
   return (
-    <ModalFrame testId={'options-group-modal'}>
+    <ModalFrame testId={'role-restricted-fields-modal'}>
       <ModalTitle>Выберите поля</ModalTitle>
       <ModalText>
         <p>

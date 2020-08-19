@@ -45,7 +45,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   if (children && children.length) {
     return (
-      <li className={classes.item}>
+      <li className={classes.item} data-cy={`app-nav-item-${nameString}`}>
         <TTip
           className={`${classes.complexItem} ${compact ? classes.complexItemCompact : ''} ${
             isDropdownActive ? classes.complexItemActive : ''
@@ -73,7 +73,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             const { nameString, path } = dropdownItem;
 
             return (
-              <li className={classes.item} key={nameString}>
+              <li className={classes.item} key={nameString} data-cy={`app-nav-item-${nameString}`}>
                 <Link
                   href={`${path}`}
                   className={`${classes.complexLink}`}
@@ -92,7 +92,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
   }
 
   return (
-    <li className={classes.item}>
+    <li className={classes.item} data-cy={`app-nav-item-${nameString}`}>
       <TTip tooltipPlacement={'right'} title={compact ? nameString : ''}>
         <Link
           href={`${path}`}

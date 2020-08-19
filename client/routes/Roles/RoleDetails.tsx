@@ -74,9 +74,19 @@ const RoleDetails: React.FC<RoleContentInterface> = ({ role }) => {
                 isRequired
               />
 
-              <FormikTextarea name={'description'} label={'Описание'} isRequired showInlineError />
+              <FormikTextarea
+                name={'description'}
+                testId={'description'}
+                label={'Описание'}
+                isRequired
+                showInlineError
+              />
 
-              <FormikCheckboxLine label={'Является персоналом'} name={'isStuff'} />
+              <FormikCheckboxLine
+                testId={'isStuff'}
+                label={'Является персоналом'}
+                name={'isStuff'}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'role-submit'}>

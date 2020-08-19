@@ -100,6 +100,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         {withCustomFilter && (
           <Button
             className={classes.ruleButton}
+            testId={`${entity}-${operationType}-custom-filter`}
             theme={buttonTheme}
             size={'small'}
             onClick={() => {
@@ -182,6 +183,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         return (
           <Button
             size={'small'}
+            testId={`${entity}-restricted-fields`}
             theme={notEmpty ? 'primary' : 'gray'}
             onClick={() => {
               showModal<RoleRestrictedFieldsModalInterface>({

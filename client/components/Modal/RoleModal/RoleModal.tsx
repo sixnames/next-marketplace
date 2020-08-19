@@ -28,7 +28,7 @@ const RoleModal: React.FC<RoleModalInterface> = ({ role = {}, confirm }) => {
   const { name, description = '', isStuff = false } = role;
 
   return (
-    <ModalFrame testId={'options-group-modal'}>
+    <ModalFrame testId={'role-modal'}>
       <ModalTitle>{name ? 'Изменение роли' : 'Создание роли'}</ModalTitle>
 
       <Formik
@@ -57,9 +57,19 @@ const RoleModal: React.FC<RoleModalInterface> = ({ role = {}, confirm }) => {
                 isRequired
               />
 
-              <FormikTextarea name={'description'} label={'Описание'} isRequired showInlineError />
+              <FormikTextarea
+                testId={'description'}
+                name={'description'}
+                label={'Описание'}
+                isRequired
+                showInlineError
+              />
 
-              <FormikCheckboxLine label={'Является персоналом'} name={'isStuff'} />
+              <FormikCheckboxLine
+                testId={'isStuff'}
+                label={'Является персоналом'}
+                name={'isStuff'}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'role-submit'}>

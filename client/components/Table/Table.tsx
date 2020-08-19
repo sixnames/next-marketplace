@@ -25,6 +25,7 @@ interface TableInterface {
   fixPosition?: string;
   emptyMessage?: string;
   testIdKey?: string;
+  testId?: string;
 }
 
 const Table: React.FC<TableInterface> = ({
@@ -38,6 +39,7 @@ const Table: React.FC<TableInterface> = ({
   fixPosition = 0,
   emptyMessage = 'Нет данных',
   testIdKey = '',
+  testId,
 }) => {
   const fixedStyle = {
     transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
@@ -109,7 +111,7 @@ const Table: React.FC<TableInterface> = ({
   }
 
   return (
-    <table className={className || ''}>
+    <table className={className || ''} data-cy={testId}>
       <thead>
         <tr className={classes.row}>
           {tHead.map(({ title = '', sortBy, style, hidden }, i) => {

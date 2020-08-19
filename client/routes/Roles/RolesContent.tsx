@@ -32,7 +32,9 @@ const RolesContent: React.FC<RolesContentInterface> = ({ queryResult = {} }) => 
 
   return (
     <Fragment>
-      <DataLayoutTitle description={description}>{nameString}</DataLayoutTitle>
+      <DataLayoutTitle testId={'role-title'} description={description}>
+        {nameString}
+      </DataLayoutTitle>
       <DataLayoutContentFrame>
         <TabsContent className={classes.content}>
           <RoleRules role={getRole} />

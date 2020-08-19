@@ -22,6 +22,13 @@ import { ROLE_CUSTOM_FILTER_MODAL, ROLE_RESTRICTED_FIELDS_MODAL } from '../../co
 import { RoleCustomFilterModalInterface } from '../../components/Modal/RoleCustomFilterModal/RoleCustomFilterModal';
 import { RoleRestrictedFieldsModalInterface } from '../../components/Modal/RoleRestrictedFieldsModal/RoleRestrictedFieldsModal';
 
+interface RenderOperationInterface {
+  operations: RoleOperationType[];
+  currentOperationType: string;
+  withCustomFilter?: boolean;
+  entity: string;
+}
+
 const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
   const { rules } = role;
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
@@ -52,11 +59,12 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     ...refetchConfig,
   });
 
-  const renderOperation = (
-    operations: RoleOperationType[],
-    currentOperationType: string,
-    withCustomFilter?: boolean,
-  ) => {
+  const renderOperation = ({
+    operations,
+    currentOperationType,
+    withCustomFilter,
+    entity,
+  }: RenderOperationInterface) => {
     const currentOperation = operations.find(
       ({ operationType }) => operationType === currentOperationType,
     );
@@ -72,7 +80,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     return (
       <div className={classes.rule}>
         <Checkbox
-          testId={operationType}
+          testId={`${entity}-${operationType}`}
           name={operationType}
           checked={allow}
           value={id}
@@ -131,22 +139,40 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       key: 'operations',
       title: 'Создание',
-      render: (operations) => renderOperation(operations, OPERATION_TYPE_CREATE),
+      render: (operations, { entity }: RoleRule) =>
+        renderOperation({
+          operations,
+          entity,
+          currentOperationType: OPERATION_TYPE_CREATE,
+        }),
     },
     {
       key: 'operations',
       title: 'Чтение',
-      render: (operations) => renderOperation(operations, OPERATION_TYPE_READ, true),
+      render: (operations, { entity }: RoleRule) =>
+        renderOperation({
+          operations,
+          entity,
+          currentOperationType: OPERATION_TYPE_READ,
+          withCustomFilter: true,
+        }),
     },
     {
       key: 'operations',
       title: 'Изменение',
-      render: (operations) => renderOperation(operations, OPERATION_TYPE_UPDATE, true),
+      render: (operations, { entity }: RoleRule) =>
+        renderOperation({
+          operations,
+          entity,
+          currentOperationType: OPERATION_TYPE_UPDATE,
+          withCustomFilter: true,
+        }),
     },
     {
       key: 'operations',
       title: 'Удаление',
-      render: (operations) => renderOperation(operations, OPERATION_TYPE_DELETE),
+      render: (operations, { entity }: RoleRule) =>
+        renderOperation({ operations, entity, currentOperationType: OPERATION_TYPE_DELETE }),
     },
     {
       key: 'restrictedFields',
@@ -175,7 +201,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     },
   ];
 
-  return <Table columns={columns} data={rules} />;
+  return <Table columns={columns} data={rules} testId={'role-rules'} />;
 };
 
 export default RoleRules;

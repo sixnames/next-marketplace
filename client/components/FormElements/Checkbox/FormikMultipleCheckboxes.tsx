@@ -1,6 +1,5 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
-import * as PropTypes from 'prop-types';
 import { get } from 'lodash';
 
 interface OnChangeInterface {
@@ -54,11 +53,6 @@ const FormikMultipleCheckboxes: React.FC<FormikMultipleCheckboxesInterface> = ({
       }}
     </Field>
   );
-};
-
-FormikMultipleCheckboxes.propTypes = {
-  name: PropTypes.string.isRequired,
-  children: PropTypes.func.isRequired,
 };
 
 export default FormikMultipleCheckboxes;

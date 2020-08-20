@@ -1,4 +1,4 @@
-import { getTestClientWithAuthenticatedUser } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
@@ -46,7 +46,7 @@ const addAttributeToGroupMutation = (
 
 describe('Attributes Groups', () => {
   it('Should CRUD attributes groups.', async () => {
-    const { query, mutate } = await getTestClientWithAuthenticatedUser();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all attributes groups
     const {
@@ -76,11 +76,7 @@ describe('Attributes Groups', () => {
     expect(getAttributesGroup.nameString).toEqual(group.nameString);
 
     // Shouldn't create attributes group on validation error.
-    const {
-      data: {
-        createAttributesGroup: { success: createAttributesGroupSuccess },
-      },
-    } = await mutate(
+    const { errors: createAttributesErrors } = await mutate(
       `
         mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
           createAttributesGroup(input: $input) {
@@ -99,7 +95,7 @@ describe('Attributes Groups', () => {
         },
       },
     );
-    expect(createAttributesGroupSuccess).toBeFalsy();
+    expect(createAttributesErrors).toBeDefined();
 
     // Shouldn't create attributes group on duplicate error.
     const {
@@ -183,12 +179,10 @@ describe('Attributes Groups', () => {
     expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
 
     // Shouldn't create attribute and return validation error.
-    const {
-      data: {
-        addAttributeToGroup: { success: addAttributeToGroupFailSuccess },
-      },
-    } = await mutate(addAttributeToGroupMutation(group.id, 'f'));
-    expect(addAttributeToGroupFailSuccess).toBeFalsy();
+    const { errors: addAttributeToGroupErrors } = await mutate(
+      addAttributeToGroupMutation(group.id, 'f'),
+    );
+    expect(addAttributeToGroupErrors).toBeDefined();
 
     // Should create attribute and add it to the group.
     const {

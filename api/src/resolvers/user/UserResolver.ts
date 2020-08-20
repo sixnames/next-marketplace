@@ -18,22 +18,42 @@ import { UpdateUserInput } from './UpdateUserInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
-import { attemptSignIn, ensureSignedOut, attemptSignOut } from '../../utils/auth';
+import {
+  attemptSignIn,
+  ensureSignedOut,
+  attemptSignOut,
+  getOperationsConfigs,
+} from '../../utils/auth/auth';
 import { hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER } from '../../config';
+import { ROLE_SLUG_GUEST } from '../../config';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import { Role, RoleModel } from '../../entities/Role';
 import {
   createUserSchema,
   signInValidationSchema,
   signUpValidationSchema,
   updateUserSchema,
-} from '../../validation';
-import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+} from '../../validation/userSchema';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+  SessionUserId,
+} from '../../decorators/parameterDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(User.name);
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -47,17 +67,25 @@ class UserPayloadType extends PayloadType() {
 @Resolver((_of) => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@Ctx() ctx: ContextInterface) {
-    return UserModel.findById(ctx.req.session!.userId);
+  async me(@SessionUserId() sessionUserId: string) {
+    return UserModel.findById(sessionUserId);
   }
 
   @Query(() => User, { nullable: true })
-  async getUser(@Arg('id', (_type) => ID) id: string): Promise<User | null> {
-    return UserModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getUser(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<User>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<User | null> {
+    return UserModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => PaginatedUsersResponse)
-  async getAllUsers(@Arg('input') input: UserPaginateInput): Promise<PaginatedUsersResponse> {
+  @AuthMethod(operationConfigRead)
+  async getAllUsers(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<User>,
+    @Arg('input') input: UserPaginateInput,
+  ): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
     const { searchOptions, options } = generatePaginationOptions({
       limit,
@@ -66,29 +94,20 @@ export class UserResolver {
       sortBy,
       search,
     });
-    return UserModel.paginate(searchOptions, options);
+
+    return UserModel.paginate({ ...searchOptions, ...customFilter }, options);
   }
 
   @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({
+    schema: createUserSchema,
+  })
   async createUser(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.password',
-        'validation.users.role',
-      ]);
-      await createUserSchema({ messages, lang }).validate(input);
-
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -106,7 +125,7 @@ export class UserResolver {
         ...values,
         itemId: '1',
         password,
-        role: role || ROLE_CUSTOMER,
+        role,
       });
 
       if (!user) {
@@ -130,24 +149,18 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async updateUser(@Ctx() ctx: ContextInterface, @Arg('input') input: UpdateUserInput) {
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    schema: updateUserSchema,
+  })
+  async updateUser(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: UpdateUserInput,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
+  ) {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.users.id',
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.role',
-      ]);
-      await updateUserSchema({ messages, lang }).validate(input);
-
       const { id, ...values } = input;
-      const user = await UserModel.findByIdAndUpdate(id, values, { new: true });
+
       const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
       if (exists) {
         return {
@@ -155,6 +168,10 @@ export class UserResolver {
           message: await getApiMessage({ key: `users.update.duplicate`, lang }),
         };
       }
+
+      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
+        new: true,
+      });
 
       if (!user) {
         return {
@@ -177,9 +194,12 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async deleteUser(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
+  @AuthMethod(operationConfigDelete)
+  async deleteUser(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const user = await UserModel.findByIdAndDelete(id);
 
       if (!user) {
@@ -202,21 +222,14 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signUp(@Ctx() ctx: ContextInterface, @Arg('input') input: SignUpInput) {
+  @ValidateMethod({
+    schema: signUpValidationSchema,
+  })
+  async signUp(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: SignUpInput,
+  ) {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.string.min',
-        'validation.string.max',
-        'validation.users.name',
-        'validation.phone',
-        'validation.phone.required',
-        'validation.users.password',
-      ]);
-      await signUpValidationSchema({ messages, lang }).validate(input);
-
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
         return {
@@ -226,12 +239,17 @@ export class UserResolver {
       }
 
       const password = await hash(input.password, 10);
+      let guestRoleId = ROLE_SLUG_GUEST;
+      const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+      if (guestRole) {
+        guestRoleId = guestRole.id;
+      }
 
       const user = await UserModel.create({
         ...input,
         itemId: '1',
         password,
-        role: ROLE_CUSTOMER,
+        role: guestRoleId,
       });
 
       if (!user) {
@@ -257,16 +275,15 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signIn(@Ctx() ctx: ContextInterface, @Arg('input') input: SignInInput) {
+  @ValidateMethod({
+    schema: signInValidationSchema,
+  })
+  async signIn(
+    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: SignInInput,
+  ) {
     try {
-      const lang = ctx.req.lang;
-      const messages = await getMessagesByKeys([
-        'validation.email',
-        'validation.email.required',
-        'validation.users.password',
-      ]);
-      await signInValidationSchema({ messages, lang }).validate(input);
-
       const isSignedOut = ensureSignedOut(ctx.req);
 
       if (!isSignedOut) {
@@ -285,11 +302,11 @@ export class UserResolver {
         };
       }
 
+      const userRole = await RoleModel.findById(user.role);
+
+      ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
-      ctx.req.session!.userRole = user.role;
-      ctx.req.session!.isAdmin = user.role === ROLE_ADMIN;
-      ctx.req.session!.isCustomer = user.role === ROLE_CUSTOMER;
-      ctx.req.session!.isManager = user.role === ROLE_MANAGER;
+      ctx.req.session!.roleId = userRole ? userRole._id : null;
       // req.session.cartId = user.cart;
 
       return {
@@ -306,9 +323,11 @@ export class UserResolver {
   }
 
   @Mutation(() => UserPayloadType)
-  async signOut(@Ctx() ctx: ContextInterface) {
+  async signOut(
+    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ) {
     try {
-      const lang = ctx.req.lang;
       const isSignedOut = await attemptSignOut(ctx.req);
 
       if (!isSignedOut) {
@@ -345,17 +364,11 @@ export class UserResolver {
   }
 
   @FieldResolver()
-  isAdmin(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isAdmin;
-  }
-
-  @FieldResolver()
-  isCustomer(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isCustomer;
-  }
-
-  @FieldResolver()
-  isManager(@Ctx() ctx: ContextInterface): boolean {
-    return ctx.req.session!.isManager;
+  async role(@Root() user: DocumentType<User>): Promise<Role> {
+    const role = await RoleModel.findById(user.role);
+    if (!role) {
+      throw new Error('Role not found');
+    }
+    return role;
   }
 }

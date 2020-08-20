@@ -86,6 +86,31 @@ const messagesKeys = [
   'validation.languages.key',
   'validation.languages.nativeName',
 
+  // Roles ----------
+  'roles.create.duplicate',
+  'roles.create.error',
+  'roles.create.success',
+  'roles.update.duplicate',
+  'roles.update.error',
+  'roles.update.success',
+  'roles.delete.notFound',
+  'roles.delete.rulesNotFound',
+  'roles.delete.rulesError',
+  'roles.delete.guestRoleNotFound',
+  'roles.delete.usersUpdateError',
+  'roles.delete.error',
+  'roles.delete.success',
+  'roles.permissions.notFound',
+  'roles.permissions.error',
+  'roles.permissions.success',
+  // Roles validation
+  'validation.roles.id',
+  'validation.roles.name',
+  'validation.roles.description',
+  'validation.roles.ruleId',
+  'validation.roles.navItemId',
+  'validation.roles.operationId',
+
   // Users ----------
   'users.create.duplicate',
   'users.create.error',
@@ -172,6 +197,7 @@ const messagesKeys = [
   'validation.attributes.name',
   'validation.attributes.variant',
   'validation.attributes.position',
+  'validation.attributes.options',
 
   // Rubric variants ----------
   'rubricVariants.create.duplicate',

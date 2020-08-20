@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -20,7 +19,6 @@ import {
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
-import { ContextInterface } from '../../types/context';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getCityData from '../../utils/getCityData';
@@ -34,11 +32,25 @@ import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
-import { createProductSchema, updateProductSchema } from '../../validation';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { createProductSchema, updateProductSchema } from '../../validation/productSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Product.name);
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -55,19 +67,24 @@ class ProductPayloadType extends PayloadType() {
 @Resolver((_of) => Product)
 export class ProductResolver {
   @Query(() => Product)
-  async getProduct(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
-    return ProductModel.findOne({ _id: id, 'cities.key': ctx.req.city });
+  @AuthMethod(operationConfigRead)
+  async getProduct(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
+    @Localization() { city }: LocalizationPayloadInterface,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
+    return ProductModel.findOne({ _id: id, 'cities.key': city, ...customFilter });
   }
 
   @Query(() => Product)
   async getProductBySlug(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('slug', (_type) => String) slug: string,
   ) {
     return ProductModel.findOne({
       cities: {
         $elemMatch: {
-          key: ctx.req.city,
+          key: city,
           'node.slug': slug,
         },
       },
@@ -75,11 +92,12 @@ export class ProductResolver {
   }
 
   @Query(() => PaginatedProductsResponse)
+  @AuthMethod(operationConfigRead)
   async getAllProducts(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('input', { nullable: true }) input: ProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const city = ctx.req.city;
     const {
       limit = 100,
       page = 1,
@@ -98,22 +116,22 @@ export class ProductResolver {
       sortBy,
     });
 
-    const paginateResult = await ProductModel.paginate(query, options);
+    const paginateResult = await ProductModel.paginate({ ...query, ...customFilter }, options);
+    const activeProductsCount = countActiveProducts
+      ? await ProductModel.countDocuments(activeProductsQuery)
+      : 0;
 
     return {
       ...paginateResult,
-      activeProductsCount: countActiveProducts
-        ? await ProductModel.countDocuments(activeProductsQuery)
-        : 0,
+      activeProductsCount,
     };
   }
 
   @Query(() => ProductsCounters)
   async getProductsCounters(
-    @Ctx() ctx: ContextInterface,
-    @Arg('input') input: ProductsCountersInput,
+    @Localization() { city }: LocalizationPayloadInterface,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<ProductsCounters> {
-    const city = ctx.req.city;
     const activeProductsQuery = getProductsFilter({ ...input, active: true }, city);
     const allProductsQuery = getProductsFilter(input, city);
 
@@ -124,12 +142,12 @@ export class ProductResolver {
   }
 
   @Query(() => [AttributesGroup])
+  @AuthMethod(operationConfigRead)
   async getFeaturesAst(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('selectedRubrics', (_type) => [ID]) selectedRubrics: string[],
   ): Promise<AttributesGroup[]> {
     try {
-      const city = ctx.req.city;
       const rubrics = await RubricModel.find({
         _id: { $in: selectedRubrics },
         'cities.key': city,
@@ -159,26 +177,13 @@ export class ProductResolver {
   }
 
   @Mutation(() => ProductPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createProductSchema })
   async createProduct(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.products.name',
-        'validation.products.cardName',
-        'validation.products.description',
-        'validation.products.rubrics',
-        'validation.products.price',
-        'validation.number.min',
-        'validation.products.assets',
-        'validation.products.attributesGroupId',
-        'validation.products.attributeId',
-        'validation.products.attributeKey',
-      ]);
-      await createProductSchema({ lang, messages, defaultLang }).validate(input);
-
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
       const assetsResult = await storeUploads({ files: assets, slug, dist: city });
@@ -245,27 +250,14 @@ export class ProductResolver {
   }
 
   @Mutation(() => ProductPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateProductSchema })
   async updateProduct(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Product>,
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.products.id',
-        'validation.products.name',
-        'validation.products.cardName',
-        'validation.products.description',
-        'validation.products.rubrics',
-        'validation.products.price',
-        'validation.number.min',
-        'validation.products.assets',
-        'validation.products.attributesGroupId',
-        'validation.products.attributeId',
-        'validation.products.attributeKey',
-      ]);
-      await updateProductSchema({ lang, messages, defaultLang }).validate(input);
-
       const { id, assets, ...values } = input;
 
       const nameValues = input.name.map(({ value }) => value);
@@ -296,7 +288,7 @@ export class ProductResolver {
         };
       }
 
-      const product = await ProductModel.findById(id);
+      const product = await ProductModel.findOne({ _id: id, ...customFilter });
       if (!product) {
         return {
           success: false,
@@ -347,14 +339,12 @@ export class ProductResolver {
   }
 
   @Mutation(() => ProductPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteProduct(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-
       const product = await ProductModel.findOne({
         _id: id,
         'cities.key': city,
@@ -368,7 +358,15 @@ export class ProductResolver {
       }
 
       const currentCity = getCityData(product.cities, city);
-      const filesPath = `./assets/${city}/${currentCity!.node.slug}`;
+
+      if (!currentCity) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
+        };
+      }
+
+      const filesPath = `./assets/${city}/${currentCity.node.slug}`;
 
       if (product.cities.length === 1) {
         const removed = await ProductModel.findByIdAndDelete(id);
@@ -425,103 +423,103 @@ export class ProductResolver {
   @FieldResolver()
   async nameString(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return '';
     }
-    return getLangField(city.node.name, ctx.req.lang);
+    return getLangField(productCity.node.name, lang);
   }
 
   @FieldResolver()
   async name(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<LanguageType[]> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return [];
     }
-    return city.node.name;
+    return productCity.node.name;
   }
 
   @FieldResolver()
   async cardNameString(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return '';
     }
-    return getLangField(city.node.cardName, ctx.req.lang);
+    return getLangField(productCity.node.cardName, lang);
   }
 
   @FieldResolver()
   async cardName(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<LanguageType[]> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return [];
     }
-    return city.node.cardName;
+    return productCity.node.cardName;
   }
 
   @FieldResolver()
   async slug(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return '';
     }
-    return city.node.slug;
+    return productCity.node.slug;
   }
 
   @FieldResolver()
   async descriptionString(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return '';
     }
-    return getLangField(city.node.description, ctx.req.lang);
+    return getLangField(productCity.node.description, lang);
   }
 
   @FieldResolver()
   async description(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<LanguageType[]> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return [];
     }
-    return city.node.description;
+    return productCity.node.description;
   }
 
   @FieldResolver()
   async rubrics(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<string[]> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return [];
     }
-    return city.node.rubrics;
+    return productCity.node.rubrics;
   }
 
   @FieldResolver()
   async attributesGroups(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<ProductAttributesGroup[]> {
     try {
       const populated = await product
@@ -534,14 +532,13 @@ export class ProductResolver {
           model: 'Attribute',
         })
         .execPopulate();
-      const city = getCityData(populated.cities, ctx.req.city);
+      const productCity = getCityData(populated.cities, city);
 
-      if (!city) {
+      if (!productCity) {
         return [];
       }
-      return city.node.attributesGroups;
+      return productCity.node.attributesGroups;
     } catch (e) {
-      console.log(e);
       return [];
     }
   }
@@ -549,25 +546,25 @@ export class ProductResolver {
   @FieldResolver()
   async assets(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<AssetType[]> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return [];
     }
-    return city.node.assets.sort((a, b) => a.index - b.index);
+    return productCity.node.assets.sort((a, b) => a.index - b.index);
   }
 
   @FieldResolver()
   async mainImage(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return '';
     }
-    const mainImage = city.node.assets.find(({ index }) => index === 0);
+    const mainImage = productCity.node.assets.find(({ index }) => index === 0);
 
     if (!mainImage) {
       return '';
@@ -578,24 +575,24 @@ export class ProductResolver {
   @FieldResolver()
   async price(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return 0;
     }
-    return city.node.price;
+    return productCity.node.price;
   }
 
   @FieldResolver()
   async active(
     @Root() product: DocumentType<Product>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<boolean> {
-    const city = getCityData(product.cities, ctx.req.city);
-    if (!city) {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
       return false;
     }
-    return city.node.active;
+    return productCity.node.active;
   }
 }

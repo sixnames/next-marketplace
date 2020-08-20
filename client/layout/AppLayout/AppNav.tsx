@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import AppNavUser from './AppNavUser';
 import AppNavItem from './AppNavItem';
 import { UseCompactReturnInterface } from '../../hooks/useCompact';
-import useAppNavItems from '../../hooks/useAppNavItems';
 import Icon from '../../components/Icon/Icon';
 import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
 import TTip from '../../components/TTip/TTip';
@@ -11,8 +10,8 @@ import { useRouter } from 'next/router';
 import useSignOut from '../../hooks/useSignOut';
 import classes from './AppNav.module.css';
 import { useThemeContext } from '../../context/themeContext';
-import { NavItemInterface } from '../../types';
 import useIsMobile from '../../hooks/useIsMobile';
+import { useAppNavContext } from '../../context/appNavContext';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -20,7 +19,7 @@ interface AppNavInterface {
 
 const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   const { pathname } = useRouter();
-  const navItems = useAppNavItems();
+  const { navItems } = useAppNavContext();
   const isMobile = useIsMobile();
   const { toggleTheme, isDark, themeTooltip } = useThemeContext();
   const signOutHandler = useSignOut();
@@ -33,7 +32,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   return (
     <nav className={classes.frame}>
       <div className={`${classes.collapse}`} onClick={mobileNavHandler}>
-        <Icon name='Menu' className={classes.CollapseIcon} />
+        <Icon name='Menu' className={classes.collapseIcon} />
       </div>
 
       <div className={`${classes.nav} ${isCompact && classes.navCompact}`}>
@@ -42,11 +41,11 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
 
           <div className={`${classes.list} ${isCompact ? classes.listClosed : ''}`}>
             <ul className={classes.listHolder}>
-              {navItems.map((item: NavItemInterface) => {
+              {navItems.map((item) => {
                 return (
                   <AppNavItem
                     compact={isCompact}
-                    key={item.name}
+                    key={item.nameString}
                     item={item}
                     pathname={pathname}
                     openNavHandler={openNavHandler}

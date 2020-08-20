@@ -201,6 +201,12 @@ input CreateProductInput {
   rubrics: [ID!]!
 }
 
+input CreateRoleInput {
+  description: String!
+  isStuff: Boolean!
+  name: [LangInput!]!
+}
+
 input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   name: [LangInput!]!
@@ -217,7 +223,7 @@ input CreateUserInput {
   lastName: String
   name: String!
   phone: String!
-  role: String
+  role: ID!
   secondName: String
 }
 
@@ -330,6 +336,7 @@ type Mutation {
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
+  createRole(input: CreateRoleInput!): RolePayloadType!
   createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
   createUser(input: CreateUserInput!): UserPayloadType!
@@ -345,10 +352,15 @@ type Mutation {
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
+  deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteUser(id: ID!): UserPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
+  setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!
+  setRoleOperationCustomFilter(input: SetRoleOperationCustomFilterInput!): RolePayloadType!
+  setRoleOperationPermission(input: SetRoleOperationPermissionInput!): RolePayloadType!
+  setRoleRuleRestrictedField(input: SetRoleRuleRestrictedFieldInput!): RolePayloadType!
   signIn(input: SignInInput!): UserPayloadType!
   signOut: UserPayloadType!
   signUp(input: SignUpInput!): UserPayloadType!
@@ -365,9 +377,22 @@ type Mutation {
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateProduct(input: UpdateProductInput!): ProductPayloadType!
+  updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
+}
+
+type NavItem {
+  children: [NavItem!]
+  icon: String
+  id: String!
+  name: [LanguageType!]!
+  nameString: String!
+  navGroup: String!
+  order: Int!
+  parent: NavItem
+  path: String
 }
 
 type Option {
@@ -538,9 +563,10 @@ enum ProductSortByEnum {
 }
 
 type Query {
+  getAllAppNavItems: [NavItem!]!
   getAllAttributesGroups(
     """list of excluded groups id's"""
-    exclude: [ID!]
+    exclude: [ID!] = []
   ): [AttributesGroup!]!
   getAllCities: [City!]!
   getAllConfigs: [Config!]!
@@ -550,6 +576,7 @@ type Query {
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
   getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
+  getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
@@ -564,6 +591,7 @@ type Query {
   getConfigValueBySlug(slug: String!): [String!]!
   getCountry(id: ID!): Country!
   getCurrency(id: ID!): Currency!
+  getEntityFields(entity: String!): [String!]!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
   getISOLanguagesList: [ISOLanguage!]!
@@ -575,13 +603,59 @@ type Query {
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
-  getProductsCounters(input: ProductsCountersInput!): ProductsCounters!
+  getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
+  getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
+  getSessionRole: Role!
   getUser(id: ID!): User
+  getValidationMessages: [Message!]!
   me: User
+}
+
+type Role {
+  allowedAppNavigation: [ID!]!
+  appNavigation: [NavItem!]!
+  description: String!
+  id: String!
+  isStuff: Boolean!
+  name: [LanguageType!]!
+  nameString: String!
+  rules: [RoleRule!]!
+  slug: String!
+}
+
+type RolePayloadType {
+  message: String!
+  role: Role
+  success: Boolean!
+}
+
+type RoleRule {
+  entity: String!
+  id: ID!
+  nameString: String!
+  operations: [RoleRuleOperation!]!
+  restrictedFields: [String!]!
+  roleId: ID!
+}
+
+type RoleRuleOperation {
+  allow: Boolean!
+  customFilter: String!
+  id: ID!
+  operationType: RoleRuleOperationTypeEnum!
+  order: Int!
+}
+
+"""Role rule operation type enum"""
+enum RoleRuleOperationTypeEnum {
+  create
+  delete
+  read
+  update
 }
 
 type Rubric {
@@ -680,6 +754,29 @@ type RubricVariantPayloadType {
   message: String!
   success: Boolean!
   variant: RubricVariant
+}
+
+input SetRoleAllowedNavItemInput {
+  navItemId: ID!
+  roleId: ID!
+}
+
+input SetRoleOperationCustomFilterInput {
+  customFilter: String!
+  operationId: ID!
+  roleId: ID!
+}
+
+input SetRoleOperationPermissionInput {
+  allow: Boolean!
+  operationId: ID!
+  roleId: ID!
+}
+
+input SetRoleRuleRestrictedFieldInput {
+  restrictedField: String!
+  roleId: ID!
+  ruleId: ID!
 }
 
 input SignInInput {
@@ -787,6 +884,13 @@ input UpdateProductInput {
   rubrics: [ID!]!
 }
 
+input UpdateRoleInput {
+  description: String!
+  id: ID!
+  isStuff: Boolean!
+  name: [LangInput!]!
+}
+
 input UpdateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   id: ID!
@@ -806,7 +910,7 @@ input UpdateUserInput {
   lastName: String
   name: String!
   phone: String!
-  role: String!
+  role: ID!
   secondName: String
 }
 
@@ -818,14 +922,11 @@ type User {
   email: String!
   fullName: String!
   id: ID!
-  isAdmin: Boolean!
-  isCustomer: Boolean!
-  isManager: Boolean!
   itemId: String!
   lastName: String
   name: String!
   phone: String!
-  role: String!
+  role: Role!
   secondName: String
   shortName: String!
   updatedAt: Timestamp!

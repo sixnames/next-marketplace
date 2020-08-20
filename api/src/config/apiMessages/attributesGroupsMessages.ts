@@ -367,6 +367,19 @@ const attributesGroupsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.attributes.options',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Группа опций обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute options group is required.',
+      },
+    ],
+  },
+  {
     key: 'validation.attributes.position',
     message: [
       {

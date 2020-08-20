@@ -1,9 +1,9 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG } from '../../../config';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
-    const { query } = await getTestClientWithUser({});
+    const { query } = await testClientWithContext();
     const keys = ['validation.string.min', 'validation.string.max'];
 
     // Should return message list
@@ -48,5 +48,23 @@ describe('Language', () => {
     );
     const defaultLangMassage = getMessage.message.find(({ key }: any) => key === DEFAULT_LANG);
     expect(defaultLangMassage.value).toEqual('Не валидный формат Email адреса.');
+
+    // Should return validation messages
+    const {
+      data: { getValidationMessages },
+    } = await query(
+      `
+      query GetValidationMessages {
+        getValidationMessages {
+          key
+          message {
+            key
+            value
+          }
+        }
+      }
+    `,
+    );
+    expect(getValidationMessages).toBeDefined();
   });
 });

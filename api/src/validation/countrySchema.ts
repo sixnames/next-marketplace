@@ -1,31 +1,30 @@
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema, minNameLength } from './schemaTemplates';
 
 const minCurrencyLength = 1;
 const minCityKeyLength = 1;
 
-const countryNameSchema = (args: SchemaMessagesInterface) =>
+const countryNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minNameLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) + ` ${minNameLength}`,
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) + ` ${minNameLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.countries.nameString' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.countries.nameString' }));
 
-const countryCurrencySchema = (args: SchemaMessagesInterface) =>
+const countryCurrencySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minCurrencyLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) +
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) +
         ` ${minCurrencyLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.countries.currency' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.countries.currency' }));
 
 const cityNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({
@@ -33,22 +32,22 @@ const cityNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     requiredMessageKey: 'validation.cities.name',
   });
 
-const citySlugSchema = (args: SchemaMessagesInterface) =>
+const citySlugSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(
       minCityKeyLength,
-      getValidationFieldMessage({ ...args, key: 'validation.string.min' }) + ` ${minCityKeyLength}`,
+      getFieldValidationMessage({ ...args, key: 'validation.string.min' }) + ` ${minCityKeyLength}`,
     )
-    .required(getValidationFieldMessage({ ...args, key: 'validation.cities.slug' }));
+    .required(getFieldValidationMessage({ ...args, key: 'validation.cities.slug' }));
 
-export const createCountrySchema = (args: SchemaMessagesInterface) =>
+export const createCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     nameString: countryNameSchema(args),
     currency: countryCurrencySchema(args),
   });
 
-export const updateCountrySchema = (args: SchemaMessagesInterface) =>
+export const updateCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: idSchema({ args, key: 'validation.countries.id' }),
     nameString: countryNameSchema(args),
@@ -70,7 +69,7 @@ export const updateCityInCountrySchema = (args: MultiLangSchemaMessagesInterface
     slug: citySlugSchema(args),
   });
 
-export const deleteCityFromCountrySchema = (args: SchemaMessagesInterface) =>
+export const deleteCityFromCountrySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     cityId: idSchema({ args, key: 'validation.cities.id' }),
     countryId: idSchema({ args, key: 'validation.countries.id' }),

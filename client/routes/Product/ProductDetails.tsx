@@ -32,18 +32,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
-    messagesKeys: [
-      'validation.products.id',
-      'validation.products.attributeId',
-      'validation.products.attributeKey',
-      'validation.products.attributesGroupId',
-      'validation.products.name',
-      'validation.products.cardName',
-      'validation.products.description',
-      'validation.products.rubrics',
-      'validation.products.price',
-      'validation.products.assets',
-    ],
   });
 
   const { data, loading, error } = useGetRubricsTreeQuery({

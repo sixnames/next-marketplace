@@ -10,7 +10,14 @@ interface GetSharpImageInterface {
 
 export function getSharpImage({ path, format, width, height }: GetSharpImageInterface) {
   try {
-    const readStream = fs.createReadStream(`.${path}`);
+    const filePath = `.${path}`;
+
+    const exists = fs.existsSync(filePath);
+    if (!exists) {
+      return null;
+    }
+
+    const readStream = fs.createReadStream(filePath);
     let transform = sharp();
 
     if (format) {
@@ -23,7 +30,7 @@ export function getSharpImage({ path, format, width, height }: GetSharpImageInte
 
     return readStream.pipe(transform);
   } catch (e) {
-    console.log(e);
+    console.log('getSharpImage ERROR==== ', e);
     return null;
   }
 }

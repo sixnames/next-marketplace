@@ -38,14 +38,6 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: optionInGroupSchema,
-    messagesKeys: [
-      'validation.optionsGroup.id',
-      'validation.option.id',
-      'validation.option.name',
-      'validation.option.variantKey',
-      'validation.option.variantValue',
-      'validation.option.gender',
-    ],
   });
 
   if (error || (!loading && !data)) {

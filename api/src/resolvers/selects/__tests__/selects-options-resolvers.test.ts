@@ -1,4 +1,4 @@
-import { getTestClientWithUser } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_LIST,
@@ -8,7 +8,7 @@ import {
 
 describe('Select options', () => {
   it('Should return select options', async () => {
-    const { query } = await getTestClientWithUser({});
+    const { query } = await testClientWithContext();
 
     // Should return gender options
     const {

@@ -2,19 +2,6 @@
   position: relative;
 }
 
-.counter {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 18px;
-  margin-left: auto;
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--primaryBackground);
-}
-
 .linkIcon {
   position: relative;
   z-index: 2;
@@ -46,6 +33,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: all 0.2s;
+}
+
+.link:not(.linkActive):hover {
+  text-decoration: none;
+  color: var(--theme);
 }
 
 .complexItem {
@@ -95,15 +87,22 @@
 
 .complexLink:hover {
   text-decoration: none;
+  color: var(--theme);
 }
 
+.linkActive:hover,
 .linkActive {
   color: var(--white);
   background-color: var(--theme);
+  cursor: default;
 }
 
 .linkActive svg {
   fill: var(--white);
+}
+
+.linkActive:hover {
+  text-decoration: none;
 }
 
 .linkText {
@@ -128,13 +127,6 @@
 }
 
 @media only screen and (min-width: 1025px) {
-  .counterCompact {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
   .linkCompact,
   .complexItemCompact {
     justify-content: center;

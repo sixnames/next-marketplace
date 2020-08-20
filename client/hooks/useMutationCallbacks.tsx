@@ -29,12 +29,15 @@ const useMutationCallbacks = ({ withModal = false }) => {
     }
   }
 
-  function onErrorCallback(error: Error) {
-    console.error('onErrorCallback', JSON.stringify(error, null, 2));
+  function onErrorCallback(error: any) {
+    let message = ERROR_NOTIFICATION_MESSAGE;
+    if (error && error.graphQLErrors) {
+      message = error.graphQLErrors.map(({ message }: any) => `${message} `);
+    }
 
     if (withModal) hideModal();
     hideLoading();
-    showErrorNotification({});
+    showErrorNotification({ message });
   }
 
   return {

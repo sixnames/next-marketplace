@@ -5,7 +5,6 @@ import {
   ID,
   Root,
   FieldResolver,
-  Ctx,
   Mutation,
   ObjectType,
   Field,
@@ -13,7 +12,6 @@ import {
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DocumentType } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
-import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
@@ -23,17 +21,36 @@ import { AddAttributeToGroupInput } from './AddAttributeToGroupInput';
 import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
-
+import { generateDefaultLangSlug } from '../../utils/slug';
+import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
   deleteAttributeFromGroupSchema,
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
-} from '../../validation';
-import { generateDefaultLangSlug } from '../../utils/slug';
-import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+} from '../../validation/attributesGroupSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(AttributesGroup.name);
+
+const {
+  operationConfigCreate: attributeOperationConfigCreate,
+  operationConfigUpdate: attributeOperationConfigUpdate,
+  operationConfigDelete: attributeOperationConfigDelete,
+} = getOperationsConfigs(Attribute.name);
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {
@@ -44,36 +61,43 @@ class AttributesGroupPayloadType extends PayloadType() {
 @Resolver((_of) => AttributesGroup)
 export class AttributesGroupResolver {
   @Query(() => AttributesGroup, { nullable: true })
-  async getAttributesGroup(@Arg('id', (_type) => ID) id: string): Promise<AttributesGroup | null> {
-    return AttributesGroupModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getAttributesGroup(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<AttributesGroup>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<AttributesGroup | null> {
+    return AttributesGroupModel.findOne({ _id: id, ...customFilter });
   }
 
-  //
   @Query(() => [AttributesGroup])
+  @AuthMethod(operationConfigRead)
   async getAllAttributesGroups(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<AttributesGroup>,
     @Arg('exclude', (_type) => [ID], {
       nullable: true,
       description: `list of excluded groups id's`,
+      defaultValue: [],
     })
-    exclude: string[] = [],
+    exclude: string[],
   ): Promise<AttributesGroup[]> {
     return AttributesGroupModel.find({
       _id: {
         $nin: exclude,
       },
+      ...customFilter,
     });
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({
+    schema: createAttributesGroupSchema,
+  })
   async createAttributesGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.attributesGroups.name']);
-      await createAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const isGroupExists = await AttributesGroupModel.exists({
         'name.value': {
@@ -111,18 +135,16 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    schema: updateAttributesGroupSchema,
+  })
   async updateAttributesGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<AttributesGroup>,
     @Arg('input') input: UpdateAttributesGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.attributesGroups.id',
-        'validation.attributesGroups.name',
-      ]);
-      await updateAttributesGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { id, ...values } = input;
 
       const nameValues = input.name.map(({ value }) => value);
@@ -138,9 +160,13 @@ export class AttributesGroupResolver {
         };
       }
 
-      const group = await AttributesGroupModel.findByIdAndUpdate(id, values, {
-        new: true,
-      });
+      const group = await AttributesGroupModel.findOneAndUpdate(
+        { _id: id, ...customFilter },
+        values,
+        {
+          new: true,
+        },
+      );
 
       if (!group) {
         return {
@@ -163,13 +189,12 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteAttributesGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('id', () => ID) id: string,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const lang = ctx.req.lang;
-      const city = ctx.req.city;
       const connectedWithRubrics = await RubricModel.exists({
         'cities.key': city,
         'cities.node.attributesGroups.node': {
@@ -224,23 +249,17 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(attributeOperationConfigCreate)
+  @ValidateMethod({
+    schema: addAttributeToGroupSchema,
+  })
   async addAttributeToGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: AddAttributeToGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.attributesGroups.id',
-        'validation.translation.key',
-        'validation.attributes.position',
-        'validation.attributes.name',
-        'validation.attributes.variant',
-      ]);
-      await addAttributeToGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { groupId, ...values } = input;
-      const group = await AttributesGroupModel.findById(groupId);
+      const group = await AttributesGroupModel.findOne({ _id: groupId });
 
       if (!group) {
         return {
@@ -306,22 +325,14 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(attributeOperationConfigUpdate)
+  @ValidateMethod({ schema: updateAttributeInGroupSchema })
   async updateAttributeInGroup(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(attributeOperationConfigUpdate) customFilter: FilterQuery<Attribute>,
     @Arg('input') input: UpdateAttributeInGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.attributesGroups.id',
-        'validation.attributes.id',
-        'validation.translation.key',
-        'validation.attributes.position',
-        'validation.attributes.name',
-        'validation.attributes.variant',
-      ]);
-      await updateAttributeInGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { groupId, attributeId, ...values } = input;
 
       const group = await AttributesGroupModel.findById(groupId);
@@ -349,7 +360,11 @@ export class AttributesGroupResolver {
         };
       }
 
-      const attribute = await AttributeModel.findByIdAndUpdate(attributeId, values, { new: true });
+      const attribute = await AttributeModel.findOneAndUpdate(
+        { _id: attributeId, ...customFilter },
+        values,
+        { new: true },
+      );
       if (!attribute) {
         return {
           success: false,
@@ -374,18 +389,15 @@ export class AttributesGroupResolver {
   }
 
   @Mutation(() => AttributesGroupPayloadType)
+  @AuthMethod(attributeOperationConfigDelete)
+  @ValidateMethod({
+    schema: deleteAttributeFromGroupSchema,
+  })
   async deleteAttributeFromGroup(
-    @Ctx() ctx: ContextInterface,
-    @Arg('input') input: DeleteAttributeFromGroupInput,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input', (_type) => DeleteAttributeFromGroupInput) input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.attributesGroups.id',
-        'validation.attributes.id',
-      ]);
-      await deleteAttributeFromGroupSchema({ defaultLang, lang, messages }).validate(input);
-
       const { groupId, attributeId } = input;
       const attribute = await AttributeModel.findByIdAndDelete(attributeId);
       if (!attribute) {
@@ -434,8 +446,8 @@ export class AttributesGroupResolver {
   @FieldResolver()
   async nameString(
     @Root() attributesGroup: DocumentType<AttributesGroup>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(attributesGroup.name, ctx.req.lang);
+    return getLangField(attributesGroup.name, lang);
   }
 }

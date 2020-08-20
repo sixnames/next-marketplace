@@ -11,6 +11,9 @@ import {
   CITY_COOKIE_KEY,
   DB_OPTIONS,
   SESS_OPTIONS,
+  // ROLE_SLUG_GUEST,
+  SESSION_COLLECTION,
+  ROLE_SLUG_GUEST,
 } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import cookie from 'cookie';
@@ -42,6 +45,8 @@ import {
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { ConfigResolver } from './resolvers/config/ConfigResolver';
+import { RoleResolver } from './resolvers/role/RoleResolver';
+import { NavItemResolver } from './resolvers/navItem/NavItemResolver';
 import {
   clearTestDataRoute,
   createTestDataRoute,
@@ -49,6 +54,10 @@ import {
   testSignInRoute,
 } from '../routes/testingDataRoutes';
 import { assetsRoute } from '../routes/assetsRoutes';
+import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
+import { AuthField } from './decorators/methodDecorators';
+import { RoleModel } from './entities/Role';
+import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 
 interface CreateAppInterface {
   app: Express;
@@ -63,6 +72,9 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const schema = buildSchemaSync({
     resolvers: [
       ConfigResolver,
+      NavItemResolver,
+      RoleResolver,
+      RoleRuleResolver,
       AttributeResolver,
       AttributesGroupResolver,
       CatalogueDataResolver,
@@ -86,6 +98,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
+    globalMiddlewares: [AuthField],
   });
 
   const app = express();
@@ -95,7 +108,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const MongoDBStore = connectMongoDBStore(session);
   const store = new MongoDBStore({
     uri: MONGO_URL,
-    collection: 'sessions',
+    collection: SESSION_COLLECTION,
   });
   const sessionHandler = session({
     store,
@@ -144,6 +157,39 @@ const createApp = async (): Promise<CreateAppInterface> => {
       } else {
         res.cookie(LANG_COOKIE_KEY, defaultLanguageKey);
         req.lang = defaultLanguageKey;
+      }
+
+      // Set request role
+      const roleRuleOperationsPopulate = {
+        path: 'operations',
+        model: RoleRuleOperationModel,
+        options: {
+          sort: {
+            order: 1,
+          },
+        },
+      };
+
+      if (req.session!.user) {
+        const userRole = await RoleModel.findOne({ _id: req.session!.user.role });
+        if (!userRole) {
+          throw Error('User role not found');
+        }
+
+        req.role = userRole;
+        req.roleRules = await RoleRuleModel.find({
+          roleId: userRole.id,
+        }).populate(roleRuleOperationsPopulate);
+      } else {
+        const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+        if (!guestRole) {
+          throw Error('Guest role not found');
+        }
+
+        req.role = guestRole;
+        req.roleRules = await RoleRuleModel.find({
+          roleId: guestRole.id,
+        }).populate(roleRuleOperationsPopulate);
       }
 
       // Return apollo context

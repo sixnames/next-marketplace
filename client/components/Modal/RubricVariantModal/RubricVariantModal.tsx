@@ -24,7 +24,6 @@ const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ name, confi
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: rubricVariantModalSchema,
-    messagesKeys: ['validation.rubricVariants.id', 'validation.rubricVariants.name'],
   });
   const { hideModal } = useAppContext();
 

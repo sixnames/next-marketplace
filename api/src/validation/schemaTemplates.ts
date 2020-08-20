@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
 import { colorRegEx, phoneRegEx } from './regExp';
 import { StringSchema } from 'yup';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 import { MessageKey } from '../config/apiMessages/messagesKeys';
 
 export const minLongNameLength = 5;
@@ -22,12 +22,104 @@ interface LangStringInputSchemaInterface extends MultiLangSchemaMessagesInterfac
   max?: number;
 }
 
-export const CONSTANT_VALIDATION_KEYS = [
+export const CONSTANT_VALIDATION_KEYS: MessageKey[] = [
   'validation.translation.key',
   'validation.string.min',
   'validation.string.max',
   'validation.number.min',
   'validation.number.max',
+  'validation.email',
+  'validation.email.required',
+  'validation.phone',
+  'validation.phone.required',
+  'validation.color',
+  'validation.color.required',
+
+  // Configs validation
+  'validation.configs.id',
+  'validation.configs.value',
+
+  // Currencies validation
+  'validation.currencies.id',
+  'validation.currencies.nameString',
+
+  // Cities validation
+  'validation.cities.id',
+  'validation.cities.name',
+  'validation.cities.slug',
+
+  // Countries validation
+  'validation.countries.id',
+  'validation.countries.nameString',
+  'validation.countries.currency',
+
+  // Languages validation
+  'validation.languages.id',
+  'validation.languages.name',
+  'validation.languages.key',
+  'validation.languages.nativeName',
+
+  // Roles validation
+  'validation.roles.id',
+  'validation.roles.name',
+  'validation.roles.description',
+  'validation.roles.ruleId',
+  'validation.roles.navItemId',
+  'validation.roles.operationId',
+
+  // Users validation
+  'validation.users.id',
+  'validation.users.name',
+  'validation.users.lastName',
+  'validation.users.secondName',
+  'validation.users.role',
+  'validation.users.password',
+
+  // Options groups validation
+  'validation.optionsGroup.id',
+  'validation.optionsGroup.name',
+  'validation.option.id',
+  'validation.option.name',
+  'validation.option.variantKey',
+  'validation.option.variantValue',
+  'validation.option.gender',
+
+  // Attributes groups validation
+  'validation.attributesGroups.id',
+  'validation.attributesGroups.name',
+  'validation.attributes.id',
+  'validation.attributes.name',
+  'validation.attributes.variant',
+  'validation.attributes.position',
+  'validation.attributes.options',
+
+  // Rubric variants validation
+  'validation.rubricVariants.id',
+  'validation.rubricVariants.name',
+
+  // Rubric validation
+  'validation.rubrics.id',
+  'validation.rubrics.name',
+  'validation.rubrics.variant',
+  'validation.rubrics.defaultTitle',
+  'validation.rubrics.keyword',
+  'validation.rubrics.gender',
+
+  // Products validation
+  'validation.products.id',
+  'validation.products.name',
+  'validation.products.cardName',
+  'validation.products.description',
+  'validation.products.rubrics',
+  'validation.products.price',
+  'validation.products.attributesGroupId',
+  'validation.products.attributeId',
+  'validation.products.attributeKey',
+  'validation.products.assets',
+
+  // Metrics validation
+  'validation.metrics.id',
+  'validation.metrics.name',
 ];
 
 export const langStringInputSchema = ({
@@ -46,7 +138,7 @@ export const langStringInputSchema = ({
     Yup.object({
       key: Yup.string()
         .trim()
-        .required(getValidationFieldMessage({ messages, lang, key: 'validation.translation.key' })),
+        .required(getFieldValidationMessage({ messages, lang, key: 'validation.translation.key' })),
       value: Yup.string()
         .trim()
         .when('key', (key: string, value: StringSchema) => {
@@ -54,15 +146,15 @@ export const langStringInputSchema = ({
             ? value
                 .min(
                   minLength,
-                  getValidationFieldMessage({ messages, lang, key: 'validation.string.min' }) +
+                  getFieldValidationMessage({ messages, lang, key: 'validation.string.min' }) +
                     ` ${minLength}`,
                 )
                 .max(
                   maxLength,
-                  getValidationFieldMessage({ messages, lang, key: 'validation.string.max' }) +
+                  getFieldValidationMessage({ messages, lang, key: 'validation.string.max' }) +
                     ` ${maxLength}`,
                 )
-                .required(getValidationFieldMessage({ messages, lang, key: requiredMessageKey }))
+                .required(getFieldValidationMessage({ messages, lang, key: requiredMessageKey }))
             : value.min(0);
         }),
     }),
@@ -78,7 +170,7 @@ export const idSchema = ({ args, key }: IdSchemaInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         ...args,
         key,
       }),
@@ -92,7 +184,7 @@ export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
           .trim()
           .matches(
             colorRegEx,
-            getValidationFieldMessage({
+            getFieldValidationMessage({
               messages,
               lang,
               key: 'validation.color',
@@ -103,7 +195,7 @@ export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
 export const emailSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .email(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.email',
@@ -111,7 +203,7 @@ export const emailSchema = ({ messages, lang }: SchemaMessagesInterface) =>
     )
     .trim()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.email.required',
@@ -122,14 +214,14 @@ export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.string()
     .matches(
       phoneRegEx,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.phone',
       }),
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.phone.required',

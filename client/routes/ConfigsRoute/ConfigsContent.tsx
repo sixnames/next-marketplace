@@ -26,7 +26,6 @@ const ConfigsContent: React.FC = () => {
   });
   const notAssetSchema = useValidationSchema({
     schema: updateConfigsClientSchema,
-    messagesKeys: ['validation.configs.id', 'validation.configs.value'],
   });
 
   const assetConfigs = configs.filter(({ variant }) => variant === CONFIG_VARIANT_ASSET);

@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import RequestError from '../RequestError/RequestError';
 import classes from './Table.module.css';
 
-interface Column {
+export interface TableColumn {
   key?: string;
   fix?: boolean;
   style?: any;
@@ -16,7 +16,7 @@ interface Column {
 
 interface TableInterface {
   data?: any[] | null;
-  columns: Column[];
+  columns: TableColumn[];
   footerData?: any[];
   footerColumns?: any[];
   sortData?: (sortBy: string) => void;
@@ -25,6 +25,7 @@ interface TableInterface {
   fixPosition?: string;
   emptyMessage?: string;
   testIdKey?: string;
+  testId?: string;
 }
 
 const Table: React.FC<TableInterface> = ({
@@ -38,6 +39,7 @@ const Table: React.FC<TableInterface> = ({
   fixPosition = 0,
   emptyMessage = 'Нет данных',
   testIdKey = '',
+  testId,
 }) => {
   const fixedStyle = {
     transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
@@ -68,7 +70,7 @@ const Table: React.FC<TableInterface> = ({
             data-cy={testId}
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
-            {columns.map((cell: Column, cellIndex: number) => {
+            {columns.map((cell: TableColumn, cellIndex: number) => {
               const { key = '', render, style, colSpan, hidden } = cell;
               const cellData = key ? get(dataItem, key) : null;
 
@@ -109,7 +111,7 @@ const Table: React.FC<TableInterface> = ({
   }
 
   return (
-    <table className={className || ''}>
+    <table className={className || ''} data-cy={testId}>
       <thead>
         <tr className={classes.row}>
           {tHead.map(({ title = '', sortBy, style, hidden }, i) => {

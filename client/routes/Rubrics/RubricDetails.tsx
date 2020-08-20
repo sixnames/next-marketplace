@@ -29,14 +29,6 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: updateRubricInputSchema,
-    messagesKeys: [
-      'validation.rubrics.id',
-      'validation.rubrics.name',
-      'validation.rubrics.variant',
-      'validation.rubrics.defaultTitle',
-      'validation.rubrics.keyword',
-      'validation.rubrics.gender',
-    ],
   });
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({});
   const [updateRubricMutation] = useUpdateRubricMutation({

@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -16,12 +15,28 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateRubricVariantInput } from './CreateRubricVariantInput';
 import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
 import { RubricModel } from '../../entities/Rubric';
-import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
-import { createRubricVariantInputSchema, updateRubricVariantSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import {
+  createRubricVariantInputSchema,
+  updateRubricVariantSchema,
+} from '../../validation/rubricVariantSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(RubricVariant.name);
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {
@@ -32,25 +47,30 @@ class RubricVariantPayloadType extends PayloadType() {
 @Resolver((_of) => RubricVariant)
 export class RubricVariantResolver {
   @Query(() => RubricVariant, { nullable: true })
-  async getRubricVariant(@Arg('id', (_type) => ID) id: string): Promise<RubricVariant | null> {
-    return RubricVariantModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getRubricVariant(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<RubricVariant>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<RubricVariant | null> {
+    return RubricVariantModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => [RubricVariant], { nullable: true })
-  async getAllRubricVariants(): Promise<RubricVariant[]> {
-    return RubricVariantModel.find();
+  @AuthMethod(operationConfigRead)
+  async getAllRubricVariants(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<RubricVariant>,
+  ): Promise<RubricVariant[]> {
+    return RubricVariantModel.find(customFilter);
   }
 
   @Mutation(() => RubricVariantPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createRubricVariantInputSchema })
   async createRubricVariant(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.rubricVariants.name']);
-      await createRubricVariantInputSchema({ defaultLang, messages, lang }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
         'name.value': {
@@ -87,18 +107,14 @@ export class RubricVariantResolver {
   }
 
   @Mutation(() => RubricVariantPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateRubricVariantSchema })
   async updateRubricVariant(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<RubricVariant>,
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubricVariants.name',
-        'validation.rubricVariants.id',
-      ]);
-      await updateRubricVariantSchema({ defaultLang, messages, lang }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const exist = await RubricVariantModel.exists({
         'name.value': {
@@ -113,7 +129,11 @@ export class RubricVariantResolver {
       }
 
       const { id, ...values } = input;
-      const variant = await RubricVariantModel.findByIdAndUpdate(id, values, { new: true });
+      const variant = await RubricVariantModel.findOneAndUpdate(
+        { _id: id, ...customFilter },
+        values,
+        { new: true },
+      );
 
       if (!variant) {
         return {
@@ -136,14 +156,12 @@ export class RubricVariantResolver {
   }
 
   @Mutation(() => RubricVariantPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteRubricVariant(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricVariantPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
-
       const isUsedInRubrics = await RubricModel.exists({
         'cities.key': city,
         'cities.node.variant': id,
@@ -179,8 +197,8 @@ export class RubricVariantResolver {
   @FieldResolver()
   async nameString(
     @Root() variant: DocumentType<RubricVariant>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(variant.name, ctx.req.lang);
+    return getLangField(variant.name, lang);
   }
 }

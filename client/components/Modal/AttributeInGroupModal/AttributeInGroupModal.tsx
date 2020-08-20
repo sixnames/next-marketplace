@@ -43,13 +43,6 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: attributeInGroupSchema,
-    messagesKeys: [
-      'validation.attributesGroups.id',
-      'validation.attributes.id',
-      'validation.attributes.name',
-      'validation.attributes.variant',
-      'validation.attributes.position',
-    ],
   });
   const { hideModal } = useAppContext();
   const { data, loading, error } = useGetNewAttributeOptionsQuery();

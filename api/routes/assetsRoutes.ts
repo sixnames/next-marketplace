@@ -35,6 +35,14 @@ export async function assetsRoute(req: Request, res: Response) {
   // Set the content-type of the response
   res.type(`image/${format}`);
 
+  // Check if file exists
+  const exists = fs.existsSync(`.${req.path}`);
+
+  if (!exists) {
+    res.status(404);
+    res.send();
+  }
+
   // Get the processed image
   const file = await getSharpImage({ path: filePath, format, width, height });
 

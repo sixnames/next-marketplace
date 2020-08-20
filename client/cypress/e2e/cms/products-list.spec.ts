@@ -17,20 +17,20 @@ describe('Products', () => {
         MOCK_PRODUCT_B,
         MOCK_PRODUCT_C,
         MOCK_RUBRIC_LEVEL_THREE_A_A,
-        MOCK_RUBRIC_LEVEL_THREE_A_B,
+        // MOCK_RUBRIC_LEVEL_THREE_A_B,
         MOCK_RUBRIC_LEVEL_THREE_B_A,
         MOCK_PRODUCT_NEW,
-        MOCK_PRODUCT_CREATE,
-        MOCK_OPTIONS_WINE_COLOR,
-        MOCK_ATTRIBUTE_WINE_VARIANT,
-        MOCK_OPTIONS_WINE_VARIANT,
+        // MOCK_PRODUCT_CREATE,
+        // MOCK_OPTIONS_WINE_COLOR,
+        // MOCK_ATTRIBUTE_WINE_VARIANT,
+        // MOCK_OPTIONS_WINE_VARIANT,
         MOCK_ATTRIBUTE_STRING,
         MOCK_ATTRIBUTE_NUMBER,
       }) => {
         const mockProductForDelete = MOCK_PRODUCT_B.name[0].value;
         const mockProductC = MOCK_PRODUCT_C.name[0].value;
         const mockRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-        const mockRubricLevelThreeB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
+        // const mockRubricLevelThreeB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
         const mockTablesRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_B_A.name[0].value;
 
         const mockProductNewName = MOCK_PRODUCT_NEW.name[0].value;
@@ -38,15 +38,15 @@ describe('Products', () => {
         const mockProductNewCardPrice = MOCK_PRODUCT_NEW.price;
         const mockProductNewCarDescription = MOCK_PRODUCT_NEW.description[0].value;
 
-        const mockProductCreateName = MOCK_PRODUCT_CREATE.name[0].value;
-        const mockProductCreateCardName = MOCK_PRODUCT_CREATE.cardName[0].value;
-        const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE.price;
-        const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE.description[0].value;
+        // const mockProductCreateName = MOCK_PRODUCT_CREATE.name[0].value;
+        // const mockProductCreateCardName = MOCK_PRODUCT_CREATE.cardName[0].value;
+        // const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE.price;
+        // const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE.description[0].value;
 
-        const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
-        const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
-        const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
-        const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
+        // const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
+        // const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
+        // const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
+        // const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
         const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
         const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 

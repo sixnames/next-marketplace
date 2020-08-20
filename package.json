@@ -10,37 +10,29 @@
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
     "postup": "yarn dev",
-
     "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
     "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
     "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
-
     "up:testing": "docker-compose -f docker-compose.testing.yml up --build",
     "stop:testing": "docker-compose -f docker-compose.testing.yml stop",
     "down:testing": "docker-compose -f docker-compose.testing.yml down",
-
     "dev": "concurrently -n api,client,watchConfig,watchValidation,watchMessages \"yarn dev:api\" \"yarn dev:client\" \"yarn watch-config\" \"yarn watch-validation\" \"yarn watch-messages\"",
     "test": "concurrently -n api,client \"yarn test:api\" \"yarn test:client\"",
-
     "install:api": "cd api && yarn",
     "dev:api": "cd api && yarn dev",
     "build:api": "cd api && yarn build",
     "start:api": "cd api && yarn start",
     "test:api": "cd api && yarn test",
-
     "install:client": "cd client && yarn",
     "dev:client": "cd client && yarn dev",
     "build:client": "cd client && yarn build",
     "start:client": "cd client && yarn start",
     "test:client": "cd client && yarn test",
-
     "watch-config": "cd api && yarn watch-config",
     "watch-validation": "cd api && yarn watch-validation",
     "watch-messages": "cd api && yarn watch-messages",
-
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
-
     "generate": "graphql-codegen --config codegen.yml"
   },
   "devDependencies": {

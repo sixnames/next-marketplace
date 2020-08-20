@@ -39,7 +39,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "sharp": "^0.25.3",
-    "type-graphql": "^1.0.0-rc.2",
+    "type-graphql": "^1.0.0",
     "yup": "^0.29.1"
   },
   "devDependencies": {

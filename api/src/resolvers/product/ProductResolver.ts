@@ -358,7 +358,15 @@ export class ProductResolver {
       }
 
       const currentCity = getCityData(product.cities, city);
-      const filesPath = `./assets/${city}/${currentCity!.node.slug}`;
+
+      if (!currentCity) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
+        };
+      }
+
+      const filesPath = `./assets/${city}/${currentCity.node.slug}`;
 
       if (product.cities.length === 1) {
         const removed = await ProductModel.findByIdAndDelete(id);

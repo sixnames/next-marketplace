@@ -33,6 +33,7 @@ const ProductsContent: React.FC = () => {
   const [deleteProductMutation] = useDeleteProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteProduct),
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: GET_ALL_PRODUCTS_QUERY,

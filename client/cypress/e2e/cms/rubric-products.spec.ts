@@ -83,7 +83,8 @@ describe('Rubric products', () => {
     );
   });
 
-  it('Should create products in rubric', () => {
+  // TODO after cypress-file-upload update
+  /*it('Should create products in rubric', () => {
     cy.getMockData(
       ({
         MOCK_RUBRIC_LEVEL_ONE,
@@ -173,5 +174,5 @@ describe('Rubric products', () => {
         cy.getByCy(`${mockRubricLevelOneName}-total`).should('contain', '4');
       },
     );
-  });
+  });*/
 });

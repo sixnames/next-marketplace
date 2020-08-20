@@ -395,7 +395,7 @@ export class AttributesGroupResolver {
   })
   async deleteAttributeFromGroup(
     @Localization() { lang }: LocalizationPayloadInterface,
-    @Arg('input') input: DeleteAttributeFromGroupInput,
+    @Arg('input', (_type) => DeleteAttributeFromGroupInput) input: DeleteAttributeFromGroupInput,
   ): Promise<AttributesGroupPayloadType> {
     try {
       const { groupId, attributeId } = input;

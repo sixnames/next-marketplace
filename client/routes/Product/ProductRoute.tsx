@@ -14,6 +14,7 @@ const ProductRoute: React.FC = () => {
   const { generateTabsConfig } = useTabsConfig();
   const { productId } = query;
   const { data, loading, error } = useGetProductQuery({
+    fetchPolicy: 'network-only',
     skip: !productId,
     variables: {
       id: `${productId}`,

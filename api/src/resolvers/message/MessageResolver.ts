@@ -12,4 +12,9 @@ export class MessageResolver {
   async getMessagesByKeys(@Arg('keys', (_type) => [String]) keys: string[]): Promise<Message[]> {
     return MessageModel.find({ key: { $in: keys } });
   }
+
+  @Query((_returns) => [Message])
+  async getValidationMessages(): Promise<Message[]> {
+    return MessageModel.find({ key: { $regex: /validation/ } });
+  }
 }

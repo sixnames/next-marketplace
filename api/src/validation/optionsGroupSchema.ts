@@ -1,47 +1,33 @@
 import * as Yup from 'yup';
 import { colorSchema, langStringInputSchema } from './schemaTemplates';
 import { GENDER_ENUMS } from '../config';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-  SchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
-export const optionVariantSchema = ({
-  defaultLang,
-  messages,
-  lang,
-}: MultiLangSchemaMessagesInterface) =>
+export const optionVariantSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     key: Yup.mixed()
       .oneOf(GENDER_ENUMS)
       .required(
-        getValidationFieldMessage({
-          messages,
-          lang,
+        getFieldValidationMessage({
+          ...args,
           key: 'validation.option.variantKey',
         }),
       ),
     value: langStringInputSchema({
-      defaultLang,
+      ...args,
       requiredMessageKey: 'validation.option.variantValue',
-      messages,
-      lang,
     }),
   });
 
-export const optionInGroupCommonSchema = ({
-  defaultLang,
-  messages,
-  lang,
-}: MultiLangSchemaMessagesInterface) => ({
+export const optionInGroupCommonSchema = (args: MultiLangSchemaMessagesInterface) => ({
   name: langStringInputSchema({
-    defaultLang,
+    ...args,
     requiredMessageKey: 'validation.option.name',
-    messages,
-    lang,
   }),
-  color: colorSchema({ messages, lang }),
-  variants: Yup.array().of(optionVariantSchema({ defaultLang, messages, lang })),
+  color: colorSchema(args),
+  variants: Yup.array().of(optionVariantSchema(args)),
   gender: Yup.mixed()
     .oneOf(GENDER_ENUMS)
     .nullable()
@@ -52,9 +38,8 @@ export const optionInGroupCommonSchema = ({
       then: Yup.mixed()
         .oneOf(GENDER_ENUMS)
         .required(
-          getValidationFieldMessage({
-            messages,
-            lang,
+          getFieldValidationMessage({
+            ...args,
             key: 'validation.option.gender',
           }),
         ),
@@ -68,24 +53,22 @@ const optionsGroupNameSchema = (args: MultiLangSchemaMessagesInterface) =>
     requiredMessageKey: 'validation.optionsGroup.name',
   });
 
-const optionsGroupIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const optionsGroupIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.optionsGroup.id',
       }),
     );
 
-const optionIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const optionIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
-        messages,
-        lang,
+      getFieldValidationMessage({
+        ...args,
         key: 'validation.option.id',
       }),
     );
@@ -97,18 +80,18 @@ export const optionInGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
 
 export const addOptionToGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    groupId: optionsGroupIdSchema({ messages: args.messages, lang: args.lang }),
+    groupId: optionsGroupIdSchema(args),
     ...optionInGroupCommonSchema(args),
   });
 
 export const updateOptionInGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    groupId: optionsGroupIdSchema({ messages: args.messages, lang: args.lang }),
-    optionId: optionIdSchema({ messages: args.messages, lang: args.lang }),
+    groupId: optionsGroupIdSchema(args),
+    optionId: optionIdSchema(args),
     ...optionInGroupCommonSchema(args),
   });
 
-export const deleteOptionFromGroupSchema = (args: SchemaMessagesInterface) =>
+export const deleteOptionFromGroupSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     groupId: optionsGroupIdSchema(args),
     optionId: optionIdSchema(args),

@@ -23,3 +23,15 @@ export const GET_MESSAGES_BY_KEYS_QUERY = gql`
     }
   }
 `;
+
+export const VALIDATION_MESSAGES_QUERY = gql`
+  query GetValidationMessages {
+    getValidationMessages {
+      key
+      message {
+        key
+        value
+      }
+    }
+  }
+`;

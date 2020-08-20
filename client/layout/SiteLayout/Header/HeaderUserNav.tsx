@@ -18,9 +18,6 @@ const HeaderUserNav: React.FC<HeaderUserNavInterface> = ({ me, hideDropdown }) =
     return null;
   }
 
-  const { isAdmin } = me;
-  const isPersonnel = isAdmin;
-
   return (
     <AnimateOpacity className={classes.frame}>
       <div className={classes.holder} data-cy={'user-nav-container'}>
@@ -28,7 +25,7 @@ const HeaderUserNav: React.FC<HeaderUserNavInterface> = ({ me, hideDropdown }) =
           <li className={classes.item}>
             <Link href={'/app'} className={classes.link} testId={'user-nav-app'}>
               <Icon name={'ShoppingCartOutlined'} className={classes.icon} />
-              <span className={classes.linkName}>{isPersonnel ? 'Кабинет' : 'Мои заказы'}</span>
+              <span className={classes.linkName}>{'Кабинет'}</span>
             </Link>
           </li>
 

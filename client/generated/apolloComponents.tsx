@@ -17,6 +17,11 @@ export type Scalars = {
 
 export type Query = {
    __typename?: 'Query';
+  getProduct: Product;
+  getProductBySlug: Product;
+  getAllProducts: PaginatedProductsResponse;
+  getProductsCounters: ProductsCounters;
+  getFeaturesAst: Array<AttributesGroup>;
   me?: Maybe<User>;
   getUser?: Maybe<User>;
   getAllUsers: PaginatedUsersResponse;
@@ -30,17 +35,13 @@ export type Query = {
   getClientLanguage: Scalars['String'];
   getAllCurrencies: Array<Currency>;
   getCurrency: Currency;
-  getProduct: Product;
-  getProductBySlug: Product;
-  getAllProducts: PaginatedProductsResponse;
-  getProductsCounters: ProductsCounters;
-  getFeaturesAst: Array<AttributesGroup>;
   getAttribute?: Maybe<Attribute>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
+  getValidationMessages: Array<Message>;
   getMetric?: Maybe<Metric>;
   getAllMetrics?: Maybe<Array<Metric>>;
   getOption?: Maybe<Option>;
@@ -58,6 +59,36 @@ export type Query = {
   getAllConfigs: Array<Config>;
   getConfigBySlug: Config;
   getConfigValueBySlug: Array<Scalars['String']>;
+  getRole: Role;
+  getAllRoles: Array<Role>;
+  getSessionRole: Role;
+  getEntityFields: Array<Scalars['String']>;
+  getAllAppNavItems: Array<NavItem>;
+};
+
+
+export type QueryGetProductArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetProductBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllProductsArgs = {
+  input?: Maybe<ProductPaginateInput>;
+};
+
+
+export type QueryGetProductsCountersArgs = {
+  input?: Maybe<ProductsCountersInput>;
+};
+
+
+export type QueryGetFeaturesAstArgs = {
+  selectedRubrics: Array<Scalars['ID']>;
 };
 
 
@@ -93,31 +124,6 @@ export type QueryGetLanguageArgs = {
 
 export type QueryGetCurrencyArgs = {
   id: Scalars['ID'];
-};
-
-
-export type QueryGetProductArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetProductBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllProductsArgs = {
-  input?: Maybe<ProductPaginateInput>;
-};
-
-
-export type QueryGetProductsCountersArgs = {
-  input: ProductsCountersInput;
-};
-
-
-export type QueryGetFeaturesAstArgs = {
-  selectedRubrics: Array<Scalars['ID']>;
 };
 
 
@@ -196,100 +202,14 @@ export type QueryGetConfigValueBySlugArgs = {
   slug: Scalars['String'];
 };
 
-export type User = {
-   __typename?: 'User';
+
+export type QueryGetRoleArgs = {
   id: Scalars['ID'];
-  itemId: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  role: Scalars['String'];
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
-  isAdmin: Scalars['Boolean'];
-  isCustomer: Scalars['Boolean'];
-  isManager: Scalars['Boolean'];
 };
 
 
-export type PaginatedUsersResponse = {
-   __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
-export type City = {
-   __typename?: 'City';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  slug: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type LanguageType = {
-   __typename?: 'LanguageType';
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type Country = {
-   __typename?: 'Country';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
-};
-
-export type Language = {
-   __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Currency = {
-   __typename?: 'Currency';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
+export type QueryGetEntityFieldsArgs = {
+  entity: Scalars['String'];
 };
 
 export type Product = {
@@ -312,6 +232,12 @@ export type Product = {
   cities: Array<ProductCity>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
+};
+
+export type LanguageType = {
+   __typename?: 'LanguageType';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type ProductAttributesGroup = {
@@ -450,6 +376,7 @@ export type ProductNode = {
   active: Scalars['Boolean'];
 };
 
+
 export type PaginatedProductsResponse = {
    __typename?: 'PaginatedProductsResponse';
   docs: Array<Product>;
@@ -477,6 +404,12 @@ export type ProductPaginateInput = {
   countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
+/** Pagination sortDir enum */
+export enum PaginateSortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
 /** Product pagination sortBy enum */
 export enum ProductSortByEnum {
   Price = 'price',
@@ -493,6 +426,139 @@ export type ProductsCountersInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+};
+
+export type User = {
+   __typename?: 'User';
+  id: Scalars['ID'];
+  itemId: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  role: Role;
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type Role = {
+   __typename?: 'Role';
+  id: Scalars['String'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+  description: Scalars['String'];
+  slug: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+  rules: Array<RoleRule>;
+  allowedAppNavigation: Array<Scalars['ID']>;
+  appNavigation: Array<NavItem>;
+};
+
+export type RoleRule = {
+   __typename?: 'RoleRule';
+  id: Scalars['ID'];
+  roleId: Scalars['ID'];
+  nameString: Scalars['String'];
+  entity: Scalars['String'];
+  operations: Array<RoleRuleOperation>;
+  restrictedFields: Array<Scalars['String']>;
+};
+
+export type RoleRuleOperation = {
+   __typename?: 'RoleRuleOperation';
+  id: Scalars['ID'];
+  operationType: RoleRuleOperationTypeEnum;
+  allow: Scalars['Boolean'];
+  customFilter: Scalars['String'];
+  order: Scalars['Int'];
+};
+
+/** Role rule operation type enum */
+export enum RoleRuleOperationTypeEnum {
+  Create = 'create',
+  Read = 'read',
+  Update = 'update',
+  Delete = 'delete'
+}
+
+export type NavItem = {
+   __typename?: 'NavItem';
+  id: Scalars['String'];
+  name: Array<LanguageType>;
+  path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
+  order: Scalars['Int'];
+  nameString: Scalars['String'];
+  icon?: Maybe<Scalars['String']>;
+  parent?: Maybe<NavItem>;
+  children?: Maybe<Array<NavItem>>;
+};
+
+export type PaginatedUsersResponse = {
+   __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type City = {
+   __typename?: 'City';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type Country = {
+   __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Language = {
+   __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
+export type Currency = {
+   __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
 };
 
 export type CatalogueData = {
@@ -654,6 +720,9 @@ export enum ConfigVariantEnum {
 
 export type Mutation = {
    __typename?: 'Mutation';
+  createProduct: ProductPayloadType;
+  updateProduct: ProductPayloadType;
+  deleteProduct: ProductPayloadType;
   createUser: UserPayloadType;
   updateUser: UserPayloadType;
   deleteUser: UserPayloadType;
@@ -673,9 +742,6 @@ export type Mutation = {
   createCurrency: CurrencyPayloadType;
   updateCurrency: CurrencyPayloadType;
   deleteCurrency: CurrencyPayloadType;
-  createProduct: ProductPayloadType;
-  updateProduct: ProductPayloadType;
-  deleteProduct: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -704,6 +770,28 @@ export type Mutation = {
   deleteRubricVariant: RubricVariantPayloadType;
   updateConfigs: ConfigPayloadType;
   updateAssetConfig: ConfigPayloadType;
+  createRole: RolePayloadType;
+  updateRole: RolePayloadType;
+  deleteRole: RolePayloadType;
+  setRoleOperationPermission: RolePayloadType;
+  setRoleOperationCustomFilter: RolePayloadType;
+  setRoleRuleRestrictedField: RolePayloadType;
+  setRoleAllowedNavItem: RolePayloadType;
+};
+
+
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+
+export type MutationDeleteProductArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -793,21 +881,6 @@ export type MutationUpdateCurrencyArgs = {
 
 
 export type MutationDeleteCurrencyArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationCreateProductArgs = {
-  input: CreateProductInput;
-};
-
-
-export type MutationUpdateProductArgs = {
-  input: UpdateProductInput;
-};
-
-
-export type MutationDeleteProductArgs = {
   id: Scalars['ID'];
 };
 
@@ -951,6 +1024,89 @@ export type MutationUpdateAssetConfigArgs = {
   input: UpdateAssetConfigInput;
 };
 
+
+export type MutationCreateRoleArgs = {
+  input: CreateRoleInput;
+};
+
+
+export type MutationUpdateRoleArgs = {
+  input: UpdateRoleInput;
+};
+
+
+export type MutationDeleteRoleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSetRoleOperationPermissionArgs = {
+  input: SetRoleOperationPermissionInput;
+};
+
+
+export type MutationSetRoleOperationCustomFilterArgs = {
+  input: SetRoleOperationCustomFilterInput;
+};
+
+
+export type MutationSetRoleRuleRestrictedFieldArgs = {
+  input: SetRoleRuleRestrictedFieldInput;
+};
+
+
+export type MutationSetRoleAllowedNavItemArgs = {
+  input: SetRoleAllowedNavItemInput;
+};
+
+export type ProductPayloadType = {
+   __typename?: 'ProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<Product>;
+};
+
+export type CreateProductInput = {
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
+export type LangInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type ProductAttributesGroupInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  attributes: Array<ProductAttributeInput>;
+};
+
+export type ProductAttributeInput = {
+  showInCard: Scalars['Boolean'];
+  node: Scalars['ID'];
+  /** Attribute reference via attribute slug field */
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+
+export type UpdateProductInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  cardName: Array<LangInput>;
+  description: Array<LangInput>;
+  rubrics: Array<Scalars['ID']>;
+  price: Scalars['Int'];
+  attributesGroups: Array<ProductAttributesGroupInput>;
+  assets: Array<Scalars['Upload']>;
+};
+
 export type UserPayloadType = {
    __typename?: 'UserPayloadType';
   success: Scalars['Boolean'];
@@ -964,7 +1120,7 @@ export type CreateUserInput = {
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
   phone: Scalars['String'];
-  role?: Maybe<Scalars['String']>;
+  role: Scalars['ID'];
 };
 
 export type UpdateUserInput = {
@@ -974,7 +1130,7 @@ export type UpdateUserInput = {
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
   phone: Scalars['String'];
-  role: Scalars['String'];
+  role: Scalars['ID'];
 };
 
 export type SignUpInput = {
@@ -1013,11 +1169,6 @@ export type AddCityToCountryInput = {
   countryId: Scalars['ID'];
   name: Array<LangInput>;
   slug: Scalars['String'];
-};
-
-export type LangInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type UpdateCityInCountryInput = {
@@ -1066,49 +1217,6 @@ export type CreateCurrencyInput = {
 export type UpdateCurrencyInput = {
   id: Scalars['ID'];
   nameString: Scalars['String'];
-};
-
-export type ProductPayloadType = {
-   __typename?: 'ProductPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  product?: Maybe<Product>;
-};
-
-export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
-};
-
-export type ProductAttributesGroupInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  attributes: Array<ProductAttributeInput>;
-};
-
-export type ProductAttributeInput = {
-  showInCard: Scalars['Boolean'];
-  node: Scalars['ID'];
-  /** Attribute reference via attribute slug field */
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-
-export type UpdateProductInput = {
-  id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
-  rubrics: Array<Scalars['ID']>;
-  price: Scalars['Int'];
-  attributesGroups: Array<ProductAttributesGroupInput>;
-  assets: Array<Scalars['Upload']>;
 };
 
 export type AttributesGroupPayloadType = {
@@ -1303,6 +1411,157 @@ export type UpdateAssetConfigInput = {
   value: Array<Scalars['Upload']>;
 };
 
+export type RolePayloadType = {
+   __typename?: 'RolePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  role?: Maybe<Role>;
+};
+
+export type CreateRoleInput = {
+  name: Array<LangInput>;
+  description: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+};
+
+export type UpdateRoleInput = {
+  id: Scalars['ID'];
+  name: Array<LangInput>;
+  description: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+};
+
+export type SetRoleOperationPermissionInput = {
+  roleId: Scalars['ID'];
+  operationId: Scalars['ID'];
+  allow: Scalars['Boolean'];
+};
+
+export type SetRoleOperationCustomFilterInput = {
+  roleId: Scalars['ID'];
+  operationId: Scalars['ID'];
+  customFilter: Scalars['String'];
+};
+
+export type SetRoleRuleRestrictedFieldInput = {
+  roleId: Scalars['ID'];
+  ruleId: Scalars['ID'];
+  restrictedField: Scalars['String'];
+};
+
+export type SetRoleAllowedNavItemInput = {
+  roleId: Scalars['ID'];
+  navItemId: Scalars['ID'];
+};
+
+export type SessionUserFragmentFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone'>
+);
+
+export type SessionRoleFragmentFragment = (
+  { __typename?: 'Role' }
+  & Pick<Role, 'id' | 'nameString' | 'isStuff'>
+);
+
+export type SiteRubricFragmentFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
+  & { variant: (
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+  ) }
+);
+
+export type InitialQueryVariables = {};
+
+
+export type InitialQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & SessionUserFragmentFragment
+  )>, getSessionRole: (
+    { __typename?: 'Role' }
+    & { appNavigation: Array<(
+      { __typename?: 'NavItem' }
+      & Pick<NavItem, 'id' | 'nameString' | 'icon' | 'path'>
+      & { children?: Maybe<Array<(
+        { __typename?: 'NavItem' }
+        & Pick<NavItem, 'id' | 'nameString' | 'icon' | 'path'>
+      )>> }
+    )> }
+    & SessionRoleFragmentFragment
+  ), getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
+  )>>, getAllConfigs: Array<(
+    { __typename?: 'Config' }
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+  )> }
+);
+
+export type InitialSiteQueryQueryVariables = {};
+
+
+export type InitialSiteQueryQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getClientLanguage'>
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & SessionUserFragmentFragment
+  )>, getSessionRole: (
+    { __typename?: 'Role' }
+    & SessionRoleFragmentFragment
+  ), getAllLanguages?: Maybe<Array<(
+    { __typename?: 'Language' }
+    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
+  )>>, getAllConfigs: Array<(
+    { __typename?: 'Config' }
+    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+  )>, getRubricsTree: Array<(
+    { __typename?: 'Rubric' }
+    & { children: Array<(
+      { __typename?: 'Rubric' }
+      & { children: Array<(
+        { __typename?: 'Rubric' }
+        & SiteRubricFragmentFragment
+      )> }
+      & SiteRubricFragmentFragment
+    )> }
+    & SiteRubricFragmentFragment
+  )> }
+);
+
+export type SignInMutationVariables = {
+  input: SignInInput;
+};
+
+
+export type SignInMutation = (
+  { __typename?: 'Mutation' }
+  & { signIn: (
+    { __typename?: 'UserPayloadType' }
+    & Pick<UserPayloadType, 'success' | 'message'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & SessionUserFragmentFragment
+    )> }
+  ) }
+);
+
+export type SignOutMutationVariables = {};
+
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & { signOut: (
+    { __typename?: 'UserPayloadType' }
+    & Pick<UserPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type CreateAttributesGroupMutationVariables = {
   input: CreateAttributesGroupInput;
 };
@@ -1417,34 +1676,6 @@ export type DeleteAttributesGroupFromRubricMutation = (
   & { deleteAttributesGroupFromRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
-  ) }
-);
-
-export type SignInMutationVariables = {
-  input: SignInInput;
-};
-
-
-export type SignInMutation = (
-  { __typename?: 'Mutation' }
-  & { signIn: (
-    { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, 'success' | 'message'>
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-    )> }
-  ) }
-);
-
-export type SignOutMutationVariables = {};
-
-
-export type SignOutMutation = (
-  { __typename?: 'Mutation' }
-  & { signOut: (
-    { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -1601,6 +1832,97 @@ export type DeleteOptionFromGroupMutation = (
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
     & Pick<OptionsGroupPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CreateRoleMutationVariables = {
+  input: CreateRoleInput;
+};
+
+
+export type CreateRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { createRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateRoleMutationVariables = {
+  input: UpdateRoleInput;
+};
+
+
+export type UpdateRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { updateRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteRoleMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRole: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleOperationPermissionMutationVariables = {
+  input: SetRoleOperationPermissionInput;
+};
+
+
+export type SetRoleOperationPermissionMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleOperationPermission: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleOperationCustomFilterMutationVariables = {
+  input: SetRoleOperationCustomFilterInput;
+};
+
+
+export type SetRoleOperationCustomFilterMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleOperationCustomFilter: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleRuleRestrictedFieldMutationVariables = {
+  input: SetRoleRuleRestrictedFieldInput;
+};
+
+
+export type SetRoleRuleRestrictedFieldMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleRuleRestrictedField: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type SetRoleAllowedNavItemMutationVariables = {
+  input: SetRoleAllowedNavItemInput;
+};
+
+
+export type SetRoleAllowedNavItemMutation = (
+  { __typename?: 'Mutation' }
+  & { setRoleAllowedNavItem: (
+    { __typename?: 'RolePayloadType' }
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -1885,62 +2207,6 @@ export type GetAllConfigsQuery = (
   )> }
 );
 
-export type InitialQueryVariables = {};
-
-
-export type InitialQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getAllLanguages?: Maybe<Array<(
-    { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
-  )>>, getAllConfigs: Array<(
-    { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
-  )> }
-);
-
-export type SiteRubricFragmentFragment = (
-  { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
-  & { variant: (
-    { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, 'id' | 'nameString'>
-  ) }
-);
-
-export type InitialSiteQueryQueryVariables = {};
-
-
-export type InitialSiteQueryQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone' | 'role' | 'isAdmin' | 'isManager' | 'isCustomer'>
-  )>, getAllLanguages?: Maybe<Array<(
-    { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
-  )>>, getAllConfigs: Array<(
-    { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
-  )>, getRubricsTree: Array<(
-    { __typename?: 'Rubric' }
-    & { children: Array<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & SiteRubricFragmentFragment
-      )> }
-      & SiteRubricFragmentFragment
-    )> }
-    & SiteRubricFragmentFragment
-  )> }
-);
-
 export type GetAllLanguagesQueryVariables = {};
 
 
@@ -1960,6 +2226,21 @@ export type GetMessagesByKeysQueryVariables = {
 export type GetMessagesByKeysQuery = (
   { __typename?: 'Query' }
   & { getMessagesByKeys: Array<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'key'>
+    & { message: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )> }
+);
+
+export type GetValidationMessagesQueryVariables = {};
+
+
+export type GetValidationMessagesQuery = (
+  { __typename?: 'Query' }
+  & { getValidationMessages: Array<(
     { __typename?: 'Message' }
     & Pick<Message, 'key'>
     & { message: Array<(
@@ -2015,6 +2296,66 @@ export type GetOptionsGroupQuery = (
   )> }
 );
 
+export type GetAllRolesQueryVariables = {};
+
+
+export type GetAllRolesQuery = (
+  { __typename?: 'Query' }
+  & { getAllRoles: Array<(
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString'>
+  )> }
+);
+
+export type GetRoleQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetRoleQuery = (
+  { __typename?: 'Query' }
+  & { getRole: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
+    & { name: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )>, rules: Array<(
+      { __typename?: 'RoleRule' }
+      & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
+      & { operations: Array<(
+        { __typename?: 'RoleRuleOperation' }
+        & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
+      )> }
+    )> }
+  ) }
+);
+
+export type GetEntityFieldsQueryVariables = {
+  entity: Scalars['String'];
+};
+
+
+export type GetEntityFieldsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getEntityFields'>
+);
+
+export type GetAllAppNavItemsQueryVariables = {};
+
+
+export type GetAllAppNavItemsQuery = (
+  { __typename?: 'Query' }
+  & { getAllAppNavItems: Array<(
+    { __typename?: 'NavItem' }
+    & Pick<NavItem, 'id' | 'nameString' | 'path'>
+    & { children?: Maybe<Array<(
+      { __typename?: 'NavItem' }
+      & Pick<NavItem, 'id' | 'nameString' | 'path'>
+    )>> }
+  )> }
+);
+
 export type GetAllRubricVariantsQueryVariables = {};
 
 
@@ -2031,38 +2372,6 @@ export type GetAllRubricVariantsQuery = (
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
   )> }
-);
-
-export type GetRubricAttributesQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetRubricAttributesQuery = (
-  { __typename?: 'Query' }
-  & { getRubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'id' | 'level'>
-    & { attributesGroups: Array<(
-      { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-          & { metric?: Maybe<(
-            { __typename?: 'Metric' }
-            & Pick<Metric, 'id' | 'nameString'>
-          )>, options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-          )> }
-        )> }
-      ) }
-    )> }
-  ) }
 );
 
 export type GetGenderOptionsQueryVariables = {};
@@ -2321,6 +2630,69 @@ export type GetAllProductsQuery = (
   ) }
 );
 
+export type GetRubricAttributesQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetRubricAttributesQuery = (
+  { __typename?: 'Query' }
+  & { getRubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'id' | 'level'>
+    & { attributesGroups: Array<(
+      { __typename?: 'RubricAttributesGroup' }
+      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
+      & { node: (
+        { __typename?: 'AttributesGroup' }
+        & Pick<AttributesGroup, 'id' | 'nameString'>
+        & { attributes: Array<(
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+          & { metric?: Maybe<(
+            { __typename?: 'Metric' }
+            & Pick<Metric, 'id' | 'nameString'>
+          )>, options?: Maybe<(
+            { __typename?: 'OptionsGroup' }
+            & Pick<OptionsGroup, 'id' | 'nameString'>
+          )> }
+        )> }
+      ) }
+    )> }
+  ) }
+);
+
+export const SessionUserFragmentFragmentDoc = gql`
+    fragment SessionUserFragment on User {
+  id
+  email
+  name
+  secondName
+  lastName
+  fullName
+  shortName
+  phone
+}
+    `;
+export const SessionRoleFragmentFragmentDoc = gql`
+    fragment SessionRoleFragment on Role {
+  id
+  nameString
+  isStuff
+}
+    `;
+export const SiteRubricFragmentFragmentDoc = gql`
+    fragment SiteRubricFragment on Rubric {
+  id
+  nameString
+  slug
+  level
+  variant {
+    id
+    nameString
+  }
+}
+    `;
 export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
@@ -2380,18 +2752,6 @@ export const ProductFragmentFragmentDoc = gql`
   }
 }
     `;
-export const SiteRubricFragmentFragmentDoc = gql`
-    fragment SiteRubricFragment on Rubric {
-  id
-  nameString
-  slug
-  level
-  variant {
-    id
-    nameString
-  }
-}
-    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -2431,6 +2791,204 @@ export const RubricProductFragmentFragmentDoc = gql`
   }
 }
     `;
+export const InitialDocument = gql`
+    query Initial {
+  me {
+    ...SessionUserFragment
+  }
+  getSessionRole {
+    ...SessionRoleFragment
+    appNavigation {
+      id
+      nameString
+      icon
+      path
+      children {
+        id
+        nameString
+        icon
+        path
+      }
+    }
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    name
+    nativeName
+    key
+    isDefault
+  }
+  getAllConfigs {
+    id
+    slug
+    value
+    nameString
+    description
+    variant
+    multi
+    acceptedFormats
+  }
+}
+    ${SessionUserFragmentFragmentDoc}
+${SessionRoleFragmentFragmentDoc}`;
+
+/**
+ * __useInitialQuery__
+ *
+ * To run a query within a React component, call `useInitialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitialQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitialQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialQuery, InitialQueryVariables>) {
+        return ApolloReactHooks.useQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
+      }
+export function useInitialLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialQuery, InitialQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
+        }
+export type InitialQueryHookResult = ReturnType<typeof useInitialQuery>;
+export type InitialLazyQueryHookResult = ReturnType<typeof useInitialLazyQuery>;
+export type InitialQueryResult = ApolloReactCommon.QueryResult<InitialQuery, InitialQueryVariables>;
+export const InitialSiteQueryDocument = gql`
+    query InitialSiteQuery {
+  me {
+    ...SessionUserFragment
+  }
+  getSessionRole {
+    ...SessionRoleFragment
+  }
+  getClientLanguage
+  getAllLanguages {
+    id
+    key
+    name
+    nativeName
+    isDefault
+  }
+  getAllConfigs {
+    id
+    slug
+    value
+    nameString
+    description
+    variant
+    multi
+    acceptedFormats
+  }
+  getRubricsTree {
+    ...SiteRubricFragment
+    children {
+      ...SiteRubricFragment
+      children {
+        ...SiteRubricFragment
+      }
+    }
+  }
+}
+    ${SessionUserFragmentFragmentDoc}
+${SessionRoleFragmentFragmentDoc}
+${SiteRubricFragmentFragmentDoc}`;
+
+/**
+ * __useInitialSiteQueryQuery__
+ *
+ * To run a query within a React component, call `useInitialSiteQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInitialSiteQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInitialSiteQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInitialSiteQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+        return ApolloReactHooks.useQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+      }
+export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
+        }
+export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
+export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
+export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
+export const SignInDocument = gql`
+    mutation SignIn($input: SignInInput!) {
+  signIn(input: $input) {
+    success
+    message
+    user {
+      ...SessionUserFragment
+    }
+  }
+}
+    ${SessionUserFragmentFragmentDoc}`;
+export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation, SignInMutationVariables>;
+
+/**
+ * __useSignInMutation__
+ *
+ * To run a mutation, you first call `useSignInMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignInMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signInMutation, { data, loading, error }] = useSignInMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
+      }
+export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
+export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
+export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export const SignOutDocument = gql`
+    mutation SignOut {
+  signOut {
+    success
+    message
+  }
+}
+    `;
+export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
+
+/**
+ * __useSignOutMutation__
+ *
+ * To run a mutation, you first call `useSignOutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignOutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signOutMutation, { data, loading, error }] = useSignOutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
+      }
+export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
+export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
+export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const CreateAttributesGroupDocument = gql`
     mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
   createAttributesGroup(input: $input) {
@@ -2728,85 +3286,6 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: ApolloR
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = ApolloReactCommon.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-export const SignInDocument = gql`
-    mutation SignIn($input: SignInInput!) {
-  signIn(input: $input) {
-    success
-    message
-    user {
-      id
-      email
-      name
-      secondName
-      lastName
-      fullName
-      shortName
-      phone
-      role
-      isAdmin
-      isManager
-      isCustomer
-    }
-  }
-}
-    `;
-export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation, SignInMutationVariables>;
-
-/**
- * __useSignInMutation__
- *
- * To run a mutation, you first call `useSignInMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignInMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [signInMutation, { data, loading, error }] = useSignInMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
-      }
-export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
-export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
-export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
-export const SignOutDocument = gql`
-    mutation SignOut {
-  signOut {
-    success
-    message
-  }
-}
-    `;
-export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
-
-/**
- * __useSignOutMutation__
- *
- * To run a mutation, you first call `useSignOutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSignOutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [signOutMutation, { data, loading, error }] = useSignOutMutation({
- *   variables: {
- *   },
- * });
- */
-export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
-      }
-export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
-export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
-export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const UpdateConfigsDocument = gql`
     mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
   updateConfigs(input: $input) {
@@ -3203,6 +3682,237 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: ApolloReactHooks.
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = ApolloReactCommon.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const CreateRoleDocument = gql`
+    mutation CreateRole($input: CreateRoleInput!) {
+  createRole(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateRoleMutationFn = ApolloReactCommon.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>;
+
+/**
+ * __useCreateRoleMutation__
+ *
+ * To run a mutation, you first call `useCreateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRoleMutation, { data, loading, error }] = useCreateRoleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, baseOptions);
+      }
+export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>;
+export type CreateRoleMutationResult = ApolloReactCommon.MutationResult<CreateRoleMutation>;
+export type CreateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>;
+export const UpdateRoleDocument = gql`
+    mutation UpdateRole($input: UpdateRoleInput!) {
+  updateRole(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateRoleMutationFn = ApolloReactCommon.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>;
+
+/**
+ * __useUpdateRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoleMutation, { data, loading, error }] = useUpdateRoleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, baseOptions);
+      }
+export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
+export type UpdateRoleMutationResult = ApolloReactCommon.MutationResult<UpdateRoleMutation>;
+export type UpdateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const DeleteRoleDocument = gql`
+    mutation DeleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteRoleMutationFn = ApolloReactCommon.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>;
+
+/**
+ * __useDeleteRoleMutation__
+ *
+ * To run a mutation, you first call `useDeleteRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRoleMutation, { data, loading, error }] = useDeleteRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRoleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, baseOptions);
+      }
+export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
+export type DeleteRoleMutationResult = ApolloReactCommon.MutationResult<DeleteRoleMutation>;
+export type DeleteRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
+export const SetRoleOperationPermissionDocument = gql`
+    mutation SetRoleOperationPermission($input: SetRoleOperationPermissionInput!) {
+  setRoleOperationPermission(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleOperationPermissionMutationFn = ApolloReactCommon.MutationFunction<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>;
+
+/**
+ * __useSetRoleOperationPermissionMutation__
+ *
+ * To run a mutation, you first call `useSetRoleOperationPermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleOperationPermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleOperationPermissionMutation, { data, loading, error }] = useSetRoleOperationPermissionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleOperationPermissionMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>(SetRoleOperationPermissionDocument, baseOptions);
+      }
+export type SetRoleOperationPermissionMutationHookResult = ReturnType<typeof useSetRoleOperationPermissionMutation>;
+export type SetRoleOperationPermissionMutationResult = ApolloReactCommon.MutationResult<SetRoleOperationPermissionMutation>;
+export type SetRoleOperationPermissionMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleOperationPermissionMutation, SetRoleOperationPermissionMutationVariables>;
+export const SetRoleOperationCustomFilterDocument = gql`
+    mutation SetRoleOperationCustomFilter($input: SetRoleOperationCustomFilterInput!) {
+  setRoleOperationCustomFilter(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleOperationCustomFilterMutationFn = ApolloReactCommon.MutationFunction<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>;
+
+/**
+ * __useSetRoleOperationCustomFilterMutation__
+ *
+ * To run a mutation, you first call `useSetRoleOperationCustomFilterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleOperationCustomFilterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleOperationCustomFilterMutation, { data, loading, error }] = useSetRoleOperationCustomFilterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleOperationCustomFilterMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>(SetRoleOperationCustomFilterDocument, baseOptions);
+      }
+export type SetRoleOperationCustomFilterMutationHookResult = ReturnType<typeof useSetRoleOperationCustomFilterMutation>;
+export type SetRoleOperationCustomFilterMutationResult = ApolloReactCommon.MutationResult<SetRoleOperationCustomFilterMutation>;
+export type SetRoleOperationCustomFilterMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleOperationCustomFilterMutation, SetRoleOperationCustomFilterMutationVariables>;
+export const SetRoleRuleRestrictedFieldDocument = gql`
+    mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+  setRoleRuleRestrictedField(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleRuleRestrictedFieldMutationFn = ApolloReactCommon.MutationFunction<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>;
+
+/**
+ * __useSetRoleRuleRestrictedFieldMutation__
+ *
+ * To run a mutation, you first call `useSetRoleRuleRestrictedFieldMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleRuleRestrictedFieldMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleRuleRestrictedFieldMutation, { data, loading, error }] = useSetRoleRuleRestrictedFieldMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleRuleRestrictedFieldMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>(SetRoleRuleRestrictedFieldDocument, baseOptions);
+      }
+export type SetRoleRuleRestrictedFieldMutationHookResult = ReturnType<typeof useSetRoleRuleRestrictedFieldMutation>;
+export type SetRoleRuleRestrictedFieldMutationResult = ApolloReactCommon.MutationResult<SetRoleRuleRestrictedFieldMutation>;
+export type SetRoleRuleRestrictedFieldMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleRuleRestrictedFieldMutation, SetRoleRuleRestrictedFieldMutationVariables>;
+export const SetRoleAllowedNavItemDocument = gql`
+    mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+  setRoleAllowedNavItem(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type SetRoleAllowedNavItemMutationFn = ApolloReactCommon.MutationFunction<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>;
+
+/**
+ * __useSetRoleAllowedNavItemMutation__
+ *
+ * To run a mutation, you first call `useSetRoleAllowedNavItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRoleAllowedNavItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRoleAllowedNavItemMutation, { data, loading, error }] = useSetRoleAllowedNavItemMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetRoleAllowedNavItemMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>) {
+        return ApolloReactHooks.useMutation<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>(SetRoleAllowedNavItemDocument, baseOptions);
+      }
+export type SetRoleAllowedNavItemMutationHookResult = ReturnType<typeof useSetRoleAllowedNavItemMutation>;
+export type SetRoleAllowedNavItemMutationResult = ApolloReactCommon.MutationResult<SetRoleAllowedNavItemMutation>;
+export type SetRoleAllowedNavItemMutationOptions = ApolloReactCommon.BaseMutationOptions<SetRoleAllowedNavItemMutation, SetRoleAllowedNavItemMutationVariables>;
 export const CreateRubricVariantDocument = gql`
     mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
   createRubricVariant(input: $input) {
@@ -3734,137 +4444,6 @@ export function useGetAllConfigsLazyQuery(baseOptions?: ApolloReactHooks.LazyQue
 export type GetAllConfigsQueryHookResult = ReturnType<typeof useGetAllConfigsQuery>;
 export type GetAllConfigsLazyQueryHookResult = ReturnType<typeof useGetAllConfigsLazyQuery>;
 export type GetAllConfigsQueryResult = ApolloReactCommon.QueryResult<GetAllConfigsQuery, GetAllConfigsQueryVariables>;
-export const InitialDocument = gql`
-    query Initial {
-  me {
-    id
-    email
-    name
-    secondName
-    lastName
-    fullName
-    shortName
-    phone
-    role
-    isAdmin
-    isManager
-    isCustomer
-  }
-  getClientLanguage
-  getAllLanguages {
-    id
-    name
-    nativeName
-    key
-    isDefault
-  }
-  getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
-    multi
-    acceptedFormats
-  }
-}
-    `;
-
-/**
- * __useInitialQuery__
- *
- * To run a query within a React component, call `useInitialQuery` and pass it any options that fit your needs.
- * When your component renders, `useInitialQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInitialQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInitialQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialQuery, InitialQueryVariables>) {
-        return ApolloReactHooks.useQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
-      }
-export function useInitialLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialQuery, InitialQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<InitialQuery, InitialQueryVariables>(InitialDocument, baseOptions);
-        }
-export type InitialQueryHookResult = ReturnType<typeof useInitialQuery>;
-export type InitialLazyQueryHookResult = ReturnType<typeof useInitialLazyQuery>;
-export type InitialQueryResult = ApolloReactCommon.QueryResult<InitialQuery, InitialQueryVariables>;
-export const InitialSiteQueryDocument = gql`
-    query InitialSiteQuery {
-  me {
-    id
-    email
-    name
-    secondName
-    lastName
-    fullName
-    shortName
-    phone
-    role
-    isAdmin
-    isManager
-    isCustomer
-  }
-  getClientLanguage
-  getAllLanguages {
-    id
-    key
-    name
-    nativeName
-    isDefault
-  }
-  getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
-    multi
-    acceptedFormats
-  }
-  getRubricsTree {
-    ...SiteRubricFragment
-    children {
-      ...SiteRubricFragment
-      children {
-        ...SiteRubricFragment
-      }
-    }
-  }
-}
-    ${SiteRubricFragmentFragmentDoc}`;
-
-/**
- * __useInitialSiteQueryQuery__
- *
- * To run a query within a React component, call `useInitialSiteQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useInitialSiteQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInitialSiteQueryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInitialSiteQueryQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
-        return ApolloReactHooks.useQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
-      }
-export function useInitialSiteQueryLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>(InitialSiteQueryDocument, baseOptions);
-        }
-export type InitialSiteQueryQueryHookResult = ReturnType<typeof useInitialSiteQueryQuery>;
-export type InitialSiteQueryLazyQueryHookResult = ReturnType<typeof useInitialSiteQueryLazyQuery>;
-export type InitialSiteQueryQueryResult = ApolloReactCommon.QueryResult<InitialSiteQueryQuery, InitialSiteQueryQueryVariables>;
 export const GetAllLanguagesDocument = gql`
     query GetAllLanguages {
   getAllLanguages {
@@ -3938,6 +4517,42 @@ export function useGetMessagesByKeysLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export type GetMessagesByKeysQueryHookResult = ReturnType<typeof useGetMessagesByKeysQuery>;
 export type GetMessagesByKeysLazyQueryHookResult = ReturnType<typeof useGetMessagesByKeysLazyQuery>;
 export type GetMessagesByKeysQueryResult = ApolloReactCommon.QueryResult<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>;
+export const GetValidationMessagesDocument = gql`
+    query GetValidationMessages {
+  getValidationMessages {
+    key
+    message {
+      key
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetValidationMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetValidationMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetValidationMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetValidationMessagesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetValidationMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>(GetValidationMessagesDocument, baseOptions);
+      }
+export function useGetValidationMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>(GetValidationMessagesDocument, baseOptions);
+        }
+export type GetValidationMessagesQueryHookResult = ReturnType<typeof useGetValidationMessagesQuery>;
+export type GetValidationMessagesLazyQueryHookResult = ReturnType<typeof useGetValidationMessagesLazyQuery>;
+export type GetValidationMessagesQueryResult = ApolloReactCommon.QueryResult<GetValidationMessagesQuery, GetValidationMessagesQueryVariables>;
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {
@@ -4029,6 +4644,163 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = ApolloReactCommon.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
+export const GetAllRolesDocument = gql`
+    query GetAllRoles {
+  getAllRoles {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useGetAllRolesQuery__
+ *
+ * To run a query within a React component, call `useGetAllRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllRolesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, baseOptions);
+      }
+export function useGetAllRolesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllRolesQuery, GetAllRolesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllRolesQuery, GetAllRolesQueryVariables>(GetAllRolesDocument, baseOptions);
+        }
+export type GetAllRolesQueryHookResult = ReturnType<typeof useGetAllRolesQuery>;
+export type GetAllRolesLazyQueryHookResult = ReturnType<typeof useGetAllRolesLazyQuery>;
+export type GetAllRolesQueryResult = ApolloReactCommon.QueryResult<GetAllRolesQuery, GetAllRolesQueryVariables>;
+export const GetRoleDocument = gql`
+    query GetRole($id: ID!) {
+  getRole(id: $id) {
+    id
+    nameString
+    allowedAppNavigation
+    description
+    isStuff
+    name {
+      key
+      value
+    }
+    rules {
+      id
+      entity
+      nameString
+      nameString
+      restrictedFields
+      operations {
+        id
+        allow
+        customFilter
+        operationType
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRoleQuery__
+ *
+ * To run a query within a React component, call `useGetRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRoleQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRoleQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
+      }
+export function useGetRoleLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
+        }
+export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>;
+export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>;
+export type GetRoleQueryResult = ApolloReactCommon.QueryResult<GetRoleQuery, GetRoleQueryVariables>;
+export const GetEntityFieldsDocument = gql`
+    query GetEntityFields($entity: String!) {
+  getEntityFields(entity: $entity)
+}
+    `;
+
+/**
+ * __useGetEntityFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetEntityFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEntityFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEntityFieldsQuery({
+ *   variables: {
+ *      entity: // value for 'entity'
+ *   },
+ * });
+ */
+export function useGetEntityFieldsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
+      }
+export function useGetEntityFieldsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
+        }
+export type GetEntityFieldsQueryHookResult = ReturnType<typeof useGetEntityFieldsQuery>;
+export type GetEntityFieldsLazyQueryHookResult = ReturnType<typeof useGetEntityFieldsLazyQuery>;
+export type GetEntityFieldsQueryResult = ApolloReactCommon.QueryResult<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>;
+export const GetAllAppNavItemsDocument = gql`
+    query GetAllAppNavItems {
+  getAllAppNavItems {
+    id
+    nameString
+    path
+    children {
+      id
+      nameString
+      path
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllAppNavItemsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAppNavItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAppNavItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAppNavItemsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAppNavItemsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>(GetAllAppNavItemsDocument, baseOptions);
+      }
+export function useGetAllAppNavItemsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>(GetAllAppNavItemsDocument, baseOptions);
+        }
+export type GetAllAppNavItemsQueryHookResult = ReturnType<typeof useGetAllAppNavItemsQuery>;
+export type GetAllAppNavItemsLazyQueryHookResult = ReturnType<typeof useGetAllAppNavItemsLazyQuery>;
+export type GetAllAppNavItemsQueryResult = ApolloReactCommon.QueryResult<GetAllAppNavItemsQuery, GetAllAppNavItemsQueryVariables>;
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {
@@ -4070,62 +4842,6 @@ export function useGetAllRubricVariantsLazyQuery(baseOptions?: ApolloReactHooks.
 export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRubricVariantsQuery>;
 export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
 export type GetAllRubricVariantsQueryResult = ApolloReactCommon.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
-export const GetRubricAttributesDocument = gql`
-    query GetRubricAttributes($id: ID!) {
-  getRubric(id: $id) {
-    id
-    level
-    attributesGroups {
-      id
-      isOwner
-      showInCatalogueFilter
-      node {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          metric {
-            id
-            nameString
-          }
-          options {
-            id
-            nameString
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetRubricAttributesQuery__
- *
- * To run a query within a React component, call `useGetRubricAttributesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricAttributesQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetRubricAttributesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
-      }
-export function useGetRubricAttributesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
-        }
-export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
-export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
-export type GetRubricAttributesQueryResult = ApolloReactCommon.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
 export const GetGenderOptionsDocument = gql`
     query GetGenderOptions {
   getGenderOptions {
@@ -4652,3 +5368,59 @@ export function useGetAllProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQu
 export type GetAllProductsQueryHookResult = ReturnType<typeof useGetAllProductsQuery>;
 export type GetAllProductsLazyQueryHookResult = ReturnType<typeof useGetAllProductsLazyQuery>;
 export type GetAllProductsQueryResult = ApolloReactCommon.QueryResult<GetAllProductsQuery, GetAllProductsQueryVariables>;
+export const GetRubricAttributesDocument = gql`
+    query GetRubricAttributes($id: ID!) {
+  getRubric(id: $id) {
+    id
+    level
+    attributesGroups {
+      id
+      isOwner
+      showInCatalogueFilter
+      node {
+        id
+        nameString
+        attributes {
+          id
+          nameString
+          variant
+          metric {
+            id
+            nameString
+          }
+          options {
+            id
+            nameString
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRubricAttributesQuery__
+ *
+ * To run a query within a React component, call `useGetRubricAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRubricAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRubricAttributesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRubricAttributesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
+      }
+export function useGetRubricAttributesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
+        }
+export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
+export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
+export type GetRubricAttributesQueryResult = ApolloReactCommon.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;

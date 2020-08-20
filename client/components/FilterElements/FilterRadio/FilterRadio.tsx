@@ -30,7 +30,7 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
   const queryValue = query[queryKey];
   const isCurrent = queryValue && queryValue === id;
   const filteredQuery = Object.keys(query).reduce((acc: ObjectType, key: string) => {
-    if (excludedQueries?.includes(key)) {
+    if (excludedQueries.includes(key)) {
       return acc;
     }
     return { ...acc, [key]: query[key] };
@@ -66,7 +66,7 @@ const FilterRadio: React.FC<FilterRadioInterface> = ({
                 pathname: asPath,
                 query: { ...nextQuery, ...additionalQuery },
               }
-            : {}
+            : undefined
         }
       >
         <a

@@ -24,7 +24,6 @@ const AttributesGroupModal: React.FC<AttributesGroupModalInterface> = ({ name, c
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: attributesGroupModalSchema,
-    messagesKeys: ['validation.attributesGroups.id', 'validation.attributesGroups.name'],
   });
   const { hideModal } = useAppContext();
 

@@ -3,7 +3,7 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, ObjectType } from 'type-graphql';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { ROLES_ENUM } from '../config';
+import { Role } from './Role';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -46,8 +46,8 @@ export class User extends TimeStamps {
   @prop({ required: true, trim: true })
   password: string;
 
-  @Field((_type) => String)
-  @prop({ required: true, enum: ROLES_ENUM })
+  @Field((_type) => Role)
+  @prop({ ref: Role })
   role: string;
 
   @Field((_type) => String)

@@ -1,4 +1,6 @@
 import React from 'react';
+// import { ReactComponent as Test } from './icons/catalogue/burger.svg';
+
 import {
   Add,
   ExpandMore,

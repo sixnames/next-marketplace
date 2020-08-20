@@ -1,3 +1,24 @@
+// Roles
+export const OPERATION_TYPE_CREATE = 'create';
+export const OPERATION_TYPE_READ = 'read';
+export const OPERATION_TYPE_UPDATE = 'update';
+export const OPERATION_TYPE_DELETE = 'delete';
+export const OPERATION_TYPE_ENUM = [
+  OPERATION_TYPE_CREATE,
+  OPERATION_TYPE_READ,
+  OPERATION_TYPE_UPDATE,
+  OPERATION_TYPE_DELETE,
+];
+
+export const ROLE_EMPTY_CUSTOM_FILTER = '{}';
+
+export const OPERATION_TYPES_LIST = [
+  { id: OPERATION_TYPE_CREATE, nameString: 'Создание' },
+  { id: OPERATION_TYPE_READ, nameString: 'Чтение' },
+  { id: OPERATION_TYPE_UPDATE, nameString: 'Изменение' },
+  { id: OPERATION_TYPE_DELETE, nameString: 'Удаление' },
+];
+
 // Internationalization
 export const LANG_COOKIE_KEY = 'lang';
 export const CITY_COOKIE_KEY = 'city';
@@ -16,45 +37,12 @@ export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'руб.';
 export const SECONDARY_CURRENCY = '$';
 
-// ROLES
-export const ROLE_ADMIN = 'ADMIN';
-export const ROLE_CUSTOMER = 'CUSTOMER';
-export const ROLE_MANAGER = 'MANAGER';
-export const ROLE_SUPER = 'SUPER';
-
-export const ROLES_ENUM = [ROLE_ADMIN, ROLE_CUSTOMER, ROLE_MANAGER, ROLE_SUPER];
-
-export const ROLES_LIST = [
-  {
-    id: ROLE_ADMIN,
-    name: 'Админ',
-  },
-  {
-    id: ROLE_CUSTOMER,
-    name: 'Клиент',
-  },
-  {
-    id: ROLE_MANAGER,
-    name: 'Менеджер',
-  },
-  {
-    id: ROLE_SUPER,
-    name: 'Супер-менеджер',
-  },
-];
-
 // GENDER
 export const GENDER_SHE = 'she';
 export const GENDER_HE = 'he';
 export const GENDER_IT = 'it';
 
 export const GENDER_ENUMS = [GENDER_HE, GENDER_SHE, GENDER_IT];
-
-export const GENDER_LIST = [
-  { id: GENDER_SHE, nameString: 'Женский' },
-  { id: GENDER_HE, nameString: 'Мужской' },
-  { id: GENDER_IT, nameString: 'Средний' },
-];
 
 // CONFIG VARIANTS
 export const CONFIG_VARIANT_STRING = 'string';

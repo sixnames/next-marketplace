@@ -33,13 +33,10 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
-  ROLE_ADMIN,
-  ROLE_CUSTOMER,
-  ROLE_MANAGER,
 } from '../src/config';
 import { Request, Response } from 'express';
 import clearTestData from '../src/utils/testUtils/clearTestData';
-import { attemptSignIn } from '../src/utils/auth';
+import { attemptSignIn } from '../src/utils/auth/auth';
 
 export async function getMockDataRoute(_: Request, res: Response) {
   res.send({
@@ -101,11 +98,9 @@ export async function testSignInRoute(req: Request, res: Response) {
     return;
   }
 
+  req.session!.user = user;
   req.session!.userId = user.id;
-  req.session!.userRole = user.role;
-  req.session!.isAdmin = user.role === ROLE_ADMIN;
-  req.session!.isCustomer = user.role === ROLE_CUSTOMER;
-  req.session!.isManager = user.role === ROLE_MANAGER;
+  req.session!.roleId = user.role;
 
   res.send('signed in');
 }

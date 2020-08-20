@@ -7,6 +7,7 @@ import countriesMessages from './countriesMessages';
 import attributesGroupsMessages from './attributesGroupsMessages';
 import productsMessages from './productsMessages';
 import metricsMessages from './metricsMessages';
+import rolesMessages from './rolesMessages';
 import usersMessages from './usersMessages';
 import rubricVariantsMessages from './rubricVariantsMessages';
 import optionsGroupsMessages from './optionsGroupsMessages';
@@ -19,6 +20,7 @@ const apiMessages = [
   ...languagesMessages,
   ...citiesMessages,
   ...countriesMessages,
+  ...rolesMessages,
   ...usersMessages,
   ...optionsGroupsMessages,
   ...attributesGroupsMessages,

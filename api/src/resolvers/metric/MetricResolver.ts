@@ -8,7 +8,6 @@ import {
   ID,
   FieldResolver,
   Root,
-  Ctx,
 } from 'type-graphql';
 import PayloadType from '../common/PayloadType';
 import { Metric, MetricModel } from '../../entities/Metric';
@@ -17,11 +16,24 @@ import { CreateMetricInput } from './CreateMetricInput';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
-import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
-import { createMetricInputSchema, updateMetricSchema } from '../../validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { createMetricInputSchema, updateMetricSchema } from '../../validation/metricSchema';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Metric.name);
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {
@@ -32,25 +44,30 @@ class MetricPayloadType extends PayloadType() {
 @Resolver((_of) => Metric)
 export class MetricResolver {
   @Query(() => Metric, { nullable: true })
-  async getMetric(@Arg('id', (_type) => ID) id: string): Promise<Metric | null> {
-    return MetricModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getMetric(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Metric>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Metric | null> {
+    return MetricModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => [Metric], { nullable: true })
-  async getAllMetrics(): Promise<Metric[]> {
-    return MetricModel.find();
+  @AuthMethod(operationConfigRead)
+  async getAllMetrics(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Metric>,
+  ): Promise<Metric[]> {
+    return MetricModel.find(customFilter);
   }
 
   @Mutation(() => MetricPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createMetricInputSchema })
   async createMetric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.metrics.name']);
-      await createMetricInputSchema({ defaultLang, lang, messages }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
         'name.value': {
@@ -87,18 +104,14 @@ export class MetricResolver {
   }
 
   @Mutation(() => MetricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateMetricSchema })
   async updateMetric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Metric>,
     @Arg('input') input: UpdateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.metrics.name',
-        'validation.metrics.id',
-      ]);
-      await updateMetricSchema({ defaultLang, lang, messages }).validate(input);
-
       const nameValues = input.name.map(({ value }) => value);
       const exist = await MetricModel.exists({
         'name.value': {
@@ -113,7 +126,9 @@ export class MetricResolver {
       }
 
       const { id, ...values } = input;
-      const metric = await MetricModel.findByIdAndUpdate(id, values, { new: true });
+      const metric = await MetricModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
+        new: true,
+      });
 
       if (!metric) {
         return {
@@ -136,12 +151,12 @@ export class MetricResolver {
   }
 
   @Mutation(() => MetricPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteMetric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<MetricPayloadType> {
     try {
-      const lang = ctx.req.lang;
       const isUsedInAttributes = await AttributeModel.exists({ metric: id });
       if (isUsedInAttributes) {
         return {
@@ -174,8 +189,8 @@ export class MetricResolver {
   @FieldResolver()
   async nameString(
     @Root() metric: DocumentType<Metric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(metric.name, ctx.req.lang);
+    return getLangField(metric.name, lang);
   }
 }

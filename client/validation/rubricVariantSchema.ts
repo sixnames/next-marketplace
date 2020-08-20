@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import { langStringInputSchema } from './schemaTemplates';
-import getValidationFieldMessage, {
+import getFieldValidationMessage, {
   MultiLangSchemaMessagesInterface,
-} from './getValidationFieldMessage';
+} from './getFieldValidationMessage';
 
 const rubricVariantNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({ ...args, requiredMessageKey: 'validation.rubricVariants.name' });
@@ -22,7 +22,7 @@ export const updateRubricVariantSchema = (args: MultiLangSchemaMessagesInterface
     id: Yup.string()
       .nullable()
       .required(
-        getValidationFieldMessage({
+        getFieldValidationMessage({
           messages: args.messages,
           lang: args.lang,
           key: 'validation.rubrics.id',

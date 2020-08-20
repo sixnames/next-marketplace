@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
-import { INITIAL_QUERY } from '../graphql/query/initialQuery';
+import { INITIAL_QUERY } from '../graphql/initialQuery';
 import privateRouteHandler from './privateRouteHandler';
 import { InitialQuery } from '../generated/apolloComponents';
 
@@ -11,7 +11,6 @@ export interface AppPageInterface {
 async function getAppServerSideProps(context: GetServerSidePropsContext) {
   try {
     const { req, res } = context;
-
     const apolloClient = initializeApollo();
 
     const initialApolloState = await apolloClient.query({
@@ -21,7 +20,7 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
       },
     });
 
-    // Redirect if user is not authorized
+    // Redirect to sign in page if user is not authorized
     if (!initialApolloState || !initialApolloState.data || !initialApolloState.data.me) {
       privateRouteHandler(res);
       return { props: { initialApolloState: {} } };

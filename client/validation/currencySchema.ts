@@ -1,44 +1,46 @@
-import getValidationFieldMessage, { SchemaMessagesInterface } from './getValidationFieldMessage';
+import getFieldValidationMessage, {
+  MultiLangSchemaMessagesInterface,
+} from './getFieldValidationMessage';
 import * as Yup from 'yup';
 
 const currencyNameMinLength = 1;
 
-const currencyIdSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const currencyIdSchema = ({ messages, lang }: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.currencies.id',
       }),
     );
 
-const currencyNameSchema = ({ messages, lang }: SchemaMessagesInterface) =>
+const currencyNameSchema = ({ messages, lang }: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .trim()
     .min(
       currencyNameMinLength,
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.string.min',
       }) + ` ${currencyNameMinLength}`,
     )
     .required(
-      getValidationFieldMessage({
+      getFieldValidationMessage({
         messages,
         lang,
         key: 'validation.currencies.nameString',
       }),
     );
 
-export const createCurrencySchema = (args: SchemaMessagesInterface) =>
+export const createCurrencySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     nameString: currencyNameSchema(args),
   });
 
-export const updateCurrencySchema = (args: SchemaMessagesInterface) =>
+export const updateCurrencySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: currencyIdSchema(args),
     nameString: currencyNameSchema(args),

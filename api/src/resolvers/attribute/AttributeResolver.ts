@@ -1,9 +1,8 @@
-import { Arg, Query, Resolver, ID, FieldResolver, Root, Ctx } from 'type-graphql';
+import { Arg, Query, Resolver, ID, FieldResolver, Root } from 'type-graphql';
 import { Attribute, AttributeFilterOption, AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Metric, MetricModel } from '../../entities/Metric';
-import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
 import { OptionModel } from '../../entities/Option';
 import { RubricModel } from '../../entities/Rubric';
@@ -11,12 +10,26 @@ import getCityData from '../../utils/getCityData';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import { ProductModel } from '../../entities/Product';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const { operationConfigRead } = getOperationsConfigs(Attribute.name);
 
 @Resolver((_for) => Attribute)
 export class AttributeResolver {
   @Query((_type) => Attribute, { nullable: true })
-  async getAttribute(@Arg('id', (_type) => ID) id: string): Promise<Attribute | null> {
-    return AttributeModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getAttribute(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Attribute>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Attribute | null> {
+    return AttributeModel.findOne({ _id: id, ...customFilter });
   }
 
   @FieldResolver()
@@ -32,14 +45,14 @@ export class AttributeResolver {
   @FieldResolver()
   async nameString(
     @Root() attribute: DocumentType<Attribute>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(attribute.name, ctx.req.lang);
+    return getLangField(attribute.name, lang);
   }
 
   @FieldResolver((_of) => [AttributeFilterOption])
   async filterOptions(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('filter', (_type) => [String]) filter: string[],
     @Root() attribute: DocumentType<Attribute>,
   ): Promise<AttributeFilterOption[]> {
@@ -51,7 +64,6 @@ export class AttributeResolver {
 
     const options = await OptionModel.find({ _id: { $in: optionsGroup.options } });
     const { slug } = attribute;
-    const city = ctx.req.city;
     const [rubricSlug] = filter || [];
 
     // get current rubric

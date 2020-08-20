@@ -51,13 +51,13 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
             </div>
 
             {contentControlsConfig && (
-              <div className={classes.ControlsRight}>
+              <div>
                 <ContentItemControls {...contentControlsConfig} />
               </div>
             )}
 
             {filterResultNavConfig && (
-              <div className={classes.ControlsRight}>
+              <div>
                 <MoreNav navConfig={filterResultNavConfig} className={classes.MoreNav} />
               </div>
             )}

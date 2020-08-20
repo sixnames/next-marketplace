@@ -14,6 +14,7 @@ import currenciesMessages from '../../config/apiMessages/currenciesMessages';
 import citiesMessages from '../../config/apiMessages/citiesMessages';
 import countriesMessages from '../../config/apiMessages/countriesMessages';
 import configsMessages from '../../config/apiMessages/configsMessages';
+import rolesMessages from '../../config/apiMessages/rolesMessages';
 
 interface MessageInterface {
   key: string;
@@ -42,6 +43,7 @@ async function createInitialApiMessages() {
     { name: 'Языки', messages: languagesMessages },
     { name: 'Города', messages: citiesMessages },
     { name: 'Страны', messages: countriesMessages },
+    { name: 'Роли', messages: rolesMessages },
     { name: 'Пользователи', messages: usersMessages },
     { name: 'Группы опций', messages: optionsGroupsMessages },
     { name: 'Группы атрибутов', messages: attributesGroupsMessages },

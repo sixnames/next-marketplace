@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import Link from '../Link/Link';
 import Icon from '../Icon/Icon';
 import AnimateOpacity from '../AnimateOpacity/AnimateOpacity';
@@ -47,8 +47,17 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                       onClick={hideDropdownHandler}
                       testId={`more-nav-item-${testId}`}
                     >
-                      {icon && <Icon name={icon} className={classes.icon} />}
-                      <span className={classes.linkName}>{name}</span>
+                      {(isCurrent: boolean) => (
+                        <Fragment>
+                          {icon && (
+                            <Icon
+                              name={icon}
+                              className={`${classes.icon} ${isCurrent ? classes.iconActive : ''}`}
+                            />
+                          )}
+                          <span className={classes.linkName}>{name}</span>
+                        </Fragment>
+                      )}
                     </Link>
                   </li>
                 );

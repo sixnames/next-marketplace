@@ -29,12 +29,6 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
   const { data, loading, error } = useGetIsoLanguagesListQuery();
   const validationSchema = useValidationSchema({
     schema: languageSchema,
-    messagesKeys: [
-      'validation.languages.id',
-      'validation.languages.name',
-      'validation.languages.key',
-      'validation.languages.nativeName',
-    ],
   });
 
   if (error || (!loading && !data)) {

@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -20,7 +19,6 @@ import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateCountryInput } from './CreateCountryInput';
 import { UpdateCountryInput } from './UpdateCountryInput';
-import { ContextInterface } from '../../types/context';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addCityToCountrySchema,
@@ -29,7 +27,27 @@ import {
   updateCityInCountrySchema,
   updateCountrySchema,
 } from '../../validation/countrySchema';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Country.name);
+
+const {
+  operationConfigCreate: operationConfigCreateCity,
+  operationConfigUpdate: operationConfigUpdateCity,
+  operationConfigDelete: operationConfigDeleteCity,
+} = getOperationsConfigs(City.name);
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {
@@ -40,13 +58,20 @@ class CountryPayloadType extends PayloadType() {
 @Resolver((_for) => Country)
 export class CountryResolver {
   @Query((_returns) => [Country])
-  async getAllCountries(): Promise<Country[]> {
-    return CountryModel.find({});
+  @AuthMethod(operationConfigRead)
+  async getAllCountries(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Country>,
+  ): Promise<Country[]> {
+    return CountryModel.find(customFilter);
   }
 
   @Query((_returns) => Country)
-  async getCountry(@Arg('id', (_type) => ID) id: string): Promise<Country> {
-    const country = await CountryModel.findById(id);
+  @AuthMethod(operationConfigRead)
+  async getCountry(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Country>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Country> {
+    const country = await CountryModel.findOne({ _id: id, ...customFilter });
     if (!country) {
       throw new Error('Country not found');
     }
@@ -55,18 +80,13 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createCountrySchema })
   async createCountry(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => CreateCountryInput) input: CreateCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.countries.nameString',
-        'validation.countries.currency',
-      ]);
-      await createCountrySchema({ lang, messages }).validate(input);
-
       const { nameString } = input;
 
       const existingCountries = await CountryModel.exists({
@@ -105,22 +125,17 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateCountrySchema })
   async updateCountry(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Country>,
     @Arg('input', (_type) => UpdateCountryInput) input: UpdateCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.countries.id',
-        'validation.countries.nameString',
-        'validation.countries.currency',
-      ]);
-      await updateCountrySchema({ lang, messages }).validate(input);
-
       const { id, nameString } = input;
 
-      const country = await CountryModel.findById(id);
+      const country = await CountryModel.findOne({ _id: id, ...customFilter });
 
       if (!country) {
         return {
@@ -170,12 +185,12 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteCountry(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
       const country = await CountryModel.findById(id);
       if (!country) {
         return {
@@ -209,19 +224,13 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigCreateCity)
+  @ValidateMethod({ schema: addCityToCountrySchema })
   async addCityToCountry(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.countries.id',
-        'validation.cities.name',
-        'validation.cities.slug',
-      ]);
-      await addCityToCountrySchema({ lang, messages, defaultLang }).validate(input);
-
       const { countryId, ...values } = input;
       const country = await CountryModel.findById(countryId);
 
@@ -286,23 +295,17 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigUpdateCity)
+  @ValidateMethod({ schema: updateCityInCountrySchema })
   async updateCityInCountry(
-    @Ctx() ctx: ContextInterface,
+    @CustomFilter(operationConfigUpdateCity) customFilter: FilterQuery<City>,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => UpdateCityInCountryInput) input: UpdateCityInCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.countries.id',
-        'validation.cities.id',
-        'validation.cities.name',
-        'validation.cities.slug',
-      ]);
-      await updateCityInCountrySchema({ lang, messages, defaultLang }).validate(input);
-
       const { countryId, cityId, ...values } = input;
       const country = await CountryModel.findById(countryId);
-      const city = await CityModel.findById(cityId);
+      const city = await CityModel.findOne({ _id: cityId, ...customFilter });
 
       if (!country || !city) {
         return {
@@ -352,15 +355,13 @@ export class CountryResolver {
   }
 
   @Mutation((_returns) => CountryPayloadType)
+  @AuthMethod(operationConfigDeleteCity)
+  @ValidateMethod({ schema: deleteCityFromCountrySchema })
   async deleteCityFromCountry(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input', (_type) => DeleteCityFromCountryInput) input: DeleteCityFromCountryInput,
   ): Promise<CountryPayloadType> {
     try {
-      const { lang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.countries.id', 'validation.cities.id']);
-      await deleteCityFromCountrySchema({ lang, messages }).validate(input);
-
       const { countryId, cityId } = input;
       const country = await CountryModel.findById(countryId);
       const city = await CityModel.findById(cityId);

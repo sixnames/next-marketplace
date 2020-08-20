@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Field,
   FieldResolver,
   ID,
@@ -17,7 +16,6 @@ import {
   RubricModel,
   RubricCatalogueTitle,
 } from '../../entities/Rubric';
-import { ContextInterface } from '../../types/context';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
 import getCityData from '../../utils/getCityData';
@@ -27,7 +25,7 @@ import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
 import { UpdateRubricInput } from './UpdateRubricInput';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
@@ -44,15 +42,6 @@ import {
   getRubricsTreeIds,
 } from '../../utils/rubricResolverHelpers';
 import {
-  addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  deleteProductFromRubricInputSchema,
-  updateAttributesGroupInRubricInputSchema,
-  updateRubricInputSchema,
-} from '../../validation';
-import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_LANG,
@@ -67,13 +56,35 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleItemInArray from '../../utils/toggleItemInArray';
 import { GenderEnum, LanguageType } from '../../entities/common';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import getMessagesByKeys from '../../utils/translations/getMessagesByKeys';
+import {
+  addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
+  createRubricInputSchema,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
+  updateAttributesGroupInRubricInputSchema,
+  updateRubricInputSchema,
+} from '../../validation/rubricSchema';
+import { getOperationsConfigs } from '../../utils/auth/auth';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
 
 interface ParentRelatedDataInterface {
   variant: string;
   level: number;
   parent?: Types.ObjectId | null;
 }
+
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+  operationConfigDelete,
+} = getOperationsConfigs(Rubric.name);
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -84,19 +95,24 @@ class RubricPayloadType extends PayloadType() {
 @Resolver((_of) => Rubric)
 export class RubricResolver {
   @Query(() => Rubric)
-  async getRubric(@Ctx() ctx: ContextInterface, @Arg('id', (_type) => ID) id: string) {
-    return RubricModel.findOne({ _id: id, 'cities.key': ctx.req.city });
+  @AuthMethod(operationConfigRead)
+  async getRubric(
+    @Localization() { city }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Rubric>,
+    @Arg('id', (_type) => ID) id: string,
+  ) {
+    return RubricModel.findOne({ _id: id, 'cities.key': city, ...customFilter });
   }
 
   @Query(() => Rubric)
   async getRubricBySlug(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('slug', (_type) => String) slug: string,
   ) {
     return RubricModel.findOne({
       cities: {
         $elemMatch: {
-          key: ctx.req.city,
+          key: city,
           'node.slug': slug,
         },
       },
@@ -105,33 +121,25 @@ export class RubricResolver {
 
   @Query(() => [Rubric])
   async getRubricsTree(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
       _id: { $nin: excluded },
-      'cities.key': ctx.req.city,
+      'cities.key': city,
       'cities.node.level': RUBRIC_LEVEL_ONE,
     });
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createRubricInputSchema })
   async createRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubrics.name',
-        'validation.rubrics.variant',
-        'validation.rubrics.defaultTitle',
-        'validation.rubrics.keyword',
-        'validation.rubrics.gender',
-      ]);
-      await createRubricInputSchema({ messages, defaultLang, lang }).validate(input);
-
       const { parent, name } = input;
 
       const nameValues = name.map(({ value }) => value);
@@ -199,24 +207,18 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateRubricInputSchema })
   async updateRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: UpdateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubrics.id',
-        'validation.rubrics.name',
-        'validation.rubrics.variant',
-        'validation.rubrics.defaultTitle',
-        'validation.rubrics.keyword',
-        'validation.rubrics.gender',
-      ]);
-      await updateRubricInputSchema({ messages, defaultLang, lang }).validate(input);
-
       const { id, ...values } = input;
-      const rubric = await RubricModel.findById(id).lean().exec();
+      const rubric = await RubricModel.findOne({ _id: id, ...customFilter })
+        .lean()
+        .exec();
 
       if (!rubric) {
         return {
@@ -285,13 +287,12 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigDelete)
   async deleteRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricPayloadType> {
     try {
-      const city = ctx.req.city;
-      const lang = ctx.req.lang;
       const rubric = await RubricModel.findOne({
         _id: id,
         'cities.key': city,
@@ -388,22 +389,19 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: addAttributesGroupToRubricInputSchema })
   async addAttributesGroupToRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubrics.id',
-        'validation.attributesGroups.id',
-      ]);
-      await addAttributesGroupToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
-
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
-        'cities.key': city,
         _id: rubricId,
+        'cities.key': city,
+        ...customFilter,
       });
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
 
@@ -486,25 +484,19 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateAttributesGroupInRubricInputSchema })
   async updateAttributesGroupInRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: UpdateAttributesGroupInRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubrics.id',
-        'validation.attributesGroups.id',
-        'validation.attributes.id',
-      ]);
-      await updateAttributesGroupInRubricInputSchema({ messages, defaultLang, lang }).validate(
-        input,
-      );
-
       const { rubricId, attributesGroupId, attributeId } = input;
       const rubric = await RubricModel.findOne({
-        'cities.key': city,
         _id: rubricId,
+        'cities.key': city,
+        ...customFilter,
       });
 
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
@@ -585,24 +577,19 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: deleteAttributesGroupFromRubricInputSchema })
   async deleteAttributesGroupFromRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys([
-        'validation.rubrics.id',
-        'validation.attributesGroups.id',
-      ]);
-      await deleteAttributesGroupFromRubricInputSchema({ messages, defaultLang, lang }).validate(
-        input,
-      );
-
       const { rubricId, attributesGroupId } = input;
       const rubric = await RubricModel.findOne({
-        'cities.key': city,
         _id: rubricId,
+        'cities.key': city,
+        ...customFilter,
       });
 
       const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
@@ -664,20 +651,20 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: addProductToRubricInputSchema })
   async addProductToRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: AddProductToRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
-      await addProductToRubricInputSchema({ messages, defaultLang, lang }).validate(input);
-
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
-        'cities.key': city,
         _id: rubricId,
+        'cities.key': city,
+        ...customFilter,
       });
 
       const product = await ProductModel.findOne({
@@ -744,20 +731,20 @@ export class RubricResolver {
   }
 
   @Mutation(() => RubricPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: deleteProductFromRubricInputSchema })
   async deleteProductFromRubric(
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: DeleteProductFromRubricInput,
   ): Promise<RubricPayloadType> {
     try {
-      const { city, lang, defaultLang } = ctx.req;
-      const messages = await getMessagesByKeys(['validation.rubrics.id', 'validation.products.id']);
-      await deleteProductFromRubricInputSchema({ messages, defaultLang, lang }).validate(input);
-
       const { rubricId, productId } = input;
 
       const rubric = await RubricModel.findOne({
-        'cities.key': city,
         _id: rubricId,
+        'cities.key': city,
+        ...customFilter,
       });
 
       const product = await ProductModel.findOne({
@@ -808,34 +795,34 @@ export class RubricResolver {
   @FieldResolver()
   async name(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<LanguageType[]> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return [];
     }
-    return city!.node.name;
+    return rubricCity.node.name;
   }
 
   @FieldResolver()
   async nameString(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return '';
     }
-    return getLangField(city!.node.name, ctx.req.lang);
+    return getLangField(rubricCity.node.name, lang);
   }
 
   @FieldResolver()
   async catalogueTitle(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<RubricCatalogueTitle> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return {
         defaultTitle: [],
         prefix: [],
@@ -844,17 +831,16 @@ export class RubricResolver {
       };
     }
 
-    return city.node.catalogueTitle;
+    return rubricCity.node.catalogueTitle;
   }
 
   @FieldResolver()
   async catalogueTitleString(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
   ): Promise<RubricCatalogueTitleField> {
-    const lang = ctx.req.lang;
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return {
         defaultTitle: LANG_NOT_FOUND_FIELD_MESSAGE,
         prefix: LANG_NOT_FOUND_FIELD_MESSAGE,
@@ -865,7 +851,7 @@ export class RubricResolver {
 
     const {
       catalogueTitle: { defaultTitle, prefix, keyword, gender },
-    } = city.node;
+    } = rubricCity.node;
 
     return {
       defaultTitle: getLangField(defaultTitle, lang),
@@ -876,54 +862,60 @@ export class RubricResolver {
   }
 
   @FieldResolver()
-  async slug(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<string> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+  async slug(
+    @Root() rubric: DocumentType<Rubric>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return '';
     }
-    return city.node.slug;
+    return rubricCity.node.slug;
   }
 
   @FieldResolver()
-  async level(@Root() rubric: DocumentType<Rubric>, @Ctx() ctx: ContextInterface): Promise<number> {
-    const city = getCityData(rubric.cities, ctx.req.city);
+  async level(
+    @Root() rubric: DocumentType<Rubric>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<number> {
+    const rubricCity = getCityData(rubric.cities, city);
     if (!city) {
       return RUBRIC_LEVEL_ZERO;
     }
-    return city.node.level;
+    return rubricCity.node.level;
   }
 
   @FieldResolver()
   async active(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<boolean | null | undefined> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return false;
     }
-    return city.node.active;
+    return rubricCity.node.active;
   }
 
   @FieldResolver()
   async parent(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<Rubric | null> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return null;
     }
-    return RubricModel.findById(city.node.parent);
+    return RubricModel.findById(rubricCity.node.parent);
   }
 
   @FieldResolver()
   async variant(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<RubricVariant> {
-    const city = getCityData(rubric.cities, ctx.req.city);
-    const variant = await RubricVariantModel.findById(city.node.variant);
+    const rubricCity = getCityData(rubric.cities, city);
+    const variant = await RubricVariantModel.findById(rubricCity.node.variant);
     if (!variant) {
       return {
         id: 'defaultVariant',
@@ -937,13 +929,13 @@ export class RubricResolver {
   @FieldResolver()
   async children(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('excluded', (_type) => [ID], { nullable: true })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
       _id: { $nin: excluded },
-      'cities.key': ctx.req.city,
+      'cities.key': city,
       'cities.node.parent': rubric.id,
     });
   }
@@ -951,23 +943,22 @@ export class RubricResolver {
   @FieldResolver()
   async attributesGroups(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<RubricAttributesGroup[]> {
     const populated = await rubric.populate('cities.node.attributesGroups.node').execPopulate();
-    const city = getCityData(populated.cities, ctx.req.city);
-    if (!city) {
+    const rubricCity = getCityData(populated.cities, city);
+    if (!rubricCity) {
       return [];
     }
-    return city.node.attributesGroups;
+    return rubricCity.node.attributesGroups;
   }
 
   @FieldResolver()
   async products(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const city = ctx.req.city;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds }, city);
@@ -985,16 +976,15 @@ export class RubricResolver {
   @FieldResolver()
   async filterAttributes(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<Attribute[]> {
-    const city = ctx.req.city;
-    const currentCity = getCityData(rubric.cities, city);
-    if (!currentCity) {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!rubricCity) {
       return [];
     }
 
     // get all visible attributes id's
-    const visibleAttributes = currentCity.node.attributesGroups.reduce((acc: string[], group) => {
+    const visibleAttributes = rubricCity.node.attributesGroups.reduce((acc: string[], group) => {
       return [...acc, ...group.showInCatalogueFilter];
     }, []);
 
@@ -1005,18 +995,16 @@ export class RubricResolver {
   @FieldResolver()
   async totalProductsCount(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
-    const city = ctx.req.city;
     return getRubricCounters({ city, rubric });
   }
 
   @FieldResolver()
   async activeProductsCount(
     @Root() rubric: DocumentType<Rubric>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
-    const city = ctx.req.city;
     return getRubricCounters({ city, rubric, args: { active: true } });
   }
 }

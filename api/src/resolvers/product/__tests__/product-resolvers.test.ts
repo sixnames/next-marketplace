@@ -1,11 +1,11 @@
-import { getTestClientWithUser, mutateWithImages } from '../../../utils/testUtils/testHelpers';
+import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
-    const { query, mutate } = await getTestClientWithUser({});
+    const { query, mutate } = await testClientWithContext();
 
     // Should return paginated products.
     const {

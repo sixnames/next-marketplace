@@ -1,6 +1,7 @@
 .frame {
   color: var(--textSecondaryColor);
   margin-bottom: 1.75rem;
+  margin-top: 1rem;
 }
 
 .frame p {

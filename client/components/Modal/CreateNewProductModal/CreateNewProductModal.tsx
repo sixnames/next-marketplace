@@ -41,17 +41,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
   const validationSchema = useValidationSchema({
     schema: createProductSchema,
-    messagesKeys: [
-      'validation.products.attributeId',
-      'validation.products.attributeKey',
-      'validation.products.attributesGroupId',
-      'validation.products.name',
-      'validation.products.cardName',
-      'validation.products.description',
-      'validation.products.rubrics',
-      'validation.products.price',
-      'validation.products.assets',
-    ],
   });
 
   const { data, loading, error } = useGetRubricsTreeQuery({

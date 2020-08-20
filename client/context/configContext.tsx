@@ -24,6 +24,10 @@ function useConfigContext() {
     configs: [],
   };
 
+  if (!context) {
+    throw new Error('useConfigContext must be used within a ConfigContextProvider');
+  }
+
   const { configs } = context;
 
   function getSiteConfig(configSlug: string) {

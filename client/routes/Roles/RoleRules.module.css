@@ -1,0 +1,9 @@
+.rule {
+  display: flex;
+  align-items: center;
+}
+
+.ruleButton {
+  white-space: nowrap;
+  margin-left: 0.5rem;
+}

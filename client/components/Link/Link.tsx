@@ -26,10 +26,12 @@ const Link: React.FC<LinkInterface> = ({
   const { pathname, query } = useRouter() || { pathname: '', query: '' };
   const currentPath = { pathname, query };
 
-  let isCurrent = typeof href === 'string' ? pathname === href : href.pathname === pathname;
+  let isCurrent =
+    typeof href === 'string' ? pathname === href.split('?')[0] : href.pathname === pathname;
 
   if (exact) {
-    isCurrent = typeof href === 'string' ? pathname === href : isEqual(currentPath, href);
+    isCurrent =
+      typeof href === 'string' ? pathname === href.split('?')[0] : isEqual(currentPath, href);
   }
 
   if (isTab) {
@@ -51,7 +53,7 @@ const Link: React.FC<LinkInterface> = ({
         data-cy={testId}
         {...props}
       >
-        {children}
+        {typeof children === 'function' ? children(isCurrent) : children}
       </a>
     </NextLink>
   );

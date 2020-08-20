@@ -18,3 +18,8 @@ generates:
       - introspection
     config:
       minify: true
+  api/introspectionSchema.json:
+    plugins:
+      - introspection
+    config:
+      minify: true

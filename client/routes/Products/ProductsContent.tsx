@@ -33,6 +33,7 @@ const ProductsContent: React.FC = () => {
   const [deleteProductMutation] = useDeleteProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteProduct),
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: GET_ALL_PRODUCTS_QUERY,
@@ -63,8 +64,8 @@ const ProductsContent: React.FC = () => {
     updateTitle: 'Редактировать товар',
     updateHandler: ({ id }) =>
       router.push({
-        pathname: `${ROUTE_CMS}/product`,
-        query: { id },
+        pathname: `${ROUTE_CMS}/products`,
+        query: { productId: id },
       }),
     deleteTitle: 'Удалить товар',
     deleteHandler: deleteProductHandler,

@@ -37,7 +37,7 @@ module.exports = {
     },
   },
   rules: {
-    'css-modules/no-unused-class': [2, { camelCase: true }],
+    'css-modules/no-unused-class': 'warn',
     'css-modules/no-undef-class': [2, { camelCase: true }],
     'react-app/jsx-a11y/anchor-is-valid': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

@@ -11,3 +11,4 @@ export const GRAPHQL_API_PATH = `${DEV_API_URL}/graphql`;
 const buildEnv = process.env.NEXT_NODE_ENV;
 const testingApiUri = IS_BROWSER ? process.env.API_BROWSER_HOST : process.env.API_HOST;
 export const API_URI = buildEnv === 'testing' ? testingApiUri : process.env.PRODUCTION_API_HOST;
+console.log(API_URI);

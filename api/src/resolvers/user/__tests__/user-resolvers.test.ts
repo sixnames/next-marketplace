@@ -3,6 +3,7 @@ import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLE_SLUG_GUEST } from '../../../config';
 import { max, alex } from '../__fixtures__';
 import { RoleModel } from '../../../entities/Role';
 import { UserModel } from '../../../entities/User';
+import { gql } from 'apollo-server-express';
 
 const { email, password, phone, name } = max;
 
@@ -20,7 +21,7 @@ describe('User', () => {
     // User should sign up
     const {
       data: { signUp },
-    } = await mutate(`
+    } = await mutate<any>(gql`
           mutation {
             signUp(
               input: {
@@ -43,7 +44,7 @@ describe('User', () => {
       data: {
         signIn: { success: signInNotFoundSuccess },
       },
-    } = await mutate(`
+    } = await mutate<any>(gql`
           mutation {
             signIn(
               input: {
@@ -58,7 +59,7 @@ describe('User', () => {
     expect(signInNotFoundSuccess).toBeFalsy();
 
     // User shouldn't signIn on Email validation error
-    const { errors: signInEmailErrors } = await mutate(`
+    const { errors: signInEmailErrors } = await mutate<any>(gql`
           mutation {
             signIn(
               input: {
@@ -72,7 +73,7 @@ describe('User', () => {
     expect(signInEmailErrors).toBeDefined();
 
     // User shouldn't signIn if is wrong Password
-    const { errors: signInPasswordErrors } = await mutate(`
+    const { errors: signInPasswordErrors } = await mutate<any>(gql`
           mutation {
             signIn(
               input: {
@@ -90,8 +91,8 @@ describe('User', () => {
       data: {
         signIn: { success, user: mutationUser },
       },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation SignIn($input: SignInInput!) {
           signIn(input: $input) {
             success
@@ -105,7 +106,8 @@ describe('User', () => {
               fullName
             }
           }
-        }`,
+        }
+      `,
       {
         variables: {
           input: {
@@ -126,7 +128,7 @@ describe('User', () => {
     // Should create new user
     const {
       data: { createUser },
-    } = await mutate(`
+    } = await mutate<any>(gql`
           mutation {
             createUser(
               input: {
@@ -153,7 +155,7 @@ describe('User', () => {
     // Should update user
     const {
       data: { updateUser },
-    } = await mutate(`
+    } = await mutate<any>(gql`
           mutation {
             updateUser(
               input: {
@@ -184,7 +186,7 @@ describe('User', () => {
     // Should return current user
     const {
       data: { getUser },
-    } = await query(`
+    } = await query<any>(gql`
           query {
             getUser(id: "${updatedUser.id}") {
              id
@@ -198,7 +200,7 @@ describe('User', () => {
     // Should delete user
     const {
       data: { deleteUser },
-    } = await mutate(`
+    } = await mutate<any>(gql`
           mutation {
             deleteUser(id: "${updatedUser.id}") { success }
           }
@@ -208,14 +210,14 @@ describe('User', () => {
     // Should return information of authorized user
     const {
       data: { me },
-    } = await query(`
-          query {
-            me {
-             id
-             name
-            }
-          }
-        `);
+    } = await query<any>(gql`
+      query {
+        me {
+          id
+          name
+        }
+      }
+    `);
     expect(me.id).toEqual(user.id);
     expect(me.name).toEqual(user.name);
 
@@ -224,30 +226,26 @@ describe('User', () => {
       data: {
         getAllUsers: { totalDocs },
       },
-    } = await query(`
-        {
-          getAllUsers(input: {
-            limit: 100,
-            page: 1,
-            sortBy: createdAt
-            sortDir: desc
-          }) {
-            totalDocs
-          }
+    } = await query<any>(gql`
+      {
+        getAllUsers(input: { limit: 100, page: 1, sortBy: createdAt, sortDir: desc }) {
+          totalDocs
         }
-        `);
+      }
+    `);
     expect(totalDocs).toEqual(2);
 
     // User should sign out
     const {
       data: { signOut },
-    } = await mutate(`
-        mutation {
-          signOut {
-            success
-            message
-          }
-        }`);
+    } = await mutate<any>(gql`
+      mutation {
+        signOut {
+          success
+          message
+        }
+      }
+    `);
     expect(signOut.success).toBeTruthy();
   });
 });

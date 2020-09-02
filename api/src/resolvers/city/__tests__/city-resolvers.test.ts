@@ -1,5 +1,6 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CITIES } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('City', () => {
   it('Should return cities', async () => {
@@ -8,15 +9,15 @@ describe('City', () => {
     // Should return cities list
     const {
       data: { getAllCities },
-    } = await query(
-      `
-      query GetAllCities {
-        getAllCities {
-          id
-          nameString
-          slug
+    } = await query<any>(
+      gql`
+        query GetAllCities {
+          getAllCities {
+            id
+            nameString
+            slug
+          }
         }
-      }
       `,
     );
     const currentCity = getAllCities[0];
@@ -25,15 +26,15 @@ describe('City', () => {
     // Should return current city
     const {
       data: { getCity },
-    } = await query(
-      `
-      query GetCity($id: ID!) {
-        getCity(id: $id) {
-          id
-          nameString
-          slug
+    } = await query<any>(
+      gql`
+        query GetCity($id: ID!) {
+          getCity(id: $id) {
+            id
+            nameString
+            slug
+          }
         }
-      }
       `,
       {
         variables: {
@@ -47,15 +48,15 @@ describe('City', () => {
     // Should return current city
     const {
       data: { getCityBySlug },
-    } = await query(
-      `
-      query GetCityBySlug($slug: String!) {
-        getCityBySlug(slug: $slug) {
-          id
-          nameString
-          slug
+    } = await query<any>(
+      gql`
+        query GetCityBySlug($slug: String!) {
+          getCityBySlug(slug: $slug) {
+            id
+            nameString
+            slug
+          }
         }
-      }
       `,
       {
         variables: {

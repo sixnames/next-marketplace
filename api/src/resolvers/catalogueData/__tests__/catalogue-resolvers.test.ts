@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 
 describe('Attributes', () => {
@@ -6,8 +7,8 @@ describe('Attributes', () => {
 
     const {
       data: { getCatalogueData },
-    } = await query(
-      `
+    } = await query<any>(
+      gql`
         query GetCatalogueData($catalogueFilter: [String!]!) {
           getCatalogueData(catalogueFilter: $catalogueFilter) {
             catalogueTitle

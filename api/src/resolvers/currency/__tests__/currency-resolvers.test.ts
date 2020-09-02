@@ -1,5 +1,6 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CURRENCIES } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Currency', () => {
   it('Should CRUD currency', async () => {
@@ -8,7 +9,7 @@ describe('Currency', () => {
     // Should return all currencies
     const {
       data: { getAllCurrencies },
-    } = await query(`
+    } = await query<any>(gql`
       query GetAllCurrencies {
         getAllCurrencies {
           id
@@ -21,7 +22,7 @@ describe('Currency', () => {
 
     const {
       data: { getCurrency },
-    } = await query(`
+    } = await query<any>(gql`
       query GetCurrency {
         getCurrency(id: "${currentCurrency.id}") {
           id
@@ -33,19 +34,19 @@ describe('Currency', () => {
     expect(getCurrency.nameString).toEqual(currentCurrency.nameString);
 
     // Shouldn't create new currency on validation error
-    const { errors: createCurrencyErrors } = await mutate(
-      `
-      mutation CreateCurrency($input: CreateCurrencyInput!) {
-        createCurrency(input: $input) {
-          success
-          message
-          currency {
-            id
-            nameString
+    const { errors: createCurrencyErrors } = await mutate<any>(
+      gql`
+        mutation CreateCurrency($input: CreateCurrencyInput!) {
+          createCurrency(input: $input) {
+            success
+            message
+            currency {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: { nameString: '' },
@@ -57,19 +58,19 @@ describe('Currency', () => {
     // Shouldn't create new currency on duplicate error
     const {
       data: { createCurrency: createCurrencyError },
-    } = await mutate(
-      `
-      mutation CreateCurrency($input: CreateCurrencyInput!) {
-        createCurrency(input: $input) {
-          success
-          message
-          currency {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation CreateCurrency($input: CreateCurrencyInput!) {
+          createCurrency(input: $input) {
+            success
+            message
+            currency {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: { nameString: currentCurrency.nameString },
@@ -82,19 +83,19 @@ describe('Currency', () => {
     const newCurrencyName = 'cn';
     const {
       data: { createCurrency },
-    } = await mutate(
-      `
-      mutation CreateCurrency($input: CreateCurrencyInput!) {
-        createCurrency(input: $input) {
-          success
-          message
-          currency {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation CreateCurrency($input: CreateCurrencyInput!) {
+          createCurrency(input: $input) {
+            success
+            message
+            currency {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: { nameString: newCurrencyName },
@@ -108,19 +109,19 @@ describe('Currency', () => {
     const updatedCurrencyName = 'ch';
     const {
       data: { updateCurrency },
-    } = await mutate(
-      `
-      mutation UpdateCurrency($input: UpdateCurrencyInput!) {
-        updateCurrency(input: $input) {
-          success
-          message
-          currency {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation UpdateCurrency($input: UpdateCurrencyInput!) {
+          updateCurrency(input: $input) {
+            success
+            message
+            currency {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -136,15 +137,15 @@ describe('Currency', () => {
     // Should delete new currency
     const {
       data: { deleteCurrency },
-    } = await mutate(
-      `
-      mutation DeleteCurrency($id: ID!) {
-        deleteCurrency(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteCurrency($id: ID!) {
+          deleteCurrency(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: updateCurrency.currency.id,

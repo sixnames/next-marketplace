@@ -123,7 +123,6 @@ export class UserResolver {
       const { role, ...values } = input;
       const user = await UserModel.create({
         ...values,
-        itemId: '1',
         password,
         role,
       });
@@ -157,7 +156,7 @@ export class UserResolver {
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateUserInput,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
-  ) {
+  ): Promise<UserPayloadType> {
     try {
       const { id, ...values } = input;
 
@@ -198,7 +197,7 @@ export class UserResolver {
   async deleteUser(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
-  ) {
+  ): Promise<UserPayloadType> {
     try {
       const user = await UserModel.findByIdAndDelete(id);
 
@@ -228,7 +227,7 @@ export class UserResolver {
   async signUp(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: SignUpInput,
-  ) {
+  ): Promise<UserPayloadType> {
     try {
       const exists = await UserModel.exists({ email: input.email });
       if (exists) {
@@ -247,7 +246,6 @@ export class UserResolver {
 
       const user = await UserModel.create({
         ...input,
-        itemId: '1',
         password,
         role: guestRoleId,
       });
@@ -282,7 +280,7 @@ export class UserResolver {
     @Ctx() ctx: ContextInterface,
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: SignInInput,
-  ) {
+  ): Promise<UserPayloadType> {
     try {
       const isSignedOut = ensureSignedOut(ctx.req);
 
@@ -326,7 +324,7 @@ export class UserResolver {
   async signOut(
     @Ctx() ctx: ContextInterface,
     @Localization() { lang }: LocalizationPayloadInterface,
-  ) {
+  ): Promise<UserPayloadType> {
     try {
       const isSignedOut = await attemptSignOut(ctx.req);
 

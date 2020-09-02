@@ -1,11 +1,12 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { DocumentType, getModelForClass, index, plugin, pre, prop } from '@typegoose/typegoose';
+import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { AssetType, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
+import { AutoIncrementID } from '@typegoose/auto-increment';
 
 // Product attribute
 @ObjectType()
@@ -98,21 +99,15 @@ export class ProductCity {
 // Product schema
 @ObjectType()
 @plugin(mongoosePaginate)
-@pre<Product>('save', async function (this: DocumentType<Product>) {
-  const lastItem = await ProductModel.find({}).sort({ itemId: -1 }).limit(1);
-  const itemId = lastItem && lastItem[0] ? `${+lastItem[0].itemId + 1}` : '1';
-  if (this.isNew) {
-    this.itemId = itemId;
-  }
-})
+@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 @index({ '$**': 'text' })
 export class Product extends TimeStamps {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => String)
-  @prop({ required: true, trim: true, default: '1' })
-  itemId: string;
+  @Field(() => Int)
+  @prop()
+  readonly itemId: number;
 
   @Field(() => String)
   readonly nameString: string;

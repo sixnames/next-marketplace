@@ -1,5 +1,6 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, MOCK_COUNTRIES } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Country', () => {
   it('Should CRUD countries and cities', async () => {
@@ -8,26 +9,24 @@ describe('Country', () => {
     // Should return countries list with cities
     const {
       data: { getAllCountries },
-    } = await query(
-      `
-        query GetAllCountries {
-          getAllCountries {
+    } = await query<any>(gql`
+      query GetAllCountries {
+        getAllCountries {
+          id
+          nameString
+          currency
+          cities {
             id
             nameString
-            currency
-            cities {
-              id
-              nameString
-              slug
-              name {
-                key
-                value
-              }
+            slug
+            name {
+              key
+              value
             }
           }
         }
-      `,
-    );
+      }
+    `);
     const currentCountry = getAllCountries[0];
     const countryForDelete = getAllCountries[1];
     const currentCountryCity = currentCountry.cities[0];
@@ -38,8 +37,8 @@ describe('Country', () => {
     // Should return current country
     const {
       data: { getCountry },
-    } = await query(
-      `
+    } = await query<any>(
+      gql`
         query GetCountry($id: ID!) {
           getCountry(id: $id) {
             id
@@ -63,8 +62,8 @@ describe('Country', () => {
     expect(getCountry.nameString).toEqual(currentCountry.nameString);
 
     // Shouldn't create country on validation error
-    const { errors: createCountryErrors } = await mutate(
-      `
+    const { errors: createCountryErrors } = await mutate<any>(
+      gql`
         mutation CreateCountry($input: CreateCountryInput!) {
           createCountry(input: $input) {
             success
@@ -95,8 +94,8 @@ describe('Country', () => {
     // Shouldn't create country on duplicate error
     const {
       data: { createCountry: createCountryDuplicateError },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation CreateCountry($input: CreateCountryInput!) {
           createCountry(input: $input) {
             success
@@ -129,8 +128,8 @@ describe('Country', () => {
     const newCountryCurrency = 'currency';
     const {
       data: { createCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation CreateCountry($input: CreateCountryInput!) {
           createCountry(input: $input) {
             success
@@ -161,8 +160,8 @@ describe('Country', () => {
     expect(createCountry.country.currency).toEqual(newCountryCurrency);
 
     // Shouldn't update country on validation error
-    const { errors: updateCountryErrors } = await mutate(
-      `
+    const { errors: updateCountryErrors } = await mutate<any>(
+      gql`
         mutation UpdateCountry($input: UpdateCountryInput!) {
           updateCountry(input: $input) {
             success
@@ -196,8 +195,8 @@ describe('Country', () => {
     const updatedCountryCurrency = 'new currency';
     const {
       data: { updateCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation UpdateCountry($input: UpdateCountryInput!) {
           updateCountry(input: $input) {
             success
@@ -231,8 +230,8 @@ describe('Country', () => {
     // Should delete country
     const {
       data: { deleteCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation deleteCountry($id: ID!) {
           deleteCountry(id: $id) {
             success
@@ -246,8 +245,8 @@ describe('Country', () => {
         },
       },
     );
-    const { errors } = await mutate(
-      `
+    const { errors } = await mutate<any>(
+      gql`
         query GetCity($id: ID!) {
           getCity(id: $id) {
             id
@@ -264,8 +263,8 @@ describe('Country', () => {
     expect(errors).toBeDefined();
 
     // Shouldn't create city on validation error
-    const { errors: addCityToCountryErrors } = await mutate(
-      `
+    const { errors: addCityToCountryErrors } = await mutate<any>(
+      gql`
         mutation AddCityToCountry($input: AddCityToCountryInput!) {
           addCityToCountry(input: $input) {
             success
@@ -297,8 +296,8 @@ describe('Country', () => {
     // Shouldn't create city on duplicate error
     const {
       data: { addCityToCountry: addCityToCountryDuplicate },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation AddCityToCountry($input: AddCityToCountryInput!) {
           addCityToCountry(input: $input) {
             success
@@ -332,8 +331,8 @@ describe('Country', () => {
     const newCityName = 'City';
     const {
       data: { addCityToCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation AddCityToCountry($input: AddCityToCountryInput!) {
           addCityToCountry(input: $input) {
             success
@@ -370,8 +369,8 @@ describe('Country', () => {
     expect(createdCity.slug).toEqual(newCitySlug);
 
     // Shouldn't update city in country on validation error
-    const { errors: updateCityInCountryErrors } = await mutate(
-      `
+    const { errors: updateCityInCountryErrors } = await mutate<any>(
+      gql`
         mutation UpdateCityInCountry($input: UpdateCityInCountryInput!) {
           updateCityInCountry(input: $input) {
             success
@@ -407,8 +406,8 @@ describe('Country', () => {
     const updatedCityName = 'updated';
     const {
       data: { updateCityInCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation UpdateCityInCountry($input: UpdateCityInCountryInput!) {
           updateCityInCountry(input: $input) {
             success
@@ -445,8 +444,8 @@ describe('Country', () => {
     expect(updatedCity.slug).toEqual(updatedCitySlug);
 
     // Shouldn't delete city from country on validation error
-    const { errors: deleteCityFromCountryErrors } = await mutate(
-      `
+    const { errors: deleteCityFromCountryErrors } = await mutate<any>(
+      gql`
         mutation DeleteCityFromCountry($input: DeleteCityFromCountryInput!) {
           deleteCityFromCountry(input: $input) {
             success
@@ -478,8 +477,8 @@ describe('Country', () => {
     // Should delete city from country
     const {
       data: { deleteCityFromCountry },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation DeleteCityFromCountry($input: DeleteCityFromCountryInput!) {
           deleteCityFromCountry(input: $input) {
             success

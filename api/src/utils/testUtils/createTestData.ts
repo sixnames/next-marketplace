@@ -316,7 +316,6 @@ const createTestData = async () => {
 
     // for delete
     await ProductModel.create({
-      itemId: '1',
       cities: await getProductCities(
         {
           ...MOCK_PRODUCT_B,
@@ -329,7 +328,6 @@ const createTestData = async () => {
 
     // for second rubric in third level
     await ProductModel.create({
-      itemId: '1',
       cities: await getProductCities({
         ...MOCK_PRODUCT_C,
         ...productAttributes(optionsSlugsColor[0], optionsSlugsWineType[0]),
@@ -340,7 +338,6 @@ const createTestData = async () => {
     // main product
     // const product = await ProductModel.create({
     await ProductModel.create({
-      itemId: '1',
       cities: await getProductCities({
         ...MOCK_PRODUCT_A,
         ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),

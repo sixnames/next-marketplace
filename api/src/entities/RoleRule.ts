@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OPERATION_TYPE_ENUM } from '../config';
 
 export enum RoleRuleOperationTypeEnum {
@@ -55,7 +55,7 @@ export class RoleRule {
 
   @Field((_type) => [RoleRuleOperation])
   @prop({ ref: RoleRuleOperation })
-  operations: Ref<RoleRuleOperation>[];
+  operations: string[];
 
   @Field((_type) => [String])
   @prop({ type: String })

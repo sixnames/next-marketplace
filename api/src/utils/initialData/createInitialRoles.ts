@@ -9,7 +9,6 @@ import {
   ROLE_RULE_OPERATIONS_TEMPLATE,
 } from '../../config';
 import { NavItemModel } from '../../entities/NavItem';
-import { Types } from 'mongoose';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 
 interface CreateInitialAppNavigationInterface {
@@ -35,7 +34,7 @@ export async function createInitialAppNavigation({
         const createdNavItem = await NavItemModel.create({
           ...rest,
           slug,
-          parent: parentId ? Types.ObjectId(parentId) : null,
+          parent: parentId ? parentId : null,
           icon: icon ? icon : null,
           children: [],
         });
@@ -44,7 +43,7 @@ export async function createInitialAppNavigation({
         if (parentId) {
           await NavItemModel.findByIdAndUpdate(parentId, {
             $addToSet: {
-              children: Types.ObjectId(createdNavItem.id),
+              children: createdNavItem.id,
             },
           });
         }
@@ -53,7 +52,7 @@ export async function createInitialAppNavigation({
         if (parentId) {
           await NavItemModel.findByIdAndUpdate(parentId, {
             $addToSet: {
-              children: Types.ObjectId(existingNavItem.id),
+              children: existingNavItem.id,
             },
           });
         }

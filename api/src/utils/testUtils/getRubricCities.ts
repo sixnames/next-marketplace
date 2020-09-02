@@ -1,6 +1,5 @@
 import { LanguageType } from '../../entities/common';
 import { RubricAttributesGroup, RubricCatalogueTitle } from '../../entities/Rubric';
-import { Types } from 'mongoose';
 import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '../../config';
 
 export interface GetRubricCitiesInterface {
@@ -9,7 +8,7 @@ export interface GetRubricCitiesInterface {
   level: number;
   slug: string;
   variant: string;
-  parent?: Types.ObjectId | null;
+  parent?: string | null;
   attributesGroups: Omit<RubricAttributesGroup, 'id'>[];
 }
 

@@ -5,7 +5,7 @@ import { LanguageType } from '../generated/apolloComponents';
 
 export interface ProductsListItemInterface {
   id: string;
-  itemId: string;
+  itemId: number;
   name: LanguageType[];
   nameString: string;
   price: number;

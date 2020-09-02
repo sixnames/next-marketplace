@@ -2,9 +2,8 @@ import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/initialQuery';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
-import { NormalizedCacheObject } from 'apollo-cache-inmemory';
-import ApolloClient from 'apollo-client';
 import privateRouteHandler from './privateRouteHandler';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 
 export type SitePagePropsType<T = undefined> = {
   initialApolloState: InitialSiteQueryQueryResult['data'];

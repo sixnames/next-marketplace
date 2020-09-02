@@ -5,6 +5,7 @@ import {
   GENDER_ENUMS,
   ISO_LANGUAGES,
 } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Select options', () => {
   it('Should return select options', async () => {
@@ -13,7 +14,7 @@ describe('Select options', () => {
     // Should return gender options
     const {
       data: { getGenderOptions },
-    } = await query(`
+    } = await query<any>(gql`
       query GetGenderOptions {
         getGenderOptions {
           id
@@ -26,7 +27,7 @@ describe('Select options', () => {
     // Should return attribute variant options
     const {
       data: { getAttributeVariants },
-    } = await query(`
+    } = await query<any>(gql`
       query GetAttributeVariants {
         getAttributeVariants {
           id
@@ -39,7 +40,7 @@ describe('Select options', () => {
     // Should return attribute positioning options
     const {
       data: { getAttributePositioningOptions },
-    } = await query(`
+    } = await query<any>(gql`
       query GetAttributePositioningOptions {
         getAttributePositioningOptions {
           id
@@ -52,7 +53,7 @@ describe('Select options', () => {
     // Should return ISO language options
     const {
       data: { getISOLanguagesList },
-    } = await query(`
+    } = await query<any>(gql`
       query GetISOLanguagesList {
         getISOLanguagesList {
           id

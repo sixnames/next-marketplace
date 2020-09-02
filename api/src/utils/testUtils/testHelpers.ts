@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { testClient } from '../../../test/setup';
-import { TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
+import { StringOrAst, TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, DEFAULT_CITY, DEFAULT_LANG } from '../../config';
 import { User } from '../../entities/User';
 import mime from 'mime-types';
+import { gql } from 'apollo-server-express';
 import { Upload } from '../../types/upload';
 
 interface WithUserMutationInterface {
@@ -54,39 +55,39 @@ export async function authenticatedTestClient(): Promise<AuthenticatedUserMutati
     data: {
       signIn: { user },
     },
-  } = await mutate(
-    `
-  mutation SignIn($input: SignInInput!) {
-    signIn(input: $input) {
-      success
-      message
-      user {
-        id
-        itemId
-        name
-        shortName
-        fullName
-        role {
-          id
-          nameString
-          description
-          slug
-          isStuff
-          rules {
-            nameString
-            entity
-            restrictedFields
-            operations {
-              operationType
-              allow
-              customFilter
+  } = await mutate<any>(
+    gql`
+      mutation SignIn($input: SignInInput!) {
+        signIn(input: $input) {
+          success
+          message
+          user {
+            id
+            itemId
+            name
+            shortName
+            fullName
+            role {
+              id
+              nameString
+              description
+              slug
+              isStuff
+              rules {
+                nameString
+                entity
+                restrictedFields
+                operations {
+                  operationType
+                  allow
+                  customFilter
+                }
+              }
             }
           }
         }
       }
-    }
-  }
-  `,
+    `,
     {
       variables: {
         input: {
@@ -106,7 +107,7 @@ interface GetTestStreamsInterface {
 }
 
 interface MutateInterface extends GetTestStreamsInterface {
-  mutation: string;
+  mutation: StringOrAst;
   input: (files: Promise<Upload>[]) => void;
 }
 

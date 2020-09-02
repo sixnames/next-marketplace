@@ -1,4 +1,4 @@
-import createTestData from '../src/utils/testUtils/createTestData';
+import createTestData from '../utils/testUtils/createTestData';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
@@ -33,10 +33,10 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
-} from '../src/config';
+} from '../config';
 import { Request, Response } from 'express';
-import clearTestData from '../src/utils/testUtils/clearTestData';
-import { attemptSignIn } from '../src/utils/auth/auth';
+import clearTestData from '../utils/testUtils/clearTestData';
+import { attemptSignIn } from '../utils/auth/auth';
 
 export async function getMockDataRoute(_: Request, res: Response) {
   res.send({

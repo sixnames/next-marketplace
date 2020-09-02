@@ -1,6 +1,7 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG, ISO_LANGUAGES, MOCK_LANGUAGES } from '../../../config';
 import { Language } from '../../../entities/Language';
+import { gql } from 'apollo-server-express';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
@@ -9,7 +10,7 @@ describe('Language', () => {
     // Should return client language stored in context
     const {
       data: { getClientLanguage },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getClientLanguage
       }
@@ -19,7 +20,7 @@ describe('Language', () => {
     // Should return all languages and languages ISO list
     const {
       data: { getAllLanguages, getISOLanguagesList },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getAllLanguages {
           id
@@ -41,15 +42,15 @@ describe('Language', () => {
     const currentLanguage = getAllLanguages[0];
     const {
       data: { getLanguage },
-    } = await query(
-      `
-      query GetLanguage($id: ID!){
-        getLanguage(id: $id) {
-          id
-          name
+    } = await query<any>(
+      gql`
+        query GetLanguage($id: ID!) {
+          getLanguage(id: $id) {
+            id
+            name
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: currentLanguage.id,
@@ -59,19 +60,19 @@ describe('Language', () => {
     expect(getLanguage.id).toEqual(currentLanguage.id);
 
     // Shouldn't create language on validation error
-    const { errors: createLanguageErrors } = await mutate(
-      `
-      mutation CreateLanguage($input: CreateLanguageInput!){
-        createLanguage(input: $input) {
-          success
-          message
-          language {
-            id
-            name
+    const { errors: createLanguageErrors } = await mutate<any>(
+      gql`
+        mutation CreateLanguage($input: CreateLanguageInput!) {
+          createLanguage(input: $input) {
+            success
+            message
+            language {
+              id
+              name
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -87,19 +88,19 @@ describe('Language', () => {
     // Shouldn't create language on duplicate error
     const {
       data: { createLanguage: createLanguageWithDuplicateError },
-    } = await mutate(
-      `
-      mutation CreateLanguage($input: CreateLanguageInput!){
-        createLanguage(input: $input) {
-          success
-          message
-          language {
-            id
-            name
+    } = await mutate<any>(
+      gql`
+        mutation CreateLanguage($input: CreateLanguageInput!) {
+          createLanguage(input: $input) {
+            success
+            message
+            language {
+              id
+              name
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -119,21 +120,21 @@ describe('Language', () => {
 
     const {
       data: { createLanguage },
-    } = await mutate(
-      `
-      mutation CreateLanguage($input: CreateLanguageInput!){
-        createLanguage(input: $input) {
-          success
-          message
-          language {
-            id
-            name
-            key
-            isDefault
+    } = await mutate<any>(
+      gql`
+        mutation CreateLanguage($input: CreateLanguageInput!) {
+          createLanguage(input: $input) {
+            success
+            message
+            language {
+              id
+              name
+              key
+              isDefault
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -152,21 +153,21 @@ describe('Language', () => {
     // Should set language as default
     const {
       data: { setLanguageAsDefault },
-    } = await mutate(
-      `
-      mutation SetLanguageAsDefault($id: ID!){
-        setLanguageAsDefault(id: $id) {
-          success
-          message
-          language {
-            id
-            name
-            key
-            isDefault
+    } = await mutate<any>(
+      gql`
+        mutation SetLanguageAsDefault($id: ID!) {
+          setLanguageAsDefault(id: $id) {
+            success
+            message
+            language {
+              id
+              name
+              key
+              isDefault
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: createLanguage.language.id,
@@ -175,7 +176,7 @@ describe('Language', () => {
     );
     const {
       data: { getAllLanguages: updatedAllLanguages },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getAllLanguages {
           id
@@ -200,21 +201,21 @@ describe('Language', () => {
     const languageNewNativeName = 'native';
     const {
       data: { updateLanguage },
-    } = await mutate(
-      `
-      mutation UpdateLanguage($input: UpdateLanguageInput!){
-        updateLanguage(input: $input) {
-          success
-          message
-          language {
-            id
-            name
-            key
-            isDefault
+    } = await mutate<any>(
+      gql`
+        mutation UpdateLanguage($input: UpdateLanguageInput!) {
+          updateLanguage(input: $input) {
+            success
+            message
+            language {
+              id
+              name
+              key
+              isDefault
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -234,15 +235,15 @@ describe('Language', () => {
     // Shouldn't delete default language
     const {
       data: { deleteLanguage: deleteLanguageWithError },
-    } = await mutate(
-      `
-      mutation DeleteLanguage($id: ID!){
-        deleteLanguage(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteLanguage($id: ID!) {
+          deleteLanguage(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: updatedDefaultLanguage.id,
@@ -254,15 +255,15 @@ describe('Language', () => {
     // Should delete language
     const {
       data: { deleteLanguage },
-    } = await mutate(
-      `
-      mutation DeleteLanguage($id: ID!){
-        deleteLanguage(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteLanguage($id: ID!) {
+          deleteLanguage(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: oldDefaultLanguage.id,

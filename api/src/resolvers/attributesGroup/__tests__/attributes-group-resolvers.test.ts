@@ -4,13 +4,14 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
 } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 const addAttributeToGroupMutation = (
   groupId: string,
   name = attributeForGroup.name[0].value,
   variant = attributeForGroup.variant,
 ) => {
-  return `
+  return gql`
         mutation {
           addAttributeToGroup (
             input: {
@@ -51,7 +52,7 @@ describe('Attributes Groups', () => {
     // Should return all attributes groups
     const {
       data: { getAllAttributesGroups },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getAllAttributesGroups {
           id
@@ -65,7 +66,7 @@ describe('Attributes Groups', () => {
     // Should return current attributes group.
     const {
       data: { getAttributesGroup },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getAttributesGroup(id: "${group.id}") {
           id
@@ -76,8 +77,8 @@ describe('Attributes Groups', () => {
     expect(getAttributesGroup.nameString).toEqual(group.nameString);
 
     // Shouldn't create attributes group on validation error.
-    const { errors: createAttributesErrors } = await mutate(
-      `
+    const { errors: createAttributesErrors } = await mutate<any>(
+      gql`
         mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
           createAttributesGroup(input: $input) {
             success
@@ -102,8 +103,8 @@ describe('Attributes Groups', () => {
       data: {
         createAttributesGroup: { success: createDuplicateAttributesGroupSuccess },
       },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
           createAttributesGroup(input: $input) {
             success
@@ -127,8 +128,8 @@ describe('Attributes Groups', () => {
     // Should create attributes group.
     const {
       data: { createAttributesGroup },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
           createAttributesGroup(input: $input) {
             success
@@ -153,8 +154,8 @@ describe('Attributes Groups', () => {
     // Should update attributes group.
     const {
       data: { updateAttributesGroup },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
           updateAttributesGroup(input: $input) {
             success
@@ -179,7 +180,7 @@ describe('Attributes Groups', () => {
     expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
 
     // Shouldn't create attribute and return validation error.
-    const { errors: addAttributeToGroupErrors } = await mutate(
+    const { errors: addAttributeToGroupErrors } = await mutate<any>(
       addAttributeToGroupMutation(group.id, 'f'),
     );
     expect(addAttributeToGroupErrors).toBeDefined();
@@ -192,7 +193,7 @@ describe('Attributes Groups', () => {
           success,
         },
       },
-    } = await mutate(addAttributeToGroupMutation(group.id));
+    } = await mutate<any>(addAttributeToGroupMutation(group.id));
     const addedAttribute = attributes.find((attribute: any) => {
       return attribute.nameString === attributeForGroup.name[0].value;
     });
@@ -209,12 +210,10 @@ describe('Attributes Groups', () => {
         updateAttributeInGroup: { group: updatedGroup },
         updateAttributeInGroup,
       },
-    } = await mutate(
-      `
+    } = await mutate<any>(
+      gql`
         mutation UpdateAttributeInGroup($input: UpdateAttributeInGroupInput!) {
-          updateAttributeInGroup (
-            input: $input
-          ) {
+          updateAttributeInGroup(input: $input) {
             success
             message
             group {
@@ -260,7 +259,7 @@ describe('Attributes Groups', () => {
           success: successAfterAttributeDelete,
         },
       },
-    } = await mutate(`
+    } = await mutate<any>(gql`
         mutation {
           deleteAttributeFromGroup (
             input: {
@@ -285,7 +284,7 @@ describe('Attributes Groups', () => {
     // Should delete attributes group.
     const {
       data: { deleteAttributesGroup },
-    } = await mutate(`
+    } = await mutate<any>(gql`
         mutation {
           deleteAttributesGroup (
             id: "${group.id}"

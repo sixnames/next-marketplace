@@ -4,6 +4,7 @@ import getLangField from '../../../utils/translations/getLangField';
 import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '../../../config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
+import { gql } from 'apollo-server-express';
 
 describe('Rubrics', () => {
   it('Should rubrics CRUD', async () => {
@@ -13,7 +14,7 @@ describe('Rubrics', () => {
     // Should return rubrics tree
     const {
       data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getAllRubricVariants {
           id
@@ -55,7 +56,9 @@ describe('Rubrics', () => {
               totalProductsCount
               activeProductsCount
               products {
-                docs { id }
+                docs {
+                  id
+                }
               }
             }
           }
@@ -78,7 +81,7 @@ describe('Rubrics', () => {
     );
 
     // Should return current rubric and it's products
-    const { data } = await query(`
+    const { data } = await query<any>(gql`
       query {
         getRubric(id: "${rubricLevelOne.id}") {
           id
@@ -118,7 +121,7 @@ describe('Rubrics', () => {
     // Should return current rubric by slug
     const {
       data: { getRubricBySlug },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getRubricBySlug(slug: "${data.getRubric.slug}") {
           id
@@ -139,14 +142,12 @@ describe('Rubrics', () => {
 
     // Should return duplicate rubric error on rubric create
     const { mutate } = await authenticatedTestClient();
-    const { data: exists } = await mutate(`
+    const duplicateName = getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG);
+    const { data: exists } = await mutate<any>(gql`
       mutation {
         createRubric(
           input: {
-            name: [{key: "${DEFAULT_LANG}", value: "${getLangField(
-      MOCK_RUBRIC_LEVEL_ONE.name,
-      DEFAULT_LANG,
-    )}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${duplicateName}"}]
             catalogueTitle: {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
@@ -170,7 +171,7 @@ describe('Rubrics', () => {
     // Should create rubric
     const {
       data: { createRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         createRubric(
           input: {
@@ -207,17 +208,15 @@ describe('Rubrics', () => {
     expect(createRubric.rubric.nameString).toEqual(testRubric.name);
 
     // Should return duplicate rubric error on rubric update
+    const duplicateNameOnUpdate = getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG);
     const {
       data: { updateRubric: falseUpdateRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         updateRubric(
           input: {
             id: "${createRubric.rubric.id}"
-            name: [{key: "${DEFAULT_LANG}", value: "${getLangField(
-      MOCK_RUBRIC_LEVEL_ONE.name,
-      DEFAULT_LANG,
-    )}"}]
+            name: [{key: "${DEFAULT_LANG}", value: "${duplicateNameOnUpdate}"}]
             catalogueTitle: {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
@@ -241,7 +240,7 @@ describe('Rubrics', () => {
     // Should update rubric
     const {
       data: { updateRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         updateRubric(
           input: {
@@ -279,7 +278,7 @@ describe('Rubrics', () => {
       data: {
         addAttributesGroupToRubric: { rubric, success },
       },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         addAttributesGroupToRubric(
           input: {
@@ -321,7 +320,7 @@ describe('Rubrics', () => {
     // Should update attributes group in rubric
     const {
       data: { updateAttributesGroupInRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         updateAttributesGroupInRubric(
           input: {
@@ -358,7 +357,7 @@ describe('Rubrics', () => {
     // Should delete attributes group from rubric
     const {
       data: { deleteAttributesGroupFromRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         deleteAttributesGroupFromRubric(
           input: {
@@ -418,7 +417,7 @@ describe('Rubrics', () => {
 
     const {
       data: { addProductToRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         addProductToRubric(
           input: {
@@ -447,7 +446,7 @@ describe('Rubrics', () => {
     );
 
     // Should return added product to third level rubric on first level
-    const { data: firstLevelRubricProducts } = await query(`
+    const { data: firstLevelRubricProducts } = await query<any>(gql`
       query {
         getRubric(id: "${rubricLevelOne.id}") {
           id
@@ -470,7 +469,7 @@ describe('Rubrics', () => {
     // Should delete product from third level rubric
     const {
       data: { deleteProductFromRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         deleteProductFromRubric(
           input: {
@@ -501,7 +500,7 @@ describe('Rubrics', () => {
     // Should delete rubric
     const {
       data: { deleteRubric },
-    } = await mutate(`
+    } = await mutate<any>(gql`
       mutation {
         deleteRubric(
           id: "${rubricLevelOne.id}"

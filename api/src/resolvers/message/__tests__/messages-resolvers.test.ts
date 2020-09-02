@@ -1,5 +1,6 @@
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Language', () => {
   it('Should CRUD language', async () => {
@@ -9,14 +10,14 @@ describe('Language', () => {
     // Should return message list
     const {
       data: { getMessagesByKeys },
-    } = await query(
-      `
-      query GetMessagesByKeys($keys: [String!]!) {
-        getMessagesByKeys(keys: $keys) {
-          key
+    } = await query<any>(
+      gql`
+        query GetMessagesByKeys($keys: [String!]!) {
+          getMessagesByKeys(keys: $keys) {
+            key
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           keys,
@@ -28,18 +29,18 @@ describe('Language', () => {
     // Should return current message
     const {
       data: { getMessage },
-    } = await query(
-      `
-      query GetMessage($key: String!) {
-        getMessage(key: $key) {
-          key
-          message {
+    } = await query<any>(
+      gql`
+        query GetMessage($key: String!) {
+          getMessage(key: $key) {
             key
-            value
+            message {
+              key
+              value
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           key: 'validation.email',
@@ -52,8 +53,7 @@ describe('Language', () => {
     // Should return validation messages
     const {
       data: { getValidationMessages },
-    } = await query(
-      `
+    } = await query<any>(gql`
       query GetValidationMessages {
         getValidationMessages {
           key
@@ -63,8 +63,7 @@ describe('Language', () => {
           }
         }
       }
-    `,
-    );
+    `);
     expect(getValidationMessages).toBeDefined();
   });
 });

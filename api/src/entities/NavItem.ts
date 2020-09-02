@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { LanguageType } from './common';
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 
 @ObjectType()
 export class NavItem {
@@ -35,11 +35,11 @@ export class NavItem {
 
   @Field((_type) => NavItem, { nullable: true })
   @prop({ ref: NavItem })
-  parent?: Ref<NavItem> | null;
+  parent?: string | null;
 
   @Field((_type) => [NavItem], { nullable: true })
   @prop({ ref: NavItem })
-  children: Ref<NavItem>[];
+  children: string[];
 }
 
 export const NavItemModel = getModelForClass(NavItem);

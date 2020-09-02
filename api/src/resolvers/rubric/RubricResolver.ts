@@ -25,7 +25,7 @@ import { generateDefaultLangSlug } from '../../utils/slug';
 import PayloadType from '../common/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
 import { UpdateRubricInput } from './UpdateRubricInput';
-import { FilterQuery, Types } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { AddAttributesGroupToRubricInput } from './AddAttributesGroupToRubricInput';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
@@ -76,7 +76,7 @@ import {
 interface ParentRelatedDataInterface {
   variant: string;
   level: number;
-  parent?: Types.ObjectId | null;
+  parent?: string | null;
 }
 
 const {
@@ -168,7 +168,7 @@ export class RubricResolver {
       if (parentRubric) {
         const parentCity = getCityData(parentRubric.cities, city);
         parentRelatedData.level = parentCity!.node.level + RUBRIC_LEVEL_STEP;
-        parentRelatedData.parent = Types.ObjectId(parent);
+        parentRelatedData.parent = parent;
       }
 
       const rubric = await RubricModel.create({

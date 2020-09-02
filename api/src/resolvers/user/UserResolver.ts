@@ -15,6 +15,7 @@ import { CreateUserInput } from './CreateUserInput';
 import generator from 'generate-password';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateUserInput } from './UpdateUserInput';
+import { UpdateMyProfileInput } from './UpdateMyProfileInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
@@ -37,6 +38,7 @@ import {
   createUserSchema,
   signInValidationSchema,
   signUpValidationSchema,
+  updateMyProfileSchema,
   updateUserSchema,
 } from '../../validation/userSchema';
 import {
@@ -159,6 +161,59 @@ export class UserResolver {
   ): Promise<UserPayloadType> {
     try {
       const { id, ...values } = input;
+
+      const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
+      if (exists) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.duplicate`, lang }),
+        };
+      }
+
+      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
+        new: true,
+      });
+
+      if (!user) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `users.update.success`, lang }),
+        user,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    schema: updateMyProfileSchema,
+  })
+  async updateMyProfile(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: UpdateMyProfileInput,
+    @SessionUserId() sessionUserId: string,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
+  ): Promise<UserPayloadType> {
+    try {
+      const { id, ...values } = input;
+
+      if (id !== sessionUserId) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
 
       const exists = await UserModel.exists({ _id: { $ne: id }, email: input.email });
       if (exists) {

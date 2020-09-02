@@ -98,6 +98,16 @@ const userRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
     }),
   );
 
+export const updateMyProfileSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    id: userIdSchema(args),
+    email: emailSchema(args),
+    name: userNameSchema(args),
+    lastName: userLastNameSchema(args),
+    secondName: userSecondNameSchema(args),
+    phone: phoneSchema(args),
+  });
+
 export const updateUserSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: userIdSchema(args),

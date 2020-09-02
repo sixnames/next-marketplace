@@ -374,6 +374,7 @@ type Mutation {
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
+  updateMyProfile(input: UpdateMyProfileInput!): UserPayloadType!
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateProduct(input: UpdateProductInput!): ProductPayloadType!
@@ -857,6 +858,15 @@ input UpdateLanguageInput {
 input UpdateMetricInput {
   id: ID!
   name: [LangInput!]!
+}
+
+input UpdateMyProfileInput {
+  email: String!
+  id: ID!
+  lastName: String
+  name: String!
+  phone: String!
+  secondName: String
 }
 
 input UpdateOptionInGroupInput {

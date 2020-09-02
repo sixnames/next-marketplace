@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop, prop as Property, Ref } from '@typegoose/typegoose';
+import { getModelForClass, prop, prop as Property } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { GenderEnum, LanguageType } from './common';
@@ -84,7 +84,7 @@ export class RubricNode {
 
   @Field(() => Rubric, { nullable: true })
   @Property({ ref: 'Rubric' })
-  parent?: Ref<Rubric> | null;
+  parent?: string | null;
 
   @Field(() => [RubricAttributesGroup])
   @Property({ type: RubricAttributesGroup })

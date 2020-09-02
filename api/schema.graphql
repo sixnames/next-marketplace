@@ -472,7 +472,7 @@ type Product {
   description: [LanguageType!]!
   descriptionString: String!
   id: ID!
-  itemId: String!
+  itemId: Int!
   mainImage: String!
   name: [LanguageType!]!
   nameString: String!
@@ -922,7 +922,7 @@ type User {
   email: String!
   fullName: String!
   id: ID!
-  itemId: String!
+  itemId: Int!
   lastName: String
   name: String!
   phone: String!

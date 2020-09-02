@@ -12,6 +12,7 @@ import {
 import { Role, RoleModel } from '../../../entities/Role';
 import { RoleRule, RoleRuleOperation } from '../../../entities/RoleRule';
 import { NavItemModel } from '../../../entities/NavItem';
+import { gql } from 'apollo-server-express';
 
 describe('Roles', () => {
   it('Should return guest session role', async () => {
@@ -23,8 +24,7 @@ describe('Roles', () => {
 
     const {
       data: { getSessionRole },
-    } = await query(
-      `
+    } = await query<any>(gql`
       query GetSessionRole {
         getSessionRole {
           id
@@ -56,8 +56,7 @@ describe('Roles', () => {
           }
         }
       }
-    `,
-    );
+    `);
     expect(getSessionRole.id).toEqual(guestRole.id);
   });
 
@@ -67,7 +66,7 @@ describe('Roles', () => {
     // Should return all roles list
     const {
       data: { getAllRoles },
-    } = await query(`
+    } = await query<any>(gql`
       query GetAllRoles {
         getAllRoles {
           id
@@ -94,28 +93,28 @@ describe('Roles', () => {
     // Should return current role
     const {
       data: { getRole },
-    } = await query(
-      `
-      query GetRole($id: ID!) {
-        getRole(id: $id) {
-          id
-          nameString
-          description
-          slug
-          isStuff
-          rules {
+    } = await query<any>(
+      gql`
+        query GetRole($id: ID!) {
+          getRole(id: $id) {
+            id
             nameString
-            entity
-            restrictedFields
-            operations {
-              operationType
-              allow
-              customFilter
+            description
+            slug
+            isStuff
+            rules {
+              nameString
+              entity
+              restrictedFields
+              operations {
+                operationType
+                allow
+                customFilter
+              }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: adminRole.id,
@@ -127,8 +126,7 @@ describe('Roles', () => {
     // Should return admin session role
     const {
       data: { getSessionRole },
-    } = await query(
-      `
+    } = await query<any>(gql`
       query GetSessionRole {
         getSessionRole {
           id
@@ -162,8 +160,7 @@ describe('Roles', () => {
           }
         }
       }
-    `,
-    );
+    `);
     expect(getSessionRole.id).toEqual(adminRole.id);
 
     // Shouldn't create role on duplicate error
@@ -171,15 +168,15 @@ describe('Roles', () => {
     const duplicateRoleDescription = 'newRoleDescription';
     const {
       data: { createRole: createRoleDuplicateError },
-    } = await mutate(
-      `
-      mutation CreateRole($input: CreateRoleInput!) {
-        createRole(input: $input) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation CreateRole($input: CreateRoleInput!) {
+          createRole(input: $input) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -193,15 +190,15 @@ describe('Roles', () => {
     expect(createRoleDuplicateError.success).toBeFalsy();
 
     // Shouldn't update role on validation error
-    const { errors: createRoleErrors } = await mutate(
-      `
-      mutation CreateRole($input: CreateRoleInput!) {
-        createRole(input: $input) {
-          success
-          message
+    const { errors: createRoleErrors } = await mutate<any>(
+      gql`
+        mutation CreateRole($input: CreateRoleInput!) {
+          createRole(input: $input) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -219,32 +216,32 @@ describe('Roles', () => {
     const newRoleDescription = 'newRoleDescription';
     const {
       data: { createRole },
-    } = await mutate(
-      `
-      mutation CreateRole($input: CreateRoleInput!) {
-        createRole(input: $input) {
-          success
-          message
-          role {
-            id
-            nameString
-            description
-            rules {
+    } = await mutate<any>(
+      gql`
+        mutation CreateRole($input: CreateRoleInput!) {
+          createRole(input: $input) {
+            success
+            message
+            role {
               id
               nameString
-              entity
-              restrictedFields
-              operations {
+              description
+              rules {
                 id
-                operationType
-                allow
-                customFilter
+                nameString
+                entity
+                restrictedFields
+                operations {
+                  id
+                  operationType
+                  allow
+                  customFilter
+                }
               }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -261,15 +258,15 @@ describe('Roles', () => {
     expect(createdRole.description).toEqual(newRoleDescription);
 
     // Shouldn't update role main info on validation error
-    const { errors: updateRoleErrors } = await mutate(
-      `
-      mutation UpdateRole($input: UpdateRoleInput!) {
-        updateRole(input: $input) {
-          success
-          message
+    const { errors: updateRoleErrors } = await mutate<any>(
+      gql`
+        mutation UpdateRole($input: UpdateRoleInput!) {
+          updateRole(input: $input) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -288,20 +285,20 @@ describe('Roles', () => {
     const updatedRoleDescription = 'updatedRoleDescription';
     const {
       data: { updateRole },
-    } = await mutate(
-      `
-      mutation UpdateRole($input: UpdateRoleInput!) {
-        updateRole(input: $input) {
-          success
-          message
-          role {
-            id
-            nameString
-            description
+    } = await mutate<any>(
+      gql`
+        mutation UpdateRole($input: UpdateRoleInput!) {
+          updateRole(input: $input) {
+            success
+            message
+            role {
+              id
+              nameString
+              description
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -327,31 +324,31 @@ describe('Roles', () => {
     );
     const {
       data: { setRoleOperationPermission },
-    } = await mutate(
-      `
-      mutation SetRoleOperationPermission($input: SetRoleOperationPermissionInput!) {
-        setRoleOperationPermission(input: $input) {
-          success
-          message
-          role {
-            id
-            nameString
-            description
-            rules {
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleOperationPermission($input: SetRoleOperationPermissionInput!) {
+          setRoleOperationPermission(input: $input) {
+            success
+            message
+            role {
               id
               nameString
-              entity
-              restrictedFields
-              operations {
-                operationType
-                allow
-                customFilter
+              description
+              rules {
+                id
+                nameString
+                entity
+                restrictedFields
+                operations {
+                  operationType
+                  allow
+                  customFilter
+                }
               }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -375,31 +372,31 @@ describe('Roles', () => {
     const operationCustomFilter = '{"_id": "__authenticatedUser"}';
     const {
       data: { setRoleOperationCustomFilter },
-    } = await mutate(
-      `
-      mutation SetRoleOperationCustomFilter($input: SetRoleOperationCustomFilterInput!) {
-        setRoleOperationCustomFilter(input: $input) {
-          success
-          message
-          role {
-            id
-            nameString
-            description
-            rules {
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleOperationCustomFilter($input: SetRoleOperationCustomFilterInput!) {
+          setRoleOperationCustomFilter(input: $input) {
+            success
+            message
+            role {
               id
               nameString
-              entity
-              restrictedFields
-              operations {
-                operationType
-                allow
-                customFilter
+              description
+              rules {
+                id
+                nameString
+                entity
+                restrictedFields
+                operations {
+                  operationType
+                  allow
+                  customFilter
+                }
               }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -423,22 +420,22 @@ describe('Roles', () => {
     const restrictedField = 'email';
     const {
       data: { setRoleRuleRestrictedField },
-    } = await mutate(
-      `
-      mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
-        setRoleRuleRestrictedField(input: $input) {
-          success
-          message
-          role {
-            id
-            rules {
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+          setRoleRuleRestrictedField(input: $input) {
+            success
+            message
+            role {
               id
-              restrictedFields
+              rules {
+                id
+                restrictedFields
+              }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -458,22 +455,22 @@ describe('Roles', () => {
     // Should unset role rule restricted fields
     const {
       data: { setRoleRuleRestrictedField: unsetRoleRuleRestrictedField },
-    } = await mutate(
-      `
-      mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
-        setRoleRuleRestrictedField(input: $input) {
-          success
-          message
-          role {
-            id
-            rules {
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleRuleRestrictedField($input: SetRoleRuleRestrictedFieldInput!) {
+          setRoleRuleRestrictedField(input: $input) {
+            success
+            message
+            role {
               id
-              restrictedFields
+              rules {
+                id
+                restrictedFields
+              }
             }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -497,19 +494,19 @@ describe('Roles', () => {
     }
     const {
       data: { setRoleAllowedNavItem },
-    } = await mutate(
-      `
-      mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
-        setRoleAllowedNavItem(input: $input) {
-          success
-          message
-          role {
-            id
-            allowedAppNavigation
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+          setRoleAllowedNavItem(input: $input) {
+            success
+            message
+            role {
+              id
+              allowedAppNavigation
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -525,19 +522,19 @@ describe('Roles', () => {
     // Should unset role rule allowed nav item
     const {
       data: { setRoleAllowedNavItem: unsetRoleAllowedNavItem },
-    } = await mutate(
-      `
-      mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
-        setRoleAllowedNavItem(input: $input) {
-          success
-          message
-          role {
-            id
-            allowedAppNavigation
+    } = await mutate<any>(
+      gql`
+        mutation SetRoleAllowedNavItem($input: SetRoleAllowedNavItemInput!) {
+          setRoleAllowedNavItem(input: $input) {
+            success
+            message
+            role {
+              id
+              allowedAppNavigation
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -554,15 +551,15 @@ describe('Roles', () => {
     // Should delete role
     const {
       data: { deleteRole },
-    } = await mutate(
-      `
-      mutation DeleteRole($id: ID!) {
-        deleteRole(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteRole($id: ID!) {
+          deleteRole(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: createdRole.id,

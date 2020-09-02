@@ -16,13 +16,12 @@ describe('Site configs', () => {
     cy.getByCy('siteLogo-remove').click();
     cy.getByCy('siteLogo').attachFile('test-logo.svg', { subjectType: 'drag-n-drop' });
     cy.getByCy('siteLogo-image').should('exist');
-    // TODO after cypress-file-upload update
-    /*
+
     cy.getByCy('pageDefaultPreviewImage-remove').click();
     cy.getByCy('pageDefaultPreviewImage').attachFile('test-image.jpg', {
       subjectType: 'drag-n-drop',
     });
-    cy.getByCy('pageDefaultPreviewImage-image').should('exist');*/
+    cy.getByCy('pageDefaultPreviewImage-image').should('exist');
 
     // Should update not asset configs
     cy.getByCy(`site-configs`).should('exist');

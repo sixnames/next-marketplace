@@ -2,6 +2,7 @@ import { testClientWithContext, mutateWithImages } from '../../../utils/testUtil
 import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
+import { gql } from 'apollo-server-express';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
@@ -10,47 +11,47 @@ describe('Product', () => {
     // Should return paginated products.
     const {
       data: { getAllProducts },
-    } = await query(
-      `
-      query GetAllProducts($input: ProductPaginateInput!){
-        getAllProducts(input: $input) {
-          docs {
-            id
-            itemId
-            nameString
-            cardNameString
-            slug
-            descriptionString
-            rubrics
-            attributesGroups {
-              showInCard
-              node {
-                id
-                nameString
-              }
-              attributes {
+    } = await query<any>(
+      gql`
+        query GetAllProducts($input: ProductPaginateInput!) {
+          getAllProducts(input: $input) {
+            docs {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              attributesGroups {
                 showInCard
-                key
                 node {
                   id
                   nameString
                 }
-                value
+                attributes {
+                  showInCard
+                  key
+                  node {
+                    id
+                    nameString
+                  }
+                  value
+                }
               }
+              assets {
+                index
+                url
+              }
+              price
+              createdAt
+              updatedAt
             }
-            assets {
-              index
-              url
-            }
-            price
-            createdAt
-            updatedAt
+            page
+            totalDocs
           }
-          page
-          totalDocs
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -70,7 +71,7 @@ describe('Product', () => {
     // Should return current product
     const {
       data: { getProduct, getRubricsTree },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getProduct(id: "${currentProduct.id}") {
           id
@@ -117,7 +118,7 @@ describe('Product', () => {
     // Should return current product by slug
     const {
       data: { getProductBySlug },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getProductBySlug(slug: "${currentProduct.slug}") {
           id
@@ -131,7 +132,7 @@ describe('Product', () => {
     // Should return features AST
     const {
       data: { getFeaturesAst },
-    } = await query(`
+    } = await query<any>(gql`
       query {
         getFeaturesAst(selectedRubrics: ["${rubricLevelOne.id}"]) {
           id
@@ -286,9 +287,9 @@ describe('Product', () => {
     // Should delete product
     const {
       data: { deleteProduct },
-    } = await mutate(
-      `
-        mutation DeleteProduct($id: ID!){
+    } = await mutate<any>(
+      gql`
+        mutation DeleteProduct($id: ID!) {
           deleteProduct(id: $id) {
             success
             message

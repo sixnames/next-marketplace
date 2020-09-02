@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
-import { getSharpImage } from '../src/utils/assets/getSharpImage';
+import { getSharpImage } from '../utils/assets/getSharpImage';
 
 export async function assetsRoute(req: Request, res: Response) {
   // Extract the query-parameter

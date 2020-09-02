@@ -1,13 +1,14 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { Metric } from '../../../entities/Metric';
 import { DEFAULT_LANG, MOCK_METRICS } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Metric', () => {
   it('Should CRUD metric', async () => {
     const { query, mutate } = await authenticatedTestClient();
 
     // Should return all metrics
-    const { data: allMetrics } = await query(`
+    const { data: allMetrics } = await query<any>(gql`
       query {
         getAllMetrics {
           id
@@ -22,15 +23,15 @@ describe('Metric', () => {
     const currentMetric = allMetricsList[0];
     const {
       data: { getMetric },
-    } = await query(
-      `
-      query GetMetric($id: ID!){
-        getMetric(id: $id) {
-          id
-          nameString
+    } = await query<any>(
+      gql`
+        query GetMetric($id: ID!) {
+          getMetric(id: $id) {
+            id
+            nameString
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: currentMetric.id,
@@ -40,19 +41,19 @@ describe('Metric', () => {
     expect(getMetric.id).toEqual(currentMetric.id);
 
     // Shouldn't create metric on validation error
-    const { errors: createMetricErrors } = await mutate(
-      `
-      mutation CreateMetric($input: CreateMetricInput!){
-        createMetric(input: $input) {
-          success
-          message
-          metric {
-            id
-            nameString
+    const { errors: createMetricErrors } = await mutate<any>(
+      gql`
+        mutation CreateMetric($input: CreateMetricInput!) {
+          createMetric(input: $input) {
+            success
+            message
+            metric {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -67,19 +68,19 @@ describe('Metric', () => {
     const newMetricName = 'new';
     const {
       data: { createMetric },
-    } = await mutate(
-      `
-      mutation CreateMetric($input: CreateMetricInput!){
-        createMetric(input: $input) {
-          success
-          message
-          metric {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation CreateMetric($input: CreateMetricInput!) {
+          createMetric(input: $input) {
+            success
+            message
+            metric {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -95,19 +96,19 @@ describe('Metric', () => {
     const updatedMetricName = 'newB';
     const {
       data: { updateMetric },
-    } = await mutate(
-      `
-      mutation UpdateMetric($input: UpdateMetricInput!){
-        updateMetric(input: $input) {
-          success
-          message
-          metric {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation UpdateMetric($input: UpdateMetricInput!) {
+          updateMetric(input: $input) {
+            success
+            message
+            metric {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -123,15 +124,15 @@ describe('Metric', () => {
     // Should delete metric
     const {
       data: { deleteMetric },
-    } = await mutate(
-      `
-      mutation DeleteMetric($id: ID!){
-        deleteMetric(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteMetric($id: ID!) {
+          deleteMetric(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: updateMetric.metric.id,

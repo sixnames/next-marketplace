@@ -3,6 +3,7 @@ import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { OptionModel } from '../../../entities/Option';
 import getLangField from '../../../utils/translations/getLangField';
 import { DEFAULT_LANG } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Options', () => {
   it('Should return current option', async () => {
@@ -11,8 +12,7 @@ describe('Options', () => {
 
     const {
       data: { getOption },
-    } = await query(
-      `
+    } = await query<any>(gql`
         query {
           getOption(
             id: "${target.id}"
@@ -21,8 +21,7 @@ describe('Options', () => {
             nameString
           }
         }
-      `,
-    );
+      `);
 
     expect(getOption.nameString).toEqual(getLangField(target.name, DEFAULT_LANG));
   });

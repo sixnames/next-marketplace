@@ -52,8 +52,8 @@ import {
   createTestDataRoute,
   getMockDataRoute,
   testSignInRoute,
-} from '../routes/testingDataRoutes';
-import { assetsRoute } from '../routes/assetsRoutes';
+} from './routes/testingDataRoutes';
+import { assetsRoute } from './routes/assetsRoutes';
 import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
 import { AuthField } from './decorators/methodDecorators';
 import { RoleModel } from './entities/Role';

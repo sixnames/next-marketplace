@@ -1,25 +1,26 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
 import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '../../../config';
+import { gql } from 'apollo-server-express';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
     const { mutate, query } = await authenticatedTestClient();
 
     // Shouldn't create rubric types on validation error
-    const { errors: createRubricVariantWithError } = await mutate(
-      `
-      mutation CreateRubricVariant($input: CreateRubricVariantInput!){
-        createRubricVariant(input: $input) {
-          success
-          message
-          variant {
-            id
-            nameString
+    const { errors: createRubricVariantWithError } = await mutate<any>(
+      gql`
+        mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
+          createRubricVariant(input: $input) {
+            success
+            message
+            variant {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -33,19 +34,19 @@ describe('Rubric type', () => {
     // Shouldn't create rubric types on duplicate error
     const {
       data: { createRubricVariant: createRubricVariantWithDuplicateError },
-    } = await mutate(
-      `
-      mutation CreateRubricVariant($input: CreateRubricVariantInput!){
-        createRubricVariant(input: $input) {
-          success
-          message
-          variant {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
+          createRubricVariant(input: $input) {
+            success
+            message
+            variant {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -60,19 +61,19 @@ describe('Rubric type', () => {
     const newRubricVariantName = 'new';
     const {
       data: { createRubricVariant },
-    } = await mutate(
-      `
-      mutation CreateRubricVariant($input: CreateRubricVariantInput!){
-        createRubricVariant(input: $input) {
-          success
-          message
-          variant {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
+          createRubricVariant(input: $input) {
+            success
+            message
+            variant {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -85,7 +86,7 @@ describe('Rubric type', () => {
     expect(createRubricVariant.variant.nameString).toEqual(newRubricVariantName);
 
     // Should return all rubric types
-    const { data: allRubricVariants } = await query(`
+    const { data: allRubricVariants } = await query<any>(gql`
       query {
         getAllRubricVariants {
           id
@@ -100,15 +101,15 @@ describe('Rubric type', () => {
     const currentRubricVariant = createRubricVariant.variant;
     const {
       data: { getRubricVariant },
-    } = await query(
-      `
-      query GetRubricVariant($id: ID!){
-        getRubricVariant(id: $id) {
-          id
-          nameString
+    } = await query<any>(
+      gql`
+        query GetRubricVariant($id: ID!) {
+          getRubricVariant(id: $id) {
+            id
+            nameString
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: currentRubricVariant.id,
@@ -121,19 +122,19 @@ describe('Rubric type', () => {
     const updatedRubricVariantName = 'newName';
     const {
       data: { updateRubricVariant },
-    } = await mutate(
-      `
-      mutation UpdateRubricVariant($input: UpdateRubricVariantInput!){
-        updateRubricVariant(input: $input) {
-          success
-          message
-          variant {
-            id
-            nameString
+    } = await mutate<any>(
+      gql`
+        mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
+          updateRubricVariant(input: $input) {
+            success
+            message
+            variant {
+              id
+              nameString
+            }
           }
         }
-      }
-    `,
+      `,
       {
         variables: {
           input: {
@@ -149,15 +150,15 @@ describe('Rubric type', () => {
     // Should delete rubric variant
     const {
       data: { deleteRubricVariant },
-    } = await mutate(
-      `
-      mutation DeleteRubricVariant($id: ID!){
-        deleteRubricVariant(id: $id) {
-          success
-          message
+    } = await mutate<any>(
+      gql`
+        mutation DeleteRubricVariant($id: ID!) {
+          deleteRubricVariant(id: $id) {
+            success
+            message
+          }
         }
-      }
-    `,
+      `,
       {
         variables: {
           id: currentRubricVariant.id,

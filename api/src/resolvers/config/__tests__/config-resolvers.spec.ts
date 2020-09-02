@@ -6,6 +6,7 @@ import {
   SITE_CONFIGS_LOGO_NAME,
 } from '../../../config';
 import { Upload } from '../../../types/upload';
+import { gql } from 'apollo-server-express';
 
 describe('Config', () => {
   it('Should CRUD site config', async () => {
@@ -15,16 +16,16 @@ describe('Config', () => {
     // Should return all site configs
     const {
       data: { getAllConfigs },
-    } = await query(
-      `
-      query GetAllConfigs {
-        getAllConfigs {
-          id
-          nameString
-          value
-          slug
+    } = await query<any>(
+      gql`
+        query GetAllConfigs {
+          getAllConfigs {
+            id
+            nameString
+            value
+            slug
+          }
         }
-      }
       `,
       {
         variables: {
@@ -37,16 +38,16 @@ describe('Config', () => {
     // Should return site config by slug
     const {
       data: { getConfigBySlug },
-    } = await query(
-      `
-      query GetConfigBySlug($slug: String!) {
-        getConfigBySlug(slug: $slug) {
-          id
-          nameString
-          value
-          slug
+    } = await query<any>(
+      gql`
+        query GetConfigBySlug($slug: String!) {
+          getConfigBySlug(slug: $slug) {
+            id
+            nameString
+            value
+            slug
+          }
         }
-      }
       `,
       {
         variables: {
@@ -59,11 +60,11 @@ describe('Config', () => {
     // Should return site config value by slug
     const {
       data: { getConfigValueBySlug },
-    } = await query(
-      `
-      query GetConfigValueBySlug($slug: String!) {
-        getConfigValueBySlug(slug: $slug)
-      }
+    } = await query<any>(
+      gql`
+        query GetConfigValueBySlug($slug: String!) {
+          getConfigValueBySlug(slug: $slug)
+        }
       `,
       {
         variables: {
@@ -77,19 +78,19 @@ describe('Config', () => {
     const {
       data: { updateAssetConfig },
     } = await mutateWithImages({
-      mutation: `
-      mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
-        updateAssetConfig(input: $input) {
-          success
-          message
-          configs {
-            id
-            nameString
-            value
-            slug
+      mutation: gql`
+        mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
+          updateAssetConfig(input: $input) {
+            success
+            message
+            configs {
+              id
+              nameString
+              value
+              slug
+            }
           }
         }
-      }
       `,
       input: (images: Promise<Upload>[]) => {
         return {
@@ -111,20 +112,20 @@ describe('Config', () => {
     ]);
 
     // Shouldn't update non asset configs on validation error
-    const { errors: updateConfigsValidationError } = await mutate(
-      `
-      mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
-        updateConfigs(input: $input) {
-          success
-          message
-          configs {
-            id
-            nameString
-            value
-            slug
+    const { errors: updateConfigsValidationError } = await mutate<any>(
+      gql`
+        mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
+          updateConfigs(input: $input) {
+            success
+            message
+            configs {
+              id
+              nameString
+              value
+              slug
+            }
           }
         }
-      }
       `,
       {
         variables: {
@@ -140,20 +141,20 @@ describe('Config', () => {
     // Should update non asset configs
     const {
       data: { updateConfigs },
-    } = await mutate(
-      `
-      mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
-        updateConfigs(input: $input) {
-          success
-          message
-          configs {
-            id
-            nameString
-            value
-            slug
+    } = await mutate<any>(
+      gql`
+        mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
+          updateConfigs(input: $input) {
+            success
+            message
+            configs {
+              id
+              nameString
+              value
+              slug
+            }
           }
         }
-      }
       `,
       {
         variables: {

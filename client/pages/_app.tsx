@@ -1,11 +1,11 @@
 import React from 'react';
-import { ApolloProvider } from '@apollo/react-hooks';
 import { useApollo } from '../apollo/client';
 import { NextPage } from 'next';
 import './reset.css';
 import { ThemeContextProvider } from '../context/themeContext';
 import { AppContextProvider } from '../context/appContext';
 import { NotificationsProvider } from '../context/notificationsContext';
+import { ApolloProvider } from '@apollo/client';
 
 interface AppInterface {
   Component: any;
@@ -13,7 +13,9 @@ interface AppInterface {
 }
 
 const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
-  const apolloClient = useApollo(pageProps.initialApolloState);
+  const apolloClient = useApollo();
+  // TODO cache store
+  // const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
     <ThemeContextProvider>

@@ -1,6 +1,6 @@
 import { IconType } from '../components/Icon/Icon';
 
-export type Theme = 'light' | 'dark' | 'not all';
+export type Theme = 'light' | 'dark';
 export type ButtonTheme = 'primary' | 'secondary' | 'gray';
 export type SizeType = 'small' | 'normal' | 'big';
 export type ButtonType = 'submit' | 'button' | 'reset';

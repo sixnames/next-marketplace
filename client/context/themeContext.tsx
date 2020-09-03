@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { IS_BROWSER, THEME_DARK, THEME_KEY, THEME_LIGHT, THEME_NOT_ALL } from '../config';
+import { IS_BROWSER, THEME_DARK, THEME_KEY, THEME_LIGHT } from '../config';
+import Cookies from 'js-cookie';
 import { Theme } from '../types';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { IconType } from '../components/Icon/Icon';
+
+interface ThemeContextProviderInterface {
+  initialTheme: Theme;
+}
 
 interface ThemeContextInterface {
   theme: Theme;
   isDark: boolean;
   isLight: boolean;
   toggleTheme?: () => void;
-  themeTooltip: string;
-  themeIcon: IconType;
   logoSlug: string;
 }
 
@@ -18,29 +19,15 @@ const ThemeContext = createContext<ThemeContextInterface>({
   theme: THEME_LIGHT,
   isDark: false,
   isLight: true,
-  themeTooltip: '',
-  themeIcon: 'sun',
   logoSlug: 'siteLogo',
 });
 
-const ThemeContextProvider: React.FC = ({ children }) => {
+const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
+  children,
+  initialTheme,
+}) => {
   const [vh, setVh] = useState(() => (IS_BROWSER ? window.innerHeight * 0.01 : 0));
-  const [logoSlug, setLogoSlug] = useState('siteLogo');
-  const [theme, setTheme] = useLocalStorage(THEME_KEY, () => {
-    const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // If `prefers-color-scheme` is not supported, fall back to light mode.
-    if (matchMedia.media === THEME_NOT_ALL) {
-      return THEME_LIGHT;
-    }
-
-    // If is user prefers dark theme
-    if (matchMedia.matches) {
-      return THEME_DARK;
-    }
-
-    return THEME_LIGHT;
-  });
+  const [theme, setTheme] = useState(() => initialTheme);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,26 +44,31 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (ref && ref.current) {
       ref.current.setAttribute('data-theme', theme);
-
-      setLogoSlug(() => {
-        const isDark = theme === THEME_DARK;
-        return isDark ? 'siteLogo' : 'siteLogoDark';
-      });
+      ref.current.setAttribute(
+        'style',
+        `
+      --vh: ${vh}px;
+      --fullHeight: calc(${vh}px * 100);
+      `,
+      );
     }
-  }, [ref, theme]);
+  }, [vh, ref, theme]);
+
+  useEffect(() => {
+    // set theme to cookie
+    const themeInCookies = Cookies.get(THEME_KEY);
+    if (themeInCookies !== theme) {
+      Cookies.set(THEME_KEY, theme);
+    }
+  }, [theme]);
 
   const value = useMemo(() => {
     const isDark = theme === THEME_DARK;
-    const themeTooltip = isDark ? 'Светлая тема' : 'Тёмная тема';
-    const themeIcon: IconType = isDark ? 'moon' : 'sun';
-
     return {
       theme,
       isDark,
-      themeTooltip,
-      themeIcon,
-      logoSlug,
       isLight: theme === THEME_LIGHT,
+      logoSlug: isDark ? 'siteLogo' : 'siteLogoDark',
       toggleTheme: () => {
         if (theme === THEME_DARK) {
           setTheme(THEME_LIGHT);
@@ -85,17 +77,11 @@ const ThemeContextProvider: React.FC = ({ children }) => {
         }
       },
     };
-  }, [theme, logoSlug, setTheme]);
+  }, [theme, setTheme]);
 
   return (
     <ThemeContext.Provider value={value}>
       <div ref={ref}>{children}</div>
-      <style jsx global>{`
-        :root {
-          --vh: ${vh}px;
-          --fullHeight: calc(${vh}px * 100);
-        }
-      `}</style>
     </ThemeContext.Provider>
   );
 };

@@ -1,0 +1,46 @@
+.frame {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon {
+  fill: var(--textSecondaryColor);
+}
+
+.iconSun {
+  width: 14px;
+  height: 14px;
+}
+
+.iconMoon {
+  width: 12px;
+  height: 12px;
+}
+
+.trigger {
+  position: relative;
+  height: 8px;
+  width: 24px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  background-color: var(--textSecondaryColor);
+}
+
+.trigger:before {
+  position: absolute;
+  content: '';
+  top: -2px;
+  left: 0;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--primaryBackground);
+  transition: all 0.2s;
+}
+
+.triggerDark:before {
+  left: 12px;
+}

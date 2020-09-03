@@ -4,9 +4,13 @@ import { INITIAL_SITE_QUERY } from '../graphql/initialQuery';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import privateRouteHandler from './privateRouteHandler';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import { Theme } from '../types';
+import { THEME_LIGHT } from '../config';
+import { parseCookies } from './parseCookies';
 
 export type SitePagePropsType<T = undefined> = {
   initialApolloState: InitialSiteQueryQueryResult['data'];
+  initialTheme: Theme;
 } & (T extends undefined ? Record<string, unknown> : T);
 
 interface GetSiteServerSidePropsResult<T> {
@@ -50,9 +54,13 @@ async function getSiteServerSideProps<T>({
       return { props: { initialApolloState: {} } };
     }
 
+    // Get theme settings
+    const { theme } = parseCookies(req);
+
     return callback({
       initialProps: {
         initialApolloState: initialApolloState.data,
+        initialTheme: (theme as Theme) || (THEME_LIGHT as Theme),
       },
       context,
       apolloClient,

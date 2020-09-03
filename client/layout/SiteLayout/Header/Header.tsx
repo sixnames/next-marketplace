@@ -7,13 +7,12 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import HeaderMobile from './HeaderMobile';
 import classes from './Header.module.css';
 import { useThemeContext } from '../../../context/themeContext';
-import Icon from '../../../components/Icon/Icon';
-import TTip from '../../../components/TTip/TTip';
 import { useLanguageContext } from '../../../context/languageContext';
 import { InitialSiteQueryQuery } from '../../../generated/apolloComponents';
 import { useConfigContext } from '../../../context/configContext';
 import Link from '../../../components/Link/Link';
 import { ASSETS_URL } from '../../../config';
+import ThemeTrigger from '../../../components/ThemeTrigger/ThemeTrigger';
 
 export type HeaderRubricType = Omit<InitialSiteQueryQuery['getRubricsTree'][0], 'children'>;
 
@@ -22,7 +21,7 @@ export interface HeaderRubricInterface extends HeaderRubricType {
 }
 
 const Header: React.FC = () => {
-  const { toggleTheme, themeIcon, themeTooltip, logoSlug } = useThemeContext();
+  const { logoSlug } = useThemeContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
   const { languagesList, setLanguage, isCurrentLanguage } = useLanguageContext();
@@ -63,14 +62,9 @@ const Header: React.FC = () => {
               <div className={classes.topLink}>Заказать звонок</div>
             </div>
 
-            <TTip
-              onClick={toggleTheme}
-              tooltipPlacement={'bottom'}
-              title={themeTooltip}
-              className={`${classes.topNavItem}`}
-            >
-              <Icon className={classes.topNavItemIcon} name={themeIcon} />
-            </TTip>
+            <div className={`${classes.topNavItem}`}>
+              <ThemeTrigger />
+            </div>
           </div>
         </Inner>
       </div>

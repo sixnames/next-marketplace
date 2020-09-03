@@ -18,7 +18,7 @@ const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   // const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
-    <ThemeContextProvider>
+    <ThemeContextProvider initialTheme={pageProps.initialTheme}>
       <ApolloProvider client={apolloClient}>
         <AppContextProvider>
           <NotificationsProvider>

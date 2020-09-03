@@ -1,16 +1,13 @@
 import React from 'react';
 import AppLayout from '../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
-import Title from '../../components/Title/Title';
-import Inner from '../../components/Inner/Inner';
 import getAppServerSideProps, { AppPageInterface } from '../../utils/getAppServerSideProps';
+import ProfileRoute from '../../routes/ProfileRoute/ProfileRoute';
 
 const Profile: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (
     <AppLayout title={'Настройки профиля'} initialApolloState={initialApolloState}>
-      <Inner>
-        <Title>Profile</Title>
-      </Inner>
+      <ProfileRoute />
     </AppLayout>
   );
 };

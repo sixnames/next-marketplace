@@ -12,12 +12,12 @@ interface ContextState {
   me?: MeType;
 }
 
-type UserContext = {
+interface UserContextInterface {
   state: ContextState;
   setState?: any;
-};
+}
 
-const UserContext = createContext<UserContext>({
+const UserContext = createContext<UserContextInterface>({
   state: {
     isAuthenticated: false,
   },
@@ -68,7 +68,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
 
 function useUserContext() {
   const { replace } = useRouter();
-  const context: UserContext = useContext(UserContext);
+  const context: UserContextInterface = useContext(UserContext);
 
   if (!context) {
     throw new Error('useUserContext must be used within a UserContextProvider');
@@ -81,6 +81,15 @@ function useUserContext() {
       setState((prevState: ContextState) => ({
         ...prevState,
         isAuthenticated: true,
+        me: user,
+      }));
+    }
+  }
+
+  function updateMyContext(user: MeType) {
+    if (user) {
+      setState((prevState: ContextState) => ({
+        ...prevState,
         me: user,
       }));
     }
@@ -101,6 +110,7 @@ function useUserContext() {
     ...state,
     setMeIn,
     setMeOut,
+    updateMyContext,
   };
 }
 

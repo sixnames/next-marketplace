@@ -8,10 +8,9 @@ import TTip from '../../components/TTip/TTip';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import useSignOut from '../../hooks/useSignOut';
-import classes from './AppNav.module.css';
-import { useThemeContext } from '../../context/themeContext';
 import useIsMobile from '../../hooks/useIsMobile';
 import { useAppNavContext } from '../../context/appNavContext';
+import classes from './AppNav.module.css';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -21,7 +20,6 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   const { pathname } = useRouter();
   const { navItems } = useAppNavContext();
   const isMobile = useIsMobile();
-  const { toggleTheme, isDark, themeTooltip } = useThemeContext();
   const signOutHandler = useSignOut();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
 
@@ -89,30 +87,6 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       }`}
                     >
                       Выйти из аккаунта
-                    </span>
-                  </div>
-                </TTip>
-              </li>
-
-              <li className={classes.bottom} onClick={toggleTheme}>
-                <TTip tooltipPlacement={'right'} title={isCompact ? themeTooltip : ''}>
-                  <div
-                    className={`${classes.bottomLink} ${
-                      isCompact ? classes.bottomLinkCompact : ''
-                    }`}
-                  >
-                    {isDark ? (
-                      <Icon className={classes.bottomIcon} name={'moon'} />
-                    ) : (
-                      <Icon className={classes.bottomIcon} name={'sun'} />
-                    )}
-
-                    <span
-                      className={`${classes.bottomText} ${
-                        isCompact ? classes.bottomTextCompact : ''
-                      }`}
-                    >
-                      {themeTooltip}
                     </span>
                   </div>
                 </TTip>

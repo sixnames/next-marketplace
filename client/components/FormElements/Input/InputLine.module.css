@@ -49,6 +49,9 @@
 }
 
 .label sup {
+  display: inline-block;
+  position: relative;
+  top: 3px;
   vertical-align: middle;
   font-size: 1.25rem;
   line-height: 0.5em;

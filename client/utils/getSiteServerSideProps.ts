@@ -10,7 +10,6 @@ import { parseCookies } from './parseCookies';
 
 export type SitePagePropsType<T = undefined> = {
   initialApolloState: InitialSiteQueryQueryResult['data'];
-  initialTheme: Theme;
 } & (T extends undefined ? Record<string, unknown> : T);
 
 interface GetSiteServerSidePropsResult<T> {

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const CREATE_RUBRIC_VARIANT_MUTATION = gql`
   mutation CreateRubricVariant($input: CreateRubricVariantInput!) {

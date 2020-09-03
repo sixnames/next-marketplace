@@ -9,7 +9,6 @@ import { THEME_LIGHT } from '../config';
 
 export interface AppPageInterface {
   initialApolloState: InitialQuery;
-  initialTheme: Theme;
 }
 
 async function getAppServerSideProps(context: GetServerSidePropsContext) {

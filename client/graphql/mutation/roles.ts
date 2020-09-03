@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const CREATE_ROLE_MUTATION = gql`
   mutation CreateRole($input: CreateRoleInput!) {

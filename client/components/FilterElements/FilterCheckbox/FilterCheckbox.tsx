@@ -35,7 +35,6 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   const currentQuery = alwaysArray(query.catalogue) || [];
   const optionPath = `${attributeSlug}-${slug}`;
   const isChecked = currentQuery.includes(optionPath);
-  const iconName = isChecked ? 'CheckBox' : 'CheckBoxOutlineBlank';
 
   let nextAsPath = `${asPath}/${optionPath}`;
 
@@ -56,14 +55,9 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
           pathname: nextAsPath,
         }}
       >
-        <a
-          data-cy={testId}
-          className={`${classes.frame} ${isChecked ? classes.current : ''} ${
-            className ? className : ''
-          }`}
-        >
-          <span className={classes.checkbox}>
-            <Icon name={iconName} />
+        <a data-cy={testId} className={`${classes.frame} ${className ? className : ''}`}>
+          <span className={`${classes.checkbox} ${isChecked ? classes.checked : ''}`}>
+            <Icon name={'check'} />
           </span>
 
           <span className={classes.label}>

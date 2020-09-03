@@ -12,7 +12,7 @@ const DataLayoutFilterTrigger: React.FC = () => {
       theme={'gray'}
       size={'small'}
       className={`${classes.ControlsButton}`}
-      icon={'FilterList'}
+      icon={'filter'}
       circle
     />
   );

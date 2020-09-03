@@ -67,7 +67,7 @@ const Accordion: React.FC<AccordionInterface> = ({
 
           {!lastInTree && (
             <div className={`${classes.arrow} ${open ? classes.arrowActive : ''}`}>
-              <Icon name={'ExpandMore'} />
+              <Icon name={'chevron-down'} />
             </div>
           )}
         </div>

@@ -32,7 +32,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   return (
     <nav className={classes.frame}>
       <div className={`${classes.collapse}`} onClick={mobileNavHandler}>
-        <Icon name='Menu' className={classes.collapseIcon} />
+        <Icon name='burger' className={classes.collapseIcon} />
       </div>
 
       <div className={`${classes.nav} ${isCompact && classes.navCompact}`}>
@@ -62,7 +62,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}
                   >
-                    <Icon name={'ChevronLeft'} className={classes.bottomIcon} />
+                    <Icon name={'chevron-left'} className={classes.bottomIcon} />
                     <span
                       className={`${classes.bottomText} ${
                         isCompact ? classes.bottomTextCompact : ''
@@ -82,7 +82,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}
                   >
-                    <Icon name={'ExitToApp'} className={classes.bottomIcon} />
+                    <Icon name={'exit'} className={classes.bottomIcon} />
                     <span
                       className={`${classes.bottomText} ${
                         isCompact ? classes.bottomTextCompact : ''
@@ -102,9 +102,9 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                     }`}
                   >
                     {isDark ? (
-                      <Icon className={classes.bottomIcon} name={'Brightness7'} />
+                      <Icon className={classes.bottomIcon} name={'moon'} />
                     ) : (
-                      <Icon className={classes.bottomIcon} name={'Brightness4'} />
+                      <Icon className={classes.bottomIcon} name={'sun'} />
                     )}
 
                     <span

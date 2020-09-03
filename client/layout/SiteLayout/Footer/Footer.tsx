@@ -44,11 +44,11 @@ const Footer: React.FC = () => {
             <span>Следите за нами:</span>
 
             <BlankLink href={'socialLinkInstagram'}>
-              <Icon name={'Instagram'} />
+              <Icon name={'instagram'} />
             </BlankLink>
 
             <BlankLink href={'socialLinkFacebook'}>
-              <Icon name={'Facebook'} />
+              <Icon name={'facebook'} />
             </BlankLink>
           </div>
         </div>

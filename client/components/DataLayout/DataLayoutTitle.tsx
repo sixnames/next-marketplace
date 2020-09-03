@@ -23,7 +23,7 @@ const DataLayoutTitle: React.FC<DataLayoutTitleInterface> = ({
     <div className={`${classes.Title} ${className ? className : ''}`} data-cy={testId}>
       <TTip className={classes.TitleText} title={description}>
         {children}
-        {description && <Icon name={'Help'} className={classes.TitleDescriptionIcon} />}
+        {description && <Icon name={'question'} className={classes.TitleDescriptionIcon} />}
       </TTip>
       <div
         className={`${classes.TitleRight} ${children ? classes.TitleRightWithGap : ''} ${

@@ -84,7 +84,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
           return null;
         }
 
-        const accordionIcon = value ? 'Check' : 'Close';
+        const accordionIcon = value ? 'check' : 'cross';
         const accordionIconTooltip = value ? 'Поле заполнено' : 'Поле не заполнено';
         const accordionIconClass = value ? classes.iconDone : classes.iconEmpty;
         const { name, isDefault } = currentLanguage;

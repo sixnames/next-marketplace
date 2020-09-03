@@ -40,6 +40,10 @@
   fill: var(--theme);
 }
 
+.checked {
+
+}
+
 .label {
   position: relative;
   display: flex;

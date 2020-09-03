@@ -19,7 +19,7 @@ const ThemeContext = createContext<ThemeContextInterface>({
   isDark: false,
   isLight: true,
   themeTooltip: '',
-  themeIcon: 'Brightness4',
+  themeIcon: 'sun',
   logoSlug: 'siteLogo',
 });
 
@@ -68,7 +68,7 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   const value = useMemo(() => {
     const isDark = theme === THEME_DARK;
     const themeTooltip = isDark ? 'Светлая тема' : 'Тёмная тема';
-    const themeIcon: IconType = isDark ? 'Brightness7' : 'Brightness4';
+    const themeIcon: IconType = isDark ? 'moon' : 'sun';
 
     return {
       theme,

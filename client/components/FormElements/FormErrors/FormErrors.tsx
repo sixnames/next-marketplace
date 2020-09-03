@@ -45,7 +45,7 @@ const FormErrors: React.FC<FormErrorsInterface> = ({ errors }) => {
   return (
     <AnimateOpacity className={`${classes.frame}`}>
       <div onClick={toggleListHandler} className={`${classes.trigger}`}>
-        <Icon name={'Error'} />
+        <Icon name={'exclamation'} />
         Ошибки формы {errorsCounter} шт.
       </div>
       <div className={`${classes.content} ${isOpen ? classes.contentActive : ''}`}>

@@ -8,12 +8,18 @@ interface ThemeTriggerInterface {
 }
 
 const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className }) => {
-  const { toggleTheme, isDark } = useThemeContext();
+  const { toggleTheme, isDark, isLight } = useThemeContext();
   return (
     <div className={`${classes.frame} ${className ? className : ''}`} onClick={toggleTheme}>
-      <Icon name={'sun'} className={`${classes.icon} ${classes.iconSun}`} />
+      <Icon
+        name={'sun'}
+        className={`${classes.icon} ${classes.iconSun} ${isLight ? classes.iconActive : ''}`}
+      />
       <div className={`${classes.trigger} ${isDark ? classes.triggerDark : ''}`} />
-      <Icon name={'moon'} className={`${classes.icon} ${classes.iconMoon}`} />
+      <Icon
+        name={'moon'}
+        className={`${classes.icon} ${classes.iconMoon} ${isDark ? classes.iconActive : ''}`}
+      />
     </div>
   );
 };

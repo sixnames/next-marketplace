@@ -43,7 +43,7 @@
   display: grid;
   grid-template-columns: 300px 1fr;
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   border-radius: 0 0 4px 4px;
 }
 

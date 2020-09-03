@@ -8,12 +8,12 @@
   padding-left: 7px;
   border-left: 3px solid var(--borderColor);
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   transition: all 0.2s;
 }
 
 .title:hover {
-  background-color: var(--primaryBackgroundDark);
+
 }
 
 .titleNoStyle {

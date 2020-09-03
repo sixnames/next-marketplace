@@ -2,10 +2,27 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+
+  --trigger-background: var(--wp-light-gray-200);
+  --trigger-thumb-background: var(--wp-light-gray-100);
+  --icon-fill: var(--wp-light-gray-100);
+  --icon-fill-active: var(--wp-mid-gray-100);
+}
+
+[data-theme='dark'] .frame {
+  --trigger-background: var(--wp-dark-gray-100);
+  --trigger-thumb-background: var(--wp-mid-gray-100);
+  --icon-fill: var(--wp-mid-gray-100);
+  --icon-fill-active: var(--wp-light-gray-100);
 }
 
 .icon {
-  fill: var(--textSecondaryColor);
+  fill: var(--icon-fill);
+  transition: all 0.2s;
+}
+
+.iconActive {
+  fill: var(--icon-fill-active);
 }
 
 .iconSun {
@@ -25,7 +42,7 @@
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border-radius: 4px;
-  background-color: var(--textSecondaryColor);
+  background-color: var(--trigger-background);
 }
 
 .trigger:before {
@@ -37,7 +54,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: var(--primaryBackground);
+  background-color: var(--trigger-thumb-background);
   transition: all 0.2s;
 }
 

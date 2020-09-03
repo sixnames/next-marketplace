@@ -25,7 +25,7 @@
   padding-right: var(--innerBlockHorizontalPadding);
   padding-left: var(--innerBlockHorizontalPadding);
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
 }
 
 .TitleText {
@@ -64,7 +64,7 @@
   max-height: 100%;
   max-width: 100%;
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   border-radius: 3px;
 }
 
@@ -152,7 +152,7 @@
     margin-right: 0;
     margin-bottom: 1rem;
     background-color: var(--primaryBackground);
-    box-shadow: var(--shadow);
+    box-shadow: var(--wp-shadow-100);
     border-radius: 3px;
   }
 

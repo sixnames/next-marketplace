@@ -21,7 +21,7 @@
   height: 60px;
   align-items: center;
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   padding-right: var(--innerBlockHorizontalPadding);
   padding-left: var(--innerBlockHorizontalPadding);
 }

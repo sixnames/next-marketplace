@@ -23,7 +23,8 @@
 }
 
 :root {
-  --theme: #DB5360;
+  /*Font*/
+  --font: 'Gilroy', sans-serif;
 
   /*Material Design colors*/
   --md-red-50: #ffebee;
@@ -299,26 +300,37 @@
   --md-blue-gray-800: #37474f;
   --md-blue-gray-900: #263238;
 
-  --font: 'Gilroy', sans-serif;
-  --textColor: #1d2225;
-  --textSecondaryColor: #666666;
+  /*WP colors*/
+  --theme: #DB5360;
+  --wp-white: #ffffff;
+  --wp-dark-pink: #99093E;
+  --wp-yellow: #E7C55A;
+  --wp-light-green: #93AF42;
+  --wp-dark-green: #3A8D4C;
+  --wp-dark-gray-100: #40454D;
+  --wp-dark-gray-200: #2B3039;
+  --wp-dark-gray-300: #1D222B;
+  --wp-dark-gray-400: #14181d;
+  --wp-mid-gray-100: #6B6E74;
+  --wp-light-gray-100: #AAACB0;
+  --wp-light-gray-200: #E8E9EA;
+  --wp-light-gray-300: #F2F3F3;
 
-  --lightColor: #7a7d81;
-  --linkColor: #6b707c;
+  /*Main styles*/
+  --primaryBackground: var(--wp-white);
+  --secondaryBackground: var(--wp-light-gray-300);
 
-  --primaryBackground: #ffffff;
-  --primaryBackgroundDark: #f3f3f3;
+  --modalFrameBackground: var(--wp-white);
+  --backdropBackground: var(--wp-mid-gray-100);
+  --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
-  --secondaryBackground: #ebebeb;
-  --modalFrameBackground: #ffffff;
-  --backdropBackground: #666666;
-  --backdropBackgroundTransparent: rgba(102, 102, 102, 0.5);
+  --textColor: var(--wp-dark-gray-300);
+  --textSecondaryColor: var(--wp-mid-gray-100);
+  --linkColor: var(--theme);
 
-  --buttonLightBackground: #ffffff;
+  --appNavBackground: var(--wp-dark-gray-400);
 
-  --appNavBackground: #292929;
-
-  --borderColor: #dfe0e1;
+  --borderColor: var(--wp-light-gray-100);
 
   --black: #111111;
   --white: #ffffff;
@@ -337,6 +349,7 @@
   --yellow: #ffde1b;
   --orange: #f68620;
 
+  /*Socials*/
   --facebook: #3a5997;
   --twitter: #30acee;
   --telegram: #30acee;
@@ -349,14 +362,15 @@
   --excel: #267248;
   --google: #d8634f;
 
+  /*Sizes*/
   --lineGap: 1.5rem;
-
-  --shadow: 0 0 20px rgba(9, 9, 9, 0.25);
-
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
-
   --fullHeight: 100vh;
+
+  /*Shadows*/
+  --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
 
   /*inputs*/
   --inputTextColor: var(--textColor);
@@ -384,53 +398,43 @@
 }
 
 [data-theme='light'] {
-  --primaryBackground: #ffffff;
-  --primaryBackgroundDark: #f3f3f3;
+  --primaryBackground: var(--wp-white);
+  --secondaryBackground: var(--wp-light-gray-300);
 
-  --secondaryBackground: #ebebeb;
+  --modalFrameBackground: var(--wp-white);
+  --backdropBackground: var(--wp-mid-gray-100);
+  --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
-  --modalFrameBackground: #ffffff;
-  --backdropBackground: #666666;
-  --backdropBackgroundTransparent: rgba(102, 102, 102, 0.5);
-  --appNavBackground: #292929;
-
-  --textColor: #151513;
-  --textSecondaryColor: #666666;
-  --linkColor: #6b707c;
+  --textColor: var(--wp-dark-gray-300);
+  --textSecondaryColor: var(--wp-mid-gray-100);
 
   --inputTextColor: var(--textColor);
   --inputBackground: var(--md-blue-gray-50);
   --inputBorder: var(--md-blue-gray-100);
-  --buttonLightBackground: #ffffff;
 
-  --borderColor: #dfe0e1;
+  --borderColor: var(--wp-light-gray-100);
 
-  --shadow: 0 0 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
 }
 
 [data-theme='dark'] {
-  --primaryBackground: #24292c;
-  --primaryBackgroundDark: #191e21;
+  --primaryBackground: var(--wp-dark-gray-300);
+  --secondaryBackground: var(--wp-dark-gray-200);
 
-  --secondaryBackground: #363d40;
-
-  --modalFrameBackground: #363d40;
+  --modalFrameBackground: var(--wp-dark-gray-200);
   --backdropBackground: #25292b;
-  --backdropBackgroundTransparent: rgba(37, 41, 43, 0.8);
-  --appNavBackground: #151a1d;
+  --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
-  --textColor: #dedede;
-  --textSecondaryColor: #cbcbcb;
-  --linkColor: var(--md-gray-500);
+  --textColor: var(--wp-white);
+  --textSecondaryColor: var(--wp-light-gray-100);
 
   --inputTextColor: var(--textColor);
-  --inputBorder: var(--md-gray-700);
   --inputBackground: var(--md-gray-800);
-  --buttonLightBackground: #e8e8e8;
+  --inputBorder: var(--md-gray-700);
 
-  --borderColor: #8f9091;
+  --borderColor: rgba(255, 255, 255, 0.3);
 
-  --shadow: 0 0 15px rgba(9, 9, 9, 0.45);
+  --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.45);
 }
 
 html,

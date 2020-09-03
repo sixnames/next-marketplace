@@ -252,7 +252,7 @@ describe('User', () => {
     expect(signOut.success).toBeTruthy();
   });
 
-  it.only('Should update user profile', async () => {
+  it('Should update user profile', async () => {
     const { mutate, user } = await authenticatedTestClient();
 
     const { data } = await mutate<any>(
@@ -291,5 +291,34 @@ describe('User', () => {
     expect(updateMyProfile.user.email).toEqual(alex.email);
     expect(updateMyProfile.user.name).toEqual(alex.name);
     expect(updateMyProfile.user.phone).toEqual(alex.phone);
+  });
+
+  it('Should update user password', async () => {
+    const { mutate, user } = await authenticatedTestClient();
+    const newPassword = 'newPassword';
+
+    const { data } = await mutate<any>(
+      gql`
+        mutation UpdateMyPassword($input: UpdateMyPasswordInput!) {
+          updateMyPassword(input: $input) {
+            success
+            message
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: user?.id,
+            oldPassword: ADMIN_PASSWORD,
+            newPassword,
+            newPasswordB: newPassword,
+          },
+        },
+      },
+    );
+
+    const { updateMyPassword } = data;
+    expect(updateMyPassword.success).toBeTruthy();
   });
 });

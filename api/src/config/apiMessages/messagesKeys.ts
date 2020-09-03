@@ -117,6 +117,7 @@ const messagesKeys = [
   'users.create.success',
   'users.update.duplicate',
   'users.update.error',
+  'users.update.passwordSuccess',
   'users.update.success',
   'users.delete.error',
   'users.delete.success',
@@ -133,6 +134,7 @@ const messagesKeys = [
   'validation.users.secondName',
   'validation.users.role',
   'validation.users.password',
+  'validation.users.passwordCompare',
 
   // Options groups ----------
   'optionsGroups.create.duplicate',

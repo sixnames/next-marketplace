@@ -16,6 +16,7 @@ import generator from 'generate-password';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateUserInput } from './UpdateUserInput';
 import { UpdateMyProfileInput } from './UpdateMyProfileInput';
+import { UpdateMyPasswordInput } from './UpdateMyPasswordInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
@@ -25,7 +26,7 @@ import {
   attemptSignOut,
   getOperationsConfigs,
 } from '../../utils/auth/auth';
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
@@ -38,6 +39,7 @@ import {
   createUserSchema,
   signInValidationSchema,
   signUpValidationSchema,
+  updateMyPasswordSchema,
   updateMyProfileSchema,
   updateUserSchema,
 } from '../../validation/userSchema';
@@ -203,7 +205,6 @@ export class UserResolver {
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateMyProfileInput,
     @SessionUserId() sessionUserId: string,
-    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
   ): Promise<UserPayloadType> {
     try {
       const { id, ...values } = input;
@@ -223,7 +224,7 @@ export class UserResolver {
         };
       }
 
-      const user = await UserModel.findOneAndUpdate({ _id: id, ...customFilter }, values, {
+      const user = await UserModel.findOneAndUpdate({ _id: id }, values, {
         new: true,
       });
 
@@ -238,6 +239,72 @@ export class UserResolver {
         success: true,
         message: await getApiMessage({ key: `users.update.success`, lang }),
         user,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => UserPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({
+    schema: updateMyPasswordSchema,
+  })
+  async updateMyPassword(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: UpdateMyPasswordInput,
+    @SessionUserId() sessionUserId: string,
+  ): Promise<UserPayloadType> {
+    try {
+      const { id, oldPassword, newPassword } = input;
+
+      if (id !== sessionUserId) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
+
+      const user = await UserModel.findById(id);
+      if (!user) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
+
+      const matches = await compare(oldPassword, user.password);
+      if (!matches) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
+
+      const password = await hash(newPassword, 10);
+      const updatedUser = await UserModel.findOneAndUpdate(
+        { _id: user.id },
+        {
+          password,
+        },
+        { new: true },
+      );
+      if (!updatedUser) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `users.update.error`, lang }),
+        };
+      }
+
+      // TODO send email confirmation
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `users.update.passwordSuccess`, lang }),
+        user: updatedUser,
       };
     } catch (e) {
       return {

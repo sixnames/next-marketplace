@@ -55,7 +55,7 @@
 }
 
 .small .icon {
-  top: 1px;
+  top: 0;
   width: 1rem;
   height: 1rem;
 }
@@ -76,7 +76,7 @@
 }
 
 .normal {
-  height: 3.5rem;
+  height: var(--formInputHeight);
 }
 
 .normal .icon {
@@ -125,10 +125,6 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .butn {
-    height: 3rem;
-  }
-
   .circle.normal {
     width: 3rem;
   }

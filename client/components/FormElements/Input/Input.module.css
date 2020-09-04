@@ -2,7 +2,7 @@
   position: relative;
   display: block;
   width: 100%;
-  height: 3.5rem;
+  height: var(--formInputHeight);
   padding-top: 0;
   padding-bottom: 0;
   padding-left: var(--inputPaddingHorizontal);
@@ -41,10 +41,4 @@
 
 .frame:read-only {
   cursor: default;
-}
-
-@media only screen and (max-width: 1024px) {
-  .frame {
-    height: 3rem;
-  }
 }

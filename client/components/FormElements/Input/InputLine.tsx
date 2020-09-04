@@ -89,7 +89,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           {isRequired && <sup>*</sup>}
           {description && (
             <TTip title={description} className={classes.description}>
-              <Icon name={'question'} />
+              <Icon name={'question-circle'} />
             </TTip>
           )}
         </TagName>

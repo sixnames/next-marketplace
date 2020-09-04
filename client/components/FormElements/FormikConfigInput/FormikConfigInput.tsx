@@ -74,7 +74,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({
           <Fragment>
             {' '}
             <TTip title={description} className={classes.description}>
-              <Icon name={'question'} />
+              <Icon name={'question-circle'} />
             </TTip>
           </Fragment>
         )}

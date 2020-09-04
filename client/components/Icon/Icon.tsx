@@ -52,6 +52,7 @@ import { ReactComponent as Image } from './icons/app/image.svg';
 import { ReactComponent as Pencil } from './icons/app/pencil.svg';
 import { ReactComponent as Plus } from './icons/app/plus.svg';
 import { ReactComponent as Question } from './icons/app/question.svg';
+import { ReactComponent as QuestionCircle } from './icons/app/question-circle.svg';
 import { ReactComponent as ThreeDots } from './icons/app/three-dots.svg';
 import { ReactComponent as ThreeDotsVertical } from './icons/app/three-dots-vertical.svg';
 import { ReactComponent as Trash } from './icons/app/trash.svg';
@@ -68,6 +69,7 @@ export type IconType =
   | 'pencil'
   | 'plus'
   | 'question'
+  | 'question-circle'
   | 'three-dots'
   | 'three-dots-vertical'
   | 'trash'
@@ -270,6 +272,9 @@ const Icon: React.FC<IconPropsInterface> = ({ name, className, ...props }) => {
 
     case 'question':
       return <Question className={className} {...props} />;
+
+    case 'question-circle':
+      return <QuestionCircle className={className} {...props} />;
 
     case 'three-dots':
       return <ThreeDots className={className} {...props} />;

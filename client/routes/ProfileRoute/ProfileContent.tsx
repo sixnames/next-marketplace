@@ -4,17 +4,22 @@ import Inner from '../../components/Inner/Inner';
 import { useUserContext } from '../../context/userContext';
 import { Form, Formik } from 'formik';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
-import { useUpdateMyProfileMutation } from '../../generated/apolloComponents';
+import {
+  useUpdateMyPasswordMutation,
+  useUpdateMyProfileMutation,
+} from '../../generated/apolloComponents';
 import RequestError from '../../components/RequestError/RequestError';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateMyProfileSchema } from '../../validation';
 import classes from './ProfileContent.module.css';
+import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
+import { UPDATE_MY_PASSWORD_MODAL } from '../../config/modals';
 
 const ProfileContent: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
-  const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({});
+  const { onErrorCallback, onCompleteCallback, showModal } = useMutationCallbacks({});
   const [updateMyProfileMutation] = useUpdateMyProfileMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
@@ -25,6 +30,25 @@ const ProfileContent: React.FC = () => {
   const validationSchema = useValidationSchema({
     schema: updateMyProfileSchema,
   });
+  const [updateMyPasswordMutation] = useUpdateMyPasswordMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => onCompleteCallback(data.updateMyPassword),
+  });
+
+  function updateMyPasswordHandler() {
+    showModal<UpdateMyPasswordModalInterface>({
+      type: UPDATE_MY_PASSWORD_MODAL,
+      props: {
+        confirm: async (input) => {
+          await updateMyPasswordMutation({
+            variables: {
+              input,
+            },
+          });
+        },
+      },
+    });
+  }
 
   if (!me) {
     return <RequestError message={'Пользователь не найден'} />;
@@ -99,7 +123,13 @@ const ProfileContent: React.FC = () => {
                   </Button>
                 </div>
                 <div className={classes.butnLine}>
-                  <Button theme={'secondary'}>Изменить пароль</Button>
+                  <Button
+                    theme={'secondary'}
+                    testId={'update-my-password'}
+                    onClick={updateMyPasswordHandler}
+                  >
+                    Изменить пароль
+                  </Button>
                 </div>
               </Form>
             );

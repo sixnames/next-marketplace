@@ -19,35 +19,39 @@ import {
   ROLE_MODAL,
   ROLE_RESTRICTED_FIELDS_MODAL,
   RUBRIC_VARIANT_MODAL,
+  UPDATE_MY_PASSWORD_MODAL,
 } from '../../config/modals';
 
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
 const LanguageModal = React.lazy(() => import('./LanguageModal/LanguageModal'));
 const RoleModal = React.lazy(() => import('./RoleModal/RoleModal'));
-const RoleCustomFilterModal = React.lazy(() =>
-  import('./RoleCustomFilterModal/RoleCustomFilterModal'),
+const RoleCustomFilterModal = React.lazy(
+  () => import('./RoleCustomFilterModal/RoleCustomFilterModal'),
 );
-const RoleRestrictedFieldsModal = React.lazy(() =>
-  import('./RoleRestrictedFieldsModal/RoleRestrictedFieldsModal'),
+const RoleRestrictedFieldsModal = React.lazy(
+  () => import('./RoleRestrictedFieldsModal/RoleRestrictedFieldsModal'),
 );
 const OptionsGroupModal = React.lazy(() => import('./OptionsGroupModal/OptionsGroupModal'));
-const AttributesGroupModal = React.lazy(() =>
-  import('./AttributesGroupModal/AttributesGroupModal'),
+const AttributesGroupModal = React.lazy(
+  () => import('./AttributesGroupModal/AttributesGroupModal'),
 );
 const RubricVariantModal = React.lazy(() => import('./RubricVariantModal/RubricVariantModal'));
 const OptionInGroupModal = React.lazy(() => import('./OptionInGroupModal/OptionInGroupModal'));
 const CreateRubricModal = React.lazy(() => import('./CreateRubricModal/CreateRubricModal'));
-const AddAttributesGroupToRubricModal = React.lazy(() =>
-  import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
+const AddAttributesGroupToRubricModal = React.lazy(
+  () => import('./AddAttributesGroupToRubricModal/AddAttributesGroupToRubricModal'),
 );
-const AttributeInGroupModal = React.lazy(() =>
-  import('./AttributeInGroupModal/AttributeInGroupModal'),
+const AttributeInGroupModal = React.lazy(
+  () => import('./AttributeInGroupModal/AttributeInGroupModal'),
 );
-const CreateNewProductModal = React.lazy(() =>
-  import('./CreateNewProductModal/CreateNewProductModal'),
+const CreateNewProductModal = React.lazy(
+  () => import('./CreateNewProductModal/CreateNewProductModal'),
 );
-const AddProductToRubricModal = React.lazy(() =>
-  import('./AddProductToRubricModal/AddProductToRubricModal'),
+const AddProductToRubricModal = React.lazy(
+  () => import('./AddProductToRubricModal/AddProductToRubricModal'),
+);
+const UpdateMyPasswordModal = React.lazy(
+  () => import('./UpdateMyPasswordModal/UpdateMyPasswordModal'),
 );
 
 interface ModalInterface {
@@ -91,6 +95,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === ADD_PRODUCT_TO_RUBRIC_MODAL && <AddProductToRubricModal {...modalProps} />}
 
           {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
+
+          {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}
         </Suspense>
       </div>
 

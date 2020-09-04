@@ -388,25 +388,6 @@
   --inputPaddingHorizontal: 1.5rem;
 }
 
-@media only screen and (max-width: 1440px) {
-  :root {
-    --innerBlockVerticalPadding: 1rem;
-    --innerBlockHorizontalPadding: 1rem;
-  }
-}
-
-@media only screen and (max-width: 1024px) {
-  :root {
-    --formInputHeight: 3rem;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  :root {
-    --innerBlockHorizontalPadding: 0.75rem;
-  }
-}
-
 [data-theme='light'] {
   --primaryBackground: var(--wp-white);
   --secondaryBackground: var(--wp-light-gray-300);
@@ -459,6 +440,25 @@
   --secondaryButtonBackground: var(--wp-dark-gray-200);
 
   --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.45);
+}
+
+@media only screen and (max-width: 1440px) {
+  :root {
+    --innerBlockVerticalPadding: 1rem;
+    --innerBlockHorizontalPadding: 1rem;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  :root {
+    --formInputHeight: 3rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --innerBlockHorizontalPadding: 0.75rem;
+  }
 }
 
 html,

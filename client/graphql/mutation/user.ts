@@ -13,3 +13,16 @@ export const UPDATE_MY_PROFILE_MUTATION = gql`
   }
   ${sessionUserFragment}
 `;
+
+export const UPDATE_MY_PASSWORD_MUTATION = gql`
+  mutation UpdateMyPassword($input: UpdateMyPasswordInput!) {
+    updateMyPassword(input: $input) {
+      success
+      message
+      user {
+        ...SessionUserFragment
+      }
+    }
+  }
+  ${sessionUserFragment}
+`;

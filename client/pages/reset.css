@@ -303,6 +303,7 @@
   /*WP colors*/
   --themeRGB: 219, 83, 96;
   --theme: rgb(219, 83, 96);
+  --wp-error: rgb(219, 83, 96);
   --wp-white: #ffffff;
   --wp-dark-pink: #99093E;
   --wp-yellow: #E7C55A;
@@ -313,7 +314,7 @@
   --wp-dark-gray-300: #1D222B;
   --wp-dark-gray-400: #14181d;
   --wp-mid-gray-100: #6B6E74;
-  --wp-light-gray-100: #AAACB0;
+  --wp-light-gray-100: #aaacb0;
   --wp-light-gray-200: #E8E9EA;
   --wp-light-gray-300: #F2F3F3;
 
@@ -377,15 +378,12 @@
 
   /*inputs*/
   --inputTextColor: var(--textColor);
-  --inputBackground: var(--md-blue-gray-50);
-  --inputBorder: var(--md-blue-gray-100);
-  --inputBorder: var(--md-blue-gray-100);
-  --inputPaddingHorizontal: 0.5rem;
-  --inputFontSize: 0.875rem;
-  --inputFontSizeSmall: 0.75rem;
-  --inputHeightNormal: 2rem;
-  --inputHeightBig: 2rem;
-  --inputHeightSmall: 2rem;
+  --inputBackground: var(--wp-white);
+  --inputBorderRGB: 170, 172, 176;
+  --inputBorder: rgba(var(--inputBorderRGB), 0.5);
+  --inputBorderFocus: rgba(var(--inputBorderRGB), 1);
+  --inputBorderError: var(--wp-error);
+  --inputPaddingHorizontal: 1.5rem;
 }
 
 @media only screen and (max-width: 1440px) {
@@ -413,8 +411,12 @@
   --textSecondaryColor: var(--wp-mid-gray-100);
 
   --inputTextColor: var(--textColor);
-  --inputBackground: var(--md-blue-gray-50);
-  --inputBorder: var(--md-blue-gray-100);
+  --inputBackground: var(--wp-white);
+  --inputBorderRGB: 170, 172, 176;
+  --inputBorder: rgba(var(--inputBorderRGB), 0.5);
+  --inputBorderFocus: rgba(var(--inputBorderRGB), 1);
+  --inputBorderError: var(--wp-error);
+  --inputPaddingHorizontal: 1.5rem;
 
   --borderColor: var(--wp-light-gray-100);
 
@@ -436,8 +438,12 @@
   --textSecondaryColor: var(--wp-light-gray-100);
 
   --inputTextColor: var(--textColor);
-  --inputBackground: var(--md-gray-800);
-  --inputBorder: var(--md-gray-700);
+  --inputBackground: var(--wp-dark-gray-300);
+  --inputBorderRGB: 255, 255, 255;
+  --inputBorder: rgba(var(--inputBorderRGB), 0.3);
+  --inputBorderFocus: rgba(var(--inputBorderRGB), 0.6);
+  --inputBorderError: var(--wp-error);
+  --inputPaddingHorizontal: 1.5rem;
 
   --borderColor: rgba(255, 255, 255, 0.3);
 

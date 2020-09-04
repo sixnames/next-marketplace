@@ -36,7 +36,7 @@
 }
 
 .close svg {
-  fill: var(--white);
+  fill: var(--wp-white);
 }
 
 .closeLeft,
@@ -58,5 +58,5 @@
 
 .warning {
   background-color: var(--red);
-  color: var(--white);
+  color: var(--wp-white);
 }

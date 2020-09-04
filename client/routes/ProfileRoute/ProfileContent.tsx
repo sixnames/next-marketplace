@@ -10,7 +10,7 @@ import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateMyProfileSchema } from '../../validation';
-// import classes from './ProfileContent.module.css';
+import classes from './ProfileContent.module.css';
 
 const ProfileContent: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
@@ -93,9 +93,14 @@ const ProfileContent: React.FC = () => {
                   isRequired
                   showInlineError
                 />
-                <Button type={'submit'} testId={'submit-my-profile'}>
-                  Сохранить
-                </Button>
+                <div className={classes.butnLine}>
+                  <Button type={'submit'} testId={'submit-my-profile'}>
+                    Сохранить
+                  </Button>
+                </div>
+                <div className={classes.butnLine}>
+                  <Button theme={'secondary'}>Изменить пароль</Button>
+                </div>
               </Form>
             );
           }}

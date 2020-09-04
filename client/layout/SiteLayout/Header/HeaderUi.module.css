@@ -59,7 +59,7 @@
   padding-right: 4px;
   font-size: 0.8rem;
   font-weight: bold;
-  color: var(--white);
+  color: var(--wp-white);
   background-color: var(--red);
   border-radius: 9px;
 }

@@ -9,7 +9,7 @@ const DataLayoutFilterTrigger: React.FC = () => {
     <Button
       title={isFilterVisible ? 'Скрыть фильтр' : 'Показать фильтр'}
       onClick={toggleFilter}
-      theme={'gray'}
+      theme={'secondary'}
       size={'small'}
       className={`${classes.ControlsButton}`}
       icon={'filter'}

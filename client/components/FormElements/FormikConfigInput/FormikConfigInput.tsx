@@ -99,7 +99,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({
                     <Button
                       onClick={addFieldHandler}
                       size={'small'}
-                      theme={'gray'}
+                      theme={'secondary'}
                       icon={'plus'}
                       testId={`${fieldName}-add`}
                       circle

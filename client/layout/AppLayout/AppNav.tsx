@@ -11,6 +11,7 @@ import useSignOut from '../../hooks/useSignOut';
 import useIsMobile from '../../hooks/useIsMobile';
 import { useAppNavContext } from '../../context/appNavContext';
 import classes from './AppNav.module.css';
+import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -90,6 +91,14 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                     </span>
                   </div>
                 </TTip>
+              </li>
+
+              <li className={`${classes.bottom} ${classes.bottom}`}>
+                <div
+                  className={`${classes.bottomLink} ${isCompact ? classes.bottomLinkCompact : ''}`}
+                >
+                  <ThemeTrigger />
+                </div>
               </li>
             </ul>
           </div>

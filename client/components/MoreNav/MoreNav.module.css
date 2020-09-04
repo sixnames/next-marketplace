@@ -37,7 +37,7 @@
   width: 260px;
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: var(--white);
+  background-color: var(--wp-white);
   box-shadow: var(--wp-shadow-100);
   border-radius: 4px;
 }

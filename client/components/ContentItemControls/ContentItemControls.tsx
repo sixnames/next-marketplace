@@ -31,7 +31,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   deleteHandler,
   className,
   justifyContent = 'flex-start',
-  theme = 'gray',
+  theme = 'secondary',
   testId,
   disabled,
   isCreateDisabled,

@@ -75,7 +75,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     const { operationType, allow, id, customFilter } = currentOperation;
 
     const isCustomFilterEdited = customFilter !== ROLE_EMPTY_CUSTOM_FILTER;
-    const buttonTheme = isCustomFilterEdited ? 'primary' : 'gray';
+    const buttonTheme = isCustomFilterEdited ? 'primary' : 'secondary';
 
     return (
       <div className={classes.rule}>
@@ -184,7 +184,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
           <Button
             size={'small'}
             testId={`${entity}-restricted-fields`}
-            theme={notEmpty ? 'primary' : 'gray'}
+            theme={notEmpty ? 'primary' : 'secondary'}
             onClick={() => {
               showModal<RoleRestrictedFieldsModalInterface>({
                 type: ROLE_RESTRICTED_FIELDS_MODAL,

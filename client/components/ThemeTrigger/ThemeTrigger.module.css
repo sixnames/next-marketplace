@@ -2,7 +2,9 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+}
 
+[data-theme='light'] .frame {
   --trigger-background: var(--wp-light-gray-200);
   --trigger-thumb-background: var(--wp-light-gray-100);
   --icon-fill: var(--wp-light-gray-100);

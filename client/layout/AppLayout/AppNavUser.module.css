@@ -22,7 +22,7 @@
   position: relative;
   z-index: 2;
   font-weight: bold;
-  color: var(--white);
+  color: var(--wp-white);
 }
 
 @media only screen and (min-width: 1025px) {

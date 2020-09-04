@@ -28,6 +28,7 @@
 .frame .butn {
   width: 2rem;
   height: 2rem;
+  min-width: auto;
   padding-left: 0;
   padding-right: 0;
   border-radius: 1rem;
@@ -35,7 +36,10 @@
   background-color: transparent;
 }
 
-.butn svg {
+.frame .reset svg,
+.frame .butn svg {
+  width: 1rem;
+  height: 1rem;
   margin-right: 0;
   fill: var(--textColor);
 }
@@ -44,8 +48,9 @@
   border: 1px solid var(--midGray);
 }
 
-.reset {
+.frame .reset {
   width: 2rem;
   height: 2rem;
+  min-width: auto;
   margin-left: 1rem;
 }

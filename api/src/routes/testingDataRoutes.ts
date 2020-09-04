@@ -33,6 +33,10 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
+  ADMIN_PASSWORD,
+  ADMIN_EMAIL,
+  ADMIN_NAME,
+  ADMIN_PHONE,
 } from '../config';
 import { Request, Response } from 'express';
 import clearTestData from '../utils/testUtils/clearTestData';
@@ -40,6 +44,10 @@ import { attemptSignIn } from '../utils/auth/auth';
 
 export async function getMockDataRoute(_: Request, res: Response) {
   res.send({
+    ADMIN_PASSWORD,
+    ADMIN_EMAIL,
+    ADMIN_NAME,
+    ADMIN_PHONE,
     ISO_LANGUAGES,
     ME_AS_ADMIN,
     MOCK_PRODUCT_B,

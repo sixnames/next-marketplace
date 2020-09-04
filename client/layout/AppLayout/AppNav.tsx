@@ -8,10 +8,10 @@ import TTip from '../../components/TTip/TTip';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import useSignOut from '../../hooks/useSignOut';
-import classes from './AppNav.module.css';
-import { useThemeContext } from '../../context/themeContext';
 import useIsMobile from '../../hooks/useIsMobile';
 import { useAppNavContext } from '../../context/appNavContext';
+import classes from './AppNav.module.css';
+import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -21,7 +21,6 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   const { pathname } = useRouter();
   const { navItems } = useAppNavContext();
   const isMobile = useIsMobile();
-  const { toggleTheme, isDark, themeTooltip } = useThemeContext();
   const signOutHandler = useSignOut();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
 
@@ -32,7 +31,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   return (
     <nav className={classes.frame}>
       <div className={`${classes.collapse}`} onClick={mobileNavHandler}>
-        <Icon name='Menu' className={classes.collapseIcon} />
+        <Icon name='burger' className={classes.collapseIcon} />
       </div>
 
       <div className={`${classes.nav} ${isCompact && classes.navCompact}`}>
@@ -62,7 +61,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}
                   >
-                    <Icon name={'ChevronLeft'} className={classes.bottomIcon} />
+                    <Icon name={'chevron-left'} className={classes.bottomIcon} />
                     <span
                       className={`${classes.bottomText} ${
                         isCompact ? classes.bottomTextCompact : ''
@@ -82,7 +81,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       isCompact ? classes.bottomLinkCompact : ''
                     }`}
                   >
-                    <Icon name={'ExitToApp'} className={classes.bottomIcon} />
+                    <Icon name={'exit'} className={classes.bottomIcon} />
                     <span
                       className={`${classes.bottomText} ${
                         isCompact ? classes.bottomTextCompact : ''
@@ -94,28 +93,12 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                 </TTip>
               </li>
 
-              <li className={classes.bottom} onClick={toggleTheme}>
-                <TTip tooltipPlacement={'right'} title={isCompact ? themeTooltip : ''}>
-                  <div
-                    className={`${classes.bottomLink} ${
-                      isCompact ? classes.bottomLinkCompact : ''
-                    }`}
-                  >
-                    {isDark ? (
-                      <Icon className={classes.bottomIcon} name={'Brightness7'} />
-                    ) : (
-                      <Icon className={classes.bottomIcon} name={'Brightness4'} />
-                    )}
-
-                    <span
-                      className={`${classes.bottomText} ${
-                        isCompact ? classes.bottomTextCompact : ''
-                      }`}
-                    >
-                      {themeTooltip}
-                    </span>
-                  </div>
-                </TTip>
+              <li className={`${classes.bottom} ${classes.bottom}`}>
+                <div
+                  className={`${classes.bottomLink} ${isCompact ? classes.bottomLinkCompact : ''}`}
+                >
+                  <ThemeTrigger />
+                </div>
               </li>
             </ul>
           </div>

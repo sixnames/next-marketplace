@@ -37,7 +37,7 @@ const HeaderMobileItem: React.FC<HeaderMobileItemInterface> = ({ rubric, hideNav
         onClick={toggleDropdownHandler}
         className={`${classes.trigger} ${isOpen ? classes.triggerActive : ''}`}
       >
-        <Icon name={'ExpandMore'} />
+        <Icon name={'chevron-down'} />
       </div>
 
       {isOpen && (

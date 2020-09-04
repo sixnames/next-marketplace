@@ -1,13 +1,21 @@
 import { MessageModel } from '../../entities/Message';
 import { MessageInterface, MessageKey } from '../../config/apiMessages/messagesKeys';
-import { CONSTANT_VALIDATION_KEYS } from '../../validation/schemaTemplates';
 
 async function getMessagesByKeys(keys: MessageKey[]): Promise<MessageInterface[]> {
-  const messages = await MessageModel.find({ key: { $in: [...CONSTANT_VALIDATION_KEYS, ...keys] } })
+  const validationMessages = await MessageModel.find({
+    key: { $regex: /validation/ },
+  })
     .lean()
     .exec();
 
-  return messages.map(({ key, message }) => ({
+  let queriedMessages: any[] = [];
+  if (keys && keys.length) {
+    queriedMessages = await MessageModel.find({ key: { $in: keys } })
+      .lean()
+      .exec();
+  }
+
+  return [...validationMessages, ...queriedMessages].map(({ key, message }) => ({
     key: key as MessageKey,
     message,
   }));

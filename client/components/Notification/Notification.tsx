@@ -22,7 +22,7 @@ const Notification: React.FC<NotificationInterface> = ({
   title = '',
   message = '',
   path = '',
-  icon = 'Error',
+  icon = 'exclamation',
   playSound = false,
   testId,
   closeHandler,

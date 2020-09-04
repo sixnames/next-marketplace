@@ -23,10 +23,12 @@ const AppNavUser: React.FC<AppNavUserInterface> = ({ compact, openNavHandler }) 
       className={`${classes.frame} ${compact ? classes.frameCompact : ''}`}
       onClick={openNavHandler}
     >
-      <Icon className={`${classes.icon} ${compact ? classes.iconCompact : ''}`} name={'Person'} />
+      <Icon className={`${classes.icon} ${compact ? classes.iconCompact : ''}`} name={'user'} />
 
       <div className={`${classes.content} ${compact ? classes.contentCompact : ''}`}>
-        <div className={`${classes.name}`}>{shortName}</div>
+        <div className={`${classes.name}`} data-cy={'app-nav-user-name'}>
+          {shortName}
+        </div>
       </div>
     </div>
   );

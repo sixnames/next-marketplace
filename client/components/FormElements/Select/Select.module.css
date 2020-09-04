@@ -3,33 +3,21 @@
   z-index: 2;
   display: block;
   width: 100%;
+  height: var(--formInputHeight);
   margin: 0;
   padding-top: 0;
   padding-bottom: 0;
   padding-right: 15px;
   padding-left: var(--inputPaddingHorizontal);
-  font-size: var(--inputFontSize);
+  font-size: 1rem;
   color: var(--inputTextColor);
   outline: none;
-  border: 1px solid var(--borderColor);
-  background-color: var(--inputBackground);
-  border-radius: 3px;
+  border: 1px solid var(--inputBorder);
+  background-color: transparent;
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
   -webkit-appearance: none;
-}
-
-.normal {
-  height: var(--inputHeightNormal);
-}
-
-.big {
-  height: var(--inputHeightBig);
-}
-
-.small {
-  height: var(--inputHeightSmall);
-  font-size: var(--inputFontSizeSmall);
 }
 
 .select:disabled {
@@ -37,32 +25,27 @@
   cursor: default;
 }
 
+.select:focus {
+  border-color: var(--inputBorderFocus);
+}
+
 .error {
-  border-color: var(--red);
+  border: 1px solid var(--wp-error);
 }
 
 .holder {
-  display: block;
   position: relative;
-  width: 100%;
-}
-
-.holder:before {
-  position: absolute;
-  right: 7px;
-  top: 50%;
-  z-index: 3;
   display: block;
-  content: '';
-  width: 0;
-  height: 0;
-  margin-left: 5px;
-  border-top: 5px solid var(--gray);
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  transform: translateY(calc(50% - 3px));
+  width: 100%;
+  background-color: var(--inputBackground);
 }
 
-[data-theme='dark'] .holder:before {
-  border-top-color: var(--midGray);
+.holder svg {
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  width: 12px;
+  height: 12px;
+  transform: translate3d(0, -5px, 0);
+  fill: var(--inputBorderFocus);
 }

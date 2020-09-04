@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
   query GetCatalogueRubric($catalogueFilter: [String!]!) {

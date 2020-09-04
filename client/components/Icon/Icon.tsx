@@ -1,152 +1,290 @@
 import React from 'react';
-// import { ReactComponent as Test } from './icons/catalogue/burger.svg';
+// Catalogue
+import { ReactComponent as ArrowLeft } from './icons/catalogue/arrow-left.svg';
+import { ReactComponent as ArrowRight } from './icons/catalogue/arrow-right.svg';
+import { ReactComponent as Burger } from './icons/catalogue/burger.svg';
+import { ReactComponent as BurgerActive } from './icons/catalogue/burger-active.svg';
+import { ReactComponent as Cart } from './icons/catalogue/cart.svg';
+import { ReactComponent as ChevronDown } from './icons/catalogue/chevron-down.svg';
+import { ReactComponent as ChevronLeft } from './icons/catalogue/chevron-left.svg';
+import { ReactComponent as ChevronLeftThin } from './icons/catalogue/chevron-left-thin.svg';
+import { ReactComponent as ChevronRight } from './icons/catalogue/chevron-right.svg';
+import { ReactComponent as ChevronRightThin } from './icons/catalogue/chevron-right-thin.svg';
+import { ReactComponent as ChevronUp } from './icons/catalogue/chevron-up.svg';
+import { ReactComponent as Compare } from './icons/catalogue/compare.svg';
+import { ReactComponent as Cross } from './icons/catalogue/cross.svg';
+import { ReactComponent as CrossBold } from './icons/catalogue/cross-bold.svg';
+import { ReactComponent as CrossThin } from './icons/catalogue/cross-thin.svg';
+import { ReactComponent as Eye } from './icons/catalogue/eye.svg';
+import { ReactComponent as Facebook } from './icons/catalogue/facebook.svg';
+import { ReactComponent as Flash } from './icons/catalogue/flash.svg';
+import { ReactComponent as Grid } from './icons/catalogue/grid.svg';
+import { ReactComponent as Heart } from './icons/catalogue/heart.svg';
+import { ReactComponent as HeartB } from './icons/catalogue/heart-2.svg';
+import { ReactComponent as Help } from './icons/catalogue/help.svg';
+import { ReactComponent as Instagram } from './icons/catalogue/instagram.svg';
+import { ReactComponent as Like } from './icons/catalogue/like.svg';
+import { ReactComponent as Marker } from './icons/catalogue/marker.svg';
+import { ReactComponent as Message } from './icons/catalogue/message.svg';
+import { ReactComponent as Moon } from './icons/catalogue/moon.svg';
+import { ReactComponent as Percent } from './icons/catalogue/percent.svg';
+import { ReactComponent as Picture } from './icons/catalogue/picture.svg';
+import { ReactComponent as Rows } from './icons/catalogue/rows.svg';
+import { ReactComponent as Scan } from './icons/catalogue/scan.svg';
+import { ReactComponent as Search } from './icons/catalogue/search.svg';
+import { ReactComponent as Shoot } from './icons/catalogue/shoot.svg';
+import { ReactComponent as Star } from './icons/catalogue/star.svg';
+import { ReactComponent as Sun } from './icons/catalogue/sun.svg';
+import { ReactComponent as Upload } from './icons/catalogue/upload.svg';
+import { ReactComponent as User } from './icons/catalogue/user.svg';
+import { ReactComponent as Vk } from './icons/catalogue/vk.svg';
+import { ReactComponent as Youtube } from './icons/catalogue/youtube.svg';
 
-import {
-  Add,
-  ExpandMore,
-  ExpandLess,
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  Edit,
-  Close,
-  Delete,
-  FilterList,
-  DateRange,
-  Error,
-  Search,
-  Replay,
-  Image,
-  MoreVert,
-  ShoppingCart,
-  Settings,
-  Person,
-  ExitToApp,
-  Menu,
-  Instagram,
-  Facebook,
-  ShoppingCartOutlined,
-  FavoriteBorderOutlined,
-  FavoriteOutlined,
-  VisibilityOutlined,
-  PersonOutlineOutlined,
-  Brightness4,
-  Brightness7,
-  CheckBox,
-  Help,
-  CheckBoxOutlineBlank,
-} from '@material-ui/icons';
-import { ObjectType } from '../../types';
+// App
+import { ReactComponent as ArrowClockWise } from './icons/app/arrow-clockwise.svg';
+import { ReactComponent as Check } from './icons/app/check.svg';
+import { ReactComponent as Dash } from './icons/app/dash.svg';
+import { ReactComponent as Exclamation } from './icons/app/exclamation.svg';
+import { ReactComponent as Exit } from './icons/app/exit.svg';
+import { ReactComponent as Filter } from './icons/app/filter.svg';
+import { ReactComponent as Gear } from './icons/app/gear.svg';
+import { ReactComponent as Image } from './icons/app/image.svg';
+import { ReactComponent as Pencil } from './icons/app/pencil.svg';
+import { ReactComponent as Plus } from './icons/app/plus.svg';
+import { ReactComponent as Question } from './icons/app/question.svg';
+import { ReactComponent as QuestionCircle } from './icons/app/question-circle.svg';
+import { ReactComponent as ThreeDots } from './icons/app/three-dots.svg';
+import { ReactComponent as ThreeDotsVertical } from './icons/app/three-dots-vertical.svg';
+import { ReactComponent as Trash } from './icons/app/trash.svg';
 
 export type IconType =
-  | 'Add'
-  | 'ExpandMore'
-  | 'ExpandLess'
-  | 'ChevronLeft'
-  | 'ChevronRight'
-  | 'Close'
-  | 'Edit'
-  | 'Delete'
-  | 'FilterList'
-  | 'DateRange'
-  | 'Error'
-  | 'Search'
-  | 'Replay'
-  | 'Image'
-  | 'MoreVert'
-  | 'ShoppingCart'
-  | 'Settings'
-  | 'Person'
-  | 'ExitToApp'
-  | 'Menu'
-  | 'Instagram'
-  | 'Facebook'
-  | 'ShoppingCartOutlined'
-  | 'FavoriteBorderOutlined'
-  | 'FavoriteOutlined'
-  | 'VisibilityOutlined'
-  | 'PersonOutlineOutlined'
-  | 'Brightness4'
-  | 'Brightness7'
-  | 'CheckBox'
-  | 'CheckBoxOutlineBlank'
-  | 'Help'
-  | 'Check';
+  | 'arrow-clockwise'
+  | 'check'
+  | 'dash'
+  | 'exclamation'
+  | 'exit'
+  | 'filter'
+  | 'gear'
+  | 'image'
+  | 'pencil'
+  | 'plus'
+  | 'question'
+  | 'question-circle'
+  | 'three-dots'
+  | 'three-dots-vertical'
+  | 'trash'
+  | 'arrow-left'
+  | 'arrow-right'
+  | 'burger'
+  | 'burger-active'
+  | 'cart'
+  | 'chevron-down'
+  | 'chevron-left'
+  | 'chevron-left-thin'
+  | 'chevron-right'
+  | 'chevron-right-thin'
+  | 'chevron-up'
+  | 'compare'
+  | 'cross'
+  | 'cross-bold'
+  | 'cross-thin'
+  | 'eye'
+  | 'facebook'
+  | 'flash'
+  | 'grid'
+  | 'heart'
+  | 'heart-2'
+  | 'help'
+  | 'instagram'
+  | 'like'
+  | 'marker'
+  | 'message'
+  | 'moon'
+  | 'percent'
+  | 'picture'
+  | 'rows'
+  | 'scan'
+  | 'search'
+  | 'shoot'
+  | 'star'
+  | 'sun'
+  | 'upload'
+  | 'user'
+  | 'vk'
+  | 'youtube';
 
 interface IconPropsInterface {
   name: IconType;
   className?: string;
-  style?: ObjectType;
+  style?: React.CSSProperties;
 }
 
 const Icon: React.FC<IconPropsInterface> = ({ name, className, ...props }) => {
   switch (name) {
-    case 'Help':
-      return <Help className={className} {...props} />;
-    case 'Add':
-      return <Add className={className} {...props} />;
-    case 'ExpandLess':
-      return <ExpandLess className={className} {...props} />;
-    case 'ChevronRight':
-      return <ChevronRight className={className} {...props} />;
-    case 'ExpandMore':
-      return <ExpandMore className={className} {...props} />;
-    case 'ChevronLeft':
+    // Catalogue
+    case 'arrow-left':
+      return <ArrowLeft className={className} {...props} />;
+
+    case 'arrow-right':
+      return <ArrowRight className={className} {...props} />;
+
+    case 'burger':
+      return <Burger className={className} {...props} />;
+
+    case 'burger-active':
+      return <BurgerActive className={className} {...props} />;
+
+    case 'cart':
+      return <Cart className={className} {...props} />;
+
+    case 'chevron-down':
+      return <ChevronDown className={className} {...props} />;
+
+    case 'chevron-left':
       return <ChevronLeft className={className} {...props} />;
-    case 'Check':
-      return <Check className={className} {...props} />;
-    case 'Edit':
-      return <Edit className={className} {...props} />;
-    case 'Delete':
-      return <Delete className={className} {...props} />;
-    case 'Close':
-      return <Close className={className} {...props} />;
-    case 'FilterList':
-      return <FilterList className={className} {...props} />;
-    case 'DateRange':
-      return <DateRange className={className} {...props} />;
-    case 'Error':
-      return <Error className={className} {...props} />;
-    case 'Search':
-      return <Search className={className} {...props} />;
-    case 'Replay':
-      return <Replay className={className} {...props} />;
-    case 'Image':
-      return <Image className={className} {...props} />;
-    case 'MoreVert':
-      return <MoreVert className={className} {...props} />;
-    case 'ShoppingCart':
-      return <ShoppingCart className={className} {...props} />;
-    case 'ShoppingCartOutlined':
-      return <ShoppingCartOutlined className={className} {...props} />;
-    case 'Settings':
-      return <Settings className={className} {...props} />;
-    case 'Person':
-      return <Person className={className} {...props} />;
-    case 'ExitToApp':
-      return <ExitToApp className={className} {...props} />;
-    case 'Menu':
-      return <Menu className={className} {...props} />;
-    case 'Instagram':
-      return <Instagram className={className} {...props} />;
-    case 'Facebook':
+
+    case 'chevron-left-thin':
+      return <ChevronLeftThin className={className} {...props} />;
+
+    case 'chevron-right':
+      return <ChevronRight className={className} {...props} />;
+
+    case 'chevron-right-thin':
+      return <ChevronRightThin className={className} {...props} />;
+
+    case 'chevron-up':
+      return <ChevronUp className={className} {...props} />;
+
+    case 'compare':
+      return <Compare className={className} {...props} />;
+
+    case 'cross':
+      return <Cross className={className} {...props} />;
+
+    case 'cross-bold':
+      return <CrossBold className={className} {...props} />;
+
+    case 'cross-thin':
+      return <CrossThin className={className} {...props} />;
+
+    case 'eye':
+      return <Eye className={className} {...props} />;
+
+    case 'facebook':
       return <Facebook className={className} {...props} />;
-    case 'FavoriteBorderOutlined':
-      return <FavoriteBorderOutlined className={className} {...props} />;
-    case 'FavoriteOutlined':
-      return <FavoriteOutlined className={className} {...props} />;
-    case 'VisibilityOutlined':
-      return <VisibilityOutlined className={className} {...props} />;
-    case 'PersonOutlineOutlined':
-      return <PersonOutlineOutlined className={className} {...props} />;
-    case 'Brightness4':
-      return <Brightness4 className={className} {...props} />;
-    case 'Brightness7':
-      return <Brightness7 className={className} {...props} />;
-    case 'CheckBox':
-      return <CheckBox className={className} {...props} />;
-    case 'CheckBoxOutlineBlank':
-      return <CheckBoxOutlineBlank className={className} {...props} />;
+
+    case 'flash':
+      return <Flash className={className} {...props} />;
+
+    case 'grid':
+      return <Grid className={className} {...props} />;
+
+    case 'heart':
+      return <Heart className={className} {...props} />;
+
+    case 'heart-2':
+      return <HeartB className={className} {...props} />;
+
+    case 'help':
+      return <Help className={className} {...props} />;
+
+    case 'instagram':
+      return <Instagram className={className} {...props} />;
+
+    case 'like':
+      return <Like className={className} {...props} />;
+
+    case 'marker':
+      return <Marker className={className} {...props} />;
+
+    case 'message':
+      return <Message className={className} {...props} />;
+
+    case 'moon':
+      return <Moon className={className} {...props} />;
+
+    case 'percent':
+      return <Percent className={className} {...props} />;
+
+    case 'picture':
+      return <Picture className={className} {...props} />;
+
+    case 'rows':
+      return <Rows className={className} {...props} />;
+
+    case 'scan':
+      return <Scan className={className} {...props} />;
+
+    case 'search':
+      return <Search className={className} {...props} />;
+
+    case 'shoot':
+      return <Shoot className={className} {...props} />;
+
+    case 'star':
+      return <Star className={className} {...props} />;
+
+    case 'sun':
+      return <Sun className={className} {...props} />;
+
+    case 'upload':
+      return <Upload className={className} {...props} />;
+
+    case 'user':
+      return <User className={className} {...props} />;
+
+    case 'vk':
+      return <Vk className={className} {...props} />;
+
+    case 'youtube':
+      return <Youtube className={className} {...props} />;
+
+    // App
+    case 'arrow-clockwise':
+      return <ArrowClockWise className={className} {...props} />;
+
+    case 'check':
+      return <Check className={className} {...props} />;
+
+    case 'dash':
+      return <Dash className={className} {...props} />;
+
+    case 'exclamation':
+      return <Exclamation className={className} {...props} />;
+
+    case 'exit':
+      return <Exit className={className} {...props} />;
+
+    case 'filter':
+      return <Filter className={className} {...props} />;
+
+    case 'gear':
+      return <Gear className={className} {...props} />;
+
+    case 'image':
+      return <Image className={className} {...props} />;
+
+    case 'pencil':
+      return <Pencil className={className} {...props} />;
+
+    case 'plus':
+      return <Plus className={className} {...props} />;
+
+    case 'question':
+      return <Question className={className} {...props} />;
+
+    case 'question-circle':
+      return <QuestionCircle className={className} {...props} />;
+
+    case 'three-dots':
+      return <ThreeDots className={className} {...props} />;
+
+    case 'three-dots-vertical':
+      return <ThreeDotsVertical className={className} {...props} />;
+
+    case 'trash':
+      return <Trash className={className} {...props} />;
+
     default:
       console.log(`Icon not found - ${name}`);
       return (

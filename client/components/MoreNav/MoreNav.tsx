@@ -25,7 +25,7 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
   return (
     <div className={`${classes.frame} ${className ? className : ''}`}>
       <div className={classes.trigger} onClick={toggleDropdownHandler} data-cy={`more-nav-trigger`}>
-        <Icon name={'MoreVert'} className={classes.triggerIcon} />
+        <Icon name={'three-dots-vertical'} className={classes.triggerIcon} />
       </div>
 
       {isDropdownOpen && (

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 const rubricFragment = gql`
   fragment RubricFragment on Rubric {

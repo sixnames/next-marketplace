@@ -54,7 +54,7 @@ function useNotificationsContext() {
       title = '',
       message = '',
       path,
-      icon = 'Error',
+      icon = 'exclamation',
       type,
       autoHideDuration = NOTIFICATION_TIMEOUT,
       playSound = false,

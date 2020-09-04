@@ -2,7 +2,7 @@
   padding-top: 1.5rem;
   padding-bottom: 2rem;
   background-color: var(--primaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
 }
 
 .frame a {

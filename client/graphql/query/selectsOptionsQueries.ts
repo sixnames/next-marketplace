@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const GET_GENDER_OPTIONS_QUERY = gql`
   query GetGenderOptions {

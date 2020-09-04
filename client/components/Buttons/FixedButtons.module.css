@@ -6,7 +6,7 @@
   align-items: center;
   padding-right: var(--innerBlockHorizontalPadding);
   padding-left: var(--innerBlockHorizontalPadding);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   background-color: var(--primaryBackground);
 }
 

@@ -33,7 +33,7 @@ function HeaderSearch() {
                 />
 
                 <Button theme={'secondary'} className={classes.butn} type={'submit'}>
-                  <Icon name={'Search'} />
+                  <Icon name={'search'} />
                 </Button>
               </Form>
 

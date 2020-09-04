@@ -85,7 +85,7 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
                   />
                 </div>
               ) : (
-                <Icon name={'Image'} className={classes.noImage} />
+                <Icon name={'image'} className={classes.noImage} />
               )}
             </TTip>
 

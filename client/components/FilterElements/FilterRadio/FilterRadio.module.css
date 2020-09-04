@@ -11,11 +11,11 @@
 
 .radio {
   position: relative;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   margin-right: 7px;
-  border: 2px solid var(--borderColor);
+  border: 1px solid var(--borderColor);
   background-color: var(--inputBackground);
   border-radius: 50%;
   overflow: hidden;
@@ -24,11 +24,11 @@
 
 .radio span {
   position: absolute;
-  top: 1px;
-  left: 1px;
+  top: 2px;
+  left: 2px;
   display: block;
-  width: 10px;
-  height: 10px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
   background-color: var(--inputBackground);
   border-radius: 50%;
   transition: all 0.2s;

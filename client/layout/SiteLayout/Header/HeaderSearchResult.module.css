@@ -13,7 +13,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background-color: var(--modalFrameBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
   border-radius: 4px;
 }
 

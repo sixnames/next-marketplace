@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
-const sessionUserFragment = gql`
+export const sessionUserFragment = gql`
   fragment SessionUserFragment on User {
     id
     email

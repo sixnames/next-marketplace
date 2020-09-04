@@ -29,7 +29,7 @@ const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) =>
           className={classes.butn}
           testId={`${testId}-search-submit`}
         >
-          <Icon name={`Search`} />
+          <Icon name={'search'} />
         </Button>
       </div>
 
@@ -42,7 +42,7 @@ const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) =>
           onClick={resetForm}
           testId={`${testId}-search-reset`}
         >
-          <Icon name={'Replay'} />
+          <Icon name={'arrow-clockwise'} />
         </Button>
       )}
     </div>

@@ -24,14 +24,14 @@ const HeaderUserNav: React.FC<HeaderUserNavInterface> = ({ me, hideDropdown }) =
         <ul>
           <li className={classes.item}>
             <Link href={'/app'} className={classes.link} testId={'user-nav-app'}>
-              <Icon name={'ShoppingCartOutlined'} className={classes.icon} />
+              <Icon name={'cart'} className={classes.icon} />
               <span className={classes.linkName}>{'Кабинет'}</span>
             </Link>
           </li>
 
           <li className={classes.item}>
             <div className={classes.link} onClick={signOutHandler} data-cy={'user-nav-sign-out'}>
-              <Icon name={'ExitToApp'} className={classes.icon} />
+              <Icon name={'exit'} className={classes.icon} />
               <span className={classes.linkName}>Выход</span>
             </div>
           </li>

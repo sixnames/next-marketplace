@@ -34,7 +34,7 @@
   width: 300px;
   height: var(--fullHeight, 100vh);
   background-color: var(--secondaryBackground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--wp-shadow-100);
 }
 
 .scroll {

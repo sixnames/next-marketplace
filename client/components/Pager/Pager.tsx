@@ -24,10 +24,10 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         initialPage={page - pageStep}
         pageRangeDisplayed={pageStep}
         marginPagesDisplayed={marginPagesDisplayed}
-        previousLabel={<Icon name={'ChevronLeft'} />}
+        previousLabel={<Icon name={'chevron-left'} />}
         previousClassName={classes.prev}
         previousLinkClassName={classes.butn}
-        nextLabel={<Icon name={'ChevronRight'} />}
+        nextLabel={<Icon name={'chevron-right'} />}
         nextLinkClassName={classes.butn}
         nextClassName={classes.next}
         pageLinkClassName={classes.butn}

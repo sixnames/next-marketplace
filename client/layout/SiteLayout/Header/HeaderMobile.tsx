@@ -34,7 +34,7 @@ const HeaderMobile: React.FC<HeaderMobileInterface> = ({ headerRef }) => {
       <div onClick={toggleNavHandler} className={classes.trigger}>
         <Icon
           className={`${classes.triggerIcon} ${isNavOpen ? classes.triggerIconActive : ''}`}
-          name={'Menu'}
+          name={'burger'}
         />
       </div>
 

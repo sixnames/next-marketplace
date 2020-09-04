@@ -29,8 +29,6 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   const disabledClassName = disabled ? classes.disabled : '';
   const checkboxClassName = `${classes.frame} ${checkedClassName} ${additionalClassName} ${errorClassName} ${disabledClassName}`;
 
-  const iconName = checked ? 'CheckBox' : 'CheckBoxOutlineBlank';
-
   return (
     <label className={checkboxClassName}>
       <input
@@ -41,7 +39,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
         disabled={disabled}
         data-cy={`${testId}-checkbox`}
       />
-      <Icon name={iconName} />
+      <Icon name={'check'} />
     </label>
   );
 };

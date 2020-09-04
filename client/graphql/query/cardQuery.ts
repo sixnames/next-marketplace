@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const CATALOGUE_CARD_QUERY = gql`
   query GetCatalogueCardQuery($slug: String!) {

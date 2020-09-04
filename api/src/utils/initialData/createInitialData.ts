@@ -1,4 +1,10 @@
-import { ADMIN_NAME, ADMIN_EMAIL, ADMIN_PHONE, ADMIN_PASSWORD } from '../../config';
+import {
+  ADMIN_NAME,
+  ADMIN_EMAIL,
+  ADMIN_LAST_NAME,
+  ADMIN_PHONE,
+  ADMIN_PASSWORD,
+} from '../../config';
 import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import createInitialApiMessages from './createInitialApiMessages';
@@ -27,6 +33,7 @@ async function createInitialData() {
 
     admin = await UserModel.create({
       name: ADMIN_NAME,
+      lastName: ADMIN_LAST_NAME,
       email: ADMIN_EMAIL,
       phone: ADMIN_PHONE,
       password,

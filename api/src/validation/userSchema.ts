@@ -42,18 +42,6 @@ const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
       }),
     );
 
-const userLastNameSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .trim()
-    .max(
-      maxNameLength,
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.string.max',
-      }) + ` ${maxNameLength}`,
-    );
-
 const userSecondNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
@@ -134,7 +122,7 @@ export const updateMyProfileSchema = (args: MultiLangSchemaMessagesInterface) =>
     id: userIdSchema(args),
     email: emailSchema(args),
     name: userNameSchema(args),
-    lastName: userLastNameSchema(args),
+    lastName: userNameSchema(args),
     secondName: userSecondNameSchema(args),
     phone: phoneSchema(args),
   });
@@ -152,7 +140,7 @@ export const updateUserSchema = (args: MultiLangSchemaMessagesInterface) =>
     id: userIdSchema(args),
     email: emailSchema(args),
     name: userNameSchema(args),
-    lastName: userLastNameSchema(args),
+    lastName: userNameSchema(args),
     secondName: userSecondNameSchema(args),
     phone: phoneSchema(args),
     role: userRoleSchema(args),
@@ -162,7 +150,7 @@ export const createUserSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     email: emailSchema(args),
     name: userNameSchema(args),
-    lastName: userLastNameSchema(args),
+    lastName: userNameSchema(args),
     secondName: userSecondNameSchema(args),
     phone: phoneSchema(args),
     role: userRoleSchema(args),
@@ -178,7 +166,7 @@ export const signUpValidationSchema = (args: MultiLangSchemaMessagesInterface) =
   Yup.object().shape({
     email: emailSchema(args),
     name: userNameSchema(args),
-    lastName: userLastNameSchema(args),
+    lastName: userNameSchema(args),
     secondName: userSecondNameSchema(args),
     phone: phoneSchema(args),
     password: passwordSchema(args),

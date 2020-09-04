@@ -9,6 +9,7 @@ export const {
   DB_NAME = 'winepoint-db',
 
   ADMIN_NAME = 'admin',
+  ADMIN_LAST_NAME = 'site',
   ADMIN_EMAIL = 'admin@gmail.com',
   ADMIN_PHONE = '+79998884433',
   ADMIN_PASSWORD = 'admin',

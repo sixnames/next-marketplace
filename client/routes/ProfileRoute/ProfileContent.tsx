@@ -19,7 +19,9 @@ import { UPDATE_MY_PASSWORD_MODAL } from '../../config/modals';
 
 const ProfileContent: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
-  const { onErrorCallback, onCompleteCallback, showModal } = useMutationCallbacks({});
+  const { onErrorCallback, onCompleteCallback, showModal, showLoading } = useMutationCallbacks({
+    withModal: true,
+  });
   const [updateMyProfileMutation] = useUpdateMyProfileMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
@@ -40,6 +42,7 @@ const ProfileContent: React.FC = () => {
       type: UPDATE_MY_PASSWORD_MODAL,
       props: {
         confirm: async (input) => {
+          showLoading();
           await updateMyPasswordMutation({
             variables: {
               input,
@@ -98,7 +101,6 @@ const ProfileContent: React.FC = () => {
                   label={'Отчество'}
                   name={'secondName'}
                   testId={'secondName'}
-                  isRequired
                   showInlineError
                 />
                 <FormikInput

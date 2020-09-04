@@ -1,5 +1,4 @@
 /// <reference types="cypress" />
-const signInPath = '/sign-in';
 const fakeEmail = 'fake@gm';
 const fakePassword = 'fake';
 
@@ -16,11 +15,10 @@ describe('Authorization', () => {
       cy.getByCy(`sign-in-email`).type(fakeEmail).blur();
       cy.getByCy(`sign-in-password`).type(fakePassword).blur();
       cy.getByCy(`sign-in-submit`).click();
-      cy.getByCy(`email-error`).should('have.length', 1);
-      cy.getByCy(`password-error`).should('have.length', 1);
+      cy.getByCy(`email-error`).should('exist');
+      cy.getByCy(`password-error`).should('exist');
 
       // User should sign in
-      cy.visit(signInPath);
       cy.getByCy(`sign-in-email`).clear().type(ME_AS_ADMIN.email);
       cy.getByCy(`sign-in-password`).clear().type(ME_AS_ADMIN.password);
       cy.getByCy(`sign-in-submit`).click();

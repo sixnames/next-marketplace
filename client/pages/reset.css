@@ -322,7 +322,7 @@
   --primaryBackground: var(--wp-white);
   --secondaryBackground: var(--wp-light-gray-300);
 
-  --modalFrameBackground: var(--wp-white);
+  --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: var(--wp-mid-gray-100);
   --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
@@ -367,7 +367,7 @@
   --google: #d8634f;
 
   /*Sizes*/
-  --lineGap: 1.5rem;
+  --lineGap: 2rem;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;
@@ -403,7 +403,7 @@
   --primaryBackground: var(--wp-white);
   --secondaryBackground: var(--wp-light-gray-300);
 
-  --modalFrameBackground: var(--wp-white);
+  --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: var(--wp-mid-gray-100);
   --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 
@@ -430,7 +430,7 @@
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground: var(--wp-dark-gray-200);
 
-  --modalFrameBackground: var(--wp-dark-gray-200);
+  --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: #25292b;
   --backdropBackgroundTransparent: rgba(20, 24, 29, 0.5);
 

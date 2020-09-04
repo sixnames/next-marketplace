@@ -1,9 +1,10 @@
 import React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import classes from './Select.module.css';
-import { InputType, OnOffType, SizeType } from '../../../types';
+import { InputType, OnOffType } from '../../../types';
 import { LanguageType } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
+import Icon from '../../Icon/Icon';
 
 export interface SelectOptionInterface {
   id: string;
@@ -17,7 +18,6 @@ export interface SelectOptionInterface {
 export interface SelectInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  size?: SizeType;
   value?: any;
   notValid?: boolean;
   type?: InputType;
@@ -42,7 +42,6 @@ const Select: React.FC<SelectInterface> = ({
   isHorizontal,
   labelLink,
   postfix,
-  size = 'normal',
   label,
   notValid,
   value,
@@ -64,10 +63,9 @@ const Select: React.FC<SelectInterface> = ({
       ]
     : options;
 
-  const sizeClassName = classes[size];
   const errorClassName = notValid ? classes.error : '';
   const additionalClassName = className ? className : '';
-  const selectClassName = `${classes.select} ${sizeClassName} ${errorClassName} ${additionalClassName}`;
+  const selectClassName = `${classes.select} ${errorClassName} ${additionalClassName}`;
 
   function getOptionName(name = '', lastName?: string) {
     const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
@@ -113,6 +111,7 @@ const Select: React.FC<SelectInterface> = ({
             );
           })}
         </select>
+        <Icon name={'chevron-down'} />
       </span>
     </InputLine>
   );

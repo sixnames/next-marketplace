@@ -24,7 +24,6 @@ describe('Profile', () => {
     cy.getByCy('phone').clear();
     cy.getByCy('submit-my-profile').click();
     cy.getByCy('name-error').should('exist');
-    cy.getByCy('lastName-error').should('exist');
     cy.getByCy('email-error').should('exist');
     cy.getByCy('phone-error').should('exist');
 

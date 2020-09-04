@@ -94,7 +94,6 @@ const ProfileContent: React.FC = () => {
                   label={'Фамилия'}
                   name={'lastName'}
                   testId={'lastName'}
-                  isRequired
                   showInlineError
                 />
                 <FormikInput

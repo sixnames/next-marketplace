@@ -1,0 +1,6 @@
+.frame {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: space-between;
+}

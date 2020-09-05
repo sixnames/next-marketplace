@@ -7,12 +7,12 @@ import Spinner from '../../components/Spinner/Spinner';
 import Meta from '../Meta';
 import { useAppContext } from '../../context/appContext';
 import Modal from '../../components/Modal/Modal';
-import classes from './SiteLayout.module.css';
 import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 import { SiteContextProvider } from '../../context/siteContext';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
+import classes from './SiteLayout.module.css';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -47,6 +47,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         <ErrorBoundary>
           <AnimateOpacity>{children}</AnimateOpacity>
         </ErrorBoundary>
+        <div style={{ width: 100, height: '300vh' }} />
       </main>
 
       <Footer />

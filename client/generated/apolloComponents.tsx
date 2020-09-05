@@ -263,15 +263,8 @@ export type Attribute = {
   nameString: Scalars['String'];
   variant: AttributeVariantEnum;
   options?: Maybe<OptionsGroup>;
-  /** list of options with products counter for catalogue filter */
-  filterOptions: Array<AttributeFilterOption>;
   positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
   metric?: Maybe<Metric>;
-};
-
-
-export type AttributeFilterOptionsArgs = {
-  filter: Array<Scalars['String']>;
 };
 
 /** Attribute variant enum */
@@ -313,12 +306,6 @@ export enum GenderEnum {
   He = 'he',
   It = 'it'
 }
-
-export type AttributeFilterOption = {
-  __typename?: 'AttributeFilterOption';
-  option: Option;
-  counter: Scalars['Int'];
-};
 
 export type AttributePositioningInTitle = {
   __typename?: 'AttributePositioningInTitle';
@@ -581,7 +568,7 @@ export type Rubric = {
   parent?: Maybe<Rubric>;
   children: Array<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
-  filterAttributes: Array<Attribute>;
+  filterAttributes: Array<RubricFilterAttribute>;
   variant: RubricVariant;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
@@ -621,6 +608,25 @@ export type RubricAttributesGroup = {
   showInCatalogueFilter: Array<Scalars['ID']>;
   isOwner: Scalars['Boolean'];
   node: AttributesGroup;
+};
+
+export type RubricFilterAttribute = {
+  __typename?: 'RubricFilterAttribute';
+  id: Scalars['ID'];
+  node: Attribute;
+  options: Array<RubricFilterAttributeOption>;
+};
+
+export type RubricFilterAttributeOption = {
+  __typename?: 'RubricFilterAttributeOption';
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Array<LanguageType>;
+  variants?: Maybe<Array<OptionVariant>>;
+  gender?: Maybe<GenderEnum>;
+  nameString: Scalars['String'];
+  color?: Maybe<Scalars['String']>;
+  counter: Scalars['Int'];
 };
 
 export type RubricVariant = {
@@ -1498,7 +1504,17 @@ export type SiteRubricFragmentFragment = (
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  ) }
+  ), filterAttributes: Array<(
+    { __typename?: 'RubricFilterAttribute' }
+    & Pick<RubricFilterAttribute, 'id'>
+    & { node: (
+      { __typename?: 'Attribute' }
+      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
+    ), options: Array<(
+      { __typename?: 'RubricFilterAttributeOption' }
+      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'nameString' | 'color' | 'counter'>
+    )> }
+  )> }
 );
 
 export type InitialQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1550,14 +1566,6 @@ export type InitialSiteQueryQuery = (
     & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
   )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
-    & { children: Array<(
-      { __typename?: 'Rubric' }
-      & { children: Array<(
-        { __typename?: 'Rubric' }
-        & SiteRubricFragmentFragment
-      )> }
-      & SiteRubricFragmentFragment
-    )> }
     & SiteRubricFragmentFragment
   )> }
 );
@@ -2236,15 +2244,14 @@ export type GetCatalogueRubricQuery = (
         { __typename?: 'RubricVariant' }
         & Pick<RubricVariant, 'id' | 'nameString'>
       ), filterAttributes: Array<(
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'variant' | 'slug'>
-        & { filterOptions: Array<(
-          { __typename?: 'AttributeFilterOption' }
-          & Pick<AttributeFilterOption, 'counter'>
-          & { option: (
-            { __typename?: 'Option' }
-            & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
-          ) }
+        { __typename?: 'RubricFilterAttribute' }
+        & Pick<RubricFilterAttribute, 'id'>
+        & { node: (
+          { __typename?: 'Attribute' }
+          & Pick<Attribute, 'id' | 'nameString' | 'slug'>
+        ), options: Array<(
+          { __typename?: 'RubricFilterAttributeOption' }
+          & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'nameString' | 'color' | 'counter'>
         )> }
       )> }
     ), products: (
@@ -2753,6 +2760,21 @@ export const SiteRubricFragmentFragmentDoc = gql`
     id
     nameString
   }
+  filterAttributes {
+    id
+    node {
+      id
+      nameString
+      slug
+    }
+    options {
+      id
+      slug
+      nameString
+      color
+      counter
+    }
+  }
 }
     `;
 export const ProductFragmentFragmentDoc = gql`
@@ -2947,12 +2969,6 @@ export const InitialSiteQueryDocument = gql`
   }
   getRubricsTree {
     ...SiteRubricFragment
-    children {
-      ...SiteRubricFragment
-      children {
-        ...SiteRubricFragment
-      }
-    }
   }
 }
     ${SessionUserFragmentFragmentDoc}
@@ -4485,17 +4501,18 @@ export const GetCatalogueRubricDocument = gql`
       }
       filterAttributes {
         id
-        nameString
-        variant
-        slug
-        filterOptions(filter: $catalogueFilter) {
-          option {
-            id
-            slug
-            nameString
-            color
-          }
+        node {
+          id
+          nameString
+          slug
+        }
+        options {
+          id
+          slug
+          nameString
+          color
           counter
+          color
         }
       }
     }

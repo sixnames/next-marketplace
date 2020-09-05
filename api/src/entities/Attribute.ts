@@ -84,11 +84,6 @@ export class Attribute {
   @prop({ ref: OptionsGroup })
   options?: string | null;
 
-  @Field((_type) => [AttributeFilterOption], {
-    description: 'list of options with products counter for catalogue filter',
-  })
-  readonly filterOptions: AttributeFilterOption[];
-
   @Field((_type) => [AttributePositioningInTitle], { nullable: true })
   @prop({
     type: AttributePositioningInTitle,

@@ -168,6 +168,7 @@ const createTestData = async () => {
     const rubricAttributesGroups = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
+        showInSiteNav: true,
         node: attributesGroupWineFeatures.id,
         isOwner,
       },
@@ -176,6 +177,7 @@ const createTestData = async () => {
     const rubricAttributesGroupsB = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [],
+        showInSiteNav: true,
         node: attributesGroupWhiskeyFeatures.id,
         isOwner,
       },

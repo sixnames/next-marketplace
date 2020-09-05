@@ -15,8 +15,9 @@ const StickyNav: React.FC = () => {
     <nav className={classes.nav}>
       <Inner lowBottom lowTop>
         <ul className={classes.navList}>
-          {getRubricsTree.map(({ nameString, slug }) => {
+          {getRubricsTree.map(({ nameString, slug, filterAttributes }) => {
             const isCurrent = slug === catalogueSlug;
+            console.log(filterAttributes);
             return (
               <li key={slug}>
                 <Link

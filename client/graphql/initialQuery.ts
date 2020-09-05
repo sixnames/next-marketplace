@@ -31,6 +31,21 @@ const rubricFragment = gql`
       id
       nameString
     }
+    filterAttributes {
+      id
+      node {
+        id
+        nameString
+        slug
+      }
+      options {
+        id
+        slug
+        nameString
+        color
+        counter
+      }
+    }
   }
 `;
 

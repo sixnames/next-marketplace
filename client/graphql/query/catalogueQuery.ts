@@ -23,7 +23,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
           options {
             id
             slug
-            nameString
+            filterNameString
             color
             counter
             color

@@ -1047,7 +1047,7 @@ export class RubricResolver {
         resultOptions.push({
           ...option,
           id: option._id,
-          nameString: filterNameString,
+          filterNameString: filterNameString,
           counter: 0,
         });
       }

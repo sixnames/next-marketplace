@@ -291,6 +291,7 @@ export type Option = {
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   nameString: Scalars['String'];
+  filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
 };
 
@@ -625,6 +626,7 @@ export type RubricFilterAttributeOption = {
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   nameString: Scalars['String'];
+  filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
   counter: Scalars['Int'];
 };
@@ -1512,7 +1514,7 @@ export type SiteRubricFragmentFragment = (
       & Pick<Attribute, 'id' | 'nameString' | 'slug'>
     ), options: Array<(
       { __typename?: 'RubricFilterAttributeOption' }
-      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'nameString' | 'color' | 'counter'>
+      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
     )> }
   )> }
 );
@@ -2251,7 +2253,7 @@ export type GetCatalogueRubricQuery = (
           & Pick<Attribute, 'id' | 'nameString' | 'slug'>
         ), options: Array<(
           { __typename?: 'RubricFilterAttributeOption' }
-          & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'nameString' | 'color' | 'counter'>
+          & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
         )> }
       )> }
     ), products: (
@@ -2770,7 +2772,7 @@ export const SiteRubricFragmentFragmentDoc = gql`
     options {
       id
       slug
-      nameString
+      filterNameString
       color
       counter
     }
@@ -4509,7 +4511,7 @@ export const GetCatalogueRubricDocument = gql`
         options {
           id
           slug
-          nameString
+          filterNameString
           color
           counter
           color

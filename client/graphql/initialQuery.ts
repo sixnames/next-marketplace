@@ -41,7 +41,7 @@ const rubricFragment = gql`
       options {
         id
         slug
-        nameString
+        filterNameString
         color
         counter
       }

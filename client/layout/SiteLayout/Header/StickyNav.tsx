@@ -7,7 +7,7 @@ import Link from '../../../components/Link/Link';
 
 const StickyNav: React.FC = () => {
   const { getRubricsTree } = useSiteContext();
-  const { query } = useRouter();
+  const { query, asPath } = useRouter();
   const { catalogue = [] } = query;
   const catalogueSlug = catalogue[0];
 
@@ -17,9 +17,9 @@ const StickyNav: React.FC = () => {
         <ul className={classes.navList}>
           {getRubricsTree.map(({ nameString, slug, filterAttributes }) => {
             const isCurrent = slug === catalogueSlug;
-            console.log(filterAttributes);
+
             return (
-              <li key={slug}>
+              <li key={slug} className={classes.navItem}>
                 <Link
                   href={{
                     pathname: `/[...catalogue]`,
@@ -32,6 +32,45 @@ const StickyNav: React.FC = () => {
                 >
                   {nameString}
                 </Link>
+                <div className={classes.dropdown}>
+                  <Inner className={classes.dropdownInner}>
+                    <div className={classes.dropdownList}>
+                      {filterAttributes.map(({ id, node: attribute, options }) => {
+                        return (
+                          <div key={id}>
+                            <div className={`${classes.dropdownAttributeName}`}>
+                              {attribute.nameString}
+                            </div>
+                            <ul>
+                              {options.map((option) => {
+                                const optionPath = `/${slug}/${attribute.slug}-${option.slug}`;
+                                const isCurrent = asPath === optionPath;
+                                return (
+                                  <li key={option.id}>
+                                    <Link
+                                      href={{
+                                        pathname: `/[...catalogue]`,
+                                      }}
+                                      as={{
+                                        pathname: `/${slug}/${attribute.slug}-${option.slug}`,
+                                      }}
+                                      className={`${classes.dropdownAttributeOption} ${
+                                        isCurrent ? classes.currentOption : ''
+                                      }`}
+                                    >
+                                      {option.filterNameString}
+                                    </Link>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div />
+                  </Inner>
+                </div>
               </li>
             );
           })}

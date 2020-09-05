@@ -2,4 +2,27 @@
   position: relative;
   z-index: 100;
   background-color: var(--primaryBackground);
+
+  --logo-widht: 10rem;
+}
+
+.middle {
+  display: flex;
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.middleLogo {
+  width: var(--logo-widht);
+}
+
+.middleLogo img {
+  width: 100%;
+  height: auto;
+}
+
+.middleSide {
+  width: calc((100% - (var(--logo-widht) + 2rem)) / 2);
 }

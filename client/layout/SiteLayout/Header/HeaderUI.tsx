@@ -35,14 +35,14 @@ const HeaderUi: React.FC = () => {
 
         <div className={classes.link}>
           <span className={classes.iconHolder}>
-            <Icon className={classes.icon} name={'FavoriteBorderOutlined'} />
+            <Icon className={classes.icon} name={'heart'} />
           </span>
           <span className={classes.label}>Избранное</span>
         </div>
       </div>
 
-      <div className={classes.item}>
-        {/*<Link
+      {/*<div className={classes.item}>
+        <Link
           activeClassName={classes.linkCurrent}
           className={classes.link}
           href={'/viewed'}
@@ -52,7 +52,7 @@ const HeaderUi: React.FC = () => {
             <Icon className={classes.icon} name={'VisibilityOutlined'} />
           </span>
           <span className={classes.label}>Просмотры</span>
-        </Link>*/}
+        </Link>
 
         <div className={classes.link}>
           <span className={classes.iconHolder}>
@@ -60,7 +60,7 @@ const HeaderUi: React.FC = () => {
           </span>
           <span className={classes.label}>Просмотры</span>
         </div>
-      </div>
+      </div>*/}
 
       {/*<div className={classes.item}>
         <Link
@@ -93,7 +93,7 @@ const HeaderUi: React.FC = () => {
             onClick={toggleDropdownHandler}
           >
             <span className={classes.iconHolder}>
-              <Icon className={classes.icon} name={'PersonOutlineOutlined'} />
+              <Icon className={classes.icon} name={'user'} />
             </span>
             <span className={classes.label}>{me.name}</span>
           </div>
@@ -105,7 +105,7 @@ const HeaderUi: React.FC = () => {
             testId={'sign-in-link'}
           >
             <span className={classes.iconHolder}>
-              <Icon className={classes.icon} name={'ExitToApp'} />
+              <Icon className={classes.icon} name={'exit'} />
             </span>
             <span className={classes.label}>Войти</span>
           </Link>

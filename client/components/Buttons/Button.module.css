@@ -4,19 +4,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 17rem;
   padding-top: 0;
+  padding-bottom: 0;
   padding-left: 1rem;
   padding-right: 1rem;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
   border: none;
   cursor: pointer;
   outline: none;
   transition: all 0.2s;
-  box-shadow: none;
-  border-radius: 4px;
+  border-radius: 0.5rem;
   text-decoration: none;
+  box-shadow: var(--buttonShadow);
 }
 
 .butn:disabled {
@@ -42,7 +46,22 @@
   padding-right: 0;
 }
 
+.small {
+  min-width: auto;
+  height: 2rem;
+  border-width: 1px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+}
+
+.small .icon {
+  top: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
 .circle {
+  min-width: auto;
   border-radius: 50%;
   padding-left: 0;
   padding-right: 0;
@@ -52,24 +71,12 @@
   margin: 0;
 }
 
-.small {
-  height: 1.5rem;
-  border-width: 1px;
-  font-size: 0.875rem;
-}
-
-.small .icon {
-  top: 1px;
-  width: 1rem;
-  height: 1rem;
-}
-
 .circle.small {
-  width: 1.5rem;
+  width: 2rem;
 }
 
 .normal {
-  height: 2rem;
+  height: var(--formInputHeight);
 }
 
 .normal .icon {
@@ -78,20 +85,7 @@
 }
 
 .circle.normal {
-  width: 2rem;
-}
-
-.big {
-  height: 3rem;
-}
-
-.big .icon {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-.circle.big {
-  width: 3rem;
+  width: 3.5rem;
 }
 
 .button [class*='excel-icon'] {
@@ -100,22 +94,17 @@
 }
 
 .button:hover [class*='excel-icon'] {
-  fill: var(--white);
+  fill: var(--wp-white);
 }
 
 .primary {
-  color: var(--white);
+  color: var(--wp-white);
   border: 2px solid var(--theme);
   background-color: var(--theme);
 }
 
 .primary .icon {
-  fill: var(--white);
-}
-
-.primary:hover {
-  color: var(--theme);
-  background-color: var(--white);
+  fill: var(--wp-white);
 }
 
 .primary:hover .icon {
@@ -124,43 +113,24 @@
 
 .secondary {
   color: var(--theme);
-  border: 2px solid var(--theme);
-  background-color: var(--buttonLightBackground);
+  background-color: var(--secondaryButtonBackground);
 }
 
 .secondary .icon {
   fill: var(--theme);
 }
 
-.secondary:hover {
-  color: var(--white);
-  background-color: var(--theme);
+.butn:hover {
+  box-shadow: 0 5px 20px rgba(var(--themeRGB), 0.6);
 }
 
-.secondary:hover .icon {
-  fill: var(--white);
-}
+@media only screen and (max-width: 1024px) {
+  .circle.normal {
+    width: 3rem;
+  }
 
-.gray {
-  color: var(--midGray);
-  border: 2px solid var(--midGray);
-  background-color: var(--buttonLightBackground);
-}
-
-.gray .icon {
-  fill: var(--midGray);
-}
-
-.gray:hover {
-  color: var(--buttonLightBackground);
-  background-color: var(--midGray);
-}
-
-.gray:hover .icon {
-  fill: var(--buttonLightBackground);
-}
-
-.noFrame {
-  border: none;
-  background-color: transparent;
+  .circle.small {
+    height: 2rem;
+    width: 2rem;
+  }
 }

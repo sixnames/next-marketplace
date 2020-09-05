@@ -1,4 +1,7 @@
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import {
+  testClientWithContext,
+  authenticatedTestClient,
+} from '../../../utils/testUtils/testHelpers';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLE_SLUG_GUEST } from '../../../config';
 import { max, alex } from '../__fixtures__';
 import { RoleModel } from '../../../entities/Role';
@@ -247,5 +250,75 @@ describe('User', () => {
       }
     `);
     expect(signOut.success).toBeTruthy();
+  });
+
+  it('Should update user profile', async () => {
+    const { mutate, user } = await authenticatedTestClient();
+
+    const { data } = await mutate<any>(
+      gql`
+        mutation UpdateMyProfile($input: UpdateMyProfileInput!) {
+          updateMyProfile(input: $input) {
+            success
+            message
+            user {
+              id
+              itemId
+              name
+              email
+              shortName
+              fullName
+              phone
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: user?.id,
+            email: alex.email,
+            name: alex.name,
+            phone: alex.phone,
+          },
+        },
+      },
+    );
+
+    const { updateMyProfile } = data;
+    expect(updateMyProfile.success).toBeTruthy();
+    expect(updateMyProfile.user.id).toEqual(user?.id);
+    expect(updateMyProfile.user.email).toEqual(alex.email);
+    expect(updateMyProfile.user.name).toEqual(alex.name);
+    expect(updateMyProfile.user.phone).toEqual(alex.phone);
+  });
+
+  it('Should update user password', async () => {
+    const { mutate, user } = await authenticatedTestClient();
+    const newPassword = 'newPassword';
+
+    const { data } = await mutate<any>(
+      gql`
+        mutation UpdateMyPassword($input: UpdateMyPasswordInput!) {
+          updateMyPassword(input: $input) {
+            success
+            message
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: user?.id,
+            oldPassword: ADMIN_PASSWORD,
+            newPassword,
+            newPasswordB: newPassword,
+          },
+        },
+      },
+    );
+
+    const { updateMyPassword } = data;
+    expect(updateMyPassword.success).toBeTruthy();
   });
 });

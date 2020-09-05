@@ -44,7 +44,7 @@ export const appRoute = {
     },
   ],
   order: 0,
-  icon: 'ShoppingCart',
+  icon: 'cart',
   path: ROUTE_APP,
   navGroup: ROUTE_APP_NAV_GROUP,
   children: [],
@@ -63,7 +63,7 @@ export const cmsRoute = {
     },
   ],
   order: 999,
-  icon: 'Settings',
+  icon: 'gear',
   navGroup: ROUTE_APP_NAV_GROUP,
   children: [
     {
@@ -212,8 +212,27 @@ export const cmsRoute = {
     },
   ],
 };
+//
+export const profileRoute = {
+  slug: 'profile',
+  name: [
+    {
+      key: DEFAULT_LANG,
+      value: 'Профиль',
+    },
+    {
+      key: SECONDARY_LANG,
+      value: 'Profile',
+    },
+  ],
+  order: 99,
+  icon: 'user',
+  path: `${ROUTE_APP}/profile`,
+  navGroup: ROUTE_APP_NAV_GROUP,
+  children: [],
+};
 
-export const INITIAL_APP_NAVIGATION = [appRoute, cmsRoute];
+export const INITIAL_APP_NAVIGATION = [appRoute, cmsRoute, profileRoute];
 
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';

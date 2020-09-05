@@ -31,8 +31,6 @@ const ConfigsContent: React.FC = () => {
   const assetConfigs = configs.filter(({ variant }) => variant === CONFIG_VARIANT_ASSET);
   const notAssetConfigs = configs.filter(({ variant }) => variant !== CONFIG_VARIANT_ASSET);
 
-  // console.log({ assetConfigs });
-
   const configsInitialValue = { inputs: notAssetConfigs };
 
   function updateConfigsHandler({ inputs }: typeof configsInitialValue) {

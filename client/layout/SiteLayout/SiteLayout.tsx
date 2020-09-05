@@ -32,7 +32,10 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   const { isLoading, isModal } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const themeColor = getSiteConfigSingleValue('siteThemeColor');
-  const themeStyles = { '--theme': themeColor } as React.CSSProperties;
+  const themeStyles = {
+    '--theme': `rgb(${themeColor})`,
+    '--themeRGB': `${themeColor}`,
+  } as React.CSSProperties;
 
   return (
     <div className={classes.frame} style={themeStyles}>

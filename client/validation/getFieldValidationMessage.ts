@@ -22,8 +22,9 @@ function getFieldValidationMessage({
   lang,
 }: GetValidationFieldMessageInterface): string {
   const currentMessage = messages.find(({ key: messageKey }) => messageKey === key);
+  const errorMessage = `${key} ${LANG_NOT_FOUND_FIELD_MESSAGE}`;
   if (!currentMessage) {
-    return LANG_NOT_FOUND_FIELD_MESSAGE;
+    return errorMessage;
   }
 
   const { message } = currentMessage;
@@ -36,7 +37,7 @@ function getFieldValidationMessage({
 
     if (!universalLang) {
       if (!defaultLang) {
-        return LANG_NOT_FOUND_FIELD_MESSAGE;
+        return errorMessage;
       }
 
       return defaultLang.value;
@@ -47,7 +48,7 @@ function getFieldValidationMessage({
 
   if (!currentLang) {
     if (!defaultLang) {
-      return LANG_NOT_FOUND_FIELD_MESSAGE;
+      return errorMessage;
     }
 
     return defaultLang.value;

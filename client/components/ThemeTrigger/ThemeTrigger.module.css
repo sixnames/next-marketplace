@@ -1,0 +1,65 @@
+.frame {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+[data-theme='light'] .frame {
+  --trigger-background: var(--wp-light-gray-200);
+  --trigger-thumb-background: var(--wp-light-gray-100);
+  --icon-fill: var(--wp-light-gray-100);
+  --icon-fill-active: var(--wp-mid-gray-100);
+}
+
+[data-theme='dark'] .frame {
+  --trigger-background: var(--wp-dark-gray-100);
+  --trigger-thumb-background: var(--wp-mid-gray-100);
+  --icon-fill: var(--wp-mid-gray-100);
+  --icon-fill-active: var(--wp-light-gray-100);
+}
+
+.icon {
+  fill: var(--icon-fill);
+  transition: all 0.2s;
+}
+
+.iconActive {
+  fill: var(--icon-fill-active);
+}
+
+.iconSun {
+  width: 14px;
+  height: 14px;
+}
+
+.iconMoon {
+  width: 12px;
+  height: 12px;
+}
+
+.trigger {
+  position: relative;
+  height: 8px;
+  width: 24px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  background-color: var(--trigger-background);
+}
+
+.trigger:before {
+  position: absolute;
+  content: '';
+  top: -2px;
+  left: 0;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--trigger-thumb-background);
+  transition: all 0.2s;
+}
+
+.triggerDark:before {
+  left: 12px;
+}

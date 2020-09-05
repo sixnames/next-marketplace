@@ -11,6 +11,7 @@
   width: 100vw;
   height: var(--fullHeight, 100vh);
   min-width: 320px;
+  backdrop-filter: blur(3px);
 }
 
 .backdrop {

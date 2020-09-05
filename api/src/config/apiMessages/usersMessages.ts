@@ -55,6 +55,19 @@ const usersMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'users.update.passwordSuccess',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Пароль обновлён.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Password updated.',
+      },
+    ],
+  },
+  {
     key: 'users.update.error',
     message: [
       {
@@ -259,6 +272,19 @@ const usersMessages: MessageInterface[] = [
       {
         key: SECONDARY_LANG,
         value: 'User Password is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.users.passwordCompare',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Пароль не совпадает.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Password do not match.',
       },
     ],
   },

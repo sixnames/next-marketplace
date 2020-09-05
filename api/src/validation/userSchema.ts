@@ -90,6 +90,37 @@ const passwordSchema = (args: MultiLangSchemaMessagesInterface) =>
       }),
     );
 
+const passwordCompareSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.string()
+    .oneOf(
+      [Yup.ref('newPassword')],
+      getFieldValidationMessage({
+        ...args,
+        key: 'validation.users.passwordCompare',
+      }),
+    )
+    .min(
+      minPasswordLength,
+      getFieldValidationMessage({
+        ...args,
+        key: 'validation.string.min',
+      }) + ` ${minPasswordLength}`,
+    )
+    .max(
+      maxPasswordLength,
+      getFieldValidationMessage({
+        ...args,
+        key: 'validation.string.max',
+      }) + ` ${maxPasswordLength}`,
+    )
+    .trim()
+    .required(
+      getFieldValidationMessage({
+        ...args,
+        key: 'validation.users.password',
+      }),
+    );
+
 const userRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string().required(
     getFieldValidationMessage({
@@ -97,6 +128,24 @@ const userRoleSchema = (args: MultiLangSchemaMessagesInterface) =>
       key: 'validation.users.role',
     }),
   );
+
+export const updateMyProfileSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    id: userIdSchema(args),
+    email: emailSchema(args),
+    name: userNameSchema(args),
+    lastName: userLastNameSchema(args),
+    secondName: userSecondNameSchema(args),
+    phone: phoneSchema(args),
+  });
+
+export const updateMyPasswordSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    id: userIdSchema(args),
+    oldPassword: passwordSchema(args),
+    newPassword: passwordSchema(args),
+    newPasswordB: passwordCompareSchema(args),
+  });
 
 export const updateUserSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({

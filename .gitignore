@@ -11,6 +11,7 @@ lerna-debug.log*
 /coverage
 /client/cypress/videos
 /client/cypress/screenshots
+/api/globalConfig.json
 
 # production
 build

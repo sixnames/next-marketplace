@@ -1,8 +1,8 @@
 import { IconType } from '../components/Icon/Icon';
 
-export type Theme = 'light' | 'dark' | 'not all';
-export type ButtonTheme = 'primary' | 'secondary' | 'gray';
-export type SizeType = 'small' | 'normal' | 'big';
+export type Theme = 'light' | 'dark';
+export type ButtonTheme = 'primary' | 'secondary';
+export type SizeType = 'small' | 'normal';
 export type ButtonType = 'submit' | 'button' | 'reset';
 export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';

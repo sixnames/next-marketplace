@@ -1067,9 +1067,10 @@ export const SITE_CONFIGS_INITIAL = [
   {
     slug: 'siteThemeColor',
     nameString: 'Акцент цвет сайта',
-    description: 'Данный цвет будет использован для акцента ключевых элементов сайта.',
+    description:
+      'Данный цвет будет использован для акцента ключевых элементов сайта. ВНИМАНИЕ! Цвет должен быть в формате RGB!',
     variant: 'string',
-    value: ['#DB5360'],
+    value: ['219, 83, 96'],
     order: 12,
     multi: false,
     acceptedFormats: [],

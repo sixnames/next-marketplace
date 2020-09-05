@@ -254,7 +254,12 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
     <ModalFrame testId={'add-product-to-rubric-modal'} wide>
       <ModalTitle
         right={
-          <Button size={'small'} onClick={createProductModalHandler} testId={'create-new-product'}>
+          <Button
+            size={'small'}
+            theme={'secondary'}
+            onClick={createProductModalHandler}
+            testId={'create-new-product'}
+          >
             Создать товар
           </Button>
         }

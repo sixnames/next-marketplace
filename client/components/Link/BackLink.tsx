@@ -9,7 +9,7 @@ const BackLink: React.FC = () => {
   return (
     <div className={classes.frame}>
       <a href={'#'} className={classes.link} onClick={router.back}>
-        <Icon name={'ChevronLeft'} className={classes.icon} />
+        <Icon name={'chevron-left'} className={classes.icon} />
         Назад
       </a>
     </div>

@@ -31,7 +31,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
   deleteHandler,
   className,
   justifyContent = 'flex-start',
-  theme = 'gray',
+  theme = 'secondary',
   testId,
   disabled,
   isCreateDisabled,
@@ -45,7 +45,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           <Button
             circle
             size={size}
-            icon={'Add'}
+            icon={'plus'}
             title={createTitle}
             onClick={createHandler}
             theme={theme}
@@ -60,7 +60,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           <Button
             circle
             size={size}
-            icon={'Edit'}
+            icon={'pencil'}
             title={updateTitle}
             onClick={updateHandler}
             theme={theme}
@@ -75,7 +75,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           <Button
             circle
             size={size}
-            icon={'Delete'}
+            icon={'trash'}
             title={deleteTitle}
             onClick={deleteHandler}
             theme={theme}

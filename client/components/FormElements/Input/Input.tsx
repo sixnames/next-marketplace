@@ -1,13 +1,12 @@
 import React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
-import { InputType, OnOffType, SizeType } from '../../../types';
+import { InputType, OnOffType } from '../../../types';
 import classes from './Input.module.css';
 
 export interface InputPropsInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  size?: SizeType;
   value?: any;
   notValid?: boolean;
   type?: InputType;
@@ -31,7 +30,6 @@ const Input: React.FC<InputPropsInterface> = ({
   postfix,
   prefix,
   labelLink,
-  size = 'normal',
   value,
   notValid,
   type = 'text',
@@ -39,10 +37,9 @@ const Input: React.FC<InputPropsInterface> = ({
   labelTag,
   ...props
 }) => {
-  const sizeClass = classes[size];
   const notValidClass = notValid ? classes.error : '';
   const additionalClass = className ? className : '';
-  const inputClassName = `${classes.frame} ${sizeClass} ${notValidClass} ${additionalClass}`;
+  const inputClassName = `${classes.frame} ${notValidClass} ${additionalClass}`;
   const currentValue = !value && value !== 0 ? '' : value;
 
   return (
@@ -68,7 +65,7 @@ const Input: React.FC<InputPropsInterface> = ({
           name={name}
           {...props}
           data-cy={testId}
-          mask='+7 (999) 999-99-99'
+          mask='+9 (999) 999-99-99'
         />
       ) : (
         <input

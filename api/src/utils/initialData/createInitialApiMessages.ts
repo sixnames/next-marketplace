@@ -28,10 +28,29 @@ interface CreateInitialApiMessagesGroup {
 
 async function createInitialApiMessagesGroup({ name, messages }: CreateInitialApiMessagesGroup) {
   const group = await MessagesGroupModel.findOne({ name });
+  const messagesIds = [];
+
+  for await (const message of messages) {
+    const currentMessage = await MessageModel.findOne({ key: message.key });
+    if (!currentMessage) {
+      const newMessage = await MessageModel.create(message);
+      messagesIds.push(newMessage.id);
+    } else {
+      messagesIds.push(currentMessage.id);
+    }
+  }
+
   if (!group) {
-    const messagesList = await MessageModel.insertMany(messages);
-    const messagesIds = messagesList.map(({ id }) => id);
     await MessagesGroupModel.create({ name, messages: messagesIds });
+  } else {
+    await MessagesGroupModel.findOneAndUpdate(
+      {
+        name,
+      },
+      {
+        messages: messagesIds,
+      },
+    );
   }
 }
 

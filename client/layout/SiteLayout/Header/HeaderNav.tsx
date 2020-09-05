@@ -46,7 +46,7 @@ function HeaderNav() {
           className={classes.trigger}
           data-cy={'show-all-rubrics'}
         >
-          <Icon name={'Menu'} />
+          <Icon name={'burger'} />
           Все разделы
         </div>
 

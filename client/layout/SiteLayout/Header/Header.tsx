@@ -32,7 +32,7 @@ const Header: React.FC = () => {
           <div className={classes.middleSide} />
         </div>
       </header>
-      <StickyNav />
+      {isMobile ? null : <StickyNav />}
     </Fragment>
   );
 };

@@ -4,7 +4,29 @@
   left: 0;
   z-index: 70;
   width: 100vw;
-  min-height: 4rem;
   box-shadow: var(--wp-shadow-100);
   background-color: var(--secondaryBackground);
+}
+
+.navList {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rubric {
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+  text-transform: uppercase;
+  color: var(--textSecondaryColor);
+}
+
+.rubric:hover {
+  text-decoration: none;
+  color: var(--theme);
+}
+
+.currentRubric {
+  cursor: default;
+  color: var(--theme);
 }

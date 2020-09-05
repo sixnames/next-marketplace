@@ -105,12 +105,6 @@ export const INITIAL_SITE_QUERY = gql`
     }
     getRubricsTree {
       ...SiteRubricFragment
-      children {
-        ...SiteRubricFragment
-        children {
-          ...SiteRubricFragment
-        }
-      }
     }
   }
   ${sessionRoleFragment}

@@ -8,13 +8,14 @@
 
 .middle {
   display: flex;
-  padding-top: 1rem;
-  padding-bottom: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
   align-items: center;
   justify-content: space-between;
 }
 
 .middleLogo {
+  flex-shrink: 0;
   width: var(--logo-widht);
 }
 
@@ -24,5 +25,73 @@
 }
 
 .middleSide {
+  display: inline-flex;
+  flex-shrink: 0;
+  min-height: 1rem;
   width: calc((100% - (var(--logo-widht) + 2rem)) / 2);
+}
+
+.middleSide:first-child {
+  justify-content: flex-start;
+}
+
+.middleSide:last-child {
+  justify-content: flex-end;
+}
+
+.middleLink {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  color: var(--textSecondaryColor);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.middleLink:not(:first-child) {
+  margin-left: 0.6rem;
+  padding-left: 0.6rem;
+}
+
+.middleLink:not(:last-child) {
+  margin-right: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+.middleLinkActive,
+.middleLink:hover {
+  color: var(--theme);
+  text-decoration: none;
+}
+
+.middleLinkIconHolder:not(.middleLinkIconHolderNoLabel){
+  margin-right: 0.875rem;
+}
+
+.middleLinkIconHolderNoLabel {
+
+}
+
+.middleLinkIconHolder svg {
+  fill: currentColor;
+}
+
+.middleLinkBurger {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.middleLinkBurgerIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.middleLinkSearchIcon,
+.middleLinkUserIcon,
+.middleLinkCompareIcon,
+.middleLinkHeartIcon,
+.middleLinkShopsIcon,
+.middleLinkCartIcon {
+  width: 1.125rem;
+  height: 1.125rem;
 }

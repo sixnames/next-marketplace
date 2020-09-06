@@ -47,7 +47,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         <ErrorBoundary>
           <AnimateOpacity>{children}</AnimateOpacity>
         </ErrorBoundary>
-        <div style={{ height: '300vh' }} />
       </main>
 
       <Footer />

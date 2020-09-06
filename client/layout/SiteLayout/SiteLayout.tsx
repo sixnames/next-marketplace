@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
 import Footer from './Footer/Footer';
@@ -8,11 +8,12 @@ import Meta from '../Meta';
 import { useAppContext } from '../../context/appContext';
 import Modal from '../../components/Modal/Modal';
 import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
-import { SiteContextProvider } from '../../context/siteContext';
+import { SiteContextProvider, useSiteContext } from '../../context/siteContext';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
+import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -30,6 +31,13 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   description,
 }) => {
   const { isLoading, isModal } = useAppContext();
+  const { isBurgerDropdownOpen } = useSiteContext();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [burgerDropdownSizes, setBurgerDropdownSizes] = useState<BurgerDropdownSizesInterface>({
+    top: 0,
+    height: 0,
+  });
+
   const { getSiteConfigSingleValue } = useConfigContext();
   const themeColor = getSiteConfigSingleValue('siteThemeColor');
   const themeStyles = {
@@ -37,16 +45,38 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     '--themeRGB': `${themeColor}`,
   } as React.CSSProperties;
 
+  // Set burger dropdown sizes
+  useEffect(() => {
+    function resizeWindow() {
+      if (contentRef && contentRef.current && isBurgerDropdownOpen) {
+        setBurgerDropdownSizes({
+          top: contentRef.current.offsetTop,
+          height: contentRef.current.clientHeight,
+        });
+      }
+    }
+
+    resizeWindow();
+
+    window.addEventListener('resize', resizeWindow);
+
+    return () => {
+      window.removeEventListener('resize', resizeWindow);
+    };
+  }, [contentRef, isBurgerDropdownOpen]);
+
   return (
     <div className={classes.frame} style={themeStyles}>
       <Meta title={title} description={description} />
 
       <Header />
 
-      <main className={classes.main}>
+      <main className={classes.main} ref={contentRef}>
         <ErrorBoundary>
           <AnimateOpacity>{children}</AnimateOpacity>
         </ErrorBoundary>
+
+        <BurgerDropdown top={burgerDropdownSizes.top} height={burgerDropdownSizes.height} />
       </main>
 
       <Footer />

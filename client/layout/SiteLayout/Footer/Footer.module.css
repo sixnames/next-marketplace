@@ -1,4 +1,6 @@
 .frame {
+  position: relative;
+  z-index: 100;
   padding-top: 1.5rem;
   padding-bottom: 2rem;
   background-color: var(--primaryBackground);

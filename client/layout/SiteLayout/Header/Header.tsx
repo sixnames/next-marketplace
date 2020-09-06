@@ -10,12 +10,14 @@ import { ASSETS_URL } from '../../../config';
 import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
+import { useSiteContext } from '../../../context/siteContext';
 
 const Header: React.FC = () => {
   const { logoSlug } = useThemeContext();
+  const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
-  const { getSiteConfigSingleValue } = useConfigContext();
 
   const siteLogo = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = `${ASSETS_URL}${siteLogo}?format=svg`;
@@ -28,7 +30,12 @@ const Header: React.FC = () => {
         {isMobile ? null : <HeaderTop />}
         <Inner className={classes.middle} lowTop>
           <div className={classes.middleSide}>
-            <div className={`${classes.middleLink} ${classes.middleLinkBurger}`}>
+            <div
+              onClick={toggleBurgerDropdown}
+              className={`${classes.middleLink} ${classes.middleLinkBurger} ${
+                isBurgerDropdownOpen ? classes.middleLinkActive : ''
+              }`}
+            >
               <div className={`${classes.middleLinkIconHolder}`}>
                 <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
               </div>

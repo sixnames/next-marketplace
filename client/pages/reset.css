@@ -376,6 +376,7 @@
 
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
   --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
 
   /*Inputs*/
@@ -447,13 +448,6 @@
 
   --scrollbarBG: var(--wp-dark-gray-300);
   --thumbBG: var(--wp-dark-gray-200);
-}
-
-@media only screen and (max-width: 1440px) {
-  :root {
-    --innerBlockVerticalPadding: 1rem;
-    --innerBlockHorizontalPadding: 1rem;
-  }
 }
 
 @media only screen and (max-width: 1024px) {
@@ -586,12 +580,6 @@ html {
 @media only screen and (max-width: 768px) {
   html {
     font-size: 14px;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  html {
-    font-size: 13px;
   }
 }
 

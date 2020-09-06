@@ -1,13 +1,20 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { InitialSiteQueryQuery } from '../generated/apolloComponents';
 import { UserContextProvider } from './userContext';
 
-interface SiteContextInterface {
+interface SiteContextStateInterface {
+  isBurgerDropdownOpen: boolean;
+}
+
+interface SiteContextInterface extends SiteContextStateInterface {
   getRubricsTree: InitialSiteQueryQuery['getRubricsTree'];
+  setState: any;
 }
 
 const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
+  isBurgerDropdownOpen: true,
+  setState: () => null,
 });
 
 interface SiteContextProviderInterface {
@@ -18,11 +25,17 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   initialApolloState,
 }) => {
+  const [state, setState] = useState({
+    isBurgerDropdownOpen: false,
+  });
+
   const initialValue = useMemo(() => {
     return {
       getRubricsTree: initialApolloState.getRubricsTree || [],
+      setState,
+      ...state,
     };
-  }, [initialApolloState]);
+  }, [initialApolloState, state]);
 
   return (
     <UserContextProvider
@@ -37,13 +50,40 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 };
 
 function useSiteContext() {
-  const context = useContext(SiteContext) || {
-    getRubricsTree: [],
-    getAllConfigs: [],
-  };
+  const context = useContext<SiteContextInterface>(SiteContext);
+
+  if (!context) {
+    throw new Error('useSiteContext must be used within a SiteContextProvider');
+  }
+
+  const { setState } = context;
+
+  function showBurgerDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isBurgerDropdownOpen: true,
+    }));
+  }
+
+  function hideBurgerDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isBurgerDropdownOpen: false,
+    }));
+  }
+
+  function toggleBurgerDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
+    }));
+  }
 
   return {
     ...context,
+    showBurgerDropdown,
+    hideBurgerDropdown,
+    toggleBurgerDropdown,
   };
 }
 

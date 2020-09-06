@@ -26,11 +26,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const { id, node, options } = attribute;
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   // TODO move this value to the site settings
-  const maxVisibleOptions = 5;
+  const maxVisibleOptions = 3;
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
   const hiddenOptions = options.slice(maxVisibleOptions);
-
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
 
   useEffect(() => {
@@ -90,12 +89,15 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             })
           : null}
       </ul>
-      <div
-        className={classes.optionsTrigger}
-        onClick={() => setIsOptionsOpen((prevState) => !prevState)}
-      >
-        {moreTriggerText}
-      </div>
+
+      {hiddenOptions.length > 0 ? (
+        <div
+          className={classes.optionsTrigger}
+          onClick={() => setIsOptionsOpen((prevState) => !prevState)}
+        >
+          {moreTriggerText}
+        </div>
+      ) : null}
     </div>
   );
 };

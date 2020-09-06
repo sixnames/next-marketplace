@@ -1046,14 +1046,14 @@ export class RubricResolver {
 
         resultOptions.push({
           ...option,
-          id: option._id,
+          id: option._id + rubric.id,
           filterNameString: filterNameString,
           counter: 0,
         });
       }
 
       return {
-        id: attribute.id,
+        id: attribute.id + rubric.id,
         node: attribute,
         options: resultOptions,
       };

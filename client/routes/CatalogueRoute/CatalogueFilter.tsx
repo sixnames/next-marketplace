@@ -15,7 +15,7 @@ type FilterAttribute = { __typename?: 'RubricFilterAttribute' } & Pick<
     options: Array<
       { __typename?: 'RubricFilterAttributeOption' } & Pick<
         RubricFilterAttributeOption,
-        'id' | 'slug' | 'nameString' | 'color' | 'counter'
+        'id' | 'slug' | 'filterNameString' | 'color' | 'counter'
       >
     >;
   };

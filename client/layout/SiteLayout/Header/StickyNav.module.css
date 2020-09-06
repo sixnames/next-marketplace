@@ -36,10 +36,15 @@
   transition: all 0.2s;
 }
 
+.currentRubric {
+  cursor: default;
+}
+
 .rubric:hover {
   text-decoration: none;
 }
 
+.currentRubric:before,
 .navItem:hover .rubric:before {
   opacity: 1;
 }
@@ -104,8 +109,7 @@
   color: var(--theme);
 }
 
-.currentOption,
-.currentRubric {
+.currentOption {
   cursor: default;
   color: var(--theme);
 }

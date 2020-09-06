@@ -26,7 +26,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   initialApolloState,
 }) => {
   const [state, setState] = useState({
-    isBurgerDropdownOpen: false,
+    isBurgerDropdownOpen: true,
   });
 
   const initialValue = useMemo(() => {

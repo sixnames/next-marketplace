@@ -116,7 +116,8 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const isCurrent = slug === catalogueSlug;
 
   function showDropdownHandler() {
-    hideBurgerDropdown();
+    console.log(hideBurgerDropdown);
+    // hideBurgerDropdown();
     setIsDropdownOpen(true);
   }
 

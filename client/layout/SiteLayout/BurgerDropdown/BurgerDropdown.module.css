@@ -35,6 +35,7 @@
   flex-grow: 1;
   align-items: stretch;
   width: 100%;
+  max-height: 100%;
   max-width: var(--dropdown-width);
   background-color: var(--primaryBackground);
   box-shadow: var(--wp-shadow-right-100);
@@ -51,7 +52,8 @@
   background-color: var(--primaryBackground);
 }
 
-.dropdown > div {
+.dropdownScroll{
+  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -59,6 +61,38 @@
 .dropdownContent {
   padding-top: 3.5rem;
   padding-bottom: 3.5rem;
+}
+
+.dropdownGroup {
+  margin-bottom: 1.5rem;
+}
+
+.dropdownGroupTitle {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+}
+
+.dropdownGroupLink {
+  display: block;
+  min-height: 3rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--textColor);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.dropdownGroupLinkAccent {
+  color: var(--theme);
+}
+
+.dropdownGroupLink:hover {
+  text-decoration: none;
+  color: var(--theme);
+}
+
+.dropdownGroupLinkBig {
+  font-size: 1.5rem;
 }
 
 @media only screen and (max-width: 1024px) {

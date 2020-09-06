@@ -13,11 +13,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
   font-family: 'Gilroy';
-  src: url('/fonts/Gilroy/Gilroy-Bold.eot');
+  src: url('/fonts/Gilroy/Gilroy-Medium.eot');
   src: local('Gilroy Bold'), local('Gilroy-Bold'),
-  url('/fonts/Gilroy/Gilroy-Bold.eot?#iefix') format('embedded-opentype'),
-  url('/fonts/Gilroy/Gilroy-Bold.woff') format('woff'),
-  url('/fonts/Gilroy/Gilroy-Bold.ttf') format('truetype');
+  url('/fonts/Gilroy/Gilroy-Medium.eot?#iefix') format('embedded-opentype'),
+  url('/fonts/Gilroy/Gilroy-Medium.woff') format('woff'),
+  url('/fonts/Gilroy/Gilroy-Medium.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }
@@ -373,6 +373,7 @@
   --fullHeight: 100vh;
   --formInputHeight: 3.5rem;
   --formLineHeight: 2rem;
+  --minLinkHeight: 3.5rem;
 
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
@@ -453,6 +454,7 @@
 @media only screen and (max-width: 1024px) {
   :root {
     --formInputHeight: 3rem;
+    --minLinkHeight: 3rem;
   }
 }
 

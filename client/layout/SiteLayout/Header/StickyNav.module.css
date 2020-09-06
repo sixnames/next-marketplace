@@ -17,7 +17,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 3.5rem;
+  min-height: var(--minLinkHeight);
   text-transform: uppercase;
   font-weight: bold;
   color: var(--textColor);
@@ -92,7 +92,7 @@
 .dropdownAttributeName {
   display: flex;
   align-items: center;
-  min-height: 3.5rem;
+  min-height: var(--minLinkHeight);
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -117,7 +117,7 @@
 .optionsTrigger {
   display: flex;
   align-items: center;
-  min-height: 3.5rem;
+  min-height: var(--minLinkHeight);
   cursor: pointer;
   color: var(--theme);
   font-weight: bold;

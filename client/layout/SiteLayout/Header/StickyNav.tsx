@@ -25,7 +25,8 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const { asPath } = useRouter();
   const { id, node, options } = attribute;
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
-  const maxVisibleOptions = 2;
+  // TODO move this value to the site settings
+  const maxVisibleOptions = 5;
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
   const hiddenOptions = options.slice(maxVisibleOptions);

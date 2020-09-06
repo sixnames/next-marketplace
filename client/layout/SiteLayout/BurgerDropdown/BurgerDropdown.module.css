@@ -10,6 +10,7 @@
   overflow: hidden;
 
   --dropdown-width: 345px;
+  --dropdown-side-gap: 2.5rem;
 }
 
 .inner {
@@ -82,6 +83,10 @@
   transition: color 0.2s;
 }
 
+.dropdownGroupLinkCurrent {
+  color: var(--theme);
+}
+
 .dropdownGroupLinkAccent {
   color: var(--theme);
 }
@@ -93,6 +98,33 @@
 
 .dropdownGroupLinkBig {
   font-size: 1.5rem;
+}
+
+.dropdownCatalogueTitle {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.dropdownCatalogueTrigger {
+  width: var(--dropdown-side-gap);
+  cursor: pointer;
+}
+
+.dropdownCatalogueTrigger svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.dropdownCatalogueTrigger:hover svg {
+  fill: var(--theme);
+}
+
+.dropdownCatalogueContent {
+
 }
 
 @media only screen and (max-width: 1024px) {

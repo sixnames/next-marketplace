@@ -673,6 +673,7 @@ svg {
   height: 1px;
   position: relative;
   display: block;
+  fill: currentColor;
   transition: fill 0.2s;
 }
 

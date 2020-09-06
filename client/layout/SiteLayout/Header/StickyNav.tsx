@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import classes from './StickyNav.module.css';
 import Inner from '../../../components/Inner/Inner';
-import { useSiteContext } from '../../../context/siteContext';
+import {
+  RubricType,
+  StickyNavAttributeInterface,
+  useSiteContext,
+} from '../../../context/siteContext';
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
-import { InitialSiteQueryQuery } from '../../../generated/apolloComponents';
 import OutsideClickHandler from 'react-outside-click-handler';
-
-type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
-
-interface StickyNavAttributeInterface {
-  attribute: RubricType['filterAttributes'][number];
-  rubricSlug: string;
-  hideDropdownHandler: () => void;
-  isDropdownOpen: boolean;
-}
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -52,7 +46,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                   pathname: `/[...catalogue]`,
                 }}
                 as={{
-                  pathname: `/${rubricSlug}/${node.slug}-${option.slug}`,
+                  pathname: optionPath,
                 }}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
@@ -116,8 +110,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const isCurrent = slug === catalogueSlug;
 
   function showDropdownHandler() {
-    console.log(hideBurgerDropdown);
-    // hideBurgerDropdown();
+    hideBurgerDropdown();
     setIsDropdownOpen(true);
   }
 

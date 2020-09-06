@@ -2,6 +2,15 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 import { InitialSiteQueryQuery } from '../generated/apolloComponents';
 import { UserContextProvider } from './userContext';
 
+export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
+
+export interface StickyNavAttributeInterface {
+  attribute: RubricType['filterAttributes'][number];
+  rubricSlug: string;
+  hideDropdownHandler: () => void;
+  isDropdownOpen: boolean;
+}
+
 interface SiteContextStateInterface {
   isBurgerDropdownOpen: boolean;
 }
@@ -26,7 +35,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   initialApolloState,
 }) => {
   const [state, setState] = useState({
-    isBurgerDropdownOpen: true,
+    isBurgerDropdownOpen: false,
   });
 
   const initialValue = useMemo(() => {

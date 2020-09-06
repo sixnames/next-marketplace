@@ -113,3 +113,16 @@
   cursor: default;
   color: var(--theme);
 }
+
+.optionsTrigger {
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+  cursor: pointer;
+  color: var(--theme);
+  font-weight: bold;
+}
+
+.optionsTrigger:hover {
+  text-decoration: underline;
+}

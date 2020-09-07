@@ -4,5 +4,64 @@
   left: 0;
   width: 100%;
   background-color: var(--primaryBackground);
-  box-shadow: var(--wp-shadow-100);
+  box-shadow: var(--wp-shadow-bottom-100);
+}
+
+.frameTitle {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  justify-content: flex-end;
+}
+
+.frameTitleName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: calc(100% - (var(--burger-dropdown-side-gap) * 2));
+}
+
+.frameTitleClose {
+  display: flex;
+  justify-content: flex-end;
+  width: var(--burger-dropdown-side-gap);
+  cursor: pointer;
+}
+
+.frameTitleClose svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: var(--textSecondaryColor);
+}
+
+.frameTitleClose:hover svg {
+  fill: var(--theme);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr var(--button-min-width) var(--formInputHeight);
+  grid-column-gap: 1rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    position: fixed;
+    z-index: 110;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--fullHeight, 100vh);
+  }
+
+  .form {
+    display: grid;
+    grid-template-columns: 1fr var(--formInputHeight) var(--formInputHeight);
+    grid-column-gap: 1rem;
+  }
 }

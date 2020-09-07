@@ -373,6 +373,7 @@
   --fullHeight: 100vh;
   --formInputHeight: 3.5rem;
   --formLineHeight: 2rem;
+  --button-min-width: 17rem;
   --minLinkHeight: 3.5rem;
   --burger-dropdown-width: 345px;
   --burger-dropdown-side-gap: 2.5rem;
@@ -380,6 +381,7 @@
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
+  --wp-shadow-bottom-100: 0 20px 15px -15px rgba(9, 9, 9, 0.2);
   --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
 
   /*Inputs*/

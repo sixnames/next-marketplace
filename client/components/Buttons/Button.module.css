@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 17rem;
+  min-width: var(--button-min-width);
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 1rem;
@@ -21,6 +21,10 @@
   border-radius: 0.5rem;
   text-decoration: none;
   box-shadow: var(--buttonShadow);
+}
+
+.short {
+  min-width: auto;
 }
 
 .butn:disabled {

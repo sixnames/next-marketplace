@@ -1,6 +1,6 @@
 .frame {
   position: relative;
-  z-index: 100;
+  z-index: 130;
   background-color: var(--primaryBackground);
 
   --logo-widht: 10rem;

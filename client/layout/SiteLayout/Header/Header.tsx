@@ -6,7 +6,7 @@ import HeaderTop from './HeaderTop';
 import Link from '../../../components/Link/Link';
 import { useThemeContext } from '../../../context/themeContext';
 import { useConfigContext } from '../../../context/configContext';
-import { ASSETS_URL } from '../../../config';
+import { ASSETS_URL, ROUTE_PROFILE } from '../../../config';
 import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
@@ -62,13 +62,13 @@ const Header: React.FC = () => {
                 <Icon name={'search'} className={classes.middleLinkSearchIcon} />
               </div>
             </div>
-            <div className={`${classes.middleLink}`}>
-              <div
+            <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
+              <span
                 className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
               >
                 <Icon name={'user'} className={classes.middleLinkUserIcon} />
-              </div>
-            </div>
+              </span>
+            </Link>
             <div className={`${classes.middleLink}`}>
               <div
                 className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}

@@ -8,6 +8,25 @@
   background-color: var(--secondaryBackground);
 }
 
+.navCover {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 100%;
+}
+
+.navCoverInner {
+  height: 0;
+  padding-left: 0;
+}
+
+.navCoverContent {
+  min-height: var(--minLinkHeight);
+  width: var(--burger-dropdown-width);
+}
+
 .navList {
   display: flex;
   justify-content: space-between;

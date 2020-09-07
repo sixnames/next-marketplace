@@ -14,6 +14,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
+import useIsMobile from '../../hooks/useIsMobile';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -32,6 +33,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { isBurgerDropdownOpen } = useSiteContext();
+  const isMobile = useIsMobile();
   const contentRef = useRef<HTMLDivElement>(null);
   const [burgerDropdownSizes, setBurgerDropdownSizes] = useState<BurgerDropdownSizesInterface>({
     top: 0,
@@ -48,7 +50,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   // Set burger dropdown sizes
   useEffect(() => {
     function resizeWindow() {
-      if (contentRef && contentRef.current && isBurgerDropdownOpen) {
+      if (contentRef && contentRef.current && isBurgerDropdownOpen && !isMobile) {
         setBurgerDropdownSizes({
           top: contentRef.current.offsetTop,
           height: contentRef.current.clientHeight,
@@ -63,7 +65,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     return () => {
       window.removeEventListener('resize', resizeWindow);
     };
-  }, [contentRef, isBurgerDropdownOpen]);
+  }, [contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
     <div className={classes.frame} style={themeStyles}>
@@ -71,15 +73,17 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 
       <Header />
 
-      <main className={classes.main} ref={contentRef}>
-        <ErrorBoundary>
-          <AnimateOpacity>{children}</AnimateOpacity>
-        </ErrorBoundary>
+      <div ref={contentRef} className={classes.content}>
+        <main className={classes.main} ref={contentRef}>
+          <ErrorBoundary>
+            <AnimateOpacity>{children}</AnimateOpacity>
+          </ErrorBoundary>
+        </main>
+
+        <Footer />
 
         <BurgerDropdown top={burgerDropdownSizes.top} height={burgerDropdownSizes.height} />
-      </main>
-
-      <Footer />
+      </div>
 
       {isLoading && <Spinner wide />}
       {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}

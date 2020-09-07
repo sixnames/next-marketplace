@@ -12,9 +12,74 @@ import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from '../../../context/siteContext';
 
+const HeaderBurgerDropdownTrigger: React.FC = () => {
+  const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
+  return (
+    <div
+      onClick={toggleBurgerDropdown}
+      className={`${classes.middleLink} ${classes.middleLinkBurger} ${
+        isBurgerDropdownOpen ? classes.middleLinkActive : ''
+      }`}
+    >
+      <div className={`${classes.middleLinkIconHolder}`}>
+        <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
+      </div>
+      <span>меню</span>
+    </div>
+  );
+};
+
+const HeaderMiddleLeft: React.FC = () => {
+  return (
+    <div className={classes.middleSide}>
+      <HeaderBurgerDropdownTrigger />
+
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder}`}>
+          <Icon name={'marker'} className={classes.middleLinkShopsIcon} />
+        </div>
+        <span>Винотеки</span>
+      </div>
+    </div>
+  );
+};
+
+const HeaderMiddleRight: React.FC = () => {
+  return (
+    <div className={classes.middleSide}>
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'search'} className={classes.middleLinkSearchIcon} />
+        </div>
+      </div>
+      <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
+        <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'user'} className={classes.middleLinkUserIcon} />
+        </span>
+      </Link>
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'compare'} className={classes.middleLinkCompareIcon} />
+        </div>
+      </div>
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'heart'} className={classes.middleLinkHeartIcon} />
+        </div>
+      </div>
+
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder}`}>
+          <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+        </div>
+        <span>Корзина</span>
+      </div>
+    </div>
+  );
+};
+
 const Header: React.FC = () => {
   const { logoSlug } = useThemeContext();
-  const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
@@ -29,71 +94,47 @@ const Header: React.FC = () => {
       <header className={classes.frame} ref={headerRef}>
         {isMobile ? null : <HeaderTop />}
         <Inner className={classes.middle} lowTop>
-          <div className={classes.middleSide}>
-            <div
-              onClick={toggleBurgerDropdown}
-              className={`${classes.middleLink} ${classes.middleLinkBurger} ${
-                isBurgerDropdownOpen ? classes.middleLinkActive : ''
-              }`}
-            >
-              <div className={`${classes.middleLinkIconHolder}`}>
-                <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
-              </div>
-              <span>меню</span>
-            </div>
-
-            <div className={`${classes.middleLink}`}>
-              <div className={`${classes.middleLinkIconHolder}`}>
-                <Icon name={'marker'} className={classes.middleLinkShopsIcon} />
-              </div>
-              <span>Винотеки</span>
-            </div>
-          </div>
+          {isMobile ? null : <HeaderMiddleLeft />}
 
           <Link href={'/'} className={classes.middleLogo} aria-label={'Главная страница'}>
             <img src={siteLogoSrc} width='166' height='27' alt={configSiteName} />
           </Link>
 
-          <div className={classes.middleSide}>
-            <div className={`${classes.middleLink}`}>
-              <div
-                className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-              >
-                <Icon name={'search'} className={classes.middleLinkSearchIcon} />
-              </div>
-            </div>
-            <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
-              <span
-                className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-              >
-                <Icon name={'user'} className={classes.middleLinkUserIcon} />
-              </span>
-            </Link>
-            <div className={`${classes.middleLink}`}>
-              <div
-                className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-              >
-                <Icon name={'compare'} className={classes.middleLinkCompareIcon} />
-              </div>
-            </div>
-            <div className={`${classes.middleLink}`}>
-              <div
-                className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-              >
-                <Icon name={'heart'} className={classes.middleLinkHeartIcon} />
-              </div>
-            </div>
-
-            <div className={`${classes.middleLink}`}>
-              <div className={`${classes.middleLinkIconHolder}`}>
-                <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-              </div>
-              <span>Корзина</span>
-            </div>
-          </div>
+          {isMobile ? null : <HeaderMiddleRight />}
         </Inner>
       </header>
-      {isMobile ? null : <StickyNav />}
+      {isMobile ? (
+        <div className={classes.mobileNav}>
+          <Inner className={classes.mobileNavInner}>
+            <HeaderBurgerDropdownTrigger />
+
+            <div className={classes.mobileNavRight}>
+              <div className={`${classes.middleLink}`}>
+                <div
+                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
+                >
+                  <Icon name={'search'} className={classes.middleLinkSearchIcon} />
+                </div>
+              </div>
+              <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
+                <span
+                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
+                >
+                  <Icon name={'user'} className={classes.middleLinkUserIcon} />
+                </span>
+              </Link>
+              <div className={`${classes.middleLink}`}>
+                <div className={`${classes.middleLinkIconHolder}`}>
+                  <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+                </div>
+                <span>Корзина</span>
+              </div>
+            </div>
+          </Inner>
+        </div>
+      ) : (
+        <StickyNav />
+      )}
     </Fragment>
   );
 };

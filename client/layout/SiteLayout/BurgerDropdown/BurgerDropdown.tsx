@@ -16,6 +16,11 @@ export interface BurgerDropdownSizesInterface {
   height: number;
 }
 
+const BurgerDropdownChevron: React.FC = () => {
+  const isMobile = useIsMobile();
+  return isMobile ? <Icon name={'chevron-right'} className={classes.chevronRight} /> : null;
+};
+
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
   const { isBurgerDropdownOpen, hideBurgerDropdown, getRubricsTree } = useSiteContext();
   const [isCatalogueVisible, setIsCatalogueVisible] = useState<boolean>(true);
@@ -37,7 +42,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
   return (
     <div
       className={`${classes.frame} ${isBurgerDropdownOpen ? classes.frameActive : ''}`}
-      style={isBurgerDropdownOpen ? { top, height } : undefined}
+      style={isBurgerDropdownOpen && !isMobile ? { top, height } : undefined}
     >
       <Inner lowBottom lowTop className={classes.inner}>
         <div className={classes.dropdown}>
@@ -56,11 +61,38 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     >
                       <Icon name={'arrow-left'} />
                     </div>
-                    {currentRubric ? currentRubric.nameString : 'Каталог товаров'}
+
+                    <div className={classes.dropdownCatalogueTitleName}>
+                      {currentRubric ? currentRubric.nameString : 'Каталог товаров'}
+                    </div>
+
+                    {isMobile ? (
+                      <div onClick={hideBurgerDropdown} className={classes.dropdownCatalogueClose}>
+                        <Icon name={'cross'} />
+                      </div>
+                    ) : null}
                   </div>
                   <div className={classes.dropdownCatalogueContent}>
                     {currentRubric ? (
                       <Fragment>
+                        {currentRubric.slug !== catalogueSlug ? (
+                          <div className={classes.dropdownGroup}>
+                            <Link
+                              href={{
+                                pathname: `/[...catalogue]`,
+                              }}
+                              as={{
+                                pathname: `${currentRubric.slug}`,
+                              }}
+                              onClick={hideBurgerDropdown}
+                              className={`${classes.dropdownGroupLink}`}
+                            >
+                              <span>Перейти в раздел</span>
+                              <BurgerDropdownChevron />
+                            </Link>
+                          </div>
+                        ) : null}
+
                         {currentRubric.filterAttributes.map(({ id, node, options }) => {
                           return (
                             <div className={classes.dropdownGroup} key={id}>
@@ -83,7 +115,8 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                           isCurrent ? classes.dropdownGroupLinkCurrent : ''
                                         }`}
                                       >
-                                        {option.filterNameString}
+                                        <span>{option.filterNameString}</span>
+                                        <BurgerDropdownChevron />
                                       </Link>
                                     </li>
                                   );
@@ -92,21 +125,6 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             </div>
                           );
                         })}
-
-                        {currentRubric.slug !== catalogueSlug ? (
-                          <Link
-                            href={{
-                              pathname: `/[...catalogue]`,
-                            }}
-                            as={{
-                              pathname: `${currentRubric.slug}`,
-                            }}
-                            onClick={hideBurgerDropdown}
-                            className={`${classes.dropdownGroupLink}`}
-                          >
-                            Перейти в раздел
-                          </Link>
-                        ) : null}
                       </Fragment>
                     ) : (
                       <ul>
@@ -120,7 +138,8 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                   isCurrent ? classes.dropdownGroupLinkCurrent : ''
                                 }`}
                               >
-                                {nameString}
+                                <span>{nameString}</span>
+                                <BurgerDropdownChevron />
                               </span>
                             </li>
                           );
@@ -138,14 +157,16 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                         <span
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkAccent} ${classes.dropdownGroupLinkBig}`}
                         >
-                          Скидки
+                          <span>Скидки</span>
+                          <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
                         <span
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkBig}`}
                         >
-                          Бестселлеры
+                          <span>Бестселлеры</span>
+                          <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
@@ -153,14 +174,16 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           onClick={() => setIsCatalogueVisible(true)}
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkBig}`}
                         >
-                          Каталог товаров
+                          <span>Каталог товаров</span>
+                          <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
                         <span
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkBig}`}
                         >
-                          Банкетный калькулятор
+                          <span>Банкетный калькулятор</span>
+                          <BurgerDropdownChevron />
                         </span>
                       </li>
                     </ul>
@@ -171,17 +194,27 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <ul>
                       <li>
                         <Link href={ROUTE_PROFILE} className={`${classes.dropdownGroupLink}`}>
-                          Личный кабинет
+                          <span>Личный кабинет</span>
+                          <BurgerDropdownChevron />
                         </Link>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Корзина</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Корзина</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Сравнение</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Сравнение</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Избранное</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Избранное</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -190,22 +223,40 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <div className={classes.dropdownGroupTitle}>{configSiteName}</div>
                     <ul>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>О компании</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>О компании</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Контакты</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Контакты</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Служба поддержки</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Служба поддержки</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Винотеки</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Винотеки</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Вакансии</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Вакансии</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>Блог компании</span>
+                        <span className={`${classes.dropdownGroupLink}`}>
+                          <span>Блог компании</span>
+                          <BurgerDropdownChevron />
+                        </span>
                       </li>
                     </ul>
                   </div>

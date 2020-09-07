@@ -8,10 +8,10 @@
 
 .middle {
   display: flex;
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
   align-items: center;
   justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
 }
 
 .middleLogo {
@@ -94,4 +94,43 @@
 .middleLinkCartIcon {
   width: 1.125rem;
   height: 1.125rem;
+}
+
+.mobileNav {
+  position: fixed;
+  z-index: 200;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: var(--secondaryBackground);
+  box-shadow: var(--wp-shadow-100);
+}
+
+.mobileNavInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.mobileNavRight {
+  display: flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1024px) {
+  .middle {
+    justify-content: center;
+    padding-top: 1.75rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .middleLink:not(:first-child) {
+    margin-left: 0.2rem;
+  }
+
+  .middleLink:not(:last-child) {
+    margin-right: 0.2rem;
+  }
 }

@@ -13,6 +13,7 @@ export interface StickyNavAttributeInterface {
 
 interface SiteContextStateInterface {
   isBurgerDropdownOpen: boolean;
+  isSearchOpen: boolean;
 }
 
 interface SiteContextInterface extends SiteContextStateInterface {
@@ -22,7 +23,8 @@ interface SiteContextInterface extends SiteContextStateInterface {
 
 const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
-  isBurgerDropdownOpen: true,
+  isBurgerDropdownOpen: false,
+  isSearchOpen: false,
   setState: () => null,
 });
 
@@ -36,6 +38,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 }) => {
   const [state, setState] = useState({
     isBurgerDropdownOpen: false,
+    isSearchOpen: false,
   });
 
   const initialValue = useMemo(() => {
@@ -88,11 +91,35 @@ function useSiteContext() {
     }));
   }
 
+  function showSearchDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isSearchOpen: true,
+    }));
+  }
+
+  function hideSearchDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isSearchOpen: false,
+    }));
+  }
+
+  function toggleSearchDropdown() {
+    setState((prevState: SiteContextStateInterface) => ({
+      ...prevState,
+      isSearchOpen: !prevState.isSearchOpen,
+    }));
+  }
+
   return {
     ...context,
     showBurgerDropdown,
     hideBurgerDropdown,
     toggleBurgerDropdown,
+    showSearchDropdown,
+    hideSearchDropdown,
+    toggleSearchDropdown,
   };
 }
 

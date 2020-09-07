@@ -73,6 +73,7 @@ function useSiteContext() {
   function showBurgerDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isSearchOpen: false,
       isBurgerDropdownOpen: true,
     }));
   }
@@ -80,6 +81,7 @@ function useSiteContext() {
   function hideBurgerDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
   }
@@ -87,6 +89,7 @@ function useSiteContext() {
   function toggleBurgerDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isSearchOpen: false,
       isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
     }));
   }
@@ -94,6 +97,7 @@ function useSiteContext() {
   function showSearchDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isBurgerDropdownOpen: false,
       isSearchOpen: true,
     }));
   }
@@ -101,6 +105,7 @@ function useSiteContext() {
   function hideSearchDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isBurgerDropdownOpen: false,
       isSearchOpen: false,
     }));
   }
@@ -108,6 +113,7 @@ function useSiteContext() {
   function toggleSearchDropdown() {
     setState((prevState: SiteContextStateInterface) => ({
       ...prevState,
+      isBurgerDropdownOpen: false,
       isSearchOpen: !prevState.isSearchOpen,
     }));
   }

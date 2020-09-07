@@ -11,6 +11,7 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from '../../../context/siteContext';
+import HeaderSearch from './HeaderSearch';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
@@ -25,6 +26,41 @@ const HeaderBurgerDropdownTrigger: React.FC = () => {
         <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
       </div>
       <span>меню</span>
+    </div>
+  );
+};
+
+const HeaderSearchTrigger: React.FC = () => {
+  const { isSearchOpen, showSearchDropdown } = useSiteContext();
+  return (
+    <div
+      onClick={showSearchDropdown}
+      className={`${classes.middleLink} ${isSearchOpen ? classes.middleLinkActive : ''}`}
+    >
+      <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+        <Icon name={'search'} className={classes.middleLinkSearchIcon} />
+      </div>
+    </div>
+  );
+};
+
+const HeaderProfileLink: React.FC = () => {
+  return (
+    <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
+      <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+        <Icon name={'user'} className={classes.middleLinkUserIcon} />
+      </span>
+    </Link>
+  );
+};
+
+const HeaderCartLink: React.FC = () => {
+  return (
+    <div className={`${classes.middleLink}`}>
+      <div className={`${classes.middleLinkIconHolder}`}>
+        <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+      </div>
+      <span>Корзина</span>
     </div>
   );
 };
@@ -47,16 +83,9 @@ const HeaderMiddleLeft: React.FC = () => {
 const HeaderMiddleRight: React.FC = () => {
   return (
     <div className={classes.middleSide}>
-      <div className={`${classes.middleLink}`}>
-        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-          <Icon name={'search'} className={classes.middleLinkSearchIcon} />
-        </div>
-      </div>
-      <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
-        <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
-          <Icon name={'user'} className={classes.middleLinkUserIcon} />
-        </span>
-      </Link>
+      <HeaderSearchTrigger />
+      <HeaderProfileLink />
+
       <div className={`${classes.middleLink}`}>
         <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
           <Icon name={'compare'} className={classes.middleLinkCompareIcon} />
@@ -68,12 +97,7 @@ const HeaderMiddleRight: React.FC = () => {
         </div>
       </div>
 
-      <div className={`${classes.middleLink}`}>
-        <div className={`${classes.middleLinkIconHolder}`}>
-          <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-        </div>
-        <span>Корзина</span>
-      </div>
+      <HeaderCartLink />
     </div>
   );
 };
@@ -102,33 +126,19 @@ const Header: React.FC = () => {
 
           {isMobile ? null : <HeaderMiddleRight />}
         </Inner>
+
+        <HeaderSearch />
       </header>
+
       {isMobile ? (
         <div className={classes.mobileNav}>
           <Inner className={classes.mobileNavInner}>
             <HeaderBurgerDropdownTrigger />
 
             <div className={classes.mobileNavRight}>
-              <div className={`${classes.middleLink}`}>
-                <div
-                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-                >
-                  <Icon name={'search'} className={classes.middleLinkSearchIcon} />
-                </div>
-              </div>
-              <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
-                <span
-                  className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}
-                >
-                  <Icon name={'user'} className={classes.middleLinkUserIcon} />
-                </span>
-              </Link>
-              <div className={`${classes.middleLink}`}>
-                <div className={`${classes.middleLinkIconHolder}`}>
-                  <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-                </div>
-                <span>Корзина</span>
-              </div>
+              <HeaderSearchTrigger />
+              <HeaderProfileLink />
+              <HeaderCartLink />
             </div>
           </Inner>
         </div>

@@ -3,7 +3,6 @@ import Inner from '../../../components/Inner/Inner';
 import HeaderTop from '../Header/HeaderTop';
 import useIsMobile from '../../../hooks/useIsMobile';
 import { RubricType, useSiteContext } from '../../../context/siteContext';
-import AnimateOpacity from '../../../components/AnimateOpacity/AnimateOpacity';
 import classes from './BurgerDropdown.module.css';
 import { useConfigContext } from '../../../context/configContext';
 import Link from '../../../components/Link/Link';
@@ -35,8 +34,11 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
     }
   }, [isBurgerDropdownOpen]);
 
-  return isBurgerDropdownOpen ? (
-    <AnimateOpacity className={classes.frame} style={{ top, height }}>
+  return (
+    <div
+      className={`${classes.frame} ${isBurgerDropdownOpen ? classes.frameActive : ''}`}
+      style={isBurgerDropdownOpen ? { top, height } : undefined}
+    >
       <Inner lowBottom lowTop className={classes.inner}>
         <div className={classes.dropdown}>
           <div className={classes.dropdownScroll}>
@@ -214,8 +216,8 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
         </div>
         <div className={classes.backdrop} onClick={hideBurgerDropdown} />
       </Inner>
-    </AnimateOpacity>
-  ) : null;
+    </div>
+  );
 };
 
 export default BurgerDropdown;

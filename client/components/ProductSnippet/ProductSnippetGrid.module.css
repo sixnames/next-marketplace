@@ -155,7 +155,7 @@
 }
 
 [data-theme='light'] .btnsItemCart svg {
-  fill: var(--wp-light-gray-100);
+  fill: var(--wp-mid-gray-100);
 }
 
 [data-theme='dark'] .btnsItem svg {

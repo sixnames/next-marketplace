@@ -1,11 +1,12 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop, prop as Property } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
+import { Option } from './Option';
 
 @ObjectType()
 export class RubricAttributesGroup {
@@ -13,30 +14,51 @@ export class RubricAttributesGroup {
   readonly id: string;
 
   @Field(() => [ID])
-  @Property({ type: String })
+  @prop({ type: String })
   showInCatalogueFilter: string[];
 
   @Field(() => Boolean)
-  @Property({ type: Boolean })
+  @prop({ type: Boolean })
   isOwner: boolean;
 
   @Field(() => AttributesGroup)
-  @Property({ ref: AttributesGroup })
+  @prop({ ref: AttributesGroup })
   node: string;
+}
+
+@ObjectType()
+export class RubricFilterAttributeOption extends Option {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => Int)
+  readonly counter: number;
+}
+
+@ObjectType()
+export class RubricFilterAttribute {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => Attribute)
+  readonly node: Attribute;
+
+  @Field(() => [RubricFilterAttributeOption])
+  readonly options: RubricFilterAttributeOption[];
 }
 
 @ObjectType()
 export class RubricCatalogueTitle {
   @Field(() => [LanguageType])
-  @Property({ type: LanguageType, required: true })
+  @prop({ type: LanguageType, required: true })
   defaultTitle: LanguageType[];
 
   @Field(() => [LanguageType], { nullable: true })
-  @Property({ type: LanguageType })
+  @prop({ type: LanguageType })
   prefix?: LanguageType[];
 
   @Field(() => [LanguageType])
-  @Property({ type: LanguageType, required: true })
+  @prop({ type: LanguageType, required: true })
   keyword: LanguageType[];
 
   @Field((_type) => GenderEnum)
@@ -63,35 +85,35 @@ export class RubricCatalogueTitleField {
 @ObjectType()
 export class RubricNode {
   @Field(() => [LanguageType])
-  @Property({ type: LanguageType, required: true })
+  @prop({ type: LanguageType, required: true })
   name: LanguageType[];
 
   @Field(() => RubricCatalogueTitle)
-  @Property({ type: RubricCatalogueTitle, required: true })
+  @prop({ type: RubricCatalogueTitle, required: true })
   catalogueTitle: RubricCatalogueTitle;
 
   @Field(() => String)
-  @Property({ required: true })
+  @prop({ required: true })
   slug: string;
 
   @Field(() => Int)
-  @Property({ required: true, default: RUBRIC_LEVEL_ONE })
+  @prop({ required: true, default: RUBRIC_LEVEL_ONE })
   level: number;
 
   @Field(() => Boolean, { nullable: true })
-  @Property({ required: true, default: true })
+  @prop({ required: true, default: true })
   active?: boolean;
 
   @Field(() => Rubric, { nullable: true })
-  @Property({ ref: 'Rubric' })
+  @prop({ ref: 'Rubric' })
   parent?: string | null;
 
   @Field(() => [RubricAttributesGroup])
-  @Property({ type: RubricAttributesGroup })
+  @prop({ type: RubricAttributesGroup })
   attributesGroups: RubricAttributesGroup[];
 
   @Field(() => RubricVariant)
-  @Property({ ref: RubricVariant })
+  @prop({ ref: RubricVariant })
   variant: string;
 }
 
@@ -99,11 +121,11 @@ export class RubricNode {
 @ObjectType()
 export class RubricCity {
   @Field(() => String)
-  @Property({ required: true })
+  @prop({ required: true })
   key: string;
 
   @Field(() => RubricNode)
-  @Property({ required: true })
+  @prop({ required: true })
   node: RubricNode;
 }
 
@@ -142,8 +164,8 @@ export class Rubric {
   @Field(() => [RubricAttributesGroup])
   readonly attributesGroups: RubricAttributesGroup[];
 
-  @Field(() => [Attribute])
-  readonly filterAttributes: Attribute[];
+  @Field(() => [RubricFilterAttribute])
+  readonly filterAttributes: RubricFilterAttribute[];
 
   @Field(() => RubricVariant)
   readonly variant: RubricVariant;
@@ -158,7 +180,7 @@ export class Rubric {
   readonly activeProductsCount: number;
 
   @Field(() => [RubricCity])
-  @Property({ type: RubricCity, required: true })
+  @prop({ type: RubricCity, required: true })
   cities: RubricCity[];
 }
 

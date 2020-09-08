@@ -1,4 +1,4 @@
-.Frame {
+.frame {
   display: flex;
   flex-direction: column;
   background-color: var(--secondaryBackground);
@@ -129,7 +129,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .Frame {
+  .frame {
     display: block;
     height: auto;
     min-height: calc(var(--fullHeight, 100vh) - 36px);

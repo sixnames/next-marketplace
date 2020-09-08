@@ -1,12 +1,11 @@
 .filter {
-  width: 280px;
-  margin-right: 20px;
+
 }
 
 .attributeTitle,
 .groupTitle {
   margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .attribute {

@@ -3,6 +3,7 @@ import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
 import { InputType, OnOffType } from '../../../types';
 import classes from './Input.module.css';
+import Icon, { IconType } from '../../Icon/Icon';
 
 export interface InputPropsInterface extends InputLinePropsInterface {
   name: string;
@@ -15,6 +16,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   min?: number;
   placeholder?: string;
   disabled?: boolean;
+  icon?: IconType;
 }
 
 const Input: React.FC<InputPropsInterface> = ({
@@ -35,11 +37,13 @@ const Input: React.FC<InputPropsInterface> = ({
   type = 'text',
   testId,
   labelTag,
+  icon,
   ...props
 }) => {
+  const withIconClass = icon ? classes.withIcon : '';
   const notValidClass = notValid ? classes.error : '';
   const additionalClass = className ? className : '';
-  const inputClassName = `${classes.frame} ${notValidClass} ${additionalClass}`;
+  const inputClassName = `${classes.frame} ${notValidClass} ${withIconClass} ${additionalClass}`;
   const currentValue = !value && value !== 0 ? '' : value;
 
   return (
@@ -57,6 +61,8 @@ const Input: React.FC<InputPropsInterface> = ({
       low={low}
       wide={wide}
     >
+      {icon ? <Icon name={icon} className={classes.icon} /> : null}
+
       {type === 'tel' ? (
         <MaskedField
           id={name}

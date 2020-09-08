@@ -15,6 +15,8 @@ import {
   RubricCatalogueTitleField,
   RubricModel,
   RubricCatalogueTitle,
+  RubricFilterAttribute,
+  RubricFilterAttributeOption,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
@@ -72,6 +74,8 @@ import {
   Localization,
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
+import { OptionsGroupModel } from '../../entities/OptionsGroup';
+import { OptionModel } from '../../entities/Option';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -973,23 +977,89 @@ export class RubricResolver {
     return ProductModel.paginate(query, options);
   }
 
-  @FieldResolver()
+  @FieldResolver((_returns) => [RubricFilterAttribute])
   async filterAttributes(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<Attribute[]> {
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+  ): Promise<RubricFilterAttribute[]> {
     const rubricCity = getCityData(rubric.cities, city);
     if (!rubricCity) {
       return [];
     }
 
+    // const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
+    const {
+      node: { attributesGroups, catalogueTitle },
+    } = rubricCity;
+
     // get all visible attributes id's
-    const visibleAttributes = rubricCity.node.attributesGroups.reduce((acc: string[], group) => {
+    const visibleAttributes = attributesGroups.reduce((acc: string[], group) => {
       return [...acc, ...group.showInCatalogueFilter];
     }, []);
 
-    // TODO return attribute options with rubric title gender
-    return AttributeModel.find({ _id: { $in: visibleAttributes } });
+    const attributes = await AttributeModel.find({ _id: { $in: visibleAttributes } });
+    const result = attributes.map(async (attribute) => {
+      const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+      if (!optionsGroup) {
+        return {
+          id: attribute.id,
+          node: attribute,
+          options: [],
+        };
+      }
+
+      // const { slug } = attribute;
+
+      const options = await OptionModel.find({ _id: { $in: optionsGroup.options } })
+        .lean()
+        .exec();
+
+      const resultOptions: RubricFilterAttributeOption[] = [];
+
+      for await (const option of options) {
+        // TODO do I need to count products
+        // cast current option for products filter
+        /*const currentOptionQuery = [
+          {
+            key: slug,
+            value: [option.slug],
+          },
+        ];*/
+
+        // get products filter query
+        /*const query = getProductsFilter(
+          { attributes: currentOptionQuery, rubrics: rubricsIds, active: true },
+          city,
+        );*/
+        // count products
+        // const counter = await ProductModel.countDocuments(query);
+
+        const { variants, name } = option;
+        let filterNameString: string;
+        const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
+        const currentVariantName = getLangField(currentVariant?.value, lang);
+        if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
+          filterNameString = getLangField(name, lang);
+        } else {
+          filterNameString = currentVariantName;
+        }
+
+        resultOptions.push({
+          ...option,
+          id: option._id + rubric.id,
+          filterNameString: filterNameString,
+          counter: 0,
+        });
+      }
+
+      return {
+        id: attribute.id + rubric.id,
+        node: attribute,
+        options: resultOptions,
+      };
+    });
+
+    return Promise.all(result);
   }
 
   @FieldResolver()

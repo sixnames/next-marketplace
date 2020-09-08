@@ -71,7 +71,7 @@ describe('Rubrics', () => {
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
-    expect(getRubricsTree.length).toEqual(1);
+    expect(getRubricsTree.length).toEqual(4);
     expect(rubricLevelOne.nameString).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
     );

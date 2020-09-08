@@ -16,7 +16,7 @@
   padding-right: 1rem;
   padding-bottom: 0.75rem;
   padding-left: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--red);
   font-size: 1.125rem;
   cursor: pointer;
@@ -68,7 +68,7 @@
   display: block;
   content: counter(errors);
   counter-increment: errors;
-  font-weight: bold;
+  font-weight: 600;
   margin-right: 5px;
 }
 

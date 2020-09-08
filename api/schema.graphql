@@ -42,8 +42,6 @@ type AssetType {
 }
 
 type Attribute {
-  """list of options with products counter for catalogue filter"""
-  filterOptions(filter: [String!]!): [AttributeFilterOption!]!
   id: ID!
   metric: Metric
   name: [LanguageType!]!
@@ -52,11 +50,6 @@ type Attribute {
   positioningInTitle: [AttributePositioningInTitle!]
   slug: String!
   variant: AttributeVariantEnum!
-}
-
-type AttributeFilterOption {
-  counter: Int!
-  option: Option!
 }
 
 type AttributePositioningInTitle {
@@ -399,6 +392,7 @@ type NavItem {
 
 type Option {
   color: String
+  filterNameString: String!
   gender: GenderEnum
   id: ID!
   name: [LanguageType!]!
@@ -611,6 +605,7 @@ type Query {
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!]): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
+  getSessionCurrency: String!
   getSessionRole: Role!
   getUser(id: ID!): User
   getValidationMessages: [Message!]!
@@ -668,7 +663,7 @@ type Rubric {
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!]): [Rubric!]!
   cities: [RubricCity!]!
-  filterAttributes: [Attribute!]!
+  filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
   name: [LanguageType!]!
@@ -711,6 +706,24 @@ input RubricCatalogueTitleInput {
 type RubricCity {
   key: String!
   node: RubricNode!
+}
+
+type RubricFilterAttribute {
+  id: ID!
+  node: Attribute!
+  options: [RubricFilterAttributeOption!]!
+}
+
+type RubricFilterAttributeOption {
+  color: String
+  counter: Int!
+  filterNameString: String!
+  gender: GenderEnum
+  id: ID!
+  name: [LanguageType!]!
+  nameString: String!
+  slug: String!
+  variants: [OptionVariant!]
 }
 
 type RubricNode {

@@ -11,7 +11,6 @@ import {
   CITY_COOKIE_KEY,
   DB_OPTIONS,
   SESS_OPTIONS,
-  // ROLE_SLUG_GUEST,
   SESSION_COLLECTION,
   ROLE_SLUG_GUEST,
 } from './config';

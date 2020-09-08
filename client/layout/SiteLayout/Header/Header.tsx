@@ -1,87 +1,158 @@
 import React, { useRef } from 'react';
-import Inner from '../../../components/Inner/Inner';
-import HeaderSearch from './HeaderSearch';
-import HeaderUi from './HeaderUI';
-import HeaderNav from './HeaderNav';
-import useIsMobile from '../../../hooks/useIsMobile';
-import HeaderMobile from './HeaderMobile';
+import { Fragment } from 'react';
 import classes from './Header.module.css';
-import { useThemeContext } from '../../../context/themeContext';
-import { useLanguageContext } from '../../../context/languageContext';
-import { InitialSiteQueryQuery } from '../../../generated/apolloComponents';
-import { useConfigContext } from '../../../context/configContext';
+import StickyNav from './StickyNav';
+import HeaderTop from './HeaderTop';
 import Link from '../../../components/Link/Link';
-import { ASSETS_URL } from '../../../config';
-import ThemeTrigger from '../../../components/ThemeTrigger/ThemeTrigger';
+import { useThemeContext } from '../../../context/themeContext';
+import { useConfigContext } from '../../../context/configContext';
+import { ASSETS_URL, ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
+import useIsMobile from '../../../hooks/useIsMobile';
+import Icon from '../../../components/Icon/Icon';
+import Inner from '../../../components/Inner/Inner';
+import { useSiteContext } from '../../../context/siteContext';
+import HeaderSearch from './HeaderSearch';
+import { useUserContext } from '../../../context/userContext';
 
-export type HeaderRubricType = Omit<InitialSiteQueryQuery['getRubricsTree'][0], 'children'>;
+const HeaderBurgerDropdownTrigger: React.FC = () => {
+  const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
+  return (
+    <div
+      data-cy={`burger-trigger`}
+      onClick={toggleBurgerDropdown}
+      className={`${classes.middleLink} ${classes.middleLinkBurger} ${
+        isBurgerDropdownOpen ? classes.middleLinkActive : ''
+      }`}
+    >
+      <div className={`${classes.middleLinkIconHolder}`}>
+        <Icon name={'burger'} className={classes.middleLinkBurgerIcon} />
+      </div>
+      <span>меню</span>
+    </div>
+  );
+};
 
-export interface HeaderRubricInterface extends HeaderRubricType {
-  children?: HeaderRubricType[];
-}
+const HeaderSearchTrigger: React.FC = () => {
+  const { isSearchOpen, showSearchDropdown } = useSiteContext();
+  return (
+    <div
+      onClick={showSearchDropdown}
+      className={`${classes.middleLink} ${isSearchOpen ? classes.middleLinkActive : ''}`}
+    >
+      <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+        <Icon name={'search'} className={classes.middleLinkSearchIcon} />
+      </div>
+    </div>
+  );
+};
+
+const HeaderProfileLink: React.FC = () => {
+  const { me } = useUserContext();
+  return (
+    <Link
+      testId={me ? `profile-link` : `sign-in-link`}
+      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      className={`${classes.middleLink}`}
+    >
+      <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+        <Icon name={'user'} className={classes.middleLinkUserIcon} />
+      </span>
+    </Link>
+  );
+};
+
+const HeaderCartLink: React.FC = () => {
+  return (
+    <div className={`${classes.middleLink}`}>
+      <div className={`${classes.middleLinkIconHolder}`}>
+        <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+      </div>
+      <span>Корзина</span>
+    </div>
+  );
+};
+
+const HeaderMiddleLeft: React.FC = () => {
+  return (
+    <div className={classes.middleSide}>
+      <HeaderBurgerDropdownTrigger />
+
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder}`}>
+          <Icon name={'marker'} className={classes.middleLinkShopsIcon} />
+        </div>
+        <span>Винотеки</span>
+      </div>
+    </div>
+  );
+};
+
+const HeaderMiddleRight: React.FC = () => {
+  return (
+    <div className={classes.middleSide}>
+      <HeaderSearchTrigger />
+      <HeaderProfileLink />
+
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'compare'} className={classes.middleLinkCompareIcon} />
+        </div>
+      </div>
+      <div className={`${classes.middleLink}`}>
+        <div className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
+          <Icon name={'heart'} className={classes.middleLinkHeartIcon} />
+        </div>
+      </div>
+
+      <HeaderCartLink />
+    </div>
+  );
+};
 
 const Header: React.FC = () => {
   const { logoSlug } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
   const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
-  const { languagesList, setLanguage, isCurrentLanguage } = useLanguageContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
 
   const siteLogo = getSiteConfigSingleValue(logoSlug);
   const siteLogoSrc = `${ASSETS_URL}${siteLogo}?format=svg`;
 
   const configSiteName = getSiteConfigSingleValue('siteName');
-  const configContactPhone = getSiteConfigSingleValue('contactPhone');
 
   return (
-    <header className={classes.frame} ref={headerRef}>
-      <div className={classes.top}>
-        <Inner lowTop lowBottom className={classes.inner}>
-          {languagesList.length > 1 ? (
-            <div className={classes.language}>
-              {languagesList.map(({ nativeName, key }) => {
-                return (
-                  <div
-                    key={key}
-                    onClick={() => setLanguage(key)}
-                    className={`${classes.languageItem} ${
-                      isCurrentLanguage(key) ? classes.languageItemActive : ''
-                    }`}
-                  >
-                    {nativeName}
-                  </div>
-                );
-              })}
-            </div>
-          ) : null}
+    <Fragment>
+      <header className={classes.frame} ref={headerRef}>
+        {isMobile ? null : <HeaderTop />}
+        <Inner className={classes.middle} lowTop>
+          {isMobile ? null : <HeaderMiddleLeft />}
 
-          <div className={classes.topRight}>
-            <a href={`tel:${configContactPhone}`}>{configContactPhone}</a>
+          <Link href={'/'} className={classes.middleLogo} aria-label={'Главная страница'}>
+            <img src={siteLogoSrc} width='166' height='27' alt={configSiteName} />
+          </Link>
 
-            <div className={classes.topNavItem}>
-              <div className={classes.topLink}>Заказать звонок</div>
-            </div>
-
-            <div className={`${classes.topNavItem}`}>
-              <ThemeTrigger />
-            </div>
-          </div>
+          {isMobile ? null : <HeaderMiddleRight />}
         </Inner>
-      </div>
-
-      <Inner className={classes.middle} lowTop lowBottom>
-        <Link href={'/'} className={classes.logo} aria-label={'Главная страница'}>
-          <img src={siteLogoSrc} width='166' height='27' alt={configSiteName} />
-        </Link>
 
         <HeaderSearch />
+      </header>
 
-        {isMobile && <HeaderMobile headerRef={headerRef} />}
+      {isMobile ? (
+        <div className={classes.mobileNav}>
+          <Inner className={classes.mobileNavInner}>
+            <HeaderBurgerDropdownTrigger />
 
-        <HeaderUi />
-      </Inner>
-      {!isMobile && <HeaderNav />}
-    </header>
+            <div className={classes.mobileNavRight}>
+              <HeaderSearchTrigger />
+              <HeaderProfileLink />
+              <HeaderCartLink />
+            </div>
+          </Inner>
+        </div>
+      ) : (
+        <StickyNav />
+      )}
+    </Fragment>
   );
 };
 

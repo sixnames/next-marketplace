@@ -21,6 +21,7 @@ export interface ButtonPropsInterface extends StyledComponentProps {
   onClick?: (e: any) => void;
   testId?: string;
   classes?: any;
+  short?: boolean;
 }
 
 const custom = {
@@ -49,15 +50,17 @@ const Button: React.FC<ButtonPropsInterface> = ({
   classes: tooltipClasses,
   className,
   testId,
+  short,
   ...props
 }) => {
   const noChildren = !children;
   const sizeClass = classes[size];
   const themeClass = classes[theme];
   const childrenClass = noChildren ? classes.noChildren : '';
+  const widthClass = short ? classes.short : '';
   const circleClass = circle ? classes.circle : '';
   const additionalClass = className ? className : '';
-  const buttonClass = `${classes.butn} ${sizeClass} ${themeClass} ${childrenClass} ${circleClass} ${additionalClass}`;
+  const buttonClass = `${classes.butn} ${sizeClass} ${widthClass} ${themeClass} ${childrenClass} ${circleClass} ${additionalClass}`;
 
   return (
     <Fragment>

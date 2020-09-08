@@ -39,6 +39,9 @@ export class Option {
   @Field(() => String)
   readonly nameString: string;
 
+  @Field(() => String)
+  readonly filterNameString: string;
+
   @Field((_type) => String, { nullable: true })
   @prop({ type: String })
   color?: string | null;

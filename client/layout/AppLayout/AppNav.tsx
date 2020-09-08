@@ -97,7 +97,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                 <div
                   className={`${classes.bottomLink} ${isCompact ? classes.bottomLinkCompact : ''}`}
                 >
-                  <ThemeTrigger />
+                  <ThemeTrigger isCompact={isCompact} />
                 </div>
               </li>
             </ul>

@@ -1,26 +1,42 @@
 import React from 'react';
 import FilterCheckboxGroup from '../../components/FilterElements/FilterCheckbox/FilterCheckboxGroup';
 import classes from './CatalogueFilter.module.css';
-import { Attribute } from '../../generated/apolloComponents';
+import {
+  Attribute,
+  RubricFilterAttribute,
+  RubricFilterAttributeOption,
+} from '../../generated/apolloComponents';
+
+type FilterAttribute = { __typename?: 'RubricFilterAttribute' } & Pick<
+  RubricFilterAttribute,
+  'id'
+> & {
+    node: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'nameString' | 'slug'>;
+    options: Array<
+      { __typename?: 'RubricFilterAttributeOption' } & Pick<
+        RubricFilterAttributeOption,
+        'id' | 'slug' | 'filterNameString' | 'color' | 'counter'
+      >
+    >;
+  };
 
 interface CatalogueFilterInterface {
-  filterAttributes: any[];
+  filterAttributes: FilterAttribute[];
 }
 
 interface CatalogueFilterAttributeInterface {
-  attribute: Attribute;
+  attribute: FilterAttribute;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
-  const { nameString, filterOptions, slug } = attribute;
+  const {
+    node: { slug, nameString },
+    options,
+  } = attribute;
 
   return (
     <div className={classes.attribute}>
-      <FilterCheckboxGroup
-        checkboxItems={filterOptions}
-        attributeSlug={`${slug}`}
-        label={nameString}
-      />
+      <FilterCheckboxGroup checkboxItems={options} attributeSlug={`${slug}`} label={nameString} />
     </div>
   );
 };

@@ -27,8 +27,10 @@ describe('Catalogue filter', () => {
         const mockAttributeWineTypeValuePortvein = MOCK_OPTIONS_WINE_VARIANT[0].slug;
         const mockAttributeWineTypeValueHeres = MOCK_OPTIONS_WINE_VARIANT[1].slug;
 
-        cy.getByCy('show-all-rubrics').click();
-        cy.getByCy('all-rubrics-nav').should('be.visible');
+        cy.getByCy(`main-rubric-list-item-${mockRubricLevelOne}`).trigger('mouseover');
+        cy.getByCy('burger-dropdown').should('be.visible');
+        cy.getByCy(`main-rubric-list-item-${mockRubricLevelOne}`).trigger('mouseout');
+
         cy.getByCy(`main-rubric-${mockRubricLevelOne}`).click();
         cy.getByCy('catalogue-title').contains('Купить вино');
 

@@ -6,7 +6,7 @@
   padding-left: 0.75rem;
   box-shadow: var(--wp-shadow-100);
   background-color: var(--primaryBackground);
-  border-radius: 4px;
+  border-radius: var(--borderRadius);
   border-left: 5px solid white;
 }
 

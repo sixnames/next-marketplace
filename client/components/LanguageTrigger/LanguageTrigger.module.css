@@ -38,7 +38,7 @@
   padding-bottom: 0.5rem;
   min-width: 180px;
   height: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--borderRadius);
   transition: all 0.2s;
   background-color: var(--primaryBackground);
   box-shadow: var(--wp-shadow-100);

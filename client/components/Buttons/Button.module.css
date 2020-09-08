@@ -18,7 +18,7 @@
   cursor: pointer;
   outline: none;
   transition: all 0.2s;
-  border-radius: 0.5rem;
+  border-radius: var(--borderRadius);
   text-decoration: none;
   box-shadow: var(--buttonShadow);
 }
@@ -55,7 +55,7 @@
   height: 2rem;
   border-width: 1px;
   font-size: 0.875rem;
-  border-radius: 4px;
+  border-radius: var(--borderRadius);
 }
 
 .small .icon {

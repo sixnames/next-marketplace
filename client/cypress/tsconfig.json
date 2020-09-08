@@ -10,7 +10,9 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "isolatedModules": false,
+    "skipLibCheck": true
   },
   "include": ["**/*.ts"]
 }

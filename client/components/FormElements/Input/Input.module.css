@@ -14,7 +14,7 @@
   background-color: var(--inputBackground);
   outline: none;
   box-shadow: 0 0 0 transparent;
-  border-radius: 0.5rem;
+  border-radius: var(--borderRadius);
   transition: all 0.2s;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -24,6 +24,10 @@
 .frame[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.withIcon {
+  padding-left: calc((var(--inputPaddingHorizontal) * 2) + var(--inputIconSize));
 }
 
 .frame:focus {
@@ -41,4 +45,15 @@
 
 .frame:read-only {
   cursor: default;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  left: var(--inputPaddingHorizontal);
+  width: var(--inputIconSize);
+  height: var(--inputIconSize);
+  fill: var(--textSecondaryColor);
+  transform: translateY(-50%);
 }

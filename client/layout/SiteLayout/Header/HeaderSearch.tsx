@@ -29,7 +29,7 @@ const HeaderSearch: React.FC = () => {
           <Formik initialValues={{ search: '' }} onSubmit={(values) => console.log(values)}>
             {() => (
               <Form className={classes.form}>
-                <FormikInput name={'search'} />
+                <FormikInput name={'search'} icon={'search'} placeholder={'Я хочу найти...'} />
                 <Button
                   type={'submit'}
                   icon={isMobile ? 'arrow-right' : undefined}

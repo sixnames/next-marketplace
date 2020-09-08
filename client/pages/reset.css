@@ -392,6 +392,8 @@
   --inputBorderFocus: rgba(var(--inputBorderRGB), 1);
   --inputBorderError: var(--wp-error);
   --inputPaddingHorizontal: 1.5rem;
+  --inputIconSize: 1.25rem;
+  --borderRadius: 0.5rem;
 
   /*Scrollbar*/
   --scrollbarBG: var(--wp-white);

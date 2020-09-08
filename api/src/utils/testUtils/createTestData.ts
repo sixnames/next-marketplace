@@ -43,6 +43,9 @@ import {
   MOCK_CURRENCIES,
   MOCK_CITIES,
   MOCK_COUNTRIES,
+  MOCK_RUBRIC_LEVEL_ONE_B,
+  MOCK_RUBRIC_LEVEL_ONE_C,
+  MOCK_RUBRIC_LEVEL_ONE_D,
 } from '../../config';
 import { ProductModel } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
@@ -168,6 +171,7 @@ const createTestData = async () => {
     const rubricAttributesGroups = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
+        showInSiteNav: true,
         node: attributesGroupWineFeatures.id,
         isOwner,
       },
@@ -176,6 +180,7 @@ const createTestData = async () => {
     const rubricAttributesGroupsB = (isOwner: boolean) => [
       {
         showInCatalogueFilter: [],
+        showInSiteNav: true,
         node: attributesGroupWhiskeyFeatures.id,
         isOwner,
       },
@@ -190,6 +195,45 @@ const createTestData = async () => {
         catalogueTitle: {
           ...MOCK_RUBRIC_LEVEL_ONE.catalogueTitle,
           gender: MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender as GenderEnum,
+        },
+      }),
+    });
+
+    await RubricModel.create({
+      cities: getRubricCities({
+        ...MOCK_RUBRIC_LEVEL_ONE_B,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
+        attributesGroups: rubricAttributesGroups(true),
+        catalogueTitle: {
+          ...MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle,
+          gender: MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.gender as GenderEnum,
+        },
+      }),
+    });
+
+    await RubricModel.create({
+      cities: getRubricCities({
+        ...MOCK_RUBRIC_LEVEL_ONE_C,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
+        attributesGroups: rubricAttributesGroups(true),
+        catalogueTitle: {
+          ...MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle,
+          gender: MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.gender as GenderEnum,
+        },
+      }),
+    });
+
+    await RubricModel.create({
+      cities: getRubricCities({
+        ...MOCK_RUBRIC_LEVEL_ONE_D,
+        slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.defaultTitle),
+        variant: rubricVariantAlcohol.id,
+        attributesGroups: rubricAttributesGroups(true),
+        catalogueTitle: {
+          ...MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle,
+          gender: MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.gender as GenderEnum,
         },
       }),
     });

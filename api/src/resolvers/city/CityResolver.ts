@@ -5,8 +5,14 @@ import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
 import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod } from '../../decorators/methodDecorators';
-import { CustomFilter } from '../../decorators/parameterDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { CountryModel } from '../../entities/Country';
+import { DEFAULT_CURRENCY } from '../../config';
 
 const { operationConfigRead } = getOperationsConfigs(City.name);
 
@@ -44,6 +50,18 @@ export class CityResolver {
     }
 
     return city;
+  }
+
+  @Query((_returns) => String)
+  async getSessionCurrency(
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    const currentCity = await CityModel.findOne({ slug: city });
+    const country = await CountryModel.findOne({ cities: currentCity?.id });
+    if (!country) {
+      return DEFAULT_CURRENCY;
+    }
+    return country.currency;
   }
 
   @FieldResolver((_returns) => String)

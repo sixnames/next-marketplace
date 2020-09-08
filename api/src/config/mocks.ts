@@ -1179,7 +1179,7 @@ export const MOCK_METRICS = [
   },
   {
     name: [
-      { key: DEFAULT_LANG, value: 'руб.' },
+      { key: DEFAULT_LANG, value: 'р.' },
       { key: SECONDARY_LANG, value: 'rub.' },
     ],
   },
@@ -1538,6 +1538,78 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
       { key: SECONDARY_LANG, value: 'wine' },
     ],
     gender: GENDER_IT,
+  },
+  level: RUBRIC_LEVEL_ONE,
+  parent: null,
+};
+
+export const MOCK_RUBRIC_LEVEL_ONE_B = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Шампанское и игристое' },
+    { key: SECONDARY_LANG, value: 'Champagne' },
+  ],
+  catalogueTitle: {
+    defaultTitle: [
+      { key: DEFAULT_LANG, value: 'Купить шампанское' },
+      { key: SECONDARY_LANG, value: 'Buy a champagne' },
+    ],
+    prefix: [
+      { key: DEFAULT_LANG, value: 'Купить' },
+      { key: SECONDARY_LANG, value: 'Buy a' },
+    ],
+    keyword: [
+      { key: DEFAULT_LANG, value: 'шампанское' },
+      { key: SECONDARY_LANG, value: 'champagne' },
+    ],
+    gender: GENDER_IT,
+  },
+  level: RUBRIC_LEVEL_ONE,
+  parent: null,
+};
+
+export const MOCK_RUBRIC_LEVEL_ONE_C = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Виски' },
+    { key: SECONDARY_LANG, value: 'Whiskey' },
+  ],
+  catalogueTitle: {
+    defaultTitle: [
+      { key: DEFAULT_LANG, value: 'Купить Виски' },
+      { key: SECONDARY_LANG, value: 'Buy a Whiskey' },
+    ],
+    prefix: [
+      { key: DEFAULT_LANG, value: 'Купить' },
+      { key: SECONDARY_LANG, value: 'Buy a' },
+    ],
+    keyword: [
+      { key: DEFAULT_LANG, value: 'Виски' },
+      { key: SECONDARY_LANG, value: 'Whiskey' },
+    ],
+    gender: GENDER_IT,
+  },
+  level: RUBRIC_LEVEL_ONE,
+  parent: null,
+};
+
+export const MOCK_RUBRIC_LEVEL_ONE_D = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Коньяк' },
+    { key: SECONDARY_LANG, value: 'Cognac' },
+  ],
+  catalogueTitle: {
+    defaultTitle: [
+      { key: DEFAULT_LANG, value: 'Купить коньяк' },
+      { key: SECONDARY_LANG, value: 'Buy a cognac' },
+    ],
+    prefix: [
+      { key: DEFAULT_LANG, value: 'Купить' },
+      { key: SECONDARY_LANG, value: 'Buy a' },
+    ],
+    keyword: [
+      { key: DEFAULT_LANG, value: 'коньяк' },
+      { key: SECONDARY_LANG, value: 'cognac' },
+    ],
+    gender: GENDER_HE,
   },
   level: RUBRIC_LEVEL_ONE,
   parent: null,

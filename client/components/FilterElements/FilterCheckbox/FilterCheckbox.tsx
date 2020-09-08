@@ -4,17 +4,17 @@ import Link from 'next/link';
 import { alwaysArray } from '../../../utils/alwaysArray';
 import Icon from '../../Icon/Icon';
 import classes from './FilterCheckbox.module.css';
+import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
 
 export interface FilterCheckboxItem {
   id: string;
   color?: string | null;
-  nameString: string;
+  filterNameString: string;
   slug: string;
 }
 
 export interface FilterCheckboxInterface {
-  option: FilterCheckboxItem;
-  counter: number;
+  option: Partial<RubricFilterAttributeOption>;
   attributeSlug: string;
   testId?: string;
   className?: string;
@@ -26,11 +26,11 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   attributeSlug = '',
   testId,
   className,
-  counter = 0,
+  // counter = 0,
 }) => {
   const router = useRouter();
   const { pathname = '', query = {}, asPath = '' } = router;
-  const { slug, nameString } = option;
+  const { slug, filterNameString } = option;
 
   const currentQuery = alwaysArray(query.catalogue) || [];
   const optionPath = `${attributeSlug}-${slug}`;
@@ -61,8 +61,8 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
           </span>
 
           <span className={classes.label}>
-            <span>{nameString}</span>
-            <span className={classes.counter}>{counter}</span>
+            <span>{filterNameString}</span>
+            {/*<span className={classes.counter}>{counter}</span>*/}
           </span>
         </a>
       </Link>

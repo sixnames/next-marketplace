@@ -1,4 +1,6 @@
 .frame {
+  position: relative;
+  z-index: 100;
   padding-top: 1.5rem;
   padding-bottom: 2rem;
   background-color: var(--primaryBackground);
@@ -27,7 +29,7 @@
 }
 
 .navItem:first-child {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .link {
@@ -83,7 +85,7 @@
 
 @media only screen and (max-width: 1024px) {
   .inner {
-    padding-bottom: 35px;
+    padding-bottom: 5rem;
   }
 }
 

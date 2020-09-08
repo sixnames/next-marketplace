@@ -42,7 +42,7 @@ describe('User roles', () => {
     cy.getByCy(`Attribute-delete-checkbox`).check();
     cy.getByCy(`Attribute-restricted-fields`).click();
     cy.getByCy(`role-restricted-fields-modal`).should('exist');
-    cy.getByCy(`filterOptions-checkbox`).check();
+    cy.getByCy(`metric-checkbox`).check();
     cy.getByCy(`success-notification`).should('exist');
     cy.getByCy(`close-modal`).click();
 

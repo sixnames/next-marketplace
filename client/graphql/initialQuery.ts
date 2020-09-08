@@ -31,6 +31,21 @@ const rubricFragment = gql`
       id
       nameString
     }
+    filterAttributes {
+      id
+      node {
+        id
+        nameString
+        slug
+      }
+      options {
+        id
+        slug
+        filterNameString
+        color
+        counter
+      }
+    }
   }
 `;
 
@@ -85,6 +100,7 @@ export const INITIAL_SITE_QUERY = gql`
     getSessionRole {
       ...SessionRoleFragment
     }
+    getSessionCurrency
     getClientLanguage
     getAllLanguages {
       id
@@ -105,12 +121,6 @@ export const INITIAL_SITE_QUERY = gql`
     }
     getRubricsTree {
       ...SiteRubricFragment
-      children {
-        ...SiteRubricFragment
-        children {
-          ...SiteRubricFragment
-        }
-      }
     }
   }
   ${sessionRoleFragment}

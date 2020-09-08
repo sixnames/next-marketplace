@@ -7,7 +7,7 @@
   align-items: flex-start;
   min-height: 1.3rem;
   margin-bottom: 8px;
-  font-weight: bold;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

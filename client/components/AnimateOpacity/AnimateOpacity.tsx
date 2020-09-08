@@ -6,12 +6,14 @@ interface AnimateOpacityInterface {
   className?: string;
   delay?: number;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 const AnimateOpacity: React.FC<AnimateOpacityInterface> = ({
   children,
   className,
   delay,
+  style = {},
   ...props
 }) => {
   const config = useSpring({
@@ -23,7 +25,7 @@ const AnimateOpacity: React.FC<AnimateOpacityInterface> = ({
     from: { opacity: 0 },
   });
   return (
-    <animated.div style={config} className={className ? className : ''} {...props}>
+    <animated.div style={{ ...config, ...style }} className={className ? className : ''} {...props}>
       {children}
     </animated.div>
   );

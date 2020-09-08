@@ -1,7 +1,13 @@
 .frame {
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+}
+
+.frameCompact {
+  width: 30px;
+  height: 30px;
 }
 
 [data-theme='light'] .frame {
@@ -32,9 +38,19 @@
   height: 14px;
 }
 
+.iconSunCompact {
+  width: 20px;
+  height: 20px;
+}
+
 .iconMoon {
   width: 12px;
   height: 12px;
+}
+
+.iconMoonCompact {
+  width: 18px;
+  height: 18px;
 }
 
 .trigger {

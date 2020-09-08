@@ -1,13 +1,13 @@
 import React from 'react';
-import CatalogueProduct from './CatalogueProduct';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import Pager from '../../components/Pager/Pager';
 import useFilterMethods from '../../hooks/useFilterMethods';
 import CatalogueFilter from './CatalogueFilter';
-import classes from './Catalogue.module.css';
+import classes from './CatalogueRoute.module.css';
 import { GetCatalogueRubricQuery } from '../../generated/apolloComponents';
+import ProductSnippetGrid from '../../components/ProductSnippet/ProductSnippetGrid';
 
 interface CatalogueRouteInterface {
   rubricData: GetCatalogueRubricQuery;
@@ -33,12 +33,12 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     <Inner testId={'catalogue'}>
       <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
 
-      <div className={classes.Frame}>
+      <div className={classes.frame}>
         {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}
 
-        <div className={`${classes.List} ${isFilterVisible ? classes.ListWithFilter : ''}`}>
+        <div className={`${classes.list} ${isFilterVisible ? classes.listWithFilter : ''}`}>
           {docs.map((product: any) => (
-            <CatalogueProduct product={product} rubricSlug={slug} key={product.id} />
+            <ProductSnippetGrid product={product} rubricSlug={slug} key={product.id} />
           ))}
         </div>
 

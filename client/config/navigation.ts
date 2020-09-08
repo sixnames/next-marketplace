@@ -11,6 +11,7 @@ export const QUERY_FILTER_PAGE = 'page';
 export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_SIGN_OUT = '/sign-out';
 export const ROUTE_APP = '/app';
+export const ROUTE_PROFILE = `${ROUTE_APP}/profile`;
 export const ROUTE_CMS = `${ROUTE_APP}/cms`;
 
 // Codes

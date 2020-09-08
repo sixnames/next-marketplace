@@ -25,10 +25,11 @@ describe('Authorization', () => {
       cy.location('pathname').should('eq', '/');
 
       // User should sign out
-      cy.getByCy(`user-nav-trigger`).click();
-      cy.getByCy(`user-nav-container`).should('exist');
-      cy.getByCy(`user-nav-sign-out`).click();
+      cy.getByCy(`burger-trigger`).click();
+      cy.getByCy(`burger-dropdown`).should('exist');
+      cy.getByCy(`burger-sign-out-link`).click();
       cy.location('pathname').should('eq', '/');
+      cy.getByCy(`profile-link`).should('not.exist');
     });
   });
 });

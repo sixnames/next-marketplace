@@ -20,6 +20,10 @@
   overflow-y: auto;
 }
 
+.nav::-webkit-scrollbar {
+  width: 0;
+}
+
 .holder {
   position: relative;
   display: flex;

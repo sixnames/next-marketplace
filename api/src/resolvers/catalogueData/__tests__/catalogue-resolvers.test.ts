@@ -16,12 +16,19 @@ describe('Attributes', () => {
               id
               nameString
               filterAttributes {
-                nameString
-                filterOptions(filter: $catalogueFilter) {
-                  option {
-                    id
-                  }
+                id
+                node {
+                  id
+                  nameString
+                  slug
+                }
+                options {
+                  id
+                  slug
+                  filterNameString
+                  color
                   counter
+                  color
                 }
               }
             }

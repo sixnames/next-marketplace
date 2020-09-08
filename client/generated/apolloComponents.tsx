@@ -28,6 +28,7 @@ export type Query = {
   getAllCities: Array<City>;
   getCity: City;
   getCityBySlug: City;
+  getSessionCurrency: Scalars['String'];
   getAllCountries: Array<Country>;
   getCountry: Country;
   getLanguage?: Maybe<Language>;
@@ -1553,7 +1554,7 @@ export type InitialSiteQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitialSiteQueryQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
+  & Pick<Query, 'getSessionCurrency' | 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & SessionUserFragmentFragment
@@ -2951,6 +2952,7 @@ export const InitialSiteQueryDocument = gql`
   getSessionRole {
     ...SessionRoleFragment
   }
+  getSessionCurrency
   getClientLanguage
   getAllLanguages {
     id

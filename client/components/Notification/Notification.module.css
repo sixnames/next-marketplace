@@ -16,7 +16,7 @@
 }
 
 .title {
-  font-weight: bold;
+  font-weight: 600;
   margin-top: 1px;
   margin-bottom: 5px;
   color: var(--textColor);

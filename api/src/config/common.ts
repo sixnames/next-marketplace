@@ -34,7 +34,7 @@ export const DEFAULT_COUNTRY = 'Россия';
 export const SECONDARY_COUNTRY = 'USA';
 export const DEFAULT_CITY = 'moscow';
 export const SECONDARY_CITY = 'ny';
-export const DEFAULT_CURRENCY = 'руб.';
+export const DEFAULT_CURRENCY = 'р.';
 export const SECONDARY_CURRENCY = '$';
 
 // GENDER

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { InitialSiteQueryQuery } from '../generated/apolloComponents';
 import { UserContextProvider } from './userContext';
+import { DEFAULT_CURRENCY } from '../config';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
@@ -18,11 +19,13 @@ interface SiteContextStateInterface {
 
 interface SiteContextInterface extends SiteContextStateInterface {
   getRubricsTree: InitialSiteQueryQuery['getRubricsTree'];
+  currency: string;
   setState: any;
 }
 
 const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
+  currency: DEFAULT_CURRENCY,
   isBurgerDropdownOpen: false,
   isSearchOpen: false,
   setState: () => null,
@@ -44,6 +47,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const initialValue = useMemo(() => {
     return {
       getRubricsTree: initialApolloState.getRubricsTree || [],
+      currency: initialApolloState.getSessionCurrency,
       setState,
       ...state,
     };

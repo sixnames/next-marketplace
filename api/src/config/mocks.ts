@@ -1179,7 +1179,7 @@ export const MOCK_METRICS = [
   },
   {
     name: [
-      { key: DEFAULT_LANG, value: 'руб.' },
+      { key: DEFAULT_LANG, value: 'р.' },
       { key: SECONDARY_LANG, value: 'rub.' },
     ],
   },

@@ -100,6 +100,7 @@ export const INITIAL_SITE_QUERY = gql`
     getSessionRole {
       ...SessionRoleFragment
     }
+    getSessionCurrency
     getClientLanguage
     getAllLanguages {
       id

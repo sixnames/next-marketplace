@@ -38,7 +38,7 @@
   align-items: center;
   min-height: var(--minLinkHeight);
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--textColor);
 }
 
@@ -113,7 +113,7 @@
   align-items: center;
   min-height: var(--minLinkHeight);
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .dropdownAttributeOption {
@@ -139,7 +139,7 @@
   min-height: var(--minLinkHeight);
   cursor: pointer;
   color: var(--theme);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .optionsTrigger:hover {

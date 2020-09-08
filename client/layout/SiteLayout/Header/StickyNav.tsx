@@ -123,6 +123,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       className={classes.navItem}
       onMouseEnter={showDropdownHandler}
       onMouseLeave={hideDropdownHandler}
+      data-cy={`main-rubric-list-item-${nameString}`}
     >
       <Link
         href={{

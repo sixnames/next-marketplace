@@ -6,17 +6,19 @@ import HeaderTop from './HeaderTop';
 import Link from '../../../components/Link/Link';
 import { useThemeContext } from '../../../context/themeContext';
 import { useConfigContext } from '../../../context/configContext';
-import { ASSETS_URL, ROUTE_PROFILE } from '../../../config';
+import { ASSETS_URL, ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
 import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from '../../../context/siteContext';
 import HeaderSearch from './HeaderSearch';
+import { useUserContext } from '../../../context/userContext';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
   return (
     <div
+      data-cy={`burger-trigger`}
       onClick={toggleBurgerDropdown}
       className={`${classes.middleLink} ${classes.middleLinkBurger} ${
         isBurgerDropdownOpen ? classes.middleLinkActive : ''
@@ -45,8 +47,13 @@ const HeaderSearchTrigger: React.FC = () => {
 };
 
 const HeaderProfileLink: React.FC = () => {
+  const { me } = useUserContext();
   return (
-    <Link href={ROUTE_PROFILE} className={`${classes.middleLink}`}>
+    <Link
+      testId={me ? `profile-link` : `sign-in-link`}
+      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      className={`${classes.middleLink}`}
+    >
       <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
         <Icon name={'user'} className={classes.middleLinkUserIcon} />
       </span>

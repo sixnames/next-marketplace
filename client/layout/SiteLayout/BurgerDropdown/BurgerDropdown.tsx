@@ -6,10 +6,12 @@ import { RubricType, useSiteContext } from '../../../context/siteContext';
 import classes from './BurgerDropdown.module.css';
 import { useConfigContext } from '../../../context/configContext';
 import Link from '../../../components/Link/Link';
-import { ROUTE_PROFILE } from '../../../config';
+import { ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
 import Icon from '../../../components/Icon/Icon';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
+import useSignOut from '../../../hooks/useSignOut';
+import { useUserContext } from '../../../context/userContext';
 
 export interface BurgerDropdownSizesInterface {
   top: number;
@@ -26,6 +28,8 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
   const [isCatalogueVisible, setIsCatalogueVisible] = useState<boolean>(true);
   const [currentRubric, setCurrentRubric] = useState<RubricType | null>(null);
   const { getSiteConfigSingleValue } = useConfigContext();
+  const { me } = useUserContext();
+  const signOutHandler = useSignOut();
   const { asPath, query } = useRouter();
   const configSiteName = getSiteConfigSingleValue('siteName');
   const isMobile = useIsMobile();
@@ -41,6 +45,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
 
   return (
     <div
+      data-cy={'burger-dropdown'}
       className={`${classes.frame} ${isBurgerDropdownOpen ? classes.frameActive : ''}`}
       style={isBurgerDropdownOpen && !isMobile ? { top, height } : undefined}
     >
@@ -193,7 +198,11 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <div className={classes.dropdownGroupTitle}>Профиль</div>
                     <ul>
                       <li>
-                        <Link href={ROUTE_PROFILE} className={`${classes.dropdownGroupLink}`}>
+                        <Link
+                          testId={me ? `burger-profile-link` : `burger-sign-in-link`}
+                          href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Личный кабинет</span>
                           <BurgerDropdownChevron />
                         </Link>
@@ -216,6 +225,21 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           <BurgerDropdownChevron />
                         </span>
                       </li>
+                      {me ? (
+                        <li>
+                          <div
+                            data-cy={`burger-sign-out-link`}
+                            className={`${classes.dropdownGroupLink}`}
+                            onClick={() => {
+                              hideBurgerDropdown();
+                              signOutHandler();
+                            }}
+                          >
+                            <span>Выйти из аккаунта</span>
+                            <BurgerDropdownChevron />
+                          </div>
+                        </li>
+                      ) : null}
                     </ul>
                   </div>
 

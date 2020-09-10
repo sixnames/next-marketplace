@@ -7,6 +7,7 @@ import {
   DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
   DEFAULT_LANG,
+  DEFAULT_PRIORITY,
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
@@ -1540,6 +1541,7 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1564,6 +1566,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1588,6 +1591,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_C = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1612,6 +1616,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_D = {
     gender: GENDER_HE,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1633,6 +1638,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_A = {
     gender: GENDER_SHE,
   },
   level: RUBRIC_LEVEL_TWO,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_TWO_B = {
@@ -1653,6 +1659,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_B = {
     gender: GENDER_HE,
   },
   level: RUBRIC_LEVEL_TWO,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
@@ -1673,6 +1680,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
@@ -1693,6 +1701,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
@@ -1713,6 +1722,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
@@ -1733,6 +1743,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 // Products

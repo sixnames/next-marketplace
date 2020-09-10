@@ -4,7 +4,7 @@ import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
-import { GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
+import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
 
@@ -95,6 +95,10 @@ export class RubricNode {
   @Field(() => String)
   @prop({ required: true })
   slug: string;
+
+  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
+  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
+  priority: number;
 
   @Field(() => Int)
   @prop({ required: true, default: RUBRIC_LEVEL_ONE })

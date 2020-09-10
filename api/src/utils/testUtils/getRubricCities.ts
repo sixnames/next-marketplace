@@ -10,6 +10,7 @@ export interface GetRubricCitiesInterface {
   variant: string;
   parent?: string | null;
   attributesGroups: Omit<RubricAttributesGroup, 'id'>[];
+  priority: number;
 }
 
 export function getRubricCities(node: GetRubricCitiesInterface) {

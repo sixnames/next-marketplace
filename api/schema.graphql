@@ -669,6 +669,7 @@ type Rubric {
   name: [LanguageType!]!
   nameString: String!
   parent: Rubric
+  priority: Int!
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
@@ -733,6 +734,7 @@ type RubricNode {
   level: Int!
   name: [LanguageType!]!
   parent: Rubric
+  priority: Int!
   slug: String!
   variant: RubricVariant!
 }

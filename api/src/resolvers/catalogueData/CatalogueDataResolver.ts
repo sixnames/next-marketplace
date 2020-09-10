@@ -1,7 +1,6 @@
-import { Arg, Ctx, Query, Resolver } from 'type-graphql';
+import { Arg, Query, Resolver } from 'type-graphql';
 import { CatalogueData } from '../../entities/CatalogueData';
 import { RubricModel } from '../../entities/Rubric';
-import { ContextInterface } from '../../types/context';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
@@ -9,19 +8,23 @@ import { ProductModel } from '../../entities/Product';
 import getCityData from '../../utils/getCityData';
 import { attributesReducer, getCatalogueTitle } from '../../utils/catalogueHelpers';
 import { ProductPaginateInput } from '../product/ProductPaginateInput';
+import {
+  Localization,
+  LocalizationPayloadInterface,
+  SessionRole,
+} from '../../decorators/parameterDecorators';
+import { Role } from '../../entities/Role';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
   @Query(() => CatalogueData, { nullable: true })
   async getCatalogueData(
-    @Ctx() ctx: ContextInterface,
+    @SessionRole() sessionRole: Role,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
-    const city = ctx.req.city;
-    const lang = ctx.req.lang;
-
     const [slug, ...attributes] = catalogueFilter;
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =
       productsInput || {};
@@ -38,6 +41,23 @@ export class CatalogueDataResolver {
 
     if (!rubric) {
       return null;
+    }
+
+    // Increase rubric priority if user not stuff
+    const { isStuff } = sessionRole;
+    if (!isStuff) {
+      await RubricModel.findOneAndUpdate(
+        {
+          _id: rubric.id,
+          'cities.key': city,
+        },
+        {
+          $inc: {
+            'cities.$.node.priority': 1,
+          },
+        },
+        { new: true },
+      );
     }
 
     // get rubric city data

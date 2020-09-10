@@ -3,6 +3,7 @@ import {
   Field,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -47,6 +48,7 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_LANG,
+  DEFAULT_PRIORITY,
   GENDER_IT,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
@@ -181,6 +183,7 @@ export class RubricResolver {
             key: city,
             node: {
               name: input.name,
+              priority: DEFAULT_PRIORITY,
               catalogueTitle: input.catalogueTitle,
               slug: generateDefaultLangSlug(input.catalogueTitle.defaultTitle),
               attributesGroups: [],
@@ -877,7 +880,7 @@ export class RubricResolver {
     return rubricCity.node.slug;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
   async level(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -889,7 +892,19 @@ export class RubricResolver {
     return rubricCity.node.level;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
+  async priority(
+    @Root() rubric: DocumentType<Rubric>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<number> {
+    const rubricCity = getCityData(rubric.cities, city);
+    if (!city) {
+      return DEFAULT_PRIORITY;
+    }
+    return rubricCity.node.priority;
+  }
+
+  @FieldResolver((_type) => Boolean)
   async active(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -901,7 +916,7 @@ export class RubricResolver {
     return rubricCity.node.active;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Rubric, { nullable: true })
   async parent(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -913,7 +928,7 @@ export class RubricResolver {
     return RubricModel.findById(rubricCity.node.parent);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => RubricVariant)
   async variant(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -930,7 +945,7 @@ export class RubricResolver {
     return variant;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [Rubric])
   async children(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -944,7 +959,7 @@ export class RubricResolver {
     });
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [RubricAttributesGroup])
   async attributesGroups(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -957,7 +972,7 @@ export class RubricResolver {
     return rubricCity.node.attributesGroups;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => PaginatedProductsResponse)
   async products(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -1062,7 +1077,7 @@ export class RubricResolver {
     return Promise.all(result);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
   async totalProductsCount(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -1070,7 +1085,7 @@ export class RubricResolver {
     return getRubricCounters({ city, rubric });
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
   async activeProductsCount(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,

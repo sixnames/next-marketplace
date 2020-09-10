@@ -65,8 +65,8 @@ describe('Product', () => {
     );
     const allProducts = getAllProducts.docs;
     const currentProduct = allProducts[0];
-    expect(allProducts).toHaveLength(3);
-    expect(getAllProducts.totalDocs).toEqual(3);
+    expect(allProducts).toHaveLength(5);
+    expect(getAllProducts.totalDocs).toEqual(5);
 
     // Should return current product
     const {

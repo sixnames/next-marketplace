@@ -533,7 +533,7 @@ input ProductPaginateInput {
   page: Int = 1
   rubric: ID
   search: String
-  sortBy: ProductSortByEnum = createdAt
+  sortBy: ProductSortByEnum = priority
   sortDir: PaginateSortDirectionEnum = desc
 }
 
@@ -558,6 +558,7 @@ input ProductsCountersInput {
 enum ProductSortByEnum {
   createdAt
   price
+  priority
 }
 
 type Query {

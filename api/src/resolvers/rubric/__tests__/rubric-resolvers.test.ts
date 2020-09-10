@@ -116,7 +116,7 @@ describe('Rubrics', () => {
     expect(data.getRubric.nameString).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
     );
-    expect(data.getRubric.products.docs).toHaveLength(3);
+    expect(data.getRubric.products.docs).toHaveLength(5);
 
     // Should return current rubric by slug
     const {

@@ -14,6 +14,10 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
+import { OptionModel } from '../../entities/Option';
+import { AttributesGroupModel } from '../../entities/AttributesGroup';
+import { AttributeModel } from '../../entities/Attribute';
+import { OptionsGroupModel } from '../../entities/OptionsGroup';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -43,7 +47,7 @@ export class CatalogueDataResolver {
       return null;
     }
 
-    // Increase rubric priority if user not stuff
+    // increase rubric priority if user not stuff
     const { isStuff } = sessionRole;
     if (!isStuff) {
       await RubricModel.findOneAndUpdate(
@@ -72,6 +76,45 @@ export class CatalogueDataResolver {
     // cast all filters from input
     const processedAttributes = attributes.reduce(attributesReducer, []);
 
+    // increase filters priority
+    const attributesGroupsIds = rubricCity.node.attributesGroups.map(({ node }) => node);
+    const attributesGroups = await AttributesGroupModel.find({ _id: { $in: attributesGroupsIds } });
+    const attributesIds = attributesGroups.reduce(
+      (acc: string[], { attributes }) => [...acc, ...attributes],
+      [],
+    );
+    const attributesSlugs = processedAttributes.reduce(
+      (acc: string[], { key }) => [...acc, key],
+      [],
+    );
+    const attributesList = await AttributeModel.find({
+      $and: [{ _id: { $in: attributesIds } }, { slug: { $in: attributesSlugs } }],
+    });
+    const optionsGroupsIds = attributesList.reduce((acc: string[], { options }) => {
+      if (options) {
+        return [...acc, options];
+      }
+      return acc;
+    }, []);
+    const optionsGroups = await OptionsGroupModel.find({ _id: { $in: optionsGroupsIds } });
+    const optionsIds = optionsGroups.reduce(
+      (acc: string[], { options }) => [...acc, ...options],
+      [],
+    );
+    const optionsSlugs = processedAttributes.reduce(
+      (acc: string[], { value }) => [...acc, ...value],
+      [],
+    );
+    const optionsList = await OptionModel.find({
+      $and: [{ _id: { $in: optionsIds } }, { slug: { $in: optionsSlugs } }],
+    });
+    console.log(JSON.stringify({ attributesList, optionsList }, null, 2));
+    /*for await (const attribute of processedAttributes) {
+      const options = await OptionModel.find({ slug: { $in: attribute.value } });
+      console.log(options);
+    }
+
+    console.log(processedAttributes);*/
     // get catalogue title
     const catalogueTitle = await getCatalogueTitle({
       processedAttributes,

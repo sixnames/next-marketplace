@@ -607,7 +607,7 @@ type Query {
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
-  getRubricsTree(excluded: [ID!]): [Rubric!]!
+  getRubricsTree(excluded: [ID!] = []): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
   getSessionCurrency: String!
   getSessionRole: Role!

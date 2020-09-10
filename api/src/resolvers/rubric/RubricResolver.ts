@@ -128,14 +128,21 @@ export class RubricResolver {
   @Query(() => [Rubric])
   async getRubricsTree(
     @Localization() { city }: LocalizationPayloadInterface,
-    @Arg('excluded', (_type) => [ID], { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true, defaultValue: [] })
     excluded: string[],
   ): Promise<Rubric[]> {
-    return RubricModel.find({
-      _id: { $nin: excluded },
-      'cities.key': city,
-      'cities.node.level': RUBRIC_LEVEL_ONE,
-    });
+    return RubricModel.aggregate([
+      {
+        $match: {
+          _id: { $nin: excluded },
+          'cities.key': city,
+          'cities.node.level': RUBRIC_LEVEL_ONE,
+        },
+      },
+      { $unwind: '$cities' },
+      { $match: { 'cities.key': city } },
+      { $sort: { 'cities.node.priority': -1 } },
+    ]);
   }
 
   @Mutation(() => RubricPayloadType)
@@ -1091,5 +1098,11 @@ export class RubricResolver {
     @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
     return getRubricCounters({ city, rubric, args: { active: true } });
+  }
+
+  // This resolver for id field after aggregation
+  @FieldResolver((_type) => String)
+  async id(@Root() rubric: DocumentType<Rubric>): Promise<number> {
+    return rubric.id || rubric._id;
   }
 }

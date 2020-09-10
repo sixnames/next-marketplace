@@ -13,6 +13,7 @@ export interface GetProductCitiesInterface {
   rubrics: string[];
   attributesGroups: ProductAttributesGroup[];
   price: number;
+  priority: number;
 }
 
 export async function getProductCities(

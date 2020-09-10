@@ -42,8 +42,11 @@ import {
   CustomFilter,
   Localization,
   LocalizationPayloadInterface,
+  SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { DEFAULT_PRIORITY } from '../../config';
+import { Role } from '../../entities/Role';
 
 const {
   operationConfigCreate,
@@ -77,10 +80,48 @@ export class ProductResolver {
   }
 
   @Query(() => Product)
+  @AuthMethod(operationConfigRead)
   async getProductBySlug(
     @Localization() { city }: LocalizationPayloadInterface,
     @Arg('slug', (_type) => String) slug: string,
   ) {
+    return ProductModel.findOne({
+      cities: {
+        $elemMatch: {
+          key: city,
+          'node.slug': slug,
+        },
+      },
+    });
+  }
+
+  @Query(() => Product)
+  async getProductCard(
+    @SessionRole() sessionRole: Role,
+    @Localization() { city }: LocalizationPayloadInterface,
+    @Arg('slug', (_type) => String) slug: string,
+  ) {
+    // Increase product priority if user not stuff
+    const { isStuff } = sessionRole;
+    if (!isStuff) {
+      await ProductModel.findOneAndUpdate(
+        {
+          cities: {
+            $elemMatch: {
+              key: city,
+              'node.slug': slug,
+            },
+          },
+        },
+        {
+          $inc: {
+            'cities.$.node.priority': 1,
+          },
+        },
+        { new: true },
+      );
+    }
+
     return ProductModel.findOne({
       cities: {
         $elemMatch: {
@@ -221,6 +262,7 @@ export class ProductResolver {
             node: {
               ...values,
               slug,
+              priority: DEFAULT_PRIORITY,
               assets: assetsResult,
               active: true,
             },
@@ -419,7 +461,7 @@ export class ProductResolver {
     }
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
@@ -431,7 +473,7 @@ export class ProductResolver {
     return getLangField(productCity.node.name, lang);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [LanguageType])
   async name(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -443,7 +485,7 @@ export class ProductResolver {
     return productCity.node.name;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => String)
   async cardNameString(
     @Root() product: DocumentType<Product>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
@@ -455,7 +497,7 @@ export class ProductResolver {
     return getLangField(productCity.node.cardName, lang);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [LanguageType])
   async cardName(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -467,7 +509,7 @@ export class ProductResolver {
     return productCity.node.cardName;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => String)
   async slug(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -479,7 +521,19 @@ export class ProductResolver {
     return productCity.node.slug;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
+  async priority(
+    @Root() product: DocumentType<Product>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<number> {
+    const productCity = getCityData(product.cities, city);
+    if (!productCity) {
+      return DEFAULT_PRIORITY;
+    }
+    return productCity.node.priority;
+  }
+
+  @FieldResolver((_type) => String)
   async descriptionString(
     @Root() product: DocumentType<Product>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
@@ -491,7 +545,7 @@ export class ProductResolver {
     return getLangField(productCity.node.description, lang);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [LanguageType])
   async description(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -503,7 +557,7 @@ export class ProductResolver {
     return productCity.node.description;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [String])
   async rubrics(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -515,7 +569,7 @@ export class ProductResolver {
     return productCity.node.rubrics;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [ProductAttributesGroup])
   async attributesGroups(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -542,7 +596,7 @@ export class ProductResolver {
     }
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => [AssetType])
   async assets(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -554,7 +608,7 @@ export class ProductResolver {
     return productCity.node.assets.sort((a, b) => a.index - b.index);
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => String)
   async mainImage(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -571,7 +625,7 @@ export class ProductResolver {
     return mainImage.url;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Int)
   async price(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
@@ -583,7 +637,7 @@ export class ProductResolver {
     return productCity.node.price;
   }
 
-  @FieldResolver()
+  @FieldResolver((_type) => Boolean)
   async active(
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,

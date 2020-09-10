@@ -473,6 +473,7 @@ type Product {
   name: [LanguageType!]!
   nameString: String!
   price: Int!
+  priority: Int!
   rubrics: [ID!]!
   slug: String!
   updatedAt: Timestamp!
@@ -519,6 +520,7 @@ type ProductNode {
   description: [LanguageType!]!
   name: [LanguageType!]!
   price: Int!
+  priority: Int!
   rubrics: [ID!]!
   slug: String!
 }
@@ -599,6 +601,7 @@ type Query {
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
+  getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!

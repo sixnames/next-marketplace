@@ -19,6 +19,7 @@ export type Query = {
   __typename?: 'Query';
   getProduct: Product;
   getProductBySlug: Product;
+  getProductCard: Product;
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
@@ -74,6 +75,11 @@ export type QueryGetProductArgs = {
 
 
 export type QueryGetProductBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetProductCardArgs = {
   slug: Scalars['String'];
 };
 
@@ -233,6 +239,7 @@ export type Product = {
   cities: Array<ProductCity>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
+  priority: Scalars['Int'];
 };
 
 export type LanguageType = {
@@ -357,6 +364,7 @@ export type ProductNode = {
   name: Array<LanguageType>;
   cardName: Array<LanguageType>;
   slug: Scalars['String'];
+  priority: Scalars['Int'];
   description: Array<LanguageType>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
@@ -576,6 +584,7 @@ export type Rubric = {
   totalProductsCount: Scalars['Int'];
   activeProductsCount: Scalars['Int'];
   cities: Array<RubricCity>;
+  priority: Scalars['Int'];
 };
 
 
@@ -666,6 +675,7 @@ export type RubricNode = {
   name: Array<LanguageType>;
   catalogueTitle: RubricCatalogueTitle;
   slug: Scalars['String'];
+  priority: Scalars['Int'];
   level: Scalars['Int'];
   active?: Maybe<Scalars['Boolean']>;
   parent?: Maybe<Rubric>;
@@ -2201,7 +2211,7 @@ export type GetCatalogueCardQueryQueryVariables = Exact<{
 
 export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
-  & { getProductBySlug: (
+  & { getProductCard: (
     { __typename?: 'Product' }
     & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
     & { attributesGroups: Array<(
@@ -4429,7 +4439,7 @@ export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof 
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
 export const GetCatalogueCardQueryDocument = gql`
     query GetCatalogueCardQuery($slug: String!) {
-  getProductBySlug(slug: $slug) {
+  getProductCard(slug: $slug) {
     id
     itemId
     nameString

@@ -1748,6 +1748,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
 
 // Products
 export const MOCK_PRODUCT_A = {
+  priority: 10,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Brancott_Estate' },
     { key: SECONDARY_LANG, value: 'Wine_Brancott_Estate' },
@@ -1764,6 +1765,7 @@ export const MOCK_PRODUCT_A = {
 };
 
 export const MOCK_PRODUCT_B = {
+  priority: 9,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Campo_Viejо' },
     { key: SECONDARY_LANG, value: 'Wine_Campo_Viejо' },
@@ -1780,6 +1782,7 @@ export const MOCK_PRODUCT_B = {
 };
 
 export const MOCK_PRODUCT_C = {
+  priority: 1,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie' },
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie' },
@@ -1789,6 +1792,40 @@ export const MOCK_PRODUCT_C = {
     { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
   ],
   price: 50,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
+export const MOCK_PRODUCT_D = {
+  priority: 1,
+  name: [
+    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_C' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_C' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
+  ],
+  price: 1150,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
+export const MOCK_PRODUCT_E = {
+  priority: 1,
+  name: [
+    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_D' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_D' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
+  ],
+  price: 500,
   description: [
     { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
     { key: SECONDARY_LANG, value: 'Very long product description' },

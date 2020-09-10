@@ -46,6 +46,8 @@ import {
   MOCK_RUBRIC_LEVEL_ONE_B,
   MOCK_RUBRIC_LEVEL_ONE_C,
   MOCK_RUBRIC_LEVEL_ONE_D,
+  MOCK_PRODUCT_D,
+  MOCK_PRODUCT_E,
 } from '../../config';
 import { ProductModel } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
@@ -379,11 +381,25 @@ const createTestData = async () => {
       }),
     });
 
-    // main product
+    // main products
     // const product = await ProductModel.create({
     await ProductModel.create({
       cities: await getProductCities({
         ...MOCK_PRODUCT_A,
+        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    });
+    await ProductModel.create({
+      cities: await getProductCities({
+        ...MOCK_PRODUCT_D,
+        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    });
+    await ProductModel.create({
+      cities: await getProductCities({
+        ...MOCK_PRODUCT_E,
         ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
         rubrics: [rubricLevelThreeAA.id],
       }),

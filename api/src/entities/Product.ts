@@ -7,6 +7,7 @@ import { AssetType, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { DEFAULT_PRIORITY } from '../config';
 
 // Product attribute
 @ObjectType()
@@ -58,6 +59,10 @@ export class ProductNode {
   @Field(() => String)
   @prop({ required: true })
   slug: string;
+
+  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
+  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
+  priority: number;
 
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })

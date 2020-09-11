@@ -1805,8 +1805,8 @@ export const MOCK_PRODUCT_D = {
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_C' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
-    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Вино Val de "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Val de, "Barista" Pinotage' },
   ],
   price: 1150,
   description: [
@@ -1822,8 +1822,8 @@ export const MOCK_PRODUCT_E = {
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_D' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
-    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Вино Vie, "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Vie, "Barista" Pinotage' },
   ],
   price: 500,
   description: [

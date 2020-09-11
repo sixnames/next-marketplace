@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import { IS_BROWSER, THEME_DARK, THEME_KEY, THEME_LIGHT } from '../config';
 import Cookies from 'js-cookie';
 import { Theme } from '../types';
+import { debounce } from 'lodash';
 
 interface ThemeContextProviderInterface {
   initialTheme: Theme;
@@ -34,10 +35,13 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
     function resizeHandler() {
       setVh(window.innerHeight * 0.01);
     }
-    window.addEventListener('resize', resizeHandler);
+    const debouncedResizeHandler = debounce(resizeHandler, 250);
+    debouncedResizeHandler();
+
+    window.addEventListener('resize', debouncedResizeHandler);
 
     return () => {
-      window.removeEventListener('resize', resizeHandler);
+      window.removeEventListener('resize', debouncedResizeHandler);
     };
   }, []);
 

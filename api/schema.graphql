@@ -397,8 +397,15 @@ type Option {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  priorities: [OptionPriority!]!
   slug: String!
   variants: [OptionVariant!]
+}
+
+type OptionPriority {
+  attributeId: String!
+  priority: Int!
+  rubricId: String!
 }
 
 type OptionsGroup {
@@ -727,6 +734,7 @@ type RubricFilterAttributeOption {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  priorities: [OptionPriority!]!
   slug: String!
   variants: [OptionVariant!]
 }

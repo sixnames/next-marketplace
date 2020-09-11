@@ -11,13 +11,14 @@ import {
   getCatalogueTitle,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
-import { ProductPaginateInput } from '../product/ProductPaginateInput';
+import { ProductPaginateInput, ProductSortByEnum } from '../product/ProductPaginateInput';
 import {
   Localization,
   LocalizationPayloadInterface,
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
+import { get } from 'lodash';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -30,8 +31,13 @@ export class CatalogueDataResolver {
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     const [slug, ...attributes] = catalogueFilter;
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =
-      productsInput || {};
+    const {
+      limit = 100,
+      page = 1,
+      sortBy = 'priority' as ProductSortByEnum,
+      sortDir = 'desc',
+      ...args
+    } = productsInput || {};
 
     // get current rubric
     const rubric = await RubricModel.findOne({
@@ -91,6 +97,30 @@ export class CatalogueDataResolver {
     });
 
     const products = await ProductModel.paginate(query, options);
+    products.docs.sort((a, b) => {
+      const cityA = getCityData(a.cities, city);
+      const cityB = getCityData(b.cities, city);
+      if (!cityA) {
+        return 1;
+      }
+
+      if (!cityB) {
+        return -1;
+      }
+
+      const valueA: any = get(cityA, `node.${sortBy}`);
+      const valueB: any = get(cityB, `node.${sortBy}`);
+
+      if (valueA < valueB) {
+        return 1;
+      }
+
+      if (valueB < valueA) {
+        return -1;
+      }
+
+      return 0;
+    });
 
     return {
       rubric,

@@ -1020,6 +1020,27 @@ export class RubricResolver {
     }, []);
 
     const attributes = await AttributeModel.find({ _id: { $in: visibleAttributes } });
+    attributes.sort((a, b) => {
+      const prioritiesA = a.priorities.find(({ rubricId }) => rubricId === rubric.id);
+      const prioritiesB = b.priorities.find(({ rubricId }) => rubricId === rubric.id);
+      if (!prioritiesA) {
+        return 1;
+      }
+
+      if (!prioritiesB) {
+        return -1;
+      }
+
+      if (prioritiesA.priority < prioritiesB?.priority) {
+        return 1;
+      }
+
+      if (prioritiesB.priority < prioritiesA?.priority) {
+        return -1;
+      }
+      return 0;
+    });
+
     const result = attributes.map(async (attribute) => {
       const optionsGroup = await OptionsGroupModel.findById(attribute.options);
       if (!optionsGroup) {
@@ -1035,6 +1056,30 @@ export class RubricResolver {
       const options = await OptionModel.find({ _id: { $in: optionsGroup.options } })
         .lean()
         .exec();
+      options.sort((a, b) => {
+        const prioritiesA = a.priorities.find(
+          ({ rubricId, attributeId }) => rubricId === rubric.id && attributeId === attribute.id,
+        );
+        const prioritiesB = b.priorities.find(
+          ({ rubricId, attributeId }) => rubricId === rubric.id && attributeId === attribute.id,
+        );
+        if (!prioritiesA) {
+          return 1;
+        }
+
+        if (!prioritiesB) {
+          return -1;
+        }
+
+        if (prioritiesA.priority < prioritiesB.priority) {
+          return 1;
+        }
+
+        if (prioritiesB.priority < prioritiesA.priority) {
+          return -1;
+        }
+        return 0;
+      });
 
       const resultOptions: RubricFilterAttributeOption[] = [];
 

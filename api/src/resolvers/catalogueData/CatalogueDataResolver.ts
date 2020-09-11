@@ -11,7 +11,7 @@ import {
   getCatalogueTitle,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
-import { ProductPaginateInput, ProductSortByEnum } from '../product/ProductPaginateInput';
+import { ProductPaginateInput } from '../product/ProductPaginateInput';
 import {
   Localization,
   LocalizationPayloadInterface,
@@ -31,13 +31,8 @@ export class CatalogueDataResolver {
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     const [slug, ...attributes] = catalogueFilter;
-    const {
-      limit = 100,
-      page = 1,
-      sortBy = 'priority' as ProductSortByEnum,
-      sortDir = 'desc',
-      ...args
-    } = productsInput || {};
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =
+      productsInput || {};
 
     // get current rubric
     const rubric = await RubricModel.findOne({

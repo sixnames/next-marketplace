@@ -2,13 +2,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { ContextInterface } from '../../types/context';
 import { User, UserModel } from '../../entities/User';
 import { compare } from 'bcryptjs';
-import {
-  IN_TEST,
-  OPERATION_TYPE_CREATE,
-  OPERATION_TYPE_DELETE,
-  OPERATION_TYPE_READ,
-  OPERATION_TYPE_UPDATE,
-} from '../../config';
+import { IN_TEST } from '../../config';
 import getApiMessage from '../translations/getApiMessage';
 import { DecoratorOperationType } from '../../decorators/methodDecorators';
 
@@ -85,22 +79,23 @@ export const attemptSignOut = async (req: Request) => {
 };
 
 export function getOperationsConfigs(entity: string) {
+  // TODO make operation name as constant
   return {
     operationConfigCreate: {
       entity,
-      operationType: OPERATION_TYPE_CREATE as DecoratorOperationType,
+      operationType: 'create' as DecoratorOperationType,
     },
     operationConfigRead: {
       entity,
-      operationType: OPERATION_TYPE_READ as DecoratorOperationType,
+      operationType: 'read' as DecoratorOperationType,
     },
     operationConfigUpdate: {
       entity,
-      operationType: OPERATION_TYPE_UPDATE as DecoratorOperationType,
+      operationType: 'update' as DecoratorOperationType,
     },
     operationConfigDelete: {
       entity,
-      operationType: OPERATION_TYPE_DELETE as DecoratorOperationType,
+      operationType: 'delete' as DecoratorOperationType,
     },
   };
 }

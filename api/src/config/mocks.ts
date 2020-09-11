@@ -1460,6 +1460,7 @@ export const MOCK_ATTRIBUTE_WINE_COLOR = {
     { key: DEFAULT_LANG, value: 'Цвет_вина' },
     { key: SECONDARY_LANG, value: 'Wine_color' },
   ],
+  priorities: [],
   slug: 'tsvet_vina',
   variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 };
@@ -1469,6 +1470,7 @@ export const MOCK_ATTRIBUTE_WINE_VARIANT = {
     { key: DEFAULT_LANG, value: 'Тип_вина' },
     { key: SECONDARY_LANG, value: 'Wine_type' },
   ],
+  priorities: [],
   slug: 'tip_vina',
   variant: ATTRIBUTE_VARIANT_SELECT,
 };
@@ -1478,6 +1480,7 @@ export const MOCK_ATTRIBUTE_STRING = {
     { key: DEFAULT_LANG, value: 'Атрибут_строка' },
     { key: SECONDARY_LANG, value: 'Attribute_string' },
   ],
+  priorities: [],
   slug: 'attribute_stroka',
   variant: ATTRIBUTE_VARIANT_STRING,
 };
@@ -1487,6 +1490,7 @@ export const MOCK_ATTRIBUTE_NUMBER = {
     { key: DEFAULT_LANG, value: 'Атрибут_число' },
     { key: SECONDARY_LANG, value: 'Attribute_number' },
   ],
+  priorities: [],
   slug: 'attribute_chislo',
   variant: ATTRIBUTE_VARIANT_NUMBER,
 };

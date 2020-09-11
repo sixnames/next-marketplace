@@ -9,16 +9,141 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   DEFAULT_LANG,
+  DEFAULT_PRIORITY,
   LANG_DEFAULT_TITLE_SEPARATOR,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
 } from '../config';
-import { RubricNode } from '../entities/Rubric';
+import { RubricModel, RubricNode } from '../entities/Rubric';
 import capitalize from 'capitalize';
+import { AttributesGroupModel } from '../entities/AttributesGroup';
+import { OptionsGroupModel } from '../entities/OptionsGroup';
 
 interface ProcessedAttributeInterface {
   key: string;
   value: string[];
+}
+
+interface SetCataloguePrioritiesInterface {
+  rubricId: string;
+  attributesGroupsIds: string[];
+  processedAttributes: ProcessedAttributeInterface[];
+  isStuff: boolean;
+  city: string;
+}
+
+export async function setCataloguePriorities({
+  attributesGroupsIds,
+  processedAttributes,
+  rubricId,
+  city,
+  isStuff,
+}: SetCataloguePrioritiesInterface) {
+  // if user not stuff
+  if (!isStuff) {
+    // increase rubric priority
+    await RubricModel.findOneAndUpdate(
+      {
+        _id: rubricId,
+        'cities.key': city,
+      },
+      {
+        $inc: {
+          'cities.$.node.priority': 1,
+        },
+      },
+      { new: true },
+    );
+
+    const attributesSlugs = processedAttributes.reduce(
+      (acc: string[], { key }) => [...acc, key],
+      [],
+    );
+    const optionsSlugs = processedAttributes.reduce(
+      (acc: string[], { value }) => [...acc, ...value],
+      [],
+    );
+
+    // increase attributes priority
+    const attributesGroups = await AttributesGroupModel.find({ _id: { $in: attributesGroupsIds } });
+    const attributesIds = attributesGroups.reduce(
+      (acc: string[], { attributes }) => [...acc, ...attributes],
+      [],
+    );
+
+    const attributesList = await AttributeModel.find({
+      $and: [{ _id: { $in: attributesIds } }, { slug: { $in: attributesSlugs } }],
+    });
+
+    for await (const attribute of attributesList) {
+      const { options } = attribute;
+      const exist = await AttributeModel.findOneAndUpdate(
+        {
+          _id: attribute.id,
+          'priorities.rubricId': rubricId,
+        },
+        {
+          $inc: {
+            'priorities.$.priority': 1,
+          },
+        },
+      );
+
+      if (!exist) {
+        await AttributeModel.findOneAndUpdate(
+          {
+            _id: attribute.id,
+          },
+          {
+            $push: {
+              priorities: {
+                rubricId: rubricId,
+                priority: DEFAULT_PRIORITY,
+              },
+            },
+          },
+        );
+      }
+
+      // increase options priority
+      const optionsGroup = await OptionsGroupModel.findOne({ _id: options });
+      if (optionsGroup) {
+        for await (const slug of optionsSlugs) {
+          const exist = await OptionModel.findOneAndUpdate(
+            {
+              _id: { $in: optionsGroup.options },
+              slug,
+              'priorities.rubricId': rubricId,
+              'priorities.attributeId': attribute.id,
+            },
+            {
+              $inc: {
+                'priorities.$.priority': 1,
+              },
+            },
+          );
+
+          if (!exist) {
+            await OptionModel.findOneAndUpdate(
+              {
+                _id: { $in: optionsGroup.options },
+                slug,
+              },
+              {
+                $push: {
+                  priorities: {
+                    attributeId: attribute.id,
+                    rubricId: rubricId,
+                    priority: DEFAULT_PRIORITY,
+                  },
+                },
+              },
+            );
+          }
+        }
+      }
+    }
+  }
 }
 
 export function getOptionFromParam(paramString: string): { key: string; value: string[] } {

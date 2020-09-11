@@ -48,6 +48,7 @@ type Attribute {
   nameString: String!
   options: OptionsGroup
   positioningInTitle: [AttributePositioningInTitle!]
+  priorities: [AttributePriority!]!
   slug: String!
   variant: AttributeVariantEnum!
 }
@@ -76,6 +77,11 @@ enum AttributePositionInTitleEnum {
   begin
   end
   replaceKeyword
+}
+
+type AttributePriority {
+  priority: Int!
+  rubricId: String!
 }
 
 type AttributesGroup {

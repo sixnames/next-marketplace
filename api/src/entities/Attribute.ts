@@ -8,6 +8,7 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANTS_ENUMS,
+  DEFAULT_PRIORITY,
 } from '../config';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { Option } from './Option';
@@ -61,6 +62,17 @@ export class AttributeFilterOption {
 }
 
 @ObjectType()
+export class AttributePriority {
+  @Field((_type) => String)
+  @prop({ required: true, type: String })
+  rubricId: string;
+
+  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
+  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
+  priority: number;
+}
+
+@ObjectType()
 export class Attribute {
   @Field((_type) => ID)
   readonly id: string;
@@ -75,6 +87,10 @@ export class Attribute {
 
   @Field(() => String)
   readonly nameString: string;
+
+  @Field(() => [AttributePriority])
+  @prop({ type: AttributePriority })
+  priorities: AttributePriority[];
 
   @Field((_type) => AttributeVariantEnum)
   @prop({ required: true, enum: ATTRIBUTE_VARIANTS_ENUMS })

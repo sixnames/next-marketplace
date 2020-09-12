@@ -128,6 +128,11 @@ type City {
   slug: String!
 }
 
+type CityCounter {
+  counter: Int!
+  key: String!
+}
+
 type Config {
   acceptedFormats: [String!]!
   description: String!
@@ -490,10 +495,11 @@ type Product {
   name: [LanguageType!]!
   nameString: String!
   price: Int!
-  priority: Int!
+  priorities: [CityCounter!]!
   rubrics: [ID!]!
   slug: String!
   updatedAt: Timestamp!
+  views: [CityCounter!]!
 }
 
 type ProductAttribute {

@@ -3,11 +3,10 @@ import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { AssetType, LanguageType } from './common';
+import { AssetType, CityCounter, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
-import { DEFAULT_PRIORITY } from '../config';
 
 // Product attribute
 @ObjectType()
@@ -58,6 +57,14 @@ export class Product extends TimeStamps {
   @prop()
   readonly itemId: number;
 
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  views: CityCounter[];
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  priorities: CityCounter[];
+
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
@@ -69,10 +76,6 @@ export class Product extends TimeStamps {
   @Field(() => String)
   @prop({ required: true })
   slug: string;
-
-  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
-  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
-  priority: number;
 
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })

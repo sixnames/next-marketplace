@@ -86,15 +86,44 @@ export class ProductResolver {
   @Query(() => Product)
   async getProductCard(
     @SessionRole() sessionRole: Role,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('slug', (_type) => String) slug: string,
-  ) {
-    // Increase product priority if user not stuff
-    const { isStuff } = sessionRole;
-    if (!isStuff) {
-      console.log('Increase product priority if user not stuff');
+  ): Promise<Product> {
+    const product = await ProductModel.findOne({ slug });
+    if (!product) {
+      throw new Error('Product not found');
     }
 
-    return ProductModel.findOne({ slug });
+    const { isStuff } = sessionRole;
+    if (!isStuff) {
+      // Increase product priority
+      const { views } = product;
+      const currentView = views.find(({ key }) => key === city);
+      if (!currentView) {
+        await ProductModel.findByIdAndUpdate(product.id, {
+          $push: {
+            views: {
+              key: city,
+              counter: DEFAULT_PRIORITY,
+            },
+          },
+        });
+      } else {
+        await ProductModel.findByIdAndUpdate(
+          product.id,
+          {
+            $inc: {
+              'views.$[view].counter': 1,
+            },
+          },
+          {
+            arrayFilters: [{ 'view.key': { $eq: city } }],
+          },
+        );
+      }
+    }
+
+    return product;
   }
 
   @Query(() => PaginatedProductsResponse)
@@ -208,7 +237,8 @@ export class ProductResolver {
       const product = await ProductModel.create({
         ...values,
         slug,
-        priority: DEFAULT_PRIORITY,
+        priorities: [],
+        views: [],
         assets: assetsResult,
         active: true,
       });
@@ -386,11 +416,6 @@ export class ProductResolver {
   @FieldResolver((_type) => String)
   async slug(@Root() product: DocumentType<Product>): Promise<string> {
     return product.slug;
-  }
-
-  @FieldResolver((_type) => Int)
-  async priority(@Root() product: DocumentType<Product>): Promise<number> {
-    return product.priority;
   }
 
   @FieldResolver((_type) => String)

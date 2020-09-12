@@ -573,7 +573,7 @@ type Query {
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
-  getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
+  getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!

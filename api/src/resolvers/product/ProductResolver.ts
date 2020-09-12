@@ -101,7 +101,7 @@ export class ProductResolver {
   @AuthMethod(operationConfigRead)
   async getAllProducts(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
-    @Arg('input', { nullable: true }) input: ProductPaginateInput,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: ProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const {
       limit = 100,
@@ -110,7 +110,7 @@ export class ProductResolver {
       sortDir = 'desc',
       countActiveProducts = false,
       ...args
-    } = input || {};
+    } = input;
     const query = getProductsFilter(args);
     const activeProductsQuery = getProductsFilter({ ...args, active: true });
 

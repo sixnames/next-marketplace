@@ -158,13 +158,12 @@ export class RubricVariantResolver {
   @Mutation(() => RubricVariantPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteRubricVariant(
-    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricVariantPayloadType> {
     try {
       const isUsedInRubrics = await RubricModel.exists({
-        'cities.key': city,
-        'cities.node.variant': id,
+        variant: id,
       });
       if (isUsedInRubrics) {
         return {

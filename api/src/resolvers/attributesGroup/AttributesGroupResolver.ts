@@ -191,14 +191,13 @@ export class AttributesGroupResolver {
   @Mutation(() => AttributesGroupPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteAttributesGroup(
-    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', () => ID) id: string,
   ): Promise<AttributesGroupPayloadType> {
     try {
       const connectedWithRubrics = await RubricModel.exists({
-        'cities.key': city,
-        'cities.node.attributesGroups.node': {
-          $in: id,
+        'attributesGroups.node': {
+          $in: [id],
         },
       });
       if (connectedWithRubrics) {

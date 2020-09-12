@@ -1,4 +1,4 @@
-import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
+import { mutateWithImages, authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
@@ -6,7 +6,7 @@ import { gql } from 'apollo-server-express';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return paginated products.
     const {
@@ -63,6 +63,7 @@ describe('Product', () => {
         },
       },
     );
+
     const allProducts = getAllProducts.docs;
     const currentProduct = allProducts[0];
     expect(allProducts).toHaveLength(5);

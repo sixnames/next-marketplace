@@ -68,7 +68,7 @@ export class CatalogueDataResolver {
       sortDir,
       sortBy,
     });
-    console.log(JSON.stringify({ query, options }, null, 2));
+
     const products = await ProductModel.paginate(query, options);
     products.docs.sort((a, b) => {
       const valueA: any = get(a, sortBy);

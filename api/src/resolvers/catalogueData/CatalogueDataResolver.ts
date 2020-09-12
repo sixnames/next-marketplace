@@ -1,5 +1,5 @@
 import { Arg, Query, Resolver } from 'type-graphql';
-import { CatalogueData } from '../../entities/CatalogueData';
+import { CatalogueData, CatalogueSearchResult } from '../../entities/CatalogueData';
 import { RubricModel } from '../../entities/Rubric';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
@@ -122,5 +122,54 @@ export class CatalogueDataResolver {
       products,
       catalogueTitle,
     };
+  }
+
+  @Query((_returns) => CatalogueSearchResult)
+  async getCatalogueSearchResult(
+    @Localization() { city }: LocalizationPayloadInterface,
+    @Arg('search', (_type) => String) search: string,
+  ): Promise<CatalogueSearchResult> {
+    try {
+      const limitOfProducts = 2;
+      const limitOfRubrics = 2;
+
+      const productsByName = await ProductModel.aggregate([
+        {
+          $match: {
+            $text: {
+              $search: search,
+              $caseSensitive: false,
+            },
+          },
+        },
+        { $unwind: '$cities' },
+        { $match: { 'cities.key': city } },
+        { $sort: { 'cities.node.priority': -1 } },
+      ]).limit(limitOfProducts);
+
+      const rubricsByName = await RubricModel.aggregate([
+        {
+          $match: {
+            $text: {
+              $search: search,
+              $caseSensitive: false,
+            },
+          },
+        },
+        { $unwind: '$cities' },
+        { $match: { 'cities.key': city } },
+        { $sort: { 'cities.node.priority': -1 } },
+      ]).limit(limitOfRubrics);
+
+      return {
+        products: productsByName,
+        rubrics: rubricsByName,
+      };
+    } catch (e) {
+      return {
+        products: [],
+        rubrics: [],
+      };
+    }
   }
 }

@@ -33,7 +33,7 @@ import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { RubricModel } from '../../entities/Rubric';
+import { Rubric, RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { createProductSchema, updateProductSchema } from '../../validation/productSchema';
 import { getOperationsConfigs } from '../../utils/auth/auth';
@@ -647,5 +647,11 @@ export class ProductResolver {
       return false;
     }
     return productCity.node.active;
+  }
+
+  // This resolver for id field after aggregation
+  @FieldResolver((_type) => String)
+  async id(@Root() rubric: DocumentType<Rubric>): Promise<number> {
+    return rubric.id || rubric._id;
   }
 }

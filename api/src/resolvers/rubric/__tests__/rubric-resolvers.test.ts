@@ -68,6 +68,7 @@ describe('Rubrics', () => {
 
     const attributesGroup = getAllAttributesGroups[0];
     const rubricLevelOne = getRubricsTree[0];
+    // console.log(JSON.stringify(rubricLevelOne, null, 2));
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];

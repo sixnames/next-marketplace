@@ -956,7 +956,7 @@ export class RubricResolver {
   async children(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { city }: LocalizationPayloadInterface,
-    @Arg('excluded', (_type) => [ID], { nullable: true })
+    @Arg('excluded', (_type) => [ID], { nullable: true, defaultValue: [] })
     excluded: string[],
   ): Promise<Rubric[]> {
     return RubricModel.find({
@@ -1084,7 +1084,7 @@ export class RubricResolver {
       const resultOptions: RubricFilterAttributeOption[] = [];
 
       for await (const option of options) {
-        // TODO do I need to count products
+        // TODO do I need to count products?
         // cast current option for products filter
         /*const currentOptionQuery = [
           {

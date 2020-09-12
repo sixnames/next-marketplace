@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { GenderEnum, LanguageType } from './common';
@@ -134,6 +134,7 @@ export class RubricCity {
 }
 
 @ObjectType()
+@index({ '$**': 'text' })
 export class Rubric {
   @Field(() => ID)
   readonly id: string;

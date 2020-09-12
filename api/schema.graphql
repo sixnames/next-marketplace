@@ -116,6 +116,11 @@ type CatalogueData {
   rubric: Rubric!
 }
 
+type CatalogueSearchResult {
+  products: [Product!]!
+  rubrics: [Rubric!]!
+}
+
 type City {
   id: ID!
   name: [LanguageType!]!
@@ -596,6 +601,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCity(id: ID!): City!
   getCityBySlug(slug: String!): City!
   getClientLanguage: String!
@@ -678,7 +684,7 @@ type Rubric {
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
-  children(excluded: [ID!]): [Rubric!]!
+  children(excluded: [ID!] = []): [Rubric!]!
   cities: [RubricCity!]!
   filterAttributes: [RubricFilterAttribute!]!
   id: ID!

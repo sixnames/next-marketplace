@@ -5,27 +5,17 @@ import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ProductModel } from '../../entities/Product';
-import getCityData from '../../utils/getCityData';
-import {
-  attributesReducer,
-  getCatalogueTitle,
-  setCataloguePriorities,
-} from '../../utils/catalogueHelpers';
+import { attributesReducer, getCatalogueTitle } from '../../utils/catalogueHelpers';
 import { ProductPaginateInput } from '../product/ProductPaginateInput';
-import {
-  Localization,
-  LocalizationPayloadInterface,
-  SessionRole,
-} from '../../decorators/parameterDecorators';
-import { Role } from '../../entities/Role';
+import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
 import { get } from 'lodash';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
   @Query(() => CatalogueData, { nullable: true })
   async getCatalogueData(
-    @SessionRole() sessionRole: Role,
-    @Localization() { city, lang }: LocalizationPayloadInterface,
+    // @SessionRole() sessionRole: Role,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
@@ -35,53 +25,41 @@ export class CatalogueDataResolver {
       productsInput || {};
 
     // get current rubric
-    const rubric = await RubricModel.findOne({
-      cities: {
-        $elemMatch: {
-          key: city,
-          'node.slug': slug,
-        },
-      },
-    });
+    const rubric = await RubricModel.findOne({ slug });
 
     if (!rubric) {
       return null;
     }
 
-    // get rubric city data
-    const rubricCity = getCityData(rubric.cities, city);
-    if (!rubricCity) {
-      return null;
-    }
-
     // get all nested rubrics
-    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id, city });
+    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
 
     // cast all filters from input
     const processedAttributes = attributes.reduce(attributesReducer, []);
 
     // increase filter priority
-    const attributesGroupsIds = rubricCity.node.attributesGroups.map(({ node }) => node);
-    await setCataloguePriorities({
+    // const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
+    /*await setCataloguePriorities({
       attributesGroupsIds,
       rubricId: rubric.id,
       processedAttributes,
       isStuff: sessionRole.isStuff,
-      city,
-    });
+    });*/
 
     // get catalogue title
     const catalogueTitle = await getCatalogueTitle({
       processedAttributes,
       lang,
-      rubric: rubricCity.node,
+      rubric,
     });
 
     // get products filter query
-    const query = getProductsFilter(
-      { ...args, attributes: processedAttributes, rubrics: rubricsIds, active: true },
-      city,
-    );
+    const query = getProductsFilter({
+      ...args,
+      attributes: processedAttributes,
+      rubrics: rubricsIds,
+      active: true,
+    });
 
     // get pagination options
     const { options } = generatePaginationOptions({
@@ -90,21 +68,11 @@ export class CatalogueDataResolver {
       sortDir,
       sortBy,
     });
-
+    console.log(JSON.stringify({ query, options }, null, 2));
     const products = await ProductModel.paginate(query, options);
     products.docs.sort((a, b) => {
-      const cityA = getCityData(a.cities, city);
-      const cityB = getCityData(b.cities, city);
-      if (!cityA) {
-        return 1;
-      }
-
-      if (!cityB) {
-        return -1;
-      }
-
-      const valueA: any = get(cityA, `node.${sortBy}`);
-      const valueB: any = get(cityB, `node.${sortBy}`);
+      const valueA: any = get(a, sortBy);
+      const valueB: any = get(b, sortBy);
 
       if (valueA < valueB) {
         return 1;
@@ -126,44 +94,13 @@ export class CatalogueDataResolver {
 
   @Query((_returns) => CatalogueSearchResult)
   async getCatalogueSearchResult(
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('search', (_type) => String) search: string,
   ): Promise<CatalogueSearchResult> {
     try {
-      const limitOfProducts = 2;
-      const limitOfRubrics = 2;
-
-      const productsByName = await ProductModel.aggregate([
-        {
-          $match: {
-            $text: {
-              $search: search,
-              $caseSensitive: false,
-            },
-          },
-        },
-        { $unwind: '$cities' },
-        { $match: { 'cities.key': city } },
-        { $sort: { 'cities.node.priority': -1 } },
-      ]).limit(limitOfProducts);
-
-      const rubricsByName = await RubricModel.aggregate([
-        {
-          $match: {
-            $text: {
-              $search: search,
-              $caseSensitive: false,
-            },
-          },
-        },
-        { $unwind: '$cities' },
-        { $match: { 'cities.key': city } },
-        { $sort: { 'cities.node.priority': -1 } },
-      ]).limit(limitOfRubrics);
-
+      console.log(search);
       return {
-        products: productsByName,
-        rubrics: rubricsByName,
+        products: [],
+        rubrics: [],
       };
     } catch (e) {
       return {

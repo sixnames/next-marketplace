@@ -45,9 +45,19 @@ export class ProductAttributesGroup {
   attributes: ProductAttribute[];
 }
 
-// Product data in current city
+// Product schema
 @ObjectType()
-export class ProductNode {
+@plugin(mongoosePaginate)
+@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
+@index({ '$**': 'text' })
+export class Product extends TimeStamps {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => Int)
+  @prop()
+  readonly itemId: number;
+
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
@@ -87,75 +97,18 @@ export class ProductNode {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
   active: boolean;
-}
-
-// Product current city
-@ObjectType()
-export class ProductCity {
-  @Field(() => String)
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => ProductNode)
-  @prop({ required: true })
-  node: ProductNode;
-}
-
-// Product schema
-@ObjectType()
-@plugin(mongoosePaginate)
-@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
-@index({ '$**': 'text' })
-export class Product extends TimeStamps {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field(() => Int)
-  @prop()
-  readonly itemId: number;
 
   @Field(() => String)
   readonly nameString: string;
 
-  @Field(() => [LanguageType])
-  readonly name: LanguageType[];
-
   @Field(() => String)
   readonly cardNameString: string;
-
-  @Field(() => [LanguageType])
-  readonly cardName: LanguageType[];
-
-  @Field(() => String)
-  readonly slug: string;
 
   @Field(() => String)
   readonly descriptionString: string;
 
-  @Field(() => [LanguageType])
-  readonly description: LanguageType[];
-
-  @Field(() => [ID])
-  readonly rubrics: string[];
-
-  @Field(() => [ProductAttributesGroup])
-  readonly attributesGroups: ProductAttributesGroup[];
-
-  @Field(() => [AssetType])
-  readonly assets: AssetType[];
-
   @Field(() => String)
   readonly mainImage: string;
-
-  @Field(() => Int)
-  readonly price: number;
-
-  @Field(() => Boolean)
-  readonly active: boolean;
-
-  @Field(() => [ProductCity])
-  @prop({ type: ProductCity, required: true })
-  cities: ProductCity[];
 
   @Field()
   readonly createdAt: Date;

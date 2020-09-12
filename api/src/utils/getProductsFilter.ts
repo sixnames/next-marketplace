@@ -26,10 +26,7 @@ interface ProductsFiltersInterface {
   [key: string]: any;
 }
 
-export function getProductsFilter(
-  args: { [key: string]: any } = {},
-  city: string,
-): ProductsFiltersInterface {
+export function getProductsFilter(args: { [key: string]: any } = {}): ProductsFiltersInterface {
   const searchQuery = args.search
     ? {
         $text: {
@@ -49,7 +46,7 @@ export function getProductsFilter(
       if (key === 'attributes') {
         const attributesQuery = value.map(({ key, value }: RubricProductAttributesFilterInput) => {
           return {
-            'node.attributesGroups.attributes': {
+            'attributesGroups.attributes': {
               $elemMatch: {
                 key,
                 value: { $in: value },
@@ -70,25 +67,25 @@ export function getProductsFilter(
 
       if (key === 'rubrics') {
         const query = alwaysArray(value);
-        return { ...acc, 'node.rubrics': { $in: query } };
+        return { ...acc, rubrics: { $in: query } };
       }
 
       if (key === 'rubric') {
         const query = alwaysArray(value);
-        return { ...acc, 'node.rubrics': { $in: query } };
+        return { ...acc, rubrics: { $in: query } };
       }
 
       if (key === 'notInRubric') {
         const query = alwaysArray(value);
-        return { ...acc, 'node.rubrics': { $nin: query } };
+        return { ...acc, rubrics: { $nin: query } };
       }
 
       if (key === 'noRubrics') {
-        return { ...acc, 'node.rubrics': { $exists: true, $size: 0 } };
+        return { ...acc, rubrics: { $exists: true, $size: 0 } };
       }
 
       if (key === 'active') {
-        return { ...acc, 'node.active': value };
+        return { ...acc, active: value };
       }
     }
 
@@ -97,11 +94,6 @@ export function getProductsFilter(
 
   return {
     ...searchQuery,
-    cities: {
-      $elemMatch: {
-        key: city,
-        ...additionalQuery,
-      },
-    },
+    ...additionalQuery,
   };
 }

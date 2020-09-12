@@ -21,7 +21,6 @@ import { ProductPaginateInput } from './ProductPaginateInput';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
-import getCityData from '../../utils/getCityData';
 import getLangField from '../../utils/translations/getLangField';
 import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
@@ -33,7 +32,7 @@ import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { Rubric, RubricModel } from '../../entities/Rubric';
+import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { createProductSchema, updateProductSchema } from '../../validation/productSchema';
 import { getOperationsConfigs } from '../../utils/auth/auth';
@@ -45,7 +44,7 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { DEFAULT_PRIORITY } from '../../config';
+import { ASSETS_DIST_PRODUCTS, DEFAULT_PRIORITY } from '../../config';
 import { Role } from '../../entities/Role';
 
 const {
@@ -73,70 +72,35 @@ export class ProductResolver {
   @AuthMethod(operationConfigRead)
   async getProduct(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ) {
-    return ProductModel.findOne({ _id: id, 'cities.key': city, ...customFilter });
+    return ProductModel.findOne({ _id: id, ...customFilter });
   }
 
   @Query(() => Product)
   @AuthMethod(operationConfigRead)
-  async getProductBySlug(
-    @Localization() { city }: LocalizationPayloadInterface,
-    @Arg('slug', (_type) => String) slug: string,
-  ) {
-    return ProductModel.findOne({
-      cities: {
-        $elemMatch: {
-          key: city,
-          'node.slug': slug,
-        },
-      },
-    });
+  async getProductBySlug(@Arg('slug', (_type) => String) slug: string) {
+    return ProductModel.findOne({ slug });
   }
 
   @Query(() => Product)
   async getProductCard(
     @SessionRole() sessionRole: Role,
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('slug', (_type) => String) slug: string,
   ) {
     // Increase product priority if user not stuff
     const { isStuff } = sessionRole;
     if (!isStuff) {
-      await ProductModel.findOneAndUpdate(
-        {
-          cities: {
-            $elemMatch: {
-              key: city,
-              'node.slug': slug,
-            },
-          },
-        },
-        {
-          $inc: {
-            'cities.$.node.priority': 1,
-          },
-        },
-        { new: true },
-      );
+      console.log('Increase product priority if user not stuff');
     }
 
-    return ProductModel.findOne({
-      cities: {
-        $elemMatch: {
-          key: city,
-          'node.slug': slug,
-        },
-      },
-    });
+    return ProductModel.findOne({ slug });
   }
 
   @Query(() => PaginatedProductsResponse)
   @AuthMethod(operationConfigRead)
   async getAllProducts(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('input', { nullable: true }) input: ProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const {
@@ -147,8 +111,8 @@ export class ProductResolver {
       countActiveProducts = false,
       ...args
     } = input || {};
-    const query = getProductsFilter(args, city);
-    const activeProductsQuery = getProductsFilter({ ...args, active: true }, city);
+    const query = getProductsFilter(args);
+    const activeProductsQuery = getProductsFilter({ ...args, active: true });
 
     const { options } = generatePaginationOptions({
       limit,
@@ -170,11 +134,10 @@ export class ProductResolver {
 
   @Query(() => ProductsCounters)
   async getProductsCounters(
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<ProductsCounters> {
-    const activeProductsQuery = getProductsFilter({ ...input, active: true }, city);
-    const allProductsQuery = getProductsFilter(input, city);
+    const activeProductsQuery = getProductsFilter({ ...input, active: true });
+    const allProductsQuery = getProductsFilter(input);
 
     return {
       activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),
@@ -185,29 +148,18 @@ export class ProductResolver {
   @Query(() => [AttributesGroup])
   @AuthMethod(operationConfigRead)
   async getFeaturesAst(
-    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('selectedRubrics', (_type) => [ID]) selectedRubrics: string[],
   ): Promise<AttributesGroup[]> {
     try {
       const rubrics = await RubricModel.find({
         _id: { $in: selectedRubrics },
-        'cities.key': city,
       })
-        .select({ 'cities.node.attributesGroups': 1, 'cities.key': 1 })
+        .select({ attributesGroups: 1 })
         .lean()
         .exec();
-      const attributesGroups = rubrics.reduce((acc: string[], rubric) => {
-        const currentCity = getCityData(rubric.cities, city);
-        if (!currentCity) {
-          return acc;
-        }
 
-        const {
-          node: { attributesGroups = [] },
-        } = currentCity;
-
+      const attributesGroups = rubrics.reduce((acc: string[], { attributesGroups = [] }) => {
         const groups = attributesGroups.map((group) => group.node);
-
         return [...acc, ...groups];
       }, []);
 
@@ -221,27 +173,25 @@ export class ProductResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createProductSchema })
   async createProduct(
-    @Localization() { city, lang }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
       const { assets, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug, dist: city });
+      const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
       const nameValues = input.name.map(({ value }) => value);
       const cardNameValues = input.cardName.map(({ value }) => value);
       const exists = await ProductModel.exists({
         $or: [
           {
-            'cities.key': city,
-            'cities.node.name.value': {
+            'name.value': {
               $in: nameValues,
             },
           },
           {
-            'cities.key': city,
-            'cities.node.cardName.value': {
+            'cardName.value': {
               $in: cardNameValues,
             },
           },
@@ -256,18 +206,11 @@ export class ProductResolver {
       }
 
       const product = await ProductModel.create({
-        cities: [
-          {
-            key: city,
-            node: {
-              ...values,
-              slug,
-              priority: DEFAULT_PRIORITY,
-              assets: assetsResult,
-              active: true,
-            },
-          },
-        ],
+        ...values,
+        slug,
+        priority: DEFAULT_PRIORITY,
+        assets: assetsResult,
+        active: true,
       });
 
       if (!product) {
@@ -294,7 +237,7 @@ export class ProductResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateProductSchema })
   async updateProduct(
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Product>,
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
@@ -307,15 +250,13 @@ export class ProductResolver {
         $or: [
           {
             _id: { $ne: id },
-            'cities.key': city,
-            'cities.node.name.value': {
+            'name.value': {
               $in: nameValues,
             },
           },
           {
             _id: { $ne: id },
-            'cities.key': city,
-            'cities.node.cardName.value': {
+            'cardName.value': {
               $in: cardNameValues,
             },
           },
@@ -338,21 +279,16 @@ export class ProductResolver {
       }
 
       const slug = generateDefaultLangSlug(values.cardName);
-      const assetsResult = await storeUploads({ files: assets, slug, dist: city });
+      const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
       const updatedProduct = await ProductModel.findOneAndUpdate(
         {
           _id: id,
-          'cities.key': city,
         },
         {
-          $set: {
-            'cities.$.node': {
-              ...values,
-              slug,
-              assets: assetsResult,
-            },
-          },
+          ...values,
+          slug,
+          assets: assetsResult,
         },
         {
           new: true,
@@ -382,13 +318,12 @@ export class ProductResolver {
   @Mutation(() => ProductPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteProduct(
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
       const product = await ProductModel.findOne({
         _id: id,
-        'cities.key': city,
       });
 
       if (!product) {
@@ -398,51 +333,12 @@ export class ProductResolver {
         };
       }
 
-      const currentCity = getCityData(product.cities, city);
+      const filesPath = `./assets/${ASSETS_DIST_PRODUCTS}/${product.slug}`;
 
-      if (!currentCity) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
-        };
-      }
-
-      const filesPath = `./assets/${city}/${currentCity.node.slug}`;
-
-      if (product.cities.length === 1) {
-        const removed = await ProductModel.findByIdAndDelete(id);
-        const removedAssets = await del(filesPath);
-
-        if (!removed || !removedAssets) {
-          return {
-            success: false,
-            message: await getApiMessage({ key: `products.delete.error`, lang }),
-          };
-        }
-
-        return {
-          success: true,
-          message: await getApiMessage({ key: `products.delete.success`, lang }),
-        };
-      }
-
-      const removed = await ProductModel.updateOne(
-        {
-          _id: id,
-          'cities.key': city,
-        },
-        {
-          $pull: {
-            cities: {
-              key: city,
-            },
-          },
-        },
-      );
-
+      const removed = await ProductModel.findByIdAndDelete(id);
       const removedAssets = await del(filesPath);
 
-      if (!removed.ok || !removedAssets) {
+      if (!removed || !removedAssets) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.delete.error`, lang }),
@@ -464,160 +360,86 @@ export class ProductResolver {
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return '';
-    }
-    return getLangField(productCity.node.name, lang);
+    return getLangField(product.name, lang);
   }
 
   @FieldResolver((_type) => [LanguageType])
-  async name(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<LanguageType[]> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return [];
-    }
-    return productCity.node.name;
+  async name(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
+    return product.name;
   }
 
   @FieldResolver((_type) => String)
   async cardNameString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return '';
-    }
-    return getLangField(productCity.node.cardName, lang);
+    return getLangField(product.cardName, lang);
   }
 
   @FieldResolver((_type) => [LanguageType])
-  async cardName(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<LanguageType[]> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return [];
-    }
-    return productCity.node.cardName;
+  async cardName(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
+    return product.cardName;
   }
 
   @FieldResolver((_type) => String)
-  async slug(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<string> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return '';
-    }
-    return productCity.node.slug;
+  async slug(@Root() product: DocumentType<Product>): Promise<string> {
+    return product.slug;
   }
 
   @FieldResolver((_type) => Int)
-  async priority(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<number> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return DEFAULT_PRIORITY;
-    }
-    return productCity.node.priority;
+  async priority(@Root() product: DocumentType<Product>): Promise<number> {
+    return product.priority;
   }
 
   @FieldResolver((_type) => String)
   async descriptionString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return '';
-    }
-    return getLangField(productCity.node.description, lang);
+    return getLangField(product.description, lang);
   }
 
   @FieldResolver((_type) => [LanguageType])
-  async description(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<LanguageType[]> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return [];
-    }
-    return productCity.node.description;
+  async description(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
+    return product.description;
   }
 
   @FieldResolver((_type) => [String])
-  async rubrics(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<string[]> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return [];
-    }
-    return productCity.node.rubrics;
+  async rubrics(@Root() product: DocumentType<Product>): Promise<string[]> {
+    return product.rubrics;
   }
 
   @FieldResolver((_type) => [ProductAttributesGroup])
   async attributesGroups(
     @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<ProductAttributesGroup[]> {
     try {
       const populated = await product
         .populate({
-          path: 'cities.node.attributesGroups.node',
+          path: 'attributesGroups.node',
           model: 'AttributesGroup',
         })
         .populate({
-          path: 'cities.node.attributesGroups.attributes.node',
+          path: 'attributesGroups.attributes.node',
           model: 'Attribute',
         })
         .execPopulate();
-      const productCity = getCityData(populated.cities, city);
-
-      if (!productCity) {
-        return [];
-      }
-      return productCity.node.attributesGroups;
+      return populated.attributesGroups;
     } catch (e) {
       return [];
     }
   }
 
   @FieldResolver((_type) => [AssetType])
-  async assets(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<AssetType[]> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return [];
-    }
-    return productCity.node.assets.sort((a, b) => a.index - b.index);
+  async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
+    return product.assets.sort((a, b) => a.index - b.index);
   }
 
   @FieldResolver((_type) => String)
-  async mainImage(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<string> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return '';
-    }
-    const mainImage = productCity.node.assets.find(({ index }) => index === 0);
+  async mainImage(@Root() product: DocumentType<Product>): Promise<string> {
+    const mainImage = product.assets.find(({ index }) => index === 0);
 
     if (!mainImage) {
       return '';
@@ -626,32 +448,12 @@ export class ProductResolver {
   }
 
   @FieldResolver((_type) => Int)
-  async price(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<number> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return 0;
-    }
-    return productCity.node.price;
+  async price(@Root() product: DocumentType<Product>): Promise<number> {
+    return product.price;
   }
 
   @FieldResolver((_type) => Boolean)
-  async active(
-    @Root() product: DocumentType<Product>,
-    @Localization() { city }: LocalizationPayloadInterface,
-  ): Promise<boolean> {
-    const productCity = getCityData(product.cities, city);
-    if (!productCity) {
-      return false;
-    }
-    return productCity.node.active;
-  }
-
-  // This resolver for id field after aggregation
-  @FieldResolver((_type) => String)
-  async id(@Root() rubric: DocumentType<Rubric>): Promise<number> {
-    return rubric.id || rubric._id;
+  async active(@Root() product: DocumentType<Product>): Promise<boolean> {
+    return product.active;
   }
 }

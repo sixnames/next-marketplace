@@ -81,9 +81,12 @@ export class RubricCatalogueTitleField {
   readonly gender: GenderEnum;
 }
 
-// Rubric data in current city
 @ObjectType()
-export class RubricNode {
+@index({ '$**': 'text' })
+export class Rubric {
+  @Field(() => ID)
+  readonly id: string;
+
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
@@ -119,61 +122,18 @@ export class RubricNode {
   @Field(() => RubricVariant)
   @prop({ ref: RubricVariant })
   variant: string;
-}
-
-// Rubric current city
-@ObjectType()
-export class RubricCity {
-  @Field(() => String)
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => RubricNode)
-  @prop({ required: true })
-  node: RubricNode;
-}
-
-@ObjectType()
-@index({ '$**': 'text' })
-export class Rubric {
-  @Field(() => ID)
-  readonly id: string;
 
   @Field(() => String)
   readonly nameString: string;
 
-  @Field(() => [LanguageType])
-  readonly name: LanguageType[];
-
-  @Field(() => RubricCatalogueTitle)
-  readonly catalogueTitle: RubricCatalogueTitle;
-
   @Field(() => RubricCatalogueTitleField)
   readonly catalogueTitleString: RubricCatalogueTitleField;
-
-  @Field(() => String)
-  readonly slug: string;
-
-  @Field(() => Int)
-  readonly level: number;
-
-  @Field(() => Boolean)
-  readonly active: boolean;
-
-  @Field(() => Rubric, { nullable: true })
-  readonly parent: Rubric | null;
 
   @Field(() => [Rubric])
   readonly children: Rubric[];
 
-  @Field(() => [RubricAttributesGroup])
-  readonly attributesGroups: RubricAttributesGroup[];
-
   @Field(() => [RubricFilterAttribute])
   readonly filterAttributes: RubricFilterAttribute[];
-
-  @Field(() => RubricVariant)
-  readonly variant: RubricVariant;
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;
@@ -183,10 +143,6 @@ export class Rubric {
 
   @Field(() => Int)
   readonly activeProductsCount: number;
-
-  @Field(() => [RubricCity])
-  @prop({ type: RubricCity, required: true })
-  cities: RubricCity[];
 }
 
 export const RubricModel = getModelForClass(Rubric);

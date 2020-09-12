@@ -14,7 +14,7 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
 } from '../config';
-import { RubricModel, RubricNode } from '../entities/Rubric';
+import { Rubric, RubricModel } from '../entities/Rubric';
 import capitalize from 'capitalize';
 import { AttributesGroupModel } from '../entities/AttributesGroup';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
@@ -29,14 +29,12 @@ interface SetCataloguePrioritiesInterface {
   attributesGroupsIds: string[];
   processedAttributes: ProcessedAttributeInterface[];
   isStuff: boolean;
-  city: string;
 }
 
 export async function setCataloguePriorities({
   attributesGroupsIds,
   processedAttributes,
   rubricId,
-  city,
   isStuff,
 }: SetCataloguePrioritiesInterface) {
   // if user not stuff
@@ -45,11 +43,10 @@ export async function setCataloguePriorities({
     await RubricModel.findOneAndUpdate(
       {
         _id: rubricId,
-        'cities.key': city,
       },
       {
         $inc: {
-          'cities.$.node.priority': 1,
+          priority: 1,
         },
       },
       { new: true },
@@ -171,7 +168,7 @@ export function attributesReducer(
 interface GetCatalogueTitleInterface {
   processedAttributes: ProcessedAttributeInterface[];
   lang: string;
-  rubric: RubricNode;
+  rubric: Rubric;
 }
 
 interface GetTitleConfigsInterface {

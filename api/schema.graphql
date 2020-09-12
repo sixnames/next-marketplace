@@ -481,7 +481,6 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   cardName: [LanguageType!]!
   cardNameString: String!
-  cities: [ProductCity!]!
   createdAt: Timestamp!
   description: [LanguageType!]!
   descriptionString: String!
@@ -523,24 +522,6 @@ input ProductAttributesGroupInput {
   attributes: [ProductAttributeInput!]!
   node: ID!
   showInCard: Boolean!
-}
-
-type ProductCity {
-  key: String!
-  node: ProductNode!
-}
-
-type ProductNode {
-  active: Boolean!
-  assets: [AssetType!]!
-  attributesGroups: [ProductAttributesGroup!]!
-  cardName: [LanguageType!]!
-  description: [LanguageType!]!
-  name: [LanguageType!]!
-  price: Int!
-  priority: Int!
-  rubrics: [ID!]!
-  slug: String!
 }
 
 input ProductPaginateInput {
@@ -679,13 +660,12 @@ enum RoleRuleOperationTypeEnum {
 }
 
 type Rubric {
-  active: Boolean!
+  active: Boolean
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!] = []): [Rubric!]!
-  cities: [RubricCity!]!
   filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
@@ -727,11 +707,6 @@ input RubricCatalogueTitleInput {
   prefix: [LangInput!]
 }
 
-type RubricCity {
-  key: String!
-  node: RubricNode!
-}
-
 type RubricFilterAttribute {
   id: ID!
   node: Attribute!
@@ -749,18 +724,6 @@ type RubricFilterAttributeOption {
   priorities: [OptionPriority!]!
   slug: String!
   variants: [OptionVariant!]
-}
-
-type RubricNode {
-  active: Boolean
-  attributesGroups: [RubricAttributesGroup!]!
-  catalogueTitle: RubricCatalogueTitle!
-  level: Int!
-  name: [LanguageType!]!
-  parent: Rubric
-  priority: Int!
-  slug: String!
-  variant: RubricVariant!
 }
 
 type RubricPayloadType {

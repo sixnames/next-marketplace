@@ -2,13 +2,12 @@ import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
-import { LanguageType } from './common';
+import { CityCounter, LanguageType } from './common';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANTS_ENUMS,
-  DEFAULT_PRIORITY,
 } from '../config';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { Option } from './Option';
@@ -62,14 +61,10 @@ export class AttributeFilterOption {
 }
 
 @ObjectType()
-export class AttributePriority {
+export class AttributeCityCounter extends CityCounter {
   @Field((_type) => String)
   @prop({ required: true, type: String })
   rubricId: string;
-
-  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
-  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
-  priority: number;
 }
 
 @ObjectType()
@@ -88,9 +83,13 @@ export class Attribute {
   @Field(() => String)
   readonly nameString: string;
 
-  @Field(() => [AttributePriority])
-  @prop({ type: AttributePriority })
-  priorities: AttributePriority[];
+  @Field(() => [AttributeCityCounter])
+  @prop({ type: AttributeCityCounter, required: true })
+  views: AttributeCityCounter[];
+
+  @Field(() => [AttributeCityCounter])
+  @prop({ type: AttributeCityCounter, required: true })
+  priorities: AttributeCityCounter[];
 
   @Field((_type) => AttributeVariantEnum)
   @prop({ required: true, enum: ATTRIBUTE_VARIANTS_ENUMS })

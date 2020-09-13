@@ -6,6 +6,7 @@ export const stringAttribute = {
     { key: 'ru', value: 'string attribute' },
     { key: 'en', value: 'string attribute' },
   ],
+  views: [],
   priorities: [],
   variant: ATTRIBUTE_VARIANT_STRING as AttributeVariantEnum,
   slug: 'string attribute',
@@ -16,6 +17,7 @@ export const selectAttribute = {
     { key: 'ru', value: 'select attribute' },
     { key: 'en', value: 'select attribute' },
   ],
+  views: [],
   priorities: [],
   variant: ATTRIBUTE_VARIANT_SELECT,
 };

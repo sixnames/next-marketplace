@@ -282,7 +282,7 @@ export class AttributesGroupResolver {
       }
 
       const slug = generateDefaultLangSlug(values.name);
-      const attribute = await AttributeModel.create({ ...values, slug, priorities: [] });
+      const attribute = await AttributeModel.create({ ...values, slug, views: [], priorities: [] });
       if (!attribute) {
         return {
           success: false,

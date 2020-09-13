@@ -16,7 +16,6 @@ import {
   LocalizationPayloadInterface,
   SessionRole,
 } from '../../decorators/parameterDecorators';
-import { get } from 'lodash';
 import { Role } from '../../entities/Role';
 
 @Resolver((_of) => CatalogueData)
@@ -80,20 +79,6 @@ export class CatalogueDataResolver {
     });
 
     const products = await ProductModel.paginate(query, options);
-    products.docs.sort((a, b) => {
-      const valueA: any = get(a, sortBy);
-      const valueB: any = get(b, sortBy);
-
-      if (valueA < valueB) {
-        return 1;
-      }
-
-      if (valueB < valueA) {
-        return -1;
-      }
-
-      return 0;
-    });
 
     return {
       rubric,

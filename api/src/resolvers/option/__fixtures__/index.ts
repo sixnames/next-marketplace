@@ -5,6 +5,7 @@ export const newOption = {
   ],
   slug: 'Option name',
   priorities: [],
+  views: [],
 };
 
 export const anotherOption = {
@@ -14,4 +15,5 @@ export const anotherOption = {
   ],
   slug: 'Another name',
   priorities: [],
+  views: [],
 };

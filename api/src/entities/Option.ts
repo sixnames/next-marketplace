@@ -1,8 +1,8 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { GenderEnum, LanguageType } from './common';
+import { CityCounter, GenderEnum, LanguageType } from './common';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
-import { DEFAULT_PRIORITY, GENDER_ENUMS } from '../config';
+import { GENDER_ENUMS } from '../config';
 
 @ObjectType()
 export class OptionVariant {
@@ -16,7 +16,7 @@ export class OptionVariant {
 }
 
 @ObjectType()
-export class OptionPriority {
+export class OptionCityCounter extends CityCounter {
   @Field((_type) => String)
   @prop({ required: true, type: String })
   attributeId: string;
@@ -24,10 +24,6 @@ export class OptionPriority {
   @Field((_type) => String)
   @prop({ required: true, type: String })
   rubricId: string;
-
-  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
-  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
-  priority: number;
 }
 
 @ObjectType()
@@ -51,9 +47,13 @@ export class Option {
   @prop({ enum: GENDER_ENUMS, type: String })
   gender?: GenderEnum | null;
 
-  @Field(() => [OptionPriority])
-  @prop({ type: OptionPriority })
-  priorities: OptionPriority[];
+  @Field(() => [OptionCityCounter])
+  @prop({ type: OptionCityCounter, required: true })
+  views: OptionCityCounter[];
+
+  @Field(() => [OptionCityCounter])
+  @prop({ type: OptionCityCounter, required: true })
+  priorities: OptionCityCounter[];
 
   @Field(() => String)
   readonly nameString: string;

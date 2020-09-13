@@ -48,9 +48,16 @@ type Attribute {
   nameString: String!
   options: OptionsGroup
   positioningInTitle: [AttributePositioningInTitle!]
-  priorities: [AttributePriority!]!
+  priorities: [AttributeCityCounter!]!
   slug: String!
   variant: AttributeVariantEnum!
+  views: [AttributeCityCounter!]!
+}
+
+type AttributeCityCounter {
+  counter: Int!
+  key: String!
+  rubricId: String!
 }
 
 type AttributePositioningInTitle {
@@ -77,11 +84,6 @@ enum AttributePositionInTitleEnum {
   begin
   end
   replaceKeyword
-}
-
-type AttributePriority {
-  priority: Int!
-  rubricId: String!
 }
 
 type AttributesGroup {
@@ -413,14 +415,16 @@ type Option {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
-  priorities: [OptionPriority!]!
+  priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]
+  views: [OptionCityCounter!]!
 }
 
-type OptionPriority {
+type OptionCityCounter {
   attributeId: String!
-  priority: Int!
+  counter: Int!
+  key: String!
   rubricId: String!
 }
 
@@ -729,9 +733,10 @@ type RubricFilterAttributeOption {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
-  priorities: [OptionPriority!]!
+  priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]
+  views: [OptionCityCounter!]!
 }
 
 type RubricPayloadType {

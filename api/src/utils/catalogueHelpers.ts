@@ -9,7 +9,6 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   DEFAULT_LANG,
-  DEFAULT_PRIORITY,
   LANG_DEFAULT_TITLE_SEPARATOR,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
@@ -73,68 +72,33 @@ export async function setCataloguePriorities({
 
     for await (const attribute of attributesList) {
       const { options } = attribute;
-      const exist = await AttributeModel.findOneAndUpdate(
-        {
-          _id: attribute.id,
-          'priorities.rubricId': rubricId,
+      await updateModelViews({
+        model: AttributeModel,
+        document: attribute,
+        city,
+        additionalCityCounterData: {
+          rubricId: rubricId,
         },
-        {
-          $inc: {
-            'priorities.$.priority': 1,
-          },
-        },
-      );
-
-      if (!exist) {
-        await AttributeModel.findOneAndUpdate(
-          {
-            _id: attribute.id,
-          },
-          {
-            $push: {
-              priorities: {
-                rubricId: rubricId,
-                priority: DEFAULT_PRIORITY,
-              },
-            },
-          },
-        );
-      }
+      });
 
       // increase options priority
       const optionsGroup = await OptionsGroupModel.findOne({ _id: options });
       if (optionsGroup) {
         for await (const slug of optionsSlugs) {
-          const exist = await OptionModel.findOneAndUpdate(
-            {
-              _id: { $in: optionsGroup.options },
-              slug,
-              'priorities.rubricId': rubricId,
-              'priorities.attributeId': attribute.id,
-            },
-            {
-              $inc: {
-                'priorities.$.priority': 1,
+          const option = await OptionModel.findOne({
+            _id: { $in: optionsGroup.options },
+            slug,
+          });
+          if (option) {
+            await updateModelViews({
+              model: OptionModel,
+              document: option,
+              city,
+              additionalCityCounterData: {
+                rubricId: rubricId,
+                attributeId: attribute.id,
               },
-            },
-          );
-
-          if (!exist) {
-            await OptionModel.findOneAndUpdate(
-              {
-                _id: { $in: optionsGroup.options },
-                slug,
-              },
-              {
-                $push: {
-                  priorities: {
-                    attributeId: attribute.id,
-                    rubricId: rubricId,
-                    priority: DEFAULT_PRIORITY,
-                  },
-                },
-              },
-            );
+            });
           }
         }
       }

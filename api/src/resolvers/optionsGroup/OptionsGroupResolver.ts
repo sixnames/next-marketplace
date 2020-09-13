@@ -251,7 +251,7 @@ export class OptionsGroupResolver {
       }
 
       const slug = generateDefaultLangSlug(values.name);
-      const option = await OptionModel.create({ ...values, slug, priorities: [] });
+      const option = await OptionModel.create({ ...values, slug, priorities: [], views: [] });
       if (!option) {
         return {
           success: false,

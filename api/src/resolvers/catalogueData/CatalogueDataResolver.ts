@@ -5,17 +5,26 @@ import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ProductModel } from '../../entities/Product';
-import { attributesReducer, getCatalogueTitle } from '../../utils/catalogueHelpers';
+import {
+  attributesReducer,
+  getCatalogueTitle,
+  setCataloguePriorities,
+} from '../../utils/catalogueHelpers';
 import { ProductPaginateInput } from '../product/ProductPaginateInput';
-import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+import {
+  Localization,
+  LocalizationPayloadInterface,
+  SessionRole,
+} from '../../decorators/parameterDecorators';
 import { get } from 'lodash';
+import { Role } from '../../entities/Role';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
   @Query(() => CatalogueData, { nullable: true })
   async getCatalogueData(
-    // @SessionRole() sessionRole: Role,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @SessionRole() sessionRole: Role,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
@@ -38,13 +47,14 @@ export class CatalogueDataResolver {
     const processedAttributes = attributes.reduce(attributesReducer, []);
 
     // increase filter priority
-    // const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
-    /*await setCataloguePriorities({
+    const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
+    await setCataloguePriorities({
       attributesGroupsIds,
-      rubricId: rubric.id,
+      rubric: rubric,
       processedAttributes,
       isStuff: sessionRole.isStuff,
-    });*/
+      city,
+    });
 
     // get catalogue title
     const catalogueTitle = await getCatalogueTitle({

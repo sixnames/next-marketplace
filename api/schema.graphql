@@ -678,11 +678,13 @@ type Rubric {
   name: [LanguageType!]!
   nameString: String!
   parent: Rubric
+  priorities: [CityCounter!]!
   priority: Int!
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
   variant: RubricVariant!
+  views: [CityCounter!]!
 }
 
 type RubricAttributesGroup {

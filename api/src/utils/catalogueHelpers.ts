@@ -18,6 +18,7 @@ import { Rubric, RubricModel } from '../entities/Rubric';
 import capitalize from 'capitalize';
 import { AttributesGroupModel } from '../entities/AttributesGroup';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
+import { updateModelViews } from './updateModelViews';
 
 interface ProcessedAttributeInterface {
   key: string;
@@ -25,32 +26,30 @@ interface ProcessedAttributeInterface {
 }
 
 interface SetCataloguePrioritiesInterface {
-  rubricId: string;
+  rubric: Rubric;
   attributesGroupsIds: string[];
   processedAttributes: ProcessedAttributeInterface[];
   isStuff: boolean;
+  city: string;
 }
 
 export async function setCataloguePriorities({
   attributesGroupsIds,
   processedAttributes,
-  rubricId,
+  rubric,
   isStuff,
+  city,
 }: SetCataloguePrioritiesInterface) {
   // if user not stuff
   if (!isStuff) {
+    const rubricId = rubric.id;
+
     // increase rubric priority
-    await RubricModel.findOneAndUpdate(
-      {
-        _id: rubricId,
-      },
-      {
-        $inc: {
-          priority: 1,
-        },
-      },
-      { new: true },
-    );
+    await updateModelViews({
+      model: RubricModel,
+      document: rubric,
+      city,
+    });
 
     const attributesSlugs = processedAttributes.reduce(
       (acc: string[], { key }) => [...acc, key],

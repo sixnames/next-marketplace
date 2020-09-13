@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { GenderEnum, LanguageType } from './common';
+import { CityCounter, GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
@@ -86,6 +86,14 @@ export class RubricCatalogueTitleField {
 export class Rubric {
   @Field(() => ID)
   readonly id: string;
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  views: CityCounter[];
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  priorities: CityCounter[];
 
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })

@@ -161,6 +161,8 @@ export class RubricResolver {
       }
 
       const rubric = await RubricModel.create({
+        views: [],
+        priorities: [],
         name: input.name,
         priority: DEFAULT_PRIORITY,
         catalogueTitle: input.catalogueTitle,

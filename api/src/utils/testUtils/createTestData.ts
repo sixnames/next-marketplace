@@ -189,6 +189,8 @@ const createTestData = async () => {
 
     const rubricLevelOne = await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_ONE,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       attributesGroups: rubricAttributesGroups(true),
@@ -200,6 +202,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_ONE_B,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       attributesGroups: rubricAttributesGroups(true),
@@ -211,6 +215,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_ONE_C,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       attributesGroups: rubricAttributesGroups(true),
@@ -222,6 +228,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_ONE_D,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       attributesGroups: rubricAttributesGroups(true),
@@ -233,6 +241,8 @@ const createTestData = async () => {
 
     const rubricLevelTwoA = await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_TWO_A,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelOne.id,
@@ -245,6 +255,8 @@ const createTestData = async () => {
 
     const rubricLevelThreeAA = await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_THREE_A_A,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelTwoA.id,
@@ -257,6 +269,8 @@ const createTestData = async () => {
 
     const rubricLevelThreeAB = await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_THREE_A_B,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelTwoA.id,
@@ -269,6 +283,8 @@ const createTestData = async () => {
 
     const rubricLevelTwoB = await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_TWO_B,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelOne.id,
@@ -281,6 +297,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_THREE_B_A,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelTwoB.id,
@@ -293,6 +311,8 @@ const createTestData = async () => {
 
     await RubricModel.create({
       ...MOCK_RUBRIC_LEVEL_THREE_B_B,
+      views: [],
+      priorities: [],
       slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.defaultTitle),
       variant: rubricVariantAlcohol.id,
       parent: rubricLevelTwoB.id,

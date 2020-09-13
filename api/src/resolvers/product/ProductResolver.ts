@@ -44,8 +44,9 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { ASSETS_DIST_PRODUCTS, DEFAULT_PRIORITY } from '../../config';
+import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { Role } from '../../entities/Role';
+import { updateModelViews } from '../../utils/updateModelViews';
 
 const {
   operationConfigCreate,
@@ -94,33 +95,14 @@ export class ProductResolver {
       throw new Error('Product not found');
     }
 
+    // Increase product priority
     const { isStuff } = sessionRole;
     if (!isStuff) {
-      // Increase product priority
-      const { views } = product;
-      const currentView = views.find(({ key }) => key === city);
-      if (!currentView) {
-        await ProductModel.findByIdAndUpdate(product.id, {
-          $push: {
-            views: {
-              key: city,
-              counter: DEFAULT_PRIORITY,
-            },
-          },
-        });
-      } else {
-        await ProductModel.findByIdAndUpdate(
-          product.id,
-          {
-            $inc: {
-              'views.$[view].counter': 1,
-            },
-          },
-          {
-            arrayFilters: [{ 'view.key': { $eq: city } }],
-          },
-        );
-      }
+      await updateModelViews({
+        model: ProductModel,
+        document: product,
+        city,
+      });
     }
 
     return product;

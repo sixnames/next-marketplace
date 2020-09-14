@@ -54,7 +54,7 @@ import {
 } from '../../config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
-import toggleItemInArray from '../../utils/toggleItemInArray';
+import toggleIdInArray from '../../utils/toggleIdInArray';
 import { LanguageType } from '../../entities/common';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import {
@@ -448,7 +448,7 @@ export class RubricResolver {
         };
       }
 
-      const updatedShowInCatalogueFilter = toggleItemInArray(
+      const updatedShowInCatalogueFilter = toggleIdInArray(
         currentAttributesGroup.showInCatalogueFilter,
         attributeId,
       );

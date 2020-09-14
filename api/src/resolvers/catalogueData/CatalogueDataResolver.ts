@@ -93,6 +93,38 @@ export class CatalogueDataResolver {
   }
 
   @Query((_returns) => CatalogueSearchResult)
+  async getCatalogueSearchTopItems(
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<CatalogueSearchResult> {
+    try {
+      const searchPipeLine = [
+        {
+          $match: {
+            active: true,
+          },
+        },
+        { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+        { $sort: { 'views.counter': -1 } },
+        { $limit: 3 },
+      ];
+
+      const products = await ProductModel.aggregate<Product>(searchPipeLine);
+      const rubrics = await RubricModel.aggregate<Rubric>(searchPipeLine);
+
+      return {
+        products,
+        rubrics,
+      };
+    } catch (e) {
+      return {
+        products: [],
+        rubrics: [],
+      };
+    }
+  }
+
+  @Query((_returns) => CatalogueSearchResult)
   async getCatalogueSearchResult(
     @Localization() { city }: LocalizationPayloadInterface,
     @Arg('search', (_type) => String) search: string,
@@ -108,12 +140,10 @@ export class CatalogueDataResolver {
             active: true,
           },
         },
-        {
-          $limit: 3,
-        },
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
         { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
         { $sort: { 'views.counter': -1 } },
+        { $limit: 3 },
       ];
 
       const products = await ProductModel.aggregate<Product>(searchPipeLine);

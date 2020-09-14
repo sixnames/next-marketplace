@@ -593,6 +593,7 @@ type Query {
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
+  getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!
   getCityBySlug(slug: String!): City!
   getClientLanguage: String!

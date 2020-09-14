@@ -66,6 +66,28 @@ describe('Catalogue', () => {
     const { query } = await testClientWithContext();
 
     const {
+      data: { getCatalogueSearchTopItems },
+    } = await query<any>(
+      gql`
+        query GetCatalogueSearchTopItems {
+          getCatalogueSearchTopItems {
+            rubrics {
+              id
+              nameString
+            }
+            products {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+    );
+
+    expect(getCatalogueSearchTopItems.products).toHaveLength(3);
+    expect(getCatalogueSearchTopItems.rubrics).toHaveLength(3);
+
+    const {
       data: { getCatalogueSearchResult },
     } = await query<any>(
       gql`

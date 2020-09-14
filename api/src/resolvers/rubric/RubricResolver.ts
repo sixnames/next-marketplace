@@ -792,9 +792,12 @@ export class RubricResolver {
     @Arg('excluded', (_type) => [ID], { nullable: true, defaultValue: [] })
     excluded: string[],
   ): Promise<Rubric[]> {
+    const { id, _id } = rubric;
+    const rubricId = id || _id;
+
     return RubricModel.find({
       _id: { $nin: excluded },
-      parent: rubric.id,
+      parent: rubricId,
     });
   }
 
@@ -810,7 +813,7 @@ export class RubricResolver {
     @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
-    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
+    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id || rubric._id });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({

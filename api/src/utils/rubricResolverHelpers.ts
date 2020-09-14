@@ -60,7 +60,7 @@ export async function getDeepRubricChildrenIds({ rubricId }: GetDeepRubricChildr
 }
 
 export async function getRubricCounters({ rubric, args = {} }: GetRubricCountersInterface) {
-  const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
+  const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id || rubric._id });
   const query = getProductsFilter({ ...args, rubric: rubricsIds });
 
   return ProductModel.countDocuments({

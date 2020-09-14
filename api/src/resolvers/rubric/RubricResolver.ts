@@ -114,13 +114,37 @@ export class RubricResolver {
 
   @Query(() => [Rubric])
   async getRubricsTree(
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('excluded', (_type) => [ID], { nullable: true, defaultValue: [] })
     excluded: string[],
   ): Promise<Rubric[]> {
-    return RubricModel.find({
-      _id: { $nin: excluded },
-      level: RUBRIC_LEVEL_ONE,
-    }).sort({ priority: -1 });
+    return RubricModel.aggregate([
+      {
+        $match: {
+          _id: { $nin: getObjectIdsArray(excluded) },
+          level: RUBRIC_LEVEL_ONE,
+        },
+      },
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          viewsCounter: {
+            $cond: {
+              if: {
+                $and: [
+                  {
+                    $eq: ['$views.key', city],
+                  },
+                ],
+              },
+              then: '$views.counter',
+              else: 0,
+            },
+          },
+        },
+      },
+      { $sort: { viewsCounter: -1 } },
+    ]);
   }
 
   @Mutation(() => RubricPayloadType)
@@ -804,8 +828,9 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<RubricFilterAttribute[]> {
-    const { attributesGroups, catalogueTitle, id } = rubric;
-    const rubricIdString = id.toString();
+    const { attributesGroups, catalogueTitle, id, _id } = rubric;
+    const rubricId = id || _id;
+    const rubricIdString = rubricId.toString();
 
     // get all visible attributes id's
     const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {

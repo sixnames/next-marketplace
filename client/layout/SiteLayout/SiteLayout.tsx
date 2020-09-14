@@ -58,12 +58,16 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       }
     }
 
+    if (burgerDropdownSizes.height === 0) {
+      resizeHandler();
+    }
+
     window.addEventListener('resize', resizeHandler);
 
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, [contentRef, isBurgerDropdownOpen, isMobile]);
+  }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
     <div className={classes.frame} style={themeStyles}>

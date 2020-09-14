@@ -804,39 +804,58 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<RubricFilterAttribute[]> {
-    const { attributesGroups, catalogueTitle } = rubric;
+    const { attributesGroups, catalogueTitle, id } = rubric;
+    const rubricIdString = id.toString();
 
     // get all visible attributes id's
     const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
       return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
     }, []);
 
-    /*const sortByViewsPipeLine = [
-      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-      { $sort: { 'views.counter': -1 } },
-    ];*/
-
     const attributes = await AttributeModel.aggregate<Attribute>([
       { $match: { _id: { $in: visibleAttributes } } },
       { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
       {
-        $match: {
-          $or: [
-            { 'views.key': city, 'views.rubricId': rubric.id.toString() },
-            { views: { $exists: false } },
-          ],
+        $addFields: {
+          viewsCounter: {
+            $cond: {
+              if: {
+                $and: [
+                  {
+                    $eq: ['$views.key', city],
+                  },
+                  {
+                    $eq: ['$views.rubricId', rubricIdString],
+                  },
+                ],
+              },
+              then: '$views.counter',
+              else: 0,
+            },
+          },
         },
       },
-      { $sort: { 'views.counter': -1 } },
-      // ...sortByViewsPipeLine,
+      { $sort: { viewsCounter: -1 } },
     ]);
-    console.log(JSON.stringify(attributes, null, 2));
-    const result = attributes.map(async (attribute) => {
+
+    const reducedAttributes = attributes.reduce((acc: Attribute[], attribute) => {
+      const { _id } = attribute;
+      const exist = acc.find(({ _id: existingId }) => {
+        return existingId?.toString() === _id?.toString();
+      });
+      if (exist) {
+        return acc;
+      }
+      return [...acc, attribute];
+    }, []);
+
+    const result = reducedAttributes.map(async (attribute) => {
+      const attributeIdString = attribute._id?.toString();
+
       const optionsGroup = await OptionsGroupModel.findById(attribute.options);
       if (!optionsGroup) {
         return {
-          id: attribute.id,
+          id: attributeIdString + rubricIdString,
           node: attribute,
           options: [],
         };
@@ -844,12 +863,47 @@ export class RubricResolver {
 
       const options = await OptionModel.aggregate<Option>([
         { $match: { _id: { $in: optionsGroup.options } } },
-        // ...sortByViewsPipeLine,
+        { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            viewsCounter: {
+              $cond: {
+                if: {
+                  $and: [
+                    {
+                      $eq: ['$views.key', city],
+                    },
+                    {
+                      $eq: ['$views.rubricId', rubricIdString],
+                    },
+                    {
+                      $eq: ['$views.attributeId', attributeIdString],
+                    },
+                  ],
+                },
+                then: '$views.counter',
+                else: 0,
+              },
+            },
+          },
+        },
+        { $sort: { viewsCounter: -1 } },
       ]);
+
+      const reducedOptions = options.reduce((acc: Option[], option) => {
+        const { _id } = option;
+        const exist = acc.find(({ _id: existingId }) => {
+          return existingId?.toString() === _id?.toString();
+        });
+        if (exist) {
+          return acc;
+        }
+        return [...acc, option];
+      }, []);
 
       const resultOptions: RubricFilterAttributeOption[] = [];
 
-      for await (const option of options) {
+      for await (const option of reducedOptions) {
         const { variants, name } = option;
         let filterNameString: string;
         const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
@@ -862,14 +916,14 @@ export class RubricResolver {
 
         resultOptions.push({
           ...option,
-          id: option._id + rubric.id,
+          id: option._id + rubricIdString,
           filterNameString: filterNameString,
           counter: 0,
         });
       }
 
       return {
-        id: attribute._id + rubric.id,
+        id: attributeIdString + rubricIdString,
         node: attribute,
         options: resultOptions,
       };

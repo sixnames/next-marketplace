@@ -17,6 +17,7 @@ export interface UpdateModelViewsInterface {
   additionalCityCounterData?: {
     [key: string]: any;
   };
+  findCurrentView: (view: ExtendedCityCounter) => boolean;
 }
 
 export async function updateModelViews({
@@ -24,9 +25,10 @@ export async function updateModelViews({
   model,
   city,
   additionalCityCounterData = {},
+  findCurrentView,
 }: UpdateModelViewsInterface) {
   const { views = [] } = document;
-  const currentView = views.find(({ key }) => key === city);
+  const currentView = views.find(findCurrentView);
 
   if (!currentView) {
     await model.findByIdAndUpdate(document.id, {

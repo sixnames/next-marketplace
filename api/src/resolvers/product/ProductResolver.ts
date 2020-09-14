@@ -102,6 +102,7 @@ export class ProductResolver {
         model: ProductModel,
         document: product,
         city,
+        findCurrentView: ({ key }) => key === city,
       });
     }
 

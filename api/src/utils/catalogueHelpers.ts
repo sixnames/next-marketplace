@@ -41,13 +41,14 @@ export async function setCataloguePriorities({
 }: SetCataloguePrioritiesInterface) {
   // if user not stuff
   if (!isStuff) {
-    const rubricId = rubric.id;
+    const rubricIdString = rubric.id.toString();
 
     // increase rubric priority
     await updateModelViews({
       model: RubricModel,
       document: rubric,
       city,
+      findCurrentView: ({ key }) => key === city,
     });
 
     const attributesSlugs = processedAttributes.reduce(
@@ -72,12 +73,17 @@ export async function setCataloguePriorities({
 
     for await (const attribute of attributesList) {
       const { options } = attribute;
+      const attributeIdString = attribute.id.toString();
+
       await updateModelViews({
         model: AttributeModel,
         document: attribute,
         city,
         additionalCityCounterData: {
-          rubricId: rubricId,
+          rubricId: rubricIdString,
+        },
+        findCurrentView: ({ key, rubricId }) => {
+          return key === city && rubricId === rubricIdString;
         },
       });
 
@@ -95,8 +101,13 @@ export async function setCataloguePriorities({
               document: option,
               city,
               additionalCityCounterData: {
-                rubricId: rubricId,
-                attributeId: attribute.id,
+                rubricId: rubricIdString,
+                attributeId: attributeIdString,
+              },
+              findCurrentView: ({ key, rubricId, attributeId }) => {
+                return (
+                  key === city && rubricId === rubricIdString && attributeId === attributeIdString
+                );
               },
             });
           }

@@ -74,7 +74,8 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
-import { OptionModel } from '../../entities/Option';
+import { Option, OptionModel } from '../../entities/Option';
+import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -801,16 +802,25 @@ export class RubricResolver {
   @FieldResolver((_returns) => [RubricFilterAttribute])
   async filterAttributes(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<RubricFilterAttribute[]> {
     const { attributesGroups, catalogueTitle } = rubric;
 
     // get all visible attributes id's
-    const visibleAttributes = attributesGroups.reduce((acc: string[], group) => {
-      return [...acc, ...group.showInCatalogueFilter];
+    const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
+      return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
     }, []);
 
-    const attributes = await AttributeModel.find({ _id: { $in: visibleAttributes } });
+    const sortByViewsPipeLine = [
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+      { $sort: { 'views.counter': -1 } },
+    ];
+
+    const attributes = await AttributeModel.aggregate<Attribute>([
+      { $match: { _id: { $in: visibleAttributes } } },
+      ...sortByViewsPipeLine,
+    ]);
 
     const result = attributes.map(async (attribute) => {
       const optionsGroup = await OptionsGroupModel.findById(attribute.options);
@@ -822,9 +832,10 @@ export class RubricResolver {
         };
       }
 
-      const options = await OptionModel.find({ _id: { $in: optionsGroup.options } })
-        .lean()
-        .exec();
+      const options = await OptionModel.aggregate<Option>([
+        { $match: { _id: { $in: optionsGroup.options } } },
+        ...sortByViewsPipeLine,
+      ]);
 
       const resultOptions: RubricFilterAttributeOption[] = [];
 
@@ -848,7 +859,7 @@ export class RubricResolver {
       }
 
       return {
-        id: attribute.id + rubric.id,
+        id: attribute._id + rubric.id,
         node: attribute,
         options: resultOptions,
       };

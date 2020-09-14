@@ -30,6 +30,7 @@ export class OptionCityCounter extends CityCounter {
 export class Option {
   @Field(() => ID)
   readonly id: string;
+  readonly _id?: string;
 
   @Field(() => String)
   @Property({ required: true })

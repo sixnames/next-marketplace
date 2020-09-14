@@ -463,4 +463,9 @@ export class ProductResolver {
   async active(@Root() product: DocumentType<Product>): Promise<boolean> {
     return product.active;
   }
+
+  @FieldResolver()
+  async id(@Root() product: DocumentType<Product>): Promise<string> {
+    return product.id || product._id;
+  }
 }

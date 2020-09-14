@@ -4,7 +4,7 @@ import { RubricModel } from '../../entities/Rubric';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
-import { ProductModel } from '../../entities/Product';
+import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
   getCatalogueTitle,
@@ -78,11 +78,28 @@ export class CatalogueDataResolver {
       sortBy,
     });
 
-    const products = await ProductModel.paginate(query, options);
+    // console.log(rubricsIds);
+    console.log(JSON.stringify({ rubricsIds, query }, null, 2));
+    const productsPipeline = ProductModel.aggregate<Product>([{ $match: query }]);
+    console.log(JSON.stringify(await productsPipeline, null, 2));
+    // const products = await ProductModel.aggregatePaginate(productsPipeline, options);
+    await ProductModel.aggregatePaginate(productsPipeline, options);
+    // console.log(JSON.stringify({ products, productsPipeline }, null, 2));
 
     return {
       rubric,
-      products,
+      products: {
+        docs: [],
+        totalDocs: 0,
+        limit: 100,
+        page: 1,
+        totalPages: 1,
+        pagingCounter: 1,
+        hasPrevPage: false,
+        hasNextPage: false,
+        prevPage: null,
+        nextPage: null,
+      },
       catalogueTitle,
     };
   }

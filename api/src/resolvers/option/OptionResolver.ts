@@ -28,4 +28,9 @@ export class OptionResolver {
   ): Promise<string> {
     return getLangField(option.name, ctx.req.lang);
   }
+
+  @FieldResolver()
+  async id(@Root() option: DocumentType<Option>): Promise<string> {
+    return option.id || option._id;
+  }
 }

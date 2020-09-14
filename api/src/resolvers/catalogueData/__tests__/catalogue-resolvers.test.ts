@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 
 describe('Catalogue', () => {
-  it('Should return catalogue data', async () => {
+  it.only('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 
     const {
@@ -46,10 +46,10 @@ describe('Catalogue', () => {
         variables: {
           catalogueFilter: [
             'kupit_vino',
-            'tsvet_vina-krasniy',
-            'tsvet_vina-beliy',
-            'tip_vina-portvein',
-            'tip_vina-kreplenoe',
+            // 'tsvet_vina-krasniy',
+            // 'tsvet_vina-beliy',
+            // 'tip_vina-portvein',
+            // 'tip_vina-kreplenoe',
           ],
         },
       },

@@ -41,6 +41,7 @@ export type Query = {
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
+  getCatalogueSearchResult: CatalogueSearchResult;
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
   getValidationMessages: Array<Message>;
@@ -155,6 +156,11 @@ export type QueryGetCatalogueDataArgs = {
 };
 
 
+export type QueryGetCatalogueSearchResultArgs = {
+  search: Scalars['String'];
+};
+
+
 export type QueryGetMessageArgs = {
   key: Scalars['String'];
 };
@@ -223,23 +229,29 @@ export type Product = {
   __typename?: 'Product';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
-  nameString: Scalars['String'];
+  views: Array<CityCounter>;
+  priorities: Array<CityCounter>;
   name: Array<LanguageType>;
-  cardNameString: Scalars['String'];
   cardName: Array<LanguageType>;
   slug: Scalars['String'];
-  descriptionString: Scalars['String'];
   description: Array<LanguageType>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<AssetType>;
-  mainImage: Scalars['String'];
   price: Scalars['Int'];
   active: Scalars['Boolean'];
-  cities: Array<ProductCity>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  mainImage: Scalars['String'];
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
-  priority: Scalars['Int'];
+};
+
+export type CityCounter = {
+  __typename?: 'CityCounter';
+  key: Scalars['String'];
+  counter: Scalars['Int'];
 };
 
 export type LanguageType = {
@@ -269,10 +281,19 @@ export type Attribute = {
   slug: Scalars['String'];
   name: Array<LanguageType>;
   nameString: Scalars['String'];
+  views: Array<AttributeCityCounter>;
+  priorities: Array<AttributeCityCounter>;
   variant: AttributeVariantEnum;
   options?: Maybe<OptionsGroup>;
   positioningInTitle?: Maybe<Array<AttributePositioningInTitle>>;
   metric?: Maybe<Metric>;
+};
+
+export type AttributeCityCounter = {
+  __typename?: 'AttributeCityCounter';
+  key: Scalars['String'];
+  counter: Scalars['Int'];
+  rubricId: Scalars['String'];
 };
 
 /** Attribute variant enum */
@@ -298,6 +319,8 @@ export type Option = {
   name: Array<LanguageType>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
+  views: Array<OptionCityCounter>;
+  priorities: Array<OptionCityCounter>;
   nameString: Scalars['String'];
   filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
@@ -315,6 +338,14 @@ export enum GenderEnum {
   He = 'he',
   It = 'it'
 }
+
+export type OptionCityCounter = {
+  __typename?: 'OptionCityCounter';
+  key: Scalars['String'];
+  counter: Scalars['Int'];
+  attributeId: Scalars['String'];
+  rubricId: Scalars['String'];
+};
 
 export type AttributePositioningInTitle = {
   __typename?: 'AttributePositioningInTitle';
@@ -351,26 +382,6 @@ export type AssetType = {
   __typename?: 'AssetType';
   url: Scalars['String'];
   index: Scalars['Int'];
-};
-
-export type ProductCity = {
-  __typename?: 'ProductCity';
-  key: Scalars['String'];
-  node: ProductNode;
-};
-
-export type ProductNode = {
-  __typename?: 'ProductNode';
-  name: Array<LanguageType>;
-  cardName: Array<LanguageType>;
-  slug: Scalars['String'];
-  priority: Scalars['Int'];
-  description: Array<LanguageType>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<AssetType>;
-  price: Scalars['Int'];
-  active: Scalars['Boolean'];
 };
 
 
@@ -410,7 +421,8 @@ export enum PaginateSortDirectionEnum {
 /** Product pagination sortBy enum */
 export enum ProductSortByEnum {
   Price = 'price',
-  CreatedAt = 'createdAt'
+  CreatedAt = 'createdAt',
+  Priority = 'priority'
 }
 
 export type ProductsCounters = {
@@ -568,23 +580,24 @@ export type CatalogueData = {
 export type Rubric = {
   __typename?: 'Rubric';
   id: Scalars['ID'];
-  nameString: Scalars['String'];
+  views: Array<CityCounter>;
+  priorities: Array<CityCounter>;
   name: Array<LanguageType>;
   catalogueTitle: RubricCatalogueTitle;
-  catalogueTitleString: RubricCatalogueTitleField;
   slug: Scalars['String'];
+  priority: Scalars['Int'];
   level: Scalars['Int'];
-  active: Scalars['Boolean'];
+  active?: Maybe<Scalars['Boolean']>;
   parent?: Maybe<Rubric>;
-  children: Array<Rubric>;
   attributesGroups: Array<RubricAttributesGroup>;
-  filterAttributes: Array<RubricFilterAttribute>;
   variant: RubricVariant;
+  nameString: Scalars['String'];
+  catalogueTitleString: RubricCatalogueTitleField;
+  children: Array<Rubric>;
+  filterAttributes: Array<RubricFilterAttribute>;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
   activeProductsCount: Scalars['Int'];
-  cities: Array<RubricCity>;
-  priority: Scalars['Int'];
 };
 
 
@@ -605,20 +618,27 @@ export type RubricCatalogueTitle = {
   gender: GenderEnum;
 };
 
-export type RubricCatalogueTitleField = {
-  __typename?: 'RubricCatalogueTitleField';
-  defaultTitle: Scalars['String'];
-  prefix?: Maybe<Scalars['String']>;
-  keyword: Scalars['String'];
-  gender: GenderEnum;
-};
-
 export type RubricAttributesGroup = {
   __typename?: 'RubricAttributesGroup';
   id: Scalars['ID'];
   showInCatalogueFilter: Array<Scalars['ID']>;
   isOwner: Scalars['Boolean'];
   node: AttributesGroup;
+};
+
+export type RubricVariant = {
+  __typename?: 'RubricVariant';
+  id: Scalars['ID'];
+  name: Array<LanguageType>;
+  nameString: Scalars['String'];
+};
+
+export type RubricCatalogueTitleField = {
+  __typename?: 'RubricCatalogueTitleField';
+  defaultTitle: Scalars['String'];
+  prefix?: Maybe<Scalars['String']>;
+  keyword: Scalars['String'];
+  gender: GenderEnum;
 };
 
 export type RubricFilterAttribute = {
@@ -635,17 +655,12 @@ export type RubricFilterAttributeOption = {
   name: Array<LanguageType>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
+  views: Array<OptionCityCounter>;
+  priorities: Array<OptionCityCounter>;
   nameString: Scalars['String'];
   filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
   counter: Scalars['Int'];
-};
-
-export type RubricVariant = {
-  __typename?: 'RubricVariant';
-  id: Scalars['ID'];
-  name: Array<LanguageType>;
-  nameString: Scalars['String'];
 };
 
 export type RubricProductPaginateInput = {
@@ -664,23 +679,10 @@ export type RubricProductAttributesFilterInput = {
   value: Array<Scalars['String']>;
 };
 
-export type RubricCity = {
-  __typename?: 'RubricCity';
-  key: Scalars['String'];
-  node: RubricNode;
-};
-
-export type RubricNode = {
-  __typename?: 'RubricNode';
-  name: Array<LanguageType>;
-  catalogueTitle: RubricCatalogueTitle;
-  slug: Scalars['String'];
-  priority: Scalars['Int'];
-  level: Scalars['Int'];
-  active?: Maybe<Scalars['Boolean']>;
-  parent?: Maybe<Rubric>;
-  attributesGroups: Array<RubricAttributesGroup>;
-  variant: RubricVariant;
+export type CatalogueSearchResult = {
+  __typename?: 'CatalogueSearchResult';
+  rubrics: Array<Rubric>;
+  products: Array<Product>;
 };
 
 export type Message = {

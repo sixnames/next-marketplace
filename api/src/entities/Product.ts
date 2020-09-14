@@ -1,8 +1,9 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { AssetType, CityCounter, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
@@ -47,6 +48,7 @@ export class ProductAttributesGroup {
 // Product schema
 @ObjectType()
 @plugin(mongoosePaginate)
+@plugin(aggregatePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 @index({ '$**': 'text' })
 export class Product extends TimeStamps {
@@ -121,6 +123,11 @@ export class Product extends TimeStamps {
 
   static paginate: (
     query?: FilterQuery<Product>,
+    options?: PaginateOptions,
+  ) => Promise<PaginateResult<Product>>;
+
+  static aggregatePaginate: (
+    pipeline?: Aggregate<Product[]>,
     options?: PaginateOptions,
   ) => Promise<PaginateResult<Product>>;
 }

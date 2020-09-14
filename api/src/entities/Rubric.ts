@@ -14,7 +14,7 @@ export class RubricAttributesGroup {
   readonly id: string;
 
   @Field(() => [ID])
-  @prop({ type: String })
+  @prop({ ref: Attribute })
   showInCatalogueFilter: string[];
 
   @Field(() => Boolean)

@@ -71,6 +71,7 @@ export class AttributeCityCounter extends CityCounter {
 export class Attribute {
   @Field((_type) => ID)
   readonly id: string;
+  readonly _id?: string;
 
   @Field(() => String)
   @Property({ required: true })

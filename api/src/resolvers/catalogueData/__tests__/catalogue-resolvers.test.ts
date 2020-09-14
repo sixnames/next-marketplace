@@ -1,8 +1,8 @@
 import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 
-describe('Attributes', () => {
-  it('Should return current attribute', async () => {
+describe('Catalogue', () => {
+  it('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 
     const {
@@ -60,5 +60,58 @@ describe('Attributes', () => {
     expect(getCatalogueData.catalogueTitle).toEqual(
       'Купить белый или красный портвейн или крепленое',
     );
+  });
+
+  it('Should return search result', async () => {
+    const { query } = await testClientWithContext();
+
+    const {
+      data: { getCatalogueSearchTopItems },
+    } = await query<any>(
+      gql`
+        query GetCatalogueSearchTopItems {
+          getCatalogueSearchTopItems {
+            rubrics {
+              id
+              nameString
+            }
+            products {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+    );
+
+    expect(getCatalogueSearchTopItems.products).toHaveLength(3);
+    expect(getCatalogueSearchTopItems.rubrics).toHaveLength(3);
+
+    const {
+      data: { getCatalogueSearchResult },
+    } = await query<any>(
+      gql`
+        query GetCatalogueSearchResult($search: String!) {
+          getCatalogueSearchResult(search: $search) {
+            rubrics {
+              id
+              nameString
+            }
+            products {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          search: 'Вино',
+        },
+      },
+    );
+
+    expect(getCatalogueSearchResult.products).toHaveLength(3);
+    expect(getCatalogueSearchResult.rubrics).toHaveLength(1);
   });
 });

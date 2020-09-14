@@ -13,12 +13,108 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
 } from '../config';
-import { RubricNode } from '../entities/Rubric';
+import { Rubric, RubricModel } from '../entities/Rubric';
 import capitalize from 'capitalize';
+import { AttributesGroupModel } from '../entities/AttributesGroup';
+import { OptionsGroupModel } from '../entities/OptionsGroup';
+import { updateModelViews } from './updateModelViews';
 
 interface ProcessedAttributeInterface {
   key: string;
   value: string[];
+}
+
+interface SetCataloguePrioritiesInterface {
+  rubric: Rubric;
+  attributesGroupsIds: string[];
+  processedAttributes: ProcessedAttributeInterface[];
+  isStuff: boolean;
+  city: string;
+}
+
+export async function setCataloguePriorities({
+  attributesGroupsIds,
+  processedAttributes,
+  rubric,
+  isStuff,
+  city,
+}: SetCataloguePrioritiesInterface) {
+  // if user not stuff
+  if (!isStuff) {
+    const rubricIdString = rubric.id.toString();
+
+    // increase rubric priority
+    await updateModelViews({
+      model: RubricModel,
+      document: rubric,
+      city,
+      findCurrentView: ({ key }) => key === city,
+    });
+
+    const attributesSlugs = processedAttributes.reduce(
+      (acc: string[], { key }) => [...acc, key],
+      [],
+    );
+    const optionsSlugs = processedAttributes.reduce(
+      (acc: string[], { value }) => [...acc, ...value],
+      [],
+    );
+
+    // increase attributes priority
+    const attributesGroups = await AttributesGroupModel.find({ _id: { $in: attributesGroupsIds } });
+    const attributesIds = attributesGroups.reduce(
+      (acc: string[], { attributes }) => [...acc, ...attributes],
+      [],
+    );
+
+    const attributesList = await AttributeModel.find({
+      $and: [{ _id: { $in: attributesIds } }, { slug: { $in: attributesSlugs } }],
+    });
+
+    for await (const attribute of attributesList) {
+      const { options } = attribute;
+      const attributeIdString = attribute.id.toString();
+
+      await updateModelViews({
+        model: AttributeModel,
+        document: attribute,
+        city,
+        additionalCityCounterData: {
+          rubricId: rubricIdString,
+        },
+        findCurrentView: ({ key, rubricId }) => {
+          return key === city && rubricId === rubricIdString;
+        },
+      });
+
+      // increase options priority
+      const optionsGroup = await OptionsGroupModel.findOne({ _id: options });
+      if (optionsGroup) {
+        for await (const slug of optionsSlugs) {
+          const option = await OptionModel.findOne({
+            _id: { $in: optionsGroup.options },
+            slug,
+          });
+          if (option) {
+            await updateModelViews({
+              model: OptionModel,
+              document: option,
+              city,
+              additionalCityCounterData: {
+                rubricId: rubricIdString,
+                attributeId: attributeIdString,
+              },
+              findCurrentView: ({ key, rubricId, attributeId }) => {
+                return (
+                  key === city && rubricId === rubricIdString && attributeId === attributeIdString
+                );
+              },
+            });
+          }
+        }
+      }
+    }
+  }
 }
 
 export function getOptionFromParam(paramString: string): { key: string; value: string[] } {
@@ -46,7 +142,7 @@ export function attributesReducer(
 interface GetCatalogueTitleInterface {
   processedAttributes: ProcessedAttributeInterface[];
   lang: string;
-  rubric: RubricNode;
+  rubric: Rubric;
 }
 
 interface GetTitleConfigsInterface {

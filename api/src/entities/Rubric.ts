@@ -1,10 +1,10 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { GenderEnum, LanguageType } from './common';
+import { CityCounter, GenderEnum, LanguageType } from './common';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
-import { GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
+import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '../config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
 
@@ -14,7 +14,7 @@ export class RubricAttributesGroup {
   readonly id: string;
 
   @Field(() => [ID])
-  @prop({ type: String })
+  @prop({ ref: Attribute })
   showInCatalogueFilter: string[];
 
   @Field(() => Boolean)
@@ -81,9 +81,20 @@ export class RubricCatalogueTitleField {
   readonly gender: GenderEnum;
 }
 
-// Rubric data in current city
 @ObjectType()
-export class RubricNode {
+@index({ '$**': 'text' })
+export class Rubric {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  views: CityCounter[];
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  priorities: CityCounter[];
+
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
@@ -95,6 +106,10 @@ export class RubricNode {
   @Field(() => String)
   @prop({ required: true })
   slug: string;
+
+  @Field(() => Int, { defaultValue: DEFAULT_PRIORITY })
+  @prop({ required: true, default: DEFAULT_PRIORITY, type: Number })
+  priority: number;
 
   @Field(() => Int)
   @prop({ required: true, default: RUBRIC_LEVEL_ONE })
@@ -115,60 +130,18 @@ export class RubricNode {
   @Field(() => RubricVariant)
   @prop({ ref: RubricVariant })
   variant: string;
-}
-
-// Rubric current city
-@ObjectType()
-export class RubricCity {
-  @Field(() => String)
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => RubricNode)
-  @prop({ required: true })
-  node: RubricNode;
-}
-
-@ObjectType()
-export class Rubric {
-  @Field(() => ID)
-  readonly id: string;
 
   @Field(() => String)
   readonly nameString: string;
 
-  @Field(() => [LanguageType])
-  readonly name: LanguageType[];
-
-  @Field(() => RubricCatalogueTitle)
-  readonly catalogueTitle: RubricCatalogueTitle;
-
   @Field(() => RubricCatalogueTitleField)
   readonly catalogueTitleString: RubricCatalogueTitleField;
-
-  @Field(() => String)
-  readonly slug: string;
-
-  @Field(() => Int)
-  readonly level: number;
-
-  @Field(() => Boolean)
-  readonly active: boolean;
-
-  @Field(() => Rubric, { nullable: true })
-  readonly parent: Rubric | null;
 
   @Field(() => [Rubric])
   readonly children: Rubric[];
 
-  @Field(() => [RubricAttributesGroup])
-  readonly attributesGroups: RubricAttributesGroup[];
-
   @Field(() => [RubricFilterAttribute])
   readonly filterAttributes: RubricFilterAttribute[];
-
-  @Field(() => RubricVariant)
-  readonly variant: RubricVariant;
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;
@@ -178,10 +151,6 @@ export class Rubric {
 
   @Field(() => Int)
   readonly activeProductsCount: number;
-
-  @Field(() => [RubricCity])
-  @prop({ type: RubricCity, required: true })
-  cities: RubricCity[];
 }
 
 export const RubricModel = getModelForClass(Rubric);

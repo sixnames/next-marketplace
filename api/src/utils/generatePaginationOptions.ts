@@ -2,6 +2,7 @@ import { GetPaginationOptionsPayload, PaginationOptions } from '../types/paginat
 
 const generatePaginationOptions = (args: PaginationOptions): GetPaginationOptionsPayload => {
   const { limit, page, sortDir, sortBy, search } = args;
+  // TODO sort by city node field
   const options = {
     limit,
     page,

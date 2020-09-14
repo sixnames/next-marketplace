@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
-import { LanguageType } from './common';
+import { CityCounter, LanguageType } from './common';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -61,9 +61,17 @@ export class AttributeFilterOption {
 }
 
 @ObjectType()
+export class AttributeCityCounter extends CityCounter {
+  @Field((_type) => String)
+  @prop({ required: true, type: String })
+  rubricId: string;
+}
+
+@ObjectType()
 export class Attribute {
   @Field((_type) => ID)
   readonly id: string;
+  readonly _id?: string;
 
   @Field(() => String)
   @Property({ required: true })
@@ -75,6 +83,14 @@ export class Attribute {
 
   @Field(() => String)
   readonly nameString: string;
+
+  @Field(() => [AttributeCityCounter])
+  @prop({ type: AttributeCityCounter, required: true })
+  views: AttributeCityCounter[];
+
+  @Field(() => [AttributeCityCounter])
+  @prop({ type: AttributeCityCounter, required: true })
+  priorities: AttributeCityCounter[];
 
   @Field((_type) => AttributeVariantEnum)
   @prop({ required: true, enum: ATTRIBUTE_VARIANTS_ENUMS })

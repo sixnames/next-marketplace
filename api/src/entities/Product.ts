@@ -1,9 +1,10 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { AssetType, LanguageType } from './common';
+import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import { AssetType, CityCounter, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
@@ -44,9 +45,28 @@ export class ProductAttributesGroup {
   attributes: ProductAttribute[];
 }
 
-// Product data in current city
+// Product schema
 @ObjectType()
-export class ProductNode {
+@plugin(mongoosePaginate)
+@plugin(aggregatePaginate)
+@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
+@index({ '$**': 'text' })
+export class Product extends TimeStamps {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => Int)
+  @prop()
+  readonly itemId: number;
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  views: CityCounter[];
+
+  @Field(() => [CityCounter])
+  @prop({ type: CityCounter, required: true })
+  priorities: CityCounter[];
+
   @Field(() => [LanguageType])
   @prop({ type: LanguageType, required: true })
   name: LanguageType[];
@@ -82,75 +102,18 @@ export class ProductNode {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
   active: boolean;
-}
-
-// Product current city
-@ObjectType()
-export class ProductCity {
-  @Field(() => String)
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => ProductNode)
-  @prop({ required: true })
-  node: ProductNode;
-}
-
-// Product schema
-@ObjectType()
-@plugin(mongoosePaginate)
-@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
-@index({ '$**': 'text' })
-export class Product extends TimeStamps {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field(() => Int)
-  @prop()
-  readonly itemId: number;
 
   @Field(() => String)
   readonly nameString: string;
 
-  @Field(() => [LanguageType])
-  readonly name: LanguageType[];
-
   @Field(() => String)
   readonly cardNameString: string;
-
-  @Field(() => [LanguageType])
-  readonly cardName: LanguageType[];
-
-  @Field(() => String)
-  readonly slug: string;
 
   @Field(() => String)
   readonly descriptionString: string;
 
-  @Field(() => [LanguageType])
-  readonly description: LanguageType[];
-
-  @Field(() => [ID])
-  readonly rubrics: string[];
-
-  @Field(() => [ProductAttributesGroup])
-  readonly attributesGroups: ProductAttributesGroup[];
-
-  @Field(() => [AssetType])
-  readonly assets: AssetType[];
-
   @Field(() => String)
   readonly mainImage: string;
-
-  @Field(() => Int)
-  readonly price: number;
-
-  @Field(() => Boolean)
-  readonly active: boolean;
-
-  @Field(() => [ProductCity])
-  @prop({ type: ProductCity, required: true })
-  cities: ProductCity[];
 
   @Field()
   readonly createdAt: Date;
@@ -160,6 +123,11 @@ export class Product extends TimeStamps {
 
   static paginate: (
     query?: FilterQuery<Product>,
+    options?: PaginateOptions,
+  ) => Promise<PaginateResult<Product>>;
+
+  static aggregatePaginate: (
+    pipeline?: Aggregate<Product[]>,
     options?: PaginateOptions,
   ) => Promise<PaginateResult<Product>>;
 }

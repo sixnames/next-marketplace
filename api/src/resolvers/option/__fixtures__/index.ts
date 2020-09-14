@@ -4,6 +4,8 @@ export const newOption = {
     { key: 'en', value: 'Option name' },
   ],
   slug: 'Option name',
+  priorities: [],
+  views: [],
 };
 
 export const anotherOption = {
@@ -12,4 +14,6 @@ export const anotherOption = {
     { key: 'en', value: 'Another name' },
   ],
   slug: 'Another name',
+  priorities: [],
+  views: [],
 };

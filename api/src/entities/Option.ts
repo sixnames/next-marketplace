@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { GenderEnum, LanguageType } from './common';
+import { CityCounter, GenderEnum, LanguageType } from './common';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { GENDER_ENUMS } from '../config';
 
@@ -16,9 +16,21 @@ export class OptionVariant {
 }
 
 @ObjectType()
+export class OptionCityCounter extends CityCounter {
+  @Field((_type) => String)
+  @prop({ required: true, type: String })
+  attributeId: string;
+
+  @Field((_type) => String)
+  @prop({ required: true, type: String })
+  rubricId: string;
+}
+
+@ObjectType()
 export class Option {
   @Field(() => ID)
   readonly id: string;
+  readonly _id?: string;
 
   @Field(() => String)
   @Property({ required: true })
@@ -35,6 +47,14 @@ export class Option {
   @Field((_type) => GenderEnum, { nullable: true })
   @prop({ enum: GENDER_ENUMS, type: String })
   gender?: GenderEnum | null;
+
+  @Field(() => [OptionCityCounter])
+  @prop({ type: OptionCityCounter, required: true })
+  views: OptionCityCounter[];
+
+  @Field(() => [OptionCityCounter])
+  @prop({ type: OptionCityCounter, required: true })
+  priorities: OptionCityCounter[];
 
   @Field(() => String)
   readonly nameString: string;

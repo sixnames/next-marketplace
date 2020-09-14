@@ -27,7 +27,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     descriptionString,
     attributesGroups,
     price,
-  } = cardData.getProductBySlug;
+  } = cardData.getProductCard;
 
   return (
     <Inner>

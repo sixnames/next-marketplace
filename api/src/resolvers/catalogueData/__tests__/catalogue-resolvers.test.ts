@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 
 describe('Catalogue', () => {
-  it.only('Should return catalogue data', async () => {
+  it('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 
     const {
@@ -65,9 +65,9 @@ describe('Catalogue', () => {
   it('Should return search result', async () => {
     const { query } = await testClientWithContext();
 
-    /*const {
+    const {
       data: { getCatalogueSearchResult },
-    } =*/ await query<any>(
+    } = await query<any>(
       gql`
         query GetCatalogueSearchResult($search: String!) {
           getCatalogueSearchResult(search: $search) {
@@ -88,7 +88,8 @@ describe('Catalogue', () => {
         },
       },
     );
-    // expect(getCatalogueSearchResult.rubrics).toHaveLength(1);
-    // expect(getCatalogueSearchResult.products).toHaveLength(2);
+
+    expect(getCatalogueSearchResult.products).toHaveLength(3);
+    expect(getCatalogueSearchResult.rubrics).toHaveLength(1);
   });
 });

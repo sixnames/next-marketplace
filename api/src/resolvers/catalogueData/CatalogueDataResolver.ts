@@ -1,6 +1,6 @@
 import { Arg, Query, Resolver } from 'type-graphql';
 import { CatalogueData, CatalogueSearchResult } from '../../entities/CatalogueData';
-import { RubricModel } from '../../entities/Rubric';
+import { Rubric, RubricModel } from '../../entities/Rubric';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
 import { Product, ProductModel } from '../../entities/Product';
@@ -94,13 +94,34 @@ export class CatalogueDataResolver {
 
   @Query((_returns) => CatalogueSearchResult)
   async getCatalogueSearchResult(
+    @Localization() { city }: LocalizationPayloadInterface,
     @Arg('search', (_type) => String) search: string,
   ): Promise<CatalogueSearchResult> {
     try {
-      console.log(search);
+      const searchPipeLine = [
+        {
+          $match: {
+            $text: {
+              $search: search,
+              $caseSensitive: false,
+            },
+            active: true,
+          },
+        },
+        {
+          $limit: 3,
+        },
+        { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+        { $sort: { 'views.counter': -1 } },
+      ];
+
+      const products = await ProductModel.aggregate<Product>(searchPipeLine);
+      const rubrics = await RubricModel.aggregate<Rubric>(searchPipeLine);
+
       return {
-        products: [],
-        rubrics: [],
+        products,
+        rubrics,
       };
     } catch (e) {
       return {

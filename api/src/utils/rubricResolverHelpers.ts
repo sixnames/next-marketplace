@@ -30,7 +30,7 @@ export async function getRubricChildrenIds({
     .select({ id: 1 })
     .lean()
     .exec();
-  return rubricChildren.map(({ _id }) => _id);
+  return rubricChildren.map(({ _id }) => _id.toString());
 }
 
 export async function getRubricsTreeIds({ rubricId, acc = [] }: GetRubricsTreeIdsInterface) {

@@ -811,17 +811,27 @@ export class RubricResolver {
       return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
     }, []);
 
-    const sortByViewsPipeLine = [
+    /*const sortByViewsPipeLine = [
       { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
       { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
       { $sort: { 'views.counter': -1 } },
-    ];
+    ];*/
 
     const attributes = await AttributeModel.aggregate<Attribute>([
       { $match: { _id: { $in: visibleAttributes } } },
-      ...sortByViewsPipeLine,
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+      {
+        $match: {
+          $or: [
+            { 'views.key': city, 'views.rubricId': rubric.id.toString() },
+            { views: { $exists: false } },
+          ],
+        },
+      },
+      { $sort: { 'views.counter': -1 } },
+      // ...sortByViewsPipeLine,
     ]);
-
+    console.log(JSON.stringify(attributes, null, 2));
     const result = attributes.map(async (attribute) => {
       const optionsGroup = await OptionsGroupModel.findById(attribute.options);
       if (!optionsGroup) {
@@ -834,7 +844,7 @@ export class RubricResolver {
 
       const options = await OptionModel.aggregate<Option>([
         { $match: { _id: { $in: optionsGroup.options } } },
-        ...sortByViewsPipeLine,
+        // ...sortByViewsPipeLine,
       ]);
 
       const resultOptions: RubricFilterAttributeOption[] = [];

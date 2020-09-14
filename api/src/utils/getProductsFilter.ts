@@ -14,7 +14,7 @@ interface EmptyArrayInterface {
   $size: number;
 }
 
-interface ProductsFiltersInterface {
+export interface ProductsFiltersInterface {
   query?: {
     $text: {
       $search: string;
@@ -26,7 +26,7 @@ interface ProductsFiltersInterface {
   [key: string]: any;
 }
 
-export function getProductsFilter(args: { [key: string]: any } = {}): ProductsFiltersInterface {
+export function getProductsFilter(args: { [key: string]: any } = {}): any {
   const searchQuery = args.search
     ? {
         $text: {

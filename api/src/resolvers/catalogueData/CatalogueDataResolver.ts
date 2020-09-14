@@ -3,7 +3,6 @@ import { CatalogueData, CatalogueSearchResult } from '../../entities/CatalogueDa
 import { RubricModel } from '../../entities/Rubric';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
 import { getProductsFilter } from '../../utils/getProductsFilter';
-import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
@@ -17,6 +16,7 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
+// import { isEqual } from 'lodash';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -29,8 +29,7 @@ export class CatalogueDataResolver {
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     const [slug, ...attributes] = catalogueFilter;
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } =
-      productsInput || {};
+    const { limit = 100, page = 1, ...args } = productsInput || {};
 
     // get current rubric
     const rubric = await RubricModel.findOne({ slug });
@@ -70,36 +69,25 @@ export class CatalogueDataResolver {
       active: true,
     });
 
-    // get pagination options
-    const { options } = generatePaginationOptions({
+    const sortByViewsPipeLine = [
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+      { $sort: { 'views.counter': -1 } },
+    ];
+
+    const productsPipeline = ProductModel.aggregate<Product>([
+      { $match: query },
+      ...sortByViewsPipeLine,
+    ]);
+
+    const products = await ProductModel.aggregatePaginate(productsPipeline, {
       limit,
       page,
-      sortDir,
-      sortBy,
     });
-
-    // console.log(rubricsIds);
-    console.log(JSON.stringify({ rubricsIds, query }, null, 2));
-    const productsPipeline = ProductModel.aggregate<Product>([{ $match: query }]);
-    console.log(JSON.stringify(await productsPipeline, null, 2));
-    // const products = await ProductModel.aggregatePaginate(productsPipeline, options);
-    await ProductModel.aggregatePaginate(productsPipeline, options);
-    // console.log(JSON.stringify({ products, productsPipeline }, null, 2));
 
     return {
       rubric,
-      products: {
-        docs: [],
-        totalDocs: 0,
-        limit: 100,
-        page: 1,
-        totalPages: 1,
-        pagingCounter: 1,
-        hasPrevPage: false,
-        hasNextPage: false,
-        prevPage: null,
-        nextPage: null,
-      },
+      products,
       catalogueTitle,
     };
   }

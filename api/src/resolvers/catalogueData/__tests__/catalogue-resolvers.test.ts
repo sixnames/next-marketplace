@@ -46,10 +46,10 @@ describe('Catalogue', () => {
         variables: {
           catalogueFilter: [
             'kupit_vino',
-            // 'tsvet_vina-krasniy',
-            // 'tsvet_vina-beliy',
-            // 'tip_vina-portvein',
-            // 'tip_vina-kreplenoe',
+            'tsvet_vina-krasniy',
+            'tsvet_vina-beliy',
+            'tip_vina-portvein',
+            'tip_vina-kreplenoe',
           ],
         },
       },

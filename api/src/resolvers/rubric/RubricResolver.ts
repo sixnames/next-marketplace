@@ -128,6 +128,7 @@ export class RubricResolver {
       { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
       {
         $addFields: {
+          id: '$_id',
           viewsCounter: {
             $cond: {
               if: {
@@ -792,12 +793,9 @@ export class RubricResolver {
     @Arg('excluded', (_type) => [ID], { nullable: true, defaultValue: [] })
     excluded: string[],
   ): Promise<Rubric[]> {
-    const { id, _id } = rubric;
-    const rubricId = id || _id;
-
     return RubricModel.find({
       _id: { $nin: excluded },
-      parent: rubricId,
+      parent: rubric.id,
     });
   }
 
@@ -813,7 +811,7 @@ export class RubricResolver {
     @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
-    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id || rubric._id });
+    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
@@ -831,9 +829,8 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<RubricFilterAttribute[]> {
-    const { attributesGroups, catalogueTitle, id, _id } = rubric;
-    const rubricId = id || _id;
-    const rubricIdString = rubricId.toString();
+    const { attributesGroups, catalogueTitle } = rubric;
+    const rubricIdString = rubric.id.toString();
 
     // get all visible attributes id's
     const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
@@ -944,7 +941,7 @@ export class RubricResolver {
 
         resultOptions.push({
           ...option,
-          id: option._id + rubricIdString,
+          id: option._id?.toString() + rubricIdString,
           filterNameString: filterNameString,
           counter: 0,
         });

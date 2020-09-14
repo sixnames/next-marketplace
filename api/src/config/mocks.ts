@@ -7,6 +7,7 @@ import {
   DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
   DEFAULT_LANG,
+  DEFAULT_PRIORITY,
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
@@ -1306,6 +1307,8 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       { key: DEFAULT_LANG, value: 'Белый' },
       { key: SECONDARY_LANG, value: 'White' },
     ],
+    priorities: [],
+    views: [],
     slug: 'beliy',
     color: 'ffffff',
     variants: [
@@ -1337,6 +1340,8 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       { key: DEFAULT_LANG, value: 'Красный' },
       { key: SECONDARY_LANG, value: 'Red' },
     ],
+    priorities: [],
+    views: [],
     slug: 'krasniy',
     color: '99020b',
     variants: [
@@ -1368,6 +1373,8 @@ export const MOCK_OPTIONS_WINE_COLOR = [
       { key: DEFAULT_LANG, value: 'Розовый' },
       { key: SECONDARY_LANG, value: 'Pink' },
     ],
+    priorities: [],
+    views: [],
     slug: 'rozoviy',
     color: 'db8ce0',
     variants: [
@@ -1402,6 +1409,8 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
       { key: DEFAULT_LANG, value: 'Портвейн' },
       { key: SECONDARY_LANG, value: 'Port_wine' },
     ],
+    priorities: [],
+    views: [],
     slug: 'portvein',
     gender: GENDER_HE,
   },
@@ -1410,6 +1419,8 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
       { key: DEFAULT_LANG, value: 'Херес' },
       { key: SECONDARY_LANG, value: 'Heres' },
     ],
+    priorities: [],
+    views: [],
     slug: 'heres',
     gender: GENDER_HE,
   },
@@ -1418,6 +1429,8 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
       { key: DEFAULT_LANG, value: 'Вермут' },
       { key: SECONDARY_LANG, value: 'Vermut' },
     ],
+    priorities: [],
+    views: [],
     slug: 'varmut',
     gender: GENDER_HE,
   },
@@ -1426,6 +1439,8 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
       { key: DEFAULT_LANG, value: 'Крепленое' },
       { key: SECONDARY_LANG, value: 'Hard' },
     ],
+    priorities: [],
+    views: [],
     slug: 'kreplenoe',
     gender: GENDER_IT,
   },
@@ -1452,6 +1467,8 @@ export const MOCK_ATTRIBUTE_WINE_COLOR = {
     { key: DEFAULT_LANG, value: 'Цвет_вина' },
     { key: SECONDARY_LANG, value: 'Wine_color' },
   ],
+  views: [],
+  priorities: [],
   slug: 'tsvet_vina',
   variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 };
@@ -1461,6 +1478,8 @@ export const MOCK_ATTRIBUTE_WINE_VARIANT = {
     { key: DEFAULT_LANG, value: 'Тип_вина' },
     { key: SECONDARY_LANG, value: 'Wine_type' },
   ],
+  views: [],
+  priorities: [],
   slug: 'tip_vina',
   variant: ATTRIBUTE_VARIANT_SELECT,
 };
@@ -1470,6 +1489,8 @@ export const MOCK_ATTRIBUTE_STRING = {
     { key: DEFAULT_LANG, value: 'Атрибут_строка' },
     { key: SECONDARY_LANG, value: 'Attribute_string' },
   ],
+  views: [],
+  priorities: [],
   slug: 'attribute_stroka',
   variant: ATTRIBUTE_VARIANT_STRING,
 };
@@ -1479,6 +1500,8 @@ export const MOCK_ATTRIBUTE_NUMBER = {
     { key: DEFAULT_LANG, value: 'Атрибут_число' },
     { key: SECONDARY_LANG, value: 'Attribute_number' },
   ],
+  views: [],
+  priorities: [],
   slug: 'attribute_chislo',
   variant: ATTRIBUTE_VARIANT_NUMBER,
 };
@@ -1540,6 +1563,7 @@ export const MOCK_RUBRIC_LEVEL_ONE = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1564,6 +1588,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1588,6 +1613,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_C = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1612,6 +1638,7 @@ export const MOCK_RUBRIC_LEVEL_ONE_D = {
     gender: GENDER_HE,
   },
   level: RUBRIC_LEVEL_ONE,
+  priority: DEFAULT_PRIORITY,
   parent: null,
 };
 
@@ -1633,6 +1660,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_A = {
     gender: GENDER_SHE,
   },
   level: RUBRIC_LEVEL_TWO,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_TWO_B = {
@@ -1653,6 +1681,7 @@ export const MOCK_RUBRIC_LEVEL_TWO_B = {
     gender: GENDER_HE,
   },
   level: RUBRIC_LEVEL_TWO,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
@@ -1673,6 +1702,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_A = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
@@ -1693,6 +1723,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_A_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
@@ -1713,6 +1744,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_A = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
@@ -1733,10 +1765,12 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
     gender: GENDER_IT,
   },
   level: RUBRIC_LEVEL_THREE,
+  priority: DEFAULT_PRIORITY,
 };
 
 // Products
 export const MOCK_PRODUCT_A = {
+  priority: 10,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Brancott_Estate' },
     { key: SECONDARY_LANG, value: 'Wine_Brancott_Estate' },
@@ -1753,6 +1787,7 @@ export const MOCK_PRODUCT_A = {
 };
 
 export const MOCK_PRODUCT_B = {
+  priority: 9,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Campo_Viejо' },
     { key: SECONDARY_LANG, value: 'Wine_Campo_Viejо' },
@@ -1769,6 +1804,7 @@ export const MOCK_PRODUCT_B = {
 };
 
 export const MOCK_PRODUCT_C = {
+  priority: 1,
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie' },
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie' },
@@ -1778,6 +1814,40 @@ export const MOCK_PRODUCT_C = {
     { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
   ],
   price: 50,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
+export const MOCK_PRODUCT_D = {
+  priority: 1,
+  name: [
+    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_C' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_C' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Вино Val de "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Val de, "Barista" Pinotage' },
+  ],
+  price: 1150,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
+export const MOCK_PRODUCT_E = {
+  priority: 1,
+  name: [
+    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_D' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_D' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Вино Vie, "Barista" Pinotage' },
+    { key: SECONDARY_LANG, value: 'Wine Vie, "Barista" Pinotage' },
+  ],
+  price: 500,
   description: [
     { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
     { key: SECONDARY_LANG, value: 'Very long product description' },

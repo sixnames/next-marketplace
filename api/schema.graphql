@@ -48,8 +48,16 @@ type Attribute {
   nameString: String!
   options: OptionsGroup
   positioningInTitle: [AttributePositioningInTitle!]
+  priorities: [AttributeCityCounter!]!
   slug: String!
   variant: AttributeVariantEnum!
+  views: [AttributeCityCounter!]!
+}
+
+type AttributeCityCounter {
+  counter: Int!
+  key: String!
+  rubricId: String!
 }
 
 type AttributePositioningInTitle {
@@ -110,11 +118,21 @@ type CatalogueData {
   rubric: Rubric!
 }
 
+type CatalogueSearchResult {
+  products: [Product!]!
+  rubrics: [Rubric!]!
+}
+
 type City {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
   slug: String!
+}
+
+type CityCounter {
+  counter: Int!
+  key: String!
 }
 
 type Config {
@@ -397,8 +415,17 @@ type Option {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]
+  views: [OptionCityCounter!]!
+}
+
+type OptionCityCounter {
+  attributeId: String!
+  counter: Int!
+  key: String!
+  rubricId: String!
 }
 
 type OptionsGroup {
@@ -463,7 +490,6 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   cardName: [LanguageType!]!
   cardNameString: String!
-  cities: [ProductCity!]!
   createdAt: Timestamp!
   description: [LanguageType!]!
   descriptionString: String!
@@ -473,9 +499,11 @@ type Product {
   name: [LanguageType!]!
   nameString: String!
   price: Int!
+  priorities: [CityCounter!]!
   rubrics: [ID!]!
   slug: String!
   updatedAt: Timestamp!
+  views: [CityCounter!]!
 }
 
 type ProductAttribute {
@@ -506,23 +534,6 @@ input ProductAttributesGroupInput {
   showInCard: Boolean!
 }
 
-type ProductCity {
-  key: String!
-  node: ProductNode!
-}
-
-type ProductNode {
-  active: Boolean!
-  assets: [AssetType!]!
-  attributesGroups: [ProductAttributesGroup!]!
-  cardName: [LanguageType!]!
-  description: [LanguageType!]!
-  name: [LanguageType!]!
-  price: Int!
-  rubrics: [ID!]!
-  slug: String!
-}
-
 input ProductPaginateInput {
   countActiveProducts: Boolean
   limit: Int = 100
@@ -531,7 +542,7 @@ input ProductPaginateInput {
   page: Int = 1
   rubric: ID
   search: String
-  sortBy: ProductSortByEnum = createdAt
+  sortBy: ProductSortByEnum = priority
   sortDir: PaginateSortDirectionEnum = desc
 }
 
@@ -556,6 +567,7 @@ input ProductsCountersInput {
 enum ProductSortByEnum {
   createdAt
   price
+  priority
 }
 
 type Query {
@@ -571,7 +583,7 @@ type Query {
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
-  getAllProducts(input: ProductPaginateInput): PaginatedProductsResponse!
+  getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
@@ -580,6 +592,8 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getCatalogueSearchResult(search: String!): CatalogueSearchResult!
+  getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!
   getCityBySlug(slug: String!): City!
   getClientLanguage: String!
@@ -599,11 +613,12 @@ type Query {
   getOptionsGroup(id: ID!): OptionsGroup
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
+  getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
-  getRubricsTree(excluded: [ID!]): [Rubric!]!
+  getRubricsTree(excluded: [ID!] = []): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant
   getSessionCurrency: String!
   getSessionRole: Role!
@@ -656,23 +671,25 @@ enum RoleRuleOperationTypeEnum {
 }
 
 type Rubric {
-  active: Boolean!
+  active: Boolean
   activeProductsCount: Int!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
-  children(excluded: [ID!]): [Rubric!]!
-  cities: [RubricCity!]!
+  children(excluded: [ID!] = []): [Rubric!]!
   filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
   name: [LanguageType!]!
   nameString: String!
   parent: Rubric
+  priorities: [CityCounter!]!
+  priority: Int!
   products(input: RubricProductPaginateInput): PaginatedProductsResponse!
   slug: String!
   totalProductsCount: Int!
   variant: RubricVariant!
+  views: [CityCounter!]!
 }
 
 type RubricAttributesGroup {
@@ -703,11 +720,6 @@ input RubricCatalogueTitleInput {
   prefix: [LangInput!]
 }
 
-type RubricCity {
-  key: String!
-  node: RubricNode!
-}
-
 type RubricFilterAttribute {
   id: ID!
   node: Attribute!
@@ -722,19 +734,10 @@ type RubricFilterAttributeOption {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]
-}
-
-type RubricNode {
-  active: Boolean
-  attributesGroups: [RubricAttributesGroup!]!
-  catalogueTitle: RubricCatalogueTitle!
-  level: Int!
-  name: [LanguageType!]!
-  parent: Rubric
-  slug: String!
-  variant: RubricVariant!
+  views: [OptionCityCounter!]!
 }
 
 type RubricPayloadType {

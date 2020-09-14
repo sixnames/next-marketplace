@@ -43,4 +43,9 @@ export class AttributeResolver {
   ): Promise<string> {
     return getLangField(attribute.name, lang);
   }
+
+  @FieldResolver()
+  async id(@Root() attribute: DocumentType<Attribute>): Promise<string> {
+    return attribute.id || attribute._id;
+  }
 }

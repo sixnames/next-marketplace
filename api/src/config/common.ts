@@ -110,6 +110,9 @@ export const ATTRIBUTE_POSITIONS_LIST = [
   { id: ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD, nameString: 'После ключевое слово' },
 ];
 
+// PRIORITY
+export const DEFAULT_PRIORITY = 1;
+
 // RUBRICS
 export const RUBRIC_LEVEL_ZERO = 0;
 export const RUBRIC_LEVEL_ONE = 1;

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const CATALOGUE_CARD_QUERY = gql`
   query GetCatalogueCardQuery($slug: String!) {
-    getProductBySlug(slug: $slug) {
+    getProductCard(slug: $slug) {
       id
       itemId
       nameString

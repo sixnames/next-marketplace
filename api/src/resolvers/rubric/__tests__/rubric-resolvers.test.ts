@@ -68,6 +68,7 @@ describe('Rubrics', () => {
 
     const attributesGroup = getAllAttributesGroups[0];
     const rubricLevelOne = getRubricsTree[0];
+    // console.log(JSON.stringify(rubricLevelOne, null, 2));
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
@@ -116,7 +117,7 @@ describe('Rubrics', () => {
     expect(data.getRubric.nameString).toEqual(
       getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
     );
-    expect(data.getRubric.products.docs).toHaveLength(3);
+    expect(data.getRubric.products.docs).toHaveLength(5);
 
     // Should return current rubric by slug
     const {

@@ -4,6 +4,7 @@ import { Field, ID, InputType, registerEnumType } from 'type-graphql';
 export enum ProductSortByEnum {
   price = 'price',
   createdAt = 'createdAt',
+  priority = 'priority',
 }
 
 registerEnumType(ProductSortByEnum, {
@@ -13,7 +14,7 @@ registerEnumType(ProductSortByEnum, {
 
 @InputType()
 export class ProductPaginateInput extends PaginateInput {
-  @Field((_type) => ProductSortByEnum, { defaultValue: 'createdAt' })
+  @Field((_type) => ProductSortByEnum, { defaultValue: 'priority' })
   sortBy?: ProductSortByEnum;
 
   @Field((_type) => ID, { nullable: true })

@@ -49,7 +49,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 
   // Set burger dropdown sizes
   useEffect(() => {
-    function resizeWindow() {
+    function resizeHandler() {
       if (contentRef && contentRef.current && isBurgerDropdownOpen && !isMobile) {
         setBurgerDropdownSizes({
           top: contentRef.current.offsetTop,
@@ -58,14 +58,16 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       }
     }
 
-    resizeWindow();
+    if (burgerDropdownSizes.height === 0) {
+      resizeHandler();
+    }
 
-    window.addEventListener('resize', resizeWindow);
+    window.addEventListener('resize', resizeHandler);
 
     return () => {
-      window.removeEventListener('resize', resizeWindow);
+      window.removeEventListener('resize', resizeHandler);
     };
-  }, [contentRef, isBurgerDropdownOpen, isMobile]);
+  }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
     <div className={classes.frame} style={themeStyles}>

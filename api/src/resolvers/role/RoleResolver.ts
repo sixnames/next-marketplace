@@ -25,7 +25,7 @@ import { SetRoleOperationPermissionInput } from './SetRoleOperationPermissionInp
 import { createRoleRules } from '../../utils/initialData/createInitialRoles';
 import { SetRoleOperationCustomFilterInput } from './SetRoleOperationCustomFilterInput';
 import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInput';
-import toggleItemInArray from '../../utils/toggleItemInArray';
+import toggleIdInArray from '../../utils/toggleIdInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import fs from 'fs';
@@ -429,7 +429,7 @@ export class RoleResolver {
         };
       }
 
-      const updatedFields = toggleItemInArray(rule.restrictedFields, restrictedField);
+      const updatedFields = toggleIdInArray(rule.restrictedFields, restrictedField);
 
       const updatedRule = await RoleRuleModel.findOneAndUpdate(
         {
@@ -486,7 +486,7 @@ export class RoleResolver {
         };
       }
 
-      const allowedAppNavigation = toggleItemInArray(role.allowedAppNavigation, navItemId);
+      const allowedAppNavigation = toggleIdInArray(role.allowedAppNavigation, navItemId);
 
       const updatedRole = await RoleModel.findOneAndUpdate(
         {

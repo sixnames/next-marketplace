@@ -392,8 +392,10 @@
   --button-min-width: 17rem;
   --minLinkHeight: 3.5rem;
   --burger-dropdown-width: 345px;
+  --catalogue-filter-width: 325px;
   --burger-dropdown-side-gap: 2.5rem;
   --catalogueGridGap: 2.5rem;
+  --mobileNavHeight: 65px;
 
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);

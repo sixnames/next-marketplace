@@ -8,7 +8,7 @@ export const CATALOGUE_SEARCH_TOP_ITEMS_QUERY = gql`
         ...CatalogueRubricFragment
       }
       products {
-        ...ProductSnippetFragment
+        ...ProductSnippet
       }
     }
   }
@@ -23,7 +23,7 @@ export const CATALOGUE_SEARCH_RESULT_QUERY = gql`
         ...CatalogueRubricFragment
       }
       products {
-        ...ProductSnippetFragment
+        ...ProductSnippet
       }
     }
   }

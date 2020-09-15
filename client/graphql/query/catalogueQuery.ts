@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const productSnippedFragment = gql`
-  fragment ProductSnippetFragment on Product {
+  fragment ProductSnippet on Product {
     id
     itemId
     nameString
@@ -52,7 +52,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
         page
         totalPages
         docs {
-          ...ProductSnippetFragment
+          ...ProductSnippet
         }
       }
     }

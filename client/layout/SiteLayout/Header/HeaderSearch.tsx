@@ -17,6 +17,7 @@ import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
 import RequestError from '../../../components/RequestError/RequestError';
 import Link from '../../../components/Link/Link';
+import ProductSnippetGrid from '../../../components/ProductSnippet/ProductSnippetGrid';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -32,7 +33,6 @@ interface HeaderSearchResultInterface {
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, products }) => {
-  console.log({ products });
   const { hideSearchDropdown } = useSiteContext();
   return (
     <div className={classes.result}>
@@ -58,7 +58,11 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
           );
         })}
       </ul>
-      <div className={classes.resultList}>products</div>
+      <div className={classes.resultList}>
+        {products.map((product) => {
+          return <ProductSnippetGrid product={product} key={product.id} />;
+        })}
+      </div>
     </div>
   );
 };

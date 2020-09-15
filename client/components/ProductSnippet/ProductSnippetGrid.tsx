@@ -1,14 +1,13 @@
 import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
-import { CatalogueProductType } from '../../types';
 import Image from '../Image/Image';
 import Link from '../Link/Link';
 import { useSiteContext } from '../../context/siteContext';
 import Icon from '../Icon/Icon';
+import { ProductSnippetFragment } from '../../generated/apolloComponents';
 
 interface ProductSnippetGridInterface {
-  product: CatalogueProductType;
-  rubricSlug: string;
+  product: ProductSnippetFragment;
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product }) => {
@@ -18,7 +17,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product }) 
 
   return (
     <div className={classes.frame}>
-      <div className={classes.image}>
+      <div className={`${classes.image} ${classes.leftColumn}`}>
         <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
       </div>
       <div className={classes.content}>
@@ -32,7 +31,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product }) 
         </div>
       </div>
 
-      <div className={classes.rating}>
+      <div className={`${classes.rating} ${classes.leftColumn}`}>
         <div className={classes.ratingSmall}>
           <span>4,9</span>
           <Icon name={'star'} />

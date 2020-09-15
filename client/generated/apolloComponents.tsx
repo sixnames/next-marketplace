@@ -2243,7 +2243,7 @@ export type GetCatalogueCardQueryQuery = (
   ) }
 );
 
-export type ProductSnippetFragmentFragment = (
+export type ProductSnippetFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
 );
@@ -2285,7 +2285,7 @@ export type GetCatalogueRubricQuery = (
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Product' }
-        & ProductSnippetFragmentFragment
+        & ProductSnippetFragment
       )> }
     ) }
   )> }
@@ -2481,7 +2481,7 @@ export type GetCatalogueSearchTopItemsQuery = (
       & CatalogueRubricFragmentFragment
     )>, products: Array<(
       { __typename?: 'Product' }
-      & ProductSnippetFragmentFragment
+      & ProductSnippetFragment
     )> }
   ) }
 );
@@ -2500,7 +2500,7 @@ export type GetCatalogueSearchResultQuery = (
       & CatalogueRubricFragmentFragment
     )>, products: Array<(
       { __typename?: 'Product' }
-      & ProductSnippetFragmentFragment
+      & ProductSnippetFragment
     )> }
   ) }
 );
@@ -2898,8 +2898,8 @@ export const ProductFragmentFragmentDoc = gql`
   }
 }
     `;
-export const ProductSnippetFragmentFragmentDoc = gql`
-    fragment ProductSnippetFragment on Product {
+export const ProductSnippetFragmentDoc = gql`
+    fragment ProductSnippet on Product {
   id
   itemId
   nameString
@@ -4599,13 +4599,13 @@ export const GetCatalogueRubricDocument = gql`
       page
       totalPages
       docs {
-        ...ProductSnippetFragment
+        ...ProductSnippet
       }
     }
   }
 }
     ${CatalogueRubricFragmentFragmentDoc}
-${ProductSnippetFragmentFragmentDoc}`;
+${ProductSnippetFragmentDoc}`;
 
 /**
  * __useGetCatalogueRubricQuery__
@@ -5074,12 +5074,12 @@ export const GetCatalogueSearchTopItemsDocument = gql`
       ...CatalogueRubricFragment
     }
     products {
-      ...ProductSnippetFragment
+      ...ProductSnippet
     }
   }
 }
     ${CatalogueRubricFragmentFragmentDoc}
-${ProductSnippetFragmentFragmentDoc}`;
+${ProductSnippetFragmentDoc}`;
 
 /**
  * __useGetCatalogueSearchTopItemsQuery__
@@ -5112,12 +5112,12 @@ export const GetCatalogueSearchResultDocument = gql`
       ...CatalogueRubricFragment
     }
     products {
-      ...ProductSnippetFragment
+      ...ProductSnippet
     }
   }
 }
     ${CatalogueRubricFragmentFragmentDoc}
-${ProductSnippetFragmentFragmentDoc}`;
+${ProductSnippetFragmentDoc}`;
 
 /**
  * __useGetCatalogueSearchResultQuery__

@@ -186,6 +186,6 @@
 
   .frame {
     position: fixed;
-    height: var(--fullHeight, 100vh);
+    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
   }
 }

@@ -1,6 +1,6 @@
 .frame {
   display: grid;
-  grid-template-columns: 3fr 9fr;
+  grid-template-columns: var(--catalogue-filter-width) 1fr;
   grid-column-gap: var(--catalogueGridGap);
   margin-bottom: 50px;
 }

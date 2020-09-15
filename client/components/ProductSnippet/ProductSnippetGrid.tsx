@@ -8,15 +8,16 @@ import { ProductSnippetFragment } from '../../generated/apolloComponents';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
+  testId?: string;
 }
 
-const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product }) => {
+const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, testId }) => {
   const { nameString, mainImage, slug, price } = product;
   const { currency } = useSiteContext();
   const imageWidth = 50;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} data-cy={testId}>
       <div className={`${classes.image} ${classes.leftColumn}`}>
         <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
       </div>

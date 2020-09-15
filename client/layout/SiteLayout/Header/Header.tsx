@@ -36,6 +36,7 @@ const HeaderSearchTrigger: React.FC = () => {
   const { isSearchOpen, showSearchDropdown } = useSiteContext();
   return (
     <div
+      data-cy={'search-trigger'}
       onClick={showSearchDropdown}
       className={`${classes.middleLink} ${isSearchOpen ? classes.middleLinkActive : ''}`}
     >

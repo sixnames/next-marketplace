@@ -40,7 +40,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
         {rubrics.map((rubric) => {
           const { nameString, slug } = rubric;
           return (
-            <li key={slug}>
+            <li key={slug} data-cy={'search-rubric'}>
               <Link
                 onClick={hideSearchDropdown}
                 href={{
@@ -60,7 +60,9 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
       </ul>
       <div className={classes.resultList}>
         {products.map((product) => {
-          return <ProductSnippetGrid product={product} key={product.id} />;
+          return (
+            <ProductSnippetGrid product={product} key={product.id} testId={'search-product'} />
+          );
         })}
       </div>
     </div>
@@ -114,7 +116,7 @@ const HeaderSearch: React.FC = () => {
   const products = searchProducts && searchProducts.length ? searchProducts : topProducts;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} data-cy={'search-dropdown'}>
       <OutsideClickHandler onOutsideClick={hideSearchDropdown}>
         <Inner>
           {isMobile ? (
@@ -133,6 +135,7 @@ const HeaderSearch: React.FC = () => {
               icon={'search'}
               value={search}
               placeholder={'Я хочу найти...'}
+              testId={'search-input'}
             />
             <Button
               type={'submit'}
@@ -144,7 +147,13 @@ const HeaderSearch: React.FC = () => {
             </Button>
             {isMobile ? <Button icon={'scan'} theme={'secondary'} short /> : null}
             {isMobile ? null : (
-              <Button icon={'cross'} theme={'secondary'} onClick={hideSearchDropdown} short />
+              <Button
+                icon={'cross'}
+                theme={'secondary'}
+                onClick={hideSearchDropdown}
+                testId={'search-close'}
+                short
+              />
             )}
           </form>
           <div className={classes.searchFrame}>

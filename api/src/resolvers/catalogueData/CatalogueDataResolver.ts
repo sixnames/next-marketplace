@@ -104,8 +104,25 @@ export class CatalogueDataResolver {
           },
         },
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        { $sort: { 'views.counter': -1 } },
+        {
+          $addFields: {
+            id: '$_id',
+            viewsCounter: {
+              $cond: {
+                if: {
+                  $and: [
+                    {
+                      $eq: ['$views.key', city],
+                    },
+                  ],
+                },
+                then: '$views.counter',
+                else: 0,
+              },
+            },
+          },
+        },
+        { $sort: { viewsCounter: -1 } },
         { $limit: 3 },
       ];
 
@@ -141,8 +158,25 @@ export class CatalogueDataResolver {
           },
         },
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        { $sort: { 'views.counter': -1 } },
+        {
+          $addFields: {
+            id: '$_id',
+            viewsCounter: {
+              $cond: {
+                if: {
+                  $and: [
+                    {
+                      $eq: ['$views.key', city],
+                    },
+                  ],
+                },
+                then: '$views.counter',
+                else: 0,
+              },
+            },
+          },
+        },
+        { $sort: { viewsCounter: -1 } },
         { $limit: 3 },
       ];
 

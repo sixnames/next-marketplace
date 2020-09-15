@@ -48,6 +48,21 @@
   grid-column-gap: 1rem;
 }
 
+.result {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  grid-column-gap: var(--catalogueGridGap);
+}
+
+.resultList {
+  display: grid;
+  align-items: start;
+  flex-grow: 1;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap:var(--catalogueGridGap);
+  grid-row-gap: var(--catalogueGridGap);
+}
+
 @media only screen and (max-width: 1024px) {
   .frame {
     position: fixed;
@@ -63,5 +78,9 @@
     display: grid;
     grid-template-columns: 1fr var(--formInputHeight) var(--formInputHeight);
     grid-column-gap: 1rem;
+  }
+
+  .resultList {
+    grid-template-columns: repeat(1, 1fr);
   }
 }

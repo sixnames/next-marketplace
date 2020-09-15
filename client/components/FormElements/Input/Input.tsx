@@ -17,6 +17,13 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   placeholder?: string;
   disabled?: boolean;
   icon?: IconType;
+  onChange?: (e: {
+    target: {
+      id?: string;
+      name?: string;
+      value: string;
+    };
+  }) => void;
 }
 
 const Input: React.FC<InputPropsInterface> = ({

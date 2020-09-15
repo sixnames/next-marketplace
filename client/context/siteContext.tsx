@@ -41,7 +41,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 }) => {
   const [state, setState] = useState({
     isBurgerDropdownOpen: false,
-    isSearchOpen: false,
+    isSearchOpen: true,
   });
 
   const initialValue = useMemo(() => {

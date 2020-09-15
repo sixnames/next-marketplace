@@ -41,6 +41,7 @@ export type Query = {
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
+  getCatalogueSearchTopItems: CatalogueSearchResult;
   getCatalogueSearchResult: CatalogueSearchResult;
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
@@ -2242,6 +2243,30 @@ export type GetCatalogueCardQueryQuery = (
   ) }
 );
 
+export type ProductSnippetFragmentFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
+);
+
+export type CatalogueRubricFragmentFragment = (
+  { __typename?: 'Rubric' }
+  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
+  & { variant: (
+    { __typename?: 'RubricVariant' }
+    & Pick<RubricVariant, 'id' | 'nameString'>
+  ), filterAttributes: Array<(
+    { __typename?: 'RubricFilterAttribute' }
+    & Pick<RubricFilterAttribute, 'id'>
+    & { node: (
+      { __typename?: 'Attribute' }
+      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
+    ), options: Array<(
+      { __typename?: 'RubricFilterAttributeOption' }
+      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+    )> }
+  )> }
+);
+
 export type GetCatalogueRubricQueryVariables = Exact<{
   catalogueFilter: Array<Scalars['String']>;
 }>;
@@ -2254,27 +2279,13 @@ export type GetCatalogueRubricQuery = (
     & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
-      & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
-      & { variant: (
-        { __typename?: 'RubricVariant' }
-        & Pick<RubricVariant, 'id' | 'nameString'>
-      ), filterAttributes: Array<(
-        { __typename?: 'RubricFilterAttribute' }
-        & Pick<RubricFilterAttribute, 'id'>
-        & { node: (
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'slug'>
-        ), options: Array<(
-          { __typename?: 'RubricFilterAttributeOption' }
-          & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
-        )> }
-      )> }
+      & CatalogueRubricFragmentFragment
     ), products: (
       { __typename?: 'PaginatedProductsResponse' }
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
+        & ProductSnippetFragmentFragment
       )> }
     ) }
   )> }
@@ -2456,6 +2467,42 @@ export type GetAllRubricVariantsQuery = (
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
   )> }
+);
+
+export type GetCatalogueSearchTopItemsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCatalogueSearchTopItemsQuery = (
+  { __typename?: 'Query' }
+  & { getCatalogueSearchTopItems: (
+    { __typename?: 'CatalogueSearchResult' }
+    & { rubrics: Array<(
+      { __typename?: 'Rubric' }
+      & CatalogueRubricFragmentFragment
+    )>, products: Array<(
+      { __typename?: 'Product' }
+      & ProductSnippetFragmentFragment
+    )> }
+  ) }
+);
+
+export type GetCatalogueSearchResultQueryVariables = Exact<{
+  search: Scalars['String'];
+}>;
+
+
+export type GetCatalogueSearchResultQuery = (
+  { __typename?: 'Query' }
+  & { getCatalogueSearchResult: (
+    { __typename?: 'CatalogueSearchResult' }
+    & { rubrics: Array<(
+      { __typename?: 'Rubric' }
+      & CatalogueRubricFragmentFragment
+    )>, products: Array<(
+      { __typename?: 'Product' }
+      & ProductSnippetFragmentFragment
+    )> }
+  ) }
 );
 
 export type GetGenderOptionsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -2847,6 +2894,44 @@ export const ProductFragmentFragmentDoc = gql`
         }
       }
       value
+    }
+  }
+}
+    `;
+export const ProductSnippetFragmentFragmentDoc = gql`
+    fragment ProductSnippetFragment on Product {
+  id
+  itemId
+  nameString
+  price
+  slug
+  mainImage
+}
+    `;
+export const CatalogueRubricFragmentFragmentDoc = gql`
+    fragment CatalogueRubricFragment on Rubric {
+  id
+  nameString
+  level
+  slug
+  variant {
+    id
+    nameString
+  }
+  filterAttributes {
+    id
+    node {
+      id
+      nameString
+      slug
+    }
+    options {
+      id
+      slug
+      filterNameString
+      color
+      counter
+      color
     }
   }
 }
@@ -4507,47 +4592,20 @@ export const GetCatalogueRubricDocument = gql`
   getCatalogueData(catalogueFilter: $catalogueFilter) {
     catalogueTitle
     rubric {
-      id
-      nameString
-      level
-      slug
-      variant {
-        id
-        nameString
-      }
-      filterAttributes {
-        id
-        node {
-          id
-          nameString
-          slug
-        }
-        options {
-          id
-          slug
-          filterNameString
-          color
-          counter
-          color
-        }
-      }
+      ...CatalogueRubricFragment
     }
     products {
       totalDocs
       page
       totalPages
       docs {
-        id
-        itemId
-        nameString
-        price
-        slug
-        mainImage
+        ...ProductSnippetFragment
       }
     }
   }
 }
-    `;
+    ${CatalogueRubricFragmentFragmentDoc}
+${ProductSnippetFragmentFragmentDoc}`;
 
 /**
  * __useGetCatalogueRubricQuery__
@@ -5009,6 +5067,83 @@ export function useGetAllRubricVariantsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetAllRubricVariantsQueryHookResult = ReturnType<typeof useGetAllRubricVariantsQuery>;
 export type GetAllRubricVariantsLazyQueryHookResult = ReturnType<typeof useGetAllRubricVariantsLazyQuery>;
 export type GetAllRubricVariantsQueryResult = Apollo.QueryResult<GetAllRubricVariantsQuery, GetAllRubricVariantsQueryVariables>;
+export const GetCatalogueSearchTopItemsDocument = gql`
+    query GetCatalogueSearchTopItems {
+  getCatalogueSearchTopItems {
+    rubrics {
+      ...CatalogueRubricFragment
+    }
+    products {
+      ...ProductSnippetFragment
+    }
+  }
+}
+    ${CatalogueRubricFragmentFragmentDoc}
+${ProductSnippetFragmentFragmentDoc}`;
+
+/**
+ * __useGetCatalogueSearchTopItemsQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueSearchTopItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueSearchTopItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueSearchTopItemsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCatalogueSearchTopItemsQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
+        return Apollo.useQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, baseOptions);
+      }
+export function useGetCatalogueSearchTopItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>(GetCatalogueSearchTopItemsDocument, baseOptions);
+        }
+export type GetCatalogueSearchTopItemsQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsQuery>;
+export type GetCatalogueSearchTopItemsLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchTopItemsLazyQuery>;
+export type GetCatalogueSearchTopItemsQueryResult = Apollo.QueryResult<GetCatalogueSearchTopItemsQuery, GetCatalogueSearchTopItemsQueryVariables>;
+export const GetCatalogueSearchResultDocument = gql`
+    query GetCatalogueSearchResult($search: String!) {
+  getCatalogueSearchResult(search: $search) {
+    rubrics {
+      ...CatalogueRubricFragment
+    }
+    products {
+      ...ProductSnippetFragment
+    }
+  }
+}
+    ${CatalogueRubricFragmentFragmentDoc}
+${ProductSnippetFragmentFragmentDoc}`;
+
+/**
+ * __useGetCatalogueSearchResultQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueSearchResultQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueSearchResultQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueSearchResultQuery({
+ *   variables: {
+ *      search: // value for 'search'
+ *   },
+ * });
+ */
+export function useGetCatalogueSearchResultQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
+        return Apollo.useQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, baseOptions);
+      }
+export function useGetCatalogueSearchResultLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
+          return Apollo.useLazyQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, baseOptions);
+        }
+export type GetCatalogueSearchResultQueryHookResult = ReturnType<typeof useGetCatalogueSearchResultQuery>;
+export type GetCatalogueSearchResultLazyQueryHookResult = ReturnType<typeof useGetCatalogueSearchResultLazyQuery>;
+export type GetCatalogueSearchResultQueryResult = Apollo.QueryResult<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>;
 export const GetGenderOptionsDocument = gql`
     query GetGenderOptions {
   getGenderOptions {

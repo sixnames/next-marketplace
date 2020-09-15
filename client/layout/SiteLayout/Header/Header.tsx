@@ -110,6 +110,7 @@ const HeaderMiddleRight: React.FC = () => {
 };
 
 const Header: React.FC = () => {
+  const { isSearchOpen } = useSiteContext();
   const { logoSlug } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const isMobile = useIsMobile();
@@ -134,7 +135,7 @@ const Header: React.FC = () => {
           {isMobile ? null : <HeaderMiddleRight />}
         </Inner>
 
-        <HeaderSearch />
+        {isSearchOpen ? <HeaderSearch /> : null}
       </header>
 
       {isMobile ? (

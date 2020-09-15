@@ -4,11 +4,15 @@
   position: relative;
   display: grid;
   grid-template-columns: 105px 1fr;
-  grid-column-gap: var(--horizontalGap);
   grid-row-gap: var(--horizontalGap);
   background-color: var(--secondaryBackground);
   border-radius: var(--borderRadius);
   box-shadow: var(--wp-shadow-200);
+}
+
+.leftColumn {
+  padding-left: var(--horizontalGap);
+  padding-right: var(--horizontalGap);
 }
 
 .link {

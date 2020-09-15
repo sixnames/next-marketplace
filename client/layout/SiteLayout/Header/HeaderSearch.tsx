@@ -16,18 +16,48 @@ import {
 import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
 import RequestError from '../../../components/RequestError/RequestError';
+import Link from '../../../components/Link/Link';
+
+type ResultRubrics =
+  | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
+  | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['rubrics'];
+
+type ResultProducts =
+  | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['products']
+  | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems']['products'];
 
 interface HeaderSearchResultInterface {
-  result:
-    | GetCatalogueSearchResultQuery['getCatalogueSearchResult']
-    | GetCatalogueSearchTopItemsQuery['getCatalogueSearchTopItems'];
+  rubrics: ResultRubrics;
+  products: ResultProducts;
 }
 
-const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ result }) => {
-  console.log(result);
+const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, products }) => {
+  console.log({ products });
+  const { hideSearchDropdown } = useSiteContext();
   return (
     <div className={classes.result}>
-      <div>rubric</div>
+      <ul>
+        {rubrics.map((rubric) => {
+          const { nameString, slug } = rubric;
+          return (
+            <li key={slug}>
+              <Link
+                onClick={hideSearchDropdown}
+                href={{
+                  pathname: `/[...catalogue]`,
+                }}
+                as={{
+                  pathname: `/${slug}`,
+                }}
+                testId={`search-rubric-${nameString}`}
+                className={`${classes.rubric}`}
+              >
+                <span>{nameString}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
       <div className={classes.resultList}>products</div>
     </div>
   );
@@ -70,7 +100,14 @@ const HeaderSearch: React.FC = () => {
 
   const isLoading = loading || searchLoading;
   const isError = error || searchError;
-  const result = searchData?.getCatalogueSearchResult || data?.getCatalogueSearchTopItems;
+
+  const searchRubrics = searchData?.getCatalogueSearchResult.rubrics;
+  const topRubrics = data?.getCatalogueSearchTopItems.rubrics;
+  const searchProducts = searchData?.getCatalogueSearchResult.products;
+  const topProducts = data?.getCatalogueSearchTopItems.products;
+
+  const rubrics = searchRubrics && searchRubrics.length ? searchRubrics : topRubrics;
+  const products = searchProducts && searchProducts.length ? searchProducts : topProducts;
 
   return (
     <div className={classes.frame}>
@@ -106,10 +143,12 @@ const HeaderSearch: React.FC = () => {
               <Button icon={'cross'} theme={'secondary'} onClick={hideSearchDropdown} short />
             )}
           </form>
-          <div>
-            {isLoading ? <Spinner isNested /> : null}
+          <div className={classes.searchFrame}>
+            {isLoading ? <Spinner className={classes.spinner} /> : null}
             {isError ? <RequestError /> : null}
-            {result ? <HeaderSearchResult result={result} /> : null}
+            {rubrics && products ? (
+              <HeaderSearchResult rubrics={rubrics} products={products} />
+            ) : null}
           </div>
         </Inner>
       </OutsideClickHandler>

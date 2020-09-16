@@ -53,11 +53,10 @@ async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): P
     return true;
   }
 
-  const config = await ConfigModel.create({
+  await ConfigModel.create({
     ...configTemplate,
     variant: configTemplate.variant as ConfigVariantEnum,
   });
-  console.log(JSON.stringify(config, null, 2));
   return true;
 }
 

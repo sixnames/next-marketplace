@@ -36,10 +36,10 @@ export class Config {
   @Field((_type) => ID)
   readonly id: string;
 
-  @Field((_type) => String)
-  readonly translation: string;
-
-  @Field((_type) => [String])
+  @Field((_type) => [String], {
+    description:
+      'Returns current translation if multiLang field is set to true. Otherwise returns value file of current city.',
+  })
   readonly value: string[];
 
   @Field((_type) => String)

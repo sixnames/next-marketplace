@@ -79,6 +79,32 @@ const configsMessages = [
       },
     ],
   },
+  {
+    key: 'validation.configs.translation',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Значение мультиязычной настройки обязательно к заполнению',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Config multi lang value is required',
+      },
+    ],
+  },
+  {
+    key: 'validation.configs.cityKey',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ключ города обязателен к заполнению',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'City key is required',
+      },
+    ],
+  },
 ];
 
 export default configsMessages;

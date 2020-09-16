@@ -28,6 +28,7 @@ import { FilterQuery } from 'mongoose';
 import getCityData from '../../utils/getCityData';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
+import { DEFAULT_CITY } from '../../config';
 
 const { operationConfigUpdate } = getOperationsConfigs(Config.name);
 
@@ -59,13 +60,23 @@ export class ConfigResolver {
   @Query((_returns) => [String])
   async getConfigValueBySlug(
     @Arg('slug', (_type) => String) slug: string,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<Config['value']> {
     const config = await ConfigModel.findOne({ slug });
     if (!config) {
       throw new Error('Config not found');
     }
 
-    return config.value;
+    const currentCity = getCityData<ConfigCity>(config.cities, city);
+    if (!currentCity) {
+      throw Error('Config city not found on query getConfigValueBySlug');
+    }
+
+    if (config.multiLang) {
+      return [getLangField(currentCity.translations, lang)];
+    }
+
+    return currentCity.value;
   }
 
   @Mutation((_returns) => ConfigPayloadType)
@@ -77,8 +88,8 @@ export class ConfigResolver {
     @Arg('input', (_type) => [UpdateConfigInput]) input: UpdateConfigInput[],
   ): Promise<ConfigPayloadType> {
     try {
-      for await (const { id, value } of input) {
-        await ConfigModel.findOneAndUpdate({ _id: id, ...customFilter }, { value });
+      for await (const { id, cities } of input) {
+        await ConfigModel.findOneAndUpdate({ _id: id, ...customFilter }, { cities });
       }
 
       return {
@@ -106,7 +117,6 @@ export class ConfigResolver {
     try {
       const { id, value } = input;
       const config = await ConfigModel.findOne({ _id: id, ...customFilter });
-
       if (!config) {
         return {
           success: false,
@@ -115,7 +125,16 @@ export class ConfigResolver {
         };
       }
 
-      for await (const oldAsset of config.value) {
+      const defaultCity = config.cities[0];
+      if (!defaultCity) {
+        return {
+          success: false,
+          message: await getApiMessage({ lang, key: 'configs.updateAsset.notFound' }),
+          configs: await ConfigModel.find({}).sort(configsSortOrder),
+        };
+      }
+
+      for await (const oldAsset of defaultCity.value) {
         await removeUpload(`.${oldAsset}`);
       }
 
@@ -125,9 +144,15 @@ export class ConfigResolver {
         dist: 'config',
         outputFormat: 'jpg',
       });
-      const updatedConfig = await ConfigModel.findByIdAndUpdate(id, {
-        value: assetsResult.map(({ url }) => url),
-      });
+
+      const updatedConfig = await ConfigModel.updateMany(
+        { _id: id },
+        {
+          $set: {
+            'cities.0.value': assetsResult.map(({ url }) => url),
+          },
+        },
+      );
 
       if (!updatedConfig) {
         return {
@@ -151,37 +176,25 @@ export class ConfigResolver {
     }
   }
 
-  @FieldResolver((_returns) => String)
-  async translation(
-    @Root() config: DocumentType<Config>,
-    @Localization() { city, lang }: LocalizationPayloadInterface,
-  ): Promise<string> {
-    if (!config.multiLang) {
-      return '';
-    }
-
-    const currentCity = getCityData<ConfigCity>(config.cities, city);
-    if (!currentCity) {
-      throw Error('Config city not found on field Translation');
-    }
-
-    return getLangField(currentCity.translations, lang);
-  }
-
   @FieldResolver((_returns) => [String])
   async value(
     @Root() config: DocumentType<Config>,
-    @Localization() { city }: LocalizationPayloadInterface,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
   ): Promise<string[]> {
+    let configCity = getCityData<ConfigCity>(config.cities, city);
+
+    if (!configCity) {
+      configCity = getCityData<ConfigCity>(config.cities, DEFAULT_CITY);
+    }
+
+    if (!configCity) {
+      throw Error('Config city not found on field value');
+    }
+
     if (config.multiLang) {
-      return [];
+      return [getLangField(configCity.translations, lang)];
     }
 
-    const currentCity = getCityData<ConfigCity>(config.cities, city);
-    if (!currentCity) {
-      throw Error('Config city not found on field Value');
-    }
-
-    return currentCity.value;
+    return configCity.value;
   }
 }

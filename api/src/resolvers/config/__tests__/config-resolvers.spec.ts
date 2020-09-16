@@ -1,5 +1,6 @@
 import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import {
+  DEFAULT_CITY,
   SITE_CONFIGS_All,
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
@@ -11,6 +12,7 @@ import { gql } from 'apollo-server-express';
 describe('Config', () => {
   it('Should CRUD site config', async () => {
     const stringConfig = SITE_CONFIGS_INITIAL[0];
+    const stringConfigCity = stringConfig.cities[0];
     const { query, mutate } = await testClientWithContext();
 
     // Should return all site configs
@@ -72,7 +74,7 @@ describe('Config', () => {
         },
       },
     );
-    expect(getConfigValueBySlug).toEqual(stringConfig.value);
+    expect(getConfigValueBySlug).toEqual(stringConfigCity.value);
 
     // Should update asset config
     const {
@@ -131,7 +133,7 @@ describe('Config', () => {
         variables: {
           input: getAllConfigs.map(({ id }: any) => ({
             id,
-            value: [],
+            cities: [],
           })),
         },
       },
@@ -160,7 +162,13 @@ describe('Config', () => {
         variables: {
           input: getAllConfigs.map(({ id }: any, index: number) => ({
             id,
-            value: [`value-${index}`],
+            cities: [
+              {
+                key: DEFAULT_CITY,
+                value: [`value-${index}`],
+                translations: [],
+              },
+            ],
           })),
         },
       },
@@ -168,6 +176,6 @@ describe('Config', () => {
     const updatedConfig = updateConfigs.configs.find(({ slug }: any) => slug === stringConfig.slug);
     expect(updateConfigs.success).toBeTruthy();
     expect(updateConfigs.configs).toHaveLength(SITE_CONFIGS_All.length);
-    expect(updatedConfig.value).not.toEqual(stringConfig.value);
+    expect(updatedConfig.value).not.toEqual(stringConfigCity.value);
   });
 });

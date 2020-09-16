@@ -20,6 +20,8 @@ const messagesKeys = [
   // Configs validation
   'validation.configs.id',
   'validation.configs.value',
+  'validation.configs.translation',
+  'validation.configs.cityKey',
 
   // Currencies ----------
   'currencies.create.duplicate',

@@ -150,7 +150,10 @@ type Config {
   nameString: String!
   order: Float!
   slug: String!
-  translation: String!
+
+  """
+  Returns current translation if multiLang field is set to true. Otherwise returns value file of current city.
+  """
   value: [String!]!
   variant: ConfigVariantEnum!
 }
@@ -158,6 +161,12 @@ type Config {
 type ConfigCity {
   key: String!
   translations: [LanguageType!]!
+  value: [String!]!
+}
+
+input ConfigCityInput {
+  key: String!
+  translations: [LangInput!]!
   value: [String!]!
 }
 
@@ -864,8 +873,8 @@ input UpdateCityInCountryInput {
 }
 
 input UpdateConfigInput {
+  cities: [ConfigCityInput!]!
   id: ID!
-  value: [String!]!
 }
 
 input UpdateCountryInput {

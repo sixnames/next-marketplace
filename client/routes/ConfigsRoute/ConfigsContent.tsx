@@ -34,9 +34,9 @@ const ConfigsContent: React.FC = () => {
   const configsInitialValue = { inputs: notAssetConfigs };
 
   function updateConfigsHandler({ inputs }: typeof configsInitialValue) {
-    const mutationInput = inputs.map(({ id, value }) => ({
+    const mutationInput = inputs.map(({ id, cities }) => ({
       id,
-      value,
+      cities,
     }));
     return updateConfigsMutation({
       variables: {

@@ -721,14 +721,20 @@ export type IsoLanguage = {
 export type Config = {
   __typename?: 'Config';
   id: Scalars['ID'];
+  /** Returns current translation if multiLang field is set to true. Otherwise returns value file of current city. */
+  value: Array<Scalars['String']>;
   slug: Scalars['String'];
   nameString: Scalars['String'];
   description: Scalars['String'];
   order: Scalars['Float'];
+  /** Set to true if config is able to hold multiple values. */
   multi: Scalars['Boolean'];
+  /** Set to true if config is able to hold value for multiple languages. */
+  multiLang: Scalars['Boolean'];
   variant: ConfigVariantEnum;
+  /** Accepted formats for asset config. */
   acceptedFormats: Array<Scalars['String']>;
-  value: Array<Scalars['String']>;
+  cities: Array<ConfigCity>;
 };
 
 /** Config variant enum */
@@ -739,6 +745,13 @@ export enum ConfigVariantEnum {
   Tel = 'tel',
   Asset = 'asset'
 }
+
+export type ConfigCity = {
+  __typename?: 'ConfigCity';
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+  translations: Array<LanguageType>;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -1453,7 +1466,13 @@ export type ConfigPayloadType = {
 
 export type UpdateConfigInput = {
   id: Scalars['ID'];
+  cities: Array<ConfigCityInput>;
+};
+
+export type ConfigCityInput = {
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
+  translations: Array<LangInput>;
 };
 
 export type UpdateAssetConfigInput = {
@@ -1558,7 +1577,7 @@ export type InitialQuery = (
     & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+    & SiteConfigFragment
   )> }
 );
 
@@ -1579,7 +1598,7 @@ export type InitialSiteQueryQuery = (
     & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+    & SiteConfigFragment
   )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & SiteRubricFragmentFragment
@@ -2291,6 +2310,19 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type SiteConfigFragment = (
+  { __typename?: 'Config' }
+  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats'>
+  & { cities: Array<(
+    { __typename?: 'ConfigCity' }
+    & Pick<ConfigCity, 'key' | 'value'>
+    & { translations: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )> }
+);
+
 export type GetAllConfigsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2298,7 +2330,7 @@ export type GetAllConfigsQuery = (
   { __typename?: 'Query' }
   & { getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+    & SiteConfigFragment
   )> }
 );
 
@@ -2936,6 +2968,25 @@ export const CatalogueRubricFragmentFragmentDoc = gql`
   }
 }
     `;
+export const SiteConfigFragmentDoc = gql`
+    fragment SiteConfig on Config {
+  id
+  slug
+  value
+  nameString
+  description
+  variant
+  acceptedFormats
+  cities {
+    key
+    value
+    translations {
+      key
+      value
+    }
+  }
+}
+    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -3004,18 +3055,12 @@ export const InitialDocument = gql`
     isDefault
   }
   getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
-    multi
-    acceptedFormats
+    ...SiteConfig
   }
 }
     ${SessionUserFragmentFragmentDoc}
-${SessionRoleFragmentFragmentDoc}`;
+${SessionRoleFragmentFragmentDoc}
+${SiteConfigFragmentDoc}`;
 
 /**
  * __useInitialQuery__
@@ -3059,14 +3104,7 @@ export const InitialSiteQueryDocument = gql`
     isDefault
   }
   getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
-    multi
-    acceptedFormats
+    ...SiteConfig
   }
   getRubricsTree {
     ...SiteRubricFragment
@@ -3074,6 +3112,7 @@ export const InitialSiteQueryDocument = gql`
 }
     ${SessionUserFragmentFragmentDoc}
 ${SessionRoleFragmentFragmentDoc}
+${SiteConfigFragmentDoc}
 ${SiteRubricFragmentFragmentDoc}`;
 
 /**
@@ -4635,15 +4674,10 @@ export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubri
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
+    ...SiteConfig
   }
 }
-    `;
+    ${SiteConfigFragmentDoc}`;
 
 /**
  * __useGetAllConfigsQuery__

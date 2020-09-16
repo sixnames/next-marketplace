@@ -67,16 +67,20 @@ export class ConfigResolver {
       throw new Error('Config not found');
     }
 
-    const currentCity = getCityData<ConfigCity>(config.cities, city);
-    if (!currentCity) {
+    let configCity = getCityData<ConfigCity>(config.cities, city);
+    if (!configCity) {
+      configCity = getCityData<ConfigCity>(config.cities, DEFAULT_CITY);
+    }
+
+    if (!configCity) {
       throw Error('Config city not found on query getConfigValueBySlug');
     }
 
     if (config.multiLang) {
-      return [getLangField(currentCity.translations, lang)];
+      return [getLangField(configCity.translations, lang)];
     }
 
-    return currentCity.value;
+    return configCity.value;
   }
 
   @Mutation((_returns) => ConfigPayloadType)

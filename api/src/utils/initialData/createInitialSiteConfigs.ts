@@ -1,6 +1,7 @@
 import { setSharpImage, StoreFileFormat } from '../assets/setSharpImage';
 import { Config, ConfigModel, ConfigVariantEnum } from '../../entities/Config';
 import {
+  DEFAULT_CITY,
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
   SITE_CONFIGS_LOGO_DARK,
@@ -18,7 +19,15 @@ function sendErrorCode(error: string) {
 interface StoreConfigWithAssetInterface {
   configTemplate: Pick<
     Config,
-    'slug' | 'nameString' | 'description' | 'variant' | 'order' | 'multi' | 'acceptedFormats'
+    | 'slug'
+    | 'nameString'
+    | 'description'
+    | 'variant'
+    | 'order'
+    | 'multi'
+    | 'multiLang'
+    | 'acceptedFormats'
+    | 'cities'
   >;
   sourceImage: string;
   slug: string;
@@ -27,14 +36,7 @@ interface StoreConfigWithAssetInterface {
 
 type FindOrCreateConfigTemplate = Pick<
   Config,
-  | 'slug'
-  | 'nameString'
-  | 'description'
-  | 'variant'
-  | 'value'
-  | 'order'
-  | 'multi'
-  | 'acceptedFormats'
+  'slug' | 'nameString' | 'description' | 'variant' | 'order' | 'multi' | 'multiLang' | 'cities'
 >;
 
 async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): Promise<boolean> {
@@ -45,6 +47,7 @@ async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): P
 
   await ConfigModel.create({
     ...configTemplate,
+    acceptedFormats: [],
     variant: configTemplate.variant as ConfigVariantEnum,
   });
   return true;
@@ -89,7 +92,16 @@ async function storeConfigWithAsset({
       return false;
     }
 
-    return findOrCreateConfig({ ...configTemplate, value: [logoPath] });
+    return findOrCreateConfig({
+      ...configTemplate,
+      cities: [
+        {
+          key: DEFAULT_CITY,
+          value: [logoPath],
+          translations: [],
+        },
+      ],
+    });
   } catch (e) {
     console.log(e);
     return false;

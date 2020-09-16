@@ -963,7 +963,9 @@ export const SITE_CONFIGS_LOGO = {
   variant: 'asset',
   order: 1,
   multi: false,
+  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
+  cities: [],
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
@@ -972,7 +974,9 @@ export const SITE_CONFIGS_LOGO_DARK = {
   variant: 'asset',
   order: 2,
   multi: false,
+  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
+  cities: [],
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
@@ -981,7 +985,9 @@ export const SITE_CONFIGS_LOGO_ICON = {
   variant: 'asset',
   order: 3,
   multi: false,
+  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
+  cities: [],
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
@@ -990,7 +996,9 @@ export const SITE_CONFIGS_LOGO_NAME = {
   variant: 'asset',
   order: 4,
   multi: false,
+  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
+  cities: [],
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -1000,7 +1008,9 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   variant: 'asset',
   order: 5,
   multi: false,
+  multiLang: false,
   acceptedFormats: ['image/jpeg'],
+  cities: [],
 };
 
 export const SITE_CONFIGS_INITIAL = [
@@ -1009,50 +1019,94 @@ export const SITE_CONFIGS_INITIAL = [
     nameString: 'Название сайта',
     description: '',
     variant: 'string',
-    value: ['Site'],
     order: 6,
     multi: false,
+    multiLang: false,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: ['Site'],
+        translations: [],
+      },
+    ],
   },
   {
     slug: 'contactEmail',
     nameString: 'Контактный Email',
     description: 'Контактный Email. Можно добавить несколько.',
     variant: 'email',
-    value: ['email@email.com'],
     order: 7,
     multi: true,
+    multiLang: false,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: ['email@email.com'],
+        translations: [],
+      },
+    ],
   },
   {
     slug: 'contactPhone',
     nameString: 'Контактный телефон',
     description: 'Контактный телефон. Можно добавить несколько.',
     variant: 'tel',
-    value: ['+79998887766'],
     order: 8,
     multi: true,
+    multiLang: false,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: ['+79998887766'],
+        translations: [],
+      },
+    ],
   },
   {
     slug: 'siteFoundationYear',
     nameString: 'Год основания сайта',
     description: '',
     variant: 'number',
-    value: ['2020'],
     order: 9,
     multi: false,
+    multiLang: false,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: ['2020'],
+        translations: [],
+      },
+    ],
   },
   {
     slug: 'pageDefaultTitle',
     nameString: 'Дефолтный title страницы',
     description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
     variant: 'string',
-    value: ['Page default title'],
     order: 10,
     multi: false,
+    multiLang: true,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: 'Дефолтный title страницы',
+          },
+          {
+            key: SECONDARY_LANG,
+            value: 'Page default title',
+          },
+        ],
+      },
+    ],
   },
   {
     slug: 'pageDefaultDescription',
@@ -1060,10 +1114,26 @@ export const SITE_CONFIGS_INITIAL = [
     description:
       'Данное поле будет добавлено в атрибут description если страница не имеет такового',
     variant: 'string',
-    value: ['Page default description'],
     order: 11,
     multi: false,
+    multiLang: true,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: 'Дефолтный description страницы',
+          },
+          {
+            key: SECONDARY_LANG,
+            value: 'Page default description',
+          },
+        ],
+      },
+    ],
   },
   {
     slug: 'siteThemeColor',
@@ -1071,10 +1141,17 @@ export const SITE_CONFIGS_INITIAL = [
     description:
       'Данный цвет будет использован для акцента ключевых элементов сайта. ВНИМАНИЕ! Цвет должен быть в формате RGB!',
     variant: 'string',
-    value: ['219, 83, 96'],
     order: 12,
     multi: false,
+    multiLang: false,
     acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        value: ['219, 83, 96'],
+        translations: [],
+      },
+    ],
   },
 ];
 export const SITE_CONFIGS_All = [

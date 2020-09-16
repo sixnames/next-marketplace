@@ -136,15 +136,29 @@ type CityCounter {
 }
 
 type Config {
+  """Accepted formats for asset config."""
   acceptedFormats: [String!]!
+  cities: [ConfigCity!]!
   description: String!
   id: ID!
+
+  """Set to true if config is able to hold multiple values."""
   multi: Boolean!
+
+  """Set to true if config is able to hold value for multiple languages."""
+  multiLang: Boolean!
   nameString: String!
   order: Float!
   slug: String!
+  translation: String!
   value: [String!]!
   variant: ConfigVariantEnum!
+}
+
+type ConfigCity {
+  key: String!
+  translations: [LanguageType!]!
+  value: [String!]!
 }
 
 type ConfigPayloadType {

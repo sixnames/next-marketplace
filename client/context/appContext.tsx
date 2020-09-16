@@ -1,16 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import Router from 'next/router';
 
-type AppContext = {
-  state: ContextState;
-  setState?: any;
-};
-
-type ModalProps<T> = {
-  type: string;
-  props?: T;
-};
-
 interface ContextState {
   isModal: {
     show: boolean;
@@ -21,7 +11,17 @@ interface ContextState {
   isLoading: boolean;
 }
 
-const AppContext = createContext<AppContext>({
+type AppContextType = {
+  state: ContextState;
+  setState?: any;
+};
+
+type ModalProps<T> = {
+  type: string;
+  props?: T;
+};
+
+const AppContext = createContext<AppContextType>({
   state: {
     isModal: {
       show: false,
@@ -71,7 +71,7 @@ const AppContextProvider: React.FC = ({ children }) => {
 };
 
 function useAppContext() {
-  const context: AppContext = useContext(AppContext);
+  const context: AppContextType = useContext(AppContext);
 
   if (!context) {
     throw new Error('useAppContext must be used within a AppContextProvider');
@@ -116,7 +116,7 @@ function useAppContext() {
     }));
   }
 
-  function showCartDropdown() {
+  /*function showCartDropdown() {
     setState((prevState: ContextState) => ({
       ...prevState,
       isCartDropdown: true,
@@ -128,7 +128,7 @@ function useAppContext() {
       ...prevState,
       isCartDropdown: false,
     }));
-  }
+  }*/
 
   /*function setCart(cart) {
     setState((prevState: ContextState) => ({
@@ -153,8 +153,8 @@ function useAppContext() {
     hideModal,
     showLoading,
     hideLoading,
-    showCartDropdown,
-    hideCartDropdown,
+    // showCartDropdown,
+    // hideCartDropdown,
     // setCart,
     // resetCart,
   };

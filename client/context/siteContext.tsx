@@ -56,8 +56,9 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   return (
     <UserContextProvider
       me={initialApolloState.me}
-      lang={initialApolloState.getClientLanguage}
+      cities={initialApolloState.getAllCities}
       configs={initialApolloState.getAllConfigs}
+      lang={initialApolloState.getClientLanguage}
       languagesList={initialApolloState.getAllLanguages || []}
     >
       <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>

@@ -1578,6 +1578,9 @@ export type InitialQuery = (
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
     & SiteConfigFragment
+  )>, getAllCities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -1602,6 +1605,9 @@ export type InitialSiteQueryQuery = (
   )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & SiteRubricFragmentFragment
+  )>, getAllCities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -3057,6 +3063,11 @@ export const InitialDocument = gql`
   getAllConfigs {
     ...SiteConfig
   }
+  getAllCities {
+    id
+    slug
+    nameString
+  }
 }
     ${SessionUserFragmentFragmentDoc}
 ${SessionRoleFragmentFragmentDoc}
@@ -3108,6 +3119,11 @@ export const InitialSiteQueryDocument = gql`
   }
   getRubricsTree {
     ...SiteRubricFragment
+  }
+  getAllCities {
+    id
+    slug
+    nameString
   }
 }
     ${SessionUserFragmentFragmentDoc}

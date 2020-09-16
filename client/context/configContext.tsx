@@ -3,18 +3,21 @@ import React, { createContext, useContext, useMemo } from 'react';
 
 interface ConfigContextInterface {
   configs: InitialQuery['getAllConfigs'];
+  cities: InitialQuery['getAllCities'];
 }
 
 const ConfigContext = createContext<ConfigContextInterface>({
   configs: [],
+  cities: [],
 });
 
-const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, children }) => {
+const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, cities, children }) => {
   const initialValue = useMemo(() => {
     return {
       configs,
+      cities,
     };
-  }, [configs]);
+  }, [configs, cities]);
 
   return <ConfigContext.Provider value={initialValue}>{children}</ConfigContext.Provider>;
 };
@@ -33,12 +36,12 @@ function useConfigContext() {
   function getSiteConfig(configSlug: string) {
     return configs.find(({ slug }) => configSlug === slug);
   }
-
+  // TODO getSiteConfigValue
   function getSiteConfigValue(configSlug: string) {
     const config = getSiteConfig(configSlug);
     return config ? config.value : [''];
   }
-
+  // TODO getSiteConfigSingleValue
   function getSiteConfigSingleValue(configSlug: string) {
     return getSiteConfigValue(configSlug)[0];
   }

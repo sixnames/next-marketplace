@@ -81,6 +81,11 @@ export const INITIAL_QUERY = gql`
     getAllConfigs {
       ...SiteConfig
     }
+    getAllCities {
+      id
+      slug
+      nameString
+    }
   }
   ${sessionRoleFragment}
   ${sessionUserFragment}
@@ -109,6 +114,11 @@ export const INITIAL_SITE_QUERY = gql`
     }
     getRubricsTree {
       ...SiteRubricFragment
+    }
+    getAllCities {
+      id
+      slug
+      nameString
     }
   }
   ${sessionRoleFragment}

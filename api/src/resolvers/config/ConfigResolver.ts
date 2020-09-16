@@ -1,5 +1,14 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
-import { Config, ConfigModel } from '../../entities/Config';
+import {
+  Arg,
+  Field,
+  FieldResolver,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
+import { Config, ConfigCity, ConfigModel } from '../../entities/Config';
 import { UpdateConfigInput } from './UpdateConfigInput';
 import PayloadType from '../common/PayloadType';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -16,6 +25,9 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import getCityData from '../../utils/getCityData';
+import { DocumentType } from '@typegoose/typegoose';
+import getLangField from '../../utils/translations/getLangField';
 
 const { operationConfigUpdate } = getOperationsConfigs(Config.name);
 
@@ -137,5 +149,39 @@ export class ConfigResolver {
         configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     }
+  }
+
+  @FieldResolver((_returns) => String)
+  async translation(
+    @Root() config: DocumentType<Config>,
+    @Localization() { city, lang }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    if (!config.multiLang) {
+      return '';
+    }
+
+    const currentCity = getCityData<ConfigCity>(config.cities, city);
+    if (!currentCity) {
+      throw Error('Config city not found on field Translation');
+    }
+
+    return getLangField(currentCity.translations, lang);
+  }
+
+  @FieldResolver((_returns) => [String])
+  async value(
+    @Root() config: DocumentType<Config>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<string[]> {
+    if (config.multiLang) {
+      return [];
+    }
+
+    const currentCity = getCityData<ConfigCity>(config.cities, city);
+    if (!currentCity) {
+      throw Error('Config city not found on field Value');
+    }
+
+    return currentCity.value;
   }
 }

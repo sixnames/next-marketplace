@@ -14,7 +14,8 @@ function getLangField(
   }
 
   const currentLang = languages.find(({ key }) => key === chosenLanguage);
-  const defaultLangValue = languages.find(({ key }) => key === DEFAULT_LANG)!.value;
+  const defaultLang = languages.find(({ key }) => key === DEFAULT_LANG);
+  const defaultLangValue = defaultLang ? defaultLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
 
   if (!currentLang && chosenLanguage !== DEFAULT_LANG) {
     const universalLang = languages.find(({ key }) => key === SECONDARY_LANG);
@@ -23,14 +24,14 @@ function getLangField(
       return defaultLangValue;
     }
 
-    return universalLang.value;
+    return universalLang ? universalLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
   }
 
   if (!currentLang) {
     return defaultLangValue;
   }
 
-  return currentLang.value;
+  return currentLang ? currentLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
 }
 
 export default getLangField;

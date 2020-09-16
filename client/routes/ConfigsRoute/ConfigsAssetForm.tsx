@@ -31,14 +31,14 @@ const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
       onSubmit={(values) => console.log(values)}
     >
       {({ values: { cities } }) => {
-        const isEmpty = cities[0].value.filter((value) => value).length === 0;
+        const isEmpty = (cities[0]?.value.filter((value) => value) || []).length === 0;
 
         return (
           <Form>
             <FormikImageUpload
               isHorizontal
               label={nameString}
-              name={'cities[0]value[0]'}
+              name={'cities[0]value'}
               testId={slug}
               width={'10rem'}
               height={'10rem'}

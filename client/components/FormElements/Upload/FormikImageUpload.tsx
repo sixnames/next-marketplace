@@ -45,9 +45,10 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
     <Field name={name}>
       {({ field, form }: FieldProps) => {
         const { setFieldValue } = form;
-        const imageSrc = field.value ? `${ASSETS_URL}${field.value}?format=png` : null;
+        const imageSrc =
+          field.value && field.value.length > 0 ? `${ASSETS_URL}${field.value}?format=png` : null;
         function removeImageHandler() {
-          setFieldValue(name, undefined);
+          setFieldValue(name, []);
         }
 
         return (

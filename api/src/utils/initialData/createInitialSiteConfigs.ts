@@ -36,7 +36,15 @@ interface StoreConfigWithAssetInterface {
 
 type FindOrCreateConfigTemplate = Pick<
   Config,
-  'slug' | 'nameString' | 'description' | 'variant' | 'order' | 'multi' | 'multiLang' | 'cities'
+  | 'slug'
+  | 'nameString'
+  | 'description'
+  | 'variant'
+  | 'order'
+  | 'multi'
+  | 'multiLang'
+  | 'cities'
+  | 'acceptedFormats'
 >;
 
 async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): Promise<boolean> {
@@ -45,11 +53,11 @@ async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): P
     return true;
   }
 
-  await ConfigModel.create({
+  const config = await ConfigModel.create({
     ...configTemplate,
-    acceptedFormats: [],
     variant: configTemplate.variant as ConfigVariantEnum,
   });
+  console.log(JSON.stringify(config, null, 2));
   return true;
 }
 

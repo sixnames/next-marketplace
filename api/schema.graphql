@@ -403,6 +403,7 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
   updateConfigs(input: [UpdateConfigInput!]!): ConfigPayloadType!
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!

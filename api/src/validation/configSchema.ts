@@ -23,13 +23,14 @@ export const configCitySchema = (args: MultiLangSchemaMessagesInterface) =>
     ),
   });
 
+export const updateConfigSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    id: idSchema({ args, key: 'validation.configs.id' }),
+    cities: Yup.array().min(minValueLength).of(configCitySchema(args)),
+  });
+
 export const updateConfigsSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.array().of(
-    Yup.object().shape({
-      id: idSchema({ args, key: 'validation.configs.id' }),
-      cities: Yup.array().of(configCitySchema(args)),
-    }),
-  );
+  Yup.array().of(updateConfigSchema(args));
 
 export const updateAssetConfigSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({

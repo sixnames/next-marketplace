@@ -1,6 +1,9 @@
 import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import {
   DEFAULT_CITY,
+  DEFAULT_LANG,
+  SECONDARY_CITY,
+  SECONDARY_LANG,
   SITE_CONFIGS_All,
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
@@ -139,6 +142,64 @@ describe('Config', () => {
       },
     );
     expect(updateConfigsValidationError).toBeDefined();
+
+    // Should update single non asset config
+    const {
+      data: { updateConfig },
+    } = await mutate<any>(
+      gql`
+        mutation UpdateConfig($input: UpdateConfigInput!) {
+          updateConfig(input: $input) {
+            success
+            message
+            configs {
+              id
+              nameString
+              value
+              slug
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: getConfigBySlug.id,
+            cities: [
+              {
+                key: DEFAULT_CITY,
+                value: [`new value`],
+                translations: [
+                  {
+                    key: DEFAULT_LANG,
+                    value: `new translation`,
+                  },
+                  {
+                    key: SECONDARY_LANG,
+                    value: `new translation`,
+                  },
+                ],
+              },
+              {
+                key: SECONDARY_CITY,
+                value: [`new secondary city value`],
+                translations: [
+                  {
+                    key: DEFAULT_LANG,
+                    value: `new translation`,
+                  },
+                  {
+                    key: SECONDARY_LANG,
+                    value: `new translation`,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    );
+    expect(updateConfig.success).toBeTruthy();
 
     // Should update non asset configs
     const {

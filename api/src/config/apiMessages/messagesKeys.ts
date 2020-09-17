@@ -14,6 +14,7 @@ const messagesKeys = [
 
   // Configs ----------
   'configs.update.success',
+  'configs.update.error',
   'configs.updateAsset.notFound',
   'configs.updateAsset.error',
   'configs.updateAsset.success',

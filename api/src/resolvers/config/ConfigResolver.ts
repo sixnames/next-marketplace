@@ -15,7 +15,11 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
-import { updateAssetConfigSchema, updateConfigsSchema } from '../../validation/configSchema';
+import {
+  updateAssetConfigSchema,
+  updateConfigSchema,
+  updateConfigsSchema,
+} from '../../validation/configSchema';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
@@ -81,6 +85,44 @@ export class ConfigResolver {
     }
 
     return configCity.value;
+  }
+
+  @Mutation((_returns) => ConfigPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateConfigSchema })
+  async updateConfig(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
+    @Arg('input', (_type) => UpdateConfigInput) input: UpdateConfigInput,
+  ): Promise<ConfigPayloadType> {
+    try {
+      const { id, cities } = input;
+      const config = await ConfigModel.findOneAndUpdate(
+        { _id: id, ...customFilter },
+        { cities },
+        { new: true },
+      );
+
+      if (!config) {
+        return {
+          success: true,
+          message: await getApiMessage({ lang, key: 'configs.update.error' }),
+          configs: await ConfigModel.find({}).sort(configsSortOrder),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ lang, key: 'configs.update.success' }),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        configs: await ConfigModel.find({}).sort(configsSortOrder),
+      };
+    }
   }
 
   @Mutation((_returns) => ConfigPayloadType)

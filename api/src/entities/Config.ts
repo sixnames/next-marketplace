@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { CONFIG_VARIANTS_ENUMS } from '../config';
 import { LanguageType } from './common';
+import { City } from './City';
 
 export enum ConfigVariantEnum {
   string = 'string',
@@ -29,6 +30,9 @@ export class ConfigCity {
   @Field((_type) => [LanguageType])
   @prop({ type: LanguageType, required: true })
   translations: LanguageType[];
+
+  @Field((_type) => City)
+  readonly city?: City;
 }
 
 @ObjectType()

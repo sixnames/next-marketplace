@@ -33,6 +33,7 @@ import getCityData from '../../utils/getCityData';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
 import { DEFAULT_CITY } from '../../config';
+import { City, CityModel } from '../../entities/City';
 
 const { operationConfigUpdate } = getOperationsConfigs(Config.name);
 
@@ -242,5 +243,17 @@ export class ConfigResolver {
     }
 
     return configCity.value;
+  }
+}
+
+@Resolver((_for) => ConfigCity)
+export class ConfigCityResolver {
+  @FieldResolver((_returns) => City)
+  async city(@Root() { key }: DocumentType<ConfigCity>): Promise<City> {
+    const city = await CityModel.findOne({ slug: key });
+    if (!city) {
+      throw Error(`City not found on ConfigCity['city']`);
+    }
+    return city;
   }
 }

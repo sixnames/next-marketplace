@@ -1,5 +1,12 @@
 import createTestData from '../utils/testUtils/createTestData';
 import {
+  DEFAULT_CITY,
+  SECONDARY_LANG,
+  SECONDARY_COUNTRY,
+  SECONDARY_CITY,
+  INITIAL_CITIES,
+  SITE_CONFIGS_All,
+  SITE_CONFIGS_INITIAL,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
@@ -44,6 +51,14 @@ import { attemptSignIn } from '../utils/auth/auth';
 
 export async function getMockDataRoute(_: Request, res: Response) {
   res.send({
+    SITE_CONFIGS_All,
+    INITIAL_CITIES,
+    SITE_CONFIGS_INITIAL,
+    DEFAULT_CITY,
+    DEFAULT_LANG,
+    SECONDARY_LANG,
+    SECONDARY_COUNTRY,
+    SECONDARY_CITY,
     ADMIN_PASSWORD,
     ADMIN_EMAIL,
     ADMIN_NAME,

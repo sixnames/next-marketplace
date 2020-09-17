@@ -159,6 +159,7 @@ type Config {
 }
 
 type ConfigCity {
+  city: City!
   key: String!
   translations: [LanguageType!]!
   value: [String!]!

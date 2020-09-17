@@ -12,10 +12,10 @@
   height: 1rem;
 }
 
-.accordionIcon.iconDone {
+.accordionIcon.iconDone svg {
   fill: var(--md-green-A700);
 }
 
-.accordionIcon.iconEmpty {
+.accordionIcon.iconEmpty svg {
   fill: var(--md-red-700);
 }

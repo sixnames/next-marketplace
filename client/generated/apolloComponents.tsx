@@ -751,6 +751,7 @@ export type ConfigCity = {
   key: Scalars['String'];
   value: Array<Scalars['String']>;
   translations: Array<LanguageType>;
+  city: City;
 };
 
 export type Mutation = {
@@ -2337,14 +2338,17 @@ export type GetCatalogueRubricQuery = (
 
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
-  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats'>
+  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi' | 'multiLang'>
   & { cities: Array<(
     { __typename?: 'ConfigCity' }
     & Pick<ConfigCity, 'key' | 'value'>
     & { translations: Array<(
       { __typename?: 'LanguageType' }
       & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    )>, city: (
+      { __typename?: 'City' }
+      & Pick<City, 'id' | 'nameString' | 'slug'>
+    ) }
   )> }
 );
 
@@ -3002,12 +3006,19 @@ export const SiteConfigFragmentDoc = gql`
   description
   variant
   acceptedFormats
+  multi
+  multiLang
   cities {
     key
     value
     translations {
       key
       value
+    }
+    city {
+      id
+      nameString
+      slug
     }
   }
 }

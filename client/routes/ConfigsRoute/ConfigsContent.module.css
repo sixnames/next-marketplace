@@ -4,3 +4,17 @@
   margin-bottom: 3rem;
   margin-top: 1rem;
 }
+
+.config {
+  margin-bottom: 2rem;
+}
+
+.configName {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.accordionContent {
+  padding-left: 2rem;
+  padding-top: var(--lineGap);
+}

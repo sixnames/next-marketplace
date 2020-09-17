@@ -32,28 +32,31 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
   const minimalLanguagesCount = 2;
 
   // Return just one input if site has one language
-  if (currentField.length < minimalLanguagesCount) {
+  if (languagesList.length < minimalLanguagesCount) {
     return (
       <div>
-        {currentField.map(({ key }, index) => (
-          <FormikInput
-            {...props}
-            lineClass={lineClass}
-            low={low}
-            wide={wide}
-            labelPostfix={labelPostfix}
-            postfix={postfix}
-            prefix={prefix}
-            labelLink={labelLink}
-            isRequired={isRequired}
-            isHorizontal={isHorizontal}
-            labelTag={labelTag}
-            label={label}
-            key={`${inputName}-${key}`}
-            name={`${inputName}[${index}].value`}
-            testId={`${testId}-${key}`}
-          />
-        ))}
+        {currentField.map(({ key }, index) => {
+          const exists = languagesList.find(({ key: languageKey }) => languageKey === key);
+          return exists ? (
+            <FormikInput
+              {...props}
+              lineClass={lineClass}
+              low={low}
+              wide={wide}
+              labelPostfix={labelPostfix}
+              postfix={postfix}
+              prefix={prefix}
+              labelLink={labelLink}
+              isRequired={isRequired}
+              isHorizontal={isHorizontal}
+              labelTag={labelTag}
+              label={label}
+              key={`${inputName}-${key}`}
+              name={`${inputName}[${index}].value`}
+              testId={`${testId}-${key}`}
+            />
+          ) : null;
+        })}
       </div>
     );
   }

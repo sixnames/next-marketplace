@@ -1160,6 +1160,46 @@ export const SITE_CONFIGS_INITIAL = [
       },
     ],
   },
+  {
+    slug: 'stickyNavVisibleOptionsCount',
+    nameString: 'Количество видимых опций в выпадающем меню.',
+    description: '',
+    variant: 'number',
+    order: 13,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['3'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'catalogueFilterVisibleOptionsCount',
+    nameString: 'Количество видимых опций фильтре каталога.',
+    description: '',
+    variant: 'number',
+    order: 14,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['3'],
+          },
+        ],
+      },
+    ],
+  },
 ];
 export const SITE_CONFIGS_All = [
   SITE_CONFIGS_LOGO,

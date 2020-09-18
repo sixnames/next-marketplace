@@ -1,6 +1,10 @@
+.warning {
+  margin-bottom: 2rem;
+  max-width: 980px;
+}
+
 .buttons {
   display: flex;
-  justify-content: center;
   margin-bottom: 3rem;
   margin-top: 1rem;
 }
@@ -10,11 +14,77 @@
 }
 
 .configName {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  min-height: 1.3rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--textSecondaryColor);
+}
+
+.configDescription {
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 0.75rem;
+}
+
+.configDescription svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
 }
 
 .accordionContent {
   padding-left: 2rem;
   padding-top: var(--lineGap);
+}
+
+.listLabel {
+  margin-bottom: 10px;
+}
+
+.languageInput {
+  margin-top: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.accordionIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.accordionIcon.iconDone svg {
+  fill: var(--md-green-A700);
+}
+
+.accordionIcon.iconEmpty svg {
+  fill: var(--md-red-700);
+}
+
+.inputsFrame {
+  margin-bottom: var(--lineGap);
+}
+
+.inputHolder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputHolderWithGap {
+  margin-top: var(--lineGap);
+}
+
+.input {
+  width: calc(100% - 40px);
+}
+
+.inputControl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 40px;
 }

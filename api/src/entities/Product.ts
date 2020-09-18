@@ -9,7 +9,6 @@ import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 
-// Product attribute
 @ObjectType()
 export class ProductAttribute {
   @Field(() => Boolean)
@@ -29,7 +28,6 @@ export class ProductAttribute {
   value: string[];
 }
 
-// Product attributes group
 @ObjectType()
 export class ProductAttributesGroup {
   @Field(() => Boolean)
@@ -45,7 +43,6 @@ export class ProductAttributesGroup {
   attributes: ProductAttribute[];
 }
 
-// Product schema
 @ObjectType()
 @plugin(mongoosePaginate)
 @plugin(aggregatePaginate)

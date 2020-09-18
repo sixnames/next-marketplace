@@ -74,11 +74,11 @@
   justify-content: center;
 }
 
-.inputHolderWithGap {
-  margin-top: var(--lineGap);
+.input {
+  width: 100%;
 }
 
-.input {
+.inputMulti {
   width: calc(100% - 40px);
 }
 

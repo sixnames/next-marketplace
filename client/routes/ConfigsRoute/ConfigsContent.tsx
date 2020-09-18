@@ -35,7 +35,7 @@ interface ConfigInputInterface extends FormikInputPropsInterface {
   multi?: boolean;
 }
 
-const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi }) => {
+const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId }) => {
   const { showModal } = useAppContext();
   const [field, meta, { setValue }] = useField(name);
 
@@ -49,12 +49,10 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi }) => {
       props: {
         testId: 'remove-field-modal',
         message: (
-          <div>
-            <p>Вы уверены, что хотите удалить поле настройки?</p>
-            <p>
-              Удаление будет сохранено только после нажатия кнопки <span>Сохранить</span>
-            </p>
-          </div>
+          <Fragment>
+            Вы уверены, что хотите удалить поле настройки? Удаление будет сохранено только после
+            нажатия кнопки <span>Сохранить</span>
+          </Fragment>
         ),
         confirm: () => {
           const newValue = meta.value.filter(
@@ -71,14 +69,12 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi }) => {
       {field.value.map((_: any, index: number) => {
         const isFirst = index === 0;
         const fieldName = `${name}[${index}]`;
+        const fieldTestId = `${testId}-${index}`;
 
         return (
-          <div
-            className={`${classes.inputHolder} ${!isFirst ? classes.inputHolderWithGap : ''}`}
-            key={index}
-          >
-            <div className={classes.input}>
-              <FormikInput name={fieldName} testId={fieldName} low />
+          <div className={`${classes.inputHolder}`} key={index}>
+            <div className={`${classes.input} ${multi ? classes.inputMulti : ''}`}>
+              <FormikInput name={fieldName} testId={fieldTestId} low />
             </div>
 
             {multi && (
@@ -89,12 +85,12 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi }) => {
                     size={'small'}
                     theme={'secondary'}
                     icon={'plus'}
-                    testId={`${fieldName}-add`}
+                    testId={`${fieldTestId}-add`}
                     circle
                   />
                 ) : (
                   <ButtonCross
-                    testId={`${fieldName}-remove`}
+                    testId={`${fieldTestId}-remove`}
                     onClick={() => removeFieldHandler(index)}
                   />
                 )}

@@ -729,8 +729,6 @@ export type Config = {
   order: Scalars['Float'];
   /** Set to true if config is able to hold multiple values. */
   multi: Scalars['Boolean'];
-  /** Set to true if config is able to hold value for multiple languages. */
-  multiLang: Scalars['Boolean'];
   variant: ConfigVariantEnum;
   /** Accepted formats for asset config. */
   acceptedFormats: Array<Scalars['String']>;
@@ -749,9 +747,14 @@ export enum ConfigVariantEnum {
 export type ConfigCity = {
   __typename?: 'ConfigCity';
   key: Scalars['String'];
-  value: Array<Scalars['String']>;
-  translations: Array<LanguageType>;
+  translations: Array<ConfigLanguage>;
   city: City;
+};
+
+export type ConfigLanguage = {
+  __typename?: 'ConfigLanguage';
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -1478,8 +1481,12 @@ export type UpdateConfigInput = {
 
 export type ConfigCityInput = {
   key: Scalars['String'];
+  translations: Array<CityLangInput>;
+};
+
+export type CityLangInput = {
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
-  translations: Array<LangInput>;
 };
 
 export type UpdateAssetConfigInput = {
@@ -2338,17 +2345,14 @@ export type GetCatalogueRubricQuery = (
 
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
-  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi' | 'multiLang'>
+  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
   & { cities: Array<(
     { __typename?: 'ConfigCity' }
-    & Pick<ConfigCity, 'key' | 'value'>
+    & Pick<ConfigCity, 'key'>
     & { translations: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )>, city: (
-      { __typename?: 'City' }
-      & Pick<City, 'id' | 'nameString' | 'slug'>
-    ) }
+      { __typename?: 'ConfigLanguage' }
+      & Pick<ConfigLanguage, 'key' | 'value'>
+    )> }
   )> }
 );
 
@@ -3007,18 +3011,11 @@ export const SiteConfigFragmentDoc = gql`
   variant
   acceptedFormats
   multi
-  multiLang
   cities {
     key
-    value
     translations {
       key
       value
-    }
-    city {
-      id
-      nameString
-      slug
     }
   }
 }

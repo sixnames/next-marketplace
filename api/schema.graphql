@@ -135,6 +135,11 @@ type CityCounter {
   key: String!
 }
 
+input CityLangInput {
+  key: String!
+  value: [String!]!
+}
+
 type Config {
   """Accepted formats for asset config."""
   acceptedFormats: [String!]!
@@ -144,16 +149,11 @@ type Config {
 
   """Set to true if config is able to hold multiple values."""
   multi: Boolean!
-
-  """Set to true if config is able to hold value for multiple languages."""
-  multiLang: Boolean!
   nameString: String!
   order: Float!
   slug: String!
 
-  """
-  Returns current translation if multiLang field is set to true. Otherwise returns value file of current city.
-  """
+  """Returns current value of current city."""
   value: [String!]!
   variant: ConfigVariantEnum!
 }
@@ -161,13 +161,16 @@ type Config {
 type ConfigCity {
   city: City!
   key: String!
-  translations: [LanguageType!]!
-  value: [String!]!
+  translations: [ConfigLanguage!]!
 }
 
 input ConfigCityInput {
   key: String!
-  translations: [LangInput!]!
+  translations: [CityLangInput!]!
+}
+
+type ConfigLanguage {
+  key: String!
   value: [String!]!
 }
 

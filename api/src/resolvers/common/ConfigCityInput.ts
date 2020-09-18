@@ -1,14 +1,19 @@
 import { Field, InputType } from 'type-graphql';
-import { LangInput } from './LangInput';
+
+@InputType()
+export class CityLangInput {
+  @Field(() => String)
+  key: string;
+
+  @Field(() => [String])
+  value: string[];
+}
 
 @InputType()
 export class ConfigCityInput {
   @Field((_type) => String)
   key: string;
 
-  @Field((_type) => [String])
-  value: string[];
-
-  @Field((_type) => [LangInput])
-  translations: LangInput[];
+  @Field((_type) => [CityLangInput])
+  translations: CityLangInput[];
 }

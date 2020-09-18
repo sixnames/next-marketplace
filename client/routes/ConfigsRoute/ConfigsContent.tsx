@@ -42,7 +42,6 @@ const ConfigsContent: React.FC = () => {
           if (configCity) {
             return {
               key: configCity.key,
-              value: configCity.value || [],
               translations: languagesList.map(({ key }) => {
                 const configTranslation = configCity.translations.find(
                   ({ key: configTranslationKey }) => key === configTranslationKey,
@@ -54,15 +53,14 @@ const ConfigsContent: React.FC = () => {
                     }
                   : {
                       key,
-                      value: '',
+                      value: [],
                     };
               }),
             };
           }
           return {
             key: city.slug,
-            value: [],
-            translations: languagesList.map(({ key }) => ({ key, value: '' })),
+            translations: languagesList.map(({ key }) => ({ key, value: [] })),
           };
         }),
       };
@@ -91,51 +89,47 @@ const ConfigsContent: React.FC = () => {
             />
           );
         })}
-        {notAssetConfigs.map(
-          ({ slug: configSlug, nameString, cities: configCities, multiLang, id }) => {
-            return (
-              <div className={classes.config} data-cy={`${configSlug}-config`} key={configSlug}>
-                <div className={classes.configName} data-cy={`${configSlug}-config-name`}>
-                  {nameString}
-                </div>
-                <Formik
-                  initialValues={{ id, cities: configCities }}
-                  onSubmit={(values) => updateConfigHandler(values)}
-                  validationSchema={notAssetSchema}
-                >
-                  {({ dirty }) => {
-                    return (
-                      <Form>
-                        {cities.map(({ nameString, slug }, cityIndex) => {
-                          const cityTestId = `${configSlug}-${slug}`;
-                          return (
-                            <Accordion testId={cityTestId} title={nameString} key={slug}>
-                              <div className={classes.accordionContent}>
-                                {multiLang ? (
-                                  <FormikTranslationsInput
-                                    name={`cities[${cityIndex}].translations`}
-                                    testId={`${configSlug}-${slug}`}
-                                  />
-                                ) : null}
-                              </div>
-                            </Accordion>
-                          );
-                        })}
-                        {dirty ? (
-                          <div className={classes.buttons}>
-                            <Button size={'small'} type={'submit'} testId={`${configSlug}-submit`}>
-                              Сохранить
-                            </Button>
-                          </div>
-                        ) : null}
-                      </Form>
-                    );
-                  }}
-                </Formik>
+        {notAssetConfigs.map(({ slug: configSlug, nameString, cities: configCities, id }) => {
+          return (
+            <div className={classes.config} data-cy={`${configSlug}-config`} key={configSlug}>
+              <div className={classes.configName} data-cy={`${configSlug}-config-name`}>
+                {nameString}
               </div>
-            );
-          },
-        )}
+              <Formik
+                initialValues={{ id, cities: configCities }}
+                onSubmit={(values) => updateConfigHandler(values)}
+                validationSchema={notAssetSchema}
+              >
+                {({ dirty }) => {
+                  return (
+                    <Form>
+                      {cities.map(({ nameString, slug }, cityIndex) => {
+                        const cityTestId = `${configSlug}-${slug}`;
+                        return (
+                          <Accordion testId={cityTestId} title={nameString} key={slug}>
+                            <div className={classes.accordionContent}>
+                              <FormikTranslationsInput
+                                name={`cities[${cityIndex}].translations`}
+                                testId={`${configSlug}-${slug}`}
+                              />
+                            </div>
+                          </Accordion>
+                        );
+                      })}
+                      {dirty ? (
+                        <div className={classes.buttons}>
+                          <Button size={'small'} type={'submit'} testId={`${configSlug}-submit`}>
+                            Сохранить
+                          </Button>
+                        </div>
+                      ) : null}
+                    </Form>
+                  );
+                }}
+              </Formik>
+            </div>
+          );
+        })}
       </InnerWide>
     </DataLayoutContentFrame>
   );

@@ -7,7 +7,6 @@ import {
   SITE_CONFIGS_All,
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
-  SITE_CONFIGS_LOGO_NAME,
 } from '../../../config';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
@@ -32,11 +31,6 @@ describe('Config', () => {
           }
         }
       `,
-      {
-        variables: {
-          slug: SITE_CONFIGS_LOGO_NAME.slug,
-        },
-      },
     );
     expect(getAllConfigs).toHaveLength(SITE_CONFIGS_All.length);
 
@@ -77,7 +71,7 @@ describe('Config', () => {
         },
       },
     );
-    expect(getConfigValueBySlug).toEqual(stringConfigCity.value);
+    expect(getConfigValueBySlug).toEqual(stringConfigCity.translations[0].value);
 
     // Should update asset config
     const {
@@ -103,7 +97,7 @@ describe('Config', () => {
           value: images,
         };
       },
-      fileNames: ['test-logo.svg', 'test-logo-icon.svg'],
+      fileNames: ['test-logo.svg'],
     });
 
     const updatedAssetConfig = updateAssetConfig.configs.find(
@@ -111,10 +105,7 @@ describe('Config', () => {
     );
 
     expect(updateAssetConfig.success).toBeTruthy();
-    expect(updatedAssetConfig.value).toEqual([
-      '/assets/config/siteLogo/siteLogo-0.svg',
-      '/assets/config/siteLogo/siteLogo-1.svg',
-    ]);
+    expect(updatedAssetConfig.value).toEqual(['/assets/config/siteLogo/siteLogo-0.svg']);
 
     // Shouldn't update non asset configs on validation error
     const { errors: updateConfigsValidationError } = await mutate<any>(
@@ -168,29 +159,27 @@ describe('Config', () => {
             cities: [
               {
                 key: DEFAULT_CITY,
-                value: [`new value`],
                 translations: [
                   {
                     key: DEFAULT_LANG,
-                    value: `new translation`,
+                    value: [`new translation`],
                   },
                   {
                     key: SECONDARY_LANG,
-                    value: `new translation`,
+                    value: [`new translation`],
                   },
                 ],
               },
               {
                 key: SECONDARY_CITY,
-                value: [`new secondary city value`],
                 translations: [
                   {
                     key: DEFAULT_LANG,
-                    value: `new translation`,
+                    value: [`new translation`],
                   },
                   {
                     key: SECONDARY_LANG,
-                    value: `new translation`,
+                    value: [`new translation`],
                   },
                 ],
               },
@@ -226,8 +215,12 @@ describe('Config', () => {
             cities: [
               {
                 key: DEFAULT_CITY,
-                value: [`value-${index}`],
-                translations: [],
+                translations: [
+                  {
+                    key: DEFAULT_LANG,
+                    value: [`value-${index}`],
+                  },
+                ],
               },
             ],
           })),
@@ -237,6 +230,6 @@ describe('Config', () => {
     const updatedConfig = updateConfigs.configs.find(({ slug }: any) => slug === stringConfig.slug);
     expect(updateConfigs.success).toBeTruthy();
     expect(updateConfigs.configs).toHaveLength(SITE_CONFIGS_All.length);
-    expect(updatedConfig.value).not.toEqual(stringConfigCity.value);
+    expect(updatedConfig.value).not.toEqual(stringConfigCity.translations[0].value);
   });
 });

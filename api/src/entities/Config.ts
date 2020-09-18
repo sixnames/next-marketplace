@@ -1,7 +1,6 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { CONFIG_VARIANTS_ENUMS } from '../config';
-import { LanguageType } from './common';
 import { City } from './City';
 
 export enum ConfigVariantEnum {
@@ -18,18 +17,25 @@ registerEnumType(ConfigVariantEnum, {
 });
 
 @ObjectType()
+export class ConfigLanguage {
+  @Field(() => String)
+  @prop({ required: true })
+  public key: string;
+
+  @Field(() => [String])
+  @prop({ required: true, type: String })
+  public value: string[];
+}
+
+@ObjectType()
 export class ConfigCity {
   @Field((_type) => String)
   @prop({ type: String, required: true })
   key: string;
 
-  @Field((_type) => [String])
-  @prop({ type: String, required: true })
-  value: string[];
-
-  @Field((_type) => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  translations: LanguageType[];
+  @Field((_type) => [ConfigLanguage])
+  @prop({ type: ConfigLanguage, required: true })
+  translations: ConfigLanguage[];
 
   @Field((_type) => City)
   readonly city?: City;
@@ -41,8 +47,7 @@ export class Config {
   readonly id: string;
 
   @Field((_type) => [String], {
-    description:
-      'Returns current translation if multiLang field is set to true. Otherwise returns value file of current city.',
+    description: 'Returns current value of current city.',
   })
   readonly value: string[];
 
@@ -67,12 +72,6 @@ export class Config {
   })
   @prop({ type: Boolean })
   multi: boolean;
-
-  @Field((_type) => Boolean, {
-    description: 'Set to true if config is able to hold value for multiple languages.',
-  })
-  @prop({ type: Boolean })
-  multiLang: boolean;
 
   @Field((_type) => ConfigVariantEnum)
   @prop({ required: true, enum: CONFIG_VARIANTS_ENUMS })

@@ -36,12 +36,12 @@ function useConfigContext() {
   function getSiteConfig(configSlug: string) {
     return configs.find(({ slug }) => configSlug === slug);
   }
-  // TODO getSiteConfigValue
+
   function getSiteConfigValue(configSlug: string) {
     const config = getSiteConfig(configSlug);
     return config ? config.value : [''];
   }
-  // TODO getSiteConfigSingleValue
+
   function getSiteConfigSingleValue(configSlug: string) {
     return getSiteConfigValue(configSlug)[0];
   }

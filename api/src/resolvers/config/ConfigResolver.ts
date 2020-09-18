@@ -31,9 +31,9 @@ import {
 import { FilterQuery } from 'mongoose';
 import getCityData from '../../utils/getCityData';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
 import { DEFAULT_CITY } from '../../config';
 import { City, CityModel } from '../../entities/City';
+import getLangFieldValues from '../../utils/translations/getLangFieldValues';
 
 const { operationConfigUpdate } = getOperationsConfigs(Config.name);
 
@@ -73,6 +73,7 @@ export class ConfigResolver {
     }
 
     let configCity = getCityData<ConfigCity>(config.cities, city);
+
     if (!configCity) {
       configCity = getCityData<ConfigCity>(config.cities, DEFAULT_CITY);
     }
@@ -81,11 +82,7 @@ export class ConfigResolver {
       throw Error('Config city not found on query getConfigValueBySlug');
     }
 
-    if (config.multiLang) {
-      return [getLangField(configCity.translations, lang)];
-    }
-
-    return configCity.value;
+    return getLangFieldValues(configCity.translations, lang);
   }
 
   @Mutation((_returns) => ConfigPayloadType)
@@ -181,7 +178,7 @@ export class ConfigResolver {
         };
       }
 
-      for await (const oldAsset of defaultCity.value) {
+      for await (const oldAsset of defaultCity.translations[0].value) {
         await removeUpload(`.${oldAsset}`);
       }
 
@@ -192,12 +189,15 @@ export class ConfigResolver {
         outputFormat: 'jpg',
       });
 
-      const updatedConfig = await ConfigModel.updateMany(
-        { _id: id },
+      const updatedConfig = await ConfigModel.findByIdAndUpdate(
+        id,
         {
           $set: {
-            'cities.0.value': assetsResult.map(({ url }) => url),
+            'cities.0.translations.0.value': assetsResult.map(({ url }) => url),
           },
+        },
+        {
+          new: true,
         },
       );
 
@@ -237,12 +237,7 @@ export class ConfigResolver {
     if (!configCity) {
       throw Error('Config city not found on field value');
     }
-
-    if (config.multiLang) {
-      return [getLangField(configCity.translations, lang)];
-    }
-
-    return configCity.value;
+    return getLangFieldValues(configCity.translations, lang);
   }
 }
 

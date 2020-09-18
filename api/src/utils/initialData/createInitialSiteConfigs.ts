@@ -2,6 +2,7 @@ import { setSharpImage, StoreFileFormat } from '../assets/setSharpImage';
 import { Config, ConfigModel, ConfigVariantEnum } from '../../entities/Config';
 import {
   DEFAULT_CITY,
+  DEFAULT_LANG,
   SITE_CONFIGS_INITIAL,
   SITE_CONFIGS_LOGO,
   SITE_CONFIGS_LOGO_DARK,
@@ -25,7 +26,6 @@ interface StoreConfigWithAssetInterface {
     | 'variant'
     | 'order'
     | 'multi'
-    | 'multiLang'
     | 'acceptedFormats'
     | 'cities'
   >;
@@ -42,22 +42,26 @@ type FindOrCreateConfigTemplate = Pick<
   | 'variant'
   | 'order'
   | 'multi'
-  | 'multiLang'
   | 'cities'
   | 'acceptedFormats'
 >;
 
 async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): Promise<boolean> {
-  const entityExists = await ConfigModel.exists({ slug: configTemplate.slug });
-  if (entityExists) {
-    return true;
-  }
+  try {
+    const entityExists = await ConfigModel.exists({ slug: configTemplate.slug });
+    if (entityExists) {
+      return true;
+    }
 
-  await ConfigModel.create({
-    ...configTemplate,
-    variant: configTemplate.variant as ConfigVariantEnum,
-  });
-  return true;
+    await ConfigModel.create({
+      ...configTemplate,
+      variant: configTemplate.variant as ConfigVariantEnum,
+    });
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }
 
 async function createManyConfigs(configs: FindOrCreateConfigTemplate[]) {
@@ -76,25 +80,32 @@ async function storeConfigWithAsset({
 }: StoreConfigWithAssetInterface) {
   try {
     const dist = 'config';
-    const filesPath = `./assets/${dist}`;
-    const exists = fs.existsSync(filesPath);
-    if (!exists) {
-      await mkdirp(filesPath);
+    const fileDirectory = `./assets/${dist}/${slug}`;
+    const assetDirectory = `/assets/${dist}/${slug}`;
+    const fileName = `${slug}.${format}`;
+    const filePath = `${fileDirectory}/${fileName}`;
+    let assetPath: string | null = `${assetDirectory}/${fileName}`;
+
+    const directoryExists = fs.existsSync(fileDirectory);
+    if (!directoryExists) {
+      await mkdirp(fileDirectory);
+    }
+    //
+    const fileExist = fs.existsSync(filePath);
+    if (!fileExist) {
+      if (format === 'svg') {
+        fs.copyFileSync(sourceImage, filePath);
+      } else {
+        assetPath = await setSharpImage({
+          sourceImage,
+          slug,
+          dist,
+          format,
+        });
+      }
     }
 
-    const assetExists = fs.existsSync(`${filesPath}/${slug}.svg`);
-    if (format === 'svg' && !assetExists) {
-      fs.copyFileSync(sourceImage, `./assets/${dist}/${slug}.svg`);
-      return true;
-    }
-
-    const logoPath = await setSharpImage({
-      sourceImage,
-      slug,
-      dist,
-      format,
-    });
-    if (!logoPath) {
+    if (!assetPath) {
       sendErrorCode(`${slug} error`);
       return false;
     }
@@ -104,8 +115,12 @@ async function storeConfigWithAsset({
       cities: [
         {
           key: DEFAULT_CITY,
-          value: [logoPath],
-          translations: [],
+          translations: [
+            {
+              key: DEFAULT_LANG,
+              value: [assetPath],
+            },
+          ],
         },
       ],
     });
@@ -169,6 +184,8 @@ export async function createInitialSiteConfigs(): Promise<boolean> {
         variant: config.variant as ConfigVariantEnum,
       })),
     );
+    /*const test = await ConfigModel.find({}).select({ slug: 1 });
+    console.log(test);*/
     return true;
   } catch (e) {
     console.log(e);

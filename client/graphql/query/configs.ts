@@ -10,18 +10,11 @@ export const siteConfigFragment = gql`
     variant
     acceptedFormats
     multi
-    multiLang
     cities {
       key
-      value
       translations {
         key
         value
-      }
-      city {
-        id
-        nameString
-        slug
       }
     }
   }

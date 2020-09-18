@@ -22,8 +22,8 @@ export async function setSharpImage({
   height,
 }: SetSharpImageInterface): Promise<string | null> {
   try {
-    const filesPath = `./assets/${dist}`;
-    const filesResolvePath = `/assets/${dist}`;
+    const filesPath = `./assets/${dist}/${slug}`;
+    const filesResolvePath = `/assets/${dist}/${slug}`;
     const fileName = `${slug}.${format}`;
     const resolvePath = `${filesResolvePath}/${fileName}`;
     const finalPath = `${filesPath}/${fileName}`;
@@ -37,10 +37,6 @@ export async function setSharpImage({
     await mkdirp(filesPath);
 
     let transform = sharp(sourceImage);
-
-    /*if (format) {
-      transform = transform.toFormat(format);
-    }*/
 
     if (width || height) {
       transform = transform.resize(width, height);

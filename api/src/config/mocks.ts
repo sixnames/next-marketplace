@@ -963,7 +963,6 @@ export const SITE_CONFIGS_LOGO = {
   variant: 'asset',
   order: 1,
   multi: false,
-  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
 };
@@ -974,7 +973,6 @@ export const SITE_CONFIGS_LOGO_DARK = {
   variant: 'asset',
   order: 2,
   multi: false,
-  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
 };
@@ -985,7 +983,6 @@ export const SITE_CONFIGS_LOGO_ICON = {
   variant: 'asset',
   order: 3,
   multi: false,
-  multiLang: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
 };
@@ -1008,7 +1005,6 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   variant: 'asset',
   order: 5,
   multi: false,
-  multiLang: false,
   acceptedFormats: ['image/jpeg'],
   cities: [],
 };
@@ -1021,13 +1017,16 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     order: 6,
     multi: false,
-    multiLang: false,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: ['Site'],
-        translations: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['Site'],
+          },
+        ],
       },
     ],
   },
@@ -1038,13 +1037,16 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'email',
     order: 7,
     multi: true,
-    multiLang: false,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: ['email@email.com'],
-        translations: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['email@email.com'],
+          },
+        ],
       },
     ],
   },
@@ -1055,13 +1057,16 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'tel',
     order: 8,
     multi: true,
-    multiLang: false,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: ['+79998887766'],
-        translations: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['+79998887766'],
+          },
+        ],
       },
     ],
   },
@@ -1072,13 +1077,16 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'number',
     order: 9,
     multi: false,
-    multiLang: false,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: ['2020'],
-        translations: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['2020'],
+          },
+        ],
       },
     ],
   },
@@ -1089,20 +1097,18 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     order: 10,
     multi: false,
-    multiLang: true,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: [],
         translations: [
           {
             key: DEFAULT_LANG,
-            value: 'Дефолтный title страницы',
+            value: ['Дефолтный title страницы'],
           },
           {
             key: SECONDARY_LANG,
-            value: 'Page default title',
+            value: ['Page default title'],
           },
         ],
       },
@@ -1116,20 +1122,18 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     order: 11,
     multi: false,
-    multiLang: true,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: [],
         translations: [
           {
             key: DEFAULT_LANG,
-            value: 'Дефолтный description страницы',
+            value: ['Дефолтный description страницы'],
           },
           {
             key: SECONDARY_LANG,
-            value: 'Page default description',
+            value: ['Page default description'],
           },
         ],
       },
@@ -1143,13 +1147,16 @@ export const SITE_CONFIGS_INITIAL = [
     variant: 'string',
     order: 12,
     multi: false,
-    multiLang: false,
     acceptedFormats: [],
     cities: [
       {
         key: DEFAULT_CITY,
-        value: ['219, 83, 96'],
-        translations: [],
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['219, 83, 96'],
+          },
+        ],
       },
     ],
   },

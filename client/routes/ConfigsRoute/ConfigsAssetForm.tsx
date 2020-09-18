@@ -27,18 +27,18 @@ const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
   return (
     <Formik
       enableReinitialize
-      initialValues={{ cities }}
+      initialValues={{ file: [cities[0].translations[0].value[0]] }}
       onSubmit={(values) => console.log(values)}
     >
-      {({ values: { cities } }) => {
-        const isEmpty = (cities[0]?.value.filter((value) => value) || []).length === 0;
+      {({ values: { file } }) => {
+        const isEmpty = !file || !file.length;
 
         return (
           <Form>
             <FormikImageUpload
               isHorizontal
               label={nameString}
-              name={'cities[0]value'}
+              name={'file'}
               testId={slug}
               width={'10rem'}
               height={'10rem'}

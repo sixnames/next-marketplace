@@ -86,6 +86,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
       <AppNavContextProvider navItems={appNavigation}>
         <UserContextProvider
           me={initialApolloState.me}
+          cities={initialApolloState.getAllCities}
           lang={initialApolloState.getClientLanguage}
           languagesList={initialApolloState.getAllLanguages || []}
           configs={initialApolloState.getAllConfigs}

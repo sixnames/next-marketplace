@@ -24,7 +24,6 @@ const FormikInput: React.FC<FormikInputPropsInterface> = ({
         const error = get(errors, name);
         const notValid = Boolean(error);
         const showError = showInlineError && notValid;
-
         return (
           <div className={frameClass ? frameClass : ''}>
             <Input

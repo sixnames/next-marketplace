@@ -79,7 +79,6 @@ export const attemptSignOut = async (req: Request) => {
 };
 
 export function getOperationsConfigs(entity: string) {
-  // TODO make operation name as constant
   return {
     operationConfigCreate: {
       entity,

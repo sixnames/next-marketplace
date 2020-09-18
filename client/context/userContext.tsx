@@ -6,6 +6,7 @@ import { ConfigContextProvider } from './configContext';
 
 export type MeType = InitialQuery['me'];
 export type ConfigsType = InitialQuery['getAllConfigs'];
+export type CitiesType = InitialQuery['getAllCities'];
 
 interface ContextState {
   isAuthenticated: boolean;
@@ -28,6 +29,7 @@ interface UserContextProviderInterface {
   lang: string;
   languagesList: Language[];
   configs: ConfigsType;
+  cities: CitiesType;
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({
@@ -36,6 +38,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
   lang,
   languagesList,
   configs,
+  cities,
 }) => {
   const [state, setState] = useState<ContextState>({
     isAuthenticated: false,
@@ -59,7 +62,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
 
   return (
     <LanguageContextProvider lang={lang} languagesList={languagesList}>
-      <ConfigContextProvider configs={configs}>
+      <ConfigContextProvider configs={configs} cities={cities}>
         <UserContext.Provider value={value}>{children}</UserContext.Provider>
       </ConfigContextProvider>
     </LanguageContextProvider>

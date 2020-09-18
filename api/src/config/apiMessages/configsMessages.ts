@@ -1,6 +1,7 @@
 import { DEFAULT_LANG, SECONDARY_LANG } from '../common';
+import { MessageInterface } from './messagesKeys';
 
-const configsMessages = [
+const configsMessages: MessageInterface[] = [
   {
     key: 'configs.update.success',
     message: [
@@ -11,6 +12,19 @@ const configsMessages = [
       {
         key: SECONDARY_LANG,
         value: 'Config is updated',
+      },
+    ],
+  },
+  {
+    key: 'configs.update.error',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ошибка обновления настройки',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Config update error',
       },
     ],
   },
@@ -76,6 +90,32 @@ const configsMessages = [
       {
         key: SECONDARY_LANG,
         value: 'Config value is required',
+      },
+    ],
+  },
+  {
+    key: 'validation.configs.translation',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Значение мультиязычной настройки обязательно к заполнению',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Config multi lang value is required',
+      },
+    ],
+  },
+  {
+    key: 'validation.configs.cityKey',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ключ города обязателен к заполнению',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'City key is required',
       },
     ],
   },

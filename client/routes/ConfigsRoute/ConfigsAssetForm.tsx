@@ -13,7 +13,7 @@ interface ConfigsAssetFormInterface {
 }
 
 const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
-  const { id, value, slug, nameString, description, acceptedFormats } = config;
+  const { id, slug, nameString, description, acceptedFormats, cities } = config;
   const { onErrorCallback } = useMutationCallbacks({});
   const [updateAssetConfigMutation] = useUpdateAssetConfigMutation({
     onError: onErrorCallback,
@@ -25,16 +25,20 @@ const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
   });
 
   return (
-    <Formik enableReinitialize initialValues={{ value }} onSubmit={(values) => console.log(values)}>
-      {({ values: { value } }) => {
-        const isEmpty = value.filter((value) => value).length === 0;
+    <Formik
+      enableReinitialize
+      initialValues={{ file: [cities[0].translations[0].value[0]] }}
+      onSubmit={(values) => console.log(values)}
+    >
+      {({ values: { file } }) => {
+        const isEmpty = !file || !file.length;
 
         return (
           <Form>
             <FormikImageUpload
               isHorizontal
               label={nameString}
-              name={'value[0]'}
+              name={'file'}
               testId={slug}
               width={'10rem'}
               height={'10rem'}

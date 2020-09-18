@@ -14,12 +14,15 @@ const messagesKeys = [
 
   // Configs ----------
   'configs.update.success',
+  'configs.update.error',
   'configs.updateAsset.notFound',
   'configs.updateAsset.error',
   'configs.updateAsset.success',
   // Configs validation
   'validation.configs.id',
   'validation.configs.value',
+  'validation.configs.translation',
+  'validation.configs.cityKey',
 
   // Currencies ----------
   'currencies.create.duplicate',

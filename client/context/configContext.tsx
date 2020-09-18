@@ -3,18 +3,21 @@ import React, { createContext, useContext, useMemo } from 'react';
 
 interface ConfigContextInterface {
   configs: InitialQuery['getAllConfigs'];
+  cities: InitialQuery['getAllCities'];
 }
 
 const ConfigContext = createContext<ConfigContextInterface>({
   configs: [],
+  cities: [],
 });
 
-const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, children }) => {
+const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, cities, children }) => {
   const initialValue = useMemo(() => {
     return {
       configs,
+      cities,
     };
-  }, [configs]);
+  }, [configs, cities]);
 
   return <ConfigContext.Provider value={initialValue}>{children}</ConfigContext.Provider>;
 };

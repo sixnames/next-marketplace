@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { siteConfigFragment } from './query/configs';
 
 export const sessionUserFragment = gql`
   fragment SessionUserFragment on User {
@@ -78,18 +79,17 @@ export const INITIAL_QUERY = gql`
       isDefault
     }
     getAllConfigs {
+      ...SiteConfig
+    }
+    getAllCities {
       id
       slug
-      value
       nameString
-      description
-      variant
-      multi
-      acceptedFormats
     }
   }
   ${sessionRoleFragment}
   ${sessionUserFragment}
+  ${siteConfigFragment}
 `;
 
 export const INITIAL_SITE_QUERY = gql`
@@ -110,22 +110,21 @@ export const INITIAL_SITE_QUERY = gql`
       isDefault
     }
     getAllConfigs {
-      id
-      slug
-      value
-      nameString
-      description
-      variant
-      multi
-      acceptedFormats
+      ...SiteConfig
     }
     getRubricsTree {
       ...SiteRubricFragment
+    }
+    getAllCities {
+      id
+      slug
+      nameString
     }
   }
   ${sessionRoleFragment}
   ${sessionUserFragment}
   ${rubricFragment}
+  ${siteConfigFragment}
 `;
 
 export const SIGN_IN_MUTATION = gql`

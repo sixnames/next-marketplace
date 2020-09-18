@@ -135,16 +135,43 @@ type CityCounter {
   key: String!
 }
 
+input CityLangInput {
+  key: String!
+  value: [String!]!
+}
+
 type Config {
+  """Accepted formats for asset config."""
   acceptedFormats: [String!]!
+  cities: [ConfigCity!]!
   description: String!
   id: ID!
+
+  """Set to true if config is able to hold multiple values."""
   multi: Boolean!
   nameString: String!
   order: Float!
   slug: String!
+
+  """Returns current value of current city."""
   value: [String!]!
   variant: ConfigVariantEnum!
+}
+
+type ConfigCity {
+  city: City!
+  key: String!
+  translations: [ConfigLanguage!]!
+}
+
+input ConfigCityInput {
+  key: String!
+  translations: [CityLangInput!]!
+}
+
+type ConfigLanguage {
+  key: String!
+  value: [String!]!
 }
 
 type ConfigPayloadType {
@@ -380,6 +407,7 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
   updateConfigs(input: [UpdateConfigInput!]!): ConfigPayloadType!
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
@@ -850,8 +878,8 @@ input UpdateCityInCountryInput {
 }
 
 input UpdateConfigInput {
+  cities: [ConfigCityInput!]!
   id: ID!
-  value: [String!]!
 }
 
 input UpdateCountryInput {

@@ -1,5 +1,5 @@
-const newSiteName = 'new site name';
-const newSitePhone = '+89990007766';
+const newEmail = 'new-email@email.com';
+const newSiteDefaultTitle = 'new default title';
 
 describe('Site configs', () => {
   beforeEach(() => {
@@ -11,31 +11,66 @@ describe('Site configs', () => {
     cy.clearTestData();
   });
 
-  it('Should save site configs', () => {
-    // Should update asset configs
-    cy.getByCy('siteLogo-remove').click();
-    cy.getByCy('siteLogo').attachFile('test-logo.svg', { subjectType: 'drag-n-drop' });
-    cy.getByCy('siteLogo-image').should('exist');
+  it('Should update asset configs', () => {
+    cy.getMockData(() => {
+      cy.getByCy('siteLogo-remove').click();
+      cy.getByCy('siteLogo').attachFile('test-logo.svg', { subjectType: 'drag-n-drop' });
+      cy.getByCy('siteLogo-image').should('exist');
 
-    cy.getByCy('pageDefaultPreviewImage-remove').click();
-    cy.getByCy('pageDefaultPreviewImage').attachFile('test-image.jpg', {
-      subjectType: 'drag-n-drop',
+      cy.getByCy('pageDefaultPreviewImage-remove').click();
+      cy.getByCy('pageDefaultPreviewImage').attachFile('test-image.jpg', {
+        subjectType: 'drag-n-drop',
+      });
+      cy.getByCy('pageDefaultPreviewImage-image').should('exist');
     });
-    cy.getByCy('pageDefaultPreviewImage-image').should('exist');
+  });
 
-    // Should update not asset configs
-    cy.getByCy(`site-configs`).should('exist');
-    cy.getByCy('inputs[0].value[0]').clear().type(newSiteName);
+  it('Should update not asset configs', () => {
+    cy.getMockData(
+      ({ SITE_CONFIGS_INITIAL, DEFAULT_CITY, DEFAULT_LANG, SECONDARY_LANG, SECONDARY_CITY }) => {
+        // pageDefaultTitle config
+        const pageDefaultTitleConfig = SITE_CONFIGS_INITIAL.find(
+          ({ slug }: any) => slug === 'pageDefaultTitle',
+        );
+        const pageDefaultTitleDefaultCityTestId = `${pageDefaultTitleConfig.slug}-${DEFAULT_CITY}`;
+        const pageDefaultTitleSecondaryCityTestId = `${pageDefaultTitleConfig.slug}-${SECONDARY_CITY}`;
+        cy.getByCy(pageDefaultTitleDefaultCityTestId).click();
+        cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-${DEFAULT_LANG}-0`)
+          .clear()
+          .type(newSiteDefaultTitle);
+        cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-accordion-${SECONDARY_LANG}`).click();
+        cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-${SECONDARY_LANG}-0`)
+          .clear()
+          .type(newSiteDefaultTitle);
 
-    // Should create additional field of config and remove it
-    cy.getByCy('inputs[2].value[0]-add').click();
-    cy.getByCy('inputs[2].value[1]').type(newSitePhone);
-    cy.getByCy('site-configs-submit').click();
-    cy.getByCy('inputs[0].value[0]').should('have.value', newSiteName);
-    cy.getByCy('inputs[2].value[1]').should('have.value', newSitePhone);
-    cy.getByCy('inputs[2].value[1]-remove').click();
-    cy.getByCy(`remove-field-modal`).should('exist');
-    cy.getByCy(`confirm`).click();
-    cy.getByCy('inputs[2].value[1]').should('not.exist');
+        cy.getByCy(pageDefaultTitleSecondaryCityTestId).click();
+        cy.getByCy(`${pageDefaultTitleSecondaryCityTestId}-${DEFAULT_LANG}-0`)
+          .clear()
+          .type(newSiteDefaultTitle);
+        cy.getByCy(`${pageDefaultTitleSecondaryCityTestId}-accordion-${SECONDARY_LANG}`).click();
+        cy.getByCy(`${pageDefaultTitleSecondaryCityTestId}-${SECONDARY_LANG}-0`)
+          .clear()
+          .type(newSiteDefaultTitle);
+        cy.getByCy(`${pageDefaultTitleConfig.slug}-submit`).click();
+        cy.getByCy('error-notification').should('not.exist');
+
+        // email config with multiple values
+        const emailConfig = SITE_CONFIGS_INITIAL.find(({ slug }: any) => slug === 'contactEmail');
+        const emailDefaultCityTestId = `${emailConfig.slug}-${DEFAULT_CITY}`;
+        cy.getByCy(emailDefaultCityTestId).click();
+        cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-0`).clear().type(newEmail);
+        cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-0-add`).click();
+        cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1`).clear().type(newEmail);
+        cy.getByCy(`${emailConfig.slug}-submit`).click();
+        cy.getByCy('error-notification').should('not.exist');
+
+        // remove second email
+        cy.getByCy(emailDefaultCityTestId).click();
+        cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1-remove`).click();
+        cy.getByCy('confirm').click();
+        cy.getByCy(`${emailConfig.slug}-submit`).click();
+        cy.getByCy('error-notification').should('not.exist');
+      },
+    );
   });
 });

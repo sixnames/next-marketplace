@@ -1,21 +1,23 @@
 import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '../../config';
 
-export interface LanguageInterface {
+export interface LanguageWithMultipleValuesInterface {
   key: string;
-  value: string;
+  value: string[];
 }
 
-function getLangField(
-  languages: LanguageInterface[] | null | undefined,
+function getLangFieldValues(
+  languages: LanguageWithMultipleValuesInterface[] | null | undefined,
   chosenLanguage: string,
-): string {
+): string[] {
+  const fallbackValue = [LANG_NOT_FOUND_FIELD_MESSAGE];
+
   if (!languages) {
-    return LANG_NOT_FOUND_FIELD_MESSAGE;
+    return fallbackValue;
   }
 
   const currentLang = languages.find(({ key }) => key === chosenLanguage);
   const defaultLang = languages.find(({ key }) => key === DEFAULT_LANG);
-  const defaultLangValue = defaultLang ? defaultLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
+  const defaultLangValue = defaultLang ? defaultLang.value : fallbackValue;
 
   if (!currentLang && chosenLanguage !== DEFAULT_LANG) {
     const universalLang = languages.find(({ key }) => key === SECONDARY_LANG);
@@ -24,14 +26,14 @@ function getLangField(
       return defaultLangValue;
     }
 
-    return universalLang ? universalLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
+    return universalLang ? universalLang.value : fallbackValue;
   }
 
   if (!currentLang) {
     return defaultLangValue;
   }
 
-  return currentLang ? currentLang.value : LANG_NOT_FOUND_FIELD_MESSAGE;
+  return currentLang ? currentLang.value : fallbackValue;
 }
 
-export default getLangField;
+export default getLangFieldValues;

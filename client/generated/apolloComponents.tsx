@@ -721,14 +721,18 @@ export type IsoLanguage = {
 export type Config = {
   __typename?: 'Config';
   id: Scalars['ID'];
+  /** Returns current translation if multiLang field is set to true. Otherwise returns value file of current city. */
+  value: Array<Scalars['String']>;
   slug: Scalars['String'];
   nameString: Scalars['String'];
   description: Scalars['String'];
   order: Scalars['Float'];
+  /** Set to true if config is able to hold multiple values. */
   multi: Scalars['Boolean'];
   variant: ConfigVariantEnum;
+  /** Accepted formats for asset config. */
   acceptedFormats: Array<Scalars['String']>;
-  value: Array<Scalars['String']>;
+  cities: Array<ConfigCity>;
 };
 
 /** Config variant enum */
@@ -739,6 +743,19 @@ export enum ConfigVariantEnum {
   Tel = 'tel',
   Asset = 'asset'
 }
+
+export type ConfigCity = {
+  __typename?: 'ConfigCity';
+  key: Scalars['String'];
+  translations: Array<ConfigLanguage>;
+  city: City;
+};
+
+export type ConfigLanguage = {
+  __typename?: 'ConfigLanguage';
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -792,6 +809,7 @@ export type Mutation = {
   createRubricVariant: RubricVariantPayloadType;
   updateRubricVariant: RubricVariantPayloadType;
   deleteRubricVariant: RubricVariantPayloadType;
+  updateConfig: ConfigPayloadType;
   updateConfigs: ConfigPayloadType;
   updateAssetConfig: ConfigPayloadType;
   createRole: RolePayloadType;
@@ -1046,6 +1064,11 @@ export type MutationUpdateRubricVariantArgs = {
 
 export type MutationDeleteRubricVariantArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationUpdateConfigArgs = {
+  input: UpdateConfigInput;
 };
 
 
@@ -1453,6 +1476,16 @@ export type ConfigPayloadType = {
 
 export type UpdateConfigInput = {
   id: Scalars['ID'];
+  cities: Array<ConfigCityInput>;
+};
+
+export type ConfigCityInput = {
+  key: Scalars['String'];
+  translations: Array<CityLangInput>;
+};
+
+export type CityLangInput = {
+  key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
 
@@ -1558,7 +1591,10 @@ export type InitialQuery = (
     & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+    & SiteConfigFragment
+  )>, getAllCities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -1579,10 +1615,13 @@ export type InitialSiteQueryQuery = (
     & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'multi' | 'acceptedFormats'>
+    & SiteConfigFragment
   )>, getRubricsTree: Array<(
     { __typename?: 'Rubric' }
     & SiteRubricFragmentFragment
+  )>, getAllCities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -1739,6 +1778,19 @@ export type UpdateConfigsMutationVariables = Exact<{
 export type UpdateConfigsMutation = (
   { __typename?: 'Mutation' }
   & { updateConfigs: (
+    { __typename?: 'ConfigPayloadType' }
+    & Pick<ConfigPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateConfigMutationVariables = Exact<{
+  input: UpdateConfigInput;
+}>;
+
+
+export type UpdateConfigMutation = (
+  { __typename?: 'Mutation' }
+  & { updateConfig: (
     { __typename?: 'ConfigPayloadType' }
     & Pick<ConfigPayloadType, 'success' | 'message'>
   ) }
@@ -2291,6 +2343,19 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type SiteConfigFragment = (
+  { __typename?: 'Config' }
+  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
+  & { cities: Array<(
+    { __typename?: 'ConfigCity' }
+    & Pick<ConfigCity, 'key'>
+    & { translations: Array<(
+      { __typename?: 'ConfigLanguage' }
+      & Pick<ConfigLanguage, 'key' | 'value'>
+    )> }
+  )> }
+);
+
 export type GetAllConfigsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2298,7 +2363,7 @@ export type GetAllConfigsQuery = (
   { __typename?: 'Query' }
   & { getAllConfigs: Array<(
     { __typename?: 'Config' }
-    & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant'>
+    & SiteConfigFragment
   )> }
 );
 
@@ -2936,6 +3001,25 @@ export const CatalogueRubricFragmentFragmentDoc = gql`
   }
 }
     `;
+export const SiteConfigFragmentDoc = gql`
+    fragment SiteConfig on Config {
+  id
+  slug
+  value
+  nameString
+  description
+  variant
+  acceptedFormats
+  multi
+  cities {
+    key
+    translations {
+      key
+      value
+    }
+  }
+}
+    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -3004,18 +3088,17 @@ export const InitialDocument = gql`
     isDefault
   }
   getAllConfigs {
+    ...SiteConfig
+  }
+  getAllCities {
     id
     slug
-    value
     nameString
-    description
-    variant
-    multi
-    acceptedFormats
   }
 }
     ${SessionUserFragmentFragmentDoc}
-${SessionRoleFragmentFragmentDoc}`;
+${SessionRoleFragmentFragmentDoc}
+${SiteConfigFragmentDoc}`;
 
 /**
  * __useInitialQuery__
@@ -3059,21 +3142,20 @@ export const InitialSiteQueryDocument = gql`
     isDefault
   }
   getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
-    multi
-    acceptedFormats
+    ...SiteConfig
   }
   getRubricsTree {
     ...SiteRubricFragment
   }
+  getAllCities {
+    id
+    slug
+    nameString
+  }
 }
     ${SessionUserFragmentFragmentDoc}
 ${SessionRoleFragmentFragmentDoc}
+${SiteConfigFragmentDoc}
 ${SiteRubricFragmentFragmentDoc}`;
 
 /**
@@ -3498,6 +3580,39 @@ export function useUpdateConfigsMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateConfigsMutationHookResult = ReturnType<typeof useUpdateConfigsMutation>;
 export type UpdateConfigsMutationResult = Apollo.MutationResult<UpdateConfigsMutation>;
 export type UpdateConfigsMutationOptions = Apollo.BaseMutationOptions<UpdateConfigsMutation, UpdateConfigsMutationVariables>;
+export const UpdateConfigDocument = gql`
+    mutation UpdateConfig($input: UpdateConfigInput!) {
+  updateConfig(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateConfigMutationFn = Apollo.MutationFunction<UpdateConfigMutation, UpdateConfigMutationVariables>;
+
+/**
+ * __useUpdateConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateConfigMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateConfigMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateConfigMutation, { data, loading, error }] = useUpdateConfigMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateConfigMutation, UpdateConfigMutationVariables>) {
+        return Apollo.useMutation<UpdateConfigMutation, UpdateConfigMutationVariables>(UpdateConfigDocument, baseOptions);
+      }
+export type UpdateConfigMutationHookResult = ReturnType<typeof useUpdateConfigMutation>;
+export type UpdateConfigMutationResult = Apollo.MutationResult<UpdateConfigMutation>;
+export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<UpdateConfigMutation, UpdateConfigMutationVariables>;
 export const UpdateAssetConfigDocument = gql`
     mutation UpdateAssetConfig($input: UpdateAssetConfigInput!) {
   updateAssetConfig(input: $input) {
@@ -4635,15 +4750,10 @@ export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubri
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {
-    id
-    slug
-    value
-    nameString
-    description
-    variant
+    ...SiteConfig
   }
 }
-    `;
+    ${SiteConfigFragmentDoc}`;
 
 /**
  * __useGetAllConfigsQuery__

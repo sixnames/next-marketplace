@@ -9,6 +9,7 @@ import {
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { useConfigContext } from '../../../context/configContext';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -17,13 +18,14 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   isDropdownOpen,
 }) => {
   const { asPath } = useRouter();
+  const { getSiteConfigSingleValue } = useConfigContext();
   const { id, node, options } = attribute;
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
-  // TODO move this value to the site settings
-  const maxVisibleOptions = 3;
+  const maxVisibleOptionsString = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
+  const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(maxVisibleOptions);
+  const hiddenOptions = options.slice(+maxVisibleOptions);
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
 
   useEffect(() => {

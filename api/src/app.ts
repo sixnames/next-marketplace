@@ -43,7 +43,7 @@ import {
   ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
-import { ConfigResolver } from './resolvers/config/ConfigResolver';
+import { ConfigCityResolver, ConfigResolver } from './resolvers/config/ConfigResolver';
 import { RoleResolver } from './resolvers/role/RoleResolver';
 import { NavItemResolver } from './resolvers/navItem/NavItemResolver';
 import {
@@ -71,6 +71,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   const schema = buildSchemaSync({
     resolvers: [
       ConfigResolver,
+      ConfigCityResolver,
       NavItemResolver,
       RoleResolver,
       RoleRuleResolver,

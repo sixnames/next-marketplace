@@ -13,7 +13,7 @@ interface NotificationInterface {
   path?: string;
   icon?: IconType;
   playSound?: boolean;
-  closeHandler: () => void;
+  closeHandler?: () => void;
   testId?: string;
 }
 
@@ -70,7 +70,13 @@ const Notification: React.FC<NotificationInterface> = ({
         )}
       </div>
 
-      <ButtonCross className={classes.close} onClick={closeHandler} testId={'close-notification'} />
+      {closeHandler ? (
+        <ButtonCross
+          className={classes.close}
+          onClick={closeHandler}
+          testId={'close-notification'}
+        />
+      ) : null}
     </div>
   );
 };

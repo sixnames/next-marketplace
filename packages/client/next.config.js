@@ -9,7 +9,9 @@ module.exports = (phase) => {
       API_HOST: process.env.API_HOST,
       ASSETS_HOST: process.env.ASSETS_HOST,
       API_BROWSER_HOST: process.env.API_BROWSER_HOST,
-      IN_PROD: phase === 'phase-production-build',
+      NEXT_IN_PROD: phase === 'phase-production-build',
+      NEXT_IN_DEV: phase === 'phase-development-server',
+      NEXT_PHASE: phase,
     },
   };
 };

@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn install:api
+      - run: yarn
       - run: yarn test:api
 
   clientTest:
@@ -34,6 +34,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn install:client
-      - run: docker-compose -f docker-compose.testing.yml up -d --build
+      - run: docker-compose -f docker-compose.dev.yml up -d
+      - run: yarn
+      - run: yarn build:all:testing
+      - run: yarn build:client:testing
+      - run: yarn start
       - run: yarn test:client

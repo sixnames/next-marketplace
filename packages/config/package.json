@@ -1,0 +1,17 @@
+{
+  "name": "@yagu/config",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "yup": "^0.29.3"
+  },
+  "devDependencies": {
+    "@types/yup": "^0.29.6",
+    "typescript": "^4.0.2"
+  }
+}

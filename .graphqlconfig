@@ -1,6 +1,6 @@
 {
   "name": "GraphQL Schema",
-  "schemaPath": "api/src/schema.graphql",
+  "schemaPath": "packages/api/src/schema.graphql",
   "extensions": {
     "endpoints": {
 

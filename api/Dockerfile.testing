@@ -1,9 +1,0 @@
-FROM node:12.18-alpine
-WORKDIR /api
-COPY ./package.json ./
-COPY ./yarn.lock ./
-RUN yarn
-COPY . .
-RUN yarn build
-EXPOSE 4000
-CMD ["yarn", "start"]

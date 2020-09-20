@@ -8,13 +8,16 @@ lerna-debug.log*
 /.pnp
 
 # testing
-/coverage
-/client/cypress/videos
-/client/cypress/screenshots
-/api/globalConfig.json
+coverage
+packages/client/cypress/videos
+packages/client/cypress/screenshots
+packages/api/globalConfig.json
 
 # production
 build
+assets
+!packages/api/src/utils/assets
+dist
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -29,7 +32,6 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
 *.lcov
 
 # nyc test coverage
@@ -52,11 +54,6 @@ packages/web/public
 certbot
 dhparam
 init-letsencrypt.sh
-
-# Images
-packages/web/src/images/
-api/assets/*
-dist
 
 # Dependency directories
 node_modules/

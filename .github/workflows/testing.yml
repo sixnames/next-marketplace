@@ -22,22 +22,22 @@ jobs:
       - run: npx lerna run --ignore @yagu/client --ignore @yagu/api build
       - run: yarn test:api
 
-#  clientTest:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        node-version: [12.x]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Development
-#        uses: actions/setup-node@v1
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#
-#      - run: docker-compose -f docker-compose.dev.yml up -d
-#      - run: yarn install
-#      - run: lerna run --ignore @yagu/client build
-#      - run: lerna run @yagu/client build:testing
-#      - run: yarn start
-#      - run: yarn test:client
+  clientTest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Development
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: docker-compose -f docker-compose.dev.yml up -d
+      - run: yarn install
+      - run: npx lerna run --ignore @yagu/client build
+      - run: npx lerna run @yagu/client build:testing
+      - run: yarn start
+      - run: yarn test:client

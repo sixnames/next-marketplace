@@ -13,29 +13,18 @@ services:
       - ./data:/data/db
     env_file:
       - .env
-  api:
-    container_name: api
+  app:
+    container_name: app
     restart: always
     build:
       dockerfile: Dockerfile.stage
-      context: ./api
+      context: .
     volumes:
-      - ./api/assets:/app/assets
+      - ./packages/api/assets:/app/packages/assets
     ports:
       - '4000:4000'
-    env_file:
-      - .env
-    depends_on:
-      - mongo
-  site:
-    container_name: site
-    restart: always
-    build:
-      dockerfile: Dockerfile.stage
-      context: client
-    ports:
       - '3000:3000'
     env_file:
       - .env
     depends_on:
-      - api
+      - mongo

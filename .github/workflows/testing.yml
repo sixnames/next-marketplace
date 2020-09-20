@@ -18,7 +18,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn install:api
+      - run: yarn install
+      - run: npx lerna run --ignore @yagu/client --ignore @yagu/api build
       - run: yarn test:api
 
   clientTest:
@@ -34,6 +35,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn install:client
-      - run: docker-compose -f docker-compose.testing.yml up -d --build
-      - run: yarn test:client
+      - run: docker-compose -f docker-compose.dev.yml up -d
+      - run: yarn install
+      - run: npx lerna run --ignore @yagu/client build
+      - run: npx lerna run --scope @yagu/client build:testing
+      - name: Start the app and run Cypress tests
+        run: yarn start & yarn test:client

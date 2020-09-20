@@ -39,5 +39,5 @@ jobs:
       - run: yarn install
       - run: npx lerna run --ignore @yagu/client build
       - run: npx lerna run --scope @yagu/client build:testing
-      - run: yarn start
-      - run: yarn test:client
+      - name: Start the app and run Cypress tests
+        run: yarn start & yarn test:client

@@ -23,6 +23,17 @@ describe('Product', () => {
               slug
               descriptionString
               rubrics
+              connections {
+                attribute {
+                  id
+                  nameString
+                }
+                key
+                products {
+                  id
+                  nameString
+                }
+              }
               attributesGroups {
                 showInCard
                 node {
@@ -160,43 +171,44 @@ describe('Product', () => {
     const {
       data: { createProduct },
     } = await mutateWithImages({
-      mutation: `
-          mutation CreateProduct($input: CreateProductInput!) {
-            createProduct(input: $input) {
-              success
-              message
-              product {
-                id
-                itemId
-                nameString
-                cardNameString
-                slug
-                descriptionString
-                rubrics
-                attributesGroups {
+      mutation: gql`
+        mutation CreateProduct($input: CreateProductInput!) {
+          createProduct(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              attributesGroups {
+                showInCard
+                node {
+                  id
+                  nameString
+                }
+                attributes {
                   showInCard
+                  key
                   node {
                     id
                     nameString
                   }
-                  attributes {
-                    showInCard
-                    key
-                    node {
-                      id
-                      nameString
-                    }
-                    value
-                  }
+                  value
                 }
-                assets {
-                  index
-                  url
-                }
-                price
               }
+              assets {
+                index
+                url
+              }
+              price
             }
-          }`,
+          }
+        }
+      `,
       input: (images: Promise<Upload>[]) => {
         return {
           name: testProduct.name,
@@ -224,43 +236,44 @@ describe('Product', () => {
     const {
       data: { updateProduct },
     } = await mutateWithImages({
-      mutation: `
-          mutation UpdateProduct($input: UpdateProductInput!) {
-            updateProduct(input: $input) {
-              success
-              message
-              product {
-                id
-                itemId
-                nameString
-                cardNameString
-                slug
-                descriptionString
-                rubrics
-                attributesGroups {
+      mutation: gql`
+        mutation UpdateProduct($input: UpdateProductInput!) {
+          updateProduct(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              attributesGroups {
+                showInCard
+                node {
+                  id
+                  nameString
+                }
+                attributes {
                   showInCard
+                  key
                   node {
                     id
                     nameString
                   }
-                  attributes {
-                    showInCard
-                    key
-                    node {
-                      id
-                      nameString
-                    }
-                    value
-                  }
+                  value
                 }
-                assets {
-                  index
-                  url
-                }
-                price
               }
+              assets {
+                index
+                url
+              }
+              price
             }
-          }`,
+          }
+        }
+      `,
       input: (images: Promise<Upload>[]) => {
         return {
           id: createdProduct.id,

@@ -25,6 +25,8 @@
 
     "start:api": "yarn api start",
     "test:api": "yarn api test",
+    "test:api:watch": "yarn api test:watch",
+
     "start:client": "yarn client start",
     "test:client": "yarn client test",
     "dev": "lerna run --parallel dev",

@@ -10,6 +10,21 @@ import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 
 @ObjectType()
+export class ProductConnections {
+  @Field(() => Attribute)
+  @prop({ ref: Attribute })
+  attribute: string;
+
+  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
+  @prop({ required: true })
+  key: string;
+
+  @Field(() => [Product])
+  @prop({ ref: () => Product, required: true })
+  products: string[];
+}
+
+@ObjectType()
 export class ProductAttribute {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
@@ -99,6 +114,10 @@ export class Product extends TimeStamps {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
   active: boolean;
+
+  @Field(() => [ProductConnections])
+  @prop({ type: ProductConnections, required: true })
+  connections: ProductConnections[];
 
   @Field(() => String)
   readonly nameString: string;

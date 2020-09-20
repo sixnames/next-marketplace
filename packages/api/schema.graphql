@@ -518,6 +518,7 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   cardName: [LanguageType!]!
   cardNameString: String!
+  connections: [ProductConnections!]!
   createdAt: Timestamp!
   description: [LanguageType!]!
   descriptionString: String!
@@ -560,6 +561,14 @@ input ProductAttributesGroupInput {
   attributes: [ProductAttributeInput!]!
   node: ID!
   showInCard: Boolean!
+}
+
+type ProductConnections {
+  attribute: Attribute!
+
+  """Attribute reference via attribute slug field"""
+  key: String!
+  products: [Product!]!
 }
 
 input ProductPaginateInput {

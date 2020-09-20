@@ -38,6 +38,6 @@ jobs:
       - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
       - run: npx lerna run --ignore @yagu/client build
-      - run: npx lerna run @yagu/client build:testing
+      - run: npx lerna run --scope @yagu/client build:testing
       - run: yarn start
       - run: yarn test:client

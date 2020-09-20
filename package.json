@@ -22,12 +22,11 @@
     "mocks": "yarn workspace @yagu/mocks",
     "shared": "yarn workspace @yagu/shared",
     "validation": "yarn workspace @yagu/validation",
+
     "start:api": "yarn api start",
     "test:api": "yarn api test",
     "start:client": "yarn client start",
     "test:client": "yarn client test",
-    "build:all:testing": "lerna run --ignore @yagu/client build",
-    "build:client:testing": "yarn client build:testing",
     "dev": "lerna run --parallel dev",
     "build": "lerna run build",
     "start": "lerna run --parallel start",

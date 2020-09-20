@@ -3,3 +3,4 @@ Dockerfile*
 .dockerignore
 .next
 dist
+data

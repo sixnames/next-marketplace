@@ -196,30 +196,6 @@ export class ProductResolver {
       const slug = generateDefaultLangSlug(values.cardName);
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
-      const nameValues = input.name.map(({ value }) => value);
-      const cardNameValues = input.cardName.map(({ value }) => value);
-      const exists = await ProductModel.exists({
-        $or: [
-          {
-            'name.value': {
-              $in: nameValues,
-            },
-          },
-          {
-            'cardName.value': {
-              $in: cardNameValues,
-            },
-          },
-        ],
-      });
-
-      if (exists) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.create.duplicate`, lang }),
-        };
-      }
-
       const product = await ProductModel.create({
         ...values,
         slug,
@@ -260,32 +236,6 @@ export class ProductResolver {
   ): Promise<ProductPayloadType> {
     try {
       const { id, assets, ...values } = input;
-
-      const nameValues = input.name.map(({ value }) => value);
-      const cardNameValues = input.cardName.map(({ value }) => value);
-      const exists = await ProductModel.exists({
-        $or: [
-          {
-            _id: { $ne: id },
-            'name.value': {
-              $in: nameValues,
-            },
-          },
-          {
-            _id: { $ne: id },
-            'cardName.value': {
-              $in: cardNameValues,
-            },
-          },
-        ],
-      });
-
-      if (exists) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.duplicate`, lang }),
-        };
-      }
 
       const product = await ProductModel.findOne({ _id: id, ...customFilter });
       if (!product) {
@@ -375,10 +325,10 @@ export class ProductResolver {
   }
 
   // TODO validation
-  // TODO messages
   @Mutation(() => ProductPayloadType)
   @AuthMethod(operationConfigUpdate)
   async createProductConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateProductConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
@@ -389,8 +339,7 @@ export class ProductResolver {
       if (!product || !attribute) {
         return {
           success: false,
-          message: 'notFound',
-          product: null,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
         };
       }
 
@@ -411,14 +360,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: 'error',
-          product: null,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage({ key: `products.update.success`, lang }),
         product: updatedProduct,
       };
     } catch (e) {

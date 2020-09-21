@@ -1,7 +1,6 @@
 import { ProductAttributesGroup } from '../../entities/Product';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
-import { generateDefaultLangSlug } from '../slug';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import sharp from 'sharp';
@@ -15,6 +14,7 @@ export interface GetProductCitiesInterface {
   attributesGroups: ProductAttributesGroup[];
   price: number;
   priority: number;
+  slug: string;
 }
 
 export async function generateTestProduct(
@@ -22,7 +22,7 @@ export async function generateTestProduct(
   active = true,
 ): Promise<any[]> {
   const initialFilePath = './src/test/test-image-0.png';
-  const slug = generateDefaultLangSlug(node.cardName);
+  const slug = node.slug;
   const productName = node.name[0].value;
   const filesPath = `./assets/${ASSETS_DIST_PRODUCTS}/${slug}`;
   const filesResolvePath = `/assets/${ASSETS_DIST_PRODUCTS}/${slug}`;

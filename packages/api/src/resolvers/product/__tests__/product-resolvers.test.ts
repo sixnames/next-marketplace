@@ -3,10 +3,88 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
+import { MOCK_PRODUCT_A } from '@yagu/mocks';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
     const { query, mutate } = await authenticatedTestClient();
+
+    // Should return current product by slug
+    const {
+      data: { getProductBySlug },
+    } = await query<any>(gql`
+      query {
+        getProductBySlug(slug: "${MOCK_PRODUCT_A.slug}") {
+          id
+          itemId
+          nameString
+          cardNameString
+          slug
+          descriptionString
+          rubrics
+          connections {
+            attribute {
+              id
+              nameString
+            }
+            key
+            products {
+              id
+              nameString
+            }
+          }
+        }
+      }
+    `);
+    const currentProduct = getProductBySlug;
+    expect(currentProduct.slug).toEqual(MOCK_PRODUCT_A.slug);
+
+    // Should return current product
+    const {
+      data: { getProduct, getRubricsTree },
+    } = await query<any>(gql`
+      query {
+        getProduct(id: "${currentProduct.id}") {
+          id
+          nameString
+          slug
+        }
+        getRubricsTree {
+          id
+          nameString
+          children {
+            id
+            nameString
+            attributesGroups {
+              node {
+                id
+                attributes {
+                  id
+                  slug
+                  variant
+                  options {
+                    id
+                    options {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            children {
+              id
+              nameString
+            }
+          }
+        }
+      }
+    `);
+    const rubricLevelOne = getRubricsTree[0];
+    const rubricLevelTwo = rubricLevelOne.children[0];
+    const rubricLevelTree = rubricLevelTwo.children[0];
+    expect(getProduct.id).toEqual(currentProduct.id);
+    expect(getProduct.nameString).toEqual(currentProduct.nameString);
+    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
 
     // Should return paginated products.
     const {
@@ -76,70 +154,8 @@ describe('Product', () => {
     );
 
     const allProducts = getAllProducts.docs;
-    const currentProduct = allProducts[0];
     expect(allProducts).toHaveLength(5);
     expect(getAllProducts.totalDocs).toEqual(5);
-
-    // Should return current product
-    const {
-      data: { getProduct, getRubricsTree },
-    } = await query<any>(gql`
-      query {
-        getProduct(id: "${currentProduct.id}") {
-          id
-          nameString
-          slug
-        }
-        getRubricsTree {
-          id
-          nameString
-          children {
-            id
-            nameString
-            attributesGroups {
-              node {
-                id
-                attributes {
-                  id
-                  slug
-                  variant
-                  options {
-                    id
-                    options {
-                      id
-                    }
-                  }
-                }
-              }
-            }
-            children {
-              id
-              nameString
-            }
-          }
-        }
-      }
-    `);
-    const rubricLevelOne = getRubricsTree[0];
-    const rubricLevelTwo = rubricLevelOne.children[0];
-    const rubricLevelTree = rubricLevelTwo.children[0];
-    expect(getProduct.id).toEqual(currentProduct.id);
-    expect(getProduct.nameString).toEqual(currentProduct.nameString);
-    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
-
-    // Should return current product by slug
-    const {
-      data: { getProductBySlug },
-    } = await query<any>(gql`
-      query {
-        getProductBySlug(slug: "${currentProduct.slug}") {
-          id
-          nameString
-        }
-      }
-    `);
-    expect(getProductBySlug.id).toEqual(currentProduct.id);
-    expect(getProductBySlug.nameString).toEqual(currentProduct.nameString);
 
     // Should return features AST
     const {

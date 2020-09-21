@@ -1895,6 +1895,7 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
 // Products
 export const MOCK_PRODUCT_A = {
   priority: 10,
+  slug: 'Wine_Brancott_Estate',
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Brancott_Estate' },
     { key: SECONDARY_LANG, value: 'Wine_Brancott_Estate' },
@@ -1912,6 +1913,7 @@ export const MOCK_PRODUCT_A = {
 
 export const MOCK_PRODUCT_B = {
   priority: 9,
+  slug: 'Wine_Campo_Viejо',
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Campo_Viejо' },
     { key: SECONDARY_LANG, value: 'Wine_Campo_Viejо' },
@@ -1929,6 +1931,7 @@ export const MOCK_PRODUCT_B = {
 
 export const MOCK_PRODUCT_C = {
   priority: 1,
+  slug: 'Wine_Val_de_Vie',
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie' },
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie' },
@@ -1946,6 +1949,7 @@ export const MOCK_PRODUCT_C = {
 
 export const MOCK_PRODUCT_D = {
   priority: 1,
+  slug: 'Wine_Val_de_Vie_C',
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_C' },
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_C' },
@@ -1963,6 +1967,7 @@ export const MOCK_PRODUCT_D = {
 
 export const MOCK_PRODUCT_E = {
   priority: 1,
+  slug: 'Wine_Val_de_Vie_D',
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_D' },
     { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_D' },

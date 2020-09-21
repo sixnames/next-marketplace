@@ -221,6 +221,7 @@ export class ProductResolver {
         ...values,
         slug,
         priorities: [],
+        connections: [],
         views: [],
         assets: assetsResult,
         active: true,

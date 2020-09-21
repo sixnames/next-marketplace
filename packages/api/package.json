@@ -1,6 +1,7 @@
 {
   "name": "@yagu/api",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "start": "node ./dist/index.js",
     "build": "rimraf ./dist && tsc",

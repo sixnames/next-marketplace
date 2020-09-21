@@ -361,7 +361,6 @@ const createTestData = async () => {
       ],
     });
 
-    // for delete
     await ProductModel.create(
       await generateTestProduct(
         {
@@ -373,7 +372,6 @@ const createTestData = async () => {
       ),
     );
 
-    // for second rubric in third level
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_C,
@@ -382,8 +380,6 @@ const createTestData = async () => {
       }),
     );
 
-    // main products
-    // const product = await ProductModel.create({
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_A,

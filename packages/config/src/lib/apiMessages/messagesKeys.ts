@@ -267,6 +267,7 @@ const messagesKeys = [
   'products.delete.success',
   // Products validation
   'validation.products.id',
+  'validation.productConnections.id',
   'validation.products.name',
   'validation.products.cardName',
   'validation.products.description',

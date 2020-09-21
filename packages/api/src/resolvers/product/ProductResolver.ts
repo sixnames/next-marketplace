@@ -14,6 +14,7 @@ import {
   Product,
   ProductAttributesGroup,
   ProductConnection,
+  ProductConnectionModel,
   ProductModel,
   ProductsCounters,
 } from '../../entities/Product';
@@ -36,6 +37,7 @@ import { AttributesGroup, AttributesGroupModel } from '../../entities/Attributes
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import {
+  addProductToConnectionSchema,
   createProductConnectionSchema,
   createProductSchema,
   updateProductSchema,
@@ -205,7 +207,6 @@ export class ProductResolver {
         ...values,
         slug,
         priorities: [],
-        connections: [],
         views: [],
         assets: assetsResult,
         active: true,
@@ -348,21 +349,13 @@ export class ProductResolver {
         };
       }
 
-      const updatedProduct = await ProductModel.findByIdAndUpdate(
-        product.id,
-        {
-          $push: {
-            connections: {
-              key: attribute.slug,
-              attribute: attribute.id,
-              products: [product.id],
-            },
-          },
-        },
-        { new: true },
-      );
+      const connection = await ProductConnectionModel.create({
+        key: attribute.slug,
+        attribute: attribute.id,
+        products: [product.id],
+      });
 
-      if (!updatedProduct) {
+      if (!connection) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.update.error`, lang }),
@@ -372,7 +365,7 @@ export class ProductResolver {
       return {
         success: true,
         message: await getApiMessage({ key: `products.update.success`, lang }),
-        product: updatedProduct,
+        product: product,
       };
     } catch (e) {
       return {
@@ -383,22 +376,47 @@ export class ProductResolver {
     }
   }
 
-  // TODO validation
   @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: addProductToConnectionSchema })
   @AuthMethod(operationConfigUpdate)
   async addProductToConnection(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Arg('input') input: AddProductToConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { productId, addProductId, connectionKey } = input;
+      const { productId, connectionId, addProductId } = input;
       const product = await ProductModel.findById(productId);
       const addProduct = await ProductModel.findById(addProductId);
-      console.log({ connectionKey, product, addProduct });
+      const connection = await ProductConnectionModel.findById(connectionId);
+
+      if (!product || !addProduct || !connection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        };
+      }
+
+      const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
+        connection.id,
+        {
+          $addToSet: {
+            products: addProduct.id,
+          },
+        },
+        { new: true },
+      );
+
+      if (!updatedConnection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
 
       return {
-        success: false,
-        message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        success: true,
+        message: await getApiMessage({ key: `products.update.success`, lang }),
+        product,
       };
     } catch (e) {
       return {
@@ -507,22 +525,24 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductConnection])
   async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
     try {
-      // Populate all nested fields and
-      // exclude current product from all connections
-      const populated = await product
+      // Populate all nested fields and of connection
+      // and exclude current product from all connections
+      return ProductConnectionModel.find({
+        products: {
+          $in: [product.id],
+        },
+      })
         .populate({
-          path: 'connections.attribute',
+          path: 'attribute',
           model: 'Attribute',
         })
         .populate({
-          path: 'connections.products',
+          path: 'products',
           model: 'Product',
           match: {
             _id: { $ne: product.id },
           },
-        })
-        .execPopulate();
-      return populated.connections;
+        });
     } catch (e) {
       return [];
     }

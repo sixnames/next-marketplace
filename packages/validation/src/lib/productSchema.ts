@@ -15,6 +15,9 @@ import { attributeIdSchema } from './attributesGroupSchema';
 export const productIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.products.id' });
 
+export const productConnectionIdSchema = (args: MultiLangSchemaMessagesInterface) =>
+  idSchema({ args, key: 'validation.productConnections.id' });
+
 export const productAttributeSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     showInCard: Yup.boolean(),
@@ -108,4 +111,11 @@ export const createProductConnectionSchema = (args: MultiLangSchemaMessagesInter
   Yup.object().shape({
     productId: productIdSchema(args),
     attributeId: attributeIdSchema(args),
+  });
+
+export const addProductToConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    addProductId: productIdSchema(args),
+    connectionId: productConnectionIdSchema(args),
   });

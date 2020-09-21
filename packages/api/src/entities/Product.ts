@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
+import { getModelForClass, getName, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
@@ -8,21 +8,6 @@ import { AssetType, CityCounter, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
-
-@ObjectType()
-export class ProductConnection {
-  @Field(() => Attribute)
-  @prop({ ref: Attribute })
-  attribute: string;
-
-  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => [Product])
-  @prop({ ref: () => Product, required: true })
-  products: string[];
-}
 
 @ObjectType()
 export class ProductAttribute {
@@ -116,8 +101,7 @@ export class Product extends TimeStamps {
   active: boolean;
 
   @Field(() => [ProductConnection])
-  @prop({ type: ProductConnection, required: true })
-  connections: ProductConnection[];
+  readonly connections: ProductConnection[];
 
   @Field(() => String)
   readonly nameString: string;
@@ -157,4 +141,23 @@ export class ProductsCounters {
   readonly activeProductsCount: number;
 }
 
+@ObjectType()
+export class ProductConnection {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => Attribute)
+  @prop({ ref: Attribute })
+  attribute: string;
+
+  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
+  @prop({ required: true })
+  key: string;
+
+  @Field(() => [Product])
+  @prop({ ref: () => getName(Product), required: true })
+  products: string[];
+}
+
+export const ProductConnectionModel = getModelForClass(ProductConnection);
 export const ProductModel = getModelForClass(Product);

@@ -130,6 +130,7 @@ describe('Product', () => {
               descriptionString
               rubrics
               connections {
+                id
                 attribute {
                   id
                   nameString
@@ -153,8 +154,10 @@ describe('Product', () => {
         },
       },
     );
+    const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
-    expect(createProductConnection.product.connections[0].products).toHaveLength(0);
+    // Shouldn't return current product in connection
+    expect(createdConnection.products).toHaveLength(0);
 
     // Should add product to connection
     const {
@@ -191,14 +194,16 @@ describe('Product', () => {
       {
         variables: {
           input: {
-            connectionKey: MOCK_ATTRIBUTE_WINE_COLOR.slug,
+            connectionId: createdConnection.id,
             productId: currentProduct.id,
             addProductId: secondaryProduct.id,
           },
         },
       },
     );
+
     expect(addProductToConnection.success).toBeTruthy();
+    expect(addProductToConnection.product.connections[0].products).toHaveLength(1);
 
     // Should return paginated products.
     const {

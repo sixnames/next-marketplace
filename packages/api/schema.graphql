@@ -33,9 +33,7 @@ input AddOptionToGroupInput {
 
 input AddProductToConnectionInput {
   addProductId: ID!
-
-  """Attribute slug added to the connection as key field."""
-  connectionKey: String!
+  connectionId: ID!
   productId: ID!
 }
 
@@ -580,6 +578,7 @@ input ProductAttributesGroupInput {
 
 type ProductConnection {
   attribute: Attribute!
+  id: ID!
 
   """Attribute reference via attribute slug field"""
   key: String!

@@ -54,6 +54,7 @@ import { Role } from '../../entities/Role';
 import { updateModelViews } from '../../utils/updateModelViews';
 import { AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
+import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 
 const {
   operationConfigCreate,
@@ -372,6 +373,32 @@ export class ProductResolver {
         success: true,
         message: await getApiMessage({ key: `products.update.success`, lang }),
         product: updatedProduct,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
+      };
+    }
+  }
+
+  // TODO validation
+  @Mutation(() => ProductPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  async addProductToConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: AddProductToConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, addProductId, connectionKey } = input;
+      const product = await ProductModel.findById(productId);
+      const addProduct = await ProductModel.findById(addProductId);
+      console.log({ connectionKey, product, addProduct });
+
+      return {
+        success: false,
+        message: await getApiMessage({ key: `products.update.notFound`, lang }),
       };
     } catch (e) {
       return {

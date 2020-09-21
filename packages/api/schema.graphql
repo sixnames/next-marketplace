@@ -31,6 +31,14 @@ input AddOptionToGroupInput {
   variants: [OptionVariantInput!]
 }
 
+input AddProductToConnectionInput {
+  addProductId: ID!
+
+  """Attribute slug added to the connection as key field."""
+  connectionKey: String!
+  productId: ID!
+}
+
 input AddProductToRubricInput {
   productId: ID!
   rubricId: ID!
@@ -371,6 +379,7 @@ type Mutation {
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCountry(input: CreateCountryInput!): CountryPayloadType!

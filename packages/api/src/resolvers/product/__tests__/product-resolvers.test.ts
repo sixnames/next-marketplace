@@ -161,7 +161,7 @@ describe('Product', () => {
       data: { addProductToConnection },
     } = await mutate<any>(
       gql`
-        mutation AddProductToConnection($input: AddProductToConnection!) {
+        mutation AddProductToConnection($input: AddProductToConnectionInput!) {
           addProductToConnection(input: $input) {
             success
             message

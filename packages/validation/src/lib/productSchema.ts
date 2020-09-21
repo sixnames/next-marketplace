@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import {
+  idSchema,
   langStringInputSchema,
   maxDescriptionLength,
   minDescriptionLength,
@@ -9,16 +10,10 @@ import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
+import { attributeIdSchema } from './attributesGroupSchema';
 
 export const productIdSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.products.id',
-      }),
-    );
+  idSchema({ args, key: 'validation.products.id' });
 
 export const productAttributeSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
@@ -107,4 +102,10 @@ export const updateProductSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: productIdSchema(args),
     ...productCommonFields(args),
+  });
+
+export const createProductConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    attributeId: attributeIdSchema(args),
   });

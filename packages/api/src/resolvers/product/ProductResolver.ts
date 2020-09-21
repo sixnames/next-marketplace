@@ -35,7 +35,11 @@ import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import { createProductSchema, updateProductSchema } from '@yagu/validation';
+import {
+  createProductConnectionSchema,
+  createProductSchema,
+  updateProductSchema,
+} from '@yagu/validation';
 import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -324,8 +328,8 @@ export class ProductResolver {
     }
   }
 
-  // TODO validation
   @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: createProductConnectionSchema })
   @AuthMethod(operationConfigUpdate)
   async createProductConnection(
     @Localization() { lang }: LocalizationPayloadInterface,

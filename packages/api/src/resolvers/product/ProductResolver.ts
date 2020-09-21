@@ -52,7 +52,7 @@ import { FilterQuery } from 'mongoose';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { Role } from '../../entities/Role';
 import { updateModelViews } from '../../utils/updateModelViews';
-import { Attribute, AttributeModel } from '../../entities/Attribute';
+import { AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 
 const {
@@ -354,7 +354,7 @@ export class ProductResolver {
             connections: {
               key: attribute.slug,
               attribute: attribute.id,
-              products: [],
+              products: [product.id],
             },
           },
         },
@@ -477,20 +477,32 @@ export class ProductResolver {
     return product.active;
   }
 
+  @FieldResolver((_returns) => [ProductConnection])
+  async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
+    try {
+      // Populate all nested fields and
+      // exclude current product from all connections
+      const populated = await product
+        .populate({
+          path: 'connections.attribute',
+          model: 'Attribute',
+        })
+        .populate({
+          path: 'connections.products',
+          model: 'Product',
+          match: {
+            _id: { $ne: product.id },
+          },
+        })
+        .execPopulate();
+      return populated.connections;
+    } catch (e) {
+      return [];
+    }
+  }
+
   @FieldResolver()
   async id(@Root() product: DocumentType<Product>): Promise<string> {
     return product.id || product._id;
-  }
-}
-
-@Resolver((_for) => ProductConnection)
-export class ProductConnectionResolver {
-  @FieldResolver(() => Attribute)
-  async attribute(@Root() connection: DocumentType<ProductConnection>): Promise<Attribute> {
-    const attribute = await AttributeModel.findById(connection.attribute);
-    if (!attribute) {
-      throw Error('Attribute for ProductConnection not fond');
-    }
-    return attribute;
   }
 }

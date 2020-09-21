@@ -30,7 +30,7 @@ import { MessageResolver } from './resolvers/message/MessageResolver';
 import { MetricResolver } from './resolvers/metric/MetricResolver';
 import { OptionResolver } from './resolvers/option/OptionResolver';
 import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
-import { ProductConnectionResolver, ProductResolver } from './resolvers/product/ProductResolver';
+import { ProductResolver } from './resolvers/product/ProductResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
@@ -83,7 +83,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
       OptionResolver,
       OptionsGroupResolver,
       ProductResolver,
-      ProductConnectionResolver,
       RubricResolver,
       RubricVariantResolver,
       UserResolver,

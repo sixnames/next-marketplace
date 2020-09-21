@@ -3,7 +3,7 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { MOCK_PRODUCT_A, MOCK_ATTRIBUTE_WINE_COLOR } from '@yagu/mocks';
+import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_COLOR } from '@yagu/mocks';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
@@ -41,6 +41,17 @@ describe('Product', () => {
               nameString
             }
           }
+        }
+      }
+    `);
+    const {
+      data: { getProductBySlug: secondaryProduct },
+    } = await query<any>(gql`
+      query {
+        getProductBySlug(slug: "${MOCK_PRODUCT_B.slug}") {
+          id
+          itemId
+          slug
         }
       }
     `);
@@ -143,6 +154,51 @@ describe('Product', () => {
       },
     );
     expect(createProductConnection.success).toBeTruthy();
+    expect(createProductConnection.product.connections[0].products).toHaveLength(0);
+
+    // Should add product to connection
+    const {
+      data: { addProductToConnection },
+    } = await mutate<any>(
+      gql`
+        mutation AddProductToConnection($input: AddProductToConnection!) {
+          addProductToConnection(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              connections {
+                attribute {
+                  id
+                  nameString
+                }
+                key
+                products {
+                  id
+                  nameString
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            connectionKey: MOCK_ATTRIBUTE_WINE_COLOR.slug,
+            productId: currentProduct.id,
+            addProductId: secondaryProduct.id,
+          },
+        },
+      },
+    );
+    expect(addProductToConnection.success).toBeTruthy();
 
     // Should return paginated products.
     const {

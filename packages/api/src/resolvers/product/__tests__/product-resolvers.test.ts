@@ -3,7 +3,7 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { MOCK_PRODUCT_A } from '@yagu/mocks';
+import { MOCK_PRODUCT_A, MOCK_ATTRIBUTE_WINE_COLOR } from '@yagu/mocks';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
@@ -22,6 +22,14 @@ describe('Product', () => {
           slug
           descriptionString
           rubrics
+          attributesGroups {
+            attributes {
+              node {
+                id
+                slug
+              }
+            }
+          }
           connections {
             attribute {
               id
@@ -39,7 +47,7 @@ describe('Product', () => {
     const currentProduct = getProductBySlug;
     expect(currentProduct.slug).toEqual(MOCK_PRODUCT_A.slug);
 
-    // Should return current product
+    // Should return product by ID
     const {
       data: { getProduct, getRubricsTree },
     } = await query<any>(gql`
@@ -85,6 +93,56 @@ describe('Product', () => {
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.nameString).toEqual(currentProduct.nameString);
     const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+
+    // Should create product connection
+    const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
+      return attributes.find(({ node }: any) => node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug);
+    });
+    const currentAttribute = currentAttributesGroup.attributes.find(({ node }: any) => {
+      return node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug;
+    });
+
+    const {
+      data: { createProductConnection },
+    } = await mutate<any>(
+      gql`
+        mutation CreateProductConnection($input: CreateProductConnectionInput!) {
+          createProductConnection(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              connections {
+                attribute {
+                  id
+                  nameString
+                }
+                key
+                products {
+                  id
+                  nameString
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            attributeId: currentAttribute.node.id,
+            productId: currentProduct.id,
+          },
+        },
+      },
+    );
+    expect(createProductConnection.success).toBeTruthy();
 
     // Should return paginated products.
     const {
@@ -152,9 +210,7 @@ describe('Product', () => {
         },
       },
     );
-
-    const allProducts = getAllProducts.docs;
-    expect(allProducts).toHaveLength(5);
+    expect(getAllProducts.docs).toHaveLength(5);
     expect(getAllProducts.totalDocs).toEqual(5);
 
     // Should return features AST

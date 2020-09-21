@@ -229,6 +229,11 @@ input CreateOptionsGroupInput {
   name: [LangInput!]!
 }
 
+input CreateProductConnectionInput {
+  attributeId: ID!
+  productId: ID!
+}
+
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
@@ -374,6 +379,7 @@ type Mutation {
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
+  createProductConnection(input: CreateProductConnectionInput!): ProductPayloadType!
   createRole(input: CreateRoleInput!): RolePayloadType!
   createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
@@ -518,7 +524,7 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   cardName: [LanguageType!]!
   cardNameString: String!
-  connections: [ProductConnections!]!
+  connections: [ProductConnection!]!
   createdAt: Timestamp!
   description: [LanguageType!]!
   descriptionString: String!
@@ -563,7 +569,7 @@ input ProductAttributesGroupInput {
   showInCard: Boolean!
 }
 
-type ProductConnections {
+type ProductConnection {
   attribute: Attribute!
 
   """Attribute reference via attribute slug field"""

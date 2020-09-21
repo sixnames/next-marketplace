@@ -13,6 +13,7 @@ import {
 import {
   Product,
   ProductAttributesGroup,
+  ProductConnection,
   ProductModel,
   ProductsCounters,
 } from '../../entities/Product';
@@ -47,6 +48,8 @@ import { FilterQuery } from 'mongoose';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { Role } from '../../entities/Role';
 import { updateModelViews } from '../../utils/updateModelViews';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
+import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 
 const {
   operationConfigCreate,
@@ -371,6 +374,62 @@ export class ProductResolver {
     }
   }
 
+  // TODO validation
+  // TODO messages
+  @Mutation(() => ProductPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  async createProductConnection(
+    @Arg('input') input: CreateProductConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, attributeId } = input;
+      const attribute = await AttributeModel.findById(attributeId);
+      const product = await ProductModel.findById(productId);
+
+      if (!product || !attribute) {
+        return {
+          success: false,
+          message: 'notFound',
+          product: null,
+        };
+      }
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        product.id,
+        {
+          $push: {
+            connections: {
+              key: attribute.slug,
+              attribute: attribute.id,
+              products: [],
+            },
+          },
+        },
+        { new: true },
+      );
+
+      if (!updatedProduct) {
+        return {
+          success: false,
+          message: 'error',
+          product: null,
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        product: updatedProduct,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
+      };
+    }
+  }
+
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
@@ -469,5 +528,17 @@ export class ProductResolver {
   @FieldResolver()
   async id(@Root() product: DocumentType<Product>): Promise<string> {
     return product.id || product._id;
+  }
+}
+
+@Resolver((_for) => ProductConnection)
+export class ProductConnectionResolver {
+  @FieldResolver(() => Attribute)
+  async attribute(@Root() connection: DocumentType<ProductConnection>): Promise<Attribute> {
+    const attribute = await AttributeModel.findById(connection.attribute);
+    if (!attribute) {
+      throw Error('Attribute for ProductConnection not fond');
+    }
+    return attribute;
   }
 }

@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, getName, index, plugin, prop } from '@typegoose/typegoose';
+import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
@@ -142,21 +142,42 @@ export class ProductsCounters {
 }
 
 @ObjectType()
+export class ProductConnectionItem {
+  @Field(() => Product)
+  node: Product;
+
+  @Field(() => String, {
+    description: 'Returns first value only because this attribute has to be Select variant',
+  })
+  value: string;
+}
+
+@ObjectType()
 export class ProductConnection {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => Attribute)
-  @prop({ ref: Attribute })
-  attribute: string;
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  attributeId: string;
+
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  attributesGroupId: string;
 
   @Field(() => String, { description: 'Attribute reference via attribute slug field' })
   @prop({ required: true })
   key: string;
 
-  @Field(() => [Product])
-  @prop({ ref: () => getName(Product), required: true })
-  products: string[];
+  @Field(() => [String])
+  @prop({ type: String, required: true })
+  productsIds: string[];
+
+  @Field(() => Attribute)
+  readonly attribute: string;
+
+  @Field(() => [ProductConnectionItem])
+  readonly products: ProductConnectionItem[];
 }
 
 export const ProductConnectionModel = getModelForClass(ProductConnection);

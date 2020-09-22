@@ -237,6 +237,7 @@ input CreateOptionsGroupInput {
 
 input CreateProductConnectionInput {
   attributeId: ID!
+  attributesGroupId: ID!
   productId: ID!
 }
 
@@ -578,11 +579,23 @@ input ProductAttributesGroupInput {
 
 type ProductConnection {
   attribute: Attribute!
+  attributeId: String!
+  attributesGroupId: String!
   id: ID!
 
   """Attribute reference via attribute slug field"""
   key: String!
-  products: [Product!]!
+  products: [ProductConnectionItem!]!
+  productsIds: [String!]!
+}
+
+type ProductConnectionItem {
+  node: Product!
+
+  """
+  Returns first value only because this attribute has to be Select variant
+  """
+  value: String!
 }
 
 input ProductPaginateInput {

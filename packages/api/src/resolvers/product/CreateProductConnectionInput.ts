@@ -7,4 +7,7 @@ export class CreateProductConnectionInput {
 
   @Field((_type) => ID)
   attributeId: string;
+
+  @Field((_type) => ID)
+  attributesGroupId: string;
 }

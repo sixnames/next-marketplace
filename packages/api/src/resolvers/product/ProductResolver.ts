@@ -14,6 +14,7 @@ import {
   Product,
   ProductAttributesGroup,
   ProductConnection,
+  ProductConnectionItem,
   ProductConnectionModel,
   ProductModel,
   ProductsCounters,
@@ -54,7 +55,7 @@ import { FilterQuery } from 'mongoose';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { Role } from '../../entities/Role';
 import { updateModelViews } from '../../utils/updateModelViews';
-import { AttributeModel } from '../../entities/Attribute';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 
@@ -338,11 +339,12 @@ export class ProductResolver {
     @Arg('input') input: CreateProductConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { productId, attributeId } = input;
+      const { productId, attributeId, attributesGroupId } = input;
       const attribute = await AttributeModel.findById(attributeId);
+      const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
       const product = await ProductModel.findById(productId);
 
-      if (!product || !attribute) {
+      if (!product || !attribute || !attributesGroup) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.update.notFound`, lang }),
@@ -351,8 +353,9 @@ export class ProductResolver {
 
       const connection = await ProductConnectionModel.create({
         key: attribute.slug,
-        attribute: attribute.id,
-        products: [product.id],
+        attributeId: attribute.id,
+        attributesGroupId: attributesGroup.id,
+        productsIds: [product.id],
       });
 
       if (!connection) {
@@ -400,7 +403,7 @@ export class ProductResolver {
         connection.id,
         {
           $addToSet: {
-            products: addProduct.id,
+            productsIds: addProduct.id,
           },
         },
         { new: true },
@@ -525,24 +528,11 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductConnection])
   async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
     try {
-      // Populate all nested fields and of connection
-      // and exclude current product from all connections
       return ProductConnectionModel.find({
-        products: {
+        productsIds: {
           $in: [product.id],
         },
-      })
-        .populate({
-          path: 'attribute',
-          model: 'Attribute',
-        })
-        .populate({
-          path: 'products',
-          model: 'Product',
-          match: {
-            _id: { $ne: product.id },
-          },
-        });
+      });
     } catch (e) {
       return [];
     }
@@ -551,5 +541,47 @@ export class ProductResolver {
   @FieldResolver()
   async id(@Root() product: DocumentType<Product>): Promise<string> {
     return product.id || product._id;
+  }
+}
+
+@Resolver((_for) => ProductConnection)
+export class ProductConnectionResolver {
+  @FieldResolver((_returns) => [ProductConnectionItem])
+  async products(
+    @Root() connection: DocumentType<ProductConnection>,
+  ): Promise<ProductConnectionItem[]> {
+    const { attributeId, attributesGroupId } = connection;
+    const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
+    return products.map((product) => {
+      const currentGroup = product.attributesGroups.find(({ node }) => {
+        return node.toString() === attributesGroupId.toString();
+      });
+
+      if (!currentGroup) {
+        throw Error('Attributes group not found on ProductConnection.products');
+      }
+
+      const currentAttribute = currentGroup.attributes.find(({ node }) => {
+        return node.toString() === attributeId.toString();
+      });
+
+      if (!currentAttribute) {
+        throw Error('Attribute not found on ProductConnection.products');
+      }
+
+      return {
+        node: product,
+        value: currentAttribute.value[0],
+      };
+    });
+  }
+
+  @FieldResolver((_returns) => Attribute)
+  async attribute(@Root() connection: DocumentType<ProductConnection>): Promise<Attribute> {
+    const attribute = await AttributeModel.findById(connection.attributeId);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductConnection.attribute');
+    }
+    return attribute;
   }
 }

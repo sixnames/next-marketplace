@@ -9,6 +9,27 @@ describe('Product', () => {
   it('Should CRUD product.', async () => {
     const { query, mutate } = await authenticatedTestClient();
 
+    const connectionFragment = gql`
+      fragment ConnectionFragment on ProductConnection {
+        id
+        key
+        attributesGroupId
+        attributeId
+        attribute {
+          id
+          nameString
+        }
+        productsIds
+        products {
+          value
+          node {
+            id
+            nameString
+          }
+        }
+      }
+    `;
+
     // Should return current product by slug
     const {
       data: { getProductBySlug },
@@ -23,6 +44,9 @@ describe('Product', () => {
           descriptionString
           rubrics
           attributesGroups {
+            node {
+              id
+            }
             attributes {
               node {
                 id
@@ -31,18 +55,11 @@ describe('Product', () => {
             }
           }
           connections {
-            attribute {
-              id
-              nameString
-            }
-            key
-            products {
-              id
-              nameString
-            }
+            ...ConnectionFragment
           }
         }
       }
+      ${connectionFragment}
     `);
     const {
       data: { getProductBySlug: secondaryProduct },
@@ -109,6 +126,7 @@ describe('Product', () => {
     const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
       return attributes.find(({ node }: any) => node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug);
     });
+
     const currentAttribute = currentAttributesGroup.attributes.find(({ node }: any) => {
       return node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug;
     });
@@ -130,34 +148,27 @@ describe('Product', () => {
               descriptionString
               rubrics
               connections {
-                id
-                attribute {
-                  id
-                  nameString
-                }
-                key
-                products {
-                  id
-                  nameString
-                }
+                ...ConnectionFragment
               }
             }
           }
         }
+        ${connectionFragment}
       `,
       {
         variables: {
           input: {
+            attributesGroupId: currentAttributesGroup.node.id,
             attributeId: currentAttribute.node.id,
             productId: currentProduct.id,
           },
         },
       },
     );
+
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
-    // Shouldn't return current product in connection
-    expect(createdConnection.products).toHaveLength(0);
+    expect(createdConnection.productsIds).toHaveLength(1);
 
     // Should add product to connection
     const {
@@ -177,19 +188,12 @@ describe('Product', () => {
               descriptionString
               rubrics
               connections {
-                attribute {
-                  id
-                  nameString
-                }
-                key
-                products {
-                  id
-                  nameString
-                }
+                ...ConnectionFragment
               }
             }
           }
         }
+        ${connectionFragment}
       `,
       {
         variables: {
@@ -203,7 +207,7 @@ describe('Product', () => {
     );
 
     expect(addProductToConnection.success).toBeTruthy();
-    expect(addProductToConnection.product.connections[0].products).toHaveLength(1);
+    expect(addProductToConnection.product.connections[0].productsIds).toHaveLength(2);
 
     // Should return paginated products.
     const {
@@ -221,15 +225,7 @@ describe('Product', () => {
               descriptionString
               rubrics
               connections {
-                attribute {
-                  id
-                  nameString
-                }
-                key
-                products {
-                  id
-                  nameString
-                }
+                ...ConnectionFragment
               }
               attributesGroups {
                 showInCard
@@ -259,6 +255,7 @@ describe('Product', () => {
             totalDocs
           }
         }
+        ${connectionFragment}
       `,
       {
         variables: {

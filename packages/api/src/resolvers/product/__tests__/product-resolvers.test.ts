@@ -165,7 +165,6 @@ describe('Product', () => {
         },
       },
     );
-
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
@@ -205,9 +204,46 @@ describe('Product', () => {
         },
       },
     );
-
     expect(addProductToConnection.success).toBeTruthy();
     expect(addProductToConnection.product.connections[0].productsIds).toHaveLength(2);
+
+    // Should delete product from connection
+    const {
+      data: { deleteProductFromConnection },
+    } = await mutate<any>(
+      gql`
+        mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
+          deleteProductFromConnection(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              connections {
+                ...ConnectionFragment
+              }
+            }
+          }
+        }
+        ${connectionFragment}
+      `,
+      {
+        variables: {
+          input: {
+            connectionId: createdConnection.id,
+            productId: currentProduct.id,
+            addProductId: secondaryProduct.id,
+          },
+        },
+      },
+    );
+    expect(deleteProductFromConnection.success).toBeTruthy();
+    expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
 
     // Should return paginated products.
     const {

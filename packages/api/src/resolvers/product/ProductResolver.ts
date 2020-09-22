@@ -41,6 +41,7 @@ import {
   addProductToConnectionSchema,
   createProductConnectionSchema,
   createProductSchema,
+  deleteProductFromConnectionSchema,
   updateProductSchema,
 } from '@yagu/validation';
 import { getOperationsConfigs } from '../../utils/auth/auth';
@@ -58,6 +59,7 @@ import { updateModelViews } from '../../utils/updateModelViews';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
+import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
 
 const {
   operationConfigCreate,
@@ -430,6 +432,57 @@ export class ProductResolver {
     }
   }
 
+  @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: deleteProductFromConnectionSchema })
+  @AuthMethod(operationConfigUpdate)
+  async deleteProductFromConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: DeleteProductFromConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, connectionId, addProductId } = input;
+      const product = await ProductModel.findById(productId);
+      const addProduct = await ProductModel.findById(addProductId);
+      const connection = await ProductConnectionModel.findById(connectionId);
+
+      if (!product || !addProduct || !connection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        };
+      }
+
+      const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
+        connection.id,
+        {
+          $pull: {
+            productsIds: addProduct.id,
+          },
+        },
+        { new: true },
+      );
+
+      if (!updatedConnection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `products.update.success`, lang }),
+        product,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
+      };
+    }
+  }
+
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
@@ -571,7 +624,7 @@ export class ProductConnectionResolver {
 
       return {
         node: product,
-        value: currentAttribute.value[0],
+        value: currentAttribute.value ? currentAttribute.value[0] : '',
       };
     });
   }

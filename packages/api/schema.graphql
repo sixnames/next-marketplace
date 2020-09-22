@@ -308,6 +308,12 @@ input DeleteOptionFromGroupInput {
   optionId: ID!
 }
 
+input DeleteProductFromConnectionInput {
+  addProductId: ID!
+  connectionId: ID!
+  productId: ID!
+}
+
 input DeleteProductFromRubricInput {
   productId: ID!
   rubricId: ID!
@@ -403,6 +409,7 @@ type Mutation {
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
+  deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
   deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!

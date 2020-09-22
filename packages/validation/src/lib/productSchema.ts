@@ -119,3 +119,10 @@ export const addProductToConnectionSchema = (args: MultiLangSchemaMessagesInterf
     addProductId: productIdSchema(args),
     connectionId: productConnectionIdSchema(args),
   });
+
+export const deleteProductFromConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    addProductId: productIdSchema(args),
+    connectionId: productConnectionIdSchema(args),
+  });

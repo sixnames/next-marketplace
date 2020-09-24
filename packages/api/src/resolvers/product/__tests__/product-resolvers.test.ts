@@ -153,6 +153,13 @@ describe('Product', () => {
                   value
                 }
               }
+              #              features {
+              #                attributesGroup
+              #                attributes {
+              #                  nameString
+              #                  value
+              #                }
+              #              }
               connections {
                 ...ConnectionFragment
               }
@@ -175,8 +182,9 @@ describe('Product', () => {
     const {
       data: { createProductConnection },
     } = createConnectionResult;
-
+    //
     const createdConnection = createProductConnection.product.connections[0];
+    console.log(JSON.stringify(createdConnection, null, 2));
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
     expect(createProductConnection.product.slug).toEqual(

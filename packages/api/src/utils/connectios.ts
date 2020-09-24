@@ -1,19 +1,53 @@
 import { DocumentType } from '@typegoose/typegoose';
 import { Product, ProductConnectionModel } from '../entities/Product';
-import { AttributeModel } from '../entities/Attribute';
+import { Attribute, AttributeModel } from '../entities/Attribute';
 import { generateDefaultLangSlug } from './slug';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
 import { OptionModel } from '../entities/Option';
 import getLangField from './translations/getLangField';
 
-export interface getConnectionValuesFromProductInterface {
+export interface GetSelectAttributeOptionsValueInterface {
+  attribute: DocumentType<Attribute>;
+  lang: string;
+  selectedOptions: string[];
+}
+
+export interface GetSelectAttributeOptionsValuePayloadInterface {
+  name: string;
+  slug: string;
+}
+
+export const getSelectAttributeOptionsName = async ({
+  attribute,
+  selectedOptions,
+  lang,
+}: GetSelectAttributeOptionsValueInterface): Promise<
+  GetSelectAttributeOptionsValuePayloadInterface[]
+> => {
+  const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+  if (!optionsGroup) {
+    throw Error('Options group not found in getSelectAttributeOptionsValue');
+  }
+
+  const options = await OptionModel.find({
+    _id: { $in: optionsGroup.options },
+    slug: { $in: selectedOptions },
+  });
+
+  return options.map((option) => ({
+    slug: option.slug,
+    name: getLangField(option.name, lang),
+  }));
+};
+
+export interface GetConnectionValuesFromProductInterface {
   product: DocumentType<Product>;
   attributeId: string;
   attributesGroupId: string;
   lang: string;
 }
 
-export interface getConnectionValuesFromProductPayloadInterface {
+export interface GetConnectionValuesFromProductPayloadInterface {
   attributeSlug: string;
   attributeValue: string;
   optionName: string;
@@ -24,8 +58,8 @@ export const getConnectionValuesFromProduct = async ({
   attributeId,
   attributesGroupId,
   lang,
-}: getConnectionValuesFromProductInterface): Promise<
-  getConnectionValuesFromProductPayloadInterface
+}: GetConnectionValuesFromProductInterface): Promise<
+  GetConnectionValuesFromProductPayloadInterface
 > => {
   const attributesGroupInProduct = product.attributesGroups.find(
     ({ node }) => node.toString() === attributesGroupId,
@@ -60,19 +94,16 @@ export const getConnectionValuesFromProduct = async ({
     throw Error('Options group not found in checkIsAllConnectionOptionsUsed');
   }
 
-  const option = await OptionModel.findOne({
-    _id: { $in: optionsGroup.options },
-    slug: currentAttributeValue,
+  const option = await getSelectAttributeOptionsName({
+    attribute,
+    selectedOptions: [currentAttributeValue],
+    lang,
   });
-
-  if (!option) {
-    throw Error('Option not found in checkIsAllConnectionOptionsUsed');
-  }
 
   return {
     attributeSlug: attribute.slug,
     attributeValue: currentAttributeValue,
-    optionName: getLangField(option.name, lang),
+    optionName: option[0].name,
   };
 };
 
@@ -98,7 +129,7 @@ export const createProductSlugWithConnections = async ({
     },
   });
 
-  const connectionsValues: getConnectionValuesFromProductPayloadInterface[] = [];
+  const connectionsValues: GetConnectionValuesFromProductPayloadInterface[] = [];
   for await (const connection of connections) {
     connectionsValues.push(
       await getConnectionValuesFromProduct({

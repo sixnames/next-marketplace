@@ -773,7 +773,11 @@ export class ProductConnectionResolver {
   async products(
     @Root() connection: DocumentType<ProductConnection>,
     @Localization() { lang }: LocalizationPayloadInterface,
-    @Arg('activeOnly', () => Boolean, { description: 'Shows only active products.' })
+    @Arg('activeOnly', () => Boolean, {
+      description: 'Shows only active products.',
+      nullable: true,
+      defaultValue: false,
+    })
     activeOnly: boolean,
   ): Promise<ProductConnectionItem[]> {
     const { attributeId, attributesGroupId } = connection;

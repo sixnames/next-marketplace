@@ -362,6 +362,14 @@ const createTestData = async () => {
     });
 
     await ProductModel.create(
+      await generateTestProduct({
+        ...MOCK_PRODUCT_A,
+        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    );
+
+    await ProductModel.create(
       await generateTestProduct(
         {
           ...MOCK_PRODUCT_B,
@@ -377,14 +385,6 @@ const createTestData = async () => {
         ...MOCK_PRODUCT_C,
         ...productAttributes(optionsSlugsColor[0], optionsSlugsWineType[0]),
         rubrics: [rubricLevelThreeAB.id],
-      }),
-    );
-
-    await ProductModel.create(
-      await generateTestProduct({
-        ...MOCK_PRODUCT_A,
-        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
-        rubrics: [rubricLevelThreeAA.id],
       }),
     );
 

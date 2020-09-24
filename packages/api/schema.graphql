@@ -309,8 +309,8 @@ input DeleteOptionFromGroupInput {
 }
 
 input DeleteProductFromConnectionInput {
-  addProductId: ID!
   connectionId: ID!
+  deleteProductId: ID!
   productId: ID!
 }
 

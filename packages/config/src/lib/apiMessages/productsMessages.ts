@@ -133,6 +133,19 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'products.update.allOptionsAreUsed',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'В связи использованы все опции.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'All options are used in this connection.',
+      },
+    ],
+  },
+  {
     key: 'products.update.success',
     message: [
       {

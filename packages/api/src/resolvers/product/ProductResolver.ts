@@ -29,7 +29,11 @@ import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
-import { generateDefaultLangSlug, createProductSlugWithConnections } from '../../utils/slug';
+import {
+  checkIsAllConnectionOptionsUsed,
+  createProductSlugWithConnections,
+  getConnectionValuesFromProduct,
+} from '../../utils/connectios';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -61,6 +65,7 @@ import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
 import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
+import { generateDefaultLangSlug } from '../../utils/slug';
 
 const {
   operationConfigCreate,
@@ -431,6 +436,23 @@ export class ProductResolver {
         };
       }
 
+      // Check if all attribute options are used for connection
+      const allOptionsAreUsed = await checkIsAllConnectionOptionsUsed({ connectionId });
+      if (allOptionsAreUsed) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'products.update.allOptionsAreUsed', lang }),
+        };
+      }
+
+      // Check attribute existence in added product
+      // It will throw an Error if attribute not exist
+      await getConnectionValuesFromProduct({
+        product: addProduct,
+        attributeId: connection.attributeId,
+        attributesGroupId: connection.attributesGroupId,
+      });
+
       const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
         connection.id,
         {
@@ -442,6 +464,28 @@ export class ProductResolver {
       );
 
       if (!updatedConnection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      // Create new slug for added product
+      const { slug } = await createProductSlugWithConnections({
+        product: addProduct,
+      });
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        addProduct.id,
+        {
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.update.error`, lang }),
@@ -470,12 +514,12 @@ export class ProductResolver {
     @Arg('input') input: DeleteProductFromConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { productId, connectionId, addProductId } = input;
+      const { productId, connectionId, deleteProductId } = input;
       const product = await ProductModel.findById(productId);
-      const addProduct = await ProductModel.findById(addProductId);
+      const deleteProduct = await ProductModel.findById(deleteProductId);
       const connection = await ProductConnectionModel.findById(connectionId);
 
-      if (!product || !addProduct || !connection) {
+      if (!product || !deleteProduct || !connection) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.update.notFound`, lang }),
@@ -486,13 +530,35 @@ export class ProductResolver {
         connection.id,
         {
           $pull: {
-            productsIds: addProduct.id,
+            productsIds: deleteProduct.id,
           },
         },
         { new: true },
       );
 
       if (!updatedConnection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      // Create new slug for removed product from connection
+      const { slug } = await createProductSlugWithConnections({
+        product: deleteProduct,
+      });
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        deleteProduct.id,
+        {
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
         return {
           success: false,
           message: await getApiMessage({ key: `products.update.error`, lang }),

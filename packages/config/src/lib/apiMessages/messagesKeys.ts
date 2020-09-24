@@ -265,6 +265,7 @@ const messagesKeys = [
   'products.update.attributesGroupNotFound',
   'products.update.attributeNotFound',
   'products.update.attributeValueNotFound',
+  'products.update.allOptionsAreUsed',
   'products.update.success',
   'products.delete.notFound',
   'products.delete.error',

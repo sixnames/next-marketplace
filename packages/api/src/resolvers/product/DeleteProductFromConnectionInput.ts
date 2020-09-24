@@ -9,5 +9,5 @@ export class DeleteProductFromConnectionInput {
   productId: string;
 
   @Field((_type) => ID)
-  addProductId: string;
+  deleteProductId: string;
 }

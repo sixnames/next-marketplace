@@ -24,6 +24,7 @@ describe('Product', () => {
           node {
             id
             nameString
+            slug
           }
         }
       }
@@ -215,8 +216,17 @@ describe('Product', () => {
         },
       },
     );
+
+    const slugs = addProductToConnection.product.connections[0].products.map(
+      ({ node }: any) => node.slug,
+    );
+    const addedProductSlug = slugs.find(
+      (slug: string) => slug === 'vino_campo_viejo_tempranillo_rioja_doc-tip_vina-varmut',
+    );
+
     expect(addProductToConnection.success).toBeTruthy();
     expect(addProductToConnection.product.connections[0].productsIds).toHaveLength(2);
+    expect(addedProductSlug).toBeDefined();
 
     // Should delete product from connection
     const {
@@ -248,13 +258,30 @@ describe('Product', () => {
           input: {
             connectionId: createdConnection.id,
             productId: currentProduct.id,
-            addProductId: secondaryProduct.id,
+            deleteProductId: secondaryProduct.id,
           },
+        },
+      },
+    );
+    const {
+      data: { getProduct: removedProductFromConnection },
+    } = await query<any>(
+      gql`
+        query GetProduct($id: ID!) {
+          getProduct(id: $id) {
+            slug
+          }
+        }
+      `,
+      {
+        variables: {
+          id: secondaryProduct.id,
         },
       },
     );
     expect(deleteProductFromConnection.success).toBeTruthy();
     expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
+    expect(removedProductFromConnection.slug).toEqual('vino_campo_viejo_tempranillo_rioja_doc');
 
     // Should return paginated products.
     const {

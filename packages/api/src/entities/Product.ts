@@ -165,10 +165,6 @@ export class ProductConnection {
   @prop({ type: String, required: true })
   attributesGroupId: string;
 
-  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
-  @prop({ required: true })
-  key: string;
-
   @Field(() => [String])
   @prop({ type: String, required: true })
   productsIds: string[];

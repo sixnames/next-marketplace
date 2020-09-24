@@ -3,7 +3,7 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_COLOR } from '@yagu/mocks';
+import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_VARIANT } from '@yagu/mocks';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
@@ -12,7 +12,6 @@ describe('Product', () => {
     const connectionFragment = gql`
       fragment ConnectionFragment on ProductConnection {
         id
-        key
         attributesGroupId
         attributeId
         attribute {
@@ -124,16 +123,14 @@ describe('Product', () => {
 
     // Should create product connection
     const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
-      return attributes.find(({ node }: any) => node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug);
+      return attributes.find(({ node }: any) => node.slug === MOCK_ATTRIBUTE_WINE_VARIANT.slug);
     });
 
     const currentAttribute = currentAttributesGroup.attributes.find(({ node }: any) => {
-      return node.slug === MOCK_ATTRIBUTE_WINE_COLOR.slug;
+      return node.slug === MOCK_ATTRIBUTE_WINE_VARIANT.slug;
     });
 
-    const {
-      data: { createProductConnection },
-    } = await mutate<any>(
+    const createConnectionResult = await mutate<any>(
       gql`
         mutation CreateProductConnection($input: CreateProductConnectionInput!) {
           createProductConnection(input: $input) {
@@ -147,6 +144,12 @@ describe('Product', () => {
               slug
               descriptionString
               rubrics
+              attributesGroups {
+                attributes {
+                  key
+                  value
+                }
+              }
               connections {
                 ...ConnectionFragment
               }
@@ -165,9 +168,15 @@ describe('Product', () => {
         },
       },
     );
+
+    const {
+      data: { createProductConnection },
+    } = createConnectionResult;
+
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
+    expect(createProductConnection.product.slug).toEqual(`wine_brancott_estate-tip_vina-heres`);
 
     // Should add product to connection
     const {

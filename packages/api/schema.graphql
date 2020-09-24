@@ -589,9 +589,6 @@ type ProductConnection {
   attributeId: String!
   attributesGroupId: String!
   id: ID!
-
-  """Attribute reference via attribute slug field"""
-  key: String!
   products: [ProductConnectionItem!]!
   productsIds: [String!]!
 }

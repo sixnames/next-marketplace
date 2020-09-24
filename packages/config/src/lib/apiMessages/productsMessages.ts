@@ -81,6 +81,19 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'products.update.attributeVariantError',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Атрибут должен иметь тип Селект.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute has to be Select variant.',
+      },
+    ],
+  },
+  {
     key: 'products.update.success',
     message: [
       {

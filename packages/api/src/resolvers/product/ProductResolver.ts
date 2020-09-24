@@ -60,6 +60,7 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
+import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 
 const {
   operationConfigCreate,
@@ -353,8 +354,14 @@ export class ProductResolver {
         };
       }
 
+      if (attribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.attributeVariantError`, lang }),
+        };
+      }
+
       const connection = await ProductConnectionModel.create({
-        key: attribute.slug,
         attributeId: attribute.id,
         attributesGroupId: attributesGroup.id,
         productsIds: [product.id],
@@ -367,10 +374,61 @@ export class ProductResolver {
         };
       }
 
+      // Create new slug for product
+      const attributesGroupInProduct = product.attributesGroups.find(
+        ({ node }) => node.toString() === attributesGroupId,
+      );
+
+      if (!attributesGroupInProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      const attributeInProduct = attributesGroupInProduct.attributes.find(
+        ({ node }) => node.toString() === attributeId,
+      );
+
+      if (!attributeInProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      const currentAttributeValue = attributeInProduct.value[0];
+
+      if (!currentAttributeValue) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      const newSlug = `${product.slug}-${attribute.slug}-${currentAttributeValue}`.toLowerCase();
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        product.id,
+        {
+          slug: newSlug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
       return {
         success: true,
         message: await getApiMessage({ key: `products.update.success`, lang }),
-        product: product,
+        product: updatedProduct,
       };
     } catch (e) {
       return {

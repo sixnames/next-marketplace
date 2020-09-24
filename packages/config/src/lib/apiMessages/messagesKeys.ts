@@ -261,6 +261,7 @@ const messagesKeys = [
   'products.update.duplicate',
   'products.update.notFound',
   'products.update.error',
+  'products.update.attributeVariantError',
   'products.update.success',
   'products.delete.notFound',
   'products.delete.error',

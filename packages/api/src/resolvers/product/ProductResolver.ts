@@ -29,7 +29,7 @@ import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
-import { generateDefaultLangSlug } from '../../utils/slug';
+import { generateDefaultLangSlug, createProductSlugWithConnections } from '../../utils/slug';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -255,6 +255,7 @@ export class ProductResolver {
         };
       }
 
+      // TODO generate slug with connections
       const slug = generateDefaultLangSlug(values.cardName);
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
@@ -375,43 +376,14 @@ export class ProductResolver {
       }
 
       // Create new slug for product
-      const attributesGroupInProduct = product.attributesGroups.find(
-        ({ node }) => node.toString() === attributesGroupId,
-      );
-
-      if (!attributesGroupInProduct) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
-        };
-      }
-
-      const attributeInProduct = attributesGroupInProduct.attributes.find(
-        ({ node }) => node.toString() === attributeId,
-      );
-
-      if (!attributeInProduct) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
-        };
-      }
-
-      const currentAttributeValue = attributeInProduct.value[0];
-
-      if (!currentAttributeValue) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
-        };
-      }
-
-      const newSlug = `${product.slug}-${attribute.slug}-${currentAttributeValue}`.toLowerCase();
+      const { slug } = await createProductSlugWithConnections({
+        product,
+      });
 
       const updatedProduct = await ProductModel.findByIdAndUpdate(
         product.id,
         {
-          slug: newSlug,
+          slug,
         },
         {
           new: true,

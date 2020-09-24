@@ -94,6 +94,45 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'products.update.attributesGroupNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Группа атрибутов не найдена.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attributes group not found.',
+      },
+    ],
+  },
+  {
+    key: 'products.update.attributeNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Атрибут не найден.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute not found.',
+      },
+    ],
+  },
+  {
+    key: 'products.update.attributeValueNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Значение атрибута не найдено.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Attribute value not found.',
+      },
+    ],
+  },
+  {
     key: 'products.update.success',
     message: [
       {

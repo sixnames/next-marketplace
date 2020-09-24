@@ -176,7 +176,9 @@ describe('Product', () => {
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
-    expect(createProductConnection.product.slug).toEqual(`wine_brancott_estate-tip_vina-heres`);
+    expect(createProductConnection.product.slug).toEqual(
+      `vino_brancott_estate_marlborough_sauvignon_blanc-tip_vina-heres`,
+    );
 
     // Should add product to connection
     const {

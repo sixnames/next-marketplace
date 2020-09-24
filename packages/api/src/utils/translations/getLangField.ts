@@ -1,12 +1,8 @@
 import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/config';
-
-export interface LanguageInterface {
-  key: string;
-  value: string;
-}
+import { LanguageType } from '../../entities/common';
 
 function getLangField(
-  languages: LanguageInterface[] | null | undefined,
+  languages: LanguageType[] | null | undefined,
   chosenLanguage: string,
 ): string {
   if (!languages) {

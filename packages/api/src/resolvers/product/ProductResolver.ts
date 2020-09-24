@@ -518,6 +518,7 @@ export class ProductResolver {
       const product = await ProductModel.findById(productId);
       const deleteProduct = await ProductModel.findById(deleteProductId);
       const connection = await ProductConnectionModel.findById(connectionId);
+      const minimumProductsCountForConnectionDelete = 1;
 
       if (!product || !deleteProduct || !connection) {
         return {
@@ -526,21 +527,33 @@ export class ProductResolver {
         };
       }
 
-      const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
-        connection.id,
-        {
-          $pull: {
-            productsIds: deleteProduct.id,
+      // Update or delete connection
+      if (connection.productsIds.length > minimumProductsCountForConnectionDelete) {
+        const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
+          connection.id,
+          {
+            $pull: {
+              productsIds: deleteProduct.id,
+            },
           },
-        },
-        { new: true },
-      );
+          { new: true },
+        );
 
-      if (!updatedConnection) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
-        };
+        if (!updatedConnection) {
+          return {
+            success: false,
+            message: await getApiMessage({ key: `products.update.error`, lang }),
+          };
+        }
+      } else {
+        const removedConnection = await ProductConnectionModel.deleteOne({ _id: connection.id });
+
+        if (!removedConnection.ok) {
+          return {
+            success: false,
+            message: await getApiMessage({ key: `products.update.error`, lang }),
+          };
+        }
       }
 
       // Create new slug for removed product from connection

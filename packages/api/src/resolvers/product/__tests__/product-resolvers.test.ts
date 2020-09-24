@@ -4,6 +4,7 @@ import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
 import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_VARIANT } from '@yagu/mocks';
+import { ProductConnectionModel } from '../../../entities/Product';
 
 describe('Product', () => {
   it('Should CRUD product.', async () => {
@@ -282,6 +283,45 @@ describe('Product', () => {
     expect(deleteProductFromConnection.success).toBeTruthy();
     expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
     expect(removedProductFromConnection.slug).toEqual('vino_campo_viejo_tempranillo_rioja_doc');
+
+    // Should delete connection if removed product is last in list
+    const {
+      data: { deleteProductFromConnection: deleteConnection },
+    } = await mutate<any>(
+      gql`
+        mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
+          deleteProductFromConnection(input: $input) {
+            success
+            message
+            product {
+              id
+              itemId
+              nameString
+              cardNameString
+              slug
+              descriptionString
+              rubrics
+              connections {
+                ...ConnectionFragment
+              }
+            }
+          }
+        }
+        ${connectionFragment}
+      `,
+      {
+        variables: {
+          input: {
+            connectionId: createdConnection.id,
+            productId: currentProduct.id,
+            deleteProductId: currentProduct.id,
+          },
+        },
+      },
+    );
+    const removedConnection = await ProductConnectionModel.findById(createdConnection.id);
+    expect(deleteConnection.success).toBeTruthy();
+    expect(removedConnection).toBeNull();
 
     // Should return paginated products.
     const {

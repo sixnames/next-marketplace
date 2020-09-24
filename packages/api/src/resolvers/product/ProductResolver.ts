@@ -383,6 +383,7 @@ export class ProductResolver {
       // Create new slug for product
       const { slug } = await createProductSlugWithConnections({
         product,
+        lang,
       });
 
       const updatedProduct = await ProductModel.findByIdAndUpdate(
@@ -451,6 +452,7 @@ export class ProductResolver {
         product: addProduct,
         attributeId: connection.attributeId,
         attributesGroupId: connection.attributesGroupId,
+        lang,
       });
 
       const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
@@ -473,6 +475,7 @@ export class ProductResolver {
       // Create new slug for added product
       const { slug } = await createProductSlugWithConnections({
         product: addProduct,
+        lang,
       });
 
       const updatedProduct = await ProductModel.findByIdAndUpdate(
@@ -559,6 +562,7 @@ export class ProductResolver {
       // Create new slug for removed product from connection
       const { slug } = await createProductSlugWithConnections({
         product: deleteProduct,
+        lang,
       });
 
       const updatedProduct = await ProductModel.findByIdAndUpdate(
@@ -711,31 +715,26 @@ export class ProductConnectionResolver {
   @FieldResolver((_returns) => [ProductConnectionItem])
   async products(
     @Root() connection: DocumentType<ProductConnection>,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<ProductConnectionItem[]> {
     const { attributeId, attributesGroupId } = connection;
     const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
-    return products.map((product) => {
-      const currentGroup = product.attributesGroups.find(({ node }) => {
-        return node.toString() === attributesGroupId.toString();
-      });
+    return Promise.all(
+      products.map(async (product) => {
+        const { attributeValue, optionName } = await getConnectionValuesFromProduct({
+          lang,
+          product,
+          attributeId,
+          attributesGroupId,
+        });
 
-      if (!currentGroup) {
-        throw Error('Attributes group not found on ProductConnection.products');
-      }
-
-      const currentAttribute = currentGroup.attributes.find(({ node }) => {
-        return node.toString() === attributeId.toString();
-      });
-
-      if (!currentAttribute) {
-        throw Error('Attribute not found on ProductConnection.products');
-      }
-
-      return {
-        node: product,
-        value: currentAttribute.value ? currentAttribute.value[0] : '',
-      };
-    });
+        return {
+          node: product,
+          value: attributeValue,
+          optionName,
+        };
+      }),
+    );
   }
 
   @FieldResolver((_returns) => Attribute)

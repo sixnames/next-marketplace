@@ -22,6 +22,7 @@ describe('Product', () => {
         productsIds
         products {
           value
+          optionName
           node {
             id
             nameString
@@ -217,7 +218,6 @@ describe('Product', () => {
         },
       },
     );
-
     const slugs = addProductToConnection.product.connections[0].products.map(
       ({ node }: any) => node.slug,
     );

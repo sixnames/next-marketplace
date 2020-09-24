@@ -596,6 +596,9 @@ type ProductConnection {
 type ProductConnectionItem {
   node: Product!
 
+  """Returns name of selected attribute value"""
+  optionName: String!
+
   """
   Returns first value only because this attribute has to be Select variant
   """

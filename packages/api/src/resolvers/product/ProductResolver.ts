@@ -773,9 +773,15 @@ export class ProductConnectionResolver {
   async products(
     @Root() connection: DocumentType<ProductConnection>,
     @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('activeOnly', () => Boolean, { description: 'Shows only active products.' })
+    activeOnly: boolean,
   ): Promise<ProductConnectionItem[]> {
     const { attributeId, attributesGroupId } = connection;
-    const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
+    const activeQuery = activeOnly ? { active: true } : {};
+    const products = await ProductModel.find({
+      _id: { $in: connection.productsIds },
+      ...activeQuery,
+    });
     return Promise.all(
       products.map(async (product) => {
         const { attributeValue, optionName } = await getConnectionValuesFromProduct({

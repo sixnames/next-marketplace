@@ -44,6 +44,24 @@ export class ProductAttributesGroup {
 }
 
 @ObjectType()
+export class ProductCardFeatureAttribute {
+  @Field(() => String)
+  nameString: string;
+
+  @Field(() => [String])
+  value: string[];
+}
+
+@ObjectType()
+export class ProductCardFeature {
+  @Field(() => AttributesGroup)
+  attributesGroup: AttributesGroup;
+
+  @Field(() => [ProductCardFeatureAttribute])
+  attributes: ProductCardFeatureAttribute[];
+}
+
+@ObjectType()
 @plugin(mongoosePaginate)
 @plugin(aggregatePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
@@ -114,6 +132,9 @@ export class Product extends TimeStamps {
 
   @Field(() => String)
   readonly mainImage: string;
+
+  @Field(() => [ProductCardFeature])
+  readonly cardFeatures: ProductCardFeature[];
 
   @Field()
   readonly createdAt: Date;

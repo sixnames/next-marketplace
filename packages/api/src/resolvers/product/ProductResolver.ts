@@ -13,6 +13,8 @@ import {
 import {
   Product,
   ProductAttributesGroup,
+  ProductCardFeature,
+  ProductCardFeatureAttribute,
   ProductConnection,
   ProductConnectionItem,
   ProductConnectionModel,
@@ -33,6 +35,7 @@ import {
   checkIsAllConnectionOptionsUsed,
   createProductSlugWithConnections,
   getConnectionValuesFromProduct,
+  getProductAttributeReadableValues,
 } from '../../utils/connectios';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
@@ -699,6 +702,60 @@ export class ProductResolver {
           $in: [product.id],
         },
       });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductCardFeature])
+  async cardFeatures(
+    @Root() product: DocumentType<Product>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<ProductCardFeature[]> {
+    try {
+      // Get ids of attributes used in connections
+      const connections = await ProductConnectionModel.find({
+        productsIds: {
+          $in: [product.id],
+        },
+      }).select({ attributeId: 1 });
+
+      const connectedAttributesIds = connections.map(({ attributeId }) => attributeId);
+
+      const features: ProductCardFeature[] = [];
+      for await (const productAttributesGroup of product.attributesGroups) {
+        const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
+        if (!attributesGroup) {
+          continue;
+        }
+
+        // Find all attributes values
+        const groupAttributes: ProductCardFeatureAttribute[] = [];
+        for await (const productAttribute of productAttributesGroup.attributes) {
+          // Exclude attributes used in connections
+          const attribute = await AttributeModel.findOne({
+            $and: [{ _id: productAttribute.node }, { _id: { $nin: connectedAttributesIds } }],
+          });
+          if (!attribute) {
+            continue;
+          }
+          groupAttributes.push({
+            nameString: getLangField(attribute.name, lang),
+            value: await getProductAttributeReadableValues({
+              attribute,
+              productAttributeValues: productAttribute.value,
+              lang,
+            }),
+          });
+        }
+
+        features.push({
+          attributesGroup,
+          attributes: groupAttributes,
+        });
+      }
+
+      return features;
     } catch (e) {
       return [];
     }

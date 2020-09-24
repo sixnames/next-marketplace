@@ -5,25 +5,26 @@ import { generateDefaultLangSlug } from './slug';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
 import { OptionModel } from '../entities/Option';
 import getLangField from './translations/getLangField';
+import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
 
 export interface GetSelectAttributeOptionsValueInterface {
   attribute: DocumentType<Attribute>;
   lang: string;
-  selectedOptions: string[];
+  productAttributeValues: string[];
 }
 
-export interface GetSelectAttributeOptionsValuePayloadInterface {
-  name: string;
-  slug: string;
-}
-
-export const getSelectAttributeOptionsName = async ({
+export const getProductAttributeReadableValues = async ({
   attribute,
-  selectedOptions,
+  productAttributeValues,
   lang,
-}: GetSelectAttributeOptionsValueInterface): Promise<
-  GetSelectAttributeOptionsValuePayloadInterface[]
-> => {
+}: GetSelectAttributeOptionsValueInterface): Promise<string[]> => {
+  if (
+    attribute.variant === ATTRIBUTE_VARIANT_STRING ||
+    attribute.variant === ATTRIBUTE_VARIANT_NUMBER
+  ) {
+    return productAttributeValues;
+  }
+
   const optionsGroup = await OptionsGroupModel.findById(attribute.options);
   if (!optionsGroup) {
     throw Error('Options group not found in getSelectAttributeOptionsValue');
@@ -31,13 +32,10 @@ export const getSelectAttributeOptionsName = async ({
 
   const options = await OptionModel.find({
     _id: { $in: optionsGroup.options },
-    slug: { $in: selectedOptions },
+    slug: { $in: productAttributeValues },
   });
 
-  return options.map((option) => ({
-    slug: option.slug,
-    name: getLangField(option.name, lang),
-  }));
+  return options.map((option) => getLangField(option.name, lang));
 };
 
 export interface GetConnectionValuesFromProductInterface {
@@ -94,16 +92,16 @@ export const getConnectionValuesFromProduct = async ({
     throw Error('Options group not found in checkIsAllConnectionOptionsUsed');
   }
 
-  const option = await getSelectAttributeOptionsName({
+  const optionsNames = await getProductAttributeReadableValues({
     attribute,
-    selectedOptions: [currentAttributeValue],
+    productAttributeValues: [currentAttributeValue],
     lang,
   });
 
   return {
     attributeSlug: attribute.slug,
     attributeValue: currentAttributeValue,
-    optionName: option[0].name,
+    optionName: optionsNames[0],
   };
 };
 

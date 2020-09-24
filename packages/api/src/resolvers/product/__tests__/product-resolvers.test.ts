@@ -153,13 +153,16 @@ describe('Product', () => {
                   value
                 }
               }
-              #              features {
-              #                attributesGroup
-              #                attributes {
-              #                  nameString
-              #                  value
-              #                }
-              #              }
+              cardFeatures {
+                attributesGroup {
+                  id
+                  nameString
+                }
+                attributes {
+                  nameString
+                  value
+                }
+              }
               connections {
                 ...ConnectionFragment
               }
@@ -182,10 +185,9 @@ describe('Product', () => {
     const {
       data: { createProductConnection },
     } = createConnectionResult;
-    //
     const createdConnection = createProductConnection.product.connections[0];
-    console.log(JSON.stringify(createdConnection, null, 2));
     expect(createProductConnection.success).toBeTruthy();
+    expect(createProductConnection.product.cardFeatures[0].attributes).toHaveLength(3);
     expect(createdConnection.productsIds).toHaveLength(1);
     expect(createProductConnection.product.slug).toEqual(
       `vino_brancott_estate_marlborough_sauvignon_blanc-tip_vina-heres`,

@@ -537,6 +537,7 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
+  cardFeatures: [ProductCardFeature!]!
   cardName: [LanguageType!]!
   cardNameString: String!
   connections: [ProductConnection!]!
@@ -582,6 +583,16 @@ input ProductAttributesGroupInput {
   attributes: [ProductAttributeInput!]!
   node: ID!
   showInCard: Boolean!
+}
+
+type ProductCardFeature {
+  attributes: [ProductCardFeatureAttribute!]!
+  attributesGroup: AttributesGroup!
+}
+
+type ProductCardFeatureAttribute {
+  nameString: String!
+  value: [String!]!
 }
 
 type ProductConnection {

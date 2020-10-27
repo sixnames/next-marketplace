@@ -263,8 +263,11 @@ export class ProductResolver {
         };
       }
 
-      // TODO generate slug with connections
-      const slug = generateDefaultLangSlug(values.cardName);
+      // Create new slug for product
+      const { slug } = await createProductSlugWithConnections({
+        product,
+        lang,
+      });
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
       const updatedProduct = await ProductModel.findOneAndUpdate(

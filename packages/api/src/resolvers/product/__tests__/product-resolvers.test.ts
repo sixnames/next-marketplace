@@ -231,8 +231,9 @@ describe('Product', () => {
     const slugs = addProductToConnection.product.connections[0].products.map(
       ({ node }: any) => node.slug,
     );
+
     const addedProductSlug = slugs.find(
-      (slug: string) => slug === 'vino_campo_viejo_tempranillo_rioja_doc-tip_vina-varmut',
+      (slug: string) => slug === 'vino_campo_vieja_tempranillo_rioja_doc-tip_vina-varmut',
     );
 
     expect(addProductToConnection.success).toBeTruthy();
@@ -292,7 +293,7 @@ describe('Product', () => {
     );
     expect(deleteProductFromConnection.success).toBeTruthy();
     expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
-    expect(removedProductFromConnection.slug).toEqual('vino_campo_viejo_tempranillo_rioja_doc');
+    expect(removedProductFromConnection.slug).toEqual('vino_campo_vieja_tempranillo_rioja_doc');
 
     // Should delete connection if removed product is last in list
     const {

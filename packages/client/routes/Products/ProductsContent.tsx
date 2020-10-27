@@ -1,11 +1,13 @@
 import React from 'react';
 import Table from '../../components/Table/Table';
-import useProductsListColumns, {
-  ProductsListItemInterface,
-} from '../../hooks/useProductsListColumns';
+import useProductsListColumns from '../../hooks/useProductsListColumns';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import Pager from '../../components/Pager/Pager';
-import { useDeleteProductMutation, useGetAllProductsQuery } from '../../generated/apolloComponents';
+import {
+  RubricProductFragment,
+  useDeleteProductMutation,
+  useGetAllProductsQuery,
+} from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
@@ -44,7 +46,7 @@ const ProductsContent: React.FC = () => {
     ],
   });
 
-  function deleteProductHandler(product: ProductsListItemInterface) {
+  function deleteProductHandler(product: RubricProductFragment) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
@@ -71,14 +73,19 @@ const ProductsContent: React.FC = () => {
     deleteHandler: deleteProductHandler,
   });
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAllProducts) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAllProducts) {
+    return <RequestError />;
+  }
 
   const { totalPages, docs } = data.getAllProducts;
 
   return (
     <DataLayoutContentFrame testId={'products-list'}>
-      <Table columns={columns} data={docs} testIdKey={'nameString'} />
+      <Table<RubricProductFragment> columns={columns} data={docs} testIdKey={'nameString'} />
       <Pager page={page} setPage={setPage} totalPages={totalPages} />
     </DataLayoutContentFrame>
   );

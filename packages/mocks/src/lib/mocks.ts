@@ -1913,14 +1913,14 @@ export const MOCK_PRODUCT_A = {
 
 export const MOCK_PRODUCT_B = {
   priority: 9,
-  slug: 'Wine_Campo_Viejо',
+  slug: 'Wine_Campo_Vieja',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Campo_Viejо' },
-    { key: SECONDARY_LANG, value: 'Wine_Campo_Viejо' },
+    { key: DEFAULT_LANG, value: 'Вино_Campo_Vieja' },
+    { key: SECONDARY_LANG, value: 'Wine_Campo_Vieja' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Campo Viejо Tempranillo Rioja DOC' },
-    { key: SECONDARY_LANG, value: 'Wine Campo Viejо Tempranillo Rioja DOC' },
+    { key: DEFAULT_LANG, value: 'Вино Campo Vieja Tempranillo Rioja DOC' },
+    { key: SECONDARY_LANG, value: 'Wine Campo Vieja Tempranillo Rioja DOC' },
   ],
   price: 200,
   description: [

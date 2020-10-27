@@ -20,13 +20,15 @@ import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
 import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/attributes';
+import { ParsedUrlQuery } from 'querystring';
 
 interface AttributesGroupsContentInterface {
-  query?: { [key: string]: any };
+  query?: ParsedUrlQuery;
 }
 
 const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ query = {} }) => {
   const { group } = query;
+  const groupId = `${group}`;
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -53,7 +55,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         confirm: () => {
           showLoading();
           return deleteAttributeFromGroupMutation({
-            variables: { input: { groupId: group, attributeId: id } },
+            variables: { input: { groupId, attributeId: id } },
           });
         },
       },
@@ -72,7 +74,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
           return updateAttributeInGroupMutation({
             variables: {
               input: {
-                groupId: group,
+                groupId,
                 attributeId,
                 ...input,
               },
@@ -85,7 +87,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
 
   const { data, loading, error } = useGetAttributesGroupQuery({
     skip: !group,
-    variables: { id: group },
+    variables: { id: groupId },
     fetchPolicy: 'network-only',
   });
 
@@ -93,8 +95,13 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     return <DataLayoutTitle>Выберите группу</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAttributesGroup) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAttributesGroup) {
+    return <RequestError />;
+  }
 
   const { getAttributesGroup } = data;
   const { nameString, attributes } = getAttributesGroup;

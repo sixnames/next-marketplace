@@ -139,28 +139,28 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     showInCatalogueFilter,
   }: AttributesColumnsInterface): TableColumn<RubricAttributeFragment>[] => [
     {
-      key: 'nameString',
-      title: 'Название',
+      accessor: 'nameString',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'variant',
-      title: 'Тип',
+      accessor: 'variant',
+      headTitle: 'Тип',
       render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
-      key: 'options',
-      title: 'Опции',
+      accessor: 'options',
+      headTitle: 'Опции',
       render: ({ cellData }) => cellData?.nameString || null,
     },
     {
-      key: 'metric',
-      title: 'Единица измерения',
+      accessor: 'metric',
+      headTitle: 'Единица измерения',
       render: ({ cellData }) => cellData?.nameString || null,
     },
     {
-      key: 'id',
-      title: 'Показывать в фильтре',
+      accessor: 'id',
+      headTitle: 'Показывать в фильтре',
       render: ({ cellData, dataItem }) => {
         const isDisabled =
           dataItem.variant === ATTRIBUTE_VARIANT_NUMBER ||

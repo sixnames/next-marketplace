@@ -111,14 +111,11 @@ const RubricVariantsContent: React.FC = () => {
 
   const columns: TableColumn<RubricVariantFragment>[] = [
     {
-      key: 'nameString',
-      title: 'Название',
+      accessor: 'nameString',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: '',
-      title: '',
-      textAlign: 'right',
       render: ({ dataItem }) => {
         return (
           <ContentItemControls

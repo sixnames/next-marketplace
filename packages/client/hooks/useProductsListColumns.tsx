@@ -38,13 +38,13 @@ const useProductsListColumns = ({
 }: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
   return [
     {
-      key: 'itemId',
-      title: 'Арт.',
+      accessor: 'itemId',
+      headTitle: 'Арт.',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'mainImage',
-      title: 'Фото',
+      accessor: 'mainImage',
+      headTitle: 'Фото',
       render: ({ cellData, dataItem }) => {
         return (
           <TableRowImage url={cellData} alt={dataItem.nameString} title={dataItem.nameString} />
@@ -52,23 +52,21 @@ const useProductsListColumns = ({
       },
     },
     {
-      key: 'nameString',
-      title: 'Название',
+      accessor: 'nameString',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'price',
-      title: 'Цена',
+      accessor: 'price',
+      headTitle: 'Цена',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'active',
-      title: 'Активен',
+      accessor: 'active',
+      headTitle: 'Активен',
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
-      key: '',
-      title: '',
       render: ({ dataItem }) => {
         return (
           <ContentItemControls

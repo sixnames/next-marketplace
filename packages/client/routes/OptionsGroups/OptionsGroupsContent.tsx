@@ -96,21 +96,19 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
 
   const columns: TableColumn<OptionInGroupFragment>[] = [
     {
-      key: 'nameString',
-      title: 'Название',
+      accessor: 'nameString',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'color',
-      title: 'Цвет',
+      accessor: 'color',
+      headTitle: 'Цвет',
       render: ({ cellData, dataItem }) => (
         <ColorPreview color={cellData} testId={dataItem.nameString} />
       ),
     },
     {
-      key: 'id',
-      title: '',
-      textAlign: 'right',
+      accessor: 'id',
       render: ({ cellData, dataItem }) => {
         const { nameString } = dataItem;
 

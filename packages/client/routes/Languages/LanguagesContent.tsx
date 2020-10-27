@@ -138,23 +138,23 @@ const LanguagesContent: React.FC = () => {
 
   const columns: TableColumn<LanguageFragment>[] = [
     {
-      key: 'name',
-      title: 'Название',
+      accessor: 'name',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'key',
-      title: 'Ключ',
+      accessor: 'key',
+      headTitle: 'Ключ',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'nativeName',
-      title: 'Нативное название',
+      accessor: 'nativeName',
+      headTitle: 'Нативное название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'isDefault',
-      title: 'Основной',
+      accessor: 'isDefault',
+      headTitle: 'Основной',
       render: ({ cellData, dataItem }) => (
         <Checkbox
           testId={dataItem.name}
@@ -166,7 +166,6 @@ const LanguagesContent: React.FC = () => {
       ),
     },
     {
-      key: '',
       render: ({ dataItem }) => {
         return (
           <ContentItemControls

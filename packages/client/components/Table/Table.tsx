@@ -11,17 +11,14 @@ export interface RenderArgs<T> {
 }
 
 export interface TableColumn<T> {
-  key?: string;
-  fix?: boolean;
-  style?: React.CSSProperties;
+  accessor?: keyof T;
+  cellStyle?: React.CSSProperties;
   colSpan?: number;
   sortBy?: string;
-  title?: any;
-  hidden?: boolean;
-  textAlign?: 'right' | 'left' | 'center';
+  headTitle?: any;
+  isHidden?: boolean;
   render?: (args: RenderArgs<T>) => any;
   hide?: (args: RenderArgs<T>) => boolean;
-  tHeadAlign?: 'flex-start' | 'flex-end';
 }
 
 type TableInterface<T> = {
@@ -29,13 +26,13 @@ type TableInterface<T> = {
   columns: TableColumn<T>[];
   footerData?: any[];
   footerColumns?: any[];
-  sortData?: (sortBy: string) => void;
+  sortHandler?: (sortBy: string) => void;
   onRowClick?: (dataItem: T) => void;
   className?: string;
   fixPosition?: number;
   emptyMessage?: string;
-  testIdKey?: string;
-  testId?: string;
+  testIdKey?: keyof T;
+  tableTestId?: string;
 };
 
 const Table = <T extends Record<string, any>>({
@@ -43,13 +40,13 @@ const Table = <T extends Record<string, any>>({
   footerData = [],
   columns = [],
   footerColumns = [],
-  sortData,
+  sortHandler,
   onRowClick,
   className,
   fixPosition = 0,
   emptyMessage = 'Нет данных',
   testIdKey = '',
-  testId,
+  tableTestId,
 }: TableInterface<T>) => {
   const fixedStyle: React.CSSProperties = useMemo(() => {
     return {
@@ -59,12 +56,11 @@ const Table = <T extends Record<string, any>>({
     };
   }, [fixPosition]);
 
-  const tHead = columns.map(({ title, sortBy, fix, style, hidden }) => ({
-    title,
+  const tHead = columns.map(({ headTitle, sortBy, cellStyle, isHidden }) => ({
+    headTitle: headTitle,
     sortBy,
-    fix,
-    style,
-    hidden,
+    cellStyle,
+    isHidden: isHidden,
   }));
 
   const renderColumns = useCallback(
@@ -83,15 +79,20 @@ const Table = <T extends Record<string, any>>({
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
             {columns.map((cell, cellIndex) => {
-              const { key = '', render, style, colSpan, hidden } = cell;
-              const cellData = key ? get(dataItem, key) : null;
+              const { accessor, render, cellStyle, colSpan, isHidden } = cell;
+              const cellData = accessor ? get(dataItem, accessor) : null;
 
-              if (hidden) {
+              if (isHidden) {
                 return null;
               }
 
               return (
-                <td colSpan={colSpan} key={key + cellIndex} className={classes.cell} style={style}>
+                <td
+                  colSpan={colSpan}
+                  key={`${accessor}${cellIndex}`}
+                  className={classes.cell}
+                  style={cellStyle}
+                >
                   {render && render({ cellData, dataItem, cellIndex, rowIndex })}
                 </td>
               );
@@ -120,22 +121,22 @@ const Table = <T extends Record<string, any>>({
   }
 
   return (
-    <table className={className || ''} data-cy={testId}>
+    <table className={className || ''} data-cy={tableTestId}>
       <thead>
         <tr className={classes.row}>
-          {tHead.map(({ title = '', sortBy, style, hidden }, i) => {
-            if (hidden) {
+          {tHead.map(({ headTitle, sortBy, cellStyle, isHidden }, i) => {
+            if (isHidden) {
               return null;
             }
 
             return (
               <th
                 className={classes.headCell}
-                onClick={() => !!sortData && !!sortBy && sortData(sortBy)}
-                key={title + i}
+                onClick={() => !!sortHandler && !!sortBy && sortHandler(sortBy)}
+                key={`${headTitle}${i}`}
               >
-                <div style={{ ...style, ...fixedStyle }} className={classes.fixedCell}>
-                  {!!title && title}
+                <div style={{ ...cellStyle, ...fixedStyle }} className={classes.fixedCell}>
+                  {headTitle}
                 </div>
               </th>
             );

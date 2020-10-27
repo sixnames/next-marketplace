@@ -106,29 +106,28 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
 
   const columns: TableColumn<AttributeInGroupFragment>[] = [
     {
-      key: 'nameString',
-      title: 'Название',
+      accessor: 'nameString',
+      headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
     {
-      key: 'variant',
-      title: 'Тип',
+      accessor: 'variant',
+      headTitle: 'Тип',
       render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
-      key: 'options',
-      title: 'Опции',
+      accessor: 'options',
+      headTitle: 'Опции',
       render: ({ cellData }) => cellData?.nameString || null,
     },
     {
-      key: 'metric',
-      title: 'Единица измерения',
+      accessor: 'metric',
+      headTitle: 'Единица измерения',
       render: ({ cellData }) => cellData?.nameString || null,
     },
     {
-      key: 'id',
-      title: '',
-      textAlign: 'right',
+      accessor: 'id',
+      headTitle: '',
       render: ({ cellData, dataItem }) => {
         const { nameString } = dataItem;
         return (

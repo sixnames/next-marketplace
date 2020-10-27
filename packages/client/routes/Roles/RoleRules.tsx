@@ -132,13 +132,13 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
 
   const columns: TableColumn<RoleRuleFragment>[] = [
     {
-      key: 'nameString',
-      title: 'Сущность',
+      accessor: 'nameString',
+      headTitle: 'Сущность',
       render: (nameString) => nameString,
     },
     {
-      key: 'operations',
-      title: 'Создание',
+      accessor: 'operations',
+      headTitle: 'Создание',
       render: ({ cellData, dataItem }) =>
         renderOperation({
           operations: cellData,
@@ -147,8 +147,8 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         }),
     },
     {
-      key: 'operations',
-      title: 'Чтение',
+      accessor: 'operations',
+      headTitle: 'Чтение',
       render: ({ cellData, dataItem }) =>
         renderOperation({
           operations: cellData,
@@ -158,8 +158,8 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         }),
     },
     {
-      key: 'operations',
-      title: 'Изменение',
+      accessor: 'operations',
+      headTitle: 'Изменение',
       render: ({ cellData, dataItem }) =>
         renderOperation({
           operations: cellData,
@@ -169,8 +169,8 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         }),
     },
     {
-      key: 'operations',
-      title: 'Удаление',
+      accessor: 'operations',
+      headTitle: 'Удаление',
       render: ({ cellData, dataItem }) =>
         renderOperation({
           operations: cellData,
@@ -179,8 +179,8 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
         }),
     },
     {
-      key: 'restrictedFields',
-      title: 'Запрещённые поля',
+      accessor: 'restrictedFields',
+      headTitle: 'Запрещённые поля',
       render: ({ cellData, dataItem }) => {
         const { entity, id: ruleId } = dataItem;
         const notEmpty = cellData.length > 0;
@@ -207,7 +207,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     },
   ];
 
-  return <Table<RoleRuleFragment> columns={columns} data={rules} testId={'role-rules'} />;
+  return <Table<RoleRuleFragment> columns={columns} data={rules} tableTestId={'role-rules'} />;
 };
 
 export default RoleRules;

@@ -8,6 +8,7 @@ import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
 import {
+  RubricProductFragment,
   useDeleteProductMutation,
   useGetNonRubricProductsQuery,
 } from '../../generated/apolloComponents';
@@ -81,7 +82,7 @@ const NoRubricProducts: React.FC = () => {
     <div>
       <DataLayoutTitle>Товары вне рубрик</DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table
+        <Table<RubricProductFragment>
           data={docs}
           columns={columns}
           emptyMessage={'Список пуст'}

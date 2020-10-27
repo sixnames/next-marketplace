@@ -140,7 +140,12 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
         />
       }
     >
-      <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />
+      <Table<RubricProductFragment>
+        data={docs}
+        columns={columns}
+        emptyMessage={'Список пуст'}
+        testIdKey={'name'}
+      />
     </Accordion>
   );
 };
@@ -185,7 +190,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   } = data;
 
   return (
-    <Table
+    <Table<RubricProductFragment>
       data={docs}
       columns={columns}
       emptyMessage={`По запросу "${search}" товаров не найдено`}

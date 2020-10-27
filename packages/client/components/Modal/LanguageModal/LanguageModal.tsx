@@ -5,7 +5,7 @@ import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
 import {
   CreateLanguageInput,
-  Language,
+  LanguageFragment,
   UpdateLanguageInput,
   useGetIsoLanguagesListQuery,
 } from '../../../generated/apolloComponents';
@@ -21,7 +21,7 @@ export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'id'>;
 
 export interface LanguageModalInterface {
   confirm: (values: CreateLanguageInput | UpdateLanguageModalInput) => void;
-  language?: Language;
+  language?: LanguageFragment;
   testId: string;
 }
 

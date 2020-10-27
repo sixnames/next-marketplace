@@ -2446,6 +2446,11 @@ export type GetAllConfigsQuery = (
   )> }
 );
 
+export type LanguageFragment = (
+  { __typename?: 'Language' }
+  & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+);
+
 export type GetAllLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2453,8 +2458,17 @@ export type GetAllLanguagesQuery = (
   { __typename?: 'Query' }
   & { getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+    & LanguageFragment
   )>> }
+);
+
+export type MessageFragment = (
+  { __typename?: 'Message' }
+  & Pick<Message, 'key'>
+  & { message: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )> }
 );
 
 export type GetMessagesByKeysQueryVariables = Exact<{
@@ -2466,11 +2480,7 @@ export type GetMessagesByKeysQuery = (
   { __typename?: 'Query' }
   & { getMessagesByKeys: Array<(
     { __typename?: 'Message' }
-    & Pick<Message, 'key'>
-    & { message: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & MessageFragment
   )> }
 );
 
@@ -2481,11 +2491,7 @@ export type GetValidationMessagesQuery = (
   { __typename?: 'Query' }
   & { getValidationMessages: Array<(
     { __typename?: 'Message' }
-    & Pick<Message, 'key'>
-    & { message: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & MessageFragment
   )> }
 );
 
@@ -3124,6 +3130,24 @@ export const SiteConfigFragmentDoc = gql`
       key
       value
     }
+  }
+}
+    `;
+export const LanguageFragmentDoc = gql`
+    fragment Language on Language {
+  id
+  name
+  key
+  isDefault
+  nativeName
+}
+    `;
+export const MessageFragmentDoc = gql`
+    fragment Message on Message {
+  key
+  message {
+    key
+    value
   }
 }
     `;
@@ -4876,14 +4900,10 @@ export type GetAllConfigsQueryResult = Apollo.QueryResult<GetAllConfigsQuery, Ge
 export const GetAllLanguagesDocument = gql`
     query GetAllLanguages {
   getAllLanguages {
-    id
-    name
-    key
-    isDefault
-    nativeName
+    ...Language
   }
 }
-    `;
+    ${LanguageFragmentDoc}`;
 
 /**
  * __useGetAllLanguagesQuery__
@@ -4912,14 +4932,10 @@ export type GetAllLanguagesQueryResult = Apollo.QueryResult<GetAllLanguagesQuery
 export const GetMessagesByKeysDocument = gql`
     query GetMessagesByKeys($keys: [String!]!) {
   getMessagesByKeys(keys: $keys) {
-    key
-    message {
-      key
-      value
-    }
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 /**
  * __useGetMessagesByKeysQuery__
@@ -4949,14 +4965,10 @@ export type GetMessagesByKeysQueryResult = Apollo.QueryResult<GetMessagesByKeysQ
 export const GetValidationMessagesDocument = gql`
     query GetValidationMessages {
   getValidationMessages {
-    key
-    message {
-      key
-      value
-    }
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 /**
  * __useGetValidationMessagesQuery__

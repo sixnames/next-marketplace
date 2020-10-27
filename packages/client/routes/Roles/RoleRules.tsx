@@ -10,7 +10,7 @@ import {
 } from '@yagu/config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import {
-  RoleRule,
+  RoleRuleFragment,
   useSetRoleOperationCustomFilterMutation,
   useSetRoleOperationPermissionMutation,
 } from '../../generated/apolloComponents';
@@ -94,7 +94,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
                   allow: !allow,
                 },
               },
-            });
+            }).catch((e) => console.log(e));
           }}
         />
         {withCustomFilter && (
@@ -117,8 +117,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
                           ...values,
                         },
                       },
-                    });
-                    console.log(values);
+                    }).catch((e) => console.log(e));
                   },
                 },
               });
@@ -131,7 +130,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     );
   };
 
-  const columns: TableColumn[] = [
+  const columns: TableColumn<RoleRuleFragment>[] = [
     {
       key: 'nameString',
       title: 'Сущность',
@@ -140,20 +139,20 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       key: 'operations',
       title: 'Создание',
-      render: (operations, { entity }: RoleRule) =>
+      render: ({ cellData, dataItem }) =>
         renderOperation({
-          operations,
-          entity,
+          operations: cellData,
+          entity: dataItem.entity,
           currentOperationType: OPERATION_TYPE_CREATE,
         }),
     },
     {
       key: 'operations',
       title: 'Чтение',
-      render: (operations, { entity }: RoleRule) =>
+      render: ({ cellData, dataItem }) =>
         renderOperation({
-          operations,
-          entity,
+          operations: cellData,
+          entity: dataItem.entity,
           currentOperationType: OPERATION_TYPE_READ,
           withCustomFilter: true,
         }),
@@ -161,10 +160,10 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       key: 'operations',
       title: 'Изменение',
-      render: (operations, { entity }: RoleRule) =>
+      render: ({ cellData, dataItem }) =>
         renderOperation({
-          operations,
-          entity,
+          operations: cellData,
+          entity: dataItem.entity,
           currentOperationType: OPERATION_TYPE_UPDATE,
           withCustomFilter: true,
         }),
@@ -172,14 +171,19 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       key: 'operations',
       title: 'Удаление',
-      render: (operations, { entity }: RoleRule) =>
-        renderOperation({ operations, entity, currentOperationType: OPERATION_TYPE_DELETE }),
+      render: ({ cellData, dataItem }) =>
+        renderOperation({
+          operations: cellData,
+          entity: dataItem.entity,
+          currentOperationType: OPERATION_TYPE_DELETE,
+        }),
     },
     {
       key: 'restrictedFields',
       title: 'Запрещённые поля',
-      render: (restrictedFields: string[], { entity, id: ruleId }: RoleRule) => {
-        const notEmpty = restrictedFields.length > 0;
+      render: ({ cellData, dataItem }) => {
+        const { entity, id: ruleId } = dataItem;
+        const notEmpty = cellData.length > 0;
         return (
           <Button
             size={'small'}
@@ -203,7 +207,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     },
   ];
 
-  return <Table columns={columns} data={rules} testId={'role-rules'} />;
+  return <Table<RoleRuleFragment> columns={columns} data={rules} testId={'role-rules'} />;
 };
 
 export default RoleRules;

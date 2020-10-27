@@ -2557,6 +2557,27 @@ export type GetAllRolesQuery = (
   )> }
 );
 
+export type RoleRuleFragment = (
+  { __typename?: 'RoleRule' }
+  & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
+  & { operations: Array<(
+    { __typename?: 'RoleRuleOperation' }
+    & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
+  )> }
+);
+
+export type RoleFragment = (
+  { __typename?: 'Role' }
+  & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, rules: Array<(
+    { __typename?: 'RoleRule' }
+    & RoleRuleFragment
+  )> }
+);
+
 export type GetRoleQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2566,18 +2587,7 @@ export type GetRoleQuery = (
   { __typename?: 'Query' }
   & { getRole: (
     { __typename?: 'Role' }
-    & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )>, rules: Array<(
-      { __typename?: 'RoleRule' }
-      & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
-      & { operations: Array<(
-        { __typename?: 'RoleRuleOperation' }
-        & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
-      )> }
-    )> }
+    & RoleFragment
   ) }
 );
 
@@ -2591,6 +2601,15 @@ export type GetEntityFieldsQuery = (
   & Pick<Query, 'getEntityFields'>
 );
 
+export type AppNavItemFragment = (
+  { __typename?: 'NavItem' }
+  & Pick<NavItem, 'id' | 'nameString' | 'path'>
+  & { children?: Maybe<Array<(
+    { __typename?: 'NavItem' }
+    & Pick<NavItem, 'id' | 'nameString' | 'path'>
+  )>> }
+);
+
 export type GetAllAppNavItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2598,11 +2617,7 @@ export type GetAllAppNavItemsQuery = (
   { __typename?: 'Query' }
   & { getAllAppNavItems: Array<(
     { __typename?: 'NavItem' }
-    & Pick<NavItem, 'id' | 'nameString' | 'path'>
-    & { children?: Maybe<Array<(
-      { __typename?: 'NavItem' }
-      & Pick<NavItem, 'id' | 'nameString' | 'path'>
-    )>> }
+    & AppNavItemFragment
   )> }
 );
 
@@ -3172,6 +3187,49 @@ export const OptionInGroupFragmentDoc = gql`
       key
       value
     }
+  }
+}
+    `;
+export const RoleRuleFragmentDoc = gql`
+    fragment RoleRule on RoleRule {
+  id
+  entity
+  nameString
+  nameString
+  restrictedFields
+  operations {
+    id
+    allow
+    customFilter
+    operationType
+  }
+}
+    `;
+export const RoleFragmentDoc = gql`
+    fragment Role on Role {
+  id
+  nameString
+  allowedAppNavigation
+  description
+  isStuff
+  name {
+    key
+    value
+  }
+  rules {
+    ...RoleRule
+  }
+}
+    ${RoleRuleFragmentDoc}`;
+export const AppNavItemFragmentDoc = gql`
+    fragment AppNavItem on NavItem {
+  id
+  nameString
+  path
+  children {
+    id
+    nameString
+    path
   }
 }
     `;
@@ -5131,31 +5189,10 @@ export type GetAllRolesQueryResult = Apollo.QueryResult<GetAllRolesQuery, GetAll
 export const GetRoleDocument = gql`
     query GetRole($id: ID!) {
   getRole(id: $id) {
-    id
-    nameString
-    allowedAppNavigation
-    description
-    isStuff
-    name {
-      key
-      value
-    }
-    rules {
-      id
-      entity
-      nameString
-      nameString
-      restrictedFields
-      operations {
-        id
-        allow
-        customFilter
-        operationType
-      }
-    }
+    ...Role
   }
 }
-    `;
+    ${RoleFragmentDoc}`;
 
 /**
  * __useGetRoleQuery__
@@ -5216,17 +5253,10 @@ export type GetEntityFieldsQueryResult = Apollo.QueryResult<GetEntityFieldsQuery
 export const GetAllAppNavItemsDocument = gql`
     query GetAllAppNavItems {
   getAllAppNavItems {
-    id
-    nameString
-    path
-    children {
-      id
-      nameString
-      path
-    }
+    ...AppNavItem
   }
 }
-    `;
+    ${AppNavItemFragmentDoc}`;
 
 /**
  * __useGetAllAppNavItemsQuery__

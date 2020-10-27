@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
 import {
-  Attribute,
-  Metric,
-  OptionsGroup,
+  AttributeInGroupFragment,
   UpdateAttributeInGroupInput,
   useDeleteAttributeFromGroupMutation,
   useGetAttributesGroupQuery,
@@ -13,9 +11,9 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import AttributesGroupControls from './AttributesGroupControls';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
-import Table from '../../components/Table/Table';
+import Table, { TableColumn } from '../../components/Table/Table';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
-import { getAttributeVariant } from '../../utils/locales';
+import { getAttributeVariantName } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
@@ -62,7 +60,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     });
   }
 
-  function updateAttributeInGroupHandler(attribute: Attribute) {
+  function updateAttributeInGroupHandler(attribute: AttributeInGroupFragment) {
     const { id: attributeId } = attribute;
 
     showModal<AddAttributeToGroupModalInterface>({
@@ -106,40 +104,40 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
   const { getAttributesGroup } = data;
   const { nameString, attributes } = getAttributesGroup;
 
-  const columns = [
+  const columns: TableColumn<AttributeInGroupFragment>[] = [
     {
       key: 'nameString',
       title: 'Название',
-      render: (name: string) => name,
+      render: ({ cellData }) => cellData,
     },
     {
       key: 'variant',
       title: 'Тип',
-      render: (variant: string) => getAttributeVariant(variant),
+      render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
       key: 'options',
       title: 'Опции',
-      render: (options: OptionsGroup) => (options ? options.nameString : null),
+      render: ({ cellData }) => cellData?.nameString || null,
     },
     {
       key: 'metric',
       title: 'Единица измерения',
-      render: (metric: Metric) => (metric ? metric.nameString : null),
+      render: ({ cellData }) => cellData?.nameString || null,
     },
     {
       key: 'id',
       title: '',
       textAlign: 'right',
-      render: (id: string, attribute: Attribute) => {
-        const { nameString } = attribute;
+      render: ({ cellData, dataItem }) => {
+        const { nameString } = dataItem;
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать атрибут'}
-            updateHandler={() => updateAttributeInGroupHandler(attribute)}
+            updateHandler={() => updateAttributeInGroupHandler(dataItem)}
             deleteTitle={'Удалить атрибут'}
-            deleteHandler={() => deleteAttributeFromGroupHandler(id, nameString)}
+            deleteHandler={() => deleteAttributeFromGroupHandler(cellData, nameString)}
             testId={`${nameString}-attribute`}
           />
         );
@@ -156,7 +154,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
         {nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table
+        <Table<AttributeInGroupFragment>
           data={attributes}
           columns={columns}
           emptyMessage={'В группе нет атрибутов'}

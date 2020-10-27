@@ -21,7 +21,7 @@ import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../confi
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import Accordion from '../../components/Accordion/Accordion';
-import { getAttributeVariant } from '../../utils/locales';
+import { getAttributeVariantName } from '../../utils/locales';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricAttributes.module.css';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/rubrics';
@@ -146,7 +146,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     {
       key: 'variant',
       title: 'Тип',
-      render: (variant: string) => getAttributeVariant(variant),
+      render: (variant: string) => getAttributeVariantName(variant),
     },
     {
       key: 'options',

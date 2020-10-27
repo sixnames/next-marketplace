@@ -3,33 +3,43 @@ import { get } from 'lodash';
 import RequestError from '../RequestError/RequestError';
 import classes from './Table.module.css';
 
-export interface TableColumn {
-  key?: string;
-  fix?: boolean;
-  style?: any;
-  colSpan?: number;
-  render?: (cellData: any, dataItem: any, index: number) => any;
-  sortBy?: string;
-  title?: string;
-  hidden?: boolean;
+export interface RenderArgs<T> {
+  cellData: any;
+  dataItem: T;
+  cellIndex: number;
+  rowIndex: number;
 }
 
-interface TableInterface {
-  data?: any[] | null;
-  columns: TableColumn[];
+export interface TableColumn<T> {
+  key?: string;
+  fix?: boolean;
+  style?: React.CSSProperties;
+  colSpan?: number;
+  sortBy?: string;
+  title?: any;
+  hidden?: boolean;
+  textAlign?: 'right' | 'left' | 'center';
+  render?: (args: RenderArgs<T>) => any;
+  hide?: (args: RenderArgs<T>) => boolean;
+  tHeadAlign?: 'flex-start' | 'flex-end';
+}
+
+type TableInterface<T> = {
+  data?: T[] | null;
+  columns: TableColumn<T>[];
   footerData?: any[];
   footerColumns?: any[];
   sortData?: (sortBy: string) => void;
-  onRowClick?: (dataItem: any) => void;
+  onRowClick?: (dataItem: T) => void;
   className?: string;
-  fixPosition?: string;
+  fixPosition?: number;
   emptyMessage?: string;
   testIdKey?: string;
   testId?: string;
-}
+};
 
-const Table: React.FC<TableInterface> = ({
-  data = [],
+const Table = <T extends Record<string, any>>({
+  data,
   footerData = [],
   columns = [],
   footerColumns = [],
@@ -40,12 +50,14 @@ const Table: React.FC<TableInterface> = ({
   emptyMessage = 'Нет данных',
   testIdKey = '',
   testId,
-}) => {
-  const fixedStyle = {
-    transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
-    backgroundColor: fixPosition ? 'var(--gray)' : null,
-    color: fixPosition ? 'white' : null,
-  };
+}: TableInterface<T>) => {
+  const fixedStyle: React.CSSProperties = useMemo(() => {
+    return {
+      transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
+      backgroundColor: fixPosition ? 'var(--gray)' : undefined,
+      color: fixPosition ? 'white' : undefined,
+    };
+  }, [fixPosition]);
 
   const tHead = columns.map(({ title, sortBy, fix, style, hidden }) => ({
     title,
@@ -56,11 +68,11 @@ const Table: React.FC<TableInterface> = ({
   }));
 
   const renderColumns = useCallback(
-    (columns, data) => {
-      return data.map((dataItem: any, i: number) => {
+    (columns: TableColumn<T>[], data: T[]) => {
+      return data.map((dataItem, rowIndex: number) => {
         const { hidden, id, isWarning = false } = dataItem;
         const testId = dataItem[testIdKey];
-        const key = id ? id : i;
+        const key = id || rowIndex;
         if (hidden) return null;
 
         return (
@@ -70,7 +82,7 @@ const Table: React.FC<TableInterface> = ({
             data-cy={testId}
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
-            {columns.map((cell: TableColumn, cellIndex: number) => {
+            {columns.map((cell, cellIndex) => {
               const { key = '', render, style, colSpan, hidden } = cell;
               const cellData = key ? get(dataItem, key) : null;
 
@@ -79,15 +91,8 @@ const Table: React.FC<TableInterface> = ({
               }
 
               return (
-                <td
-                  colSpan={colSpan}
-                  key={key + cellIndex}
-                  className={classes.cell}
-                  style={{
-                    ...style,
-                  }}
-                >
-                  {render && render(cellData, dataItem, cellIndex)}
+                <td colSpan={colSpan} key={key + cellIndex} className={classes.cell} style={style}>
+                  {render && render({ cellData, dataItem, cellIndex, rowIndex })}
                 </td>
               );
             })}
@@ -95,10 +100,14 @@ const Table: React.FC<TableInterface> = ({
         );
       });
     },
+    // eslint-disable-next-line
     [onRowClick, testIdKey],
   );
 
   const renderTableBody = useMemo(() => {
+    if (!data) {
+      return null;
+    }
     return renderColumns(columns, data);
   }, [data, columns, renderColumns]);
 

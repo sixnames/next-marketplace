@@ -481,10 +481,12 @@ export type Product = {
   assets: Array<AssetType>;
   price: Scalars['Int'];
   active: Scalars['Boolean'];
+  connections: Array<ProductConnection>;
   nameString: Scalars['String'];
   cardNameString: Scalars['String'];
   descriptionString: Scalars['String'];
   mainImage: Scalars['String'];
+  cardFeatures: Array<ProductCardFeature>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
 };
@@ -523,6 +525,42 @@ export type AssetType = {
   __typename?: 'AssetType';
   url: Scalars['String'];
   index: Scalars['Int'];
+};
+
+export type ProductConnection = {
+  __typename?: 'ProductConnection';
+  id: Scalars['ID'];
+  attributeId: Scalars['String'];
+  attributesGroupId: Scalars['String'];
+  productsIds: Array<Scalars['String']>;
+  attribute: Attribute;
+  products: Array<ProductConnectionItem>;
+};
+
+
+export type ProductConnectionProductsArgs = {
+  activeOnly?: Maybe<Scalars['Boolean']>;
+};
+
+export type ProductConnectionItem = {
+  __typename?: 'ProductConnectionItem';
+  node: Product;
+  /** Returns first value only because this attribute has to be Select variant */
+  value: Scalars['String'];
+  /** Returns name of selected attribute value */
+  optionName: Scalars['String'];
+};
+
+export type ProductCardFeature = {
+  __typename?: 'ProductCardFeature';
+  attributesGroup: AttributesGroup;
+  attributes: Array<ProductCardFeatureAttribute>;
+};
+
+export type ProductCardFeatureAttribute = {
+  __typename?: 'ProductCardFeatureAttribute';
+  nameString: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 export type PaginatedProductsResponse = {
@@ -783,6 +821,9 @@ export type Mutation = {
   createProduct: ProductPayloadType;
   updateProduct: ProductPayloadType;
   deleteProduct: ProductPayloadType;
+  createProductConnection: ProductPayloadType;
+  addProductToConnection: ProductPayloadType;
+  deleteProductFromConnection: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -934,6 +975,21 @@ export type MutationUpdateProductArgs = {
 
 export type MutationDeleteProductArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationCreateProductConnectionArgs = {
+  input: CreateProductConnectionInput;
+};
+
+
+export type MutationAddProductToConnectionArgs = {
+  input: AddProductToConnectionInput;
+};
+
+
+export type MutationDeleteProductFromConnectionArgs = {
+  input: DeleteProductFromConnectionInput;
 };
 
 
@@ -1290,6 +1346,24 @@ export type UpdateProductInput = {
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
+};
+
+export type CreateProductConnectionInput = {
+  productId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+};
+
+export type AddProductToConnectionInput = {
+  connectionId: Scalars['ID'];
+  productId: Scalars['ID'];
+  addProductId: Scalars['ID'];
+};
+
+export type DeleteProductFromConnectionInput = {
+  connectionId: Scalars['ID'];
+  productId: Scalars['ID'];
+  deleteProductId: Scalars['ID'];
 };
 
 export type AttributesGroupPayloadType = {
@@ -2213,6 +2287,24 @@ export type GetAllAttributesGroupsQuery = (
   )> }
 );
 
+export type AttributeInGroupFragment = (
+  { __typename?: 'Attribute' }
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, positioningInTitle?: Maybe<Array<(
+    { __typename?: 'AttributePositioningInTitle' }
+    & Pick<AttributePositioningInTitle, 'key' | 'value'>
+  )>>, options?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+  )>, metric?: Maybe<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
+  )> }
+);
+
 export type GetAttributesGroupQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2228,20 +2320,7 @@ export type GetAttributesGroupQuery = (
       & Pick<LanguageType, 'key' | 'value'>
     )>, attributes: Array<(
       { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, positioningInTitle?: Maybe<Array<(
-        { __typename?: 'AttributePositioningInTitle' }
-        & Pick<AttributePositioningInTitle, 'key' | 'value'>
-      )>>, options?: Maybe<(
-        { __typename?: 'OptionsGroup' }
-        & Pick<OptionsGroup, 'id' | 'nameString'>
-      )>, metric?: Maybe<(
-        { __typename?: 'Metric' }
-        & Pick<Metric, 'id' | 'nameString'>
-      )> }
+      & AttributeInGroupFragment
     )> }
   )> }
 );
@@ -2960,6 +3039,29 @@ export const ProductFragmentFragmentDoc = gql`
       }
       value
     }
+  }
+}
+    `;
+export const AttributeInGroupFragmentDoc = gql`
+    fragment AttributeInGroup on Attribute {
+  id
+  name {
+    key
+    value
+  }
+  nameString
+  variant
+  positioningInTitle {
+    key
+    value
+  }
+  options {
+    id
+    nameString
+  }
+  metric {
+    id
+    nameString
   }
 }
     `;
@@ -4556,29 +4658,11 @@ export const GetAttributesGroupDocument = gql`
     }
     nameString
     attributes {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      variant
-      positioningInTitle {
-        key
-        value
-      }
-      options {
-        id
-        nameString
-      }
-      metric {
-        id
-        nameString
-      }
+      ...AttributeInGroup
     }
   }
 }
-    `;
+    ${AttributeInGroupFragmentDoc}`;
 
 /**
  * __useGetAttributesGroupQuery__

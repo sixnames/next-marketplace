@@ -2,9 +2,7 @@ import React from 'react';
 import {
   AddAttributesGroupToRubricInput,
   GetRubricQuery,
-  Metric,
-  OptionsGroup,
-  RubricAttributesGroup,
+  RubricAttributeFragment,
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useGetRubricAttributesQuery,
@@ -15,7 +13,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
-import Table from '../../components/Table/Table';
+import Table, { TableColumn } from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
@@ -26,7 +24,7 @@ import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricAttributes.module.css';
 import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/rubrics';
 
-interface AttributesGroupInterface {
+interface DeleteAttributesGroupInterface {
   id: string;
   nameString: string;
 }
@@ -41,7 +39,6 @@ interface AttributesColumnsInterface {
 }
 
 export type AddAttributesGroupToRubricValues = Omit<AddAttributesGroupToRubricInput, 'rubricId'>;
-type RubricAttribute = RubricAttributesGroup['node']['attributes'][0];
 
 const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
@@ -95,7 +92,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     getRubric: { attributesGroups = [] },
   } = data;
 
-  function deleteAttributesGroupHandler(attributesGroup: AttributesGroupInterface) {
+  function deleteAttributesGroupHandler(attributesGroup: DeleteAttributesGroupInterface) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
@@ -137,51 +134,55 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  const columns = ({ groupId, showInCatalogueFilter }: AttributesColumnsInterface) => [
+  const columns = ({
+    groupId,
+    showInCatalogueFilter,
+  }: AttributesColumnsInterface): TableColumn<RubricAttributeFragment>[] => [
     {
       key: 'nameString',
       title: 'Название',
-      render: (name: string) => name,
+      render: ({ cellData }) => cellData,
     },
     {
       key: 'variant',
       title: 'Тип',
-      render: (variant: string) => getAttributeVariantName(variant),
+      render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
       key: 'options',
       title: 'Опции',
-      render: (options: OptionsGroup) => (options ? options.nameString : null),
+      render: ({ cellData }) => cellData?.nameString || null,
     },
     {
       key: 'metric',
       title: 'Единица измерения',
-      render: (metric: Metric) => (metric ? metric.nameString : null),
+      render: ({ cellData }) => cellData?.nameString || null,
     },
     {
       key: 'id',
       title: 'Показывать в фильтре',
-      render: (id: string, { nameString, variant }: RubricAttribute) => {
+      render: ({ cellData, dataItem }) => {
         const isDisabled =
-          variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING;
+          dataItem.variant === ATTRIBUTE_VARIANT_NUMBER ||
+          dataItem.variant === ATTRIBUTE_VARIANT_STRING;
         return (
           <Checkbox
-            testId={`${nameString}`}
+            testId={`${dataItem.nameString}`}
             disabled={isDisabled}
-            checked={showInCatalogueFilter.includes(id)}
-            value={id}
+            checked={showInCatalogueFilter.includes(cellData)}
+            value={cellData}
             name={'showInCatalogueFilter'}
             onChange={() => {
               showLoading();
               updateAttributesGroupInRubricMutation({
                 variables: {
                   input: {
-                    attributeId: id,
+                    attributeId: cellData,
                     rubricId: rubric.id,
                     attributesGroupId: groupId,
                   },
                 },
-              });
+              }).catch((e) => console.log(e));
             }}
           />
         );
@@ -222,7 +223,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                     />
                   }
                 >
-                  <Table
+                  <Table<RubricAttributeFragment>
                     data={attributes}
                     columns={columns({ groupId: node.id, showInCatalogueFilter })}
                     emptyMessage={'Список атрибутов пуст'}

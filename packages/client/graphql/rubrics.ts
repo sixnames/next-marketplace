@@ -175,33 +175,47 @@ export const GET_ALL_PRODUCTS_QUERY = gql`
   ${rubricProductsFragment}
 `;
 
+export const rubricAttributeFragment = gql`
+  fragment RubricAttribute on Attribute {
+    id
+    nameString
+    variant
+    metric {
+      id
+      nameString
+    }
+    options {
+      id
+      nameString
+    }
+  }
+`;
+
+export const rubricAttributesGroupFragment = gql`
+  fragment RubricAttributesGroup on RubricAttributesGroup {
+    id
+    isOwner
+    showInCatalogueFilter
+    node {
+      id
+      nameString
+      attributes {
+        ...RubricAttribute
+      }
+    }
+  }
+  ${rubricAttributeFragment}
+`;
+
 export const RUBRIC_ATTRIBUTES_QUERY = gql`
   query GetRubricAttributes($id: ID!) {
     getRubric(id: $id) {
       id
       level
       attributesGroups {
-        id
-        isOwner
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-          attributes {
-            id
-            nameString
-            variant
-            metric {
-              id
-              nameString
-            }
-            options {
-              id
-              nameString
-            }
-          }
-        }
+        ...RubricAttributesGroup
       }
     }
   }
+  ${rubricAttributesGroupFragment}
 `;

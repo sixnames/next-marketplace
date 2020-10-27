@@ -2941,6 +2941,31 @@ export type GetAllProductsQuery = (
   ) }
 );
 
+export type RubricAttributeFragment = (
+  { __typename?: 'Attribute' }
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+  & { metric?: Maybe<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
+  )>, options?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type RubricAttributesGroupFragment = (
+  { __typename?: 'RubricAttributesGroup' }
+  & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
+  & { node: (
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+    & { attributes: Array<(
+      { __typename?: 'Attribute' }
+      & RubricAttributeFragment
+    )> }
+  ) }
+);
+
 export type GetRubricAttributesQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2953,22 +2978,7 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-          & { metric?: Maybe<(
-            { __typename?: 'Metric' }
-            & Pick<Metric, 'id' | 'nameString'>
-          )>, options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-          )> }
-        )> }
-      ) }
+      & RubricAttributesGroupFragment
     )> }
   ) }
 );
@@ -3292,6 +3302,35 @@ export const RubricProductsPaginationFragmentDoc = gql`
   }
 }
     ${RubricProductFragmentDoc}`;
+export const RubricAttributeFragmentDoc = gql`
+    fragment RubricAttribute on Attribute {
+  id
+  nameString
+  variant
+  metric {
+    id
+    nameString
+  }
+  options {
+    id
+    nameString
+  }
+}
+    `;
+export const RubricAttributesGroupFragmentDoc = gql`
+    fragment RubricAttributesGroup on RubricAttributesGroup {
+  id
+  isOwner
+  showInCatalogueFilter
+  node {
+    id
+    nameString
+    attributes {
+      ...RubricAttribute
+    }
+  }
+}
+    ${RubricAttributeFragmentDoc}`;
 export const InitialDocument = gql`
     query Initial {
   me {
@@ -5942,30 +5981,11 @@ export const GetRubricAttributesDocument = gql`
     id
     level
     attributesGroups {
-      id
-      isOwner
-      showInCatalogueFilter
-      node {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          metric {
-            id
-            nameString
-          }
-          options {
-            id
-            nameString
-          }
-        }
-      }
+      ...RubricAttributesGroup
     }
   }
 }
-    `;
+    ${RubricAttributesGroupFragmentDoc}`;
 
 /**
  * __useGetRubricAttributesQuery__

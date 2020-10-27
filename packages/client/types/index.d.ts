@@ -13,7 +13,7 @@ export type PostfixType =
   | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
   | undefined;
 
-export type ObjectType = { [key: string]: any };
+export type ObjectType = Record<string, any>;
 export interface QueryInterface {
   query?: ObjectType;
 }

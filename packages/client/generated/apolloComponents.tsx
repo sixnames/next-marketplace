@@ -2621,6 +2621,15 @@ export type GetAllAppNavItemsQuery = (
   )> }
 );
 
+export type RubricVariantFragment = (
+  { __typename?: 'RubricVariant' }
+  & Pick<RubricVariant, 'id' | 'nameString'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )> }
+);
+
 export type GetAllRubricVariantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2628,11 +2637,7 @@ export type GetAllRubricVariantsQuery = (
   { __typename?: 'Query' }
   & { getAllRubricVariants?: Maybe<Array<(
     { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, 'id' | 'nameString'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & RubricVariantFragment
   )>>, getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
@@ -3230,6 +3235,16 @@ export const AppNavItemFragmentDoc = gql`
     id
     nameString
     path
+  }
+}
+    `;
+export const RubricVariantFragmentDoc = gql`
+    fragment RubricVariant on RubricVariant {
+  id
+  nameString
+  name {
+    key
+    value
   }
 }
     `;
@@ -5285,19 +5300,14 @@ export type GetAllAppNavItemsQueryResult = Apollo.QueryResult<GetAllAppNavItemsQ
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {
-    id
-    nameString
-    name {
-      key
-      value
-    }
+    ...RubricVariant
   }
   getGenderOptions {
     id
     nameString
   }
 }
-    `;
+    ${RubricVariantFragmentDoc}`;
 
 /**
  * __useGetAllRubricVariantsQuery__

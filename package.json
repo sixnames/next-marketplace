@@ -11,11 +11,9 @@
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
     "stage": "docker-compose -f docker-compose.dev.yml up -d",
-
     "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
     "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
     "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
-
     "postup": "yarn dev",
     "api": "yarn workspace @yagu/api",
     "client": "yarn workspace @yagu/client",
@@ -23,11 +21,9 @@
     "mocks": "yarn workspace @yagu/mocks",
     "shared": "yarn workspace @yagu/shared",
     "validation": "yarn workspace @yagu/validation",
-
     "start:api": "yarn api start",
     "test:api": "yarn api test",
     "test:api:watch": "yarn api test:watch",
-
     "start:client": "yarn client start",
     "test:client": "yarn client test",
     "dev": "lerna run --parallel dev",
@@ -38,7 +34,6 @@
     "generate": "graphql-codegen --config codegen.yml"
   },
   "devDependencies": {
-    "lerna": "^3.22.1",
     "@graphql-codegen/cli": "^1.17.8",
     "@graphql-codegen/introspection": "^1.17.8",
     "@graphql-codegen/typescript": "1.17.9",
@@ -59,6 +54,7 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.1.0",
     "graphql": "^15.3.0",
+    "lerna": "^3.22.1",
     "prettier": "^2.1.1",
     "typescript": "^4.0.2"
   },

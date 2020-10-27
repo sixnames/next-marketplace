@@ -2510,6 +2510,22 @@ export type GetAllOptionsGroupsQuery = (
   )> }
 );
 
+export type OptionInGroupFragment = (
+  { __typename?: 'Option' }
+  & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, variants?: Maybe<Array<(
+    { __typename?: 'OptionVariant' }
+    & Pick<OptionVariant, 'key'>
+    & { value: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )>> }
+);
+
 export type GetOptionsGroupQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2525,18 +2541,7 @@ export type GetOptionsGroupQuery = (
       & Pick<LanguageType, 'key' | 'value'>
     )>, options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, variants?: Maybe<Array<(
-        { __typename?: 'OptionVariant' }
-        & Pick<OptionVariant, 'key'>
-        & { value: Array<(
-          { __typename?: 'LanguageType' }
-          & Pick<LanguageType, 'key' | 'value'>
-        )> }
-      )>> }
+      & OptionInGroupFragment
     )> }
   )> }
 );
@@ -3148,6 +3153,25 @@ export const MessageFragmentDoc = gql`
   message {
     key
     value
+  }
+}
+    `;
+export const OptionInGroupFragmentDoc = gql`
+    fragment OptionInGroup on Option {
+  id
+  name {
+    key
+    value
+  }
+  nameString
+  color
+  gender
+  variants {
+    key
+    value {
+      key
+      value
+    }
   }
 }
     `;
@@ -5040,25 +5064,11 @@ export const GetOptionsGroupDocument = gql`
     }
     nameString
     options {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      color
-      gender
-      variants {
-        key
-        value {
-          key
-          value
-        }
-      }
+      ...OptionInGroup
     }
   }
 }
-    `;
+    ${OptionInGroupFragmentDoc}`;
 
 /**
  * __useGetOptionsGroupQuery__

@@ -1,31 +1,27 @@
-import ContentItemControls from '../components/ContentItemControls/ContentItemControls';
+import ContentItemControls, {
+  ContentItemControlsInterface,
+} from '../components/ContentItemControls/ContentItemControls';
 import React from 'react';
 import TableRowImage from '../components/Table/TableRowImage';
-import { LanguageType } from '../generated/apolloComponents';
+import { RubricProductFragment } from '../generated/apolloComponents';
+import { TableColumn } from '../components/Table/Table';
 
-export interface ProductsListItemInterface {
-  id: string;
-  itemId: number;
-  name: LanguageType[];
-  nameString: string;
-  price: number;
-  slug: string;
-  mainImage: string;
-  active: boolean;
-  rubrics: string[];
-}
-
-export interface ProductColumnsInterface {
-  createTitle?: string;
-  updateTitle?: string;
-  deleteTitle?: string;
-  createHandler?: (product: ProductsListItemInterface) => void;
-  updateHandler?: (product: ProductsListItemInterface) => void;
-  deleteHandler?: (product: ProductsListItemInterface) => void;
-  disabled?: boolean;
-  isCreateDisabled?: (product: ProductsListItemInterface) => boolean;
-  isUpdateDisabled?: (product: ProductsListItemInterface) => boolean;
-  isDeleteDisabled?: (product: ProductsListItemInterface) => boolean;
+export interface ProductColumnsInterface
+  extends Omit<
+    ContentItemControlsInterface,
+    | 'isCreateDisabled'
+    | 'isUpdateDisabled'
+    | 'isDeleteDisabled'
+    | 'createHandler'
+    | 'updateHandler'
+    | 'deleteHandler'
+  > {
+  createHandler?: (product: RubricProductFragment) => void;
+  updateHandler?: (product: RubricProductFragment) => void;
+  deleteHandler?: (product: RubricProductFragment) => void;
+  isCreateDisabled?: (product: RubricProductFragment) => boolean;
+  isUpdateDisabled?: (product: RubricProductFragment) => boolean;
+  isDeleteDisabled?: (product: RubricProductFragment) => boolean;
 }
 
 const useProductsListColumns = ({
@@ -39,55 +35,55 @@ const useProductsListColumns = ({
   isCreateDisabled,
   isUpdateDisabled,
   isDeleteDisabled,
-}: ProductColumnsInterface) => {
+}: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
   return [
     {
       key: 'itemId',
       title: 'Арт.',
-      render: (itemID: string) => itemID,
+      render: ({ cellData }) => cellData,
     },
     {
       key: 'mainImage',
       title: 'Фото',
-      render: (mainImage: string, product: ProductsListItemInterface) => {
+      render: ({ cellData, dataItem }) => {
         return (
-          <TableRowImage url={mainImage} alt={product.nameString} title={product.nameString} />
+          <TableRowImage url={cellData} alt={dataItem.nameString} title={dataItem.nameString} />
         );
       },
     },
     {
       key: 'nameString',
       title: 'Название',
-      render: (nameString: string) => nameString,
+      render: ({ cellData }) => cellData,
     },
     {
       key: 'price',
       title: 'Цена',
-      render: (price: number) => price,
+      render: ({ cellData }) => cellData,
     },
     {
       key: 'active',
       title: 'Активен',
-      render: (active: boolean) => (active ? 'Да' : 'Нет'),
+      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
       key: '',
       title: '',
-      render: (_: any, product: ProductsListItemInterface) => {
+      render: ({ dataItem }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
-            testId={product.nameString}
+            testId={dataItem.nameString}
             createTitle={createTitle}
             updateTitle={updateTitle}
             deleteTitle={deleteTitle}
-            createHandler={createHandler ? () => createHandler(product) : undefined}
-            updateHandler={updateHandler ? () => updateHandler(product) : undefined}
-            deleteHandler={deleteHandler ? () => deleteHandler(product) : undefined}
+            createHandler={createHandler ? () => createHandler(dataItem) : undefined}
+            updateHandler={updateHandler ? () => updateHandler(dataItem) : undefined}
+            deleteHandler={deleteHandler ? () => deleteHandler(dataItem) : undefined}
             disabled={disabled}
-            isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(product) : undefined}
-            isCreateDisabled={isCreateDisabled ? isCreateDisabled(product) : undefined}
-            isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(product) : undefined}
+            isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(dataItem) : undefined}
+            isCreateDisabled={isCreateDisabled ? isCreateDisabled(dataItem) : undefined}
+            isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(dataItem) : undefined}
           />
         );
       },

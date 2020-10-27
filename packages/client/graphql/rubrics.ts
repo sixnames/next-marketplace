@@ -18,27 +18,34 @@ const rubricFragment = gql`
   }
 `;
 
-const rubricProductsFragment = gql`
-  fragment RubricProductFragment on PaginatedProductsResponse {
+export const rubricProductFragment = gql`
+  fragment RubricProduct on Product {
+    id
+    itemId
+    name {
+      key
+      value
+    }
+    nameString
+    price
+    slug
+    mainImage
+    active
+    rubrics
+  }
+`;
+
+export const rubricProductsFragment = gql`
+  fragment RubricProductsPagination on PaginatedProductsResponse {
     totalDocs
     page
     totalPages
     activeProductsCount
     docs {
-      id
-      itemId
-      name {
-        key
-        value
-      }
-      nameString
-      price
-      slug
-      mainImage
-      active
-      rubrics
+      ...RubricProduct
     }
   }
+  ${rubricProductFragment}
 `;
 
 export const RUBRICS_TREE_QUERY = gql`
@@ -122,7 +129,7 @@ export const RUBRIC_PRODUCTS_QUERY = gql`
     getRubric(id: $id) {
       id
       products(input: { notInRubric: $notInRubric }) {
-        ...RubricProductFragment
+        ...RubricProductsPagination
       }
     }
   }
@@ -133,7 +140,7 @@ export const RUBRIC_PRODUCTS_QUERY = gql`
 export const GET_NON_RUBRIC_PRODUCTS_QUERY = gql`
   query GetNonRubricProducts($input: ProductPaginateInput!) {
     getAllProducts(input: $input) {
-      ...RubricProductFragment
+      ...RubricProductsPagination
     }
   }
 
@@ -161,7 +168,7 @@ export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
 export const GET_ALL_PRODUCTS_QUERY = gql`
   query GetAllProducts($input: ProductPaginateInput!) {
     getAllProducts(input: $input) {
-      ...RubricProductFragment
+      ...RubricProductsPagination
     }
   }
 

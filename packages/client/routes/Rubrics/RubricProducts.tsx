@@ -7,8 +7,8 @@ import RequestError from '../../components/RequestError/RequestError';
 import Table from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import {
-  GetRubricProductsQuery,
   GetRubricQuery,
+  RubricProductFragment,
   useDeleteProductFromRubricMutation,
   useGetRubricProductsQuery,
 } from '../../generated/apolloComponents';
@@ -19,8 +19,6 @@ import useProductsListColumns from '../../hooks/useProductsListColumns';
 import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import { useRouter } from 'next/router';
 import { ROUTE_CMS } from '../../config';
-
-type RubricProduct = GetRubricProductsQuery['getRubric']['products']['docs'][0];
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
@@ -61,12 +59,12 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     ],
   });
 
-  function deleteProductFromRubricHandler(product: RubricProduct) {
+  function deleteProductFromRubricHandler(product: RubricProductFragment) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-from-rubric-modal',
-        message: `Вы уверены, что хотите удалить товар ${product.name} из рубрики?`,
+        message: `Вы уверены, что хотите удалить товар ${product.nameString} из рубрики?`,
         confirm: () => {
           showLoading();
           return deleteProductFromRubricMutation({
@@ -109,8 +107,13 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     return <DataLayoutTitle>Выберите рубрику</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubric) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getRubric) {
+    return <RequestError />;
+  }
 
   const {
     getRubric: { products },
@@ -133,7 +136,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         {rubric.nameString}
       </DataLayoutTitle>
       <DataLayoutContentFrame>
-        <Table
+        <Table<RubricProductFragment>
           data={docs}
           columns={columns}
           emptyMessage={'Список пуст'}

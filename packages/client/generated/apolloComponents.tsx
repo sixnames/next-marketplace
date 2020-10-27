@@ -2731,16 +2731,21 @@ export type RubricFragmentFragment = (
   ) }
 );
 
-export type RubricProductFragmentFragment = (
+export type RubricProductFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )> }
+);
+
+export type RubricProductsPaginationFragment = (
   { __typename?: 'PaginatedProductsResponse' }
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & RubricProductFragment
   )> }
 );
 
@@ -2848,7 +2853,7 @@ export type GetRubricProductsQuery = (
     & Pick<Rubric, 'id'>
     & { products: (
       { __typename?: 'PaginatedProductsResponse' }
-      & RubricProductFragmentFragment
+      & RubricProductsPaginationFragment
     ) }
   ) }
 );
@@ -2862,7 +2867,7 @@ export type GetNonRubricProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & RubricProductFragmentFragment
+    & RubricProductsPaginationFragment
   ) }
 );
 
@@ -2901,7 +2906,7 @@ export type GetAllProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & RubricProductFragmentFragment
+    & RubricProductsPaginationFragment
   ) }
 );
 
@@ -3139,28 +3144,33 @@ export const RubricFragmentFragmentDoc = gql`
   activeProductsCount
 }
     `;
-export const RubricProductFragmentFragmentDoc = gql`
-    fragment RubricProductFragment on PaginatedProductsResponse {
+export const RubricProductFragmentDoc = gql`
+    fragment RubricProduct on Product {
+  id
+  itemId
+  name {
+    key
+    value
+  }
+  nameString
+  price
+  slug
+  mainImage
+  active
+  rubrics
+}
+    `;
+export const RubricProductsPaginationFragmentDoc = gql`
+    fragment RubricProductsPagination on PaginatedProductsResponse {
   totalDocs
   page
   totalPages
   activeProductsCount
   docs {
-    id
-    itemId
-    name {
-      key
-      value
-    }
-    nameString
-    price
-    slug
-    mainImage
-    active
-    rubrics
+    ...RubricProduct
   }
 }
-    `;
+    ${RubricProductFragmentDoc}`;
 export const InitialDocument = gql`
     query Initial {
   me {
@@ -5700,11 +5710,11 @@ export const GetRubricProductsDocument = gql`
   getRubric(id: $id) {
     id
     products(input: {notInRubric: $notInRubric}) {
-      ...RubricProductFragment
+      ...RubricProductsPagination
     }
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetRubricProductsQuery__
@@ -5735,10 +5745,10 @@ export type GetRubricProductsQueryResult = Apollo.QueryResult<GetRubricProductsQ
 export const GetNonRubricProductsDocument = gql`
     query GetNonRubricProducts($input: ProductPaginateInput!) {
   getAllProducts(input: $input) {
-    ...RubricProductFragment
+    ...RubricProductsPagination
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetNonRubricProductsQuery__
@@ -5834,10 +5844,10 @@ export type DeleteProductFromRubricMutationOptions = Apollo.BaseMutationOptions<
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductPaginateInput!) {
   getAllProducts(input: $input) {
-    ...RubricProductFragment
+    ...RubricProductsPagination
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetAllProductsQuery__

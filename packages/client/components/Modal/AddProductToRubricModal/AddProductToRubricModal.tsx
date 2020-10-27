@@ -3,6 +3,7 @@ import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import Button from '../../Buttons/Button';
 import {
+  RubricProductFragment,
   useAddProductTuRubricMutation,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
@@ -66,14 +67,20 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubric) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getRubric) {
+    return <RequestError />;
+  }
+
   const {
     getRubric: { products },
   } = data;
 
   return (
-    <Table
+    <Table<RubricProductFragment>
       data={products.docs}
       columns={columns}
       emptyMessage={'Список пуст'}
@@ -109,8 +116,14 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAllProducts) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAllProducts) {
+    return <RequestError />;
+  }
+
   const {
     getAllProducts: { docs, totalDocs, activeProductsCount },
   } = data;
@@ -159,8 +172,14 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAllProducts) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAllProducts) {
+    return <RequestError />;
+  }
+
   const {
     getAllProducts: { docs },
   } = data;
@@ -245,8 +264,13 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubricsTree) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getRubricsTree) {
+    return <RequestError />;
+  }
 
   const { getRubricsTree } = data;
 

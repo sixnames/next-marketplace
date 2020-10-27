@@ -1,5 +1,4 @@
 import { IconType } from '../components/Icon/Icon';
-import { Product } from '../generated/apolloComponents';
 
 export type Theme = 'light' | 'dark';
 export type ButtonTheme = 'primary' | 'secondary';
@@ -46,8 +45,3 @@ export interface LangInterface {
   key: string;
   value: string;
 }
-
-export type CatalogueProductType = Pick<
-  Product,
-  'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'
->;

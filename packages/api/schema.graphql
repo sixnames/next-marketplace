@@ -600,7 +600,10 @@ type ProductConnection {
   attributeId: String!
   attributesGroupId: String!
   id: ID!
-  products: [ProductConnectionItem!]!
+  products(
+    """Shows only active products."""
+    activeOnly: Boolean = false
+  ): [ProductConnectionItem!]!
   productsIds: [String!]!
 }
 

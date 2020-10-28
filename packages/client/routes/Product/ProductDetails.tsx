@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  GetProductQuery,
+  CmsProductFragment,
   useGetRubricsTreeQuery,
   useUpdateProductMutation,
 } from '../../generated/apolloComponents';
@@ -24,7 +24,7 @@ import FormikTranslationsInput from '../../components/FormElements/Input/FormikT
 import useValidationSchema from '../../hooks/useValidationSchema';
 
 interface ProductDetailsInterface {
-  product: GetProductQuery['getProduct'];
+  product: CmsProductFragment;
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {

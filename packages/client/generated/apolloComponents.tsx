@@ -2177,7 +2177,39 @@ export type UpdateMyPasswordMutation = (
   ) }
 );
 
-export type ProductFragmentFragment = (
+export type CmsProductAttributeFragment = (
+  { __typename?: 'ProductAttribute' }
+  & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
+  & { node: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
+    & { metric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, 'id' | 'nameString'>
+    )>, options?: Maybe<(
+      { __typename?: 'OptionsGroup' }
+      & Pick<OptionsGroup, 'id' | 'nameString'>
+      & { options: Array<(
+        { __typename?: 'Option' }
+        & Pick<Option, 'id' | 'nameString' | 'color'>
+      )> }
+    )> }
+  ) }
+);
+
+export type CmsProductAttributesGroupFragment = (
+  { __typename?: 'ProductAttributesGroup' }
+  & Pick<ProductAttributesGroup, 'showInCard'>
+  & { node: (
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+  ), attributes: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CmsProductAttributeFragment
+  )> }
+);
+
+export type CmsProductFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'rubrics'>
   & { name: Array<(
@@ -2194,29 +2226,7 @@ export type ProductFragmentFragment = (
     & Pick<AssetType, 'url' | 'index'>
   )>, attributesGroups: Array<(
     { __typename?: 'ProductAttributesGroup' }
-    & Pick<ProductAttributesGroup, 'showInCard'>
-    & { node: (
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    ), attributes: Array<(
-      { __typename?: 'ProductAttribute' }
-      & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
-      & { node: (
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
-        & { metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )>, options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-          & { options: Array<(
-            { __typename?: 'Option' }
-            & Pick<Option, 'id' | 'nameString' | 'color'>
-          )> }
-        )> }
-      ) }
-    )> }
+    & CmsProductAttributesGroupFragment
   )> }
 );
 
@@ -2229,7 +2239,7 @@ export type GetProductQuery = (
   { __typename?: 'Query' }
   & { getProduct: (
     { __typename?: 'Product' }
-    & ProductFragmentFragment
+    & CmsProductFragment
   ) }
 );
 
@@ -2245,7 +2255,7 @@ export type UpdateProductMutation = (
     & Pick<ProductPayloadType, 'success' | 'message'>
     & { product?: Maybe<(
       { __typename?: 'Product' }
-      & ProductFragmentFragment
+      & CmsProductFragment
     )> }
   ) }
 );
@@ -2271,6 +2281,19 @@ export type DeleteProductMutationVariables = Exact<{
 export type DeleteProductMutation = (
   { __typename?: 'Mutation' }
   & { deleteProduct: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CreateProductConnectionMutationVariables = Exact<{
+  input: CreateProductConnectionInput;
+}>;
+
+
+export type CreateProductConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { createProductConnection: (
     { __typename?: 'ProductPayloadType' }
     & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
@@ -3029,8 +3052,46 @@ export const SiteRubricFragmentFragmentDoc = gql`
   }
 }
     `;
-export const ProductFragmentFragmentDoc = gql`
-    fragment ProductFragment on Product {
+export const CmsProductAttributeFragmentDoc = gql`
+    fragment CMSProductAttribute on ProductAttribute {
+  showInCard
+  key
+  node {
+    id
+    slug
+    nameString
+    variant
+    metric {
+      id
+      nameString
+    }
+    options {
+      id
+      nameString
+      options {
+        id
+        nameString
+        color
+      }
+    }
+  }
+  value
+}
+    `;
+export const CmsProductAttributesGroupFragmentDoc = gql`
+    fragment CMSProductAttributesGroup on ProductAttributesGroup {
+  showInCard
+  node {
+    id
+    nameString
+  }
+  attributes {
+    ...CMSProductAttribute
+  }
+}
+    ${CmsProductAttributeFragmentDoc}`;
+export const CmsProductFragmentDoc = gql`
+    fragment CMSProduct on Product {
   id
   itemId
   name {
@@ -3056,38 +3117,10 @@ export const ProductFragmentFragmentDoc = gql`
   }
   rubrics
   attributesGroups {
-    showInCard
-    node {
-      id
-      nameString
-    }
-    attributes {
-      showInCard
-      key
-      node {
-        id
-        slug
-        nameString
-        variant
-        metric {
-          id
-          nameString
-        }
-        options {
-          id
-          nameString
-          options {
-            id
-            nameString
-            color
-          }
-        }
-      }
-      value
-    }
+    ...CMSProductAttributesGroup
   }
 }
-    `;
+    ${CmsProductAttributesGroupFragmentDoc}`;
 export const AttributeInGroupFragmentDoc = gql`
     fragment AttributeInGroup on Attribute {
   id
@@ -4653,10 +4686,10 @@ export type UpdateMyPasswordMutationOptions = Apollo.BaseMutationOptions<UpdateM
 export const GetProductDocument = gql`
     query GetProduct($id: ID!) {
   getProduct(id: $id) {
-    ...ProductFragment
+    ...CMSProduct
   }
 }
-    ${ProductFragmentFragmentDoc}`;
+    ${CmsProductFragmentDoc}`;
 
 /**
  * __useGetProductQuery__
@@ -4689,11 +4722,11 @@ export const UpdateProductDocument = gql`
     success
     message
     product {
-      ...ProductFragment
+      ...CMSProduct
     }
   }
 }
-    ${ProductFragmentFragmentDoc}`;
+    ${CmsProductFragmentDoc}`;
 export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
 
 /**
@@ -4785,6 +4818,39 @@ export function useDeleteProductMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
 export type DeleteProductMutationResult = Apollo.MutationResult<DeleteProductMutation>;
 export type DeleteProductMutationOptions = Apollo.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
+export const CreateProductConnectionDocument = gql`
+    mutation CreateProductConnection($input: CreateProductConnectionInput!) {
+  createProductConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateProductConnectionMutationFn = Apollo.MutationFunction<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
+
+/**
+ * __useCreateProductConnectionMutation__
+ *
+ * To run a mutation, you first call `useCreateProductConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductConnectionMutation, { data, loading, error }] = useCreateProductConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductConnectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>) {
+        return Apollo.useMutation<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>(CreateProductConnectionDocument, baseOptions);
+      }
+export type CreateProductConnectionMutationHookResult = ReturnType<typeof useCreateProductConnectionMutation>;
+export type CreateProductConnectionMutationResult = Apollo.MutationResult<CreateProductConnectionMutation>;
+export type CreateProductConnectionMutationOptions = Apollo.BaseMutationOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
 export const GetAllAttributesGroupsDocument = gql`
     query GetAllAttributesGroups {
   getAllAttributesGroups {

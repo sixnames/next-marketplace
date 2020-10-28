@@ -20,6 +20,7 @@ import {
   ROLE_RESTRICTED_FIELDS_MODAL,
   RUBRIC_VARIANT_MODAL,
   UPDATE_MY_PASSWORD_MODAL,
+  CREATE_CONNECTION_MODAL,
 } from '../../config/modals';
 
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
@@ -52,6 +53,9 @@ const AddProductToRubricModal = React.lazy(
 );
 const UpdateMyPasswordModal = React.lazy(
   () => import('./UpdateMyPasswordModal/UpdateMyPasswordModal'),
+);
+const CreateConnectionModal = React.lazy(
+  () => import('./CreateConnectionModal/CreateConnectionModal'),
 );
 
 interface ModalInterface {
@@ -97,6 +101,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
 
           {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}
+
+          {modalType === CREATE_CONNECTION_MODAL && <CreateConnectionModal {...modalProps} />}
         </Suspense>
       </div>
 

@@ -10,7 +10,7 @@ import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
-import { attributeIdSchema } from './attributesGroupSchema';
+import { attributeIdSchema, attributesGroupIdSchema } from './attributesGroupSchema';
 
 export const productIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.products.id' });
@@ -111,6 +111,7 @@ export const createProductConnectionSchema = (args: MultiLangSchemaMessagesInter
   Yup.object().shape({
     productId: productIdSchema(args),
     attributeId: attributeIdSchema(args),
+    attributesGroupId: attributesGroupIdSchema(args),
   });
 
 export const addProductToConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>

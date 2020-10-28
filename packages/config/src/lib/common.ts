@@ -1,3 +1,10 @@
+// Admin
+export const ADMIN_NAME = 'admin';
+export const ADMIN_LAST_NAME = 'site';
+export const ADMIN_EMAIL = 'admin@gmail.com';
+export const ADMIN_PHONE = '+79998884433';
+export const ADMIN_PASSWORD = 'admin';
+
 // Roles
 export const OPERATION_TYPE_CREATE = 'create';
 export const OPERATION_TYPE_READ = 'read';

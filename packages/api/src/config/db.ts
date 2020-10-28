@@ -1,4 +1,5 @@
 import { ConnectionOptions } from 'mongoose';
+import commonConfig from '@yagu/config';
 
 export const {
   DB_USERNAME = 'admin',
@@ -8,11 +9,12 @@ export const {
   DB_PORT = 27017,
   DB_NAME = 'dev-db',
 
-  ADMIN_NAME = 'admin',
-  ADMIN_LAST_NAME = 'site',
-  ADMIN_EMAIL = 'admin@gmail.com',
-  ADMIN_PHONE = '+79998884433',
-  ADMIN_PASSWORD = 'admin',
+  ADMIN_NAME = commonConfig.ADMIN_NAME,
+  ADMIN_LAST_NAME = commonConfig.ADMIN_LAST_NAME,
+  ADMIN_EMAIL = commonConfig.ADMIN_EMAIL,
+  ADMIN_PHONE = commonConfig.ADMIN_PHONE,
+  ADMIN_PASSWORD = commonConfig.ADMIN_PASSWORD,
+
   // MONGO_URL = `mongodb://mongo:27017/app`,
 } = process.env;
 

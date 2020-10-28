@@ -49,7 +49,7 @@ describe('Rubric products', () => {
     cy.getByCy(mockProductForDelete).should('not.exist');
   });
 
-  it('Should add product to rubric', () => {
+  it.only('Should add product to rubric', () => {
     const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
     const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
 

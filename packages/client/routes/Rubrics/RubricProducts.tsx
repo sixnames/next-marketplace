@@ -9,16 +9,18 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import {
   GetRubricQuery,
   RubricProductFragment,
+  useAddProductTuRubricMutation,
   useDeleteProductFromRubricMutation,
   useGetRubricProductsQuery,
 } from '../../generated/apolloComponents';
-import { ADD_PRODUCT_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
 import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
 import { useRouter } from 'next/router';
 import { ROUTE_CMS } from '../../config';
+import { ProductSearchModalInterface } from '../../components/Modal/ProductSearchModal/ProductSearchModal';
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
@@ -59,6 +61,37 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     ],
   });
 
+  const [addProductToRubricMutation] = useAddProductTuRubricMutation({
+    onCompleted: (data) => onCompleteCallback(data.addProductToRubric),
+    onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [
+      {
+        query: RUBRICS_TREE_QUERY,
+        variables: {
+          counters: { noRubrics: true },
+        },
+      },
+      {
+        query: RUBRIC_PRODUCTS_QUERY,
+        variables: {
+          id: rubric.id,
+        },
+      },
+    ],
+  });
+
+  function addProductToRubricHandler(productId: string) {
+    return addProductToRubricMutation({
+      variables: {
+        input: {
+          rubricId: rubric.id,
+          productId,
+        },
+      },
+    });
+  }
+
   function deleteProductFromRubricHandler(product: RubricProductFragment) {
     showModal({
       type: CONFIRM_MODAL,
@@ -80,11 +113,13 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  function addProductToRubricHandler() {
-    showModal({
-      type: ADD_PRODUCT_TO_RUBRIC_MODAL,
+  function addProductToRubricModalHandler() {
+    showModal<ProductSearchModalInterface>({
+      type: PRODUCT_SEARCH_MODAL,
       props: {
         rubricId: rubric.id,
+        createHandler: (product) => addProductToRubricHandler(product.id),
+        createTitle: 'Добавить товар в рубрику',
       },
     });
   }
@@ -129,7 +164,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           <ContentItemControls
             testId={'product'}
             createTitle={'Добавить товар в рубрику'}
-            createHandler={addProductToRubricHandler}
+            createHandler={addProductToRubricModalHandler}
           />
         }
       >

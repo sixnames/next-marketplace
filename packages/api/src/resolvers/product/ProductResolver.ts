@@ -373,6 +373,7 @@ export class ProductResolver {
         };
       }
 
+      // TODO check if connection already exist
       const connection = await ProductConnectionModel.create({
         attributeId: attribute.id,
         attributesGroupId: attributesGroup.id,

@@ -15,6 +15,27 @@ import classes from './ProductConnections.module.css';
 import Accordion from '../../components/Accordion/Accordion';
 import Table, { TableColumn } from '../../components/Table/Table';
 import TableRowImage from '../../components/Table/TableRowImage';
+import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
+
+interface ProductConnectionControlsInterface {
+  connection: CmsProductConnectionFragment;
+}
+
+const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
+  connection,
+}) => {
+  console.log(connection);
+
+  return (
+    <ContentItemControls
+      testId={`${connection.attribute.nameString}-connection`}
+      createTitle={'Добавить товар к связи'}
+      createHandler={() => {
+        console.log(connection);
+      }}
+    />
+  );
+};
 
 export interface ProductConnectionsItemInterface {
   productId: string;
@@ -77,6 +98,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       title={connectionName}
       isOpen
       className={classes.listItem}
+      titleRight={<ProductConnectionControls connection={connection} />}
     >
       <Table<CmsProductConnectionItemFragment>
         columns={columns}

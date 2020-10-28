@@ -1,58 +1,39 @@
-import React, { useState, Fragment } from 'react';
-import ModalFrame from '../ModalFrame';
-import ModalTitle from '../ModalTitle';
-import Button from '../../Buttons/Button';
+import React, { Fragment, useState } from 'react';
+import { useAppContext } from '../../../context/appContext';
 import {
   RubricProductFragment,
-  useAddProductTuRubricMutation,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
   useGetRubricsTreeQuery,
 } from '../../../generated/apolloComponents';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
+import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
+import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import DataLayoutTitle from '../../DataLayout/DataLayoutTitle';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
+import ModalFrame from '../ModalFrame';
+import ModalTitle from '../ModalTitle';
+import Button from '../../Buttons/Button';
+import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
+import RubricsTree from '../../../routes/Rubrics/RubricsTree';
+import useProductsListColumns, {
+  ProductColumnsInterface,
+} from '../../../hooks/useProductsListColumns';
 import Table from '../../Table/Table';
 import Accordion from '../../Accordion/Accordion';
-import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
-import { useAppContext } from '../../../context/appContext';
-import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
-import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
-import useProductsListColumns from '../../../hooks/useProductsListColumns';
 import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import RubricsTree from '../../../routes/Rubrics/RubricsTree';
 
-interface AddProductToRubricModalInterface {
-  rubricId: string;
-}
-
-interface AddProductToRubricListInterface {
-  notInRubric: string;
+interface ProductsListInterface extends ProductColumnsInterface {
+  notInRubric?: string;
   viewRubric: string;
-  addProductToRubricHandler: (id: string) => void;
 }
 
-interface NotInRubricProductsListInterface {
-  addProductToRubricHandler: (id: string) => void;
-}
-
-interface ProductsSearchListInterface {
-  addProductToRubricHandler: (id: string) => void;
-  notInRubric: string;
-  search: string;
-}
-
-const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
-  viewRubric,
-  notInRubric,
-  addProductToRubricHandler,
-}) => {
+const ProductsList: React.FC<ProductsListInterface> = ({ viewRubric, notInRubric, ...props }) => {
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetRubricProductsQuery({
@@ -89,15 +70,15 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
   );
 };
 
-const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
-  addProductToRubricHandler,
-}) => {
+type NotInRubricProductsListInterface = ProductColumnsInterface;
+
+const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({ ...props }) => {
   const page = 1;
   const limit = 1000;
 
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetNonRubricProductsQuery({
@@ -150,16 +131,21 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
   );
 };
 
+interface ProductsSearchListInterface extends ProductColumnsInterface {
+  notInRubric?: string;
+  search: string;
+}
+
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
-  addProductToRubricHandler,
   notInRubric,
+  ...props
 }) => {
   const page = 1;
 
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetNonRubricProductsQuery({
@@ -199,48 +185,20 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   );
 };
 
-const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ rubricId }) => {
-  const { onCompleteCallback, onErrorCallback } = useMutationCallbacks({ withModal: true });
+export interface ProductSearchModalInterface extends ProductColumnsInterface {
+  rubricId?: string;
+}
+
+const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({ rubricId, ...props }) => {
   const [search, setSearch] = useState<string | null>(null);
   const { showModal } = useAppContext();
   const { data, error, loading } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
     variables: {
-      excluded: [rubricId],
+      excluded: rubricId ? [rubricId] : [],
       counters: { noRubrics: true },
     },
   });
-
-  const [addProductToRubricMutation] = useAddProductTuRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.addProductToRubric),
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRICS_TREE_QUERY,
-        variables: {
-          counters: { noRubrics: true },
-        },
-      },
-      {
-        query: RUBRIC_PRODUCTS_QUERY,
-        variables: {
-          id: rubricId,
-        },
-      },
-    ],
-  });
-
-  function addProductToRubricHandler(productId: string) {
-    return addProductToRubricMutation({
-      variables: {
-        input: {
-          rubricId,
-          productId,
-        },
-      },
-    });
-  }
 
   function createProductModalHandler() {
     showModal<CreateNewProductModalInterface>({
@@ -304,30 +262,22 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
       />
 
       {search ? (
-        <ProductsSearchList
-          search={search}
-          notInRubric={rubricId}
-          addProductToRubricHandler={addProductToRubricHandler}
-        />
+        <ProductsSearchList search={search} notInRubric={rubricId} {...props} />
       ) : (
         <Fragment>
           <RubricsTree
             low
             tree={getRubricsTree}
-            render={(viewRubric) => (
-              <AddProductToRubricList
-                viewRubric={viewRubric}
-                notInRubric={rubricId}
-                addProductToRubricHandler={addProductToRubricHandler}
-              />
-            )}
+            render={(viewRubric) => {
+              return <ProductsList viewRubric={viewRubric} notInRubric={rubricId} {...props} />;
+            }}
           />
 
-          <NotInRubricProductsList addProductToRubricHandler={addProductToRubricHandler} />
+          <NotInRubricProductsList {...props} />
         </Fragment>
       )}
     </ModalFrame>
   );
 };
 
-export default AddProductToRubricModal;
+export default ProductSearchModal;

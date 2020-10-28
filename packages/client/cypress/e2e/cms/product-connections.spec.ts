@@ -15,7 +15,7 @@ describe('Product connections', () => {
     cy.clearTestData();
   });*/
 
-  it('Should create new product connection', () => {
+  it('Should CRUD product connection', () => {
     const mockProductC = MOCK_PRODUCT_C.name[0].value;
     const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
     const mockAttributeName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
@@ -33,5 +33,8 @@ describe('Product connections', () => {
     cy.getByCy(`create-connection-modal`).should('not.exist');
     cy.getByCy(`${mockAttributeName}-connection`).should('exist');
     cy.getByCy(`${mockAttributeName}-connection-list`).should('exist');
+
+    cy.getByCy(`${mockAttributeName}-connection-create`).click();
+    cy.getByCy(`add-product-to-connection-modal`).should('exist');
   });
 });

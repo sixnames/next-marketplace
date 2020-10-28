@@ -134,7 +134,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
     {
       accessor: 'nameString',
       headTitle: 'Сущность',
-      render: (nameString) => nameString,
+      render: ({ cellData }) => cellData,
     },
     {
       accessor: 'operations',

@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'mongoose';
-import commonConfig from '@yagu/config';
+import * as commonConfig from '@yagu/config';
 
 export const {
   DB_USERNAME = 'admin',

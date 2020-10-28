@@ -45,7 +45,6 @@ import { NavItemResolver } from './resolvers/navItem/NavItemResolver';
 import {
   clearTestDataRoute,
   createTestDataRoute,
-  getMockDataRoute,
   testSignInRoute,
 } from './routes/testingDataRoutes';
 import { assetsRoute } from './routes/assetsRoutes';
@@ -115,7 +114,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
   // Test data routes
   // TODO make this methods safe
-  app.get('/get-mock-data', getMockDataRoute);
   app.get('/create-test-data', createTestDataRoute);
   app.get('/clear-test-data', clearTestDataRoute);
   app.get('/test-sign-in', testSignInRoute);

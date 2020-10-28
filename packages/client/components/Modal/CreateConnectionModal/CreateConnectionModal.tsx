@@ -11,6 +11,7 @@ import { createProductConnectionSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import Button from '../../Buttons/Button';
 import { SelectOptionInterface } from '../../FormElements/Select/Select';
+import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 
 export interface CreateConnectionModalInterface {
   product: CmsProductFragment;
@@ -55,12 +56,19 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
             ({ node }) => node.id === attributesGroupId,
           );
           const attributesOptions: SelectOptionInterface[] = attributesGroup
-            ? attributesGroup.attributes.map(({ node }) => {
-                return {
-                  id: node.id,
-                  nameString: node.nameString,
-                };
-              })
+            ? attributesGroup.attributes.reduce((acc: SelectOptionInterface[], { node }) => {
+                if (node.variant !== ATTRIBUTE_VARIANT_SELECT) {
+                  return acc;
+                }
+
+                return [
+                  ...acc,
+                  {
+                    id: node.id,
+                    nameString: node.nameString,
+                  },
+                ];
+              }, [])
             : [];
 
           return (

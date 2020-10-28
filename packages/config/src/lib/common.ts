@@ -27,12 +27,17 @@ export const OPERATION_TYPES_LIST = [
 ];
 
 // Internationalization
+export const THEME_COOKIE_KEY = 'theme';
+export const THEME_DARK = 'dark';
+export const THEME_LIGHT = 'light';
+
 export const LANG_COOKIE_KEY = 'lang';
+export const DEFAULT_LANG = 'ru';
+export const SECONDARY_LANG = 'en';
+
 export const CITY_COOKIE_KEY = 'city';
 export const LANG_COOKIE_HEADER = 'accept-language';
 export const LANG_NOT_FOUND_FIELD_MESSAGE = 'Field translation not found';
-export const DEFAULT_LANG = 'ru';
-export const SECONDARY_LANG = 'en';
 export const LANG_DEFAULT_TITLE_SEPARATOR = ' или ';
 export const LANG_SECONDARY_TITLE_SEPARATOR = ' or ';
 

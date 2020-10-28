@@ -1,7 +1,10 @@
 import React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
-import { CmsProductFragment } from '../../../generated/apolloComponents';
+import {
+  CmsProductFragment,
+  CreateProductConnectionInput,
+} from '../../../generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { createProductConnectionSchema } from '@yagu/validation';
@@ -11,9 +14,10 @@ import { SelectOptionInterface } from '../../FormElements/Select/Select';
 
 export interface CreateConnectionModalInterface {
   product: CmsProductFragment;
+  confirm: (input: CreateProductConnectionInput) => void;
 }
 
-const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ product }) => {
+const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ product, confirm }) => {
   const validationSchema = useValidationSchema({
     schema: createProductConnectionSchema,
   });
@@ -38,7 +42,11 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
           attributesGroupId: null,
         }}
         onSubmit={(values) => {
-          console.log(values);
+          confirm({
+            productId: values.productId,
+            attributeId: `${values.attributeId}`,
+            attributesGroupId: `${values.attributesGroupId}`,
+          });
         }}
       >
         {({ values }) => {

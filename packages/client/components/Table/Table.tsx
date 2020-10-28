@@ -10,8 +10,9 @@ export interface RenderArgs<T> {
   rowIndex: number;
 }
 
+// TODO deep accessor type
 export interface TableColumn<T> {
-  accessor?: keyof T;
+  accessor?: string;
   cellStyle?: React.CSSProperties;
   colSpan?: number;
   sortBy?: string;
@@ -21,6 +22,7 @@ export interface TableColumn<T> {
   hide?: (args: RenderArgs<T>) => boolean;
 }
 
+// TODO deep testIdKey type
 type TableInterface<T> = {
   data?: T[] | null;
   columns: TableColumn<T>[];
@@ -31,7 +33,7 @@ type TableInterface<T> = {
   className?: string;
   fixPosition?: number;
   emptyMessage?: string;
-  testIdKey?: keyof T;
+  testIdKey?: string;
   tableTestId?: string;
 };
 

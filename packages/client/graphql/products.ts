@@ -41,8 +41,8 @@ export const cmsProductAttributesGroupFragment = gql`
   ${cmsProductAttributeFragment}
 `;
 
-export const cmsProductFragment = gql`
-  fragment CMSProduct on Product {
+export const cmsProductFieldsFragment = gql`
+  fragment CMSProductFields on Product {
     id
     itemId
     name {
@@ -66,12 +66,50 @@ export const cmsProductFragment = gql`
       url
       index
     }
+    mainImage
     rubrics
     attributesGroups {
       ...CMSProductAttributesGroup
     }
   }
   ${cmsProductAttributesGroupFragment}
+`;
+
+export const cmsProductConnectionItemFragment = gql`
+  fragment CMSProductConnectionItem on ProductConnectionItem {
+    optionName
+    value
+    node {
+      ...CMSProductFields
+    }
+  }
+  ${cmsProductFieldsFragment}
+`;
+
+export const cmsProductConnectionFragment = gql`
+  fragment CMSProductConnection on ProductConnection {
+    id
+    attribute {
+      id
+      nameString
+    }
+    products {
+      ...CMSProductConnectionItem
+    }
+  }
+  ${cmsProductFieldsFragment}
+  ${cmsProductConnectionItemFragment}
+`;
+
+export const cmsProductFragment = gql`
+  fragment CMSProduct on Product {
+    ...CMSProductFields
+    connections {
+      ...CMSProductConnection
+    }
+  }
+  ${cmsProductFieldsFragment}
+  ${cmsProductConnectionFragment}
 `;
 
 export const PRODUCT_QUERY = gql`

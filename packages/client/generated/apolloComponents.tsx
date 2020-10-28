@@ -2209,9 +2209,9 @@ export type CmsProductAttributesGroupFragment = (
   )> }
 );
 
-export type CmsProductFragment = (
+export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'rubrics'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'mainImage' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -2228,6 +2228,36 @@ export type CmsProductFragment = (
     { __typename?: 'ProductAttributesGroup' }
     & CmsProductAttributesGroupFragment
   )> }
+);
+
+export type CmsProductConnectionItemFragment = (
+  { __typename?: 'ProductConnectionItem' }
+  & Pick<ProductConnectionItem, 'optionName' | 'value'>
+  & { node: (
+    { __typename?: 'Product' }
+    & CmsProductFieldsFragment
+  ) }
+);
+
+export type CmsProductConnectionFragment = (
+  { __typename?: 'ProductConnection' }
+  & Pick<ProductConnection, 'id'>
+  & { attribute: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'nameString'>
+  ), products: Array<(
+    { __typename?: 'ProductConnectionItem' }
+    & CmsProductConnectionItemFragment
+  )> }
+);
+
+export type CmsProductFragment = (
+  { __typename?: 'Product' }
+  & { connections: Array<(
+    { __typename?: 'ProductConnection' }
+    & CmsProductConnectionFragment
+  )> }
+  & CmsProductFieldsFragment
 );
 
 export type GetProductQueryVariables = Exact<{
@@ -3090,8 +3120,8 @@ export const CmsProductAttributesGroupFragmentDoc = gql`
   }
 }
     ${CmsProductAttributeFragmentDoc}`;
-export const CmsProductFragmentDoc = gql`
-    fragment CMSProduct on Product {
+export const CmsProductFieldsFragmentDoc = gql`
+    fragment CMSProductFields on Product {
   id
   itemId
   name {
@@ -3115,12 +3145,43 @@ export const CmsProductFragmentDoc = gql`
     url
     index
   }
+  mainImage
   rubrics
   attributesGroups {
     ...CMSProductAttributesGroup
   }
 }
     ${CmsProductAttributesGroupFragmentDoc}`;
+export const CmsProductConnectionItemFragmentDoc = gql`
+    fragment CMSProductConnectionItem on ProductConnectionItem {
+  optionName
+  value
+  node {
+    ...CMSProductFields
+  }
+}
+    ${CmsProductFieldsFragmentDoc}`;
+export const CmsProductConnectionFragmentDoc = gql`
+    fragment CMSProductConnection on ProductConnection {
+  id
+  attribute {
+    id
+    nameString
+  }
+  products {
+    ...CMSProductConnectionItem
+  }
+}
+    ${CmsProductConnectionItemFragmentDoc}`;
+export const CmsProductFragmentDoc = gql`
+    fragment CMSProduct on Product {
+  ...CMSProductFields
+  connections {
+    ...CMSProductConnection
+  }
+}
+    ${CmsProductFieldsFragmentDoc}
+${CmsProductConnectionFragmentDoc}`;
 export const AttributeInGroupFragmentDoc = gql`
     fragment AttributeInGroup on Attribute {
   id

@@ -28,9 +28,15 @@ import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
 interface ProductsListInterface extends ProductColumnsInterface {
   notInRubric?: string;
   viewRubric: string;
+  excludedProductsIds?: string[];
 }
 
-const ProductsList: React.FC<ProductsListInterface> = ({ viewRubric, notInRubric, ...props }) => {
+const ProductsList: React.FC<ProductsListInterface> = ({
+  viewRubric,
+  notInRubric,
+  excludedProductsIds,
+  ...props
+}) => {
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
     ...props,
@@ -41,6 +47,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({ viewRubric, notInRubric
     variables: {
       id: `${viewRubric}`,
       notInRubric,
+      excludedProductsIds,
     },
   });
 
@@ -70,9 +77,14 @@ const ProductsList: React.FC<ProductsListInterface> = ({ viewRubric, notInRubric
   );
 };
 
-type NotInRubricProductsListInterface = ProductColumnsInterface;
+interface NotInRubricProductsListInterface extends ProductColumnsInterface {
+  excludedProductsIds?: string[];
+}
 
-const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({ ...props }) => {
+const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
+  excludedProductsIds,
+  ...props
+}) => {
   const page = 1;
   const limit = 1000;
 
@@ -89,6 +101,7 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({ .
         page,
         limit,
         countActiveProducts: true,
+        excludedProductsIds,
       },
     },
   });
@@ -109,7 +122,7 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({ .
     getAllProducts: { docs, totalDocs, activeProductsCount },
   } = data;
 
-  return (
+  return docs.length > 0 ? (
     <Accordion
       title={'Товары вне рубрик'}
       testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
@@ -128,17 +141,19 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({ .
         testIdKey={'name'}
       />
     </Accordion>
-  );
+  ) : null;
 };
 
 interface ProductsSearchListInterface extends ProductColumnsInterface {
   notInRubric?: string;
+  excludedProductsIds?: string[];
   search: string;
 }
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
   notInRubric,
+  excludedProductsIds,
   ...props
 }) => {
   const page = 1;
@@ -155,6 +170,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
         page,
         notInRubric,
         search,
+        excludedProductsIds,
       },
     },
   });
@@ -187,16 +203,26 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
 
 export interface ProductSearchModalInterface extends ProductColumnsInterface {
   rubricId?: string;
+  excludedProductsIds?: string[];
+  testId?: string;
 }
 
-const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({ rubricId, ...props }) => {
+const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
+  rubricId,
+  testId,
+  excludedProductsIds,
+  ...props
+}) => {
   const [search, setSearch] = useState<string | null>(null);
   const { showModal } = useAppContext();
   const { data, error, loading } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
     variables: {
       excluded: rubricId ? [rubricId] : [],
-      counters: { noRubrics: true },
+      counters: {
+        noRubrics: true,
+        excludedProductsIds,
+      },
     },
   });
 
@@ -238,7 +264,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({ rubricId, .
   const { getRubricsTree } = data;
 
   return (
-    <ModalFrame testId={'add-product-to-rubric-modal'} wide>
+    <ModalFrame testId={testId} wide>
       <ModalTitle
         right={
           <Button
@@ -262,18 +288,30 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({ rubricId, .
       />
 
       {search ? (
-        <ProductsSearchList search={search} notInRubric={rubricId} {...props} />
+        <ProductsSearchList
+          search={search}
+          notInRubric={rubricId}
+          excludedProductsIds={excludedProductsIds}
+          {...props}
+        />
       ) : (
         <Fragment>
           <RubricsTree
             low
             tree={getRubricsTree}
             render={(viewRubric) => {
-              return <ProductsList viewRubric={viewRubric} notInRubric={rubricId} {...props} />;
+              return (
+                <ProductsList
+                  viewRubric={viewRubric}
+                  notInRubric={rubricId}
+                  excludedProductsIds={excludedProductsIds}
+                  {...props}
+                />
+              );
             }}
           />
 
-          <NotInRubricProductsList {...props} />
+          <NotInRubricProductsList excludedProductsIds={excludedProductsIds} {...props} />
         </Fragment>
       )}
     </ModalFrame>

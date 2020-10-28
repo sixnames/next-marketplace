@@ -13,8 +13,6 @@ const rubricFragment = gql`
       id
       nameString
     }
-    totalProductsCount
-    activeProductsCount
   }
 `;
 
@@ -52,10 +50,16 @@ export const RUBRICS_TREE_QUERY = gql`
   query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
     getRubricsTree(excluded: $excluded) {
       ...RubricFragment
+      totalProductsCount(input: $counters)
+      activeProductsCount(input: $counters)
       children(excluded: $excluded) {
         ...RubricFragment
+        totalProductsCount(input: $counters)
+        activeProductsCount(input: $counters)
         children(excluded: $excluded) {
           ...RubricFragment
+          totalProductsCount(input: $counters)
+          activeProductsCount(input: $counters)
         }
       }
     }
@@ -125,10 +129,10 @@ export const DELETE_RUBRIC = gql`
 `;
 
 export const RUBRIC_PRODUCTS_QUERY = gql`
-  query GetRubricProducts($id: ID!, $notInRubric: ID) {
+  query GetRubricProducts($id: ID!, $notInRubric: ID, $excludedProductsIds: [ID!]) {
     getRubric(id: $id) {
       id
-      products(input: { notInRubric: $notInRubric }) {
+      products(input: { notInRubric: $notInRubric, excludedProductsIds: $excludedProductsIds }) {
         ...RubricProductsPagination
       }
     }

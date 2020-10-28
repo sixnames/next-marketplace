@@ -3,6 +3,8 @@ import {
   MOCK_PRODUCT_C,
   MOCK_ATTRIBUTE_WINE_VARIANT,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+  MOCK_RUBRIC_LEVEL_THREE_A_A,
+  MOCK_PRODUCT_A,
 } from '@yagu/mocks';
 
 describe('Product connections', () => {
@@ -19,6 +21,8 @@ describe('Product connections', () => {
     const mockProductC = MOCK_PRODUCT_C.name[0].value;
     const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
     const mockAttributeName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
+    const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
+    const mockProductForAdd = MOCK_PRODUCT_A.name[0].value;
 
     cy.getByCy(`products-list`).should('exist');
     cy.getByCy(`${mockProductC}-update`).click();
@@ -33,8 +37,21 @@ describe('Product connections', () => {
     cy.getByCy(`create-connection-modal`).should('not.exist');
     cy.getByCy(`${mockAttributeName}-connection`).should('exist');
     cy.getByCy(`${mockAttributeName}-connection-list`).should('exist');
+    cy.get(`[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductC}"]`).should(
+      'exist',
+    );
 
+    const addProductToConnectionModal = `add-product-to-connection-modal`;
     cy.getByCy(`${mockAttributeName}-connection-create`).click();
-    cy.getByCy(`add-product-to-connection-modal`).should('exist');
+    cy.getByCy(addProductToConnectionModal).should('exist');
+
+    cy.getBySelector(
+      `[data-cy=${addProductToConnectionModal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`,
+    ).click();
+    cy.getByCy(`${mockProductForAdd}-create`).click();
+    cy.getByCy(addProductToConnectionModal).should('not.exist');
+    cy.get(
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}"]`,
+    ).should('exist');
   });
 });

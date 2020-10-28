@@ -3,12 +3,13 @@ import {
   CmsProductConnectionFragment,
   CmsProductConnectionItemFragment,
   CmsProductFragment,
+  useAddProductToConnectionMutation,
   useCreateProductConnectionMutation,
 } from '../../generated/apolloComponents';
 import Inner from '../../components/Inner/Inner';
 import Button from '../../components/Buttons/Button';
 import { CreateConnectionModalInterface } from '../../components/Modal/CreateConnectionModal/CreateConnectionModal';
-import { CREATE_CONNECTION_MODAL } from '../../config/modals';
+import { CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { PRODUCT_QUERY } from '../../graphql/products';
 import classes from './ProductConnections.module.css';
@@ -16,22 +17,52 @@ import Accordion from '../../components/Accordion/Accordion';
 import Table, { TableColumn } from '../../components/Table/Table';
 import TableRowImage from '../../components/Table/TableRowImage';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
+import { ProductSearchModalInterface } from '../../components/Modal/ProductSearchModal/ProductSearchModal';
 
 interface ProductConnectionControlsInterface {
   connection: CmsProductConnectionFragment;
+  productId: string;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
   connection,
+  productId,
 }) => {
-  console.log(connection);
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+    withModal: true,
+  });
+  const [addProductToConnectionMutation] = useAddProductToConnectionMutation({
+    onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
+    onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: PRODUCT_QUERY, variables: { id: productId } }],
+  });
 
   return (
     <ContentItemControls
       testId={`${connection.attribute.nameString}-connection`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
-        console.log(connection);
+        showModal<ProductSearchModalInterface>({
+          type: PRODUCT_SEARCH_MODAL,
+          props: {
+            createHandler: (product) => {
+              showLoading();
+              addProductToConnectionMutation({
+                variables: {
+                  input: {
+                    addProductId: product.id,
+                    connectionId: connection.id,
+                    productId,
+                  },
+                },
+              }).catch((e) => console.log(e));
+            },
+            createTitle: 'Добавить товар в связь',
+            testId: 'add-product-to-connection-modal',
+            excludedProductsIds: [productId],
+          },
+        });
       }}
     />
   );
@@ -46,7 +77,6 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   productId,
 }) => {
-  console.log({ productId });
   const { attribute, products } = connection;
 
   const connectionName = attribute.nameString;
@@ -98,13 +128,13 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       title={connectionName}
       isOpen
       className={classes.listItem}
-      titleRight={<ProductConnectionControls connection={connection} />}
+      titleRight={<ProductConnectionControls connection={connection} productId={productId} />}
     >
       <Table<CmsProductConnectionItemFragment>
         columns={columns}
         data={products}
         tableTestId={`${connectionName}-connection-list`}
-        testIdKey={'node.id'}
+        testIdKey={'node.nameString'}
       />
     </Accordion>
   );

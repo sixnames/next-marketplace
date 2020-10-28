@@ -587,6 +587,7 @@ export type ProductPaginateInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
   countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
@@ -607,6 +608,7 @@ export type ProductsCountersInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
 };
 
 export type CatalogueData = {
@@ -647,6 +649,16 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+
+export type RubricTotalProductsCountArgs = {
+  input?: Maybe<ProductsCountersInput>;
+};
+
+
+export type RubricActiveProductsCountArgs = {
+  input?: Maybe<ProductsCountersInput>;
 };
 
 export type RubricCatalogueTitle = {
@@ -710,6 +722,7 @@ export type RubricProductPaginateInput = {
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
   active?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
   attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
 };
 
@@ -2329,6 +2342,19 @@ export type CreateProductConnectionMutation = (
   ) }
 );
 
+export type AddProductToConnectionMutationVariables = Exact<{
+  input: AddProductToConnectionInput;
+}>;
+
+
+export type AddProductToConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { addProductToConnection: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type GetAllAttributesGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2805,7 +2831,7 @@ export type GetFeaturesAstQuery = (
 
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
+  & Pick<Rubric, 'id' | 'nameString' | 'level'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -2843,10 +2869,13 @@ export type GetRubricsTreeQuery = (
   { __typename?: 'Query' }
   & { getRubricsTree: Array<(
     { __typename?: 'Rubric' }
+    & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
     & { children: Array<(
       { __typename?: 'Rubric' }
+      & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
       & { children: Array<(
         { __typename?: 'Rubric' }
+        & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
         & RubricFragmentFragment
       )> }
       & RubricFragmentFragment
@@ -2927,6 +2956,7 @@ export type DeleteRubricMutation = (
 export type GetRubricProductsQueryVariables = Exact<{
   id: Scalars['ID'];
   notInRubric?: Maybe<Scalars['ID']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
 }>;
 
 
@@ -3365,8 +3395,6 @@ export const RubricFragmentFragmentDoc = gql`
     id
     nameString
   }
-  totalProductsCount
-  activeProductsCount
 }
     `;
 export const RubricProductFragmentDoc = gql`
@@ -4912,6 +4940,39 @@ export function useCreateProductConnectionMutation(baseOptions?: Apollo.Mutation
 export type CreateProductConnectionMutationHookResult = ReturnType<typeof useCreateProductConnectionMutation>;
 export type CreateProductConnectionMutationResult = Apollo.MutationResult<CreateProductConnectionMutation>;
 export type CreateProductConnectionMutationOptions = Apollo.BaseMutationOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
+export const AddProductToConnectionDocument = gql`
+    mutation AddProductToConnection($input: AddProductToConnectionInput!) {
+  addProductToConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddProductToConnectionMutationFn = Apollo.MutationFunction<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
+
+/**
+ * __useAddProductToConnectionMutation__
+ *
+ * To run a mutation, you first call `useAddProductToConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToConnectionMutation, { data, loading, error }] = useAddProductToConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToConnectionMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>) {
+        return Apollo.useMutation<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>(AddProductToConnectionDocument, baseOptions);
+      }
+export type AddProductToConnectionMutationHookResult = ReturnType<typeof useAddProductToConnectionMutation>;
+export type AddProductToConnectionMutationResult = Apollo.MutationResult<AddProductToConnectionMutation>;
+export type AddProductToConnectionMutationOptions = Apollo.BaseMutationOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
 export const GetAllAttributesGroupsDocument = gql`
     query GetAllAttributesGroups {
   getAllAttributesGroups {
@@ -5746,10 +5807,16 @@ export const GetRubricsTreeDocument = gql`
     query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {
     ...RubricFragment
+    totalProductsCount(input: $counters)
+    activeProductsCount(input: $counters)
     children(excluded: $excluded) {
       ...RubricFragment
+      totalProductsCount(input: $counters)
+      activeProductsCount(input: $counters)
       children(excluded: $excluded) {
         ...RubricFragment
+        totalProductsCount(input: $counters)
+        activeProductsCount(input: $counters)
       }
     }
   }
@@ -5934,10 +6001,12 @@ export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMu
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
 export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const GetRubricProductsDocument = gql`
-    query GetRubricProducts($id: ID!, $notInRubric: ID) {
+    query GetRubricProducts($id: ID!, $notInRubric: ID, $excludedProductsIds: [ID!]) {
   getRubric(id: $id) {
     id
-    products(input: {notInRubric: $notInRubric}) {
+    products(
+      input: {notInRubric: $notInRubric, excludedProductsIds: $excludedProductsIds}
+    ) {
       ...RubricProductsPagination
     }
   }
@@ -5958,6 +6027,7 @@ export const GetRubricProductsDocument = gql`
  *   variables: {
  *      id: // value for 'id'
  *      notInRubric: // value for 'notInRubric'
+ *      excludedProductsIds: // value for 'excludedProductsIds'
  *   },
  * });
  */

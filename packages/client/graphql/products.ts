@@ -160,3 +160,12 @@ export const CREATE_PRODUCT_CONNECTION_MUTATION = gql`
     }
   }
 `;
+
+export const ADD_PRODUCT_TO_CONNECTION_MUTATION = gql`
+  mutation AddProductToConnection($input: AddProductToConnectionInput!) {
+    addProductToConnection(input: $input) {
+      success
+      message
+    }
+  }
+`;

@@ -69,7 +69,7 @@ const Table = <T extends Record<string, any>>({
     (columns: TableColumn<T>[], data: T[]) => {
       return data.map((dataItem, rowIndex: number) => {
         const { hidden, id, isWarning = false } = dataItem;
-        const testId = dataItem[testIdKey];
+        const testId = get(dataItem, testIdKey);
         const key = id || rowIndex;
         if (hidden) return null;
 

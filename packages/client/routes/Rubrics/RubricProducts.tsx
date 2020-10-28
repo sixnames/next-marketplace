@@ -120,6 +120,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
         rubricId: rubric.id,
         createHandler: (product) => addProductToRubricHandler(product.id),
         createTitle: 'Добавить товар в рубрику',
+        testId: 'add-product-to-rubric-modal',
       },
     });
   }

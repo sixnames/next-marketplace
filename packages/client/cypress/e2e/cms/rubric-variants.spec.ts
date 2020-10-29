@@ -46,7 +46,7 @@ describe('Rubric variants', () => {
     cy.getByCy(`${mockRubricVariantName}-delete`).click();
     cy.getByCy('rubric-variant-delete-modal').should('exist');
     cy.getByCy('confirm').click();
-    cy.getByCy('error-notification').should('exist');
+    cy.shouldError();
     cy.getByCy(`${mockRubricVariantName}`).should('exist');
 
     // Should delete rubric type

@@ -30,7 +30,7 @@ describe('Languages', () => {
     cy.getByCy('language-key').select(mockNewLanguageKey);
     cy.getByCy('language-submit').click();
     cy.getByCy('create-language-modal').should('not.exist');
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(mockNewLanguageName).should('exist');
 
     // Should set new language as default
@@ -39,7 +39,7 @@ describe('Languages', () => {
     cy.getByCy('confirm').click();
     cy.getByCy(`${mockNewLanguageName}-checkbox`).should('be.checked');
     cy.getByCy(`${mockDefaultLanguageName}-checkbox`).should('not.be.checked');
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`${mockDefaultLanguageName}-checkbox`).click();
     cy.getByCy('confirm').click();
 
@@ -49,7 +49,7 @@ describe('Languages', () => {
     cy.getByCy('language-name').clear().type(mockUpdatedLanguageName);
     cy.getByCy('language-key').select(mockUpdatedLanguageKey);
     cy.getByCy('language-submit').click();
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(mockUpdatedLanguageName).should('exist');
 
     // Delete default language button should be disabled
@@ -59,7 +59,7 @@ describe('Languages', () => {
     cy.getByCy(`${mockUpdatedLanguageName}-delete`).click();
     cy.getByCy('delete-language-modal').should('exist');
     cy.getByCy('confirm').click();
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(mockUpdatedLanguageName).should('not.exist');
   });
 });

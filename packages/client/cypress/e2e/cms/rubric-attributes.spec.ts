@@ -36,7 +36,7 @@ describe('Rubric attributes', () => {
     // Should update attributes group only in one rubric
     cy.getByCy(`${mockStringAttribute}-checkbox`).should('be.disabled');
     cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).click();
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`${mockMultipleSelectAttribute}-checkbox`).should('not.be.checked');
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.visitMoreNavLink('attributes');

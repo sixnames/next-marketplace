@@ -59,7 +59,7 @@ describe('Profile', () => {
     // Should update
     cy.getByCy('newPasswordB').clear().type(newPassword);
     cy.getByCy('password-submit').click();
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy('password-modal').should('not.exist');
   });
 });

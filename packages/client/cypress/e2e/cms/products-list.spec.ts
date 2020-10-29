@@ -54,6 +54,7 @@ describe('Products', () => {
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(mockProductForDelete).should('not.exist');
+    cy.shouldSuccess();
 
     // Should open product details
     cy.getByCy(`${mockProductC}-update`).click();
@@ -62,14 +63,14 @@ describe('Products', () => {
     // Should update product activity
     cy.getByCy('active-checkbox').check();
     cy.getByCy('submit-product').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should update product main image
     cy.getByCy('file-preview-remove-0').click();
     cy.getByCy('remove-image-confirm').click();
     cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
     cy.getByCy('submit-product').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should update product main fields
     cy.getByCy('name-accordion-en').click();
@@ -83,7 +84,7 @@ describe('Products', () => {
     cy.getByCy('description-ru').clear().type(mockProductNewCarDescription);
     cy.getByCy('description-en').clear().type(mockProductNewCarDescription);
     cy.getByCy('submit-product').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should update product attributes
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
@@ -93,7 +94,7 @@ describe('Products', () => {
     cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
     cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
     cy.getByCy('submit-product').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should create new product
     cy.visit(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);

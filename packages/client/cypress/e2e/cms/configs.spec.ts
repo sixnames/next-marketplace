@@ -56,7 +56,7 @@ describe('Site configs', () => {
       .clear()
       .type(newSiteDefaultTitle);
     cy.getByCy(`${pageDefaultTitleConfig.slug}-submit`).click();
-    cy.getByCy('error-notification').should('not.exist');
+    cy.shouldNotError();
 
     // email config with multiple values
     const emailConfig = SITE_CONFIGS_INITIAL.find(({ slug }: any) => slug === 'contactEmail');
@@ -71,13 +71,13 @@ describe('Site configs', () => {
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-0-add`).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1`).clear().type(newEmail);
     cy.getByCy(`${emailConfig.slug}-submit`).click();
-    cy.getByCy('error-notification').should('not.exist');
+    cy.shouldNotError();
 
     // remove second email
     cy.getByCy(emailDefaultCityTestId).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1-remove`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(`${emailConfig.slug}-submit`).click();
-    cy.getByCy('error-notification').should('not.exist');
+    cy.shouldNotError();
   });
 });

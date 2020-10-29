@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "up": "docker-compose -f docker-compose.dev.yml up -d",
+    "up:db": "docker-compose -f docker-compose.dev.yml up -d",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
     "stage": "docker-compose -f docker-compose.dev.yml up -d",

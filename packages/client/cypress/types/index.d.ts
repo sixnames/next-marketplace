@@ -15,6 +15,9 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
+    shouldSuccess(): void;
+    shouldError(): void;
+    shouldNotError(): void;
     getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;

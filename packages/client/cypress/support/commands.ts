@@ -30,6 +30,20 @@ Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);
 });
 
+Cypress.Commands.add('shouldSuccess', () => {
+  cy.getByCy(`success-notification`);
+  cy.getByCy(`close-notification`).click();
+});
+
+Cypress.Commands.add('shouldError', () => {
+  cy.getByCy(`error-notification`);
+  cy.getByCy(`close-notification`).click();
+});
+
+Cypress.Commands.add('shouldNotError', () => {
+  cy.getByCy(`error-notification`).should('not.exist');
+});
+
 Cypress.Commands.add('getBySelector', (selector) => {
   cy.wait(300);
   cy.get(selector);

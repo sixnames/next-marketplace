@@ -1357,6 +1357,7 @@ export type UpdateProductInput = {
   description: Array<LangInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
+  active: Scalars['Boolean'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
 };
@@ -2224,7 +2225,7 @@ export type CmsProductAttributesGroupFragment = (
 
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'mainImage' | 'rubrics'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -3188,6 +3189,7 @@ export const CmsProductFieldsFragmentDoc = gql`
     url
     index
   }
+  active
   mainImage
   rubrics
   attributesGroups {

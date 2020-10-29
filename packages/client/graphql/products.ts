@@ -66,6 +66,7 @@ export const cmsProductFieldsFragment = gql`
       url
       index
     }
+    active
     mainImage
     rubrics
     attributesGroups {

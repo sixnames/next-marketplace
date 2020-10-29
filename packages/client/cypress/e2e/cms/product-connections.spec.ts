@@ -13,9 +13,9 @@ describe('Product connections', () => {
     cy.testAuth(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
-  /*after(() => {
+  after(() => {
     cy.clearTestData();
-  });*/
+  });
 
   it('Should CRUD product connection', () => {
     const mockProductC = MOCK_PRODUCT_C.name[0].value;

@@ -59,6 +59,11 @@ describe('Products', () => {
     cy.getByCy(`${mockProductC}-update`).click();
     cy.getByCy(`product-details`).should('exist');
 
+    // Should update product activity
+    cy.getByCy('active-checkbox').check();
+    cy.getByCy('submit-product').click();
+    cy.getByCy(`success-notification`).should('exist');
+
     // Should update product main image
     cy.getByCy('file-preview-remove-0').click();
     cy.getByCy('remove-image-confirm').click();

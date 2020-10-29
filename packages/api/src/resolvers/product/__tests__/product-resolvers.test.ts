@@ -538,6 +538,7 @@ describe('Product', () => {
           description: anotherProduct.description,
           rubrics: [rubricLevelTree.id],
           assets: images,
+          active: true,
           ...productAttributes,
         };
       },

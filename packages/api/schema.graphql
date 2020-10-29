@@ -996,6 +996,7 @@ input UpdateOptionsGroupInput {
 }
 
 input UpdateProductInput {
+  active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
   cardName: [LangInput!]!

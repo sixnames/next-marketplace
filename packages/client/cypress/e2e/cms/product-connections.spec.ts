@@ -24,6 +24,7 @@ describe('Product connections', () => {
     const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
     const mockProductForAdd = MOCK_PRODUCT_A.name[0].value;
 
+    // Should create new connection
     cy.getByCy(`products-list`).should('exist');
     cy.getByCy(`${mockProductC}-update`).click();
     cy.visitMoreNavLink('connections');
@@ -41,6 +42,14 @@ describe('Product connections', () => {
       'exist',
     );
 
+    // Shouldn't create new connection on duplicate error
+    cy.getByCy(`create-connection`).click();
+    cy.selectOptionByTestId('attributesGroupId', mockGroupName);
+    cy.selectOptionByTestId('attributeId', mockAttributeName);
+    cy.getByCy(`create-connection-submit`).click();
+    cy.getByCy(`${mockAttributeName}-connection`).should('have.length', 1);
+
+    // Should add product to the new connection
     const addProductToConnectionModal = `add-product-to-connection-modal`;
     cy.getByCy(`${mockAttributeName}-connection-create`).click();
     cy.getByCy(addProductToConnectionModal).should('exist');

@@ -81,6 +81,19 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'products.connection.exist',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Связь уже существует.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Connection already exist.',
+      },
+    ],
+  },
+  {
     key: 'products.update.attributeVariantError',
     message: [
       {

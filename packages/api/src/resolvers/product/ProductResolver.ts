@@ -373,7 +373,20 @@ export class ProductResolver {
         };
       }
 
-      // TODO check if connection already exist
+      // Check if connection already exist
+      const exist = await ProductConnectionModel.findOne({
+        attributesGroupId,
+        attributeId,
+        productsIds: { $in: [productId] },
+      });
+
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.connection.exist`, lang }),
+        };
+      }
+
       const connection = await ProductConnectionModel.create({
         attributeId: attribute.id,
         attributesGroupId: attributesGroup.id,

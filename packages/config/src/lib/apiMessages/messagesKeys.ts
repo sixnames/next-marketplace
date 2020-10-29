@@ -270,6 +270,7 @@ const messagesKeys = [
   'products.delete.notFound',
   'products.delete.error',
   'products.delete.success',
+  'products.connection.exist',
   // Products validation
   'validation.products.id',
   'validation.productConnections.id',

@@ -1,10 +1,10 @@
 import React from 'react';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
-import Table from '../../components/Table/Table';
+import Table, { TableColumn } from '../../components/Table/Table';
 import {
   CreateLanguageInput,
-  Language,
+  LanguageFragment,
   useCreateLanguageMutation,
   useDeleteLanguageMutation,
   useGetAllLanguagesQuery,
@@ -58,7 +58,7 @@ const LanguagesContent: React.FC = () => {
     onError: onErrorCallback,
   });
 
-  function deleteLanguageHandler(language: Language) {
+  function deleteLanguageHandler(language: LanguageFragment) {
     showModal<ConfirmModalInterface>({
       type: CONFIRM_MODAL,
       props: {
@@ -111,7 +111,7 @@ const LanguagesContent: React.FC = () => {
     });
   }
 
-  function updateLanguageHandler(language: Language) {
+  function updateLanguageHandler(language: LanguageFragment) {
     const { id } = language;
     showModal<LanguageModalInterface>({
       type: LANGUAGE_MODAL,
@@ -136,47 +136,46 @@ const LanguagesContent: React.FC = () => {
   if (loading) return <Spinner isNested />;
   if (error || !data) return <RequestError />;
 
-  const columns = [
+  const columns: TableColumn<LanguageFragment>[] = [
     {
-      key: 'name',
-      title: 'Название',
-      render: (name: string) => name,
+      accessor: 'name',
+      headTitle: 'Название',
+      render: ({ cellData }) => cellData,
     },
     {
-      key: 'key',
-      title: 'Ключ',
-      render: (key: string) => key,
+      accessor: 'key',
+      headTitle: 'Ключ',
+      render: ({ cellData }) => cellData,
     },
     {
-      key: 'nativeName',
-      title: 'Нативное название',
-      render: (nativeName: string) => nativeName,
+      accessor: 'nativeName',
+      headTitle: 'Нативное название',
+      render: ({ cellData }) => cellData,
     },
     {
-      key: 'isDefault',
-      title: 'Основной',
-      render: (isDefault: boolean, { id, name }: Language) => (
+      accessor: 'isDefault',
+      headTitle: 'Основной',
+      render: ({ cellData, dataItem }) => (
         <Checkbox
-          testId={name}
-          disabled={isDefault}
+          testId={dataItem.name}
+          disabled={cellData}
           name={'isDefault'}
-          checked={isDefault}
-          onChange={() => setLanguageAsDefaultHandler(id, name)}
+          checked={cellData}
+          onChange={() => setLanguageAsDefaultHandler(dataItem.id, dataItem.name)}
         />
       ),
     },
     {
-      key: '',
-      render: (_: any, language: Language) => {
+      render: ({ dataItem }) => {
         return (
           <ContentItemControls
-            isDeleteDisabled={language.isDefault}
-            testId={language.name}
+            isDeleteDisabled={dataItem.isDefault}
+            testId={dataItem.name}
             justifyContent={'flex-end'}
             updateTitle={'Обновить язык'}
-            updateHandler={() => updateLanguageHandler(language)}
+            updateHandler={() => updateLanguageHandler(dataItem)}
             deleteTitle={'Удалить язык'}
-            deleteHandler={() => deleteLanguageHandler(language)}
+            deleteHandler={() => deleteLanguageHandler(dataItem)}
           />
         );
       },
@@ -196,7 +195,7 @@ const LanguagesContent: React.FC = () => {
         }
       />
       <DataLayoutContentFrame>
-        <Table
+        <Table<LanguageFragment>
           columns={columns}
           data={data.getAllLanguages}
           testIdKey={'name'}

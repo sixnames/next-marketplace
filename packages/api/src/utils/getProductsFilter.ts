@@ -87,6 +87,11 @@ export function getProductsFilter(args: { [key: string]: any } = {}): ProductsFi
       if (key === 'active') {
         return { ...acc, active: value };
       }
+
+      if (key === 'excludedProductsIds') {
+        const query = alwaysArray(value);
+        return { ...acc, _id: { $nin: query } };
+      }
     }
 
     return acc;

@@ -76,6 +76,7 @@ import {
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
+import { ProductsCountersInput } from '../product/ProductsCountersInput';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -808,9 +809,9 @@ export class RubricResolver {
   @FieldResolver((_type) => PaginatedProductsResponse)
   async products(
     @Root() rubric: DocumentType<Rubric>,
-    @Arg('input', { nullable: true }) input: RubricProductPaginateInput,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input || {};
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
     const query = getProductsFilter({ ...args, rubrics: rubricsIds });
 
@@ -958,13 +959,19 @@ export class RubricResolver {
   }
 
   @FieldResolver((_type) => Int)
-  async totalProductsCount(@Root() rubric: DocumentType<Rubric>): Promise<number> {
-    return getRubricCounters({ rubric });
+  async totalProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
+  ): Promise<number> {
+    return getRubricCounters({ rubric, args: input });
   }
 
   @FieldResolver((_type) => Int)
-  async activeProductsCount(@Root() rubric: DocumentType<Rubric>): Promise<number> {
-    return getRubricCounters({ rubric, args: { active: true } });
+  async activeProductsCount(
+    @Root() rubric: DocumentType<Rubric>,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
+  ): Promise<number> {
+    return getRubricCounters({ rubric, args: { ...input, active: true } });
   }
 
   // This resolver for id field after aggregation

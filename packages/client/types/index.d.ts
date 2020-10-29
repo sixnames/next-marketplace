@@ -1,5 +1,4 @@
 import { IconType } from '../components/Icon/Icon';
-import { Product } from '../generated/apolloComponents';
 
 export type Theme = 'light' | 'dark';
 export type ButtonTheme = 'primary' | 'secondary';
@@ -14,7 +13,7 @@ export type PostfixType =
   | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
   | undefined;
 
-export type ObjectType = { [key: string]: any };
+export type ObjectType = Record<string, any>;
 export interface QueryInterface {
   query?: ObjectType;
 }
@@ -46,8 +45,3 @@ export interface LangInterface {
   key: string;
   value: string;
 }
-
-export type CatalogueProductType = Pick<
-  Product,
-  'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'
->;

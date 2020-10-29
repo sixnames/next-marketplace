@@ -8,7 +8,7 @@ import Spinner from '../../Spinner/Spinner';
 import Button from '../../Buttons/Button';
 import {
   AddAttributeToGroupInput,
-  Attribute,
+  AttributeInGroupFragment,
   AttributeVariantEnum,
   UpdateAttributeInGroupInput,
   useGetNewAttributeOptionsQuery,
@@ -23,7 +23,7 @@ import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslatio
 import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface AddAttributeToGroupModalInterface {
-  attribute?: Attribute;
+  attribute?: AttributeInGroupFragment;
   confirm: (
     values:
       | Omit<AddAttributeToGroupInput, 'groupId'>

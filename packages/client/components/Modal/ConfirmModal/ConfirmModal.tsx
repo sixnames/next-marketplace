@@ -7,7 +7,7 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
 
 export interface ConfirmModalInterface {
-  confirm?: (args?: any) => void;
+  confirm?: () => void;
   message?: any;
   testId?: string;
 }

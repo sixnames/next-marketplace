@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: var(--inputHeightNormal);
+  height: var(--formInputHeight);
   margin-bottom: var(--lineGap);
   cursor: pointer;
   transition: all 0.2s;

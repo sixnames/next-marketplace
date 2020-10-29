@@ -3,19 +3,7 @@ WORKDIR /app
 
 COPY . .
 
-#COPY ./package.json ./
-#COPY ./yarn.lock ./
-#COPY ./lerna.json ./
-#COPY ./packages/api/package.json ./packages/api/
-#COPY ./packages/client/package.json ./packages/client/
-#COPY ./packages/config/package.json ./packages/config/
-#COPY ./packages/mocks/package.json ./packages/mocks/
-#COPY ./packages/shared/package.json ./packages/shared/
-#COPY ./packages/validation/package.json ./packages/validation/
-
 RUN yarn install
-
-#COPY . .
 
 RUN yarn build
 

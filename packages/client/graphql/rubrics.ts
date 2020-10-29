@@ -13,42 +13,53 @@ const rubricFragment = gql`
       id
       nameString
     }
-    totalProductsCount
-    activeProductsCount
   }
 `;
 
-const rubricProductsFragment = gql`
-  fragment RubricProductFragment on PaginatedProductsResponse {
+export const rubricProductFragment = gql`
+  fragment RubricProduct on Product {
+    id
+    itemId
+    name {
+      key
+      value
+    }
+    nameString
+    price
+    slug
+    mainImage
+    active
+    rubrics
+  }
+`;
+
+export const rubricProductsFragment = gql`
+  fragment RubricProductsPagination on PaginatedProductsResponse {
     totalDocs
     page
     totalPages
     activeProductsCount
     docs {
-      id
-      itemId
-      name {
-        key
-        value
-      }
-      nameString
-      price
-      slug
-      mainImage
-      active
-      rubrics
+      ...RubricProduct
     }
   }
+  ${rubricProductFragment}
 `;
 
 export const RUBRICS_TREE_QUERY = gql`
   query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
     getRubricsTree(excluded: $excluded) {
       ...RubricFragment
+      totalProductsCount(input: $counters)
+      activeProductsCount(input: $counters)
       children(excluded: $excluded) {
         ...RubricFragment
+        totalProductsCount(input: $counters)
+        activeProductsCount(input: $counters)
         children(excluded: $excluded) {
           ...RubricFragment
+          totalProductsCount(input: $counters)
+          activeProductsCount(input: $counters)
         }
       }
     }
@@ -118,11 +129,11 @@ export const DELETE_RUBRIC = gql`
 `;
 
 export const RUBRIC_PRODUCTS_QUERY = gql`
-  query GetRubricProducts($id: ID!, $notInRubric: ID) {
+  query GetRubricProducts($id: ID!, $notInRubric: ID, $excludedProductsIds: [ID!]) {
     getRubric(id: $id) {
       id
-      products(input: { notInRubric: $notInRubric }) {
-        ...RubricProductFragment
+      products(input: { notInRubric: $notInRubric, excludedProductsIds: $excludedProductsIds }) {
+        ...RubricProductsPagination
       }
     }
   }
@@ -133,7 +144,7 @@ export const RUBRIC_PRODUCTS_QUERY = gql`
 export const GET_NON_RUBRIC_PRODUCTS_QUERY = gql`
   query GetNonRubricProducts($input: ProductPaginateInput!) {
     getAllProducts(input: $input) {
-      ...RubricProductFragment
+      ...RubricProductsPagination
     }
   }
 
@@ -161,11 +172,43 @@ export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
 export const GET_ALL_PRODUCTS_QUERY = gql`
   query GetAllProducts($input: ProductPaginateInput!) {
     getAllProducts(input: $input) {
-      ...RubricProductFragment
+      ...RubricProductsPagination
     }
   }
 
   ${rubricProductsFragment}
+`;
+
+export const rubricAttributeFragment = gql`
+  fragment RubricAttribute on Attribute {
+    id
+    nameString
+    variant
+    metric {
+      id
+      nameString
+    }
+    options {
+      id
+      nameString
+    }
+  }
+`;
+
+export const rubricAttributesGroupFragment = gql`
+  fragment RubricAttributesGroup on RubricAttributesGroup {
+    id
+    isOwner
+    showInCatalogueFilter
+    node {
+      id
+      nameString
+      attributes {
+        ...RubricAttribute
+      }
+    }
+  }
+  ${rubricAttributeFragment}
 `;
 
 export const RUBRIC_ATTRIBUTES_QUERY = gql`
@@ -174,27 +217,9 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
       id
       level
       attributesGroups {
-        id
-        isOwner
-        showInCatalogueFilter
-        node {
-          id
-          nameString
-          attributes {
-            id
-            nameString
-            variant
-            metric {
-              id
-              nameString
-            }
-            options {
-              id
-              nameString
-            }
-          }
-        }
+        ...RubricAttributesGroup
       }
     }
   }
+  ${rubricAttributesGroupFragment}
 `;

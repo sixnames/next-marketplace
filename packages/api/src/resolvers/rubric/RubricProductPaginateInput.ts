@@ -22,6 +22,9 @@ export class RubricProductPaginateInput extends PaginateInput {
   @Field((_type) => Boolean, { nullable: true })
   active?: boolean;
 
+  @Field((_type) => [ID], { nullable: true })
+  excludedProductsIds?: string[];
+
   @Field((_type) => [RubricProductAttributesFilterInput], { nullable: true })
   attributes?: RubricProductAttributesFilterInput[];
 }

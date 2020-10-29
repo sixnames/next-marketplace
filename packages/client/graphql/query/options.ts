@@ -12,6 +12,26 @@ export const OPTIONS_GROUPS_QUERY = gql`
   }
 `;
 
+export const optionInGroupFragment = gql`
+  fragment OptionInGroup on Option {
+    id
+    name {
+      key
+      value
+    }
+    nameString
+    color
+    gender
+    variants {
+      key
+      value {
+        key
+        value
+      }
+    }
+  }
+`;
+
 export const OPTIONS_GROUP_QUERY = gql`
   query GetOptionsGroup($id: ID!) {
     getOptionsGroup(id: $id) {
@@ -22,22 +42,9 @@ export const OPTIONS_GROUP_QUERY = gql`
       }
       nameString
       options {
-        id
-        name {
-          key
-          value
-        }
-        nameString
-        color
-        gender
-        variants {
-          key
-          value {
-            key
-            value
-          }
-        }
+        ...OptionInGroup
       }
     }
   }
+  ${optionInGroupFragment}
 `;

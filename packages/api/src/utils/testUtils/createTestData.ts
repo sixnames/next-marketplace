@@ -361,7 +361,14 @@ const createTestData = async () => {
       ],
     });
 
-    // for delete
+    await ProductModel.create(
+      await generateTestProduct({
+        ...MOCK_PRODUCT_A,
+        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    );
+
     await ProductModel.create(
       await generateTestProduct(
         {
@@ -373,22 +380,11 @@ const createTestData = async () => {
       ),
     );
 
-    // for second rubric in third level
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_C,
         ...productAttributes(optionsSlugsColor[0], optionsSlugsWineType[0]),
         rubrics: [rubricLevelThreeAB.id],
-      }),
-    );
-
-    // main products
-    // const product = await ProductModel.create({
-    await ProductModel.create(
-      await generateTestProduct({
-        ...MOCK_PRODUCT_A,
-        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
-        rubrics: [rubricLevelThreeAA.id],
       }),
     );
 

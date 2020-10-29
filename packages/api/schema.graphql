@@ -31,6 +31,12 @@ input AddOptionToGroupInput {
   variants: [OptionVariantInput!]
 }
 
+input AddProductToConnectionInput {
+  addProductId: ID!
+  connectionId: ID!
+  productId: ID!
+}
+
 input AddProductToRubricInput {
   productId: ID!
   rubricId: ID!
@@ -229,6 +235,12 @@ input CreateOptionsGroupInput {
   name: [LangInput!]!
 }
 
+input CreateProductConnectionInput {
+  attributeId: ID!
+  attributesGroupId: ID!
+  productId: ID!
+}
+
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
@@ -294,6 +306,12 @@ input DeleteCityFromCountryInput {
 input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
+}
+
+input DeleteProductFromConnectionInput {
+  connectionId: ID!
+  deleteProductId: ID!
+  productId: ID!
 }
 
 input DeleteProductFromRubricInput {
@@ -366,6 +384,7 @@ type Mutation {
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
@@ -374,6 +393,7 @@ type Mutation {
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
+  createProductConnection(input: CreateProductConnectionInput!): ProductPayloadType!
   createRole(input: CreateRoleInput!): RolePayloadType!
   createRubric(input: CreateRubricInput!): RubricPayloadType!
   createRubricVariant(input: CreateRubricVariantInput!): RubricVariantPayloadType!
@@ -389,6 +409,7 @@ type Mutation {
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
+  deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
   deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
@@ -516,8 +537,10 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
+  cardFeatures: [ProductCardFeature!]!
   cardName: [LanguageType!]!
   cardNameString: String!
+  connections: [ProductConnection!]!
   createdAt: Timestamp!
   description: [LanguageType!]!
   descriptionString: String!
@@ -562,8 +585,43 @@ input ProductAttributesGroupInput {
   showInCard: Boolean!
 }
 
+type ProductCardFeature {
+  attributes: [ProductCardFeatureAttribute!]!
+  attributesGroup: AttributesGroup!
+}
+
+type ProductCardFeatureAttribute {
+  nameString: String!
+  value: [String!]!
+}
+
+type ProductConnection {
+  attribute: Attribute!
+  attributeId: String!
+  attributesGroupId: String!
+  id: ID!
+  products(
+    """Shows only active products."""
+    activeOnly: Boolean = false
+  ): [ProductConnectionItem!]!
+  productsIds: [String!]!
+}
+
+type ProductConnectionItem {
+  node: Product!
+
+  """Returns name of selected attribute value"""
+  optionName: String!
+
+  """
+  Returns first value only because this attribute has to be Select variant
+  """
+  value: String!
+}
+
 input ProductPaginateInput {
   countActiveProducts: Boolean
+  excludedProductsIds: [ID!]
   limit: Int = 100
   noRubrics: Boolean
   notInRubric: ID
@@ -586,6 +644,7 @@ type ProductsCounters {
 }
 
 input ProductsCountersInput {
+  excludedProductsIds: [ID!]
   noRubrics: Boolean
   notInRubric: ID
   rubric: ID
@@ -700,7 +759,7 @@ enum RoleRuleOperationTypeEnum {
 
 type Rubric {
   active: Boolean
-  activeProductsCount: Int!
+  activeProductsCount(input: ProductsCountersInput = {}): Int!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
@@ -713,9 +772,9 @@ type Rubric {
   parent: Rubric
   priorities: [CityCounter!]!
   priority: Int
-  products(input: RubricProductPaginateInput): PaginatedProductsResponse!
+  products(input: RubricProductPaginateInput = {}): PaginatedProductsResponse!
   slug: String!
-  totalProductsCount: Int!
+  totalProductsCount(input: ProductsCountersInput = {}): Int!
   variant: RubricVariant!
   views: [CityCounter!]!
 }
@@ -782,6 +841,7 @@ input RubricProductAttributesFilterInput {
 input RubricProductPaginateInput {
   active: Boolean
   attributes: [RubricProductAttributesFilterInput!]
+  excludedProductsIds: [ID!]
   limit: Int = 100
   notInRubric: ID
   page: Int = 1
@@ -936,6 +996,7 @@ input UpdateOptionsGroupInput {
 }
 
 input UpdateProductInput {
+  active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
   cardName: [LangInput!]!

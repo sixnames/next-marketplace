@@ -1,57 +1,45 @@
-import React, { useState, Fragment } from 'react';
-import ModalFrame from '../ModalFrame';
-import ModalTitle from '../ModalTitle';
-import Button from '../../Buttons/Button';
+import React, { Fragment, useState } from 'react';
+import { useAppContext } from '../../../context/appContext';
 import {
-  useAddProductTuRubricMutation,
+  RubricProductFragment,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
   useGetRubricsTreeQuery,
 } from '../../../generated/apolloComponents';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
+import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
+import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import DataLayoutTitle from '../../DataLayout/DataLayoutTitle';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
+import ModalFrame from '../ModalFrame';
+import ModalTitle from '../ModalTitle';
+import Button from '../../Buttons/Button';
+import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
+import RubricsTree from '../../../routes/Rubrics/RubricsTree';
+import useProductsListColumns, {
+  ProductColumnsInterface,
+} from '../../../hooks/useProductsListColumns';
 import Table from '../../Table/Table';
 import Accordion from '../../Accordion/Accordion';
-import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
-import { useAppContext } from '../../../context/appContext';
-import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
-import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
-import useProductsListColumns from '../../../hooks/useProductsListColumns';
 import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import RubricsTree from '../../../routes/Rubrics/RubricsTree';
 
-interface AddProductToRubricModalInterface {
-  rubricId: string;
-}
-
-interface AddProductToRubricListInterface {
-  notInRubric: string;
+interface ProductsListInterface extends ProductColumnsInterface {
+  notInRubric?: string;
   viewRubric: string;
-  addProductToRubricHandler: (id: string) => void;
+  excludedProductsIds?: string[];
 }
 
-interface NotInRubricProductsListInterface {
-  addProductToRubricHandler: (id: string) => void;
-}
-
-interface ProductsSearchListInterface {
-  addProductToRubricHandler: (id: string) => void;
-  notInRubric: string;
-  search: string;
-}
-
-const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
+const ProductsList: React.FC<ProductsListInterface> = ({
   viewRubric,
   notInRubric,
-  addProductToRubricHandler,
+  excludedProductsIds,
+  ...props
 }) => {
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetRubricProductsQuery({
@@ -59,6 +47,7 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
     variables: {
       id: `${viewRubric}`,
       notInRubric,
+      excludedProductsIds,
     },
   });
 
@@ -66,14 +55,20 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubric) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getRubric) {
+    return <RequestError />;
+  }
+
   const {
     getRubric: { products },
   } = data;
 
   return (
-    <Table
+    <Table<RubricProductFragment>
       data={products.docs}
       columns={columns}
       emptyMessage={'Список пуст'}
@@ -82,15 +77,20 @@ const AddProductToRubricList: React.FC<AddProductToRubricListInterface> = ({
   );
 };
 
+interface NotInRubricProductsListInterface extends ProductColumnsInterface {
+  excludedProductsIds?: string[];
+}
+
 const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
-  addProductToRubricHandler,
+  excludedProductsIds,
+  ...props
 }) => {
   const page = 1;
   const limit = 1000;
 
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetNonRubricProductsQuery({
@@ -101,6 +101,7 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
         page,
         limit,
         countActiveProducts: true,
+        excludedProductsIds,
       },
     },
   });
@@ -109,13 +110,19 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAllProducts) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAllProducts) {
+    return <RequestError />;
+  }
+
   const {
     getAllProducts: { docs, totalDocs, activeProductsCount },
   } = data;
 
-  return (
+  return docs.length > 0 ? (
     <Accordion
       title={'Товары вне рубрик'}
       testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
@@ -127,21 +134,33 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
         />
       }
     >
-      <Table data={docs} columns={columns} emptyMessage={'Список пуст'} testIdKey={'name'} />
+      <Table<RubricProductFragment>
+        data={docs}
+        columns={columns}
+        emptyMessage={'Список пуст'}
+        testIdKey={'name'}
+      />
     </Accordion>
-  );
+  ) : null;
 };
+
+interface ProductsSearchListInterface extends ProductColumnsInterface {
+  notInRubric?: string;
+  excludedProductsIds?: string[];
+  search: string;
+}
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
-  addProductToRubricHandler,
   notInRubric,
+  excludedProductsIds,
+  ...props
 }) => {
   const page = 1;
 
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
-    createHandler: (product) => addProductToRubricHandler(product.id),
+    ...props,
   });
 
   const { data, loading, error } = useGetNonRubricProductsQuery({
@@ -151,6 +170,7 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
         page,
         notInRubric,
         search,
+        excludedProductsIds,
       },
     },
   });
@@ -159,14 +179,20 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getAllProducts) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getAllProducts) {
+    return <RequestError />;
+  }
+
   const {
     getAllProducts: { docs },
   } = data;
 
   return (
-    <Table
+    <Table<RubricProductFragment>
       data={docs}
       columns={columns}
       emptyMessage={`По запросу "${search}" товаров не найдено`}
@@ -175,48 +201,30 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   );
 };
 
-const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ rubricId }) => {
-  const { onCompleteCallback, onErrorCallback } = useMutationCallbacks({ withModal: true });
+export interface ProductSearchModalInterface extends ProductColumnsInterface {
+  rubricId?: string;
+  excludedProductsIds?: string[];
+  testId?: string;
+}
+
+const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
+  rubricId,
+  testId,
+  excludedProductsIds,
+  ...props
+}) => {
   const [search, setSearch] = useState<string | null>(null);
   const { showModal } = useAppContext();
   const { data, error, loading } = useGetRubricsTreeQuery({
     fetchPolicy: 'network-only',
     variables: {
-      excluded: [rubricId],
-      counters: { noRubrics: true },
+      excluded: rubricId ? [rubricId] : [],
+      counters: {
+        noRubrics: true,
+        excludedProductsIds,
+      },
     },
   });
-
-  const [addProductToRubricMutation] = useAddProductTuRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.addProductToRubric),
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries: [
-      {
-        query: RUBRICS_TREE_QUERY,
-        variables: {
-          counters: { noRubrics: true },
-        },
-      },
-      {
-        query: RUBRIC_PRODUCTS_QUERY,
-        variables: {
-          id: rubricId,
-        },
-      },
-    ],
-  });
-
-  function addProductToRubricHandler(productId: string) {
-    return addProductToRubricMutation({
-      variables: {
-        input: {
-          rubricId,
-          productId,
-        },
-      },
-    });
-  }
 
   function createProductModalHandler() {
     showModal<CreateNewProductModalInterface>({
@@ -245,13 +253,18 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
     return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
   }
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data || !data.getRubricsTree) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getRubricsTree) {
+    return <RequestError />;
+  }
 
   const { getRubricsTree } = data;
 
   return (
-    <ModalFrame testId={'add-product-to-rubric-modal'} wide>
+    <ModalFrame testId={testId} wide>
       <ModalTitle
         right={
           <Button
@@ -278,27 +291,31 @@ const AddProductToRubricModal: React.FC<AddProductToRubricModalInterface> = ({ r
         <ProductsSearchList
           search={search}
           notInRubric={rubricId}
-          addProductToRubricHandler={addProductToRubricHandler}
+          excludedProductsIds={excludedProductsIds}
+          {...props}
         />
       ) : (
         <Fragment>
           <RubricsTree
             low
             tree={getRubricsTree}
-            render={(viewRubric) => (
-              <AddProductToRubricList
-                viewRubric={viewRubric}
-                notInRubric={rubricId}
-                addProductToRubricHandler={addProductToRubricHandler}
-              />
-            )}
+            render={(viewRubric) => {
+              return (
+                <ProductsList
+                  viewRubric={viewRubric}
+                  notInRubric={rubricId}
+                  excludedProductsIds={excludedProductsIds}
+                  {...props}
+                />
+              );
+            }}
           />
 
-          <NotInRubricProductsList addProductToRubricHandler={addProductToRubricHandler} />
+          <NotInRubricProductsList excludedProductsIds={excludedProductsIds} {...props} />
         </Fragment>
       )}
     </ModalFrame>
   );
 };
 
-export default AddProductToRubricModal;
+export default ProductSearchModal;

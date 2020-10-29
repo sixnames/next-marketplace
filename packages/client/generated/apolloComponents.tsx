@@ -481,10 +481,12 @@ export type Product = {
   assets: Array<AssetType>;
   price: Scalars['Int'];
   active: Scalars['Boolean'];
+  connections: Array<ProductConnection>;
   nameString: Scalars['String'];
   cardNameString: Scalars['String'];
   descriptionString: Scalars['String'];
   mainImage: Scalars['String'];
+  cardFeatures: Array<ProductCardFeature>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
 };
@@ -525,6 +527,42 @@ export type AssetType = {
   index: Scalars['Int'];
 };
 
+export type ProductConnection = {
+  __typename?: 'ProductConnection';
+  id: Scalars['ID'];
+  attributeId: Scalars['String'];
+  attributesGroupId: Scalars['String'];
+  productsIds: Array<Scalars['String']>;
+  attribute: Attribute;
+  products: Array<ProductConnectionItem>;
+};
+
+
+export type ProductConnectionProductsArgs = {
+  activeOnly?: Maybe<Scalars['Boolean']>;
+};
+
+export type ProductConnectionItem = {
+  __typename?: 'ProductConnectionItem';
+  node: Product;
+  /** Returns first value only because this attribute has to be Select variant */
+  value: Scalars['String'];
+  /** Returns name of selected attribute value */
+  optionName: Scalars['String'];
+};
+
+export type ProductCardFeature = {
+  __typename?: 'ProductCardFeature';
+  attributesGroup: AttributesGroup;
+  attributes: Array<ProductCardFeatureAttribute>;
+};
+
+export type ProductCardFeatureAttribute = {
+  __typename?: 'ProductCardFeatureAttribute';
+  nameString: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
 export type PaginatedProductsResponse = {
   __typename?: 'PaginatedProductsResponse';
   docs: Array<Product>;
@@ -549,6 +587,7 @@ export type ProductPaginateInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
   countActiveProducts?: Maybe<Scalars['Boolean']>;
 };
 
@@ -569,6 +608,7 @@ export type ProductsCountersInput = {
   rubric?: Maybe<Scalars['ID']>;
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
 };
 
 export type CatalogueData = {
@@ -609,6 +649,16 @@ export type RubricChildrenArgs = {
 
 export type RubricProductsArgs = {
   input?: Maybe<RubricProductPaginateInput>;
+};
+
+
+export type RubricTotalProductsCountArgs = {
+  input?: Maybe<ProductsCountersInput>;
+};
+
+
+export type RubricActiveProductsCountArgs = {
+  input?: Maybe<ProductsCountersInput>;
 };
 
 export type RubricCatalogueTitle = {
@@ -672,6 +722,7 @@ export type RubricProductPaginateInput = {
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
   active?: Maybe<Scalars['Boolean']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
   attributes?: Maybe<Array<RubricProductAttributesFilterInput>>;
 };
 
@@ -783,6 +834,9 @@ export type Mutation = {
   createProduct: ProductPayloadType;
   updateProduct: ProductPayloadType;
   deleteProduct: ProductPayloadType;
+  createProductConnection: ProductPayloadType;
+  addProductToConnection: ProductPayloadType;
+  deleteProductFromConnection: ProductPayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
@@ -934,6 +988,21 @@ export type MutationUpdateProductArgs = {
 
 export type MutationDeleteProductArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationCreateProductConnectionArgs = {
+  input: CreateProductConnectionInput;
+};
+
+
+export type MutationAddProductToConnectionArgs = {
+  input: AddProductToConnectionInput;
+};
+
+
+export type MutationDeleteProductFromConnectionArgs = {
+  input: DeleteProductFromConnectionInput;
 };
 
 
@@ -1288,8 +1357,27 @@ export type UpdateProductInput = {
   description: Array<LangInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
+  active: Scalars['Boolean'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
+};
+
+export type CreateProductConnectionInput = {
+  productId: Scalars['ID'];
+  attributeId: Scalars['ID'];
+  attributesGroupId: Scalars['ID'];
+};
+
+export type AddProductToConnectionInput = {
+  connectionId: Scalars['ID'];
+  productId: Scalars['ID'];
+  addProductId: Scalars['ID'];
+};
+
+export type DeleteProductFromConnectionInput = {
+  connectionId: Scalars['ID'];
+  productId: Scalars['ID'];
+  deleteProductId: Scalars['ID'];
 };
 
 export type AttributesGroupPayloadType = {
@@ -2103,9 +2191,41 @@ export type UpdateMyPasswordMutation = (
   ) }
 );
 
-export type ProductFragmentFragment = (
+export type CmsProductAttributeFragment = (
+  { __typename?: 'ProductAttribute' }
+  & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
+  & { node: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
+    & { metric?: Maybe<(
+      { __typename?: 'Metric' }
+      & Pick<Metric, 'id' | 'nameString'>
+    )>, options?: Maybe<(
+      { __typename?: 'OptionsGroup' }
+      & Pick<OptionsGroup, 'id' | 'nameString'>
+      & { options: Array<(
+        { __typename?: 'Option' }
+        & Pick<Option, 'id' | 'nameString' | 'color'>
+      )> }
+    )> }
+  ) }
+);
+
+export type CmsProductAttributesGroupFragment = (
+  { __typename?: 'ProductAttributesGroup' }
+  & Pick<ProductAttributesGroup, 'showInCard'>
+  & { node: (
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+  ), attributes: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CmsProductAttributeFragment
+  )> }
+);
+
+export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'rubrics'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -2120,30 +2240,38 @@ export type ProductFragmentFragment = (
     & Pick<AssetType, 'url' | 'index'>
   )>, attributesGroups: Array<(
     { __typename?: 'ProductAttributesGroup' }
-    & Pick<ProductAttributesGroup, 'showInCard'>
-    & { node: (
-      { __typename?: 'AttributesGroup' }
-      & Pick<AttributesGroup, 'id' | 'nameString'>
-    ), attributes: Array<(
-      { __typename?: 'ProductAttribute' }
-      & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
-      & { node: (
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
-        & { metric?: Maybe<(
-          { __typename?: 'Metric' }
-          & Pick<Metric, 'id' | 'nameString'>
-        )>, options?: Maybe<(
-          { __typename?: 'OptionsGroup' }
-          & Pick<OptionsGroup, 'id' | 'nameString'>
-          & { options: Array<(
-            { __typename?: 'Option' }
-            & Pick<Option, 'id' | 'nameString' | 'color'>
-          )> }
-        )> }
-      ) }
-    )> }
+    & CmsProductAttributesGroupFragment
   )> }
+);
+
+export type CmsProductConnectionItemFragment = (
+  { __typename?: 'ProductConnectionItem' }
+  & Pick<ProductConnectionItem, 'optionName' | 'value'>
+  & { node: (
+    { __typename?: 'Product' }
+    & CmsProductFieldsFragment
+  ) }
+);
+
+export type CmsProductConnectionFragment = (
+  { __typename?: 'ProductConnection' }
+  & Pick<ProductConnection, 'id'>
+  & { attribute: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'nameString'>
+  ), products: Array<(
+    { __typename?: 'ProductConnectionItem' }
+    & CmsProductConnectionItemFragment
+  )> }
+);
+
+export type CmsProductFragment = (
+  { __typename?: 'Product' }
+  & { connections: Array<(
+    { __typename?: 'ProductConnection' }
+    & CmsProductConnectionFragment
+  )> }
+  & CmsProductFieldsFragment
 );
 
 export type GetProductQueryVariables = Exact<{
@@ -2155,7 +2283,7 @@ export type GetProductQuery = (
   { __typename?: 'Query' }
   & { getProduct: (
     { __typename?: 'Product' }
-    & ProductFragmentFragment
+    & CmsProductFragment
   ) }
 );
 
@@ -2171,7 +2299,7 @@ export type UpdateProductMutation = (
     & Pick<ProductPayloadType, 'success' | 'message'>
     & { product?: Maybe<(
       { __typename?: 'Product' }
-      & ProductFragmentFragment
+      & CmsProductFragment
     )> }
   ) }
 );
@@ -2202,6 +2330,45 @@ export type DeleteProductMutation = (
   ) }
 );
 
+export type CreateProductConnectionMutationVariables = Exact<{
+  input: CreateProductConnectionInput;
+}>;
+
+
+export type CreateProductConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { createProductConnection: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type AddProductToConnectionMutationVariables = Exact<{
+  input: AddProductToConnectionInput;
+}>;
+
+
+export type AddProductToConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { addProductToConnection: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteProductFromConnectionMutationVariables = Exact<{
+  input: DeleteProductFromConnectionInput;
+}>;
+
+
+export type DeleteProductFromConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProductFromConnection: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type GetAllAttributesGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2210,6 +2377,24 @@ export type GetAllAttributesGroupsQuery = (
   & { getAllAttributesGroups: Array<(
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type AttributeInGroupFragment = (
+  { __typename?: 'Attribute' }
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, positioningInTitle?: Maybe<Array<(
+    { __typename?: 'AttributePositioningInTitle' }
+    & Pick<AttributePositioningInTitle, 'key' | 'value'>
+  )>>, options?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+  )>, metric?: Maybe<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
   )> }
 );
 
@@ -2228,20 +2413,7 @@ export type GetAttributesGroupQuery = (
       & Pick<LanguageType, 'key' | 'value'>
     )>, attributes: Array<(
       { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, positioningInTitle?: Maybe<Array<(
-        { __typename?: 'AttributePositioningInTitle' }
-        & Pick<AttributePositioningInTitle, 'key' | 'value'>
-      )>>, options?: Maybe<(
-        { __typename?: 'OptionsGroup' }
-        & Pick<OptionsGroup, 'id' | 'nameString'>
-      )>, metric?: Maybe<(
-        { __typename?: 'Metric' }
-        & Pick<Metric, 'id' | 'nameString'>
-      )> }
+      & AttributeInGroupFragment
     )> }
   )> }
 );
@@ -2367,6 +2539,11 @@ export type GetAllConfigsQuery = (
   )> }
 );
 
+export type LanguageFragment = (
+  { __typename?: 'Language' }
+  & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+);
+
 export type GetAllLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2374,8 +2551,17 @@ export type GetAllLanguagesQuery = (
   { __typename?: 'Query' }
   & { getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
+    & LanguageFragment
   )>> }
+);
+
+export type MessageFragment = (
+  { __typename?: 'Message' }
+  & Pick<Message, 'key'>
+  & { message: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )> }
 );
 
 export type GetMessagesByKeysQueryVariables = Exact<{
@@ -2387,11 +2573,7 @@ export type GetMessagesByKeysQuery = (
   { __typename?: 'Query' }
   & { getMessagesByKeys: Array<(
     { __typename?: 'Message' }
-    & Pick<Message, 'key'>
-    & { message: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & MessageFragment
   )> }
 );
 
@@ -2402,11 +2584,7 @@ export type GetValidationMessagesQuery = (
   { __typename?: 'Query' }
   & { getValidationMessages: Array<(
     { __typename?: 'Message' }
-    & Pick<Message, 'key'>
-    & { message: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & MessageFragment
   )> }
 );
 
@@ -2425,6 +2603,22 @@ export type GetAllOptionsGroupsQuery = (
   )> }
 );
 
+export type OptionInGroupFragment = (
+  { __typename?: 'Option' }
+  & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, variants?: Maybe<Array<(
+    { __typename?: 'OptionVariant' }
+    & Pick<OptionVariant, 'key'>
+    & { value: Array<(
+      { __typename?: 'LanguageType' }
+      & Pick<LanguageType, 'key' | 'value'>
+    )> }
+  )>> }
+);
+
 export type GetOptionsGroupQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2440,18 +2634,7 @@ export type GetOptionsGroupQuery = (
       & Pick<LanguageType, 'key' | 'value'>
     )>, options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
-      & { name: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
-      )>, variants?: Maybe<Array<(
-        { __typename?: 'OptionVariant' }
-        & Pick<OptionVariant, 'key'>
-        & { value: Array<(
-          { __typename?: 'LanguageType' }
-          & Pick<LanguageType, 'key' | 'value'>
-        )> }
-      )>> }
+      & OptionInGroupFragment
     )> }
   )> }
 );
@@ -2467,6 +2650,27 @@ export type GetAllRolesQuery = (
   )> }
 );
 
+export type RoleRuleFragment = (
+  { __typename?: 'RoleRule' }
+  & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
+  & { operations: Array<(
+    { __typename?: 'RoleRuleOperation' }
+    & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
+  )> }
+);
+
+export type RoleFragment = (
+  { __typename?: 'Role' }
+  & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, rules: Array<(
+    { __typename?: 'RoleRule' }
+    & RoleRuleFragment
+  )> }
+);
+
 export type GetRoleQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2476,18 +2680,7 @@ export type GetRoleQuery = (
   { __typename?: 'Query' }
   & { getRole: (
     { __typename?: 'Role' }
-    & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )>, rules: Array<(
-      { __typename?: 'RoleRule' }
-      & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
-      & { operations: Array<(
-        { __typename?: 'RoleRuleOperation' }
-        & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
-      )> }
-    )> }
+    & RoleFragment
   ) }
 );
 
@@ -2501,6 +2694,15 @@ export type GetEntityFieldsQuery = (
   & Pick<Query, 'getEntityFields'>
 );
 
+export type AppNavItemFragment = (
+  { __typename?: 'NavItem' }
+  & Pick<NavItem, 'id' | 'nameString' | 'path'>
+  & { children?: Maybe<Array<(
+    { __typename?: 'NavItem' }
+    & Pick<NavItem, 'id' | 'nameString' | 'path'>
+  )>> }
+);
+
 export type GetAllAppNavItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2508,11 +2710,16 @@ export type GetAllAppNavItemsQuery = (
   { __typename?: 'Query' }
   & { getAllAppNavItems: Array<(
     { __typename?: 'NavItem' }
-    & Pick<NavItem, 'id' | 'nameString' | 'path'>
-    & { children?: Maybe<Array<(
-      { __typename?: 'NavItem' }
-      & Pick<NavItem, 'id' | 'nameString' | 'path'>
-    )>> }
+    & AppNavItemFragment
+  )> }
+);
+
+export type RubricVariantFragment = (
+  { __typename?: 'RubricVariant' }
+  & Pick<RubricVariant, 'id' | 'nameString'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
   )> }
 );
 
@@ -2523,11 +2730,7 @@ export type GetAllRubricVariantsQuery = (
   { __typename?: 'Query' }
   & { getAllRubricVariants?: Maybe<Array<(
     { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, 'id' | 'nameString'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & RubricVariantFragment
   )>>, getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
     & Pick<GenderOption, 'id' | 'nameString'>
@@ -2642,7 +2845,7 @@ export type GetFeaturesAstQuery = (
 
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'totalProductsCount' | 'activeProductsCount'>
+  & Pick<Rubric, 'id' | 'nameString' | 'level'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -2652,16 +2855,21 @@ export type RubricFragmentFragment = (
   ) }
 );
 
-export type RubricProductFragmentFragment = (
+export type RubricProductFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )> }
+);
+
+export type RubricProductsPaginationFragment = (
   { __typename?: 'PaginatedProductsResponse' }
   & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )> }
+    & RubricProductFragment
   )> }
 );
 
@@ -2675,10 +2883,13 @@ export type GetRubricsTreeQuery = (
   { __typename?: 'Query' }
   & { getRubricsTree: Array<(
     { __typename?: 'Rubric' }
+    & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
     & { children: Array<(
       { __typename?: 'Rubric' }
+      & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
       & { children: Array<(
         { __typename?: 'Rubric' }
+        & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
         & RubricFragmentFragment
       )> }
       & RubricFragmentFragment
@@ -2759,6 +2970,7 @@ export type DeleteRubricMutation = (
 export type GetRubricProductsQueryVariables = Exact<{
   id: Scalars['ID'];
   notInRubric?: Maybe<Scalars['ID']>;
+  excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
 }>;
 
 
@@ -2769,7 +2981,7 @@ export type GetRubricProductsQuery = (
     & Pick<Rubric, 'id'>
     & { products: (
       { __typename?: 'PaginatedProductsResponse' }
-      & RubricProductFragmentFragment
+      & RubricProductsPaginationFragment
     ) }
   ) }
 );
@@ -2783,7 +2995,7 @@ export type GetNonRubricProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & RubricProductFragmentFragment
+    & RubricProductsPaginationFragment
   ) }
 );
 
@@ -2822,7 +3034,32 @@ export type GetAllProductsQuery = (
   { __typename?: 'Query' }
   & { getAllProducts: (
     { __typename?: 'PaginatedProductsResponse' }
-    & RubricProductFragmentFragment
+    & RubricProductsPaginationFragment
+  ) }
+);
+
+export type RubricAttributeFragment = (
+  { __typename?: 'Attribute' }
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
+  & { metric?: Maybe<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
+  )>, options?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+  )> }
+);
+
+export type RubricAttributesGroupFragment = (
+  { __typename?: 'RubricAttributesGroup' }
+  & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
+  & { node: (
+    { __typename?: 'AttributesGroup' }
+    & Pick<AttributesGroup, 'id' | 'nameString'>
+    & { attributes: Array<(
+      { __typename?: 'Attribute' }
+      & RubricAttributeFragment
+    )> }
   ) }
 );
 
@@ -2838,22 +3075,7 @@ export type GetRubricAttributesQuery = (
     & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
-      & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-        & { attributes: Array<(
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString' | 'variant'>
-          & { metric?: Maybe<(
-            { __typename?: 'Metric' }
-            & Pick<Metric, 'id' | 'nameString'>
-          )>, options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-          )> }
-        )> }
-      ) }
+      & RubricAttributesGroupFragment
     )> }
   ) }
 );
@@ -2904,8 +3126,46 @@ export const SiteRubricFragmentFragmentDoc = gql`
   }
 }
     `;
-export const ProductFragmentFragmentDoc = gql`
-    fragment ProductFragment on Product {
+export const CmsProductAttributeFragmentDoc = gql`
+    fragment CMSProductAttribute on ProductAttribute {
+  showInCard
+  key
+  node {
+    id
+    slug
+    nameString
+    variant
+    metric {
+      id
+      nameString
+    }
+    options {
+      id
+      nameString
+      options {
+        id
+        nameString
+        color
+      }
+    }
+  }
+  value
+}
+    `;
+export const CmsProductAttributesGroupFragmentDoc = gql`
+    fragment CMSProductAttributesGroup on ProductAttributesGroup {
+  showInCard
+  node {
+    id
+    nameString
+  }
+  attributes {
+    ...CMSProductAttribute
+  }
+}
+    ${CmsProductAttributeFragmentDoc}`;
+export const CmsProductFieldsFragmentDoc = gql`
+    fragment CMSProductFields on Product {
   id
   itemId
   name {
@@ -2929,37 +3189,64 @@ export const ProductFragmentFragmentDoc = gql`
     url
     index
   }
+  active
+  mainImage
   rubrics
   attributesGroups {
-    showInCard
-    node {
-      id
-      nameString
-    }
-    attributes {
-      showInCard
-      key
-      node {
-        id
-        slug
-        nameString
-        variant
-        metric {
-          id
-          nameString
-        }
-        options {
-          id
-          nameString
-          options {
-            id
-            nameString
-            color
-          }
-        }
-      }
-      value
-    }
+    ...CMSProductAttributesGroup
+  }
+}
+    ${CmsProductAttributesGroupFragmentDoc}`;
+export const CmsProductConnectionItemFragmentDoc = gql`
+    fragment CMSProductConnectionItem on ProductConnectionItem {
+  optionName
+  value
+  node {
+    ...CMSProductFields
+  }
+}
+    ${CmsProductFieldsFragmentDoc}`;
+export const CmsProductConnectionFragmentDoc = gql`
+    fragment CMSProductConnection on ProductConnection {
+  id
+  attribute {
+    id
+    nameString
+  }
+  products {
+    ...CMSProductConnectionItem
+  }
+}
+    ${CmsProductConnectionItemFragmentDoc}`;
+export const CmsProductFragmentDoc = gql`
+    fragment CMSProduct on Product {
+  ...CMSProductFields
+  connections {
+    ...CMSProductConnection
+  }
+}
+    ${CmsProductFieldsFragmentDoc}
+${CmsProductConnectionFragmentDoc}`;
+export const AttributeInGroupFragmentDoc = gql`
+    fragment AttributeInGroup on Attribute {
+  id
+  name {
+    key
+    value
+  }
+  nameString
+  variant
+  positioningInTitle {
+    key
+    value
+  }
+  options {
+    id
+    nameString
+  }
+  metric {
+    id
+    nameString
   }
 }
     `;
@@ -3020,6 +3307,96 @@ export const SiteConfigFragmentDoc = gql`
   }
 }
     `;
+export const LanguageFragmentDoc = gql`
+    fragment Language on Language {
+  id
+  name
+  key
+  isDefault
+  nativeName
+}
+    `;
+export const MessageFragmentDoc = gql`
+    fragment Message on Message {
+  key
+  message {
+    key
+    value
+  }
+}
+    `;
+export const OptionInGroupFragmentDoc = gql`
+    fragment OptionInGroup on Option {
+  id
+  name {
+    key
+    value
+  }
+  nameString
+  color
+  gender
+  variants {
+    key
+    value {
+      key
+      value
+    }
+  }
+}
+    `;
+export const RoleRuleFragmentDoc = gql`
+    fragment RoleRule on RoleRule {
+  id
+  entity
+  nameString
+  nameString
+  restrictedFields
+  operations {
+    id
+    allow
+    customFilter
+    operationType
+  }
+}
+    `;
+export const RoleFragmentDoc = gql`
+    fragment Role on Role {
+  id
+  nameString
+  allowedAppNavigation
+  description
+  isStuff
+  name {
+    key
+    value
+  }
+  rules {
+    ...RoleRule
+  }
+}
+    ${RoleRuleFragmentDoc}`;
+export const AppNavItemFragmentDoc = gql`
+    fragment AppNavItem on NavItem {
+  id
+  nameString
+  path
+  children {
+    id
+    nameString
+    path
+  }
+}
+    `;
+export const RubricVariantFragmentDoc = gql`
+    fragment RubricVariant on RubricVariant {
+  id
+  nameString
+  name {
+    key
+    value
+  }
+}
+    `;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -3033,32 +3410,64 @@ export const RubricFragmentFragmentDoc = gql`
     id
     nameString
   }
-  totalProductsCount
-  activeProductsCount
 }
     `;
-export const RubricProductFragmentFragmentDoc = gql`
-    fragment RubricProductFragment on PaginatedProductsResponse {
+export const RubricProductFragmentDoc = gql`
+    fragment RubricProduct on Product {
+  id
+  itemId
+  name {
+    key
+    value
+  }
+  nameString
+  price
+  slug
+  mainImage
+  active
+  rubrics
+}
+    `;
+export const RubricProductsPaginationFragmentDoc = gql`
+    fragment RubricProductsPagination on PaginatedProductsResponse {
   totalDocs
   page
   totalPages
   activeProductsCount
   docs {
+    ...RubricProduct
+  }
+}
+    ${RubricProductFragmentDoc}`;
+export const RubricAttributeFragmentDoc = gql`
+    fragment RubricAttribute on Attribute {
+  id
+  nameString
+  variant
+  metric {
     id
-    itemId
-    name {
-      key
-      value
-    }
     nameString
-    price
-    slug
-    mainImage
-    active
-    rubrics
+  }
+  options {
+    id
+    nameString
   }
 }
     `;
+export const RubricAttributesGroupFragmentDoc = gql`
+    fragment RubricAttributesGroup on RubricAttributesGroup {
+  id
+  isOwner
+  showInCatalogueFilter
+  node {
+    id
+    nameString
+    attributes {
+      ...RubricAttribute
+    }
+  }
+}
+    ${RubricAttributeFragmentDoc}`;
 export const InitialDocument = gql`
     query Initial {
   me {
@@ -4381,10 +4790,10 @@ export type UpdateMyPasswordMutationOptions = Apollo.BaseMutationOptions<UpdateM
 export const GetProductDocument = gql`
     query GetProduct($id: ID!) {
   getProduct(id: $id) {
-    ...ProductFragment
+    ...CMSProduct
   }
 }
-    ${ProductFragmentFragmentDoc}`;
+    ${CmsProductFragmentDoc}`;
 
 /**
  * __useGetProductQuery__
@@ -4417,11 +4826,11 @@ export const UpdateProductDocument = gql`
     success
     message
     product {
-      ...ProductFragment
+      ...CMSProduct
     }
   }
 }
-    ${ProductFragmentFragmentDoc}`;
+    ${CmsProductFragmentDoc}`;
 export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
 
 /**
@@ -4513,6 +4922,105 @@ export function useDeleteProductMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
 export type DeleteProductMutationResult = Apollo.MutationResult<DeleteProductMutation>;
 export type DeleteProductMutationOptions = Apollo.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
+export const CreateProductConnectionDocument = gql`
+    mutation CreateProductConnection($input: CreateProductConnectionInput!) {
+  createProductConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateProductConnectionMutationFn = Apollo.MutationFunction<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
+
+/**
+ * __useCreateProductConnectionMutation__
+ *
+ * To run a mutation, you first call `useCreateProductConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductConnectionMutation, { data, loading, error }] = useCreateProductConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductConnectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>) {
+        return Apollo.useMutation<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>(CreateProductConnectionDocument, baseOptions);
+      }
+export type CreateProductConnectionMutationHookResult = ReturnType<typeof useCreateProductConnectionMutation>;
+export type CreateProductConnectionMutationResult = Apollo.MutationResult<CreateProductConnectionMutation>;
+export type CreateProductConnectionMutationOptions = Apollo.BaseMutationOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
+export const AddProductToConnectionDocument = gql`
+    mutation AddProductToConnection($input: AddProductToConnectionInput!) {
+  addProductToConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddProductToConnectionMutationFn = Apollo.MutationFunction<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
+
+/**
+ * __useAddProductToConnectionMutation__
+ *
+ * To run a mutation, you first call `useAddProductToConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToConnectionMutation, { data, loading, error }] = useAddProductToConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToConnectionMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>) {
+        return Apollo.useMutation<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>(AddProductToConnectionDocument, baseOptions);
+      }
+export type AddProductToConnectionMutationHookResult = ReturnType<typeof useAddProductToConnectionMutation>;
+export type AddProductToConnectionMutationResult = Apollo.MutationResult<AddProductToConnectionMutation>;
+export type AddProductToConnectionMutationOptions = Apollo.BaseMutationOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
+export const DeleteProductFromConnectionDocument = gql`
+    mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
+  deleteProductFromConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteProductFromConnectionMutationFn = Apollo.MutationFunction<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
+
+/**
+ * __useDeleteProductFromConnectionMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductFromConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductFromConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductFromConnectionMutation, { data, loading, error }] = useDeleteProductFromConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>) {
+        return Apollo.useMutation<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>(DeleteProductFromConnectionDocument, baseOptions);
+      }
+export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
+export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
+export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
 export const GetAllAttributesGroupsDocument = gql`
     query GetAllAttributesGroups {
   getAllAttributesGroups {
@@ -4556,29 +5064,11 @@ export const GetAttributesGroupDocument = gql`
     }
     nameString
     attributes {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      variant
-      positioningInTitle {
-        key
-        value
-      }
-      options {
-        id
-        nameString
-      }
-      metric {
-        id
-        nameString
-      }
+      ...AttributeInGroup
     }
   }
 }
-    `;
+    ${AttributeInGroupFragmentDoc}`;
 
 /**
  * __useGetAttributesGroupQuery__
@@ -4782,14 +5272,10 @@ export type GetAllConfigsQueryResult = Apollo.QueryResult<GetAllConfigsQuery, Ge
 export const GetAllLanguagesDocument = gql`
     query GetAllLanguages {
   getAllLanguages {
-    id
-    name
-    key
-    isDefault
-    nativeName
+    ...Language
   }
 }
-    `;
+    ${LanguageFragmentDoc}`;
 
 /**
  * __useGetAllLanguagesQuery__
@@ -4818,14 +5304,10 @@ export type GetAllLanguagesQueryResult = Apollo.QueryResult<GetAllLanguagesQuery
 export const GetMessagesByKeysDocument = gql`
     query GetMessagesByKeys($keys: [String!]!) {
   getMessagesByKeys(keys: $keys) {
-    key
-    message {
-      key
-      value
-    }
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 /**
  * __useGetMessagesByKeysQuery__
@@ -4855,14 +5337,10 @@ export type GetMessagesByKeysQueryResult = Apollo.QueryResult<GetMessagesByKeysQ
 export const GetValidationMessagesDocument = gql`
     query GetValidationMessages {
   getValidationMessages {
-    key
-    message {
-      key
-      value
-    }
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 /**
  * __useGetValidationMessagesQuery__
@@ -4934,25 +5412,11 @@ export const GetOptionsGroupDocument = gql`
     }
     nameString
     options {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      color
-      gender
-      variants {
-        key
-        value {
-          key
-          value
-        }
-      }
+      ...OptionInGroup
     }
   }
 }
-    `;
+    ${OptionInGroupFragmentDoc}`;
 
 /**
  * __useGetOptionsGroupQuery__
@@ -5015,31 +5479,10 @@ export type GetAllRolesQueryResult = Apollo.QueryResult<GetAllRolesQuery, GetAll
 export const GetRoleDocument = gql`
     query GetRole($id: ID!) {
   getRole(id: $id) {
-    id
-    nameString
-    allowedAppNavigation
-    description
-    isStuff
-    name {
-      key
-      value
-    }
-    rules {
-      id
-      entity
-      nameString
-      nameString
-      restrictedFields
-      operations {
-        id
-        allow
-        customFilter
-        operationType
-      }
-    }
+    ...Role
   }
 }
-    `;
+    ${RoleFragmentDoc}`;
 
 /**
  * __useGetRoleQuery__
@@ -5100,17 +5543,10 @@ export type GetEntityFieldsQueryResult = Apollo.QueryResult<GetEntityFieldsQuery
 export const GetAllAppNavItemsDocument = gql`
     query GetAllAppNavItems {
   getAllAppNavItems {
-    id
-    nameString
-    path
-    children {
-      id
-      nameString
-      path
-    }
+    ...AppNavItem
   }
 }
-    `;
+    ${AppNavItemFragmentDoc}`;
 
 /**
  * __useGetAllAppNavItemsQuery__
@@ -5139,19 +5575,14 @@ export type GetAllAppNavItemsQueryResult = Apollo.QueryResult<GetAllAppNavItemsQ
 export const GetAllRubricVariantsDocument = gql`
     query GetAllRubricVariants {
   getAllRubricVariants {
-    id
-    nameString
-    name {
-      key
-      value
-    }
+    ...RubricVariant
   }
   getGenderOptions {
     id
     nameString
   }
 }
-    `;
+    ${RubricVariantFragmentDoc}`;
 
 /**
  * __useGetAllRubricVariantsQuery__
@@ -5424,10 +5855,16 @@ export const GetRubricsTreeDocument = gql`
     query GetRubricsTree($excluded: [ID!], $counters: ProductsCountersInput!) {
   getRubricsTree(excluded: $excluded) {
     ...RubricFragment
+    totalProductsCount(input: $counters)
+    activeProductsCount(input: $counters)
     children(excluded: $excluded) {
       ...RubricFragment
+      totalProductsCount(input: $counters)
+      activeProductsCount(input: $counters)
       children(excluded: $excluded) {
         ...RubricFragment
+        totalProductsCount(input: $counters)
+        activeProductsCount(input: $counters)
       }
     }
   }
@@ -5612,15 +6049,17 @@ export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMu
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
 export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const GetRubricProductsDocument = gql`
-    query GetRubricProducts($id: ID!, $notInRubric: ID) {
+    query GetRubricProducts($id: ID!, $notInRubric: ID, $excludedProductsIds: [ID!]) {
   getRubric(id: $id) {
     id
-    products(input: {notInRubric: $notInRubric}) {
-      ...RubricProductFragment
+    products(
+      input: {notInRubric: $notInRubric, excludedProductsIds: $excludedProductsIds}
+    ) {
+      ...RubricProductsPagination
     }
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetRubricProductsQuery__
@@ -5636,6 +6075,7 @@ export const GetRubricProductsDocument = gql`
  *   variables: {
  *      id: // value for 'id'
  *      notInRubric: // value for 'notInRubric'
+ *      excludedProductsIds: // value for 'excludedProductsIds'
  *   },
  * });
  */
@@ -5651,10 +6091,10 @@ export type GetRubricProductsQueryResult = Apollo.QueryResult<GetRubricProductsQ
 export const GetNonRubricProductsDocument = gql`
     query GetNonRubricProducts($input: ProductPaginateInput!) {
   getAllProducts(input: $input) {
-    ...RubricProductFragment
+    ...RubricProductsPagination
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetNonRubricProductsQuery__
@@ -5750,10 +6190,10 @@ export type DeleteProductFromRubricMutationOptions = Apollo.BaseMutationOptions<
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductPaginateInput!) {
   getAllProducts(input: $input) {
-    ...RubricProductFragment
+    ...RubricProductsPagination
   }
 }
-    ${RubricProductFragmentFragmentDoc}`;
+    ${RubricProductsPaginationFragmentDoc}`;
 
 /**
  * __useGetAllProductsQuery__
@@ -5786,30 +6226,11 @@ export const GetRubricAttributesDocument = gql`
     id
     level
     attributesGroups {
-      id
-      isOwner
-      showInCatalogueFilter
-      node {
-        id
-        nameString
-        attributes {
-          id
-          nameString
-          variant
-          metric {
-            id
-            nameString
-          }
-          options {
-            id
-            nameString
-          }
-        }
-      }
+      ...RubricAttributesGroup
     }
   }
 }
-    `;
+    ${RubricAttributesGroupFragmentDoc}`;
 
 /**
  * __useGetRubricAttributesQuery__

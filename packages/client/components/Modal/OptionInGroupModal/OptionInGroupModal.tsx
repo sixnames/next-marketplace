@@ -12,13 +12,13 @@ import {
   GenderEnum,
   useGetGenderOptionsQuery,
   UpdateOptionInGroupInput,
+  OptionInGroupFragment,
 } from '../../../generated/apolloComponents';
 import { GENDER_ENUMS, GENDER_HE, GENDER_SHE } from '@yagu/config';
 import InputLine from '../../FormElements/Input/InputLine';
 import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
-import { OptionInGroupType } from '../../../routes/OptionsGroups/OptionsGroupsContent';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
@@ -29,7 +29,7 @@ export interface OptionInGroupModalInterface {
       | Omit<AddOptionToGroupInput, 'groupId'>
       | Omit<UpdateOptionInGroupInput, 'groupId' | 'optionId'>,
   ) => void;
-  option?: OptionInGroupType;
+  option?: OptionInGroupFragment;
 }
 
 const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, option }) => {

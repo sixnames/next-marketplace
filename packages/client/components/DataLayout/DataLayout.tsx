@@ -7,22 +7,23 @@ import Inner from '../Inner/Inner';
 import DataLayoutFilter from './DataLayoutFilter';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import classes from './DataLayout.module.css';
-import { NavItemInterface, ObjectType } from '../../types';
+import { NavItemInterface } from '../../types';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from '../ContentItemControls/ContentItemControls';
+import { ParsedUrlQuery } from 'querystring';
+
+export interface FilterResultArgsInterface {
+  query: ParsedUrlQuery;
+}
 
 interface DataLayoutInterface {
   title: string;
   filterContent?: ReactNode;
   contentControlsConfig?: ContentItemControlsInterface | null;
-  filterResult: any;
+  filterResult: (args: FilterResultArgsInterface) => any;
   filterResultNavConfig?: NavItemInterface[] | null;
   preview?: any;
-}
-
-export interface FilterResultArgsInterface {
-  query: ObjectType;
 }
 
 const DataLayout: React.FC<DataLayoutInterface> = ({
@@ -38,7 +39,7 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
   const noContentControls = !filterContent && !filterResultNavConfig && !contentControlsConfig;
 
   return (
-    <div className={classes.Frame}>
+    <div className={classes.frame}>
       <Title light>{title}</Title>
 
       <Inner className={classes.Inner} wide lowTop>

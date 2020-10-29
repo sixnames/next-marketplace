@@ -30,7 +30,7 @@ import { MessageResolver } from './resolvers/message/MessageResolver';
 import { MetricResolver } from './resolvers/metric/MetricResolver';
 import { OptionResolver } from './resolvers/option/OptionResolver';
 import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
-import { ProductResolver } from './resolvers/product/ProductResolver';
+import { ProductConnectionResolver, ProductResolver } from './resolvers/product/ProductResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
@@ -45,7 +45,6 @@ import { NavItemResolver } from './resolvers/navItem/NavItemResolver';
 import {
   clearTestDataRoute,
   createTestDataRoute,
-  getMockDataRoute,
   testSignInRoute,
 } from './routes/testingDataRoutes';
 import { assetsRoute } from './routes/assetsRoutes';
@@ -83,6 +82,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       OptionResolver,
       OptionsGroupResolver,
       ProductResolver,
+      ProductConnectionResolver,
       RubricResolver,
       RubricVariantResolver,
       UserResolver,
@@ -114,7 +114,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
   // Test data routes
   // TODO make this methods safe
-  app.get('/get-mock-data', getMockDataRoute);
   app.get('/create-test-data', createTestDataRoute);
   app.get('/clear-test-data', clearTestDataRoute);
   app.get('/test-sign-in', testSignInRoute);

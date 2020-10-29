@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  GetProductQuery,
+  CmsProductFragment,
   useGetRubricsTreeQuery,
   useUpdateProductMutation,
 } from '../../generated/apolloComponents';
@@ -22,9 +22,10 @@ import { updateProductSchema } from '@yagu/validation';
 import { useLanguageContext } from '../../context/languageContext';
 import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import FormikCheckboxLine from '../../components/FormElements/Checkbox/FormikCheckboxLine';
 
 interface ProductDetailsInterface {
-  product: GetProductQuery['getProduct'];
+  product: CmsProductFragment;
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
@@ -59,6 +60,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     description: getLanguageFieldInitialValue(product.description),
     assets: files,
     rubrics: product.rubrics,
+    active: product.active,
     attributesGroups: product.attributesGroups.map((group) => {
       return {
         showInCard: group.showInCard,
@@ -113,6 +115,8 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
           return (
             <Form>
+              <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
+
               <FormikDropZone
                 tooltip={'Подсказка для загрузки изображения'}
                 label={'Изображения'}

@@ -3,19 +3,18 @@ import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
-import Table from '../../components/Table/Table';
+import Table, { TableColumn } from '../../components/Table/Table';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { GET_ALL_RUBRIC_VARIANTS } from '../../graphql/query/rubricVariants';
 import {
-  RubricVariant,
+  RubricVariantFragment,
   useCreateRubricVariantMutation,
   useDeleteRubricVariantMutation,
   useGetAllRubricVariantsQuery,
   useUpdateRubricVariantMutation,
 } from '../../generated/apolloComponents';
 import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from '../../config/modals';
-import { LangInterface } from '../../types';
 import { RubricVariantModalInterface } from '../../components/Modal/RubricVariantModal/RubricVariantModal';
 
 const RubricVariantsContent: React.FC = () => {
@@ -46,8 +45,13 @@ const RubricVariantsContent: React.FC = () => {
     onCompleted: (data) => onCompleteCallback(data.deleteRubricVariant),
   });
 
-  if (loading) return <Spinner isNested />;
-  if (error || !data) return <RequestError />;
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data) {
+    return <RequestError />;
+  }
 
   function createRubricVariantHandler() {
     showModal<RubricVariantModalInterface>({
@@ -67,12 +71,12 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  function updateRubricVariantHandler({ name, id }: RubricVariant) {
+  function updateRubricVariantHandler({ name, id }: RubricVariantFragment) {
     showModal<RubricVariantModalInterface>({
       type: RUBRIC_VARIANT_MODAL,
       props: {
         name,
-        confirm: (values: { name: LangInterface[] }) => {
+        confirm: (values) => {
           showLoading();
           return updateRubricVariantMutation({
             variables: {
@@ -87,7 +91,7 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  function deleteRubricVariantHandler({ nameString, id }: RubricVariant) {
+  function deleteRubricVariantHandler({ nameString, id }: RubricVariantFragment) {
     showModal({
       type: CONFIRM_MODAL,
       props: {
@@ -105,25 +109,22 @@ const RubricVariantsContent: React.FC = () => {
     });
   }
 
-  const columns = [
+  const columns: TableColumn<RubricVariantFragment>[] = [
     {
-      key: 'nameString',
-      title: 'Название',
-      render: (name: string) => name,
+      accessor: 'nameString',
+      headTitle: 'Название',
+      render: ({ cellData }) => cellData,
     },
     {
-      key: '',
-      title: '',
-      textAlign: 'right',
-      render: (_: any, rubricVariant: RubricVariant) => {
+      render: ({ dataItem }) => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
             updateTitle={'Редактировать тип рубрики'}
-            updateHandler={() => updateRubricVariantHandler(rubricVariant)}
+            updateHandler={() => updateRubricVariantHandler(dataItem)}
             deleteTitle={'Удалить тип рубрики'}
-            deleteHandler={() => deleteRubricVariantHandler(rubricVariant)}
-            testId={rubricVariant.nameString}
+            deleteHandler={() => deleteRubricVariantHandler(dataItem)}
+            testId={dataItem.nameString}
           />
         );
       },
@@ -143,7 +144,7 @@ const RubricVariantsContent: React.FC = () => {
         }
       />
       <DataLayoutContentFrame>
-        <Table
+        <Table<RubricVariantFragment>
           data={data.getAllRubricVariants}
           columns={columns}
           emptyMessage={'Список пуст'}

@@ -3,64 +3,74 @@ import { get } from 'lodash';
 import RequestError from '../RequestError/RequestError';
 import classes from './Table.module.css';
 
-export interface TableColumn {
-  key?: string;
-  fix?: boolean;
-  style?: any;
-  colSpan?: number;
-  render?: (cellData: any, dataItem: any, index: number) => any;
-  sortBy?: string;
-  title?: string;
-  hidden?: boolean;
+export interface RenderArgs<T> {
+  cellData: any;
+  dataItem: T;
+  cellIndex: number;
+  rowIndex: number;
 }
 
-interface TableInterface {
-  data?: any[] | null;
-  columns: TableColumn[];
+// TODO deep accessor type
+export interface TableColumn<T> {
+  accessor?: string;
+  cellStyle?: React.CSSProperties;
+  colSpan?: number;
+  sortBy?: string;
+  headTitle?: any;
+  isHidden?: boolean;
+  render?: (args: RenderArgs<T>) => any;
+  hide?: (args: RenderArgs<T>) => boolean;
+}
+
+// TODO deep testIdKey type
+type TableInterface<T> = {
+  data?: T[] | null;
+  columns: TableColumn<T>[];
   footerData?: any[];
   footerColumns?: any[];
-  sortData?: (sortBy: string) => void;
-  onRowClick?: (dataItem: any) => void;
+  sortHandler?: (sortBy: string) => void;
+  onRowClick?: (dataItem: T) => void;
   className?: string;
-  fixPosition?: string;
+  fixPosition?: number;
   emptyMessage?: string;
   testIdKey?: string;
-  testId?: string;
-}
+  tableTestId?: string;
+};
 
-const Table: React.FC<TableInterface> = ({
-  data = [],
+const Table = <T extends Record<string, any>>({
+  data,
   footerData = [],
   columns = [],
   footerColumns = [],
-  sortData,
+  sortHandler,
   onRowClick,
   className,
   fixPosition = 0,
   emptyMessage = 'Нет данных',
   testIdKey = '',
-  testId,
-}) => {
-  const fixedStyle = {
-    transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
-    backgroundColor: fixPosition ? 'var(--gray)' : null,
-    color: fixPosition ? 'white' : null,
-  };
+  tableTestId,
+}: TableInterface<T>) => {
+  const fixedStyle: React.CSSProperties = useMemo(() => {
+    return {
+      transform: fixPosition ? `translateY(${fixPosition}px)` : `translateY(0px)`,
+      backgroundColor: fixPosition ? 'var(--gray)' : undefined,
+      color: fixPosition ? 'white' : undefined,
+    };
+  }, [fixPosition]);
 
-  const tHead = columns.map(({ title, sortBy, fix, style, hidden }) => ({
-    title,
+  const tHead = columns.map(({ headTitle, sortBy, cellStyle, isHidden }) => ({
+    headTitle: headTitle,
     sortBy,
-    fix,
-    style,
-    hidden,
+    cellStyle,
+    isHidden: isHidden,
   }));
 
   const renderColumns = useCallback(
-    (columns, data) => {
-      return data.map((dataItem: any, i: number) => {
+    (columns: TableColumn<T>[], data: T[]) => {
+      return data.map((dataItem, rowIndex: number) => {
         const { hidden, id, isWarning = false } = dataItem;
-        const testId = dataItem[testIdKey];
-        const key = id ? id : i;
+        const testId = get(dataItem, testIdKey);
+        const key = id || rowIndex;
         if (hidden) return null;
 
         return (
@@ -70,24 +80,22 @@ const Table: React.FC<TableInterface> = ({
             data-cy={testId}
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
-            {columns.map((cell: TableColumn, cellIndex: number) => {
-              const { key = '', render, style, colSpan, hidden } = cell;
-              const cellData = key ? get(dataItem, key) : null;
+            {columns.map((cell, cellIndex) => {
+              const { accessor, render, cellStyle, colSpan, isHidden } = cell;
+              const cellData = accessor ? get(dataItem, accessor) : null;
 
-              if (hidden) {
+              if (isHidden) {
                 return null;
               }
 
               return (
                 <td
                   colSpan={colSpan}
-                  key={key + cellIndex}
+                  key={`${accessor}${cellIndex}`}
                   className={classes.cell}
-                  style={{
-                    ...style,
-                  }}
+                  style={cellStyle}
                 >
-                  {render && render(cellData, dataItem, cellIndex)}
+                  {render && render({ cellData, dataItem, cellIndex, rowIndex })}
                 </td>
               );
             })}
@@ -95,10 +103,14 @@ const Table: React.FC<TableInterface> = ({
         );
       });
     },
+    // eslint-disable-next-line
     [onRowClick, testIdKey],
   );
 
   const renderTableBody = useMemo(() => {
+    if (!data) {
+      return null;
+    }
     return renderColumns(columns, data);
   }, [data, columns, renderColumns]);
 
@@ -111,22 +123,22 @@ const Table: React.FC<TableInterface> = ({
   }
 
   return (
-    <table className={className || ''} data-cy={testId}>
+    <table className={className || ''} data-cy={tableTestId}>
       <thead>
         <tr className={classes.row}>
-          {tHead.map(({ title = '', sortBy, style, hidden }, i) => {
-            if (hidden) {
+          {tHead.map(({ headTitle, sortBy, cellStyle, isHidden }, i) => {
+            if (isHidden) {
               return null;
             }
 
             return (
               <th
                 className={classes.headCell}
-                onClick={() => !!sortData && !!sortBy && sortData(sortBy)}
-                key={title + i}
+                onClick={() => !!sortHandler && !!sortBy && sortHandler(sortBy)}
+                key={`${headTitle}${i}`}
               >
-                <div style={{ ...style, ...fixedStyle }} className={classes.fixedCell}>
-                  {!!title && title}
+                <div style={{ ...cellStyle, ...fixedStyle }} className={classes.fixedCell}>
+                  {headTitle}
                 </div>
               </th>
             );

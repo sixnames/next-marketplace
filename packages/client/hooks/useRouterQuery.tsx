@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { ObjectType } from '../types';
+import { useCallback, useMemo } from 'react';
 
 interface RemoveQueryInterface {
   key: string;
@@ -20,45 +21,60 @@ interface UseRouterQueryInterface {
 
 const useRouterQuery = (): UseRouterQueryInterface => {
   const router = useRouter();
-  const { pathname = '', query = {} } = router;
 
-  function setQuery({ key, value }: SetQueryInterface) {
-    return router.replace({
-      pathname,
-      query: {
-        ...query,
-        [key]: value,
-      },
-    });
-  }
+  const setQuery = useCallback(
+    ({ key, value }: SetQueryInterface) =>
+      router.replace({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          [key]: value,
+        },
+      }),
+    [router],
+  );
 
-  function removeQuery({ key }: RemoveQueryInterface) {
-    return router.replace({
-      pathname,
-      query: Object.keys(query).reduce((acc: ObjectType, queryKey: string) => {
-        if (queryKey === key) {
-          return { ...acc };
-        }
-        return {
-          ...acc,
-          [queryKey]: query[queryKey],
-        };
-      }, {}),
-    });
-  }
+  const removeQuery = useCallback(
+    ({ key }: RemoveQueryInterface) =>
+      router.replace({
+        pathname: router.pathname,
+        query: Object.keys(router.query).reduce((acc: ObjectType, queryKey: string) => {
+          if (queryKey === key) {
+            return { ...acc };
+          }
+          return {
+            ...acc,
+            [queryKey]: router.query[queryKey],
+          };
+        }, {}),
+      }),
+    [router],
+  );
 
-  function toggleQuery({ key, value }: SetQueryInterface) {
-    const queryValue = query[key];
-    const isExists = queryValue && queryValue === value;
+  const toggleQuery = useCallback(
+    ({ key, value }: SetQueryInterface) => {
+      const queryValue = router.query[key];
+      const isExists = queryValue && queryValue === value;
 
-    if (isExists) {
-      return removeQuery({ key });
-    }
+      if (isExists) {
+        return removeQuery({ key });
+      }
 
-    return setQuery({ key, value });
-  }
+      return setQuery({ key, value });
+    },
+    [removeQuery, router.query, setQuery],
+  );
 
-  return { setQuery, removeQuery, toggleQuery, query, pathname };
+  return useMemo(
+    () => ({
+      setQuery,
+      removeQuery,
+      toggleQuery,
+      query: router.query || {},
+      pathname: router.pathname || '',
+    }),
+    [router, removeQuery, setQuery, toggleQuery],
+  );
 };
 
 export default useRouterQuery;

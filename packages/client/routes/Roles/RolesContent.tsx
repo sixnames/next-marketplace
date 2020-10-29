@@ -24,8 +24,14 @@ interface RolesContentInterface {
 
 const RolesContent: React.FC<RolesContentInterface> = ({ queryResult = {} }) => {
   const { data, loading, error } = queryResult;
-  if (loading) return <Spinner />;
-  if (error || !data) return <RequestError />;
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (error || !data) {
+    return <RequestError />;
+  }
 
   const { getRole } = data;
   const { nameString, description } = getRole;

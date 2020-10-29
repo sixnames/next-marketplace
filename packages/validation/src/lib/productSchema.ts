@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import {
+  idSchema,
   langStringInputSchema,
   maxDescriptionLength,
   minDescriptionLength,
@@ -9,16 +10,13 @@ import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
+import { attributeIdSchema, attributesGroupIdSchema } from './attributesGroupSchema';
 
 export const productIdSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.products.id',
-      }),
-    );
+  idSchema({ args, key: 'validation.products.id' });
+
+export const productConnectionIdSchema = (args: MultiLangSchemaMessagesInterface) =>
+  idSchema({ args, key: 'validation.productConnections.id' });
 
 export const productAttributeSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
@@ -107,4 +105,25 @@ export const updateProductSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     id: productIdSchema(args),
     ...productCommonFields(args),
+  });
+
+export const createProductConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    attributeId: attributeIdSchema(args),
+    attributesGroupId: attributesGroupIdSchema(args),
+  });
+
+export const addProductToConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    addProductId: productIdSchema(args),
+    connectionId: productConnectionIdSchema(args),
+  });
+
+export const deleteProductFromConnectionSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
+    deleteProductId: productIdSchema(args),
+    connectionId: productConnectionIdSchema(args),
   });

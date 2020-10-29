@@ -8,13 +8,16 @@ declare namespace Cypress {
     subjectType?: string;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
-    getMockData(callback: (body: any) => void): Chainable<Element>;
+    shouldSuccess(): void;
+    shouldError(): void;
+    shouldNotError(): void;
     getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;

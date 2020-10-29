@@ -24,6 +24,9 @@ export class UpdateProductInput {
   @Field(() => Int)
   price: number;
 
+  @Field(() => Boolean)
+  active: boolean;
+
   @Field(() => [ProductAttributesGroupInput])
   attributesGroups: ProductAttributesGroupInput[];
 

@@ -44,6 +44,24 @@ export class ProductAttributesGroup {
 }
 
 @ObjectType()
+export class ProductCardFeatureAttribute {
+  @Field(() => String)
+  nameString: string;
+
+  @Field(() => [String])
+  value: string[];
+}
+
+@ObjectType()
+export class ProductCardFeature {
+  @Field(() => AttributesGroup)
+  attributesGroup: AttributesGroup;
+
+  @Field(() => [ProductCardFeatureAttribute])
+  attributes: ProductCardFeatureAttribute[];
+}
+
+@ObjectType()
 @plugin(mongoosePaginate)
 @plugin(aggregatePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
@@ -100,6 +118,9 @@ export class Product extends TimeStamps {
   @prop({ required: true, default: true })
   active: boolean;
 
+  @Field(() => [ProductConnection])
+  readonly connections: ProductConnection[];
+
   @Field(() => String)
   readonly nameString: string;
 
@@ -111,6 +132,9 @@ export class Product extends TimeStamps {
 
   @Field(() => String)
   readonly mainImage: string;
+
+  @Field(() => [ProductCardFeature])
+  readonly cardFeatures: ProductCardFeature[];
 
   @Field()
   readonly createdAt: Date;
@@ -138,4 +162,45 @@ export class ProductsCounters {
   readonly activeProductsCount: number;
 }
 
+@ObjectType()
+export class ProductConnectionItem {
+  @Field(() => Product)
+  node: Product;
+
+  @Field(() => String, {
+    description: 'Returns first value only because this attribute has to be Select variant',
+  })
+  value: string;
+
+  @Field(() => String, {
+    description: 'Returns name of selected attribute value',
+  })
+  optionName: string;
+}
+
+@ObjectType()
+export class ProductConnection {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  attributeId: string;
+
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  attributesGroupId: string;
+
+  @Field(() => [String])
+  @prop({ type: String, required: true })
+  productsIds: string[];
+
+  @Field(() => Attribute)
+  readonly attribute: string;
+
+  @Field(() => [ProductConnectionItem])
+  readonly products: ProductConnectionItem[];
+}
+
+export const ProductConnectionModel = getModelForClass(ProductConnection);
 export const ProductModel = getModelForClass(Product);

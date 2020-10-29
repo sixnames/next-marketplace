@@ -119,7 +119,7 @@ const RoleRestrictedFieldsModal: React.FC<RoleRestrictedFieldsModalInterface> = 
                     ruleId,
                   },
                 },
-              });
+              }).catch((e) => console.log(e));
             }}
           />
           <span className={classes.labelText}>{field}</span>

@@ -1,0 +1,7 @@
+.list {
+  margin-bottom: var(--lineGap);
+}
+
+.listItem {
+  margin-bottom: var(--lineGap);
+}

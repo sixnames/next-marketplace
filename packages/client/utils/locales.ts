@@ -10,7 +10,7 @@ export const localeString = (value: string | number) => {
   return value ? finalValue.toLocaleString('ru-RU') : 0;
 };
 
-export const getAttributeVariant = (variant: string) => {
+export const getAttributeVariantName = (variant: string) => {
   switch (variant) {
     case ATTRIBUTE_VARIANT_SELECT:
       return 'Селект';

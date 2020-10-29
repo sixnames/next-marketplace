@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { langStringInputSchema } from './schemaTemplates';
+import { idSchema, langStringInputSchema } from './schemaTemplates';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -12,24 +12,10 @@ import {
 } from './getFieldValidationMessage';
 
 export const attributesGroupIdSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.attributesGroups.id',
-      }),
-    );
+  idSchema({ args, key: 'validation.attributesGroups.id' });
 
 export const attributeIdSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.attributes.id',
-      }),
-    );
+  idSchema({ args, key: 'validation.attributes.id' });
 
 const attributesGroupNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   langStringInputSchema({

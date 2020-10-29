@@ -13,6 +13,11 @@ import {
 import {
   Product,
   ProductAttributesGroup,
+  ProductCardFeature,
+  ProductCardFeatureAttribute,
+  ProductConnection,
+  ProductConnectionItem,
+  ProductConnectionModel,
   ProductModel,
   ProductsCounters,
 } from '../../entities/Product';
@@ -26,7 +31,12 @@ import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
-import { generateDefaultLangSlug } from '../../utils/slug';
+import {
+  checkIsAllConnectionOptionsUsed,
+  createProductSlugWithConnections,
+  getConnectionValuesFromProduct,
+  getProductAttributeReadableValues,
+} from '../../utils/connectios';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -34,7 +44,13 @@ import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import { createProductSchema, updateProductSchema } from '@yagu/validation';
+import {
+  addProductToConnectionSchema,
+  createProductConnectionSchema,
+  createProductSchema,
+  deleteProductFromConnectionSchema,
+  updateProductSchema,
+} from '@yagu/validation';
 import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -47,6 +63,12 @@ import { FilterQuery } from 'mongoose';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { Role } from '../../entities/Role';
 import { updateModelViews } from '../../utils/updateModelViews';
+import { Attribute, AttributeModel } from '../../entities/Attribute';
+import { CreateProductConnectionInput } from './CreateProductConnectionInput';
+import { AddProductToConnectionInput } from './AddProductToConnectionInput';
+import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
+import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
+import { generateDefaultLangSlug } from '../../utils/slug';
 
 const {
   operationConfigCreate,
@@ -193,30 +215,6 @@ export class ProductResolver {
       const slug = generateDefaultLangSlug(values.cardName);
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
-      const nameValues = input.name.map(({ value }) => value);
-      const cardNameValues = input.cardName.map(({ value }) => value);
-      const exists = await ProductModel.exists({
-        $or: [
-          {
-            'name.value': {
-              $in: nameValues,
-            },
-          },
-          {
-            'cardName.value': {
-              $in: cardNameValues,
-            },
-          },
-        ],
-      });
-
-      if (exists) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.create.duplicate`, lang }),
-        };
-      }
-
       const product = await ProductModel.create({
         ...values,
         slug,
@@ -257,32 +255,6 @@ export class ProductResolver {
     try {
       const { id, assets, ...values } = input;
 
-      const nameValues = input.name.map(({ value }) => value);
-      const cardNameValues = input.cardName.map(({ value }) => value);
-      const exists = await ProductModel.exists({
-        $or: [
-          {
-            _id: { $ne: id },
-            'name.value': {
-              $in: nameValues,
-            },
-          },
-          {
-            _id: { $ne: id },
-            'cardName.value': {
-              $in: cardNameValues,
-            },
-          },
-        ],
-      });
-
-      if (exists) {
-        return {
-          success: false,
-          message: await getApiMessage({ key: `products.update.duplicate`, lang }),
-        };
-      }
-
       const product = await ProductModel.findOne({ _id: id, ...customFilter });
       if (!product) {
         return {
@@ -291,7 +263,11 @@ export class ProductResolver {
         };
       }
 
-      const slug = generateDefaultLangSlug(values.cardName);
+      // Create new slug for product
+      const { slug } = await createProductSlugWithConnections({
+        product,
+        lang,
+      });
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
 
       const updatedProduct = await ProductModel.findOneAndUpdate(
@@ -366,6 +342,276 @@ export class ProductResolver {
       return {
         success: false,
         message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: createProductConnectionSchema })
+  @AuthMethod(operationConfigUpdate)
+  async createProductConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: CreateProductConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, attributeId, attributesGroupId } = input;
+      const attribute = await AttributeModel.findById(attributeId);
+      const attributesGroup = await AttributesGroupModel.findById(attributesGroupId);
+      const product = await ProductModel.findById(productId);
+
+      if (!product || !attribute || !attributesGroup) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        };
+      }
+
+      if (attribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.attributeVariantError`, lang }),
+        };
+      }
+
+      // Check if connection already exist
+      const exist = await ProductConnectionModel.findOne({
+        attributesGroupId,
+        attributeId,
+        productsIds: { $in: [productId] },
+      });
+
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.connection.exist`, lang }),
+        };
+      }
+
+      const connection = await ProductConnectionModel.create({
+        attributeId: attribute.id,
+        attributesGroupId: attributesGroup.id,
+        productsIds: [product.id],
+      });
+
+      if (!connection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      // Create new slug for product
+      const { slug } = await createProductSlugWithConnections({
+        product,
+        lang,
+      });
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        product.id,
+        {
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `products.update.success`, lang }),
+        product: updatedProduct,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
+      };
+    }
+  }
+
+  @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: addProductToConnectionSchema })
+  @AuthMethod(operationConfigUpdate)
+  async addProductToConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: AddProductToConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, connectionId, addProductId } = input;
+      const product = await ProductModel.findById(productId);
+      const addProduct = await ProductModel.findById(addProductId);
+      const connection = await ProductConnectionModel.findById(connectionId);
+
+      if (!product || !addProduct || !connection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        };
+      }
+
+      // Check if all attribute options are used for connection
+      const allOptionsAreUsed = await checkIsAllConnectionOptionsUsed({ connectionId });
+      if (allOptionsAreUsed) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'products.update.allOptionsAreUsed', lang }),
+        };
+      }
+
+      // Check attribute existence in added product
+      // It will throw an Error if attribute not exist
+      await getConnectionValuesFromProduct({
+        product: addProduct,
+        attributeId: connection.attributeId,
+        attributesGroupId: connection.attributesGroupId,
+        lang,
+      });
+
+      const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
+        connection.id,
+        {
+          $addToSet: {
+            productsIds: addProduct.id,
+          },
+        },
+        { new: true },
+      );
+
+      if (!updatedConnection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      // Create new slug for added product
+      const { slug } = await createProductSlugWithConnections({
+        product: addProduct,
+        lang,
+      });
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        addProduct.id,
+        {
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `products.update.success`, lang }),
+        product,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
+      };
+    }
+  }
+
+  @Mutation(() => ProductPayloadType)
+  @ValidateMethod({ schema: deleteProductFromConnectionSchema })
+  @AuthMethod(operationConfigUpdate)
+  async deleteProductFromConnection(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: DeleteProductFromConnectionInput,
+  ): Promise<ProductPayloadType> {
+    try {
+      const { productId, connectionId, deleteProductId } = input;
+      const product = await ProductModel.findById(productId);
+      const deleteProduct = await ProductModel.findById(deleteProductId);
+      const connection = await ProductConnectionModel.findById(connectionId);
+      const minimumProductsCountForConnectionDelete = 1;
+
+      if (!product || !deleteProduct || !connection) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+        };
+      }
+
+      // Update or delete connection
+      if (connection.productsIds.length > minimumProductsCountForConnectionDelete) {
+        const updatedConnection = await ProductConnectionModel.findByIdAndUpdate(
+          connection.id,
+          {
+            $pull: {
+              productsIds: deleteProduct.id,
+            },
+          },
+          { new: true },
+        );
+
+        if (!updatedConnection) {
+          return {
+            success: false,
+            message: await getApiMessage({ key: `products.update.error`, lang }),
+          };
+        }
+      } else {
+        const removedConnection = await ProductConnectionModel.deleteOne({ _id: connection.id });
+
+        if (!removedConnection.ok) {
+          return {
+            success: false,
+            message: await getApiMessage({ key: `products.update.error`, lang }),
+          };
+        }
+      }
+
+      // Create new slug for removed product from connection
+      const { slug } = await createProductSlugWithConnections({
+        product: deleteProduct,
+        lang,
+      });
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        deleteProduct.id,
+        {
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedProduct) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `products.update.error`, lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: `products.update.success`, lang }),
+        product,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+        product: null,
       };
     }
   }
@@ -465,8 +711,122 @@ export class ProductResolver {
     return product.active;
   }
 
+  @FieldResolver((_returns) => [ProductConnection])
+  async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
+    try {
+      return ProductConnectionModel.find({
+        productsIds: {
+          $in: [product.id],
+        },
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductCardFeature])
+  async cardFeatures(
+    @Root() product: DocumentType<Product>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<ProductCardFeature[]> {
+    try {
+      // Get ids of attributes used in connections
+      const connections = await ProductConnectionModel.find({
+        productsIds: {
+          $in: [product.id],
+        },
+      }).select({ attributeId: 1 });
+
+      const connectedAttributesIds = connections.map(({ attributeId }) => attributeId);
+
+      const features: ProductCardFeature[] = [];
+      for await (const productAttributesGroup of product.attributesGroups) {
+        const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
+        if (!attributesGroup) {
+          continue;
+        }
+
+        // Find all attributes values
+        const groupAttributes: ProductCardFeatureAttribute[] = [];
+        for await (const productAttribute of productAttributesGroup.attributes) {
+          // Exclude attributes used in connections
+          const attribute = await AttributeModel.findOne({
+            $and: [{ _id: productAttribute.node }, { _id: { $nin: connectedAttributesIds } }],
+          });
+          if (!attribute) {
+            continue;
+          }
+          groupAttributes.push({
+            nameString: getLangField(attribute.name, lang),
+            value: await getProductAttributeReadableValues({
+              attribute,
+              productAttributeValues: productAttribute.value,
+              lang,
+            }),
+          });
+        }
+
+        features.push({
+          attributesGroup,
+          attributes: groupAttributes,
+        });
+      }
+
+      return features;
+    } catch (e) {
+      return [];
+    }
+  }
+
   @FieldResolver()
   async id(@Root() product: DocumentType<Product>): Promise<string> {
     return product.id || product._id;
+  }
+}
+
+@Resolver((_for) => ProductConnection)
+export class ProductConnectionResolver {
+  @FieldResolver((_returns) => [ProductConnectionItem])
+  async products(
+    @Root() connection: DocumentType<ProductConnection>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('activeOnly', () => Boolean, {
+      description: 'Shows only active products.',
+      nullable: true,
+      defaultValue: false,
+    })
+    activeOnly: boolean,
+  ): Promise<ProductConnectionItem[]> {
+    const { attributeId, attributesGroupId } = connection;
+    const activeQuery = activeOnly ? { active: true } : {};
+    const products = await ProductModel.find({
+      _id: { $in: connection.productsIds },
+      ...activeQuery,
+    });
+    return Promise.all(
+      products.map(async (product) => {
+        const { attributeValue, optionName } = await getConnectionValuesFromProduct({
+          lang,
+          product,
+          attributeId,
+          attributesGroupId,
+        });
+
+        return {
+          node: product,
+          value: attributeValue,
+          optionName,
+        };
+      }),
+    );
+  }
+
+  @FieldResolver((_returns) => Attribute)
+  async attribute(@Root() connection: DocumentType<ProductConnection>): Promise<Attribute> {
+    const attribute = await AttributeModel.findById(connection.attributeId);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductConnection.attribute');
+    }
+    return attribute;
   }
 }

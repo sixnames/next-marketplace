@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./dist/index.js",
+    "start:testing": "node ./dist/index.js",
     "build": "rimraf ./dist && tsc",
     "dev": "ts-node-dev --poll --transpile-only --no-notify src/index.ts",
     "predev": "rimraf ./dist",

@@ -62,5 +62,14 @@ describe('Product connections', () => {
     cy.get(
       `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}"]`,
     ).should('exist');
+
+    // Should delete product from connection
+    cy.getByCy(`${mockProductForAdd}-delete`).click();
+    cy.getByCy(`delete-product-from-connection-modal`).should('exist');
+    cy.getByCy(`confirm`).click();
+    cy.getByCy(`delete-product-from-connection-modal`).should('not.exist');
+    cy.get(
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}"]`,
+    ).should('not.exist');
   });
 });

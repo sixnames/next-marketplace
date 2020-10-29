@@ -5,11 +5,12 @@ import {
   CmsProductFragment,
   useAddProductToConnectionMutation,
   useCreateProductConnectionMutation,
+  useDeleteProductFromConnectionMutation,
 } from '../../generated/apolloComponents';
 import Inner from '../../components/Inner/Inner';
 import Button from '../../components/Buttons/Button';
 import { CreateConnectionModalInterface } from '../../components/Modal/CreateConnectionModal/CreateConnectionModal';
-import { CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { PRODUCT_QUERY } from '../../graphql/products';
 import classes from './ProductConnections.module.css';
@@ -18,6 +19,7 @@ import Table, { TableColumn } from '../../components/Table/Table';
 import TableRowImage from '../../components/Table/TableRowImage';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import { ProductSearchModalInterface } from '../../components/Modal/ProductSearchModal/ProductSearchModal';
+import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 
 interface ProductConnectionControlsInterface {
   connection: CmsProductConnectionFragment;
@@ -77,6 +79,16 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   productId,
 }) => {
+  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+    withModal: true,
+  });
+  const [deleteProductFromConnectionMutation] = useDeleteProductFromConnectionMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
+    onError: onErrorCallback,
+    awaitRefetchQueries: true,
+    refetchQueries: [{ query: PRODUCT_QUERY, variables: { id: productId } }],
+  });
+
   const { attribute, products } = connection;
 
   const connectionName = attribute.nameString;
@@ -119,6 +131,38 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       accessor: 'optionName',
       headTitle: 'Значение',
       render: ({ cellData }) => cellData,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <ContentItemControls
+            testId={dataItem.node.nameString}
+            deleteTitle={'Удалить товар из связи'}
+            justifyContent={'flex-end'}
+            deleteHandler={() => {
+              showModal<ConfirmModalInterface>({
+                type: CONFIRM_MODAL,
+                props: {
+                  message: `Вы уверенны, что хотите удалить ${dataItem.node.nameString} из связи ${connection.attribute.nameString}?`,
+                  testId: 'delete-product-from-connection-modal',
+                  confirm: () => {
+                    showLoading();
+                    deleteProductFromConnectionMutation({
+                      variables: {
+                        input: {
+                          deleteProductId: dataItem.node.id,
+                          connectionId: connection.id,
+                          productId,
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  },
+                },
+              });
+            }}
+          />
+        );
+      },
     },
   ];
 

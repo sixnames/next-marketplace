@@ -2355,6 +2355,19 @@ export type AddProductToConnectionMutation = (
   ) }
 );
 
+export type DeleteProductFromConnectionMutationVariables = Exact<{
+  input: DeleteProductFromConnectionInput;
+}>;
+
+
+export type DeleteProductFromConnectionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProductFromConnection: (
+    { __typename?: 'ProductPayloadType' }
+    & Pick<ProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type GetAllAttributesGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4973,6 +4986,39 @@ export function useAddProductToConnectionMutation(baseOptions?: Apollo.MutationH
 export type AddProductToConnectionMutationHookResult = ReturnType<typeof useAddProductToConnectionMutation>;
 export type AddProductToConnectionMutationResult = Apollo.MutationResult<AddProductToConnectionMutation>;
 export type AddProductToConnectionMutationOptions = Apollo.BaseMutationOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
+export const DeleteProductFromConnectionDocument = gql`
+    mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
+  deleteProductFromConnection(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteProductFromConnectionMutationFn = Apollo.MutationFunction<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
+
+/**
+ * __useDeleteProductFromConnectionMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductFromConnectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductFromConnectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductFromConnectionMutation, { data, loading, error }] = useDeleteProductFromConnectionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>) {
+        return Apollo.useMutation<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>(DeleteProductFromConnectionDocument, baseOptions);
+      }
+export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
+export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
+export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
 export const GetAllAttributesGroupsDocument = gql`
     query GetAllAttributesGroups {
   getAllAttributesGroups {

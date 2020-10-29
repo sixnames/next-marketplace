@@ -169,3 +169,12 @@ export const ADD_PRODUCT_TO_CONNECTION_MUTATION = gql`
     }
   }
 `;
+
+export const DELETE_PRODUCT_FROM_CONNECTION_MUTATION = gql`
+  mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
+    deleteProductFromConnection(input: $input) {
+      success
+      message
+    }
+  }
+`;

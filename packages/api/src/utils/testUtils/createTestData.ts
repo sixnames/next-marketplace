@@ -23,6 +23,7 @@ import {
   MOCK_OPTIONS_GROUP_COLORS,
   MOCK_OPTIONS_GROUP_WINE_VARIANTS,
   MOCK_OPTIONS_WINE_VARIANT,
+  MOCK_OPTIONS_VINTAGE,
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_B,
@@ -44,20 +45,30 @@ import {
   MOCK_RUBRIC_LEVEL_ONE_D,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
+  MOCK_OPTIONS_GROUP_WINE_VINTAGE,
+  MOCK_ATTRIBUTE_WINE_VINTAGE,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
 } from '@yagu/config';
-import { ProductModel } from '../../entities/Product';
+import { ProductConnectionModel, ProductModel } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
 import { CityModel } from '../../entities/City';
 import { CountryModel } from '../../entities/Country';
 import { generateTestProduct } from './generateTestProduct';
+import { createProductSlugWithConnections } from '../connectios';
+
+interface ProductAttributesInterface {
+  wineColorOptions?: string;
+  wineTypeOptions?: string;
+  wineVintageOptions?: string;
+}
 
 const createTestData = async () => {
   try {
@@ -80,13 +91,21 @@ const createTestData = async () => {
     await LanguageModel.create(MOCK_LANGUAGES[1]);
 
     // Options
+    const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
     const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
+    const optionsIdsVintage = optionsVintage.map(({ id }) => id);
     const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
 
+    const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
     const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
     const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
+
+    const optionsGroupWineVintage = await OptionsGroupModel.create({
+      ...MOCK_OPTIONS_GROUP_WINE_VINTAGE,
+      options: optionsIdsVintage,
+    });
 
     const optionsGroupWineTypes = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_WINE_VARIANTS,
@@ -99,6 +118,22 @@ const createTestData = async () => {
     });
 
     // Attributes
+    const attributeWineVintage = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_WINE_VINTAGE,
+      variant: MOCK_ATTRIBUTE_WINE_VINTAGE.variant as AttributeVariantEnum,
+      options: optionsGroupWineVintage.id,
+      positioningInTitle: [
+        {
+          key: DEFAULT_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD as AttributePositionInTitleEnum,
+        },
+        {
+          key: SECONDARY_LANG,
+          value: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD as AttributePositionInTitleEnum,
+        },
+      ],
+    });
+
     const attributeWineColor = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_COLOR,
       variant: MOCK_ATTRIBUTE_WINE_COLOR.variant as AttributeVariantEnum,
@@ -154,6 +189,7 @@ const createTestData = async () => {
     const attributesGroupWineFeatures = await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
       attributes: [
+        attributeWineVintage.id,
         attributeWineColor.id,
         attributeWineType.id,
         attributeString.id,
@@ -166,7 +202,7 @@ const createTestData = async () => {
       attributes: [attributeString.id, attributeNumber.id],
     });
 
-    // Rubric types
+    // Rubric variants
     const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_ALCOHOL);
     await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_JUICE);
 
@@ -326,45 +362,78 @@ const createTestData = async () => {
     });
 
     // Products
-    const productAttributes = (wineColorOptions: string, wineTypeOptions: string) => ({
-      attributesGroups: [
-        {
-          node: attributesGroupWineFeatures.id,
-          showInCard: true,
-          attributes: [
+    const productAttributes = ({
+      wineColorOptions,
+      wineTypeOptions,
+      wineVintageOptions,
+    }: ProductAttributesInterface) => {
+      const vintageAttribute = wineVintageOptions
+        ? [
+            {
+              node: attributeWineVintage.id,
+              showInCard: true,
+              key: attributeWineVintage.slug,
+              value: [wineVintageOptions],
+            },
+          ]
+        : [];
+
+      const colorAttribute = wineColorOptions
+        ? [
             {
               node: attributeWineColor.id,
               showInCard: true,
               key: attributeWineColor.slug,
               value: [wineColorOptions],
             },
+          ]
+        : [];
+
+      const wineTypeAttribute = wineTypeOptions
+        ? [
             {
               node: attributeWineType.id,
               showInCard: true,
               key: attributeWineType.slug,
               value: [wineTypeOptions],
             },
-            {
-              node: attributeString.id,
-              showInCard: true,
-              key: attributeString.slug,
-              value: ['string'],
-            },
-            {
-              node: attributeNumber.id,
-              showInCard: true,
-              key: attributeNumber.slug,
-              value: ['123'],
-            },
-          ],
-        },
-      ],
-    });
+          ]
+        : [];
+
+      return {
+        attributesGroups: [
+          {
+            node: attributesGroupWineFeatures.id,
+            showInCard: true,
+            attributes: [
+              ...vintageAttribute,
+              ...colorAttribute,
+              ...wineTypeAttribute,
+              {
+                node: attributeString.id,
+                showInCard: true,
+                key: attributeString.slug,
+                value: ['string'],
+              },
+              {
+                node: attributeNumber.id,
+                showInCard: true,
+                key: attributeNumber.slug,
+                value: ['123'],
+              },
+            ],
+          },
+        ],
+      };
+    };
 
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_A,
-        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[1],
+          wineTypeOptions: optionsSlugsWineType[1],
+        }),
         rubrics: [rubricLevelThreeAA.id],
       }),
     );
@@ -373,7 +442,10 @@ const createTestData = async () => {
       await generateTestProduct(
         {
           ...MOCK_PRODUCT_B,
-          ...productAttributes(optionsSlugsColor[2], optionsSlugsWineType[2]),
+          ...productAttributes({
+            wineColorOptions: optionsSlugsColor[2],
+            wineTypeOptions: optionsSlugsWineType[2],
+          }),
           rubrics: [rubricLevelThreeAA.id],
         },
         false,
@@ -383,7 +455,10 @@ const createTestData = async () => {
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_C,
-        ...productAttributes(optionsSlugsColor[0], optionsSlugsWineType[0]),
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[0],
+          wineTypeOptions: optionsSlugsWineType[0],
+        }),
         rubrics: [rubricLevelThreeAB.id],
       }),
     );
@@ -391,18 +466,81 @@ const createTestData = async () => {
     await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_D,
-        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[1],
+          wineTypeOptions: optionsSlugsWineType[1],
+        }),
         rubrics: [rubricLevelThreeAA.id],
       }),
     );
 
-    await ProductModel.create(
+    const connectionProductA = await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_E,
-        ...productAttributes(optionsSlugsColor[1], optionsSlugsWineType[1]),
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[1],
+          wineTypeOptions: optionsSlugsWineType[1],
+          wineVintageOptions: optionsSlugsVintage[0],
+        }),
         rubrics: [rubricLevelThreeAA.id],
       }),
     );
+
+    const connectionProductB = await ProductModel.create(
+      await generateTestProduct({
+        ...MOCK_PRODUCT_E,
+        price: 300,
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[1],
+          wineTypeOptions: optionsSlugsWineType[1],
+          wineVintageOptions: optionsSlugsVintage[1],
+        }),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    );
+
+    const connectionProductC = await ProductModel.create(
+      await generateTestProduct({
+        ...MOCK_PRODUCT_E,
+        price: 100,
+        ...productAttributes({
+          wineColorOptions: optionsSlugsColor[1],
+          wineTypeOptions: optionsSlugsWineType[1],
+          wineVintageOptions: optionsSlugsVintage[2],
+        }),
+        rubrics: [rubricLevelThreeAA.id],
+      }),
+    );
+
+    // Product connections
+    await ProductConnectionModel.create({
+      attributeId: attributeWineVintage.id,
+      attributesGroupId: attributesGroupWineFeatures.id,
+      productsIds: [connectionProductA.id, connectionProductB.id, connectionProductC.id],
+    });
+
+    // Get updated slugs for products in connection
+    const connectionProductASlug = await createProductSlugWithConnections({
+      product: connectionProductA,
+      lang: DEFAULT_LANG,
+    });
+    await ProductModel.findByIdAndUpdate(connectionProductA.id, {
+      slug: connectionProductASlug.slug,
+    });
+    const connectionProductBSlug = await createProductSlugWithConnections({
+      product: connectionProductB,
+      lang: DEFAULT_LANG,
+    });
+    await ProductModel.findByIdAndUpdate(connectionProductB.id, {
+      slug: connectionProductBSlug.slug,
+    });
+    const connectionProductCSlug = await createProductSlugWithConnections({
+      product: connectionProductC,
+      lang: DEFAULT_LANG,
+    });
+    await ProductModel.findByIdAndUpdate(connectionProductC.id, {
+      slug: connectionProductCSlug.slug,
+    });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);
   }

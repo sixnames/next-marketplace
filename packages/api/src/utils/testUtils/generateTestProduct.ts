@@ -20,7 +20,7 @@ export interface GetProductCitiesInterface {
 export async function generateTestProduct(
   node: GetProductCitiesInterface,
   active = true,
-): Promise<any[]> {
+): Promise<any> {
   const initialFilePath = './src/test/test-image-0.png';
   const slug = node.slug;
   const productName = node.name[0].value;

@@ -1425,6 +1425,108 @@ export const MOCK_METRICS = [
 ];
 
 // Options
+export const MOCK_OPTIONS_VINTAGE = [
+  {
+    name: [
+      { key: DEFAULT_LANG, value: '1950' },
+      { key: SECONDARY_LANG, value: '1950' },
+    ],
+    priorities: [],
+    views: [],
+    slug: '1950',
+    color: '',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: DEFAULT_LANG, value: '1950' },
+          { key: SECONDARY_LANG, value: '1950' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: DEFAULT_LANG, value: '1950' },
+          { key: SECONDARY_LANG, value: '1950' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: DEFAULT_LANG, value: '1950' },
+          { key: SECONDARY_LANG, value: '1950' },
+        ],
+      },
+    ],
+  },
+  {
+    name: [
+      { key: DEFAULT_LANG, value: '1978' },
+      { key: SECONDARY_LANG, value: '1978' },
+    ],
+    priorities: [],
+    views: [],
+    slug: '1978',
+    color: '',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: DEFAULT_LANG, value: '1978' },
+          { key: SECONDARY_LANG, value: '1978' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: DEFAULT_LANG, value: '1978' },
+          { key: SECONDARY_LANG, value: '1978' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: DEFAULT_LANG, value: '1978' },
+          { key: SECONDARY_LANG, value: '1978' },
+        ],
+      },
+    ],
+  },
+  {
+    name: [
+      { key: DEFAULT_LANG, value: '2001' },
+      { key: SECONDARY_LANG, value: '2001' },
+    ],
+    priorities: [],
+    views: [],
+    slug: '2001',
+    color: '',
+    variants: [
+      {
+        key: GENDER_SHE,
+        value: [
+          { key: DEFAULT_LANG, value: '2001' },
+          { key: SECONDARY_LANG, value: '2001' },
+        ],
+      },
+      {
+        key: GENDER_HE,
+        value: [
+          { key: DEFAULT_LANG, value: '2001' },
+          { key: SECONDARY_LANG, value: '2001' },
+        ],
+      },
+      {
+        key: GENDER_IT,
+        value: [
+          { key: DEFAULT_LANG, value: '2001' },
+          { key: SECONDARY_LANG, value: '2001' },
+        ],
+      },
+    ],
+  },
+];
+
 export const MOCK_OPTIONS_WINE_COLOR = [
   {
     name: [
@@ -1585,7 +1687,25 @@ export const MOCK_OPTIONS_GROUP_WINE_VARIANTS = {
   ],
 };
 
+export const MOCK_OPTIONS_GROUP_WINE_VINTAGE = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Винтаж_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_vintage' },
+  ],
+};
+
 // Attributes
+export const MOCK_ATTRIBUTE_WINE_VINTAGE = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Винтаж_вина' },
+    { key: SECONDARY_LANG, value: 'Wine_vintage' },
+  ],
+  views: [],
+  priorities: [],
+  slug: 'vintaz_vina',
+  variant: ATTRIBUTE_VARIANT_SELECT,
+};
+
 export const MOCK_ATTRIBUTE_WINE_COLOR = {
   name: [
     { key: DEFAULT_LANG, value: 'Цвет_вина' },
@@ -1967,10 +2087,10 @@ export const MOCK_PRODUCT_D = {
 
 export const MOCK_PRODUCT_E = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie_D',
+  slug: 'Wine_Val_de_Vie_E',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_D' },
-    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_D' },
+    { key: DEFAULT_LANG, value: 'Wine_Val_de_Vie_E' },
+    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_E' },
   ],
   cardName: [
     { key: DEFAULT_LANG, value: 'Вино Vie, "Barista" Pinotage' },

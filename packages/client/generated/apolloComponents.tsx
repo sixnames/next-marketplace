@@ -584,6 +584,7 @@ export type ProductCardConnectionItem = {
   /** Value of selected option for current product in connection */
   value: Scalars['String'];
   product: Product;
+  isCurrent: Scalars['Boolean'];
 };
 
 export type PaginatedProductsResponse = {
@@ -2469,7 +2470,7 @@ export type ProductCardFragment = (
     & Pick<ProductCardConnection, 'id' | 'nameString'>
     & { products: Array<(
       { __typename?: 'ProductCardConnectionItem' }
-      & Pick<ProductCardConnectionItem, 'id' | 'value'>
+      & Pick<ProductCardConnectionItem, 'id' | 'value' | 'isCurrent'>
       & { product: (
         { __typename?: 'Product' }
         & Pick<Product, 'id' | 'slug'>
@@ -3301,6 +3302,7 @@ export const ProductCardFragmentDoc = gql`
     products {
       id
       value
+      isCurrent
       product {
         id
         slug

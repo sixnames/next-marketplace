@@ -351,6 +351,7 @@
 
   --borderRadius: 0.5rem;
   --radius-1-3: var(--borderRadius)  0 var(--borderRadius) 0;
+  --radius-2-3: 0 var(--borderRadius) var(--borderRadius) 0;
   --radius-2-4: 0 var(--borderRadius)  0 var(--borderRadius);
 
   --black: #111111;
@@ -384,6 +385,7 @@
 
   /*Sizes*/
   --lineGap: 2rem;
+  --innerBlockMaxWidht: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;

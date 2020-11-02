@@ -760,6 +760,7 @@ export class ProductResolver {
           if (!attribute) {
             continue;
           }
+
           groupAttributes.push({
             id: attribute.id,
             nameString: getLangField(attribute.name, lang),

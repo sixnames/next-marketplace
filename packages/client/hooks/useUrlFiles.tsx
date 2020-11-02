@@ -11,8 +11,8 @@ function useUrlFiles(assets: AssetType[] | null, format?: string) {
       }
     }
 
-    getImageThumb();
-  }, [assets]);
+    getImageThumb().catch((e) => console.log(e));
+  }, [assets, format]);
 
   return files;
 }

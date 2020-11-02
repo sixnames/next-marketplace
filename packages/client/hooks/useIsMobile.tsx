@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
 
-function useIsMobile(additional = 0) {
+function useIsMobile(breakpoint = 1024) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    function resizeWindow() {
-      setIsMobile(window.matchMedia(`(max-width: ${1024 + additional}px)`).matches);
+    function resizeHandler() {
+      setIsMobile(window.matchMedia(`(max-width: ${breakpoint}px)`).matches);
     }
 
-    resizeWindow();
+    const debouncedResizeHandler = debounce(resizeHandler, 250);
+    debouncedResizeHandler();
 
-    window.addEventListener('resize', resizeWindow);
+    window.addEventListener('resize', debouncedResizeHandler);
 
     return () => {
-      window.removeEventListener('resize', resizeWindow);
+      window.removeEventListener('resize', debouncedResizeHandler);
     };
-  });
+  }, [breakpoint]);
 
   return isMobile;
 }

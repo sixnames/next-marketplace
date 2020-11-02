@@ -65,12 +65,12 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
     if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && options) {
       return (
         <InputLine name={multipleValueInputName} label={nameString}>
-          {optionsList.map(({ id, nameString }) => {
+          {optionsList.map(({ slug, nameString }) => {
             return (
               <FormikArrayCheckboxLine
                 name={multipleValueInputName}
-                value={id}
-                key={id}
+                value={slug}
+                key={slug}
                 label={nameString}
                 testId={`${nameString}-${groupIndex}`}
                 inList

@@ -3,10 +3,12 @@ import { Product } from './Product';
 
 @ObjectType()
 export class ProductCardConnectionItem {
-  @Field(() => ID)
+  @Field(() => ID, { description: 'ID of product' })
   id: string;
 
-  @Field(() => String)
+  @Field(() => String, {
+    description: 'Value of selected option for current product in connection',
+  })
   value: string;
 
   @Field(() => Product)

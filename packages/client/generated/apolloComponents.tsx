@@ -487,6 +487,7 @@ export type Product = {
   descriptionString: Scalars['String'];
   mainImage: Scalars['String'];
   cardFeatures: Array<ProductCardFeature>;
+  cardConnections: Array<ProductCardConnection>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
 };
@@ -565,6 +566,24 @@ export type ProductCardFeatureAttribute = {
   nameString: Scalars['String'];
   showInCard: Scalars['Boolean'];
   value: Array<Scalars['String']>;
+};
+
+export type ProductCardConnection = {
+  __typename?: 'ProductCardConnection';
+  /** ID of connection */
+  id: Scalars['ID'];
+  /** Name of attribute used for connection */
+  nameString: Scalars['String'];
+  products: Array<ProductCardConnectionItem>;
+};
+
+export type ProductCardConnectionItem = {
+  __typename?: 'ProductCardConnectionItem';
+  /** ID of product */
+  id: Scalars['ID'];
+  /** Value of selected option for current product in connection */
+  value: Scalars['String'];
+  product: Product;
 };
 
 export type PaginatedProductsResponse = {
@@ -2445,6 +2464,17 @@ export type ProductCardFragment = (
       { __typename?: 'ProductCardFeatureAttribute' }
       & Pick<ProductCardFeatureAttribute, 'id' | 'nameString' | 'value' | 'showInCard'>
     )> }
+  )>, cardConnections: Array<(
+    { __typename?: 'ProductCardConnection' }
+    & Pick<ProductCardConnection, 'id' | 'nameString'>
+    & { products: Array<(
+      { __typename?: 'ProductCardConnectionItem' }
+      & Pick<ProductCardConnectionItem, 'id' | 'value'>
+      & { product: (
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'slug'>
+      ) }
+    )> }
   )> }
 );
 
@@ -3263,6 +3293,18 @@ export const ProductCardFragmentDoc = gql`
       nameString
       value
       showInCard
+    }
+  }
+  cardConnections {
+    id
+    nameString
+    products {
+      id
+      value
+      product {
+        id
+        slug
+      }
     }
   }
 }

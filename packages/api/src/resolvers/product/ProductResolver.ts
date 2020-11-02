@@ -69,7 +69,10 @@ import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
 import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import { ProductCardConnection } from '../../entities/ProductCardConnection';
+import {
+  ProductCardConnection,
+  ProductCardConnectionItem,
+} from '../../entities/ProductCardConnection';
 
 const {
   operationConfigCreate,
@@ -786,7 +789,7 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductCardConnection])
   async cardConnections(
     @Root() product: DocumentType<Product>,
-    // @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<ProductCardConnection[]> {
     try {
       // Get all product connections
@@ -796,11 +799,52 @@ export class ProductResolver {
         },
       });
 
+      // Cast connections data for product card
+      const cardConnections: ProductCardConnection[] = [];
       for await (const connection of connections) {
-        console.log(connection);
+        const attribute = await AttributeModel.findById(connection.attributeId);
+        const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
+
+        if (!attribute) {
+          continue;
+        }
+
+        cardConnections.push({
+          id: connection.id,
+          nameString: getLangField(attribute.name, lang),
+          products: products.reduce((acc: ProductCardConnectionItem[], product) => {
+            const productAttributesGroup = product.attributesGroups.find(({ node }) => {
+              return node.toString() === connection.attributesGroupId.toString();
+            });
+            if (!productAttributesGroup) {
+              return acc;
+            }
+
+            const productAttribute = productAttributesGroup.attributes.find(({ node }) => {
+              return node.toString() === connection.attributeId.toString();
+            });
+            if (!productAttribute) {
+              return acc;
+            }
+
+            const productConnectionValue = productAttribute.value[0];
+            if (!productConnectionValue) {
+              return acc;
+            }
+
+            return [
+              ...acc,
+              {
+                id: product.id,
+                value: productConnectionValue,
+                product,
+              },
+            ];
+          }, []),
+        });
       }
 
-      return [];
+      return cardConnections;
     } catch (e) {
       return [];
     }

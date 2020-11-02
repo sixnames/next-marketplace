@@ -21,6 +21,18 @@ export const productCardFragment = gql`
         showInCard
       }
     }
+    cardConnections {
+      id
+      nameString
+      products {
+        id
+        value
+        product {
+          id
+          slug
+        }
+      }
+    }
   }
 `;
 

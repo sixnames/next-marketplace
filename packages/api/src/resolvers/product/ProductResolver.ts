@@ -69,6 +69,7 @@ import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
 import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
+import { ProductCardConnection } from '../../entities/ProductCardConnection';
 
 const {
   operationConfigCreate,
@@ -757,7 +758,9 @@ export class ProductResolver {
             continue;
           }
           groupAttributes.push({
+            id: attribute.id,
             nameString: getLangField(attribute.name, lang),
+            showInCard: productAttribute.showInCard,
             value: await getProductAttributeReadableValues({
               attribute,
               productAttributeValues: productAttribute.value,
@@ -767,12 +770,37 @@ export class ProductResolver {
         }
 
         features.push({
-          attributesGroup,
+          id: attributesGroup.id,
+          nameString: getLangField(attributesGroup.name, lang),
+          showInCard: productAttributesGroup.showInCard,
           attributes: groupAttributes,
         });
       }
 
       return features;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductCardConnection])
+  async cardConnections(
+    @Root() product: DocumentType<Product>,
+    // @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<ProductCardConnection[]> {
+    try {
+      // Get all product connections
+      const connections = await ProductConnectionModel.find({
+        productsIds: {
+          $in: [product.id],
+        },
+      });
+
+      for await (const connection of connections) {
+        console.log(connection);
+      }
+
+      return [];
     } catch (e) {
       return [];
     }

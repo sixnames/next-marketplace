@@ -27,7 +27,7 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, 
 
   return (
     <SiteLayout initialApolloState={initialApolloState}>
-      <CardRoute cardData={cardData} />
+      <CardRoute cardData={cardData.getProductCard} />
     </SiteLayout>
   );
 };

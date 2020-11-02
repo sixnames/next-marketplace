@@ -553,13 +553,17 @@ export type ProductConnectionItem = {
 
 export type ProductCardFeature = {
   __typename?: 'ProductCardFeature';
-  attributesGroup: AttributesGroup;
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  showInCard: Scalars['Boolean'];
   attributes: Array<ProductCardFeatureAttribute>;
 };
 
 export type ProductCardFeatureAttribute = {
   __typename?: 'ProductCardFeatureAttribute';
+  id: Scalars['ID'];
   nameString: Scalars['String'];
+  showInCard: Scalars['Boolean'];
   value: Array<Scalars['String']>;
 };
 
@@ -2431,6 +2435,19 @@ export type GetAttributesGroupsForRubricQuery = (
   )> }
 );
 
+export type ProductCardFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
+  & { cardFeatures: Array<(
+    { __typename?: 'ProductCardFeature' }
+    & Pick<ProductCardFeature, 'id' | 'nameString' | 'showInCard'>
+    & { attributes: Array<(
+      { __typename?: 'ProductCardFeatureAttribute' }
+      & Pick<ProductCardFeatureAttribute, 'id' | 'nameString' | 'value' | 'showInCard'>
+    )> }
+  )> }
+);
+
 export type GetCatalogueCardQueryQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -2440,30 +2457,7 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProductCard: (
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
-    & { attributesGroups: Array<(
-      { __typename?: 'ProductAttributesGroup' }
-      & Pick<ProductAttributesGroup, 'showInCard'>
-      & { node: (
-        { __typename?: 'AttributesGroup' }
-        & Pick<AttributesGroup, 'id' | 'nameString'>
-      ), attributes: Array<(
-        { __typename?: 'ProductAttribute' }
-        & Pick<ProductAttribute, 'showInCard' | 'value'>
-        & { node: (
-          { __typename?: 'Attribute' }
-          & Pick<Attribute, 'id' | 'nameString'>
-          & { options?: Maybe<(
-            { __typename?: 'OptionsGroup' }
-            & Pick<OptionsGroup, 'id' | 'nameString'>
-            & { options: Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, 'id' | 'nameString'>
-            )> }
-          )> }
-        ) }
-      )> }
-    )> }
+    & ProductCardFragment
   ) }
 );
 
@@ -3247,6 +3241,29 @@ export const AttributeInGroupFragmentDoc = gql`
   metric {
     id
     nameString
+  }
+}
+    `;
+export const ProductCardFragmentDoc = gql`
+    fragment ProductCard on Product {
+  id
+  itemId
+  nameString
+  cardNameString
+  price
+  slug
+  mainImage
+  descriptionString
+  cardFeatures {
+    id
+    nameString
+    showInCard
+    attributes {
+      id
+      nameString
+      value
+      showInCard
+    }
   }
 }
     `;
@@ -5132,40 +5149,10 @@ export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttr
 export const GetCatalogueCardQueryDocument = gql`
     query GetCatalogueCardQuery($slug: String!) {
   getProductCard(slug: $slug) {
-    id
-    itemId
-    nameString
-    cardNameString
-    price
-    slug
-    mainImage
-    descriptionString
-    attributesGroups {
-      showInCard
-      node {
-        id
-        nameString
-      }
-      attributes {
-        showInCard
-        node {
-          id
-          nameString
-          options {
-            id
-            nameString
-            options {
-              id
-              nameString
-            }
-          }
-        }
-        value
-      }
-    }
+    ...ProductCard
   }
 }
-    `;
+    ${ProductCardFragmentDoc}`;
 
 /**
  * __useGetCatalogueCardQueryQuery__

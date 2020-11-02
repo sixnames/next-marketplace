@@ -27,6 +27,7 @@ export const productCardFragment = gql`
       products {
         id
         value
+        isCurrent
         product {
           id
           slug
@@ -42,4 +43,5 @@ export const CATALOGUE_CARD_QUERY = gql`
       ...ProductCard
     }
   }
+  ${productCardFragment}
 `;

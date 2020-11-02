@@ -13,6 +13,9 @@ export class ProductCardConnectionItem {
 
   @Field(() => Product)
   product: Product;
+
+  @Field(() => Boolean)
+  isCurrent: boolean;
 }
 
 @ObjectType()

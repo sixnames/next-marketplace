@@ -812,8 +812,8 @@ export class ProductResolver {
         cardConnections.push({
           id: connection.id,
           nameString: getLangField(attribute.name, lang),
-          products: products.reduce((acc: ProductCardConnectionItem[], product) => {
-            const productAttributesGroup = product.attributesGroups.find(({ node }) => {
+          products: products.reduce((acc: ProductCardConnectionItem[], connectionProduct) => {
+            const productAttributesGroup = connectionProduct.attributesGroups.find(({ node }) => {
               return node.toString() === connection.attributesGroupId.toString();
             });
             if (!productAttributesGroup) {
@@ -835,9 +835,10 @@ export class ProductResolver {
             return [
               ...acc,
               {
-                id: product.id,
+                id: connectionProduct.id,
                 value: productConnectionValue,
-                product,
+                isCurrent: connectionProduct.id.toString() === product.id.toString(),
+                product: connectionProduct,
               },
             ];
           }, []),

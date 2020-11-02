@@ -21,7 +21,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
   const imageWidth = 450;
   const { mainImage, nameString, cardNameString, descriptionString, price } = cardData;
-
+  console.log(cardData);
   return (
     <Inner>
       <div className={classes.frame}>

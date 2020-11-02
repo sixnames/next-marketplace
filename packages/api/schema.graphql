@@ -598,6 +598,7 @@ type ProductCardConnection {
 type ProductCardConnectionItem {
   """ID of product"""
   id: ID!
+  isCurrent: Boolean!
   product: Product!
 
   """Value of selected option for current product in connection"""

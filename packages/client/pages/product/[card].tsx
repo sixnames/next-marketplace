@@ -25,9 +25,16 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, 
     );
   }
 
+  const { getProductCard } = cardData;
+  const { cardNameString, descriptionString } = getProductCard;
+
   return (
-    <SiteLayout initialApolloState={initialApolloState}>
-      <CardRoute cardData={cardData.getProductCard} />
+    <SiteLayout
+      title={cardNameString}
+      description={descriptionString}
+      initialApolloState={initialApolloState}
+    >
+      <CardRoute cardData={getProductCard} />
     </SiteLayout>
   );
 };

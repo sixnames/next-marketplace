@@ -1,8 +1,15 @@
 import React from 'react';
 import classes from './Breadcrumbs.module.css';
 import Inner from '../Inner/Inner';
+import { useAppContext } from '../../context/appContext';
 
 const Breadcrumbs: React.FC = () => {
+  const { isMobile } = useAppContext();
+
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <div className={classes.frame}>
       <Inner>

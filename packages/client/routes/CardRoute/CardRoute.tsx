@@ -11,21 +11,54 @@ import Icon from '../../components/Icon/Icon';
 import Button from '../../components/Buttons/Button';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { noNaN } from '../../utils/noNaN';
+import { useAppContext } from '../../context/appContext';
 
 interface CardRouteInterface {
   cardData: ProductCardFragment;
 }
 
+const CardRouteFeatures: React.FC<CardRouteInterface> = ({ cardData }) => {
+  const { cardFeatures } = cardData;
+
+  return (
+    <div className={classes.mainFrameFeatures}>
+      {cardFeatures.map(({ id, showInCard, attributes }) => {
+        if (!showInCard) {
+          return null;
+        }
+        return (
+          <div key={id}>
+            {attributes.map(({ id, showInCard, nameString, value }) => {
+              if (!showInCard) {
+                return null;
+              }
+
+              return (
+                <div key={id} className={classes.feature}>
+                  <div className={classes.featureTitle}>{nameString}</div>
+                  <div>
+                    {value.map((valueItem, valueIndex) => {
+                      const isLast = value.length - 1 === valueIndex;
+                      return (
+                        <span className={classes.featureItem} key={valueItem}>
+                          {isLast ? valueItem : `${valueItem}, `}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const {
-    mainImage,
-    nameString,
-    cardNameString,
-    price,
-    cardConnections,
-    cardFeatures,
-    itemId,
-  } = cardData;
+  const { mainImage, nameString, cardNameString, price, cardConnections, itemId } = cardData;
+  const { isMobile } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
@@ -35,37 +68,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <Inner>
         <div className={classes.mainFrame}>
-          <div className={classes.mainFrameFeatures}>
-            {cardFeatures.map(({ id, showInCard, attributes }) => {
-              if (!showInCard) {
-                return null;
-              }
-              // Features
-              return (
-                <div key={id}>
-                  {attributes.map(({ id, showInCard, nameString, value }) => {
-                    if (!showInCard) {
-                      return null;
-                    }
-
-                    return (
-                      <div key={id} className={classes.feature}>
-                        <div className={classes.featureTitle}>{nameString}</div>
-                        {value.map((valueItem, valueIndex) => {
-                          const isLast = value.length - 1 === valueIndex;
-                          return (
-                            <span className={classes.featureItem} key={valueItem}>
-                              {isLast ? valueItem : `${valueItem}, `}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
+          {isMobile ? null : <CardRouteFeatures cardData={cardData} />}
 
           <div className={classes.mainData}>
             <div className={classes.image}>
@@ -87,10 +90,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               </div>
 
               <div className={classes.outerRatings}>
-                <div className={classes.cartLabel}>Мнение экспертов:</div>
-                <div className={classes.outerRatingsItem}>vivino 4,2</div>
-                <div className={classes.outerRatingsItem}>RP 88</div>
-                <div className={classes.outerRatingsItem}>ws 88</div>
+                <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
+
+                <div className={classes.outerRatingsList}>
+                  <div className={classes.outerRatingsItem}>vivino 4,2</div>
+                  <div className={classes.outerRatingsItem}>RP 88</div>
+                  <div className={classes.outerRatingsItem}>ws 88</div>
+                </div>
               </div>
 
               <div className={classes.connections}>
@@ -98,7 +104,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                   // Connections
                   return (
                     <div key={id} className={classes.connectionsGroup}>
-                      <div className={classes.cartLabel}>{`${nameString}:`}</div>
+                      <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
                       <div className={classes.connectionsList}>
                         {products.map(({ value, id, product, isCurrent }) => {
                           if (isCurrent) {
@@ -186,6 +192,8 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             </div>
           </div>
         </div>
+
+        {isMobile ? <CardRouteFeatures cardData={cardData} /> : null}
       </Inner>
     </div>
   );

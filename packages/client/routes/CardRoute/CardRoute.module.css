@@ -83,7 +83,6 @@
 }
 
 .featureItem {
-  margin-bottom: 1.5rem;
   font-weight: 600;
   font-size: 1.125rem;
 }
@@ -124,8 +123,17 @@
 
 .outerRatings {
   display: flex;
-  align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.outerRatingsLabel {
+  display: flex;
+  align-items: center;
+  height: 1.8rem;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  color: var(--textSecondaryColor);
+  white-space: nowrap;
 }
 
 .outerRatingsItem {
@@ -136,9 +144,11 @@
   border-radius: 0.9rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+  margin-bottom: 0.5rem;
   background-color: var(--outerRatingBackground);
   color: var(--outerRatingColor);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .outerRatingsItem:not(:last-child) {
@@ -154,10 +164,20 @@
 
 .connectionsGroup {
   display: flex;
-  align-items: center;
   margin-right: 2rem;
 }
 
+.connectionsGroupLabel {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  color: var(--textSecondaryColor);
+  white-space: nowrap;
+}
+
+.outerRatingsList,
 .connectionsList {
   display: flex;
   align-items: center;
@@ -171,6 +191,7 @@
   border-radius: var(--borderRadius);
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+  margin-bottom: 0.5rem;
   background-color: var(--primaryBackground);
   border: 1px solid var(--primaryBackground);
   color: var(--outerRatingColor);
@@ -264,4 +285,45 @@
 
 .addToCartFormInput {
   margin-right: 2rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .card {
+    padding-top: 4rem;
+  }
+
+  .mainFrame {
+    grid-template-columns: 1fr;
+  }
+
+  .feature {
+    display: flex;
+  }
+
+  .featureTitle {
+    margin-bottom: 0;
+    margin-right: 1rem;
+    width: 8rem;
+  }
+
+  .featureItem {
+    font-size: 1rem;
+    margin-right: 1.5rem;
+  }
+
+  .mainData {
+    padding-right: var(--formInputHeight);
+  }
+
+  .btns {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    display: block;
+  }
+
+  .btnsItem {
+
+  }
 }

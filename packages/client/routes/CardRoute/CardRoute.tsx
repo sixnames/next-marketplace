@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -8,6 +8,9 @@ import ProductMarker from '../../components/Product/ProductMarker/ProductMarker'
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import Icon from '../../components/Icon/Icon';
+import Button from '../../components/Buttons/Button';
+import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
+import { noNaN } from '../../utils/noNaN';
 
 interface CardRouteInterface {
   cardData: ProductCardFragment;
@@ -23,7 +26,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardFeatures,
     itemId,
   } = cardData;
-
+  const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   return (
@@ -153,7 +156,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                     <Icon name={'heart'} />
                   </button>
                   <button className={`${classes.btnsItem}`}>
-                    <Icon name={'cart'} />
+                    <Icon name={'upload'} />
                   </button>
                 </div>
               </div>
@@ -161,6 +164,27 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
 
           <ProductMarker>Выбор покупателей</ProductMarker>
+        </div>
+
+        <div
+          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop}`}
+        >
+          <div />
+          <div className={`${classes.mainData}`}>
+            <div />
+            <div className={`${classes.addToCartForm}`}>
+              <SpinnerInput
+                onChange={(e) => {
+                  setAmount(noNaN(e.target.value));
+                }}
+                frameClassName={`${classes.addToCartFormInput}`}
+                min={1}
+                name={'amount'}
+                value={amount}
+              />
+              <Button>В корзину</Button>
+            </div>
+          </div>
         </div>
       </Inner>
     </div>

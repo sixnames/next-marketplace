@@ -16,9 +16,10 @@
 
   padding-top: 4rem;
   padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.mainFrame:after {
+.mainFrame:not(.mainFrameNoBackground):after {
   position: absolute;
   content: '';
   top: 0;
@@ -29,9 +30,17 @@
   background: linear-gradient(to left, var(--secondaryBackground), transparent);
 }
 
+.mainFrameNoBackground {
+  background: none;
+}
+
 .mainFrameFeatures {
   position: relative;
   z-index: 2;
+}
+
+.mainFrameLowTop {
+  padding-top: 0;
 }
 
 .mainData {
@@ -246,4 +255,13 @@
 .helpers {
   display: flex;
   align-items: center;
+}
+
+.addToCartForm {
+  display: flex;
+  align-items: center;
+}
+
+.addToCartFormInput {
+  margin-right: 2rem;
 }

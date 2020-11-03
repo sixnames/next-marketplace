@@ -43,6 +43,10 @@
   padding-top: 0;
 }
 
+.mainFrameLowBottom {
+  padding-bottom: 0;
+}
+
 .mainData {
   position: relative;
   z-index: 2;
@@ -50,6 +54,10 @@
   grid-template-columns: var(--secondaryColumnsWidht) 1fr;
   grid-column-gap: var(--mainColumnsGap);
   padding-right: 2rem;
+}
+
+.mainDataNoRightPadding {
+  padding-right: 0;
 }
 
 .image {
@@ -100,7 +108,7 @@
   margin-top: 0.25rem;
 }
 
-.cartLabel {
+.cardLabel {
   flex-shrink: 0;
   margin-right: 1rem;
   color: var(--textSecondaryColor);
@@ -130,10 +138,8 @@
   display: flex;
   align-items: center;
   height: 1.8rem;
-  flex-shrink: 0;
   margin-right: 1rem;
   color: var(--textSecondaryColor);
-  white-space: nowrap;
 }
 
 .outerRatingsItem {
@@ -171,10 +177,8 @@
   display: flex;
   align-items: center;
   height: 2rem;
-  flex-shrink: 0;
   margin-right: 1rem;
   color: var(--textSecondaryColor);
-  white-space: nowrap;
 }
 
 .outerRatingsList,
@@ -315,6 +319,10 @@
     padding-right: var(--formInputHeight);
   }
 
+  .mainDataNoRightPadding {
+    padding-right: 0;
+  }
+
   .btns {
     position: absolute;
     top: 0;
@@ -322,8 +330,71 @@
     z-index: 5;
     display: block;
   }
+}
 
-  .btnsItem {
+@media only screen and (max-width: 680px) {
+  .card {
+    padding-top: 2rem;
+  }
 
+  .mainData {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .imageHolder {
+    width: 100px;
+  }
+
+  .cardName {
+    font-size: 1.25rem;
+  }
+
+  .priceValue span {
+    font-size: 2rem;
+  }
+
+  .addToCartForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1rem;
+  }
+
+  .addToCartFormInput {
+    margin-right: 0;
+    min-width: auto;
+    width: auto;
+  }
+
+  .addToCartForm .addToCartFormButton {
+    min-width: auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .mainData {
+    grid-template-columns: 1fr;
+    padding-right: 0.5rem;
+  }
+
+  .mainDataNoRightPadding {
+    padding-right: 0;
+  }
+
+  .image {
+    position: relative;
+  }
+
+  .imageHolder {
+    position: relative;
+    top: 0;
+    left: 30%;
+    width: 120px;
+    transform: translate3d(-50%, -10%, 0);
+  }
+
+  .outerRatingsLabel,
+  .connectionsGroupLabel {
+    width: 100px;
+    flex-shrink: 0;
   }
 }

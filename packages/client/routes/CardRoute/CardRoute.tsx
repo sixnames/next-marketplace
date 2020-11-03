@@ -141,7 +141,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               <div className={classes.mainDataBottom}>
                 <div>
                   <div className={classes.price}>
-                    <div className={classes.cartLabel}>Цена от</div>
+                    <div className={classes.cardLabel}>Цена от</div>
                     <div className={classes.priceValue}>
                       <span>{price}</span>
                       р.
@@ -149,7 +149,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                   </div>
 
                   <div className={classes.helpers}>
-                    <div className={classes.cartLabel}>В наличии в 16 винотеках</div>
+                    <div className={classes.cardLabel}>В наличии в 16 винотеках</div>
                     <div>Сравнить цены</div>
                   </div>
                 </div>
@@ -173,10 +173,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         </div>
 
         <div
-          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop}`}
+          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop} ${classes.mainFrameLowBottom}`}
         >
           <div />
-          <div className={`${classes.mainData}`}>
+          <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
             <div />
             <div className={`${classes.addToCartForm}`}>
               <SpinnerInput
@@ -188,7 +188,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 name={'amount'}
                 value={amount}
               />
-              <Button>В корзину</Button>
+              <Button className={classes.addToCartFormButton}>В корзину</Button>
             </div>
           </div>
         </div>

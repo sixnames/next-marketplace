@@ -7,6 +7,7 @@ import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import Icon from '../../components/Icon/Icon';
 
 interface CardRouteInterface {
   cardData: ProductCardFragment;
@@ -128,9 +129,20 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 })}
               </div>
 
-              <div>
-                <div style={{ marginBottom: 15 }}>{price} р.</div>
-                <div></div>
+              <div className={classes.mainDataBottom}>
+                <div>{price} р.</div>
+
+                <div className={classes.btns}>
+                  <button className={`${classes.btnsItem}`}>
+                    <Icon name={'compare'} />
+                  </button>
+                  <button className={`${classes.btnsItem}`}>
+                    <Icon name={'heart'} />
+                  </button>
+                  <button className={`${classes.btnsItem}`}>
+                    <Icon name={'cart'} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

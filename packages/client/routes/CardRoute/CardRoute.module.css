@@ -1,5 +1,6 @@
 .card {
   overflow: hidden;
+  padding-bottom: 5rem;
 }
 
 .mainFrame {
@@ -91,8 +92,10 @@
 }
 
 .cartLabel {
+  flex-shrink: 0;
   margin-right: 1rem;
   color: var(--textSecondaryColor);
+  white-space: nowrap;
 }
 
 .innerRatings {
@@ -123,8 +126,58 @@
   border-radius: 0.9rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  margin-right: 0.5rem;
   background-color: var(--outerRatingBackground);
   color: var(--outerRatingColor);
   text-transform: uppercase;
+}
+
+.outerRatingsItem:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.connections {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.connectionsGroup {
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.connectionsList {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.connectionsGroupItem {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  border-radius: var(--borderRadius);
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  background-color: var(--primaryBackground);
+  border: 1px solid var(--primaryBackground);
+  color: var(--outerRatingColor);
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.connectionsGroupItem:not(.connectionsGroupItemCurrent):hover {
+  text-decoration: none;
+  color: var(--theme);
+}
+
+.connectionsGroupItem:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.connectionsGroupItemCurrent {
+  border-color: var(--theme);
+  cursor: default;
 }

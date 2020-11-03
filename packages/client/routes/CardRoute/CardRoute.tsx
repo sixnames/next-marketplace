@@ -17,7 +17,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     mainImage,
     nameString,
     cardNameString,
-    descriptionString,
     price,
     cardConnections,
     cardFeatures,
@@ -90,50 +89,53 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.outerRatingsItem}>ws 88</div>
               </div>
 
-              <div>
+              <div className={classes.connections}>
                 {cardConnections.map(({ id, nameString, products }) => {
                   // Connections
                   return (
-                    <div key={id}>
-                      <div>{nameString}</div>
-                      {products.map(({ value, id, product, isCurrent }) => {
-                        if (isCurrent) {
+                    <div key={id} className={classes.connectionsGroup}>
+                      <div className={classes.cartLabel}>{`${nameString}:`}</div>
+                      <div className={classes.connectionsList}>
+                        {products.map(({ value, id, product, isCurrent }) => {
+                          if (isCurrent) {
+                            return (
+                              <span
+                                className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
+                                key={id}
+                              >
+                                {value}
+                              </span>
+                            );
+                          }
                           return (
-                            <span style={{ marginRight: 15 }} key={id}>
+                            <Link
+                              className={`${classes.connectionsGroupItem}`}
+                              key={id}
+                              href={{
+                                pathname: `/product/[card]`,
+                              }}
+                              as={{
+                                pathname: `/product/${product.slug}`,
+                              }}
+                            >
                               {value}
-                            </span>
+                            </Link>
                           );
-                        }
-                        return (
-                          <Link
-                            style={{ marginRight: 15 }}
-                            key={id}
-                            href={{
-                              pathname: `/product/[card]`,
-                            }}
-                            as={{
-                              pathname: `/product/${product.slug}`,
-                            }}
-                          >
-                            {value}
-                          </Link>
-                        );
-                      })}
+                        })}
+                      </div>
                     </div>
                   );
                 })}
+              </div>
+
+              <div>
+                <div style={{ marginBottom: 15 }}>{price} р.</div>
+                <div></div>
               </div>
             </div>
           </div>
 
           <ProductMarker>Выбор покупателей</ProductMarker>
-        </div>
-
-        <div>
-          <div>
-            <div style={{ marginBottom: 15 }}>{price} р.</div>
-            <div style={{ marginBottom: 30 }}>{descriptionString}</div>
-          </div>
         </div>
       </Inner>
     </div>

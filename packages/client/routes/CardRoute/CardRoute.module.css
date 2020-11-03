@@ -1,36 +1,30 @@
+.card {
+  overflow: hidden;
+}
+
 .mainFrame {
   --mainColumnsGap: 1.5rem;
   --secondaryColumnsWidht: 180px;
 
-  --frameBackgroundHeight: 80%;
-  --frameBackgroundPositionTop: calc((100% - var(--frameBackgroundHeight)) / 2);
-
   position: relative;
   display: grid;
-  align-items: center;
   grid-template-columns: var(--secondaryColumnsWidht) 1fr;
   grid-column-gap: var(--mainColumnsGap);
-}
-
-.mainFrameBg {
-  position: absolute;
-  top: var(--frameBackgroundPositionTop);
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  height: var(--frameBackgroundHeight);
   background-color: var(--secondaryBackground);
   border-radius: var(--radius-2-3);
+
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
-.mainFrameShade {
+.mainFrame:after {
   position: absolute;
   content: '';
-  top: var(--frameBackgroundPositionTop);
+  top: 0;
   right: 100%;
   display: block;
-  width: 0;
-  height: var(--frameBackgroundHeight);
+  width: 10%;
+  height: 100%;
   background: linear-gradient(to left, var(--secondaryBackground), transparent);
 }
 
@@ -48,13 +42,15 @@
 }
 
 .image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
 }
 
 .imageHolder {
-  max-width: 150px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .imageHolder img {
@@ -63,8 +59,7 @@
 }
 
 .mainDataContent {
-  padding-top: var(--frameBackgroundPositionTop);
-  padding-bottom: var(--frameBackgroundPositionTop);
+
 }
 
 .feature {
@@ -83,7 +78,7 @@
 }
 
 .cardNameHolder {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .cardName {
@@ -95,8 +90,41 @@
   margin-top: 0.25rem;
 }
 
-@media only screen and (max-width: 768px) {
-  .mainFrameShade {
-    background: var(--secondaryBackground);
-  }
+.cartLabel {
+  margin-right: 1rem;
+  color: var(--textSecondaryColor);
+}
+
+.innerRatings {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.innerRatingsStars {
+  margin-right: 1rem;
+}
+
+.innerRatingsFeedback {
+  color: var(--textSecondaryColor);
+}
+
+.outerRatings {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.outerRatingsItem {
+  display: flex;
+  align-items: center;
+  height: 1.8rem;
+  font-size: 0.875rem;
+  border-radius: 0.9rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  margin-right: 0.5rem;
+  background-color: var(--outerRatingBackground);
+  color: var(--outerRatingColor);
+  text-transform: uppercase;
 }

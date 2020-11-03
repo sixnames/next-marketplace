@@ -418,6 +418,10 @@
   /*Scrollbar*/
   --scrollbarBG: var(--wp-white);
   --thumbBG: var(--wp-mid-gray-100);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-light-gray-200);
+  --outerRatingColor: var(--wp-dark-gray-100);
 }
 
 [data-theme='light'] {
@@ -445,6 +449,10 @@
   --secondaryButtonBackground: var(--wp-light-gray-300);
 
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-light-gray-200);
+  --outerRatingColor: var(--wp-dark-gray-100);
 }
 
 [data-theme='dark'] {
@@ -475,6 +483,10 @@
 
   --scrollbarBG: var(--wp-dark-gray-300);
   --thumbBG: var(--wp-dark-gray-200);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-dark-gray-100);
+  --outerRatingColor: var(--wp-light-gray-200);
 }
 
 @media only screen and (max-width: 1024px) {

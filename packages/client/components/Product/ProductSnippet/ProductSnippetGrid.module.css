@@ -165,19 +165,3 @@
 .btnsItem:hover svg {
   fill: var(--theme);
 }
-
-
-/* rating star */
-.ratingSmall {
-  display: flex;
-  align-items: center;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-.ratingSmall svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-left: 0.5rem;
-  fill: var(--wp-yellow);
-}

@@ -6,6 +6,7 @@ import { ProductCardFragment } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import useRefSizes from '../../hooks/useRefSizes';
 import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
+import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 
 interface CardRouteInterface {
   cardData: ProductCardFragment;
@@ -69,8 +70,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             </div>
           </div>
           <div className={classes.mainDataContent}>
-            <div className={classes.cardName}>
-              <h1>{cardNameString}</h1>
+            <div className={classes.cardNameHolder}>
+              <div className={classes.cardName}>
+                <h1>{cardNameString}</h1>
+              </div>
+              <div className={classes.cardArt}>Артикул: {itemId}</div>
             </div>
 
             <div>
@@ -107,6 +111,8 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               })}
             </div>
           </div>
+
+          <ProductMarker>Выбор покупателей</ProductMarker>
         </div>
 
         <AnimateOpacity className={classes.mainFrameBg} />
@@ -115,7 +121,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <div>
         <div>
-          <div style={{ marginBottom: 15 }}>Артикул: {itemId}</div>
           <div style={{ marginBottom: 15 }}>{price} р.</div>
           <div style={{ marginBottom: 30 }}>{descriptionString}</div>
         </div>

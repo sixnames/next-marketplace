@@ -14,6 +14,10 @@ export interface AppPageInterface {
 async function getAppServerSideProps(context: GetServerSidePropsContext) {
   try {
     const { req, res } = context;
+    const isMobileDevice = `${req ? req.headers['user-agent'] : navigator.userAgent}`.match(
+      /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
+    );
+
     const apolloClient = initializeApollo();
 
     const initialApolloState = await apolloClient.query({
@@ -36,6 +40,7 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
       props: {
         initialApolloState: initialApolloState.data,
         initialTheme: (theme as Theme) || (THEME_LIGHT as Theme),
+        isMobileDevice,
       },
     };
   } catch (e) {

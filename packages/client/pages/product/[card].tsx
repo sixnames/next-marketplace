@@ -39,7 +39,6 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, 
   );
 };
 
-// noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async (context) =>
   getSiteServerSideProps<CardInterface>({
     context,
@@ -65,5 +64,4 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     },
   });
 
-// noinspection JSUnusedGlobalSymbols
 export default Card;

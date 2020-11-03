@@ -1,10 +1,11 @@
 import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
-import Image from '../Image/Image';
-import Link from '../Link/Link';
-import { useSiteContext } from '../../context/siteContext';
-import Icon from '../Icon/Icon';
-import { ProductSnippetFragment } from '../../generated/apolloComponents';
+import Image from '../../Image/Image';
+import Link from '../../Link/Link';
+import { useSiteContext } from '../../../context/siteContext';
+import Icon from '../../Icon/Icon';
+import { ProductSnippetFragment } from '../../../generated/apolloComponents';
+import ProductMarker from '../ProductMarker/ProductMarker';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -57,7 +58,8 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
         </div>
       </div>
 
-      <div className={classes.marker}>Выбор покупателей</div>
+      <ProductMarker>Выбор покупателей</ProductMarker>
+
       <Link
         href={{
           pathname: `/product/[card]`,

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 
 function useIsMobile(breakpoint = 1024) {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
     function resizeHandler() {

@@ -7,7 +7,7 @@ import useFilterMethods from '../../hooks/useFilterMethods';
 import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
 import { GetCatalogueRubricQuery } from '../../generated/apolloComponents';
-import ProductSnippetGrid from '../../components/ProductSnippet/ProductSnippetGrid';
+import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
 
 interface CatalogueRouteInterface {
   rubricData: GetCatalogueRubricQuery;

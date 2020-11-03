@@ -130,7 +130,20 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               </div>
 
               <div className={classes.mainDataBottom}>
-                <div>{price} р.</div>
+                <div>
+                  <div className={classes.price}>
+                    <div className={classes.cartLabel}>Цена от</div>
+                    <div className={classes.priceValue}>
+                      <span>{price}</span>
+                      р.
+                    </div>
+                  </div>
+
+                  <div className={classes.helpers}>
+                    <div className={classes.cartLabel}>В наличии в 16 винотеках</div>
+                    <div>Сравнить цены</div>
+                  </div>
+                </div>
 
                 <div className={classes.btns}>
                   <button className={`${classes.btnsItem}`}>

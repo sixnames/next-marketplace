@@ -231,3 +231,19 @@
 .btnsItem:hover svg {
   fill: var(--theme);
 }
+
+.price {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.priceValue span {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.helpers {
+  display: flex;
+  align-items: center;
+}

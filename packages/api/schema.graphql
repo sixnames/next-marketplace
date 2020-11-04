@@ -538,7 +538,7 @@ type Product {
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
   cardConnections: [ProductCardConnection!]!
-  cardFeatures: [ProductCardFeature!]!
+  cardFeatures: ProductCardFeatures!
   cardName: [LanguageType!]!
   cardNameString: String!
   connections: [ProductConnection!]!
@@ -615,18 +615,11 @@ type ProductCardConnectionItem {
   value: String!
 }
 
-type ProductCardFeature {
-  attributes: [ProductCardFeatureAttribute!]!
-  id: ID!
-  nameString: String!
-  showInCard: Boolean!
-}
-
-type ProductCardFeatureAttribute {
-  id: ID!
-  nameString: String!
-  showInCard: Boolean!
-  value: [String!]!
+type ProductCardFeatures {
+  iconFeatures: [ProductAttribute!]!
+  listFeatures: [ProductAttribute!]!
+  tagFeatures: [ProductAttribute!]!
+  textFeatures: [ProductAttribute!]!
 }
 
 type ProductConnection {

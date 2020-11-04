@@ -54,8 +54,16 @@ import {
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
 } from '@yagu/config';
-import { ProductConnectionModel, ProductModel } from '../../entities/Product';
+import {
+  ProductAttributeViewVariantEnum,
+  ProductConnectionModel,
+  ProductModel,
+} from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
@@ -374,6 +382,7 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineVintage.slug,
               value: [wineVintageOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
@@ -385,6 +394,7 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineColor.slug,
               value: [wineColorOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
@@ -396,6 +406,7 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineType.slug,
               value: [wineTypeOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
@@ -413,13 +424,17 @@ const createTestData = async () => {
                 node: attributeString.id,
                 showInCard: true,
                 key: attributeString.slug,
-                value: ['string'],
+                value: [
+                  'Very long string attribute. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto consectetur, consequatur cumque cupiditate enim laborum nihil nisi obcaecati officia perspiciatis quidem quos rem similique sunt ut voluptatum! Deleniti, provident!',
+                ],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
               },
               {
                 node: attributeNumber.id,
                 showInCard: true,
                 key: attributeNumber.slug,
                 value: ['123'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as ProductAttributeViewVariantEnum,
               },
             ],
           },

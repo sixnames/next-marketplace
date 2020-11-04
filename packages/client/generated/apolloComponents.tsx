@@ -486,7 +486,7 @@ export type Product = {
   cardNameString: Scalars['String'];
   descriptionString: Scalars['String'];
   mainImage: Scalars['String'];
-  cardFeatures: Array<ProductCardFeature>;
+  cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
@@ -516,11 +516,20 @@ export type AttributesGroup = {
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
+  viewVariant: ProductAttributeViewVariantEnum;
   node: Attribute;
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
   value: Array<Scalars['String']>;
 };
+
+/** Product attribute view variant enum */
+export enum ProductAttributeViewVariantEnum {
+  List = 'list',
+  Text = 'text',
+  Tag = 'tag',
+  Icon = 'icon'
+}
 
 export type AssetType = {
   __typename?: 'AssetType';
@@ -552,20 +561,12 @@ export type ProductConnectionItem = {
   optionName: Scalars['String'];
 };
 
-export type ProductCardFeature = {
-  __typename?: 'ProductCardFeature';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  showInCard: Scalars['Boolean'];
-  attributes: Array<ProductCardFeatureAttribute>;
-};
-
-export type ProductCardFeatureAttribute = {
-  __typename?: 'ProductCardFeatureAttribute';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  showInCard: Scalars['Boolean'];
-  value: Array<Scalars['String']>;
+export type ProductCardFeatures = {
+  __typename?: 'ProductCardFeatures';
+  listFeatures: Array<ProductAttribute>;
+  textFeatures: Array<ProductAttribute>;
+  tagFeatures: Array<ProductAttribute>;
+  iconFeatures: Array<ProductAttribute>;
 };
 
 export type ProductCardConnection = {
@@ -1367,6 +1368,7 @@ export type ProductAttributesGroupInput = {
 
 export type ProductAttributeInput = {
   showInCard: Scalars['Boolean'];
+  viewVariant: ProductAttributeViewVariantEnum;
   node: Scalars['ID'];
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
@@ -2455,27 +2457,49 @@ export type GetAttributesGroupsForRubricQuery = (
   )> }
 );
 
+export type CardFeatureFragment = (
+  { __typename?: 'ProductAttribute' }
+  & Pick<ProductAttribute, 'showInCard' | 'viewVariant' | 'value'>
+  & { node: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'nameString'>
+  ) }
+);
+
+export type CardConnectionFragment = (
+  { __typename?: 'ProductCardConnection' }
+  & Pick<ProductCardConnection, 'id' | 'nameString'>
+  & { products: Array<(
+    { __typename?: 'ProductCardConnectionItem' }
+    & Pick<ProductCardConnectionItem, 'id' | 'value' | 'isCurrent'>
+    & { product: (
+      { __typename?: 'Product' }
+      & Pick<Product, 'id' | 'slug'>
+    ) }
+  )> }
+);
+
 export type ProductCardFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
-  & { cardFeatures: Array<(
-    { __typename?: 'ProductCardFeature' }
-    & Pick<ProductCardFeature, 'id' | 'nameString' | 'showInCard'>
-    & { attributes: Array<(
-      { __typename?: 'ProductCardFeatureAttribute' }
-      & Pick<ProductCardFeatureAttribute, 'id' | 'nameString' | 'value' | 'showInCard'>
+  & { cardFeatures: (
+    { __typename?: 'ProductCardFeatures' }
+    & { listFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & CardFeatureFragment
+    )>, textFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & CardFeatureFragment
+    )>, tagFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & CardFeatureFragment
+    )>, iconFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & CardFeatureFragment
     )> }
-  )>, cardConnections: Array<(
+  ), cardConnections: Array<(
     { __typename?: 'ProductCardConnection' }
-    & Pick<ProductCardConnection, 'id' | 'nameString'>
-    & { products: Array<(
-      { __typename?: 'ProductCardConnectionItem' }
-      & Pick<ProductCardConnectionItem, 'id' | 'value' | 'isCurrent'>
-      & { product: (
-        { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'slug'>
-      ) }
-    )> }
+    & CardConnectionFragment
   )> }
 );
 
@@ -3275,6 +3299,32 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
+export const CardFeatureFragmentDoc = gql`
+    fragment CardFeature on ProductAttribute {
+  showInCard
+  viewVariant
+  value
+  node {
+    id
+    nameString
+  }
+}
+    `;
+export const CardConnectionFragmentDoc = gql`
+    fragment CardConnection on ProductCardConnection {
+  id
+  nameString
+  products {
+    id
+    value
+    isCurrent
+    product {
+      id
+      slug
+    }
+  }
+}
+    `;
 export const ProductCardFragmentDoc = gql`
     fragment ProductCard on Product {
   id
@@ -3286,31 +3336,25 @@ export const ProductCardFragmentDoc = gql`
   mainImage
   descriptionString
   cardFeatures {
-    id
-    nameString
-    showInCard
-    attributes {
-      id
-      nameString
-      value
-      showInCard
+    listFeatures {
+      ...CardFeature
+    }
+    textFeatures {
+      ...CardFeature
+    }
+    tagFeatures {
+      ...CardFeature
+    }
+    iconFeatures {
+      ...CardFeature
     }
   }
   cardConnections {
-    id
-    nameString
-    products {
-      id
-      value
-      isCurrent
-      product {
-        id
-        slug
-      }
-    }
+    ...CardConnection
   }
 }
-    `;
+    ${CardFeatureFragmentDoc}
+${CardConnectionFragmentDoc}`;
 export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
   id

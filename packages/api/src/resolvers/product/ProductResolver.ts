@@ -12,9 +12,9 @@ import {
 } from 'type-graphql';
 import {
   Product,
+  ProductAttribute,
   ProductAttributesGroup,
-  ProductCardFeature,
-  ProductCardFeatureAttribute,
+  ProductCardFeatures,
   ProductConnection,
   ProductConnectionItem,
   ProductConnectionModel,
@@ -67,7 +67,13 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
-import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
+import {
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+} from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
   ProductCardConnection,
@@ -728,11 +734,11 @@ export class ProductResolver {
     }
   }
 
-  @FieldResolver((_returns) => [ProductCardFeature])
+  @FieldResolver((_returns) => ProductCardFeatures)
   async cardFeatures(
     @Root() product: DocumentType<Product>,
     @Localization() { lang }: LocalizationPayloadInterface,
-  ): Promise<ProductCardFeature[]> {
+  ): Promise<ProductCardFeatures> {
     try {
       // Get ids of attributes used in connections
       const connections = await ProductConnectionModel.find({
@@ -741,49 +747,72 @@ export class ProductResolver {
         },
       }).select({ attributeId: 1 });
 
-      const connectedAttributesIds = connections.map(({ attributeId }) => attributeId);
+      const attributesIdsInConnections = connections.map(({ attributeId }) => attributeId);
 
-      const features: ProductCardFeature[] = [];
+      const features: ProductCardFeatures = {
+        listFeatures: [],
+        textFeatures: [],
+        tagFeatures: [],
+        iconFeatures: [],
+      };
+
       for await (const productAttributesGroup of product.attributesGroups) {
-        const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
-        if (!attributesGroup) {
+        if (!productAttributesGroup.showInCard) {
           continue;
         }
 
         // Find all attributes values
-        const groupAttributes: ProductCardFeatureAttribute[] = [];
         for await (const productAttribute of productAttributesGroup.attributes) {
+          if (!productAttribute.showInCard) {
+            continue;
+          }
+
           // Exclude attributes used in connections
           const attribute = await AttributeModel.findOne({
-            $and: [{ _id: productAttribute.node }, { _id: { $nin: connectedAttributesIds } }],
+            $and: [{ _id: productAttribute.node }, { _id: { $nin: attributesIdsInConnections } }],
           });
           if (!attribute) {
             continue;
           }
-
-          groupAttributes.push({
-            id: attribute.id,
-            nameString: getLangField(attribute.name, lang),
+          // console.log(productAttribute);
+          const payloadAttribute: ProductAttribute = {
             showInCard: productAttribute.showInCard,
+            viewVariant: productAttribute.viewVariant,
+            node: productAttribute.node,
+            key: productAttribute.key,
             value: await getProductAttributeReadableValues({
               attribute,
               productAttributeValues: productAttribute.value,
               lang,
             }),
-          });
+          };
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
+            features.listFeatures.push(payloadAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
+            features.textFeatures.push(payloadAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
+            features.tagFeatures.push(payloadAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
+            features.iconFeatures.push(payloadAttribute);
+          }
         }
-
-        features.push({
-          id: attributesGroup.id,
-          nameString: getLangField(attributesGroup.name, lang),
-          showInCard: productAttributesGroup.showInCard,
-          attributes: groupAttributes,
-        });
       }
-
+      // console.log(features);
       return features;
     } catch (e) {
-      return [];
+      return {
+        listFeatures: [],
+        textFeatures: [],
+        tagFeatures: [],
+        iconFeatures: [],
+      };
     }
   }
 

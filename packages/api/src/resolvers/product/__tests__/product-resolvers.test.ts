@@ -32,6 +32,47 @@ describe('Product', () => {
       }
     `;
 
+    const cardFeaturesFragment = gql`
+      fragment CardFeaturesFragment on ProductCardFeatures {
+        listFeatures {
+          showInCard
+          viewVariant
+          value
+          node {
+            id
+            nameString
+          }
+        }
+        textFeatures {
+          showInCard
+          viewVariant
+          value
+          node {
+            id
+            nameString
+          }
+        }
+        tagFeatures {
+          showInCard
+          viewVariant
+          value
+          node {
+            id
+            nameString
+          }
+        }
+        iconFeatures {
+          showInCard
+          viewVariant
+          value
+          node {
+            id
+            nameString
+          }
+        }
+      }
+    `;
+
     // Should return current product by slug
     const {
       data: { getProductBySlug },
@@ -56,12 +97,29 @@ describe('Product', () => {
               }
             }
           }
+          cardFeatures {
+            ...CardFeaturesFragment
+          }
+          cardConnections {
+            id
+            nameString
+            products {
+              id
+              value
+              isCurrent
+              product {
+                id
+                slug
+              }
+            }
+          }
           connections {
             ...ConnectionFragment
           }
         }
       }
       ${connectionFragment}
+      ${cardFeaturesFragment}
     `);
     const {
       data: { getProductBySlug: secondaryProduct },
@@ -154,13 +212,7 @@ describe('Product', () => {
                 }
               }
               cardFeatures {
-                id
-                nameString
-                showInCard
-                attributes {
-                  nameString
-                  value
-                }
+                ...CardFeaturesFragment
               }
               connections {
                 ...ConnectionFragment
@@ -169,6 +221,7 @@ describe('Product', () => {
           }
         }
         ${connectionFragment}
+        ${cardFeaturesFragment}
       `,
       {
         variables: {
@@ -186,7 +239,6 @@ describe('Product', () => {
     } = createConnectionResult;
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
-    expect(createProductConnection.product.cardFeatures[0].attributes).toHaveLength(3);
     expect(createdConnection.productsIds).toHaveLength(1);
     expect(createProductConnection.product.slug).toEqual(
       `vino_brancott_estate_marlborough_sauvignon_blanc-tip_vina-heres`,

@@ -67,33 +67,18 @@ export class ProductAttributesGroup {
 }
 
 @ObjectType()
-export class ProductCardFeatureAttribute {
-  @Field(() => ID)
-  id: string;
+export class ProductCardFeatures {
+  @Field(() => [ProductAttribute])
+  readonly listFeatures: ProductAttribute[];
 
-  @Field(() => String)
-  nameString: string;
+  @Field(() => [ProductAttribute])
+  readonly textFeatures: ProductAttribute[];
 
-  @Field(() => Boolean)
-  showInCard: boolean;
+  @Field(() => [ProductAttribute])
+  readonly tagFeatures: ProductAttribute[];
 
-  @Field(() => [String])
-  value: string[];
-}
-
-@ObjectType()
-export class ProductCardFeature {
-  @Field(() => ID)
-  id: string;
-
-  @Field(() => String)
-  nameString: string;
-
-  @Field(() => Boolean)
-  showInCard: boolean;
-
-  @Field(() => [ProductCardFeatureAttribute])
-  attributes: ProductCardFeatureAttribute[];
+  @Field(() => [ProductAttribute])
+  readonly iconFeatures: ProductAttribute[];
 }
 
 @ObjectType()
@@ -168,8 +153,8 @@ export class Product extends TimeStamps {
   @Field(() => String)
   readonly mainImage: string;
 
-  @Field(() => [ProductCardFeature])
-  readonly cardFeatures: ProductCardFeature[];
+  @Field(() => ProductCardFeatures)
+  readonly cardFeatures: ProductCardFeatures;
 
   @Field(() => [ProductCardConnection])
   readonly cardConnections: ProductCardConnection[];

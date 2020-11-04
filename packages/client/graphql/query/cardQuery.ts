@@ -1,5 +1,33 @@
 import { gql } from '@apollo/client';
 
+export const cardFeatureFragment = gql`
+  fragment CardFeature on ProductAttribute {
+    showInCard
+    viewVariant
+    value
+    node {
+      id
+      nameString
+    }
+  }
+`;
+
+export const cardConnectionFragment = gql`
+  fragment CardConnection on ProductCardConnection {
+    id
+    nameString
+    products {
+      id
+      value
+      isCurrent
+      product {
+        id
+        slug
+      }
+    }
+  }
+`;
+
 export const productCardFragment = gql`
   fragment ProductCard on Product {
     id
@@ -11,30 +39,25 @@ export const productCardFragment = gql`
     mainImage
     descriptionString
     cardFeatures {
-      id
-      nameString
-      showInCard
-      attributes {
-        id
-        nameString
-        value
-        showInCard
+      listFeatures {
+        ...CardFeature
+      }
+      textFeatures {
+        ...CardFeature
+      }
+      tagFeatures {
+        ...CardFeature
+      }
+      iconFeatures {
+        ...CardFeature
       }
     }
     cardConnections {
-      id
-      nameString
-      products {
-        id
-        value
-        isCurrent
-        product {
-          id
-          slug
-        }
-      }
+      ...CardConnection
     }
   }
+  ${cardFeatureFragment}
+  ${cardConnectionFragment}
 `;
 
 export const CATALOGUE_CARD_QUERY = gql`

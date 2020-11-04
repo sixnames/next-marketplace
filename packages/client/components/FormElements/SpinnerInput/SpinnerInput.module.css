@@ -1,0 +1,76 @@
+.frame {
+  position: relative;
+  width: var(--button-min-width);
+}
+
+.input {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: var(--formInputHeight);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: calc(var(--formInputHeight) + var(--inputPaddingHorizontal));
+  padding-right: calc(var(--formInputHeight) + var(--inputPaddingHorizontal));
+  margin: 0;
+  font-family: var(--font);
+  color: var(--inputTextColor);
+  text-align: center;
+  border: 1px solid var(--inputBorder);
+  background-color: var(--inputBackground);
+  outline: none;
+  box-shadow: 0 0 0 transparent;
+  border-radius: var(--borderRadius);
+  transition: all 0.2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.error {
+  border: 1px solid var(--wp-error);
+}
+
+.input:disabled {
+  background-color: rgba(var(--inputBackground), 0.6);
+  cursor: default;
+}
+
+.input:read-only {
+  cursor: default;
+}
+
+.butn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: var(--formInputHeight);
+  border: none;
+  background: none;
+  height: 100%;
+  outline: none;
+  cursor: pointer;
+}
+
+.butnPlus {
+  left: auto;
+  right: 0;
+}
+
+.butn svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: var(--textColor);
+}

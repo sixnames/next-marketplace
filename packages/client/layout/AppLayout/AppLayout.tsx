@@ -8,7 +8,6 @@ import Meta from '../Meta';
 import Modal from '../../components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from '../../hooks/useCompact';
-import useIsMobile from '../../hooks/useIsMobile';
 import { UserContextProvider } from '../../context/userContext';
 import { AppPageInterface } from '../../utils/getAppServerSideProps';
 import Inner from '../../components/Inner/Inner';
@@ -27,8 +26,7 @@ interface AppLayoutConsumerInterface {
 }
 
 const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, title }) => {
-  const { isLoading, isModal } = useAppContext();
-  const isMobile = useIsMobile();
+  const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
   const { getSiteConfigSingleValue } = useConfigContext();

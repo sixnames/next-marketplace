@@ -7,12 +7,12 @@ import Link from '../../../components/Link/Link';
 import { useThemeContext } from '../../../context/themeContext';
 import { useConfigContext } from '../../../context/configContext';
 import { ASSETS_URL, ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
-import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from '../../../context/siteContext';
 import HeaderSearch from './HeaderSearch';
 import { useUserContext } from '../../../context/userContext';
+import { useAppContext } from '../../../context/appContext';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
@@ -113,8 +113,8 @@ const HeaderMiddleRight: React.FC = () => {
 const Header: React.FC = () => {
   const { isSearchOpen } = useSiteContext();
   const { logoSlug } = useThemeContext();
+  const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const isMobile = useIsMobile();
   const headerRef = useRef<HTMLElement | null>(null);
 
   const siteLogo = getSiteConfigSingleValue(logoSlug);

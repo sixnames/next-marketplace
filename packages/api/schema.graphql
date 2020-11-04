@@ -537,6 +537,7 @@ type Product {
   active: Boolean!
   assets: [AssetType!]!
   attributesGroups: [ProductAttributesGroup!]!
+  cardConnections: [ProductCardConnection!]!
   cardFeatures: [ProductCardFeature!]!
   cardName: [LanguageType!]!
   cardNameString: String!
@@ -585,13 +586,36 @@ input ProductAttributesGroupInput {
   showInCard: Boolean!
 }
 
+type ProductCardConnection {
+  """ID of connection"""
+  id: ID!
+
+  """Name of attribute used for connection"""
+  nameString: String!
+  products: [ProductCardConnectionItem!]!
+}
+
+type ProductCardConnectionItem {
+  """ID of product"""
+  id: ID!
+  isCurrent: Boolean!
+  product: Product!
+
+  """Value of selected option for current product in connection"""
+  value: String!
+}
+
 type ProductCardFeature {
   attributes: [ProductCardFeatureAttribute!]!
-  attributesGroup: AttributesGroup!
+  id: ID!
+  nameString: String!
+  showInCard: Boolean!
 }
 
 type ProductCardFeatureAttribute {
+  id: ID!
   nameString: String!
+  showInCard: Boolean!
   value: [String!]!
 }
 

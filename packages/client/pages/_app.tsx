@@ -20,7 +20,7 @@ const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   return (
     <ThemeContextProvider initialTheme={pageProps.initialTheme}>
       <ApolloProvider client={apolloClient}>
-        <AppContextProvider>
+        <AppContextProvider isMobileDevice={pageProps.isMobileDevice}>
           <NotificationsProvider>
             <Component {...pageProps} />
           </NotificationsProvider>

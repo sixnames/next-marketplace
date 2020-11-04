@@ -41,7 +41,7 @@
 .butn[aria-disabled='true'] {
   pointer-events: none;
   cursor: default;
-  opacity: 0.8;
+  opacity: var(--inputDisabledOpacity);
 }
 
 .butn[aria-disabled='true'] svg {

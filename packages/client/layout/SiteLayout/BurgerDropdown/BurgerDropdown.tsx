@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Inner from '../../../components/Inner/Inner';
 import HeaderTop from '../Header/HeaderTop';
-import useIsMobile from '../../../hooks/useIsMobile';
 import { RubricType, useSiteContext } from '../../../context/siteContext';
 import classes from './BurgerDropdown.module.css';
 import { useConfigContext } from '../../../context/configContext';
@@ -12,6 +11,7 @@ import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import useSignOut from '../../../hooks/useSignOut';
 import { useUserContext } from '../../../context/userContext';
+import { useAppContext } from '../../../context/appContext';
 
 export interface BurgerDropdownSizesInterface {
   top: number;
@@ -19,8 +19,7 @@ export interface BurgerDropdownSizesInterface {
 }
 
 const BurgerDropdownChevron: React.FC = () => {
-  const isMobile = useIsMobile();
-  return isMobile ? <Icon name={'chevron-right'} className={classes.chevronRight} /> : null;
+  return <Icon name={'chevron-right'} className={classes.chevronRight} />;
 };
 
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
@@ -32,7 +31,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
   const signOutHandler = useSignOut();
   const { asPath, query } = useRouter();
   const configSiteName = getSiteConfigSingleValue('siteName');
-  const isMobile = useIsMobile();
+  const { isMobile } = useAppContext();
   const { catalogue = [] } = query;
   const catalogueSlug = catalogue[0];
 

@@ -24,7 +24,7 @@
 }
 
 .textarea:disabled {
-  opacity: 0.8;
+  opacity: var(--inputDisabledOpacity);
   cursor: default;
 }
 

@@ -1,10 +1,12 @@
 import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
-import Image from '../Image/Image';
-import Link from '../Link/Link';
-import { useSiteContext } from '../../context/siteContext';
-import Icon from '../Icon/Icon';
-import { ProductSnippetFragment } from '../../generated/apolloComponents';
+import Image from '../../Image/Image';
+import Link from '../../Link/Link';
+import { useSiteContext } from '../../../context/siteContext';
+import Icon from '../../Icon/Icon';
+import { ProductSnippetFragment } from '../../../generated/apolloComponents';
+import ProductMarker from '../ProductMarker/ProductMarker';
+import RatingStars from '../../RatingStars/RatingStars';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -33,10 +35,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>
-        <div className={classes.ratingSmall}>
-          <span>4,9</span>
-          <Icon name={'star'} />
-        </div>
+        <RatingStars size={'small'} rating={4.9} />
       </div>
 
       <div className={classes.bottomRight}>
@@ -57,7 +56,8 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
         </div>
       </div>
 
-      <div className={classes.marker}>Выбор покупателей</div>
+      <ProductMarker>Выбор покупателей</ProductMarker>
+
       <Link
         href={{
           pathname: `/product/[card]`,

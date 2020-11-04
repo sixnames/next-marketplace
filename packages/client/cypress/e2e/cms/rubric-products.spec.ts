@@ -62,7 +62,7 @@ describe('Rubric products', () => {
     cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`).click();
     cy.getByCy(`${mockProductForDelete}-create`).click();
     cy.getByCy(mockProductForDelete).should('exist');
-    cy.getByCy(`${mockRubricLevelThreeName}-total`).should('contain', '5');
+    cy.getByCy(`${mockRubricLevelThreeName}-total`).should('contain', '7');
 
     // Should add product from not in rubric list to the rubric
     cy.getByCy(`${mockProduct}-delete`).click();
@@ -161,6 +161,6 @@ describe('Rubric products', () => {
 
     cy.getByCy('submit-new-product').click();
     cy.getByCy(mockProductNewName).should('exist');
-    cy.getByCy(`${mockRubricLevelOneName}-total`).should('contain', '6');
+    cy.getByCy(`${mockRubricLevelOneName}-total`).should('contain', '8');
   });
 });

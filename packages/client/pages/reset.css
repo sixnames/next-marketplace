@@ -351,6 +351,7 @@
 
   --borderRadius: 0.5rem;
   --radius-1-3: var(--borderRadius)  0 var(--borderRadius) 0;
+  --radius-2-3: 0 var(--borderRadius) var(--borderRadius) 0;
   --radius-2-4: 0 var(--borderRadius)  0 var(--borderRadius);
 
   --black: #111111;
@@ -384,6 +385,7 @@
 
   /*Sizes*/
   --lineGap: 2rem;
+  --innerBlockMaxWidht: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;
@@ -412,10 +414,15 @@
   --inputBorderError: var(--wp-error);
   --inputPaddingHorizontal: 1.5rem;
   --inputIconSize: 1.25rem;
+  --inputDisabledOpacity: 0.5;
 
   /*Scrollbar*/
   --scrollbarBG: var(--wp-white);
   --thumbBG: var(--wp-mid-gray-100);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-light-gray-200);
+  --outerRatingColor: var(--wp-dark-gray-100);
 }
 
 [data-theme='light'] {
@@ -443,6 +450,10 @@
   --secondaryButtonBackground: var(--wp-light-gray-300);
 
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-light-gray-200);
+  --outerRatingColor: var(--wp-dark-gray-100);
 }
 
 [data-theme='dark'] {
@@ -473,6 +484,10 @@
 
   --scrollbarBG: var(--wp-dark-gray-300);
   --thumbBG: var(--wp-dark-gray-200);
+
+  /*Outer ratings*/
+  --outerRatingBackground: var(--wp-dark-gray-100);
+  --outerRatingColor: var(--wp-light-gray-200);
 }
 
 @media only screen and (max-width: 1024px) {
@@ -485,7 +500,7 @@
 
 @media only screen and (max-width: 768px) {
   :root {
-    --innerBlockHorizontalPadding: 0.75rem;
+    --innerBlockHorizontalPadding: 1.25rem;
   }
 }
 

@@ -92,6 +92,13 @@ export const ATTRIBUTE_VARIANTS_ENUMS = [
   ATTRIBUTE_VARIANT_NUMBER,
 ];
 
+export const ATTRIBUTE_VARIANTS_LIST = [
+  { id: ATTRIBUTE_VARIANT_SELECT, nameString: 'Селект' },
+  { id: ATTRIBUTE_VARIANT_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
+  { id: ATTRIBUTE_VARIANT_STRING, nameString: 'Строка' },
+  { id: ATTRIBUTE_VARIANT_NUMBER, nameString: 'Число' },
+];
+
 // ATTRIBUTE VIEW VARIANTS
 export const ATTRIBUTE_VIEW_VARIANT_LIST = 'list';
 export const ATTRIBUTE_VIEW_VARIANT_TEXT = 'text';
@@ -105,11 +112,11 @@ export const ATTRIBUTE_VIEW_VARIANTS_ENUMS = [
   ATTRIBUTE_VIEW_VARIANT_ICON,
 ];
 
-export const ATTRIBUTE_VARIANTS_LIST = [
-  { id: ATTRIBUTE_VARIANT_SELECT, nameString: 'Селект' },
-  { id: ATTRIBUTE_VARIANT_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
-  { id: ATTRIBUTE_VARIANT_STRING, nameString: 'Строка' },
-  { id: ATTRIBUTE_VARIANT_NUMBER, nameString: 'Число' },
+export const ATTRIBUTE_VIEW_VARIANTS_LIST = [
+  { id: ATTRIBUTE_VIEW_VARIANT_LIST, nameString: 'Список' },
+  { id: ATTRIBUTE_VIEW_VARIANT_TEXT, nameString: 'Текст' },
+  { id: ATTRIBUTE_VIEW_VARIANT_TAG, nameString: 'Тег' },
+  { id: ATTRIBUTE_VIEW_VARIANT_ICON, nameString: 'С иконкой' },
 ];
 
 // ATTRIBUTE POSITIONS IN TITLE

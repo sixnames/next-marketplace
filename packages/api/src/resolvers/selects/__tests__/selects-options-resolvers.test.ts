@@ -2,7 +2,9 @@ import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_LIST,
+  ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   GENDER_ENUMS,
+  iconTypesList,
 } from '@yagu/config';
 import { ISO_LANGUAGES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
@@ -10,6 +12,32 @@ import { gql } from 'apollo-server-express';
 describe('Select options', () => {
   it('Should return select options', async () => {
     const { query } = await testClientWithContext();
+
+    // Should return icons options
+    const {
+      data: { getIconsList },
+    } = await query<any>(gql`
+      query GetGenderOptions {
+        getIconsList {
+          id
+          nameString
+        }
+      }
+    `);
+    expect(getIconsList).toHaveLength(iconTypesList.length);
+
+    // Should return attribute view variants options
+    const {
+      data: { getAttributeViewVariantsList },
+    } = await query<any>(gql`
+      query GetGenderOptions {
+        getAttributeViewVariantsList {
+          id
+          nameString
+        }
+      }
+    `);
+    expect(getAttributeViewVariantsList).toHaveLength(ATTRIBUTE_VIEW_VARIANTS_ENUMS.length);
 
     // Should return gender options
     const {

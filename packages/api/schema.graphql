@@ -118,6 +118,11 @@ enum AttributeVariantEnum {
   string
 }
 
+type AttributeViewOption {
+  id: String!
+  nameString: String!
+}
+
 type CatalogueData {
   catalogueTitle: String!
   products: PaginatedProductsResponse!
@@ -327,6 +332,12 @@ enum GenderEnum {
 }
 
 type GenderOption {
+  id: String!
+  nameString: String!
+}
+
+type IconOption {
+  icon: String!
   id: String!
   nameString: String!
 }
@@ -706,6 +717,7 @@ type Query {
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariants: [AttributeVariant!]
+  getAttributeViewVariantsList: [AttributeViewOption!]!
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
@@ -719,6 +731,7 @@ type Query {
   getEntityFields(entity: String!): [String!]!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
+  getIconsList: [IconOption!]!
   getISOLanguagesList: [ISOLanguage!]!
   getLanguage(id: ID!): Language
   getMessage(key: String!): Message!

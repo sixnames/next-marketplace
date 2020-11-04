@@ -40,7 +40,9 @@ import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
   AttributeVariantResolver,
+  AttributeViewVariantsListResolver,
   GendersListResolver,
+  IconOptionsListResolver,
   ISOLanguagesListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
@@ -97,6 +99,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
       AttributeVariantResolver,
       AttributePositioningListResolver,
       ISOLanguagesListResolver,
+      IconOptionsListResolver,
+      AttributeViewVariantsListResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),

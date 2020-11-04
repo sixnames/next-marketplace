@@ -8,10 +8,10 @@ import TTip from '../../components/TTip/TTip';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import useSignOut from '../../hooks/useSignOut';
-import useIsMobile from '../../hooks/useIsMobile';
 import { useAppNavContext } from '../../context/appNavContext';
 import classes from './AppNav.module.css';
 import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
+import { useAppContext } from '../../context/appContext';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -20,7 +20,7 @@ interface AppNavInterface {
 const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
   const { pathname } = useRouter();
   const { navItems } = useAppNavContext();
-  const isMobile = useIsMobile();
+  const { isMobile } = useAppContext();
   const signOutHandler = useSignOut();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
 

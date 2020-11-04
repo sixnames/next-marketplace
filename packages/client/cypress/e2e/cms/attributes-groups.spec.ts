@@ -6,7 +6,6 @@ import {
   MOCK_OPTIONS_GROUP_COLORS,
 } from '@yagu/mocks';
 import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
@@ -87,7 +86,7 @@ describe('Attributes Groups', () => {
     cy.getByCy(`name[0].value-error`).should('exist');
     cy.getByCy(`variant-error`).should('exist');
 
-    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_MULTIPLE_SELECT);
+    cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
     cy.getByCy(`positioningInTitle[0].value-error`).should('exist');
 
     cy.getByCy(`attribute-submit`).click();

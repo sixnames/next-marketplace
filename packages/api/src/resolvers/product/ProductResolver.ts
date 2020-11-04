@@ -69,6 +69,10 @@ import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
 import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
+import {
+  ProductCardConnection,
+  ProductCardConnectionItem,
+} from '../../entities/ProductCardConnection';
 
 const {
   operationConfigCreate,
@@ -756,8 +760,11 @@ export class ProductResolver {
           if (!attribute) {
             continue;
           }
+
           groupAttributes.push({
+            id: attribute.id,
             nameString: getLangField(attribute.name, lang),
+            showInCard: productAttribute.showInCard,
             value: await getProductAttributeReadableValues({
               attribute,
               productAttributeValues: productAttribute.value,
@@ -767,12 +774,79 @@ export class ProductResolver {
         }
 
         features.push({
-          attributesGroup,
+          id: attributesGroup.id,
+          nameString: getLangField(attributesGroup.name, lang),
+          showInCard: productAttributesGroup.showInCard,
           attributes: groupAttributes,
         });
       }
 
       return features;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductCardConnection])
+  async cardConnections(
+    @Root() product: DocumentType<Product>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<ProductCardConnection[]> {
+    try {
+      // Get all product connections
+      const connections = await ProductConnectionModel.find({
+        productsIds: {
+          $in: [product.id],
+        },
+      });
+
+      // Cast connections data for product card
+      const cardConnections: ProductCardConnection[] = [];
+      for await (const connection of connections) {
+        const attribute = await AttributeModel.findById(connection.attributeId);
+        const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
+
+        if (!attribute) {
+          continue;
+        }
+
+        cardConnections.push({
+          id: connection.id,
+          nameString: getLangField(attribute.name, lang),
+          products: products.reduce((acc: ProductCardConnectionItem[], connectionProduct) => {
+            const productAttributesGroup = connectionProduct.attributesGroups.find(({ node }) => {
+              return node.toString() === connection.attributesGroupId.toString();
+            });
+            if (!productAttributesGroup) {
+              return acc;
+            }
+
+            const productAttribute = productAttributesGroup.attributes.find(({ node }) => {
+              return node.toString() === connection.attributeId.toString();
+            });
+            if (!productAttribute) {
+              return acc;
+            }
+
+            const productConnectionValue = productAttribute.value[0];
+            if (!productConnectionValue) {
+              return acc;
+            }
+
+            return [
+              ...acc,
+              {
+                id: connectionProduct.id,
+                value: productConnectionValue,
+                isCurrent: connectionProduct.id.toString() === product.id.toString(),
+                product: connectionProduct,
+              },
+            ];
+          }, []),
+        });
+      }
+
+      return cardConnections;
     } catch (e) {
       return [];
     }

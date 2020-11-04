@@ -14,7 +14,6 @@ import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
-import useIsMobile from '../../hooks/useIsMobile';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -31,9 +30,8 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
 }) => {
-  const { isLoading, isModal } = useAppContext();
+  const { isLoading, isModal, isMobile } = useAppContext();
   const { isBurgerDropdownOpen } = useSiteContext();
-  const isMobile = useIsMobile();
   const contentRef = useRef<HTMLDivElement>(null);
   const [burgerDropdownSizes, setBurgerDropdownSizes] = useState<BurgerDropdownSizesInterface>({
     top: 0,

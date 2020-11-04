@@ -8,6 +8,7 @@ import { AssetType, CityCounter, LanguageType } from './common';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { ProductCardConnection } from './ProductCardConnection';
 
 @ObjectType()
 export class ProductAttribute {
@@ -45,8 +46,14 @@ export class ProductAttributesGroup {
 
 @ObjectType()
 export class ProductCardFeatureAttribute {
+  @Field(() => ID)
+  id: string;
+
   @Field(() => String)
   nameString: string;
+
+  @Field(() => Boolean)
+  showInCard: boolean;
 
   @Field(() => [String])
   value: string[];
@@ -54,8 +61,14 @@ export class ProductCardFeatureAttribute {
 
 @ObjectType()
 export class ProductCardFeature {
-  @Field(() => AttributesGroup)
-  attributesGroup: AttributesGroup;
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => String)
+  nameString: string;
+
+  @Field(() => Boolean)
+  showInCard: boolean;
 
   @Field(() => [ProductCardFeatureAttribute])
   attributes: ProductCardFeatureAttribute[];
@@ -135,6 +148,9 @@ export class Product extends TimeStamps {
 
   @Field(() => [ProductCardFeature])
   readonly cardFeatures: ProductCardFeature[];
+
+  @Field(() => [ProductCardConnection])
+  readonly cardConnections: ProductCardConnection[];
 
   @Field()
   readonly createdAt: Date;

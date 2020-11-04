@@ -33,6 +33,7 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
     [group],
   );
 
+  // Set attributes default values if rubrics changed
   useEffect(() => {
     const currentGroupValue = get(values, inputName);
     if (!currentGroupValue) {
@@ -42,7 +43,19 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
         attributes: groupAttributesValue,
       });
     }
-  }, [values, id, inputName, setFieldValue, groupAttributesValue]);
+
+    attributes.forEach((_attribute, index) => {
+      const attributeInputName = `${inputName}.attributes[${index}]`;
+      const currentAttributeValue = get(values, attributeInputName);
+      if (!currentAttributeValue || !currentAttributeValue.key || !currentAttributeValue.node) {
+        setFieldValue(inputName, {
+          node: id,
+          showInCard: true,
+          attributes: groupAttributesValue,
+        });
+      }
+    });
+  }, [values, id, inputName, setFieldValue, groupAttributesValue, attributes]);
 
   return (
     <div className={classes.frame}>
@@ -94,7 +107,7 @@ const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = (
   return (
     <div>
       {getFeaturesAst.map((group, index) => {
-        return <ProductAttributesGroup key={index} group={group} groupIndex={index} />;
+        return <ProductAttributesGroup key={group.id} group={group} groupIndex={index} />;
       })}
     </div>
   );

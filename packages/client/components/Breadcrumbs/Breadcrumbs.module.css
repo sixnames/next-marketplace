@@ -1,0 +1,14 @@
+.frame {
+  margin-bottom: 2.5rem;
+}
+
+.list {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listItem {
+  display: inline-block;
+  margin-right: 0.25rem;
+}

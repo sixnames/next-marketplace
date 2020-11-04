@@ -1,39 +1,47 @@
 import { gql } from '@apollo/client';
 
-export const CATALOGUE_CARD_QUERY = gql`
-  query GetCatalogueCardQuery($slug: String!) {
-    getProductCard(slug: $slug) {
+export const productCardFragment = gql`
+  fragment ProductCard on Product {
+    id
+    itemId
+    nameString
+    cardNameString
+    price
+    slug
+    mainImage
+    descriptionString
+    cardFeatures {
       id
-      itemId
       nameString
-      cardNameString
-      price
-      slug
-      mainImage
-      descriptionString
-      attributesGroups {
+      showInCard
+      attributes {
+        id
+        nameString
+        value
         showInCard
-        node {
+      }
+    }
+    cardConnections {
+      id
+      nameString
+      products {
+        id
+        value
+        isCurrent
+        product {
           id
-          nameString
-        }
-        attributes {
-          showInCard
-          node {
-            id
-            nameString
-            options {
-              id
-              nameString
-              options {
-                id
-                nameString
-              }
-            }
-          }
-          value
+          slug
         }
       }
     }
   }
+`;
+
+export const CATALOGUE_CARD_QUERY = gql`
+  query GetCatalogueCardQuery($slug: String!) {
+    getProductCard(slug: $slug) {
+      ...ProductCard
+    }
+  }
+  ${productCardFragment}
 `;

@@ -4,7 +4,6 @@ import Inner from '../../../components/Inner/Inner';
 import { useSiteContext } from '../../../context/siteContext';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from '../../../components/Buttons/Button';
-import useIsMobile from '../../../hooks/useIsMobile';
 import Icon from '../../../components/Icon/Icon';
 import Input from '../../../components/FormElements/Input/Input';
 import {
@@ -17,7 +16,8 @@ import { debounce } from 'lodash';
 import Spinner from '../../../components/Spinner/Spinner';
 import RequestError from '../../../components/RequestError/RequestError';
 import Link from '../../../components/Link/Link';
-import ProductSnippetGrid from '../../../components/ProductSnippet/ProductSnippetGrid';
+import ProductSnippetGrid from '../../../components/Product/ProductSnippet/ProductSnippetGrid';
+import { useAppContext } from '../../../context/appContext';
 
 type ResultRubrics =
   | GetCatalogueSearchResultQuery['getCatalogueSearchResult']['rubrics']
@@ -72,7 +72,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
 const HeaderSearch: React.FC = () => {
   const { hideSearchDropdown } = useSiteContext();
   const [search, setSearch] = useState<string>('');
-  const isMobile = useIsMobile();
+  const { isMobile } = useAppContext();
   const [getTopResults, { data, loading, error }] = useGetCatalogueSearchTopItemsLazyQuery();
   const [
     getSearchResult,

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import Router from 'next/router';
+import { debounce } from 'lodash';
 
 interface ContextState {
   isModal: {
@@ -7,6 +8,7 @@ interface ContextState {
     props: any;
     type: string;
   };
+  isMobile: boolean;
   isCartDropdown: boolean;
   isLoading: boolean;
 }
@@ -28,12 +30,20 @@ const AppContext = createContext<AppContextType>({
       props: {},
       type: '',
     },
+    isMobile: false,
     isCartDropdown: false,
     isLoading: false,
   },
 });
 
-const AppContextProvider: React.FC = ({ children }) => {
+interface AppContextProviderInterface {
+  isMobileDevice: boolean;
+}
+
+const AppContextProvider: React.FC<AppContextProviderInterface> = ({
+  children,
+  isMobileDevice,
+}) => {
   const defaultModalState = useMemo(
     () => ({
       show: false,
@@ -43,13 +53,14 @@ const AppContextProvider: React.FC = ({ children }) => {
     [],
   );
 
-  const [state, setState] = useState({
+  const [state, setState] = useState(() => ({
     isCartDropdown: false,
+    isMobile: isMobileDevice,
     isModal: {
       ...defaultModalState,
     },
     isLoading: false,
-  });
+  }));
 
   useEffect(() => {
     Router.events.on('routeChangeStart', () => {
@@ -59,6 +70,26 @@ const AppContextProvider: React.FC = ({ children }) => {
       }));
     });
   }, [defaultModalState]);
+
+  useEffect(() => {
+    function resizeHandler() {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          isMobile: window.matchMedia(`(max-width: ${1024}px)`).matches,
+        };
+      });
+    }
+
+    const debouncedResizeHandler = debounce(resizeHandler, 250);
+    resizeHandler();
+
+    window.addEventListener('resize', debouncedResizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', debouncedResizeHandler);
+    };
+  }, []);
 
   const value = useMemo(() => {
     return {

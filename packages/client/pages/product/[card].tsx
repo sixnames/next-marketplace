@@ -25,14 +25,20 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, 
     );
   }
 
+  const { getProductCard } = cardData;
+  const { cardNameString, descriptionString } = getProductCard;
+
   return (
-    <SiteLayout initialApolloState={initialApolloState}>
-      <CardRoute cardData={cardData} />
+    <SiteLayout
+      title={cardNameString}
+      description={descriptionString}
+      initialApolloState={initialApolloState}
+    >
+      <CardRoute cardData={getProductCard} />
     </SiteLayout>
   );
 };
 
-// noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async (context) =>
   getSiteServerSideProps<CardInterface>({
     context,
@@ -58,5 +64,4 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     },
   });
 
-// noinspection JSUnusedGlobalSymbols
 export default Card;

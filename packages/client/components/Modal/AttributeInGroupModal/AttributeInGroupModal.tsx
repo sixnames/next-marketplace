@@ -128,31 +128,33 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 testId={'attribute-metrics'}
               />
 
-              {(variant === ATTRIBUTE_VARIANT_SELECT ||
-                variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) && (
-                <FormikSelect
-                  isRequired
-                  firstOption={'Не выбрано'}
-                  label={'Группа опций'}
-                  name={'options'}
-                  options={getAllOptionsGroups}
-                  testId={'attribute-options'}
-                  showInlineError
-                />
-              )}
+              <FormikSelect
+                isRequired={
+                  variant === ATTRIBUTE_VARIANT_SELECT ||
+                  variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+                }
+                disabled={
+                  variant !== ATTRIBUTE_VARIANT_SELECT &&
+                  variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+                }
+                firstOption={'Не выбрано'}
+                label={'Группа опций'}
+                name={'options'}
+                options={getAllOptionsGroups}
+                testId={'attribute-options'}
+                showInlineError
+              />
 
-              {(variant === ATTRIBUTE_VARIANT_SELECT ||
-                variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) && (
-                <FormikTranslationsSelect
-                  name={'positioningInTitle'}
-                  testId={'positioningInTitle'}
-                  options={getAttributePositioningOptions}
-                  label={'Позиционирование в заголовке'}
-                  isRequired
-                  showInlineError
-                  firstOption={'Не выбрано'}
-                />
-              )}
+              <FormikTranslationsSelect
+                disabled={variant !== ATTRIBUTE_VARIANT_SELECT}
+                isRequired={variant === ATTRIBUTE_VARIANT_SELECT}
+                name={'positioningInTitle'}
+                testId={'positioningInTitle'}
+                options={getAttributePositioningOptions}
+                label={'Позиционирование в заголовке'}
+                showInlineError
+                firstOption={'Не выбрано'}
+              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'attribute-submit'}>

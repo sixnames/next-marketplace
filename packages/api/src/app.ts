@@ -30,7 +30,12 @@ import { MessageResolver } from './resolvers/message/MessageResolver';
 import { MetricResolver } from './resolvers/metric/MetricResolver';
 import { OptionResolver } from './resolvers/option/OptionResolver';
 import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
-import { ProductConnectionResolver, ProductResolver } from './resolvers/product/ProductResolver';
+import {
+  ProductAttributeResolver,
+  ProductAttributesGroupResolver,
+  ProductConnectionResolver,
+  ProductResolver,
+} from './resolvers/product/ProductResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
@@ -83,6 +88,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
       OptionsGroupResolver,
       ProductResolver,
       ProductConnectionResolver,
+      ProductAttributesGroupResolver,
+      ProductAttributeResolver,
       RubricResolver,
       RubricVariantResolver,
       UserResolver,

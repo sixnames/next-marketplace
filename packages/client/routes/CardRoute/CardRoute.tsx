@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
-import { ProductCardFragment } from '../../generated/apolloComponents';
+import { CardFeatureFragment, ProductCardFragment } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -13,54 +13,57 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import { noNaN } from '../../utils/noNaN';
 import { useAppContext } from '../../context/appContext';
 
-interface CardRouteInterface {
-  cardData: ProductCardFragment;
+interface CardRouteFeaturesInterface {
+  features: CardFeatureFragment[];
 }
 
-const CardRouteFeatures: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const { cardFeatures } = cardData;
-
-  return (
+const CardRouteFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
+  return features.length > 0 ? (
     <div className={classes.mainFrameFeatures}>
-      {cardFeatures.map(({ id, showInCard, attributes }) => {
+      {features.map(({ showInCard, node, value }) => {
         if (!showInCard) {
           return null;
         }
-        return (
-          <div key={id}>
-            {attributes.map(({ id, showInCard, nameString, value }) => {
-              if (!showInCard) {
-                return null;
-              }
 
-              return (
-                <div key={id} className={classes.feature}>
-                  <div className={classes.featureTitle}>{nameString}</div>
-                  <div>
-                    {value.map((valueItem, valueIndex) => {
-                      const isLast = value.length - 1 === valueIndex;
-                      return (
-                        <span className={classes.featureItem} key={valueItem}>
-                          {isLast ? valueItem : `${valueItem}, `}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+        return (
+          <div key={node.id} className={classes.feature}>
+            <div className={classes.featureTitle}>{node.nameString}</div>
+            <div>
+              {value.map((valueItem, valueIndex) => {
+                const isLast = value.length - 1 === valueIndex;
+                return (
+                  <span className={classes.featureItem} key={valueItem}>
+                    {isLast ? valueItem : `${valueItem}, `}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         );
       })}
     </div>
-  );
+  ) : null;
 };
 
+interface CardRouteInterface {
+  cardData: ProductCardFragment;
+}
+
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const { mainImage, nameString, cardNameString, price, cardConnections, itemId } = cardData;
+  const {
+    mainImage,
+    nameString,
+    cardNameString,
+    price,
+    cardConnections,
+    itemId,
+    cardFeatures,
+  } = cardData;
   const { isMobile } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
+
+  const { listFeatures } = cardFeatures;
 
   return (
     <div className={classes.card}>
@@ -68,7 +71,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <Inner>
         <div className={classes.mainFrame}>
-          {isMobile ? null : <CardRouteFeatures cardData={cardData} />}
+          {isMobile ? null : <CardRouteFeatures features={listFeatures} />}
 
           <div className={classes.mainData}>
             <div className={classes.image}>
@@ -193,7 +196,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
         </div>
 
-        {isMobile ? <CardRouteFeatures cardData={cardData} /> : null}
+        {isMobile ? <CardRouteFeatures features={listFeatures} /> : null}
       </Inner>
     </div>
   );

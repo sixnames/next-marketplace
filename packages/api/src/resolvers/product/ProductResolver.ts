@@ -35,7 +35,7 @@ import {
   checkIsAllConnectionOptionsUsed,
   createProductSlugWithConnections,
   getConnectionValuesFromProduct,
-  getProductAttributeReadableValues,
+  // getProductAttributeReadableValues,
 } from '../../utils/connectios';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
@@ -675,7 +675,7 @@ export class ProductResolver {
     return product.rubrics;
   }
 
-  @FieldResolver((_type) => [ProductAttributesGroup])
+  /*@FieldResolver((_type) => [ProductAttributesGroup])
   async attributesGroups(
     @Root() product: DocumentType<Product>,
   ): Promise<ProductAttributesGroup[]> {
@@ -694,7 +694,7 @@ export class ProductResolver {
     } catch (e) {
       return [];
     }
-  }
+  }*/
 
   @FieldResolver((_type) => [AssetType])
   async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
@@ -735,10 +735,7 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => ProductCardFeatures)
-  async cardFeatures(
-    @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
-  ): Promise<ProductCardFeatures> {
+  async cardFeatures(@Root() product: DocumentType<Product>): Promise<ProductCardFeatures> {
     try {
       // Get ids of attributes used in connections
       const connections = await ProductConnectionModel.find({
@@ -774,37 +771,25 @@ export class ProductResolver {
           if (!attribute) {
             continue;
           }
-          // console.log(productAttribute);
-          const payloadAttribute: ProductAttribute = {
-            showInCard: productAttribute.showInCard,
-            viewVariant: productAttribute.viewVariant,
-            node: productAttribute.node,
-            key: productAttribute.key,
-            value: await getProductAttributeReadableValues({
-              attribute,
-              productAttributeValues: productAttribute.value,
-              lang,
-            }),
-          };
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
-            features.listFeatures.push(payloadAttribute);
+            features.listFeatures.push(productAttribute);
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
-            features.textFeatures.push(payloadAttribute);
+            features.textFeatures.push(productAttribute);
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
-            features.tagFeatures.push(payloadAttribute);
+            features.tagFeatures.push(productAttribute);
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
-            features.iconFeatures.push(payloadAttribute);
+            features.iconFeatures.push(productAttribute);
           }
         }
       }
-      // console.log(features);
+
       return features;
     } catch (e) {
       return {
@@ -929,6 +914,32 @@ export class ProductConnectionResolver {
     const attribute = await AttributeModel.findById(connection.attributeId);
     if (!attribute) {
       throw Error('Attribute not found on ProductConnection.attribute');
+    }
+    return attribute;
+  }
+}
+
+@Resolver((_for) => ProductAttributesGroup)
+export class ProductAttributesGroupResolver {
+  @FieldResolver((_returns) => AttributesGroup)
+  async node(
+    @Root() productAttributesGroup: DocumentType<ProductAttributesGroup>,
+  ): Promise<AttributesGroup> {
+    const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
+    if (!attributesGroup) {
+      throw Error('Attributes group not found on ProductAttributesGroup.node');
+    }
+    return attributesGroup;
+  }
+}
+
+@Resolver((_for) => ProductAttribute)
+export class ProductAttributeResolver {
+  @FieldResolver((_returns) => Attribute)
+  async node(@Root() productAttribute: DocumentType<ProductAttribute>): Promise<Attribute> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.node');
     }
     return attribute;
   }

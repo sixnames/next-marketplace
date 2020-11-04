@@ -106,6 +106,7 @@
 
 .cardArt {
   margin-top: 0.25rem;
+  color: var(--textSecondaryColor);
 }
 
 .cardLabel {

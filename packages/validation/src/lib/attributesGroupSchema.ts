@@ -10,6 +10,7 @@ import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
+import { ArraySchema } from 'yup';
 
 export const attributesGroupIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.attributesGroups.id' });
@@ -79,7 +80,14 @@ const attributeCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   variant: attributeVariantSchema(args),
   metric,
   options: options(args),
-  positioningInTitle: Yup.array().of(attributePositioningInTitleSchema(args)).required(),
+  positioningInTitle: Yup.array()
+    .nullable()
+    .when('variant', (variant: any, schema: ArraySchema<any>) => {
+      if (variant === ATTRIBUTE_VARIANT_SELECT) {
+        return schema.of(attributePositioningInTitleSchema(args)).required();
+      }
+      return schema;
+    }),
 });
 
 export const addAttributeToGroupSchema = (args: MultiLangSchemaMessagesInterface) =>

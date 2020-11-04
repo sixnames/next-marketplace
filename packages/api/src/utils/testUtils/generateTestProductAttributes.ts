@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
 } from '@yagu/config';
 
 interface GenerateTestProductAttributesInterface {
@@ -41,6 +42,7 @@ export function generateTestProductAttributes({
           return {
             node: id,
             showInCard: true,
+            viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
             key: slug,
             value,
           };

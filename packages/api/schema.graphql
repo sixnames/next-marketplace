@@ -564,6 +564,7 @@ type ProductAttribute {
   node: Attribute!
   showInCard: Boolean!
   value: [String!]!
+  viewVariant: ProductAttributeViewVariantEnum!
 }
 
 input ProductAttributeInput {
@@ -572,6 +573,7 @@ input ProductAttributeInput {
   node: ID!
   showInCard: Boolean!
   value: [String!]!
+  viewVariant: ProductAttributeViewVariantEnum!
 }
 
 type ProductAttributesGroup {
@@ -584,6 +586,14 @@ input ProductAttributesGroupInput {
   attributes: [ProductAttributeInput!]!
   node: ID!
   showInCard: Boolean!
+}
+
+"""Product attribute view variant enum"""
+enum ProductAttributeViewVariantEnum {
+  icon
+  list
+  tag
+  text
 }
 
 type ProductCardConnection {

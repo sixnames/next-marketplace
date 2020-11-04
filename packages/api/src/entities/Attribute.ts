@@ -20,12 +20,12 @@ export enum AttributeVariantEnum {
   number = 'number',
 }
 
-// Attribute positioning in catalogue title
 registerEnumType(AttributeVariantEnum, {
   name: 'AttributeVariantEnum',
   description: 'Attribute variant enum',
 });
 
+// Attribute positioning in catalogue title
 export enum AttributePositionInTitleEnum {
   begin = 'begin',
   end = 'end',

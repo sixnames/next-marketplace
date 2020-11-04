@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
@@ -9,12 +9,34 @@ import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { ProductCardConnection } from './ProductCardConnection';
+import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/config';
+
+// Attribute variant
+export enum ProductAttributeViewVariantEnum {
+  list = 'list',
+  text = 'text',
+  tag = 'tag',
+  icon = 'icon',
+}
+
+registerEnumType(ProductAttributeViewVariantEnum, {
+  name: 'ProductAttributeViewVariantEnum',
+  description: 'Product attribute view variant enum',
+});
 
 @ObjectType()
 export class ProductAttribute {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
   showInCard: boolean;
+
+  @Field((_type) => ProductAttributeViewVariantEnum)
+  @prop({
+    required: true,
+    enum: ATTRIBUTE_VIEW_VARIANTS_ENUMS,
+    default: ATTRIBUTE_VIEW_VARIANT_LIST,
+  })
+  viewVariant: ProductAttributeViewVariantEnum;
 
   @Field(() => Attribute)
   @prop({ ref: Attribute })

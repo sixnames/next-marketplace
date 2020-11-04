@@ -4,7 +4,7 @@ export const cardFeatureFragment = gql`
   fragment CardFeature on ProductAttribute {
     showInCard
     viewVariant
-    value
+    readableValue
     node {
       id
       nameString

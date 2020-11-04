@@ -521,6 +521,7 @@ export type ProductAttribute = {
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
   value: Array<Scalars['String']>;
+  readableValue: Array<Scalars['String']>;
 };
 
 /** Product attribute view variant enum */
@@ -2219,7 +2220,7 @@ export type UpdateMyPasswordMutation = (
 
 export type CmsProductAttributeFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'key' | 'value'>
+  & Pick<ProductAttribute, 'key' | 'showInCard' | 'viewVariant' | 'value'>
   & { node: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
@@ -2459,7 +2460,7 @@ export type GetAttributesGroupsForRubricQuery = (
 
 export type CardFeatureFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'viewVariant' | 'value'>
+  & Pick<ProductAttribute, 'showInCard' | 'viewVariant' | 'readableValue'>
   & { node: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, 'id' | 'nameString'>
@@ -3177,8 +3178,10 @@ export const SiteRubricFragmentFragmentDoc = gql`
     `;
 export const CmsProductAttributeFragmentDoc = gql`
     fragment CMSProductAttribute on ProductAttribute {
-  showInCard
   key
+  showInCard
+  viewVariant
+  value
   node {
     id
     slug
@@ -3198,7 +3201,6 @@ export const CmsProductAttributeFragmentDoc = gql`
       }
     }
   }
-  value
 }
     `;
 export const CmsProductAttributesGroupFragmentDoc = gql`
@@ -3303,7 +3305,7 @@ export const CardFeatureFragmentDoc = gql`
     fragment CardFeature on ProductAttribute {
   showInCard
   viewVariant
-  value
+  readableValue
   node {
     id
     nameString

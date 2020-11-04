@@ -70,6 +70,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
             showInCard: attribute.showInCard,
             node: attribute.node.id,
             key: attribute.node.slug,
+            viewVariant: attribute.viewVariant,
             value: attribute.value.map((value) => `${value}`),
           };
         }),

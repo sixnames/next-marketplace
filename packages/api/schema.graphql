@@ -562,6 +562,7 @@ type ProductAttribute {
   """Attribute reference via attribute slug field"""
   key: String!
   node: Attribute!
+  readableValue: [String!]!
   showInCard: Boolean!
   value: [String!]!
   viewVariant: ProductAttributeViewVariantEnum!

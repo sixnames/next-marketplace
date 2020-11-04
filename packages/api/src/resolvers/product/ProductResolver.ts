@@ -35,7 +35,7 @@ import {
   checkIsAllConnectionOptionsUsed,
   createProductSlugWithConnections,
   getConnectionValuesFromProduct,
-  // getProductAttributeReadableValues,
+  getProductAttributeReadableValues,
 } from '../../utils/connectios';
 import { UpdateProductInput } from './UpdateProductInput';
 import del from 'del';
@@ -675,27 +675,6 @@ export class ProductResolver {
     return product.rubrics;
   }
 
-  /*@FieldResolver((_type) => [ProductAttributesGroup])
-  async attributesGroups(
-    @Root() product: DocumentType<Product>,
-  ): Promise<ProductAttributesGroup[]> {
-    try {
-      const populated = await product
-        .populate({
-          path: 'attributesGroups.node',
-          model: 'AttributesGroup',
-        })
-        .populate({
-          path: 'attributesGroups.attributes.node',
-          model: 'Attribute',
-        })
-        .execPopulate();
-      return populated.attributesGroups;
-    } catch (e) {
-      return [];
-    }
-  }*/
-
   @FieldResolver((_type) => [AssetType])
   async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
     return product.assets.sort((a, b) => a.index - b.index);
@@ -942,5 +921,21 @@ export class ProductAttributeResolver {
       throw Error('Attribute not found on ProductAttributeResolver.node');
     }
     return attribute;
+  }
+
+  @FieldResolver((_returns) => [String])
+  async readableValue(
+    @Root() productAttribute: DocumentType<ProductAttribute>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string[]> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.node');
+    }
+    return getProductAttributeReadableValues({
+      lang,
+      productAttributeValues: productAttribute.value,
+      attribute,
+    });
   }
 }

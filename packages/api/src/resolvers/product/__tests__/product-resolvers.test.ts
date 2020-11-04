@@ -37,7 +37,7 @@ describe('Product', () => {
         listFeatures {
           showInCard
           viewVariant
-          value
+          readableValue
           node {
             id
             nameString
@@ -46,7 +46,7 @@ describe('Product', () => {
         textFeatures {
           showInCard
           viewVariant
-          value
+          readableValue
           node {
             id
             nameString
@@ -55,7 +55,7 @@ describe('Product', () => {
         tagFeatures {
           showInCard
           viewVariant
-          value
+          readableValue
           node {
             id
             nameString
@@ -64,7 +64,7 @@ describe('Product', () => {
         iconFeatures {
           showInCard
           viewVariant
-          value
+          readableValue
           node {
             id
             nameString

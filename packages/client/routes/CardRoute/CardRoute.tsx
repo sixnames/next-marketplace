@@ -17,10 +17,10 @@ interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
 }
 
-const CardRouteFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
+const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
   return features.length > 0 ? (
     <div className={classes.mainFrameFeatures}>
-      {features.map(({ showInCard, node, value }) => {
+      {features.map(({ showInCard, node, readableValue }) => {
         if (!showInCard) {
           return null;
         }
@@ -29,8 +29,8 @@ const CardRouteFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) =
           <div key={node.id} className={classes.feature}>
             <div className={classes.featureTitle}>{node.nameString}</div>
             <div>
-              {value.map((valueItem, valueIndex) => {
-                const isLast = value.length - 1 === valueIndex;
+              {readableValue.map((valueItem, valueIndex) => {
+                const isLast = readableValue.length - 1 === valueIndex;
                 return (
                   <span className={classes.featureItem} key={valueItem}>
                     {isLast ? valueItem : `${valueItem}, `}
@@ -71,7 +71,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <Inner>
         <div className={classes.mainFrame}>
-          {isMobile ? null : <CardRouteFeatures features={listFeatures} />}
+          {isMobile ? null : <CardRouteListFeatures features={listFeatures} />}
 
           <div className={classes.mainData}>
             <div className={classes.image}>
@@ -196,7 +196,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
         </div>
 
-        {isMobile ? <CardRouteFeatures features={listFeatures} /> : null}
+        {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
       </Inner>
     </div>
   );

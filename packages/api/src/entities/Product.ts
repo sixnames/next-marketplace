@@ -49,6 +49,9 @@ export class ProductAttribute {
   @Field(() => [String])
   @prop({ type: String, required: true })
   value: string[];
+
+  @Field(() => [String])
+  readonly readableValue?: string[];
 }
 
 @ObjectType()

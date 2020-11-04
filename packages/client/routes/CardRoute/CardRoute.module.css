@@ -233,7 +233,7 @@
   position: relative;
   z-index: 5;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   height: var(--formInputHeight);
   width: var(--formInputHeight);
@@ -329,6 +329,11 @@
     right: 0;
     z-index: 5;
     display: block;
+  }
+
+
+  .btnsItem {
+    align-items: center;
   }
 }
 

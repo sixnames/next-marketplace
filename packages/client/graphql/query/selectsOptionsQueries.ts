@@ -9,6 +9,32 @@ export const GET_GENDER_OPTIONS_QUERY = gql`
   }
 `;
 
+export const ATTRIBUTE_VIEW_VARIANT_OPTIONS_QUERY = gql`
+  query AttributeViewVariantOptions {
+    getAttributeViewVariantsList {
+      id
+      nameString
+    }
+  }
+`;
+
+export const iconOptionFragment = gql`
+  fragment IconOption on IconOption {
+    id
+    icon
+    nameString
+  }
+`;
+
+export const ICON_OPTIONS_QUERY = gql`
+  query IconsOptions {
+    getIconsList {
+      ...IconOption
+    }
+  }
+  ${iconOptionFragment}
+`;
+
 export const LANGUAGES_ISO__OPTIONS_QUERY = gql`
   query GetISOLanguagesList {
     getISOLanguagesList {

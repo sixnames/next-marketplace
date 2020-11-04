@@ -58,6 +58,8 @@ export type Query = {
   getAttributeVariants?: Maybe<Array<AttributeVariant>>;
   getAttributePositioningOptions: Array<AttributePositioningOption>;
   getISOLanguagesList: Array<IsoLanguage>;
+  getIconsList: Array<IconOption>;
+  getAttributeViewVariantsList: Array<AttributeViewOption>;
   getRubricVariant?: Maybe<RubricVariant>;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getAllConfigs: Array<Config>;
@@ -793,6 +795,19 @@ export type IsoLanguage = {
   id: Scalars['String'];
   nameString: Scalars['String'];
   nativeName: Scalars['String'];
+};
+
+export type IconOption = {
+  __typename?: 'IconOption';
+  id: Scalars['String'];
+  icon: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type AttributeViewOption = {
+  __typename?: 'AttributeViewOption';
+  id: Scalars['String'];
+  nameString: Scalars['String'];
 };
 
 export type Config = {
@@ -2834,6 +2849,33 @@ export type GetGenderOptionsQuery = (
   )> }
 );
 
+export type AttributeViewVariantOptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AttributeViewVariantOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getAttributeViewVariantsList: Array<(
+    { __typename?: 'AttributeViewOption' }
+    & Pick<AttributeViewOption, 'id' | 'nameString'>
+  )> }
+);
+
+export type IconOptionFragment = (
+  { __typename?: 'IconOption' }
+  & Pick<IconOption, 'id' | 'icon' | 'nameString'>
+);
+
+export type IconsOptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IconsOptionsQuery = (
+  { __typename?: 'Query' }
+  & { getIconsList: Array<(
+    { __typename?: 'IconOption' }
+    & IconOptionFragment
+  )> }
+);
+
 export type GetIsoLanguagesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3502,6 +3544,13 @@ export const RubricVariantFragmentDoc = gql`
     key
     value
   }
+}
+    `;
+export const IconOptionFragmentDoc = gql`
+    fragment IconOption on IconOption {
+  id
+  icon
+  nameString
 }
     `;
 export const RubricFragmentFragmentDoc = gql`
@@ -5795,6 +5844,71 @@ export function useGetGenderOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetGenderOptionsQueryHookResult = ReturnType<typeof useGetGenderOptionsQuery>;
 export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGenderOptionsLazyQuery>;
 export type GetGenderOptionsQueryResult = Apollo.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;
+export const AttributeViewVariantOptionsDocument = gql`
+    query AttributeViewVariantOptions {
+  getAttributeViewVariantsList {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useAttributeViewVariantOptionsQuery__
+ *
+ * To run a query within a React component, call `useAttributeViewVariantOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAttributeViewVariantOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAttributeViewVariantOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAttributeViewVariantOptionsQuery(baseOptions?: Apollo.QueryHookOptions<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>) {
+        return Apollo.useQuery<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>(AttributeViewVariantOptionsDocument, baseOptions);
+      }
+export function useAttributeViewVariantOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>) {
+          return Apollo.useLazyQuery<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>(AttributeViewVariantOptionsDocument, baseOptions);
+        }
+export type AttributeViewVariantOptionsQueryHookResult = ReturnType<typeof useAttributeViewVariantOptionsQuery>;
+export type AttributeViewVariantOptionsLazyQueryHookResult = ReturnType<typeof useAttributeViewVariantOptionsLazyQuery>;
+export type AttributeViewVariantOptionsQueryResult = Apollo.QueryResult<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>;
+export const IconsOptionsDocument = gql`
+    query IconsOptions {
+  getIconsList {
+    ...IconOption
+  }
+}
+    ${IconOptionFragmentDoc}`;
+
+/**
+ * __useIconsOptionsQuery__
+ *
+ * To run a query within a React component, call `useIconsOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIconsOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIconsOptionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIconsOptionsQuery(baseOptions?: Apollo.QueryHookOptions<IconsOptionsQuery, IconsOptionsQueryVariables>) {
+        return Apollo.useQuery<IconsOptionsQuery, IconsOptionsQueryVariables>(IconsOptionsDocument, baseOptions);
+      }
+export function useIconsOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IconsOptionsQuery, IconsOptionsQueryVariables>) {
+          return Apollo.useLazyQuery<IconsOptionsQuery, IconsOptionsQueryVariables>(IconsOptionsDocument, baseOptions);
+        }
+export type IconsOptionsQueryHookResult = ReturnType<typeof useIconsOptionsQuery>;
+export type IconsOptionsLazyQueryHookResult = ReturnType<typeof useIconsOptionsLazyQuery>;
+export type IconsOptionsQueryResult = Apollo.QueryResult<IconsOptionsQuery, IconsOptionsQueryVariables>;
 export const GetIsoLanguagesListDocument = gql`
     query GetISOLanguagesList {
   getISOLanguagesList {

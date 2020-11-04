@@ -12,6 +12,7 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 } from '@yagu/config';
 import { ProductAttributesGroupType } from './ProductAttributes';
+import FormikIconSelect from '../../FormElements/IconSelect/FormikIconSelect';
 
 export type AttributeType = ProductAttributesGroupType['attributes'][0];
 
@@ -35,9 +36,9 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   const singleValueInputName = `${inputName}.value[${firstValueIndex}]`;
   const multipleValueInputName = `${inputName}.value`;
 
-  function getAttributeInput() {
-    if (variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING) {
-      return (
+  return (
+    <div className={classes.frame}>
+      {variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING ? (
         <FormikInput
           min={variant === 'string' ? undefined : 0}
           label={nameString}
@@ -46,11 +47,9 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
           name={singleValueInputName}
           testId={`${nameString}-${groupIndex}`}
         />
-      );
-    }
+      ) : null}
 
-    if (variant === ATTRIBUTE_VARIANT_SELECT) {
-      return (
+      {variant === ATTRIBUTE_VARIANT_SELECT ? (
         <FormikSelect
           label={nameString}
           labelPostfix={labelPostfix}
@@ -59,11 +58,9 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
           name={singleValueInputName}
           testId={`${nameString}-${groupIndex}`}
         />
-      );
-    }
+      ) : null}
 
-    if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && options) {
-      return (
+      {variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && options ? (
         <InputLine name={multipleValueInputName} label={nameString}>
           {optionsList.map(({ slug, nameString }) => {
             return (
@@ -78,15 +75,13 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
             );
           })}
         </InputLine>
-      );
-    }
+      ) : null}
 
-    return null;
-  }
-
-  return (
-    <div className={classes.frame}>
-      {getAttributeInput()}
+      <FormikIconSelect
+        label={'Иконка атрибута'}
+        testId={`${nameString}-${groupIndex}-viewVariant`}
+        name={`${inputName}.viewVariant`}
+      />
 
       <FormikCheckboxLine
         label={'Показать в карточке товара'}

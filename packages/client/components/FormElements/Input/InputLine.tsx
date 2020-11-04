@@ -69,7 +69,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
       case 'hash':
         return <div className={postfixClassName}>#</div>;
       default:
-        return null;
+        return postfix;
     }
   };
 

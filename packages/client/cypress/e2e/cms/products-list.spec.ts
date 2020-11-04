@@ -22,7 +22,7 @@ describe('Products', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should CRUD products', () => {

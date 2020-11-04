@@ -414,6 +414,7 @@
   --inputBorderError: var(--wp-error);
   --inputPaddingHorizontal: 1.5rem;
   --inputIconSize: 1.25rem;
+  --inputDisabledOpacity: 0.5;
 
   /*Scrollbar*/
   --scrollbarBG: var(--wp-white);

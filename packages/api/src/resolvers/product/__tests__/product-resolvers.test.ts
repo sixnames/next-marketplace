@@ -154,10 +154,9 @@ describe('Product', () => {
                 }
               }
               cardFeatures {
-                attributesGroup {
-                  id
-                  nameString
-                }
+                id
+                nameString
+                showInCard
                 attributes {
                   nameString
                   value

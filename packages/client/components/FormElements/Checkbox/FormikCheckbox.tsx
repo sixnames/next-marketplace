@@ -1,14 +1,9 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
-import Checkbox from './Checkbox';
+import Checkbox, { CheckboxInterface } from './Checkbox';
 import { get } from 'lodash';
 
-interface FormikCheckboxInterface {
-  name: string;
-  disabled?: boolean;
-  testId?: string;
-  className?: string;
-}
+export type FormikCheckboxInterface = Omit<CheckboxInterface, 'onChange'>;
 
 const FormikCheckbox: React.FC<FormikCheckboxInterface> = ({ name, disabled, ...props }) => {
   return (

@@ -59,12 +59,17 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
 
   return (
     <div className={classes.frame}>
-      <div className={classes.title}>{nameString}</div>
-      <FormikCheckboxLine
-        label={'Показать группу в карточке товара'}
-        name={`${inputName}.showInCard`}
-        inList
-      />
+      <div className={classes.titleHolder}>
+        <div className={classes.title}>{nameString}</div>
+        <div>
+          <FormikCheckboxLine
+            lineClassName={classes.titleCheckboxLine}
+            label={'Показать группу в карточке товара'}
+            name={`${inputName}.showInCard`}
+            low
+          />
+        </div>
+      </div>
 
       <div className={classes.list}>
         {attributes.map((attribute, index) => {

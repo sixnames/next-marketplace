@@ -585,7 +585,7 @@ input ProductAttributeInput {
   node: ID!
   showInCard: Boolean!
   value: [String!]!
-  viewVariant: ProductAttributeViewVariantEnum!
+  viewVariant: ProductAttributeViewVariantEnum
 }
 
 type ProductAttributesGroup {

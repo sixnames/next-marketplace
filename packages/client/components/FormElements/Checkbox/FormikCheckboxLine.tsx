@@ -1,21 +1,18 @@
 import React from 'react';
-import FormikCheckbox from './FormikCheckbox';
+import FormikCheckbox, { FormikCheckboxInterface } from './FormikCheckbox';
 import classes from './FormikCheckboxLine.module.css';
 
-interface FormikCheckboxLineInterface {
+interface FormikCheckboxLineInterface extends FormikCheckboxInterface {
   label: string;
   low?: boolean;
-  className?: string;
+  lineClassName?: string;
   inList?: boolean;
-  name: string;
-  disabled?: boolean;
-  testId?: string;
 }
 
 const FormikCheckboxLine: React.FC<FormikCheckboxLineInterface> = ({
   label,
   low,
-  className,
+  lineClassName,
   inList,
   name,
   disabled,
@@ -25,7 +22,7 @@ const FormikCheckboxLine: React.FC<FormikCheckboxLineInterface> = ({
     <label
       className={`${classes.frame} ${disabled ? classes.disabled : ''} ${
         inList ? classes.inList : ''
-      } ${low ? classes.low : ''} ${className ? className : ''}`}
+      } ${low ? classes.low : ''} ${lineClassName ? lineClassName : ''}`}
     >
       <FormikCheckbox name={name} disabled={disabled} {...props} />
       <span className={classes.label}>{label}</span>

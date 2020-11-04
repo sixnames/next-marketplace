@@ -6,7 +6,7 @@ export class ProductAttributeInput {
   @Field(() => Boolean)
   showInCard: boolean;
 
-  @Field(() => ProductAttributeViewVariantEnum)
+  @Field(() => ProductAttributeViewVariantEnum, { nullable: true })
   viewVariant: ProductAttributeViewVariantEnum;
 
   @Field(() => ID)

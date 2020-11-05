@@ -76,7 +76,7 @@ export const featuresASTAttributeFragment = gql`
       id
       nameString
     }
-    options {
+    optionsGroup {
       id
       nameString
       options {

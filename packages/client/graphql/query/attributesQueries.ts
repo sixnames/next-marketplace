@@ -22,7 +22,7 @@ export const attributeInGroupFragment = gql`
       key
       value
     }
-    options {
+    optionsGroup {
       id
       nameString
     }

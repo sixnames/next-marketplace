@@ -878,7 +878,7 @@ export class RubricResolver {
     const result = reducedAttributes.map(async (attribute) => {
       const attributeIdString = attribute._id?.toString();
 
-      const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+      const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
       if (!optionsGroup) {
         return {
           id: attributeIdString + rubricIdString,

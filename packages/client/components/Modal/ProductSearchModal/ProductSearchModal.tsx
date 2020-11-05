@@ -6,7 +6,7 @@ import {
   useGetRubricProductsQuery,
   useGetRubricsTreeQuery,
 } from '../../../generated/apolloComponents';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/rubrics';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/complex/rubricsQueries';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
 import DataLayoutTitle from '../../DataLayout/DataLayoutTitle';

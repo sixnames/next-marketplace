@@ -98,7 +98,7 @@ export class Attribute {
 
   @Field((_type) => OptionsGroup, { nullable: true })
   @prop({ ref: OptionsGroup })
-  options?: string | null;
+  optionsGroup?: string | null;
 
   @Field((_type) => [AttributePositioningInTitle], { nullable: true })
   @prop({

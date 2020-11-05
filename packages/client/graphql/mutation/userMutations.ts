@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { sessionUserFragment } from '../initialQuery';
+import { sessionUserFragment } from '../query/initialQueries';
 
 export const UPDATE_MY_PROFILE_MUTATION = gql`
   mutation UpdateMyProfile($input: UpdateMyProfileInput!) {

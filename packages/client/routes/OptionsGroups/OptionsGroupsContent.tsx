@@ -17,7 +17,7 @@ import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ObjectType } from '../../types';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
-import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
+import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 
 interface OptionsGroupsContentInterface {

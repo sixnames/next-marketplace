@@ -129,7 +129,7 @@ const createTestData = async () => {
     const attributeWineVintage = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_VINTAGE,
       variant: MOCK_ATTRIBUTE_WINE_VINTAGE.variant as AttributeVariantEnum,
-      options: optionsGroupWineVintage.id,
+      optionsGroup: optionsGroupWineVintage.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,
@@ -145,7 +145,7 @@ const createTestData = async () => {
     const attributeWineColor = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_COLOR,
       variant: MOCK_ATTRIBUTE_WINE_COLOR.variant as AttributeVariantEnum,
-      options: optionsGroupColors.id,
+      optionsGroup: optionsGroupColors.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,
@@ -161,7 +161,7 @@ const createTestData = async () => {
     const attributeWineType = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_VARIANT,
       variant: MOCK_ATTRIBUTE_WINE_VARIANT.variant as AttributeVariantEnum,
-      options: optionsGroupWineTypes.id,
+      optionsGroup: optionsGroupWineTypes.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,

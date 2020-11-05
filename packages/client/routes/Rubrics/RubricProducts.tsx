@@ -17,7 +17,7 @@ import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/rubrics';
+import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../graphql/complex/rubricsQueries';
 import { useRouter } from 'next/router';
 import { ROUTE_CMS } from '../../config';
 import { ProductSearchModalInterface } from '../../components/Modal/ProductSearchModal/ProductSearchModal';

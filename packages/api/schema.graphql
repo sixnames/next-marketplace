@@ -12,7 +12,7 @@ input AddAttributeToGroupInput {
   groupId: ID!
   metric: ID
   name: [LangInput!]!
-  options: ID
+  optionsGroup: ID
   positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }
@@ -52,7 +52,7 @@ type Attribute {
   metric: Metric
   name: [LanguageType!]!
   nameString: String!
-  options: OptionsGroup
+  optionsGroup: OptionsGroup
   positioningInTitle: [AttributePositioningInTitle!]
   priorities: [AttributeCityCounter!]!
   slug: String!
@@ -97,6 +97,8 @@ type AttributesGroup {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
+  withColor: Boolean
+  withIcon: Boolean
 }
 
 type AttributesGroupPayloadType {
@@ -955,7 +957,7 @@ input UpdateAttributeInGroupInput {
   groupId: ID!
   metric: ID
   name: [LangInput!]!
-  options: ID
+  optionsGroup: ID
   positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
 }

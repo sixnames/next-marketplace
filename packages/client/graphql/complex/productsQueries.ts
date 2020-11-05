@@ -15,7 +15,7 @@ export const cmsProductAttributeFragment = gql`
         id
         nameString
       }
-      options {
+      optionsGroup {
         id
         nameString
         options {

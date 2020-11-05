@@ -1,7 +1,7 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '@yagu/mocks';
-import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN } from '@yagu/config';
+import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN, DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
 
 const addAttributeToGroupMutation = (
@@ -14,9 +14,9 @@ const addAttributeToGroupMutation = (
           addAttributeToGroup (
             input: {
               groupId: "${groupId}"
-              name: [{key: "ru", value: "${name}"}]
+              name: [{key: "${DEFAULT_LANG}", value: "${name}"}]
               variant: ${variant}
-              positioningInTitle: [{key: "ru", value: ${ATTRIBUTE_POSITION_IN_TITLE_BEGIN}}]
+              positioningInTitle: [{key: "${DEFAULT_LANG}", value: ${ATTRIBUTE_POSITION_IN_TITLE_BEGIN}}]
             }
           ) {
             success
@@ -32,7 +32,7 @@ const addAttributeToGroupMutation = (
                  key
                  value
                 }
-                options {
+                optionsGroup {
                   id
                   nameString
                 }

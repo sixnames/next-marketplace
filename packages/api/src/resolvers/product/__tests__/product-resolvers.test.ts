@@ -158,7 +158,7 @@ describe('Product', () => {
                   id
                   slug
                   variant
-                  options {
+                  optionsGroup {
                     id
                     options {
                       id
@@ -457,7 +457,7 @@ describe('Product', () => {
           attributes {
             id
             nameString
-            options {
+            optionsGroup {
               id
               nameString
               options {

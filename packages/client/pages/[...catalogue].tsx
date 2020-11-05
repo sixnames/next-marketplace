@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import Inner from '../components/Inner/Inner';
 import { GetCatalogueRubricQuery } from '../generated/apolloComponents';
-import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQuery';
+import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
 import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';

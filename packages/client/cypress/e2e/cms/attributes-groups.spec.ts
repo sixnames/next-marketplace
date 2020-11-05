@@ -90,7 +90,7 @@ describe('Attributes Groups', () => {
     cy.getByCy(`positioningInTitle[0].value-error`).should('exist');
 
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`options-error`).should('exist');
+    cy.getByCy(`optionsGroup-error`).should('exist');
 
     // Should create attribute in group
     cy.getByCy(`name-accordion-en`).click();

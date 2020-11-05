@@ -10,7 +10,7 @@ import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ATTRIBUTES_GROUP_MODAL } from '../../config/modals';
 import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
-import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
+import { ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributesQueries';
 
 const AttributesGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllAttributesGroupsQuery({

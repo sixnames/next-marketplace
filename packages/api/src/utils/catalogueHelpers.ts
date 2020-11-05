@@ -72,7 +72,7 @@ export async function setCataloguePriorities({
     });
 
     for await (const attribute of attributesList) {
-      const { options } = attribute;
+      const { optionsGroup } = attribute;
       const attributeIdString = attribute.id.toString();
 
       await updateModelViews({
@@ -88,11 +88,11 @@ export async function setCataloguePriorities({
       });
 
       // increase options priority
-      const optionsGroup = await OptionsGroupModel.findOne({ _id: options });
-      if (optionsGroup) {
+      const attributeOptionsGroup = await OptionsGroupModel.findOne({ _id: optionsGroup });
+      if (attributeOptionsGroup) {
         for await (const slug of optionsSlugs) {
           const option = await OptionModel.findOne({
-            _id: { $in: optionsGroup.options },
+            _id: { $in: attributeOptionsGroup.options },
             slug,
           });
           if (option) {

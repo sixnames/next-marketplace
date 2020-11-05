@@ -178,7 +178,7 @@ export class OptionsGroupResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const connectedWithAttributes = await AttributeModel.exists({ options: id });
+      const connectedWithAttributes = await AttributeModel.exists({ optionsGroup: id });
       if (connectedWithAttributes) {
         return {
           success: false,
@@ -186,7 +186,15 @@ export class OptionsGroupResolver {
         };
       }
 
-      const group = (await OptionsGroupModel.findById(id)) || { options: [] };
+      const group = await OptionsGroupModel.findById(id);
+
+      if (!group) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
+        };
+      }
+
       const removedOptions = await OptionModel.deleteMany({
         _id: { $in: group.options },
       });

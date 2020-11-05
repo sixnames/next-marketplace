@@ -42,7 +42,7 @@ describe('Rubrics', () => {
                   id
                   slug
                   variant
-                  options {
+                  optionsGroup {
                     id
                     options {
                       id

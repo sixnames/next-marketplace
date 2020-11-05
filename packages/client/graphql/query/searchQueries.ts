@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { catalogueRubricFragment, productSnippedFragment } from './catalogueQuery';
+import { catalogueRubricFragment, productSnippedFragment } from './catalogueQueries';
 
 export const CATALOGUE_SEARCH_TOP_ITEMS_QUERY = gql`
   query GetCatalogueSearchTopItems {

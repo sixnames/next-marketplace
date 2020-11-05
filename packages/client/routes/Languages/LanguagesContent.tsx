@@ -15,7 +15,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { GET_ALL_LANGUAGES_QUERY } from '../../graphql/query/languages';
+import { GET_ALL_LANGUAGES_QUERY } from '../../graphql/query/languagesQueries';
 import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../config/modals';
 import {
   LanguageModalInterface,

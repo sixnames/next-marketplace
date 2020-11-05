@@ -24,11 +24,11 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
   inputName,
   groupIndex,
 }) => {
-  const { variant, options, nameString, metric } = attribute;
+  const { variant, optionsGroup, nameString, metric } = attribute;
   const firstValueIndex = 0;
   const labelPostfix = metric ? metric.nameString : '';
 
-  const optionsList = options ? options.options : [];
+  const optionsList = optionsGroup ? optionsGroup.options : [];
 
   const singleValueInputName = `${inputName}.value[${firstValueIndex}]`;
   const multipleValueInputName = `${inputName}.value`;
@@ -57,7 +57,7 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
         />
       ) : null}
 
-      {variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && options ? (
+      {variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && optionsGroup ? (
         <InputLine name={multipleValueInputName} label={nameString}>
           {optionsList.map(({ slug, nameString }) => {
             return (

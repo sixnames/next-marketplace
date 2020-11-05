@@ -27,8 +27,8 @@ export class AttributeResolver {
   }
 
   @FieldResolver()
-  async options(@Root() attribute: DocumentType<Attribute>): Promise<OptionsGroup | null> {
-    return OptionsGroupModel.findById(attribute.options);
+  async optionsGroup(@Root() attribute: DocumentType<Attribute>): Promise<OptionsGroup | null> {
+    return OptionsGroupModel.findById(attribute.optionsGroup);
   }
 
   @FieldResolver()

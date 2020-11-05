@@ -22,7 +22,7 @@ import Accordion from '../../components/Accordion/Accordion';
 import { getAttributeVariantName } from '../../utils/locales';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricAttributes.module.css';
-import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/rubrics';
+import { RUBRIC_ATTRIBUTES_QUERY } from '../../graphql/complex/rubricsQueries';
 
 interface DeleteAttributesGroupInterface {
   id: string;
@@ -149,7 +149,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
-      accessor: 'options',
+      accessor: 'optionsGroup',
       headTitle: 'Опции',
       render: ({ cellData }) => cellData?.nameString || null,
     },

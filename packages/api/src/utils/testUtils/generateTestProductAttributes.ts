@@ -20,33 +20,35 @@ export function generateTestProductAttributes({
       return {
         node: id,
         showInCard: true,
-        attributes: attributes.map(({ id, slug, variant, options }: { [key: string]: any }) => {
-          let value = [];
+        attributes: attributes.map(
+          ({ id, slug, variant, optionsGroup }: { [key: string]: any }) => {
+            let value = [];
 
-          if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
-            value = options.options.map(({ id }: { id: string }) => id);
-          }
+            if (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) {
+              value = optionsGroup.options.map(({ id }: { id: string }) => id);
+            }
 
-          if (variant === ATTRIBUTE_VARIANT_SELECT) {
-            value = options.options[0].id;
-          }
+            if (variant === ATTRIBUTE_VARIANT_SELECT) {
+              value = optionsGroup.options[0].id;
+            }
 
-          if (variant === ATTRIBUTE_VARIANT_STRING) {
-            value = ['string'];
-          }
+            if (variant === ATTRIBUTE_VARIANT_STRING) {
+              value = ['string'];
+            }
 
-          if (variant === ATTRIBUTE_VARIANT_NUMBER) {
-            value = ['123'];
-          }
+            if (variant === ATTRIBUTE_VARIANT_NUMBER) {
+              value = ['123'];
+            }
 
-          return {
-            node: id,
-            showInCard: true,
-            viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-            key: slug,
-            value,
-          };
-        }),
+            return {
+              node: id,
+              showInCard: true,
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+              key: slug,
+              value,
+            };
+          },
+        ),
       };
     }),
   };

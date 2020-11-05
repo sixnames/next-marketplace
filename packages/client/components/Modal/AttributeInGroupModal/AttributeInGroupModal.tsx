@@ -69,7 +69,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         name: getLanguageFieldInitialValue(attribute.name),
         variant: attribute.variant,
         metric: attribute.metric ? attribute.metric.id : null,
-        options: attribute.options ? attribute.options.id : null,
+        optionsGroup: attribute.optionsGroup ? attribute.optionsGroup.id : null,
         positioningInTitle: attribute.positioningInTitle
           ? getAttributePositionInTitleInitialValue(attribute.positioningInTitle)
           : getAttributePositionInTitleInitialValue(),
@@ -78,7 +78,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         name: getLanguageFieldInitialValue(),
         variant: '' as AttributeVariantEnum,
         metric: null,
-        options: null,
+        optionsGroup: null,
         positioningInTitle: getAttributePositionInTitleInitialValue(),
       };
 
@@ -139,7 +139,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 }
                 firstOption={'Не выбрано'}
                 label={'Группа опций'}
-                name={'options'}
+                name={'optionsGroup'}
                 options={getAllOptionsGroups}
                 testId={'attribute-options'}
                 showInlineError

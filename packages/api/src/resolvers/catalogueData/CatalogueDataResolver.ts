@@ -2,7 +2,6 @@ import { Arg, Query, Resolver } from 'type-graphql';
 import { CatalogueData, CatalogueSearchResult } from '../../entities/CatalogueData';
 import { Rubric, RubricModel } from '../../entities/Rubric';
 import { getRubricsTreeIds } from '../../utils/rubricResolverHelpers';
-import { getProductsFilter } from '../../utils/getProductsFilter';
 import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
@@ -62,7 +61,7 @@ export class CatalogueDataResolver {
     });
 
     // get products filter query
-    const query = getProductsFilter({
+    const query = ProductModel.getProductsFilter({
       ...args,
       attributes: processedAttributes,
       rubrics: rubricsIds,

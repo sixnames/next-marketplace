@@ -33,7 +33,6 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToRubricInput } from './AddProductToRubricInput';
-import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
@@ -813,7 +812,7 @@ export class RubricResolver {
   ): Promise<PaginatedProductsResponse> {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
     const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
-    const query = getProductsFilter({ ...args, rubrics: rubricsIds });
+    const query = ProductModel.getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
       limit,

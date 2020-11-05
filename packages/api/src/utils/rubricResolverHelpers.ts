@@ -1,6 +1,5 @@
 import { Rubric, RubricModel } from '../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
-import { getProductsFilter } from './getProductsFilter';
 import { ProductModel } from '../entities/Product';
 
 interface GetRubricChildrenIdsInterface {
@@ -61,7 +60,7 @@ export async function getDeepRubricChildrenIds({ rubricId }: GetDeepRubricChildr
 
 export async function getRubricCounters({ rubric, args = {} }: GetRubricCountersInterface) {
   const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id || rubric._id });
-  const query = getProductsFilter({ ...args, rubric: rubricsIds });
+  const query = ProductModel.getProductsFilter({ ...args, rubric: rubricsIds });
 
   return ProductModel.countDocuments({
     ...query,

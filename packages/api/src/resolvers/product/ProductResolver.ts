@@ -23,7 +23,6 @@ import {
 } from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
-import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
@@ -155,8 +154,8 @@ export class ProductResolver {
       countActiveProducts = false,
       ...args
     } = input;
-    const query = getProductsFilter(args);
-    const activeProductsQuery = getProductsFilter({ ...args, active: true });
+    const query = ProductModel.getProductsFilter(args);
+    const activeProductsQuery = ProductModel.getProductsFilter({ ...args, active: true });
 
     const { options } = generatePaginationOptions({
       limit,
@@ -180,8 +179,8 @@ export class ProductResolver {
   async getProductsCounters(
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<ProductsCounters> {
-    const activeProductsQuery = getProductsFilter({ ...input, active: true });
-    const allProductsQuery = getProductsFilter(input);
+    const activeProductsQuery = ProductModel.getProductsFilter({ ...input, active: true });
+    const allProductsQuery = ProductModel.getProductsFilter(input);
 
     return {
       activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),

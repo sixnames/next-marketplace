@@ -18,14 +18,6 @@ export class AttributesGroup {
   @Field((_type) => [Attribute])
   @prop({ ref: Attribute })
   attributes: string[];
-
-  @Field((_type) => Boolean, { nullable: true })
-  @prop({ type: Boolean, default: false })
-  withColor?: boolean;
-
-  @Field((_type) => Boolean, { nullable: true })
-  @prop({ type: Boolean, default: false })
-  withIcon?: boolean;
 }
 
 export const AttributesGroupModel = getModelForClass(AttributesGroup);

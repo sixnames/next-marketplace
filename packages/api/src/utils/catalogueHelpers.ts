@@ -39,7 +39,7 @@ export async function setCataloguePriorities({
   isStuff,
   city,
 }: SetCataloguePrioritiesInterface) {
-  // if user not stuff
+  // if user is not stuff
   if (!isStuff) {
     const rubricIdString = rubric.id.toString();
 

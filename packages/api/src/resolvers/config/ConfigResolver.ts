@@ -17,7 +17,6 @@ import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
 import { updateAssetConfigSchema, updateConfigSchema, updateConfigsSchema } from '@yagu/validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -30,8 +29,9 @@ import { DocumentType } from '@typegoose/typegoose';
 import { DEFAULT_CITY } from '@yagu/config';
 import { City, CityModel } from '../../entities/City';
 import getLangFieldValues from '../../utils/translations/getLangFieldValues';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
-const { operationConfigUpdate } = getOperationsConfigs(Config.name);
+const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(Config.name);
 
 @ObjectType()
 class ConfigPayloadType extends PayloadType() {

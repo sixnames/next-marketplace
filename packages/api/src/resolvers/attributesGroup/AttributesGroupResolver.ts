@@ -30,7 +30,6 @@ import {
   updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -38,19 +37,20 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(AttributesGroup.name);
+} = RoleRuleModel.getOperationsConfigs(AttributesGroup.name);
 
 const {
   operationConfigCreate: attributeOperationConfigCreate,
   operationConfigUpdate: attributeOperationConfigUpdate,
   operationConfigDelete: attributeOperationConfigDelete,
-} = getOperationsConfigs(Attribute.name);
+} = RoleRuleModel.getOperationsConfigs(Attribute.name);
 
 @ObjectType()
 class AttributesGroupPayloadType extends PayloadType() {

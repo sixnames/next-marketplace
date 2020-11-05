@@ -2,7 +2,7 @@ import createTestData from '../utils/testUtils/createTestData';
 import { DEFAULT_LANG, LANG_COOKIE_KEY, THEME_COOKIE_KEY, THEME_DARK } from '@yagu/config';
 import { Request, Response } from 'express';
 import clearTestData from '../utils/testUtils/clearTestData';
-import { attemptSignIn } from '../utils/auth/auth';
+import { UserModel } from '../entities/User';
 
 export async function createTestDataRoute(_: Request, res: Response) {
   await createTestData();
@@ -21,7 +21,7 @@ export async function clearTestDataRoute(_: Request, res: Response) {
 export async function testSignInRoute(req: Request, res: Response) {
   const lang = req.lang;
   const { email, password } = req.query;
-  const { user, message } = await attemptSignIn(`${email}`, `${password}`, lang);
+  const { user, message } = await UserModel.attemptSignIn(`${email}`, `${password}`, lang);
 
   if (!user) {
     res.status(401);

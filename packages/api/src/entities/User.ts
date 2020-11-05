@@ -5,6 +5,12 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { Role } from './Role';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import getApiMessage from '../utils/translations/getApiMessage';
+import { compare } from 'bcryptjs';
+import { IN_TEST } from '../config';
+import { ContextInterface } from '../types/context';
+
+type Request = ContextInterface['req'];
 
 @ObjectType()
 @index({ '$**': 'text' })
@@ -61,6 +67,66 @@ export class User extends TimeStamps {
     query?: FilterQuery<User>,
     options?: PaginateOptions,
   ) => Promise<PaginateResult<User>>;
+
+  static signedIn(req: Request) {
+    return req.session && req.session.userId;
+  }
+
+  static ensureSignedOut(req: Request) {
+    return !this.signedIn(req);
+  }
+
+  static async attemptSignIn(email: User['email'], password: User['password'], lang: string) {
+    const emailErrorMessage = await getApiMessage({ key: `users.signIn.emailError`, lang });
+    const passwordErrorMessage = await getApiMessage({ key: `users.signIn.passwordError`, lang });
+
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return {
+        user: null,
+        message: emailErrorMessage,
+      };
+    }
+
+    const matches = await compare(password, user.password);
+
+    if (!matches) {
+      return {
+        user: null,
+        message: passwordErrorMessage,
+      };
+    }
+
+    return {
+      user,
+      message: await getApiMessage({ key: `users.signIn.success`, lang }),
+    };
+  }
+
+  static async attemptSignOut(req: Request) {
+    return new Promise((resolve) => {
+      // TODO temporary. Remove after apollo-server-integration-testing update or fork the package
+      if (IN_TEST) {
+        req.session!.user = null;
+        req.session!.userId = null;
+        req.session!.roleId = null;
+        resolve(true);
+      }
+
+      if (req.session && req.session.destroy) {
+        req.session.destroy((error) => {
+          if (error) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        });
+      } else {
+        resolve(false);
+      }
+    });
+  }
 }
 
 export const UserModel = getModelForClass(User);

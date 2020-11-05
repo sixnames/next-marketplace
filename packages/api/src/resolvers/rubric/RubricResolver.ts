@@ -66,7 +66,6 @@ import {
   updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -77,6 +76,7 @@ import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -89,7 +89,7 @@ const {
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Rubric.name);
+} = RoleRuleModel.getOperationsConfigs(Rubric.name);
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {

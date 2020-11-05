@@ -51,7 +51,6 @@ import {
   deleteProductFromConnectionSchema,
   updateProductSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -79,13 +78,14 @@ import {
   ProductCardConnection,
   ProductCardConnectionItem,
 } from '../../entities/ProductCardConnection';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Product.name);
+} = RoleRuleModel.getOperationsConfigs(Product.name);
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {

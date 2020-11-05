@@ -11,13 +11,10 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
 } from '@yagu/config';
-import { ProductAttributesGroupType } from './ProductAttributes';
-import FormikIconSelect from '../../FormElements/IconSelect/FormikIconSelect';
-
-export type AttributeType = ProductAttributesGroupType['attributes'][0];
+import { FeaturesAstAttributeFragment } from '../../../generated/apolloComponents';
 
 interface ProductAttributesItemInterface {
-  attribute: AttributeType;
+  attribute: FeaturesAstAttributeFragment;
   inputName: string;
   groupIndex: number;
 }
@@ -76,12 +73,6 @@ const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
           })}
         </InputLine>
       ) : null}
-
-      <FormikIconSelect
-        label={'Иконка атрибута'}
-        testId={`${nameString}-${groupIndex}-viewVariant`}
-        name={`${inputName}.viewVariant`}
-      />
 
       <FormikCheckboxLine
         label={'Показать в карточке товара'}

@@ -4,13 +4,15 @@ import ProductAttributesItem from './ProductAttributesItem';
 import { useFormikContext } from 'formik';
 import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
 import { get } from 'lodash';
-import { GetFeaturesAstQuery, useGetFeaturesAstQuery } from '../../../generated/apolloComponents';
+import {
+  FeaturesAstGroupFragment,
+  useGetFeaturesAstQuery,
+} from '../../../generated/apolloComponents';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 
-export type ProductAttributesGroupType = GetFeaturesAstQuery['getFeaturesAst'][0];
 interface ProductAttributesGroupInterface {
-  group: ProductAttributesGroupType;
+  group: FeaturesAstGroupFragment;
   groupIndex: number;
 }
 

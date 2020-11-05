@@ -1384,7 +1384,7 @@ export type ProductAttributesGroupInput = {
 
 export type ProductAttributeInput = {
   showInCard: Scalars['Boolean'];
-  viewVariant: ProductAttributeViewVariantEnum;
+  viewVariant?: Maybe<ProductAttributeViewVariantEnum>;
   node: Scalars['ID'];
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
@@ -2907,6 +2907,31 @@ export type GetNewAttributeOptionsQuery = (
   )> }
 );
 
+export type FeaturesAstAttributeFragment = (
+  { __typename?: 'Attribute' }
+  & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
+  & { metric?: Maybe<(
+    { __typename?: 'Metric' }
+    & Pick<Metric, 'id' | 'nameString'>
+  )>, options?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, 'id' | 'nameString'>
+    & { options: Array<(
+      { __typename?: 'Option' }
+      & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
+    )> }
+  )> }
+);
+
+export type FeaturesAstGroupFragment = (
+  { __typename?: 'AttributesGroup' }
+  & Pick<AttributesGroup, 'id' | 'nameString'>
+  & { attributes: Array<(
+    { __typename?: 'Attribute' }
+    & FeaturesAstAttributeFragment
+  )> }
+);
+
 export type GetFeaturesAstQueryVariables = Exact<{
   selectedRubrics: Array<Scalars['ID']>;
 }>;
@@ -2916,22 +2941,7 @@ export type GetFeaturesAstQuery = (
   { __typename?: 'Query' }
   & { getFeaturesAst: Array<(
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, 'id' | 'nameString'>
-    & { attributes: Array<(
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
-      & { metric?: Maybe<(
-        { __typename?: 'Metric' }
-        & Pick<Metric, 'id' | 'nameString'>
-      )>, options?: Maybe<(
-        { __typename?: 'OptionsGroup' }
-        & Pick<OptionsGroup, 'id' | 'nameString'>
-        & { options: Array<(
-          { __typename?: 'Option' }
-          & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
-        )> }
-      )> }
-    )> }
+    & FeaturesAstGroupFragment
   )> }
 );
 
@@ -3553,6 +3563,37 @@ export const IconOptionFragmentDoc = gql`
   nameString
 }
     `;
+export const FeaturesAstAttributeFragmentDoc = gql`
+    fragment FeaturesASTAttribute on Attribute {
+  id
+  slug
+  nameString
+  variant
+  metric {
+    id
+    nameString
+  }
+  options {
+    id
+    nameString
+    options {
+      id
+      slug
+      nameString
+      color
+    }
+  }
+}
+    `;
+export const FeaturesAstGroupFragmentDoc = gql`
+    fragment FeaturesASTGroup on AttributesGroup {
+  id
+  nameString
+  attributes {
+    ...FeaturesASTAttribute
+  }
+}
+    ${FeaturesAstAttributeFragmentDoc}`;
 export const RubricFragmentFragmentDoc = gql`
     fragment RubricFragment on Rubric {
   id
@@ -5991,31 +6032,10 @@ export type GetNewAttributeOptionsQueryResult = Apollo.QueryResult<GetNewAttribu
 export const GetFeaturesAstDocument = gql`
     query GetFeaturesAST($selectedRubrics: [ID!]!) {
   getFeaturesAst(selectedRubrics: $selectedRubrics) {
-    id
-    nameString
-    attributes {
-      id
-      slug
-      nameString
-      variant
-      metric {
-        id
-        nameString
-      }
-      options {
-        id
-        nameString
-        options {
-          id
-          slug
-          nameString
-          color
-        }
-      }
-    }
+    ...FeaturesASTGroup
   }
 }
-    `;
+    ${FeaturesAstGroupFragmentDoc}`;
 
 /**
  * __useGetFeaturesAstQuery__

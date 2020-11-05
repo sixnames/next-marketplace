@@ -66,31 +66,45 @@ export const NEW_ATTRIBUTE_OPTIONS_QUERY = gql`
   }
 `;
 
-export const GET_FEATURES_AST_QUERY = gql`
-  query GetFeaturesAST($selectedRubrics: [ID!]!) {
-    getFeaturesAst(selectedRubrics: $selectedRubrics) {
+export const featuresASTAttributeFragment = gql`
+  fragment FeaturesASTAttribute on Attribute {
+    id
+    slug
+    nameString
+    variant
+    metric {
       id
       nameString
-      attributes {
+    }
+    options {
+      id
+      nameString
+      options {
         id
         slug
         nameString
-        variant
-        metric {
-          id
-          nameString
-        }
-        options {
-          id
-          nameString
-          options {
-            id
-            slug
-            nameString
-            color
-          }
-        }
+        color
       }
     }
   }
+`;
+
+export const featuresASTGroupFragment = gql`
+  fragment FeaturesASTGroup on AttributesGroup {
+    id
+    nameString
+    attributes {
+      ...FeaturesASTAttribute
+    }
+  }
+  ${featuresASTAttributeFragment}
+`;
+
+export const GET_FEATURES_AST_QUERY = gql`
+  query GetFeaturesAST($selectedRubrics: [ID!]!) {
+    getFeaturesAst(selectedRubrics: $selectedRubrics) {
+      ...FeaturesASTGroup
+    }
+  }
+  ${featuresASTGroupFragment}
 `;

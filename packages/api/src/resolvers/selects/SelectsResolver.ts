@@ -5,14 +5,16 @@ import {
   ISOLanguage,
   IconOption,
   AttributeViewOption,
+  OptionsGroupVariantOption,
 } from '../../entities/SelectsOptions';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
-  ATTRIBUTE_VARIANTS_LIST,
+  ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   GENDER_ENUMS,
   getFieldTranslation,
   iconTypesList,
+  OPTIONS_GROUP_VARIANT_ENUMS,
 } from '@yagu/config';
 import { ISO_LANGUAGES } from '@yagu/mocks';
 import { AttributeVariant } from '../../entities/AttributeVariant';
@@ -34,8 +36,26 @@ export class GendersListResolver {
 @Resolver((_for) => AttributeVariant)
 export class AttributeVariantResolver {
   @Query((_type) => [AttributeVariant], { nullable: true })
-  async getAttributeVariants(): Promise<AttributeVariant[]> {
-    return ATTRIBUTE_VARIANTS_LIST;
+  async getAttributeVariantsOptions(
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<AttributeVariant[]> {
+    return ATTRIBUTE_VARIANTS_ENUMS.map((variant) => ({
+      id: variant,
+      nameString: getFieldTranslation(`selectsOptions.attributeVariants.${variant}.${lang}`),
+    }));
+  }
+}
+
+@Resolver((_of) => OptionsGroupVariantOption)
+export class OptionsGroupVariantsListResolver {
+  @Query((_returns) => [OptionsGroupVariantOption])
+  async getOptionsGroupVariantsOptions(
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<OptionsGroupVariantOption[]> {
+    return OPTIONS_GROUP_VARIANT_ENUMS.map((variant) => ({
+      id: variant,
+      nameString: getFieldTranslation(`selectsOptions.optionsGroupVariant.${variant}.${lang}`),
+    }));
   }
 }
 
@@ -55,7 +75,7 @@ export class AttributePositioningListResolver {
 @Resolver((_of) => ISOLanguage)
 export class ISOLanguagesListResolver {
   @Query((_returns) => [ISOLanguage])
-  async getISOLanguagesList(): Promise<ISOLanguage[]> {
+  async getISOLanguagesOptions(): Promise<ISOLanguage[]> {
     return ISO_LANGUAGES;
   }
 }
@@ -63,7 +83,7 @@ export class ISOLanguagesListResolver {
 @Resolver((_of) => IconOption)
 export class IconOptionsListResolver {
   @Query((_returns) => [IconOption])
-  async getIconsList(): Promise<IconOption[]> {
+  async getIconsOptions(): Promise<IconOption[]> {
     return iconTypesList.map((icon) => ({
       id: icon,
       icon: icon,
@@ -75,7 +95,7 @@ export class IconOptionsListResolver {
 @Resolver((_of) => AttributeViewOption)
 export class AttributeViewVariantsListResolver {
   @Query((_returns) => [AttributeViewOption])
-  async getAttributeViewVariantsList(
+  async getAttributeViewVariantsOptions(
     @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<AttributeViewOption[]> {
     return ATTRIBUTE_VIEW_VARIANTS_ENUMS.map((position) => ({

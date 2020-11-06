@@ -27,6 +27,7 @@ input AddOptionToGroupInput {
   color: String
   gender: GenderEnum
   groupId: ID!
+  icon: String
   name: [LangInput!]!
   variants: [OptionVariantInput!]
 }
@@ -238,6 +239,7 @@ input CreateMetricInput {
 
 input CreateOptionsGroupInput {
   name: [LangInput!]!
+  variant: OptionsGroupVariantEnum
 }
 
 input CreateProductConnectionInput {
@@ -493,14 +495,25 @@ type OptionsGroup {
   name: [LanguageType!]!
   nameString: String!
   options: [Option!]!
-  withColor: Boolean
-  withIcon: Boolean
+  variant: OptionsGroupVariantEnum!
 }
 
 type OptionsGroupPayloadType {
   group: OptionsGroup
   message: String!
   success: Boolean!
+}
+
+"""Attribute variant enum"""
+enum OptionsGroupVariantEnum {
+  color
+  icon
+  text
+}
+
+type OptionsGroupVariantOption {
+  id: String!
+  nameString: String!
 }
 
 type OptionVariant {
@@ -720,8 +733,8 @@ type Query {
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
-  getAttributeVariants: [AttributeVariant!]
-  getAttributeViewVariantsList: [AttributeViewOption!]!
+  getAttributeVariantsOptions: [AttributeVariant!]
+  getAttributeViewVariantsOptions: [AttributeViewOption!]!
   getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
@@ -735,14 +748,15 @@ type Query {
   getEntityFields(entity: String!): [String!]!
   getFeaturesAst(selectedRubrics: [ID!]!): [AttributesGroup!]!
   getGenderOptions: [GenderOption!]!
-  getIconsList: [IconOption!]!
-  getISOLanguagesList: [ISOLanguage!]!
+  getIconsOptions: [IconOption!]!
+  getISOLanguagesOptions: [ISOLanguage!]!
   getLanguage(id: ID!): Language
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
   getOption(id: ID!): Option
   getOptionsGroup(id: ID!): OptionsGroup
+  getOptionsGroupVariantsOptions: [OptionsGroupVariantOption!]!
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!
@@ -1030,6 +1044,7 @@ input UpdateOptionInGroupInput {
   color: String
   gender: GenderEnum
   groupId: ID!
+  icon: String
   name: [LangInput!]!
   optionId: ID!
   variants: [OptionVariantInput!]
@@ -1038,6 +1053,7 @@ input UpdateOptionInGroupInput {
 input UpdateOptionsGroupInput {
   id: ID!
   name: [LangInput!]!
+  variant: OptionsGroupVariantEnum
 }
 
 input UpdateProductInput {

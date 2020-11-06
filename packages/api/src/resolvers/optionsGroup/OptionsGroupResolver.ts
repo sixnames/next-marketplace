@@ -38,6 +38,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
 
 const {
   operationConfigCreate,
@@ -243,6 +244,20 @@ export class OptionsGroupResolver {
         };
       }
 
+      if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
+        };
+      }
+
       const nameValues = input.name.map(({ value }) => value);
       const existingOptions = await OptionModel.exists({
         _id: { $in: group.options },
@@ -305,13 +320,27 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { groupId, optionId, color, name, gender, variants } = input;
+      const { groupId, optionId, color, name, gender, variants, icon } = input;
       const group = await OptionsGroupModel.findById(groupId);
 
       if (!group) {
         return {
           success: false,
           message: await getApiMessage({ key: `optionsGroups.updateOption.groupError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !icon) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !color) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
         };
       }
 
@@ -337,6 +366,7 @@ export class OptionsGroupResolver {
           color,
           gender,
           variants,
+          icon,
         },
         { new: true },
       );

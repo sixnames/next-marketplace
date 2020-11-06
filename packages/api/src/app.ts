@@ -44,6 +44,7 @@ import {
   GendersListResolver,
   IconOptionsListResolver,
   ISOLanguagesListResolver,
+  OptionsGroupVariantsListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { ConfigCityResolver, ConfigResolver } from './resolvers/config/ConfigResolver';
@@ -101,6 +102,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       ISOLanguagesListResolver,
       IconOptionsListResolver,
       AttributeViewVariantsListResolver,
+      OptionsGroupVariantsListResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),

@@ -15,7 +15,10 @@ export class UpdateOptionInGroupInput {
   name: LangInput[];
 
   @Field((_type) => String, { nullable: true })
-  public color: string;
+  color: string;
+
+  @Field((_type) => String, { nullable: true })
+  icon: string;
 
   @Field((_type) => [OptionVariantInput], { nullable: true })
   variants?: OptionVariantInput[];

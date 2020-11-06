@@ -40,6 +40,15 @@ export class AttributePositioningOption {
 }
 
 @ObjectType()
+export class OptionsGroupVariantOption {
+  @Field((_type) => String)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly nameString: string;
+}
+
+@ObjectType()
 export class ISOLanguage {
   @Field((_type) => String)
   readonly id: string;

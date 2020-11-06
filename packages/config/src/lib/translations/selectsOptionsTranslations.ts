@@ -14,6 +14,13 @@ import {
   GENDER_SHE,
   DEFAULT_LANG,
   SECONDARY_LANG,
+  OPTIONS_GROUP_VARIANT_TEXT,
+  OPTIONS_GROUP_VARIANT_ICON,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VARIANT_NUMBER,
 } from '../common';
 
 const selectsOptionsTranslations = {
@@ -30,6 +37,24 @@ const selectsOptionsTranslations = {
       [GENDER_IT]: {
         [DEFAULT_LANG]: 'Средний род',
         [SECONDARY_LANG]: 'It',
+      },
+    },
+    attributeVariants: {
+      [ATTRIBUTE_VARIANT_SELECT]: {
+        [DEFAULT_LANG]: 'Селект',
+        [SECONDARY_LANG]: 'Select',
+      },
+      [ATTRIBUTE_VARIANT_MULTIPLE_SELECT]: {
+        [DEFAULT_LANG]: 'Мульти-селект',
+        [SECONDARY_LANG]: 'Multi-select',
+      },
+      [ATTRIBUTE_VARIANT_STRING]: {
+        [DEFAULT_LANG]: 'Строка',
+        [SECONDARY_LANG]: 'String',
+      },
+      [ATTRIBUTE_VARIANT_NUMBER]: {
+        [DEFAULT_LANG]: 'Число',
+        [SECONDARY_LANG]: 'Number',
       },
     },
     attributePositioning: {
@@ -74,6 +99,20 @@ const selectsOptionsTranslations = {
       [ATTRIBUTE_VIEW_VARIANT_OUTER_RATING]: {
         [DEFAULT_LANG]: 'Внешний рейтинг',
         [SECONDARY_LANG]: 'As outer rating',
+      },
+    },
+    optionsGroupVariant: {
+      [OPTIONS_GROUP_VARIANT_TEXT]: {
+        [DEFAULT_LANG]: 'Текст',
+        [SECONDARY_LANG]: 'Text',
+      },
+      [OPTIONS_GROUP_VARIANT_ICON]: {
+        [DEFAULT_LANG]: 'С иконкой',
+        [SECONDARY_LANG]: 'With icon',
+      },
+      [OPTIONS_GROUP_VARIANT_COLOR]: {
+        [DEFAULT_LANG]: 'С цветом',
+        [SECONDARY_LANG]: 'With color',
       },
     },
   },

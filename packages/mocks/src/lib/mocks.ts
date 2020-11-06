@@ -53,6 +53,16 @@ export const ISO_LANGUAGES = [
     nameString: 'English',
     nativeName: 'English',
   },
+  {
+    id: 'ua-UA',
+    nameString: 'Украинский',
+    nativeName: 'Украинский',
+  },
+  {
+    id: 'pl',
+    nameString: 'Польский',
+    nativeName: 'Polska',
+  },
 ];
 
 // Site config

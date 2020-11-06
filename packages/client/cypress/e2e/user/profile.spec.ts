@@ -38,7 +38,7 @@ describe('Profile', () => {
     cy.getByCy('app-nav-user-name').should('contain', `${newName.charAt(0)}.${newLastName}`);
   });
 
-  it('Should user password', () => {
+  it('Should update user password', () => {
     const newPassword = 'newPassword';
     const newPasswordWrong = 'newPasswordWrong';
 

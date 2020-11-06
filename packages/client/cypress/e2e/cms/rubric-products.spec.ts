@@ -13,6 +13,7 @@ import {
   MOCK_OPTIONS_WINE_VARIANT,
   MOCK_ATTRIBUTE_NUMBER,
 } from '@yagu/mocks';
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 const modal = 'add-product-to-rubric-modal';
 
@@ -135,16 +136,16 @@ describe('Rubric products', () => {
     cy.getByCy('file-preview-2').should('not.exist');
 
     // fill inputs
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('cardName-accordion-en').click();
-    cy.getByCy('description-accordion-en').click();
-    cy.getByCy('name-ru').type(mockProductNewName);
-    cy.getByCy('name-en').type(mockProductNewName);
-    cy.getByCy('cardName-ru').type(mockProductNewCardName);
-    cy.getByCy('cardName-en').type(mockProductNewCardName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockProductNewName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).type(mockProductNewName);
+    cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductNewCardName);
+    cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductNewCardName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('description-ru').type(mockProductNewCarDescription);
-    cy.getByCy('description-en').type(mockProductNewCarDescription);
+    cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductNewCarDescription);
+    cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductNewCarDescription);
 
     // fill attributes
     cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();

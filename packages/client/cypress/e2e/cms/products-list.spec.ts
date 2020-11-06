@@ -14,6 +14,7 @@ import {
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTE_NUMBER,
 } from '@yagu/mocks';
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 describe('Products', () => {
   beforeEach(() => {
@@ -73,16 +74,16 @@ describe('Products', () => {
     cy.shouldSuccess();
 
     // Should update product main fields
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('cardName-accordion-en').click();
-    cy.getByCy('description-accordion-en').click();
-    cy.getByCy('name-ru').clear().type(mockProductNewName);
-    cy.getByCy('name-en').clear().type(mockProductNewName);
-    cy.getByCy('cardName-ru').clear().type(mockProductNewCardName);
-    cy.getByCy('cardName-en').clear().type(mockProductNewCardName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockProductNewName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockProductNewName);
+    cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
+    cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('description-ru').clear().type(mockProductNewCarDescription);
-    cy.getByCy('description-en').clear().type(mockProductNewCarDescription);
+    cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
+    cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 
@@ -104,16 +105,16 @@ describe('Products', () => {
     cy.getByCy('product-images').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
 
     // fill inputs
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('cardName-accordion-en').click();
-    cy.getByCy('description-accordion-en').click();
-    cy.getByCy('name-ru').type(mockProductCreateName);
-    cy.getByCy('name-en').type(mockProductCreateName);
-    cy.getByCy('cardName-ru').type(mockProductCreateCardName);
-    cy.getByCy('cardName-en').type(mockProductCreateCardName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockProductCreateName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).type(mockProductCreateName);
+    cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductCreateCardName);
+    cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductCreateCardName);
     cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
-    cy.getByCy('description-ru').type(mockProductCreateCarDescription);
-    cy.getByCy('description-en').type(mockProductCreateCarDescription);
+    cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductCreateCarDescription);
+    cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductCreateCarDescription);
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
 

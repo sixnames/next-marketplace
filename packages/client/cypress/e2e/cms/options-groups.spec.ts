@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 import { MOCK_OPTIONS_GROUP_COLORS, MOCK_OPTIONS_WINE_COLOR } from '@yagu/mocks';
-import { GENDER_SHE, GENDER_HE, GENDER_IT } from '@yagu/config';
+import { GENDER_SHE, GENDER_HE, GENDER_IT, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 describe('Options Groups', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('Options Groups', () => {
     cy.getByCy(`create-options-group`).click();
 
     // Should show validation error on not valid options group name
-    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(fakeName);
     cy.getByCy(`options-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
@@ -39,8 +39,8 @@ describe('Options Groups', () => {
     // Should update options group
     cy.getByCy(`options-group-update`).click();
     cy.getByCy(`name-ru`).should('have.value', createdGroupName).clear().type(groupNewName);
-    cy.getByCy(`name-accordion-en`).click();
-    cy.getByCy(`name-en`).clear().type(groupNewName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(groupNewName);
     cy.getByCy(`options-group-submit`).click();
     cy.contains(groupNewName).should('exist');
 
@@ -71,7 +71,7 @@ describe('Options Groups', () => {
     // Shouldn't create option in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
     cy.getByCy(`options-group-create`).click();
-    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(fakeName);
     cy.getByCy(`option-color`).type(fakeColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
@@ -81,11 +81,11 @@ describe('Options Groups', () => {
     cy.getByCy(`color-error`).should('exist');
 
     //Shouldn't create option in group if there is an option with the same name
-    cy.getByCy(`name-ru`).clear().type(mockOptionName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockOptionName);
     cy.getByCy(`option-gender`).select(GENDER_SHE);
-    cy.getByCy(`variant-${GENDER_SHE}-ru`).type(optionName);
-    cy.getByCy(`variant-${GENDER_HE}-ru`).type(optionName);
-    cy.getByCy(`variant-${GENDER_IT}-ru`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).type(optionName);
     cy.getByCy(`option-color`).clear().type(mockOptionColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${mockOptionName}`).should('have.length', 1);
@@ -102,28 +102,28 @@ describe('Options Groups', () => {
 
     //Should create option in group
     cy.getByCy(`options-group-create`).click();
-    cy.getByCy(`name-ru`).type(optionName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(optionName);
     cy.getByCy(`option-gender`).select(GENDER_IT);
     cy.getByCy(`option-color`).type(optionColor);
 
-    cy.getByCy(`variant-${GENDER_SHE}-ru`).type(optionName);
-    cy.getByCy(`variant-${GENDER_SHE}-accordion-en`).click();
-    cy.getByCy(`variant-${GENDER_SHE}-en`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`variant-${GENDER_SHE}-${SECONDARY_LANG}`).type(optionName);
 
-    cy.getByCy(`variant-${GENDER_HE}-ru`).type(optionName);
-    cy.getByCy(`variant-${GENDER_HE}-accordion-en`).click();
-    cy.getByCy(`variant-${GENDER_HE}-en`).type(optionName);
+    cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_HE}-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`variant-${GENDER_HE}-${SECONDARY_LANG}`).type(optionName);
 
-    cy.getByCy(`variant-${GENDER_IT}-ru`).type(optionName);
-    cy.getByCy(`variant-${GENDER_IT}-accordion-en`).click();
-    cy.getByCy(`variant-${GENDER_IT}-en`).type(optionName);
+    cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_IT}-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`variant-${GENDER_IT}-${SECONDARY_LANG}`).type(optionName);
 
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('exist');
 
     // Should update option name in group
     cy.getByCy(`${optionName}-option-update`).click();
-    cy.getByCy(`name-ru`).should('have.value', optionName).clear().type(optionNewName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).should('have.value', optionName).clear().type(optionNewName);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionName}`).should('not.exist');
     cy.getByCy(`${optionNewName}`).should('exist');
@@ -132,15 +132,15 @@ describe('Options Groups', () => {
     cy.getByCy(`${optionNewName}-option-update`).click();
     cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);
     cy.getByCy(`option-gender`).should('have.value', GENDER_IT).select(GENDER_SHE);
-    cy.getByCy(`variant-${GENDER_SHE}-ru`)
+    cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`)
       .should('have.value', optionName)
       .clear()
       .type(optionNewName);
-    cy.getByCy(`variant-${GENDER_HE}-ru`)
+    cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`)
       .should('have.value', optionName)
       .clear()
       .type(optionNewName);
-    cy.getByCy(`variant-${GENDER_IT}-ru`)
+    cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`)
       .should('have.value', optionName)
       .clear()
       .type(optionNewName);

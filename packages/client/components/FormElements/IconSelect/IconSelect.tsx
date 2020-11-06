@@ -11,8 +11,8 @@ const IconSelect: React.FC<IconSelectInterface> = ({ value, ...props }) => {
   const { data, loading, error } = useIconsOptionsQuery();
 
   useEffect(() => {
-    if (!loading && !error && data && data.getIconsList) {
-      setOptions(data.getIconsList);
+    if (!loading && !error && data && data.getIconsOptions) {
+      setOptions(data.getIconsOptions);
     }
   }, [data, loading, error]);
 

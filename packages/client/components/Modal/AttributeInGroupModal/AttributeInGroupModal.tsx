@@ -60,7 +60,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   const {
     getAllMetrics,
     getAllOptionsGroups,
-    getAttributeVariants,
+    getAttributeVariantsOptions,
     getAttributePositioningOptions,
   } = data;
 
@@ -115,7 +115,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 firstOption={'Не выбрано'}
                 label={'Тип атрибута'}
                 name={'variant'}
-                options={getAttributeVariants || []}
+                options={getAttributeVariantsOptions || []}
                 testId={'attribute-variant'}
                 showInlineError
               />

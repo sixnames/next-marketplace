@@ -97,8 +97,6 @@ type AttributesGroup {
   id: ID!
   name: [LanguageType!]!
   nameString: String!
-  withColor: Boolean
-  withIcon: Boolean
 }
 
 type AttributesGroupPayloadType {
@@ -495,6 +493,8 @@ type OptionsGroup {
   name: [LanguageType!]!
   nameString: String!
   options: [Option!]!
+  withColor: Boolean
+  withIcon: Boolean
 }
 
 type OptionsGroupPayloadType {
@@ -606,6 +606,7 @@ input ProductAttributesGroupInput {
 enum ProductAttributeViewVariantEnum {
   icon
   list
+  outerRating
   tag
   text
 }
@@ -632,6 +633,7 @@ type ProductCardConnectionItem {
 type ProductCardFeatures {
   iconFeatures: [ProductAttribute!]!
   listFeatures: [ProductAttribute!]!
+  ratingFeatures: [ProductAttribute!]!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
 }

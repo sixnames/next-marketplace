@@ -19,6 +19,7 @@ export enum ProductAttributeViewVariantEnum {
   text = 'text',
   tag = 'tag',
   icon = 'icon',
+  outerRating = 'outerRating',
 }
 
 registerEnumType(ProductAttributeViewVariantEnum, {
@@ -84,6 +85,9 @@ export class ProductCardFeatures {
 
   @Field(() => [ProductAttribute])
   readonly iconFeatures: ProductAttribute[];
+
+  @Field(() => [ProductAttribute])
+  readonly ratingFeatures: ProductAttribute[];
 }
 
 interface InArrayInterface {

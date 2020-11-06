@@ -8,6 +8,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
@@ -67,6 +68,10 @@ const selectsOptionsTranslations = {
       [ATTRIBUTE_VIEW_VARIANT_ICON]: {
         ru: 'С иконкой',
         en: 'With icon',
+      },
+      [ATTRIBUTE_VIEW_VARIANT_OUTER_RATING]: {
+        ru: 'Внешний рейтинг',
+        en: 'As outer rating',
       },
     },
   },

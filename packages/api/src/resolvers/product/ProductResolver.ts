@@ -69,6 +69,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from '@yagu/config';
@@ -729,6 +730,7 @@ export class ProductResolver {
         textFeatures: [],
         tagFeatures: [],
         iconFeatures: [],
+        ratingFeatures: [],
       };
 
       for await (const productAttributesGroup of product.attributesGroups) {
@@ -765,6 +767,10 @@ export class ProductResolver {
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
             features.iconFeatures.push(productAttribute);
           }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
+            features.ratingFeatures.push(productAttribute);
+          }
         }
       }
 
@@ -775,6 +781,7 @@ export class ProductResolver {
         textFeatures: [],
         tagFeatures: [],
         iconFeatures: [],
+        ratingFeatures: [],
       };
     }
   }

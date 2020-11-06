@@ -115,9 +115,9 @@ describe('Language', () => {
     expect(createLanguageWithDuplicateError.success).toBeFalsy();
 
     // Should create language
-    const newLanguageName = ISO_LANGUAGES[0].nameString;
-    const newLanguageKey = ISO_LANGUAGES[0].id;
-    const newLanguageNativeName = ISO_LANGUAGES[0].nativeName;
+    const newLanguageName = 'newLanguageName';
+    const newLanguageKey = 'newLanguageKey';
+    const newLanguageNativeName = 'newLanguageNativeName';
 
     const {
       data: { createLanguage },

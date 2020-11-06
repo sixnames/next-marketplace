@@ -12,66 +12,68 @@ import {
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
+  DEFAULT_LANG,
+  SECONDARY_LANG,
 } from '../common';
 
 const selectsOptionsTranslations = {
   selectsOptions: {
     gender: {
       [GENDER_SHE]: {
-        ru: 'Женский род',
-        en: 'She',
+        [DEFAULT_LANG]: 'Женский род',
+        [SECONDARY_LANG]: 'She',
       },
       [GENDER_HE]: {
-        ru: 'Мужской род',
-        en: 'He',
+        [DEFAULT_LANG]: 'Мужской род',
+        [SECONDARY_LANG]: 'He',
       },
       [GENDER_IT]: {
-        ru: 'Средний род',
-        en: 'It',
+        [DEFAULT_LANG]: 'Средний род',
+        [SECONDARY_LANG]: 'It',
       },
     },
     attributePositioning: {
       [ATTRIBUTE_POSITION_IN_TITLE_BEGIN]: {
-        ru: 'Начало заголовка',
-        en: 'In the beginning of title',
+        [DEFAULT_LANG]: 'Начало заголовка',
+        [SECONDARY_LANG]: 'In the beginning of title',
       },
       [ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD]: {
-        ru: 'Перед ключевым словом',
-        en: 'Before keyword',
+        [DEFAULT_LANG]: 'Перед ключевым словом',
+        [SECONDARY_LANG]: 'Before keyword',
       },
       [ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD]: {
-        ru: 'Замена ключевого слова',
-        en: 'Replace keyword',
+        [DEFAULT_LANG]: 'Замена ключевого слова',
+        [SECONDARY_LANG]: 'Replace keyword',
       },
       [ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD]: {
-        ru: 'После ключевого слова',
-        en: 'After keyword',
+        [DEFAULT_LANG]: 'После ключевого слова',
+        [SECONDARY_LANG]: 'After keyword',
       },
       [ATTRIBUTE_POSITION_IN_TITLE_END]: {
-        ru: 'Конец заголовка',
-        en: 'In the end of title',
+        [DEFAULT_LANG]: 'Конец заголовка',
+        [SECONDARY_LANG]: 'In the end of title',
       },
     },
     attributeView: {
       [ATTRIBUTE_VIEW_VARIANT_LIST]: {
-        ru: 'Список',
-        en: 'In list',
+        [DEFAULT_LANG]: 'Список',
+        [SECONDARY_LANG]: 'In list',
       },
       [ATTRIBUTE_VIEW_VARIANT_TEXT]: {
-        ru: 'Текст',
-        en: 'As text',
+        [DEFAULT_LANG]: 'Текст',
+        [SECONDARY_LANG]: 'As text',
       },
       [ATTRIBUTE_VIEW_VARIANT_TAG]: {
-        ru: 'Тег',
-        en: 'As tag',
+        [DEFAULT_LANG]: 'Тег',
+        [SECONDARY_LANG]: 'As tag',
       },
       [ATTRIBUTE_VIEW_VARIANT_ICON]: {
-        ru: 'С иконкой',
-        en: 'With icon',
+        [DEFAULT_LANG]: 'С иконкой',
+        [SECONDARY_LANG]: 'With icon',
       },
       [ATTRIBUTE_VIEW_VARIANT_OUTER_RATING]: {
-        ru: 'Внешний рейтинг',
-        en: 'As outer rating',
+        [DEFAULT_LANG]: 'Внешний рейтинг',
+        [SECONDARY_LANG]: 'As outer rating',
       },
     },
   },

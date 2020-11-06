@@ -117,7 +117,7 @@ describe('Options groups', () => {
             input: {
               name: [
                 {
-                  key: "ru", value: "${duplicateName}"}]
+                  key: "${DEFAULT_LANG}", value: "${duplicateName}"}]
             }
           ) {
             success
@@ -138,7 +138,7 @@ describe('Options groups', () => {
         mutation {
           createOptionsGroup(
             input: {
-              name: [{key: "ru", value: "${optionsGroup.name}"}]
+              name: [{key: "${DEFAULT_LANG}", value: "${optionsGroup.name}"}]
             }
           ) {
             success
@@ -160,7 +160,7 @@ describe('Options groups', () => {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: [{key: "ru", value: "f"}]
+              name: [{key: "${DEFAULT_LANG}", value: "f"}]
             }
           ) {
             success
@@ -182,7 +182,7 @@ describe('Options groups', () => {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: [{key: "ru", value: "${group.nameString}"}]
+              name: [{key: "${DEFAULT_LANG}", value: "${group.nameString}"}]
             }
           ) {
             success
@@ -203,7 +203,7 @@ describe('Options groups', () => {
           updateOptionsGroup(
             input: {
               id: "${createdGroup.id}"
-              name: [{key: "ru", value: "${anotherOptionsGroup.name}"}]
+              name: [{key: "${DEFAULT_LANG}", value: "${anotherOptionsGroup.name}"}]
             }
           ) {
             success

@@ -13,7 +13,7 @@ import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yag
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
 import { alwaysArray } from '@yagu/shared';
 
-// Attribute variant
+// Attribute view variant
 export enum ProductAttributeViewVariantEnum {
   list = 'list',
   text = 'text',

@@ -89,7 +89,7 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: 'f' }],
+            name: [{ key: DEFAULT_LANG, value: 'f' }],
           },
         },
       },
@@ -233,9 +233,9 @@ describe('Attributes Groups', () => {
           input: {
             groupId: group.id,
             attributeId: addedAttribute.id,
-            name: [{ key: 'ru', value: newName }],
+            name: [{ key: DEFAULT_LANG, value: newName }],
             variant: addedAttribute.variant,
-            positioningInTitle: [{ key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
+            positioningInTitle: [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
           },
         },
       },
@@ -246,7 +246,7 @@ describe('Attributes Groups', () => {
     expect(updateAttributeInGroup.success).toBeTruthy();
     expect(updatedAttribute.nameString).toEqual(newName);
     expect(updatedAttribute.positioningInTitle).toEqual([
-      { key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
+      { key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
     ]);
 
     // Should delete attribute from the group.

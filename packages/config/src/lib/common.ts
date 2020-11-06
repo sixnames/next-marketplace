@@ -32,8 +32,8 @@ export const THEME_DARK = 'dark';
 export const THEME_LIGHT = 'light';
 
 export const LANG_COOKIE_KEY = 'lang';
-export const DEFAULT_LANG = 'ru';
-export const SECONDARY_LANG = 'en';
+export const DEFAULT_LANG = 'ru-RU';
+export const SECONDARY_LANG = 'en-EN';
 
 export const CITY_COOKIE_KEY = 'city';
 export const LANG_COOKIE_HEADER = 'accept-language';

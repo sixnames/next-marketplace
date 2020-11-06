@@ -148,7 +148,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
       // Language
       const cookies = cookie.parse(req.headers.cookie || '');
-      const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+      const systemLang = req.headers[LANG_COOKIE_HEADER] || '';
       const cookieLang = cookies[LANG_COOKIE_KEY];
       const clientLanguage = cookieLang || systemLang;
 

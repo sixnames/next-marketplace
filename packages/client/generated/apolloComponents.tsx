@@ -55,11 +55,12 @@ export type Query = {
   getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
   getGenderOptions: Array<GenderOption>;
-  getAttributeVariants?: Maybe<Array<AttributeVariant>>;
+  getAttributeVariantsOptions?: Maybe<Array<AttributeVariant>>;
+  getOptionsGroupVariantsOptions: Array<OptionsGroupVariantOption>;
   getAttributePositioningOptions: Array<AttributePositioningOption>;
-  getISOLanguagesList: Array<IsoLanguage>;
-  getIconsList: Array<IconOption>;
-  getAttributeViewVariantsList: Array<AttributeViewOption>;
+  getISOLanguagesOptions: Array<IsoLanguage>;
+  getIconsOptions: Array<IconOption>;
+  getAttributeViewVariantsOptions: Array<AttributeViewOption>;
   getRubricVariant?: Maybe<RubricVariant>;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getAllConfigs: Array<Config>;
@@ -409,6 +410,7 @@ export type OptionsGroup = {
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   options: Array<Option>;
+  variant: OptionsGroupVariantEnum;
 };
 
 export type Option = {
@@ -445,6 +447,13 @@ export type OptionCityCounter = {
   attributeId: Scalars['String'];
   rubricId: Scalars['String'];
 };
+
+/** Attribute variant enum */
+export enum OptionsGroupVariantEnum {
+  Text = 'text',
+  Icon = 'icon',
+  Color = 'color'
+}
 
 export type AttributePositioningInTitle = {
   __typename?: 'AttributePositioningInTitle';
@@ -513,8 +522,6 @@ export type AttributesGroup = {
   name: Array<LanguageType>;
   nameString: Scalars['String'];
   attributes: Array<Attribute>;
-  withColor?: Maybe<Scalars['Boolean']>;
-  withIcon?: Maybe<Scalars['Boolean']>;
 };
 
 export type ProductAttribute = {
@@ -533,7 +540,8 @@ export enum ProductAttributeViewVariantEnum {
   List = 'list',
   Text = 'text',
   Tag = 'tag',
-  Icon = 'icon'
+  Icon = 'icon',
+  OuterRating = 'outerRating'
 }
 
 export type AssetType = {
@@ -572,6 +580,7 @@ export type ProductCardFeatures = {
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
   iconFeatures: Array<ProductAttribute>;
+  ratingFeatures: Array<ProductAttribute>;
 };
 
 export type ProductCardConnection = {
@@ -783,6 +792,12 @@ export type GenderOption = {
 export type AttributeVariant = {
   __typename?: 'AttributeVariant';
   id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type OptionsGroupVariantOption = {
+  __typename?: 'OptionsGroupVariantOption';
+  id: Scalars['String'];
   nameString: Scalars['String'];
 };
 
@@ -1494,17 +1509,20 @@ export type OptionsGroupPayloadType = {
 
 export type CreateOptionsGroupInput = {
   name: Array<LangInput>;
+  variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type UpdateOptionsGroupInput = {
   id: Scalars['ID'];
   name: Array<LangInput>;
+  variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type AddOptionToGroupInput = {
   groupId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
   gender?: Maybe<GenderEnum>;
 };
@@ -1519,6 +1537,7 @@ export type UpdateOptionInGroupInput = {
   optionId: Scalars['ID'];
   name: Array<LangInput>;
   color?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
   gender?: Maybe<GenderEnum>;
 };
@@ -3093,7 +3112,7 @@ export type AttributeViewVariantOptionsQueryVariables = Exact<{ [key: string]: n
 
 export type AttributeViewVariantOptionsQuery = (
   { __typename?: 'Query' }
-  & { getAttributeViewVariantsList: Array<(
+  & { getAttributeViewVariantsOptions: Array<(
     { __typename?: 'AttributeViewOption' }
     & Pick<AttributeViewOption, 'id' | 'nameString'>
   )> }
@@ -3109,7 +3128,7 @@ export type IconsOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type IconsOptionsQuery = (
   { __typename?: 'Query' }
-  & { getIconsList: Array<(
+  & { getIconsOptions: Array<(
     { __typename?: 'IconOption' }
     & IconOptionFragment
   )> }
@@ -3120,7 +3139,7 @@ export type GetIsoLanguagesListQueryVariables = Exact<{ [key: string]: never; }>
 
 export type GetIsoLanguagesListQuery = (
   { __typename?: 'Query' }
-  & { getISOLanguagesList: Array<(
+  & { getISOLanguagesOptions: Array<(
     { __typename?: 'ISOLanguage' }
     & Pick<IsoLanguage, 'id' | 'nameString' | 'nativeName'>
   )> }
@@ -3137,7 +3156,7 @@ export type GetNewAttributeOptionsQuery = (
   )>, getAllMetrics?: Maybe<Array<(
     { __typename?: 'Metric' }
     & Pick<Metric, 'id' | 'nameString'>
-  )>>, getAttributeVariants?: Maybe<Array<(
+  )>>, getAttributeVariantsOptions?: Maybe<Array<(
     { __typename?: 'AttributeVariant' }
     & Pick<AttributeVariant, 'id' | 'nameString'>
   )>>, getAttributePositioningOptions: Array<(
@@ -6295,7 +6314,7 @@ export type GetGenderOptionsLazyQueryHookResult = ReturnType<typeof useGetGender
 export type GetGenderOptionsQueryResult = Apollo.QueryResult<GetGenderOptionsQuery, GetGenderOptionsQueryVariables>;
 export const AttributeViewVariantOptionsDocument = gql`
     query AttributeViewVariantOptions {
-  getAttributeViewVariantsList {
+  getAttributeViewVariantsOptions {
     id
     nameString
   }
@@ -6328,7 +6347,7 @@ export type AttributeViewVariantOptionsLazyQueryHookResult = ReturnType<typeof u
 export type AttributeViewVariantOptionsQueryResult = Apollo.QueryResult<AttributeViewVariantOptionsQuery, AttributeViewVariantOptionsQueryVariables>;
 export const IconsOptionsDocument = gql`
     query IconsOptions {
-  getIconsList {
+  getIconsOptions {
     ...IconOption
   }
 }
@@ -6360,7 +6379,7 @@ export type IconsOptionsLazyQueryHookResult = ReturnType<typeof useIconsOptionsL
 export type IconsOptionsQueryResult = Apollo.QueryResult<IconsOptionsQuery, IconsOptionsQueryVariables>;
 export const GetIsoLanguagesListDocument = gql`
     query GetISOLanguagesList {
-  getISOLanguagesList {
+  getISOLanguagesOptions {
     id
     nameString
     nativeName
@@ -6402,7 +6421,7 @@ export const GetNewAttributeOptionsDocument = gql`
     id
     nameString
   }
-  getAttributeVariants {
+  getAttributeVariantsOptions {
     id
     nameString
   }

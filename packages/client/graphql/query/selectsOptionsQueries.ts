@@ -35,6 +35,15 @@ export const ICON_OPTIONS_QUERY = gql`
   ${iconOptionFragment}
 `;
 
+export const OPTIONS_GROUP_VARIANTS_QUERY = gql`
+  query OptionsGroupVariants {
+    getOptionsGroupVariantsOptions {
+      id
+      nameString
+    }
+  }
+`;
+
 export const LANGUAGES_ISO__OPTIONS_QUERY = gql`
   query GetISOLanguagesList {
     getISOLanguagesOptions {

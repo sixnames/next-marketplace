@@ -425,6 +425,7 @@ export type Option = {
   nameString: Scalars['String'];
   filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
 };
 
 export type OptionVariant = {
@@ -750,6 +751,7 @@ export type RubricFilterAttributeOption = {
   nameString: Scalars['String'];
   filterNameString: Scalars['String'];
   color?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
   counter: Scalars['Int'];
 };
 
@@ -2928,7 +2930,7 @@ export type GetAllOptionsGroupsQuery = (
 
 export type OptionInGroupFragment = (
   { __typename?: 'Option' }
-  & Pick<Option, 'id' | 'nameString' | 'color' | 'gender'>
+  & Pick<Option, 'id' | 'nameString' | 'color' | 'icon' | 'gender'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
     & Pick<LanguageType, 'key' | 'value'>
@@ -2942,6 +2944,18 @@ export type OptionInGroupFragment = (
   )>> }
 );
 
+export type OptionsGroupFragment = (
+  { __typename?: 'OptionsGroup' }
+  & Pick<OptionsGroup, 'id' | 'variant' | 'nameString'>
+  & { name: Array<(
+    { __typename?: 'LanguageType' }
+    & Pick<LanguageType, 'key' | 'value'>
+  )>, options: Array<(
+    { __typename?: 'Option' }
+    & OptionInGroupFragment
+  )> }
+);
+
 export type GetOptionsGroupQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2951,14 +2965,7 @@ export type GetOptionsGroupQuery = (
   { __typename?: 'Query' }
   & { getOptionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, 'id' | 'nameString'>
-    & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
-    )>, options: Array<(
-      { __typename?: 'Option' }
-      & OptionInGroupFragment
-    )> }
+    & OptionsGroupFragment
   )> }
 );
 
@@ -3131,6 +3138,17 @@ export type IconsOptionsQuery = (
   & { getIconsOptions: Array<(
     { __typename?: 'IconOption' }
     & IconOptionFragment
+  )> }
+);
+
+export type OptionsGroupVariantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OptionsGroupVariantsQuery = (
+  { __typename?: 'Query' }
+  & { getOptionsGroupVariantsOptions: Array<(
+    { __typename?: 'OptionsGroupVariantOption' }
+    & Pick<OptionsGroupVariantOption, 'id' | 'nameString'>
   )> }
 );
 
@@ -3585,6 +3603,7 @@ export const OptionInGroupFragmentDoc = gql`
   }
   nameString
   color
+  icon
   gender
   variants {
     key
@@ -3595,6 +3614,20 @@ export const OptionInGroupFragmentDoc = gql`
   }
 }
     `;
+export const OptionsGroupFragmentDoc = gql`
+    fragment OptionsGroup on OptionsGroup {
+  id
+  name {
+    key
+    value
+  }
+  variant
+  nameString
+  options {
+    ...OptionInGroup
+  }
+}
+    ${OptionInGroupFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
   id
@@ -5999,18 +6032,10 @@ export type GetAllOptionsGroupsQueryResult = Apollo.QueryResult<GetAllOptionsGro
 export const GetOptionsGroupDocument = gql`
     query GetOptionsGroup($id: ID!) {
   getOptionsGroup(id: $id) {
-    id
-    name {
-      key
-      value
-    }
-    nameString
-    options {
-      ...OptionInGroup
-    }
+    ...OptionsGroup
   }
 }
-    ${OptionInGroupFragmentDoc}`;
+    ${OptionsGroupFragmentDoc}`;
 
 /**
  * __useGetOptionsGroupQuery__
@@ -6377,6 +6402,39 @@ export function useIconsOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type IconsOptionsQueryHookResult = ReturnType<typeof useIconsOptionsQuery>;
 export type IconsOptionsLazyQueryHookResult = ReturnType<typeof useIconsOptionsLazyQuery>;
 export type IconsOptionsQueryResult = Apollo.QueryResult<IconsOptionsQuery, IconsOptionsQueryVariables>;
+export const OptionsGroupVariantsDocument = gql`
+    query OptionsGroupVariants {
+  getOptionsGroupVariantsOptions {
+    id
+    nameString
+  }
+}
+    `;
+
+/**
+ * __useOptionsGroupVariantsQuery__
+ *
+ * To run a query within a React component, call `useOptionsGroupVariantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOptionsGroupVariantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOptionsGroupVariantsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOptionsGroupVariantsQuery(baseOptions?: Apollo.QueryHookOptions<OptionsGroupVariantsQuery, OptionsGroupVariantsQueryVariables>) {
+        return Apollo.useQuery<OptionsGroupVariantsQuery, OptionsGroupVariantsQueryVariables>(OptionsGroupVariantsDocument, baseOptions);
+      }
+export function useOptionsGroupVariantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OptionsGroupVariantsQuery, OptionsGroupVariantsQueryVariables>) {
+          return Apollo.useLazyQuery<OptionsGroupVariantsQuery, OptionsGroupVariantsQueryVariables>(OptionsGroupVariantsDocument, baseOptions);
+        }
+export type OptionsGroupVariantsQueryHookResult = ReturnType<typeof useOptionsGroupVariantsQuery>;
+export type OptionsGroupVariantsLazyQueryHookResult = ReturnType<typeof useOptionsGroupVariantsLazyQuery>;
+export type OptionsGroupVariantsQueryResult = Apollo.QueryResult<OptionsGroupVariantsQuery, OptionsGroupVariantsQueryVariables>;
 export const GetIsoLanguagesListDocument = gql`
     query GetISOLanguagesList {
   getISOLanguagesOptions {

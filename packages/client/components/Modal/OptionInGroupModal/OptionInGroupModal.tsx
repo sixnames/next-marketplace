@@ -13,8 +13,15 @@ import {
   useGetGenderOptionsQuery,
   UpdateOptionInGroupInput,
   OptionInGroupFragment,
+  OptionsGroupVariantEnum,
 } from '../../../generated/apolloComponents';
-import { GENDER_ENUMS, GENDER_HE, GENDER_SHE } from '@yagu/config';
+import {
+  GENDER_ENUMS,
+  GENDER_HE,
+  GENDER_SHE,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+} from '@yagu/config';
 import InputLine from '../../FormElements/Input/InputLine';
 import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
@@ -22,6 +29,7 @@ import FormikSelect from '../../FormElements/Select/FormikSelect';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import FormikIconSelect from '../../FormElements/IconSelect/FormikIconSelect';
 
 export interface OptionInGroupModalInterface {
   confirm: (
@@ -30,9 +38,14 @@ export interface OptionInGroupModalInterface {
       | Omit<UpdateOptionInGroupInput, 'groupId' | 'optionId'>,
   ) => void;
   option?: OptionInGroupFragment;
+  groupVariant: OptionsGroupVariantEnum;
 }
 
-const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, option }) => {
+const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
+  confirm,
+  option,
+  groupVariant,
+}) => {
   const { data, loading, error } = useGetGenderOptionsQuery();
   const { hideModal } = useAppContext();
   const { getLanguageFieldInitialValue, getLanguageFieldInputValue } = useLanguageContext();
@@ -133,6 +146,17 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, op
                 name={'color'}
                 testId={'option-color'}
                 prefix={'hash'}
+                disabled={groupVariant !== OPTIONS_GROUP_VARIANT_COLOR}
+                isRequired={groupVariant === OPTIONS_GROUP_VARIANT_COLOR}
+                showInlineError
+              />
+
+              <FormikIconSelect
+                label={'Иконка'}
+                name={'icon'}
+                testId={'option-icon'}
+                disabled={groupVariant !== OPTIONS_GROUP_VARIANT_ICON}
+                isRequired={groupVariant === OPTIONS_GROUP_VARIANT_ICON}
                 showInlineError
               />
 

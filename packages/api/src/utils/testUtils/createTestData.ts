@@ -1,7 +1,7 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
 import { OptionModel } from '../../entities/Option';
-import { OptionsGroupModel } from '../../entities/OptionsGroup';
+import { OptionsGroupModel, OptionsGroupVariantEnum } from '../../entities/OptionsGroup';
 import {
   AttributeModel,
   AttributePositionInTitleEnum,
@@ -58,6 +58,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   ATTRIBUTE_VIEW_VARIANT_ICON,
+  OPTIONS_GROUP_VARIANT_COLOR,
 } from '@yagu/config';
 import {
   ProductAttributeViewVariantEnum,
@@ -123,6 +124,7 @@ const createTestData = async () => {
     const optionsGroupColors = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_COLORS,
       options: optionsIdsColor,
+      variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantEnum,
     });
 
     // Attributes

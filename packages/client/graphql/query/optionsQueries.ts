@@ -21,6 +21,7 @@ export const optionInGroupFragment = gql`
     }
     nameString
     color
+    icon
     gender
     variants {
       key
@@ -32,19 +33,27 @@ export const optionInGroupFragment = gql`
   }
 `;
 
-export const OPTIONS_GROUP_QUERY = gql`
-  query GetOptionsGroup($id: ID!) {
-    getOptionsGroup(id: $id) {
-      id
-      name {
-        key
-        value
-      }
-      nameString
-      options {
-        ...OptionInGroup
-      }
+export const optionsGroupFragment = gql`
+  fragment OptionsGroup on OptionsGroup {
+    id
+    name {
+      key
+      value
+    }
+    variant
+    nameString
+    options {
+      ...OptionInGroup
     }
   }
   ${optionInGroupFragment}
+`;
+
+export const OPTIONS_GROUP_QUERY = gql`
+  query GetOptionsGroup($id: ID!) {
+    getOptionsGroup(id: $id) {
+      ...OptionsGroup
+    }
+  }
+  ${optionsGroupFragment}
 `;

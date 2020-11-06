@@ -474,6 +474,7 @@ type Option {
   color: String
   filterNameString: String!
   gender: GenderEnum
+  icon: String
   id: ID!
   name: [LanguageType!]!
   nameString: String!
@@ -877,6 +878,7 @@ type RubricFilterAttributeOption {
   counter: Int!
   filterNameString: String!
   gender: GenderEnum
+  icon: String
   id: ID!
   name: [LanguageType!]!
   nameString: String!

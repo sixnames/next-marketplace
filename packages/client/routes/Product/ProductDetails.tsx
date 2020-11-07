@@ -115,7 +115,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
           const showFeatures = rubrics.length > 0;
 
           return (
-            <Form>
+            <Form noValidate>
               <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
               <FormikDropZone

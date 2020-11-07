@@ -14,7 +14,7 @@ import {
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTE_NUMBER,
 } from '@yagu/mocks';
-import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+import { ATTRIBUTE_VIEW_VARIANT_TAG, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 describe('Products', () => {
   beforeEach(() => {
@@ -51,41 +51,41 @@ describe('Products', () => {
     const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
 
     // Should delete product from city or DB
-    cy.getByCy(`products-list`).should('exist');
-    cy.getByCy(`${mockProductForDelete}-delete`).click();
-    cy.getByCy('confirm').click();
-    cy.getByCy(mockProductForDelete).should('not.exist');
-    cy.shouldSuccess();
+    // cy.getByCy(`products-list`).should('exist');
+    // cy.getByCy(`${mockProductForDelete}-delete`).click();
+    // cy.getByCy('confirm').click();
+    // cy.getByCy(mockProductForDelete).should('not.exist');
+    // cy.shouldSuccess();
 
     // Should open product details
     cy.getByCy(`${mockProductC}-update`).click();
     cy.getByCy(`product-details`).should('exist');
 
     // Should update product activity
-    cy.getByCy('active-checkbox').check();
-    cy.getByCy('submit-product').click();
-    cy.shouldSuccess();
+    // cy.getByCy('active-checkbox').check();
+    // cy.getByCy('submit-product').click();
+    // cy.shouldSuccess();
 
     // Should update product main image
-    cy.getByCy('file-preview-remove-0').click();
-    cy.getByCy('remove-image-confirm').click();
-    cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
-    cy.getByCy('submit-product').click();
-    cy.shouldSuccess();
+    // cy.getByCy('file-preview-remove-0').click();
+    // cy.getByCy('remove-image-confirm').click();
+    // cy.getByCy('product-images').attachFile('test-image-1.png', { subjectType: 'drag-n-drop' });
+    // cy.getByCy('submit-product').click();
+    // cy.shouldSuccess();
 
     // Should update product main fields
-    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
-    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
-    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
-    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockProductNewName);
-    cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockProductNewName);
-    cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
-    cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
-    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
-    cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
-    cy.getByCy('submit-product').click();
-    cy.shouldSuccess();
+    // cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    // cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    // cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    // cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockProductNewName);
+    // cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockProductNewName);
+    // cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
+    // cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
+    // cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
+    // cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
+    // cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
+    // cy.getByCy('submit-product').click();
+    // cy.shouldSuccess();
 
     // Should update product attributes
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
@@ -94,6 +94,7 @@ describe('Products', () => {
     cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
     cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
     cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributeNumberName}-0-viewVariant`).select(ATTRIBUTE_VIEW_VARIANT_TAG);
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 

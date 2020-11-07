@@ -865,6 +865,39 @@ export const MOCK_OPTIONS_GROUP_WINE_VINTAGE = {
 };
 
 // Attributes
+export const MOCK_ATTRIBUTE_OUTER_RATING_A = {
+  name: [
+    { key: DEFAULT_LANG, value: 'vivino' },
+    { key: SECONDARY_LANG, value: 'vivino' },
+  ],
+  views: [],
+  priorities: [],
+  slug: 'vivino',
+  variant: ATTRIBUTE_VARIANT_NUMBER,
+};
+
+export const MOCK_ATTRIBUTE_OUTER_RATING_B = {
+  name: [
+    { key: DEFAULT_LANG, value: 'pr' },
+    { key: SECONDARY_LANG, value: 'pr' },
+  ],
+  views: [],
+  priorities: [],
+  slug: 'pr',
+  variant: ATTRIBUTE_VARIANT_NUMBER,
+};
+
+export const MOCK_ATTRIBUTE_OUTER_RATING_C = {
+  name: [
+    { key: DEFAULT_LANG, value: 'ws' },
+    { key: SECONDARY_LANG, value: 'ws' },
+  ],
+  views: [],
+  priorities: [],
+  slug: 'ws',
+  variant: ATTRIBUTE_VARIANT_NUMBER,
+};
+
 export const MOCK_ATTRIBUTE_WINE_COMBINATIONS = {
   name: [
     { key: DEFAULT_LANG, value: 'Сочетание' },
@@ -929,6 +962,13 @@ export const MOCK_ATTRIBUTE_NUMBER = {
   priorities: [],
   slug: 'attribute_chislo',
   variant: ATTRIBUTE_VARIANT_NUMBER,
+};
+
+export const MOCK_ATTRIBUTES_GROUP_OUTER_RATING = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Внешний_рейтинг' },
+    { key: SECONDARY_LANG, value: 'Outer_rating' },
+  ],
 };
 
 export const MOCK_ATTRIBUTES_GROUP_WINE_FEATURES = {

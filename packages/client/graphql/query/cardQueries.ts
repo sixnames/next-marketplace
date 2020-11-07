@@ -51,6 +51,9 @@ export const productCardFragment = gql`
       iconFeatures {
         ...CardFeature
       }
+      ratingFeatures {
+        ...CardFeature
+      }
     }
     cardConnections {
       ...CardConnection

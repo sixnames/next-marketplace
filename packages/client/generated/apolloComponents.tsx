@@ -2656,6 +2656,9 @@ export type ProductCardFragment = (
     )>, iconFeatures: Array<(
       { __typename?: 'ProductAttribute' }
       & CardFeatureFragment
+    )>, ratingFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & CardFeatureFragment
     )> }
   ), cardConnections: Array<(
     { __typename?: 'ProductCardConnection' }
@@ -3472,6 +3475,9 @@ export const ProductCardFragmentDoc = gql`
       ...CardFeature
     }
     iconFeatures {
+      ...CardFeature
+    }
+    ratingFeatures {
       ...CardFeature
     }
   }

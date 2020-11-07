@@ -63,7 +63,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
-  const { listFeatures } = cardFeatures;
+  const { listFeatures, ratingFeatures } = cardFeatures;
 
   return (
     <div className={classes.card}>
@@ -96,9 +96,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
                 <div className={classes.outerRatingsList}>
-                  <div className={classes.outerRatingsItem}>vivino 4,2</div>
-                  <div className={classes.outerRatingsItem}>RP 88</div>
-                  <div className={classes.outerRatingsItem}>ws 88</div>
+                  {ratingFeatures.map(({ node, readableValue }) => {
+                    return (
+                      <div key={node.id} className={classes.outerRatingsItem}>
+                        {node.nameString} {readableValue[0]}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 

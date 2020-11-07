@@ -533,6 +533,7 @@ export type ProductAttribute = {
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
   value: Array<Scalars['String']>;
+  readableOptions: Array<Option>;
   readableValue: Array<Scalars['String']>;
 };
 
@@ -2620,7 +2621,10 @@ export type GetAttributesGroupsForRubricQuery = (
 export type CardFeatureFragment = (
   { __typename?: 'ProductAttribute' }
   & Pick<ProductAttribute, 'showInCard' | 'viewVariant' | 'readableValue'>
-  & { node: (
+  & { readableOptions: Array<(
+    { __typename?: 'Option' }
+    & Pick<Option, 'id' | 'nameString' | 'icon'>
+  )>, node: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, 'id' | 'nameString'>
   ) }
@@ -3433,6 +3437,11 @@ export const CardFeatureFragmentDoc = gql`
   showInCard
   viewVariant
   readableValue
+  readableOptions {
+    id
+    nameString
+    icon
+  }
   node {
     id
     nameString

@@ -589,6 +589,7 @@ type ProductAttribute {
   """Attribute reference via attribute slug field"""
   key: String!
   node: Attribute!
+  readableOptions: [Option!]!
   readableValue: [String!]!
   showInCard: Boolean!
   value: [String!]!

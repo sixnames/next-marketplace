@@ -5,6 +5,11 @@ export const cardFeatureFragment = gql`
     showInCard
     viewVariant
     readableValue
+    readableOptions {
+      id
+      nameString
+      icon
+    }
     node {
       id
       nameString

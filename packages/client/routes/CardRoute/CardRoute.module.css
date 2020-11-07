@@ -27,7 +27,7 @@
   display: block;
   width: 10%;
   height: 100%;
-  background: linear-gradient(to left, var(--secondaryBackground), transparent);
+  background: linear-gradient(to left, rgba(var(--secondaryBackground-RGB), 1) 30%, rgba(var(--secondaryBackground-RGB), 0));
 }
 
 .mainFrameNoBackground {
@@ -292,7 +292,95 @@
   margin-right: 2rem;
 }
 
+.cardFeatures {
+  display: grid;
+  grid-template-columns: 2fr 5fr;
+  grid-column-gap: 2rem;
+}
+
+.cardFeaturesAside {
+
+}
+
+.cardFeaturesContent {
+
+}
+
+.cardFeaturesGroup {
+  margin-bottom: 1.75rem;
+}
+
+.cardFeaturesText {
+  color: var(--textSecondaryColor);
+  line-height: 1.4;
+}
+
+.cardFeaturesText p:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.cardFeaturesLabel {
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+.cardFeaturesTagsList {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.cardFeaturesTag {
+  display: flex;
+  align-items: center;
+  height: 1.8rem;
+  font-size: 0.875rem;
+  border-radius: 0.9rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--outerRatingBackground);
+  color: var(--outerRatingColor);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cardFeaturesCombinationsList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1.25rem;
+}
+
+.cardFeaturesCombination {
+  display: flex;
+  align-items: center;
+  min-width: 10rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-shadow: var(--buttonShadow);
+  background-color: var(--secondaryBackground);
+  border-radius: var(--borderRadiusBig);
+}
+
+.cardFeaturesCombinationIcon {
+  width: 2rem;
+  height: 2rem;
+  fill: var(--textSecondaryColor);
+}
+
+.cardFeaturesCombinationName {
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
 @media only screen and (max-width: 1024px) {
+  .mainFrame:not(.mainFrameNoBackground):after {
+    background: var(--secondaryBackground);
+  }
+
   .card {
     padding-top: 4rem;
   }
@@ -374,6 +462,14 @@
   .addToCartForm .addToCartFormButton {
     min-width: auto;
   }
+
+  .cardFeatures {
+    grid-template-columns: 1fr;
+  }
+
+  .cardFeaturesGroup {
+    margin-bottom: 2.5rem;
+  }
 }
 
 @media only screen and (max-width: 480px) {
@@ -402,5 +498,16 @@
   .connectionsGroupLabel {
     width: 100px;
     flex-shrink: 0;
+  }
+
+  .cardFeaturesCombinationsList {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cardFeaturesCombination {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }

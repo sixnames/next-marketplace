@@ -63,7 +63,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
-  const { listFeatures, ratingFeatures } = cardFeatures;
+  const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
 
   return (
     <div className={classes.card}>
@@ -201,6 +201,57 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         </div>
 
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
+
+        {/* Features */}
+        <div className={classes.cardFeatures}>
+          <div className={classes.cardFeaturesAside}>
+            {iconFeatures.map(({ node, readableOptions }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesCombinationsList}>
+                    {readableOptions.map(({ id, nameString, icon }) => {
+                      return (
+                        <div className={classes.cardFeaturesCombination} key={id}>
+                          <Icon className={classes.cardFeaturesCombinationIcon} name={`${icon}`} />
+                          <div className={classes.cardFeaturesCombinationName}>{nameString}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {tagFeatures.map(({ node, readableValue }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesTagsList}>
+                    {readableValue.map((value) => (
+                      <div className={classes.cardFeaturesTag} key={value}>
+                        {value}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className={classes.cardFeaturesContent}>
+            {textFeatures.map(({ node, readableValue }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesText}>
+                    <p>{readableValue[0]}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Inner>
     </div>
   );

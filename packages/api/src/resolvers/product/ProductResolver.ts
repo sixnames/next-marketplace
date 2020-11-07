@@ -79,6 +79,8 @@ import {
   ProductCardConnectionItem,
 } from '../../entities/ProductCardConnection';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { Option, OptionModel } from '../../entities/Option';
+import { OptionsGroupModel } from '../../entities/OptionsGroup';
 
 const {
   operationConfigCreate,
@@ -930,13 +932,48 @@ export class ProductAttributeResolver {
   }
 
   @FieldResolver((_returns) => [String])
+  async readableOptions(
+    @Root() productAttribute: DocumentType<ProductAttribute>,
+  ): Promise<Option[]> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.readableOptions');
+    }
+
+    if (!attribute.optionsGroup) {
+      return [];
+    }
+
+    const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
+    if (!optionsGroup) {
+      throw Error('Options group not found on ProductAttributeResolver.readableOptions');
+    }
+
+    const options = await OptionModel.find({
+      $and: [
+        {
+          _id: { $in: optionsGroup.options },
+        },
+        {
+          slug: { $in: productAttribute.value },
+        },
+      ],
+    });
+    if (!options) {
+      throw Error('Options not found on ProductAttributeResolver.readableOptions');
+    }
+
+    return options;
+  }
+
+  @FieldResolver((_returns) => [String])
   async readableValue(
     @Root() productAttribute: DocumentType<ProductAttribute>,
     @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<string[]> {
     const attribute = await AttributeModel.findById(productAttribute.node);
     if (!attribute) {
-      throw Error('Attribute not found on ProductAttributeResolver.node');
+      throw Error('Attribute not found on ProductAttributeResolver.readableValue');
     }
     return getProductAttributeReadableValues({
       lang,

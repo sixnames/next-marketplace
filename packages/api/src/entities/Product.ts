@@ -12,6 +12,7 @@ import { ProductCardConnection } from './ProductCardConnection';
 import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/config';
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
 import { alwaysArray } from '@yagu/shared';
+import { Option } from './Option';
 
 // Attribute view variant
 export enum ProductAttributeViewVariantEnum {
@@ -52,6 +53,9 @@ export class ProductAttribute {
   @Field(() => [String])
   @prop({ type: String, required: true })
   value: string[];
+
+  @Field(() => [Option])
+  readonly readableOptions?: Option[];
 
   @Field(() => [String])
   readonly readableValue?: string[];

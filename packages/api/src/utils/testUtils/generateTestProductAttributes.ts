@@ -8,14 +8,16 @@ import {
 } from '@yagu/config';
 
 interface GenerateTestProductAttributesInterface {
-  rubricLevelTwo: Rubric;
+  rubric: Rubric;
+  viewVariant?: string;
 }
 
 export function generateTestProductAttributes({
-  rubricLevelTwo,
+  rubric,
+  viewVariant,
 }: GenerateTestProductAttributesInterface) {
   return {
-    attributesGroups: rubricLevelTwo.attributesGroups.map(({ node }: { [key: string]: any }) => {
+    attributesGroups: rubric.attributesGroups.map(({ node }: { [key: string]: any }) => {
       const { id, attributes } = node;
       return {
         node: id,
@@ -43,7 +45,7 @@ export function generateTestProductAttributes({
             return {
               node: id,
               showInCard: true,
-              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+              viewVariant: viewVariant || ATTRIBUTE_VIEW_VARIANT_LIST,
               key: slug,
               value,
             };

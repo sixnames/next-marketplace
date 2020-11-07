@@ -180,7 +180,7 @@ describe('Product', () => {
     const rubricLevelTree = rubricLevelTwo.children[0];
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.nameString).toEqual(currentProduct.nameString);
-    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
 
     // Should create product connection
     const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {

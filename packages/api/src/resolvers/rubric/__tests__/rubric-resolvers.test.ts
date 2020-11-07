@@ -387,7 +387,7 @@ describe('Rubrics', () => {
     expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);
 
     // Should add product to the third level rubric
-    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
 
     // Create new product for rubric.
     const {

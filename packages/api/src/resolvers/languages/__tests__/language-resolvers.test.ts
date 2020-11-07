@@ -20,7 +20,7 @@ describe('Language', () => {
 
     // Should return all languages and languages ISO list
     const {
-      data: { getAllLanguages, getISOLanguagesList },
+      data: { getAllLanguages, getISOLanguagesOptions },
     } = await query<any>(gql`
       query {
         getAllLanguages {
@@ -29,7 +29,7 @@ describe('Language', () => {
           name
           isDefault
         }
-        getISOLanguagesList {
+        getISOLanguagesOptions {
           id
           nameString
           nativeName
@@ -37,7 +37,7 @@ describe('Language', () => {
       }
     `);
     expect(getAllLanguages).toHaveLength(MOCK_LANGUAGES.length);
-    expect(getISOLanguagesList).toHaveLength(ISO_LANGUAGES.length);
+    expect(getISOLanguagesOptions).toHaveLength(ISO_LANGUAGES.length);
 
     // Should return current language
     const currentLanguage = getAllLanguages[0];

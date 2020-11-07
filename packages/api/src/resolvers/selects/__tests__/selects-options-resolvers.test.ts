@@ -15,29 +15,29 @@ describe('Select options', () => {
 
     // Should return icons options
     const {
-      data: { getIconsList },
+      data: { getIconsOptions },
     } = await query<any>(gql`
       query GetGenderOptions {
-        getIconsList {
+        getIconsOptions {
           id
           nameString
         }
       }
     `);
-    expect(getIconsList).toHaveLength(iconTypesList.length);
+    expect(getIconsOptions).toHaveLength(iconTypesList.length);
 
     // Should return attribute view variants options
     const {
-      data: { getAttributeViewVariantsList },
+      data: { getAttributeViewVariantsOptions },
     } = await query<any>(gql`
       query GetGenderOptions {
-        getAttributeViewVariantsList {
+        getAttributeViewVariantsOptions {
           id
           nameString
         }
       }
     `);
-    expect(getAttributeViewVariantsList).toHaveLength(ATTRIBUTE_VIEW_VARIANTS_ENUMS.length);
+    expect(getAttributeViewVariantsOptions).toHaveLength(ATTRIBUTE_VIEW_VARIANTS_ENUMS.length);
 
     // Should return gender options
     const {
@@ -54,16 +54,16 @@ describe('Select options', () => {
 
     // Should return attribute variant options
     const {
-      data: { getAttributeVariants },
+      data: { getAttributeVariantsOptions },
     } = await query<any>(gql`
       query GetAttributeVariants {
-        getAttributeVariants {
+        getAttributeVariantsOptions {
           id
           nameString
         }
       }
     `);
-    expect(getAttributeVariants).toHaveLength(ATTRIBUTE_VARIANTS_LIST.length);
+    expect(getAttributeVariantsOptions).toHaveLength(ATTRIBUTE_VARIANTS_LIST.length);
 
     // Should return attribute positioning options
     const {
@@ -80,15 +80,15 @@ describe('Select options', () => {
 
     // Should return ISO language options
     const {
-      data: { getISOLanguagesList },
+      data: { getISOLanguagesOptions },
     } = await query<any>(gql`
       query GetISOLanguagesList {
-        getISOLanguagesList {
+        getISOLanguagesOptions {
           id
           nameString
         }
       }
     `);
-    expect(getISOLanguagesList).toHaveLength(ISO_LANGUAGES.length);
+    expect(getISOLanguagesOptions).toHaveLength(ISO_LANGUAGES.length);
   });
 });

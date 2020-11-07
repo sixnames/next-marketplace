@@ -788,7 +788,61 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
   },
 ];
 
+export const MOCK_OPTIONS_COMBINATION = [
+  {
+    name: [
+      { key: DEFAULT_LANG, value: 'Белое_мясо' },
+      { key: SECONDARY_LANG, value: 'White_meat' },
+    ],
+    icon: 'white-meat',
+    priorities: [],
+    views: [],
+    slug: 'white_meat',
+    gender: GENDER_IT,
+  },
+  {
+    name: [
+      { key: DEFAULT_LANG, value: 'Суп' },
+      { key: SECONDARY_LANG, value: 'Soup' },
+    ],
+    icon: 'soup',
+    priorities: [],
+    views: [],
+    slug: 'soup',
+    gender: GENDER_HE,
+  },
+  {
+    name: [
+      { key: DEFAULT_LANG, value: 'Рыба' },
+      { key: SECONDARY_LANG, value: 'Fish' },
+    ],
+    icon: 'fish',
+    priorities: [],
+    views: [],
+    slug: 'fish',
+    gender: GENDER_HE,
+  },
+  {
+    name: [
+      { key: DEFAULT_LANG, value: 'Дары_моря' },
+      { key: SECONDARY_LANG, value: 'Seafood' },
+    ],
+    icon: 'seafood',
+    priorities: [],
+    views: [],
+    slug: 'seafood',
+    gender: GENDER_IT,
+  },
+];
+
 // Options groups
+export const MOCK_OPTIONS_GROUP_COMBINATIONS = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Сочетания' },
+    { key: SECONDARY_LANG, value: 'Combinations' },
+  ],
+};
+
 export const MOCK_OPTIONS_GROUP_COLORS = {
   name: [
     { key: DEFAULT_LANG, value: 'Цвета' },
@@ -811,6 +865,17 @@ export const MOCK_OPTIONS_GROUP_WINE_VINTAGE = {
 };
 
 // Attributes
+export const MOCK_ATTRIBUTE_WINE_COMBINATIONS = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Сочетание' },
+    { key: SECONDARY_LANG, value: 'Combinations' },
+  ],
+  views: [],
+  priorities: [],
+  slug: 'combinations',
+  variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+};
+
 export const MOCK_ATTRIBUTE_WINE_VINTAGE = {
   name: [
     { key: DEFAULT_LANG, value: 'Винтаж_вина' },

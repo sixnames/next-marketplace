@@ -47,6 +47,9 @@ import {
   MOCK_PRODUCT_E,
   MOCK_OPTIONS_GROUP_WINE_VINTAGE,
   MOCK_ATTRIBUTE_WINE_VINTAGE,
+  MOCK_OPTIONS_COMBINATION,
+  MOCK_OPTIONS_GROUP_COMBINATIONS,
+  MOCK_ATTRIBUTE_WINE_COMBINATIONS,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -59,6 +62,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   ATTRIBUTE_VIEW_VARIANT_ICON,
   OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
 } from '@yagu/config';
 import {
   ProductAttributeViewVariantEnum,
@@ -103,13 +107,17 @@ const createTestData = async () => {
     const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
     const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
+    const optionsCombination = await OptionModel.insertMany(MOCK_OPTIONS_COMBINATION);
+
     const optionsIdsVintage = optionsVintage.map(({ id }) => id);
     const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
+    const optionsIdsCombination = optionsCombination.map(({ id }) => id);
 
     const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
     const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
     const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
+    const optionsSlugsCombination = optionsCombination.map(({ slug }) => slug);
 
     const optionsGroupWineVintage = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_WINE_VINTAGE,
@@ -127,7 +135,20 @@ const createTestData = async () => {
       variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantEnum,
     });
 
+    const optionsGroupCombination = await OptionsGroupModel.create({
+      ...MOCK_OPTIONS_GROUP_COMBINATIONS,
+      options: optionsIdsCombination,
+      variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantEnum,
+    });
+
     // Attributes
+    const attributeWineCombinations = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_WINE_COMBINATIONS,
+      variant: MOCK_ATTRIBUTE_WINE_COMBINATIONS.variant as AttributeVariantEnum,
+      optionsGroup: optionsGroupCombination.id,
+      positioningInTitle: [],
+    });
+
     const attributeWineVintage = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_VINTAGE,
       variant: MOCK_ATTRIBUTE_WINE_VINTAGE.variant as AttributeVariantEnum,
@@ -199,6 +220,7 @@ const createTestData = async () => {
     const attributesGroupWineFeatures = await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
       attributes: [
+        attributeWineCombinations.id,
         attributeWineVintage.id,
         attributeWineColor.id,
         attributeWineType.id,
@@ -432,11 +454,18 @@ const createTestData = async () => {
                 viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
               },
               {
+                node: attributeWineCombinations.id,
+                showInCard: true,
+                key: attributeWineCombinations.slug,
+                value: optionsSlugsCombination,
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as ProductAttributeViewVariantEnum,
+              },
+              {
                 node: attributeNumber.id,
                 showInCard: true,
                 key: attributeNumber.slug,
                 value: ['123'],
-                viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as ProductAttributeViewVariantEnum,
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
               },
             ],
           },

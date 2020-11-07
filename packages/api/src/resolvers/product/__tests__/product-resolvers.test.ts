@@ -32,6 +32,47 @@ describe('Product', () => {
       }
     `;
 
+    const cardFeaturesFragment = gql`
+      fragment CardFeaturesFragment on ProductCardFeatures {
+        listFeatures {
+          showInCard
+          viewVariant
+          readableValue
+          node {
+            id
+            nameString
+          }
+        }
+        textFeatures {
+          showInCard
+          viewVariant
+          readableValue
+          node {
+            id
+            nameString
+          }
+        }
+        tagFeatures {
+          showInCard
+          viewVariant
+          readableValue
+          node {
+            id
+            nameString
+          }
+        }
+        iconFeatures {
+          showInCard
+          viewVariant
+          readableValue
+          node {
+            id
+            nameString
+          }
+        }
+      }
+    `;
+
     // Should return current product by slug
     const {
       data: { getProductBySlug },
@@ -56,12 +97,29 @@ describe('Product', () => {
               }
             }
           }
+          cardFeatures {
+            ...CardFeaturesFragment
+          }
+          cardConnections {
+            id
+            nameString
+            products {
+              id
+              value
+              isCurrent
+              product {
+                id
+                slug
+              }
+            }
+          }
           connections {
             ...ConnectionFragment
           }
         }
       }
       ${connectionFragment}
+      ${cardFeaturesFragment}
     `);
     const {
       data: { getProductBySlug: secondaryProduct },
@@ -100,7 +158,7 @@ describe('Product', () => {
                   id
                   slug
                   variant
-                  options {
+                  optionsGroup {
                     id
                     options {
                       id
@@ -122,7 +180,7 @@ describe('Product', () => {
     const rubricLevelTree = rubricLevelTwo.children[0];
     expect(getProduct.id).toEqual(currentProduct.id);
     expect(getProduct.nameString).toEqual(currentProduct.nameString);
-    const productAttributes = generateTestProductAttributes({ rubricLevelTwo });
+    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
 
     // Should create product connection
     const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
@@ -154,13 +212,7 @@ describe('Product', () => {
                 }
               }
               cardFeatures {
-                id
-                nameString
-                showInCard
-                attributes {
-                  nameString
-                  value
-                }
+                ...CardFeaturesFragment
               }
               connections {
                 ...ConnectionFragment
@@ -169,6 +221,7 @@ describe('Product', () => {
           }
         }
         ${connectionFragment}
+        ${cardFeaturesFragment}
       `,
       {
         variables: {
@@ -186,7 +239,6 @@ describe('Product', () => {
     } = createConnectionResult;
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
-    expect(createProductConnection.product.cardFeatures[0].attributes).toHaveLength(3);
     expect(createdConnection.productsIds).toHaveLength(1);
     expect(createProductConnection.product.slug).toEqual(
       `vino_brancott_estate_marlborough_sauvignon_blanc-tip_vina-heres`,
@@ -405,7 +457,7 @@ describe('Product', () => {
           attributes {
             id
             nameString
-            options {
+            optionsGroup {
               id
               nameString
               options {
@@ -418,7 +470,7 @@ describe('Product', () => {
         }
       }
     `);
-    expect(getFeaturesAst).toHaveLength(1);
+    expect(getFeaturesAst).toBeDefined();
 
     // Should create product.
     const {

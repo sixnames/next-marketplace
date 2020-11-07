@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import TTip from '../../components/TTip/TTip';
-import Icon, { IconType } from '../../components/Icon/Icon';
+import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
 import classes from './AppNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
 import { NavItemType } from '../../context/appNavContext';
+import { IconType } from '@yagu/config';
 
 interface AppNavItemInterface {
   item: NavItemType;

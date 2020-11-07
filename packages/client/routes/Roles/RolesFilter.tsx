@@ -4,7 +4,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import FilterRadioGroup from '../../components/FilterElements/FilterRadio/FilterRadioGroup';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { GET_ALL_ROLES_QUERY } from '../../graphql/query/roles';
+import { GET_ALL_ROLES_QUERY } from '../../graphql/query/rolesQueries';
 import { ROLE_MODAL } from '../../config/modals';
 import { RoleModalInterface } from '../../components/Modal/RoleModal/RoleModal';
 import Button from '../../components/Buttons/Button';

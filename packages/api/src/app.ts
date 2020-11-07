@@ -30,13 +30,21 @@ import { MessageResolver } from './resolvers/message/MessageResolver';
 import { MetricResolver } from './resolvers/metric/MetricResolver';
 import { OptionResolver } from './resolvers/option/OptionResolver';
 import { OptionsGroupResolver } from './resolvers/optionsGroup/OptionsGroupResolver';
-import { ProductConnectionResolver, ProductResolver } from './resolvers/product/ProductResolver';
+import {
+  ProductAttributeResolver,
+  ProductAttributesGroupResolver,
+  ProductConnectionResolver,
+  ProductResolver,
+} from './resolvers/product/ProductResolver';
 import { RubricResolver } from './resolvers/rubric/RubricResolver';
 import {
   AttributePositioningListResolver,
   AttributeVariantResolver,
+  AttributeViewVariantsListResolver,
   GendersListResolver,
+  IconOptionsListResolver,
   ISOLanguagesListResolver,
+  OptionsGroupVariantsListResolver,
 } from './resolvers/selects/SelectsResolver';
 import { RubricVariantResolver } from './resolvers/rubricVariant/RubricVariantResolver';
 import { ConfigCityResolver, ConfigResolver } from './resolvers/config/ConfigResolver';
@@ -83,6 +91,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
       OptionsGroupResolver,
       ProductResolver,
       ProductConnectionResolver,
+      ProductAttributesGroupResolver,
+      ProductAttributeResolver,
       RubricResolver,
       RubricVariantResolver,
       UserResolver,
@@ -90,6 +100,9 @@ const createApp = async (): Promise<CreateAppInterface> => {
       AttributeVariantResolver,
       AttributePositioningListResolver,
       ISOLanguagesListResolver,
+      IconOptionsListResolver,
+      AttributeViewVariantsListResolver,
+      OptionsGroupVariantsListResolver,
     ],
     dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
@@ -137,7 +150,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
       // Language
       const cookies = cookie.parse(req.headers.cookie || '');
-      const systemLang = (req.headers[LANG_COOKIE_HEADER] || '').slice(0, 2);
+      const systemLang = req.headers[LANG_COOKIE_HEADER] || '';
       const cookieLang = cookies[LANG_COOKIE_KEY];
       const clientLanguage = cookieLang || systemLang;
 

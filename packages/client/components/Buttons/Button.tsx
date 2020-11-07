@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
-import Icon, { IconType } from '../Icon/Icon';
+import Icon from '../Icon/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core';
 import { StyledComponentProps } from '@material-ui/styles/withStyles/withStyles';
 import { ButtonTheme, ButtonType, SizeType, TooltipPlacement } from '../../types';
 import classes from './Button.module.css';
+import { IconType } from '@yagu/config';
 
 export interface ButtonPropsInterface extends StyledComponentProps {
   theme?: ButtonTheme;

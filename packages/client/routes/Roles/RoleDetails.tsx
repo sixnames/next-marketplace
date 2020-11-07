@@ -11,7 +11,7 @@ import { useLanguageContext } from '../../context/languageContext';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateRoleSchema } from '@yagu/validation';
 import { useUpdateRoleMutation } from '../../generated/apolloComponents';
-import { GET_ALL_ROLES_QUERY, GET_ROLE_QUERY } from '../../graphql/query/roles';
+import { GET_ALL_ROLES_QUERY, GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 
 const RoleDetails: React.FC<RoleContentInterface> = ({ role }) => {

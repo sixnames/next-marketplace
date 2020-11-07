@@ -12,7 +12,7 @@ import Button from '../../components/Buttons/Button';
 import { CreateConnectionModalInterface } from '../../components/Modal/CreateConnectionModal/CreateConnectionModal';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { PRODUCT_QUERY } from '../../graphql/products';
+import { PRODUCT_QUERY } from '../../graphql/complex/productsQueries';
 import classes from './ProductConnections.module.css';
 import Accordion from '../../components/Accordion/Accordion';
 import Table, { TableColumn } from '../../components/Table/Table';

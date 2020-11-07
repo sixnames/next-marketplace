@@ -16,7 +16,10 @@ import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
 import { AttributesGroupModalInterface } from '../../components/Modal/AttributesGroupModal/AttributesGroupModal';
-import { ATTRIBUTES_GROUP_QUERY, ATTRIBUTES_GROUPS_QUERY } from '../../graphql/query/attributes';
+import {
+  ATTRIBUTES_GROUP_QUERY,
+  ATTRIBUTES_GROUPS_QUERY,
+} from '../../graphql/query/attributesQueries';
 
 interface AttributesGroupControlsInterface {
   group: Pick<AttributesGroup, 'id' | 'nameString' | 'name'>;

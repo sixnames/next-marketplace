@@ -11,7 +11,7 @@ import { OPTIONS_GROUP_MODAL } from '../../config/modals';
 import { LangInterface } from '../../types';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
-import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
+import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
 
 const OptionsGroupsFilter: React.FC = () => {
   const { data, loading, error } = useGetAllOptionsGroupsQuery({

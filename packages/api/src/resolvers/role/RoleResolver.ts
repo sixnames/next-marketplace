@@ -45,14 +45,13 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Role.name);
+} = RoleRuleModel.getOperationsConfigs(Role.name);
 
 @ObjectType()
 class RolePayloadType extends PayloadType() {

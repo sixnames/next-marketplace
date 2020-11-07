@@ -8,6 +8,7 @@ import Table, { TableColumn } from '../../components/Table/Table';
 import Spinner from '../../components/Spinner/Spinner';
 import {
   OptionInGroupFragment,
+  OptionsGroupVariantEnum,
   useDeleteOptionFromGroupMutation,
   useGetOptionsGroupQuery,
   useUpdateOptionInGroupMutation,
@@ -17,8 +18,11 @@ import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ObjectType } from '../../types';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
-import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
+import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
+import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
+import Icon from '../../components/Icon/Icon';
+import classes from './OptionsGroupsContent.module.css';
 
 interface OptionsGroupsContentInterface {
   query?: ObjectType;
@@ -68,6 +72,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
       type: OPTION_IN_GROUP_MODAL,
       props: {
         option,
+        groupVariant: `${data?.getOptionsGroup?.variant}` as OptionsGroupVariantEnum,
         confirm: (values) => {
           showLoading();
           return updateOptionInGroupMutation({
@@ -92,7 +97,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
   }
 
   const { getOptionsGroup } = data;
-  const { nameString, id, options, name } = getOptionsGroup;
+  const { nameString, options, variant } = getOptionsGroup;
 
   const columns: TableColumn<OptionInGroupFragment>[] = [
     {
@@ -103,8 +108,19 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
     {
       accessor: 'color',
       headTitle: 'Цвет',
+      isHidden: variant !== OPTIONS_GROUP_VARIANT_COLOR,
       render: ({ cellData, dataItem }) => (
         <ColorPreview color={cellData} testId={dataItem.nameString} />
+      ),
+    },
+    {
+      accessor: 'icon',
+      headTitle: 'Иконка',
+      isHidden: variant !== OPTIONS_GROUP_VARIANT_ICON,
+      render: ({ cellData, dataItem }) => (
+        <div data-cy={`${dataItem.nameString}-icon`}>
+          <Icon className={classes.icon} name={cellData} />
+        </div>
       ),
     },
     {
@@ -129,7 +145,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
   return (
     <Fragment>
       <DataLayoutTitle
-        titleRight={<OptionsGroupControls id={id} name={name} nameString={nameString} />}
+        titleRight={<OptionsGroupControls group={getOptionsGroup} />}
         testId={'group-title'}
       >
         {nameString}

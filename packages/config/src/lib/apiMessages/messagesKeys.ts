@@ -151,6 +151,8 @@ const messagesKeys = [
   'optionsGroups.delete.error',
   'optionsGroups.delete.success',
   'optionsGroups.addOption.groupError',
+  'optionsGroups.addOption.colorError',
+  'optionsGroups.addOption.iconError',
   'optionsGroups.addOption.optionError',
   'optionsGroups.addOption.duplicate',
   'optionsGroups.addOption.error',

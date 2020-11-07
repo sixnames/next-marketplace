@@ -1,7 +1,9 @@
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+
 export const newOption = {
   name: [
-    { key: 'ru', value: 'Option name' },
-    { key: 'en', value: 'Option name' },
+    { key: DEFAULT_LANG, value: 'Option name' },
+    { key: SECONDARY_LANG, value: 'Option name' },
   ],
   slug: 'Option name',
   priorities: [],
@@ -10,8 +12,8 @@ export const newOption = {
 
 export const anotherOption = {
   name: [
-    { key: 'ru', value: 'Another name' },
-    { key: 'en', value: 'Another name' },
+    { key: DEFAULT_LANG, value: 'Another name' },
+    { key: SECONDARY_LANG, value: 'Another name' },
   ],
   slug: 'Another name',
   priorities: [],

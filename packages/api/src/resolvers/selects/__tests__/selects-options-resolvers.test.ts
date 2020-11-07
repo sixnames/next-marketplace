@@ -2,7 +2,9 @@ import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_LIST,
+  ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   GENDER_ENUMS,
+  iconTypesList,
 } from '@yagu/config';
 import { ISO_LANGUAGES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
@@ -10,6 +12,32 @@ import { gql } from 'apollo-server-express';
 describe('Select options', () => {
   it('Should return select options', async () => {
     const { query } = await testClientWithContext();
+
+    // Should return icons options
+    const {
+      data: { getIconsOptions },
+    } = await query<any>(gql`
+      query GetGenderOptions {
+        getIconsOptions {
+          id
+          nameString
+        }
+      }
+    `);
+    expect(getIconsOptions).toHaveLength(iconTypesList.length);
+
+    // Should return attribute view variants options
+    const {
+      data: { getAttributeViewVariantsOptions },
+    } = await query<any>(gql`
+      query GetGenderOptions {
+        getAttributeViewVariantsOptions {
+          id
+          nameString
+        }
+      }
+    `);
+    expect(getAttributeViewVariantsOptions).toHaveLength(ATTRIBUTE_VIEW_VARIANTS_ENUMS.length);
 
     // Should return gender options
     const {
@@ -26,16 +54,16 @@ describe('Select options', () => {
 
     // Should return attribute variant options
     const {
-      data: { getAttributeVariants },
+      data: { getAttributeVariantsOptions },
     } = await query<any>(gql`
       query GetAttributeVariants {
-        getAttributeVariants {
+        getAttributeVariantsOptions {
           id
           nameString
         }
       }
     `);
-    expect(getAttributeVariants).toHaveLength(ATTRIBUTE_VARIANTS_LIST.length);
+    expect(getAttributeVariantsOptions).toHaveLength(ATTRIBUTE_VARIANTS_LIST.length);
 
     // Should return attribute positioning options
     const {
@@ -52,15 +80,15 @@ describe('Select options', () => {
 
     // Should return ISO language options
     const {
-      data: { getISOLanguagesList },
+      data: { getISOLanguagesOptions },
     } = await query<any>(gql`
       query GetISOLanguagesList {
-        getISOLanguagesList {
+        getISOLanguagesOptions {
           id
           nameString
         }
       }
     `);
-    expect(getISOLanguagesList).toHaveLength(ISO_LANGUAGES.length);
+    expect(getISOLanguagesOptions).toHaveLength(ISO_LANGUAGES.length);
   });
 });

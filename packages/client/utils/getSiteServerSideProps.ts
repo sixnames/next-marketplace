@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
-import { INITIAL_SITE_QUERY } from '../graphql/initialQuery';
+import { INITIAL_SITE_QUERY } from '../graphql/query/initialQueries';
 import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import privateRouteHandler from './privateRouteHandler';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
-import { ProductCardFragment } from '../../generated/apolloComponents';
+import { CardFeatureFragment, ProductCardFragment } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -13,54 +13,57 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import { noNaN } from '../../utils/noNaN';
 import { useAppContext } from '../../context/appContext';
 
-interface CardRouteInterface {
-  cardData: ProductCardFragment;
+interface CardRouteFeaturesInterface {
+  features: CardFeatureFragment[];
 }
 
-const CardRouteFeatures: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const { cardFeatures } = cardData;
-
-  return (
+const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
+  return features.length > 0 ? (
     <div className={classes.mainFrameFeatures}>
-      {cardFeatures.map(({ id, showInCard, attributes }) => {
+      {features.map(({ showInCard, node, readableValue }) => {
         if (!showInCard) {
           return null;
         }
-        return (
-          <div key={id}>
-            {attributes.map(({ id, showInCard, nameString, value }) => {
-              if (!showInCard) {
-                return null;
-              }
 
-              return (
-                <div key={id} className={classes.feature}>
-                  <div className={classes.featureTitle}>{nameString}</div>
-                  <div>
-                    {value.map((valueItem, valueIndex) => {
-                      const isLast = value.length - 1 === valueIndex;
-                      return (
-                        <span className={classes.featureItem} key={valueItem}>
-                          {isLast ? valueItem : `${valueItem}, `}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+        return (
+          <div key={node.id} className={classes.feature}>
+            <div className={classes.featureTitle}>{node.nameString}</div>
+            <div>
+              {readableValue.map((valueItem, valueIndex) => {
+                const isLast = readableValue.length - 1 === valueIndex;
+                return (
+                  <span className={classes.featureItem} key={valueItem}>
+                    {isLast ? valueItem : `${valueItem}, `}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         );
       })}
     </div>
-  );
+  ) : null;
 };
 
+interface CardRouteInterface {
+  cardData: ProductCardFragment;
+}
+
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const { mainImage, nameString, cardNameString, price, cardConnections, itemId } = cardData;
+  const {
+    mainImage,
+    nameString,
+    cardNameString,
+    price,
+    cardConnections,
+    itemId,
+    cardFeatures,
+  } = cardData;
   const { isMobile } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
+
+  const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
 
   return (
     <div className={classes.card}>
@@ -68,7 +71,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       <Inner>
         <div className={classes.mainFrame}>
-          {isMobile ? null : <CardRouteFeatures cardData={cardData} />}
+          {isMobile ? null : <CardRouteListFeatures features={listFeatures} />}
 
           <div className={classes.mainData}>
             <div className={classes.image}>
@@ -93,9 +96,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
                 <div className={classes.outerRatingsList}>
-                  <div className={classes.outerRatingsItem}>vivino 4,2</div>
-                  <div className={classes.outerRatingsItem}>RP 88</div>
-                  <div className={classes.outerRatingsItem}>ws 88</div>
+                  {ratingFeatures.map(({ node, readableValue }) => {
+                    return (
+                      <div key={node.id} className={classes.outerRatingsItem}>
+                        {node.nameString} {readableValue[0]}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -193,7 +200,58 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
         </div>
 
-        {isMobile ? <CardRouteFeatures cardData={cardData} /> : null}
+        {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
+
+        {/* Features */}
+        <div className={classes.cardFeatures}>
+          <div className={classes.cardFeaturesAside}>
+            {iconFeatures.map(({ node, readableOptions }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesCombinationsList}>
+                    {readableOptions.map(({ id, nameString, icon }) => {
+                      return (
+                        <div className={classes.cardFeaturesCombination} key={id}>
+                          <Icon className={classes.cardFeaturesCombinationIcon} name={`${icon}`} />
+                          <div className={classes.cardFeaturesCombinationName}>{nameString}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {tagFeatures.map(({ node, readableValue }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesTagsList}>
+                    {readableValue.map((value) => (
+                      <div className={classes.cardFeaturesTag} key={value}>
+                        {value}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className={classes.cardFeaturesContent}>
+            {textFeatures.map(({ node, readableValue }) => {
+              return (
+                <div className={classes.cardFeaturesGroup} key={node.id}>
+                  <div className={classes.cardFeaturesLabel}>{node.nameString}</div>
+                  <div className={classes.cardFeaturesText}>
+                    <p>{readableValue[0]}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Inner>
     </div>
   );

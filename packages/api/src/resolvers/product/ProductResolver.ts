@@ -12,9 +12,9 @@ import {
 } from 'type-graphql';
 import {
   Product,
+  ProductAttribute,
   ProductAttributesGroup,
-  ProductCardFeature,
-  ProductCardFeatureAttribute,
+  ProductCardFeatures,
   ProductConnection,
   ProductConnectionItem,
   ProductConnectionModel,
@@ -23,7 +23,6 @@ import {
 } from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
-import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
@@ -51,7 +50,6 @@ import {
   deleteProductFromConnectionSchema,
   updateProductSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -67,19 +65,29 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
-import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
+import {
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+} from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
   ProductCardConnection,
   ProductCardConnectionItem,
 } from '../../entities/ProductCardConnection';
+import { RoleRuleModel } from '../../entities/RoleRule';
+import { Option, OptionModel } from '../../entities/Option';
+import { OptionsGroupModel } from '../../entities/OptionsGroup';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Product.name);
+} = RoleRuleModel.getOperationsConfigs(Product.name);
 
 @ObjectType()
 export class PaginatedProductsResponse extends PaginateType(Product) {
@@ -149,8 +157,8 @@ export class ProductResolver {
       countActiveProducts = false,
       ...args
     } = input;
-    const query = getProductsFilter(args);
-    const activeProductsQuery = getProductsFilter({ ...args, active: true });
+    const query = ProductModel.getProductsFilter(args);
+    const activeProductsQuery = ProductModel.getProductsFilter({ ...args, active: true });
 
     const { options } = generatePaginationOptions({
       limit,
@@ -174,8 +182,8 @@ export class ProductResolver {
   async getProductsCounters(
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<ProductsCounters> {
-    const activeProductsQuery = getProductsFilter({ ...input, active: true });
-    const allProductsQuery = getProductsFilter(input);
+    const activeProductsQuery = ProductModel.getProductsFilter({ ...input, active: true });
+    const allProductsQuery = ProductModel.getProductsFilter(input);
 
     return {
       activeProductsCount: await ProductModel.countDocuments(activeProductsQuery),
@@ -669,27 +677,6 @@ export class ProductResolver {
     return product.rubrics;
   }
 
-  @FieldResolver((_type) => [ProductAttributesGroup])
-  async attributesGroups(
-    @Root() product: DocumentType<Product>,
-  ): Promise<ProductAttributesGroup[]> {
-    try {
-      const populated = await product
-        .populate({
-          path: 'attributesGroups.node',
-          model: 'AttributesGroup',
-        })
-        .populate({
-          path: 'attributesGroups.attributes.node',
-          model: 'Attribute',
-        })
-        .execPopulate();
-      return populated.attributesGroups;
-    } catch (e) {
-      return [];
-    }
-  }
-
   @FieldResolver((_type) => [AssetType])
   async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
     return product.assets.sort((a, b) => a.index - b.index);
@@ -728,11 +715,8 @@ export class ProductResolver {
     }
   }
 
-  @FieldResolver((_returns) => [ProductCardFeature])
-  async cardFeatures(
-    @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
-  ): Promise<ProductCardFeature[]> {
+  @FieldResolver((_returns) => ProductCardFeatures)
+  async cardFeatures(@Root() product: DocumentType<Product>): Promise<ProductCardFeatures> {
     try {
       // Get ids of attributes used in connections
       const connections = await ProductConnectionModel.find({
@@ -741,49 +725,66 @@ export class ProductResolver {
         },
       }).select({ attributeId: 1 });
 
-      const connectedAttributesIds = connections.map(({ attributeId }) => attributeId);
+      const attributesIdsInConnections = connections.map(({ attributeId }) => attributeId);
 
-      const features: ProductCardFeature[] = [];
+      const features: ProductCardFeatures = {
+        listFeatures: [],
+        textFeatures: [],
+        tagFeatures: [],
+        iconFeatures: [],
+        ratingFeatures: [],
+      };
+
       for await (const productAttributesGroup of product.attributesGroups) {
-        const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
-        if (!attributesGroup) {
+        if (!productAttributesGroup.showInCard) {
           continue;
         }
 
         // Find all attributes values
-        const groupAttributes: ProductCardFeatureAttribute[] = [];
         for await (const productAttribute of productAttributesGroup.attributes) {
+          if (!productAttribute.showInCard) {
+            continue;
+          }
+
           // Exclude attributes used in connections
           const attribute = await AttributeModel.findOne({
-            $and: [{ _id: productAttribute.node }, { _id: { $nin: connectedAttributesIds } }],
+            $and: [{ _id: productAttribute.node }, { _id: { $nin: attributesIdsInConnections } }],
           });
           if (!attribute) {
             continue;
           }
 
-          groupAttributes.push({
-            id: attribute.id,
-            nameString: getLangField(attribute.name, lang),
-            showInCard: productAttribute.showInCard,
-            value: await getProductAttributeReadableValues({
-              attribute,
-              productAttributeValues: productAttribute.value,
-              lang,
-            }),
-          });
-        }
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
+            features.listFeatures.push(productAttribute);
+          }
 
-        features.push({
-          id: attributesGroup.id,
-          nameString: getLangField(attributesGroup.name, lang),
-          showInCard: productAttributesGroup.showInCard,
-          attributes: groupAttributes,
-        });
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
+            features.textFeatures.push(productAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
+            features.tagFeatures.push(productAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
+            features.iconFeatures.push(productAttribute);
+          }
+
+          if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
+            features.ratingFeatures.push(productAttribute);
+          }
+        }
       }
 
       return features;
     } catch (e) {
-      return [];
+      return {
+        listFeatures: [],
+        textFeatures: [],
+        tagFeatures: [],
+        iconFeatures: [],
+        ratingFeatures: [],
+      };
     }
   }
 
@@ -902,5 +903,82 @@ export class ProductConnectionResolver {
       throw Error('Attribute not found on ProductConnection.attribute');
     }
     return attribute;
+  }
+}
+
+@Resolver((_for) => ProductAttributesGroup)
+export class ProductAttributesGroupResolver {
+  @FieldResolver((_returns) => AttributesGroup)
+  async node(
+    @Root() productAttributesGroup: DocumentType<ProductAttributesGroup>,
+  ): Promise<AttributesGroup> {
+    const attributesGroup = await AttributesGroupModel.findById(productAttributesGroup.node);
+    if (!attributesGroup) {
+      throw Error('Attributes group not found on ProductAttributesGroup.node');
+    }
+    return attributesGroup;
+  }
+}
+
+@Resolver((_for) => ProductAttribute)
+export class ProductAttributeResolver {
+  @FieldResolver((_returns) => Attribute)
+  async node(@Root() productAttribute: DocumentType<ProductAttribute>): Promise<Attribute> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.node');
+    }
+    return attribute;
+  }
+
+  @FieldResolver((_returns) => [String])
+  async readableOptions(
+    @Root() productAttribute: DocumentType<ProductAttribute>,
+  ): Promise<Option[]> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.readableOptions');
+    }
+
+    if (!attribute.optionsGroup) {
+      return [];
+    }
+
+    const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
+    if (!optionsGroup) {
+      throw Error('Options group not found on ProductAttributeResolver.readableOptions');
+    }
+
+    const options = await OptionModel.find({
+      $and: [
+        {
+          _id: { $in: optionsGroup.options },
+        },
+        {
+          slug: { $in: productAttribute.value },
+        },
+      ],
+    });
+    if (!options) {
+      throw Error('Options not found on ProductAttributeResolver.readableOptions');
+    }
+
+    return options;
+  }
+
+  @FieldResolver((_returns) => [String])
+  async readableValue(
+    @Root() productAttribute: DocumentType<ProductAttribute>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string[]> {
+    const attribute = await AttributeModel.findById(productAttribute.node);
+    if (!attribute) {
+      throw Error('Attribute not found on ProductAttributeResolver.readableValue');
+    }
+    return getProductAttributeReadableValues({
+      lang,
+      productAttributeValues: productAttribute.value,
+      attribute,
+    });
   }
 }

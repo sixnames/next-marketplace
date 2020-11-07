@@ -30,7 +30,6 @@ import {
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -38,19 +37,21 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
+import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(OptionsGroup.name);
+} = RoleRuleModel.getOperationsConfigs(OptionsGroup.name);
 
 const {
   operationConfigCreate: operationConfigCreateOption,
   operationConfigUpdate: operationConfigUpdateOption,
   operationConfigDelete: operationConfigDeleteOption,
-} = getOperationsConfigs(Option.name);
+} = RoleRuleModel.getOperationsConfigs(Option.name);
 
 @ObjectType()
 class OptionsGroupPayloadType extends PayloadType() {
@@ -178,7 +179,7 @@ export class OptionsGroupResolver {
     @Arg('id', (_type) => ID) id: string,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const connectedWithAttributes = await AttributeModel.exists({ options: id });
+      const connectedWithAttributes = await AttributeModel.exists({ optionsGroup: id });
       if (connectedWithAttributes) {
         return {
           success: false,
@@ -186,7 +187,15 @@ export class OptionsGroupResolver {
         };
       }
 
-      const group = (await OptionsGroupModel.findById(id)) || { options: [] };
+      const group = await OptionsGroupModel.findById(id);
+
+      if (!group) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
+        };
+      }
+
       const removedOptions = await OptionModel.deleteMany({
         _id: { $in: group.options },
       });
@@ -232,6 +241,20 @@ export class OptionsGroupResolver {
         return {
           success: false,
           message: await getApiMessage({ key: `optionsGroups.addOption.groupError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
         };
       }
 
@@ -297,13 +320,27 @@ export class OptionsGroupResolver {
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
-      const { groupId, optionId, color, name, gender, variants } = input;
+      const { groupId, optionId, color, name, gender, variants, icon } = input;
       const group = await OptionsGroupModel.findById(groupId);
 
       if (!group) {
         return {
           success: false,
           message: await getApiMessage({ key: `optionsGroups.updateOption.groupError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !icon) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+        };
+      }
+
+      if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !color) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
         };
       }
 
@@ -329,6 +366,7 @@ export class OptionsGroupResolver {
           color,
           gender,
           variants,
+          icon,
         },
         { new: true },
       );

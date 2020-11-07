@@ -3,7 +3,6 @@ import { City, CityModel } from '../../entities/City';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -13,8 +12,9 @@ import {
 import { FilterQuery } from 'mongoose';
 import { CountryModel } from '../../entities/Country';
 import { DEFAULT_CURRENCY } from '@yagu/config';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
-const { operationConfigRead } = getOperationsConfigs(City.name);
+const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(City.name);
 
 @Resolver((_for) => City)
 export class CityResolver {

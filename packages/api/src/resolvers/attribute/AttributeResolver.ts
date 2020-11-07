@@ -4,7 +4,6 @@ import { DocumentType } from '@typegoose/typegoose';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Metric, MetricModel } from '../../entities/Metric';
 import getLangField from '../../utils/translations/getLangField';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -12,8 +11,9 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
-const { operationConfigRead } = getOperationsConfigs(Attribute.name);
+const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Attribute.name);
 
 @Resolver((_for) => Attribute)
 export class AttributeResolver {
@@ -27,8 +27,8 @@ export class AttributeResolver {
   }
 
   @FieldResolver()
-  async options(@Root() attribute: DocumentType<Attribute>): Promise<OptionsGroup | null> {
-    return OptionsGroupModel.findById(attribute.options);
+  async optionsGroup(@Root() attribute: DocumentType<Attribute>): Promise<OptionsGroup | null> {
+    return OptionsGroupModel.findById(attribute.optionsGroup);
   }
 
   @FieldResolver()

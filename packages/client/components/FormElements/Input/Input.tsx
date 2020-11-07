@@ -3,7 +3,8 @@ import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
 import { InputType, OnOffType } from '../../../types';
 import classes from './Input.module.css';
-import Icon, { IconType } from '../../Icon/Icon';
+import Icon from '../../Icon/Icon';
+import { IconType } from '@yagu/config';
 
 export interface InputPropsInterface extends InputLinePropsInterface {
   name: string;

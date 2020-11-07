@@ -1,10 +1,15 @@
 import { AttributeVariantEnum } from '../../../entities/Attribute';
-import { ATTRIBUTE_VARIANT_SELECT, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
+import {
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+  DEFAULT_LANG,
+  SECONDARY_LANG,
+} from '@yagu/config';
 
 export const stringAttribute = {
   name: [
-    { key: 'ru', value: 'string attribute' },
-    { key: 'en', value: 'string attribute' },
+    { key: DEFAULT_LANG, value: 'string attribute' },
+    { key: SECONDARY_LANG, value: 'string attribute' },
   ],
   views: [],
   priorities: [],
@@ -14,8 +19,8 @@ export const stringAttribute = {
 
 export const selectAttribute = {
   name: [
-    { key: 'ru', value: 'select attribute' },
-    { key: 'en', value: 'select attribute' },
+    { key: DEFAULT_LANG, value: 'select attribute' },
+    { key: SECONDARY_LANG, value: 'select attribute' },
   ],
   views: [],
   priorities: [],
@@ -24,14 +29,14 @@ export const selectAttribute = {
 
 export const optionsGroupForAttribute = {
   name: [
-    { key: 'ru', value: 'group' },
-    { key: 'en', value: 'group' },
+    { key: DEFAULT_LANG, value: 'group' },
+    { key: SECONDARY_LANG, value: 'group' },
   ],
 };
 
 export const anotherOptionsGroupForAttribute = {
   name: [
-    { key: 'ru', value: 'groupB' },
-    { key: 'en', value: 'groupB' },
+    { key: DEFAULT_LANG, value: 'groupB' },
+    { key: SECONDARY_LANG, value: 'groupB' },
   ],
 };

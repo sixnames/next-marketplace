@@ -49,6 +49,7 @@ const Select: React.FC<SelectInterface> = ({
   isRequired,
   setNameToValue,
   testId,
+  prefix,
   ...props
 }) => {
   const { getLanguageFieldTranslation } = useLanguageContext();
@@ -87,6 +88,7 @@ const Select: React.FC<SelectInterface> = ({
       isHorizontal={isHorizontal}
       labelLink={labelLink}
       postfix={postfix}
+      prefix={prefix}
       low={low}
       wide={wide}
     >

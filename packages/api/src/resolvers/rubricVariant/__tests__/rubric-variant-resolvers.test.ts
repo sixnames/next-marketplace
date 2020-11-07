@@ -2,6 +2,7 @@ import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
 import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
+import { DEFAULT_LANG } from '@yagu/config';
 
 describe('Rubric type', () => {
   it('Should CRUD rubric variant', async () => {
@@ -24,7 +25,7 @@ describe('Rubric type', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: '' }],
+            name: [{ key: DEFAULT_LANG, value: '' }],
           },
         },
       },
@@ -50,7 +51,7 @@ describe('Rubric type', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value }],
+            name: [{ key: DEFAULT_LANG, value: MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value }],
           },
         },
       },
@@ -77,7 +78,7 @@ describe('Rubric type', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: newRubricVariantName }],
+            name: [{ key: DEFAULT_LANG, value: newRubricVariantName }],
           },
         },
       },
@@ -139,7 +140,7 @@ describe('Rubric type', () => {
         variables: {
           input: {
             id: currentRubricVariant.id,
-            name: [{ key: 'ru', value: updatedRubricVariantName }],
+            name: [{ key: DEFAULT_LANG, value: updatedRubricVariantName }],
           },
         },
       },

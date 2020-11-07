@@ -12,7 +12,7 @@ import RequestError from '../../RequestError/RequestError';
 import Checkbox from '../../FormElements/Checkbox/Checkbox';
 import classes from './RoleRestrictedFieldsModal.module.css';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import { GET_ROLE_QUERY } from '../../../graphql/query/roles';
+import { GET_ROLE_QUERY } from '../../../graphql/query/rolesQueries';
 
 export interface RoleRestrictedFieldsModalInterface {
   roleId: string;

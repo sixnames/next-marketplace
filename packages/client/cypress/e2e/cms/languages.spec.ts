@@ -12,10 +12,10 @@ describe('Languages', () => {
   });
 
   it(`Should CRUD languages`, () => {
-    const mockNewLanguageName = ISO_LANGUAGES[0].nameString;
-    const mockNewLanguageKey = ISO_LANGUAGES[0].id;
-    const mockUpdatedLanguageName = ISO_LANGUAGES[1].nameString;
-    const mockUpdatedLanguageKey = ISO_LANGUAGES[1].id;
+    const mockNewLanguageName = ISO_LANGUAGES[2].nameString;
+    const mockNewLanguageKey = ISO_LANGUAGES[2].id;
+    const mockUpdatedLanguageName = ISO_LANGUAGES[3].nameString;
+    const mockUpdatedLanguageKey = ISO_LANGUAGES[3].id;
     const mockDefaultLanguageName = 'Русский';
 
     // Shouldn't create new language on validation error

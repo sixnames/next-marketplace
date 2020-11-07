@@ -188,7 +188,7 @@ export const rubricAttributeFragment = gql`
       id
       nameString
     }
-    options {
+    optionsGroup {
       id
       nameString
     }

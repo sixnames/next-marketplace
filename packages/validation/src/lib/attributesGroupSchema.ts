@@ -79,7 +79,7 @@ const attributeCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
   }),
   variant: attributeVariantSchema(args),
   metric,
-  options: options(args),
+  optionsGroup: options(args),
   positioningInTitle: Yup.array()
     .nullable()
     .when('variant', (variant: any, schema: ArraySchema<any>) => {

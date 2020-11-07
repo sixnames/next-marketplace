@@ -10,6 +10,8 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_END,
+  SECONDARY_LANG,
+  DEFAULT_LANG,
 } from '@yagu/config';
 
 describe('Attributes Groups', () => {
@@ -33,26 +35,29 @@ describe('Attributes Groups', () => {
     cy.getByCy(`attributes-group-modal`).should('exist');
 
     // Should show validation error on not valid attributes group name
-    cy.getByCy(`name-ru`).type(fakeName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(fakeName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should create a new attributes group
-    cy.getByCy(`name-ru`).clear().type(createdGroupName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(createdGroupName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`group-${createdGroupName}`).click();
     cy.getByCy(`group-title`).contains(createdGroupName).should('exist');
 
     // Should show validation error on not valid attributes group update
     cy.getByCy(`attributes-group-update`).click();
-    cy.getByCy(`name-accordion-en`).click();
-    cy.getByCy(`name-ru`).should('have.value', createdGroupName).clear().type(fakeName);
-    cy.getByCy(`name-en`).type(fakeName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`)
+      .should('have.value', createdGroupName)
+      .clear()
+      .type(fakeName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).type(fakeName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.getByCy(`name[0].value-error`).should('exist');
 
     // Should update attributes group
-    cy.getByCy(`name-ru`).clear().type(updatedGroupName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(updatedGroupName);
     cy.getByCy(`attributes-group-submit`).click();
     cy.contains(updatedGroupName).should('exist');
 
@@ -90,29 +95,31 @@ describe('Attributes Groups', () => {
     cy.getByCy(`positioningInTitle[0].value-error`).should('exist');
 
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`options-error`).should('exist');
+    cy.getByCy(`optionsGroup-error`).should('exist');
 
     // Should create attribute in group
-    cy.getByCy(`name-accordion-en`).click();
-    cy.getByCy(`name-ru`).type(mockAttributeNewName);
-    cy.getByCy(`name-en`).type(mockAttributeNewName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockAttributeNewName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).type(mockAttributeNewName);
     cy.selectOptionByTestId(`attribute-options`, mockOptionsGroupName);
-    cy.getByCy(`positioningInTitle-accordion-en`).click();
-    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
-    cy.getByCy(`positioningInTitle-en`).select(ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD);
+    cy.getByCy(`positioningInTitle-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`positioningInTitle-${DEFAULT_LANG}`).select(ATTRIBUTE_POSITION_IN_TITLE_BEGIN);
+    cy.getByCy(`positioningInTitle-${SECONDARY_LANG}`).select(
+      ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
+    );
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('exist');
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
 
-    cy.getByCy(`name-ru`)
+    cy.getByCy(`name-${DEFAULT_LANG}`)
       .should('have.value', mockAttributeNewName)
       .clear()
       .type(updatedAttributeName);
     cy.getByCy(`attribute-variant`).select(ATTRIBUTE_VARIANT_SELECT);
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
-    cy.getByCy(`positioningInTitle-ru`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
+    cy.getByCy(`positioningInTitle-${DEFAULT_LANG}`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}`).should('exist');

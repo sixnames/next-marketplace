@@ -1,46 +1,57 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '@yagu/mocks';
-import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN } from '@yagu/config';
+import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN, DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
 
-const addAttributeToGroupMutation = (
-  groupId: string,
+interface AddAttributeToGroupMutationInterface {
+  groupId: string;
+  name?: string;
+  variant?: string;
+}
+
+const addAttributeToGroupMutation = ({
+  groupId,
   name = attributeForGroup.name[0].value,
   variant = attributeForGroup.variant,
-) => {
-  return gql`
-        mutation {
-          addAttributeToGroup (
-            input: {
-              groupId: "${groupId}"
-              name: [{key: "ru", value: "${name}"}]
-              variant: ${variant}
-              positioningInTitle: [{key: "ru", value: ${ATTRIBUTE_POSITION_IN_TITLE_BEGIN}}]
-            }
-          ) {
-            success
-            message
-            group {
+}: AddAttributeToGroupMutationInterface) => {
+  return {
+    mutation: gql`
+      mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
+        addAttributeToGroup(input: $input) {
+          success
+          message
+          group {
+            id
+            nameString
+            attributes {
               id
               nameString
-              attributes {
+              variant
+              positioningInTitle {
+                key
+                value
+              }
+              optionsGroup {
                 id
                 nameString
-                variant
-                positioningInTitle {
-                 key
-                 value
-                }
-                options {
-                  id
-                  nameString
-                }
               }
             }
           }
         }
-      `;
+      }
+    `,
+    options: {
+      variables: {
+        input: {
+          groupId,
+          variant,
+          name: [{ key: DEFAULT_LANG, value: name }],
+          positioningInTitle: [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
+        },
+      },
+    },
+  };
 };
 
 describe('Attributes Groups', () => {
@@ -58,7 +69,6 @@ describe('Attributes Groups', () => {
         }
       }
     `);
-    expect(getAllAttributesGroups.length).toEqual(3);
     const group = getAllAttributesGroups[0];
 
     // Should return current attributes group.
@@ -89,7 +99,7 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: [{ key: 'ru', value: 'f' }],
+            name: [{ key: DEFAULT_LANG, value: 'f' }],
           },
         },
       },
@@ -178,12 +188,18 @@ describe('Attributes Groups', () => {
     expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
 
     // Shouldn't create attribute and return validation error.
+    const addAttributeToGroupErrorsArgs = addAttributeToGroupMutation({
+      groupId: group.id,
+      name: 'f',
+    });
     const { errors: addAttributeToGroupErrors } = await mutate<any>(
-      addAttributeToGroupMutation(group.id, 'f'),
+      addAttributeToGroupErrorsArgs.mutation,
+      addAttributeToGroupErrorsArgs.options,
     );
     expect(addAttributeToGroupErrors).toBeDefined();
 
     // Should create attribute and add it to the group.
+    const addAttributeToGroupMutationArgs = addAttributeToGroupMutation({ groupId: group.id });
     const {
       data: {
         addAttributeToGroup: {
@@ -191,7 +207,10 @@ describe('Attributes Groups', () => {
           success,
         },
       },
-    } = await mutate<any>(addAttributeToGroupMutation(group.id));
+    } = await mutate<any>(
+      addAttributeToGroupMutationArgs.mutation,
+      addAttributeToGroupMutationArgs.options,
+    );
     const addedAttribute = attributes.find((attribute: any) => {
       return attribute.nameString === attributeForGroup.name[0].value;
     });
@@ -233,9 +252,9 @@ describe('Attributes Groups', () => {
           input: {
             groupId: group.id,
             attributeId: addedAttribute.id,
-            name: [{ key: 'ru', value: newName }],
+            name: [{ key: DEFAULT_LANG, value: newName }],
             variant: addedAttribute.variant,
-            positioningInTitle: [{ key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
+            positioningInTitle: [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
           },
         },
       },
@@ -246,7 +265,7 @@ describe('Attributes Groups', () => {
     expect(updateAttributeInGroup.success).toBeTruthy();
     expect(updatedAttribute.nameString).toEqual(newName);
     expect(updatedAttribute.positioningInTitle).toEqual([
-      { key: 'ru', value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
+      { key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
     ]);
 
     // Should delete attribute from the group.

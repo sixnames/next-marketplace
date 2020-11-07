@@ -32,8 +32,8 @@ export const THEME_DARK = 'dark';
 export const THEME_LIGHT = 'light';
 
 export const LANG_COOKIE_KEY = 'lang';
-export const DEFAULT_LANG = 'ru';
-export const SECONDARY_LANG = 'en';
+export const DEFAULT_LANG = 'ru-RU';
+export const SECONDARY_LANG = 'en-EN';
 
 export const CITY_COOKIE_KEY = 'city';
 export const LANG_COOKIE_HEADER = 'accept-language';
@@ -79,6 +79,17 @@ export const CONFIG_VARIANTS_LIST = [
   { id: CONFIG_VARIANT_ASSET, nameString: 'Изображение' },
 ];
 
+// OPTIONS GROUP VARIANTS
+export const OPTIONS_GROUP_VARIANT_TEXT = 'text';
+export const OPTIONS_GROUP_VARIANT_ICON = 'icon';
+export const OPTIONS_GROUP_VARIANT_COLOR = 'color';
+
+export const OPTIONS_GROUP_VARIANT_ENUMS = [
+  OPTIONS_GROUP_VARIANT_TEXT,
+  OPTIONS_GROUP_VARIANT_ICON,
+  OPTIONS_GROUP_VARIANT_COLOR,
+];
+
 // ATTRIBUTE VARIANTS
 export const ATTRIBUTE_VARIANT_SELECT = 'select';
 export const ATTRIBUTE_VARIANT_MULTIPLE_SELECT = 'multipleSelect';
@@ -97,6 +108,29 @@ export const ATTRIBUTE_VARIANTS_LIST = [
   { id: ATTRIBUTE_VARIANT_MULTIPLE_SELECT, nameString: 'Мульти-селект' },
   { id: ATTRIBUTE_VARIANT_STRING, nameString: 'Строка' },
   { id: ATTRIBUTE_VARIANT_NUMBER, nameString: 'Число' },
+];
+
+// ATTRIBUTE VIEW VARIANTS
+export const ATTRIBUTE_VIEW_VARIANT_LIST = 'list';
+export const ATTRIBUTE_VIEW_VARIANT_TEXT = 'text';
+export const ATTRIBUTE_VIEW_VARIANT_TAG = 'tag';
+export const ATTRIBUTE_VIEW_VARIANT_ICON = 'icon';
+export const ATTRIBUTE_VIEW_VARIANT_OUTER_RATING = 'outerRating';
+
+export const ATTRIBUTE_VIEW_VARIANTS_ENUMS = [
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+];
+
+export const ATTRIBUTE_VIEW_VARIANTS_LIST = [
+  { id: ATTRIBUTE_VIEW_VARIANT_LIST, nameString: 'Список' },
+  { id: ATTRIBUTE_VIEW_VARIANT_TEXT, nameString: 'Текст' },
+  { id: ATTRIBUTE_VIEW_VARIANT_TAG, nameString: 'Тег' },
+  { id: ATTRIBUTE_VIEW_VARIANT_ICON, nameString: 'С иконкой' },
+  { id: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING, nameString: 'Внешний рейтинг' },
 ];
 
 // ATTRIBUTE POSITIONS IN TITLE

@@ -1,61 +1,67 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/translations/getLangField';
-import { DEFAULT_LANG, GENDER_IT } from '@yagu/config';
+import {
+  DEFAULT_LANG,
+  GENDER_IT,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ENUMS,
+  OPTIONS_GROUP_VARIANT_ICON,
+} from '@yagu/config';
 import { MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP_COLORS } from '@yagu/mocks';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 import { gql } from 'apollo-server-express';
 
-const addOptionToGroupMutation = () => `
-        mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
-          addOptionToGroup(input: $input) {
-            success
-            message
-            group {
-              id
-              nameString
-              options {
-                id
-                nameString
-                color
-                gender
-                variants {
-                  key
-                  value {
-                    key
-                    value
-                  }
-                }
-              }
+const addOptionToGroupMutation = gql`
+  mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
+    addOptionToGroup(input: $input) {
+      success
+      message
+      group {
+        id
+        nameString
+        options {
+          id
+          nameString
+          color
+          gender
+          variants {
+            key
+            value {
+              key
+              value
             }
           }
         }
-      `;
+      }
+    }
+  }
+`;
 
-const updateOptionInGroupMutation = () => `
-        mutation UpdateOptionToGroup($input: UpdateOptionInGroupInput!) {
-          updateOptionInGroup(input: $input) {
-            message
-            success
-            group {
-              id
-              nameString
-              options {
-                id
-                nameString
-                color
-                gender
-                variants {
-                  key
-                  value {
-                    key
-                    value
-                  }
-                }
-              }
+const updateOptionInGroupMutation = gql`
+  mutation UpdateOptionToGroup($input: UpdateOptionInGroupInput!) {
+    updateOptionInGroup(input: $input) {
+      message
+      success
+      group {
+        id
+        nameString
+        options {
+          id
+          nameString
+          color
+          gender
+          variants {
+            key
+            value {
+              key
+              value
             }
           }
         }
-      `;
+      }
+    }
+  }
+`;
 
 describe('Options groups', () => {
   it('Should CRUD options group', async () => {
@@ -80,23 +86,27 @@ describe('Options groups', () => {
     // Should return current options group
     const {
       data: { getOptionsGroup },
-    } = await query<any>(gql`
-        {
-          getOptionsGroup(id: "${group.id}") {
+    } = await query<any>(
+      gql`
+        query GetOptionsGroup($id: ID!) {
+          getOptionsGroup(id: $id) {
             id
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          id: group.id,
+        },
+      },
+    );
     expect(getOptionsGroup.id).toEqual(group.id);
 
     // Shouldn't create options group on validation error
-    const { errors: createOptionsGroupFailSuccess } = await mutate<any>(gql`
-        mutation {
-          createOptionsGroup(
-            input: {
-              name: [{key: "${DEFAULT_LANG}", value: "f"}]
-            }
-          ) {
+    const { errors: createOptionsGroupFailSuccess } = await mutate<any>(
+      gql`
+        mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
+          createOptionsGroup(input: $input) {
             success
             group {
               id
@@ -104,22 +114,25 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            name: [{ key: DEFAULT_LANG, value: 'f' }],
+          },
+        },
+      },
+    );
     expect(createOptionsGroupFailSuccess).toBeDefined();
 
     // Should return duplicate options group error on group create
     const duplicateName = `${getLangField(MOCK_OPTIONS_GROUP_COLORS.name, DEFAULT_LANG)}`;
     const {
       data: { createOptionsGroup: duplicate },
-    } = await mutate<any>(gql`
-        mutation {
-          createOptionsGroup(
-            input: {
-              name: [
-                {
-                  key: "ru", value: "${duplicateName}"}]
-            }
-          ) {
+    } = await mutate<any>(
+      gql`
+        mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
+          createOptionsGroup(input: $input) {
             success
             message
             group {
@@ -128,19 +141,29 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            name: [
+              {
+                key: DEFAULT_LANG,
+                value: duplicateName,
+              },
+            ],
+          },
+        },
+      },
+    );
     expect(duplicate.success).toBeFalsy();
 
     // Should create options group
     const {
       data: { createOptionsGroup },
-    } = await mutate<any>(gql`
-        mutation {
-          createOptionsGroup(
-            input: {
-              name: [{key: "ru", value: "${optionsGroup.name}"}]
-            }
-          ) {
+    } = await mutate<any>(
+      gql`
+        mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
+          createOptionsGroup(input: $input) {
             success
             group {
               id
@@ -148,21 +171,26 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            name: [{ key: DEFAULT_LANG, value: optionsGroup.name }],
+            variant: OPTIONS_GROUP_VARIANT_ICON,
+          },
+        },
+      },
+    );
 
     const createdGroup = createOptionsGroup.group;
     expect(createOptionsGroup.success).toBeTruthy();
     expect(createdGroup.nameString).toEqual(optionsGroup.name);
 
     // Shouldn't update options group if new name is not valid
-    const { errors: updateOptionsGroupFailSuccess } = await mutate<any>(gql`
-        mutation {
-          updateOptionsGroup(
-            input: {
-              id: "${createdGroup.id}"
-              name: [{key: "ru", value: "f"}]
-            }
-          ) {
+    const { errors: updateOptionsGroupFailSuccess } = await mutate<any>(
+      gql`
+        mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
+          updateOptionsGroup(input: $input) {
             success
             message
             group {
@@ -171,20 +199,25 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            id: createdGroup.id,
+            name: [{ key: DEFAULT_LANG, value: 'f' }],
+          },
+        },
+      },
+    );
     expect(updateOptionsGroupFailSuccess).toBeDefined();
 
     // Should return duplicate options group error on group update
     const {
       data: { updateOptionsGroup: duplicateOnUpdate },
-    } = await mutate<any>(gql`
-        mutation {
-          updateOptionsGroup(
-            input: {
-              id: "${createdGroup.id}"
-              name: [{key: "ru", value: "${group.nameString}"}]
-            }
-          ) {
+    } = await mutate<any>(
+      gql`
+        mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
+          updateOptionsGroup(input: $input) {
             success
             group {
               id
@@ -192,20 +225,38 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          input: {
+            id: createdGroup.id,
+            name: [{ key: DEFAULT_LANG, value: group.nameString }],
+          },
+        },
+      },
+    );
     expect(duplicateOnUpdate.success).toBeFalsy();
+
+    // Should return options group variants list
+    const {
+      data: { getOptionsGroupVariantsOptions },
+    } = await query<any>(gql`
+      query {
+        getOptionsGroupVariantsOptions {
+          id
+          nameString
+        }
+      }
+    `);
+    expect(getOptionsGroupVariantsOptions).toHaveLength(OPTIONS_GROUP_VARIANT_ENUMS.length);
 
     // Should update options group
     const {
       data: { updateOptionsGroup },
-    } = await mutate<any>(gql`
-        mutation {
-          updateOptionsGroup(
-            input: {
-              id: "${createdGroup.id}"
-              name: [{key: "ru", value: "${anotherOptionsGroup.name}"}]
-            }
-          ) {
+    } = await mutate<any>(
+      gql`
+        mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
+          updateOptionsGroup(input: $input) {
             success
             message
             group {
@@ -214,39 +265,73 @@ describe('Options groups', () => {
             }
           }
         }
-      `);
-    const updatedGroup = updateOptionsGroup.group;
-    expect(updateOptionsGroup.success).toBeTruthy();
-    expect(updatedGroup.nameString).toEqual(anotherOptionsGroup.name);
-
-    // Should delete options group
-    const { data } = await mutate<any>(gql`
-        mutation {
-          deleteOptionsGroup(id: "${updatedGroup.id}") {
-            success
-          }
-        }
-      `);
-    expect(data.deleteOptionsGroup.success).toBeTruthy();
-
-    // Shouldn't create option on validation error
-    const { errors: addOptionToGroupValidationFail } = await mutate<any>(
-      addOptionToGroupMutation(),
+      `,
       {
         variables: {
           input: {
-            groupId: group.id,
-            name: [{ key: DEFAULT_LANG, value: '' }],
-            color: null,
-            gender: GENDER_IT,
+            id: createdGroup.id,
+            name: [{ key: DEFAULT_LANG, value: anotherOptionsGroup.name }],
+            variant: OPTIONS_GROUP_VARIANT_COLOR,
           },
         },
       },
     );
+    const updatedGroup = updateOptionsGroup.group;
+    expect(updateOptionsGroup.success).toBeTruthy();
+    expect(updatedGroup.nameString).toEqual(anotherOptionsGroup.name);
+
+    // Shouldn't create option on color validation error
+    const {
+      data: { addOptionToGroup: addOptionToGroupColorValidationError },
+    } = await mutate<any>(addOptionToGroupMutation, {
+      variables: {
+        input: {
+          groupId: updatedGroup.id,
+          name: [
+            {
+              key: DEFAULT_LANG,
+              value: optionForGroup.name,
+            },
+          ],
+          color: null,
+          gender: GENDER_IT,
+        },
+      },
+    });
+    expect(addOptionToGroupColorValidationError.success).toBeFalsy();
+
+    // Should delete options group
+    const { data } = await mutate<any>(
+      gql`
+        mutation DeleteOptionsGroup($id: ID!) {
+          deleteOptionsGroup(id: $id) {
+            success
+          }
+        }
+      `,
+      {
+        variables: {
+          id: updatedGroup.id,
+        },
+      },
+    );
+    expect(data.deleteOptionsGroup.success).toBeTruthy();
+
+    // Shouldn't create option on validation error
+    const { errors: addOptionToGroupValidationFail } = await mutate<any>(addOptionToGroupMutation, {
+      variables: {
+        input: {
+          groupId: group.id,
+          name: [{ key: DEFAULT_LANG, value: '' }],
+          color: null,
+          gender: GENDER_IT,
+        },
+      },
+    });
     expect(addOptionToGroupValidationFail).toBeDefined();
 
     // Should return duplicate options group error on option update
-    const { data: optionDuplicate } = await mutate<any>(addOptionToGroupMutation(), {
+    const { data: optionDuplicate } = await mutate<any>(addOptionToGroupMutation, {
       variables: {
         input: {
           groupId: group.id,
@@ -266,7 +351,7 @@ describe('Options groups', () => {
     // Should create option and add it to the options group
     const {
       data: { addOptionToGroup },
-    } = await mutate<any>(addOptionToGroupMutation(), {
+    } = await mutate<any>(addOptionToGroupMutation, {
       variables: {
         input: {
           groupId: group.id,
@@ -296,7 +381,7 @@ describe('Options groups', () => {
 
     // Should return validation error on option update
     const { errors: updateOptionInGroupFalseSuccess } = await mutate<any>(
-      updateOptionInGroupMutation(),
+      updateOptionInGroupMutation,
       {
         variables: {
           input: {
@@ -326,7 +411,7 @@ describe('Options groups', () => {
           success: updateOptionInGroupSuccess,
         },
       },
-    } = await mutate<any>(updateOptionInGroupMutation(), {
+    } = await mutate<any>(updateOptionInGroupMutation, {
       variables: {
         input: {
           groupId: group.id,

@@ -25,7 +25,7 @@ export const getProductAttributeReadableValues = async ({
     return productAttributeValues;
   }
 
-  const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+  const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
   if (!optionsGroup) {
     throw Error('Options group not found in getSelectAttributeOptionsValue');
   }
@@ -87,7 +87,7 @@ export const getConnectionValuesFromProduct = async ({
     throw Error('Attribute value not found in getConnectionValuesFromProduct');
   }
 
-  const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+  const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
   if (!optionsGroup) {
     throw Error('Options group not found in checkIsAllConnectionOptionsUsed');
   }
@@ -167,7 +167,7 @@ export const checkIsAllConnectionOptionsUsed = async ({
     throw Error('Attribute not found in checkIsAllConnectionOptionsUsed');
   }
 
-  const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+  const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
   if (!optionsGroup) {
     throw Error('Options group not found in checkIsAllConnectionOptionsUsed');
   }

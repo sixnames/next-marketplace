@@ -20,12 +20,12 @@ export enum AttributeVariantEnum {
   number = 'number',
 }
 
-// Attribute positioning in catalogue title
 registerEnumType(AttributeVariantEnum, {
   name: 'AttributeVariantEnum',
   description: 'Attribute variant enum',
 });
 
+// Attribute positioning in catalogue title
 export enum AttributePositionInTitleEnum {
   begin = 'begin',
   end = 'end',
@@ -98,7 +98,7 @@ export class Attribute {
 
   @Field((_type) => OptionsGroup, { nullable: true })
   @prop({ ref: OptionsGroup })
-  options?: string | null;
+  optionsGroup?: string | null;
 
   @Field((_type) => [AttributePositioningInTitle], { nullable: true })
   @prop({

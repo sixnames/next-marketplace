@@ -4,8 +4,6 @@ import {
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
 
-const languageKeyLength = 2;
-
 const languageIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
@@ -25,43 +23,20 @@ const languageNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   );
 
 const languageKeySchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .min(
-      languageKeyLength,
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.string.min',
-      }) + ` ${languageKeyLength}`,
-    )
-    .max(
-      languageKeyLength,
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.string.max',
-      }) + ` ${languageKeyLength}`,
-    )
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.languages.key',
-      }),
-    );
+  Yup.string().required(
+    getFieldValidationMessage({
+      ...args,
+      key: 'validation.languages.key',
+    }),
+  );
 
 const languageNativeNameSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .min(
-      languageKeyLength,
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.string.min',
-      }) + ` ${languageKeyLength}`,
-    )
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.languages.nativeName',
-      }),
-    );
+  Yup.string().required(
+    getFieldValidationMessage({
+      ...args,
+      key: 'validation.languages.nativeName',
+    }),
+  );
 
 export const createLanguageSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({

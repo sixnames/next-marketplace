@@ -1,9 +1,13 @@
 import { Field, ID, InputType } from 'type-graphql';
+import { ProductAttributeViewVariantEnum } from '../../entities/Product';
 
 @InputType()
 export class ProductAttributeInput {
   @Field(() => Boolean)
   showInCard: boolean;
+
+  @Field(() => ProductAttributeViewVariantEnum, { nullable: true })
+  viewVariant: ProductAttributeViewVariantEnum;
 
   @Field(() => ID)
   node: string;

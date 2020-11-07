@@ -11,7 +11,8 @@ export type OnOffType = 'on' | 'off';
 export type NotificationType = 'success' | 'warning' | 'error';
 export type PostfixType =
   | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
-  | undefined;
+  | undefined
+  | any;
 
 export type ObjectType = Record<string, any>;
 export interface QueryInterface {

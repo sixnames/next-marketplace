@@ -7,7 +7,6 @@ import { UpdateCurrencyInput } from './UpdateCurrencyInput';
 import { createCurrencySchema, updateCurrencySchema } from '@yagu/validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { CountryModel } from '../../entities/Country';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -15,13 +14,14 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Currency.name);
+} = RoleRuleModel.getOperationsConfigs(Currency.name);
 
 @ObjectType()
 class CurrencyPayloadType extends PayloadType() {

@@ -6,7 +6,6 @@ import { UpdateLanguageInput } from './UpdateLanguageInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { createLanguageSchema, updateLanguageSchema } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -14,13 +13,14 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Language.name);
+} = RoleRuleModel.getOperationsConfigs(Language.name);
 
 @ObjectType()
 class LanguagePayloadType extends PayloadType() {

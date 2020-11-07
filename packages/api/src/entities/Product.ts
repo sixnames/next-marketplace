@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
@@ -9,12 +9,38 @@ import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { ProductCardConnection } from './ProductCardConnection';
+import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/config';
+import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
+import { alwaysArray } from '@yagu/shared';
+import { Option } from './Option';
+
+// Attribute view variant
+export enum ProductAttributeViewVariantEnum {
+  list = 'list',
+  text = 'text',
+  tag = 'tag',
+  icon = 'icon',
+  outerRating = 'outerRating',
+}
+
+registerEnumType(ProductAttributeViewVariantEnum, {
+  name: 'ProductAttributeViewVariantEnum',
+  description: 'Product attribute view variant enum',
+});
 
 @ObjectType()
 export class ProductAttribute {
   @Field(() => Boolean)
   @prop({ required: true, default: true })
   showInCard: boolean;
+
+  @Field((_type) => ProductAttributeViewVariantEnum)
+  @prop({
+    required: true,
+    enum: ATTRIBUTE_VIEW_VARIANTS_ENUMS,
+    default: ATTRIBUTE_VIEW_VARIANT_LIST,
+  })
+  viewVariant: ProductAttributeViewVariantEnum;
 
   @Field(() => Attribute)
   @prop({ ref: Attribute })
@@ -27,6 +53,12 @@ export class ProductAttribute {
   @Field(() => [String])
   @prop({ type: String, required: true })
   value: string[];
+
+  @Field(() => [Option])
+  readonly readableOptions?: Option[];
+
+  @Field(() => [String])
+  readonly readableValue?: string[];
 }
 
 @ObjectType()
@@ -45,33 +77,46 @@ export class ProductAttributesGroup {
 }
 
 @ObjectType()
-export class ProductCardFeatureAttribute {
-  @Field(() => ID)
-  id: string;
+export class ProductCardFeatures {
+  @Field(() => [ProductAttribute])
+  readonly listFeatures: ProductAttribute[];
 
-  @Field(() => String)
-  nameString: string;
+  @Field(() => [ProductAttribute])
+  readonly textFeatures: ProductAttribute[];
 
-  @Field(() => Boolean)
-  showInCard: boolean;
+  @Field(() => [ProductAttribute])
+  readonly tagFeatures: ProductAttribute[];
 
-  @Field(() => [String])
-  value: string[];
+  @Field(() => [ProductAttribute])
+  readonly iconFeatures: ProductAttribute[];
+
+  @Field(() => [ProductAttribute])
+  readonly ratingFeatures: ProductAttribute[];
 }
 
-@ObjectType()
-export class ProductCardFeature {
-  @Field(() => ID)
-  id: string;
+interface InArrayInterface {
+  $in: any[];
+}
 
-  @Field(() => String)
-  nameString: string;
+interface NotInArrayInterface {
+  $nin: any[];
+}
 
-  @Field(() => Boolean)
-  showInCard: boolean;
+interface EmptyArrayInterface {
+  $exists: boolean;
+  $size: number;
+}
 
-  @Field(() => [ProductCardFeatureAttribute])
-  attributes: ProductCardFeatureAttribute[];
+interface ProductsFiltersInterface {
+  query?: {
+    $text: {
+      $search: string;
+      $caseSensitive: boolean;
+    };
+  };
+  rubrics?: InArrayInterface | NotInArrayInterface | EmptyArrayInterface;
+  active?: boolean;
+  [key: string]: any;
 }
 
 @ObjectType()
@@ -146,8 +191,8 @@ export class Product extends TimeStamps {
   @Field(() => String)
   readonly mainImage: string;
 
-  @Field(() => [ProductCardFeature])
-  readonly cardFeatures: ProductCardFeature[];
+  @Field(() => ProductCardFeatures)
+  readonly cardFeatures: ProductCardFeatures;
 
   @Field(() => [ProductCardConnection])
   readonly cardConnections: ProductCardConnection[];
@@ -167,6 +212,85 @@ export class Product extends TimeStamps {
     pipeline?: Aggregate<Product[]>,
     options?: PaginateOptions,
   ) => Promise<PaginateResult<Product>>;
+
+  static getProductsFilter(args: { [key: string]: any } = {}): ProductsFiltersInterface {
+    const searchQuery = args.search
+      ? {
+          $text: {
+            $search: args.search,
+            $caseSensitive: false,
+          },
+        }
+      : {};
+
+    const additionalQuery = Object.keys(args).reduce((acc, key) => {
+      const value = args[key];
+      if (value) {
+        if (key === 'search') {
+          return acc;
+        }
+
+        if (key === 'attributes') {
+          const attributesQuery = value.map(
+            ({ key, value }: RubricProductAttributesFilterInput) => {
+              return {
+                'attributesGroups.attributes': {
+                  $elemMatch: {
+                    key,
+                    value: { $in: value },
+                  },
+                },
+              };
+            },
+          );
+
+          if (!attributesQuery.length) {
+            return acc;
+          }
+
+          return {
+            ...acc,
+            $and: attributesQuery,
+          };
+        }
+
+        if (key === 'rubrics') {
+          const query = alwaysArray(value);
+          return { ...acc, rubrics: { $in: query } };
+        }
+
+        if (key === 'rubric') {
+          const query = alwaysArray(value);
+          return { ...acc, rubrics: { $in: query } };
+        }
+
+        if (key === 'notInRubric') {
+          const query = alwaysArray(value);
+          return { ...acc, rubrics: { $nin: query } };
+        }
+
+        if (key === 'noRubrics') {
+          return { ...acc, rubrics: { $exists: true, $size: 0 } };
+        }
+
+        if (key === 'active') {
+          return { ...acc, active: value };
+        }
+
+        if (key === 'excludedProductsIds') {
+          const query = alwaysArray(value);
+          return { ...acc, _id: { $nin: query } };
+        }
+      }
+
+      return acc;
+    }, {});
+
+    return {
+      ...searchQuery,
+      ...additionalQuery,
+    };
+  }
 }
 
 @ObjectType()

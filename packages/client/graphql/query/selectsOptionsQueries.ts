@@ -9,13 +9,20 @@ export const GET_GENDER_OPTIONS_QUERY = gql`
   }
 `;
 
+export const attributeViewVariantFragment = gql`
+  fragment AttributeViewOption on AttributeViewOption {
+    id
+    nameString
+  }
+`;
+
 export const ATTRIBUTE_VIEW_VARIANT_OPTIONS_QUERY = gql`
   query AttributeViewVariantOptions {
     getAttributeViewVariantsOptions {
-      id
-      nameString
+      ...AttributeViewOption
     }
   }
+  ${attributeViewVariantFragment}
 `;
 
 export const iconOptionFragment = gql`
@@ -114,6 +121,10 @@ export const GET_FEATURES_AST_QUERY = gql`
     getFeaturesAst(selectedRubrics: $selectedRubrics) {
       ...FeaturesASTGroup
     }
+    getAttributeViewVariantsOptions {
+      ...AttributeViewOption
+    }
   }
+  ${attributeViewVariantFragment}
   ${featuresASTGroupFragment}
 `;

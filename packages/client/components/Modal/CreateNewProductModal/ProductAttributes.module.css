@@ -22,6 +22,18 @@
   white-space: nowrap;
 }
 
+.attribute {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.attribute:first-child {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--borderColor);
+}
+
 @media only screen and (max-width: 768px) {
   .titleHolder {
     display: block;

@@ -1,26 +1,118 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classes from './ProductAttributes.module.css';
-import ProductAttributesItem from './ProductAttributesItem';
 import { useFormikContext } from 'formik';
 import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
-import { get } from 'lodash';
 import {
+  AttributeViewOptionFragment,
+  FeaturesAstAttributeFragment,
   FeaturesAstGroupFragment,
+  UpdateProductInput,
   useGetFeaturesAstQuery,
 } from '../../../generated/apolloComponents';
-import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+} from '@yagu/config';
+import FormikInput from '../../FormElements/Input/FormikInput';
+import FormikSelect from '../../FormElements/Select/FormikSelect';
+import InputLine from '../../FormElements/Input/InputLine';
+import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
+
+interface ProductAttributesItemInterface {
+  attribute: FeaturesAstAttributeFragment;
+  inputName: string;
+  groupIndex: number;
+  viewOptions: AttributeViewOptionFragment[];
+}
+
+const ProductAttributesItem: React.FC<ProductAttributesItemInterface> = ({
+  attribute,
+  inputName,
+  groupIndex,
+  viewOptions,
+}) => {
+  const { variant, optionsGroup, nameString, metric } = attribute;
+  const firstValueIndex = 0;
+  const labelPostfix = metric ? metric.nameString : '';
+
+  const optionsList = optionsGroup ? optionsGroup.options : [];
+
+  const singleValueInputName = `${inputName}.value[${firstValueIndex}]`;
+  const multipleValueInputName = `${inputName}.value`;
+
+  return (
+    <div className={classes.attribute}>
+      {variant === ATTRIBUTE_VARIANT_NUMBER || variant === ATTRIBUTE_VARIANT_STRING ? (
+        <FormikInput
+          min={variant === 'string' ? undefined : 0}
+          label={nameString}
+          labelPostfix={labelPostfix}
+          type={variant === ATTRIBUTE_VARIANT_STRING ? 'text' : 'number'}
+          name={singleValueInputName}
+          testId={`${nameString}-${groupIndex}`}
+        />
+      ) : null}
+
+      {variant === ATTRIBUTE_VARIANT_SELECT ? (
+        <FormikSelect
+          label={nameString}
+          labelPostfix={labelPostfix}
+          options={optionsList}
+          firstOption={'Не выбрано'}
+          name={singleValueInputName}
+          testId={`${nameString}-${groupIndex}`}
+        />
+      ) : null}
+
+      {variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT && optionsGroup ? (
+        <InputLine name={multipleValueInputName} label={nameString}>
+          {optionsList.map(({ slug, nameString }) => {
+            return (
+              <FormikArrayCheckboxLine
+                name={multipleValueInputName}
+                value={slug}
+                key={slug}
+                label={nameString}
+                testId={`${nameString}-${groupIndex}`}
+                inList
+              />
+            );
+          })}
+        </InputLine>
+      ) : null}
+
+      <FormikSelect
+        label={'Тип отображения'}
+        name={`${inputName}.viewVariant`}
+        options={viewOptions}
+      />
+
+      <FormikCheckboxLine
+        label={'Показать в карточке товара'}
+        name={`${inputName}.showInCard`}
+        testId={`${nameString}-${groupIndex}-showInCard`}
+        low
+      />
+    </div>
+  );
+};
 
 interface ProductAttributesGroupInterface {
   group: FeaturesAstGroupFragment;
   groupIndex: number;
+  viewOptions: AttributeViewOptionFragment[];
 }
 
 const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
   group,
   groupIndex,
+  viewOptions,
 }) => {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<UpdateProductInput>();
   const inputName = `attributesGroups[${groupIndex}]`;
   const { id, nameString, attributes } = group;
 
@@ -31,13 +123,14 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
         showInCard: false,
         key: slug,
         value: [],
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
       })),
     [group],
   );
 
   // Set attributes default values if rubrics changed
   useEffect(() => {
-    const currentGroupValue = get(values, inputName);
+    const currentGroupValue = values.attributesGroups.find(({ node }) => node === id);
     if (!currentGroupValue) {
       setFieldValue(inputName, {
         node: id,
@@ -46,9 +139,10 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
       });
     }
 
-    attributes.forEach((_attribute, index) => {
-      const attributeInputName = `${inputName}.attributes[${index}]`;
-      const currentAttributeValue = get(values, attributeInputName);
+    attributes.forEach((attribute) => {
+      const currentAttributeValue = currentGroupValue?.attributes.find(
+        ({ node }) => node === attribute.id,
+      );
       if (!currentAttributeValue || !currentAttributeValue.key || !currentAttributeValue.node) {
         setFieldValue(inputName, {
           node: id,
@@ -81,6 +175,7 @@ const ProductAttributesGroup: React.FC<ProductAttributesGroupInterface> = ({
               groupIndex={groupIndex}
               attribute={attribute}
               inputName={attributeInputName}
+              viewOptions={viewOptions}
               key={index}
             />
           );
@@ -94,7 +189,17 @@ interface CreateNewProductAttributesSelectInterface {
   rubrics: string[];
 }
 
+interface ProductAttributesStateInterface {
+  getFeaturesAst: FeaturesAstGroupFragment[];
+  getAttributeViewVariantsOptions: AttributeViewOptionFragment[];
+}
+
 const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = ({ rubrics }) => {
+  const [state, setState] = useState<ProductAttributesStateInterface>({
+    getFeaturesAst: [],
+    getAttributeViewVariantsOptions: [],
+  });
+
   const { data, loading, error } = useGetFeaturesAstQuery({
     variables: {
       selectedRubrics: rubrics,
@@ -102,19 +207,29 @@ const ProductAttributes: React.FC<CreateNewProductAttributesSelectInterface> = (
     fetchPolicy: 'network-only',
   });
 
-  if (loading) {
-    return <Spinner isNested />;
-  }
+  useEffect(() => {
+    if (!loading && !error && data) {
+      setState(data);
+    }
+  }, [loading, data, error]);
 
   if (!data || error) {
     return <RequestError />;
   }
 
-  const { getFeaturesAst } = data;
+  const { getFeaturesAst, getAttributeViewVariantsOptions } = state;
+
   return (
     <div>
       {getFeaturesAst.map((group, index) => {
-        return <ProductAttributesGroup key={group.id} group={group} groupIndex={index} />;
+        return (
+          <ProductAttributesGroup
+            viewOptions={getAttributeViewVariantsOptions}
+            key={group.id}
+            group={group}
+            groupIndex={index}
+          />
+        );
       })}
     </div>
   );

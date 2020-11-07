@@ -150,21 +150,18 @@ const createTestData = async () => {
     const attributeOuterRatingA = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_OUTER_RATING_A,
       variant: MOCK_ATTRIBUTE_OUTER_RATING_A.variant as AttributeVariantEnum,
-      optionsGroup: optionsGroupCombination.id,
       positioningInTitle: [],
     });
 
     const attributeOuterRatingB = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_OUTER_RATING_B,
       variant: MOCK_ATTRIBUTE_OUTER_RATING_B.variant as AttributeVariantEnum,
-      optionsGroup: optionsGroupCombination.id,
       positioningInTitle: [],
     });
 
     const attributeOuterRatingC = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_OUTER_RATING_C,
       variant: MOCK_ATTRIBUTE_OUTER_RATING_C.variant as AttributeVariantEnum,
-      optionsGroup: optionsGroupCombination.id,
       positioningInTitle: [],
     });
 
@@ -279,7 +276,7 @@ const createTestData = async () => {
       },
       {
         showInCatalogueFilter: [],
-        showInSiteNav: true,
+        showInSiteNav: false,
         node: attributesGroupOuterRating.id,
         isOwner,
       },
@@ -294,7 +291,7 @@ const createTestData = async () => {
       },
       {
         showInCatalogueFilter: [],
-        showInSiteNav: true,
+        showInSiteNav: false,
         node: attributesGroupOuterRating.id,
         isOwner,
       },
@@ -481,6 +478,33 @@ const createTestData = async () => {
       return {
         attributesGroups: [
           {
+            node: attributesGroupOuterRating.id,
+            showInCard: true,
+            attributes: [
+              {
+                node: attributeOuterRatingA.id,
+                showInCard: true,
+                key: attributeOuterRatingA.slug,
+                value: ['4.2'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeOuterRatingB.id,
+                showInCard: true,
+                key: attributeOuterRatingB.slug,
+                value: ['88'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeOuterRatingC.id,
+                showInCard: true,
+                key: attributeOuterRatingC.slug,
+                value: ['22'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+            ],
+          },
+          {
             node: attributesGroupWineFeatures.id,
             showInCard: true,
             attributes: [
@@ -509,27 +533,6 @@ const createTestData = async () => {
                 key: attributeNumber.slug,
                 value: ['123'],
                 viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
-              },
-              {
-                node: attributeOuterRatingA.id,
-                showInCard: true,
-                key: attributeOuterRatingA.slug,
-                value: ['4.2'],
-                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
-              },
-              {
-                node: attributeOuterRatingB.id,
-                showInCard: true,
-                key: attributeOuterRatingB.slug,
-                value: ['88'],
-                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
-              },
-              {
-                node: attributeOuterRatingC.id,
-                showInCard: true,
-                key: attributeOuterRatingC.slug,
-                value: ['22'],
-                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
               },
             ],
           },

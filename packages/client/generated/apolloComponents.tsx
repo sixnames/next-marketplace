@@ -3114,6 +3114,11 @@ export type GetGenderOptionsQuery = (
   )> }
 );
 
+export type AttributeViewOptionFragment = (
+  { __typename?: 'AttributeViewOption' }
+  & Pick<AttributeViewOption, 'id' | 'nameString'>
+);
+
 export type AttributeViewVariantOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3121,7 +3126,7 @@ export type AttributeViewVariantOptionsQuery = (
   { __typename?: 'Query' }
   & { getAttributeViewVariantsOptions: Array<(
     { __typename?: 'AttributeViewOption' }
-    & Pick<AttributeViewOption, 'id' | 'nameString'>
+    & AttributeViewOptionFragment
   )> }
 );
 
@@ -3218,6 +3223,9 @@ export type GetFeaturesAstQuery = (
   & { getFeaturesAst: Array<(
     { __typename?: 'AttributesGroup' }
     & FeaturesAstGroupFragment
+  )>, getAttributeViewVariantsOptions: Array<(
+    { __typename?: 'AttributeViewOption' }
+    & AttributeViewOptionFragment
   )> }
 );
 
@@ -3679,6 +3687,12 @@ export const RubricVariantFragmentDoc = gql`
     key
     value
   }
+}
+    `;
+export const AttributeViewOptionFragmentDoc = gql`
+    fragment AttributeViewOption on AttributeViewOption {
+  id
+  nameString
 }
     `;
 export const IconOptionFragmentDoc = gql`
@@ -6340,11 +6354,10 @@ export type GetGenderOptionsQueryResult = Apollo.QueryResult<GetGenderOptionsQue
 export const AttributeViewVariantOptionsDocument = gql`
     query AttributeViewVariantOptions {
   getAttributeViewVariantsOptions {
-    id
-    nameString
+    ...AttributeViewOption
   }
 }
-    `;
+    ${AttributeViewOptionFragmentDoc}`;
 
 /**
  * __useAttributeViewVariantOptionsQuery__
@@ -6519,8 +6532,12 @@ export const GetFeaturesAstDocument = gql`
   getFeaturesAst(selectedRubrics: $selectedRubrics) {
     ...FeaturesASTGroup
   }
+  getAttributeViewVariantsOptions {
+    ...AttributeViewOption
+  }
 }
-    ${FeaturesAstGroupFragmentDoc}`;
+    ${FeaturesAstGroupFragmentDoc}
+${AttributeViewOptionFragmentDoc}`;
 
 /**
  * __useGetFeaturesAstQuery__

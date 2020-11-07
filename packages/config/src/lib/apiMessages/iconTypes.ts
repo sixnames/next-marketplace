@@ -53,6 +53,10 @@ export const iconTypesList = [
   'user',
   'vk',
   'youtube',
+  'white-meat',
+  'soup',
+  'fish',
+  'seafood',
 ];
 
 export type IconType = typeof iconTypesList[number];

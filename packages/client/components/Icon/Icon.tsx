@@ -39,6 +39,10 @@ import { ReactComponent as Upload } from './icons/catalogue/upload.svg';
 import { ReactComponent as User } from './icons/catalogue/user.svg';
 import { ReactComponent as Vk } from './icons/catalogue/vk.svg';
 import { ReactComponent as Youtube } from './icons/catalogue/youtube.svg';
+import { ReactComponent as WhiteMeat } from './icons/catalogue/white-meat.svg';
+import { ReactComponent as Soup } from './icons/catalogue/soup.svg';
+import { ReactComponent as Fish } from './icons/catalogue/fish.svg';
+import { ReactComponent as Seafood } from './icons/catalogue/seafood.svg';
 
 // App
 import { ReactComponent as ArrowClockWise } from './icons/app/arrow-clockwise.svg';
@@ -67,6 +71,18 @@ interface IconPropsInterface {
 const Icon: React.FC<IconPropsInterface> = ({ name, className, ...props }) => {
   switch (name) {
     // Catalogue
+    case 'white-meat':
+      return <WhiteMeat className={className} {...props} />;
+
+    case 'soup':
+      return <Soup className={className} {...props} />;
+
+    case 'fish':
+      return <Fish className={className} {...props} />;
+
+    case 'seafood':
+      return <Seafood className={className} {...props} />;
+
     case 'arrow-left':
       return <ArrowLeft className={className} {...props} />;
 

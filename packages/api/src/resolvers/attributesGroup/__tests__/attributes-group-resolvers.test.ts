@@ -4,43 +4,54 @@ import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '@yagu/mocks';
 import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN, DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
 
-const addAttributeToGroupMutation = (
-  groupId: string,
+interface AddAttributeToGroupMutationInterface {
+  groupId: string;
+  name?: string;
+  variant?: string;
+}
+
+const addAttributeToGroupMutation = ({
+  groupId,
   name = attributeForGroup.name[0].value,
   variant = attributeForGroup.variant,
-) => {
-  return gql`
-        mutation {
-          addAttributeToGroup (
-            input: {
-              groupId: "${groupId}"
-              name: [{key: "${DEFAULT_LANG}", value: "${name}"}]
-              variant: ${variant}
-              positioningInTitle: [{key: "${DEFAULT_LANG}", value: ${ATTRIBUTE_POSITION_IN_TITLE_BEGIN}}]
-            }
-          ) {
-            success
-            message
-            group {
+}: AddAttributeToGroupMutationInterface) => {
+  return {
+    mutation: gql`
+      mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
+        addAttributeToGroup(input: $input) {
+          success
+          message
+          group {
+            id
+            nameString
+            attributes {
               id
               nameString
-              attributes {
+              variant
+              positioningInTitle {
+                key
+                value
+              }
+              optionsGroup {
                 id
                 nameString
-                variant
-                positioningInTitle {
-                 key
-                 value
-                }
-                optionsGroup {
-                  id
-                  nameString
-                }
               }
             }
           }
         }
-      `;
+      }
+    `,
+    options: {
+      variables: {
+        input: {
+          groupId,
+          variant,
+          name: [{ key: DEFAULT_LANG, value: name }],
+          positioningInTitle: [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
+        },
+      },
+    },
+  };
 };
 
 describe('Attributes Groups', () => {
@@ -178,12 +189,18 @@ describe('Attributes Groups', () => {
     expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
 
     // Shouldn't create attribute and return validation error.
+    const addAttributeToGroupErrorsArgs = addAttributeToGroupMutation({
+      groupId: group.id,
+      name: 'f',
+    });
     const { errors: addAttributeToGroupErrors } = await mutate<any>(
-      addAttributeToGroupMutation(group.id, 'f'),
+      addAttributeToGroupErrorsArgs.mutation,
+      addAttributeToGroupErrorsArgs.options,
     );
     expect(addAttributeToGroupErrors).toBeDefined();
 
     // Should create attribute and add it to the group.
+    const addAttributeToGroupMutationArgs = addAttributeToGroupMutation({ groupId: group.id });
     const {
       data: {
         addAttributeToGroup: {
@@ -191,7 +208,10 @@ describe('Attributes Groups', () => {
           success,
         },
       },
-    } = await mutate<any>(addAttributeToGroupMutation(group.id));
+    } = await mutate<any>(
+      addAttributeToGroupMutationArgs.mutation,
+      addAttributeToGroupMutationArgs.options,
+    );
     const addedAttribute = attributes.find((attribute: any) => {
       return attribute.nameString === attributeForGroup.name[0].value;
     });

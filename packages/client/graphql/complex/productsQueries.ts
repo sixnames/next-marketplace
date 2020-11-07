@@ -2,8 +2,10 @@ import { gql } from '@apollo/client';
 
 export const cmsProductAttributeFragment = gql`
   fragment CMSProductAttribute on ProductAttribute {
-    showInCard
     key
+    showInCard
+    viewVariant
+    value
     node {
       id
       slug
@@ -13,7 +15,7 @@ export const cmsProductAttributeFragment = gql`
         id
         nameString
       }
-      options {
+      optionsGroup {
         id
         nameString
         options {
@@ -23,7 +25,6 @@ export const cmsProductAttributeFragment = gql`
         }
       }
     }
-    value
   }
 `;
 

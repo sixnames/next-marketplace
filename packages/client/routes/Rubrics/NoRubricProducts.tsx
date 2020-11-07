@@ -14,7 +14,7 @@ import {
 } from '../../generated/apolloComponents';
 import { CONFIRM_MODAL } from '../../config/modals';
 import Pager from '../../components/Pager/Pager';
-import { GET_NON_RUBRIC_PRODUCTS_QUERY } from '../../graphql/rubrics';
+import { GET_NON_RUBRIC_PRODUCTS_QUERY } from '../../graphql/complex/rubricsQueries';
 
 const NoRubricProducts: React.FC = () => {
   const { showModal, showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({

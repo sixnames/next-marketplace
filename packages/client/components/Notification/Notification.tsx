@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import useSound from 'use-sound';
-import Icon, { IconType } from '../Icon/Icon';
+import Icon from '../Icon/Icon';
 import Link from '../Link/Link';
 import ButtonCross from '../Buttons/ButtonCross';
 import { NotificationType } from '../../types';
 import classes from './Notification.module.css';
+import { IconType } from '@yagu/config';
 
 interface NotificationInterface {
   type: NotificationType;

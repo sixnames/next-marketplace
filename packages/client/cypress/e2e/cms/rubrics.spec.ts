@@ -7,7 +7,7 @@ import {
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
 } from '@yagu/mocks';
-import { GENDER_IT, GENDER_SHE, GENDER_HE } from '@yagu/config';
+import { GENDER_IT, GENDER_SHE, GENDER_HE, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 describe('Rubrics', () => {
   beforeEach(() => {
@@ -36,10 +36,10 @@ describe('Rubrics', () => {
     cy.getByCy(`variant-error`).should('exist');
 
     // Shouldn't create a new rubric if exists on first level
-    cy.getByCy(`name-ru`).type(mockRubricLevelOneName);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockRubricLevelOneName);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockRubricLevelOneName);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockRubricLevelOneName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
@@ -47,10 +47,10 @@ describe('Rubrics', () => {
 
     // Shouldn't create a new rubric if exists on second level
     cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`name-ru`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockRubricLevelTwoName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
     cy.selectOptionByTestId(`parent`, mockRubricLevelOneName);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
@@ -61,12 +61,12 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric`).click();
     cy.selectOptionByTestId(`parent`, mockRubricLevelOneName);
     cy.selectOptionByTestId(`subParent`, mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockRubricLevelThreeName);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockRubricLevelThreeName);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockRubricLevelThreeName);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_IT);
-    cy.getByCy(`name-ru`).type(mockRubricLevelThreeName);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`error-notification`).should('exist');
   });
@@ -79,10 +79,10 @@ describe('Rubrics', () => {
 
     // Should create a new rubric on first level
     cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`name-ru`).type(mockNewRubricA);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockNewRubricA);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockNewRubricA);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockNewRubricA);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricA);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricA);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricA);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockNewRubricA);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy(`rubric-submit`).click();
@@ -91,12 +91,12 @@ describe('Rubrics', () => {
     // Should create a new rubric on second level
     cy.getByCy(`create-rubric`).click();
     cy.getByCy(`create-rubric-modal`).should('exist');
-    cy.getByCy(`name-ru`).type(mockNewRubricB);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricB);
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockNewRubricB);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockNewRubricB);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockNewRubricB);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricB);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricB);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockNewRubricB);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`tree-link-${mockNewRubricB}`).should('exist');
@@ -105,12 +105,12 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric`).click();
     cy.getByCy(`create-rubric-modal`).should('exist');
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
-    cy.getByCy(`name-ru`).type(mockNewRubricC);
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricC);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.selectOptionByTestId(`subParent`, mockNewRubricB);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).type(mockNewRubricC);
-    cy.getByCy(`catalogueTitle-prefix-ru`).type(mockNewRubricC);
-    cy.getByCy(`catalogueTitle-keyword-ru`).type(mockNewRubricC);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricC);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricC);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockNewRubricC);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`tree-link-${mockNewRubricC}`).should('exist');
@@ -124,12 +124,12 @@ describe('Rubrics', () => {
     // Should have rubric details tab and should update rubric
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();
     cy.visitMoreNavLink('details');
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('name-ru').clear().type(mockNewRubric);
-    cy.getByCy('name-en').clear().type(mockNewRubric);
-    cy.getByCy(`catalogueTitle-defaultTitle-ru`).clear().type(mockNewRubric);
-    cy.getByCy(`catalogueTitle-prefix-ru`).clear().type(mockNewRubric);
-    cy.getByCy(`catalogueTitle-keyword-ru`).clear().type(mockNewRubric);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockNewRubric);
+    cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockNewRubric);
+    cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).clear().type(mockNewRubric);
+    cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).clear().type(mockNewRubric);
+    cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).clear().type(mockNewRubric);
     cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();

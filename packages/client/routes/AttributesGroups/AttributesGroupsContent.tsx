@@ -17,7 +17,7 @@ import { getAttributeVariantName } from '../../utils/locales';
 import { ATTRIBUTE_IN_GROUP_MODAL, CONFIRM_MODAL } from '../../config/modals';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { AddAttributeToGroupModalInterface } from '../../components/Modal/AttributeInGroupModal/AttributeInGroupModal';
-import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/attributes';
+import { ATTRIBUTES_GROUP_QUERY } from '../../graphql/query/attributesQueries';
 import { ParsedUrlQuery } from 'querystring';
 
 interface AttributesGroupsContentInterface {
@@ -116,7 +116,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
       render: ({ cellData }) => getAttributeVariantName(cellData),
     },
     {
-      accessor: 'options',
+      accessor: 'optionsGroup',
       headTitle: 'Опции',
       render: ({ cellData }) => cellData?.nameString || null,
     },

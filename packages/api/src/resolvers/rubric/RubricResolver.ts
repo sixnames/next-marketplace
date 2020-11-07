@@ -33,16 +33,10 @@ import { AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DeleteAttributesGroupFromRubricInput } from './DeleteAttributesGroupFromRubricInput';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToRubricInput } from './AddProductToRubricInput';
-import { getProductsFilter } from '../../utils/getProductsFilter';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import {
-  getDeepRubricChildrenIds,
-  getRubricCounters,
-  getRubricsTreeIds,
-} from '../../utils/rubricResolverHelpers';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
@@ -66,7 +60,6 @@ import {
   updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -77,6 +70,7 @@ import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -89,7 +83,7 @@ const {
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Rubric.name);
+} = RoleRuleModel.getOperationsConfigs(Rubric.name);
 
 @ObjectType()
 class RubricPayloadType extends PayloadType() {
@@ -309,7 +303,7 @@ export class RubricResolver {
         };
       }
 
-      const allRubrics = await getRubricsTreeIds({ rubricId: rubric._id });
+      const allRubrics = await RubricModel.getRubricsTreeIds({ rubricId: rubric._id });
 
       const updatedProducts = await ProductModel.updateMany(
         {
@@ -384,7 +378,7 @@ export class RubricResolver {
         [],
       );
 
-      const childrenIds = await getDeepRubricChildrenIds({ rubricId });
+      const childrenIds = await RubricModel.getDeepRubricChildrenIds({ rubricId });
 
       const updatedOwnerRubric = await RubricModel.findOneAndUpdate(
         {
@@ -552,7 +546,7 @@ export class RubricResolver {
         };
       }
 
-      const childrenIds = await getRubricsTreeIds({ rubricId });
+      const childrenIds = await RubricModel.getRubricsTreeIds({ rubricId });
       const updatedRubrics = await RubricModel.updateMany(
         {
           _id: { $in: [...childrenIds, rubricId] },
@@ -812,8 +806,8 @@ export class RubricResolver {
     @Arg('input', { nullable: true, defaultValue: {} }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
-    const rubricsIds = await getRubricsTreeIds({ rubricId: rubric.id });
-    const query = getProductsFilter({ ...args, rubrics: rubricsIds });
+    const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
+    const query = ProductModel.getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
       limit,
@@ -878,7 +872,7 @@ export class RubricResolver {
     const result = reducedAttributes.map(async (attribute) => {
       const attributeIdString = attribute._id?.toString();
 
-      const optionsGroup = await OptionsGroupModel.findById(attribute.options);
+      const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
       if (!optionsGroup) {
         return {
           id: attributeIdString + rubricIdString,
@@ -963,7 +957,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<number> {
-    return getRubricCounters({ rubric, args: input });
+    return RubricModel.getRubricCounters({ rubric, args: input });
   }
 
   @FieldResolver((_type) => Int)
@@ -971,7 +965,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<number> {
-    return getRubricCounters({ rubric, args: { ...input, active: true } });
+    return RubricModel.getRubricCounters({ rubric, args: { ...input, active: true } });
   }
 
   // This resolver for id field after aggregation

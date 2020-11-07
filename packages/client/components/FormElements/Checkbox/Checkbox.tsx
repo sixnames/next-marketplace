@@ -3,7 +3,7 @@ import Icon from '../../Icon/Icon';
 import classes from './Checkbox.module.css';
 import { FormikHandlers } from 'formik/dist/types';
 
-interface CheckboxInterface {
+export interface CheckboxInterface {
   name: string;
   onChange: FormikHandlers['handleChange'];
   notValid?: boolean;

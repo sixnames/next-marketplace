@@ -14,7 +14,7 @@ import {
   useSetRoleOperationCustomFilterMutation,
   useSetRoleOperationPermissionMutation,
 } from '../../generated/apolloComponents';
-import { GET_ROLE_QUERY } from '../../graphql/query/roles';
+import { GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import Button from '../../components/Buttons/Button';
 import classes from './RoleRules.module.css';

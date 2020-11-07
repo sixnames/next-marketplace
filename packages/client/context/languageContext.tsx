@@ -20,6 +20,8 @@ interface LanguageContextInterface {
 interface UseLanguageContextInterface {
   lang: string;
   defaultLang: string;
+  currentLangItem?: Language;
+  defaultLangItem?: Language;
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
@@ -62,6 +64,7 @@ function useLanguageContext(): UseLanguageContextInterface {
   }
 
   const { lang, languagesList } = context;
+  const currentLangItem = languagesList.find(({ key }) => key === lang);
 
   const defaultLangItem = languagesList.find(({ isDefault }) => isDefault);
   const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
@@ -154,7 +157,9 @@ function useLanguageContext(): UseLanguageContextInterface {
 
   return {
     lang,
+    currentLangItem,
     defaultLang,
+    defaultLangItem,
     setLanguage,
     languagesList,
     isCurrentLanguage,

@@ -22,6 +22,9 @@ export class AddOptionToGroupInput {
   @Field((_type) => String, { nullable: true })
   color: string;
 
+  @Field((_type) => String, { nullable: true })
+  icon: string;
+
   @Field((_type) => [OptionVariantInput], { nullable: true })
   variants?: OptionVariantInput[];
 

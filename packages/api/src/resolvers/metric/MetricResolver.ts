@@ -20,20 +20,20 @@ import getLangField from '../../utils/translations/getLangField';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { createMetricInputSchema, updateMetricSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import {
   CustomFilter,
   Localization,
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Metric.name);
+} = RoleRuleModel.getOperationsConfigs(Metric.name);
 
 @ObjectType()
 class MetricPayloadType extends PayloadType() {

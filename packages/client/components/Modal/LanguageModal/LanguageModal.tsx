@@ -43,7 +43,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
     return <Spinner isTransparent />;
   }
 
-  const { getISOLanguagesList } = data!;
+  const { getISOLanguagesOptions } = data!;
 
   const initialValues = language
     ? {
@@ -63,7 +63,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
-          const languageTemplate = getISOLanguagesList.find(({ id }) => id === values.key);
+          const languageTemplate = getISOLanguagesOptions.find(({ id }) => id === values.key);
           return confirm({
             ...values,
             nativeName: languageTemplate ? languageTemplate.nativeName : '',
@@ -83,7 +83,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
 
               <FormikSelect
                 label={'Ключ языка'}
-                options={getISOLanguagesList}
+                options={getISOLanguagesOptions}
                 name={'key'}
                 firstOption={'На назначено'}
                 testId={'language-key'}

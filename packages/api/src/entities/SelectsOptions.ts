@@ -1,6 +1,27 @@
 import { Field, ObjectType } from 'type-graphql';
 
 @ObjectType()
+export class IconOption {
+  @Field((_type) => String)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly icon: string;
+
+  @Field((_type) => String)
+  readonly nameString: string;
+}
+
+@ObjectType()
+export class AttributeViewOption {
+  @Field((_type) => String)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly nameString: string;
+}
+
+@ObjectType()
 export class GenderOption {
   @Field((_type) => String)
   readonly id: string;
@@ -11,6 +32,15 @@ export class GenderOption {
 
 @ObjectType()
 export class AttributePositioningOption {
+  @Field((_type) => String)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly nameString: string;
+}
+
+@ObjectType()
+export class OptionsGroupVariantOption {
   @Field((_type) => String)
   readonly id: string;
 

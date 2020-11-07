@@ -1,3 +1,5 @@
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+
 export const testRubric = {
   name: 'new_rubric',
   catalogueName: 'name',
@@ -10,16 +12,16 @@ export const anotherRubric = {
 
 export const testProduct = {
   name: [
-    { key: 'ru', value: 'new_product' },
-    { key: 'en', value: 'new_product' },
+    { key: DEFAULT_LANG, value: 'new_product' },
+    { key: SECONDARY_LANG, value: 'new_product' },
   ],
   cardName: [
-    { key: 'ru', value: 'new_product' },
-    { key: 'en', value: 'new_product' },
+    { key: DEFAULT_LANG, value: 'new_product' },
+    { key: SECONDARY_LANG, value: 'new_product' },
   ],
   price: 200,
   description: [
-    { key: 'ru', value: 'very long item description' },
-    { key: 'en', value: 'bar' },
+    { key: DEFAULT_LANG, value: 'very long item description' },
+    { key: SECONDARY_LANG, value: 'bar' },
   ],
 };

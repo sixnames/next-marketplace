@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { siteConfigFragment } from './query/configs';
+import { siteConfigFragment } from './configsQueries';
 
 export const sessionUserFragment = gql`
   fragment SessionUserFragment on User {

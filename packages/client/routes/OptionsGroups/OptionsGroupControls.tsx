@@ -1,7 +1,7 @@
 import React from 'react';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import {
-  LanguageType,
+  OptionsGroupFragment,
   useAddOptionToGroupMutation,
   useDeleteOptionsGroupMutation,
   useUpdateOptionsGroupMutation,
@@ -11,19 +11,14 @@ import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL, OPTIONS_GROUP_MODAL } from '../..
 import useRouterQuery from '../../hooks/useRouterQuery';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
 import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
-import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/options';
+import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
 
 interface OptionsGroupControlsInterface {
-  id: string;
-  name: LanguageType[];
-  nameString: string;
+  group: OptionsGroupFragment;
 }
 
-const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({
-  id,
-  name,
-  nameString,
-}) => {
+const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }) => {
+  const { id, nameString, variant } = group;
   const { removeQuery } = useRouterQuery();
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
@@ -59,7 +54,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({
     showModal<OptionsGroupModalInterface>({
       type: OPTIONS_GROUP_MODAL,
       props: {
-        name,
+        group,
         confirm: (values) => {
           showLoading();
           return updateOptionsGroupMutation({
@@ -93,6 +88,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({
     showModal<OptionInGroupModalInterface>({
       type: OPTION_IN_GROUP_MODAL,
       props: {
+        groupVariant: variant,
         confirm: (input) => {
           showLoading();
           return addOptionToGroupMutation({

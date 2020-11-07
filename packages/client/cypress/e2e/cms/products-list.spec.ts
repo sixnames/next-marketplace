@@ -13,7 +13,10 @@ import {
   MOCK_OPTIONS_WINE_VARIANT,
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTE_NUMBER,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+  MOCK_ATTRIBUTE_WINE_COLOR,
 } from '@yagu/mocks';
+import { ATTRIBUTE_VIEW_VARIANT_TAG, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 
 describe('Products', () => {
   beforeEach(() => {
@@ -42,8 +45,12 @@ describe('Products', () => {
     const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE.price;
     const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE.description[0].value;
 
+    const mockAttributeColorName = MOCK_ATTRIBUTE_WINE_COLOR.name[0].value;
     const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
     const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
+
+    const mockAttributesGroupWineFeaturesName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
+
     const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
     const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
     const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
@@ -73,26 +80,33 @@ describe('Products', () => {
     cy.shouldSuccess();
 
     // Should update product main fields
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('cardName-accordion-en').click();
-    cy.getByCy('description-accordion-en').click();
-    cy.getByCy('name-ru').clear().type(mockProductNewName);
-    cy.getByCy('name-en').clear().type(mockProductNewName);
-    cy.getByCy('cardName-ru').clear().type(mockProductNewCardName);
-    cy.getByCy('cardName-en').clear().type(mockProductNewCardName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockProductNewName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockProductNewName);
+    cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
+    cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
-    cy.getByCy('description-ru').clear().type(mockProductNewCarDescription);
-    cy.getByCy('description-en').clear().type(mockProductNewCarDescription);
+    cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
+    cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 
     // Should update product attributes
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockTablesRubricLevelThree}-checkbox`).check();
-    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
-    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
-    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}`).type('string');
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}-showInCard-checkbox`,
+    ).check();
+    cy.getByCy(`${mockAttributesGroupWineFeaturesName}-${mockAttributeNumberName}`).type('999');
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeNumberName}-showInCard-checkbox`,
+    ).check();
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeNumberName}-viewVariant`,
+    ).select(ATTRIBUTE_VIEW_VARIANT_TAG);
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 
@@ -104,31 +118,44 @@ describe('Products', () => {
     cy.getByCy('product-images').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
 
     // fill inputs
-    cy.getByCy('name-accordion-en').click();
-    cy.getByCy('cardName-accordion-en').click();
-    cy.getByCy('description-accordion-en').click();
-    cy.getByCy('name-ru').type(mockProductCreateName);
-    cy.getByCy('name-en').type(mockProductCreateName);
-    cy.getByCy('cardName-ru').type(mockProductCreateCardName);
-    cy.getByCy('cardName-en').type(mockProductCreateCardName);
+    cy.getByCy(`name-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`cardName-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`description-accordion-${SECONDARY_LANG}`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`).type(mockProductCreateName);
+    cy.getByCy(`name-${SECONDARY_LANG}`).type(mockProductCreateName);
+    cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductCreateCardName);
+    cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductCreateCardName);
     cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
-    cy.getByCy('description-ru').type(mockProductCreateCarDescription);
-    cy.getByCy('description-en').type(mockProductCreateCarDescription);
+    cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductCreateCarDescription);
+    cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductCreateCarDescription);
     cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
     cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
 
     // fill attributes
-    cy.getByCy(`${mockAttributeMultipleSelectValueA}-0-checkbox`).check();
-    cy.getByCy(`${mockAttributeMultipleSelectValueB}-0-checkbox`).check();
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeColorName}-${mockAttributeMultipleSelectValueA}-checkbox`,
+    ).check();
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeColorName}-${mockAttributeMultipleSelectValueB}-checkbox`,
+    ).check();
 
-    cy.selectOptionByTestId(`${mockAttributeSelectName}-0`, mockAttributeSelectValue);
-    cy.getByCy(`${mockAttributeSelectName}-0-showInCard-checkbox`).check();
+    cy.selectOptionByTestId(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeSelectName}`,
+      mockAttributeSelectValue,
+    );
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeSelectName}-showInCard-checkbox`,
+    ).check();
 
-    cy.getByCy(`${mockAttributeStringName}-0`).type('string');
-    cy.getByCy(`${mockAttributeStringName}-0-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}`).type('string');
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}-showInCard-checkbox`,
+    ).check();
 
-    cy.getByCy(`${mockAttributeNumberName}-0`).type('999');
-    cy.getByCy(`${mockAttributeNumberName}-0-showInCard-checkbox`).check();
+    cy.getByCy(`${mockAttributesGroupWineFeaturesName}-${mockAttributeNumberName}`).type('999');
+    cy.getByCy(
+      `${mockAttributesGroupWineFeaturesName}-${mockAttributeNumberName}-showInCard-checkbox`,
+    ).check();
 
     cy.getByCy('submit-new-product').click();
     cy.getByCy(mockProductCreateName).should('exist');

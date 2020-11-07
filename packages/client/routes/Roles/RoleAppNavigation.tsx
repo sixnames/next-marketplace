@@ -9,7 +9,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RoleAppNavigation.module.css';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
-import { GET_ROLE_QUERY } from '../../graphql/query/roles';
+import { GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import getBooleanFromArray from '../../utils/getBooleanFromArray';
 

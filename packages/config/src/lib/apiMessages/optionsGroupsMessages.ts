@@ -1,6 +1,7 @@
 import { DEFAULT_LANG, SECONDARY_LANG } from '../common';
+import { MessageInterface } from './messagesKeys';
 
-export const optionsGroupsMessages = [
+export const optionsGroupsMessages: MessageInterface[] = [
   {
     key: 'optionsGroups.create.duplicate',
     message: [
@@ -141,6 +142,32 @@ export const optionsGroupsMessages = [
       {
         key: SECONDARY_LANG,
         value: 'Options group not found.',
+      },
+    ],
+  },
+  {
+    key: 'optionsGroups.addOption.colorError',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Цвет обязателен.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Color is required.',
+      },
+    ],
+  },
+  {
+    key: 'optionsGroups.addOption.iconError',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Иконка обязательна.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Icon is required.',
       },
     ],
   },

@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { getModelForClass, index, prop } from '@typegoose/typegoose';
+import { DocumentType, getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { CityCounter, GenderEnum, LanguageType } from './common';
@@ -7,6 +7,7 @@ import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver'
 import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
+import { ProductModel } from './Product';
 
 @ObjectType()
 export class RubricAttributesGroup {
@@ -81,6 +82,24 @@ export class RubricCatalogueTitleField {
   readonly gender: GenderEnum;
 }
 
+interface GetRubricChildrenIdsInterface {
+  rubricId: string;
+}
+
+interface GetRubricsTreeIdsInterface {
+  rubricId: string;
+  acc?: string[];
+}
+
+interface GetDeepRubricChildrenIdsInterface {
+  rubricId: string;
+}
+
+interface GetRubricCountersInterface {
+  rubric: DocumentType<Rubric>;
+  args?: { [key: string]: any };
+}
+
 @ObjectType()
 @index({ '$**': 'text' })
 export class Rubric {
@@ -151,6 +170,53 @@ export class Rubric {
 
   @Field(() => Int)
   readonly activeProductsCount: number;
+
+  static async getRubricChildrenIds({
+    rubricId,
+  }: GetRubricChildrenIdsInterface): Promise<string[]> {
+    const rubricChildren = await RubricModel.find({
+      parent: rubricId,
+    })
+      .select({ id: 1 })
+      .lean()
+      .exec();
+    return rubricChildren.map(({ _id }) => _id.toString());
+  }
+
+  static async getRubricsTreeIds({ rubricId, acc = [] }: GetRubricsTreeIdsInterface) {
+    const childrenIds = await this.getRubricChildrenIds({ rubricId });
+    const newAcc = [...acc, rubricId];
+    if (childrenIds.length === 0) {
+      return newAcc;
+    }
+
+    const array: Promise<string[][]> = Promise.all(
+      childrenIds.map(async (rubricId) => {
+        return this.getRubricsTreeIds({ rubricId, acc: newAcc });
+      }),
+    );
+    const set = new Set((await array).flat());
+    const result = [];
+    for (const setItem of set.values()) {
+      result.push(setItem);
+    }
+
+    return result;
+  }
+
+  static async getDeepRubricChildrenIds({ rubricId }: GetDeepRubricChildrenIdsInterface) {
+    const treeIds = await this.getRubricsTreeIds({ rubricId });
+    return treeIds.filter((id) => id !== rubricId);
+  }
+
+  static async getRubricCounters({ rubric, args = {} }: GetRubricCountersInterface) {
+    const rubricsIds = await this.getRubricsTreeIds({ rubricId: rubric.id || rubric._id });
+    const query = ProductModel.getProductsFilter({ ...args, rubric: rubricsIds });
+
+    return ProductModel.countDocuments({
+      ...query,
+    });
+  }
 }
 
 export const RubricModel = getModelForClass(Rubric);

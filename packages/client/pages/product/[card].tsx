@@ -5,7 +5,7 @@ import SiteLayout from '../../layout/SiteLayout/SiteLayout';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import CardRoute from '../../routes/CardRoute/CardRoute';
-import { CATALOGUE_CARD_QUERY } from '../../graphql/query/cardQuery';
+import { CATALOGUE_CARD_QUERY } from '../../graphql/query/cardQueries';
 import getSiteServerSideProps, { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 
 export type CardData = GetCatalogueCardQueryQueryResult['data'];

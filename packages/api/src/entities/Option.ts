@@ -65,6 +65,10 @@ export class Option {
   @Field((_type) => String, { nullable: true })
   @prop({ type: String })
   color?: string | null;
+
+  @Field((_type) => String, { nullable: true })
+  @prop({ type: String })
+  icon?: string | null;
 }
 
 export const OptionModel = getModelForClass(Option);

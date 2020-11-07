@@ -28,6 +28,7 @@ export * from './rubricVariantsMessages';
 export * from './optionsGroupsMessages';
 export * from './rubricsMessages';
 export * from './messagesKeys';
+export * from './iconTypes';
 
 export const apiMessages = [
   ...commonMessages,

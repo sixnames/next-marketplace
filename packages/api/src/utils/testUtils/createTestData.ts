@@ -1,7 +1,7 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
 import { OptionModel } from '../../entities/Option';
-import { OptionsGroupModel } from '../../entities/OptionsGroup';
+import { OptionsGroupModel, OptionsGroupVariantEnum } from '../../entities/OptionsGroup';
 import {
   AttributeModel,
   AttributePositionInTitleEnum,
@@ -47,6 +47,13 @@ import {
   MOCK_PRODUCT_E,
   MOCK_OPTIONS_GROUP_WINE_VINTAGE,
   MOCK_ATTRIBUTE_WINE_VINTAGE,
+  MOCK_OPTIONS_COMBINATION,
+  MOCK_OPTIONS_GROUP_COMBINATIONS,
+  MOCK_ATTRIBUTE_WINE_COMBINATIONS,
+  MOCK_ATTRIBUTE_OUTER_RATING_A,
+  MOCK_ATTRIBUTE_OUTER_RATING_B,
+  MOCK_ATTRIBUTE_OUTER_RATING_C,
+  MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -54,8 +61,19 @@ import {
   SECONDARY_LANG,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
 } from '@yagu/config';
-import { ProductConnectionModel, ProductModel } from '../../entities/Product';
+import {
+  ProductAttributeViewVariantEnum,
+  ProductConnectionModel,
+  ProductModel,
+} from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
 import { CurrencyModel } from '../../entities/Currency';
@@ -94,13 +112,17 @@ const createTestData = async () => {
     const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);
     const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
     const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
+    const optionsCombination = await OptionModel.insertMany(MOCK_OPTIONS_COMBINATION);
+
     const optionsIdsVintage = optionsVintage.map(({ id }) => id);
     const optionsIdsColor = optionsColor.map(({ id }) => id);
     const optionsIdsWineType = optionsWineType.map(({ id }) => id);
+    const optionsIdsCombination = optionsCombination.map(({ id }) => id);
 
     const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
     const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
     const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
+    const optionsSlugsCombination = optionsCombination.map(({ slug }) => slug);
 
     const optionsGroupWineVintage = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_WINE_VINTAGE,
@@ -115,13 +137,45 @@ const createTestData = async () => {
     const optionsGroupColors = await OptionsGroupModel.create({
       ...MOCK_OPTIONS_GROUP_COLORS,
       options: optionsIdsColor,
+      variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantEnum,
+    });
+
+    const optionsGroupCombination = await OptionsGroupModel.create({
+      ...MOCK_OPTIONS_GROUP_COMBINATIONS,
+      options: optionsIdsCombination,
+      variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantEnum,
     });
 
     // Attributes
+    const attributeOuterRatingA = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_OUTER_RATING_A,
+      variant: MOCK_ATTRIBUTE_OUTER_RATING_A.variant as AttributeVariantEnum,
+      positioningInTitle: [],
+    });
+
+    const attributeOuterRatingB = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_OUTER_RATING_B,
+      variant: MOCK_ATTRIBUTE_OUTER_RATING_B.variant as AttributeVariantEnum,
+      positioningInTitle: [],
+    });
+
+    const attributeOuterRatingC = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_OUTER_RATING_C,
+      variant: MOCK_ATTRIBUTE_OUTER_RATING_C.variant as AttributeVariantEnum,
+      positioningInTitle: [],
+    });
+
+    const attributeWineCombinations = await AttributeModel.create({
+      ...MOCK_ATTRIBUTE_WINE_COMBINATIONS,
+      variant: MOCK_ATTRIBUTE_WINE_COMBINATIONS.variant as AttributeVariantEnum,
+      optionsGroup: optionsGroupCombination.id,
+      positioningInTitle: [],
+    });
+
     const attributeWineVintage = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_VINTAGE,
       variant: MOCK_ATTRIBUTE_WINE_VINTAGE.variant as AttributeVariantEnum,
-      options: optionsGroupWineVintage.id,
+      optionsGroup: optionsGroupWineVintage.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,
@@ -137,7 +191,7 @@ const createTestData = async () => {
     const attributeWineColor = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_COLOR,
       variant: MOCK_ATTRIBUTE_WINE_COLOR.variant as AttributeVariantEnum,
-      options: optionsGroupColors.id,
+      optionsGroup: optionsGroupColors.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,
@@ -153,7 +207,7 @@ const createTestData = async () => {
     const attributeWineType = await AttributeModel.create({
       ...MOCK_ATTRIBUTE_WINE_VARIANT,
       variant: MOCK_ATTRIBUTE_WINE_VARIANT.variant as AttributeVariantEnum,
-      options: optionsGroupWineTypes.id,
+      optionsGroup: optionsGroupWineTypes.id,
       positioningInTitle: [
         {
           key: DEFAULT_LANG,
@@ -186,9 +240,15 @@ const createTestData = async () => {
       ],
     });
 
+    const attributesGroupOuterRating = await AttributesGroupModel.create({
+      ...MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
+      attributes: [attributeOuterRatingA.id, attributeOuterRatingB.id, attributeOuterRatingC.id],
+    });
+
     const attributesGroupWineFeatures = await AttributesGroupModel.create({
       ...MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
       attributes: [
+        attributeWineCombinations.id,
         attributeWineVintage.id,
         attributeWineColor.id,
         attributeWineType.id,
@@ -214,6 +274,12 @@ const createTestData = async () => {
         node: attributesGroupWineFeatures.id,
         isOwner,
       },
+      {
+        showInCatalogueFilter: [],
+        showInSiteNav: false,
+        node: attributesGroupOuterRating.id,
+        isOwner,
+      },
     ];
 
     const rubricAttributesGroupsB = (isOwner: boolean) => [
@@ -221,6 +287,12 @@ const createTestData = async () => {
         showInCatalogueFilter: [],
         showInSiteNav: true,
         node: attributesGroupWhiskeyFeatures.id,
+        isOwner,
+      },
+      {
+        showInCatalogueFilter: [],
+        showInSiteNav: false,
+        node: attributesGroupOuterRating.id,
         isOwner,
       },
     ];
@@ -374,6 +446,7 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineVintage.slug,
               value: [wineVintageOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
@@ -385,6 +458,7 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineColor.slug,
               value: [wineColorOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
@@ -396,12 +470,40 @@ const createTestData = async () => {
               showInCard: true,
               key: attributeWineType.slug,
               value: [wineTypeOptions],
+              viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,
             },
           ]
         : [];
 
       return {
         attributesGroups: [
+          {
+            node: attributesGroupOuterRating.id,
+            showInCard: true,
+            attributes: [
+              {
+                node: attributeOuterRatingA.id,
+                showInCard: true,
+                key: attributeOuterRatingA.slug,
+                value: ['4.2'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeOuterRatingB.id,
+                showInCard: true,
+                key: attributeOuterRatingB.slug,
+                value: ['88'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeOuterRatingC.id,
+                showInCard: true,
+                key: attributeOuterRatingC.slug,
+                value: ['22'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as ProductAttributeViewVariantEnum,
+              },
+            ],
+          },
           {
             node: attributesGroupWineFeatures.id,
             showInCard: true,
@@ -413,13 +515,24 @@ const createTestData = async () => {
                 node: attributeString.id,
                 showInCard: true,
                 key: attributeString.slug,
-                value: ['string'],
+                value: [
+                  'Very long string attribute. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto consectetur, consequatur cumque cupiditate enim laborum nihil nisi obcaecati officia perspiciatis quidem quos rem similique sunt ut voluptatum! Deleniti, provident!',
+                ],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeWineCombinations.id,
+                showInCard: true,
+                key: attributeWineCombinations.slug,
+                value: optionsSlugsCombination,
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as ProductAttributeViewVariantEnum,
               },
               {
                 node: attributeNumber.id,
                 showInCard: true,
                 key: attributeNumber.slug,
                 value: ['123'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
               },
             ],
           },

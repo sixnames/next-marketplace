@@ -27,7 +27,6 @@ import {
   updateCityInCountrySchema,
   updateCountrySchema,
 } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -35,19 +34,20 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(Country.name);
+} = RoleRuleModel.getOperationsConfigs(Country.name);
 
 const {
   operationConfigCreate: operationConfigCreateCity,
   operationConfigUpdate: operationConfigUpdateCity,
   operationConfigDelete: operationConfigDeleteCity,
-} = getOperationsConfigs(City.name);
+} = RoleRuleModel.getOperationsConfigs(City.name);
 
 @ObjectType()
 class CountryPayloadType extends PayloadType() {

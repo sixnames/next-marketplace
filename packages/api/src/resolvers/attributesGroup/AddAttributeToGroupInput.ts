@@ -23,10 +23,10 @@ export class AddAttributeToGroupInput {
   variant: AttributeVariantEnum;
 
   @Field((_type) => ID, { nullable: true })
-  options: string;
+  optionsGroup?: string;
 
   @Field((_type) => ID, { nullable: true })
-  metric: string;
+  metric?: string;
 
   @Field((_type) => [AttributePositioningInTitleInput], { nullable: true })
   positioningInTitle?: AttributePositioningInTitleInput[];

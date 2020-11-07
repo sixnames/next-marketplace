@@ -7,7 +7,7 @@ import useRouterQuery from '../../hooks/useRouterQuery';
 import { useDeleteRoleMutation, useGetRoleQuery } from '../../generated/apolloComponents';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { GET_ALL_ROLES_QUERY } from '../../graphql/query/roles';
+import { GET_ALL_ROLES_QUERY } from '../../graphql/query/rolesQueries';
 import { CONFIRM_MODAL } from '../../config/modals';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 

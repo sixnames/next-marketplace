@@ -19,7 +19,6 @@ import { DocumentType } from '@typegoose/typegoose';
 import getLangField from '../../utils/translations/getLangField';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import { createRubricVariantInputSchema, updateRubricVariantSchema } from '@yagu/validation';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -27,13 +26,14 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(RubricVariant.name);
+} = RoleRuleModel.getOperationsConfigs(RubricVariant.name);
 
 @ObjectType()
 class RubricVariantPayloadType extends PayloadType() {

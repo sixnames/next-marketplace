@@ -3,12 +3,12 @@ import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
 import { ContextInterface } from '../../types/context';
 import getLangField from '../../utils/translations/getLangField';
-import { getOperationsConfigs } from '../../utils/auth/auth';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import { CustomFilter } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
-const { operationConfigRead } = getOperationsConfigs(Option.name);
+const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Option.name);
 
 @Resolver((_of) => Option)
 export class OptionResolver {

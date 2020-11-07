@@ -20,12 +20,6 @@ import { UpdateMyPasswordInput } from './UpdateMyPasswordInput';
 import { SignUpInput } from './SignUpInput';
 import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
-import {
-  attemptSignIn,
-  ensureSignedOut,
-  attemptSignOut,
-  getOperationsConfigs,
-} from '../../utils/auth/auth';
 import { compare, hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
@@ -51,13 +45,14 @@ import {
 } from '../../decorators/parameterDecorators';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { FilterQuery } from 'mongoose';
+import { RoleRuleModel } from '../../entities/RoleRule';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
   operationConfigDelete,
-} = getOperationsConfigs(User.name);
+} = RoleRuleModel.getOperationsConfigs(User.name);
 
 @ObjectType()
 class PaginatedUsersResponse extends PaginateType(User) {}
@@ -404,7 +399,7 @@ export class UserResolver {
     @Arg('input') input: SignInInput,
   ): Promise<UserPayloadType> {
     try {
-      const isSignedOut = ensureSignedOut(ctx.req);
+      const isSignedOut = UserModel.ensureSignedOut(ctx.req);
 
       if (!isSignedOut) {
         return {
@@ -413,7 +408,7 @@ export class UserResolver {
         };
       }
 
-      const { user, message } = await attemptSignIn(input.email, input.password, lang);
+      const { user, message } = await UserModel.attemptSignIn(input.email, input.password, lang);
 
       if (!user) {
         return {
@@ -448,7 +443,7 @@ export class UserResolver {
     @Localization() { lang }: LocalizationPayloadInterface,
   ): Promise<UserPayloadType> {
     try {
-      const isSignedOut = await attemptSignOut(ctx.req);
+      const isSignedOut = await UserModel.attemptSignOut(ctx.req);
 
       if (!isSignedOut) {
         return {

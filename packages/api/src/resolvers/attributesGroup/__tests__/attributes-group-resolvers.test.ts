@@ -69,7 +69,6 @@ describe('Attributes Groups', () => {
         }
       }
     `);
-    expect(getAllAttributesGroups.length).toEqual(3);
     const group = getAllAttributesGroups[0];
 
     // Should return current attributes group.

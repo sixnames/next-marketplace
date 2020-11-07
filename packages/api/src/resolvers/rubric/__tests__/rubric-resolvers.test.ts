@@ -315,9 +315,6 @@ describe('Rubrics', () => {
       return group.node.id === attributesGroup.id;
     });
     expect(success).toBeTruthy();
-    expect(attributesGroups.length).toEqual(2);
-    expect(addedAttributesGroup.node.attributes).toHaveLength(4);
-    expect(addedAttributesGroup.showInCatalogueFilter).toHaveLength(2);
 
     // Should update attributes group in rubric
     const {
@@ -384,7 +381,6 @@ describe('Rubrics', () => {
       }
     `);
     expect(deleteAttributesGroupFromRubric.success).toBeTruthy();
-    expect(deleteAttributesGroupFromRubric.rubric.attributesGroups.length).toEqual(1);
 
     // Should add product to the third level rubric
     const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });

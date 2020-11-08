@@ -60,6 +60,7 @@ import { RoleRuleResolver } from './resolvers/roleRule/RoleRuleResolver';
 import { AuthField } from './decorators/methodDecorators';
 import { RoleModel } from './entities/Role';
 import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
+import { CompanyResolver } from './resolvers/company/CompanyResolver';
 
 interface CreateAppInterface {
   app: Express;
@@ -96,6 +97,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       RubricResolver,
       RubricVariantResolver,
       UserResolver,
+      CompanyResolver,
       GendersListResolver,
       AttributeVariantResolver,
       AttributePositioningListResolver,

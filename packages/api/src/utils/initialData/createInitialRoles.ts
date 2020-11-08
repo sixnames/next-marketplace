@@ -130,18 +130,20 @@ interface RoleTemplateInterface {
 interface CreateRoleInterface {
   template: RoleTemplateInterface;
   allowedAppNavigation: string[];
+  allow?: boolean;
 }
 
 export async function createRole({
   template,
   allowedAppNavigation,
+  allow = false,
 }: CreateRoleInterface): Promise<DocumentType<Role>> {
   let role = await RoleModel.findOne({ slug: template.slug });
   if (!role) {
     role = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedAppNavigation });
   }
   // check new rules
-  await createRoleRules({ allow: false, roleId: role.id });
+  await createRoleRules({ allow, roleId: role.id });
 
   return role;
 }
@@ -174,6 +176,7 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   const adminRole = await createRole({
     template: ROLE_TEMPLATE_ADMIN,
     allowedAppNavigation,
+    allow: true,
   });
 
   // check new nav items

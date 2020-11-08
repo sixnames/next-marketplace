@@ -60,6 +60,8 @@ export const MOCK_COMPANY = {
   },
 };
 
+export const MOCK_COMPANIES = [MOCK_COMPANY];
+
 // Languages
 export const ISO_LANGUAGES = [
   {

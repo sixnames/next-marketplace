@@ -315,6 +315,10 @@ export const ROLE_RULES_TEMPLATE = [
     nameString: 'Компании',
     entity: 'Company',
   },
+  {
+    nameString: 'Магазин',
+    entity: 'Shop',
+  },
 ];
 
 export const ROLE_TEMPLATE_ADMIN = {

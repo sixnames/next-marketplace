@@ -677,14 +677,13 @@ const createTestData = async () => {
       dist: ASSETS_DIST_COMPANIES,
       slug: companySlug,
     });
-    const company = await CompanyModel.create({
+    await CompanyModel.create({
       ...MOCK_COMPANY,
       owner: companyOwner.id,
       logo: companyLogo,
       slug: companySlug,
       staff: [],
     });
-    console.log(JSON.stringify(company, null, 2));
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);
   }

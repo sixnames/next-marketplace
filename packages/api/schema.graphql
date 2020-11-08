@@ -152,6 +152,18 @@ input CityLangInput {
   value: [String!]!
 }
 
+type Company {
+  contacts: ContactsType!
+  createdAt: Timestamp!
+  id: ID!
+  logo: AssetType!
+  nameString: String!
+  owner: User!
+  slug: String!
+  staff: [User!]!
+  updatedAt: Timestamp!
+}
+
 type Config {
   """Accepted formats for asset config."""
   acceptedFormats: [String!]!
@@ -199,6 +211,11 @@ enum ConfigVariantEnum {
   number
   string
   tel
+}
+
+type ContactsType {
+  emails: [String!]!
+  phones: [String!]!
 }
 
 type Country {
@@ -722,6 +739,7 @@ type Query {
     exclude: [ID!] = []
   ): [AttributesGroup!]!
   getAllCities: [City!]!
+  getAllCompanies: [Company!]!
   getAllConfigs: [Config!]!
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!

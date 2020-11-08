@@ -6,6 +6,7 @@ import {
   ROLE_RULES_TEMPLATE,
   ROLE_RULE_OPERATIONS_TEMPLATE,
   ROLE_TEMPLATE_COMPANY_OWNER,
+  ROLE_TEMPLATE_COMPANY_MANAGER,
 } from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
@@ -152,6 +153,7 @@ export interface CreateInitialRolesPayloadInterface {
   adminRoleId: string;
   guestRoleId: string;
   companyOwnerRoleId: string;
+  companyManagerRoleId: string;
 }
 
 export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInterface> {
@@ -164,6 +166,12 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   // Company owner role
   const companyOwnerRole = await createRole({
     template: ROLE_TEMPLATE_COMPANY_OWNER,
+    allowedAppNavigation: [],
+  });
+
+  // Company owner manager
+  const companyManagerRole = await createRole({
+    template: ROLE_TEMPLATE_COMPANY_MANAGER,
     allowedAppNavigation: [],
   });
 
@@ -196,5 +204,6 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
     adminRoleId: adminRole.id,
     guestRoleId: guestRole.id,
     companyOwnerRoleId: companyOwnerRole.id,
+    companyManagerRoleId: companyManagerRole.id,
   };
 }

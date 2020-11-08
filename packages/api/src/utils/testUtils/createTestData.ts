@@ -56,6 +56,7 @@ import {
   MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
   MOCK_COMPANY_OWNER,
   MOCK_COMPANY,
+  MOCK_COMPANY_MANAGER,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -663,11 +664,19 @@ const createTestData = async () => {
     });
 
     // Company owner
-    const password = await hash(MOCK_COMPANY_OWNER.password, 10);
+    const companyOwnerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
     const companyOwner = await UserModel.create({
       ...MOCK_COMPANY_OWNER,
       role: initialRolesIds.companyOwnerRoleId,
-      password,
+      password: companyOwnerPassword,
+    });
+
+    // Company manager
+    const companyManagerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+    const companyManager = await UserModel.create({
+      ...MOCK_COMPANY_MANAGER,
+      role: initialRolesIds.companyOwnerRoleId,
+      password: companyManagerPassword,
     });
 
     // Company
@@ -682,7 +691,7 @@ const createTestData = async () => {
       owner: companyOwner.id,
       logo: companyLogo,
       slug: companySlug,
-      staff: [],
+      staff: [companyManager.id],
     });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);

@@ -350,3 +350,13 @@ export const ROLE_TEMPLATE_COMPANY_OWNER = {
   slug: ROLE_SLUG_COMPANY_OWNER,
   isStuff: false,
 };
+
+export const ROLE_TEMPLATE_COMPANY_MANAGER = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Сотрудник компании' },
+    { key: SECONDARY_LANG, value: 'Company manager' },
+  ],
+  description: 'Сотрудник компании',
+  slug: ROLE_SLUG_COMPANY_MANAGER,
+  isStuff: false,
+};

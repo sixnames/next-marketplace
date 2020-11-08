@@ -220,6 +220,8 @@ export const INITIAL_APP_NAVIGATION = [appRoute, cmsRoute, profileRoute];
 
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
+export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
+export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 
 export const ROLE_RULE_OPERATIONS_TEMPLATE = [
   {
@@ -309,7 +311,22 @@ export const ROLE_RULES_TEMPLATE = [
     nameString: 'Пользователи',
     entity: 'User',
   },
+  {
+    nameString: 'Компании',
+    entity: 'Company',
+  },
 ];
+
+export const ROLE_TEMPLATE_ADMIN = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Админ' },
+    { key: SECONDARY_LANG, value: 'Admin' },
+  ],
+  nameString: '',
+  description: 'Администратор сайта',
+  slug: ROLE_SLUG_ADMIN,
+  isStuff: true,
+};
 
 export const ROLE_TEMPLATE_GUEST = {
   name: [
@@ -322,13 +339,13 @@ export const ROLE_TEMPLATE_GUEST = {
   isStuff: false,
 };
 
-export const ROLE_TEMPLATE_ADMIN = {
+export const ROLE_TEMPLATE_COMPANY_OWNER = {
   name: [
-    { key: DEFAULT_LANG, value: 'Админ' },
-    { key: SECONDARY_LANG, value: 'Admin' },
+    { key: DEFAULT_LANG, value: 'Владелец компании' },
+    { key: SECONDARY_LANG, value: 'Company owner' },
   ],
   nameString: '',
-  description: 'Администратор сайта',
-  slug: ROLE_SLUG_ADMIN,
-  isStuff: true,
+  description: 'Владелец компании',
+  slug: ROLE_SLUG_COMPANY_OWNER,
+  isStuff: false,
 };

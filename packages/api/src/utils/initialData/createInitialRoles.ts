@@ -7,6 +7,8 @@ import {
   ROLE_TEMPLATE_GUEST,
   ROLE_RULES_TEMPLATE,
   ROLE_RULE_OPERATIONS_TEMPLATE,
+  ROLE_SLUG_COMPANY_OWNER,
+  ROLE_TEMPLATE_COMPANY_OWNER,
 } from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
@@ -119,7 +121,13 @@ export async function createRoleRules({ allow, roleId }: CreateRoleRulesInterfac
   }
 }
 
-export async function createInitialRoles(): Promise<string> {
+export interface CreateInitialRolesPayloadInterface {
+  adminRoleId: string;
+  guestRoleId: string;
+  companyOwnerRoleId: string;
+}
+
+export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInterface> {
   // Guest role
   let guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
   if (!guestRole) {
@@ -127,6 +135,17 @@ export async function createInitialRoles(): Promise<string> {
   }
   // check new rules
   await createRoleRules({ allow: false, roleId: guestRole.id });
+
+  // Company owner role
+  let companyOwnerRole = await RoleModel.findOne({ slug: ROLE_SLUG_COMPANY_OWNER });
+  if (!companyOwnerRole) {
+    companyOwnerRole = await RoleModel.create({
+      ...ROLE_TEMPLATE_COMPANY_OWNER,
+      allowedAppNavigation: [],
+    });
+  }
+  // check new rules
+  await createRoleRules({ allow: false, roleId: companyOwnerRole.id });
 
   // Admin role
   const adminNavItems = await createInitialAppNavigation({
@@ -155,5 +174,9 @@ export async function createInitialRoles(): Promise<string> {
   // check new rules
   await createRoleRules({ allow: true, roleId: adminRole.id });
 
-  return adminRole.id;
+  return {
+    adminRoleId: adminRole.id,
+    guestRoleId: guestRole.id,
+    companyOwnerRoleId: companyOwnerRole.id,
+  };
 }

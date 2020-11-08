@@ -9,11 +9,15 @@ import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import createInitialApiMessages from './createInitialApiMessages';
 import { createInitialSiteConfigs } from './createInitialSiteConfigs';
-import { createInitialRoles } from './createInitialRoles';
+import { createInitialRoles, CreateInitialRolesPayloadInterface } from './createInitialRoles';
 import { createInitialLocalizationData } from './createInitialLocalizationData';
 import { Types } from 'mongoose';
 
-async function createInitialData() {
+interface createInitialDataPayloadInterface {
+  initialRolesIds: CreateInitialRolesPayloadInterface;
+}
+
+async function createInitialData(): Promise<createInitialDataPayloadInterface> {
   // Create initial site config
   await createInitialSiteConfigs();
 
@@ -24,7 +28,8 @@ async function createInitialData() {
   await createInitialApiMessages();
 
   // Create roles and get admin role
-  const adminRoleId = await createInitialRoles();
+  const initialRolesIds = await createInitialRoles();
+  const { adminRoleId } = initialRolesIds;
 
   // Create admin user
   let admin = await UserModel.findOne({ email: ADMIN_EMAIL });
@@ -43,6 +48,10 @@ async function createInitialData() {
   if (!Types.ObjectId.isValid(admin.role)) {
     await UserModel.findByIdAndUpdate(admin.id, { role: adminRoleId });
   }
+
+  return {
+    initialRolesIds,
+  };
 }
 
 export default createInitialData;

@@ -54,6 +54,7 @@ import {
   MOCK_ATTRIBUTE_OUTER_RATING_B,
   MOCK_ATTRIBUTE_OUTER_RATING_C,
   MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
+  MOCK_COMPANY_OWNER,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -81,6 +82,8 @@ import { CityModel } from '../../entities/City';
 import { CountryModel } from '../../entities/Country';
 import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
+import { UserModel } from '../../entities/User';
+import { hash } from 'bcryptjs';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -94,7 +97,7 @@ const createTestData = async () => {
     await clearTestData();
 
     // Initial data
-    await createInitialData();
+    const { initialRolesIds } = await createInitialData();
 
     // Currencies, countries and cities
     const secondaryCurrency = await CurrencyModel.create(MOCK_CURRENCIES[1]);
@@ -654,6 +657,15 @@ const createTestData = async () => {
     await ProductModel.findByIdAndUpdate(connectionProductC.id, {
       slug: connectionProductCSlug.slug,
     });
+
+    // Company owner
+    const password = await hash(MOCK_COMPANY_OWNER.password, 10);
+    const companyOwner = await UserModel.create({
+      ...MOCK_COMPANY_OWNER,
+      role: initialRolesIds.companyOwnerRoleId,
+      password,
+    });
+    console.log(JSON.stringify(companyOwner, null, 2));
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);
   }

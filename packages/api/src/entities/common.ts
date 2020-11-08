@@ -28,11 +28,11 @@ export class PointGeoJSON {
 @ObjectType()
 export class ContactsType {
   @Field(() => [String])
-  @prop({ required: true, default: [] })
+  @prop({ type: String, required: true, default: [] })
   public emails: string[];
 
   @Field(() => [String])
-  @prop({ required: true, default: [] })
+  @prop({ type: String, required: true, default: [] })
   public phones: string[];
 }
 

@@ -13,6 +13,10 @@ export class Company extends TimeStamps {
   @prop({ type: String, required: true })
   nameString: string;
 
+  @Field(() => String)
+  @prop({ required: true })
+  slug: string;
+
   @Field(() => AssetType)
   @prop({ type: AssetType, required: true })
   logo: AssetType;

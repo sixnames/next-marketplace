@@ -8,7 +8,7 @@ import {
   AttributeVariantEnum,
 } from '../../entities/Attribute';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
-import { generateDefaultLangSlug } from '../slug';
+import { generateDefaultLangSlug, generateSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import {
@@ -55,6 +55,7 @@ import {
   MOCK_ATTRIBUTE_OUTER_RATING_C,
   MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
   MOCK_COMPANY_OWNER,
+  MOCK_COMPANY,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -84,6 +85,9 @@ import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
 import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
+import { CompanyModel } from '../../entities/Company';
+import generateTestAsset from './generateTestAsset';
+import { ASSETS_DIST_COMPANIES } from '../../config';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -665,7 +669,22 @@ const createTestData = async () => {
       role: initialRolesIds.companyOwnerRoleId,
       password,
     });
-    console.log(JSON.stringify(companyOwner, null, 2));
+
+    // Company
+    const companySlug = generateSlug(MOCK_COMPANY.nameString);
+    const companyLogo = await generateTestAsset({
+      targetFileName: 'test-company-logo',
+      dist: ASSETS_DIST_COMPANIES,
+      slug: companySlug,
+    });
+    const company = await CompanyModel.create({
+      ...MOCK_COMPANY,
+      owner: companyOwner.id,
+      logo: companyLogo,
+      slug: companySlug,
+      staff: [],
+    });
+    console.log(JSON.stringify(company, null, 2));
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);
   }

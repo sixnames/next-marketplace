@@ -144,6 +144,7 @@ const messagesKeys = [
   'companies.create.duplicate',
   'companies.create.error',
   'companies.create.success',
+  'companies.update.notFound',
   'companies.update.duplicate',
   'companies.update.error',
   'companies.update.success',

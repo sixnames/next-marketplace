@@ -150,5 +150,39 @@ describe('Company', () => {
       },
     });
     expect(createCompanyValidation.errors).toBeDefined();
+
+    // Should update company
+    const companyNewName = 'companyNewName';
+    const updateCompanyPayload = await mutateWithImages({
+      mutation: gql`
+        mutation UpdateCompany($input: UpdateCompanyInput!) {
+          updateCompany(input: $input) {
+            success
+            message
+            company {
+              id
+              nameString
+              slug
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        return {
+          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          nameString: companyNewName,
+          logo: images,
+          owner: sampleUser?.id,
+          staff: [],
+          id: createCompany.company.id,
+        };
+      },
+    });
+    const {
+      data: { updateCompany },
+    } = updateCompanyPayload;
+    expect(updateCompany.success).toBeTruthy();
+    expect(updateCompany.company.id).toEqual(createCompany.company.id);
+    expect(updateCompany.company.nameString).toEqual(companyNewName);
   });
 });

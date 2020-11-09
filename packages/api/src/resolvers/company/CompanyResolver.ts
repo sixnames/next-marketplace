@@ -25,13 +25,16 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { createCompanySchema } from '@yagu/validation';
+import { createCompanySchema, updateCompanySchema } from '@yagu/validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { UpdateCompanyInput } from './UpdateCompanyInput';
 
-const { operationConfigCreate, operationConfigRead } = RoleRuleModel.getOperationsConfigs(
-  Company.name,
-);
+const {
+  operationConfigCreate,
+  operationConfigRead,
+  operationConfigUpdate,
+} = RoleRuleModel.getOperationsConfigs(Company.name);
 
 @ObjectType()
 class CompanyPayloadtype extends PayloadType() {
@@ -100,6 +103,72 @@ export class CompanyResolver {
         success: true,
         message: await getApiMessage({ key: 'companies.create.success', lang }),
         company,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => CompanyPayloadtype)
+  @ValidateMethod({ schema: updateCompanySchema })
+  @AuthMethod(operationConfigUpdate)
+  async updateCompany(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigRead) customFiler: FilterQuery<Company>,
+    @Arg('input') input: UpdateCompanyInput,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const { nameString, logo, id } = input;
+      const company = await CompanyModel.findOne({ _id: id, ...customFiler });
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.update.notFound', lang }),
+        };
+      }
+
+      const exist = await CompanyModel.findOne({ nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.update.duplicate', lang }),
+        };
+      }
+
+      const slug = generateSlug(nameString);
+      const [assetsResult] = await storeUploads({
+        files: [logo[0]],
+        slug,
+        dist: ASSETS_DIST_COMPANIES,
+      });
+      const updatedCompany = await CompanyModel.findOneAndUpdate(
+        {
+          _id: id,
+        },
+        {
+          ...input,
+          logo: assetsResult,
+          slug,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedCompany) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.update.error', lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: 'companies.update.success', lang }),
+        company: updatedCompany,
       };
     } catch (e) {
       return {

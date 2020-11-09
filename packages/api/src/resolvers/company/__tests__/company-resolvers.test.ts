@@ -51,6 +51,15 @@ describe('Company', () => {
               emails
               phones
             }
+            shops {
+              id
+              slug
+              nameString
+              address {
+                type
+                coordinates
+              }
+            }
           }
         }
       `,

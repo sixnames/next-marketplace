@@ -120,6 +120,19 @@ export const companiesMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'companies.shopsDelete.error',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ошибка удаления магазинов компании.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Company shops delete error.',
+      },
+    ],
+  },
+  {
     key: 'companies.delete.success',
     message: [
       {

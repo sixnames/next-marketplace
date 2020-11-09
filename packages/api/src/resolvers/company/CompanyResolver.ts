@@ -29,6 +29,7 @@ import { createCompanySchema, updateCompanySchema } from '@yagu/validation';
 import getApiMessage from '../../utils/translations/getApiMessage';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
+import { Shop, ShopModel } from '../../entities/Shop';
 
 const {
   operationConfigCreate,
@@ -196,7 +197,15 @@ export class CompanyResolver {
         };
       }
 
-      // TODO delete all related shops
+      // Remove all shops
+      const removedShops = await ShopModel.deleteMany({ _id: { $in: company.shops } });
+      if (!removedShops) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.shopsDelete.error', lang }),
+        };
+      }
+
       const removedCompany = await CompanyModel.findOneAndDelete({
         _id: id,
       });
@@ -233,5 +242,10 @@ export class CompanyResolver {
   @FieldResolver((_returns) => [User])
   async staff(@Root() company: DocumentType<Company>): Promise<User[]> {
     return UserModel.find({ _id: { $in: company.staff } });
+  }
+
+  @FieldResolver((_returns) => [Shop])
+  async shops(@Root() company: DocumentType<Company>): Promise<Shop[]> {
+    return ShopModel.find({ _id: { $in: company.shops } });
   }
 }

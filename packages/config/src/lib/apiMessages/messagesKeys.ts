@@ -150,6 +150,7 @@ const messagesKeys = [
   'companies.update.success',
   'companies.delete.notFound',
   'companies.delete.error',
+  'companies.shopsDelete.error',
   'companies.delete.success',
   // Companies validation
   'validation.companies.id',

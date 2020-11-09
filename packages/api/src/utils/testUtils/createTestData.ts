@@ -58,6 +58,7 @@ import {
   MOCK_COMPANY,
   MOCK_COMPANY_MANAGER,
   MOCK_SAMPLE_USER,
+  MOCK_SHOP,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -89,7 +90,9 @@ import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import { CompanyModel } from '../../entities/Company';
 import generateTestAsset from './generateTestAsset';
-import { ASSETS_DIST_COMPANIES } from '../../config';
+import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS } from '../../config';
+import { ShopModel } from '../../entities/Shop';
+import { ShopProductModel } from '../../entities/ShopProduct';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -549,7 +552,7 @@ const createTestData = async () => {
       };
     };
 
-    await ProductModel.create(
+    const productA = await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_A,
         ...productAttributes({
@@ -560,7 +563,7 @@ const createTestData = async () => {
       }),
     );
 
-    await ProductModel.create(
+    const productB = await ProductModel.create(
       await generateTestProduct(
         {
           ...MOCK_PRODUCT_B,
@@ -574,7 +577,7 @@ const createTestData = async () => {
       ),
     );
 
-    await ProductModel.create(
+    const productC = await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_C,
         ...productAttributes({
@@ -585,7 +588,7 @@ const createTestData = async () => {
       }),
     );
 
-    await ProductModel.create(
+    const productD = await ProductModel.create(
       await generateTestProduct({
         ...MOCK_PRODUCT_D,
         ...productAttributes({
@@ -688,18 +691,92 @@ const createTestData = async () => {
       password: companyManagerPassword,
     });
 
-    // Company
+    // Shop products
+    const shopAProductA = await ShopProductModel.create({
+      available: 1,
+      price: 100,
+      oldPrices: [],
+      product: productA.id,
+    });
+
+    const shopAProductB = await ShopProductModel.create({
+      available: 3,
+      price: 180,
+      oldPrices: [],
+      product: productB.id,
+    });
+
+    const shopAProductC = await ShopProductModel.create({
+      available: 12,
+      price: 1200,
+      oldPrices: [],
+      product: productC.id,
+    });
+
+    const shopAProductD = await ShopProductModel.create({
+      available: 0,
+      price: 980,
+      oldPrices: [],
+      product: productD.id,
+    });
+
+    const shopAConnectionProductA = await ShopProductModel.create({
+      available: 32,
+      price: 480,
+      oldPrices: [],
+      product: connectionProductA.id,
+    });
+
+    const shopAConnectionProductB = await ShopProductModel.create({
+      available: 0,
+      price: 680,
+      oldPrices: [],
+      product: connectionProductB.id,
+    });
+
+    const shopAConnectionProductC = await ShopProductModel.create({
+      available: 45,
+      price: 720,
+      oldPrices: [],
+      product: connectionProductC.id,
+    });
+
+    // Company and shop assets
     const companyLogo = await generateTestAsset({
       targetFileName: 'test-company-logo',
       dist: ASSETS_DIST_COMPANIES,
       slug: MOCK_COMPANY.slug,
     });
+
+    const shopAAssetA = await generateTestAsset({
+      targetFileName: 'shop-asset-0',
+      dist: ASSETS_DIST_SHOPS,
+      slug: MOCK_SHOP.slug,
+    });
+
+    // Shop
+    const shop = await ShopModel.create({
+      ...MOCK_SHOP,
+      logo: companyLogo,
+      assets: [shopAAssetA],
+      products: [
+        shopAProductA.id,
+        shopAProductB.id,
+        shopAProductC.id,
+        shopAProductD.id,
+        shopAConnectionProductA.id,
+        shopAConnectionProductB.id,
+        shopAConnectionProductC.id,
+      ],
+    });
+
+    // Company
     await CompanyModel.create({
       ...MOCK_COMPANY,
       owner: companyOwner.id,
       logo: companyLogo,
       staff: [companyManager.id],
-      shops: [],
+      shops: [shop.id],
     });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);

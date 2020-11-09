@@ -79,6 +79,33 @@ export const MOCK_NEW_COMPANY = {
 
 export const MOCK_COMPANIES = [MOCK_COMPANY];
 
+// Shop
+export const MOCK_SHOP = {
+  nameString: 'Shop',
+  slug: 'shop',
+  contacts: {
+    emails: ['shop1@gmail.com', 'shop2@gmail.com'],
+    phones: ['+78990002245', '+78890002246'],
+  },
+  address: {
+    coordinates: [40, 40],
+  },
+};
+
+export const MOCK_NEW_SHOP = {
+  nameString: 'New Shop',
+  slug: 'new_shop',
+  contacts: {
+    emails: ['new.shop1@gmail.com', 'new.shop2@gmail.com'],
+    phones: ['+78990002255', '+78890002256'],
+  },
+  address: {
+    coordinates: [40, 40],
+  },
+};
+
+export const MOCK_SHOPS = [MOCK_SHOP];
+
 // Languages
 export const ISO_LANGUAGES = [
   {

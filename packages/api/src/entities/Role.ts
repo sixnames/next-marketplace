@@ -14,7 +14,7 @@ export class Role {
   name: LanguageType[];
 
   @Field((_type) => String)
-  nameString: string;
+  readonly nameString: string;
 
   @Field((_type) => String)
   @prop({ type: String })

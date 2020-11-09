@@ -17,9 +17,10 @@ export * from './lib/rubricSchema';
 export * from './lib/rubricVariantSchema';
 export * from './lib/schemaTemplates';
 export * from './lib/userSchema';
+export * from './lib/companySchema';
 
 export type ObjectSchema<
-  T extends object | null | undefined = object | undefined,
-  C = object
+  T extends Record<string, any> | null | undefined = Record<string, any> | undefined,
+  C = Record<string, any>
 > = ObjectSchemaType<T, C>;
-export type NotRequiredArraySchema<T, C = object> = NotRequiredArraySchemaType<T, C>;
+export type NotRequiredArraySchema<T, C = Record<string, any>> = NotRequiredArraySchemaType<T, C>;

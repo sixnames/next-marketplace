@@ -128,3 +128,10 @@ export const phoneSchema = ({ messages, lang }: SchemaMessagesInterface) =>
         key: 'validation.phone.required',
       }),
     );
+
+export const contactsInputSchema = ({ messages, lang }: MultiLangSchemaMessagesInterface) => {
+  return Yup.object({
+    emails: Yup.array().of(emailSchema({ messages, lang })),
+    phones: Yup.array().of(phoneSchema({ messages, lang })),
+  });
+};

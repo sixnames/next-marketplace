@@ -145,4 +145,17 @@ export const commonMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.contacts',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Контакты обязательны к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Contacts is required.',
+      },
+    ],
+  },
 ];

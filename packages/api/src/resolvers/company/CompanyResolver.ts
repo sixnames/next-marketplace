@@ -17,6 +17,21 @@ import { CreateCompanyInput } from './CreateCompanyInput';
 import { generateSlug } from '../../utils/slug';
 import storeUploads from '../../utils/assets/storeUploads';
 import { ASSETS_DIST_COMPANIES } from '../../config';
+import { RoleRuleModel } from '../../entities/RoleRule';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
+import { FilterQuery } from 'mongoose';
+import { createCompanySchema } from '@yagu/validation';
+import getApiMessage from '../../utils/translations/getApiMessage';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+
+const { operationConfigCreate, operationConfigRead } = RoleRuleModel.getOperationsConfigs(
+  Company.name,
+);
 
 @ObjectType()
 class CompanyPayloadtype extends PayloadType() {
@@ -27,8 +42,12 @@ class CompanyPayloadtype extends PayloadType() {
 @Resolver((_for) => Company)
 export class CompanyResolver {
   @Query((_returns) => Company)
-  async getCompany(@Arg('id', (_type) => ID) id: string): Promise<Company> {
-    const company = await CompanyModel.findOne({ _id: id });
+  @AuthMethod(operationConfigRead)
+  async getCompany(
+    @CustomFilter(operationConfigRead) customFiler: FilterQuery<Company>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<Company> {
+    const company = await CompanyModel.findOne({ _id: id, ...customFiler });
     if (!company) {
       throw Error('Company not found');
     }
@@ -36,45 +55,58 @@ export class CompanyResolver {
   }
 
   @Query((_returns) => [Company])
+  @AuthMethod(operationConfigRead)
   async getAllCompanies(): Promise<Company[]> {
     return CompanyModel.find();
   }
 
   @Mutation((_returns) => CompanyPayloadtype)
-  async createCompany(@Arg('input') input: CreateCompanyInput): Promise<CompanyPayloadtype> {
-    const { nameString, logo } = input;
-    const exist = await CompanyModel.findOne({ nameString });
-    if (exist) {
+  @ValidateMethod({ schema: createCompanySchema })
+  @AuthMethod(operationConfigCreate)
+  async createCompany(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Arg('input') input: CreateCompanyInput,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const { nameString, logo } = input;
+      const exist = await CompanyModel.findOne({ nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.create.duplicate', lang }),
+        };
+      }
+
+      const slug = generateSlug(nameString);
+      const [assetsResult] = await storeUploads({
+        files: [logo[0]],
+        slug,
+        dist: ASSETS_DIST_COMPANIES,
+      });
+      const company = await CompanyModel.create({
+        ...input,
+        logo: assetsResult,
+        slug,
+      });
+
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.create.error', lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: 'companies.create.success', lang }),
+        company,
+      };
+    } catch (e) {
       return {
         success: false,
-        message: '',
+        message: await getResolverErrorMessage(e),
       };
     }
-
-    const slug = generateSlug(nameString);
-    const [assetsResult] = await storeUploads({
-      files: [logo[0]],
-      slug,
-      dist: ASSETS_DIST_COMPANIES,
-    });
-    const company = await CompanyModel.create({
-      ...input,
-      logo: assetsResult,
-      slug,
-    });
-
-    if (!company) {
-      return {
-        success: false,
-        message: '',
-      };
-    }
-
-    return {
-      success: true,
-      message: '',
-      company,
-    };
   }
 
   // Field resolvers

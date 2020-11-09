@@ -12,6 +12,7 @@ import { usersMessages } from './usersMessages';
 import { rubricVariantsMessages } from './rubricVariantsMessages';
 import { optionsGroupsMessages } from './optionsGroupsMessages';
 import { rubricsMessages } from './rubricsMessages';
+import { companiesMessages } from './companiesMessages';
 
 export * from './commonMessages';
 export * from './configsMessages';
@@ -27,6 +28,7 @@ export * from './usersMessages';
 export * from './rubricVariantsMessages';
 export * from './optionsGroupsMessages';
 export * from './rubricsMessages';
+export * from './companiesMessages';
 export * from './messagesKeys';
 export * from './iconTypes';
 
@@ -45,4 +47,5 @@ export const apiMessages = [
   ...rubricsMessages,
   ...productsMessages,
   ...metricsMessages,
+  ...companiesMessages,
 ];

@@ -64,9 +64,7 @@ describe('Company', () => {
 
     // Should create company
     const sampleUser = await UserModel.findOne({ email: MOCK_SAMPLE_USER.email });
-    const {
-      data: { createCompany },
-    } = await mutateWithImages({
+    const createCompanyPayload = await mutateWithImages({
       mutation: gql`
         mutation CreateCompany($input: CreateCompanyInput!) {
           createCompany(input: $input) {
@@ -105,6 +103,52 @@ describe('Company', () => {
         };
       },
     });
+    const {
+      data: { createCompany },
+    } = createCompanyPayload;
     expect(createCompany.success).toBeTruthy();
+
+    // Shouldn't create company on duplicate error
+    const createCompanyDuplicate = await mutateWithImages({
+      mutation: gql`
+        mutation CreateCompany($input: CreateCompanyInput!) {
+          createCompany(input: $input) {
+            success
+            message
+          }
+        }
+      `,
+      input: (images) => {
+        return {
+          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          logo: images,
+          owner: sampleUser?.id,
+          staff: [],
+        };
+      },
+    });
+    expect(createCompanyDuplicate.data.success).toBeFalsy();
+
+    // Shouldn't create company on validation error
+    const createCompanyValidation = await mutateWithImages({
+      mutation: gql`
+        mutation CreateCompany($input: CreateCompanyInput!) {
+          createCompany(input: $input) {
+            success
+            message
+          }
+        }
+      `,
+      input: (images) => {
+        return {
+          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          nameString: 'n',
+          logo: images,
+          owner: sampleUser?.id,
+          staff: [],
+        };
+      },
+    });
+    expect(createCompanyValidation.errors).toBeDefined();
   });
 });

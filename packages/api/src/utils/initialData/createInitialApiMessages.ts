@@ -16,6 +16,7 @@ import {
   rubricsMessages,
   rubricVariantsMessages,
   usersMessages,
+  companiesMessages,
 } from '@yagu/config';
 
 interface MessageInterface {
@@ -72,6 +73,7 @@ async function createInitialApiMessages() {
     { name: 'Рубрики', messages: rubricsMessages },
     { name: 'Товары', messages: productsMessages },
     { name: 'Метрические значения', messages: metricsMessages },
+    { name: 'Компании', messages: companiesMessages },
   ];
 
   return Promise.all(

@@ -54,6 +54,10 @@ import {
   MOCK_ATTRIBUTE_OUTER_RATING_B,
   MOCK_ATTRIBUTE_OUTER_RATING_C,
   MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
+  MOCK_COMPANY_OWNER,
+  MOCK_COMPANY,
+  MOCK_COMPANY_MANAGER,
+  MOCK_SAMPLE_USER,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -81,6 +85,11 @@ import { CityModel } from '../../entities/City';
 import { CountryModel } from '../../entities/Country';
 import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
+import { UserModel } from '../../entities/User';
+import { hash } from 'bcryptjs';
+import { CompanyModel } from '../../entities/Company';
+import generateTestAsset from './generateTestAsset';
+import { ASSETS_DIST_COMPANIES } from '../../config';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -94,7 +103,7 @@ const createTestData = async () => {
     await clearTestData();
 
     // Initial data
-    await createInitialData();
+    const { initialRolesIds } = await createInitialData();
 
     // Currencies, countries and cities
     const secondaryCurrency = await CurrencyModel.create(MOCK_CURRENCIES[1]);
@@ -653,6 +662,43 @@ const createTestData = async () => {
     });
     await ProductModel.findByIdAndUpdate(connectionProductC.id, {
       slug: connectionProductCSlug.slug,
+    });
+
+    // Sample user
+    const sampleUserPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+    await UserModel.create({
+      ...MOCK_SAMPLE_USER,
+      role: initialRolesIds.guestRoleId,
+      password: sampleUserPassword,
+    });
+
+    // Company owner
+    const companyOwnerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+    const companyOwner = await UserModel.create({
+      ...MOCK_COMPANY_OWNER,
+      role: initialRolesIds.companyOwnerRoleId,
+      password: companyOwnerPassword,
+    });
+
+    // Company manager
+    const companyManagerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+    const companyManager = await UserModel.create({
+      ...MOCK_COMPANY_MANAGER,
+      role: initialRolesIds.companyOwnerRoleId,
+      password: companyManagerPassword,
+    });
+
+    // Company
+    const companyLogo = await generateTestAsset({
+      targetFileName: 'test-company-logo',
+      dist: ASSETS_DIST_COMPANIES,
+      slug: MOCK_COMPANY.slug,
+    });
+    await CompanyModel.create({
+      ...MOCK_COMPANY,
+      owner: companyOwner.id,
+      logo: companyLogo,
+      staff: [companyManager.id],
     });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);

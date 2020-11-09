@@ -9,3 +9,5 @@ export const IN_DEV = NODE_ENV === 'development';
 export const SESSION_COLLECTION = 'sessions';
 
 export const ASSETS_DIST_PRODUCTS = 'products';
+export const ASSETS_DIST_COMPANIES = 'companies';
+export const ASSETS_DIST_SHOPS = 'shops';

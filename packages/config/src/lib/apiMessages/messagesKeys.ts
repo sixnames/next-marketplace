@@ -11,6 +11,7 @@ const messagesKeys = [
   'validation.color',
   'validation.color.required',
   'validation.translation.key',
+  'validation.contacts',
 
   // Configs ----------
   'configs.update.success',
@@ -138,6 +139,24 @@ const messagesKeys = [
   'validation.users.role',
   'validation.users.password',
   'validation.users.passwordCompare',
+
+  // Companies ----------
+  'companies.create.duplicate',
+  'companies.create.error',
+  'companies.create.success',
+  'companies.update.notFound',
+  'companies.update.duplicate',
+  'companies.update.error',
+  'companies.update.success',
+  'companies.delete.notFound',
+  'companies.delete.error',
+  'companies.delete.success',
+  // Companies validation
+  'validation.companies.id',
+  'validation.companies.nameString',
+  'validation.companies.owner',
+  'validation.companies.staff',
+  'validation.companies.logo',
 
   // Options groups ----------
   'optionsGroups.create.duplicate',

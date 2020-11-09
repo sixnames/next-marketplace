@@ -20,6 +20,7 @@ import {
   SECONDARY_LANG,
 } from '@yagu/config';
 
+// Users
 export const ME_AS_ADMIN = {
   id: 'adminBro',
   email: 'admin@gmail.com',
@@ -27,21 +28,58 @@ export const ME_AS_ADMIN = {
   name: 'Admin',
   secondName: 'Secondname',
   lastName: 'Lastname',
-  fullName: 'Admin Secondname Lastname',
-  shortName: 'A. Lastname',
   phone: '+79990002233',
-  isAdmin: true,
-  isBookkeeper: false,
-  isContractor: false,
-  isDriver: false,
-  isHelper: false,
-  isLogistician: false,
-  isManager: false,
-  isStage: false,
-  isWarehouse: false,
-  isSuper: false,
 };
 
+export const MOCK_COMPANY_OWNER = {
+  email: 'company.owner@gmail.com',
+  password: 'owner',
+  name: 'Owner',
+  secondName: 'Secondname',
+  lastName: 'Lastname',
+  phone: '+79990002234',
+};
+
+export const MOCK_COMPANY_MANAGER = {
+  email: 'company.manager@gmail.com',
+  password: 'manager',
+  name: 'Manager',
+  secondName: 'Secondname',
+  lastName: 'Lastname',
+  phone: '+79990002235',
+};
+
+export const MOCK_SAMPLE_USER = {
+  email: 'sample.user@gmail.com',
+  password: 'sample',
+  name: 'Sample',
+  secondName: 'Secondname',
+  lastName: 'Lastname',
+  phone: '+79990002236',
+};
+
+// Company
+export const MOCK_COMPANY = {
+  nameString: 'Company',
+  slug: 'company',
+  contacts: {
+    emails: ['company1@gmail.com', 'company2@gmail.com'],
+    phones: ['+78990002235', '+78890002235'],
+  },
+};
+
+export const MOCK_NEW_COMPANY = {
+  nameString: 'New Company',
+  slug: 'new_company',
+  contacts: {
+    emails: ['new.company1@gmail.com', 'new.company2@gmail.com'],
+    phones: ['+78990002222', '+78890001111'],
+  },
+};
+
+export const MOCK_COMPANIES = [MOCK_COMPANY];
+
+// Languages
 export const ISO_LANGUAGES = [
   {
     id: DEFAULT_LANG,

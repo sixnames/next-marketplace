@@ -141,7 +141,7 @@ export async function createRole({
 }: CreateRoleInterface): Promise<DocumentType<Role>> {
   let role = await RoleModel.findOne({ slug: template.slug });
   if (!role) {
-    role = await RoleModel.create({ ...ROLE_TEMPLATE_GUEST, allowedAppNavigation });
+    role = await RoleModel.create({ ...template, allowedAppNavigation });
   }
   // check new rules
   await createRoleRules({ allow, roleId: role.id });

@@ -1,6 +1,6 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
-import { MessageKey } from '@yagu/config';
+import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import {
   MultiLangSchemaMessagesInterface,
   ObjectSchema,
@@ -41,6 +41,11 @@ export interface AuthDecoratorConfigInterface {
 export function AuthMethod(operationConfig: AuthDecoratorConfigInterface) {
   return createMethodDecorator<ContextInterface>(async ({ context: { req }, info }, next) => {
     const { fieldName } = info;
+
+    if (req.role.slug === ROLE_SLUG_ADMIN) {
+      return next();
+    }
+
     const currentRule = req.roleRules.find(({ entity }) => entity === operationConfig.entity);
 
     if (!currentRule) {

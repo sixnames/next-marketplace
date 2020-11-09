@@ -699,6 +699,7 @@ const createTestData = async () => {
       owner: companyOwner.id,
       logo: companyLogo,
       staff: [companyManager.id],
+      shops: [],
     });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);

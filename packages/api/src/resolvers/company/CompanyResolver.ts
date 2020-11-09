@@ -91,6 +91,7 @@ export class CompanyResolver {
         ...input,
         logo: assetsResult,
         slug,
+        shops: [],
       });
 
       if (!company) {

@@ -159,6 +159,7 @@ type Company {
   logo: AssetType!
   nameString: String!
   owner: User!
+  shops: [Shop!]!
   slug: String!
   staff: [User!]!
   updatedAt: Timestamp!
@@ -599,6 +600,11 @@ enum PaginateSortDirectionEnum {
   desc
 }
 
+type PointGeoJSON {
+  coordinates: [Float!]!
+  type: String!
+}
+
 type Product {
   active: Boolean!
   assets: [AssetType!]!
@@ -986,6 +992,29 @@ input SetRoleRuleRestrictedFieldInput {
   restrictedField: String!
   roleId: ID!
   ruleId: ID!
+}
+
+type Shop {
+  address: PointGeoJSON!
+  assets: [AssetType!]!
+  company: Company!
+  contacts: ContactsType!
+  createdAt: Timestamp!
+  id: ID!
+  logo: AssetType!
+  nameString: String!
+  products: [ShopProduct!]!
+  slug: String!
+  updatedAt: Timestamp!
+}
+
+type ShopProduct {
+  available: Int!
+  id: ID!
+  oldPrices: [Float!]!
+  price: Float!
+  product: Product!
+  shop: Shop!
 }
 
 input SignInInput {

@@ -18,7 +18,7 @@ registerEnumType(GenderEnum, {
 export class PointGeoJSON {
   @Field(() => String)
   @prop({ type: String, required: true, default: 'Point' })
-  public type: string;
+  readonly type: string;
 
   @Field(() => [Float])
   @prop({ type: Number, required: true, default: [] })

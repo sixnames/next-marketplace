@@ -34,6 +34,7 @@ const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
+  operationConfigDelete,
 } = RoleRuleModel.getOperationsConfigs(Company.name);
 
 @ObjectType()
@@ -169,6 +170,46 @@ export class CompanyResolver {
         success: true,
         message: await getApiMessage({ key: 'companies.update.success', lang }),
         company: updatedCompany,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => CompanyPayloadtype)
+  @AuthMethod(operationConfigDelete)
+  async deleteCompany(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigRead) customFiler: FilterQuery<Company>,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const company = await CompanyModel.findOne({ _id: id, ...customFiler });
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.delete.notFound', lang }),
+        };
+      }
+
+      // TODO delete all related shops
+      const removedCompany = await CompanyModel.findOneAndDelete({
+        _id: id,
+      });
+
+      if (!removedCompany) {
+        return {
+          success: false,
+          message: await getApiMessage({ key: 'companies.delete.error', lang }),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage({ key: 'companies.delete.success', lang }),
       };
     } catch (e) {
       return {

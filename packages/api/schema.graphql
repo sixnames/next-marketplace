@@ -452,6 +452,7 @@ type Mutation {
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
+  deleteCompany(id: ID!): CompanyPayloadtype!
   deleteCountry(id: ID!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
@@ -478,6 +479,7 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
+  updateCompany(input: UpdateCompanyInput!): CompanyPayloadtype!
   updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
   updateConfigs(input: [UpdateConfigInput!]!): ConfigPayloadType!
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
@@ -1036,6 +1038,15 @@ input UpdateCityInCountryInput {
   countryId: ID!
   name: [LangInput!]!
   slug: String!
+}
+
+input UpdateCompanyInput {
+  contacts: ContactsInput!
+  id: ID!
+  logo: [Upload!]!
+  nameString: String!
+  owner: ID!
+  staff: [ID!]!
 }
 
 input UpdateConfigInput {

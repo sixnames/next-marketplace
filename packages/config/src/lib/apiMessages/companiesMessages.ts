@@ -94,6 +94,19 @@ export const companiesMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'companies.delete.notFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Компания не найдена.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Company not found.',
+      },
+    ],
+  },
+  {
     key: 'companies.delete.error',
     message: [
       {

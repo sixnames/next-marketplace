@@ -148,6 +148,7 @@ const messagesKeys = [
   'companies.update.duplicate',
   'companies.update.error',
   'companies.update.success',
+  'companies.delete.notFound',
   'companies.delete.error',
   'companies.delete.success',
   // Companies validation

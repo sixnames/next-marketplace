@@ -6,7 +6,7 @@ import { omit } from 'lodash';
 
 describe('Company', () => {
   it('Should CRUD companies', async () => {
-    const { query } = await authenticatedTestClient();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return companies list
     const {
@@ -184,5 +184,26 @@ describe('Company', () => {
     expect(updateCompany.success).toBeTruthy();
     expect(updateCompany.company.id).toEqual(createCompany.company.id);
     expect(updateCompany.company.nameString).toEqual(companyNewName);
+
+    // Should delete company
+    const deleteCompanyPayload = await mutate<any>(
+      gql`
+        mutation DeleteCompany($id: ID!) {
+          deleteCompany(id: $id) {
+            success
+            message
+          }
+        }
+      `,
+      {
+        variables: {
+          id: updateCompany.company.id,
+        },
+      },
+    );
+    const {
+      data: { deleteCompany },
+    } = deleteCompanyPayload;
+    expect(deleteCompany.success).toBeTruthy();
   });
 });

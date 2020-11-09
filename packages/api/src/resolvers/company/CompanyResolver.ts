@@ -1,7 +1,28 @@
-import { Arg, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Field,
+  FieldResolver,
+  ID,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Company, CompanyModel } from '../../entities/Company';
 import { User, UserModel } from '../../entities/User';
 import { DocumentType } from '@typegoose/typegoose';
+import PayloadType from '../common/PayloadType';
+import { CreateCompanyInput } from './CreateCompanyInput';
+import { generateSlug } from '../../utils/slug';
+import storeUploads from '../../utils/assets/storeUploads';
+import { ASSETS_DIST_COMPANIES } from '../../config';
+
+@ObjectType()
+class CompanyPayloadtype extends PayloadType() {
+  @Field((_type) => Company, { nullable: true })
+  company?: Company;
+}
 
 @Resolver((_for) => Company)
 export class CompanyResolver {
@@ -19,6 +40,44 @@ export class CompanyResolver {
     return CompanyModel.find();
   }
 
+  @Mutation((_returns) => CompanyPayloadtype)
+  async createCompany(@Arg('input') input: CreateCompanyInput): Promise<CompanyPayloadtype> {
+    const { nameString, logo } = input;
+    const exist = await CompanyModel.findOne({ nameString });
+    if (exist) {
+      return {
+        success: false,
+        message: '',
+      };
+    }
+
+    const slug = generateSlug(nameString);
+    const [assetsResult] = await storeUploads({
+      files: [logo[0]],
+      slug,
+      dist: ASSETS_DIST_COMPANIES,
+    });
+    const company = await CompanyModel.create({
+      ...input,
+      logo: assetsResult,
+      slug,
+    });
+
+    if (!company) {
+      return {
+        success: false,
+        message: '',
+      };
+    }
+
+    return {
+      success: true,
+      message: '',
+      company,
+    };
+  }
+
+  // Field resolvers
   @FieldResolver((_returns) => User)
   async owner(@Root() company: DocumentType<Company>): Promise<User> {
     const user = await UserModel.findOne({ _id: company.owner });

@@ -32,7 +32,6 @@ export const ME_AS_ADMIN = {
 };
 
 export const MOCK_COMPANY_OWNER = {
-  id: 'COMPANY_OWNER',
   email: 'company.owner@gmail.com',
   password: 'owner',
   name: 'Owner',
@@ -42,7 +41,6 @@ export const MOCK_COMPANY_OWNER = {
 };
 
 export const MOCK_COMPANY_MANAGER = {
-  id: 'COMPANY_MANAGER',
   email: 'company.manager@gmail.com',
   password: 'manager',
   name: 'Manager',
@@ -51,12 +49,31 @@ export const MOCK_COMPANY_MANAGER = {
   phone: '+79990002235',
 };
 
+export const MOCK_SAMPLE_USER = {
+  email: 'sample.user@gmail.com',
+  password: 'sample',
+  name: 'Sample',
+  secondName: 'Secondname',
+  lastName: 'Lastname',
+  phone: '+79990002236',
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',
+  slug: 'company',
   contacts: {
     emails: ['company1@gmail.com', 'company2@gmail.com'],
     phones: ['+78990002235', '+78890002235'],
+  },
+};
+
+export const MOCK_NEW_COMPANY = {
+  nameString: 'New Company',
+  slug: 'new_company',
+  contacts: {
+    emails: ['new.company1@gmail.com', 'new.company2@gmail.com'],
+    phones: ['+78990002222', '+78890001111'],
   },
 };
 

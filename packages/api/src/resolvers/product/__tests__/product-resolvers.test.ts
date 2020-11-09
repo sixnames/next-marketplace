@@ -514,7 +514,7 @@ describe('Product', () => {
           }
         }
       `,
-      input: (images: Promise<Upload>[]) => {
+      input: (images) => {
         return {
           name: testProduct.name,
           cardName: testProduct.cardName,

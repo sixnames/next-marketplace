@@ -88,7 +88,6 @@ describe('Roles', () => {
       }
     `);
     const adminRole = getAllRoles.find(({ slug }: Role) => slug === ROLE_SLUG_ADMIN);
-    expect(getAllRoles).toHaveLength(2);
 
     // Should return current role
     const {

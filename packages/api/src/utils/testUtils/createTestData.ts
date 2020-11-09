@@ -8,7 +8,7 @@ import {
   AttributeVariantEnum,
 } from '../../entities/Attribute';
 import { AttributesGroupModel } from '../../entities/AttributesGroup';
-import { generateDefaultLangSlug, generateSlug } from '../slug';
+import { generateDefaultLangSlug } from '../slug';
 import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import {
@@ -57,6 +57,7 @@ import {
   MOCK_COMPANY_OWNER,
   MOCK_COMPANY,
   MOCK_COMPANY_MANAGER,
+  MOCK_SAMPLE_USER,
 } from '@yagu/mocks';
 import {
   DEFAULT_LANG,
@@ -663,6 +664,14 @@ const createTestData = async () => {
       slug: connectionProductCSlug.slug,
     });
 
+    // Sample user
+    const sampleUserPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+    await UserModel.create({
+      ...MOCK_SAMPLE_USER,
+      role: initialRolesIds.guestRoleId,
+      password: sampleUserPassword,
+    });
+
     // Company owner
     const companyOwnerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
     const companyOwner = await UserModel.create({
@@ -680,17 +689,15 @@ const createTestData = async () => {
     });
 
     // Company
-    const companySlug = generateSlug(MOCK_COMPANY.nameString);
     const companyLogo = await generateTestAsset({
       targetFileName: 'test-company-logo',
       dist: ASSETS_DIST_COMPANIES,
-      slug: companySlug,
+      slug: MOCK_COMPANY.slug,
     });
     await CompanyModel.create({
       ...MOCK_COMPANY,
       owner: companyOwner.id,
       logo: companyLogo,
-      slug: companySlug,
       staff: [companyManager.id],
     });
   } catch (e) {

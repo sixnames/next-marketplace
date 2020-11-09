@@ -164,6 +164,12 @@ type Company {
   updatedAt: Timestamp!
 }
 
+type CompanyPayloadtype {
+  company: Company
+  message: String!
+  success: Boolean!
+}
+
 type Config {
   """Accepted formats for asset config."""
   acceptedFormats: [String!]!
@@ -213,6 +219,11 @@ enum ConfigVariantEnum {
   tel
 }
 
+input ContactsInput {
+  emails: [String!]!
+  phones: [String!]!
+}
+
 type ContactsType {
   emails: [String!]!
   phones: [String!]!
@@ -233,6 +244,14 @@ type CountryPayloadType {
 
 input CreateAttributesGroupInput {
   name: [LangInput!]!
+}
+
+input CreateCompanyInput {
+  contacts: ContactsInput!
+  logo: [Upload!]!
+  nameString: String!
+  owner: ID!
+  staff: [ID!]!
 }
 
 input CreateCountryInput {
@@ -417,6 +436,7 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
   createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!
   createLanguage(input: CreateLanguageInput!): LanguagePayloadType!

@@ -37,7 +37,6 @@ import {
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
   MOCK_LANGUAGES,
-  MOCK_COUNTRIES,
   MOCK_RUBRIC_LEVEL_ONE_B,
   MOCK_RUBRIC_LEVEL_ONE_C,
   MOCK_RUBRIC_LEVEL_ONE_D,
@@ -79,7 +78,6 @@ import {
 } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
 import { LanguageModel } from '../../entities/Language';
-import { CountryModel } from '../../entities/Country';
 import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
 import { UserModel } from '../../entities/User';
@@ -91,6 +89,7 @@ import { ShopModel } from '../../entities/Shop';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
+import { createTestSecondaryCountry } from './createTestSecondaryCountry';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -108,12 +107,10 @@ const createTestData = async () => {
 
     // Currencies, countries and cities
     const { secondaryCurrency } = await createTestSecondaryCurrency();
-    const { secondaryCity } = createTestSecondaryCity();
-
-    await CountryModel.create({
-      ...MOCK_COUNTRIES[1],
-      cities: [secondaryCity.id],
-      currency: secondaryCurrency.nameString,
+    const { secondaryCity } = await createTestSecondaryCity();
+    await createTestSecondaryCountry({
+      citiesIds: [secondaryCity.id],
+      currencySlug: secondaryCurrency.nameString,
     });
 
     // Languages

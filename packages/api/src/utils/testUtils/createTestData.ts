@@ -36,7 +36,6 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_B,
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
-  MOCK_LANGUAGES,
   MOCK_RUBRIC_LEVEL_ONE_B,
   MOCK_RUBRIC_LEVEL_ONE_C,
   MOCK_RUBRIC_LEVEL_ONE_D,
@@ -77,7 +76,6 @@ import {
   ProductModel,
 } from '../../entities/Product';
 import { GenderEnum } from '../../entities/common';
-import { LanguageModel } from '../../entities/Language';
 import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
 import { UserModel } from '../../entities/User';
@@ -90,6 +88,7 @@ import { ShopProductModel } from '../../entities/ShopProduct';
 import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
 import { createTestSecondaryCountry } from './createTestSecondaryCountry';
+import { createTestSecondaryLanguage } from './createTestSecondaryLanguage';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -114,7 +113,7 @@ const createTestData = async () => {
     });
 
     // Languages
-    await LanguageModel.create(MOCK_LANGUAGES[1]);
+    await createTestSecondaryLanguage();
 
     // Options
     const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);

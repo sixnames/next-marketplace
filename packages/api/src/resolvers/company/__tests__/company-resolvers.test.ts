@@ -206,7 +206,7 @@ describe('Company', () => {
       `,
       {
         variables: {
-          id: updateCompany.company.id,
+          id: currentCompany.id,
         },
       },
     );

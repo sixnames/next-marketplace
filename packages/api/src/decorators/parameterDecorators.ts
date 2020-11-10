@@ -1,6 +1,8 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { AuthDecoratorConfigInterface } from './methodDecorators';
+import { MessageKey } from '@yagu/config';
+import getApiMessage from '../utils/translations/getApiMessage';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
@@ -53,6 +55,7 @@ export interface LocalizationPayloadInterface {
   lang: string;
   defaultLang: string;
   city: string;
+  getApiMessage: (key: MessageKey) => Promise<string>;
 }
 
 export function Localization() {
@@ -62,6 +65,7 @@ export function Localization() {
       lang,
       defaultLang,
       city,
+      getApiMessage: (key: MessageKey) => getApiMessage({ lang, key }),
     };
   });
 }

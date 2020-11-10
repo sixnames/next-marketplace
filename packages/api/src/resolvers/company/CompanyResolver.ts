@@ -26,10 +26,10 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { createCompanySchema, updateCompanySchema } from '@yagu/validation';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
 import { Shop, ShopModel } from '../../entities/Shop';
+import { ShopProductModel } from '../../entities/ShopProduct';
 
 const {
   operationConfigCreate,
@@ -69,7 +69,7 @@ export class CompanyResolver {
   @ValidateMethod({ schema: createCompanySchema })
   @AuthMethod(operationConfigCreate)
   async createCompany(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateCompanyInput,
   ): Promise<CompanyPayloadtype> {
     try {
@@ -78,7 +78,7 @@ export class CompanyResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.create.duplicate', lang }),
+          message: await getApiMessage('companies.create.duplicate'),
         };
       }
 
@@ -98,13 +98,13 @@ export class CompanyResolver {
       if (!company) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.create.error', lang }),
+          message: await getApiMessage('companies.create.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'companies.create.success', lang }),
+        message: await getApiMessage('companies.create.success'),
         company,
       };
     } catch (e) {
@@ -119,7 +119,7 @@ export class CompanyResolver {
   @ValidateMethod({ schema: updateCompanySchema })
   @AuthMethod(operationConfigUpdate)
   async updateCompany(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigRead) customFiler: FilterQuery<Company>,
     @Arg('input') input: UpdateCompanyInput,
   ): Promise<CompanyPayloadtype> {
@@ -129,7 +129,7 @@ export class CompanyResolver {
       if (!company) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.update.notFound', lang }),
+          message: await getApiMessage('companies.update.notFound'),
         };
       }
 
@@ -137,7 +137,7 @@ export class CompanyResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.update.duplicate', lang }),
+          message: await getApiMessage('companies.update.duplicate'),
         };
       }
 
@@ -164,13 +164,13 @@ export class CompanyResolver {
       if (!updatedCompany) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.update.error', lang }),
+          message: await getApiMessage('companies.update.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'companies.update.success', lang }),
+        message: await getApiMessage('companies.update.success'),
         company: updatedCompany,
       };
     } catch (e) {
@@ -184,7 +184,7 @@ export class CompanyResolver {
   @Mutation((_returns) => CompanyPayloadtype)
   @AuthMethod(operationConfigDelete)
   async deleteCompany(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigRead) customFiler: FilterQuery<Company>,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<CompanyPayloadtype> {
@@ -193,16 +193,31 @@ export class CompanyResolver {
       if (!company) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.delete.notFound', lang }),
+          message: await getApiMessage('companies.delete.notFound'),
         };
       }
 
-      // Remove all shops
-      const removedShops = await ShopModel.deleteMany({ _id: { $in: company.shops } });
-      if (!removedShops) {
+      // Remove all shops and products
+      const shops = await ShopModel.find({ _id: { $in: company.shops } });
+      const shopsProductsIds = shops.reduce((acc: string[], { products }) => {
+        return [...acc, ...products];
+      }, []);
+
+      const removedShopsProducts = await ShopProductModel.deleteMany({
+        _id: { $in: shopsProductsIds },
+      });
+      if (!removedShopsProducts.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.shopsDelete.error', lang }),
+          message: await getApiMessage('shopProducts.delete.error'),
+        };
+      }
+
+      const removedShops = await ShopModel.deleteMany({ _id: { $in: company.shops } });
+      if (!removedShops.ok) {
+        return {
+          success: false,
+          message: await getApiMessage('companies.shopsDelete.error'),
         };
       }
 
@@ -213,13 +228,13 @@ export class CompanyResolver {
       if (!removedCompany) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'companies.delete.error', lang }),
+          message: await getApiMessage('companies.delete.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'companies.delete.success', lang }),
+        message: await getApiMessage('companies.delete.success'),
       };
     } catch (e) {
       return {

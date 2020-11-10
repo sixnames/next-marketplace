@@ -18,6 +18,7 @@ import {
   usersMessages,
   companiesMessages,
   shopsMessages,
+  shopProductsMessages,
 } from '@yagu/config';
 
 interface MessageInterface {
@@ -76,6 +77,7 @@ async function createInitialApiMessages() {
     { name: 'Метрические значения', messages: metricsMessages },
     { name: 'Компании', messages: companiesMessages },
     { name: 'Магазины', messages: shopsMessages },
+    { name: 'Товары магазина', messages: shopProductsMessages },
   ];
 
   return Promise.all(

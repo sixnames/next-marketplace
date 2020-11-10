@@ -14,6 +14,7 @@ import { optionsGroupsMessages } from './optionsGroupsMessages';
 import { rubricsMessages } from './rubricsMessages';
 import { companiesMessages } from './companiesMessages';
 import { shopsMessages } from './shopsMessages';
+import { shopProductsMessages } from './shopProductsMessages';
 
 export * from './commonMessages';
 export * from './configsMessages';
@@ -31,6 +32,7 @@ export * from './optionsGroupsMessages';
 export * from './rubricsMessages';
 export * from './companiesMessages';
 export * from './shopsMessages';
+export * from './shopProductsMessages';
 export * from './messagesKeys';
 export * from './iconTypes';
 
@@ -51,4 +53,5 @@ export const apiMessages = [
   ...metricsMessages,
   ...companiesMessages,
   ...shopsMessages,
+  ...shopProductsMessages,
 ];

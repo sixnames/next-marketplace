@@ -90,7 +90,7 @@ import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import { CompanyModel } from '../../entities/Company';
 import generateTestAsset from './generateTestAsset';
-import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS } from '../../config';
+import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
 import { ShopModel } from '../../entities/Shop';
 import { ShopProductModel } from '../../entities/ShopProduct';
 
@@ -742,14 +742,14 @@ const createTestData = async () => {
     });
 
     // Company and shop assets
-    const companyLogo = await generateTestAsset({
+    const shopLogo = await generateTestAsset({
       targetFileName: 'test-company-logo',
-      dist: ASSETS_DIST_COMPANIES,
-      slug: MOCK_COMPANY.slug,
+      dist: ASSETS_DIST_SHOPS_LOGOS,
+      slug: MOCK_SHOP.slug,
     });
 
     const shopAAssetA = await generateTestAsset({
-      targetFileName: 'shop-asset-0',
+      targetFileName: 'test-shop-asset-0',
       dist: ASSETS_DIST_SHOPS,
       slug: MOCK_SHOP.slug,
     });
@@ -757,7 +757,7 @@ const createTestData = async () => {
     // Shop
     const shop = await ShopModel.create({
       ...MOCK_SHOP,
-      logo: companyLogo,
+      logo: shopLogo,
       assets: [shopAAssetA],
       products: [
         shopAProductA.id,
@@ -771,6 +771,12 @@ const createTestData = async () => {
     });
 
     // Company
+    const companyLogo = await generateTestAsset({
+      targetFileName: 'test-company-logo',
+      dist: ASSETS_DIST_COMPANIES,
+      slug: MOCK_COMPANY.slug,
+    });
+
     await CompanyModel.create({
       ...MOCK_COMPANY,
       owner: companyOwner.id,

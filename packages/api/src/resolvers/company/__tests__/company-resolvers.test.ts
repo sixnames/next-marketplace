@@ -1,5 +1,5 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import { MOCK_COMPANIES, MOCK_NEW_COMPANY, MOCK_SAMPLE_USER } from '@yagu/mocks';
+import { MOCK_COMPANIES, MOCK_NEW_COMPANY, MOCK_NEW_SHOP, MOCK_SAMPLE_USER } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import { UserModel } from '../../../entities/User';
 import { omit } from 'lodash';
@@ -190,9 +190,47 @@ describe('Company', () => {
     const {
       data: { updateCompany },
     } = updateCompanyPayload;
+    const { company: updatedCompany } = updateCompany;
     expect(updateCompany.success).toBeTruthy();
-    expect(updateCompany.company.id).toEqual(createCompany.company.id);
-    expect(updateCompany.company.nameString).toEqual(companyNewName);
+    expect(updatedCompany.id).toEqual(createCompany.company.id);
+    expect(updatedCompany.nameString).toEqual(companyNewName);
+
+    // Should add shop to company
+    const addShopToCompanyPayload = await mutateWithImages({
+      mutation: gql`
+        mutation AddShopToCompany($input: AddShopToCompanyInput!) {
+          addShopToCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                id
+                nameString
+              }
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        return {
+          companyId: updatedCompany.id,
+          nameString: MOCK_NEW_SHOP.nameString,
+          contacts: MOCK_NEW_SHOP.contacts,
+          address: [40, 40],
+          logo: [images[0]],
+          assets: [images[1]],
+        };
+      },
+      fileNames: ['test-company-logo.png', 'test-shop-asset-0.png'],
+    });
+    const {
+      data: { addShopToCompany },
+    } = addShopToCompanyPayload;
+    const {
+      company: { shops },
+    } = addShopToCompany;
+    expect(shops).toHaveLength(1);
+    expect(addShopToCompany.success).toBeTruthy();
 
     // Should delete company
     const deleteCompanyPayload = await mutate<any>(
@@ -206,7 +244,7 @@ describe('Company', () => {
       `,
       {
         variables: {
-          id: currentCompany.id,
+          id: updatedCompany.id,
         },
       },
     );

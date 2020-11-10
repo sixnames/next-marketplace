@@ -16,7 +16,7 @@ import PayloadType from '../common/PayloadType';
 import { CreateCompanyInput } from './CreateCompanyInput';
 import { generateSlug } from '../../utils/slug';
 import storeUploads from '../../utils/assets/storeUploads';
-import { ASSETS_DIST_COMPANIES } from '../../config';
+import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS_LOGOS, ASSETS_DIST_SHOPS } from '../../config';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -25,11 +25,13 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { createCompanySchema, updateCompanySchema } from '@yagu/validation';
+import { addShopToCompanySchema, createCompanySchema, updateCompanySchema } from '@yagu/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProductModel } from '../../entities/ShopProduct';
+import { AddShopToCompanyInput } from './AddShopToCompanyInput';
+import del from 'del';
 
 const {
   operationConfigCreate,
@@ -37,6 +39,12 @@ const {
   operationConfigUpdate,
   operationConfigDelete,
 } = RoleRuleModel.getOperationsConfigs(Company.name);
+
+const {
+  operationConfigCreate: operationConfigShopCreate,
+  // operationConfigUpdate: operationConfigShopUpdate,
+  // operationConfigDelete: operationConfigShopDelete,
+} = RoleRuleModel.getOperationsConfigs(Shop.name);
 
 @ObjectType()
 class CompanyPayloadtype extends PayloadType() {
@@ -141,6 +149,10 @@ export class CompanyResolver {
         };
       }
 
+      // Remove old assets
+      const filesPath = `./assets/${ASSETS_DIST_COMPANIES}/${company.slug}`;
+      const removedAssets = await del(filesPath);
+
       const slug = generateSlug(nameString);
       const [assetsResult] = await storeUploads({
         files: [logo[0]],
@@ -161,7 +173,7 @@ export class CompanyResolver {
         },
       );
 
-      if (!updatedCompany) {
+      if (!updatedCompany || !removedAssets) {
         return {
           success: false,
           message: await getApiMessage('companies.update.error'),
@@ -199,10 +211,19 @@ export class CompanyResolver {
 
       // Remove all shops and products
       const shops = await ShopModel.find({ _id: { $in: company.shops } });
+
+      // remove shops assets
+      for await (const shop of shops) {
+        const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${company.slug}`;
+        const logoPath = `./assets/${ASSETS_DIST_SHOPS_LOGOS}/${shop.slug}`;
+        await del(assetsPath);
+        await del(logoPath);
+      }
+
+      // remove shops products
       const shopsProductsIds = shops.reduce((acc: string[], { products }) => {
         return [...acc, ...products];
       }, []);
-
       const removedShopsProducts = await ShopProductModel.deleteMany({
         _id: { $in: shopsProductsIds },
       });
@@ -213,6 +234,7 @@ export class CompanyResolver {
         };
       }
 
+      // remove shops
       const removedShops = await ShopModel.deleteMany({ _id: { $in: company.shops } });
       if (!removedShops.ok) {
         return {
@@ -221,11 +243,14 @@ export class CompanyResolver {
         };
       }
 
+      // remove company and company assets
+      const filesPath = `./assets/${ASSETS_DIST_COMPANIES}/${company.slug}`;
+      const removedAssets = await del(filesPath);
       const removedCompany = await CompanyModel.findOneAndDelete({
         _id: id,
       });
 
-      if (!removedCompany) {
+      if (!removedCompany || !removedAssets) {
         return {
           success: false,
           message: await getApiMessage('companies.delete.error'),
@@ -235,6 +260,94 @@ export class CompanyResolver {
       return {
         success: true,
         message: await getApiMessage('companies.delete.success'),
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => CompanyPayloadtype)
+  @ValidateMethod({ schema: addShopToCompanySchema })
+  @AuthMethod(operationConfigShopCreate)
+  async addShopToCompany(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigShopCreate) customFilter: FilterQuery<Shop>,
+    @Arg('input') input: AddShopToCompanyInput,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const { companyId, ...values } = input;
+      const company = await CompanyModel.findOne({ _id: companyId, ...customFilter });
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage('companies.update.notFound'),
+        };
+      }
+
+      const exist = await ShopModel.findOne({ nameString: values.nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.create.duplicate'),
+        };
+      }
+
+      // crate shop
+      const slug = generateSlug(values.nameString);
+      const [logoAsset] = await storeUploads({
+        files: [values.logo[0]],
+        slug,
+        dist: ASSETS_DIST_SHOPS_LOGOS,
+      });
+      const photosAssets = await storeUploads({
+        files: values.assets,
+        slug,
+        dist: ASSETS_DIST_SHOPS,
+      });
+
+      const createdShop = await ShopModel.create({
+        ...values,
+        slug,
+        address: {
+          coordinates: values.address,
+        },
+        logo: logoAsset,
+        assets: photosAssets,
+        products: [],
+      });
+      if (!createdShop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.create.error'),
+        };
+      }
+
+      // add created shop to the company
+      const updatedCompany = await CompanyModel.findByIdAndUpdate(
+        companyId,
+        {
+          $push: {
+            shops: createdShop.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedCompany) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.create.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('shops.create.success'),
+        company: updatedCompany,
       };
     } catch (e) {
       return {

@@ -18,6 +18,7 @@ export * from './lib/rubricVariantSchema';
 export * from './lib/schemaTemplates';
 export * from './lib/userSchema';
 export * from './lib/companySchema';
+export * from './lib/shopSchema';
 
 export type ObjectSchema<
   T extends Record<string, any> | null | undefined = Record<string, any> | undefined,

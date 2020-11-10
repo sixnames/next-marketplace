@@ -5,7 +5,7 @@ interface CreateSecondaryCurrencyInterface {
   secondaryCurrency: Currency;
 }
 
-export const createSecondaryCurrency = async (): Promise<CreateSecondaryCurrencyInterface> => {
+export const createTestSecondaryCurrency = async (): Promise<CreateSecondaryCurrencyInterface> => {
   const secondaryCurrency = await CurrencyModel.create(MOCK_CURRENCIES[1]);
 
   return {

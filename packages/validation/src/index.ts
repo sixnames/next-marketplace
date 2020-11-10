@@ -19,6 +19,7 @@ export * from './lib/schemaTemplates';
 export * from './lib/userSchema';
 export * from './lib/companySchema';
 export * from './lib/shopSchema';
+export * from './lib/shopProductSchema';
 
 export type ObjectSchema<
   T extends Record<string, any> | null | undefined = Record<string, any> | undefined,

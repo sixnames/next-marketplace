@@ -16,7 +16,7 @@ import {
 } from '../../entities/OptionsGroup';
 import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
 
-interface CreateTestOptionsInterface {
+export interface CreateTestOptionsInterface {
   optionsVintage: Option[];
   optionsColor: Option[];
   optionsWineType: Option[];

@@ -1,7 +1,6 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
 import { generateDefaultLangSlug } from '../slug';
-import { RubricVariantModel } from '../../entities/RubricVariant';
 import { RubricModel } from '../../entities/Rubric';
 import {
   MOCK_PRODUCT_A,
@@ -14,8 +13,6 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_B_B,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_LEVEL_TWO_B,
-  MOCK_RUBRIC_VARIANT_ALCOHOL,
-  MOCK_RUBRIC_VARIANT_JUICE,
   MOCK_RUBRIC_LEVEL_ONE_B,
   MOCK_RUBRIC_LEVEL_ONE_C,
   MOCK_RUBRIC_LEVEL_ONE_D,
@@ -56,6 +53,7 @@ import { createTestSecondaryCountry } from './createTestSecondaryCountry';
 import { createTestSecondaryLanguage } from './createTestSecondaryLanguage';
 import { createTestOptions } from './createTestOptions';
 import { createTestAttributes } from './createTestAttributes';
+import { createTestRubricVariants } from './createTestRubricVariants';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -116,8 +114,7 @@ const createTestData = async () => {
     });
 
     // Rubric variants
-    const rubricVariantAlcohol = await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_ALCOHOL);
-    await RubricVariantModel.create(MOCK_RUBRIC_VARIANT_JUICE);
+    const { rubricVariantAlcohol } = await createTestRubricVariants();
 
     // Rubrics
     const rubricAttributesGroups = (isOwner: boolean) => [

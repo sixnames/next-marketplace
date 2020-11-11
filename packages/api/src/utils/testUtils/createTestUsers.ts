@@ -5,7 +5,7 @@ import { createInitialDataPayloadInterface } from '../initialData/createInitialD
 
 type CreateTestUsersInterface = createInitialDataPayloadInterface;
 
-interface CreateTestUsersPayloadInterface {
+export interface CreateTestUsersPayloadInterface {
   sampleUser: User;
   companyOwner: User;
   companyManager: User;

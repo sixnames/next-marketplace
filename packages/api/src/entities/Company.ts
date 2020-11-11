@@ -23,11 +23,11 @@ export class Company extends TimeStamps {
   logo: AssetType;
 
   @Field((_type) => User)
-  @prop({ ref: User })
+  @prop({ ref: () => User })
   owner: string;
 
   @Field((_type) => [User])
-  @prop({ ref: User })
+  @prop({ ref: () => User })
   staff: string[];
 
   @Field((_type) => ContactsType)
@@ -35,7 +35,7 @@ export class Company extends TimeStamps {
   contacts: ContactsType;
 
   @Field((_type) => [Shop])
-  @prop({ ref: Shop })
+  @prop({ ref: () => Shop })
   shops: string[];
 
   @Field()

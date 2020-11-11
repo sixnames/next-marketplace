@@ -1,9 +1,5 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
-import { MOCK_COMPANY } from '@yagu/mocks';
-import { CompanyModel } from '../../entities/Company';
-import generateTestAsset from './generateTestAsset';
-import { ASSETS_DIST_COMPANIES } from '../../config';
 import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
 import { createTestSecondaryCountry } from './createTestSecondaryCountry';
@@ -15,6 +11,7 @@ import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
 import { createTestUsers } from './createTestUsers';
 import { createTestShops } from './createTestShops';
+import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
@@ -69,28 +66,19 @@ const createTestData = async () => {
     });
 
     // Users
-    const { companyOwner, companyManager } = await createTestUsers({
+    const users = await createTestUsers({
       initialRolesIds,
     });
 
     // Shops
-    const { shopA } = await createTestShops({
+    const shops = await createTestShops({
       ...products,
     });
 
     // Companies
-    const companyLogo = await generateTestAsset({
-      targetFileName: 'test-company-logo',
-      dist: ASSETS_DIST_COMPANIES,
-      slug: MOCK_COMPANY.slug,
-    });
-
-    await CompanyModel.create({
-      ...MOCK_COMPANY,
-      owner: companyOwner.id,
-      logo: companyLogo,
-      staff: [companyManager.id],
-      shops: [shopA.id],
+    await createTestCompanies({
+      ...users,
+      ...shops,
     });
   } catch (e) {
     console.log('========== createTestData ERROR ==========', '\n', e);

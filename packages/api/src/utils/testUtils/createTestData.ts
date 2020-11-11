@@ -1,7 +1,5 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
-import { OptionModel } from '../../entities/Option';
-import { OptionsGroupModel, OptionsGroupVariantEnum } from '../../entities/OptionsGroup';
 import {
   AttributeModel,
   AttributePositionInTitleEnum,
@@ -19,11 +17,6 @@ import {
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS_WINE_COLOR,
-  MOCK_OPTIONS_GROUP_COLORS,
-  MOCK_OPTIONS_GROUP_WINE_VARIANTS,
-  MOCK_OPTIONS_WINE_VARIANT,
-  MOCK_OPTIONS_VINTAGE,
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_B,
@@ -41,10 +34,7 @@ import {
   MOCK_RUBRIC_LEVEL_ONE_D,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
-  MOCK_OPTIONS_GROUP_WINE_VINTAGE,
   MOCK_ATTRIBUTE_WINE_VINTAGE,
-  MOCK_OPTIONS_COMBINATION,
-  MOCK_OPTIONS_GROUP_COMBINATIONS,
   MOCK_ATTRIBUTE_WINE_COMBINATIONS,
   MOCK_ATTRIBUTE_OUTER_RATING_A,
   MOCK_ATTRIBUTE_OUTER_RATING_B,
@@ -66,8 +56,6 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   ATTRIBUTE_VIEW_VARIANT_ICON,
-  OPTIONS_GROUP_VARIANT_COLOR,
-  OPTIONS_GROUP_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
 } from '@yagu/config';
 import {
@@ -89,6 +77,7 @@ import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
 import { createTestSecondaryCountry } from './createTestSecondaryCountry';
 import { createTestSecondaryLanguage } from './createTestSecondaryLanguage';
+import { createTestOptions } from './createTestOptions';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -116,42 +105,16 @@ const createTestData = async () => {
     await createTestSecondaryLanguage();
 
     // Options
-    const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);
-    const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
-    const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
-    const optionsCombination = await OptionModel.insertMany(MOCK_OPTIONS_COMBINATION);
-
-    const optionsIdsVintage = optionsVintage.map(({ id }) => id);
-    const optionsIdsColor = optionsColor.map(({ id }) => id);
-    const optionsIdsWineType = optionsWineType.map(({ id }) => id);
-    const optionsIdsCombination = optionsCombination.map(({ id }) => id);
-
-    const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
-    const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
-    const optionsSlugsWineType = optionsWineType.map(({ slug }) => slug);
-    const optionsSlugsCombination = optionsCombination.map(({ slug }) => slug);
-
-    const optionsGroupWineVintage = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_WINE_VINTAGE,
-      options: optionsIdsVintage,
-    });
-
-    const optionsGroupWineTypes = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_WINE_VARIANTS,
-      options: optionsIdsWineType,
-    });
-
-    const optionsGroupColors = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_COLORS,
-      options: optionsIdsColor,
-      variant: OPTIONS_GROUP_VARIANT_COLOR as OptionsGroupVariantEnum,
-    });
-
-    const optionsGroupCombination = await OptionsGroupModel.create({
-      ...MOCK_OPTIONS_GROUP_COMBINATIONS,
-      options: optionsIdsCombination,
-      variant: OPTIONS_GROUP_VARIANT_ICON as OptionsGroupVariantEnum,
-    });
+    const {
+      optionsGroupWineVintage,
+      optionsGroupWineTypes,
+      optionsGroupColors,
+      optionsGroupCombination,
+      optionsSlugsVintage,
+      optionsSlugsColor,
+      optionsSlugsWineType,
+      optionsSlugsCombination,
+    } = await createTestOptions();
 
     // Attributes
     const attributeOuterRatingA = await AttributeModel.create({

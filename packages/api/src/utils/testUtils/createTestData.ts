@@ -1,14 +1,6 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
-import {
-  MOCK_COMPANY_OWNER,
-  MOCK_COMPANY,
-  MOCK_COMPANY_MANAGER,
-  MOCK_SAMPLE_USER,
-  MOCK_SHOP,
-} from '@yagu/mocks';
-import { UserModel } from '../../entities/User';
-import { hash } from 'bcryptjs';
+import { MOCK_COMPANY, MOCK_SHOP } from '@yagu/mocks';
 import { CompanyModel } from '../../entities/Company';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
@@ -23,6 +15,7 @@ import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
 import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
+import { createTestUsers } from './createTestUsers';
 
 const createTestData = async () => {
   try {
@@ -86,28 +79,9 @@ const createTestData = async () => {
       connectionProductC,
     } = products;
 
-    // Sample user
-    const sampleUserPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
-    await UserModel.create({
-      ...MOCK_SAMPLE_USER,
-      role: initialRolesIds.guestRoleId,
-      password: sampleUserPassword,
-    });
-
-    // Company owner
-    const companyOwnerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
-    const companyOwner = await UserModel.create({
-      ...MOCK_COMPANY_OWNER,
-      role: initialRolesIds.companyOwnerRoleId,
-      password: companyOwnerPassword,
-    });
-
-    // Company manager
-    const companyManagerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
-    const companyManager = await UserModel.create({
-      ...MOCK_COMPANY_MANAGER,
-      role: initialRolesIds.companyOwnerRoleId,
-      password: companyManagerPassword,
+    // Users
+    const { companyOwner, companyManager } = await createTestUsers({
+      initialRolesIds,
     });
 
     // Shop products

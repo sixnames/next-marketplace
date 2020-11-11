@@ -13,7 +13,7 @@ import { createInitialRoles, CreateInitialRolesPayloadInterface } from './create
 import { createInitialLocalizationData } from './createInitialLocalizationData';
 import { Types } from 'mongoose';
 
-interface createInitialDataPayloadInterface {
+export interface createInitialDataPayloadInterface {
   initialRolesIds: CreateInitialRolesPayloadInterface;
 }
 

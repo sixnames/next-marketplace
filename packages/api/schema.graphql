@@ -372,6 +372,11 @@ input DeleteProductFromRubricInput {
   rubricId: ID!
 }
 
+input DeleteShopFromCompanyInput {
+  companyId: ID!
+  shopId: ID!
+}
+
 """List of gender enums"""
 enum GenderEnum {
   he
@@ -476,6 +481,7 @@ type Mutation {
   deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
+  deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayloadtype!
   deleteUser(id: ID!): UserPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
   setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!

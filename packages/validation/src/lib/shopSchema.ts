@@ -63,3 +63,10 @@ export const addShopToCompanySchema = (args: MultiLangSchemaMessagesInterface) =
     companyId: companyIdSchema(args),
     ...shopCommonFields(args),
   });
+
+export const updateShopInCompanySchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    shopId: shopIdSchema(args),
+    companyId: companyIdSchema(args),
+    ...shopCommonFields(args),
+  });

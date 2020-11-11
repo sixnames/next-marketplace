@@ -277,6 +277,41 @@ describe('Company', () => {
     expect(updatedShop.assets).toHaveLength(2);
     expect(updateShopInCompany.success).toBeTruthy();
 
+    // Should delete shop from company
+    const deleteShopFromCompanyPayload = await mutate<any>(
+      gql`
+        mutation DeleteShopFromCompany($input: DeleteShopFromCompanyInput!) {
+          deleteShopFromCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                id
+                nameString
+                assets {
+                  index
+                  url
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            companyId: updatedCompany.id,
+            shopId: createdShop.id,
+          },
+        },
+      },
+    );
+    const {
+      data: { deleteShopFromCompany },
+    } = deleteShopFromCompanyPayload;
+    expect(deleteShopFromCompany.company.shops).toHaveLength(0);
+    expect(deleteShopFromCompany.success).toBeTruthy();
+
     // Should delete company
     const deleteCompanyPayload = await mutate<any>(
       gql`

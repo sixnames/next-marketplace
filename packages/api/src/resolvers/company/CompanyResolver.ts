@@ -25,7 +25,12 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { addShopToCompanySchema, createCompanySchema, updateCompanySchema } from '@yagu/validation';
+import {
+  addShopToCompanySchema,
+  createCompanySchema,
+  updateCompanySchema,
+  updateShopInCompanySchema,
+} from '@yagu/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
 import { Shop, ShopModel } from '../../entities/Shop';
@@ -33,6 +38,7 @@ import { ShopProductModel } from '../../entities/ShopProduct';
 import { AddShopToCompanyInput } from './AddShopToCompanyInput';
 import del from 'del';
 import { UpdateShopInCompanyInput } from './UpdateShopInCompanyInput';
+import { DeleteShopFromCompanyInput } from './DeleteShopFromCompanyInput';
 
 const {
   operationConfigCreate,
@@ -44,7 +50,7 @@ const {
 const {
   operationConfigCreate: operationConfigShopCreate,
   operationConfigUpdate: operationConfigShopUpdate,
-  // operationConfigDelete: operationConfigShopDelete,
+  operationConfigDelete: operationConfigShopDelete,
 } = RoleRuleModel.getOperationsConfigs(Shop.name);
 
 @ObjectType()
@@ -359,11 +365,11 @@ export class CompanyResolver {
   }
 
   @Mutation((_returns) => CompanyPayloadtype)
-  @ValidateMethod({ schema: addShopToCompanySchema })
+  @ValidateMethod({ schema: updateShopInCompanySchema })
   @AuthMethod(operationConfigShopUpdate)
   async updateShopInCompany(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
-    @CustomFilter(operationConfigShopCreate) customFilter: FilterQuery<Shop>,
+    @CustomFilter(operationConfigShopUpdate) customFilter: FilterQuery<Shop>,
     @Arg('input') input: UpdateShopInCompanyInput,
   ): Promise<CompanyPayloadtype> {
     try {
@@ -431,6 +437,70 @@ export class CompanyResolver {
       return {
         success: true,
         message: await getApiMessage('shops.update.success'),
+        company,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => CompanyPayloadtype)
+  @AuthMethod(operationConfigShopDelete)
+  async deleteShopFromCompany(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigShopDelete) customFilter: FilterQuery<Shop>,
+    @Arg('input') input: DeleteShopFromCompanyInput,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const { companyId, shopId } = input;
+      const company = await CompanyModel.findOne({ _id: companyId, ...customFilter });
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage('companies.update.notFound'),
+        };
+      }
+
+      const shop = await ShopModel.findOne({ _id: shopId });
+      if (!shop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.delete.notFound'),
+        };
+      }
+
+      // remove shop assets
+      const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${shop.slug}`;
+      const logoPath = `./assets/${ASSETS_DIST_SHOPS_LOGOS}/${shop.slug}`;
+      await del(assetsPath);
+      await del(logoPath);
+
+      // remove shops products
+      const removedShopsProducts = await ShopProductModel.deleteMany({
+        _id: { $in: shop.products },
+      });
+      if (!removedShopsProducts.ok) {
+        return {
+          success: false,
+          message: await getApiMessage('shopProducts.delete.error'),
+        };
+      }
+
+      // update shop
+      const removedShop = await ShopModel.findByIdAndDelete(shopId);
+      if (!removedShop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.delete.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('shops.delete.success'),
         company,
       };
     } catch (e) {

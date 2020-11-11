@@ -1,11 +1,9 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
-import { MOCK_COMPANY, MOCK_SHOP } from '@yagu/mocks';
+import { MOCK_COMPANY } from '@yagu/mocks';
 import { CompanyModel } from '../../entities/Company';
 import generateTestAsset from './generateTestAsset';
-import { ASSETS_DIST_COMPANIES, ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
-import { ShopModel } from '../../entities/Shop';
-import { ShopProductModel } from '../../entities/ShopProduct';
+import { ASSETS_DIST_COMPANIES } from '../../config';
 import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
 import { createTestSecondaryCountry } from './createTestSecondaryCountry';
@@ -16,6 +14,7 @@ import { createTestRubricVariants } from './createTestRubricVariants';
 import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
 import { createTestUsers } from './createTestUsers';
+import { createTestShops } from './createTestShops';
 
 const createTestData = async () => {
   try {
@@ -69,100 +68,17 @@ const createTestData = async () => {
       ...rubrics,
     });
 
-    const {
-      productA,
-      productB,
-      productC,
-      productD,
-      connectionProductA,
-      connectionProductB,
-      connectionProductC,
-    } = products;
-
     // Users
     const { companyOwner, companyManager } = await createTestUsers({
       initialRolesIds,
     });
 
-    // Shop products
-    const shopAProductA = await ShopProductModel.create({
-      available: 1,
-      price: 100,
-      oldPrices: [],
-      product: productA.id,
+    // Shops
+    const { shopA } = await createTestShops({
+      ...products,
     });
 
-    const shopAProductB = await ShopProductModel.create({
-      available: 3,
-      price: 180,
-      oldPrices: [],
-      product: productB.id,
-    });
-
-    const shopAProductC = await ShopProductModel.create({
-      available: 12,
-      price: 1200,
-      oldPrices: [],
-      product: productC.id,
-    });
-
-    const shopAProductD = await ShopProductModel.create({
-      available: 0,
-      price: 980,
-      oldPrices: [],
-      product: productD.id,
-    });
-
-    const shopAConnectionProductA = await ShopProductModel.create({
-      available: 32,
-      price: 480,
-      oldPrices: [],
-      product: connectionProductA.id,
-    });
-
-    const shopAConnectionProductB = await ShopProductModel.create({
-      available: 0,
-      price: 680,
-      oldPrices: [],
-      product: connectionProductB.id,
-    });
-
-    const shopAConnectionProductC = await ShopProductModel.create({
-      available: 45,
-      price: 720,
-      oldPrices: [],
-      product: connectionProductC.id,
-    });
-
-    // Shop
-    const shopLogo = await generateTestAsset({
-      targetFileName: 'test-company-logo',
-      dist: ASSETS_DIST_SHOPS_LOGOS,
-      slug: MOCK_SHOP.slug,
-    });
-
-    const shopAAssetA = await generateTestAsset({
-      targetFileName: 'test-shop-asset-0',
-      dist: ASSETS_DIST_SHOPS,
-      slug: MOCK_SHOP.slug,
-    });
-
-    const shopA = await ShopModel.create({
-      ...MOCK_SHOP,
-      logo: shopLogo,
-      assets: [shopAAssetA],
-      products: [
-        shopAProductA.id,
-        shopAProductB.id,
-        shopAProductC.id,
-        shopAProductD.id,
-        shopAConnectionProductA.id,
-        shopAConnectionProductB.id,
-        shopAConnectionProductC.id,
-      ],
-    });
-
-    // Company
+    // Companies
     const companyLogo = await generateTestAsset({
       targetFileName: 'test-company-logo',
       dist: ASSETS_DIST_COMPANIES,

@@ -63,6 +63,9 @@ import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 import { CompanyResolver } from './resolvers/company/CompanyResolver';
 import { ApolloContextInterface } from './types/context';
 
+// Configure env variables
+require('dotenv').config();
+
 interface CreateAppInterface {
   app: Express;
   server: ApolloServer;

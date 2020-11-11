@@ -3,8 +3,18 @@ import { MOCK_COMPANIES, MOCK_NEW_COMPANY, MOCK_NEW_SHOP, MOCK_SAMPLE_USER } fro
 import { gql } from 'apollo-server-express';
 import { UserModel } from '../../../entities/User';
 import { omit } from 'lodash';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Company', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD companies', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

@@ -6,8 +6,18 @@ import { DEFAULT_LANG } from '@yagu/config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Rubrics', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should rubrics CRUD', async () => {
     expect(true).toBeTruthy();
     const { query } = await authenticatedTestClient();

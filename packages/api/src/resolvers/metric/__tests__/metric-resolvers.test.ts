@@ -3,8 +3,18 @@ import { Metric } from '../../../entities/Metric';
 import { MOCK_METRICS } from '@yagu/mocks';
 import { DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Metric', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD metric', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

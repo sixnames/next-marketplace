@@ -5,8 +5,18 @@ import { generateTestProductAttributes } from '../../../utils/testUtils/generate
 import { gql } from 'apollo-server-express';
 import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_VARIANT } from '@yagu/mocks';
 import { ProductConnectionModel } from '../../../entities/Product';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Product', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD product.', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

@@ -10,6 +10,8 @@ import {
 import { MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP_COLORS } from '@yagu/mocks';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 const addOptionToGroupMutation = gql`
   mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
@@ -64,6 +66,14 @@ const updateOptionInGroupMutation = gql`
 `;
 
 describe('Options groups', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD options group', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

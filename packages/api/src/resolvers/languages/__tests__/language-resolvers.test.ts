@@ -3,8 +3,18 @@ import { DEFAULT_LANG } from '@yagu/config';
 import { ISO_LANGUAGES, MOCK_LANGUAGES } from '@yagu/mocks';
 import { Language } from '../../../entities/Language';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Language', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD language', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

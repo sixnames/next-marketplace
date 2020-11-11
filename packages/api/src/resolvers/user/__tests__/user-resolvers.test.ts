@@ -8,10 +8,20 @@ import { max, alex } from '../__fixtures__';
 import { RoleModel } from '../../../entities/Role';
 import { UserModel } from '../../../entities/User';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 const { email, password, phone, name } = max;
 
 describe('User', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD user', async () => {
     const user = await UserModel.findOne({
       email: ADMIN_EMAIL,

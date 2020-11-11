@@ -1,4 +1,3 @@
-import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
 import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
 import { createTestSecondaryCity } from './createTestSecondaryCity';
@@ -15,9 +14,6 @@ import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
-    // Clear old test data
-    await clearTestData();
-
     // Initial data
     const { initialRolesIds } = await createInitialData();
 

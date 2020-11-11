@@ -5,6 +5,7 @@ import { UserModel } from '../entities/User';
 import { ContextInterface } from '../types/context';
 
 export async function createTestDataRoute({ res }: ContextInterface) {
+  await clearTestData();
   await createTestData();
 
   // set default lang for tests
@@ -19,8 +20,8 @@ export async function clearTestDataRoute({ res }: ContextInterface) {
 }
 
 export async function testSignInRoute({ req, res }: ContextInterface) {
-  const lang = req.lang;
-  const { email, password } = req.query;
+  const { lang, query } = req;
+  const { email, password } = query;
   const { user, message } = await UserModel.attemptSignIn(`${email}`, `${password}`, lang);
 
   if (!user) {

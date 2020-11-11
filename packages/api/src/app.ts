@@ -61,6 +61,7 @@ import { AuthField } from './decorators/methodDecorators';
 import { RoleModel } from './entities/Role';
 import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 import { CompanyResolver } from './resolvers/company/CompanyResolver';
+import { ApolloContextInterface } from './types/context';
 
 interface CreateAppInterface {
   app: Express;
@@ -141,7 +142,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     ...APOLLO_OPTIONS,
     schema,
     introspection: true,
-    context: async ({ req, res, connection }) => {
+    context: async ({ req, res, connection }: ApolloContextInterface) => {
       // Get current city from subdomain name
       // and language from cookie or user accepted language
       // City
@@ -180,7 +181,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
         },
       };
 
-      if (req.session!.user) {
+      if (req.session.user) {
         let userRole = await RoleModel.findOne({ _id: req.session!.user.role });
         if (!userRole) {
           userRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });

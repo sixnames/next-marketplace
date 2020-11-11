@@ -37,12 +37,24 @@ export async function testClientWithContext(
 
   const { setOptions, mutate, query } = testClient;
 
+  const session = {
+    user: null,
+    userId: null,
+    roleId: null,
+    destroy: (callback: (arg: any) => void) => {
+      session.user = null;
+      session.userId = null;
+      session.roleId = null;
+      callback(null);
+    },
+  };
+
   setOptions({
     request: {
       city,
       lang,
       defaultLang: DEFAULT_LANG,
-      session: {},
+      session,
     },
   });
 

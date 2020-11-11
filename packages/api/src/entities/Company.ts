@@ -35,7 +35,7 @@ export class Company extends TimeStamps {
   contacts: ContactsType;
 
   @Field((_type) => [Shop])
-  @prop({ ref: () => Shop })
+  @prop({ ref: () => 'Shop' })
   shops: string[];
 
   @Field()

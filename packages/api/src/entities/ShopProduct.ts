@@ -17,7 +17,7 @@ export class ShopProduct {
   price: number;
 
   @Field(() => [Float])
-  @prop({ required: true })
+  @prop({ type: Number, required: true })
   oldPrices: number[];
 
   @Field((_type) => Product)

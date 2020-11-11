@@ -61,8 +61,19 @@ export async function testClientWithContext(
   return { mutate, query, setOptions };
 }
 
-export async function authenticatedTestClient(): Promise<AuthenticatedUserMutationInterface> {
+interface AuthenticatedTestClient {
+  email: string;
+  password: string;
+}
+
+export async function authenticatedTestClient(
+  props?: AuthenticatedTestClient,
+): Promise<AuthenticatedUserMutationInterface> {
   const { mutate, query, setOptions } = await testClientWithContext();
+  const { email, password } = props || {
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+  };
 
   const {
     data: {
@@ -104,8 +115,8 @@ export async function authenticatedTestClient(): Promise<AuthenticatedUserMutati
     {
       variables: {
         input: {
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
+          email,
+          password,
         },
       },
     },

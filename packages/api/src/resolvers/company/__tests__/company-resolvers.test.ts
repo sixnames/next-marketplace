@@ -212,13 +212,14 @@ describe('Company', () => {
         }
       `,
       input: (images) => {
+        const [logo, ...assets] = images;
         return {
           companyId: updatedCompany.id,
           nameString: MOCK_NEW_SHOP.nameString,
           contacts: MOCK_NEW_SHOP.contacts,
           address: [40, 40],
-          logo: [images[0]],
-          assets: [images[1]],
+          logo: [logo],
+          assets,
         };
       },
       fileNames: ['test-company-logo.png', 'test-shop-asset-0.png'],
@@ -229,8 +230,52 @@ describe('Company', () => {
     const {
       company: { shops },
     } = addShopToCompany;
+    const createdShop = shops[0];
     expect(shops).toHaveLength(1);
     expect(addShopToCompany.success).toBeTruthy();
+
+    // Should update shop in company
+    const shopNewName = 'shopNewName';
+    const updateShopInCompanyPayload = await mutateWithImages({
+      mutation: gql`
+        mutation UpdateShopInCompany($input: UpdateShopInCompanyInput!) {
+          updateShopInCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                id
+                nameString
+                assets {
+                  index
+                  url
+                }
+              }
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        const [logo, ...assets] = images;
+        return {
+          companyId: updatedCompany.id,
+          shopId: createdShop.id,
+          nameString: shopNewName,
+          contacts: MOCK_NEW_SHOP.contacts,
+          address: [140, 140],
+          logo: [logo],
+          assets,
+        };
+      },
+      fileNames: ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'],
+    });
+    const {
+      data: { updateShopInCompany },
+    } = updateShopInCompanyPayload;
+    const updatedShop = updateShopInCompany.company.shops[0];
+    expect(updatedShop.nameString).toEqual(shopNewName);
+    expect(updatedShop.assets).toHaveLength(2);
+    expect(updateShopInCompany.success).toBeTruthy();
 
     // Should delete company
     const deleteCompanyPayload = await mutate<any>(

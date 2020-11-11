@@ -32,6 +32,7 @@ import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { AddShopToCompanyInput } from './AddShopToCompanyInput';
 import del from 'del';
+import { UpdateShopInCompanyInput } from './UpdateShopInCompanyInput';
 
 const {
   operationConfigCreate,
@@ -42,7 +43,7 @@ const {
 
 const {
   operationConfigCreate: operationConfigShopCreate,
-  // operationConfigUpdate: operationConfigShopUpdate,
+  operationConfigUpdate: operationConfigShopUpdate,
   // operationConfigDelete: operationConfigShopDelete,
 } = RoleRuleModel.getOperationsConfigs(Shop.name);
 
@@ -214,7 +215,7 @@ export class CompanyResolver {
 
       // remove shops assets
       for await (const shop of shops) {
-        const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${company.slug}`;
+        const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${shop.slug}`;
         const logoPath = `./assets/${ASSETS_DIST_SHOPS_LOGOS}/${shop.slug}`;
         await del(assetsPath);
         await del(logoPath);
@@ -348,6 +349,89 @@ export class CompanyResolver {
         success: true,
         message: await getApiMessage('shops.create.success'),
         company: updatedCompany,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => CompanyPayloadtype)
+  @ValidateMethod({ schema: addShopToCompanySchema })
+  @AuthMethod(operationConfigShopUpdate)
+  async updateShopInCompany(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigShopCreate) customFilter: FilterQuery<Shop>,
+    @Arg('input') input: UpdateShopInCompanyInput,
+  ): Promise<CompanyPayloadtype> {
+    try {
+      const { companyId, shopId, ...values } = input;
+      const company = await CompanyModel.findOne({ _id: companyId, ...customFilter });
+      if (!company) {
+        return {
+          success: false,
+          message: await getApiMessage('companies.update.notFound'),
+        };
+      }
+
+      const shop = await ShopModel.findOne({ _id: shopId });
+      if (!shop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.notFound'),
+        };
+      }
+
+      const exist = await ShopModel.findOne({ nameString: values.nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.duplicate'),
+        };
+      }
+
+      // remove shop assets
+      const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${shop.slug}`;
+      const logoPath = `./assets/${ASSETS_DIST_SHOPS_LOGOS}/${shop.slug}`;
+      await del(assetsPath);
+      await del(logoPath);
+
+      // update shop
+      const slug = generateSlug(values.nameString);
+      const [logoAsset] = await storeUploads({
+        files: [values.logo[0]],
+        slug,
+        dist: ASSETS_DIST_SHOPS_LOGOS,
+      });
+      const photosAssets = await storeUploads({
+        files: values.assets,
+        slug,
+        dist: ASSETS_DIST_SHOPS,
+      });
+
+      const updatedShop = await ShopModel.findByIdAndUpdate(shopId, {
+        ...values,
+        slug,
+        address: {
+          coordinates: values.address,
+        },
+        logo: logoAsset,
+        assets: photosAssets,
+      });
+
+      if (!updatedShop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('shops.update.success'),
+        company,
       };
     } catch (e) {
       return {

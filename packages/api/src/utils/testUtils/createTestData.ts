@@ -1,21 +1,9 @@
 import clearTestData from './clearTestData';
 import createInitialData from '../initialData/createInitialData';
-import { generateDefaultLangSlug } from '../slug';
-import { RubricModel } from '../../entities/Rubric';
 import {
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_B,
-  MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_RUBRIC_LEVEL_THREE_A_B,
-  MOCK_RUBRIC_LEVEL_THREE_B_A,
-  MOCK_RUBRIC_LEVEL_THREE_B_B,
-  MOCK_RUBRIC_LEVEL_TWO_A,
-  MOCK_RUBRIC_LEVEL_TWO_B,
-  MOCK_RUBRIC_LEVEL_ONE_B,
-  MOCK_RUBRIC_LEVEL_ONE_C,
-  MOCK_RUBRIC_LEVEL_ONE_D,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
   MOCK_COMPANY_OWNER,
@@ -37,7 +25,6 @@ import {
   ProductConnectionModel,
   ProductModel,
 } from '../../entities/Product';
-import { GenderEnum } from '../../entities/common';
 import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
 import { UserModel } from '../../entities/User';
@@ -54,6 +41,7 @@ import { createTestSecondaryLanguage } from './createTestSecondaryLanguage';
 import { createTestOptions } from './createTestOptions';
 import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
+import { createTestRubrics } from './createTestRubrics';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -93,10 +81,16 @@ const createTestData = async () => {
     } = await createTestOptions();
 
     // Attributes
+    const attributes = await createTestAttributes({
+      optionsGroupWineVintage,
+      optionsGroupWineTypes,
+      optionsGroupColors,
+      optionsGroupCombination,
+    });
+
     const {
       attributesGroupOuterRating,
       attributesGroupWineFeatures,
-      attributesGroupWhiskeyFeatures,
       attributeOuterRatingA,
       attributeOuterRatingB,
       attributeOuterRatingC,
@@ -106,181 +100,15 @@ const createTestData = async () => {
       attributeWineType,
       attributeString,
       attributeNumber,
-    } = await createTestAttributes({
-      optionsGroupWineVintage,
-      optionsGroupWineTypes,
-      optionsGroupColors,
-      optionsGroupCombination,
-    });
+    } = attributes;
 
     // Rubric variants
-    const { rubricVariantAlcohol } = await createTestRubricVariants();
+    const rubricVariants = await createTestRubricVariants();
 
     // Rubrics
-    const rubricAttributesGroups = (isOwner: boolean) => [
-      {
-        showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
-        showInSiteNav: true,
-        node: attributesGroupWineFeatures.id,
-        isOwner,
-      },
-      {
-        showInCatalogueFilter: [],
-        showInSiteNav: false,
-        node: attributesGroupOuterRating.id,
-        isOwner,
-      },
-    ];
-
-    const rubricAttributesGroupsB = (isOwner: boolean) => [
-      {
-        showInCatalogueFilter: [],
-        showInSiteNav: true,
-        node: attributesGroupWhiskeyFeatures.id,
-        isOwner,
-      },
-      {
-        showInCatalogueFilter: [],
-        showInSiteNav: false,
-        node: attributesGroupOuterRating.id,
-        isOwner,
-      },
-    ];
-
-    const rubricLevelOne = await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_ONE,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      attributesGroups: rubricAttributesGroups(true),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_ONE.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_ONE_B,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      attributesGroups: rubricAttributesGroups(true),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_ONE_C,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      attributesGroups: rubricAttributesGroups(true),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_ONE_D,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      attributesGroups: rubricAttributesGroups(true),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    const rubricLevelTwoA = await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_TWO_A,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelOne.id,
-      attributesGroups: rubricAttributesGroups(false),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    const rubricLevelThreeAA = await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_THREE_A_A,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelTwoA.id,
-      attributesGroups: rubricAttributesGroups(false),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    const rubricLevelThreeAB = await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_THREE_A_B,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelTwoA.id,
-      attributesGroups: rubricAttributesGroups(false),
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    const rubricLevelTwoB = await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_TWO_B,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelOne.id,
-      attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_THREE_B_A,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelTwoB.id,
-      attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.gender as GenderEnum,
-      },
-    });
-
-    await RubricModel.create({
-      ...MOCK_RUBRIC_LEVEL_THREE_B_B,
-      views: [],
-      priorities: [],
-      slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.defaultTitle),
-      variant: rubricVariantAlcohol.id,
-      parent: rubricLevelTwoB.id,
-      attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
-      catalogueTitle: {
-        ...MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle,
-        gender: MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.gender as GenderEnum,
-      },
+    const rubrics = await createTestRubrics({
+      ...rubricVariants,
+      ...attributes,
     });
 
     // Products

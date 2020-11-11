@@ -36,7 +36,7 @@ interface CreateTestAttributesInterface {
   optionsGroupCombination: OptionsGroup;
 }
 
-interface CreateTestAttributesPayloadInterface {
+export interface CreateTestAttributesPayloadInterface {
   attributeOuterRatingA: Attribute;
   attributeOuterRatingB: Attribute;
   attributeOuterRatingC: Attribute;

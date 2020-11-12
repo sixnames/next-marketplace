@@ -33,7 +33,7 @@ import {
 } from '@yagu/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
-import { Shop, ShopModel } from '../../entities/Shop';
+import { PaginatedShopsResponse, Shop, ShopModel } from '../../entities/Shop';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { AddShopToCompanyInput } from './AddShopToCompanyInput';
 import del from 'del';
@@ -41,6 +41,7 @@ import { UpdateShopInCompanyInput } from './UpdateShopInCompanyInput';
 import { DeleteShopFromCompanyInput } from './DeleteShopFromCompanyInput';
 import { CompanyPaginateInput } from './CompanyPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
+import { ShopPaginateInput } from '../shop/ShopPaginateInput';
 
 const {
   operationConfigCreate,
@@ -539,8 +540,19 @@ export class CompanyResolver {
     return UserModel.find({ _id: { $in: company.staff } });
   }
 
-  @FieldResolver((_returns) => [Shop])
-  async shops(@Root() company: DocumentType<Company>): Promise<Shop[]> {
-    return ShopModel.find({ _id: { $in: company.shops } });
+  @FieldResolver((_returns) => PaginatedShopsResponse)
+  async shops(
+    @Root() company: DocumentType<Company>,
+    @Arg('input', { nullable: true, defaultValue: {} })
+    input: ShopPaginateInput,
+  ): Promise<PaginatedShopsResponse> {
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc' } = input;
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+    return ShopModel.paginate({ _id: { $in: company.shops } }, options);
   }
 }

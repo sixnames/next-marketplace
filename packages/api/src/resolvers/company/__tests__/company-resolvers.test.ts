@@ -74,12 +74,14 @@ describe('Company', () => {
               phones
             }
             shops {
-              id
-              slug
-              nameString
-              address {
-                type
-                coordinates
+              docs {
+                id
+                slug
+                nameString
+                address {
+                  type
+                  coordinates
+                }
               }
             }
           }
@@ -226,8 +228,10 @@ describe('Company', () => {
             message
             company {
               shops {
-                id
-                nameString
+                docs {
+                  id
+                  nameString
+                }
               }
             }
           }
@@ -252,8 +256,8 @@ describe('Company', () => {
     const {
       company: { shops },
     } = addShopToCompany;
-    const createdShop = shops[0];
-    expect(shops).toHaveLength(1);
+    const createdShop = shops.docs[0];
+    expect(shops.docs).toHaveLength(1);
     expect(addShopToCompany.success).toBeTruthy();
 
     // Should update shop in company
@@ -266,11 +270,13 @@ describe('Company', () => {
             message
             company {
               shops {
-                id
-                nameString
-                assets {
-                  index
-                  url
+                docs {
+                  id
+                  nameString
+                  assets {
+                    index
+                    url
+                  }
                 }
               }
             }
@@ -294,7 +300,7 @@ describe('Company', () => {
     const {
       data: { updateShopInCompany },
     } = updateShopInCompanyPayload;
-    const updatedShop = updateShopInCompany.company.shops[0];
+    const updatedShop = updateShopInCompany.company.shops.docs[0];
     expect(updatedShop.nameString).toEqual(shopNewName);
     expect(updatedShop.assets).toHaveLength(2);
     expect(updateShopInCompany.success).toBeTruthy();
@@ -308,11 +314,13 @@ describe('Company', () => {
             message
             company {
               shops {
-                id
-                nameString
-                assets {
-                  index
-                  url
+                docs {
+                  id
+                  nameString
+                  assets {
+                    index
+                    url
+                  }
                 }
               }
             }
@@ -331,7 +339,7 @@ describe('Company', () => {
     const {
       data: { deleteShopFromCompany },
     } = deleteShopFromCompanyPayload;
-    expect(deleteShopFromCompany.company.shops).toHaveLength(0);
+    expect(deleteShopFromCompany.company.shops.docs).toHaveLength(0);
     expect(deleteShopFromCompany.success).toBeTruthy();
 
     // Should delete company

@@ -181,7 +181,7 @@ type Company {
   logo: AssetType!
   nameString: String!
   owner: User!
-  shops: [Shop!]!
+  shops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
   slug: String!
   staff: [User!]!
   updatedAt: Timestamp!

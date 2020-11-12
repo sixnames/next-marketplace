@@ -3,11 +3,11 @@ import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { AssetType, ContactsType } from './common';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { User } from './User';
-import { Shop } from './Shop';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import PaginateType from '../resolvers/common/PaginateType';
+import { PaginatedShopsResponse } from './Shop';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -44,7 +44,7 @@ export class Company extends TimeStamps {
   @prop({ type: ContactsType })
   contacts: ContactsType;
 
-  @Field((_type) => [Shop])
+  @Field((_type) => PaginatedShopsResponse)
   @prop({ ref: () => 'Shop' })
   shops: string[];
 

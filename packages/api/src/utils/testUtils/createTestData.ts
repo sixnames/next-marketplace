@@ -1,4 +1,3 @@
-import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
 import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
@@ -7,10 +6,6 @@ import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
-    // Attributes
-    const attributes = await createTestAttributes();
-    const { companyOwner, companyManager } = attributes;
-
     // Rubric variants
     const rubricVariants = await createTestRubricVariants();
 

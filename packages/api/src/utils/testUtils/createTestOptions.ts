@@ -15,8 +15,9 @@ import {
   OptionsGroupVariantEnum,
 } from '../../entities/OptionsGroup';
 import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
+import { createTestUsers, CreateTestUsersPayloadInterface } from './createTestUsers';
 
-export interface CreateTestOptionsInterface {
+export interface CreateTestOptionsInterface extends CreateTestUsersPayloadInterface {
   optionsVintage: Option[];
   optionsColor: Option[];
   optionsWineType: Option[];
@@ -36,6 +37,9 @@ export interface CreateTestOptionsInterface {
 }
 
 export const createTestOptions = async (): Promise<CreateTestOptionsInterface> => {
+  // Users
+  const usersPayload = await createTestUsers();
+
   const optionsVintage = await OptionModel.insertMany(MOCK_OPTIONS_VINTAGE);
   const optionsColor = await OptionModel.insertMany(MOCK_OPTIONS_WINE_COLOR);
   const optionsWineType = await OptionModel.insertMany(MOCK_OPTIONS_WINE_VARIANT);
@@ -74,6 +78,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   });
 
   return {
+    ...usersPayload,
     optionsVintage,
     optionsColor,
     optionsWineType,

@@ -3,15 +3,11 @@ import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
 import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
-import { createTestUsers } from './createTestUsers';
 import { createTestShops } from './createTestShops';
 import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
-    // Users
-    const { companyOwner, companyManager } = await createTestUsers();
-
     // Options
     const options = await createTestOptions();
     const {
@@ -19,6 +15,8 @@ const createTestData = async () => {
       optionsGroupWineTypes,
       optionsGroupColors,
       optionsGroupCombination,
+      companyOwner,
+      companyManager,
     } = options;
 
     // Attributes

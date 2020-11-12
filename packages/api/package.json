@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "node ./dist/index.js",
-    "start:testing": "node ./dist/index.js",
+    "start": "NODE_ENV=production node ./dist/index.js",
+    "start:testing": "NODE_ENV=development node ./dist/index.js",
     "build": "rimraf ./dist && tsc",
-    "dev": "ts-node-dev --poll --transpile-only --no-notify src/index.ts",
+    "dev": "NODE_ENV=development ts-node-dev --poll --transpile-only --no-notify src/index.ts",
     "predev": "rimraf ./dist",
     "test": "jest --runInBand --detectOpenHandles --coverage --forceExit",
     "test:watch": "jest --watch --runInBand --detectOpenHandles"
@@ -28,7 +28,7 @@
     "cyrillic-to-translit-js": "^3.1.0",
     "date-fns": "^2.16.1",
     "del": "^5.1.0",
-    "dotenv": "^8.2.0",
+    "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "generate-password": "^1.5.1",

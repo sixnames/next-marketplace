@@ -1,13 +1,11 @@
-import { CreateTestProductsPayloadInterface } from './createTestProducts';
+import { createTestProducts, CreateTestProductsPayloadInterface } from './createTestProducts';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
 import { MOCK_SHOP } from '@yagu/mocks';
 
-type CreateTestShopsInterface = CreateTestProductsPayloadInterface;
-
-export interface CreateTestShopsPayloadInterface {
+export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   shopA: Shop;
   shopAProductA: ShopProduct;
   shopAProductB: ShopProduct;
@@ -18,15 +16,18 @@ export interface CreateTestShopsPayloadInterface {
   shopAConnectionProductC: ShopProduct;
 }
 
-export const createTestShops = async ({
-  productA,
-  productB,
-  productC,
-  productD,
-  connectionProductA,
-  connectionProductB,
-  connectionProductC,
-}: CreateTestShopsInterface): Promise<CreateTestShopsPayloadInterface> => {
+export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface> => {
+  const productsPayload = await createTestProducts();
+  const {
+    productA,
+    productB,
+    productC,
+    productD,
+    connectionProductA,
+    connectionProductB,
+    connectionProductC,
+  } = productsPayload;
+
   // Shop A products
   const shopAProductA = await ShopProductModel.create({
     available: 1,
@@ -106,6 +107,7 @@ export const createTestShops = async ({
   });
 
   return {
+    ...productsPayload,
     shopA,
     shopAProductA,
     shopAProductB,

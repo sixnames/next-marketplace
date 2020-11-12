@@ -168,6 +168,11 @@ input CityLangInput {
   value: [String!]!
 }
 
+"""Companies pagination sortBy enum"""
+enum CompaniesSortByEnum {
+  createdAt
+}
+
 type Company {
   contacts: ContactsType!
   createdAt: Timestamp!
@@ -180,6 +185,14 @@ type Company {
   slug: String!
   staff: [User!]!
   updatedAt: Timestamp!
+}
+
+input CompanyPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: CompaniesSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
 }
 
 type CompanyPayloadtype {
@@ -593,6 +606,19 @@ input OptionVariantInput {
   value: [LangInput!]!
 }
 
+type PaginatedCompaniesResponse {
+  docs: [Company!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedProductsResponse {
   activeProductsCount: Int
   docs: [Product!]!
@@ -819,7 +845,7 @@ type Query {
     exclude: [ID!] = []
   ): [AttributesGroup!]!
   getAllCities: [City!]!
-  getAllCompanies: [Company!]!
+  getAllCompanies(input: CompanyPaginateInput = {}): PaginatedCompaniesResponse!
   getAllConfigs: [Config!]!
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!

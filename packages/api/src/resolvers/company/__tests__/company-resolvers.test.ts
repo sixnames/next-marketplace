@@ -1,5 +1,11 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import { MOCK_COMPANIES, MOCK_NEW_COMPANY, MOCK_NEW_SHOP, MOCK_SAMPLE_USER } from '@yagu/mocks';
+import {
+  MOCK_COMPANIES,
+  MOCK_COMPANY,
+  MOCK_NEW_COMPANY,
+  MOCK_NEW_SHOP,
+  MOCK_SAMPLE_USER,
+} from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import { UserModel } from '../../../entities/User';
 import { omit } from 'lodash';
@@ -25,17 +31,23 @@ describe('Company', () => {
       gql`
         query GetAllCompanies {
           getAllCompanies {
-            id
-            nameString
-            slug
+            docs {
+              id
+              nameString
+              slug
+            }
           }
         }
       `,
     );
-    expect(getAllCompanies).toHaveLength(MOCK_COMPANIES.length);
+    expect(getAllCompanies.docs).toHaveLength(MOCK_COMPANIES.length);
 
     // Should return company by id
-    const currentCompany = getAllCompanies[0];
+    const currentCompany = getAllCompanies.docs.find(({ slug }: any) => slug === MOCK_COMPANY.slug);
+    if (!currentCompany) {
+      throw Error('Test company not found');
+    }
+
     const {
       data: { getCompany },
     } = await query<any>(

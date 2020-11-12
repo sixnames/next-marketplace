@@ -10,7 +10,7 @@ export let testClient: {
 };
 
 beforeAll(async () => {
-  jest.setTimeout(10000);
+  jest.setTimeout(30000);
   const { server } = await createApp();
 
   testClient = createTestClient({

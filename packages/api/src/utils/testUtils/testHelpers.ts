@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { testClient } from '../../test/setup';
+import { testClient } from '../../test/jest.setup';
 import { StringOrAst, TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../config';
 import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/config';

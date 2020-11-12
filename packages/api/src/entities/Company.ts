@@ -7,6 +7,7 @@ import { Shop } from './Shop';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import PaginateType from '../resolvers/common/PaginateType';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -58,5 +59,8 @@ export class Company extends TimeStamps {
     options?: PaginateOptions,
   ) => Promise<PaginateResult<Company>>;
 }
+
+@ObjectType()
+export class PaginatedCompaniesResponse extends PaginateType(Company) {}
 
 export const CompanyModel = getModelForClass(Company);

@@ -9,7 +9,7 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Company, CompanyModel } from '../../entities/Company';
+import { Company, CompanyModel, PaginatedCompaniesResponse } from '../../entities/Company';
 import { User, UserModel } from '../../entities/User';
 import { DocumentType } from '@typegoose/typegoose';
 import PayloadType from '../common/PayloadType';
@@ -39,6 +39,8 @@ import { AddShopToCompanyInput } from './AddShopToCompanyInput';
 import del from 'del';
 import { UpdateShopInCompanyInput } from './UpdateShopInCompanyInput';
 import { DeleteShopFromCompanyInput } from './DeleteShopFromCompanyInput';
+import { CompanyPaginateInput } from './CompanyPaginateInput';
+import generatePaginationOptions from '../../utils/generatePaginationOptions';
 
 const {
   operationConfigCreate,
@@ -74,10 +76,21 @@ export class CompanyResolver {
     return company;
   }
 
-  @Query((_returns) => [Company])
+  @Query((_returns) => PaginatedCompaniesResponse)
   @AuthMethod(operationConfigRead)
-  async getAllCompanies(): Promise<Company[]> {
-    return CompanyModel.find();
+  async getAllCompanies(
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Shop>,
+    @Arg('input', { nullable: true, defaultValue: {} })
+    input: CompanyPaginateInput,
+  ): Promise<PaginatedCompaniesResponse> {
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc' } = input;
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+    return CompanyModel.paginate({ ...customFilter }, options);
   }
 
   @Mutation((_returns) => CompanyPayloadtype)

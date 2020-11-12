@@ -8,21 +8,29 @@ import {
 import { UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import createInitialApiMessages from './createInitialApiMessages';
-import { createInitialSiteConfigs } from './createInitialSiteConfigs';
+import {
+  createInitialSiteConfigs,
+  CreateInitialSiteConfigsInterface,
+} from './createInitialSiteConfigs';
 import { createInitialRoles, CreateInitialRolesPayloadInterface } from './createInitialRoles';
-import { createInitialLocalizationData } from './createInitialLocalizationData';
+import {
+  createInitialLocalizationData,
+  CreateInitialLocalizationDataPayloadInterface,
+} from './createInitialLocalizationData';
 import { Types } from 'mongoose';
 
-export interface CreateInitialDataPayloadInterface {
+export interface CreateInitialDataPayloadInterface
+  extends CreateInitialSiteConfigsInterface,
+    CreateInitialLocalizationDataPayloadInterface {
   initialRolesIds: CreateInitialRolesPayloadInterface;
 }
 
 async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
   // Create initial site config
-  await createInitialSiteConfigs();
+  const configsPayload = await createInitialSiteConfigs();
 
   // Create metrics, currencies, cities, countries, languages
-  await createInitialLocalizationData();
+  const localizationPayload = await createInitialLocalizationData();
 
   // Create api message
   await createInitialApiMessages();
@@ -50,6 +58,8 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
   }
 
   return {
+    ...configsPayload,
+    ...localizationPayload,
     initialRolesIds,
   };
 }

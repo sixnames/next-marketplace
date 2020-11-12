@@ -29,6 +29,7 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
   const initialPayload = await createInitialData();
 
   // Currencies
+  // TODO remove and update with currency from initial data
   const currencyPayload = await createTestSecondaryCurrency();
   const { secondaryCurrency } = currencyPayload;
 

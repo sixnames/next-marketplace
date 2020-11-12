@@ -1,4 +1,4 @@
-import { CurrencyModel } from '../../entities/Currency';
+import { Currency, CurrencyModel } from '../../entities/Currency';
 import {
   INITIAL_CITIES,
   INITIAL_COUNTRIES,
@@ -7,47 +7,61 @@ import {
   MOCK_METRICS,
 } from '@yagu/mocks';
 import { DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_CURRENCY, DEFAULT_LANG } from '@yagu/config';
-import { CityModel } from '../../entities/City';
-import { CountryModel } from '../../entities/Country';
-import { LanguageModel } from '../../entities/Language';
-import { MetricModel } from '../../entities/Metric';
+import { City, CityModel } from '../../entities/City';
+import { Country, CountryModel } from '../../entities/Country';
+import { Language, LanguageModel } from '../../entities/Language';
+import { Metric, MetricModel } from '../../entities/Metric';
 
-export async function createInitialLocalizationData() {
+export interface CreateInitialLocalizationDataPayloadInterface {
+  initialMetricsPayload: Metric[];
+  initialCurrenciesPayload: Currency[];
+  initialCityPayload: City;
+  initialCountryPayload: Country;
+  initialLanguagePayload: Language;
+}
+
+export const createInitialLocalizationData = async (): Promise<
+  CreateInitialLocalizationDataPayloadInterface
+> => {
   // Create all metrics
-  const metric = await MetricModel.find({});
-  if (!metric.length) {
-    await MetricModel.insertMany(MOCK_METRICS);
+  let initialMetricsPayload = await MetricModel.find({});
+  if (!initialMetricsPayload.length) {
+    initialMetricsPayload = await MetricModel.insertMany(MOCK_METRICS);
   }
 
   // Create initial currencies
-  const currencies = await CurrencyModel.find({ nameString: DEFAULT_CURRENCY });
-  let initialCurrencyName = DEFAULT_CURRENCY;
-  if (!currencies || !currencies.length) {
-    const initialCurrency = await CurrencyModel.create(INITIAL_CURRENCIES[0]);
-    initialCurrencyName = initialCurrency.nameString;
+  let initialCurrenciesPayload = await CurrencyModel.find({});
+  if (!initialCurrenciesPayload.length) {
+    initialCurrenciesPayload = await CurrencyModel.insertMany(INITIAL_CURRENCIES);
   }
 
   // Create initial cities
-  const cities = await CityModel.find({ slug: DEFAULT_CITY });
-  const citiesIds = [];
-  if (!cities || !cities.length) {
-    const initialCity = await CityModel.create(INITIAL_CITIES[0]);
-    citiesIds.push(initialCity.id);
+  let initialCityPayload = await CityModel.findOne({ slug: DEFAULT_CITY });
+  if (!initialCityPayload) {
+    initialCityPayload = await CityModel.create(INITIAL_CITIES[0]);
   }
 
   // Create initial countries
-  const countries = await CountryModel.find({ nameString: DEFAULT_COUNTRY });
-  if (!countries || !countries.length) {
-    await CountryModel.create({
+  let initialCountryPayload = await CountryModel.findOne({ nameString: DEFAULT_COUNTRY });
+  if (!initialCountryPayload) {
+    initialCountryPayload = await CountryModel.create({
       ...INITIAL_COUNTRIES[0],
-      cities: citiesIds,
-      currency: initialCurrencyName,
+      cities: [initialCityPayload.id],
+      currency: DEFAULT_CURRENCY,
     });
   }
 
   // Create default language
-  const languages = await LanguageModel.find({ key: DEFAULT_LANG });
-  if (!languages || !languages.length) {
-    await LanguageModel.create(INITIAL_LANGUAGES[0]);
+  let initialLanguagePayload = await LanguageModel.findOne({ key: DEFAULT_LANG });
+  if (!initialLanguagePayload) {
+    initialLanguagePayload = await LanguageModel.create(INITIAL_LANGUAGES[0]);
   }
-}
+
+  return {
+    initialMetricsPayload,
+    initialCurrenciesPayload,
+    initialCityPayload,
+    initialCountryPayload,
+    initialLanguagePayload,
+  };
+};

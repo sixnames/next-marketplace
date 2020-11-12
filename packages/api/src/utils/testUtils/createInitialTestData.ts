@@ -2,10 +2,6 @@ import createInitialData, {
   CreateInitialDataPayloadInterface,
 } from '../initialData/createInitialData';
 import {
-  CreateSecondaryCurrencyInterface,
-  createTestSecondaryCurrency,
-} from './createTestSecondaryCurrency';
-import {
   createTestSecondaryCity,
   CreateTestSecondaryCityInterface,
 } from './createTestSecondaryCity';
@@ -17,10 +13,10 @@ import {
   createTestSecondaryLanguage,
   CreateTestSecondaryLanguageInterface,
 } from './createTestSecondaryLanguage';
+import { SECONDARY_CURRENCY } from '@yagu/config';
 
 interface CreateInitialTestDataPayloadInterface
   extends CreateInitialDataPayloadInterface,
-    CreateSecondaryCurrencyInterface,
     CreateTestSecondaryCityInterface,
     CreateTestSecondaryCountryPayloadInterface,
     CreateTestSecondaryLanguageInterface {}
@@ -29,9 +25,12 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
   const initialPayload = await createInitialData();
 
   // Currencies
-  // TODO remove and update with currency from initial data
-  const currencyPayload = await createTestSecondaryCurrency();
-  const { secondaryCurrency } = currencyPayload;
+  const secondaryCurrency = initialPayload.initialCurrenciesPayload.find(({ nameString }) => {
+    return nameString === SECONDARY_CURRENCY;
+  });
+  if (!secondaryCurrency) {
+    throw Error('secondaryCurrency not fond on createInitialTestData');
+  }
 
   // Cities
   const citiesPayload = await createTestSecondaryCity();
@@ -48,7 +47,6 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
 
   return {
     ...initialPayload,
-    ...currencyPayload,
     ...citiesPayload,
     ...countriesPayload,
     ...languagesPayload,

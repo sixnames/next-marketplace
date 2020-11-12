@@ -133,6 +133,58 @@ export const shopsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'shops.addProduct.duplicate',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товар уже присутствует в магазине.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product already exist.',
+      },
+    ],
+  },
+  {
+    key: 'shops.addProduct.notFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товар не найден.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product not found.',
+      },
+    ],
+  },
+  {
+    key: 'shops.addProduct.error',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ошибка добавления товара в магазин.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Add product to the shop error.',
+      },
+    ],
+  },
+  {
+    key: 'shops.addProduct.success',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товар добавлен в магазин.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product added to the shop.',
+      },
+    ],
+  },
+  {
     key: 'validation.shops.id',
     message: [
       {

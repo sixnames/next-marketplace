@@ -5,6 +5,7 @@ import {
 import { contactsInputSchema, idSchema, maxNameLength, minNameLength } from './schemaTemplates';
 import * as Yup from 'yup';
 import { companyIdSchema } from './companySchema';
+import { productIdSchema } from './productSchema';
 
 export const shopIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.shops.id' });
@@ -69,4 +70,10 @@ export const updateShopInCompanySchema = (args: MultiLangSchemaMessagesInterface
     shopId: shopIdSchema(args),
     companyId: companyIdSchema(args),
     ...shopCommonFields(args),
+  });
+
+export const addProductToShopSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    shopId: shopIdSchema(args),
+    productId: productIdSchema(args),
   });

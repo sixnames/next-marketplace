@@ -43,6 +43,13 @@ input AddProductToRubricInput {
   rubricId: ID!
 }
 
+input AddProductToShopInput {
+  available: Int!
+  price: Int!
+  productId: ID!
+  shopId: ID!
+}
+
 input AddShopToCompanyInput {
   address: [Float!]!
   assets: [Upload!]!
@@ -450,6 +457,7 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
+  addProductToShop(input: AddProductToShopInput!): ShopPayloadtype!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
@@ -1025,6 +1033,12 @@ type Shop {
   products: [ShopProduct!]!
   slug: String!
   updatedAt: Timestamp!
+}
+
+type ShopPayloadtype {
+  message: String!
+  shop: Shop
+  success: Boolean!
 }
 
 type ShopProduct {

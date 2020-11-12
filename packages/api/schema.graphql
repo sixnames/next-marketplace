@@ -172,6 +172,7 @@ type Company {
   contacts: ContactsType!
   createdAt: Timestamp!
   id: ID!
+  itemId: Int!
   logo: AssetType!
   nameString: String!
   owner: User!

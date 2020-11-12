@@ -61,9 +61,9 @@ export class Shop extends TimeStamps {
   readonly updatedAt: Date;
 
   static paginate: (
-    query?: FilterQuery<ShopProduct>,
+    query?: FilterQuery<Shop>,
     options?: PaginateOptions,
-  ) => Promise<PaginateResult<ShopProduct>>;
+  ) => Promise<PaginateResult<Shop>>;
 }
 
 export const ShopModel = getModelForClass(Shop);

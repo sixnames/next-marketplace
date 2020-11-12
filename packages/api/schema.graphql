@@ -620,6 +620,19 @@ type PaginatedShopProductsResponse {
   totalPages: Int!
 }
 
+type PaginatedShopsResponse {
+  docs: [Shop!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedUsersResponse {
   docs: [User!]!
   hasNextPage: Int!
@@ -816,7 +829,7 @@ type Query {
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
-  getAllShops: [Shop!]!
+  getAllShops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
@@ -1050,6 +1063,14 @@ type Shop {
   updatedAt: Timestamp!
 }
 
+input ShopPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: ShopsSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}
+
 type ShopPayloadtype {
   message: String!
   shop: Shop
@@ -1060,7 +1081,6 @@ type ShopProduct {
   available: Int!
   createdAt: Timestamp!
   id: ID!
-  itemId: Int!
   oldPrices: [Float!]!
   price: Float!
   product: Product!
@@ -1080,6 +1100,12 @@ input ShopProductPaginateInput {
 enum ShopProductSortByEnum {
   createdAt
   price
+}
+
+"""Shops pagination sortBy enum"""
+enum ShopsSortByEnum {
+  company
+  createdAt
 }
 
 input SignInInput {

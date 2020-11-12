@@ -1,4 +1,4 @@
-import { Shop, ShopModel } from '../../entities/Shop';
+import { PaginatedShopsResponse, Shop, ShopModel } from '../../entities/Shop';
 import {
   Arg,
   Field,
@@ -27,6 +27,7 @@ import { PaginatedShopProductsResponse, ShopProductModel } from '../../entities/
 import { addProductToShopSchema } from '@yagu/validation';
 import { ShopProductPaginateInput } from './ShopProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
+import { ShopPaginateInput } from './ShopPaginateInput';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,
@@ -53,12 +54,21 @@ export class ShopResolver {
     return shop;
   }
 
-  @Query((_returns) => [Shop])
+  @Query((_returns) => PaginatedShopsResponse)
   @AuthMethod(operationConfigRead)
   async getAllShops(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Shop>,
-  ): Promise<Shop[]> {
-    return ShopModel.find({ ...customFilter });
+    @Arg('input', { nullable: true, defaultValue: {} })
+    input: ShopPaginateInput,
+  ): Promise<PaginatedShopsResponse> {
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc' } = input;
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+    return ShopModel.paginate({ ...customFilter }, options);
   }
 
   @Mutation((_returns) => ShopPayloadtype)

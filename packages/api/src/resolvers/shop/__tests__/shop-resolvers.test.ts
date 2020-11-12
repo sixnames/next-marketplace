@@ -31,23 +31,25 @@ describe('Shop', () => {
       gql`
         query GetAllShops {
           getAllShops {
-            id
-            nameString
-            slug
-            company {
+            docs {
               id
               nameString
               slug
+              company {
+                id
+                nameString
+                slug
+              }
             }
           }
         }
       `,
     );
-    const currentShop = getAllShops.find(({ slug }: any) => slug === MOCK_SHOP.slug);
+    const currentShop = getAllShops.docs.find(({ slug }: any) => slug === MOCK_SHOP.slug);
     if (!currentShop) {
       throw Error('Test shop not found');
     }
-    expect(getAllShops).toHaveLength(MOCK_SHOPS.length);
+    expect(getAllShops.docs).toHaveLength(MOCK_SHOPS.length);
     expect(currentShop.company.nameString).toEqual(MOCK_COMPANY.nameString);
 
     // Should return shop by ID

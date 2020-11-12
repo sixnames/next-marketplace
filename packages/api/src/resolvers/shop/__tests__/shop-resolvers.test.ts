@@ -136,13 +136,18 @@ describe('Shop', () => {
               nameString
               slug
               products {
-                id
-                available
-                price
-                oldPrices
-                product {
+                totalDocs
+                totalPages
+                limit
+                docs {
                   id
-                  nameString
+                  available
+                  price
+                  oldPrices
+                  product {
+                    id
+                    nameString
+                  }
                 }
               }
             }

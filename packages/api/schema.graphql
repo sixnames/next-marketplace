@@ -606,6 +606,19 @@ type PaginatedProductsResponse {
   totalPages: Int!
 }
 
+type PaginatedShopProductsResponse {
+  docs: [ShopProduct!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedUsersResponse {
   docs: [User!]!
   hasNextPage: Int!
@@ -1028,9 +1041,10 @@ type Shop {
   contacts: ContactsType!
   createdAt: Timestamp!
   id: ID!
+  itemId: Int!
   logo: AssetType!
   nameString: String!
-  products: [ShopProduct!]!
+  products(input: ShopProductPaginateInput = {}): PaginatedShopProductsResponse!
   slug: String!
   updatedAt: Timestamp!
 }
@@ -1043,11 +1057,28 @@ type ShopPayloadtype {
 
 type ShopProduct {
   available: Int!
+  createdAt: Timestamp!
   id: ID!
+  itemId: Int!
   oldPrices: [Float!]!
   price: Float!
   product: Product!
   shop: Shop!
+  updatedAt: Timestamp!
+}
+
+input ShopProductPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: ShopProductSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}
+
+"""Shop product pagination sortBy enum"""
+enum ShopProductSortByEnum {
+  createdAt
+  price
 }
 
 input SignInInput {

@@ -14,7 +14,7 @@ registerEnumType(ProductSortByEnum, {
 
 @InputType()
 export class ProductPaginateInput extends PaginateInput {
-  @Field((_type) => ProductSortByEnum, { defaultValue: 'priority' })
+  @Field((_type) => ProductSortByEnum, { nullable: true, defaultValue: 'priority' })
   sortBy?: ProductSortByEnum;
 
   @Field((_type) => ID, { nullable: true })

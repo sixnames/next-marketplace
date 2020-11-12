@@ -1,4 +1,4 @@
-import { Shop, ShopModel } from '../../entities/Shop';
+import { PaginatedShopProductsResponse, Shop, ShopModel } from '../../entities/Shop';
 import {
   Arg,
   Field,
@@ -23,8 +23,10 @@ import { DocumentType } from '@typegoose/typegoose';
 import PayloadType from '../common/PayloadType';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToShopInput } from './AddProductToShopInput';
-import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
+import { ShopProductModel } from '../../entities/ShopProduct';
 import { addProductToShopSchema } from '@yagu/validation';
+import { ShopProductPaginateInput } from './ShopProductPaginateInput';
+import generatePaginationOptions from '../../utils/generatePaginationOptions';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,
@@ -138,9 +140,20 @@ export class ShopResolver {
   }
 
   // Field resolvers
-  @FieldResolver((_returns) => [ShopProduct])
-  async products(@Root() shop: DocumentType<Shop>): Promise<ShopProduct[]> {
-    return ShopProductModel.find({ _id: { $in: shop.products } });
+  @FieldResolver((_returns) => PaginatedShopProductsResponse)
+  async products(
+    @Root() shop: DocumentType<Shop>,
+    @Arg('input', { nullable: true, defaultValue: {} })
+    input: ShopProductPaginateInput,
+  ): Promise<PaginatedShopProductsResponse> {
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc' } = input;
+    const { options } = generatePaginationOptions({
+      limit,
+      page,
+      sortDir,
+      sortBy,
+    });
+    return ShopProductModel.paginate({ _id: { $in: shop.products } }, options);
   }
 
   @FieldResolver((_returns) => Company)

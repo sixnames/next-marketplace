@@ -1,14 +1,27 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { getModelForClass, prop } from '@typegoose/typegoose';
+import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { AssetType, ContactsType, PointGeoJSON } from './common';
 import { Company } from './Company';
 import { ShopProduct } from './ShopProduct';
+import PaginateType from '../resolvers/common/PaginateType';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import { AutoIncrementID } from '@typegoose/auto-increment';
+import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 
 @ObjectType()
+export class PaginatedShopProductsResponse extends PaginateType(ShopProduct) {}
+
+@ObjectType()
+@plugin(mongoosePaginate)
+@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class Shop extends TimeStamps {
   @Field((_type) => ID)
   readonly id: string;
+
+  @Field(() => Int)
+  @prop()
+  readonly itemId: number;
 
   @Field(() => String)
   @prop({ type: String, required: true })
@@ -34,7 +47,7 @@ export class Shop extends TimeStamps {
   @prop({ type: PointGeoJSON, required: true })
   address: PointGeoJSON;
 
-  @Field((_type) => [ShopProduct])
+  @Field((_type) => PaginatedShopProductsResponse)
   @prop({ ref: ShopProduct, required: true })
   products: string[];
 
@@ -46,6 +59,11 @@ export class Shop extends TimeStamps {
 
   @Field()
   readonly updatedAt: Date;
+
+  static paginate: (
+    query?: FilterQuery<ShopProduct>,
+    options?: PaginateOptions,
+  ) => Promise<PaginateResult<ShopProduct>>;
 }
 
 export const ShopModel = getModelForClass(Shop);

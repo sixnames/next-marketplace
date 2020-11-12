@@ -3,14 +3,10 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { AssetType, ContactsType, PointGeoJSON } from './common';
 import { Company } from './Company';
-import { ShopProduct } from './ShopProduct';
-import PaginateType from '../resolvers/common/PaginateType';
+import { PaginatedShopProductsResponse, ShopProduct } from './ShopProduct';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-
-@ObjectType()
-export class PaginatedShopProductsResponse extends PaginateType(ShopProduct) {}
 
 @ObjectType()
 @plugin(mongoosePaginate)

@@ -1,4 +1,4 @@
-import { PaginatedShopProductsResponse, Shop, ShopModel } from '../../entities/Shop';
+import { Shop, ShopModel } from '../../entities/Shop';
 import {
   Arg,
   Field,
@@ -23,7 +23,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import PayloadType from '../common/PayloadType';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToShopInput } from './AddProductToShopInput';
-import { ShopProductModel } from '../../entities/ShopProduct';
+import { PaginatedShopProductsResponse, ShopProductModel } from '../../entities/ShopProduct';
 import { addProductToShopSchema } from '@yagu/validation';
 import { ShopProductPaginateInput } from './ShopProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';

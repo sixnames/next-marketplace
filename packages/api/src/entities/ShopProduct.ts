@@ -6,6 +6,7 @@ import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+import PaginateType from '../resolvers/common/PaginateType';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -48,5 +49,8 @@ export class ShopProduct extends TimeStamps {
     options?: PaginateOptions,
   ) => Promise<PaginateResult<ShopProduct>>;
 }
+
+@ObjectType()
+export class PaginatedShopProductsResponse extends PaginateType(ShopProduct) {}
 
 export const ShopProductModel = getModelForClass(ShopProduct);

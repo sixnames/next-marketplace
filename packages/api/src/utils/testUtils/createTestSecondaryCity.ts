@@ -1,7 +1,7 @@
 import { City, CityModel } from '../../entities/City';
 import { MOCK_CITIES } from '@yagu/mocks';
 
-interface CreateTestSecondaryCityInterface {
+export interface CreateTestSecondaryCityInterface {
   secondaryCity: City;
 }
 

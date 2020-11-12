@@ -1,9 +1,9 @@
 import { User, UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import { MOCK_COMPANY_MANAGER, MOCK_COMPANY_OWNER, MOCK_SAMPLE_USER } from '@yagu/mocks';
-import { createInitialDataPayloadInterface } from '../initialData/createInitialData';
+import { CreateInitialDataPayloadInterface } from '../initialData/createInitialData';
 
-type CreateTestUsersInterface = createInitialDataPayloadInterface;
+type CreateTestUsersInterface = CreateInitialDataPayloadInterface;
 
 export interface CreateTestUsersPayloadInterface {
   sampleUser: User;

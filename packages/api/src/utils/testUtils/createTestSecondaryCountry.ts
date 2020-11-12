@@ -6,7 +6,7 @@ interface CreateTestSecondaryCountryInterface {
   currencySlug: string;
 }
 
-interface CreateTestSecondaryCountryPayloadInterface {
+export interface CreateTestSecondaryCountryPayloadInterface {
   secondaryCountry: Country;
 }
 

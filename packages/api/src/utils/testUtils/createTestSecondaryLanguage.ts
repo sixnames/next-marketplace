@@ -1,7 +1,7 @@
 import { Language, LanguageModel } from '../../entities/Language';
 import { MOCK_LANGUAGES } from '@yagu/mocks';
 
-interface CreateTestSecondaryLanguageInterface {
+export interface CreateTestSecondaryLanguageInterface {
   secondaryLanguage: Language;
 }
 

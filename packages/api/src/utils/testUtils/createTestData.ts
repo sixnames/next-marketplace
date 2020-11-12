@@ -1,8 +1,3 @@
-import createInitialData from '../initialData/createInitialData';
-import { createTestSecondaryCurrency } from './createTestSecondaryCurrency';
-import { createTestSecondaryCity } from './createTestSecondaryCity';
-import { createTestSecondaryCountry } from './createTestSecondaryCountry';
-import { createTestSecondaryLanguage } from './createTestSecondaryLanguage';
 import { createTestOptions } from './createTestOptions';
 import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
@@ -11,22 +6,12 @@ import { createTestProducts } from './createTestProducts';
 import { createTestUsers } from './createTestUsers';
 import { createTestShops } from './createTestShops';
 import { createTestCompanies } from './createTestCompanies';
+import { createInitialTestData } from './createInitialTestData';
 
 const createTestData = async () => {
   try {
     // Initial data
-    const { initialRolesIds } = await createInitialData();
-
-    // Currencies, countries and cities
-    const { secondaryCurrency } = await createTestSecondaryCurrency();
-    const { secondaryCity } = await createTestSecondaryCity();
-    await createTestSecondaryCountry({
-      citiesIds: [secondaryCity.id],
-      currencySlug: secondaryCurrency.nameString,
-    });
-
-    // Languages
-    await createTestSecondaryLanguage();
+    const { initialRolesIds } = await createInitialTestData();
 
     // Options
     const options = await createTestOptions();

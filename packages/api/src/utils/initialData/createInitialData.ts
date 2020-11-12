@@ -13,11 +13,11 @@ import { createInitialRoles, CreateInitialRolesPayloadInterface } from './create
 import { createInitialLocalizationData } from './createInitialLocalizationData';
 import { Types } from 'mongoose';
 
-export interface createInitialDataPayloadInterface {
+export interface CreateInitialDataPayloadInterface {
   initialRolesIds: CreateInitialRolesPayloadInterface;
 }
 
-async function createInitialData(): Promise<createInitialDataPayloadInterface> {
+async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
   // Create initial site config
   await createInitialSiteConfigs();
 

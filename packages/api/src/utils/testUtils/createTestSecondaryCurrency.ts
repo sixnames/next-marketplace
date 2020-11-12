@@ -1,7 +1,7 @@
 import { Currency, CurrencyModel } from '../../entities/Currency';
 import { MOCK_CURRENCIES } from '@yagu/mocks';
 
-interface CreateSecondaryCurrencyInterface {
+export interface CreateSecondaryCurrencyInterface {
   secondaryCurrency: Currency;
 }
 

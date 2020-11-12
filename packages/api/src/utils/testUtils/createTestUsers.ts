@@ -18,7 +18,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const { initialRolesIds } = initialTestData;
 
   // Sample user
-  const sampleUserPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+  const sampleUserPassword = await hash(MOCK_SAMPLE_USER.password, 10);
   const sampleUser = await UserModel.create({
     ...MOCK_SAMPLE_USER,
     role: initialRolesIds.guestRoleId,
@@ -34,7 +34,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   });
 
   // Company manager
-  const companyManagerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+  const companyManagerPassword = await hash(MOCK_COMPANY_MANAGER.password, 10);
   const companyManager = await UserModel.create({
     ...MOCK_COMPANY_MANAGER,
     role: initialRolesIds.companyManagerRoleId,

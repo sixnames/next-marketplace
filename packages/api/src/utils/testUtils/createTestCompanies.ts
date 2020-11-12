@@ -6,6 +6,7 @@ import { MOCK_COMPANY } from '@yagu/mocks';
 
 export interface CreateTestCompaniesPayloadInterface extends CreateTestShopsPayloadInterface {
   companyA: Company;
+  mockCompanies: Company[];
 }
 
 export const createTestCompanies = async (): Promise<CreateTestCompaniesPayloadInterface> => {
@@ -26,8 +27,11 @@ export const createTestCompanies = async (): Promise<CreateTestCompaniesPayloadI
     shops: [shopA.id],
   });
 
+  const mockCompanies = [companyA];
+
   return {
     ...shopsPayload,
+    mockCompanies,
     companyA,
   };
 };

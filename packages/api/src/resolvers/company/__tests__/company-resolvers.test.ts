@@ -1,20 +1,17 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import {
-  MOCK_COMPANIES,
-  MOCK_COMPANY,
-  MOCK_NEW_COMPANY,
-  MOCK_NEW_SHOP,
-  MOCK_SAMPLE_USER,
-} from '@yagu/mocks';
+import { MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
-import { UserModel } from '../../../entities/User';
 import { omit } from 'lodash';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Company', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -40,14 +37,9 @@ describe('Company', () => {
         }
       `,
     );
-    expect(getAllCompanies.docs).toHaveLength(MOCK_COMPANIES.length);
+    expect(getAllCompanies.docs).toHaveLength(mockData.mockCompanies.length);
 
     // Should return company by id
-    const currentCompany = getAllCompanies.docs.find(({ slug }: any) => slug === MOCK_COMPANY.slug);
-    if (!currentCompany) {
-      throw Error('Test company not found');
-    }
-
     const {
       data: { getCompany },
     } = await query<any>(
@@ -89,14 +81,13 @@ describe('Company', () => {
       `,
       {
         variables: {
-          id: currentCompany.id,
+          id: mockData.companyA.id,
         },
       },
     );
-    expect(getCompany.id).toEqual(currentCompany.id);
+    expect(getCompany.id).toEqual(mockData.companyA.id);
 
     // Should create company
-    const sampleUser = await UserModel.findOne({ email: MOCK_SAMPLE_USER.email });
     const createCompanyPayload = await mutateWithImages({
       mutation: gql`
         mutation CreateCompany($input: CreateCompanyInput!) {
@@ -131,7 +122,7 @@ describe('Company', () => {
         return {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -155,7 +146,7 @@ describe('Company', () => {
         return {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -177,7 +168,7 @@ describe('Company', () => {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           nameString: 'n',
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -205,7 +196,7 @@ describe('Company', () => {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           nameString: companyNewName,
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
           id: createCompany.company.id,
         };

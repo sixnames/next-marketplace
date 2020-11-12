@@ -15,7 +15,7 @@ import {
 } from './createTestSecondaryLanguage';
 import { SECONDARY_CURRENCY } from '@yagu/config';
 
-interface CreateInitialTestDataPayloadInterface
+export interface CreateInitialTestDataPayloadInterface
   extends CreateInitialDataPayloadInterface,
     CreateTestSecondaryCityInterface,
     CreateTestSecondaryCountryPayloadInterface,

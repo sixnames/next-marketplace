@@ -6,12 +6,11 @@ import { createTestProducts } from './createTestProducts';
 import { createTestUsers } from './createTestUsers';
 import { createTestShops } from './createTestShops';
 import { createTestCompanies } from './createTestCompanies';
-import { createInitialTestData } from './createInitialTestData';
 
 const createTestData = async () => {
   try {
-    // Initial data
-    const { initialRolesIds } = await createInitialTestData();
+    // Users
+    const { companyOwner, companyManager } = await createTestUsers();
 
     // Options
     const options = await createTestOptions();
@@ -46,11 +45,6 @@ const createTestData = async () => {
       ...rubrics,
     });
 
-    // Users
-    const users = await createTestUsers({
-      initialRolesIds,
-    });
-
     // Shops
     const shops = await createTestShops({
       ...products,
@@ -58,7 +52,8 @@ const createTestData = async () => {
 
     // Companies
     await createTestCompanies({
-      ...users,
+      companyOwner,
+      companyManager,
       ...shops,
     });
   } catch (e) {

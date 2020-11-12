@@ -1,21 +1,22 @@
 import { User, UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import { MOCK_COMPANY_MANAGER, MOCK_COMPANY_OWNER, MOCK_SAMPLE_USER } from '@yagu/mocks';
-import { CreateInitialDataPayloadInterface } from '../initialData/createInitialData';
+import {
+  createInitialTestData,
+  CreateInitialTestDataPayloadInterface,
+} from './createInitialTestData';
 
-interface CreateTestUsersInterface {
-  initialRolesIds: CreateInitialDataPayloadInterface['initialRolesIds'];
-}
-
-export interface CreateTestUsersPayloadInterface {
+export interface CreateTestUsersPayloadInterface extends CreateInitialTestDataPayloadInterface {
   sampleUser: User;
   companyOwner: User;
   companyManager: User;
 }
 
-export const createTestUsers = async ({
-  initialRolesIds,
-}: CreateTestUsersInterface): Promise<CreateTestUsersPayloadInterface> => {
+export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface> => {
+  // Initial data
+  const initialTestData = await createInitialTestData();
+  const { initialRolesIds } = initialTestData;
+
   // Sample user
   const sampleUserPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
   const sampleUser = await UserModel.create({
@@ -41,6 +42,7 @@ export const createTestUsers = async ({
   });
 
   return {
+    ...initialTestData,
     sampleUser,
     companyOwner,
     companyManager,

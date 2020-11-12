@@ -5,9 +5,10 @@ import { ASSETS_DIST_COMPANIES } from '../../config';
 import { MOCK_COMPANY } from '@yagu/mocks';
 import { CreateTestUsersPayloadInterface } from './createTestUsers';
 
-interface CreateTestCompaniesInterface
-  extends CreateTestShopsPayloadInterface,
-    CreateTestUsersPayloadInterface {}
+interface CreateTestCompaniesInterface extends CreateTestShopsPayloadInterface {
+  companyOwner: CreateTestUsersPayloadInterface['companyOwner'];
+  companyManager: CreateTestUsersPayloadInterface['companyManager'];
+}
 
 export interface CreateTestCompaniesPayloadInterface {
   companyA: Company;

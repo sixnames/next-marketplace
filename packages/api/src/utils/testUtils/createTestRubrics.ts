@@ -13,14 +13,12 @@ import {
 } from '@yagu/mocks';
 import { generateDefaultLangSlug } from '../slug';
 import { GenderEnum } from '../../entities/common';
-import { CreateTestAttributesPayloadInterface } from './createTestAttributes';
-import { CreateTestRubricVariantsInterface } from './createTestRubricVariants';
+import {
+  createTestRubricVariants,
+  CreateTestRubricVariantsInterface,
+} from './createTestRubricVariants';
 
-interface CreateTestRubricsInterface
-  extends CreateTestAttributesPayloadInterface,
-    CreateTestRubricVariantsInterface {}
-
-export interface CreateTestRubricsPayloadInterface {
+export interface CreateTestRubricsPayloadInterface extends CreateTestRubricVariantsInterface {
   rubricLevelOneA: Rubric;
   rubricLevelOneB: Rubric;
   rubricLevelOneC: Rubric;
@@ -33,14 +31,17 @@ export interface CreateTestRubricsPayloadInterface {
   rubricLevelThreeBB: Rubric;
 }
 
-export const createTestRubrics = async ({
-  attributeWineColor,
-  attributeWineType,
-  attributesGroupOuterRating,
-  attributesGroupWineFeatures,
-  attributesGroupWhiskeyFeatures,
-  rubricVariantAlcohol,
-}: CreateTestRubricsInterface): Promise<CreateTestRubricsPayloadInterface> => {
+export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInterface> => {
+  const rubricVariantsPayload = await createTestRubricVariants();
+  const {
+    attributeWineColor,
+    attributeWineType,
+    attributesGroupOuterRating,
+    attributesGroupWineFeatures,
+    attributesGroupWhiskeyFeatures,
+    rubricVariantAlcohol,
+  } = rubricVariantsPayload;
+
   const rubricAttributesGroups = (isOwner: boolean) => [
     {
       showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
@@ -208,6 +209,7 @@ export const createTestRubrics = async ({
   });
 
   return {
+    ...rubricVariantsPayload,
     rubricLevelOneA,
     rubricLevelOneB,
     rubricLevelOneC,

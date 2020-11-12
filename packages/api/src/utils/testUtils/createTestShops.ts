@@ -6,6 +6,7 @@ import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
 import { MOCK_SHOP } from '@yagu/mocks';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
+  mockShops: Shop[];
   shopA: Shop;
   shopAProductA: ShopProduct;
   shopAProductB: ShopProduct;
@@ -106,8 +107,11 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     ],
   });
 
+  const mockShops = [shopA];
+
   return {
     ...productsPayload,
+    mockShops,
     shopA,
     shopAProductA,
     shopAProductB,

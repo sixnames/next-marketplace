@@ -1,20 +1,15 @@
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { MOCK_COMPANY, MOCK_SHOPS, MOCK_SHOP } from '@yagu/mocks';
-import { testProduct } from '../../product/__fixtures__';
-import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
-import { RubricModel } from '../../../entities/Rubric';
-import { RUBRIC_LEVEL_TWO } from '@yagu/config';
-import { AttributesGroupModel } from '../../../entities/AttributesGroup';
-import { AttributeModel } from '../../../entities/Attribute';
-import { OptionsGroupModel } from '../../../entities/OptionsGroup';
-import { OptionModel } from '../../../entities/Option';
 
 describe('Shop', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -45,12 +40,12 @@ describe('Shop', () => {
         }
       `,
     );
-    const currentShop = getAllShops.docs.find(({ slug }: any) => slug === MOCK_SHOP.slug);
+    const currentShop = getAllShops.docs.find(({ slug }: any) => slug === mockData.shopA.slug);
     if (!currentShop) {
       throw Error('Test shop not found');
     }
-    expect(getAllShops.docs).toHaveLength(MOCK_SHOPS.length);
-    expect(currentShop.company.nameString).toEqual(MOCK_COMPANY.nameString);
+    expect(getAllShops.docs).toHaveLength(mockData.mockShops.length);
+    expect(currentShop.company.nameString).toEqual(mockData.companyA.nameString);
 
     // Should return shop by ID
     const {
@@ -79,54 +74,6 @@ describe('Shop', () => {
     expect(getShop.id).toEqual(currentShop.id);
 
     // Should add product to the shop
-    // create new product
-    const rubricLevelTwo = await RubricModel.findOne({ level: RUBRIC_LEVEL_TWO }).populate({
-      path: 'attributesGroups.node',
-      model: AttributesGroupModel,
-      populate: {
-        path: 'attributes',
-        model: AttributeModel,
-        populate: {
-          path: 'optionsGroup',
-          model: OptionsGroupModel,
-          populate: {
-            path: 'options',
-            model: OptionModel,
-          },
-        },
-      },
-    });
-    if (!rubricLevelTwo) {
-      throw Error('Test rubricLevelTwo not found');
-    }
-    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
-    const {
-      data: { createProduct },
-    } = await mutateWithImages({
-      mutation: gql`
-        mutation CreateProduct($input: CreateProductInput!) {
-          createProduct(input: $input) {
-            success
-            message
-            product {
-              id
-            }
-          }
-        }
-      `,
-      input: (images) => {
-        return {
-          name: testProduct.name,
-          cardName: testProduct.cardName,
-          price: testProduct.price,
-          description: testProduct.description,
-          rubrics: [rubricLevelTwo.id],
-          assets: images,
-          ...productAttributes,
-        };
-      },
-    });
-    // add product to the shop
     const addProductToShopPayload = await mutate<any>(
       gql`
         mutation AddProductToShop($input: AddProductToShopInput!) {
@@ -160,7 +107,7 @@ describe('Shop', () => {
         variables: {
           input: {
             shopId: currentShop.id,
-            productId: createProduct.product.id,
+            productId: mockData.productF.id,
             available: 10,
             price: 1000,
           },
@@ -189,7 +136,7 @@ describe('Shop', () => {
         variables: {
           input: {
             shopId: currentShop.id,
-            productId: createProduct.product.id,
+            productId: mockData.productF.id,
             available: 0,
             price: 1,
           },

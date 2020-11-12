@@ -1,6 +1,6 @@
 import { createTestCompanies, CreateTestCompaniesPayloadInterface } from './createTestCompanies';
 
-type CreateTestDataPayloadInterface = CreateTestCompaniesPayloadInterface;
+export type CreateTestDataPayloadInterface = CreateTestCompaniesPayloadInterface;
 
 const createTestData = async (): Promise<CreateTestDataPayloadInterface> => {
   return createTestCompanies();

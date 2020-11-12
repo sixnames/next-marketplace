@@ -1391,6 +1391,24 @@ export const MOCK_PRODUCT_E = {
   ],
 };
 
+export const MOCK_PRODUCT_F = {
+  priority: 1,
+  slug: 'Wine_Val_de_Vie_E',
+  name: [
+    { key: DEFAULT_LANG, value: 'Product_F' },
+    { key: SECONDARY_LANG, value: 'Product_F' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Product_F' },
+    { key: SECONDARY_LANG, value: 'Product_F' },
+  ],
+  price: 500,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
 export const MOCK_PRODUCT_NEW = {
   name: [
     { key: DEFAULT_LANG, value: 'Вино_Sogrape_Vinhos' },

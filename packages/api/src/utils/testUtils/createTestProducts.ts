@@ -21,6 +21,7 @@ import {
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
+  MOCK_PRODUCT_F,
 } from '@yagu/mocks';
 import { createProductSlugWithConnections } from '../connectios';
 
@@ -35,6 +36,7 @@ export interface CreateTestProductsPayloadInterface extends CreateTestRubricsPay
   productB: Product;
   productC: Product;
   productD: Product;
+  productF: Product;
   connectionProductA: Product;
   connectionProductB: Product;
   connectionProductC: Product;
@@ -216,6 +218,17 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     }),
   );
 
+  const productF = await ProductModel.create(
+    await generateTestProduct({
+      ...MOCK_PRODUCT_F,
+      ...productAttributes({
+        wineColorOptions: optionsSlugsColor[1],
+        wineTypeOptions: optionsSlugsWineType[1],
+      }),
+      rubrics: [rubricLevelThreeAA.id],
+    }),
+  );
+
   const connectionProductA = await ProductModel.create(
     await generateTestProduct({
       ...MOCK_PRODUCT_E,
@@ -290,6 +303,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     productB,
     productC,
     productD,
+    productF,
     connectionProductA,
     connectionProductB,
     connectionProductC,

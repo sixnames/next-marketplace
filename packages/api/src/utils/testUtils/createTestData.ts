@@ -1,19 +1,11 @@
-import { createTestRubrics } from './createTestRubrics';
 import { createTestProducts } from './createTestProducts';
 import { createTestShops } from './createTestShops';
 import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
-    // Rubrics
-    const rubrics = await createTestRubrics();
-
     // Products
-    const products = await createTestProducts({
-      ...options,
-      ...attributes,
-      ...rubrics,
-    });
+    const products = await createTestProducts();
 
     // Shops
     const shops = await createTestShops({

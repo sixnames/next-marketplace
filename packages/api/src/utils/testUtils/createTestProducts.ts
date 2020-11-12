@@ -1,5 +1,4 @@
-import { CreateTestRubricsPayloadInterface } from './createTestRubrics';
-import { CreateTestAttributesPayloadInterface } from './createTestAttributes';
+import { createTestRubrics, CreateTestRubricsPayloadInterface } from './createTestRubrics';
 import {
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -24,7 +23,6 @@ import {
   MOCK_PRODUCT_E,
 } from '@yagu/mocks';
 import { createProductSlugWithConnections } from '../connectios';
-import { CreateTestOptionsInterface } from './createTestOptions';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -32,12 +30,7 @@ interface ProductAttributesInterface {
   wineVintageOptions?: string;
 }
 
-interface CreateTestProductsInterface
-  extends CreateTestRubricsPayloadInterface,
-    CreateTestAttributesPayloadInterface,
-    CreateTestOptionsInterface {}
-
-export interface CreateTestProductsPayloadInterface {
+export interface CreateTestProductsPayloadInterface extends CreateTestRubricsPayloadInterface {
   productA: Product;
   productB: Product;
   productC: Product;
@@ -48,25 +41,28 @@ export interface CreateTestProductsPayloadInterface {
   connectionA: ProductConnection;
 }
 
-export const createTestProducts = async ({
-  attributeWineVintage,
-  attributeWineColor,
-  attributeWineType,
-  attributesGroupOuterRating,
-  attributeOuterRatingA,
-  attributeOuterRatingB,
-  attributeOuterRatingC,
-  attributesGroupWineFeatures,
-  attributeString,
-  attributeWineCombinations,
-  optionsSlugsCombination,
-  attributeNumber,
-  optionsSlugsColor,
-  optionsSlugsWineType,
-  rubricLevelThreeAA,
-  rubricLevelThreeAB,
-  optionsSlugsVintage,
-}: CreateTestProductsInterface): Promise<CreateTestProductsPayloadInterface> => {
+export const createTestProducts = async (): Promise<CreateTestProductsPayloadInterface> => {
+  const rubricsPayload = await createTestRubrics();
+  const {
+    attributeWineVintage,
+    attributeWineColor,
+    attributeWineType,
+    attributesGroupOuterRating,
+    attributeOuterRatingA,
+    attributeOuterRatingB,
+    attributeOuterRatingC,
+    attributesGroupWineFeatures,
+    attributeString,
+    attributeWineCombinations,
+    optionsSlugsCombination,
+    attributeNumber,
+    optionsSlugsColor,
+    optionsSlugsWineType,
+    rubricLevelThreeAA,
+    rubricLevelThreeAB,
+    optionsSlugsVintage,
+  } = rubricsPayload;
+
   const productAttributes = ({
     wineColorOptions,
     wineTypeOptions,
@@ -289,6 +285,7 @@ export const createTestProducts = async ({
   });
 
   return {
+    ...rubricsPayload,
     productA,
     productB,
     productC,

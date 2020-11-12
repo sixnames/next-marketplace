@@ -62,6 +62,7 @@ import { RoleModel } from './entities/Role';
 import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 import { CompanyResolver } from './resolvers/company/CompanyResolver';
 import { ApolloContextInterface } from './types/context';
+import { ShopResolver } from './resolvers/shop/ShopResolver';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -102,6 +103,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
       RubricVariantResolver,
       UserResolver,
       CompanyResolver,
+      ShopResolver,
       GendersListResolver,
       AttributeVariantResolver,
       AttributePositioningListResolver,

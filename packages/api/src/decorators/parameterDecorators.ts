@@ -1,7 +1,7 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { AuthDecoratorConfigInterface } from './methodDecorators';
-import { MessageKey } from '@yagu/config';
+import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 
 export function SessionUser() {
@@ -30,7 +30,11 @@ export function SessionRole() {
 
 export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const { roleRules, session } = context.req;
+    const { roleRules, session, role } = context.req;
+    if (role.slug === ROLE_SLUG_ADMIN) {
+      return {};
+    }
+
     const currentRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
 
     if (!currentRule) {

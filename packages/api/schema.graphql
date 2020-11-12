@@ -794,6 +794,7 @@ type Query {
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
+  getAllShops: [Shop!]!
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute
   getAttributePositioningOptions: [AttributePositioningOption!]!
@@ -834,6 +835,7 @@ type Query {
   getRubricVariant(id: ID!): RubricVariant
   getSessionCurrency: String!
   getSessionRole: Role!
+  getShop(id: ID!): Shop!
   getUser(id: ID!): User
   getValidationMessages: [Message!]!
   me: User

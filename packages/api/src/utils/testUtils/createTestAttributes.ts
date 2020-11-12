@@ -27,16 +27,9 @@ import {
   SECONDARY_LANG,
 } from '@yagu/config';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { OptionsGroup } from '../../entities/OptionsGroup';
+import { createTestOptions, CreateTestOptionsInterface } from './createTestOptions';
 
-interface CreateTestAttributesInterface {
-  optionsGroupWineVintage: OptionsGroup;
-  optionsGroupWineTypes: OptionsGroup;
-  optionsGroupColors: OptionsGroup;
-  optionsGroupCombination: OptionsGroup;
-}
-
-export interface CreateTestAttributesPayloadInterface {
+export interface CreateTestAttributesPayloadInterface extends CreateTestOptionsInterface {
   attributeOuterRatingA: Attribute;
   attributeOuterRatingB: Attribute;
   attributeOuterRatingC: Attribute;
@@ -52,12 +45,15 @@ export interface CreateTestAttributesPayloadInterface {
   attributesGroupWhiskeyFeatures: AttributesGroup;
 }
 
-export const createTestAttributes = async ({
-  optionsGroupWineVintage,
-  optionsGroupWineTypes,
-  optionsGroupColors,
-  optionsGroupCombination,
-}: CreateTestAttributesInterface): Promise<CreateTestAttributesPayloadInterface> => {
+export const createTestAttributes = async (): Promise<CreateTestAttributesPayloadInterface> => {
+  const optionsPayload = await createTestOptions();
+  const {
+    optionsGroupWineVintage,
+    optionsGroupWineTypes,
+    optionsGroupColors,
+    optionsGroupCombination,
+  } = optionsPayload;
+
   const attributeOuterRatingA = await AttributeModel.create({
     ...MOCK_ATTRIBUTE_OUTER_RATING_A,
     variant: MOCK_ATTRIBUTE_OUTER_RATING_A.variant as AttributeVariantEnum,
@@ -174,6 +170,7 @@ export const createTestAttributes = async ({
   });
 
   return {
+    ...optionsPayload,
     attributeOuterRatingA,
     attributeOuterRatingB,
     attributeOuterRatingC,

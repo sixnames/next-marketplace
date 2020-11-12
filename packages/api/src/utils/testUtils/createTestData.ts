@@ -1,4 +1,3 @@
-import { createTestOptions } from './createTestOptions';
 import { createTestAttributes } from './createTestAttributes';
 import { createTestRubricVariants } from './createTestRubricVariants';
 import { createTestRubrics } from './createTestRubrics';
@@ -8,24 +7,9 @@ import { createTestCompanies } from './createTestCompanies';
 
 const createTestData = async () => {
   try {
-    // Options
-    const options = await createTestOptions();
-    const {
-      optionsGroupWineVintage,
-      optionsGroupWineTypes,
-      optionsGroupColors,
-      optionsGroupCombination,
-      companyOwner,
-      companyManager,
-    } = options;
-
     // Attributes
-    const attributes = await createTestAttributes({
-      optionsGroupWineVintage,
-      optionsGroupWineTypes,
-      optionsGroupColors,
-      optionsGroupCombination,
-    });
+    const attributes = await createTestAttributes();
+    const { companyOwner, companyManager } = attributes;
 
     // Rubric variants
     const rubricVariants = await createTestRubricVariants();

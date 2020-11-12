@@ -2,8 +2,8 @@ import { Currency, CurrencyModel } from '../../entities/Currency';
 import {
   INITIAL_CITIES,
   INITIAL_COUNTRIES,
-  INITIAL_CURRENCIES,
   INITIAL_LANGUAGES,
+  MOCK_CURRENCIES,
   MOCK_METRICS,
 } from '@yagu/mocks';
 import { DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_CURRENCY, DEFAULT_LANG } from '@yagu/config';
@@ -32,7 +32,7 @@ export const createInitialLocalizationData = async (): Promise<
   // Create initial currencies
   let initialCurrenciesPayload = await CurrencyModel.find({});
   if (!initialCurrenciesPayload.length) {
-    initialCurrenciesPayload = await CurrencyModel.insertMany(INITIAL_CURRENCIES);
+    initialCurrenciesPayload = await CurrencyModel.insertMany(MOCK_CURRENCIES);
   }
 
   // Create initial cities

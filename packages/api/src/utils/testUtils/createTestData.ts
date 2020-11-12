@@ -1,20 +1,9 @@
-import { createTestShops } from './createTestShops';
-import { createTestCompanies } from './createTestCompanies';
+import { createTestCompanies, CreateTestCompaniesPayloadInterface } from './createTestCompanies';
 
-const createTestData = async () => {
-  try {
-    // Shops
-    const shops = await createTestShops();
+type CreateTestDataPayloadInterface = CreateTestCompaniesPayloadInterface;
 
-    // Companies
-    await createTestCompanies({
-      companyOwner,
-      companyManager,
-      ...shops,
-    });
-  } catch (e) {
-    console.log('========== createTestData ERROR ==========', '\n', e);
-  }
+const createTestData = async (): Promise<CreateTestDataPayloadInterface> => {
+  return createTestCompanies();
 };
 
 export default createTestData;

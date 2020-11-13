@@ -93,6 +93,9 @@ describe('Shop', () => {
                   available
                   price
                   oldPrices
+                  shop {
+                    id
+                  }
                   product {
                     id
                     nameString
@@ -118,6 +121,7 @@ describe('Shop', () => {
       data: { addProductToShop },
     } = addProductToShopPayload;
     expect(addProductToShop.success).toBeTruthy();
+    expect(addProductToShop.shop.id).toEqual(currentShop.id);
 
     // Shouldn't add product to the shop on duplicate error
     const addProductToShopDuplicatePayload = await mutate<any>(

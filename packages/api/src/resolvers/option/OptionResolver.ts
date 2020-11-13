@@ -12,13 +12,17 @@ const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Option.name);
 
 @Resolver((_of) => Option)
 export class OptionResolver {
-  @Query(() => Option, { nullable: true })
+  @Query(() => Option)
   @AuthMethod(operationConfigRead)
   async getOption(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Option>,
     @Arg('id', (_type) => ID) id: string,
-  ): Promise<Option | null> {
-    return OptionModel.findOne({ _id: id, ...customFilter });
+  ): Promise<Option> {
+    const option = await OptionModel.findOne({ _id: id, ...customFilter });
+    if (!option) {
+      throw Error('Options not found by given ID');
+    }
+    return option;
   }
 
   @FieldResolver()

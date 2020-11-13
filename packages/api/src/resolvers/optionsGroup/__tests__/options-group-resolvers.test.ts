@@ -7,11 +7,13 @@ import {
   OPTIONS_GROUP_VARIANT_ENUMS,
   OPTIONS_GROUP_VARIANT_ICON,
 } from '@yagu/config';
-import { MOCK_OPTIONS_WINE_COLOR, MOCK_OPTIONS_GROUP_COLORS } from '@yagu/mocks';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import {
+  createTestOptions,
+  CreateTestOptionsInterface,
+} from '../../../utils/testUtils/createTestOptions';
 
 const addOptionToGroupMutation = gql`
   mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
@@ -66,8 +68,9 @@ const updateOptionInGroupMutation = gql`
 `;
 
 describe('Options groups', () => {
+  let mockData: CreateTestOptionsInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestOptions();
   });
 
   afterEach(async () => {
@@ -89,7 +92,7 @@ describe('Options groups', () => {
       }
     `);
 
-    const colorsGroupName = getLangField(MOCK_OPTIONS_GROUP_COLORS.name, DEFAULT_LANG);
+    const colorsGroupName = getLangField(mockData.optionsGroupColors.name, DEFAULT_LANG);
     const group = getAllOptionsGroups.find(({ nameString }: any) => nameString === colorsGroupName);
     expect(getAllOptionsGroups).not.toBeNull();
 
@@ -136,7 +139,6 @@ describe('Options groups', () => {
     expect(createOptionsGroupFailSuccess).toBeDefined();
 
     // Should return duplicate options group error on group create
-    const duplicateName = `${getLangField(MOCK_OPTIONS_GROUP_COLORS.name, DEFAULT_LANG)}`;
     const {
       data: { createOptionsGroup: duplicate },
     } = await mutate<any>(
@@ -158,7 +160,7 @@ describe('Options groups', () => {
             name: [
               {
                 key: DEFAULT_LANG,
-                value: duplicateName,
+                value: colorsGroupName,
               },
             ],
           },
@@ -348,10 +350,9 @@ describe('Options groups', () => {
           name: [
             {
               key: DEFAULT_LANG,
-              value: getLangField(MOCK_OPTIONS_WINE_COLOR[0].name, DEFAULT_LANG),
+              value: colorsGroupName,
             },
           ],
-          color: MOCK_OPTIONS_WINE_COLOR[0].color,
           gender: GENDER_IT,
         },
       },

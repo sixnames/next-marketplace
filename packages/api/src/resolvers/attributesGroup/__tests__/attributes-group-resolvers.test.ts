@@ -3,8 +3,8 @@ import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../_
 import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '@yagu/mocks';
 import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN, DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { createTestAttributes } from '../../../utils/testUtils/createTestAttributes';
 
 interface AddAttributeToGroupMutationInterface {
   groupId: string;
@@ -58,7 +58,7 @@ const addAttributeToGroupMutation = ({
 
 describe('Attributes Groups', () => {
   beforeEach(async () => {
-    await createTestData();
+    await createTestAttributes();
   });
 
   afterEach(async () => {

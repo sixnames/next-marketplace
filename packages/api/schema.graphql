@@ -857,7 +857,7 @@ type Query {
   getAllRubricVariants: [RubricVariant!]
   getAllShops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
   getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
-  getAttribute(id: ID!): Attribute
+  getAttribute(id: ID!): Attribute!
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]

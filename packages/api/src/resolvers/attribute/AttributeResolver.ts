@@ -17,13 +17,18 @@ const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Attribute.nam
 
 @Resolver((_for) => Attribute)
 export class AttributeResolver {
-  @Query((_type) => Attribute, { nullable: true })
+  @Query((_type) => Attribute)
   @AuthMethod(operationConfigRead)
   async getAttribute(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Attribute>,
     @Arg('id', (_type) => ID) id: string,
-  ): Promise<Attribute | null> {
-    return AttributeModel.findOne({ _id: id, ...customFilter });
+  ): Promise<Attribute> {
+    const attribute = await AttributeModel.findOne({ _id: id, ...customFilter });
+    if (!attribute) {
+      throw Error('Attribute not found by given ID');
+    }
+
+    return attribute;
   }
 
   @FieldResolver()

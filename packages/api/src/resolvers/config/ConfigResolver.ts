@@ -16,7 +16,6 @@ import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
 import { updateAssetConfigSchema, updateConfigSchema, updateConfigsSchema } from '@yagu/validation';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -85,7 +84,7 @@ export class ConfigResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateConfigSchema })
   async updateConfig(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
     @Arg('input', (_type) => UpdateConfigInput) input: UpdateConfigInput,
   ): Promise<ConfigPayloadType> {
@@ -100,14 +99,14 @@ export class ConfigResolver {
       if (!config) {
         return {
           success: true,
-          message: await getApiMessage({ lang, key: 'configs.update.error' }),
+          message: await getApiMessage('configs.update.error'),
           configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ lang, key: 'configs.update.success' }),
+        message: await getApiMessage('configs.update.success'),
         configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     } catch (e) {
@@ -123,7 +122,7 @@ export class ConfigResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateConfigsSchema })
   async updateConfigs(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
     @Arg('input', (_type) => [UpdateConfigInput]) input: UpdateConfigInput[],
   ): Promise<ConfigPayloadType> {
@@ -134,7 +133,7 @@ export class ConfigResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ lang, key: 'configs.update.success' }),
+        message: await getApiMessage('configs.update.success'),
         configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     } catch (e) {
@@ -150,7 +149,7 @@ export class ConfigResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateAssetConfigSchema })
   async updateAssetConfig(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Config>,
     @Arg('input', (_type) => UpdateAssetConfigInput) input: UpdateAssetConfigInput,
   ): Promise<ConfigPayloadType> {
@@ -160,7 +159,7 @@ export class ConfigResolver {
       if (!config) {
         return {
           success: false,
-          message: await getApiMessage({ lang, key: 'configs.updateAsset.notFound' }),
+          message: await getApiMessage('configs.updateAsset.notFound'),
           configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
@@ -169,7 +168,7 @@ export class ConfigResolver {
       if (!defaultCity) {
         return {
           success: false,
-          message: await getApiMessage({ lang, key: 'configs.updateAsset.notFound' }),
+          message: await getApiMessage('configs.updateAsset.notFound'),
           configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
@@ -200,14 +199,14 @@ export class ConfigResolver {
       if (!updatedConfig) {
         return {
           success: false,
-          message: await getApiMessage({ lang, key: 'configs.updateAsset.error' }),
+          message: await getApiMessage('configs.updateAsset.error'),
           configs: await ConfigModel.find({}).sort(configsSortOrder),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ lang, key: 'configs.updateAsset.success' }),
+        message: await getApiMessage('configs.updateAsset.success'),
         configs: await ConfigModel.find({}).sort(configsSortOrder),
       };
     } catch (e) {

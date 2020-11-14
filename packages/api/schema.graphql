@@ -710,6 +710,7 @@ type Product {
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
+  shops: [ProductShop!]!
   slug: String!
   updatedAt: Timestamp!
   views: [CityCounter!]!
@@ -836,6 +837,18 @@ input ProductsCountersInput {
   noRubrics: Boolean
   notInRubric: ID
   rubric: ID
+}
+
+type ProductShop {
+  available: Int!
+  createdAt: Timestamp!
+  id: ID!
+  node: Shop!
+  oldPrices: [ShopProductOldPrice!]!
+  price: Float!
+  product: Product!
+  shop: Shop!
+  updatedAt: Timestamp!
 }
 
 """Product pagination sortBy enum"""

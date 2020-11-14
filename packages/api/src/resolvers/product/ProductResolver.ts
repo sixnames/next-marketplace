@@ -20,6 +20,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   ProductsCounters,
+  ProductShop,
 } from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
@@ -79,6 +80,8 @@ import {
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { Option, OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
+import { ShopProductModel } from '../../entities/ShopProduct';
+import { ShopModel } from '../../entities/Shop';
 
 const {
   operationConfigCreate,
@@ -673,6 +676,30 @@ export class ProductResolver {
           $in: [product.id],
         },
       });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductShop])
+  async shops(@Root() product: DocumentType<Product>): Promise<ProductShop[]> {
+    try {
+      const shopsProducts = await ShopProductModel.find({ product: product.id }).lean().exec();
+      const shopsArr = shopsProducts.map(async (shopProduct) => {
+        const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
+
+        if (!shop) {
+          throw Error('Product shop not found');
+        }
+
+        return {
+          node: shop,
+          ...shopProduct,
+          id: shopProduct._id,
+        };
+      });
+
+      return Promise.all(shopsArr);
     } catch (e) {
       return [];
     }

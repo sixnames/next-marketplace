@@ -3,7 +3,7 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { AssetType, ContactsType, PointGeoJSON } from './common';
 import { Company } from './Company';
-import { PaginatedShopProductsResponse, ShopProduct } from './ShopProduct';
+import { PaginatedShopProductsResponse } from './ShopProduct';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
@@ -45,7 +45,7 @@ export class Shop extends TimeStamps {
   address: PointGeoJSON;
 
   @Field((_type) => PaginatedShopProductsResponse)
-  @prop({ ref: ShopProduct, required: true })
+  @prop({ ref: () => 'ShopProduct', required: true })
   products: string[];
 
   @Field((_type) => Company)

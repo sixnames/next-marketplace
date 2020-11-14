@@ -13,6 +13,8 @@ import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yag
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
 import { alwaysArray } from '@yagu/shared';
 import { Option } from './Option';
+import { ShopProduct } from './ShopProduct';
+import { Shop } from './Shop';
 
 // Attribute view variant
 export enum ProductAttributeViewVariantEnum {
@@ -92,6 +94,12 @@ export class ProductCardFeatures {
 
   @Field(() => [ProductAttribute])
   readonly ratingFeatures: ProductAttribute[];
+}
+
+@ObjectType()
+export class ProductShop extends ShopProduct {
+  @Field(() => Shop)
+  readonly node: Shop;
 }
 
 interface InArrayInterface {
@@ -196,6 +204,9 @@ export class Product extends TimeStamps {
 
   @Field(() => [ProductCardConnection])
   readonly cardConnections: ProductCardConnection[];
+
+  @Field(() => [ProductShop])
+  readonly shops: ProductShop[];
 
   @Field()
   readonly createdAt: Date;

@@ -3,14 +3,16 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { MOCK_PRODUCT_A, MOCK_PRODUCT_B, MOCK_ATTRIBUTE_WINE_VARIANT } from '@yagu/mocks';
 import { ProductConnectionModel } from '../../../entities/Product';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Product', () => {
+  let mockData: CreateTestDataPayloadInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -88,7 +90,7 @@ describe('Product', () => {
       data: { getProductBySlug },
     } = await query<any>(gql`
       query {
-        getProductBySlug(slug: "${MOCK_PRODUCT_A.slug}") {
+        getProductBySlug(slug: "${mockData.productA.slug}") {
           id
           itemId
           nameString
@@ -126,24 +128,37 @@ describe('Product', () => {
           connections {
             ...ConnectionFragment
           }
+          shops {
+            node {
+              id
+              nameString
+            }
+            available
+            price
+            oldPrices {
+              createdAt
+              price
+            }
+          }
         }
       }
       ${connectionFragment}
       ${cardFeaturesFragment}
     `);
+    const currentProduct = getProductBySlug;
+    expect(currentProduct.slug).toEqual(mockData.productA.slug);
+
     const {
       data: { getProductBySlug: secondaryProduct },
     } = await query<any>(gql`
       query {
-        getProductBySlug(slug: "${MOCK_PRODUCT_B.slug}") {
+        getProductBySlug(slug: "${mockData.productB.slug}") {
           id
           itemId
           slug
         }
       }
     `);
-    const currentProduct = getProductBySlug;
-    expect(currentProduct.slug).toEqual(MOCK_PRODUCT_A.slug);
 
     // Should return product by ID
     const {
@@ -194,11 +209,11 @@ describe('Product', () => {
 
     // Should create product connection
     const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
-      return attributes.find(({ node }: any) => node.slug === MOCK_ATTRIBUTE_WINE_VARIANT.slug);
+      return attributes.find(({ node }: any) => node.slug === mockData.attributeWineType.slug);
     });
 
     const currentAttribute = currentAttributesGroup.attributes.find(({ node }: any) => {
-      return node.slug === MOCK_ATTRIBUTE_WINE_VARIANT.slug;
+      return node.slug === mockData.attributeWineType.slug;
     });
 
     const createConnectionResult = await mutate<any>(

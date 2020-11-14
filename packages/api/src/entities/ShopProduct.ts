@@ -44,7 +44,7 @@ export class ShopProduct extends TimeStamps {
   oldPrices: ShopProductOldPrice[];
 
   @Field((_type) => Product)
-  @prop({ ref: Product, required: true })
+  @prop({ ref: () => 'Product', required: true })
   product: string;
 
   @Field((_type) => Shop)

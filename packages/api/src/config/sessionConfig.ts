@@ -17,6 +17,7 @@ export const SESS_OPTIONS: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: +SESS_ABSOLUTE_TIMEOUT,
+
     // TODO fix secure option
     // sameSite: true,
     // secure: IN_PROD,

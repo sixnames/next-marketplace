@@ -1,6 +1,10 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { AuthDecoratorConfigInterface } from './methodDecorators';
+import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
+import getApiMessage from '../utils/translations/getApiMessage';
+import getLangField from '../utils/translations/getLangField';
+import { LanguageType } from '../entities/common';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
@@ -28,7 +32,11 @@ export function SessionRole() {
 
 export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const { roleRules, session } = context.req;
+    const { roleRules, session, role } = context.req;
+    if (role.slug === ROLE_SLUG_ADMIN) {
+      return {};
+    }
+
     const currentRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
 
     if (!currentRule) {
@@ -53,6 +61,8 @@ export interface LocalizationPayloadInterface {
   lang: string;
   defaultLang: string;
   city: string;
+  getApiMessage: (key: MessageKey) => Promise<string>;
+  getLangField: (translations: LanguageType[] | null | undefined) => string;
 }
 
 export function Localization() {
@@ -62,6 +72,10 @@ export function Localization() {
       lang,
       defaultLang,
       city,
+      getApiMessage: (key: MessageKey) => getApiMessage({ lang, key }),
+      getLangField: (translations: LanguageType[] | null | undefined) => {
+        return getLangField(translations, lang);
+      },
     };
   });
 }

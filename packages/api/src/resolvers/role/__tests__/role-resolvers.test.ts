@@ -13,8 +13,18 @@ import { Role, RoleModel } from '../../../entities/Role';
 import { RoleRule, RoleRuleOperation } from '../../../entities/RoleRule';
 import { NavItemModel } from '../../../entities/NavItem';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Roles', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should return guest session role', async () => {
     const { query } = await testClientWithContext();
     const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });

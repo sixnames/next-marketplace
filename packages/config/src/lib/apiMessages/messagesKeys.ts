@@ -150,6 +150,7 @@ const messagesKeys = [
   'companies.update.success',
   'companies.delete.notFound',
   'companies.delete.error',
+  'companies.shopsDelete.error',
   'companies.delete.success',
   // Companies validation
   'validation.companies.id',
@@ -157,6 +158,46 @@ const messagesKeys = [
   'validation.companies.owner',
   'validation.companies.staff',
   'validation.companies.logo',
+
+  // Shops ----------
+  'shops.create.duplicate',
+  'shops.create.error',
+  'shops.create.success',
+  'shops.update.notFound',
+  'shops.update.duplicate',
+  'shops.update.error',
+  'shops.update.success',
+  'shops.addProduct.duplicate',
+  'shops.addProduct.notFound',
+  'shops.addProduct.error',
+  'shops.addProduct.success',
+  'shops.delete.notFound',
+  'shops.delete.error',
+  'shops.delete.success',
+  // Companies validation
+  'validation.shops.id',
+  'validation.shops.nameString',
+  'validation.shops.logo',
+  'validation.shops.assets',
+  'validation.shops.address',
+  'validation.shops.products',
+
+  // Shop products ----------
+  'shopProducts.create.duplicate',
+  'shopProducts.create.error',
+  'shopProducts.create.success',
+  'shopProducts.update.notFound',
+  'shopProducts.update.duplicate',
+  'shopProducts.update.error',
+  'shopProducts.update.success',
+  'shopProducts.delete.notFound',
+  'shopProducts.delete.error',
+  'shopProducts.delete.success',
+  // Companies validation
+  'validation.shopProducts.id',
+  'validation.shopProducts.available',
+  'validation.shopProducts.price',
+  'validation.shopProducts.product',
 
   // Options groups ----------
   'optionsGroups.create.duplicate',

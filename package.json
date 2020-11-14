@@ -30,6 +30,7 @@
     "dev": "lerna run --parallel dev",
     "build": "lerna run build",
     "start": "lerna run --parallel start",
+    "start:testing": "lerna run --parallel start:testing",
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "npm run lint -- --fix",
     "generate": "graphql-codegen --config codegen.yml"

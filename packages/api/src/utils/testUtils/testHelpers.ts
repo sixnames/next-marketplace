@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { testClient } from '../../test/setup';
+import { testClient } from '../../test/jest.setup';
 import { StringOrAst, TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../config';
 import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/config';
@@ -37,20 +37,43 @@ export async function testClientWithContext(
 
   const { setOptions, mutate, query } = testClient;
 
+  const session = {
+    user: null,
+    userId: null,
+    roleId: null,
+    destroy: (callback: (arg: any) => void) => {
+      session.user = null;
+      session.userId = null;
+      session.roleId = null;
+      callback(null);
+    },
+  };
+
   setOptions({
     request: {
       city,
       lang,
       defaultLang: DEFAULT_LANG,
-      session: {},
+      session,
     },
   });
 
   return { mutate, query, setOptions };
 }
 
-export async function authenticatedTestClient(): Promise<AuthenticatedUserMutationInterface> {
+interface AuthenticatedTestClient {
+  email: string;
+  password: string;
+}
+
+export async function authenticatedTestClient(
+  props?: AuthenticatedTestClient,
+): Promise<AuthenticatedUserMutationInterface> {
   const { mutate, query, setOptions } = await testClientWithContext();
+  const { email, password } = props || {
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+  };
 
   const {
     data: {
@@ -92,8 +115,8 @@ export async function authenticatedTestClient(): Promise<AuthenticatedUserMutati
     {
       variables: {
         input: {
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
+          email,
+          password,
         },
       },
     },

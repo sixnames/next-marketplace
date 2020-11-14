@@ -1,4 +1,4 @@
-import { IN_PROD } from './app';
+import { IN_PROD } from './appConfig';
 
 export const APOLLO_OPTIONS = {
   playground: IN_PROD

@@ -3,7 +3,6 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Metric, MetricModel } from '../../entities/Metric';
-import getLangField from '../../utils/translations/getLangField';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -17,13 +16,18 @@ const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Attribute.nam
 
 @Resolver((_for) => Attribute)
 export class AttributeResolver {
-  @Query((_type) => Attribute, { nullable: true })
+  @Query((_type) => Attribute)
   @AuthMethod(operationConfigRead)
   async getAttribute(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Attribute>,
     @Arg('id', (_type) => ID) id: string,
-  ): Promise<Attribute | null> {
-    return AttributeModel.findOne({ _id: id, ...customFilter });
+  ): Promise<Attribute> {
+    const attribute = await AttributeModel.findOne({ _id: id, ...customFilter });
+    if (!attribute) {
+      throw Error('Attribute not found by given ID');
+    }
+
+    return attribute;
   }
 
   @FieldResolver()
@@ -39,9 +43,9 @@ export class AttributeResolver {
   @FieldResolver()
   async nameString(
     @Root() attribute: DocumentType<Attribute>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(attribute.name, lang);
+    return getLangField(attribute.name);
   }
 
   @FieldResolver()

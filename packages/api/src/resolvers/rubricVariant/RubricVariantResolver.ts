@@ -16,8 +16,6 @@ import { CreateRubricVariantInput } from './CreateRubricVariantInput';
 import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
 import { RubricModel } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { createRubricVariantInputSchema, updateRubricVariantSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -43,13 +41,17 @@ class RubricVariantPayloadType extends PayloadType() {
 
 @Resolver((_of) => RubricVariant)
 export class RubricVariantResolver {
-  @Query(() => RubricVariant, { nullable: true })
+  @Query(() => RubricVariant)
   @AuthMethod(operationConfigRead)
   async getRubricVariant(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<RubricVariant>,
     @Arg('id', (_type) => ID) id: string,
-  ): Promise<RubricVariant | null> {
-    return RubricVariantModel.findOne({ _id: id, ...customFilter });
+  ): Promise<RubricVariant> {
+    const rubricVariant = await RubricVariantModel.findOne({ _id: id, ...customFilter });
+    if (!rubricVariant) {
+      throw Error('RubricVariant not found by given ID');
+    }
+    return rubricVariant;
   }
 
   @Query(() => [RubricVariant], { nullable: true })
@@ -64,7 +66,7 @@ export class RubricVariantResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createRubricVariantInputSchema })
   async createRubricVariant(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
     try {
@@ -77,7 +79,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.create.duplicate`, lang }),
+          message: await getApiMessage(`rubricVariants.create.duplicate`),
         };
       }
 
@@ -86,13 +88,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.create.error`, lang }),
+          message: await getApiMessage(`rubricVariants.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubricVariants.create.success`, lang }),
+        message: await getApiMessage(`rubricVariants.create.success`),
         variant,
       };
     } catch (e) {
@@ -107,7 +109,7 @@ export class RubricVariantResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateRubricVariantSchema })
   async updateRubricVariant(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<RubricVariant>,
     @Arg('input') input: UpdateRubricVariantInput,
   ): Promise<RubricVariantPayloadType> {
@@ -121,7 +123,7 @@ export class RubricVariantResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.update.duplicate`, lang }),
+          message: await getApiMessage(`rubricVariants.update.duplicate`),
         };
       }
 
@@ -135,13 +137,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.update.error`, lang }),
+          message: await getApiMessage(`rubricVariants.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubricVariants.update.success`, lang }),
+        message: await getApiMessage(`rubricVariants.update.success`),
         variant,
       };
     } catch (e) {
@@ -155,7 +157,7 @@ export class RubricVariantResolver {
   @Mutation(() => RubricVariantPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteRubricVariant(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricVariantPayloadType> {
     try {
@@ -165,7 +167,7 @@ export class RubricVariantResolver {
       if (isUsedInRubrics) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.delete.used`, lang }),
+          message: await getApiMessage(`rubricVariants.delete.used`),
         };
       }
 
@@ -174,13 +176,13 @@ export class RubricVariantResolver {
       if (!variant) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubricVariants.delete.error`, lang }),
+          message: await getApiMessage(`rubricVariants.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubricVariants.delete.success`, lang }),
+        message: await getApiMessage(`rubricVariants.delete.success`),
       };
     } catch (e) {
       return {
@@ -193,8 +195,8 @@ export class RubricVariantResolver {
   @FieldResolver()
   async nameString(
     @Root() variant: DocumentType<RubricVariant>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(variant.name, lang);
+    return getLangField(variant.name);
   }
 }

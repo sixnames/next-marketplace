@@ -1,10 +1,9 @@
-import { Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
+import { FieldResolver, Query, Resolver, Root } from 'type-graphql';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { DocumentType } from '@typegoose/typegoose';
-import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/translations/getLangField';
 import { OPERATION_TYPE_READ, ROUTE_APP_NAV_GROUP } from '@yagu/config';
 import { AuthMethod } from '../../decorators/methodDecorators';
+import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
 
 @Resolver((_for) => NavItem)
 export class NavItemResolver {
@@ -32,8 +31,8 @@ export class NavItemResolver {
   @FieldResolver()
   async nameString(
     @Root() navItem: DocumentType<NavItem>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(navItem.name, ctx.req.lang);
+    return getLangField(navItem.name);
   }
 }

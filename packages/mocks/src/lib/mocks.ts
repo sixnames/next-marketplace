@@ -79,6 +79,33 @@ export const MOCK_NEW_COMPANY = {
 
 export const MOCK_COMPANIES = [MOCK_COMPANY];
 
+// Shop
+export const MOCK_SHOP = {
+  nameString: 'Shop',
+  slug: 'shop',
+  contacts: {
+    emails: ['shop1@gmail.com', 'shop2@gmail.com'],
+    phones: ['+78990002245', '+78890002246'],
+  },
+  address: {
+    coordinates: [40, 40],
+  },
+};
+
+export const MOCK_NEW_SHOP = {
+  nameString: 'New Shop',
+  slug: 'new_shop',
+  contacts: {
+    emails: ['new.shop1@gmail.com', 'new.shop2@gmail.com'],
+    phones: ['+78990002255', '+78890002256'],
+  },
+  address: {
+    coordinates: [40, 40],
+  },
+};
+
+export const MOCK_SHOPS = [MOCK_SHOP];
+
 // Languages
 export const ISO_LANGUAGES = [
   {
@@ -349,14 +376,16 @@ export const SITE_CONFIGS_INITIAL = [
     ],
   },
 ];
-export const SITE_CONFIGS_All = [
+
+export const SITE_CONFIGS_ASSETS_All = [
   SITE_CONFIGS_LOGO,
   SITE_CONFIGS_LOGO_DARK,
   SITE_CONFIGS_LOGO_ICON,
   SITE_CONFIGS_LOGO_NAME,
   SITE_CONFIGS_PREVIEW_IMAGE,
-  ...SITE_CONFIGS_INITIAL,
 ];
+
+export const SITE_CONFIGS_All = [...SITE_CONFIGS_ASSETS_All, ...SITE_CONFIGS_INITIAL];
 
 // Currency
 export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
@@ -1354,6 +1383,24 @@ export const MOCK_PRODUCT_E = {
   cardName: [
     { key: DEFAULT_LANG, value: 'Вино Vie, "Barista" Pinotage' },
     { key: SECONDARY_LANG, value: 'Wine Vie, "Barista" Pinotage' },
+  ],
+  price: 500,
+  description: [
+    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+    { key: SECONDARY_LANG, value: 'Very long product description' },
+  ],
+};
+
+export const MOCK_PRODUCT_F = {
+  priority: 1,
+  slug: 'Wine_Val_de_Vie_E',
+  name: [
+    { key: DEFAULT_LANG, value: 'Product_F' },
+    { key: SECONDARY_LANG, value: 'Product_F' },
+  ],
+  cardName: [
+    { key: DEFAULT_LANG, value: 'Product_F' },
+    { key: SECONDARY_LANG, value: 'Product_F' },
   ],
   price: 500,
   description: [

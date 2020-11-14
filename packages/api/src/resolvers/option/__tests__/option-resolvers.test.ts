@@ -1,28 +1,42 @@
-import { newOption } from '../__fixtures__';
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { OptionModel } from '../../../entities/Option';
-import getLangField from '../../../utils/translations/getLangField';
-import { DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
+import clearTestData from '../../../utils/testUtils/clearTestData';
+import {
+  createTestOptions,
+  CreateTestOptionsInterface,
+} from '../../../utils/testUtils/createTestOptions';
 
 describe('Options', () => {
+  let mockData: CreateTestOptionsInterface;
+  beforeEach(async () => {
+    mockData = await createTestOptions();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should return current option', async () => {
-    const target = await OptionModel.create(newOption);
     const { query } = await authenticatedTestClient();
 
     const {
       data: { getOption },
-    } = await query<any>(gql`
-        query {
-          getOption(
-            id: "${target.id}"
-          ) {
+    } = await query<any>(
+      gql`
+        query GetOption($id: ID!) {
+          getOption(id: $id) {
             id
             nameString
           }
         }
-      `);
+      `,
+      {
+        variables: {
+          id: mockData.optionsVintage[0].id,
+        },
+      },
+    );
 
-    expect(getOption.nameString).toEqual(getLangField(target.name, DEFAULT_LANG));
+    expect(getOption.id).toEqual(mockData.optionsVintage[0].id);
   });
 });

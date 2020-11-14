@@ -3,8 +3,18 @@ import { SITE_CONFIGS_All, SITE_CONFIGS_INITIAL, SITE_CONFIGS_LOGO } from '@yagu
 import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/config';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Config', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD site config', async () => {
     const stringConfig = SITE_CONFIGS_INITIAL[0];
     const stringConfigCity = stringConfig.cities[0];

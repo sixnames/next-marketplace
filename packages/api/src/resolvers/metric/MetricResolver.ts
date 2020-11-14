@@ -16,8 +16,6 @@ import { CreateMetricInput } from './CreateMetricInput';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { createMetricInputSchema, updateMetricSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -64,7 +62,7 @@ export class MetricResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createMetricInputSchema })
   async createMetric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateMetricInput,
   ): Promise<MetricPayloadType> {
     try {
@@ -77,7 +75,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.create.duplicate`, lang }),
+          message: await getApiMessage(`metrics.create.duplicate`),
         };
       }
 
@@ -86,13 +84,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.create.error`, lang }),
+          message: await getApiMessage(`metrics.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `metrics.create.success`, lang }),
+        message: await getApiMessage(`metrics.create.success`),
         metric,
       };
     } catch (e) {
@@ -107,7 +105,7 @@ export class MetricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateMetricSchema })
   async updateMetric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Metric>,
     @Arg('input') input: UpdateMetricInput,
   ): Promise<MetricPayloadType> {
@@ -121,7 +119,7 @@ export class MetricResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.update.duplicate`, lang }),
+          message: await getApiMessage(`metrics.update.duplicate`),
         };
       }
 
@@ -133,13 +131,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.update.error`, lang }),
+          message: await getApiMessage(`metrics.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `metrics.update.success`, lang }),
+        message: await getApiMessage(`metrics.update.success`),
         metric,
       };
     } catch (e) {
@@ -153,7 +151,7 @@ export class MetricResolver {
   @Mutation(() => MetricPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteMetric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<MetricPayloadType> {
     try {
@@ -161,7 +159,7 @@ export class MetricResolver {
       if (isUsedInAttributes) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.delete.used`, lang }),
+          message: await getApiMessage(`metrics.delete.used`),
         };
       }
 
@@ -170,13 +168,13 @@ export class MetricResolver {
       if (!metric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `metrics.delete.error`, lang }),
+          message: await getApiMessage(`metrics.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `metrics.delete.success`, lang }),
+        message: await getApiMessage(`metrics.delete.success`),
       };
     } catch (e) {
       return {
@@ -189,8 +187,8 @@ export class MetricResolver {
   @FieldResolver()
   async nameString(
     @Root() metric: DocumentType<Metric>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(metric.name, lang);
+    return getLangField(metric.name);
   }
 }

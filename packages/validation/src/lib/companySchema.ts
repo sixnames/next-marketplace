@@ -50,7 +50,7 @@ const companyCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
     .required(
       getFieldValidationMessage({
         ...args,
-        key: 'validation.products.assets',
+        key: 'validation.companies.logo',
       }),
     ),
 });

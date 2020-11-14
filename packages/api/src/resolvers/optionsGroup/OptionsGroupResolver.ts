@@ -12,7 +12,6 @@ import {
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -22,7 +21,6 @@ import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -82,7 +80,7 @@ export class OptionsGroupResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createOptionsGroupSchema })
   async createOptionsGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
@@ -96,7 +94,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.create.duplicate`, lang }),
+          message: await getApiMessage(`optionsGroups.create.duplicate`),
         };
       }
 
@@ -105,13 +103,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.create.error`, lang }),
+          message: await getApiMessage(`optionsGroups.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.create.success`, lang }),
+        message: await getApiMessage(`optionsGroups.create.success`),
         group,
       };
     } catch (e) {
@@ -126,7 +124,7 @@ export class OptionsGroupResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateOptionsGroupSchema })
   async updateOptionsGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<OptionsGroup>,
     @Arg('input') input: UpdateOptionsGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -144,7 +142,7 @@ export class OptionsGroupResolver {
       if (isGroupExists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.update.duplicate`, lang }),
+          message: await getApiMessage(`optionsGroups.update.duplicate`),
         };
       }
 
@@ -155,13 +153,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.update.error`, lang }),
+          message: await getApiMessage(`optionsGroups.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.update.success`, lang }),
+        message: await getApiMessage(`optionsGroups.update.success`),
         group,
       };
     } catch (e) {
@@ -175,7 +173,7 @@ export class OptionsGroupResolver {
   @Mutation(() => OptionsGroupPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteOptionsGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<OptionsGroupPayloadType> {
     try {
@@ -183,7 +181,7 @@ export class OptionsGroupResolver {
       if (connectedWithAttributes) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.delete.used`, lang }),
+          message: await getApiMessage(`optionsGroups.delete.used`),
         };
       }
 
@@ -192,7 +190,7 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
+          message: await getApiMessage(`optionsGroups.delete.optionsError`),
         };
       }
 
@@ -202,7 +200,7 @@ export class OptionsGroupResolver {
       if (!removedOptions.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.delete.optionsError`, lang }),
+          message: await getApiMessage(`optionsGroups.delete.optionsError`),
         };
       }
 
@@ -210,13 +208,13 @@ export class OptionsGroupResolver {
       if (!removedGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.delete.error`, lang }),
+          message: await getApiMessage(`optionsGroups.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.delete.success`, lang }),
+        message: await getApiMessage(`optionsGroups.delete.success`),
       };
     } catch (e) {
       return {
@@ -230,7 +228,7 @@ export class OptionsGroupResolver {
   @AuthMethod(operationConfigCreateOption)
   @ValidateMethod({ schema: addOptionToGroupSchema })
   async addOptionToGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: AddOptionToGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
@@ -240,21 +238,21 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.groupError`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.groupError`),
         };
       }
 
       if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.iconError`),
         };
       }
 
       if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.colorError`),
         };
       }
 
@@ -269,7 +267,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.duplicate`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.duplicate`),
         };
       }
 
@@ -278,7 +276,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.error`),
         };
       }
 
@@ -294,13 +292,13 @@ export class OptionsGroupResolver {
       if (!updatedGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.error`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.addOption.success`, lang }),
+        message: await getApiMessage(`optionsGroups.addOption.success`),
         group: updatedGroup,
       };
     } catch (e) {
@@ -315,7 +313,7 @@ export class OptionsGroupResolver {
   @AuthMethod(operationConfigUpdateOption)
   @ValidateMethod({ schema: updateOptionInGroupSchema })
   async updateOptionInGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdateOption) customFilter: FilterQuery<Option>,
     @Arg('input') input: UpdateOptionInGroupInput,
   ): Promise<OptionsGroupPayloadType> {
@@ -326,21 +324,21 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.updateOption.groupError`, lang }),
+          message: await getApiMessage(`optionsGroups.updateOption.groupError`),
         };
       }
 
       if (group.variant === OPTIONS_GROUP_VARIANT_ICON && !icon) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.iconError`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.iconError`),
         };
       }
 
       if (group.variant === OPTIONS_GROUP_VARIANT_COLOR && !color) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.addOption.colorError`, lang }),
+          message: await getApiMessage(`optionsGroups.addOption.colorError`),
         };
       }
 
@@ -355,7 +353,7 @@ export class OptionsGroupResolver {
       if (existingOptions) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.updateOption.duplicate`, lang }),
+          message: await getApiMessage(`optionsGroups.updateOption.duplicate`),
         };
       }
 
@@ -374,13 +372,13 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.updateOption.error`, lang }),
+          message: await getApiMessage(`optionsGroups.updateOption.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.updateOption.success`, lang }),
+        message: await getApiMessage(`optionsGroups.updateOption.success`),
         group,
       };
     } catch (e) {
@@ -395,7 +393,7 @@ export class OptionsGroupResolver {
   @AuthMethod(operationConfigDeleteOption)
   @ValidateMethod({ schema: deleteOptionFromGroupSchema })
   async deleteOptionFromGroup(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: DeleteOptionFromGroupInput,
   ): Promise<OptionsGroupPayloadType> {
     try {
@@ -405,7 +403,7 @@ export class OptionsGroupResolver {
       if (!option) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.deleteOption.error`, lang }),
+          message: await getApiMessage(`optionsGroups.deleteOption.error`),
         };
       }
 
@@ -418,13 +416,13 @@ export class OptionsGroupResolver {
       if (!group) {
         return {
           success: false,
-          message: await getApiMessage({ key: `optionsGroups.deleteOption.groupError`, lang }),
+          message: await getApiMessage(`optionsGroups.deleteOption.groupError`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `optionsGroups.deleteOption.success`, lang }),
+        message: await getApiMessage(`optionsGroups.deleteOption.success`),
         group,
       };
     } catch (e) {
@@ -438,9 +436,9 @@ export class OptionsGroupResolver {
   @FieldResolver()
   async nameString(
     @Root() group: DocumentType<OptionsGroup>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(group.name, lang);
+    return getLangField(group.name);
   }
 
   @FieldResolver()

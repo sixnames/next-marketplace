@@ -61,6 +61,12 @@ import { AuthField } from './decorators/methodDecorators';
 import { RoleModel } from './entities/Role';
 import { RoleRuleModel, RoleRuleOperationModel } from './entities/RoleRule';
 import { CompanyResolver } from './resolvers/company/CompanyResolver';
+import { ApolloContextInterface } from './types/context';
+import { ShopResolver } from './resolvers/shop/ShopResolver';
+import { ShopProductResolver } from './resolvers/shopProduct/ShopProductResolver';
+
+// Configure env variables
+require('dotenv-flow').config();
 
 interface CreateAppInterface {
   app: Express;
@@ -98,6 +104,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
       RubricVariantResolver,
       UserResolver,
       CompanyResolver,
+      ShopResolver,
+      ShopProductResolver,
       GendersListResolver,
       AttributeVariantResolver,
       AttributePositioningListResolver,
@@ -121,11 +129,12 @@ const createApp = async (): Promise<CreateAppInterface> => {
     uri: MONGO_URL,
     collection: SESSION_COLLECTION,
   });
-  const sessionHandler = session({
-    store,
-    ...SESS_OPTIONS,
-  });
-  app.use(sessionHandler);
+  app.use(
+    session({
+      store,
+      ...SESS_OPTIONS,
+    }),
+  );
 
   // Test data routes
   // TODO make this methods safe
@@ -141,7 +150,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     ...APOLLO_OPTIONS,
     schema,
     introspection: true,
-    context: async ({ req, res, connection }) => {
+    context: async ({ req, res, connection }: ApolloContextInterface) => {
       // Get current city from subdomain name
       // and language from cookie or user accepted language
       // City
@@ -180,7 +189,16 @@ const createApp = async (): Promise<CreateAppInterface> => {
         },
       };
 
-      if (req.session!.user) {
+      // console.log('Session =========================\n');
+      // console.log(JSON.stringify(req.session, null, 2));
+      // console.log('User ============================\n');
+      // console.log(JSON.stringify(req.sessionID, null, 2));
+      // console.log(JSON.stringify(req.session.user, null, 2));
+      // console.log('-----------------------------------');
+      // console.log('-----------------------------------');
+      // console.log('-----------------------------------');
+
+      if (req.session.user) {
         let userRole = await RoleModel.findOne({ _id: req.session!.user.role });
         if (!userRole) {
           userRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });

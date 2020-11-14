@@ -471,7 +471,7 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
-  addProductToShop(input: AddProductToShopInput!): ShopPayloadtype!
+  addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
@@ -534,6 +534,7 @@ type Mutation {
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
   updateShopInCompany(input: UpdateShopInCompanyInput!): CompanyPayloadtype!
+  updateShopProduct(input: UpdateShopProductInput!): ShopProductPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
 }
 
@@ -856,7 +857,7 @@ type Query {
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
   getAllShops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
-  getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
+  getAllUsers(input: UserPaginateInput = {}): PaginatedUsersResponse!
   getAttribute(id: ID!): Attribute!
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
@@ -893,7 +894,7 @@ type Query {
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!] = []): [Rubric!]!
-  getRubricVariant(id: ID!): RubricVariant
+  getRubricVariant(id: ID!): RubricVariant!
   getSessionCurrency: String!
   getSessionRole: Role!
   getShop(id: ID!): Shop!
@@ -1097,7 +1098,7 @@ input ShopPaginateInput {
   sortDir: PaginateSortDirectionEnum = desc
 }
 
-type ShopPayloadtype {
+type ShopPayloadType {
   message: String!
   shop: Shop
   success: Boolean!
@@ -1107,10 +1108,18 @@ type ShopProduct {
   available: Int!
   createdAt: Timestamp!
   id: ID!
-  oldPrices: [Float!]!
+  oldPrices: [ShopProductOldPrice!]!
   price: Float!
   product: Product!
   shop: Shop!
+  updatedAt: Timestamp!
+}
+
+"""List of all old prices for shop product with dates of creation."""
+type ShopProductOldPrice {
+  createdAt: Timestamp!
+  id: ID!
+  price: Float!
   updatedAt: Timestamp!
 }
 
@@ -1120,6 +1129,12 @@ input ShopProductPaginateInput {
   search: String
   sortBy: ShopProductSortByEnum = createdAt
   sortDir: PaginateSortDirectionEnum = desc
+}
+
+type ShopProductPayloadType {
+  message: String!
+  product: ShopProduct
+  success: Boolean!
 }
 
 """Shop product pagination sortBy enum"""
@@ -1295,6 +1310,12 @@ input UpdateShopInCompanyInput {
   logo: [Upload!]!
   nameString: String!
   shopId: ID!
+}
+
+input UpdateShopProductInput {
+  available: Int!
+  price: Int!
+  productId: ID!
 }
 
 input UpdateUserInput {

@@ -7,6 +7,24 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import PaginateType from '../resolvers/common/PaginateType';
 
+@ObjectType({
+  description: 'List of all old prices for shop product with dates of creation.',
+})
+export class ShopProductOldPrice extends TimeStamps {
+  @Field((_type) => ID)
+  readonly id?: string;
+
+  @Field(() => Float)
+  @prop({ required: true })
+  price: number;
+
+  @Field()
+  readonly createdAt?: Date;
+
+  @Field()
+  readonly updatedAt?: Date;
+}
+
 @ObjectType()
 @plugin(mongoosePaginate)
 export class ShopProduct extends TimeStamps {
@@ -21,9 +39,9 @@ export class ShopProduct extends TimeStamps {
   @prop({ required: true })
   price: number;
 
-  @Field(() => [Float])
-  @prop({ type: Number, required: true })
-  oldPrices: number[];
+  @Field(() => [ShopProductOldPrice])
+  @prop({ type: ShopProductOldPrice, required: true })
+  oldPrices: ShopProductOldPrice[];
 
   @Field((_type) => Product)
   @prop({ ref: Product, required: true })

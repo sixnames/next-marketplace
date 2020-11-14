@@ -1,8 +1,6 @@
-import { Arg, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import { Arg, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
 import { City, CityModel } from '../../entities/City';
 import { DocumentType } from '@typegoose/typegoose';
-import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/translations/getLangField';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -67,8 +65,8 @@ export class CityResolver {
   @FieldResolver((_returns) => String)
   async nameString(
     @Root() city: DocumentType<City>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(city.name, ctx.req.lang);
+    return getLangField(city.name);
   }
 }

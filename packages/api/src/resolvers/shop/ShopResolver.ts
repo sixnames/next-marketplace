@@ -34,7 +34,7 @@ const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperatio
 );
 
 @ObjectType()
-class ShopPayloadtype extends PayloadType() {
+class ShopPayloadType extends PayloadType() {
   @Field((_type) => Shop, { nullable: true })
   shop?: Shop;
 }
@@ -71,14 +71,14 @@ export class ShopResolver {
     return ShopModel.paginate({ ...customFilter }, options);
   }
 
-  @Mutation((_returns) => ShopPayloadtype)
+  @Mutation((_returns) => ShopPayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: addProductToShopSchema })
   async addProductToShop(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Shop>,
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: AddProductToShopInput,
-  ): Promise<ShopPayloadtype> {
+  ): Promise<ShopPayloadType> {
     const { shopId, productId, price, available } = input;
     const shop = await ShopModel.findOne({ _id: shopId, ...customFilter });
     if (!shop) {

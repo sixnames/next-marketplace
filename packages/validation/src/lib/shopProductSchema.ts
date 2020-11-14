@@ -27,3 +27,15 @@ export const addProductToShopSchema = (args: MultiLangSchemaMessagesInterface) =
     productId: productIdSchema(args),
     ...shopProductCommonFields(args),
   });
+
+export const deleteProductFromShopSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    shopId: shopIdSchema(args),
+    productId: productIdSchema(args),
+  });
+
+export const updateShopProductSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    productId: productIdSchema(args),
+    ...shopProductCommonFields(args),
+  });

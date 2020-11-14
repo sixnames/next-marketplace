@@ -12,7 +12,6 @@ import {
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DocumentType } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
-import getLangField from '../../utils/translations/getLangField';
 import PayloadType from '../common/PayloadType';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -429,8 +428,8 @@ export class AttributesGroupResolver {
   @FieldResolver()
   async nameString(
     @Root() attributesGroup: DocumentType<AttributesGroup>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(attributesGroup.name, lang);
+    return getLangField(attributesGroup.name);
   }
 }

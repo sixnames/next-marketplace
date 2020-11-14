@@ -3,7 +3,6 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Metric, MetricModel } from '../../entities/Metric';
-import getLangField from '../../utils/translations/getLangField';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -44,9 +43,9 @@ export class AttributeResolver {
   @FieldResolver()
   async nameString(
     @Root() attribute: DocumentType<Attribute>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(attribute.name, lang);
+    return getLangField(attribute.name);
   }
 
   @FieldResolver()

@@ -16,7 +16,6 @@ import { CreateMetricInput } from './CreateMetricInput';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
 import { createMetricInputSchema, updateMetricSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -188,8 +187,8 @@ export class MetricResolver {
   @FieldResolver()
   async nameString(
     @Root() metric: DocumentType<Metric>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(metric.name, lang);
+    return getLangField(metric.name);
   }
 }

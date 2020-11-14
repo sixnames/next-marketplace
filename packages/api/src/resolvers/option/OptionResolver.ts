@@ -1,10 +1,12 @@
-import { Arg, Ctx, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
+import { Arg, FieldResolver, ID, Query, Resolver, Root } from 'type-graphql';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
-import { ContextInterface } from '../../types/context';
-import getLangField from '../../utils/translations/getLangField';
 import { AuthMethod } from '../../decorators/methodDecorators';
-import { CustomFilter } from '../../decorators/parameterDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
 
@@ -28,9 +30,9 @@ export class OptionResolver {
   @FieldResolver()
   async nameString(
     @Root() option: DocumentType<Option>,
-    @Ctx() ctx: ContextInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(option.name, ctx.req.lang);
+    return getLangField(option.name);
   }
 
   @FieldResolver()

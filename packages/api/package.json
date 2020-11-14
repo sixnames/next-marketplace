@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=production node ./dist/index.js",
-    "start:testing": "NODE_ENV=development node ./dist/index.js",
-    "build": "rimraf ./dist && tsc",
     "dev": "NODE_ENV=development ts-node-dev --poll --transpile-only --no-notify src/index.ts",
     "predev": "rimraf ./dist",
-    "test": "jest --runInBand --detectOpenHandles --coverage --forceExit",
-    "test:watch": "jest --watch --runInBand --detectOpenHandles"
+    "build": "rimraf ./dist && tsc",
+    "start": "NODE_ENV=production node ./dist/index.js",
+    "start:testing": "NODE_ENV=development node ./dist/index.js",
+    "test:watch": "jest --watch --runInBand --detectOpenHandles",
+    "test": "jest --runInBand --detectOpenHandles --coverage --forceExit"
   },
   "dependencies": {
     "@yagu/config": "1.0.0",

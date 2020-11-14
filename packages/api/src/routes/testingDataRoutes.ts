@@ -2,9 +2,9 @@ import createTestData from '../utils/testUtils/createTestData';
 import { DEFAULT_LANG, LANG_COOKIE_KEY, THEME_COOKIE_KEY, THEME_DARK } from '@yagu/config';
 import clearTestData from '../utils/testUtils/clearTestData';
 import { UserModel } from '../entities/User';
-import { ContextInterface } from '../types/context';
+import { Response } from 'express';
 
-export async function createTestDataRoute({ res }: ContextInterface) {
+export async function createTestDataRoute(_req: any, res: Response) {
   await clearTestData();
   await createTestData();
 
@@ -14,13 +14,13 @@ export async function createTestDataRoute({ res }: ContextInterface) {
   res.send('test data created');
 }
 
-export async function clearTestDataRoute({ res }: ContextInterface) {
+export async function clearTestDataRoute(_req: any, res: Response) {
   await clearTestData();
   res.send('test data removed');
 }
 
-export async function testSignInRoute({ req, res }: ContextInterface) {
-  const { lang, query } = req;
+export async function testSignInRoute(req: any, res: Response) {
+  const { query, lang } = req;
   const { email, password } = query;
   const { user, message } = await UserModel.attemptSignIn(`${email}`, `${password}`, lang);
 

@@ -20,8 +20,7 @@ jobs:
 
       - run: yarn install
       - run: npx lerna run --ignore @yagu/client --ignore @yagu/api build
-      - run: cd packages/api
-      - run: GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} jest --runInBand --detectOpenHandles --coverage --forceExit
+      - run: cd packages/api & GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} jest --runInBand --detectOpenHandles --coverage --forceExit
 
   clientTest:
     runs-on: ubuntu-latest

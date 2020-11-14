@@ -129,11 +129,12 @@ const createApp = async (): Promise<CreateAppInterface> => {
     uri: MONGO_URL,
     collection: SESSION_COLLECTION,
   });
-  const sessionHandler = session({
-    store,
-    ...SESS_OPTIONS,
-  });
-  app.use(sessionHandler);
+  app.use(
+    session({
+      store,
+      ...SESS_OPTIONS,
+    }),
+  );
 
   // Test data routes
   // TODO make this methods safe
@@ -188,6 +189,10 @@ const createApp = async (): Promise<CreateAppInterface> => {
         },
       };
 
+      // console.log('Session =========================\n');
+      // console.log(JSON.stringify(req.session, null, 2));
+      // console.log('User ============================\n');
+      // console.log(JSON.stringify(req.session.user, null, 2));
       if (req.session.user) {
         let userRole = await RoleModel.findOne({ _id: req.session!.user.role });
         if (!userRole) {

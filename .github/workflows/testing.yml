@@ -41,7 +41,8 @@ jobs:
       - run: yarn install
       - run: npx lerna run --ignore @yagu/client build
       - run: npx lerna run --scope @yagu/client build:testing
+      - run: npx lerna run --scope @yagu/api start:testing
       - name: Start the app and run Cypress tests
-        run: yarn start & yarn test:client
+        run: npx lerna run --scope @yagu/client start & yarn test:client
         env:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}

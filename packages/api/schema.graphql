@@ -878,7 +878,7 @@ type Query {
   getGenderOptions: [GenderOption!]!
   getIconsOptions: [IconOption!]!
   getISOLanguagesOptions: [ISOLanguage!]!
-  getLanguage(id: ID!): Language
+  getLanguage(id: ID!): Language!
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric

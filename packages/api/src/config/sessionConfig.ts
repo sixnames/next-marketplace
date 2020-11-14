@@ -1,5 +1,4 @@
 import { SessionOptions } from 'express-session';
-import { IN_PROD } from './appConfig';
 
 const ONE_HOUR = 1000 * 60 * 60;
 const SIX_HOURS = ONE_HOUR * 6;
@@ -18,7 +17,9 @@ export const SESS_OPTIONS: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: +SESS_ABSOLUTE_TIMEOUT,
-    sameSite: true,
-    secure: IN_PROD,
+
+    // TODO fix secure option
+    // sameSite: true,
+    // secure: IN_PROD,
   },
 };

@@ -25,7 +25,6 @@ import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
 import { AssetType, LanguageType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
@@ -42,7 +41,6 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addProductToConnectionSchema,
   createProductConnectionSchema,
@@ -219,7 +217,7 @@ export class ProductResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createProductSchema })
   async createProduct(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
@@ -239,13 +237,13 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.create.error`, lang }),
+          message: await getApiMessage(`products.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.create.success`, lang }),
+        message: await getApiMessage(`products.create.success`),
         product,
       };
     } catch (e) {
@@ -260,7 +258,7 @@ export class ProductResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateProductSchema })
   async updateProduct(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Product>,
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
@@ -271,7 +269,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+          message: await getApiMessage(`products.update.notFound`),
         };
       }
 
@@ -299,13 +297,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.update.success`, lang }),
+        message: await getApiMessage(`products.update.success`),
         product: updatedProduct,
       };
     } catch (e) {
@@ -319,7 +317,7 @@ export class ProductResolver {
   @Mutation(() => ProductPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteProduct(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', () => ID) id: string,
   ): Promise<ProductPayloadType> {
     try {
@@ -330,7 +328,7 @@ export class ProductResolver {
       if (!product) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.delete.notFound`, lang }),
+          message: await getApiMessage(`products.delete.notFound`),
         };
       }
 
@@ -342,13 +340,13 @@ export class ProductResolver {
       if (!removed || !removedAssets) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.delete.error`, lang }),
+          message: await getApiMessage(`products.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.delete.success`, lang }),
+        message: await getApiMessage(`products.delete.success`),
       };
     } catch (e) {
       return {
@@ -362,7 +360,7 @@ export class ProductResolver {
   @ValidateMethod({ schema: createProductConnectionSchema })
   @AuthMethod(operationConfigUpdate)
   async createProductConnection(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
     @Arg('input') input: CreateProductConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
@@ -374,14 +372,14 @@ export class ProductResolver {
       if (!product || !attribute || !attributesGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+          message: await getApiMessage(`products.update.notFound`),
         };
       }
 
       if (attribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.attributeVariantError`, lang }),
+          message: await getApiMessage(`products.update.attributeVariantError`),
         };
       }
 
@@ -395,7 +393,7 @@ export class ProductResolver {
       if (exist) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.connection.exist`, lang }),
+          message: await getApiMessage(`products.connection.exist`),
         };
       }
 
@@ -408,7 +406,7 @@ export class ProductResolver {
       if (!connection) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
@@ -431,13 +429,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.update.success`, lang }),
+        message: await getApiMessage(`products.update.success`),
         product: updatedProduct,
       };
     } catch (e) {
@@ -453,7 +451,7 @@ export class ProductResolver {
   @ValidateMethod({ schema: addProductToConnectionSchema })
   @AuthMethod(operationConfigUpdate)
   async addProductToConnection(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
     @Arg('input') input: AddProductToConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
@@ -465,7 +463,7 @@ export class ProductResolver {
       if (!product || !addProduct || !connection) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+          message: await getApiMessage(`products.update.notFound`),
         };
       }
 
@@ -474,7 +472,7 @@ export class ProductResolver {
       if (allOptionsAreUsed) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'products.update.allOptionsAreUsed', lang }),
+          message: await getApiMessage('products.update.allOptionsAreUsed'),
         };
       }
 
@@ -500,7 +498,7 @@ export class ProductResolver {
       if (!updatedConnection) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
@@ -523,13 +521,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.update.success`, lang }),
+        message: await getApiMessage(`products.update.success`),
         product,
       };
     } catch (e) {
@@ -545,7 +543,7 @@ export class ProductResolver {
   @ValidateMethod({ schema: deleteProductFromConnectionSchema })
   @AuthMethod(operationConfigUpdate)
   async deleteProductFromConnection(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
     @Arg('input') input: DeleteProductFromConnectionInput,
   ): Promise<ProductPayloadType> {
     try {
@@ -558,7 +556,7 @@ export class ProductResolver {
       if (!product || !deleteProduct || !connection) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.notFound`, lang }),
+          message: await getApiMessage(`products.update.notFound`),
         };
       }
 
@@ -577,7 +575,7 @@ export class ProductResolver {
         if (!updatedConnection) {
           return {
             success: false,
-            message: await getApiMessage({ key: `products.update.error`, lang }),
+            message: await getApiMessage(`products.update.error`),
           };
         }
       } else {
@@ -586,7 +584,7 @@ export class ProductResolver {
         if (!removedConnection.ok) {
           return {
             success: false,
-            message: await getApiMessage({ key: `products.update.error`, lang }),
+            message: await getApiMessage(`products.update.error`),
           };
         }
       }
@@ -610,13 +608,13 @@ export class ProductResolver {
       if (!updatedProduct) {
         return {
           success: false,
-          message: await getApiMessage({ key: `products.update.error`, lang }),
+          message: await getApiMessage(`products.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `products.update.success`, lang }),
+        message: await getApiMessage(`products.update.success`),
         product,
       };
     } catch (e) {
@@ -631,9 +629,9 @@ export class ProductResolver {
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(product.name, lang);
+    return getLangField(product.name);
   }
 
   @FieldResolver((_type) => [LanguageType])
@@ -644,9 +642,9 @@ export class ProductResolver {
   @FieldResolver((_type) => String)
   async cardNameString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(product.cardName, lang);
+    return getLangField(product.cardName);
   }
 
   @FieldResolver((_type) => [LanguageType])
@@ -662,9 +660,9 @@ export class ProductResolver {
   @FieldResolver((_type) => String)
   async descriptionString(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(product.description, lang);
+    return getLangField(product.description);
   }
 
   @FieldResolver((_type) => [LanguageType])
@@ -791,7 +789,7 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductCardConnection])
   async cardConnections(
     @Root() product: DocumentType<Product>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<ProductCardConnection[]> {
     try {
       // Get all product connections
@@ -813,7 +811,7 @@ export class ProductResolver {
 
         cardConnections.push({
           id: connection.id,
-          nameString: getLangField(attribute.name, lang),
+          nameString: getLangField(attribute.name),
           products: products.reduce((acc: ProductCardConnectionItem[], connectionProduct) => {
             const productAttributesGroup = connectionProduct.attributesGroups.find(({ node }) => {
               return node.toString() === connection.attributesGroupId.toString();

@@ -9,6 +9,10 @@ describe('Authorization', () => {
     cy.visit('/');
   });
 
+  after(() => {
+    cy.clearTestData();
+  });
+
   it('Should have a sign in page', () => {
     cy.getByCy(`sign-in-link`).click();
 

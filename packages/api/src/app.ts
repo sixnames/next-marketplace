@@ -192,7 +192,12 @@ const createApp = async (): Promise<CreateAppInterface> => {
       // console.log('Session =========================\n');
       // console.log(JSON.stringify(req.session, null, 2));
       // console.log('User ============================\n');
+      // console.log(JSON.stringify(req.sessionID, null, 2));
       // console.log(JSON.stringify(req.session.user, null, 2));
+      // console.log('-----------------------------------');
+      // console.log('-----------------------------------');
+      // console.log('-----------------------------------');
+
       if (req.session.user) {
         let userRole = await RoleModel.findOne({ _id: req.session!.user.role });
         if (!userRole) {

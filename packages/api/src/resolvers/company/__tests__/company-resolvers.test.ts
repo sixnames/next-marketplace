@@ -1,10 +1,23 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import { MOCK_COMPANIES, MOCK_NEW_COMPANY, MOCK_SAMPLE_USER } from '@yagu/mocks';
+import { MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
-import { UserModel } from '../../../entities/User';
 import { omit } from 'lodash';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Company', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
+  beforeEach(async () => {
+    mockData = await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD companies', async () => {
     const { query, mutate } = await authenticatedTestClient();
 
@@ -15,17 +28,18 @@ describe('Company', () => {
       gql`
         query GetAllCompanies {
           getAllCompanies {
-            id
-            nameString
-            slug
+            docs {
+              id
+              nameString
+              slug
+            }
           }
         }
       `,
     );
-    expect(getAllCompanies).toHaveLength(MOCK_COMPANIES.length);
+    expect(getAllCompanies.docs).toHaveLength(mockData.mockCompanies.length);
 
     // Should return company by id
-    const currentCompany = getAllCompanies[0];
     const {
       data: { getCompany },
     } = await query<any>(
@@ -51,19 +65,29 @@ describe('Company', () => {
               emails
               phones
             }
+            shops {
+              docs {
+                id
+                slug
+                nameString
+                address {
+                  type
+                  coordinates
+                }
+              }
+            }
           }
         }
       `,
       {
         variables: {
-          id: currentCompany.id,
+          id: mockData.companyA.id,
         },
       },
     );
-    expect(getCompany.id).toEqual(currentCompany.id);
+    expect(getCompany.id).toEqual(mockData.companyA.id);
 
     // Should create company
-    const sampleUser = await UserModel.findOne({ email: MOCK_SAMPLE_USER.email });
     const createCompanyPayload = await mutateWithImages({
       mutation: gql`
         mutation CreateCompany($input: CreateCompanyInput!) {
@@ -98,7 +122,7 @@ describe('Company', () => {
         return {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -122,7 +146,7 @@ describe('Company', () => {
         return {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -144,7 +168,7 @@ describe('Company', () => {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           nameString: 'n',
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
         };
       },
@@ -172,7 +196,7 @@ describe('Company', () => {
           ...omit(MOCK_NEW_COMPANY, 'slug'),
           nameString: companyNewName,
           logo: images,
-          owner: sampleUser?.id,
+          owner: mockData.sampleUser.id,
           staff: [],
           id: createCompany.company.id,
         };
@@ -181,9 +205,133 @@ describe('Company', () => {
     const {
       data: { updateCompany },
     } = updateCompanyPayload;
+    const { company: updatedCompany } = updateCompany;
     expect(updateCompany.success).toBeTruthy();
-    expect(updateCompany.company.id).toEqual(createCompany.company.id);
-    expect(updateCompany.company.nameString).toEqual(companyNewName);
+    expect(updatedCompany.id).toEqual(createCompany.company.id);
+    expect(updatedCompany.nameString).toEqual(companyNewName);
+
+    // Should add shop to company
+    const addShopToCompanyPayload = await mutateWithImages({
+      mutation: gql`
+        mutation AddShopToCompany($input: AddShopToCompanyInput!) {
+          addShopToCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                docs {
+                  id
+                  nameString
+                }
+              }
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        const [logo, ...assets] = images;
+        return {
+          companyId: updatedCompany.id,
+          nameString: MOCK_NEW_SHOP.nameString,
+          contacts: MOCK_NEW_SHOP.contacts,
+          address: [40, 40],
+          logo: [logo],
+          assets,
+        };
+      },
+      fileNames: ['test-company-logo.png', 'test-shop-asset-0.png'],
+    });
+    const {
+      data: { addShopToCompany },
+    } = addShopToCompanyPayload;
+    const {
+      company: { shops },
+    } = addShopToCompany;
+    const createdShop = shops.docs[0];
+    expect(shops.docs).toHaveLength(1);
+    expect(addShopToCompany.success).toBeTruthy();
+
+    // Should update shop in company
+    const shopNewName = 'shopNewName';
+    const updateShopInCompanyPayload = await mutateWithImages({
+      mutation: gql`
+        mutation UpdateShopInCompany($input: UpdateShopInCompanyInput!) {
+          updateShopInCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                docs {
+                  id
+                  nameString
+                  assets {
+                    index
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        const [logo, ...assets] = images;
+        return {
+          companyId: updatedCompany.id,
+          shopId: createdShop.id,
+          nameString: shopNewName,
+          contacts: MOCK_NEW_SHOP.contacts,
+          address: [140, 140],
+          logo: [logo],
+          assets,
+        };
+      },
+      fileNames: ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'],
+    });
+    const {
+      data: { updateShopInCompany },
+    } = updateShopInCompanyPayload;
+    const updatedShop = updateShopInCompany.company.shops.docs[0];
+    expect(updatedShop.nameString).toEqual(shopNewName);
+    expect(updatedShop.assets).toHaveLength(2);
+    expect(updateShopInCompany.success).toBeTruthy();
+
+    // Should delete shop from company
+    const deleteShopFromCompanyPayload = await mutate<any>(
+      gql`
+        mutation DeleteShopFromCompany($input: DeleteShopFromCompanyInput!) {
+          deleteShopFromCompany(input: $input) {
+            success
+            message
+            company {
+              shops {
+                docs {
+                  id
+                  nameString
+                  assets {
+                    index
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            companyId: updatedCompany.id,
+            shopId: createdShop.id,
+          },
+        },
+      },
+    );
+    const {
+      data: { deleteShopFromCompany },
+    } = deleteShopFromCompanyPayload;
+    expect(deleteShopFromCompany.company.shops.docs).toHaveLength(0);
+    expect(deleteShopFromCompany.success).toBeTruthy();
 
     // Should delete company
     const deleteCompanyPayload = await mutate<any>(
@@ -197,7 +345,7 @@ describe('Company', () => {
       `,
       {
         variables: {
-          id: updateCompany.company.id,
+          id: updatedCompany.id,
         },
       },
     );

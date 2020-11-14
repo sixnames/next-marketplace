@@ -3,8 +3,18 @@ import { RubricVariant } from '../../../entities/RubricVariant';
 import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import { DEFAULT_LANG } from '@yagu/config';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
-describe('Rubric type', () => {
+describe('Rubric variant', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD rubric variant', async () => {
     const { mutate, query } = await authenticatedTestClient();
 

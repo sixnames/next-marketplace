@@ -1,7 +1,17 @@
 import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Catalogue', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 

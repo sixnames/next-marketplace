@@ -15,7 +15,6 @@ import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
 import PayloadType from '../common/PayloadType';
-import getLangField from '../../utils/translations/getLangField';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateRoleInput } from './UpdateRoleInput';
 import { UserModel } from '../../entities/User';
@@ -27,7 +26,6 @@ import { SetRoleOperationCustomFilterInput } from './SetRoleOperationCustomFilte
 import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInput';
 import toggleIdInArray from '../../utils/toggleIdInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import fs from 'fs';
 import {
   createRoleSchema,
@@ -118,7 +116,7 @@ export class RoleResolver {
   })
   async createRole(
     @Arg('input') input: CreateRoleInput,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
   ): Promise<RolePayloadType> {
     try {
       const { name } = input;
@@ -133,7 +131,7 @@ export class RoleResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.create.duplicate', lang }),
+          message: await getApiMessage('roles.create.duplicate'),
         };
       }
 
@@ -148,7 +146,7 @@ export class RoleResolver {
       if (!role) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.create.error', lang }),
+          message: await getApiMessage('roles.create.error'),
         };
       }
 
@@ -156,7 +154,7 @@ export class RoleResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.create.success', lang }),
+        message: await getApiMessage('roles.create.success'),
         role,
       };
     } catch (e) {
@@ -175,7 +173,7 @@ export class RoleResolver {
   async updateRole(
     @CustomFilter(operationConfigUpdate)
     customFilter: FilterQuery<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateRoleInput,
   ): Promise<RolePayloadType> {
     try {
@@ -191,7 +189,7 @@ export class RoleResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.update.duplicate', lang }),
+          message: await getApiMessage('roles.update.duplicate'),
         };
       }
 
@@ -202,13 +200,13 @@ export class RoleResolver {
       if (!updatedRole) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.update.error', lang }),
+          message: await getApiMessage('roles.update.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.update.success', lang }),
+        message: await getApiMessage('roles.update.success'),
         role: updatedRole,
       };
     } catch (e) {
@@ -222,7 +220,7 @@ export class RoleResolver {
   @Mutation(() => RolePayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteRole(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RolePayloadType> {
     try {
@@ -231,7 +229,7 @@ export class RoleResolver {
       if (!role) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.notFound', lang }),
+          message: await getApiMessage('roles.delete.notFound'),
         };
       }
 
@@ -240,7 +238,7 @@ export class RoleResolver {
       if (!rules) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.rulesNotFound', lang }),
+          message: await getApiMessage('roles.delete.rulesNotFound'),
         };
       }
       const rulesIds = rules.map(({ id }) => id);
@@ -258,7 +256,7 @@ export class RoleResolver {
       if (!removedOperations || !removedRules) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.rulesError', lang }),
+          message: await getApiMessage('roles.delete.rulesError'),
         };
       }
 
@@ -267,7 +265,7 @@ export class RoleResolver {
       if (!guestRole) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.guestRoleNotFound', lang }),
+          message: await getApiMessage('roles.delete.guestRoleNotFound'),
         };
       }
       const updatedUsers = await UserModel.updateMany(
@@ -282,7 +280,7 @@ export class RoleResolver {
       if (!updatedUsers) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.usersUpdateError', lang }),
+          message: await getApiMessage('roles.delete.usersUpdateError'),
         };
       }
 
@@ -291,13 +289,13 @@ export class RoleResolver {
       if (!removedRole) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.delete.error', lang }),
+          message: await getApiMessage('roles.delete.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.delete.success', lang }),
+        message: await getApiMessage('roles.delete.success'),
       };
     } catch (e) {
       return {
@@ -314,7 +312,7 @@ export class RoleResolver {
   })
   async setRoleOperationPermission(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationPermissionInput)
     input: SetRoleOperationPermissionInput,
   ): Promise<RolePayloadType> {
@@ -325,7 +323,7 @@ export class RoleResolver {
       if (!role) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.notFound', lang }),
+          message: await getApiMessage('roles.permissions.notFound'),
         };
       }
 
@@ -339,13 +337,13 @@ export class RoleResolver {
       if (!updatedOperation) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.error', lang }),
+          message: await getApiMessage('roles.permissions.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.permissions.success', lang }),
+        message: await getApiMessage('roles.permissions.success'),
         role,
       };
     } catch (e) {
@@ -363,7 +361,7 @@ export class RoleResolver {
   })
   async setRoleOperationCustomFilter(
     @CustomFilter(operationConfigUpdate) ruleCustomFilter: FilterQuery<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleOperationCustomFilterInput)
     input: SetRoleOperationCustomFilterInput,
   ): Promise<RolePayloadType> {
@@ -373,7 +371,7 @@ export class RoleResolver {
       if (!role) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.notFound', lang }),
+          message: await getApiMessage('roles.permissions.notFound'),
         };
       }
 
@@ -387,13 +385,13 @@ export class RoleResolver {
       if (!updatedOperation) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.error', lang }),
+          message: await getApiMessage('roles.permissions.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.permissions.success', lang }),
+        message: await getApiMessage('roles.permissions.success'),
         role,
       };
     } catch (e) {
@@ -411,7 +409,7 @@ export class RoleResolver {
   })
   async setRoleRuleRestrictedField(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleRuleRestrictedFieldInput)
     input: SetRoleRuleRestrictedFieldInput,
   ): Promise<RolePayloadType> {
@@ -424,7 +422,7 @@ export class RoleResolver {
       if (!role || !rule) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.notFound', lang }),
+          message: await getApiMessage('roles.permissions.notFound'),
         };
       }
 
@@ -444,13 +442,13 @@ export class RoleResolver {
       if (!updatedRule) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.error', lang }),
+          message: await getApiMessage('roles.permissions.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.permissions.success', lang }),
+        message: await getApiMessage('roles.permissions.success'),
         role,
       };
     } catch (e) {
@@ -468,7 +466,7 @@ export class RoleResolver {
   })
   async setRoleAllowedNavItem(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => SetRoleAllowedNavItemInput)
     input: SetRoleAllowedNavItemInput,
   ): Promise<RolePayloadType> {
@@ -481,7 +479,7 @@ export class RoleResolver {
       if (!role || !navItem) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.notFound', lang }),
+          message: await getApiMessage('roles.permissions.notFound'),
         };
       }
 
@@ -501,13 +499,13 @@ export class RoleResolver {
       if (!updatedRole) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'roles.permissions.error', lang }),
+          message: await getApiMessage('roles.permissions.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'roles.permissions.success', lang }),
+        message: await getApiMessage('roles.permissions.success'),
         role: updatedRole,
       };
     } catch (e) {
@@ -521,9 +519,9 @@ export class RoleResolver {
   @FieldResolver((_returns) => String)
   async nameString(
     @Root() role: DocumentType<Role>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(role.name, lang);
+    return getLangField(role.name);
   }
 
   @FieldResolver((_returns) => [RoleRule])

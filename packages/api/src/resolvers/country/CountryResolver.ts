@@ -19,7 +19,6 @@ import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateCountryInput } from './CreateCountryInput';
 import { UpdateCountryInput } from './UpdateCountryInput';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addCityToCountrySchema,
   createCountrySchema,
@@ -83,7 +82,7 @@ export class CountryResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createCountrySchema })
   async createCountry(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => CreateCountryInput) input: CreateCountryInput,
   ): Promise<CountryPayloadType> {
     try {
@@ -95,7 +94,7 @@ export class CountryResolver {
       if (existingCountries) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.create.duplicate', lang }),
+          message: await getApiMessage('countries.create.duplicate'),
         };
       }
 
@@ -107,13 +106,13 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.create.error', lang }),
+          message: await getApiMessage('countries.create.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'countries.create.success', lang }),
+        message: await getApiMessage('countries.create.success'),
         country,
       };
     } catch (e) {
@@ -128,7 +127,7 @@ export class CountryResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateCountrySchema })
   async updateCountry(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Country>,
     @Arg('input', (_type) => UpdateCountryInput) input: UpdateCountryInput,
   ): Promise<CountryPayloadType> {
@@ -140,7 +139,7 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.update.notFound', lang }),
+          message: await getApiMessage('countries.update.notFound'),
         };
       }
 
@@ -151,7 +150,7 @@ export class CountryResolver {
       if (existingCountries) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.update.duplicate', lang }),
+          message: await getApiMessage('countries.update.duplicate'),
         };
       }
 
@@ -167,13 +166,13 @@ export class CountryResolver {
       if (!updatedCountry) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.update.error', lang }),
+          message: await getApiMessage('countries.update.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'countries.update.success', lang }),
+        message: await getApiMessage('countries.update.success'),
         country: updatedCountry,
       };
     } catch (e) {
@@ -187,7 +186,7 @@ export class CountryResolver {
   @Mutation((_returns) => CountryPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteCountry(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<CountryPayloadType> {
     try {
@@ -195,7 +194,7 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.delete.notFound', lang }),
+          message: await getApiMessage('countries.delete.notFound'),
         };
       }
 
@@ -207,13 +206,13 @@ export class CountryResolver {
       if (!removedCountry.ok || !removedCities.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'countries.delete.error', lang }),
+          message: await getApiMessage('countries.delete.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'countries.delete.success', lang }),
+        message: await getApiMessage('countries.delete.success'),
       };
     } catch (e) {
       return {
@@ -227,7 +226,7 @@ export class CountryResolver {
   @AuthMethod(operationConfigCreateCity)
   @ValidateMethod({ schema: addCityToCountrySchema })
   async addCityToCountry(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => AddCityToCountryInput) input: AddCityToCountryInput,
   ): Promise<CountryPayloadType> {
     try {
@@ -237,7 +236,7 @@ export class CountryResolver {
       if (!country) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.create.notFound', lang }),
+          message: await getApiMessage('cities.create.notFound'),
         };
       }
 
@@ -251,7 +250,7 @@ export class CountryResolver {
       if (existingCities) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.create.duplicate', lang }),
+          message: await getApiMessage('cities.create.duplicate'),
         };
       }
 
@@ -259,7 +258,7 @@ export class CountryResolver {
       if (!city) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.create.error', lang }),
+          message: await getApiMessage('cities.create.error'),
         };
       }
 
@@ -277,13 +276,13 @@ export class CountryResolver {
       if (!updatedCountry) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.create.error', lang }),
+          message: await getApiMessage('cities.create.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'cities.create.success', lang }),
+        message: await getApiMessage('cities.create.success'),
         country: updatedCountry,
       };
     } catch (e) {
@@ -299,7 +298,7 @@ export class CountryResolver {
   @ValidateMethod({ schema: updateCityInCountrySchema })
   async updateCityInCountry(
     @CustomFilter(operationConfigUpdateCity) customFilter: FilterQuery<City>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => UpdateCityInCountryInput) input: UpdateCityInCountryInput,
   ): Promise<CountryPayloadType> {
     try {
@@ -310,7 +309,7 @@ export class CountryResolver {
       if (!country || !city) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.update.notFound', lang }),
+          message: await getApiMessage('cities.update.notFound'),
         };
       }
 
@@ -324,7 +323,7 @@ export class CountryResolver {
       if (existingCities) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.update.duplicate', lang }),
+          message: await getApiMessage('cities.update.duplicate'),
         };
       }
 
@@ -337,13 +336,13 @@ export class CountryResolver {
       if (!updatedCity.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.update.error', lang }),
+          message: await getApiMessage('cities.update.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'cities.update.success', lang }),
+        message: await getApiMessage('cities.update.success'),
         country,
       };
     } catch (e) {
@@ -358,7 +357,7 @@ export class CountryResolver {
   @AuthMethod(operationConfigDeleteCity)
   @ValidateMethod({ schema: deleteCityFromCountrySchema })
   async deleteCityFromCountry(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input', (_type) => DeleteCityFromCountryInput) input: DeleteCityFromCountryInput,
   ): Promise<CountryPayloadType> {
     try {
@@ -369,7 +368,7 @@ export class CountryResolver {
       if (!country || !city) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.delete.notFound', lang }),
+          message: await getApiMessage('cities.delete.notFound'),
         };
       }
 
@@ -378,13 +377,13 @@ export class CountryResolver {
       if (!updatedCity) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'cities.delete.error', lang }),
+          message: await getApiMessage('cities.delete.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'cities.delete.success', lang }),
+        message: await getApiMessage('cities.delete.success'),
         country,
       };
     } catch (e) {

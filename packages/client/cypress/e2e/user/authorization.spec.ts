@@ -5,6 +5,7 @@ const fakePassword = 'fake';
 
 describe('Authorization', () => {
   beforeEach(() => {
+    cy.createTestData();
     cy.visit('/');
   });
 

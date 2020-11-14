@@ -27,7 +27,6 @@ import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
 import { ROLE_SLUG_GUEST } from '@yagu/config';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { Role, RoleModel } from '../../entities/Role';
 import {
   createUserSchema,
@@ -66,7 +65,7 @@ class UserPayloadType extends PayloadType() {
 @Resolver((_of) => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@SessionUserId() sessionUserId: string) {
+  async me(@SessionUserId() sessionUserId: string): Promise<User | null> {
     return UserModel.findById(sessionUserId);
   }
 
@@ -83,7 +82,7 @@ export class UserResolver {
   @AuthMethod(operationConfigRead)
   async getAllUsers(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<User>,
-    @Arg('input') input: UserPaginateInput,
+    @Arg('input', { nullable: true, defaultValue: {} }) input: UserPaginateInput,
   ): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
     const { searchOptions, options } = generatePaginationOptions({
@@ -103,7 +102,7 @@ export class UserResolver {
     schema: createUserSchema,
   })
   async createUser(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateUserInput,
   ): Promise<UserPayloadType> {
     try {
@@ -111,7 +110,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
+          message: await getApiMessage(`users.create.duplicate`),
         };
       }
 
@@ -129,13 +128,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.create.error`, lang }),
+          message: await getApiMessage(`users.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.create.success`, lang }),
+        message: await getApiMessage(`users.create.success`),
         user,
       };
     } catch (e) {
@@ -152,7 +151,7 @@ export class UserResolver {
     schema: updateUserSchema,
   })
   async updateUser(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateUserInput,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<User>,
   ): Promise<UserPayloadType> {
@@ -163,7 +162,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.duplicate`, lang }),
+          message: await getApiMessage(`users.update.duplicate`),
         };
       }
 
@@ -174,13 +173,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.update.success`, lang }),
+        message: await getApiMessage(`users.update.success`),
         user,
       };
     } catch (e) {
@@ -197,7 +196,7 @@ export class UserResolver {
     schema: updateMyProfileSchema,
   })
   async updateMyProfile(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateMyProfileInput,
     @SessionUserId() sessionUserId: string,
   ): Promise<UserPayloadType> {
@@ -207,7 +206,7 @@ export class UserResolver {
       if (id !== sessionUserId) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
@@ -215,7 +214,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.duplicate`, lang }),
+          message: await getApiMessage(`users.update.duplicate`),
         };
       }
 
@@ -226,13 +225,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.update.success`, lang }),
+        message: await getApiMessage(`users.update.success`),
         user,
       };
     } catch (e) {
@@ -249,7 +248,7 @@ export class UserResolver {
     schema: updateMyPasswordSchema,
   })
   async updateMyPassword(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: UpdateMyPasswordInput,
     @SessionUserId() sessionUserId: string,
   ): Promise<UserPayloadType> {
@@ -259,7 +258,7 @@ export class UserResolver {
       if (id !== sessionUserId) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
@@ -267,7 +266,7 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
@@ -275,7 +274,7 @@ export class UserResolver {
       if (!matches) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
@@ -290,7 +289,7 @@ export class UserResolver {
       if (!updatedUser) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.update.error`, lang }),
+          message: await getApiMessage(`users.update.error`),
         };
       }
 
@@ -298,7 +297,7 @@ export class UserResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.update.passwordSuccess`, lang }),
+        message: await getApiMessage(`users.update.passwordSuccess`),
         user: updatedUser,
       };
     } catch (e) {
@@ -312,7 +311,7 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteUser(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<UserPayloadType> {
     try {
@@ -321,13 +320,13 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.delete.error`, lang }),
+          message: await getApiMessage(`users.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.delete.success`, lang }),
+        message: await getApiMessage(`users.delete.success`),
       };
     } catch (e) {
       return {
@@ -342,7 +341,7 @@ export class UserResolver {
     schema: signUpValidationSchema,
   })
   async signUp(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: SignUpInput,
   ): Promise<UserPayloadType> {
     try {
@@ -350,7 +349,7 @@ export class UserResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.create.duplicate`, lang }),
+          message: await getApiMessage(`users.create.duplicate`),
         };
       }
 
@@ -370,7 +369,7 @@ export class UserResolver {
       if (!user) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.create.error`, lang }),
+          message: await getApiMessage(`users.create.error`),
         };
       }
 
@@ -378,7 +377,7 @@ export class UserResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ key: `users.create.success`, lang }),
+        message: await getApiMessage(`users.create.success`),
         user,
       };
     } catch (e) {
@@ -395,7 +394,7 @@ export class UserResolver {
   })
   async signIn(
     @Ctx() ctx: ContextInterface,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
     @Arg('input') input: SignInInput,
   ): Promise<UserPayloadType> {
     try {
@@ -404,7 +403,7 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.signIn.authorized`, lang }),
+          message: await getApiMessage(`users.signIn.authorized`),
         };
       }
 
@@ -440,7 +439,7 @@ export class UserResolver {
   @Mutation(() => UserPayloadType)
   async signOut(
     @Ctx() ctx: ContextInterface,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
   ): Promise<UserPayloadType> {
     try {
       const isSignedOut = await UserModel.attemptSignOut(ctx.req);
@@ -448,12 +447,12 @@ export class UserResolver {
       if (!isSignedOut) {
         return {
           success: false,
-          message: await getApiMessage({ key: `users.signOut.error`, lang }),
+          message: await getApiMessage(`users.signOut.error`),
         };
       }
       return {
         success: true,
-        message: await getApiMessage({ key: `users.signOut.success`, lang }),
+        message: await getApiMessage(`users.signOut.success`),
       };
     } catch (e) {
       return {

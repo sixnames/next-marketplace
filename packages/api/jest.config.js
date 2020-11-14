@@ -5,6 +5,6 @@ module.exports = {
   ...tsPreset,
   ...mongoPreset,
   testEnvironment: 'node',
-  setupFilesAfterEnv: ['./src/test/setup.ts'],
+  setupFilesAfterEnv: ['./src/test/jest.setup.ts'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
 };

@@ -43,6 +43,22 @@ input AddProductToRubricInput {
   rubricId: ID!
 }
 
+input AddProductToShopInput {
+  available: Int!
+  price: Int!
+  productId: ID!
+  shopId: ID!
+}
+
+input AddShopToCompanyInput {
+  address: [Float!]!
+  assets: [Upload!]!
+  companyId: ID!
+  contacts: ContactsInput!
+  logo: [Upload!]!
+  nameString: String!
+}
+
 type AssetType {
   index: Int!
   url: String!
@@ -152,16 +168,31 @@ input CityLangInput {
   value: [String!]!
 }
 
+"""Companies pagination sortBy enum"""
+enum CompaniesSortByEnum {
+  createdAt
+}
+
 type Company {
   contacts: ContactsType!
   createdAt: Timestamp!
   id: ID!
+  itemId: Int!
   logo: AssetType!
   nameString: String!
   owner: User!
+  shops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
   slug: String!
   staff: [User!]!
   updatedAt: Timestamp!
+}
+
+input CompanyPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: CompaniesSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
 }
 
 type CompanyPayloadtype {
@@ -362,6 +393,16 @@ input DeleteProductFromRubricInput {
   rubricId: ID!
 }
 
+input DeleteProductFromShopInput {
+  productId: ID!
+  shopId: ID!
+}
+
+input DeleteShopFromCompanyInput {
+  companyId: ID!
+  shopId: ID!
+}
+
 """List of gender enums"""
 enum GenderEnum {
   he
@@ -435,6 +476,8 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
+  addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
+  addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
@@ -462,9 +505,11 @@ type Mutation {
   deleteProduct(id: ID!): ProductPayloadType!
   deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
+  deleteProductFromShop(input: DeleteProductFromShopInput!): ShopPayloadType!
   deleteRole(id: ID!): RolePayloadType!
   deleteRubric(id: ID!): RubricPayloadType!
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
+  deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayloadtype!
   deleteUser(id: ID!): UserPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
   setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!
@@ -494,6 +539,8 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
+  updateShopInCompany(input: UpdateShopInCompanyInput!): CompanyPayloadtype!
+  updateShopProduct(input: UpdateShopProductInput!): ShopProductPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
 }
 
@@ -566,9 +613,48 @@ input OptionVariantInput {
   value: [LangInput!]!
 }
 
+type PaginatedCompaniesResponse {
+  docs: [Company!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedProductsResponse {
   activeProductsCount: Int
   docs: [Product!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type PaginatedShopProductsResponse {
+  docs: [ShopProduct!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type PaginatedShopsResponse {
+  docs: [Shop!]!
   hasNextPage: Int!
   hasPrevPage: Int!
   limit: Int!
@@ -599,6 +685,11 @@ enum PaginateSortDirectionEnum {
   desc
 }
 
+type PointGeoJSON {
+  coordinates: [Float!]!
+  type: String!
+}
+
 type Product {
   active: Boolean!
   assets: [AssetType!]!
@@ -619,6 +710,7 @@ type Product {
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
+  shops: [ProductShop!]!
   slug: String!
   updatedAt: Timestamp!
   views: [CityCounter!]!
@@ -747,6 +839,18 @@ input ProductsCountersInput {
   rubric: ID
 }
 
+type ProductShop {
+  available: Int!
+  createdAt: Timestamp!
+  id: ID!
+  node: Shop!
+  oldPrices: [ShopProductOldPrice!]!
+  price: Float!
+  product: Product!
+  shop: Shop!
+  updatedAt: Timestamp!
+}
+
 """Product pagination sortBy enum"""
 enum ProductSortByEnum {
   createdAt
@@ -761,7 +865,7 @@ type Query {
     exclude: [ID!] = []
   ): [AttributesGroup!]!
   getAllCities: [City!]!
-  getAllCompanies: [Company!]!
+  getAllCompanies(input: CompanyPaginateInput = {}): PaginatedCompaniesResponse!
   getAllConfigs: [Config!]!
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!
@@ -771,8 +875,9 @@ type Query {
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
-  getAllUsers(input: UserPaginateInput!): PaginatedUsersResponse!
-  getAttribute(id: ID!): Attribute
+  getAllShops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
+  getAllUsers(input: UserPaginateInput = {}): PaginatedUsersResponse!
+  getAttribute(id: ID!): Attribute!
   getAttributePositioningOptions: [AttributePositioningOption!]!
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
@@ -793,11 +898,11 @@ type Query {
   getGenderOptions: [GenderOption!]!
   getIconsOptions: [IconOption!]!
   getISOLanguagesOptions: [ISOLanguage!]!
-  getLanguage(id: ID!): Language
+  getLanguage(id: ID!): Language!
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
-  getOption(id: ID!): Option
+  getOption(id: ID!): Option!
   getOptionsGroup(id: ID!): OptionsGroup
   getOptionsGroupVariantsOptions: [OptionsGroupVariantOption!]!
   getProduct(id: ID!): Product!
@@ -808,9 +913,10 @@ type Query {
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!] = []): [Rubric!]!
-  getRubricVariant(id: ID!): RubricVariant
+  getRubricVariant(id: ID!): RubricVariant!
   getSessionCurrency: String!
   getSessionRole: Role!
+  getShop(id: ID!): Shop!
   getUser(id: ID!): User
   getValidationMessages: [Message!]!
   me: User
@@ -988,6 +1094,80 @@ input SetRoleRuleRestrictedFieldInput {
   ruleId: ID!
 }
 
+type Shop {
+  address: PointGeoJSON!
+  assets: [AssetType!]!
+  company: Company!
+  contacts: ContactsType!
+  createdAt: Timestamp!
+  id: ID!
+  itemId: Int!
+  logo: AssetType!
+  nameString: String!
+  products(input: ShopProductPaginateInput = {}): PaginatedShopProductsResponse!
+  slug: String!
+  updatedAt: Timestamp!
+}
+
+input ShopPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: ShopsSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}
+
+type ShopPayloadType {
+  message: String!
+  shop: Shop
+  success: Boolean!
+}
+
+type ShopProduct {
+  available: Int!
+  createdAt: Timestamp!
+  id: ID!
+  oldPrices: [ShopProductOldPrice!]!
+  price: Float!
+  product: Product!
+  shop: Shop!
+  updatedAt: Timestamp!
+}
+
+"""List of all old prices for shop product with dates of creation."""
+type ShopProductOldPrice {
+  createdAt: Timestamp!
+  id: ID!
+  price: Float!
+  updatedAt: Timestamp!
+}
+
+input ShopProductPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: ShopProductSortByEnum = createdAt
+  sortDir: PaginateSortDirectionEnum = desc
+}
+
+type ShopProductPayloadType {
+  message: String!
+  product: ShopProduct
+  success: Boolean!
+}
+
+"""Shop product pagination sortBy enum"""
+enum ShopProductSortByEnum {
+  createdAt
+  price
+}
+
+"""Shops pagination sortBy enum"""
+enum ShopsSortByEnum {
+  company
+  createdAt
+}
+
 input SignInInput {
   email: String!
   password: String!
@@ -1139,6 +1319,22 @@ input UpdateRubricInput {
 input UpdateRubricVariantInput {
   id: ID!
   name: [LangInput!]!
+}
+
+input UpdateShopInCompanyInput {
+  address: [Float!]!
+  assets: [Upload!]!
+  companyId: ID!
+  contacts: ContactsInput!
+  logo: [Upload!]!
+  nameString: String!
+  shopId: ID!
+}
+
+input UpdateShopProductInput {
+  available: Int!
+  price: Int!
+  productId: ID!
 }
 
 input UpdateUserInput {

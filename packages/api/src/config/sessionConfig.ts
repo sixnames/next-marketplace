@@ -1,5 +1,5 @@
 import { SessionOptions } from 'express-session';
-import { IN_PROD } from './app';
+import { IN_PROD } from './appConfig';
 
 const ONE_HOUR = 1000 * 60 * 60;
 const SIX_HOURS = ONE_HOUR * 6;

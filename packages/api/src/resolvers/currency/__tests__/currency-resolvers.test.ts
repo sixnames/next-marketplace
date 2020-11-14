@@ -1,8 +1,18 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { MOCK_CURRENCIES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Currency', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD currency', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

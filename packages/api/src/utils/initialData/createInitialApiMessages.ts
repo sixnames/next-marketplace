@@ -1,5 +1,5 @@
 import { LanguageType } from '../../entities/common';
-import { MessagesGroupModel } from '../../entities/MessagesGroup';
+import { MessagesGroup, MessagesGroupModel } from '../../entities/MessagesGroup';
 import { MessageModel } from '../../entities/Message';
 import {
   attributesGroupsMessages,
@@ -17,6 +17,8 @@ import {
   rubricVariantsMessages,
   usersMessages,
   companiesMessages,
+  shopsMessages,
+  shopProductsMessages,
 } from '@yagu/config';
 
 interface MessageInterface {
@@ -29,8 +31,11 @@ interface CreateInitialApiMessagesGroup {
   messages: MessageInterface[];
 }
 
-async function createInitialApiMessagesGroup({ name, messages }: CreateInitialApiMessagesGroup) {
-  const group = await MessagesGroupModel.findOne({ name });
+async function createInitialApiMessagesGroup({
+  name,
+  messages,
+}: CreateInitialApiMessagesGroup): Promise<MessagesGroup> {
+  let group = await MessagesGroupModel.findOne({ name });
   const messagesIds = [];
 
   for await (const message of messages) {
@@ -44,20 +49,29 @@ async function createInitialApiMessagesGroup({ name, messages }: CreateInitialAp
   }
 
   if (!group) {
-    await MessagesGroupModel.create({ name, messages: messagesIds });
+    group = await MessagesGroupModel.create({ name, messages: messagesIds });
   } else {
-    await MessagesGroupModel.findOneAndUpdate(
+    group = await MessagesGroupModel.findOneAndUpdate(
       {
         name,
       },
       {
         messages: messagesIds,
       },
+      {
+        new: true,
+      },
     );
   }
+
+  if (!group) {
+    throw Error('Error in createInitialApiMessagesGroup');
+  }
+
+  return group;
 }
 
-async function createInitialApiMessages() {
+async function createInitialApiMessages(): Promise<MessagesGroup[]> {
   const config = [
     { name: 'Общее', messages: commonMessages },
     { name: 'Настройки сайта', messages: configsMessages },
@@ -74,6 +88,8 @@ async function createInitialApiMessages() {
     { name: 'Товары', messages: productsMessages },
     { name: 'Метрические значения', messages: metricsMessages },
     { name: 'Компании', messages: companiesMessages },
+    { name: 'Магазины', messages: shopsMessages },
+    { name: 'Товары магазина', messages: shopProductsMessages },
   ];
 
   return Promise.all(

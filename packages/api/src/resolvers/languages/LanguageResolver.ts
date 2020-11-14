@@ -4,7 +4,6 @@ import { Language, LanguageModel } from '../../entities/Language';
 import { CreateLanguageInput } from './CreateLanguageInput';
 import { UpdateLanguageInput } from './UpdateLanguageInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { createLanguageSchema, updateLanguageSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -30,13 +29,17 @@ class LanguagePayloadType extends PayloadType() {
 
 @Resolver((_of) => Language)
 export class LanguageResolver {
-  @Query(() => Language, { nullable: true })
+  @Query(() => Language)
   @AuthMethod(operationConfigRead)
   async getLanguage(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Language>,
     @Arg('id', (_type) => ID) id: string,
-  ): Promise<Language | null> {
-    return LanguageModel.findOne({ _id: id, ...customFilter });
+  ): Promise<Language> {
+    const language = await LanguageModel.findOne({ _id: id, ...customFilter });
+    if (!language) {
+      throw Error('Language not found by given ID');
+    }
+    return language;
   }
 
   @Query(() => [Language], { nullable: true })
@@ -52,7 +55,7 @@ export class LanguageResolver {
   @Mutation(() => LanguagePayloadType)
   @AuthMethod(operationConfigUpdate)
   async setLanguageAsDefault(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Language>,
     @Arg('id', (_type) => ID) id: string,
   ) {
@@ -64,7 +67,7 @@ export class LanguageResolver {
       if (!setAllLanguagesAsNotDefault.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.setLanguageAsDefault.error`, lang }),
+          message: await getApiMessage(`languages.setLanguageAsDefault.error`),
         };
       }
 
@@ -76,13 +79,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.setLanguageAsDefault.error`, lang }),
+          message: await getApiMessage(`languages.setLanguageAsDefault.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `languages.setLanguageAsDefault.success`, lang }),
+        message: await getApiMessage(`languages.setLanguageAsDefault.success`),
         language,
       };
     } catch (e) {
@@ -97,7 +100,7 @@ export class LanguageResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createLanguageSchema })
   async createLanguage(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateLanguageInput,
   ): Promise<LanguagePayloadType> {
     try {
@@ -115,7 +118,7 @@ export class LanguageResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.create.duplicate`, lang }),
+          message: await getApiMessage(`languages.create.duplicate`),
         };
       }
 
@@ -127,13 +130,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.create.error`, lang }),
+          message: await getApiMessage(`languages.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `languages.create.success`, lang }),
+        message: await getApiMessage(`languages.create.success`),
         language,
       };
     } catch (e) {
@@ -148,7 +151,7 @@ export class LanguageResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateLanguageSchema })
   async updateLanguage(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Language>,
     @Arg('input') input: UpdateLanguageInput,
   ): Promise<LanguagePayloadType> {
@@ -168,7 +171,7 @@ export class LanguageResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.update.duplicate`, lang }),
+          message: await getApiMessage(`languages.update.duplicate`),
         };
       }
 
@@ -179,13 +182,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.update.error`, lang }),
+          message: await getApiMessage(`languages.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `languages.update.success`, lang }),
+        message: await getApiMessage(`languages.update.success`),
         language,
       };
     } catch (e) {
@@ -199,7 +202,7 @@ export class LanguageResolver {
   @Mutation(() => LanguagePayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteLanguage(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ) {
     try {
@@ -211,7 +214,7 @@ export class LanguageResolver {
       if (isDefault) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.delete.default`, lang }),
+          message: await getApiMessage(`languages.delete.default`),
         };
       }
 
@@ -220,13 +223,13 @@ export class LanguageResolver {
       if (!language) {
         return {
           success: false,
-          message: await getApiMessage({ key: `languages.delete.error`, lang }),
+          message: await getApiMessage(`languages.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `languages.delete.success`, lang }),
+        message: await getApiMessage(`languages.delete.success`),
         language,
       };
     } catch (e) {

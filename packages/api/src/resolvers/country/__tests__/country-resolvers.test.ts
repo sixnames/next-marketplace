@@ -2,8 +2,18 @@ import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG } from '@yagu/config';
 import { MOCK_COUNTRIES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Country', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD countries and cities', async () => {
     const { query, mutate } = await authenticatedTestClient();
 

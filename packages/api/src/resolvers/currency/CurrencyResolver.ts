@@ -5,7 +5,6 @@ import { CreateCurrencyInput } from './CreateCurrencyInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCurrencyInput } from './UpdateCurrencyInput';
 import { createCurrencySchema, updateCurrencySchema } from '@yagu/validation';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import { CountryModel } from '../../entities/Country';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -52,7 +51,7 @@ export class CurrencyResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createCurrencySchema })
   async createCurrency(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateCurrencyInput,
   ): Promise<CurrencyPayloadType> {
     try {
@@ -60,7 +59,7 @@ export class CurrencyResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.create.duplicate', lang }),
+          message: await getApiMessage('currencies.create.duplicate'),
         };
       }
 
@@ -69,13 +68,13 @@ export class CurrencyResolver {
       if (!currency) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.create.error', lang }),
+          message: await getApiMessage('currencies.create.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'currencies.create.success', lang }),
+        message: await getApiMessage('currencies.create.success'),
         currency,
       };
     } catch (e) {
@@ -90,7 +89,7 @@ export class CurrencyResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateCurrencySchema })
   async updateCurrency(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Currency>,
     @Arg('input') input: UpdateCurrencyInput,
   ): Promise<CurrencyPayloadType> {
@@ -100,7 +99,7 @@ export class CurrencyResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.update.duplicate', lang }),
+          message: await getApiMessage('currencies.update.duplicate'),
         };
       }
 
@@ -113,13 +112,13 @@ export class CurrencyResolver {
       if (!currency) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.update.error', lang }),
+          message: await getApiMessage('currencies.update.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'currencies.update.success', lang }),
+        message: await getApiMessage('currencies.update.success'),
         currency,
       };
     } catch (e) {
@@ -133,7 +132,7 @@ export class CurrencyResolver {
   @Mutation((_returns) => CurrencyPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteCurrency(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<CurrencyPayloadType> {
     try {
@@ -142,7 +141,7 @@ export class CurrencyResolver {
       if (!currency) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.delete.error', lang }),
+          message: await getApiMessage('currencies.delete.error'),
         };
       }
 
@@ -151,13 +150,13 @@ export class CurrencyResolver {
       if (usedInCountries) {
         return {
           success: false,
-          message: await getApiMessage({ key: 'currencies.delete.used', lang }),
+          message: await getApiMessage('currencies.delete.used'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: 'currencies.delete.success', lang }),
+        message: await getApiMessage('currencies.delete.success'),
       };
     } catch (e) {
       return {

@@ -1,8 +1,18 @@
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import { DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Language', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should CRUD language', async () => {
     const { query } = await testClientWithContext();
     const keys = ['validation.string.min', 'validation.string.max'];

@@ -8,8 +8,18 @@ import {
 } from '@yagu/config';
 import { ISO_LANGUAGES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 
 describe('Select options', () => {
+  beforeEach(async () => {
+    await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it('Should return select options', async () => {
     const { query } = await testClientWithContext();
 

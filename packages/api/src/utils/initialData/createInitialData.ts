@@ -5,27 +5,37 @@ import {
   ADMIN_PHONE,
   ADMIN_PASSWORD,
 } from '../../config';
-import { UserModel } from '../../entities/User';
+import { User, UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
 import createInitialApiMessages from './createInitialApiMessages';
-import { createInitialSiteConfigs } from './createInitialSiteConfigs';
+import {
+  createInitialSiteConfigs,
+  CreateInitialSiteConfigsInterface,
+} from './createInitialSiteConfigs';
 import { createInitialRoles, CreateInitialRolesPayloadInterface } from './createInitialRoles';
-import { createInitialLocalizationData } from './createInitialLocalizationData';
-import { Types } from 'mongoose';
+import {
+  createInitialLocalizationData,
+  CreateInitialLocalizationDataPayloadInterface,
+} from './createInitialLocalizationData';
+import { MessagesGroup } from '../../entities/MessagesGroup';
 
-interface createInitialDataPayloadInterface {
+export interface CreateInitialDataPayloadInterface
+  extends CreateInitialSiteConfigsInterface,
+    CreateInitialLocalizationDataPayloadInterface {
   initialRolesIds: CreateInitialRolesPayloadInterface;
+  initialApiMessages: MessagesGroup[];
+  admin: User;
 }
 
-async function createInitialData(): Promise<createInitialDataPayloadInterface> {
+async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
   // Create initial site config
-  await createInitialSiteConfigs();
+  const configsPayload = await createInitialSiteConfigs();
 
   // Create metrics, currencies, cities, countries, languages
-  await createInitialLocalizationData();
+  const localizationPayload = await createInitialLocalizationData();
 
   // Create api message
-  await createInitialApiMessages();
+  const initialApiMessages = await createInitialApiMessages();
 
   // Create roles and get admin role
   const initialRolesIds = await createInitialRoles();
@@ -45,12 +55,13 @@ async function createInitialData(): Promise<createInitialDataPayloadInterface> {
       role: adminRoleId,
     });
   }
-  if (!Types.ObjectId.isValid(admin.role)) {
-    await UserModel.findByIdAndUpdate(admin.id, { role: adminRoleId });
-  }
 
   return {
+    ...configsPayload,
+    ...localizationPayload,
     initialRolesIds,
+    initialApiMessages,
+    admin,
   };
 }
 

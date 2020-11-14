@@ -8,6 +8,7 @@
     "build": "next build",
     "build:testing": "env-cmd -f .dev.env next build",
     "start": "next start",
+    "start:testing": "next start",
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "test": "npm run cy:start"

@@ -5,7 +5,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import PayloadType from '../common/PayloadType';
-import { AuthMethod } from '../../decorators/methodDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { UpdateShopProductInput } from './UpdateShopProductInput';
 import {
   CustomFilter,
@@ -13,11 +13,9 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import { updateShopProductSchema } from '@yagu/validation';
 
-const {
-  // operationConfigDelete,
-  operationConfigUpdate,
-} = RoleRuleModel.getOperationsConfigs(ShopProduct.name);
+const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(ShopProduct.name);
 
 @ObjectType()
 class ShopProductPayloadType extends PayloadType() {
@@ -29,6 +27,7 @@ class ShopProductPayloadType extends PayloadType() {
 export class ShopProductResolver {
   @Mutation((_returns) => ShopProductPayloadType)
   @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateShopProductSchema })
   async updateShopProduct(
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<ShopProduct>,
     @Localization() { getApiMessage }: LocalizationPayloadInterface,

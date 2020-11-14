@@ -23,11 +23,17 @@ import { DocumentType } from '@typegoose/typegoose';
 import PayloadType from '../common/PayloadType';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToShopInput } from './AddProductToShopInput';
-import { PaginatedShopProductsResponse, ShopProductModel } from '../../entities/ShopProduct';
-import { addProductToShopSchema } from '@yagu/validation';
+import {
+  PaginatedShopProductsResponse,
+  ShopProduct,
+  ShopProductModel,
+} from '../../entities/ShopProduct';
+import { addProductToShopSchema, deleteProductFromShopSchema } from '@yagu/validation';
 import { ShopProductPaginateInput } from './ShopProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ShopPaginateInput } from './ShopPaginateInput';
+import { DeleteProductFromShopInput } from './DeleteProductFromShopInput';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,
@@ -134,7 +140,6 @@ export class ShopResolver {
         new: true,
       },
     );
-
     if (!updatedShop) {
       return {
         success: false,
@@ -145,8 +150,78 @@ export class ShopResolver {
     return {
       success: true,
       message: await getApiMessage('shops.addProduct.success'),
-      shop,
+      shop: updatedShop,
     };
+  }
+
+  @Mutation((_returns) => ShopPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: deleteProductFromShopSchema })
+  async deleteProductFromShop(
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<ShopProduct>,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @Arg('input') input: DeleteProductFromShopInput,
+  ): Promise<ShopPayloadType> {
+    try {
+      const { shopId, productId } = input;
+      const shop = await ShopModel.findOne({ _id: shopId, ...customFilter });
+      if (!shop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.notFound'),
+        };
+      }
+
+      const product = await ShopProductModel.findOne({ _id: productId });
+      if (!product) {
+        return {
+          success: false,
+          message: await getApiMessage('shopProducts.delete.notFound'),
+        };
+      }
+
+      // delete shop product
+      const shopProduct = await ShopProductModel.findByIdAndDelete(productId);
+      if (!shopProduct) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.addProduct.error'),
+        };
+      }
+
+      // update shop
+      const updatedShop = await ShopModel.findOneAndUpdate(
+        {
+          _id: shopId,
+        },
+        {
+          $pull: {
+            products: productId,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedShop) {
+        return {
+          success: false,
+          message: await getApiMessage('shopProducts.delete.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('shopProducts.delete.success'),
+        shop: updatedShop,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
   }
 
   // Field resolvers

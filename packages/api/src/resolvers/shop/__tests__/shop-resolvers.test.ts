@@ -85,14 +85,13 @@ describe('Shop', () => {
               nameString
               slug
               products {
-                totalDocs
-                totalPages
-                limit
                 docs {
                   id
                   available
                   price
-                  oldPrices
+                  oldPrices {
+                    price
+                  }
                   shop {
                     id
                   }
@@ -122,6 +121,7 @@ describe('Shop', () => {
     } = addProductToShopPayload;
     expect(addProductToShop.success).toBeTruthy();
     expect(addProductToShop.shop.id).toEqual(currentShop.id);
+    expect(addProductToShop.shop.products.docs).toHaveLength(mockData.shopA.products.length + 1);
 
     // Shouldn't add product to the shop on duplicate error
     const addProductToShopDuplicatePayload = await mutate<any>(
@@ -148,5 +148,38 @@ describe('Shop', () => {
       },
     );
     expect(addProductToShopDuplicatePayload.data.addProductToShop.success).toBeFalsy();
+
+    // Should update shop product
+    const deleteProductFromShopPayload = await mutate<any>(
+      gql`
+        mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
+          deleteProductFromShop(input: $input) {
+            success
+            message
+            shop {
+              id
+              products {
+                docs {
+                  id
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            shopId: currentShop.id,
+            productId: mockData.shopAProductA.id,
+          },
+        },
+      },
+    );
+    const {
+      data: { deleteProductFromShop },
+    } = deleteProductFromShopPayload;
+    expect(deleteProductFromShop.success).toBeTruthy();
+    expect(deleteProductFromShop.shop.products.docs).toHaveLength(mockData.shopA.products.length);
   });
 });

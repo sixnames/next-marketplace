@@ -15,12 +15,10 @@ import {
   RubricAttributesGroup,
   RubricCatalogueTitleField,
   RubricModel,
-  RubricCatalogueTitle,
   RubricFilterAttribute,
   RubricFilterAttributeOption,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
-import getLangField from '../../utils/translations/getLangField';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
@@ -49,8 +47,6 @@ import {
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleIdInArray from '../../utils/toggleIdInArray';
-import { LanguageType } from '../../entities/common';
-import getApiMessage from '../../utils/translations/getApiMessage';
 import {
   addAttributesGroupToRubricInputSchema,
   addProductToRubricInputSchema,
@@ -98,13 +94,21 @@ export class RubricResolver {
   async getRubric(
     @CustomFilter(operationConfigRead) customFilter: FilterQuery<Rubric>,
     @Arg('id', (_type) => ID) id: string,
-  ) {
-    return RubricModel.findOne({ _id: id, ...customFilter });
+  ): Promise<Rubric> {
+    const rubric = await RubricModel.findOne({ _id: id, ...customFilter });
+    if (!rubric) {
+      throw Error('Rubric not found by given ID');
+    }
+    return rubric;
   }
 
   @Query(() => Rubric)
-  async getRubricBySlug(@Arg('slug', (_type) => String) slug: string) {
-    return RubricModel.findOne({ slug });
+  async getRubricBySlug(@Arg('slug', (_type) => String) slug: string): Promise<Rubric> {
+    const rubric = await RubricModel.findOne({ slug });
+    if (!rubric) {
+      throw Error('Rubric not found by given slug');
+    }
+    return rubric;
   }
 
   @Query(() => [Rubric])
@@ -147,7 +151,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigCreate)
   @ValidateMethod({ schema: createRubricInputSchema })
   async createRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: CreateRubricInput,
   ): Promise<RubricPayloadType> {
     try {
@@ -164,7 +168,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.create.duplicate`, lang }),
+          message: await getApiMessage(`rubrics.create.duplicate`),
         };
       }
 
@@ -195,13 +199,13 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.create.error`, lang }),
+          message: await getApiMessage(`rubrics.create.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.create.success`, lang }),
+        message: await getApiMessage(`rubrics.create.success`),
         rubric,
       };
     } catch (e) {
@@ -216,7 +220,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateRubricInputSchema })
   async updateRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: UpdateRubricInput,
   ): Promise<RubricPayloadType> {
@@ -229,7 +233,7 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.update.notFound`, lang }),
+          message: await getApiMessage(`rubrics.update.notFound`),
         };
       }
 
@@ -246,7 +250,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.update.duplicate`, lang }),
+          message: await getApiMessage(`rubrics.update.duplicate`),
         };
       }
 
@@ -266,13 +270,13 @@ export class RubricResolver {
       if (!updatedRubric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.update.error`, lang }),
+          message: await getApiMessage(`rubrics.update.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.update.success`, lang }),
+        message: await getApiMessage(`rubrics.update.success`),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -286,7 +290,7 @@ export class RubricResolver {
   @Mutation(() => RubricPayloadType)
   @AuthMethod(operationConfigDelete)
   async deleteRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('id', (_type) => ID) id: string,
   ): Promise<RubricPayloadType> {
     try {
@@ -299,7 +303,7 @@ export class RubricResolver {
       if (!rubric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.delete.notFound`, lang }),
+          message: await getApiMessage(`rubrics.delete.notFound`),
         };
       }
 
@@ -323,13 +327,13 @@ export class RubricResolver {
       if (!removed.ok || !updatedProducts.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.delete.error`, lang }),
+          message: await getApiMessage(`rubrics.delete.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.delete.success`, lang }),
+        message: await getApiMessage(`rubrics.delete.success`),
       };
     } catch (e) {
       return {
@@ -343,7 +347,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: addAttributesGroupToRubricInputSchema })
   async addAttributesGroupToRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: AddAttributesGroupToRubricInput,
   ): Promise<RubricPayloadType> {
@@ -358,7 +362,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.addAttributesGroup.notFound`, lang }),
+          message: await getApiMessage(`rubrics.addAttributesGroup.notFound`),
         };
       }
       const groupAttributes = await AttributeModel.find({
@@ -416,13 +420,13 @@ export class RubricResolver {
       if (!updatedChildrenRubrics.ok || !updatedOwnerRubric) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.addAttributesGroup.error`, lang }),
+          message: await getApiMessage(`rubrics.addAttributesGroup.error`),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.addAttributesGroup.success`, lang }),
+        message: await getApiMessage(`rubrics.addAttributesGroup.success`),
         rubric: updatedOwnerRubric,
       };
     } catch (e) {
@@ -437,7 +441,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateAttributesGroupInRubricInputSchema })
   async updateAttributesGroupInRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: UpdateAttributesGroupInRubricInput,
   ): Promise<RubricPayloadType> {
@@ -453,7 +457,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.notFound`, lang }),
+          message: await getApiMessage(`rubrics.updateAttributesGroup.notFound`),
         };
       }
 
@@ -464,7 +468,7 @@ export class RubricResolver {
       if (!currentAttributesGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.notFound`, lang }),
+          message: await getApiMessage(`rubrics.updateAttributesGroup.notFound`),
         };
       }
 
@@ -494,7 +498,7 @@ export class RubricResolver {
       if (!isUpdated.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.updateAttributesGroup.error`, lang }),
+          message: await getApiMessage(`rubrics.updateAttributesGroup.error`),
         };
       }
 
@@ -502,7 +506,7 @@ export class RubricResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.updateAttributesGroup.success`, lang }),
+        message: await getApiMessage(`rubrics.updateAttributesGroup.success`),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -517,7 +521,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: deleteAttributesGroupFromRubricInputSchema })
   async deleteAttributesGroupFromRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: DeleteAttributesGroupFromRubricInput,
   ): Promise<RubricPayloadType> {
@@ -533,7 +537,7 @@ export class RubricResolver {
       if (!rubric || !attributesGroup) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.notFound`, lang }),
+          message: await getApiMessage(`rubrics.deleteAttributesGroup.notFound`),
         };
       }
 
@@ -542,7 +546,7 @@ export class RubricResolver {
       if (!currentGroup || !currentGroup.isOwner) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.ownerError`, lang }),
+          message: await getApiMessage(`rubrics.deleteAttributesGroup.ownerError`),
         };
       }
 
@@ -563,7 +567,7 @@ export class RubricResolver {
       if (!updatedRubrics.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.error`, lang }),
+          message: await getApiMessage(`rubrics.deleteAttributesGroup.error`),
         };
       }
 
@@ -571,7 +575,7 @@ export class RubricResolver {
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.deleteAttributesGroup.success`, lang }),
+        message: await getApiMessage(`rubrics.deleteAttributesGroup.success`),
         rubric: updatedRubric,
       };
     } catch (e) {
@@ -586,7 +590,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: addProductToRubricInputSchema })
   async addProductToRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: AddProductToRubricInput,
   ): Promise<RubricPayloadType> {
@@ -605,7 +609,7 @@ export class RubricResolver {
       if (!rubric || !product) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.addProduct.notFound`, lang }),
+          message: await getApiMessage(`rubrics.addProduct.notFound`),
         };
       }
 
@@ -614,7 +618,7 @@ export class RubricResolver {
       if (exists) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.addProduct.exists`, lang }),
+          message: await getApiMessage(`rubrics.addProduct.exists`),
         };
       }
 
@@ -632,14 +636,14 @@ export class RubricResolver {
       if (!updatedProduct.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.addProduct.error`, lang }),
+          message: await getApiMessage(`rubrics.addProduct.error`),
           rubric,
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.addProduct.success`, lang }),
+        message: await getApiMessage(`rubrics.addProduct.success`),
         rubric,
       };
     } catch (e) {
@@ -654,7 +658,7 @@ export class RubricResolver {
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: deleteProductFromRubricInputSchema })
   async deleteProductFromRubric(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Rubric>,
     @Arg('input') input: DeleteProductFromRubricInput,
   ): Promise<RubricPayloadType> {
@@ -673,7 +677,7 @@ export class RubricResolver {
       if (!rubric || !product) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.deleteProduct.notFound`, lang }),
+          message: await getApiMessage(`rubrics.deleteProduct.notFound`),
         };
       }
 
@@ -691,14 +695,14 @@ export class RubricResolver {
       if (!updatedProduct.ok) {
         return {
           success: false,
-          message: await getApiMessage({ key: `rubrics.deleteProduct.error`, lang }),
+          message: await getApiMessage(`rubrics.deleteProduct.error`),
           rubric,
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage({ key: `rubrics.deleteProduct.success`, lang }),
+        message: await getApiMessage(`rubrics.deleteProduct.success`),
         rubric,
       };
     } catch (e) {
@@ -710,58 +714,28 @@ export class RubricResolver {
   }
 
   @FieldResolver()
-  async name(@Root() rubric: DocumentType<Rubric>): Promise<LanguageType[]> {
-    return rubric.name;
-  }
-
-  @FieldResolver()
   async nameString(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
-    return getLangField(rubric.name, lang);
-  }
-
-  @FieldResolver()
-  async catalogueTitle(@Root() rubric: DocumentType<Rubric>): Promise<RubricCatalogueTitle> {
-    return rubric.catalogueTitle;
+    return getLangField(rubric.name);
   }
 
   @FieldResolver()
   async catalogueTitleString(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<RubricCatalogueTitleField> {
     const {
       catalogueTitle: { defaultTitle, prefix, keyword, gender },
     } = rubric;
 
     return {
-      defaultTitle: getLangField(defaultTitle, lang),
-      prefix: prefix && prefix.length ? getLangField(prefix, lang) : null,
-      keyword: getLangField(keyword, lang),
+      defaultTitle: getLangField(defaultTitle),
+      prefix: prefix && prefix.length ? getLangField(prefix) : null,
+      keyword: getLangField(keyword),
       gender,
     };
-  }
-
-  @FieldResolver()
-  async slug(@Root() rubric: DocumentType<Rubric>): Promise<string> {
-    return rubric.slug;
-  }
-
-  @FieldResolver((_type) => Int)
-  async level(@Root() rubric: DocumentType<Rubric>): Promise<number> {
-    return rubric.level;
-  }
-
-  @FieldResolver((_type) => Int)
-  async priority(@Root() rubric: DocumentType<Rubric>): Promise<number> {
-    return rubric.priority;
-  }
-
-  @FieldResolver((_type) => Boolean)
-  async active(@Root() rubric: DocumentType<Rubric>): Promise<boolean | null | undefined> {
-    return rubric.active;
   }
 
   @FieldResolver((_type) => Rubric, { nullable: true })
@@ -822,7 +796,7 @@ export class RubricResolver {
   @FieldResolver((_returns) => [RubricFilterAttribute])
   async filterAttributes(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { getLangField, city }: LocalizationPayloadInterface,
   ): Promise<RubricFilterAttribute[]> {
     const { attributesGroups, catalogueTitle } = rubric;
     const rubricIdString = rubric.id.toString();
@@ -927,9 +901,9 @@ export class RubricResolver {
         const { variants, name } = option;
         let filterNameString: string;
         const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
-        const currentVariantName = getLangField(currentVariant?.value, lang);
+        const currentVariantName = getLangField(currentVariant?.value);
         if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
-          filterNameString = getLangField(name, lang);
+          filterNameString = getLangField(name);
         } else {
           filterNameString = currentVariantName;
         }

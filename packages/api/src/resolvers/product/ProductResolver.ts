@@ -25,7 +25,7 @@ import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
-import { AssetType, LanguageType } from '../../entities/common';
+import { AssetType } from '../../entities/common';
 import PayloadType from '../common/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
@@ -634,11 +634,6 @@ export class ProductResolver {
     return getLangField(product.name);
   }
 
-  @FieldResolver((_type) => [LanguageType])
-  async name(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
-    return product.name;
-  }
-
   @FieldResolver((_type) => String)
   async cardNameString(
     @Root() product: DocumentType<Product>,
@@ -647,32 +642,12 @@ export class ProductResolver {
     return getLangField(product.cardName);
   }
 
-  @FieldResolver((_type) => [LanguageType])
-  async cardName(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
-    return product.cardName;
-  }
-
-  @FieldResolver((_type) => String)
-  async slug(@Root() product: DocumentType<Product>): Promise<string> {
-    return product.slug;
-  }
-
   @FieldResolver((_type) => String)
   async descriptionString(
     @Root() product: DocumentType<Product>,
     @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<string> {
     return getLangField(product.description);
-  }
-
-  @FieldResolver((_type) => [LanguageType])
-  async description(@Root() product: DocumentType<Product>): Promise<LanguageType[]> {
-    return product.description;
-  }
-
-  @FieldResolver((_type) => [String])
-  async rubrics(@Root() product: DocumentType<Product>): Promise<string[]> {
-    return product.rubrics;
   }
 
   @FieldResolver((_type) => [AssetType])
@@ -688,16 +663,6 @@ export class ProductResolver {
       return '';
     }
     return mainImage.url;
-  }
-
-  @FieldResolver((_type) => Int)
-  async price(@Root() product: DocumentType<Product>): Promise<number> {
-    return product.price;
-  }
-
-  @FieldResolver((_type) => Boolean)
-  async active(@Root() product: DocumentType<Product>): Promise<boolean> {
-    return product.active;
   }
 
   @FieldResolver((_returns) => [ProductConnection])

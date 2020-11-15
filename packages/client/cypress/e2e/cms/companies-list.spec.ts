@@ -1,4 +1,6 @@
 /// <reference types="cypress" />
+import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
+
 describe('Companies list', () => {
   let mockData: any;
 
@@ -6,11 +8,11 @@ describe('Companies list', () => {
     cy.createTestData((mocks) => {
       mockData = mocks;
     });
-    cy.testAuth(`/app/cms/companies`);
+    cy.testAuth(`/app/cms/companies${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should have companies list in CMS', () => {

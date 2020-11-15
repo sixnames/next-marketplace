@@ -6,7 +6,7 @@ describe('Companies list', () => {
     cy.createTestData((mocks) => {
       mockData = mocks;
     });
-    cy.testAuth(`/app/cms/companies-list`);
+    cy.testAuth(`/app/cms/companies`);
   });
 
   after(() => {

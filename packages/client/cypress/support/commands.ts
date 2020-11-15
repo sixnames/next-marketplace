@@ -103,16 +103,6 @@ Cypress.Commands.add('clearTestData', () => {
   cy.request('GET', clearTestDataURI);
 });
 
-/*Cypress.Commands.add('getMockData', (callback) => {
-  const testAuthURI = `${apiHost}/get-mock-data`;
-  cy.request({
-    method: 'GET',
-    url: testAuthURI,
-  }).then(({ body }) => {
-    callback(body);
-  });
-});*/
-
 Cypress.Commands.add(
   'testAuth',
   (redirect = '/', email = 'admin@gmail.com', password = 'admin') => {

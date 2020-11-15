@@ -26,12 +26,12 @@ export type Query = {
   getSessionCurrency: Scalars['String'];
   getAllCountries: Array<Country>;
   getCountry: Country;
-  getLanguage?: Maybe<Language>;
+  getLanguage: Language;
   getAllLanguages?: Maybe<Array<Language>>;
   getClientLanguage: Scalars['String'];
   getAllCurrencies: Array<Currency>;
   getCurrency: Currency;
-  getAttribute?: Maybe<Attribute>;
+  getAttribute: Attribute;
   getProduct: Product;
   getProductBySlug: Product;
   getProductCard: Product;
@@ -48,7 +48,7 @@ export type Query = {
   getValidationMessages: Array<Message>;
   getMetric?: Maybe<Metric>;
   getAllMetrics?: Maybe<Array<Metric>>;
-  getOption?: Maybe<Option>;
+  getOption: Option;
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
   getRubric: Rubric;
@@ -61,7 +61,7 @@ export type Query = {
   getISOLanguagesOptions: Array<IsoLanguage>;
   getIconsOptions: Array<IconOption>;
   getAttributeViewVariantsOptions: Array<AttributeViewOption>;
-  getRubricVariant?: Maybe<RubricVariant>;
+  getRubricVariant: RubricVariant;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getAllConfigs: Array<Config>;
   getConfigBySlug: Config;
@@ -71,6 +71,10 @@ export type Query = {
   getSessionRole: Role;
   getEntityFields: Array<Scalars['String']>;
   getAllAppNavItems: Array<NavItem>;
+  getCompany: Company;
+  getAllCompanies: PaginatedCompaniesResponse;
+  getShop: Shop;
+  getAllShops: PaginatedShopsResponse;
 };
 
 
@@ -80,7 +84,7 @@ export type QueryGetUserArgs = {
 
 
 export type QueryGetAllUsersArgs = {
-  input: UserPaginateInput;
+  input?: Maybe<UserPaginateInput>;
 };
 
 
@@ -227,6 +231,26 @@ export type QueryGetRoleArgs = {
 
 export type QueryGetEntityFieldsArgs = {
   entity: Scalars['String'];
+};
+
+
+export type QueryGetCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllCompaniesArgs = {
+  input?: Maybe<CompanyPaginateInput>;
+};
+
+
+export type QueryGetShopArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllShopsArgs = {
+  input?: Maybe<ShopPaginateInput>;
 };
 
 export type User = {
@@ -500,6 +524,7 @@ export type Product = {
   mainImage: Scalars['String'];
   cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
+  shops: Array<ProductShop>;
   createdAt: Scalars['Timestamp'];
   updatedAt: Scalars['Timestamp'];
 };
@@ -603,6 +628,149 @@ export type ProductCardConnectionItem = {
   product: Product;
   isCurrent: Scalars['Boolean'];
 };
+
+export type ProductShop = {
+  __typename?: 'ProductShop';
+  id: Scalars['ID'];
+  available: Scalars['Int'];
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+  node: Shop;
+};
+
+/** List of all old prices for shop product with dates of creation. */
+export type ShopProductOldPrice = {
+  __typename?: 'ShopProductOldPrice';
+  id: Scalars['ID'];
+  price: Scalars['Float'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type Shop = {
+  __typename?: 'Shop';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  logo: AssetType;
+  assets: Array<AssetType>;
+  contacts: ContactsType;
+  address: PointGeoJson;
+  products: PaginatedShopProductsResponse;
+  company: Company;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+
+export type ShopProductsArgs = {
+  input?: Maybe<ShopProductPaginateInput>;
+};
+
+export type ContactsType = {
+  __typename?: 'ContactsType';
+  emails: Array<Scalars['String']>;
+  phones: Array<Scalars['String']>;
+};
+
+export type PointGeoJson = {
+  __typename?: 'PointGeoJSON';
+  type: Scalars['String'];
+  coordinates: Array<Scalars['Float']>;
+};
+
+export type PaginatedShopProductsResponse = {
+  __typename?: 'PaginatedShopProductsResponse';
+  docs: Array<ShopProduct>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type ShopProduct = {
+  __typename?: 'ShopProduct';
+  id: Scalars['ID'];
+  available: Scalars['Int'];
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+export type ShopProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ShopProductSortByEnum>;
+};
+
+/** Shop product pagination sortBy enum */
+export enum ShopProductSortByEnum {
+  Price = 'price',
+  CreatedAt = 'createdAt'
+}
+
+export type Company = {
+  __typename?: 'Company';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  logo: AssetType;
+  owner: User;
+  staff: Array<User>;
+  contacts: ContactsType;
+  shops: PaginatedShopsResponse;
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
+};
+
+
+export type CompanyShopsArgs = {
+  input?: Maybe<ShopPaginateInput>;
+};
+
+export type PaginatedShopsResponse = {
+  __typename?: 'PaginatedShopsResponse';
+  docs: Array<Shop>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type ShopPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ShopsSortByEnum>;
+};
+
+/** Shops pagination sortBy enum */
+export enum ShopsSortByEnum {
+  Company = 'company',
+  CreatedAt = 'createdAt'
+}
 
 export type PaginatedProductsResponse = {
   __typename?: 'PaginatedProductsResponse';
@@ -869,6 +1037,33 @@ export type ConfigLanguage = {
   value: Array<Scalars['String']>;
 };
 
+export type PaginatedCompaniesResponse = {
+  __typename?: 'PaginatedCompaniesResponse';
+  docs: Array<Company>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type CompanyPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<CompaniesSortByEnum>;
+};
+
+/** Companies pagination sortBy enum */
+export enum CompaniesSortByEnum {
+  CreatedAt = 'createdAt'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: UserPayloadType;
@@ -934,6 +1129,15 @@ export type Mutation = {
   setRoleOperationCustomFilter: RolePayloadType;
   setRoleRuleRestrictedField: RolePayloadType;
   setRoleAllowedNavItem: RolePayloadType;
+  createCompany: CompanyPayloadtype;
+  updateCompany: CompanyPayloadtype;
+  deleteCompany: CompanyPayloadtype;
+  addShopToCompany: CompanyPayloadtype;
+  updateShopInCompany: CompanyPayloadtype;
+  deleteShopFromCompany: CompanyPayloadtype;
+  addProductToShop: ShopPayloadType;
+  deleteProductFromShop: ShopPayloadType;
+  updateShopProduct: ShopProductPayloadType;
 };
 
 
@@ -1244,6 +1448,51 @@ export type MutationSetRoleRuleRestrictedFieldArgs = {
 
 export type MutationSetRoleAllowedNavItemArgs = {
   input: SetRoleAllowedNavItemInput;
+};
+
+
+export type MutationCreateCompanyArgs = {
+  input: CreateCompanyInput;
+};
+
+
+export type MutationUpdateCompanyArgs = {
+  input: UpdateCompanyInput;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddShopToCompanyArgs = {
+  input: AddShopToCompanyInput;
+};
+
+
+export type MutationUpdateShopInCompanyArgs = {
+  input: UpdateShopInCompanyInput;
+};
+
+
+export type MutationDeleteShopFromCompanyArgs = {
+  input: DeleteShopFromCompanyInput;
+};
+
+
+export type MutationAddProductToShopArgs = {
+  input: AddProductToShopInput;
+};
+
+
+export type MutationDeleteProductFromShopArgs = {
+  input: DeleteProductFromShopInput;
+};
+
+
+export type MutationUpdateShopProductArgs = {
+  input: UpdateShopProductInput;
 };
 
 export type UserPayloadType = {
@@ -1689,6 +1938,91 @@ export type SetRoleRuleRestrictedFieldInput = {
 export type SetRoleAllowedNavItemInput = {
   roleId: Scalars['ID'];
   navItemId: Scalars['ID'];
+};
+
+export type CompanyPayloadtype = {
+  __typename?: 'CompanyPayloadtype';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  company?: Maybe<Company>;
+};
+
+export type CreateCompanyInput = {
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  owner: Scalars['ID'];
+  staff: Array<Scalars['ID']>;
+};
+
+export type ContactsInput = {
+  emails: Array<Scalars['String']>;
+  phones: Array<Scalars['String']>;
+};
+
+export type UpdateCompanyInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  owner: Scalars['ID'];
+  staff: Array<Scalars['ID']>;
+};
+
+export type AddShopToCompanyInput = {
+  companyId: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  assets: Array<Scalars['Upload']>;
+  address: Array<Scalars['Float']>;
+};
+
+export type UpdateShopInCompanyInput = {
+  companyId: Scalars['ID'];
+  shopId: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  assets: Array<Scalars['Upload']>;
+  address: Array<Scalars['Float']>;
+};
+
+export type DeleteShopFromCompanyInput = {
+  companyId: Scalars['ID'];
+  shopId: Scalars['ID'];
+};
+
+export type ShopPayloadType = {
+  __typename?: 'ShopPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  shop?: Maybe<Shop>;
+};
+
+export type AddProductToShopInput = {
+  shopId: Scalars['ID'];
+  productId: Scalars['ID'];
+  price: Scalars['Int'];
+  available: Scalars['Int'];
+};
+
+export type DeleteProductFromShopInput = {
+  shopId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
+export type ShopProductPayloadType = {
+  __typename?: 'ShopProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<ShopProduct>;
+};
+
+export type UpdateShopProductInput = {
+  productId: Scalars['ID'];
+  price: Scalars['Int'];
+  available: Scalars['Int'];
 };
 
 export type CmsProductAttributeFragment = (
@@ -2731,6 +3065,32 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type CompanyInListFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'url'>
+  ) }
+);
+
+export type GetAllCompaniesQueryVariables = Exact<{
+  input?: Maybe<CompanyPaginateInput>;
+}>;
+
+
+export type GetAllCompaniesQuery = (
+  { __typename?: 'Query' }
+  & { getAllCompanies: (
+    { __typename?: 'PaginatedCompaniesResponse' }
+    & Pick<PaginatedCompaniesResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Company' }
+      & CompanyInListFragment
+    )> }
+  ) }
+);
+
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
   & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
@@ -3531,6 +3891,17 @@ export const CatalogueRubricFragmentFragmentDoc = gql`
       counter
       color
     }
+  }
+}
+    `;
+export const CompanyInListFragmentDoc = gql`
+    fragment CompanyInList on Company {
+  id
+  itemId
+  slug
+  nameString
+  logo {
+    url
   }
 }
     `;
@@ -5702,6 +6073,44 @@ export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
 export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
 export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const GetAllCompaniesDocument = gql`
+    query GetAllCompanies($input: CompanyPaginateInput) {
+  getAllCompanies(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...CompanyInList
+    }
+  }
+}
+    ${CompanyInListFragmentDoc}`;
+
+/**
+ * __useGetAllCompaniesQuery__
+ *
+ * To run a query within a React component, call `useGetAllCompaniesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCompaniesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCompaniesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllCompaniesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>) {
+        return Apollo.useQuery<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>(GetAllCompaniesDocument, baseOptions);
+      }
+export function useGetAllCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>(GetAllCompaniesDocument, baseOptions);
+        }
+export type GetAllCompaniesQueryHookResult = ReturnType<typeof useGetAllCompaniesQuery>;
+export type GetAllCompaniesLazyQueryHookResult = ReturnType<typeof useGetAllCompaniesLazyQuery>;
+export type GetAllCompaniesQueryResult = Apollo.QueryResult<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>;
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {

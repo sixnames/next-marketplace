@@ -6,12 +6,12 @@ import { Response } from 'express';
 
 export async function createTestDataRoute(_req: any, res: Response) {
   await clearTestData();
-  await createTestData();
+  const mockData = await createTestData();
 
   // set default lang for tests
   res.cookie(LANG_COOKIE_KEY, DEFAULT_LANG);
   res.cookie(THEME_COOKIE_KEY, THEME_DARK);
-  res.send('test data created');
+  res.json(mockData);
 }
 
 export async function clearTestDataRoute(_req: any, res: Response) {

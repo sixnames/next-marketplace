@@ -89,9 +89,13 @@ Cypress.Commands.add('closeNotification', () => {
 
 const apiHost = 'http://localhost:4000';
 
-Cypress.Commands.add('createTestData', () => {
+Cypress.Commands.add('createTestData', (callback?: (mocks: any) => void) => {
   const createTestDataURI = `${apiHost}/create-test-data`;
-  cy.request('GET', createTestDataURI);
+  cy.request('GET', createTestDataURI).then((res) => {
+    if (callback) {
+      callback(res.body);
+    }
+  });
 });
 
 Cypress.Commands.add('clearTestData', () => {

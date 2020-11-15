@@ -3068,7 +3068,10 @@ export type GetCatalogueRubricQuery = (
 export type CompanyInListFragment = (
   { __typename?: 'Company' }
   & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
-  & { logo: (
+  & { owner: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'fullName'>
+  ), logo: (
     { __typename?: 'AssetType' }
     & Pick<AssetType, 'url'>
   ) }
@@ -3900,6 +3903,10 @@ export const CompanyInListFragmentDoc = gql`
   itemId
   slug
   nameString
+  owner {
+    id
+    fullName
+  }
   logo {
     url
   }

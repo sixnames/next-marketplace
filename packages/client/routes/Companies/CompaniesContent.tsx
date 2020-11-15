@@ -40,7 +40,7 @@ const CompaniesContent: React.FC = () => {
     },
     {
       accessor: 'logo',
-      headTitle: 'Фото',
+      headTitle: 'Лого',
       render: ({ cellData, dataItem }) => {
         return (
           <TableRowImage url={cellData.url} alt={dataItem.nameString} title={dataItem.nameString} />
@@ -51,6 +51,13 @@ const CompaniesContent: React.FC = () => {
       accessor: 'nameString',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
+    },
+    {
+      accessor: 'owner',
+      headTitle: 'Владелец',
+      render: ({ cellData }) => {
+        return cellData.fullName;
+      },
     },
   ];
 

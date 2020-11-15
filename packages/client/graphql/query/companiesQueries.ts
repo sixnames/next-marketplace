@@ -6,6 +6,10 @@ export const companyInListFragment = gql`
     itemId
     slug
     nameString
+    owner {
+      id
+      fullName
+    }
     logo {
       url
     }

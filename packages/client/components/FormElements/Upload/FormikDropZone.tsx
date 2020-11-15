@@ -9,6 +9,8 @@ import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
 import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
 import { NEGATIVE_INDEX } from '../../../config';
+import { alwaysArray } from '@yagu/shared';
+import { noNaN } from '../../../utils/noNaN';
 
 interface FormikDropZoneInterface {
   format?: string;
@@ -24,22 +26,13 @@ interface FormikDropZoneInterface {
   isRequired?: boolean;
   testId?: string;
   showInlineError?: boolean;
+  limit?: number;
+  disabled?: boolean;
 }
 
-interface FormikDropZoneConsumerInterface {
-  format?: string;
-  name: string;
-  label?: string;
-  lineClass?: string;
+interface FormikDropZoneConsumerInterface extends FormikDropZoneInterface {
   setFieldValue: (name: string, value: any) => void;
-  low?: boolean;
-  tooltip?: string;
   value: any[];
-  wide?: boolean;
-  labelPostfix?: any;
-  labelLink?: any;
-  isRequired?: boolean;
-  testId?: string;
 }
 
 const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
@@ -55,6 +48,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
   tooltip,
   value = [],
   testId,
+  disabled,
 }) => {
   const [removeIndex, setRemoveIndex] = useState<number>(NEGATIVE_INDEX);
   const onDrop = useCallback(
@@ -67,6 +61,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: format,
+    disabled,
   });
 
   function removeImageHandler(index?: number) {
@@ -96,7 +91,14 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
       <div className={classes.holder}>
         <div className={classes.frame} {...getRootProps()} data-cy={testId}>
           <TTip title={tooltip}>
-            <div className={classes.frameText}>Перетащите файлы сюда. Или нажмите для выбора.</div>
+            <div
+              data-cy={`${testId}-text`}
+              className={`${classes.frameText} ${disabled ? classes.frameTextDisabled : ''}`}
+            >
+              {disabled
+                ? 'Добавлено максимальное количество файлов.'
+                : 'Перетащите файлы сюда. Или нажмите для выбора.'}
+            </div>
 
             <input {...getInputProps()} className={classes.input} />
           </TTip>
@@ -133,7 +135,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
 };
 
 const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
-  const { frameClass, name, showInlineError } = props;
+  const { frameClass, name, showInlineError, limit, disabled } = props;
   return (
     <Field name={name}>
       {({ field, form: { setFieldValue, errors } }: FieldProps<any[]>) => {
@@ -141,10 +143,17 @@ const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
         const notValid = Boolean(error);
         const showError = showInlineError && notValid;
         const value: any[] = field.value;
+        const limited = limit ? alwaysArray(value).length >= noNaN(limit) : false;
+        const initialDisabled = disabled || limited;
 
         return (
           <div className={frameClass ? frameClass : ''}>
-            <FormikDropZoneConsumer value={value} setFieldValue={setFieldValue} {...props} />
+            <FormikDropZoneConsumer
+              disabled={initialDisabled}
+              value={value}
+              setFieldValue={setFieldValue}
+              {...props}
+            />
 
             {showError && <FieldErrorMessage name={name} />}
           </div>

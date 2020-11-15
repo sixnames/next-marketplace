@@ -3,22 +3,22 @@ import DataLayout from '../../components/DataLayout/DataLayout';
 import CompaniesFilter from './CompaniesFilter';
 import CompaniesContent from './CompaniesContent';
 import { useAppContext } from '../../context/appContext';
-import { CreateNewProductModalInterface } from '../../components/Modal/CreateNewProductModal/CreateNewProductModal';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
-import { CREATE_NEW_PRODUCT_MODAL } from '../../config/modals';
-import { GET_ALL_PRODUCTS_QUERY } from '../../graphql/complex/rubricsQueries';
+import { CREATE_NEW_COMPANY_MODAL } from '../../config/modals';
+import { CreateNewCompanyModalInterface } from '../../components/Modal/CreateNewCompanyModal/CreateNewCompanyModal';
+import { COMPANIES_LIST_QUERY } from '../../graphql/query/companiesQueries';
 
 const CompaniesRoute: React.FC = () => {
   const { showModal } = useAppContext();
   const { contentFilters } = useDataLayoutMethods();
 
   function createCompanyModalHandler() {
-    showModal<CreateNewProductModalInterface>({
-      type: CREATE_NEW_PRODUCT_MODAL,
+    showModal<CreateNewCompanyModalInterface>({
+      type: CREATE_NEW_COMPANY_MODAL,
       props: {
         refetchQueries: [
           {
-            query: GET_ALL_PRODUCTS_QUERY,
+            query: COMPANIES_LIST_QUERY,
             variables: {
               input: contentFilters,
             },

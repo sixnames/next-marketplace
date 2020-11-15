@@ -4,7 +4,6 @@ import FormikSearch from '../../components/FormElements/Search/FormikSearch';
 import Button from '../../components/Buttons/Button';
 import useWithFilterQuery from '../../hooks/useWithFilterQuery';
 import HorizontalList from '../../components/HorizontalList/HorizontalList';
-// import classes from './ProductsFilter.module.css';
 
 const CompaniesFilter: React.FC = () => {
   const initialValues = { search: '' };
@@ -14,7 +13,7 @@ const CompaniesFilter: React.FC = () => {
     <FormikFilter initialValues={initialValues} initialQueryValue={withFilterQuery}>
       {({ onResetHandler }) => (
         <Fragment>
-          <FormikSearch testId={'products'} />
+          <FormikSearch testId={'companies'} />
 
           <HorizontalList>
             <Button type={'submit'} size={'small'}>

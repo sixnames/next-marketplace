@@ -24,19 +24,21 @@ const Link: React.FC<LinkInterface> = ({
   ...props
 }) => {
   const { pathname, query } = useRouter() || { pathname: '', query: '' };
-  const currentPath = { pathname, query };
+  const pathnameArr = pathname.split('/[');
+  const realPathname = pathnameArr[0];
+  const currentPath = { pathname: realPathname, query };
 
   let isCurrent =
-    typeof href === 'string' ? pathname === href.split('?')[0] : href.pathname === pathname;
+    typeof href === 'string' ? realPathname === href.split('?')[0] : href.pathname === realPathname;
 
   if (exact) {
     isCurrent =
-      typeof href === 'string' ? pathname === href.split('?')[0] : isEqual(currentPath, href);
+      typeof href === 'string' ? realPathname === href.split('?')[0] : isEqual(currentPath, href);
   }
 
   if (isTab) {
     if (typeof href === 'string') {
-      isCurrent = pathname === href;
+      isCurrent = realPathname === href;
     } else if (href.query && typeof href.query !== 'string') {
       isCurrent = href.query.tab === query.tab;
 

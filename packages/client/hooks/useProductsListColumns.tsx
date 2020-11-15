@@ -5,6 +5,8 @@ import React from 'react';
 import TableRowImage from '../components/Table/TableRowImage';
 import { RubricProductFragment } from '../generated/apolloComponents';
 import { TableColumn } from '../components/Table/Table';
+import { ROUTE_CMS } from '../config';
+import Link from 'next/link';
 
 export interface ProductColumnsInterface
   extends Omit<
@@ -40,7 +42,11 @@ const useProductsListColumns = ({
     {
       accessor: 'itemId',
       headTitle: 'Арт.',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => (
+        <Link href={`${ROUTE_CMS}/products/${dataItem.id}`}>
+          <a>{cellData}</a>
+        </Link>
+      ),
     },
     {
       accessor: 'mainImage',

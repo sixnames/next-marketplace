@@ -3,7 +3,7 @@ import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutConten
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createCompanySchema } from '@yagu/validation';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { CreateCompanyInput } from '../../generated/apolloComponents';
+import { CreateCompanyInput, UserInListFragment } from '../../generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
@@ -11,27 +11,40 @@ import FormikMultiLineInput from '../../components/FormElements/Input/FormikMult
 import ModalButtons from '../../components/Modal/ModalButtons';
 import Button from '../../components/Buttons/Button';
 import Inner from '../../components/Inner/Inner';
+import { UsersSearchModalInterface } from '../../components/Modal/UsersSearchModal/UsersSearchModal';
+import { USERS_SEARCH_MODAL } from '../../config/modals';
 // import classes from './CreateCompanyContent.module.css';
+
+interface CompanyFormInitialValuesInterface extends Omit<CreateCompanyInput, 'owner' | 'staff'> {
+  owner: UserInListFragment | null;
+  staff: UserInListFragment[];
+}
 
 const CreateCompanyContent: React.FC = () => {
   const validationSchema = useValidationSchema({
     schema: createCompanySchema,
   });
 
-  const { showLoading } = useMutationCallbacks({
+  const { showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
 
-  const initialValues: CreateCompanyInput = {
+  const initialValues: CompanyFormInitialValuesInterface = {
     nameString: '',
     contacts: {
       emails: [''],
       phones: [''],
     },
     logo: [],
-    owner: '',
+    owner: null,
     staff: [],
   };
+
+  function showUsersSearchModal() {
+    showModal<UsersSearchModalInterface>({
+      type: USERS_SEARCH_MODAL,
+    });
+  }
 
   const logoInputFilesLimit = 1;
 
@@ -83,6 +96,15 @@ const CreateCompanyContent: React.FC = () => {
                   isRequired
                   showInlineError
                 />
+
+                <Button
+                  onClick={showUsersSearchModal}
+                  theme={'secondary'}
+                  size={'small'}
+                  testId={'add-owner'}
+                >
+                  Выбрать владельца
+                </Button>
 
                 <ModalButtons>
                   <Button type={'submit'} testId={'new-company-submit'}>

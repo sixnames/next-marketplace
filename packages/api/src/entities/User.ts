@@ -1,4 +1,4 @@
-import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
+import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -12,7 +12,6 @@ import { ContextInterface } from '../types/context';
 type Request = ContextInterface['req'];
 
 @ObjectType()
-@index({ '$**': 'text' })
 @plugin(mongoosePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class User extends TimeStamps {

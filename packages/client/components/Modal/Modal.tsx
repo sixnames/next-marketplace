@@ -21,6 +21,7 @@ import {
   UPDATE_MY_PASSWORD_MODAL,
   CREATE_CONNECTION_MODAL,
   PRODUCT_SEARCH_MODAL,
+  USERS_SEARCH_MODAL,
 } from '../../config/modals';
 
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
@@ -49,6 +50,7 @@ const CreateNewProductModal = React.lazy(
   () => import('./CreateNewProductModal/CreateNewProductModal'),
 );
 
+const UsersSearchModal = React.lazy(() => import('./UsersSearchModal/UsersSearchModal'));
 const ProductSearchModal = React.lazy(() => import('./ProductSearchModal/ProductSearchModal'));
 const UpdateMyPasswordModal = React.lazy(
   () => import('./UpdateMyPasswordModal/UpdateMyPasswordModal'),
@@ -98,6 +100,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           )}
 
           {modalType === PRODUCT_SEARCH_MODAL && <ProductSearchModal {...modalProps} />}
+
+          {modalType === USERS_SEARCH_MODAL && <UsersSearchModal {...modalProps} />}
 
           {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
 

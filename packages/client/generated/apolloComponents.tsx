@@ -3599,6 +3599,32 @@ export type GetFeaturesAstQuery = (
   )> }
 );
 
+export type UserInListFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'itemId' | 'email' | 'phone' | 'fullName' | 'shortName'>
+  & { role: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString'>
+  ) }
+);
+
+export type UsersSerchQueryVariables = Exact<{
+  input: UserPaginateInput;
+}>;
+
+
+export type UsersSerchQuery = (
+  { __typename?: 'Query' }
+  & { getAllUsers: (
+    { __typename?: 'PaginatedUsersResponse' }
+    & Pick<PaginatedUsersResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'User' }
+      & UserInListFragment
+    )> }
+  ) }
+);
+
 export const CmsProductAttributeFragmentDoc = gql`
     fragment CMSProductAttribute on ProductAttribute {
   key
@@ -4126,6 +4152,20 @@ export const FeaturesAstGroupFragmentDoc = gql`
   }
 }
     ${FeaturesAstAttributeFragmentDoc}`;
+export const UserInListFragmentDoc = gql`
+    fragment UserInList on User {
+  id
+  itemId
+  email
+  phone
+  fullName
+  shortName
+  role {
+    id
+    nameString
+  }
+}
+    `;
 export const GetProductDocument = gql`
     query GetProduct($id: ID!) {
   getProduct(id: $id) {
@@ -6995,3 +7035,41 @@ export function useGetFeaturesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetFeaturesAstQueryHookResult = ReturnType<typeof useGetFeaturesAstQuery>;
 export type GetFeaturesAstLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstLazyQuery>;
 export type GetFeaturesAstQueryResult = Apollo.QueryResult<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>;
+export const UsersSerchDocument = gql`
+    query UsersSerch($input: UserPaginateInput!) {
+  getAllUsers(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...UserInList
+    }
+  }
+}
+    ${UserInListFragmentDoc}`;
+
+/**
+ * __useUsersSerchQuery__
+ *
+ * To run a query within a React component, call `useUsersSerchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersSerchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersSerchQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersSerchQuery(baseOptions?: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+        return Apollo.useQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
+      }
+export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+          return Apollo.useLazyQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
+        }
+export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
+export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
+export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;

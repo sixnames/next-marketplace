@@ -22,7 +22,6 @@ import { SignInInput } from './SignInInput';
 import { ContextInterface } from '../../types/context';
 import { compare, hash } from 'bcryptjs';
 import { UserPaginateInput } from './UserPaginateInput';
-import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import PaginateType from '../common/PaginateType';
 import PayloadType from '../common/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
@@ -45,6 +44,7 @@ import {
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { noNaN } from '@yagu/client/utils/noNaN';
 
 const {
   operationConfigCreate,
@@ -85,15 +85,40 @@ export class UserResolver {
     @Arg('input', { nullable: true, defaultValue: {} }) input: UserPaginateInput,
   ): Promise<PaginatedUsersResponse> {
     const { limit = 100, page = 1, search, sortBy = 'createdAt', sortDir = 'desc' } = input;
-    const { searchOptions, options } = generatePaginationOptions({
-      limit,
-      page,
-      sortDir,
-      sortBy,
-      search,
-    });
 
-    return UserModel.paginate({ ...searchOptions, ...customFilter }, options);
+    const searchOptions = search
+      ? {
+          $or: [
+            {
+              email: search,
+            },
+            {
+              name: search,
+            },
+            {
+              lastName: search,
+            },
+            {
+              secondName: search,
+            },
+            {
+              phone: search,
+            },
+            {
+              itemId: noNaN(search),
+            },
+          ],
+        }
+      : {};
+
+    return UserModel.paginate(
+      { ...searchOptions, ...customFilter },
+      {
+        limit,
+        page,
+        sort: `${sortBy} ${sortDir}`,
+      },
+    );
   }
 
   @Mutation(() => UserPayloadType)

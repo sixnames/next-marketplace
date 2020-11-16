@@ -79,7 +79,7 @@ const Input: React.FC<InputPropsInterface> = ({
           name={name}
           {...props}
           data-cy={testId}
-          mask='+9 (999) 999-99-99'
+          mask='+9 999 999-99-99'
         />
       ) : (
         <input

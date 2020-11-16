@@ -43,7 +43,7 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`error-notification`).should('exist');
+    cy.shouldError();
 
     // Shouldn't create a new rubric if exists on second level
     cy.getByCy(`create-rubric`).click();
@@ -55,7 +55,7 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`error-notification`).should('exist');
+    cy.shouldError();
 
     // Shouldn't create a new rubric if exists on third level
     cy.getByCy(`create-rubric`).click();
@@ -68,7 +68,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_IT);
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`error-notification`).should('exist');
+    cy.shouldError();
   });
 
   it('Should create new rubrics', () => {

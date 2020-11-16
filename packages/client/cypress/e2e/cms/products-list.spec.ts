@@ -60,7 +60,7 @@ describe('Products', () => {
     cy.getByCy(`products-list`).should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy('confirm').click();
-    cy.getByCy(mockProductForDelete).should('not.exist');
+    cy.getByCy(`${mockProductForDelete}-row`).should('not.exist');
     cy.shouldSuccess();
 
     // Should open product details
@@ -158,6 +158,6 @@ describe('Products', () => {
     ).check();
 
     cy.getByCy('submit-new-product').click();
-    cy.getByCy(mockProductCreateName).should('exist');
+    cy.getByCy(`${mockProductCreateName}-row`).should('exist');
   });
 });

@@ -44,12 +44,12 @@ describe('Rubric products', () => {
 
     // Should display not in rubric products and should delete product from DB
     cy.getByCy(QUERY_DATA_LAYOUT_NO_RUBRIC).click();
-    cy.getByCy(mockProductForDelete).should('exist');
+    cy.getByCy(`${mockProductForDelete}-row`).should('exist');
     cy.getByCy(`${mockProductForDelete}-delete`).click();
     cy.getByCy(`confirm`).click();
 
     cy.getByCy('delete-product-modal').should('not.exist');
-    cy.getByCy(mockProductForDelete).should('not.exist');
+    cy.getByCy(`${mockProductForDelete}-row`).should('not.exist');
   });
 
   it('Should add product to rubric', () => {
@@ -64,7 +64,7 @@ describe('Rubric products', () => {
     cy.getByCy('product-create').click();
     cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`).click();
     cy.getByCy(`${mockProductForDelete}-create`).click();
-    cy.getByCy(mockProductForDelete).should('exist');
+    cy.getByCy(`${mockProductForDelete}-row`).should('exist');
 
     // Should add product from not in rubric list to the rubric
     cy.getByCy(`${mockProduct}-delete`).click();
@@ -72,7 +72,7 @@ describe('Rubric products', () => {
     cy.getByCy('product-create').click();
     cy.get(`[data-cy=${modal}] [data-cy=${QUERY_DATA_LAYOUT_NO_RUBRIC}]`).click();
     cy.getByCy(`${mockProduct}-create`).click();
-    cy.getByCy(mockProduct).should('exist');
+    cy.getByCy(`${mockProduct}-row`).should('exist');
 
     // Should add product from search result to the rubric
     cy.getByCy(`${mockProduct}-delete`).click();
@@ -84,7 +84,7 @@ describe('Rubric products', () => {
     cy.getByCy('product-search-input').type(mockProduct);
     cy.getByCy('product-search-submit').click();
     cy.getByCy(`${mockProduct}-create`).click();
-    cy.getByCy(mockProduct).should('exist');
+    cy.getByCy(`${mockProduct}-row`).should('exist');
   });
 
   it('Should create products in rubric', () => {
@@ -178,6 +178,6 @@ describe('Rubric products', () => {
     ).check();
 
     cy.getByCy('submit-new-product').click();
-    cy.getByCy(mockProductNewName).should('exist');
+    cy.getByCy(`${mockProductNewName}-row`).should('exist');
   });
 });

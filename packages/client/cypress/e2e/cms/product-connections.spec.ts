@@ -38,9 +38,9 @@ describe('Product connections', () => {
     cy.getByCy(`create-connection-modal`).should('not.exist');
     cy.getByCy(`${mockAttributeName}-connection`).should('exist');
     cy.getByCy(`${mockAttributeName}-connection-list`).should('exist');
-    cy.get(`[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductC}"]`).should(
-      'exist',
-    );
+    cy.get(
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductC}-row"]`,
+    ).should('exist');
 
     // Shouldn't create new connection on duplicate error
     cy.getByCy(`create-connection`).click();
@@ -60,7 +60,7 @@ describe('Product connections', () => {
     cy.getByCy(`${mockProductForAdd}-create`).click();
     cy.getByCy(addProductToConnectionModal).should('not.exist');
     cy.get(
-      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}"]`,
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}-row"]`,
     ).should('exist');
 
     // Should delete product from connection
@@ -69,7 +69,7 @@ describe('Product connections', () => {
     cy.getByCy(`confirm`).click();
     cy.getByCy(`delete-product-from-connection-modal`).should('not.exist');
     cy.get(
-      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}"]`,
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}-row"]`,
     ).should('not.exist');
   });
 });

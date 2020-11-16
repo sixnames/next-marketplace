@@ -4,7 +4,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import { createCompanySchema } from '@yagu/validation';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CreateCompanyInput, UserInListFragment } from '../../generated/apolloComponents';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
@@ -18,6 +18,9 @@ import ContentItemControls, {
 } from '../../components/ContentItemControls/ContentItemControls';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
+import { useAppContext } from '../../context/appContext';
+import useUsersListColumns from '../../hooks/useUsersListColumns';
+import Table from '../../components/Table/Table';
 // import classes from './CreateCompanyContent.module.css';
 
 interface UsersSearchModalControlsInterface
@@ -43,25 +46,13 @@ interface CompanyFormInitialValuesInterface extends Omit<CreateCompanyInput, 'ow
   staff: UserInListFragment[];
 }
 
-const CreateCompanyContent: React.FC = () => {
-  const validationSchema = useValidationSchema({
-    schema: createCompanySchema,
-  });
+const CreateCompanyContentConsumer: React.FC = () => {
+  const { showModal, hideModal } = useAppContext();
+  const { values, setFieldValue } = useFormikContext<CompanyFormInitialValuesInterface>();
+  const columns = useUsersListColumns();
 
-  const { showLoading, showModal, hideModal } = useMutationCallbacks({
-    withModal: true,
-  });
-
-  const initialValues: CompanyFormInitialValuesInterface = {
-    nameString: '',
-    contacts: {
-      emails: [''],
-      phones: [''],
-    },
-    logo: [],
-    owner: null,
-    staff: [],
-  };
+  const { owner, staff } = values;
+  const logoInputFilesLimit = 1;
 
   function showUsersSearchModal({
     createTitle,
@@ -101,8 +92,120 @@ const CreateCompanyContent: React.FC = () => {
       },
     });
   }
+  return (
+    <Form>
+      <FormikDropZone
+        label={'Логотип'}
+        name={'logo'}
+        testId={'company-logo'}
+        limit={logoInputFilesLimit}
+        isRequired
+        showInlineError
+      />
 
-  const logoInputFilesLimit = 1;
+      <FormikInput
+        label={'Название'}
+        name={'nameString'}
+        testId={'nameString'}
+        showInlineError
+        isRequired
+      />
+
+      <FormikMultiLineInput
+        label={'Email'}
+        name={'contacts.emails'}
+        type={'email'}
+        testId={'email'}
+        isRequired
+        showInlineError
+      />
+
+      <FormikMultiLineInput
+        label={'Телефон'}
+        name={'contacts.phones'}
+        type={'tel'}
+        testId={'phone'}
+        isRequired
+        showInlineError
+      />
+
+      <FakeInput value={owner?.fullName} label={'Владелец'} testId={'owner'} />
+
+      <InputLine labelTag={'div'}>
+        <Button
+          theme={'secondary'}
+          size={'small'}
+          testId={'add-owner'}
+          onClick={() =>
+            showUsersSearchModal({
+              createTitle: 'Назначить владельцем компании',
+              createHandler: (user) => {
+                setFieldValue('owner', user);
+                hideModal();
+              },
+            })
+          }
+        >
+          {owner ? 'Изменить владельца' : 'Выбрать владельца'}
+        </Button>
+      </InputLine>
+
+      <InputLine label={'Персонал компании'} labelTag={'div'}>
+        <Table<UserInListFragment>
+          columns={columns}
+          data={staff}
+          testIdKey={'itemId'}
+          emptyMessage={'Список пуст'}
+        />
+      </InputLine>
+
+      <InputLine labelTag={'div'}>
+        <Button
+          theme={'secondary'}
+          size={'small'}
+          testId={'add-staff'}
+          onClick={() =>
+            showUsersSearchModal({
+              createTitle: 'Добавить в список сотрудников компании',
+              createHandler: (user) => {
+                setFieldValue(`staff[${staff.length}]`, user);
+                hideModal();
+              },
+            })
+          }
+        >
+          {'Добавить сотрудника'}
+        </Button>
+      </InputLine>
+
+      <ModalButtons>
+        <Button type={'submit'} testId={'new-company-submit'}>
+          Создать
+        </Button>
+      </ModalButtons>
+    </Form>
+  );
+};
+
+const CreateCompanyContent: React.FC = () => {
+  const validationSchema = useValidationSchema({
+    schema: createCompanySchema,
+  });
+
+  const { showLoading } = useMutationCallbacks({
+    withModal: true,
+  });
+
+  const initialValues: CompanyFormInitialValuesInterface = {
+    nameString: '',
+    contacts: {
+      emails: [''],
+      phones: [''],
+    },
+    logo: [],
+    owner: null,
+    staff: [],
+  };
 
   return (
     <DataLayoutContentFrame testId={'create-company-content'}>
@@ -115,74 +218,8 @@ const CreateCompanyContent: React.FC = () => {
             console.log(values);
           }}
         >
-          {({ values, setFieldValue }) => {
-            const { owner } = values;
-
-            return (
-              <Form>
-                <FormikDropZone
-                  label={'Логотип'}
-                  name={'logo'}
-                  testId={'company-logo'}
-                  limit={logoInputFilesLimit}
-                  isRequired
-                  showInlineError
-                />
-
-                <FormikInput
-                  label={'Название'}
-                  name={'nameString'}
-                  testId={'nameString'}
-                  showInlineError
-                  isRequired
-                />
-
-                <FormikMultiLineInput
-                  label={'Email'}
-                  name={'contacts.emails'}
-                  type={'email'}
-                  testId={'email'}
-                  isRequired
-                  showInlineError
-                />
-
-                <FormikMultiLineInput
-                  label={'Телефон'}
-                  name={'contacts.phones'}
-                  type={'tel'}
-                  testId={'phone'}
-                  isRequired
-                  showInlineError
-                />
-
-                <FakeInput value={owner?.fullName} label={'Владелец'} testId={'owner'} />
-
-                <InputLine name={''} labelTag={'div'}>
-                  <Button
-                    theme={'secondary'}
-                    size={'small'}
-                    testId={'add-owner'}
-                    onClick={() =>
-                      showUsersSearchModal({
-                        createTitle: 'Назначить владельцем компании',
-                        createHandler: (user) => {
-                          setFieldValue('owner', user);
-                          hideModal();
-                        },
-                      })
-                    }
-                  >
-                    {owner ? 'Изменить владельца' : 'Выбрать владельца'}
-                  </Button>
-                </InputLine>
-
-                <ModalButtons>
-                  <Button type={'submit'} testId={'new-company-submit'}>
-                    Создать
-                  </Button>
-                </ModalButtons>
-              </Form>
-            );
+          {() => {
+            return <CreateCompanyContentConsumer />;
           }}
         </Formik>
       </Inner>

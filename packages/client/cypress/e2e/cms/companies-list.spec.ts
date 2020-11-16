@@ -50,7 +50,15 @@ describe('Companies list', () => {
     cy.getByCy(`${mockData.sampleUser.itemId}-create`).click();
     cy.getByCy('owner').should('contain', getFullName(mockData.sampleUser));
 
+    // staff
+    cy.getByCy(`add-staff`).click();
+    cy.getByCy('user-search-input').type(mockData.sampleUserB.email);
+    cy.getByCy('user-search-submit').click();
+    cy.getByCy(`${mockData.sampleUserB.itemId}-create`).click();
+    cy.getByCy(`users-search-modal`).should('not.exist');
+    cy.getByCy(`${mockData.sampleUserB.itemId}`).should('exist');
+
     // submit
-    // cy.getByCy(`new-company-submit`).click();
+    cy.getByCy(`new-company-submit`).click();
   });
 });

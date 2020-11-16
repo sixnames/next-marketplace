@@ -6,16 +6,14 @@ import ModalTitle from '../ModalTitle';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
 import { UserInListFragment, useUsersSerchQuery } from '../../../generated/apolloComponents';
 import useDataLayoutMethods from '../../../hooks/useDataLayoutMethods';
-import Table, { TableColumn } from '../../Table/Table';
+import Table from '../../Table/Table';
 import Pager from '../../Pager/Pager';
-import Link from 'next/link';
-import { ROUTE_CMS } from '../../../config';
-import LinkPhone from '../../Link/LinkPhone';
-import LinkEmail from '../../Link/LinkEmail';
+import useUsersListColumns, {
+  UseUsersListColumnsInterface,
+} from '../../../hooks/useUsersListColumns';
 
-export interface UsersSearchModalInterface {
+export interface UsersSearchModalInterface extends UseUsersListColumnsInterface {
   testId?: string;
-  controlsColumn?: TableColumn<UserInListFragment>;
 }
 
 const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
@@ -24,6 +22,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
 }) => {
   const { setPage, page } = useDataLayoutMethods();
   const [search, setSearch] = useState<string | null>(null);
+  const columns = useUsersListColumns({ controlsColumn });
   const { data, error, loading } = useUsersSerchQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -46,36 +45,6 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   }
 
   const { docs, totalPages } = data.getAllUsers;
-
-  const controls = controlsColumn ? [controlsColumn] : [];
-
-  const columns: TableColumn<UserInListFragment>[] = [
-    {
-      accessor: 'itemId',
-      headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/users/${dataItem.id}`}>
-          <a>{cellData}</a>
-        </Link>
-      ),
-    },
-    {
-      accessor: 'fullName',
-      headTitle: 'Имя',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'formattedPhone',
-      headTitle: 'Телефон',
-      render: ({ cellData }) => <LinkPhone value={cellData} />,
-    },
-    {
-      accessor: 'email',
-      headTitle: 'Email',
-      render: ({ cellData }) => <LinkEmail value={cellData} />,
-    },
-    ...controls,
-  ];
 
   return (
     <ModalFrame testId={testId} wide>

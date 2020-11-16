@@ -58,6 +58,15 @@ export const MOCK_SAMPLE_USER = {
   phone: '+79990002236',
 };
 
+export const MOCK_SAMPLE_USER_B = {
+  email: 'sampleb.user@gmail.com',
+  password: 'sampleB',
+  name: 'SampleB',
+  secondName: 'SecondnameB',
+  lastName: 'LastnameB',
+  phone: '+79990002237',
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',

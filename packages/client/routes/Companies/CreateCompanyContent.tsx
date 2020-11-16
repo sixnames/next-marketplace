@@ -3,7 +3,11 @@ import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutConten
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createCompanySchema } from '@yagu/validation';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { CreateCompanyInput, UserInListFragment } from '../../generated/apolloComponents';
+import {
+  CreateCompanyInput,
+  useCreateComanyMutation,
+  UserInListFragment,
+} from '../../generated/apolloComponents';
 import { Form, Formik, useFormikContext } from 'formik';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
@@ -21,6 +25,8 @@ import InputLine from '../../components/FormElements/Input/InputLine';
 import { useAppContext } from '../../context/appContext';
 import useUsersListColumns from '../../hooks/useUsersListColumns';
 import Table from '../../components/Table/Table';
+import { useRouter } from 'next/router';
+import { ROUTE_CMS } from '@yagu/config';
 // import classes from './CreateCompanyContent.module.css';
 
 interface UsersSearchModalControlsInterface
@@ -188,12 +194,22 @@ const CreateCompanyContentConsumer: React.FC = () => {
 };
 
 const CreateCompanyContent: React.FC = () => {
+  const router = useRouter();
+  const {
+    showLoading,
+    onCompleteCallback,
+    onErrorCallback,
+    showErrorNotification,
+  } = useMutationCallbacks();
+  const [createCompanyMutation] = useCreateComanyMutation({
+    onError: onErrorCallback,
+    onCompleted: (data) => {
+      router.replace(`${ROUTE_CMS}/companies`).catch((e) => console.log(e));
+      onCompleteCallback(data.createCompany);
+    },
+  });
   const validationSchema = useValidationSchema({
     schema: createCompanySchema,
-  });
-
-  const { showLoading } = useMutationCallbacks({
-    withModal: true,
   });
 
   const initialValues: CompanyFormInitialValuesInterface = {
@@ -214,8 +230,23 @@ const CreateCompanyContent: React.FC = () => {
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={(values) => {
+            if (!values.owner) {
+              showErrorNotification({
+                title: 'Добавьте владельца компании',
+              });
+              return;
+            }
+
             showLoading();
-            console.log(values);
+            createCompanyMutation({
+              variables: {
+                input: {
+                  ...values,
+                  owner: values.owner.id,
+                  staff: values.staff.map(({ id }) => id),
+                },
+              },
+            }).catch((e) => console.log(e));
           }}
         >
           {() => {

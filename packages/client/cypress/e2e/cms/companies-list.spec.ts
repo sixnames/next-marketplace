@@ -60,5 +60,7 @@ describe('Companies list', () => {
 
     // submit
     cy.getByCy(`new-company-submit`).click();
+    cy.shouldSuccess();
+    cy.getByCy('companies-list').should('contain', MOCK_NEW_COMPANY.nameString);
   });
 });

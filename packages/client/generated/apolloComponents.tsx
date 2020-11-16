@@ -2564,6 +2564,19 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
+export type CreateComanyMutationVariables = Exact<{
+  input: CreateCompanyInput;
+}>;
+
+
+export type CreateComanyMutation = (
+  { __typename?: 'Mutation' }
+  & { createCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateConfigsMutationVariables = Exact<{
   input: Array<UpdateConfigInput>;
 }>;
@@ -5116,6 +5129,39 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+export const CreateComanyDocument = gql`
+    mutation CreateComany($input: CreateCompanyInput!) {
+  createCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateComanyMutationFn = Apollo.MutationFunction<CreateComanyMutation, CreateComanyMutationVariables>;
+
+/**
+ * __useCreateComanyMutation__
+ *
+ * To run a mutation, you first call `useCreateComanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateComanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createComanyMutation, { data, loading, error }] = useCreateComanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateComanyMutation(baseOptions?: Apollo.MutationHookOptions<CreateComanyMutation, CreateComanyMutationVariables>) {
+        return Apollo.useMutation<CreateComanyMutation, CreateComanyMutationVariables>(CreateComanyDocument, baseOptions);
+      }
+export type CreateComanyMutationHookResult = ReturnType<typeof useCreateComanyMutation>;
+export type CreateComanyMutationResult = Apollo.MutationResult<CreateComanyMutation>;
+export type CreateComanyMutationOptions = Apollo.BaseMutationOptions<CreateComanyMutation, CreateComanyMutationVariables>;
 export const UpdateConfigsDocument = gql`
     mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
   updateConfigs(input: $input) {

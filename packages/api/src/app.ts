@@ -125,10 +125,23 @@ const createApp = async (): Promise<CreateAppInterface> => {
 
   // Session
   const MongoDBStore = connectMongoDBStore(session);
-  const store = new MongoDBStore({
-    uri: MONGO_URL,
-    collection: SESSION_COLLECTION,
-  });
+  const store = new MongoDBStore(
+    {
+      uri: MONGO_URL,
+      collection: SESSION_COLLECTION,
+      connectionOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 1000,
+      },
+    },
+    (e) => {
+      if (e) {
+        console.log('============ MongoDBStore connection error ============');
+        console.error(e);
+      }
+    },
+  );
   app.use(
     session({
       store,

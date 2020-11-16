@@ -16,6 +16,15 @@ registerEnumType(GenderEnum, {
 });
 
 @ObjectType()
+export class FormattedPhone {
+  @Field(() => String)
+  readonly raw: string;
+
+  @Field(() => String)
+  readonly readable: string;
+}
+
+@ObjectType()
 export class PointGeoJSON {
   @Field(() => String)
   @prop({ type: String, default: GEO_POINT_TYPE })

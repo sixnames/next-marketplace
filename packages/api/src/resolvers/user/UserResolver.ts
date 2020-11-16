@@ -45,6 +45,8 @@ import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { noNaN } from '@yagu/client/utils/noNaN';
+import { FormattedPhone } from '../../entities/common';
+import { phoneToRaw, phoneToReadable } from '@yagu/shared';
 
 const {
   operationConfigCreate,
@@ -487,13 +489,22 @@ export class UserResolver {
     }
   }
 
-  @FieldResolver()
+  @FieldResolver(() => String)
   fullName(@Root() user: DocumentType<User>): string {
     const { name, lastName, secondName } = user;
     return `${lastName ? `${lastName} ` : ''}${name}${secondName ? ` ${secondName}` : ''}`;
   }
 
-  @FieldResolver()
+  @FieldResolver(() => FormattedPhone)
+  formattedPhone(@Root() user: DocumentType<User>): FormattedPhone {
+    const { phone } = user;
+    return {
+      raw: phoneToRaw(phone),
+      readable: phoneToReadable(phone),
+    };
+  }
+
+  @FieldResolver(() => String)
   shortName(@Root() user: DocumentType<User>): string {
     const { name, lastName } = user;
     if (lastName && lastName.length > 0) {
@@ -502,7 +513,7 @@ export class UserResolver {
     return name;
   }
 
-  @FieldResolver()
+  @FieldResolver(() => Role)
   async role(@Root() user: DocumentType<User>): Promise<Role> {
     const role = await RoleModel.findById(user.role);
     if (!role) {

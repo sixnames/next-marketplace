@@ -5,9 +5,12 @@ export const userInListFragment = gql`
     id
     itemId
     email
-    phone
     fullName
     shortName
+    formattedPhone {
+      raw
+      readable
+    }
     role {
       id
       nameString

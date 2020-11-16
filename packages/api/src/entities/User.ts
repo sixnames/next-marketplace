@@ -8,6 +8,7 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import getApiMessage from '../utils/translations/getApiMessage';
 import { compare } from 'bcryptjs';
 import { ContextInterface } from '../types/context';
+import { FormattedPhone } from './common';
 
 type Request = ContextInterface['req'];
 
@@ -48,6 +49,9 @@ export class User extends TimeStamps {
   @Field((_type) => Role)
   @prop({ ref: Role })
   role: string;
+
+  @Field((_type) => FormattedPhone)
+  readonly formattedPhone: string;
 
   @Field((_type) => String)
   readonly fullName: string;

@@ -263,6 +263,7 @@ export type User = {
   email: Scalars['String'];
   phone: Scalars['String'];
   role: Role;
+  formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
   createdAt: Scalars['Timestamp'];
@@ -326,6 +327,12 @@ export type NavItem = {
   icon?: Maybe<Scalars['String']>;
   parent?: Maybe<NavItem>;
   children?: Maybe<Array<NavItem>>;
+};
+
+export type FormattedPhone = {
+  __typename?: 'FormattedPhone';
+  raw: Scalars['String'];
+  readable: Scalars['String'];
 };
 
 
@@ -3601,8 +3608,11 @@ export type GetFeaturesAstQuery = (
 
 export type UserInListFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'itemId' | 'email' | 'phone' | 'fullName' | 'shortName'>
-  & { role: (
+  & Pick<User, 'id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
+  & { formattedPhone: (
+    { __typename?: 'FormattedPhone' }
+    & Pick<FormattedPhone, 'raw' | 'readable'>
+  ), role: (
     { __typename?: 'Role' }
     & Pick<Role, 'id' | 'nameString'>
   ) }
@@ -4157,9 +4167,12 @@ export const UserInListFragmentDoc = gql`
   id
   itemId
   email
-  phone
   fullName
   shortName
+  formattedPhone {
+    raw
+    readable
+  }
   role {
     id
     nameString

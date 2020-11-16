@@ -403,6 +403,11 @@ input DeleteShopFromCompanyInput {
   shopId: ID!
 }
 
+type FormattedPhone {
+  raw: String!
+  readable: String!
+}
+
 """List of gender enums"""
 enum GenderEnum {
   he
@@ -1353,6 +1358,7 @@ scalar Upload
 type User {
   createdAt: Timestamp!
   email: String!
+  formattedPhone: FormattedPhone!
   fullName: String!
   id: ID!
   itemId: Int!

@@ -9,6 +9,7 @@ import { NavItemInterface } from '../../types';
 import TabsContent from '../../components/TabsContent/TabsContent';
 import CompanyDetails from './CompanyDetails';
 import CompanyShops from './CompanyShops';
+import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 
 const CompanyRoute: React.FC = () => {
   const { query } = useRouterQuery();
@@ -51,10 +52,12 @@ const CompanyRoute: React.FC = () => {
       title={company.nameString}
       filterResultNavConfig={navConfig}
       filterResult={() => (
-        <TabsContent>
-          <CompanyDetails company={company} />
-          <CompanyShops company={company} />
-        </TabsContent>
+        <DataLayoutContentFrame>
+          <TabsContent>
+            <CompanyDetails company={company} />
+            <CompanyShops company={company} />
+          </TabsContent>
+        </DataLayoutContentFrame>
       )}
     />
   );

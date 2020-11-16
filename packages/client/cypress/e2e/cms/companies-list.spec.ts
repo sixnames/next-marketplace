@@ -14,10 +14,10 @@ describe('Companies list', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
-  it('Should have companies list in CMS', () => {
+  it('Should display companies list in CMS', () => {
     cy.getByCy('companies-list').should('exist');
     cy.getByCy('company-create').click();
     cy.getByCy('create-company-content').should('exist');
@@ -56,7 +56,7 @@ describe('Companies list', () => {
     cy.getByCy('user-search-submit').click();
     cy.getByCy(`${mockData.sampleUserB.itemId}-create`).click();
     cy.getByCy(`users-search-modal`).should('not.exist');
-    cy.getByCy(`${mockData.sampleUserB.itemId}`).should('exist');
+    cy.getByCy(`${mockData.sampleUserB.itemId}-row`).should('exist');
 
     // submit
     cy.getByCy(`company-submit`).click();
@@ -71,7 +71,7 @@ describe('Companies list', () => {
     cy.getByCy('companies-list').should('not.contain', mockData.companyA.itemId);
   });
 
-  it.only('Should have company route', () => {
+  it('Should display company route', () => {
     const { companyA } = mockData;
 
     cy.getByCy('companies-list').should('exist');
@@ -105,10 +105,18 @@ describe('Companies list', () => {
     cy.getByCy('user-search-submit').click();
     cy.getByCy(`${mockData.sampleUserB.itemId}-create`).click();
     cy.getByCy(`users-search-modal`).should('not.exist');
-    cy.getByCy(`${mockData.sampleUserB.itemId}`).should('exist');
+    cy.getByCy(`${mockData.sampleUserB.itemId}-row`).should('exist');
 
     // submit
     cy.getByCy(`company-submit`).click();
     cy.shouldSuccess();
+  });
+
+  it('Should display company shops list', () => {
+    const { companyA } = mockData;
+    cy.getByCy(`${companyA.slug}-update`).click();
+    cy.visitMoreNavLink('shops');
+    cy.getByCy('company-shops-list').should('exist');
+    cy.getByCy(`${mockData.shopA.slug}-row`).should('exist');
   });
 });

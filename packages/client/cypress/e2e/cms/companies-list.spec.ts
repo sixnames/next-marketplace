@@ -62,5 +62,12 @@ describe('Companies list', () => {
     cy.getByCy(`new-company-submit`).click();
     cy.shouldSuccess();
     cy.getByCy('companies-list').should('contain', MOCK_NEW_COMPANY.nameString);
+
+    // Should delete company
+    cy.getByCy(`${mockData.companyA.slug}-delete`).click();
+    cy.getByCy(`delete-company-modal`).should('exist');
+    cy.getByCy(`confirm`).click();
+    cy.shouldSuccess();
+    cy.getByCy('companies-list').should('not.contain', mockData.companyA.itemId);
   });
 });

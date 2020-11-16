@@ -5,7 +5,7 @@ import { createCompanySchema } from '@yagu/validation';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import {
   CreateCompanyInput,
-  useCreateComanyMutation,
+  useCreateCompanyMutation,
   UserInListFragment,
 } from '../../generated/apolloComponents';
 import { Form, Formik, useFormikContext } from 'formik';
@@ -201,7 +201,7 @@ const CreateCompanyContent: React.FC = () => {
     onErrorCallback,
     showErrorNotification,
   } = useMutationCallbacks();
-  const [createCompanyMutation] = useCreateComanyMutation({
+  const [createCompanyMutation] = useCreateCompanyMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
       router.replace(`${ROUTE_CMS}/companies`).catch((e) => console.log(e));

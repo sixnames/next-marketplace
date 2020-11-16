@@ -2564,14 +2564,27 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
-export type CreateComanyMutationVariables = Exact<{
+export type CreateCompanyMutationVariables = Exact<{
   input: CreateCompanyInput;
 }>;
 
 
-export type CreateComanyMutation = (
+export type CreateCompanyMutation = (
   { __typename?: 'Mutation' }
   & { createCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteCompanyMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteCompany: (
     { __typename?: 'CompanyPayloadtype' }
     & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
@@ -5129,39 +5142,72 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-export const CreateComanyDocument = gql`
-    mutation CreateComany($input: CreateCompanyInput!) {
+export const CreateCompanyDocument = gql`
+    mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {
     success
     message
   }
 }
     `;
-export type CreateComanyMutationFn = Apollo.MutationFunction<CreateComanyMutation, CreateComanyMutationVariables>;
+export type CreateCompanyMutationFn = Apollo.MutationFunction<CreateCompanyMutation, CreateCompanyMutationVariables>;
 
 /**
- * __useCreateComanyMutation__
+ * __useCreateCompanyMutation__
  *
- * To run a mutation, you first call `useCreateComanyMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateComanyMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompanyMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createComanyMutation, { data, loading, error }] = useCreateComanyMutation({
+ * const [createCompanyMutation, { data, loading, error }] = useCreateCompanyMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateComanyMutation(baseOptions?: Apollo.MutationHookOptions<CreateComanyMutation, CreateComanyMutationVariables>) {
-        return Apollo.useMutation<CreateComanyMutation, CreateComanyMutationVariables>(CreateComanyDocument, baseOptions);
+export function useCreateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompanyMutation, CreateCompanyMutationVariables>) {
+        return Apollo.useMutation<CreateCompanyMutation, CreateCompanyMutationVariables>(CreateCompanyDocument, baseOptions);
       }
-export type CreateComanyMutationHookResult = ReturnType<typeof useCreateComanyMutation>;
-export type CreateComanyMutationResult = Apollo.MutationResult<CreateComanyMutation>;
-export type CreateComanyMutationOptions = Apollo.BaseMutationOptions<CreateComanyMutation, CreateComanyMutationVariables>;
+export type CreateCompanyMutationHookResult = ReturnType<typeof useCreateCompanyMutation>;
+export type CreateCompanyMutationResult = Apollo.MutationResult<CreateCompanyMutation>;
+export type CreateCompanyMutationOptions = Apollo.BaseMutationOptions<CreateCompanyMutation, CreateCompanyMutationVariables>;
+export const DeleteCompanyDocument = gql`
+    mutation DeleteCompany($id: ID!) {
+  deleteCompany(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteCompanyMutationFn = Apollo.MutationFunction<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+
+/**
+ * __useDeleteCompanyMutation__
+ *
+ * To run a mutation, you first call `useDeleteCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCompanyMutation, { data, loading, error }] = useDeleteCompanyMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>) {
+        return Apollo.useMutation<DeleteCompanyMutation, DeleteCompanyMutationVariables>(DeleteCompanyDocument, baseOptions);
+      }
+export type DeleteCompanyMutationHookResult = ReturnType<typeof useDeleteCompanyMutation>;
+export type DeleteCompanyMutationResult = Apollo.MutationResult<DeleteCompanyMutation>;
+export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
 export const UpdateConfigsDocument = gql`
     mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
   updateConfigs(input: $input) {

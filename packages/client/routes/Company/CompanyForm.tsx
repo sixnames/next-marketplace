@@ -45,13 +45,19 @@ interface CompanyFormInitialValuesInterface
   staff: UserInListFragment[];
 }
 
-interface CompanyFormInterface {
+interface CompanyFormConsumerInterface {
+  submitButtonText?: string;
+}
+
+interface CompanyFormInterface extends CompanyFormConsumerInterface {
   validationSchema: ObjectSchema;
   initialValues: CompanyFormInitialValuesInterface;
   onSubmitHandler: (values: CompanyFormPayloadInterface) => void;
 }
 
-const CompanyFormConsumer: React.FC = () => {
+const CompanyFormConsumer: React.FC<CompanyFormConsumerInterface> = ({
+  submitButtonText = 'Создать',
+}) => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormInitialValuesInterface>();
   const columns = useUsersListColumns();
@@ -184,8 +190,8 @@ const CompanyFormConsumer: React.FC = () => {
       </InputLine>
 
       <ModalButtons>
-        <Button type={'submit'} testId={'new-company-submit'}>
-          Создать
+        <Button type={'submit'} testId={'company-submit'}>
+          {submitButtonText}
         </Button>
       </ModalButtons>
     </Form>
@@ -196,11 +202,13 @@ const CompanyForm: React.FC<CompanyFormInterface> = ({
   initialValues,
   validationSchema,
   onSubmitHandler,
+  submitButtonText,
 }) => {
   const { showErrorNotification } = useMutationCallbacks();
 
   return (
     <Formik
+      enableReinitialize
       validationSchema={validationSchema}
       initialValues={initialValues}
       onSubmit={(values) => {
@@ -219,7 +227,7 @@ const CompanyForm: React.FC<CompanyFormInterface> = ({
       }}
     >
       {() => {
-        return <CompanyFormConsumer />;
+        return <CompanyFormConsumer submitButtonText={submitButtonText} />;
       }}
     </Formik>
   );

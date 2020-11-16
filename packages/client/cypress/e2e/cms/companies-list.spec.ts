@@ -59,7 +59,7 @@ describe('Companies list', () => {
     cy.getByCy(`${mockData.sampleUserB.itemId}`).should('exist');
 
     // submit
-    cy.getByCy(`new-company-submit`).click();
+    cy.getByCy(`company-submit`).click();
     cy.shouldSuccess();
     cy.getByCy('companies-list').should('contain', MOCK_NEW_COMPANY.nameString);
 
@@ -81,5 +81,34 @@ describe('Companies list', () => {
     // company name
     cy.getByCy('nameString').should('have.value', companyA.nameString);
     cy.getByCy('nameString').clear().type(MOCK_NEW_COMPANY.nameString);
+
+    // company emails
+    cy.getByCy(`email-1-remove`).click();
+    cy.getByCy(`remove-field-confirm`).click();
+    cy.getByCy(`email-1`).should('not.exist');
+
+    // company phones
+    cy.getByCy(`phone-0`).clear().type(MOCK_NEW_COMPANY.contacts.phones[0]);
+    cy.getByCy(`phone-1`).clear().type(MOCK_NEW_COMPANY.contacts.phones[1]);
+
+    // owner
+    cy.getByCy(`add-owner`).click();
+    cy.getByCy(`users-search-modal`).should('exist');
+    cy.getByCy('user-search-input').type(mockData.sampleUser.email);
+    cy.getByCy('user-search-submit').click();
+    cy.getByCy(`${mockData.sampleUser.itemId}-create`).click();
+    cy.getByCy('owner').should('contain', getFullName(mockData.sampleUser));
+
+    // staff
+    cy.getByCy(`add-staff`).click();
+    cy.getByCy('user-search-input').type(mockData.sampleUserB.email);
+    cy.getByCy('user-search-submit').click();
+    cy.getByCy(`${mockData.sampleUserB.itemId}-create`).click();
+    cy.getByCy(`users-search-modal`).should('not.exist');
+    cy.getByCy(`${mockData.sampleUserB.itemId}`).should('exist');
+
+    // submit
+    cy.getByCy(`company-submit`).click();
+    cy.shouldSuccess();
   });
 });

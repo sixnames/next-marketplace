@@ -38,6 +38,7 @@ export const companyShopFragment = gql`
     slug
     nameString
     logo {
+      index
       url
     }
   }
@@ -56,7 +57,12 @@ export const companyFragment = gql`
       ...UserInList
     }
     logo {
+      index
       url
+    }
+    contacts {
+      emails
+      phones
     }
     shops {
       totalPages

@@ -58,6 +58,9 @@ const companyCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
 export const createCompanySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object(companyCommonFields(args));
 
+export const updateCompanyClientSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object(companyCommonFields(args));
+
 export const updateCompanySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object({
     ...companyCommonFields(args),

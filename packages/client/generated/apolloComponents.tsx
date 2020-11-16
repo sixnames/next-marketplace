@@ -3145,7 +3145,7 @@ export type ShopInListFragment = (
   & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
   & { logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url'>
+    & Pick<AssetType, 'index' | 'url'>
   ) }
 );
 
@@ -3160,7 +3160,10 @@ export type CompanyFragment = (
     & UserInListFragment
   ), logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url'>
+    & Pick<AssetType, 'index' | 'url'>
+  ), contacts: (
+    { __typename?: 'ContactsType' }
+    & Pick<ContactsType, 'emails' | 'phones'>
   ), shops: (
     { __typename?: 'PaginatedShopsResponse' }
     & Pick<PaginatedShopsResponse, 'totalPages'>
@@ -4055,6 +4058,7 @@ export const ShopInListFragmentDoc = gql`
   slug
   nameString
   logo {
+    index
     url
   }
 }
@@ -4072,7 +4076,12 @@ export const CompanyFragmentDoc = gql`
     ...UserInList
   }
   logo {
+    index
     url
+  }
+  contacts {
+    emails
+    phones
   }
   shops {
     totalPages

@@ -98,11 +98,11 @@ export const commonMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Телефон пользователя обязателен к заполнению.',
+        value: 'Телефон обязателен к заполнению.',
       },
       {
         key: SECONDARY_LANG,
-        value: 'User Phone is required.',
+        value: 'Phone is required.',
       },
     ],
   },

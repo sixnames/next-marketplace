@@ -2,7 +2,7 @@ import React from 'react';
 import AppLayout from '../../../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
 import getAppServerSideProps, { AppPageInterface } from '../../../../utils/getAppServerSideProps';
-import CreateCompanyRoute from '../../../../routes/Companies/CreateCompanyRoute';
+import CreateCompanyRoute from '../../../../routes/Company/CreateCompanyRoute';
 
 const Companies: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (

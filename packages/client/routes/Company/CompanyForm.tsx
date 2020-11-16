@@ -1,33 +1,25 @@
 import React from 'react';
-import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import { createCompanySchema } from '@yagu/validation';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import {
-  CreateCompanyInput,
-  useCreateCompanyMutation,
-  UserInListFragment,
-} from '../../generated/apolloComponents';
+import { ObjectSchema } from 'yup';
+import { UpdateCompanyInput, UserInListFragment } from '../../generated/apolloComponents';
+import { useAppContext } from '../../context/appContext';
 import { Form, Formik, useFormikContext } from 'formik';
-import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
-import FormikInput from '../../components/FormElements/Input/FormikInput';
-import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
-import ModalButtons from '../../components/Modal/ModalButtons';
-import Button from '../../components/Buttons/Button';
-import Inner from '../../components/Inner/Inner';
+import useUsersListColumns from '../../hooks/useUsersListColumns';
 import { UsersSearchModalInterface } from '../../components/Modal/UsersSearchModal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from '../../config/modals';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from '../../components/ContentItemControls/ContentItemControls';
+import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
+import FormikInput from '../../components/FormElements/Input/FormikInput';
+import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import { useAppContext } from '../../context/appContext';
-import useUsersListColumns from '../../hooks/useUsersListColumns';
+import Button from '../../components/Buttons/Button';
 import Table from '../../components/Table/Table';
-import { useRouter } from 'next/router';
-import { ROUTE_CMS } from '@yagu/config';
-// import classes from './CreateCompanyContent.module.css';
+import ModalButtons from '../../components/Modal/ModalButtons';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+
+type CompanyFormPayloadInterface = Omit<UpdateCompanyInput, 'id'>;
 
 interface UsersSearchModalControlsInterface
   extends Omit<
@@ -47,12 +39,19 @@ interface UsersSearchModalControlsInterface
   isDeleteDisabled?: (user: UserInListFragment) => boolean;
 }
 
-interface CompanyFormInitialValuesInterface extends Omit<CreateCompanyInput, 'owner' | 'staff'> {
+interface CompanyFormInitialValuesInterface
+  extends Omit<UpdateCompanyInput, 'owner' | 'staff' | 'id'> {
   owner: UserInListFragment | null;
   staff: UserInListFragment[];
 }
 
-const CreateCompanyContentConsumer: React.FC = () => {
+interface CompanyFormInterface {
+  validationSchema: ObjectSchema;
+  initialValues: CompanyFormInitialValuesInterface;
+  onSubmitHandler: (values: CompanyFormPayloadInterface) => void;
+}
+
+const CompanyFormConsumer: React.FC = () => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormInitialValuesInterface>();
   const columns = useUsersListColumns();
@@ -193,69 +192,37 @@ const CreateCompanyContentConsumer: React.FC = () => {
   );
 };
 
-const CreateCompanyContent: React.FC = () => {
-  const router = useRouter();
-  const {
-    showLoading,
-    onCompleteCallback,
-    onErrorCallback,
-    showErrorNotification,
-  } = useMutationCallbacks();
-  const [createCompanyMutation] = useCreateCompanyMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => {
-      router.replace(`${ROUTE_CMS}/companies`).catch((e) => console.log(e));
-      onCompleteCallback(data.createCompany);
-    },
-  });
-  const validationSchema = useValidationSchema({
-    schema: createCompanySchema,
-  });
-
-  const initialValues: CompanyFormInitialValuesInterface = {
-    nameString: '',
-    contacts: {
-      emails: [''],
-      phones: [''],
-    },
-    logo: [],
-    owner: null,
-    staff: [],
-  };
+const CompanyForm: React.FC<CompanyFormInterface> = ({
+  initialValues,
+  validationSchema,
+  onSubmitHandler,
+}) => {
+  const { showErrorNotification } = useMutationCallbacks();
 
   return (
-    <DataLayoutContentFrame testId={'create-company-content'}>
-      <Inner>
-        <Formik
-          validationSchema={validationSchema}
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            if (!values.owner) {
-              showErrorNotification({
-                title: 'Добавьте владельца компании',
-              });
-              return;
-            }
+    <Formik
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+      onSubmit={(values) => {
+        if (!values.owner) {
+          showErrorNotification({
+            title: 'Добавьте владельца компании',
+          });
+          return;
+        }
 
-            showLoading();
-            createCompanyMutation({
-              variables: {
-                input: {
-                  ...values,
-                  owner: values.owner.id,
-                  staff: values.staff.map(({ id }) => id),
-                },
-              },
-            }).catch((e) => console.log(e));
-          }}
-        >
-          {() => {
-            return <CreateCompanyContentConsumer />;
-          }}
-        </Formik>
-      </Inner>
-    </DataLayoutContentFrame>
+        onSubmitHandler({
+          ...values,
+          owner: values.owner.id,
+          staff: values.staff.map(({ id }) => id),
+        });
+      }}
+    >
+      {() => {
+        return <CompanyFormConsumer />;
+      }}
+    </Formik>
   );
 };
 
-export default CreateCompanyContent;
+export default CompanyForm;

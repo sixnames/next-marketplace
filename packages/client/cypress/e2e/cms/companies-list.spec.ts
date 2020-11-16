@@ -72,8 +72,14 @@ describe('Companies list', () => {
   });
 
   it.only('Should have company route', () => {
+    const { companyA } = mockData;
+
     cy.getByCy('companies-list').should('exist');
-    cy.getByCy(`${mockData.companyA.slug}-update`).click();
+    cy.getByCy(`${companyA.slug}-update`).click();
     cy.getByCy('company-details').should('exist');
+
+    // company name
+    cy.getByCy('nameString').should('have.value', companyA.nameString);
+    cy.getByCy('nameString').clear().type(MOCK_NEW_COMPANY.nameString);
   });
 });

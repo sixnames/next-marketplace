@@ -70,4 +70,10 @@ describe('Companies list', () => {
     cy.shouldSuccess();
     cy.getByCy('companies-list').should('not.contain', mockData.companyA.itemId);
   });
+
+  it.only('Should have company route', () => {
+    cy.getByCy('companies-list').should('exist');
+    cy.getByCy(`${mockData.companyA.slug}-update`).click();
+    cy.getByCy('company-details').should('exist');
+  });
 });

@@ -86,6 +86,15 @@ export const MOCK_NEW_COMPANY = {
   },
 };
 
+export const MOCK_NEW_COMPANY_B = {
+  nameString: 'New Company B',
+  slug: 'new_company_b',
+  contacts: {
+    emails: ['new.companyB1@gmail.com', 'new.companyB2@gmail.com'],
+    phones: ['+78990003333', '+78890004444'],
+  },
+};
+
 export const MOCK_COMPANIES = [MOCK_COMPANY];
 
 // Shop

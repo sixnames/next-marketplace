@@ -17,3 +17,12 @@ export const DELETE_COMPANY_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_COMPANY_MUTATION = gql`
+  mutation UpdateCompany($input: UpdateCompanyInput!) {
+    updateCompany(input: $input) {
+      success
+      message
+    }
+  }
+`;

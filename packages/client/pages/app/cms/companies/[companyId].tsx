@@ -2,16 +2,16 @@ import React from 'react';
 import AppLayout from '../../../../layout/AppLayout/AppLayout';
 import { GetServerSideProps, NextPage } from 'next';
 import getAppServerSideProps, { AppPageInterface } from '../../../../utils/getAppServerSideProps';
-import CompaniesRoute from '../../../../routes/Companies/CompaniesRoute';
+import CompanyRoute from '../../../../routes/Company/CompanyRoute';
 
-const Companies: NextPage<AppPageInterface> = ({ initialApolloState }) => {
+const Company: NextPage<AppPageInterface> = ({ initialApolloState }) => {
   return (
-    <AppLayout title={'Компании'} initialApolloState={initialApolloState}>
-      <CompaniesRoute />
+    <AppLayout title={'Компания'} initialApolloState={initialApolloState}>
+      <CompanyRoute />
     </AppLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = getAppServerSideProps;
 
-export default Companies;
+export default Company;

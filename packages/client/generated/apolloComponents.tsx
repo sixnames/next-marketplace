@@ -2590,6 +2590,19 @@ export type DeleteCompanyMutation = (
   ) }
 );
 
+export type UpdateCompanyMutationVariables = Exact<{
+  input: UpdateCompanyInput;
+}>;
+
+
+export type UpdateCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { updateCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateConfigsMutationVariables = Exact<{
   input: Array<UpdateConfigInput>;
 }>;
@@ -3124,6 +3137,50 @@ export type GetAllCompaniesQuery = (
       { __typename?: 'Company' }
       & CompanyInListFragment
     )> }
+  ) }
+);
+
+export type ShopInListFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'url'>
+  ) }
+);
+
+export type CompanyFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { staff: Array<(
+    { __typename?: 'User' }
+    & UserInListFragment
+  )>, owner: (
+    { __typename?: 'User' }
+    & UserInListFragment
+  ), logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'url'>
+  ), shops: (
+    { __typename?: 'PaginatedShopsResponse' }
+    & Pick<PaginatedShopsResponse, 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Shop' }
+      & ShopInListFragment
+    )> }
+  ) }
+);
+
+export type GetCompanyQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetCompanyQuery = (
+  { __typename?: 'Query' }
+  & { getCompany: (
+    { __typename?: 'Company' }
+    & CompanyFragment
   ) }
 );
 
@@ -3974,6 +4031,58 @@ export const CompanyInListFragmentDoc = gql`
   }
 }
     `;
+export const UserInListFragmentDoc = gql`
+    fragment UserInList on User {
+  id
+  itemId
+  email
+  fullName
+  shortName
+  formattedPhone {
+    raw
+    readable
+  }
+  role {
+    id
+    nameString
+  }
+}
+    `;
+export const ShopInListFragmentDoc = gql`
+    fragment ShopInList on Shop {
+  id
+  itemId
+  slug
+  nameString
+  logo {
+    url
+  }
+}
+    `;
+export const CompanyFragmentDoc = gql`
+    fragment Company on Company {
+  id
+  itemId
+  slug
+  nameString
+  staff {
+    ...UserInList
+  }
+  owner {
+    ...UserInList
+  }
+  logo {
+    url
+  }
+  shops {
+    totalPages
+    docs {
+      ...ShopInList
+    }
+  }
+}
+    ${UserInListFragmentDoc}
+${ShopInListFragmentDoc}`;
 export const SiteConfigFragmentDoc = gql`
     fragment SiteConfig on Config {
   id
@@ -4188,23 +4297,6 @@ export const FeaturesAstGroupFragmentDoc = gql`
   }
 }
     ${FeaturesAstAttributeFragmentDoc}`;
-export const UserInListFragmentDoc = gql`
-    fragment UserInList on User {
-  id
-  itemId
-  email
-  fullName
-  shortName
-  formattedPhone {
-    raw
-    readable
-  }
-  role {
-    id
-    nameString
-  }
-}
-    `;
 export const GetProductDocument = gql`
     query GetProduct($id: ID!) {
   getProduct(id: $id) {
@@ -5208,6 +5300,39 @@ export function useDeleteCompanyMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteCompanyMutationHookResult = ReturnType<typeof useDeleteCompanyMutation>;
 export type DeleteCompanyMutationResult = Apollo.MutationResult<DeleteCompanyMutation>;
 export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+export const UpdateCompanyDocument = gql`
+    mutation UpdateCompany($input: UpdateCompanyInput!) {
+  updateCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateCompanyMutationFn = Apollo.MutationFunction<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
+
+/**
+ * __useUpdateCompanyMutation__
+ *
+ * To run a mutation, you first call `useUpdateCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCompanyMutation, { data, loading, error }] = useUpdateCompanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>) {
+        return Apollo.useMutation<UpdateCompanyMutation, UpdateCompanyMutationVariables>(UpdateCompanyDocument, baseOptions);
+      }
+export type UpdateCompanyMutationHookResult = ReturnType<typeof useUpdateCompanyMutation>;
+export type UpdateCompanyMutationResult = Apollo.MutationResult<UpdateCompanyMutation>;
+export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
 export const UpdateConfigsDocument = gql`
     mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
   updateConfigs(input: $input) {
@@ -6263,6 +6388,39 @@ export function useGetAllCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAllCompaniesQueryHookResult = ReturnType<typeof useGetAllCompaniesQuery>;
 export type GetAllCompaniesLazyQueryHookResult = ReturnType<typeof useGetAllCompaniesLazyQuery>;
 export type GetAllCompaniesQueryResult = Apollo.QueryResult<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>;
+export const GetCompanyDocument = gql`
+    query GetCompany($id: ID!) {
+  getCompany(id: $id) {
+    ...Company
+  }
+}
+    ${CompanyFragmentDoc}`;
+
+/**
+ * __useGetCompanyQuery__
+ *
+ * To run a query within a React component, call `useGetCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompanyQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+        return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
+      }
+export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+          return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
+        }
+export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
+export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
+export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {

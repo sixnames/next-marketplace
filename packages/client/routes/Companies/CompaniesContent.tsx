@@ -18,9 +18,10 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 import { CONFIRM_MODAL } from '../../config/modals';
 import { COMPANIES_LIST_QUERY } from '../../graphql/query/companiesQueries';
-// import classes from './CompaniesContent.module.css';
+import { useRouter } from 'next/router';
 
 const CompaniesContent: React.FC = () => {
+  const router = useRouter();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -112,6 +113,10 @@ const CompaniesContent: React.FC = () => {
             testId={dataItem.slug}
             deleteTitle={`Удалить компанию`}
             deleteHandler={() => deleteCompanyHandler(dataItem)}
+            updateTitle={`Редактировать компанию`}
+            updateHandler={() => {
+              router.push(`${ROUTE_CMS}/companies/${dataItem.id}`).catch((e) => console.log(e));
+            }}
           />
         );
       },

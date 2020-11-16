@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { userInListFragment } from './usersQueries';
 
 export const companyInListFragment = gql`
   fragment CompanyInList on Company {
@@ -28,4 +29,51 @@ export const COMPANIES_LIST_QUERY = gql`
     }
   }
   ${companyInListFragment}
+`;
+
+export const companyShopFragment = gql`
+  fragment ShopInList on Shop {
+    id
+    itemId
+    slug
+    nameString
+    logo {
+      url
+    }
+  }
+`;
+
+export const companyFragment = gql`
+  fragment Company on Company {
+    id
+    itemId
+    slug
+    nameString
+    staff {
+      ...UserInList
+    }
+    owner {
+      ...UserInList
+    }
+    logo {
+      url
+    }
+    shops {
+      totalPages
+      docs {
+        ...ShopInList
+      }
+    }
+  }
+  ${userInListFragment}
+  ${companyShopFragment}
+`;
+
+export const COMPANY_QUERY = gql`
+  query GetCompany($id: ID!) {
+    getCompany(id: $id) {
+      ...Company
+    }
+  }
+  ${companyFragment}
 `;

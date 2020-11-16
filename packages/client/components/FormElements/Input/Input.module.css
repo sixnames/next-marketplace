@@ -9,6 +9,7 @@
   padding-right: var(--inputPaddingHorizontal);
   margin: 0;
   font-family: var(--font);
+  font-size: 1rem;
   color: var(--inputTextColor);
   border: 1px solid var(--inputBorder);
   background-color: var(--inputBackground);

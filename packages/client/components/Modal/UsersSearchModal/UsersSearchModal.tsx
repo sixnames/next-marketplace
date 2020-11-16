@@ -15,10 +15,12 @@ import LinkEmail from '../../Link/LinkEmail';
 
 export interface UsersSearchModalInterface {
   testId?: string;
+  controlsColumn?: TableColumn<UserInListFragment>;
 }
 
 const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   testId = 'users-search-modal',
+  controlsColumn = {},
 }) => {
   const { setPage, page } = useDataLayoutMethods();
   const [search, setSearch] = useState<string | null>(null);
@@ -45,6 +47,8 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
 
   const { docs, totalPages } = data.getAllUsers;
 
+  const controls = controlsColumn ? [controlsColumn] : [];
+
   const columns: TableColumn<UserInListFragment>[] = [
     {
       accessor: 'itemId',
@@ -70,6 +74,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
       headTitle: 'Email',
       render: ({ cellData }) => <LinkEmail value={cellData} />,
     },
+    ...controls,
   ];
 
   return (

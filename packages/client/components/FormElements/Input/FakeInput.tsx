@@ -1,17 +1,13 @@
 import React from 'react';
-import InputLine from './InputLine';
+import InputLine, { InputLinePropsInterface } from './InputLine';
 import { PostfixType } from '../../../types';
 import classes from './FakeInput.module.css';
 
-interface FakeInputInterface {
+interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'labelTag'> {
   className?: string;
   value: any;
-  lineClass?: string;
-  label?: any;
-  low?: boolean;
-  labelPostfix?: any;
   postfix?: PostfixType;
-  labelLink?: any;
+  testId?: string | number | null;
 }
 
 const FakeInput: React.FC<FakeInputInterface> = ({
@@ -23,6 +19,7 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   labelPostfix,
   postfix,
   labelLink,
+  testId,
 }) => {
   return (
     <InputLine
@@ -34,8 +31,11 @@ const FakeInput: React.FC<FakeInputInterface> = ({
       labelLink={labelLink}
       postfix={postfix}
       low={low}
+      labelTag={'div'}
     >
-      <span className={`${classes.frame} ${className ? className : ''}`}>{value}</span>
+      <span className={`${classes.frame} ${className ? className : ''}`} data-cy={testId}>
+        {value}
+      </span>
     </InputLine>
   );
 };

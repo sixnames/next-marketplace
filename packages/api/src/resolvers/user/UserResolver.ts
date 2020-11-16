@@ -46,7 +46,7 @@ import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { noNaN } from '@yagu/client/utils/noNaN';
 import { FormattedPhone } from '../../entities/common';
-import { phoneToRaw, phoneToReadable } from '@yagu/shared';
+import { getFullName, getShortName, phoneToRaw, phoneToReadable } from '@yagu/shared';
 
 const {
   operationConfigCreate,
@@ -491,8 +491,12 @@ export class UserResolver {
 
   @FieldResolver(() => String)
   fullName(@Root() user: DocumentType<User>): string {
-    const { name, lastName, secondName } = user;
-    return `${lastName ? `${lastName} ` : ''}${name}${secondName ? ` ${secondName}` : ''}`;
+    return getFullName(user);
+  }
+
+  @FieldResolver(() => String)
+  shortName(@Root() user: DocumentType<User>): string {
+    return getShortName(user);
   }
 
   @FieldResolver(() => FormattedPhone)
@@ -502,15 +506,6 @@ export class UserResolver {
       raw: phoneToRaw(phone),
       readable: phoneToReadable(phone),
     };
-  }
-
-  @FieldResolver(() => String)
-  shortName(@Root() user: DocumentType<User>): string {
-    const { name, lastName } = user;
-    if (lastName && lastName.length > 0) {
-      return `${name.charAt(0)}.${lastName}`;
-    }
-    return name;
   }
 
   @FieldResolver(() => Role)

@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
 import { MOCK_NEW_COMPANY } from '@yagu/mocks';
+import { getFullName } from '@yagu/shared';
 
 describe('Companies list', () => {
   let mockData: any;
@@ -47,6 +48,7 @@ describe('Companies list', () => {
     cy.getByCy('user-search-input').type(mockData.sampleUser.email);
     cy.getByCy('user-search-submit').click();
     cy.getByCy(`${mockData.sampleUser.itemId}-create`).click();
+    cy.getByCy('owner').should('contain', getFullName(mockData.sampleUser));
 
     // submit
     // cy.getByCy(`new-company-submit`).click();

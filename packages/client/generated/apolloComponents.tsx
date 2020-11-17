@@ -9,8 +9,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
-  Timestamp: any;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
@@ -266,8 +266,8 @@ export type User = {
   formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Role = {
@@ -532,8 +532,8 @@ export type Product = {
   cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
   shops: Array<ProductShop>;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type CityCounter = {
@@ -644,8 +644,8 @@ export type ProductShop = {
   oldPrices: Array<ShopProductOldPrice>;
   product: Product;
   shop: Shop;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
   node: Shop;
 };
 
@@ -654,8 +654,8 @@ export type ShopProductOldPrice = {
   __typename?: 'ShopProductOldPrice';
   id: Scalars['ID'];
   price: Scalars['Float'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Shop = {
@@ -667,11 +667,11 @@ export type Shop = {
   logo: AssetType;
   assets: Array<AssetType>;
   contacts: ContactsType;
-  address: PointGeoJson;
+  address: Address;
   products: PaginatedShopProductsResponse;
   company: Company;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 
@@ -685,9 +685,17 @@ export type ContactsType = {
   phones: Array<Scalars['String']>;
 };
 
+export type Address = {
+  __typename?: 'Address';
+  formattedAddress: Scalars['String'];
+  point: PointGeoJson;
+};
+
 export type PointGeoJson = {
   __typename?: 'PointGeoJSON';
+  /** Field that specifies the GeoJSON object type. */
   type: Scalars['String'];
+  /** Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude. */
   coordinates: Array<Scalars['Float']>;
 };
 
@@ -713,8 +721,8 @@ export type ShopProduct = {
   oldPrices: Array<ShopProductOldPrice>;
   product: Product;
   shop: Shop;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type ShopProductPaginateInput = {
@@ -742,8 +750,8 @@ export type Company = {
   staff: Array<User>;
   contacts: ContactsType;
   shops: PaginatedShopsResponse;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 
@@ -1988,7 +1996,17 @@ export type AddShopToCompanyInput = {
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
-  address: Array<Scalars['Float']>;
+  address: AddressInput;
+};
+
+export type AddressInput = {
+  formattedAddress: Scalars['String'];
+  point: CoordinatesInput;
+};
+
+export type CoordinatesInput = {
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
 };
 
 export type UpdateShopInCompanyInput = {
@@ -1997,7 +2015,7 @@ export type UpdateShopInCompanyInput = {
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
-  address: Array<Scalars['Float']>;
+  address: AddressInput;
   companyId: Scalars['ID'];
 };
 
@@ -2019,7 +2037,7 @@ export type UpdateShopInput = {
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
-  address: Array<Scalars['Float']>;
+  address: AddressInput;
 };
 
 export type AddProductToShopInput = {

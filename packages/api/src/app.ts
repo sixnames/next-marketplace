@@ -114,7 +114,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
       AttributeViewVariantsListResolver,
       OptionsGroupVariantsListResolver,
     ],
-    dateScalarMode: 'timestamp',
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
     globalMiddlewares: [AuthField],

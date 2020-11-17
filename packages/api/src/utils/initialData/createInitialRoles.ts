@@ -10,7 +10,7 @@ import {
 } from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
-import { LanguageType } from '../../entities/common';
+import { LanguageType } from '../../entities/commonEntities';
 import { DocumentType } from '@typegoose/typegoose';
 
 interface NavItemInterface {

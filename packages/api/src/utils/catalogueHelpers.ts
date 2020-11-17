@@ -1,7 +1,7 @@
 import { AttributeModel } from '../entities/Attribute';
 import { OptionModel, OptionVariant } from '../entities/Option';
 import getLangField from './translations/getLangField';
-import { GenderEnum, LanguageType } from '../entities/common';
+import { GenderEnum, LanguageType } from '../entities/commonEntities';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,

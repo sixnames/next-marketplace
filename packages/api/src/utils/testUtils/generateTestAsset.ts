@@ -1,4 +1,4 @@
-import { AssetType } from '../../entities/common';
+import { AssetType } from '../../entities/commonEntities';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import sharp from 'sharp';

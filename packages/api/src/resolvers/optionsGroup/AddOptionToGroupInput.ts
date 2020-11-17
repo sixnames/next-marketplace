@@ -1,6 +1,6 @@
 import { Field, InputType, ID } from 'type-graphql';
 import { LangInput } from '../common/LangInput';
-import { GenderEnum } from '../../entities/common';
+import { GenderEnum } from '../../entities/commonEntities';
 
 @InputType()
 export class OptionVariantInput {

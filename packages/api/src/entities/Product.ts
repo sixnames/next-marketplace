@@ -4,7 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { AssetType, CityCounter, LanguageType } from './common';
+import { AssetType, CityCounter, LanguageType } from './commonEntities';
 import { AttributesGroup } from './AttributesGroup';
 import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';

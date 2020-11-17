@@ -1,7 +1,8 @@
-import { Field, Float, ID, InputType } from 'type-graphql';
+import { Field, ID, InputType } from 'type-graphql';
 import { ContactsInput } from '../common/ContactsInput';
 import { GraphQLUpload } from 'apollo-server-express';
 import { Upload } from '../../types/upload';
+import { AddressInput } from '../common/AddressInput';
 
 @InputType()
 export class AddShopToCompanyInput {
@@ -20,6 +21,6 @@ export class AddShopToCompanyInput {
   @Field((_type) => [GraphQLUpload])
   assets: Upload[];
 
-  @Field((_type) => [Float])
-  address: number[];
+  @Field((_type) => AddressInput)
+  address: AddressInput;
 }

@@ -138,7 +138,10 @@ export class ShopResolver {
           ...values,
           slug,
           address: {
-            coordinates: values.address,
+            formattedAddress: values.address.formattedAddress,
+            point: {
+              coordinates: [values.address.point.lng, values.address.point.lat],
+            },
           },
           logo: logoAsset,
           assets: photosAssets,

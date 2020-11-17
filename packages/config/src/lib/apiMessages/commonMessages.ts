@@ -158,4 +158,43 @@ export const commonMessages: MessageInterface[] = [
       },
     ],
   },
+  {
+    key: 'validation.address',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Адрес обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Address is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.point.lat',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Широта обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Coordinates latitude is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.point.lng',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Долгота обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Coordinates longitude is required.',
+      },
+    ],
+  },
 ];

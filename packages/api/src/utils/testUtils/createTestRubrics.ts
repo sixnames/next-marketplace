@@ -12,7 +12,7 @@ import {
   MOCK_RUBRIC_LEVEL_TWO_B,
 } from '@yagu/mocks';
 import { generateDefaultLangSlug } from '../slug';
-import { GenderEnum } from '../../entities/common';
+import { GenderEnum } from '../../entities/commonEntities';
 import {
   createTestRubricVariants,
   CreateTestRubricVariantsInterface,

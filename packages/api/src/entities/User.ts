@@ -8,7 +8,7 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import getApiMessage from '../utils/translations/getApiMessage';
 import { compare } from 'bcryptjs';
 import { ContextInterface } from '../types/context';
-import { FormattedPhone } from './common';
+import { FormattedPhone } from './commonEntities';
 
 type Request = ContextInterface['req'];
 

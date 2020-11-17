@@ -1,7 +1,6 @@
 import { Field, Float, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
-import { DEFAULT_PRIORITY } from '@yagu/config';
-import { GEO_POINT_TYPE } from '../config';
+import { DEFAULT_PRIORITY, GEO_POINT_TYPE } from '@yagu/config';
 
 // Gender enum
 export enum GenderEnum {
@@ -38,6 +37,17 @@ export class PointGeoJSON {
   })
   @prop({ type: Number, required: true, default: [] })
   public coordinates: number[];
+}
+
+@ObjectType()
+export class Address {
+  @Field(() => String)
+  @prop({ type: String, required: true })
+  formattedAddress: string;
+
+  @Field(() => PointGeoJSON)
+  @prop({ type: PointGeoJSON, required: true })
+  point: PointGeoJSON;
 }
 
 @ObjectType()

@@ -1,4 +1,4 @@
-import { LanguageType } from '../../entities/common';
+import { LanguageType } from '../../entities/commonEntities';
 import { MessagesGroup, MessagesGroupModel } from '../../entities/MessagesGroup';
 import { MessageModel } from '../../entities/Message';
 import {

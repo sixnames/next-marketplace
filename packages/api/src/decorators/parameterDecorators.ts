@@ -4,7 +4,7 @@ import { AuthDecoratorConfigInterface } from './methodDecorators';
 import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
-import { LanguageType } from '../entities/common';
+import { LanguageType } from '../entities/commonEntities';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {

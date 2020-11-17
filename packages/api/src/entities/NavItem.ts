@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from 'type-graphql';
-import { LanguageType } from './common';
+import { LanguageType } from './commonEntities';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 
 @ObjectType()

@@ -11,6 +11,7 @@ import {
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
+  GEO_POINT_TYPE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
@@ -67,6 +68,15 @@ export const MOCK_SAMPLE_USER_B = {
   phone: '+79990002237',
 };
 
+// Addresses
+export const MOCK_ADDRESS_A = {
+  formattedAddress: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',
+  point: {
+    lat: 55.790229,
+    lng: 37.549611,
+  },
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',
@@ -106,7 +116,11 @@ export const MOCK_SHOP = {
     phones: ['+78990002245', '+78890002246'],
   },
   address: {
-    coordinates: [40, 40],
+    formattedAddress: MOCK_ADDRESS_A.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+    },
   },
 };
 
@@ -118,7 +132,11 @@ export const MOCK_NEW_SHOP = {
     phones: ['+78990002255', '+78890002256'],
   },
   address: {
-    coordinates: [40, 40],
+    formattedAddress: MOCK_ADDRESS_A.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+    },
   },
 };
 
@@ -147,15 +165,6 @@ export const ISO_LANGUAGES = [
     nativeName: 'Polska',
   },
 ];
-
-// Addresses
-export const MOCK_ADDRESS_A = {
-  address: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',
-  coordinates: {
-    lat: 55.790229,
-    lng: 37.549611,
-  },
-};
 
 // Site config
 export const SITE_CONFIGS_LOGO = {

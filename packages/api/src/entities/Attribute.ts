@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
-import { CityCounter, LanguageType } from './common';
+import { CityCounter, LanguageType } from './commonEntities';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,

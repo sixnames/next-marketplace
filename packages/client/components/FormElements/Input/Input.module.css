@@ -58,3 +58,11 @@
   fill: var(--textSecondaryColor);
   transform: translateY(-50%);
 }
+
+.clearButton {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  z-index: 2;
+  transform: translateY(-50%);
+}

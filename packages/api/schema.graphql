@@ -692,7 +692,12 @@ enum PaginateSortDirectionEnum {
 }
 
 type PointGeoJSON {
+  """
+  Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude.
+  """
   coordinates: [Float!]!
+
+  """Field that specifies the GeoJSON object type."""
   type: String!
 }
 

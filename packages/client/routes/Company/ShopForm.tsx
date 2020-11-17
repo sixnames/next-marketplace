@@ -8,6 +8,7 @@ import ModalButtons from '../../components/Modal/ModalButtons';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
+import FormikAddressInput from '../../components/FormElements/Input/FormikAddressInput';
 
 type ShopFormPayloadInterface = Omit<UpdateShopInput, 'shopId'>;
 
@@ -95,7 +96,7 @@ const ShopForm: React.FC<ShopFormInterface> = ({
                 showInlineError
               />
 
-              <FormikInput
+              <FormikAddressInput
                 label={'Адрес'}
                 name={'address'}
                 testId={'address'}

@@ -13,6 +13,7 @@ module.exports = (phase) => {
       ASSETS_HOST: process.env.ASSETS_HOST,
       ENV: process.env.ENV,
       API_BROWSER_HOST: process.env.API_BROWSER_HOST,
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
       NEXT_IN_PROD: phase === 'phase-production-build',
       NEXT_IN_DEV: phase === 'phase-development-server',
       NEXT_PHASE: phase,

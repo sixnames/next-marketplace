@@ -2,8 +2,9 @@ import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
+import { MOCK_NEW_SHOP } from '@yagu/mocks';
 
 describe('Shop', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -181,5 +182,45 @@ describe('Shop', () => {
     } = deleteProductFromShopPayload;
     expect(deleteProductFromShop.success).toBeTruthy();
     expect(deleteProductFromShop.shop.products.docs).toHaveLength(mockData.shopA.products.length);
+
+    // Should update shop
+    const shopNewName = 'shopNewName';
+    const updateShopPayload = await mutateWithImages({
+      mutation: gql`
+        mutation UpdateShop($input: UpdateShopInput!) {
+          updateShop(input: $input) {
+            success
+            message
+            shop {
+              id
+              nameString
+              assets {
+                index
+                url
+              }
+            }
+          }
+        }
+      `,
+      input: (images) => {
+        const [logo, ...assets] = images;
+        return {
+          shopId: currentShop.id,
+          nameString: shopNewName,
+          contacts: MOCK_NEW_SHOP.contacts,
+          address: [140, 140],
+          logo: [logo],
+          assets,
+        };
+      },
+      fileNames: ['test-image-0.png', 'test-image-1.png', 'test-image-2.png'],
+    });
+    const {
+      data: { updateShop },
+    } = updateShopPayload;
+    const updatedShop = updateShop.shop;
+    expect(updatedShop.nameString).toEqual(shopNewName);
+    expect(updatedShop.assets).toHaveLength(2);
+    expect(updateShop.success).toBeTruthy();
   });
 });

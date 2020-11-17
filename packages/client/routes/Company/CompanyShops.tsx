@@ -7,6 +7,8 @@ import Pager from '../../components/Pager/Pager';
 import Link from 'next/link';
 import { ROUTE_CMS } from '../../config';
 import TableRowImage from '../../components/Table/TableRowImage';
+import Button from '../../components/Buttons/Button';
+import RowWithGap from '../../layout/RowWithGap/RowWithGap';
 
 interface CompanyShopsInterface {
   company: CompanyFragment;
@@ -45,7 +47,16 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
 
   return (
     <Inner testId={'company-shops-list'}>
-      <Table<ShopInListFragment> columns={columns} data={docs} testIdKey={'slug'} />
+      <RowWithGap>
+        <Table<ShopInListFragment> columns={columns} data={docs} testIdKey={'slug'} />
+      </RowWithGap>
+
+      <RowWithGap>
+        <Button testId={'create-shop'} size={'small'}>
+          Добавить магазин
+        </Button>
+      </RowWithGap>
+
       <Pager page={page} setPage={setPage} totalPages={totalPages} />
     </Inner>
   );

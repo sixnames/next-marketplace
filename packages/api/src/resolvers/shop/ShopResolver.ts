@@ -28,12 +28,21 @@ import {
   ShopProduct,
   ShopProductModel,
 } from '../../entities/ShopProduct';
-import { addProductToShopSchema, deleteProductFromShopSchema } from '@yagu/validation';
+import {
+  addProductToShopSchema,
+  deleteProductFromShopSchema,
+  updateShopSchema,
+} from '@yagu/validation';
 import { ShopProductPaginateInput } from './ShopProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ShopPaginateInput } from './ShopPaginateInput';
 import { DeleteProductFromShopInput } from './DeleteProductFromShopInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
+import del from 'del';
+import { generateSlug } from '../../utils/slug';
+import storeUploads from '../../utils/assets/storeUploads';
+import { UpdateShopInput } from './UpdateShopInput';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,
@@ -75,6 +84,86 @@ export class ShopResolver {
       sortBy,
     });
     return ShopModel.paginate({ ...customFilter }, options);
+  }
+
+  @Mutation((_returns) => ShopPayloadType)
+  @ValidateMethod({ schema: updateShopSchema })
+  @AuthMethod(operationConfigUpdate)
+  async updateShop(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Shop>,
+    @Arg('input') input: UpdateShopInput,
+  ): Promise<ShopPayloadType> {
+    try {
+      const { shopId, ...values } = input;
+
+      const shop = await ShopModel.findOne({ _id: shopId, ...customFilter });
+      if (!shop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.notFound'),
+        };
+      }
+
+      const exist = await ShopModel.findOne({ nameString: values.nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.duplicate'),
+        };
+      }
+
+      // remove shop assets
+      const assetsPath = `./assets/${ASSETS_DIST_SHOPS}/${shop.slug}`;
+      const logoPath = `./assets/${ASSETS_DIST_SHOPS_LOGOS}/${shop.slug}`;
+      await del(assetsPath);
+      await del(logoPath);
+
+      // update shop
+      const slug = generateSlug(values.nameString);
+      const [logoAsset] = await storeUploads({
+        files: [values.logo[0]],
+        slug,
+        dist: ASSETS_DIST_SHOPS_LOGOS,
+      });
+      const photosAssets = await storeUploads({
+        files: values.assets,
+        slug,
+        dist: ASSETS_DIST_SHOPS,
+      });
+
+      const updatedShop = await ShopModel.findByIdAndUpdate(
+        shopId,
+        {
+          ...values,
+          slug,
+          address: {
+            coordinates: values.address,
+          },
+          logo: logoAsset,
+          assets: photosAssets,
+        },
+        { new: true },
+      );
+
+      if (!updatedShop) {
+        return {
+          success: false,
+          message: await getApiMessage('shops.update.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('shops.update.success'),
+        shop: updatedShop,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: await getResolverErrorMessage(e),
+      };
+    }
   }
 
   @Mutation((_returns) => ShopPayloadType)

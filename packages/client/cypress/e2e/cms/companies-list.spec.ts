@@ -112,11 +112,15 @@ describe('Companies list', () => {
     cy.shouldSuccess();
   });
 
-  it('Should display company shops list', () => {
+  it.only('Should display company shops list', () => {
     const { companyA } = mockData;
     cy.getByCy(`${companyA.slug}-update`).click();
     cy.visitMoreNavLink('shops');
     cy.getByCy('company-shops-list').should('exist');
     cy.getByCy(`${mockData.shopA.slug}-row`).should('exist');
+
+    // Should add shop to the company
+    cy.getByCy(`create-shop`).click();
+    cy.getByCy(`create-shop-modal`).should('exist');
   });
 });

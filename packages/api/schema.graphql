@@ -544,6 +544,7 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
+  updateShop(input: UpdateShopInput!): ShopPayloadType!
   updateShopInCompany(input: UpdateShopInCompanyInput!): CompanyPayloadtype!
   updateShopProduct(input: UpdateShopProductInput!): ShopProductPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
@@ -1330,6 +1331,15 @@ input UpdateShopInCompanyInput {
   address: [Float!]!
   assets: [Upload!]!
   companyId: ID!
+  contacts: ContactsInput!
+  logo: [Upload!]!
+  nameString: String!
+  shopId: ID!
+}
+
+input UpdateShopInput {
+  address: [Float!]!
+  assets: [Upload!]!
   contacts: ContactsInput!
   logo: [Upload!]!
   nameString: String!

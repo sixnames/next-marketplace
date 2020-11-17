@@ -431,15 +431,19 @@ export class CompanyResolver {
         dist: ASSETS_DIST_SHOPS,
       });
 
-      const updatedShop = await ShopModel.findByIdAndUpdate(shopId, {
-        ...values,
-        slug,
-        address: {
-          coordinates: values.address,
+      const updatedShop = await ShopModel.findByIdAndUpdate(
+        shopId,
+        {
+          ...values,
+          slug,
+          address: {
+            coordinates: values.address,
+          },
+          logo: logoAsset,
+          assets: photosAssets,
         },
-        logo: logoAsset,
-        assets: photosAssets,
-      });
+        { new: true },
+      );
 
       if (!updatedShop) {
         return {

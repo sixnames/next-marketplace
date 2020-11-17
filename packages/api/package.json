@@ -18,7 +18,6 @@
     "@yagu/shared": "1.0.0",
     "@typegoose/auto-increment": "^0.5.0",
     "@typegoose/typegoose": "^7.3.4",
-    "@googlemaps/google-maps-services-js": "^3.1.13",
     "apollo-server-express": "^2.17.0",
     "bcryptjs": "^2.4.3",
     "capitalize": "^2.0.3",

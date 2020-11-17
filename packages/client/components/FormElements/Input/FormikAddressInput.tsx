@@ -5,23 +5,16 @@ import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
 import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
 import classes from './FormikAddressInput.module.css';
-import { ReverseGeocodeResponseData } from '@googlemaps/google-maps-services-js/dist/geocode/reversegeocode';
 import Spinner from '../../Spinner/Spinner';
+import { GeocodeResultInterface, ReverseGeocodePayload } from '@yagu/shared';
+import fetch from 'node-fetch';
 
 type AddressInputType = Omit<InputPropsInterface, 'autoComplete' | 'type'>;
-
-interface FormikAddressInputResultInterface {
-  formattedAddress: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-}
 
 interface FormikAddressInputConsumerInterface extends AddressInputType {
   notValid: boolean;
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
-  fieldValue?: FormikAddressInputResultInterface | null;
+  fieldValue?: GeocodeResultInterface | null;
 }
 
 const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> = ({
@@ -35,33 +28,30 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   const { lang } = useLanguageContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [string, setString] = React.useState<string | null>('Складочная 1/7');
-  const [results, setResults] = React.useState<FormikAddressInputResultInterface[]>([]);
+  const [string, setString] = React.useState<string | null>(null);
+  const [results, setResults] = React.useState<GeocodeResultInterface[]>([]);
 
   useEffect(() => {
-    const geocode = async (value: string) => {
+    const getGeoResult = async (value: string) => {
       try {
         const address = `address=${value}`;
         const settings = `language=${lang}&location_type=ROOFTOP&result_type=street_address`;
         const apiKey = `key=${process.env.GOOGLE_MAPS_API_KEY}`;
         const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
         const res = await fetch(url);
-        const json: ReverseGeocodeResponseData = await res.json();
+        const json: ReverseGeocodePayload = await res.json();
+        const results = json.results.map(({ formatted_address, geometry }) => {
+          return {
+            formattedAddress: formatted_address,
+            coordinates: {
+              lat: geometry.location.lat,
+              lng: geometry.location.lng,
+            },
+          };
+        });
         setLoading(false);
-        if (json && json.status === 'OK' && json.results) {
-          setResults(
-            json.results.map(({ formatted_address, geometry }) => {
-              return {
-                formattedAddress: formatted_address,
-                coordinates: {
-                  lat: geometry.location.lat,
-                  lng: geometry.location.lng,
-                },
-              };
-            }),
-          );
-        }
-      } catch {
+        setResults(results);
+      } catch (e) {
         setLoading(false);
       }
     };
@@ -69,7 +59,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
     if (string && string.length > 0) {
       setResults([]);
       setLoading(true);
-      debounce(() => geocode(string), 2000)();
+      debounce(() => getGeoResult(string), 2000)();
     }
   }, [lang, string]);
 
@@ -107,10 +97,11 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         <div className={`${classes.list}`}>
           {loading ? <Spinner isNested /> : null}
           {!loading
-            ? results.map((result) => {
+            ? results.map((result, index) => {
                 const { formattedAddress } = result;
                 return (
                   <div
+                    data-cy={`address-result-${index}`}
                     onClick={() => setFieldValue(name, result)}
                     className={`${classes.listItem}`}
                     key={formattedAddress}

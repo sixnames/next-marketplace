@@ -148,6 +148,15 @@ export const ISO_LANGUAGES = [
   },
 ];
 
+// Addresses
+export const MOCK_ADDRESS_A = {
+  address: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',
+  coordinates: {
+    lat: 55.790229,
+    lng: 37.549611,
+  },
+};
+
 // Site config
 export const SITE_CONFIGS_LOGO = {
   slug: 'siteLogo',

@@ -4,7 +4,7 @@
 
 .inputHolder {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
@@ -22,6 +22,7 @@
 
 .inputControl {
   display: flex;
+  height: var(--formInputHeight);
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;

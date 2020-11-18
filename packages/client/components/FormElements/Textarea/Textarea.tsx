@@ -1,20 +1,11 @@
 import React from 'react';
 import classes from './Textarea.module.css';
-import InputLine from '../Input/InputLine';
-import { OnOffType, PostfixType, SizeType } from '../../../types';
+import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
+import { OnOffType } from '../../../types';
 
-interface TextareaInterface {
+export interface TextareaInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
-  lineClass?: string;
-  label: string;
-  low?: boolean;
-  wide?: boolean;
-  labelPostfix?: any;
-  postfix?: PostfixType;
-  labelLink?: any;
-  isRequired?: boolean;
-  size?: SizeType;
   value?: any;
   notValid?: boolean;
   autoComplete?: OnOffType;

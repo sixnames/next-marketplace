@@ -1,16 +1,37 @@
 import React from 'react';
 import classes from './FieldErrorMessage.module.css';
-import { ErrorMessage } from 'formik';
+import { FormikErrors } from 'formik';
 
-interface FieldErrorMessageInterface {
-  name: string;
-  className?: string;
+export interface ErrorMessageGapsInterface {
+  errorMessageLowBottom?: boolean;
+  errorMessageLowTop?: boolean;
 }
 
-const FieldErrorMessage: React.FC<FieldErrorMessageInterface> = ({ name, className }) => {
+interface FieldErrorMessageInterface extends ErrorMessageGapsInterface {
+  name: string;
+  className?: string;
+  error: string | FormikErrors<any> | string[] | FormikErrors<any>[] | undefined;
+}
+
+const FieldErrorMessage: React.FC<FieldErrorMessageInterface> = ({
+  name,
+  error,
+  className,
+  errorMessageLowTop,
+  errorMessageLowBottom,
+}) => {
+  if (!error) {
+    return null;
+  }
+
   return (
-    <div className={`${classes.frame} ${className ? className : ''}`} data-cy={`${name}-error`}>
-      <ErrorMessage name={name} />
+    <div
+      className={`${classes.frame} ${errorMessageLowBottom ? classes.frameLowBottom : ''} ${
+        errorMessageLowTop ? classes.frameLowTop : ''
+      } ${className ? className : ''}`}
+      data-cy={`${name}-error`}
+    >
+      {`${error}`}
     </div>
   );
 };

@@ -5,14 +5,16 @@ import TTip from '../../TTip/TTip';
 import FormikDropZonePreview from './FormikDropZonePreview';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
+import FieldErrorMessage, {
+  ErrorMessageGapsInterface,
+} from '../FieldErrorMessage/FieldErrorMessage';
 import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
 import { NEGATIVE_INDEX } from '../../../config';
 import { alwaysArray } from '@yagu/shared';
 import { noNaN } from '../../../utils/noNaN';
 
-interface FormikDropZoneInterface {
+interface FormikDropZoneInterface extends ErrorMessageGapsInterface {
   format?: string;
   name: string;
   label?: string;
@@ -135,7 +137,15 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
 };
 
 const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
-  const { frameClass, name, showInlineError, limit, disabled } = props;
+  const {
+    frameClass,
+    name,
+    showInlineError,
+    limit,
+    disabled,
+    errorMessageLowTop,
+    errorMessageLowBottom,
+  } = props;
   return (
     <Field name={name}>
       {({ field, form: { setFieldValue, errors } }: FieldProps<any[]>) => {
@@ -155,7 +165,14 @@ const FormikDropZone: React.FC<FormikDropZoneInterface> = (props) => {
               {...props}
             />
 
-            {showError && <FieldErrorMessage name={name} />}
+            {showError && (
+              <FieldErrorMessage
+                errorMessageLowBottom={errorMessageLowBottom}
+                errorMessageLowTop={errorMessageLowTop}
+                error={error}
+                name={name}
+              />
+            )}
           </div>
         );
       }}

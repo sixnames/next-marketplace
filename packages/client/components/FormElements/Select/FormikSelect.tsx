@@ -2,9 +2,11 @@ import React from 'react';
 import { Field, FieldProps } from 'formik';
 import Select, { SelectInterface } from './Select';
 import { get } from 'lodash';
-import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
+import FieldErrorMessage, {
+  ErrorMessageGapsInterface,
+} from '../FieldErrorMessage/FieldErrorMessage';
 
-export interface FormikSelectInterface extends SelectInterface {
+export interface FormikSelectInterface extends SelectInterface, ErrorMessageGapsInterface {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -15,12 +17,16 @@ const FormikSelect: React.FC<FormikSelectInterface> = ({
   isRequired,
   setNameToValue,
   showInlineError,
+  errorMessageLowTop,
+  errorMessageLowBottom,
   ...props
 }) => {
   return (
     <Field name={name}>
-      {({ field, form }: FieldProps) => {
-        const notValid = !!get(form.errors, name);
+      {({ field, form: { errors } }: FieldProps) => {
+        const error = get(errors, name);
+        const notValid = Boolean(error);
+        const showError = showInlineError && notValid;
 
         return (
           <div>
@@ -33,7 +39,14 @@ const FormikSelect: React.FC<FormikSelectInterface> = ({
               notValid={notValid}
             />
 
-            {showInlineError && notValid && <FieldErrorMessage name={name} />}
+            {showError && (
+              <FieldErrorMessage
+                errorMessageLowBottom={errorMessageLowBottom}
+                errorMessageLowTop={errorMessageLowTop}
+                error={error}
+                name={name}
+              />
+            )}
           </div>
         );
       }}

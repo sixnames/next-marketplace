@@ -3,7 +3,9 @@ import { useLanguageContext } from '../../../context/languageContext';
 import { get } from 'lodash';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
-import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
+import FieldErrorMessage, {
+  ErrorMessageGapsInterface,
+} from '../FieldErrorMessage/FieldErrorMessage';
 import classes from './FormikAddressInput.module.css';
 import Spinner from '../../Spinner/Spinner';
 import { GeocodeResultInterface, ReverseGeocodePayload } from '@yagu/shared';
@@ -127,7 +129,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   );
 };
 
-export interface FormikAddressInputInterface extends AddressInputType {
+export interface FormikAddressInputInterface extends AddressInputType, ErrorMessageGapsInterface {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -138,6 +140,8 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
   showInlineError,
   frameClass,
   low,
+  errorMessageLowBottom,
+  errorMessageLowTop,
   ...props
 }) => {
   return (
@@ -160,7 +164,14 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
               disabled={fieldValue}
               {...props}
             />
-            {showError && <FieldErrorMessage name={name} />}
+            {showError && (
+              <FieldErrorMessage
+                errorMessageLowBottom={errorMessageLowBottom}
+                errorMessageLowTop={errorMessageLowTop}
+                error={error}
+                name={name}
+              />
+            )}
           </div>
         );
       }}

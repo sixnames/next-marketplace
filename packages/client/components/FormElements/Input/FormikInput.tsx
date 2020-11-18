@@ -2,9 +2,11 @@ import React from 'react';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
+import FieldErrorMessage, {
+  ErrorMessageGapsInterface,
+} from '../FieldErrorMessage/FieldErrorMessage';
 
-export interface FormikInputPropsInterface extends InputPropsInterface {
+export interface FormikInputPropsInterface extends InputPropsInterface, ErrorMessageGapsInterface {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -16,6 +18,8 @@ const FormikInput: React.FC<FormikInputPropsInterface> = ({
   type,
   showInlineError,
   frameClass,
+  errorMessageLowTop,
+  errorMessageLowBottom,
   ...props
 }) => {
   return (
@@ -35,7 +39,14 @@ const FormikInput: React.FC<FormikInputPropsInterface> = ({
               notValid={notValid}
             />
 
-            {showError && <FieldErrorMessage name={name} />}
+            {showError && (
+              <FieldErrorMessage
+                errorMessageLowBottom={errorMessageLowBottom}
+                errorMessageLowTop={errorMessageLowTop}
+                error={error}
+                name={name}
+              />
+            )}
           </div>
         );
       }}

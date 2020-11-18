@@ -2,5 +2,13 @@
   font-weight: 600;
   color: var(--red);
   margin-bottom: var(--lineGap);
-  margin-top: var(--lineGap);
+  margin-top: calc(var(--lineGap) / 2);
+}
+
+.frameLowTop {
+  margin-top: 0;
+}
+
+.frameLowBottom {
+  margin-bottom: 0;
 }

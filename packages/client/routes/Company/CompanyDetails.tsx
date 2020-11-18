@@ -34,7 +34,7 @@ const CompanyDetails: React.FC<CompanyDetailsInterface> = ({ company }) => {
     schema: updateCompanyClientSchema,
   });
 
-  const initialCompany = removeApolloFields(omit(company, ['shops', 'itemId', 'slug']));
+  const initialCompany = removeApolloFields(omit(company, ['itemId', 'slug']));
   const initialValues = {
     ...initialCompany,
     contacts: removeApolloFields(initialCompany.contacts),

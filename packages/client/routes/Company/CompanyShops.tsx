@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  CompanyFragment,
   ShopInListFragment,
   useDeleteShopFromCompanyMutation,
+  useGetCompanyShopsQuery,
 } from '../../generated/apolloComponents';
 import Inner from '../../components/Inner/Inner';
 import Table, { TableColumn } from '../../components/Table/Table';
@@ -18,13 +18,14 @@ import { CreateShopModalInterface } from '../../components/Modal/CreateShopModal
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
-import { COMPANY_QUERY } from '../../graphql/query/companiesQueries';
+import { COMPANY_SHOPS_QUERY } from '../../graphql/query/companiesQueries';
+import Spinner from '../../components/Spinner/Spinner';
+import RequestError from '../../components/RequestError/RequestError';
+import { useRouter } from 'next/router';
 
-interface CompanyShopsInterface {
-  company: CompanyFragment;
-}
-
-const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
+const CompanyShops: React.FC = () => {
+  const { query } = useRouter();
+  const { companyId } = query;
   const {
     showModal,
     onErrorCallback,
@@ -32,21 +33,40 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
     showLoading,
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
+  const { setPage, page, contentFilters } = useDataLayoutMethods();
+  const { data, loading, error } = useGetCompanyShopsQuery({
+    variables: {
+      companyId: `${companyId}`,
+      input: {
+        page: contentFilters.page,
+      },
+    },
+  });
   const [deleteShopFromCompanyMutation] = useDeleteShopFromCompanyMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteShopFromCompany),
     onError: onErrorCallback,
     refetchQueries: [
       {
-        query: COMPANY_QUERY,
+        query: COMPANY_SHOPS_QUERY,
         variables: {
-          id: company.id,
+          companyId: `${companyId}`,
+          input: {
+            page: contentFilters.page,
+          },
         },
       },
     ],
   });
-  const { setPage, page } = useDataLayoutMethods();
-  const { shops } = company;
-  const { totalPages, docs } = shops;
+
+  if (loading) {
+    return <Spinner isNested />;
+  }
+
+  if (error || !data || !data.getCompany) {
+    return <RequestError />;
+  }
+
+  const { totalPages, docs } = data.getCompany.shops;
 
   const columns: TableColumn<ShopInListFragment>[] = [
     {
@@ -90,7 +110,7 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
                       variables: {
                         input: {
                           shopId: dataItem.id,
-                          companyId: company.id,
+                          companyId: `${companyId}`,
                         },
                       },
                     }).catch(() => {
@@ -119,7 +139,7 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
             showModal<CreateShopModalInterface>({
               type: CREATE_SHOP_MODAL,
               props: {
-                companyId: company.id,
+                companyId: `${companyId}`,
               },
             });
           }}

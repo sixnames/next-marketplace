@@ -44,7 +44,6 @@ export const shopInListFragment = gql`
   }
 `;
 
-// TODO separate company shops query for pagination
 export const companyFragment = gql`
   fragment Company on Company {
     id
@@ -65,15 +64,8 @@ export const companyFragment = gql`
       emails
       phones
     }
-    shops {
-      totalPages
-      docs {
-        ...ShopInList
-      }
-    }
   }
   ${userInListFragment}
-  ${shopInListFragment}
 `;
 
 export const COMPANY_QUERY = gql`

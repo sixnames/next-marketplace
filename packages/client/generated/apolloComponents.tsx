@@ -3275,13 +3275,6 @@ export type CompanyFragment = (
   ), contacts: (
     { __typename?: 'ContactsType' }
     & Pick<ContactsType, 'emails' | 'phones'>
-  ), shops: (
-    { __typename?: 'PaginatedShopsResponse' }
-    & Pick<PaginatedShopsResponse, 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'Shop' }
-      & ShopInListFragment
-    )> }
   ) }
 );
 
@@ -4253,6 +4246,18 @@ export const CompanyInListFragmentDoc = gql`
   }
 }
     `;
+export const ShopInListFragmentDoc = gql`
+    fragment ShopInList on Shop {
+  id
+  itemId
+  slug
+  nameString
+  logo {
+    index
+    url
+  }
+}
+    `;
 export const UserInListFragmentDoc = gql`
     fragment UserInList on User {
   id
@@ -4267,18 +4272,6 @@ export const UserInListFragmentDoc = gql`
   role {
     id
     nameString
-  }
-}
-    `;
-export const ShopInListFragmentDoc = gql`
-    fragment ShopInList on Shop {
-  id
-  itemId
-  slug
-  nameString
-  logo {
-    index
-    url
   }
 }
     `;
@@ -4302,15 +4295,8 @@ export const CompanyFragmentDoc = gql`
     emails
     phones
   }
-  shops {
-    totalPages
-    docs {
-      ...ShopInList
-    }
-  }
 }
-    ${UserInListFragmentDoc}
-${ShopInListFragmentDoc}`;
+    ${UserInListFragmentDoc}`;
 export const ShopProductNodeFragmentDoc = gql`
     fragment ShopProductNode on Product {
   id

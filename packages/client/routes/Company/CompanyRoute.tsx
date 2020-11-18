@@ -1,6 +1,5 @@
 import React from 'react';
 import DataLayout from '../../components/DataLayout/DataLayout';
-import useRouterQuery from '../../hooks/useRouterQuery';
 import useTabsConfig from '../../hooks/useTabsConfig';
 import { useGetCompanyQuery } from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
@@ -10,11 +9,12 @@ import TabsContent from '../../components/TabsContent/TabsContent';
 import CompanyDetails from './CompanyDetails';
 import CompanyShops from './CompanyShops';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
+import { useRouter } from 'next/router';
 
 const CompanyRoute: React.FC = () => {
-  const { query } = useRouterQuery();
-  const { generateTabsConfig } = useTabsConfig();
+  const { query } = useRouter();
   const { companyId } = query;
+  const { generateTabsConfig } = useTabsConfig();
   const { data, loading, error } = useGetCompanyQuery({
     fetchPolicy: 'network-only',
     skip: !companyId,
@@ -55,7 +55,7 @@ const CompanyRoute: React.FC = () => {
         <DataLayoutContentFrame>
           <TabsContent>
             <CompanyDetails company={company} />
-            <CompanyShops company={company} />
+            <CompanyShops />
           </TabsContent>
         </DataLayoutContentFrame>
       )}

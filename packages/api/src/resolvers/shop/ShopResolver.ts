@@ -105,7 +105,10 @@ export class ShopResolver {
         };
       }
 
-      const exist = await ShopModel.findOne({ nameString: values.nameString });
+      const exist = await ShopModel.findOne({
+        _id: { $ne: shop.id },
+        nameString: values.nameString,
+      });
       if (exist) {
         return {
           success: false,

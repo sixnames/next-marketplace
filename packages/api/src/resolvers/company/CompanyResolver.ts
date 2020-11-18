@@ -162,7 +162,7 @@ export class CompanyResolver {
         };
       }
 
-      const exist = await CompanyModel.findOne({ nameString });
+      const exist = await CompanyModel.findOne({ _id: { $ne: company.id }, nameString });
       if (exist) {
         return {
           success: false,
@@ -407,7 +407,10 @@ export class CompanyResolver {
         };
       }
 
-      const exist = await ShopModel.findOne({ nameString: values.nameString });
+      const exist = await ShopModel.findOne({
+        _id: { $ne: shop.id },
+        nameString: values.nameString,
+      });
       if (exist) {
         return {
           success: false,

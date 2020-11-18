@@ -14,7 +14,7 @@ describe('Companies list', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should display companies list in CMS', () => {
@@ -112,7 +112,7 @@ describe('Companies list', () => {
     cy.shouldSuccess();
   });
 
-  it.only('Should display company shops list', () => {
+  it('Should display company shops list', () => {
     const { companyA } = mockData;
     cy.getByCy(`${companyA.slug}-update`).click();
     cy.visitMoreNavLink('shops');
@@ -120,38 +120,38 @@ describe('Companies list', () => {
     cy.getByCy(`${mockData.shopA.slug}-row`).should('exist');
 
     // Should add shop to the company
-    // cy.getByCy(`create-shop`).click();
-    // cy.getByCy(`create-shop-modal`).should('exist');
+    cy.getByCy(`create-shop`).click();
+    cy.getByCy(`create-shop-modal`).should('exist');
 
     // add logo
-    // cy.getByCy('shop-logo').attachFile('test-company-logo.png', { subjectType: 'drag-n-drop' });
+    cy.getByCy('shop-logo').attachFile('test-company-logo.png', { subjectType: 'drag-n-drop' });
 
     // add assets
-    // cy.getByCy('shop-assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
+    cy.getByCy('shop-assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
 
     // add name
-    // cy.getByCy('nameString').type(MOCK_NEW_COMPANY.nameString);
+    cy.getByCy('nameString').type(MOCK_NEW_COMPANY.nameString);
 
     // add emails
-    // cy.getByCy(`email-0`).type(MOCK_NEW_COMPANY.contacts.emails[0]);
+    cy.getByCy(`email-0`).type(MOCK_NEW_COMPANY.contacts.emails[0]);
 
     // add phones
-    // cy.getByCy(`phone-0`).type(MOCK_NEW_COMPANY.contacts.phones[0]);
+    cy.getByCy(`phone-0`).type(MOCK_NEW_COMPANY.contacts.phones[0]);
 
     // address
-    // cy.getByCy(`address`).type(MOCK_ADDRESS_A.formattedAddress);
-    // cy.getByCy(`address-result-0`).click();
-    // cy.getByCy(`address`).should('have.value', MOCK_ADDRESS_A.formattedAddress);
+    cy.getByCy(`address`).type(MOCK_ADDRESS_A.formattedAddress);
+    cy.getByCy(`address-result-0`).click();
+    cy.getByCy(`address`).should('have.value', MOCK_ADDRESS_A.formattedAddress);
 
     // submit
-    // cy.getByCy(`shop-submit`).click();
-    // cy.shouldSuccess();
-    // cy.getByCy(`create-shop-modal`).should('not.exist');
-    // cy.getByCy('company-shops-list').should('contain', MOCK_NEW_COMPANY.nameString);
+    cy.getByCy(`shop-submit`).click();
+    cy.shouldSuccess();
+    cy.getByCy(`create-shop-modal`).should('not.exist');
+    cy.getByCy('company-shops-list').should('contain', MOCK_NEW_COMPANY.nameString);
 
     // Should delete shop
     cy.getByCy(`${mockData.shopA.itemId}-delete`).click();
-    cy.getByCy(`delete-chop-modal`).should('exist');
+    cy.getByCy(`delete-shop-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.shouldSuccess();
     cy.getByCy(`${mockData.shopA.itemId}-row`).should('not.exist');

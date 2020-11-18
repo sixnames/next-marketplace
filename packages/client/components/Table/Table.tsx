@@ -46,7 +46,7 @@ const Table = <T extends Record<string, any>>({
   onRowClick,
   className,
   fixPosition = 0,
-  emptyMessage = 'Нет данных',
+  emptyMessage = 'Список пуст',
   testIdKey = '',
   tableTestId,
 }: TableInterface<T>) => {

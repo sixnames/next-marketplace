@@ -22,6 +22,7 @@ import {
   CREATE_CONNECTION_MODAL,
   PRODUCT_SEARCH_MODAL,
   USERS_SEARCH_MODAL,
+  CREATE_SHOP_MODAL,
 } from '../../config/modals';
 
 const ConfirmModal = React.lazy(() => import('./ConfirmModal/ConfirmModal'));
@@ -58,6 +59,7 @@ const UpdateMyPasswordModal = React.lazy(
 const CreateConnectionModal = React.lazy(
   () => import('./CreateConnectionModal/CreateConnectionModal'),
 );
+const CreateShopModal = React.lazy(() => import('./CreateShopModal/CreateShopModal'));
 
 interface ModalInterface {
   modalType: string;
@@ -108,6 +110,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === UPDATE_MY_PASSWORD_MODAL && <UpdateMyPasswordModal {...modalProps} />}
 
           {modalType === CREATE_CONNECTION_MODAL && <CreateConnectionModal {...modalProps} />}
+
+          {modalType === CREATE_SHOP_MODAL && <CreateShopModal {...modalProps} />}
         </Suspense>
       </div>
 

@@ -122,5 +122,25 @@ describe('Companies list', () => {
     // Should add shop to the company
     cy.getByCy(`create-shop`).click();
     cy.getByCy(`create-shop-modal`).should('exist');
+
+    // add logo
+    cy.getByCy('shop-logo').attachFile('test-company-logo.png', { subjectType: 'drag-n-drop' });
+    cy.getByCy('shop-logo-text').should('contain', 'Добавлено максимальное количество файлов.');
+
+    // add name
+    cy.getByCy('nameString').type(MOCK_NEW_COMPANY.nameString);
+
+    // add emails
+    cy.getByCy(`email-0`).type(MOCK_NEW_COMPANY.contacts.emails[0]);
+    cy.getByCy(`email-0-add`).click();
+    cy.getByCy(`email-1`).type(MOCK_NEW_COMPANY.contacts.emails[1]);
+    cy.getByCy(`email-1-remove`).click();
+    cy.getByCy(`remove-field-confirm`).click();
+    cy.getByCy(`email-1`).should('not.exist');
+
+    // add phones
+    cy.getByCy(`phone-0`).type(MOCK_NEW_COMPANY.contacts.phones[0]);
+    cy.getByCy(`phone-0-add`).click();
+    cy.getByCy(`phone-1`).type(MOCK_NEW_COMPANY.contacts.phones[1]);
   });
 });

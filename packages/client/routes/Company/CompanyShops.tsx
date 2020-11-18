@@ -9,12 +9,16 @@ import { ROUTE_CMS } from '../../config';
 import TableRowImage from '../../components/Table/TableRowImage';
 import Button from '../../components/Buttons/Button';
 import RowWithGap from '../../layout/RowWithGap/RowWithGap';
+import { useAppContext } from '../../context/appContext';
+import { CREATE_SHOP_MODAL } from '../../config/modals';
+import { CreateShopModalInterface } from '../../components/Modal/CreateShopModal/CreateShopModal';
 
 interface CompanyShopsInterface {
   company: CompanyFragment;
 }
 
 const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
+  const { showModal } = useAppContext();
   const { setPage, page } = useDataLayoutMethods();
   const { shops } = company;
   const { totalPages, docs } = shops;
@@ -52,7 +56,18 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
       </RowWithGap>
 
       <RowWithGap>
-        <Button testId={'create-shop'} size={'small'}>
+        <Button
+          onClick={() => {
+            showModal<CreateShopModalInterface>({
+              type: CREATE_SHOP_MODAL,
+              props: {
+                companyId: company.id,
+              },
+            });
+          }}
+          testId={'create-shop'}
+          size={'small'}
+        >
           Добавить магазин
         </Button>
       </RowWithGap>

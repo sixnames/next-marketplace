@@ -1,6 +1,6 @@
 import React from 'react';
 import { ObjectSchema } from 'yup';
-import { UpdateShopInput, UserInListFragment } from '../../generated/apolloComponents';
+import { AddressInput, UpdateShopInput } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { Form, Formik } from 'formik';
 import Button from '../../components/Buttons/Button';
@@ -12,9 +12,8 @@ import FormikAddressInput from '../../components/FormElements/Input/FormikAddres
 
 type ShopFormPayloadInterface = Omit<UpdateShopInput, 'shopId'>;
 
-interface ShopFormInitialValuesInterface extends Omit<UpdateShopInput, 'shopId'> {
-  owner: UserInListFragment | null;
-  staff: UserInListFragment[];
+interface ShopFormInitialValuesInterface extends Omit<UpdateShopInput, 'shopId' | 'address'> {
+  address?: AddressInput | null;
 }
 
 interface ShopFormInterface {
@@ -39,14 +38,18 @@ const ShopForm: React.FC<ShopFormInterface> = ({
       validationSchema={validationSchema}
       initialValues={initialValues}
       onSubmit={(values) => {
-        if (!values.owner) {
+        const { address } = values;
+        if (!address) {
           showErrorNotification({
-            title: 'Добавьте владельца компании',
+            title: 'Укажите адрес магазина',
           });
           return;
         }
 
-        onSubmitHandler(values);
+        onSubmitHandler({
+          ...values,
+          address,
+        });
       }}
     >
       {() => {

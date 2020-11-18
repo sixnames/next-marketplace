@@ -3298,6 +3298,62 @@ export type GetCompanyQuery = (
   ) }
 );
 
+export type ShopProductNodeFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'mainImage'>
+);
+
+export type ShopProductFragment = (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id' | 'available' | 'price'>
+  & { product: (
+    { __typename?: 'Product' }
+    & ShopProductNodeFragment
+  ) }
+);
+
+export type ShopFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'itemId' | 'nameString'>
+  & { products: (
+    { __typename?: 'PaginatedShopProductsResponse' }
+    & Pick<PaginatedShopProductsResponse, 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'ShopProduct' }
+      & ShopProductFragment
+    )> }
+  ), contacts: (
+    { __typename?: 'ContactsType' }
+    & Pick<ContactsType, 'emails' | 'phones'>
+  ), address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { point: (
+      { __typename?: 'PointGeoJSON' }
+      & Pick<PointGeoJson, 'coordinates'>
+    ) }
+  ), logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  ), assets: Array<(
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  )> }
+);
+
+export type GetShopQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetShopQuery = (
+  { __typename?: 'Query' }
+  & { getShop: (
+    { __typename?: 'Shop' }
+    & ShopFragment
+  ) }
+);
+
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
   & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
@@ -4203,6 +4259,55 @@ export const CompanyFragmentDoc = gql`
 }
     ${UserInListFragmentDoc}
 ${ShopInListFragmentDoc}`;
+export const ShopProductNodeFragmentDoc = gql`
+    fragment ShopProductNode on Product {
+  id
+  itemId
+  nameString
+  mainImage
+}
+    `;
+export const ShopProductFragmentDoc = gql`
+    fragment ShopProduct on ShopProduct {
+  id
+  available
+  price
+  product {
+    ...ShopProductNode
+  }
+}
+    ${ShopProductNodeFragmentDoc}`;
+export const ShopFragmentDoc = gql`
+    fragment Shop on Shop {
+  id
+  itemId
+  nameString
+  products {
+    totalPages
+    docs {
+      ...ShopProduct
+    }
+  }
+  contacts {
+    emails
+    phones
+  }
+  address {
+    formattedAddress
+    point {
+      coordinates
+    }
+  }
+  logo {
+    index
+    url
+  }
+  assets {
+    index
+    url
+  }
+}
+    ${ShopProductFragmentDoc}`;
 export const SiteConfigFragmentDoc = gql`
     fragment SiteConfig on Config {
   id
@@ -6739,6 +6844,39 @@ export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
 export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
 export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
+export const GetShopDocument = gql`
+    query GetShop($id: ID!) {
+  getShop(id: $id) {
+    ...Shop
+  }
+}
+    ${ShopFragmentDoc}`;
+
+/**
+ * __useGetShopQuery__
+ *
+ * To run a query within a React component, call `useGetShopQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShopQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShopQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShopQuery(baseOptions?: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+        return Apollo.useQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
+      }
+export function useGetShopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+          return Apollo.useLazyQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
+        }
+export type GetShopQueryHookResult = ReturnType<typeof useGetShopQuery>;
+export type GetShopLazyQueryHookResult = ReturnType<typeof useGetShopLazyQuery>;
+export type GetShopQueryResult = Apollo.QueryResult<GetShopQuery, GetShopQueryVariables>;
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {

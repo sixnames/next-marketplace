@@ -83,3 +83,66 @@ export const COMPANY_QUERY = gql`
   }
   ${companyFragment}
 `;
+
+export const shopProductNodeFragment = gql`
+  fragment ShopProductNode on Product {
+    id
+    itemId
+    nameString
+    mainImage
+  }
+`;
+
+export const shopProductFragment = gql`
+  fragment ShopProduct on ShopProduct {
+    id
+    available
+    price
+    product {
+      ...ShopProductNode
+    }
+  }
+  ${shopProductNodeFragment}
+`;
+
+export const shopFragment = gql`
+  fragment Shop on Shop {
+    id
+    itemId
+    nameString
+    products {
+      totalPages
+      docs {
+        ...ShopProduct
+      }
+    }
+    contacts {
+      emails
+      phones
+    }
+    address {
+      formattedAddress
+      point {
+        coordinates
+      }
+    }
+    logo {
+      index
+      url
+    }
+    assets {
+      index
+      url
+    }
+  }
+  ${shopProductFragment}
+`;
+
+export const SHOP_QUERY = gql`
+  query GetShop($id: ID!) {
+    getShop(id: $id) {
+      ...Shop
+    }
+  }
+  ${shopFragment}
+`;

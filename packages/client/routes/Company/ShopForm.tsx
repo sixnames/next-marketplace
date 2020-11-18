@@ -4,7 +4,6 @@ import { AddressInput, UpdateShopInput } from '../../generated/apolloComponents'
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { Form, Formik } from 'formik';
 import Button from '../../components/Buttons/Button';
-import ModalButtons from '../../components/Modal/ModalButtons';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
@@ -55,62 +54,60 @@ const ShopForm: React.FC<ShopFormInterface> = ({
       {() => {
         return (
           <Form>
-            <ModalButtons>
-              <FormikDropZone
-                label={'Логотип'}
-                name={'logo'}
-                testId={'shop-logo'}
-                limit={logoInputFilesLimit}
-                isRequired
-                showInlineError
-              />
+            <FormikDropZone
+              label={'Логотип'}
+              name={'logo'}
+              testId={'shop-logo'}
+              limit={logoInputFilesLimit}
+              isRequired
+              showInlineError
+            />
 
-              <FormikDropZone
-                label={'Фото магазина'}
-                name={'assets'}
-                testId={'shop-assets'}
-                isRequired
-                showInlineError
-              />
+            <FormikDropZone
+              label={'Фото магазина'}
+              name={'assets'}
+              testId={'shop-assets'}
+              isRequired
+              showInlineError
+            />
 
-              <FormikInput
-                label={'Название'}
-                name={'nameString'}
-                testId={'nameString'}
-                showInlineError
-                isRequired
-              />
+            <FormikInput
+              label={'Название'}
+              name={'nameString'}
+              testId={'nameString'}
+              showInlineError
+              isRequired
+            />
 
-              <FormikMultiLineInput
-                label={'Email'}
-                name={'contacts.emails'}
-                type={'email'}
-                testId={'email'}
-                isRequired
-                showInlineError
-              />
+            <FormikMultiLineInput
+              label={'Email'}
+              name={'contacts.emails'}
+              type={'email'}
+              testId={'email'}
+              isRequired
+              showInlineError
+            />
 
-              <FormikMultiLineInput
-                label={'Телефон'}
-                name={'contacts.phones'}
-                type={'tel'}
-                testId={'phone'}
-                isRequired
-                showInlineError
-              />
+            <FormikMultiLineInput
+              label={'Телефон'}
+              name={'contacts.phones'}
+              type={'tel'}
+              testId={'phone'}
+              isRequired
+              showInlineError
+            />
 
-              <FormikAddressInput
-                label={'Адрес'}
-                name={'address'}
-                testId={'address'}
-                showInlineError
-                isRequired
-              />
+            <FormikAddressInput
+              label={'Адрес'}
+              name={'address'}
+              testId={'address'}
+              showInlineError
+              isRequired
+            />
 
-              <Button type={'submit'} testId={'shop-submit'}>
-                {submitButtonText}
-              </Button>
-            </ModalButtons>
+            <Button type={'submit'} testId={'shop-submit'}>
+              {submitButtonText}
+            </Button>
           </Form>
         );
       }}

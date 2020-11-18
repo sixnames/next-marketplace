@@ -149,5 +149,7 @@ export const addressSchema = (args: MultiLangSchemaMessagesInterface) => {
       getFieldValidationMessage({ ...args, key: 'validation.address' }),
     ),
     point: geoPointSchema(args),
-  });
+  })
+    .nullable()
+    .required(getFieldValidationMessage({ ...args, key: 'validation.address' }));
 };

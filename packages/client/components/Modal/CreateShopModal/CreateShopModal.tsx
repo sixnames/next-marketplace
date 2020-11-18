@@ -4,12 +4,33 @@ import ModalTitle from '../ModalTitle';
 import ShopForm from '../../../routes/Company/ShopForm';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import { addShopToCompanySchema } from '@yagu/validation';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import { useAddShopToCompanyMutation } from '../../../generated/apolloComponents';
+import { COMPANY_QUERY } from '../../../graphql/query/companiesQueries';
 
 export interface CreateShopModalInterface {
   companyId: string;
 }
 
 const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
+  const {
+    onCompleteCallback,
+    onErrorCallback,
+    showLoading,
+    showErrorNotification,
+  } = useMutationCallbacks({ withModal: true });
+  const [addShopToCompanyMutation] = useAddShopToCompanyMutation({
+    onCompleted: (data) => onCompleteCallback(data.addShopToCompany),
+    onError: onErrorCallback,
+    refetchQueries: [
+      {
+        query: COMPANY_QUERY,
+        variables: {
+          id: companyId,
+        },
+      },
+    ],
+  });
   const validationSchema = useValidationSchema({
     schema: addShopToCompanySchema,
   });
@@ -21,8 +42,8 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
     logo: [],
     assets: [],
     contacts: {
-      emails: [],
-      phones: [],
+      emails: [''],
+      phones: [''],
     },
   };
 
@@ -32,7 +53,19 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
       <ShopForm
         validationSchema={validationSchema}
         initialValues={initialValues}
-        onSubmitHandler={(values) => console.log(values)}
+        onSubmitHandler={(values) => {
+          showLoading();
+          addShopToCompanyMutation({
+            variables: {
+              input: {
+                ...values,
+                companyId,
+              },
+            },
+          }).catch(() => {
+            showErrorNotification({});
+          });
+        }}
       />
     </ModalFrame>
   );

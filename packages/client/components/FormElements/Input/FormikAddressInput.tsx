@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useLanguageContext } from '../../../context/languageContext';
-import { debounce, get } from 'lodash';
+import { get } from 'lodash';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
 import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
 import classes from './FormikAddressInput.module.css';
 import Spinner from '../../Spinner/Spinner';
 import { GeocodeResultInterface, ReverseGeocodePayload } from '@yagu/shared';
-import fetch from 'node-fetch';
+import { useDebounce } from 'use-debounce';
 
 type AddressInputType = Omit<InputPropsInterface, 'autoComplete' | 'type'>;
 
@@ -29,6 +29,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [string, setString] = React.useState<string | null>(null);
+  const [value] = useDebounce(string, 1000);
   const [results, setResults] = React.useState<GeocodeResultInterface[]>([]);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         const results = json.results.map(({ formatted_address, geometry }) => {
           return {
             formattedAddress: formatted_address,
-            coordinates: {
+            point: {
               lat: geometry.location.lat,
               lng: geometry.location.lng,
             },
@@ -56,12 +57,21 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
       }
     };
 
-    if (string && string.length > 0) {
+    if (value && value.length > 0) {
       setResults([]);
       setLoading(true);
-      debounce(() => getGeoResult(string), 2000)();
+
+      getGeoResult(value).catch(() => {
+        setIsOpen(false);
+        setLoading(false);
+        setResults([]);
+      });
+    } else {
+      setIsOpen(false);
+      setLoading(false);
+      setResults([]);
     }
-  }, [lang, string]);
+  }, [lang, value]);
 
   useEffect(() => {
     if ((loading || results.length > 0) && !fieldValue) {
@@ -104,7 +114,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
                     data-cy={`address-result-${index}`}
                     onClick={() => setFieldValue(name, result)}
                     className={`${classes.listItem}`}
-                    key={formattedAddress}
+                    key={`${formattedAddress}-${index}`}
                   >
                     {formattedAddress}
                   </div>

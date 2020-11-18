@@ -29,7 +29,7 @@ interface GeocodeInterface {
 
 export interface GeocodeResultInterface {
   formattedAddress: string;
-  coordinates: {
+  point: {
     lat: number;
     lng: number;
   };
@@ -48,7 +48,7 @@ export const geocode = async ({
   return json.results.map(({ formatted_address, geometry }) => {
     return {
       formattedAddress: formatted_address,
-      coordinates: {
+      point: {
         lat: geometry.location.lat,
         lng: geometry.location.lng,
       },

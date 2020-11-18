@@ -147,22 +147,22 @@ export const ISO_LANGUAGES = [
   {
     id: DEFAULT_LANG,
     nameString: 'Russian',
-    nativeName: 'Русский',
+    nativeName: 'ru',
   },
   {
     id: SECONDARY_LANG,
     nameString: 'English',
-    nativeName: 'English',
+    nativeName: 'en',
   },
   {
     id: 'ua-UA',
     nameString: 'Украинский',
-    nativeName: 'Украинский',
+    nativeName: 'ua',
   },
   {
     id: 'pl',
     nameString: 'Польский',
-    nativeName: 'Polska',
+    nativeName: 'pl',
   },
 ];
 
@@ -457,7 +457,7 @@ export const INITIAL_LANGUAGES = [
   {
     key: DEFAULT_LANG,
     name: 'Русский',
-    nativeName: 'Русский',
+    nativeName: 'ru',
     isDefault: true,
   },
 ];
@@ -467,7 +467,7 @@ export const MOCK_LANGUAGES = [
   {
     key: SECONDARY_LANG,
     name: 'Английский',
-    nativeName: 'English',
+    nativeName: 'en',
     isDefault: false,
   },
 ];

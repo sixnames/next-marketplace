@@ -53,7 +53,7 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/companies/${dataItem.id}`}>
+        <Link href={`${ROUTE_CMS}/shops/${dataItem.id}`}>
           <a>{cellData}</a>
         </Link>
       ),

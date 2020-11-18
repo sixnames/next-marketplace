@@ -31,7 +31,7 @@ export const COMPANIES_LIST_QUERY = gql`
   ${companyInListFragment}
 `;
 
-export const companyShopFragment = gql`
+export const shopInListFragment = gql`
   fragment ShopInList on Shop {
     id
     itemId
@@ -44,6 +44,7 @@ export const companyShopFragment = gql`
   }
 `;
 
+// TODO separate company shops query for pagination
 export const companyFragment = gql`
   fragment Company on Company {
     id
@@ -72,7 +73,7 @@ export const companyFragment = gql`
     }
   }
   ${userInListFragment}
-  ${companyShopFragment}
+  ${shopInListFragment}
 `;
 
 export const COMPANY_QUERY = gql`
@@ -82,6 +83,32 @@ export const COMPANY_QUERY = gql`
     }
   }
   ${companyFragment}
+`;
+
+export const COMPANY_SHOPS_QUERY = gql`
+  query GetCompanyShops($companyId: ID!, $input: ShopPaginateInput) {
+    getCompany(id: $companyId) {
+      shops(input: $input) {
+        totalPages
+        docs {
+          ...ShopInList
+        }
+      }
+    }
+  }
+  ${shopInListFragment}
+`;
+
+export const SHOPS_QUERY = gql`
+  query GetAllShops($input: ShopPaginateInput) {
+    getAllShops(input: $input) {
+      totalPages
+      docs {
+        ...ShopInList
+      }
+    }
+  }
+  ${shopInListFragment}
 `;
 
 export const shopProductNodeFragment = gql`
@@ -110,12 +137,6 @@ export const shopFragment = gql`
     id
     itemId
     nameString
-    products {
-      totalPages
-      docs {
-        ...ShopProduct
-      }
-    }
     contacts {
       emails
       phones
@@ -135,7 +156,6 @@ export const shopFragment = gql`
       url
     }
   }
-  ${shopProductFragment}
 `;
 
 export const SHOP_QUERY = gql`
@@ -145,4 +165,18 @@ export const SHOP_QUERY = gql`
     }
   }
   ${shopFragment}
+`;
+
+export const SHOP_PRODUCTS_QUERY = gql`
+  query GetShopProducts($shopId: ID!, $input: ShopProductPaginateInput) {
+    getShop(id: $shopId) {
+      products(input: $input) {
+        totalPages
+        docs {
+          ...ShopProduct
+        }
+      }
+    }
+  }
+  ${shopProductFragment}
 `;

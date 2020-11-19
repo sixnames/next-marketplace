@@ -10,8 +10,10 @@ import Link from 'next/link';
 import { ROUTE_CMS } from '../../config';
 import TableRowImage from '../../components/Table/TableRowImage';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
+import { useRouter } from 'next/router';
 
 const ShopsContent: React.FC = () => {
+  const router = useRouter();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { data, loading, error } = useGetAllShopsQuery({
     fetchPolicy: 'network-only',
@@ -54,7 +56,16 @@ const ShopsContent: React.FC = () => {
     },
     {
       render: ({ dataItem }) => {
-        return <ContentItemControls justifyContent={'flex-end'} testId={dataItem.itemId} />;
+        return (
+          <ContentItemControls
+            justifyContent={'flex-end'}
+            updateTitle={'Редактировать магазин'}
+            updateHandler={() => {
+              router.push(`${ROUTE_CMS}/shops/${dataItem.id}`).catch((e) => console.log(e));
+            }}
+            testId={dataItem.itemId}
+          />
+        );
       },
     },
   ];

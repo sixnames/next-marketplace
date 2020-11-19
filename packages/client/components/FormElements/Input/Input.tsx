@@ -97,7 +97,7 @@ const Input: React.FC<InputPropsInterface> = ({
       )}
 
       {onClear ? (
-        <ButtonCross onClick={onClear} testId={'clear-address'} className={classes.clearButton} />
+        <ButtonCross onClick={onClear} testId={`${name}-clear`} className={classes.clearButton} />
       ) : null}
     </InputLine>
   );

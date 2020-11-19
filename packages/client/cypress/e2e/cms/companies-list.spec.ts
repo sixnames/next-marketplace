@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
-import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY } from '@yagu/mocks';
+import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { getFullName } from '@yagu/shared';
 
 describe('Companies list', () => {
@@ -130,13 +130,13 @@ describe('Companies list', () => {
     cy.getByCy('shop-assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
 
     // add name
-    cy.getByCy('nameString').type(MOCK_NEW_COMPANY.nameString);
+    cy.getByCy('nameString').type(MOCK_NEW_SHOP.nameString);
 
     // add emails
-    cy.getByCy(`email-0`).type(MOCK_NEW_COMPANY.contacts.emails[0]);
+    cy.getByCy(`email-0`).type(MOCK_NEW_SHOP.contacts.emails[0]);
 
     // add phones
-    cy.getByCy(`phone-0`).type(MOCK_NEW_COMPANY.contacts.phones[0]);
+    cy.getByCy(`phone-0`).type(MOCK_NEW_SHOP.contacts.phones[0]);
 
     // address
     cy.getByCy(`address`).type(MOCK_ADDRESS_A.formattedAddress);
@@ -147,7 +147,7 @@ describe('Companies list', () => {
     cy.getByCy(`shop-submit`).click();
     cy.shouldSuccess();
     cy.getByCy(`create-shop-modal`).should('not.exist');
-    cy.getByCy('company-shops-list').should('contain', MOCK_NEW_COMPANY.nameString);
+    cy.getByCy('company-shops-list').should('contain', MOCK_NEW_SHOP.nameString);
 
     // Should delete shop
     cy.getByCy(`${mockData.shopA.itemId}-delete`).click();

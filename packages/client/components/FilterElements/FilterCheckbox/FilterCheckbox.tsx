@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { alwaysArray } from '../../../utils/alwaysArray';
 import Icon from '../../Icon/Icon';
 import classes from './FilterCheckbox.module.css';
 import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
+import { alwaysArray } from '@yagu/shared';
 
 export interface FilterCheckboxItem {
   id: string;

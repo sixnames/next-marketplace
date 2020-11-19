@@ -7,8 +7,8 @@ import {
   QUERY_DATA_LAYOUT_PREVIEW,
 } from '../config';
 import { ObjectType } from '../types';
-import { noNaN } from '../utils/noNaN';
 import { ParsedUrlQuery } from 'querystring';
+import { noNaN } from '@yagu/shared';
 
 export interface UseDataLayoutMethodsInterface {
   toggleFilter: () => void;

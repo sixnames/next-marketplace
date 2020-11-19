@@ -44,9 +44,8 @@ import {
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { noNaN } from '@yagu/client/utils/noNaN';
 import { FormattedPhone } from '../../entities/commonEntities';
-import { getFullName, getShortName, phoneToRaw, phoneToReadable } from '@yagu/shared';
+import { getFullName, getShortName, noNaN, phoneToRaw, phoneToReadable } from '@yagu/shared';
 
 const {
   operationConfigCreate,

@@ -10,8 +10,8 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import Icon from '../../components/Icon/Icon';
 import Button from '../../components/Buttons/Button';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
-import { noNaN } from '../../utils/noNaN';
 import { useAppContext } from '../../context/appContext';
+import { noNaN } from '@yagu/shared';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];

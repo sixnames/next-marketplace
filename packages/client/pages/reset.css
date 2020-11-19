@@ -389,6 +389,7 @@
 
   /*Sizes*/
   --lineGap: 2rem;
+  --lineGapHalf: calc(var(--lineGap) / 2);
   --innerBlockMaxWidht: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;

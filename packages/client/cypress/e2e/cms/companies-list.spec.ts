@@ -5,12 +5,12 @@ import { getFullName } from '@yagu/shared';
 
 describe('Companies list', () => {
   let mockData: any;
-
+  const companiesPath = `/app/cms/companies${QUERY_DATA_LAYOUT_FILTER_ENABLED}`;
   beforeEach(() => {
     cy.createTestData((mocks) => {
       mockData = mocks;
     });
-    cy.testAuth(`/app/cms/companies${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
+    cy.testAuth(companiesPath);
   });
 
   after(() => {
@@ -149,7 +149,14 @@ describe('Companies list', () => {
     cy.getByCy(`create-shop-modal`).should('not.exist');
     cy.getByCy('company-shops-list').should('contain', MOCK_NEW_SHOP.nameString);
 
+    // Should have shop details link
+    cy.getByCy(`${mockData.shopA.itemId}-update`).click();
+    cy.getByCy('shop-details').should('exist');
+
     // Should delete shop
+    cy.visit(companiesPath);
+    cy.getByCy(`${companyA.slug}-update`).click();
+    cy.visitMoreNavLink('shops');
     cy.getByCy(`${mockData.shopA.itemId}-delete`).click();
     cy.getByCy(`delete-shop-modal`).should('exist');
     cy.getByCy(`confirm`).click();

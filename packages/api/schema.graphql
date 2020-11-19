@@ -874,6 +874,7 @@ type ProductShop {
   available: Int!
   createdAt: DateTime!
   id: ID!
+  itemId: Int!
   node: Shop!
   oldPrices: [ShopProductOldPrice!]!
   price: Float!
@@ -1158,6 +1159,7 @@ type ShopProduct {
   available: Int!
   createdAt: DateTime!
   id: ID!
+  itemId: Int!
   oldPrices: [ShopProductOldPrice!]!
   price: Float!
   product: Product!

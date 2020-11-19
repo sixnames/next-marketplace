@@ -6,6 +6,7 @@ import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import PaginateType from '../resolvers/common/PaginateType';
+import { AutoIncrementID } from '@typegoose/auto-increment';
 
 @ObjectType({
   description: 'List of all old prices for shop product with dates of creation.',
@@ -27,9 +28,14 @@ export class ShopProductOldPrice extends TimeStamps {
 
 @ObjectType()
 @plugin(mongoosePaginate)
+@plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class ShopProduct extends TimeStamps {
   @Field((_type) => ID)
   readonly id: string;
+
+  @Field(() => Int)
+  @prop()
+  readonly itemId: number;
 
   @Field(() => Int)
   @prop({ required: true })

@@ -639,6 +639,7 @@ export type ProductCardConnectionItem = {
 export type ProductShop = {
   __typename?: 'ProductShop';
   id: Scalars['ID'];
+  itemId: Scalars['Int'];
   available: Scalars['Int'];
   price: Scalars['Float'];
   oldPrices: Array<ShopProductOldPrice>;
@@ -716,6 +717,7 @@ export type PaginatedShopProductsResponse = {
 export type ShopProduct = {
   __typename?: 'ShopProduct';
   id: Scalars['ID'];
+  itemId: Scalars['Int'];
   available: Scalars['Int'];
   price: Scalars['Float'];
   oldPrices: Array<ShopProductOldPrice>;
@@ -3336,7 +3338,7 @@ export type ShopProductNodeFragment = (
 
 export type ShopProductFragment = (
   { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, 'id' | 'available' | 'price'>
+  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'price'>
   & { product: (
     { __typename?: 'Product' }
     & ShopProductNodeFragment
@@ -4308,6 +4310,7 @@ export const ShopProductNodeFragmentDoc = gql`
 export const ShopProductFragmentDoc = gql`
     fragment ShopProduct on ShopProduct {
   id
+  itemId
   available
   price
   product {

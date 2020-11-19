@@ -115,6 +115,7 @@ export const shopProductNodeFragment = gql`
 export const shopProductFragment = gql`
   fragment ShopProduct on ShopProduct {
     id
+    itemId
     available
     price
     product {

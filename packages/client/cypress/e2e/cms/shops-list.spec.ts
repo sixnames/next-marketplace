@@ -14,7 +14,7 @@ describe('Shops list', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should display shops list in CMS', () => {
@@ -39,5 +39,23 @@ describe('Shops list', () => {
     // submit
     cy.getByCy(`shop-submit`).click();
     cy.shouldSuccess();
+  });
+
+  it.only('Should display shop products list in CMS', () => {
+    const { shopA } = mockData;
+    cy.getByCy('shops-list').should('exist');
+    cy.getByCy(`${shopA.slug}-row`).should('exist');
+    cy.getByCy(`${shopA.itemId}-update`).click();
+    cy.visitMoreNavLink('products');
+    cy.getByCy('shop-products').should('exist');
+
+    // Should delete shop product
+    cy.getByCy(`${mockData.shopAProductD.itemId}-delete`).click();
+    cy.getByCy(`delete-shop-product-modal`).should('exist');
+    cy.getByCy('confirm').click();
+    cy.shouldSuccess();
+    cy.getByCy(`${mockData.shopAProductD.itemId}-row`).should('not.exist');
+
+    // Should update shop product
   });
 });

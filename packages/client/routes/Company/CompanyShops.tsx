@@ -24,7 +24,8 @@ import RequestError from '../../components/RequestError/RequestError';
 import { useRouter } from 'next/router';
 
 const CompanyShops: React.FC = () => {
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router;
   const { companyId } = query;
   const {
     showModal,
@@ -97,6 +98,10 @@ const CompanyShops: React.FC = () => {
         return (
           <ContentItemControls
             justifyContent={'flex-end'}
+            updateTitle={'Редактировать магазин'}
+            updateHandler={() => {
+              router.push(`${ROUTE_CMS}/shops/${dataItem.id}`).catch((e) => console.log(e));
+            }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({

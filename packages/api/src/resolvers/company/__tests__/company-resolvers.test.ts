@@ -1,5 +1,5 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import { MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
+import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import { omit } from 'lodash';
 import createTestData, {
@@ -71,8 +71,7 @@ describe('Company', () => {
                 slug
                 nameString
                 address {
-                  type
-                  coordinates
+                  formattedAddress
                 }
               }
             }
@@ -234,13 +233,17 @@ describe('Company', () => {
           companyId: updatedCompany.id,
           nameString: MOCK_NEW_SHOP.nameString,
           contacts: MOCK_NEW_SHOP.contacts,
-          address: [40, 40],
+          address: {
+            formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
+            point: MOCK_ADDRESS_A.point,
+          },
           logo: [logo],
           assets,
         };
       },
       fileNames: ['test-company-logo.png', 'test-shop-asset-0.png'],
     });
+
     const {
       data: { addShopToCompany },
     } = addShopToCompanyPayload;
@@ -281,7 +284,10 @@ describe('Company', () => {
           shopId: createdShop.id,
           nameString: shopNewName,
           contacts: MOCK_NEW_SHOP.contacts,
-          address: [140, 140],
+          address: {
+            formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
+            point: MOCK_ADDRESS_A.point,
+          },
           logo: [logo],
           assets,
         };

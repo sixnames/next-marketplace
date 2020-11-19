@@ -1,6 +1,6 @@
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import { DEFAULT_LANG } from '@yagu/config';
-import { LanguageType } from '../entities/common';
+import { LanguageType } from '../entities/commonEntities';
 
 export const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();

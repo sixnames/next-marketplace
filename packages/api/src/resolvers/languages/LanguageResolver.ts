@@ -158,6 +158,7 @@ export class LanguageResolver {
     try {
       const { id, ...values } = input;
       const exists = await LanguageModel.exists({
+        _id: { $ne: id },
         $or: [
           {
             name: input.name,

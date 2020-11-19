@@ -50,8 +50,18 @@ input AddProductToShopInput {
   shopId: ID!
 }
 
+type Address {
+  formattedAddress: String!
+  point: PointGeoJSON!
+}
+
+input AddressInput {
+  formattedAddress: String!
+  point: CoordinatesInput!
+}
+
 input AddShopToCompanyInput {
-  address: [Float!]!
+  address: AddressInput!
   assets: [Upload!]!
   companyId: ID!
   contacts: ContactsInput!
@@ -175,7 +185,7 @@ enum CompaniesSortByEnum {
 
 type Company {
   contacts: ContactsType!
-  createdAt: Timestamp!
+  createdAt: DateTime!
   id: ID!
   itemId: Int!
   logo: AssetType!
@@ -184,7 +194,7 @@ type Company {
   shops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
   slug: String!
   staff: [User!]!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 input CompanyPaginateInput {
@@ -258,6 +268,11 @@ input ContactsInput {
 type ContactsType {
   emails: [String!]!
   phones: [String!]!
+}
+
+input CoordinatesInput {
+  lat: Float!
+  lng: Float!
 }
 
 type Country {
@@ -362,6 +377,11 @@ type CurrencyPayloadType {
   success: Boolean!
 }
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 input DeleteAttributeFromGroupInput {
   attributeId: ID!
   groupId: ID!
@@ -401,6 +421,11 @@ input DeleteProductFromShopInput {
 input DeleteShopFromCompanyInput {
   companyId: ID!
   shopId: ID!
+}
+
+type FormattedPhone {
+  raw: String!
+  readable: String!
 }
 
 """List of gender enums"""
@@ -539,6 +564,7 @@ type Mutation {
   updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
+  updateShop(input: UpdateShopInput!): ShopPayloadType!
   updateShopInCompany(input: UpdateShopInCompanyInput!): CompanyPayloadtype!
   updateShopProduct(input: UpdateShopProductInput!): ShopProductPayloadType!
   updateUser(input: UpdateUserInput!): UserPayloadType!
@@ -686,7 +712,12 @@ enum PaginateSortDirectionEnum {
 }
 
 type PointGeoJSON {
+  """
+  Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude.
+  """
   coordinates: [Float!]!
+
+  """Field that specifies the GeoJSON object type."""
   type: String!
 }
 
@@ -699,7 +730,7 @@ type Product {
   cardName: [LanguageType!]!
   cardNameString: String!
   connections: [ProductConnection!]!
-  createdAt: Timestamp!
+  createdAt: DateTime!
   description: [LanguageType!]!
   descriptionString: String!
   id: ID!
@@ -712,7 +743,7 @@ type Product {
   rubrics: [ID!]!
   shops: [ProductShop!]!
   slug: String!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
   views: [CityCounter!]!
 }
 
@@ -841,14 +872,15 @@ input ProductsCountersInput {
 
 type ProductShop {
   available: Int!
-  createdAt: Timestamp!
+  createdAt: DateTime!
   id: ID!
+  itemId: Int!
   node: Shop!
   oldPrices: [ShopProductOldPrice!]!
   price: Float!
   product: Product!
   shop: Shop!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 """Product pagination sortBy enum"""
@@ -1095,18 +1127,18 @@ input SetRoleRuleRestrictedFieldInput {
 }
 
 type Shop {
-  address: PointGeoJSON!
+  address: Address!
   assets: [AssetType!]!
   company: Company!
   contacts: ContactsType!
-  createdAt: Timestamp!
+  createdAt: DateTime!
   id: ID!
   itemId: Int!
   logo: AssetType!
   nameString: String!
   products(input: ShopProductPaginateInput = {}): PaginatedShopProductsResponse!
   slug: String!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 input ShopPaginateInput {
@@ -1125,21 +1157,22 @@ type ShopPayloadType {
 
 type ShopProduct {
   available: Int!
-  createdAt: Timestamp!
+  createdAt: DateTime!
   id: ID!
+  itemId: Int!
   oldPrices: [ShopProductOldPrice!]!
   price: Float!
   product: Product!
   shop: Shop!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 """List of all old prices for shop product with dates of creation."""
 type ShopProductOldPrice {
-  createdAt: Timestamp!
+  createdAt: DateTime!
   id: ID!
   price: Float!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 input ShopProductPaginateInput {
@@ -1181,11 +1214,6 @@ input SignUpInput {
   phone: String
   secondName: String
 }
-
-"""
-The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
-"""
-scalar Timestamp
 
 input UpdateAssetConfigInput {
   id: ID!
@@ -1322,9 +1350,18 @@ input UpdateRubricVariantInput {
 }
 
 input UpdateShopInCompanyInput {
-  address: [Float!]!
+  address: AddressInput!
   assets: [Upload!]!
   companyId: ID!
+  contacts: ContactsInput!
+  logo: [Upload!]!
+  nameString: String!
+  shopId: ID!
+}
+
+input UpdateShopInput {
+  address: AddressInput!
+  assets: [Upload!]!
   contacts: ContactsInput!
   logo: [Upload!]!
   nameString: String!
@@ -1351,8 +1388,9 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
-  createdAt: Timestamp!
+  createdAt: DateTime!
   email: String!
+  formattedPhone: FormattedPhone!
   fullName: String!
   id: ID!
   itemId: Int!
@@ -1362,7 +1400,7 @@ type User {
   role: Role!
   secondName: String
   shortName: String!
-  updatedAt: Timestamp!
+  updatedAt: DateTime!
 }
 
 input UserPaginateInput {

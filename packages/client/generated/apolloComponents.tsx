@@ -9,8 +9,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
-  Timestamp: any;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
@@ -26,12 +26,12 @@ export type Query = {
   getSessionCurrency: Scalars['String'];
   getAllCountries: Array<Country>;
   getCountry: Country;
-  getLanguage?: Maybe<Language>;
+  getLanguage: Language;
   getAllLanguages?: Maybe<Array<Language>>;
   getClientLanguage: Scalars['String'];
   getAllCurrencies: Array<Currency>;
   getCurrency: Currency;
-  getAttribute?: Maybe<Attribute>;
+  getAttribute: Attribute;
   getProduct: Product;
   getProductBySlug: Product;
   getProductCard: Product;
@@ -48,7 +48,7 @@ export type Query = {
   getValidationMessages: Array<Message>;
   getMetric?: Maybe<Metric>;
   getAllMetrics?: Maybe<Array<Metric>>;
-  getOption?: Maybe<Option>;
+  getOption: Option;
   getOptionsGroup?: Maybe<OptionsGroup>;
   getAllOptionsGroups: Array<OptionsGroup>;
   getRubric: Rubric;
@@ -61,7 +61,7 @@ export type Query = {
   getISOLanguagesOptions: Array<IsoLanguage>;
   getIconsOptions: Array<IconOption>;
   getAttributeViewVariantsOptions: Array<AttributeViewOption>;
-  getRubricVariant?: Maybe<RubricVariant>;
+  getRubricVariant: RubricVariant;
   getAllRubricVariants?: Maybe<Array<RubricVariant>>;
   getAllConfigs: Array<Config>;
   getConfigBySlug: Config;
@@ -71,6 +71,10 @@ export type Query = {
   getSessionRole: Role;
   getEntityFields: Array<Scalars['String']>;
   getAllAppNavItems: Array<NavItem>;
+  getCompany: Company;
+  getAllCompanies: PaginatedCompaniesResponse;
+  getShop: Shop;
+  getAllShops: PaginatedShopsResponse;
 };
 
 
@@ -80,7 +84,7 @@ export type QueryGetUserArgs = {
 
 
 export type QueryGetAllUsersArgs = {
-  input: UserPaginateInput;
+  input?: Maybe<UserPaginateInput>;
 };
 
 
@@ -229,6 +233,26 @@ export type QueryGetEntityFieldsArgs = {
   entity: Scalars['String'];
 };
 
+
+export type QueryGetCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllCompaniesArgs = {
+  input?: Maybe<CompanyPaginateInput>;
+};
+
+
+export type QueryGetShopArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllShopsArgs = {
+  input?: Maybe<ShopPaginateInput>;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -239,10 +263,11 @@ export type User = {
   email: Scalars['String'];
   phone: Scalars['String'];
   role: Role;
+  formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Role = {
@@ -302,6 +327,12 @@ export type NavItem = {
   icon?: Maybe<Scalars['String']>;
   parent?: Maybe<NavItem>;
   children?: Maybe<Array<NavItem>>;
+};
+
+export type FormattedPhone = {
+  __typename?: 'FormattedPhone';
+  raw: Scalars['String'];
+  readable: Scalars['String'];
 };
 
 
@@ -500,8 +531,9 @@ export type Product = {
   mainImage: Scalars['String'];
   cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
-  createdAt: Scalars['Timestamp'];
-  updatedAt: Scalars['Timestamp'];
+  shops: Array<ProductShop>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type CityCounter = {
@@ -603,6 +635,159 @@ export type ProductCardConnectionItem = {
   product: Product;
   isCurrent: Scalars['Boolean'];
 };
+
+export type ProductShop = {
+  __typename?: 'ProductShop';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  available: Scalars['Int'];
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  node: Shop;
+};
+
+/** List of all old prices for shop product with dates of creation. */
+export type ShopProductOldPrice = {
+  __typename?: 'ShopProductOldPrice';
+  id: Scalars['ID'];
+  price: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type Shop = {
+  __typename?: 'Shop';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  logo: AssetType;
+  assets: Array<AssetType>;
+  contacts: ContactsType;
+  address: Address;
+  products: PaginatedShopProductsResponse;
+  company: Company;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type ShopProductsArgs = {
+  input?: Maybe<ShopProductPaginateInput>;
+};
+
+export type ContactsType = {
+  __typename?: 'ContactsType';
+  emails: Array<Scalars['String']>;
+  phones: Array<Scalars['String']>;
+};
+
+export type Address = {
+  __typename?: 'Address';
+  formattedAddress: Scalars['String'];
+  point: PointGeoJson;
+};
+
+export type PointGeoJson = {
+  __typename?: 'PointGeoJSON';
+  /** Field that specifies the GeoJSON object type. */
+  type: Scalars['String'];
+  /** Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude. */
+  coordinates: Array<Scalars['Float']>;
+};
+
+export type PaginatedShopProductsResponse = {
+  __typename?: 'PaginatedShopProductsResponse';
+  docs: Array<ShopProduct>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type ShopProduct = {
+  __typename?: 'ShopProduct';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  available: Scalars['Int'];
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type ShopProductPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ShopProductSortByEnum>;
+};
+
+/** Shop product pagination sortBy enum */
+export enum ShopProductSortByEnum {
+  Price = 'price',
+  CreatedAt = 'createdAt'
+}
+
+export type Company = {
+  __typename?: 'Company';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  logo: AssetType;
+  owner: User;
+  staff: Array<User>;
+  contacts: ContactsType;
+  shops: PaginatedShopsResponse;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type CompanyShopsArgs = {
+  input?: Maybe<ShopPaginateInput>;
+};
+
+export type PaginatedShopsResponse = {
+  __typename?: 'PaginatedShopsResponse';
+  docs: Array<Shop>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type ShopPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<ShopsSortByEnum>;
+};
+
+/** Shops pagination sortBy enum */
+export enum ShopsSortByEnum {
+  Company = 'company',
+  CreatedAt = 'createdAt'
+}
 
 export type PaginatedProductsResponse = {
   __typename?: 'PaginatedProductsResponse';
@@ -869,6 +1054,33 @@ export type ConfigLanguage = {
   value: Array<Scalars['String']>;
 };
 
+export type PaginatedCompaniesResponse = {
+  __typename?: 'PaginatedCompaniesResponse';
+  docs: Array<Company>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type CompanyPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<CompaniesSortByEnum>;
+};
+
+/** Companies pagination sortBy enum */
+export enum CompaniesSortByEnum {
+  CreatedAt = 'createdAt'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: UserPayloadType;
@@ -934,6 +1146,16 @@ export type Mutation = {
   setRoleOperationCustomFilter: RolePayloadType;
   setRoleRuleRestrictedField: RolePayloadType;
   setRoleAllowedNavItem: RolePayloadType;
+  createCompany: CompanyPayloadtype;
+  updateCompany: CompanyPayloadtype;
+  deleteCompany: CompanyPayloadtype;
+  addShopToCompany: CompanyPayloadtype;
+  updateShopInCompany: CompanyPayloadtype;
+  deleteShopFromCompany: CompanyPayloadtype;
+  updateShop: ShopPayloadType;
+  addProductToShop: ShopPayloadType;
+  deleteProductFromShop: ShopPayloadType;
+  updateShopProduct: ShopProductPayloadType;
 };
 
 
@@ -1244,6 +1466,56 @@ export type MutationSetRoleRuleRestrictedFieldArgs = {
 
 export type MutationSetRoleAllowedNavItemArgs = {
   input: SetRoleAllowedNavItemInput;
+};
+
+
+export type MutationCreateCompanyArgs = {
+  input: CreateCompanyInput;
+};
+
+
+export type MutationUpdateCompanyArgs = {
+  input: UpdateCompanyInput;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddShopToCompanyArgs = {
+  input: AddShopToCompanyInput;
+};
+
+
+export type MutationUpdateShopInCompanyArgs = {
+  input: UpdateShopInCompanyInput;
+};
+
+
+export type MutationDeleteShopFromCompanyArgs = {
+  input: DeleteShopFromCompanyInput;
+};
+
+
+export type MutationUpdateShopArgs = {
+  input: UpdateShopInput;
+};
+
+
+export type MutationAddProductToShopArgs = {
+  input: AddProductToShopInput;
+};
+
+
+export type MutationDeleteProductFromShopArgs = {
+  input: DeleteProductFromShopInput;
+};
+
+
+export type MutationUpdateShopProductArgs = {
+  input: UpdateShopProductInput;
 };
 
 export type UserPayloadType = {
@@ -1689,6 +1961,110 @@ export type SetRoleRuleRestrictedFieldInput = {
 export type SetRoleAllowedNavItemInput = {
   roleId: Scalars['ID'];
   navItemId: Scalars['ID'];
+};
+
+export type CompanyPayloadtype = {
+  __typename?: 'CompanyPayloadtype';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  company?: Maybe<Company>;
+};
+
+export type CreateCompanyInput = {
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  owner: Scalars['ID'];
+  staff: Array<Scalars['ID']>;
+};
+
+export type ContactsInput = {
+  emails: Array<Scalars['String']>;
+  phones: Array<Scalars['String']>;
+};
+
+export type UpdateCompanyInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  owner: Scalars['ID'];
+  staff: Array<Scalars['ID']>;
+};
+
+export type AddShopToCompanyInput = {
+  companyId: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  assets: Array<Scalars['Upload']>;
+  address: AddressInput;
+};
+
+export type AddressInput = {
+  formattedAddress: Scalars['String'];
+  point: CoordinatesInput;
+};
+
+export type CoordinatesInput = {
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
+};
+
+export type UpdateShopInCompanyInput = {
+  shopId: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  assets: Array<Scalars['Upload']>;
+  address: AddressInput;
+  companyId: Scalars['ID'];
+};
+
+export type DeleteShopFromCompanyInput = {
+  companyId: Scalars['ID'];
+  shopId: Scalars['ID'];
+};
+
+export type ShopPayloadType = {
+  __typename?: 'ShopPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  shop?: Maybe<Shop>;
+};
+
+export type UpdateShopInput = {
+  shopId: Scalars['ID'];
+  nameString: Scalars['String'];
+  contacts: ContactsInput;
+  logo: Array<Scalars['Upload']>;
+  assets: Array<Scalars['Upload']>;
+  address: AddressInput;
+};
+
+export type AddProductToShopInput = {
+  shopId: Scalars['ID'];
+  productId: Scalars['ID'];
+  price: Scalars['Int'];
+  available: Scalars['Int'];
+};
+
+export type DeleteProductFromShopInput = {
+  shopId: Scalars['ID'];
+  productId: Scalars['ID'];
+};
+
+export type ShopProductPayloadType = {
+  __typename?: 'ShopProductPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  product?: Maybe<ShopProduct>;
+};
+
+export type UpdateShopProductInput = {
+  productId: Scalars['ID'];
+  price: Scalars['Int'];
+  available: Scalars['Int'];
 };
 
 export type CmsProductAttributeFragment = (
@@ -2223,6 +2599,123 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
+export type CreateCompanyMutationVariables = Exact<{
+  input: CreateCompanyInput;
+}>;
+
+
+export type CreateCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { createCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteCompanyMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateCompanyMutationVariables = Exact<{
+  input: UpdateCompanyInput;
+}>;
+
+
+export type UpdateCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { updateCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type AddShopToCompanyMutationVariables = Exact<{
+  input: AddShopToCompanyInput;
+}>;
+
+
+export type AddShopToCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { addShopToCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateShopMutationVariables = Exact<{
+  input: UpdateShopInput;
+}>;
+
+
+export type UpdateShopMutation = (
+  { __typename?: 'Mutation' }
+  & { updateShop: (
+    { __typename?: 'ShopPayloadType' }
+    & Pick<ShopPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteShopFromCompanyMutationVariables = Exact<{
+  input: DeleteShopFromCompanyInput;
+}>;
+
+
+export type DeleteShopFromCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteShopFromCompany: (
+    { __typename?: 'CompanyPayloadtype' }
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
+  ) }
+);
+
+export type AddProductToShopMutationVariables = Exact<{
+  input: AddProductToShopInput;
+}>;
+
+
+export type AddProductToShopMutation = (
+  { __typename?: 'Mutation' }
+  & { addProductToShop: (
+    { __typename?: 'ShopPayloadType' }
+    & Pick<ShopPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateShopProductMutationVariables = Exact<{
+  input: UpdateShopProductInput;
+}>;
+
+
+export type UpdateShopProductMutation = (
+  { __typename?: 'Mutation' }
+  & { updateShopProduct: (
+    { __typename?: 'ShopProductPayloadType' }
+    & Pick<ShopProductPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type DeleteProductFromShopMutationVariables = Exact<{
+  input: DeleteProductFromShopInput;
+}>;
+
+
+export type DeleteProductFromShopMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProductFromShop: (
+    { __typename?: 'ShopPayloadType' }
+    & Pick<ShopPayloadType, 'success' | 'message'>
+  ) }
+);
+
 export type UpdateConfigsMutationVariables = Exact<{
   input: Array<UpdateConfigInput>;
 }>;
@@ -2731,6 +3224,183 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type CompanyInListFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { owner: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'fullName'>
+  ), logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'url'>
+  ) }
+);
+
+export type GetAllCompaniesQueryVariables = Exact<{
+  input?: Maybe<CompanyPaginateInput>;
+}>;
+
+
+export type GetAllCompaniesQuery = (
+  { __typename?: 'Query' }
+  & { getAllCompanies: (
+    { __typename?: 'PaginatedCompaniesResponse' }
+    & Pick<PaginatedCompaniesResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Company' }
+      & CompanyInListFragment
+    )> }
+  ) }
+);
+
+export type ShopInListFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  ) }
+);
+
+export type CompanyFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
+  & { staff: Array<(
+    { __typename?: 'User' }
+    & UserInListFragment
+  )>, owner: (
+    { __typename?: 'User' }
+    & UserInListFragment
+  ), logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  ), contacts: (
+    { __typename?: 'ContactsType' }
+    & Pick<ContactsType, 'emails' | 'phones'>
+  ) }
+);
+
+export type GetCompanyQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetCompanyQuery = (
+  { __typename?: 'Query' }
+  & { getCompany: (
+    { __typename?: 'Company' }
+    & CompanyFragment
+  ) }
+);
+
+export type GetCompanyShopsQueryVariables = Exact<{
+  companyId: Scalars['ID'];
+  input?: Maybe<ShopPaginateInput>;
+}>;
+
+
+export type GetCompanyShopsQuery = (
+  { __typename?: 'Query' }
+  & { getCompany: (
+    { __typename?: 'Company' }
+    & { shops: (
+      { __typename?: 'PaginatedShopsResponse' }
+      & Pick<PaginatedShopsResponse, 'totalPages'>
+      & { docs: Array<(
+        { __typename?: 'Shop' }
+        & ShopInListFragment
+      )> }
+    ) }
+  ) }
+);
+
+export type GetAllShopsQueryVariables = Exact<{
+  input?: Maybe<ShopPaginateInput>;
+}>;
+
+
+export type GetAllShopsQuery = (
+  { __typename?: 'Query' }
+  & { getAllShops: (
+    { __typename?: 'PaginatedShopsResponse' }
+    & Pick<PaginatedShopsResponse, 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Shop' }
+      & ShopInListFragment
+    )> }
+  ) }
+);
+
+export type ShopProductNodeFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'mainImage'>
+);
+
+export type ShopProductFragment = (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'price'>
+  & { product: (
+    { __typename?: 'Product' }
+    & ShopProductNodeFragment
+  ) }
+);
+
+export type ShopFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'itemId' | 'nameString'>
+  & { contacts: (
+    { __typename?: 'ContactsType' }
+    & Pick<ContactsType, 'emails' | 'phones'>
+  ), address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { point: (
+      { __typename?: 'PointGeoJSON' }
+      & Pick<PointGeoJson, 'coordinates'>
+    ) }
+  ), logo: (
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  ), assets: Array<(
+    { __typename?: 'AssetType' }
+    & Pick<AssetType, 'index' | 'url'>
+  )> }
+);
+
+export type GetShopQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetShopQuery = (
+  { __typename?: 'Query' }
+  & { getShop: (
+    { __typename?: 'Shop' }
+    & ShopFragment
+  ) }
+);
+
+export type GetShopProductsQueryVariables = Exact<{
+  shopId: Scalars['ID'];
+  input?: Maybe<ShopProductPaginateInput>;
+}>;
+
+
+export type GetShopProductsQuery = (
+  { __typename?: 'Query' }
+  & { getShop: (
+    { __typename?: 'Shop' }
+    & { products: (
+      { __typename?: 'PaginatedShopProductsResponse' }
+      & Pick<PaginatedShopProductsResponse, 'totalPages'>
+      & { docs: Array<(
+        { __typename?: 'ShopProduct' }
+        & ShopProductFragment
+      )> }
+    ) }
+  ) }
+);
+
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
   & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
@@ -3236,6 +3906,35 @@ export type GetFeaturesAstQuery = (
   )> }
 );
 
+export type UserInListFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
+  & { formattedPhone: (
+    { __typename?: 'FormattedPhone' }
+    & Pick<FormattedPhone, 'raw' | 'readable'>
+  ), role: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'nameString'>
+  ) }
+);
+
+export type UsersSerchQueryVariables = Exact<{
+  input: UserPaginateInput;
+}>;
+
+
+export type UsersSerchQuery = (
+  { __typename?: 'Query' }
+  & { getAllUsers: (
+    { __typename?: 'PaginatedUsersResponse' }
+    & Pick<PaginatedUsersResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'User' }
+      & UserInListFragment
+    )> }
+  ) }
+);
+
 export const CmsProductAttributeFragmentDoc = gql`
     fragment CMSProductAttribute on ProductAttribute {
   key
@@ -3531,6 +4230,116 @@ export const CatalogueRubricFragmentFragmentDoc = gql`
       counter
       color
     }
+  }
+}
+    `;
+export const CompanyInListFragmentDoc = gql`
+    fragment CompanyInList on Company {
+  id
+  itemId
+  slug
+  nameString
+  owner {
+    id
+    fullName
+  }
+  logo {
+    url
+  }
+}
+    `;
+export const ShopInListFragmentDoc = gql`
+    fragment ShopInList on Shop {
+  id
+  itemId
+  slug
+  nameString
+  logo {
+    index
+    url
+  }
+}
+    `;
+export const UserInListFragmentDoc = gql`
+    fragment UserInList on User {
+  id
+  itemId
+  email
+  fullName
+  shortName
+  formattedPhone {
+    raw
+    readable
+  }
+  role {
+    id
+    nameString
+  }
+}
+    `;
+export const CompanyFragmentDoc = gql`
+    fragment Company on Company {
+  id
+  itemId
+  slug
+  nameString
+  staff {
+    ...UserInList
+  }
+  owner {
+    ...UserInList
+  }
+  logo {
+    index
+    url
+  }
+  contacts {
+    emails
+    phones
+  }
+}
+    ${UserInListFragmentDoc}`;
+export const ShopProductNodeFragmentDoc = gql`
+    fragment ShopProductNode on Product {
+  id
+  itemId
+  nameString
+  mainImage
+}
+    `;
+export const ShopProductFragmentDoc = gql`
+    fragment ShopProduct on ShopProduct {
+  id
+  itemId
+  available
+  price
+  product {
+    ...ShopProductNode
+  }
+}
+    ${ShopProductNodeFragmentDoc}`;
+export const ShopFragmentDoc = gql`
+    fragment Shop on Shop {
+  id
+  itemId
+  nameString
+  contacts {
+    emails
+    phones
+  }
+  address {
+    formattedAddress
+    point {
+      coordinates
+    }
+  }
+  logo {
+    index
+    url
+  }
+  assets {
+    index
+    url
   }
 }
     `;
@@ -4685,6 +5494,303 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+export const CreateCompanyDocument = gql`
+    mutation CreateCompany($input: CreateCompanyInput!) {
+  createCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type CreateCompanyMutationFn = Apollo.MutationFunction<CreateCompanyMutation, CreateCompanyMutationVariables>;
+
+/**
+ * __useCreateCompanyMutation__
+ *
+ * To run a mutation, you first call `useCreateCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCompanyMutation, { data, loading, error }] = useCreateCompanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompanyMutation, CreateCompanyMutationVariables>) {
+        return Apollo.useMutation<CreateCompanyMutation, CreateCompanyMutationVariables>(CreateCompanyDocument, baseOptions);
+      }
+export type CreateCompanyMutationHookResult = ReturnType<typeof useCreateCompanyMutation>;
+export type CreateCompanyMutationResult = Apollo.MutationResult<CreateCompanyMutation>;
+export type CreateCompanyMutationOptions = Apollo.BaseMutationOptions<CreateCompanyMutation, CreateCompanyMutationVariables>;
+export const DeleteCompanyDocument = gql`
+    mutation DeleteCompany($id: ID!) {
+  deleteCompany(id: $id) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteCompanyMutationFn = Apollo.MutationFunction<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+
+/**
+ * __useDeleteCompanyMutation__
+ *
+ * To run a mutation, you first call `useDeleteCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCompanyMutation, { data, loading, error }] = useDeleteCompanyMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>) {
+        return Apollo.useMutation<DeleteCompanyMutation, DeleteCompanyMutationVariables>(DeleteCompanyDocument, baseOptions);
+      }
+export type DeleteCompanyMutationHookResult = ReturnType<typeof useDeleteCompanyMutation>;
+export type DeleteCompanyMutationResult = Apollo.MutationResult<DeleteCompanyMutation>;
+export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+export const UpdateCompanyDocument = gql`
+    mutation UpdateCompany($input: UpdateCompanyInput!) {
+  updateCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateCompanyMutationFn = Apollo.MutationFunction<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
+
+/**
+ * __useUpdateCompanyMutation__
+ *
+ * To run a mutation, you first call `useUpdateCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCompanyMutation, { data, loading, error }] = useUpdateCompanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>) {
+        return Apollo.useMutation<UpdateCompanyMutation, UpdateCompanyMutationVariables>(UpdateCompanyDocument, baseOptions);
+      }
+export type UpdateCompanyMutationHookResult = ReturnType<typeof useUpdateCompanyMutation>;
+export type UpdateCompanyMutationResult = Apollo.MutationResult<UpdateCompanyMutation>;
+export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
+export const AddShopToCompanyDocument = gql`
+    mutation AddShopToCompany($input: AddShopToCompanyInput!) {
+  addShopToCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddShopToCompanyMutationFn = Apollo.MutationFunction<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>;
+
+/**
+ * __useAddShopToCompanyMutation__
+ *
+ * To run a mutation, you first call `useAddShopToCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddShopToCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addShopToCompanyMutation, { data, loading, error }] = useAddShopToCompanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddShopToCompanyMutation(baseOptions?: Apollo.MutationHookOptions<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>) {
+        return Apollo.useMutation<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>(AddShopToCompanyDocument, baseOptions);
+      }
+export type AddShopToCompanyMutationHookResult = ReturnType<typeof useAddShopToCompanyMutation>;
+export type AddShopToCompanyMutationResult = Apollo.MutationResult<AddShopToCompanyMutation>;
+export type AddShopToCompanyMutationOptions = Apollo.BaseMutationOptions<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>;
+export const UpdateShopDocument = gql`
+    mutation UpdateShop($input: UpdateShopInput!) {
+  updateShop(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateShopMutationFn = Apollo.MutationFunction<UpdateShopMutation, UpdateShopMutationVariables>;
+
+/**
+ * __useUpdateShopMutation__
+ *
+ * To run a mutation, you first call `useUpdateShopMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShopMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShopMutation, { data, loading, error }] = useUpdateShopMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateShopMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopMutation, UpdateShopMutationVariables>) {
+        return Apollo.useMutation<UpdateShopMutation, UpdateShopMutationVariables>(UpdateShopDocument, baseOptions);
+      }
+export type UpdateShopMutationHookResult = ReturnType<typeof useUpdateShopMutation>;
+export type UpdateShopMutationResult = Apollo.MutationResult<UpdateShopMutation>;
+export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<UpdateShopMutation, UpdateShopMutationVariables>;
+export const DeleteShopFromCompanyDocument = gql`
+    mutation DeleteShopFromCompany($input: DeleteShopFromCompanyInput!) {
+  deleteShopFromCompany(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteShopFromCompanyMutationFn = Apollo.MutationFunction<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>;
+
+/**
+ * __useDeleteShopFromCompanyMutation__
+ *
+ * To run a mutation, you first call `useDeleteShopFromCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteShopFromCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteShopFromCompanyMutation, { data, loading, error }] = useDeleteShopFromCompanyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteShopFromCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>) {
+        return Apollo.useMutation<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>(DeleteShopFromCompanyDocument, baseOptions);
+      }
+export type DeleteShopFromCompanyMutationHookResult = ReturnType<typeof useDeleteShopFromCompanyMutation>;
+export type DeleteShopFromCompanyMutationResult = Apollo.MutationResult<DeleteShopFromCompanyMutation>;
+export type DeleteShopFromCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>;
+export const AddProductToShopDocument = gql`
+    mutation AddProductToShop($input: AddProductToShopInput!) {
+  addProductToShop(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type AddProductToShopMutationFn = Apollo.MutationFunction<AddProductToShopMutation, AddProductToShopMutationVariables>;
+
+/**
+ * __useAddProductToShopMutation__
+ *
+ * To run a mutation, you first call `useAddProductToShopMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToShopMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToShopMutation, { data, loading, error }] = useAddProductToShopMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToShopMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToShopMutation, AddProductToShopMutationVariables>) {
+        return Apollo.useMutation<AddProductToShopMutation, AddProductToShopMutationVariables>(AddProductToShopDocument, baseOptions);
+      }
+export type AddProductToShopMutationHookResult = ReturnType<typeof useAddProductToShopMutation>;
+export type AddProductToShopMutationResult = Apollo.MutationResult<AddProductToShopMutation>;
+export type AddProductToShopMutationOptions = Apollo.BaseMutationOptions<AddProductToShopMutation, AddProductToShopMutationVariables>;
+export const UpdateShopProductDocument = gql`
+    mutation UpdateShopProduct($input: UpdateShopProductInput!) {
+  updateShopProduct(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateShopProductMutationFn = Apollo.MutationFunction<UpdateShopProductMutation, UpdateShopProductMutationVariables>;
+
+/**
+ * __useUpdateShopProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateShopProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShopProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShopProductMutation, { data, loading, error }] = useUpdateShopProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateShopProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopProductMutation, UpdateShopProductMutationVariables>) {
+        return Apollo.useMutation<UpdateShopProductMutation, UpdateShopProductMutationVariables>(UpdateShopProductDocument, baseOptions);
+      }
+export type UpdateShopProductMutationHookResult = ReturnType<typeof useUpdateShopProductMutation>;
+export type UpdateShopProductMutationResult = Apollo.MutationResult<UpdateShopProductMutation>;
+export type UpdateShopProductMutationOptions = Apollo.BaseMutationOptions<UpdateShopProductMutation, UpdateShopProductMutationVariables>;
+export const DeleteProductFromShopDocument = gql`
+    mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
+  deleteProductFromShop(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteProductFromShopMutationFn = Apollo.MutationFunction<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>;
+
+/**
+ * __useDeleteProductFromShopMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductFromShopMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductFromShopMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductFromShopMutation, { data, loading, error }] = useDeleteProductFromShopMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProductFromShopMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>) {
+        return Apollo.useMutation<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>(DeleteProductFromShopDocument, baseOptions);
+      }
+export type DeleteProductFromShopMutationHookResult = ReturnType<typeof useDeleteProductFromShopMutation>;
+export type DeleteProductFromShopMutationResult = Apollo.MutationResult<DeleteProductFromShopMutation>;
+export type DeleteProductFromShopMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>;
 export const UpdateConfigsDocument = gql`
     mutation UpdateConfigs($input: [UpdateConfigInput!]!) {
   updateConfigs(input: $input) {
@@ -5702,6 +6808,224 @@ export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
 export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
 export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const GetAllCompaniesDocument = gql`
+    query GetAllCompanies($input: CompanyPaginateInput) {
+  getAllCompanies(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...CompanyInList
+    }
+  }
+}
+    ${CompanyInListFragmentDoc}`;
+
+/**
+ * __useGetAllCompaniesQuery__
+ *
+ * To run a query within a React component, call `useGetAllCompaniesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCompaniesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCompaniesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllCompaniesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>) {
+        return Apollo.useQuery<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>(GetAllCompaniesDocument, baseOptions);
+      }
+export function useGetAllCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>(GetAllCompaniesDocument, baseOptions);
+        }
+export type GetAllCompaniesQueryHookResult = ReturnType<typeof useGetAllCompaniesQuery>;
+export type GetAllCompaniesLazyQueryHookResult = ReturnType<typeof useGetAllCompaniesLazyQuery>;
+export type GetAllCompaniesQueryResult = Apollo.QueryResult<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>;
+export const GetCompanyDocument = gql`
+    query GetCompany($id: ID!) {
+  getCompany(id: $id) {
+    ...Company
+  }
+}
+    ${CompanyFragmentDoc}`;
+
+/**
+ * __useGetCompanyQuery__
+ *
+ * To run a query within a React component, call `useGetCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompanyQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+        return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
+      }
+export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+          return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
+        }
+export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
+export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
+export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
+export const GetCompanyShopsDocument = gql`
+    query GetCompanyShops($companyId: ID!, $input: ShopPaginateInput) {
+  getCompany(id: $companyId) {
+    shops(input: $input) {
+      totalPages
+      docs {
+        ...ShopInList
+      }
+    }
+  }
+}
+    ${ShopInListFragmentDoc}`;
+
+/**
+ * __useGetCompanyShopsQuery__
+ *
+ * To run a query within a React component, call `useGetCompanyShopsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompanyShopsQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCompanyShopsQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
+        return Apollo.useQuery<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>(GetCompanyShopsDocument, baseOptions);
+      }
+export function useGetCompanyShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>(GetCompanyShopsDocument, baseOptions);
+        }
+export type GetCompanyShopsQueryHookResult = ReturnType<typeof useGetCompanyShopsQuery>;
+export type GetCompanyShopsLazyQueryHookResult = ReturnType<typeof useGetCompanyShopsLazyQuery>;
+export type GetCompanyShopsQueryResult = Apollo.QueryResult<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>;
+export const GetAllShopsDocument = gql`
+    query GetAllShops($input: ShopPaginateInput) {
+  getAllShops(input: $input) {
+    totalPages
+    docs {
+      ...ShopInList
+    }
+  }
+}
+    ${ShopInListFragmentDoc}`;
+
+/**
+ * __useGetAllShopsQuery__
+ *
+ * To run a query within a React component, call `useGetAllShopsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllShopsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllShopsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllShopsQuery, GetAllShopsQueryVariables>) {
+        return Apollo.useQuery<GetAllShopsQuery, GetAllShopsQueryVariables>(GetAllShopsDocument, baseOptions);
+      }
+export function useGetAllShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllShopsQuery, GetAllShopsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllShopsQuery, GetAllShopsQueryVariables>(GetAllShopsDocument, baseOptions);
+        }
+export type GetAllShopsQueryHookResult = ReturnType<typeof useGetAllShopsQuery>;
+export type GetAllShopsLazyQueryHookResult = ReturnType<typeof useGetAllShopsLazyQuery>;
+export type GetAllShopsQueryResult = Apollo.QueryResult<GetAllShopsQuery, GetAllShopsQueryVariables>;
+export const GetShopDocument = gql`
+    query GetShop($id: ID!) {
+  getShop(id: $id) {
+    ...Shop
+  }
+}
+    ${ShopFragmentDoc}`;
+
+/**
+ * __useGetShopQuery__
+ *
+ * To run a query within a React component, call `useGetShopQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShopQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShopQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShopQuery(baseOptions?: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+        return Apollo.useQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
+      }
+export function useGetShopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+          return Apollo.useLazyQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
+        }
+export type GetShopQueryHookResult = ReturnType<typeof useGetShopQuery>;
+export type GetShopLazyQueryHookResult = ReturnType<typeof useGetShopLazyQuery>;
+export type GetShopQueryResult = Apollo.QueryResult<GetShopQuery, GetShopQueryVariables>;
+export const GetShopProductsDocument = gql`
+    query GetShopProducts($shopId: ID!, $input: ShopProductPaginateInput) {
+  getShop(id: $shopId) {
+    products(input: $input) {
+      totalPages
+      docs {
+        ...ShopProduct
+      }
+    }
+  }
+}
+    ${ShopProductFragmentDoc}`;
+
+/**
+ * __useGetShopProductsQuery__
+ *
+ * To run a query within a React component, call `useGetShopProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShopProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShopProductsQuery({
+ *   variables: {
+ *      shopId: // value for 'shopId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetShopProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
+        return Apollo.useQuery<GetShopProductsQuery, GetShopProductsQueryVariables>(GetShopProductsDocument, baseOptions);
+      }
+export function useGetShopProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
+          return Apollo.useLazyQuery<GetShopProductsQuery, GetShopProductsQueryVariables>(GetShopProductsDocument, baseOptions);
+        }
+export type GetShopProductsQueryHookResult = ReturnType<typeof useGetShopProductsQuery>;
+export type GetShopProductsLazyQueryHookResult = ReturnType<typeof useGetShopProductsLazyQuery>;
+export type GetShopProductsQueryResult = Apollo.QueryResult<GetShopProductsQuery, GetShopProductsQueryVariables>;
 export const GetAllConfigsDocument = gql`
     query GetAllConfigs {
   getAllConfigs {
@@ -6579,3 +7903,41 @@ export function useGetFeaturesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetFeaturesAstQueryHookResult = ReturnType<typeof useGetFeaturesAstQuery>;
 export type GetFeaturesAstLazyQueryHookResult = ReturnType<typeof useGetFeaturesAstLazyQuery>;
 export type GetFeaturesAstQueryResult = Apollo.QueryResult<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>;
+export const UsersSerchDocument = gql`
+    query UsersSerch($input: UserPaginateInput!) {
+  getAllUsers(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...UserInList
+    }
+  }
+}
+    ${UserInListFragmentDoc}`;
+
+/**
+ * __useUsersSerchQuery__
+ *
+ * To run a query within a React component, call `useUsersSerchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersSerchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersSerchQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersSerchQuery(baseOptions?: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+        return Apollo.useQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
+      }
+export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+          return Apollo.useLazyQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
+        }
+export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
+export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
+export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;

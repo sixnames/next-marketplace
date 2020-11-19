@@ -1,6 +1,6 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
-import { AssetType, ContactsType } from './common';
+import { AssetType, ContactsType } from './commonEntities';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { User } from './User';
 import mongoosePaginate from 'mongoose-paginate-v2';

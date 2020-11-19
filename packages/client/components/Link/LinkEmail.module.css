@@ -1,0 +1,14 @@
+.frame {
+  white-space: nowrap;
+}
+
+.frame a {
+  color: var(--textColor);
+  text-decoration: none;
+  cursor: default;
+}
+
+.frame a:hover {
+  text-decoration: none;
+  cursor: default;
+}

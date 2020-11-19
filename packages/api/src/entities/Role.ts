@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { NavItem } from './NavItem';
-import { LanguageType } from './common';
+import { LanguageType } from './commonEntities';
 import { RoleRule } from './RoleRule';
 
 @ObjectType()

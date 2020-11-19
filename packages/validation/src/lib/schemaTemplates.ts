@@ -135,3 +135,21 @@ export const contactsInputSchema = ({ messages, lang }: MultiLangSchemaMessagesI
     phones: Yup.array().of(phoneSchema({ messages, lang })),
   });
 };
+
+export const geoPointSchema = (args: MultiLangSchemaMessagesInterface) => {
+  return Yup.object({
+    lat: Yup.number().required(getFieldValidationMessage({ ...args, key: 'validation.point.lat' })),
+    lng: Yup.number().required(getFieldValidationMessage({ ...args, key: 'validation.point.lng' })),
+  });
+};
+
+export const addressSchema = (args: MultiLangSchemaMessagesInterface) => {
+  return Yup.object({
+    formattedAddress: Yup.string().required(
+      getFieldValidationMessage({ ...args, key: 'validation.address' }),
+    ),
+    point: geoPointSchema(args),
+  })
+    .nullable()
+    .required(getFieldValidationMessage({ ...args, key: 'validation.address' }));
+};

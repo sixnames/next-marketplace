@@ -5,7 +5,7 @@ import Icon from '../../Icon/Icon';
 import TTip from '../../TTip/TTip';
 
 export interface InputLinePropsInterface {
-  name: string;
+  name?: string;
   lineClass?: string;
   lineContentClass?: string;
   labelClass?: string;

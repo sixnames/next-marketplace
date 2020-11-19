@@ -1,7 +1,7 @@
 import { ProductAttributesGroup } from '../../entities/Product';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
-import { LanguageType } from '../../entities/common';
+import { LanguageType } from '../../entities/commonEntities';
 import generateTestAsset from './generateTestAsset';
 
 export interface GetProductCitiesInterface {

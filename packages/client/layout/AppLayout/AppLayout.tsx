@@ -16,6 +16,7 @@ import { useConfigContext } from '../../context/configContext';
 import PrivateRoute from '../PrivateRoute';
 import getFieldArrayFromTree from '../../utils/getFieldArrayFromTree';
 import { AppNavContextProvider } from '../../context/appNavContext';
+import { ROUTE_APP } from '@yagu/config';
 
 interface AppLayoutInterface extends AppPageInterface {
   title?: string;
@@ -78,7 +79,22 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
         })
           .filter((path) => path)
           .map((path) => `${path}`.split('?')[0]);
-        return allowedPaths.includes(pathname);
+
+        const allowedPathsCounter = allowedPaths.reduce((acc: number, path) => {
+          const pathArr = path.split('/');
+          const last = pathArr[pathArr.length - 1];
+
+          if (path === ROUTE_APP) {
+            return acc + 2;
+          }
+
+          if (pathname.indexOf(last) > -1) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
+
+        return allowedPathsCounter > 1;
       }}
     >
       <AppNavContextProvider navItems={appNavigation}>

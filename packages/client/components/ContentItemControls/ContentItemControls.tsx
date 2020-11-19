@@ -14,7 +14,7 @@ export interface ContentItemControlsInterface {
   className?: string;
   justifyContent?: JustifyType;
   theme?: ButtonTheme;
-  testId?: string;
+  testId?: string | number | undefined;
   disabled?: boolean;
   isCreateDisabled?: boolean;
   isUpdateDisabled?: boolean;

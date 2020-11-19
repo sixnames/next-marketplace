@@ -49,6 +49,7 @@ export const cmsRoute = {
   order: 999,
   icon: 'gear',
   navGroup: ROUTE_APP_NAV_GROUP,
+  path: '',
   children: [
     {
       name: [
@@ -61,7 +62,6 @@ export const cmsRoute = {
           value: 'Products',
         },
       ],
-      order: 0,
       slug: 'cms-products',
       path: `${ROUTE_CMS}/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
@@ -79,9 +79,42 @@ export const cmsRoute = {
           value: 'Rubrics',
         },
       ],
-      order: 1,
       slug: 'cms-rubrics',
       path: `${ROUTE_CMS}/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      icon: '',
+      children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
+    },
+    {
+      name: [
+        {
+          key: DEFAULT_LANG,
+          value: 'Компании',
+        },
+        {
+          key: SECONDARY_LANG,
+          value: 'Companies',
+        },
+      ],
+      slug: 'cms-companies',
+      path: `${ROUTE_CMS}/companies${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      icon: '',
+      children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
+    },
+    {
+      name: [
+        {
+          key: DEFAULT_LANG,
+          value: 'Магазины',
+        },
+        {
+          key: SECONDARY_LANG,
+          value: 'Shops',
+        },
+      ],
+      slug: 'cms-shops',
+      path: `${ROUTE_CMS}/shops${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
       children: [],
       navGroup: ROUTE_APP_NAV_GROUP,
@@ -97,7 +130,6 @@ export const cmsRoute = {
           value: 'Rubric variants',
         },
       ],
-      order: 2,
       slug: 'cms-rubric-variants',
       path: `${ROUTE_CMS}/rubric-variants`,
       icon: '',
@@ -115,7 +147,6 @@ export const cmsRoute = {
           value: 'Attributes groups',
         },
       ],
-      order: 3,
       slug: 'cms-attributes-groups',
       path: `${ROUTE_CMS}/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
@@ -133,7 +164,6 @@ export const cmsRoute = {
           value: 'Options groups',
         },
       ],
-      order: 4,
       slug: 'cms-options-groups',
       path: `${ROUTE_CMS}/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
@@ -151,7 +181,6 @@ export const cmsRoute = {
           value: 'Site languages',
         },
       ],
-      order: 5,
       slug: 'cms-languages',
       path: `${ROUTE_CMS}/languages`,
       icon: '',
@@ -169,7 +198,6 @@ export const cmsRoute = {
           value: 'Site settings',
         },
       ],
-      order: 6,
       slug: 'cms-config',
       path: `${ROUTE_CMS}/config`,
       icon: '',
@@ -187,7 +215,6 @@ export const cmsRoute = {
           value: 'Roles',
         },
       ],
-      order: 7,
       slug: 'cms-roles',
       path: `${ROUTE_CMS}/roles${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
       icon: '',
@@ -196,7 +223,7 @@ export const cmsRoute = {
     },
   ],
 };
-//
+
 export const profileRoute = {
   slug: 'profile',
   name: [

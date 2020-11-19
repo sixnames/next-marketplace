@@ -9,7 +9,6 @@ import {
 import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from '../../../graphql/complex/rubricsQueries';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
 import { CREATE_NEW_PRODUCT_MODAL } from '../../../config/modals';
-import DataLayoutTitle from '../../DataLayout/DataLayoutTitle';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import ModalFrame from '../ModalFrame';
@@ -52,7 +51,11 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   });
 
   if (!data && !loading && !error) {
-    return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
+    return (
+      <ModalFrame>
+        <ModalTitle>Ошибка загрузки данных</ModalTitle>
+      </ModalFrame>
+    );
   }
 
   if (loading) {
@@ -107,7 +110,11 @@ const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
   });
 
   if (!data && !loading && !error) {
-    return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
+    return (
+      <ModalFrame>
+        <ModalTitle>Ошибка загрузки данных</ModalTitle>
+      </ModalFrame>
+    );
   }
 
   if (loading) {
@@ -176,7 +183,11 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   });
 
   if (!data && !loading && !error) {
-    return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
+    return (
+      <ModalFrame>
+        <ModalTitle>Ошибка загрузки данных</ModalTitle>
+      </ModalFrame>
+    );
   }
 
   if (loading) {
@@ -250,7 +261,11 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   }
 
   if (!data && !loading && !error) {
-    return <DataLayoutTitle>Ошибка загрузки данных</DataLayoutTitle>;
+    return (
+      <ModalFrame>
+        <ModalTitle>Ошибка загрузки данных</ModalTitle>
+      </ModalFrame>
+    );
   }
 
   if (loading) {

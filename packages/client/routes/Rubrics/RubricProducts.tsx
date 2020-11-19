@@ -129,11 +129,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     deleteTitle: 'Удалить товар из рубрики',
     deleteHandler: deleteProductFromRubricHandler,
     updateTitle: 'Редактировать товар',
-    updateHandler: ({ id }) =>
-      router.push({
-        pathname: `${ROUTE_CMS}/products`,
-        query: { productId: id },
-      }),
+    updateHandler: ({ id }) => router.push(`${ROUTE_CMS}/products/${id}`),
     isDeleteDisabled: ({ rubrics }) => {
       return !rubrics.includes(rubric.id);
     },

@@ -1,7 +1,7 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
-import { AssetType, ContactsType, PointGeoJSON } from './common';
+import { Address, AssetType, ContactsType } from './commonEntities';
 import { Company } from './Company';
 import { PaginatedShopProductsResponse } from './ShopProduct';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -40,9 +40,9 @@ export class Shop extends TimeStamps {
   @prop({ type: ContactsType, required: true })
   contacts: ContactsType;
 
-  @Field((_type) => PointGeoJSON)
-  @prop({ type: PointGeoJSON, required: true })
-  address: PointGeoJSON;
+  @Field((_type) => Address)
+  @prop({ type: Address, required: true })
+  address: Address;
 
   @Field((_type) => PaginatedShopProductsResponse)
   @prop({ ref: () => 'ShopProduct', required: true })

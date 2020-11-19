@@ -2,7 +2,13 @@ import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
-import { contactsInputSchema, idSchema, maxNameLength, minNameLength } from './schemaTemplates';
+import {
+  addressSchema,
+  contactsInputSchema,
+  idSchema,
+  maxNameLength,
+  minNameLength,
+} from './schemaTemplates';
 import * as Yup from 'yup';
 import { companyIdSchema } from './companySchema';
 
@@ -31,14 +37,7 @@ const shopCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
         key: 'validation.shops.nameString',
       }),
     ),
-  address: Yup.array().of(
-    Yup.number().required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.shops.address',
-      }),
-    ),
-  ),
+  address: addressSchema(args),
   contacts: contactsInputSchema(args),
   logo: Yup.array()
     .of(Yup.mixed())
@@ -68,5 +67,16 @@ export const updateShopInCompanySchema = (args: MultiLangSchemaMessagesInterface
   Yup.object({
     shopId: shopIdSchema(args),
     companyId: companyIdSchema(args),
+    ...shopCommonFields(args),
+  });
+
+export const updateShopSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    shopId: shopIdSchema(args),
+    ...shopCommonFields(args),
+  });
+
+export const updateShopClientSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
     ...shopCommonFields(args),
   });

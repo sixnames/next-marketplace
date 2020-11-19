@@ -9,9 +9,10 @@ import Backdrop from '../Backdrop/Backdrop';
 interface MoreNavInterface {
   navConfig: NavItemInterface[];
   className?: string;
+  isTab?: boolean;
 }
 
-const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
+const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className, isTab }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   function toggleDropdownHandler() {
@@ -42,6 +43,7 @@ const MoreNav: React.FC<MoreNavInterface> = ({ navConfig, className }) => {
                     <Link
                       exact
                       href={path}
+                      isTab={isTab}
                       activeClassName={classes.linkActive}
                       className={classes.link}
                       onClick={hideDropdownHandler}

@@ -17,14 +17,17 @@ const PrivateRoute: React.FC<PrivateRouteInterface> = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (condition && condition(router.pathname)) {
+    const pathnameArr = router.pathname.split('/[');
+    const realPathname = pathnameArr[0];
+
+    if (condition && condition(realPathname)) {
       setAllow(true);
     }
 
-    if (condition && !condition(router.pathname)) {
-      router.replace(redirectPath);
+    if (condition && !condition(realPathname)) {
+      router.replace(redirectPath).catch((e) => console.log(e));
     }
-  }, [condition, router]);
+  }, [condition, redirectPath, router]);
 
   if (!allow) {
     return <Spinner wide />;

@@ -7,8 +7,8 @@ import {
   QUERY_DATA_LAYOUT_PREVIEW,
 } from '../config';
 import { ObjectType } from '../types';
-import { noNaN } from '../utils/noNaN';
 import { ParsedUrlQuery } from 'querystring';
+import { noNaN } from '@yagu/shared';
 
 export interface UseDataLayoutMethodsInterface {
   toggleFilter: () => void;
@@ -20,8 +20,8 @@ export interface UseDataLayoutMethodsInterface {
   query: ParsedUrlQuery;
   contentFilters: Record<string, any>;
   page: number;
-  isFilterVisible?: string | '1' | '0' | null;
-  isPreviewVisible?: string | number | null;
+  isFilterVisible?: boolean;
+  isPreviewVisible?: boolean;
 }
 
 const useDataLayoutMethods = (): UseDataLayoutMethodsInterface => {
@@ -83,8 +83,8 @@ const useDataLayoutMethods = (): UseDataLayoutMethodsInterface => {
       query,
       contentFilters,
       [QUERY_DATA_LAYOUT_PAGE]: pageNum,
-      [QUERY_DATA_LAYOUT_FILTER]: `${query[QUERY_DATA_LAYOUT_FILTER]}`,
-      [QUERY_DATA_LAYOUT_PREVIEW]: `${query[QUERY_DATA_LAYOUT_PREVIEW]}`,
+      [QUERY_DATA_LAYOUT_FILTER]: Boolean(query[QUERY_DATA_LAYOUT_FILTER]),
+      [QUERY_DATA_LAYOUT_PREVIEW]: Boolean(query[QUERY_DATA_LAYOUT_PREVIEW]),
     }),
     [
       contentFilters,

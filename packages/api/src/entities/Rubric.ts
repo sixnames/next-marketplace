@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { DocumentType, getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { CityCounter, GenderEnum, LanguageType } from './common';
+import { CityCounter, GenderEnum, LanguageType } from './commonEntities';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/config';
 import { Attribute } from './Attribute';

@@ -59,7 +59,11 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
 
             {filterResultNavConfig && (
               <div>
-                <MoreNav navConfig={filterResultNavConfig} className={classes.MoreNav} />
+                <MoreNav
+                  navConfig={filterResultNavConfig}
+                  className={classes.MoreNav}
+                  isTab={true}
+                />
               </div>
             )}
           </div>

@@ -46,7 +46,7 @@ const Table = <T extends Record<string, any>>({
   onRowClick,
   className,
   fixPosition = 0,
-  emptyMessage = 'Нет данных',
+  emptyMessage = 'Список пуст',
   testIdKey = '',
   tableTestId,
 }: TableInterface<T>) => {
@@ -77,7 +77,7 @@ const Table = <T extends Record<string, any>>({
           <tr
             onClick={() => onRowClick && onRowClick(dataItem)}
             key={key}
-            data-cy={testId}
+            data-cy={`${testId}-row`}
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}
           >
             {columns.map((cell, cellIndex) => {

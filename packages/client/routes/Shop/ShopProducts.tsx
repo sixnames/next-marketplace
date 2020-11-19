@@ -4,6 +4,7 @@ import {
   ShopProductFragment,
   useDeleteProductFromShopMutation,
   useGetShopProductsQuery,
+  useUpdateShopProductMutation,
 } from '../../generated/apolloComponents';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import Spinner from '../../components/Spinner/Spinner';
@@ -20,7 +21,8 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { SHOP_PRODUCTS_QUERY } from '../../graphql/query/companiesQueries';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
-import { CONFIRM_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, SHOP_PRODUCT_MODAL } from '../../config/modals';
+import { ShopProductModalInterface } from '../../components/Modal/ShopProductModal/ShopProductModal';
 
 const ShopProducts: React.FC = () => {
   const router = useRouter();
@@ -38,6 +40,7 @@ const ShopProducts: React.FC = () => {
   const { data, loading, error } = useGetShopProductsQuery({
     variables: shopProductsVariables,
   });
+
   const {
     showModal,
     onErrorCallback,
@@ -45,15 +48,24 @@ const ShopProducts: React.FC = () => {
     showLoading,
     showErrorNotification,
   } = useMutationCallbacks({ withModal: true });
+
+  const refetchQueries = [
+    {
+      query: SHOP_PRODUCTS_QUERY,
+      variables: shopProductsVariables,
+    },
+  ];
+
   const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromShop),
     onError: onErrorCallback,
-    refetchQueries: [
-      {
-        query: SHOP_PRODUCTS_QUERY,
-        variables: shopProductsVariables,
-      },
-    ],
+    refetchQueries,
+  });
+
+  const [updateShopProductMutation] = useUpdateShopProductMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateShopProduct),
+    onError: onErrorCallback,
+    refetchQueries,
   });
 
   if (loading) {
@@ -68,8 +80,8 @@ const ShopProducts: React.FC = () => {
 
   const columns: TableColumn<ShopProductFragment>[] = [
     {
-      accessor: 'product.itemId',
-      headTitle: 'ID',
+      accessor: 'itemId',
+      headTitle: 'Арт',
       render: ({ cellData, dataItem }) => (
         <Link href={`${ROUTE_CMS}/shops/${dataItem.product.id}`}>
           <a>{cellData}</a>
@@ -90,22 +102,44 @@ const ShopProducts: React.FC = () => {
     },
     {
       headTitle: 'Наличие',
-      accessor: 'available',
-      render: ({ cellData }) => {
-        return cellData;
+      render: ({ dataItem }) => {
+        return <div data-cy={`${dataItem.itemId}-available`}>{dataItem.available}</div>;
       },
     },
     {
       headTitle: 'Цена',
-      accessor: 'price',
-      render: ({ cellData }) => {
-        return cellData;
+      render: ({ dataItem }) => {
+        return <div data-cy={`${dataItem.itemId}-price`}>{dataItem.price}</div>;
       },
     },
     {
       render: ({ dataItem }) => {
         return (
           <ContentItemControls
+            justifyContent={'flex-end'}
+            updateTitle={'Редактировать товар'}
+            updateHandler={() => {
+              showModal<ShopProductModalInterface>({
+                type: SHOP_PRODUCT_MODAL,
+                props: {
+                  title: 'Обновление товара',
+                  shopProduct: dataItem,
+                  confirm: (values) => {
+                    showLoading();
+                    updateShopProductMutation({
+                      variables: {
+                        input: {
+                          ...values,
+                          productId: dataItem.id,
+                        },
+                      },
+                    }).catch(() => {
+                      showErrorNotification({});
+                    });
+                  },
+                },
+              });
+            }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({

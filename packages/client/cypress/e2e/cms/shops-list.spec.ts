@@ -57,5 +57,16 @@ describe('Shops list', () => {
     cy.getByCy(`${mockData.shopAProductD.itemId}-row`).should('not.exist');
 
     // Should update shop product
+    const newAvailableAmount = `100`;
+    const newPriceAmount = `9999`;
+    const { shopAProductA } = mockData;
+    cy.getByCy(`${shopAProductA.itemId}-update`).click();
+    cy.getByCy(`update-shop-product-modal`).should('exist');
+    cy.getByCy(`available`).clear().type(newAvailableAmount);
+    cy.getByCy(`price`).clear().type(newPriceAmount);
+    cy.getByCy(`shop-submit`).click();
+    cy.shouldSuccess();
+    cy.getByCy(`${shopAProductA.itemId}-price`).should('contain', newPriceAmount);
+    cy.getByCy(`${shopAProductA.itemId}-available`).should('contain', newAvailableAmount);
   });
 });

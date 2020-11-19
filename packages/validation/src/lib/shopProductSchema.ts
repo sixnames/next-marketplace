@@ -39,3 +39,8 @@ export const updateShopProductSchema = (args: MultiLangSchemaMessagesInterface) 
     productId: productIdSchema(args),
     ...shopProductCommonFields(args),
   });
+
+export const updateShopProductClientSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object({
+    ...shopProductCommonFields(args),
+  });

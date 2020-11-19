@@ -12,7 +12,6 @@
   border: 1px solid var(--borderColor);
   overflow: hidden;
   outline: none;
-  cursor: pointer;
 }
 
 .frameText {
@@ -31,6 +30,12 @@
   height: 100%;
   font-weight: 600;
   text-align: center;
+  cursor: pointer;
+}
+
+.frameTextDisabled {
+  opacity: var(--inputDisabledOpacity);
+  cursor: no-drop;
 }
 
 .inputLine {

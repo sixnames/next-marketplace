@@ -12,6 +12,9 @@ const messagesKeys = [
   'validation.color.required',
   'validation.translation.key',
   'validation.contacts',
+  'validation.address',
+  'validation.point.lat',
+  'validation.point.lng',
 
   // Configs ----------
   'configs.update.success',

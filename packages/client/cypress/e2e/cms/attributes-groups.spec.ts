@@ -108,7 +108,7 @@ describe('Attributes Groups', () => {
       ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
     );
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`${mockAttributeNewName}`).should('exist');
+    cy.getByCy(`${mockAttributeNewName}-row`).should('exist');
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
@@ -121,8 +121,8 @@ describe('Attributes Groups', () => {
     cy.selectNthOption(`[data-cy=attribute-metrics]`, 3);
     cy.getByCy(`positioningInTitle-${DEFAULT_LANG}`).select(ATTRIBUTE_POSITION_IN_TITLE_END);
     cy.getByCy(`attribute-submit`).click();
-    cy.getByCy(`${mockAttributeNewName}`).should('not.exist');
-    cy.getByCy(`${updatedAttributeName}`).should('exist');
+    cy.getByCy(`${mockAttributeNewName}-row`).should('not.exist');
+    cy.getByCy(`${updatedAttributeName}-row`).should('exist');
 
     // Should delete attribute from group
     cy.getByCy(`${updatedAttributeName}-attribute-delete`).click();

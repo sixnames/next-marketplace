@@ -1,0 +1,25 @@
+.product {
+  --imageSize: 7rem;
+
+  display: grid;
+  grid-template-columns: var(--imageSize) 1fr;
+  grid-column-gap: var(--lineGapHalf);
+  align-items: flex-start;
+  margin-bottom: var(--lineGap);
+}
+
+.image {
+  width: var(--imageSize);
+  height: var(--imageSize);
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: 600;
+}

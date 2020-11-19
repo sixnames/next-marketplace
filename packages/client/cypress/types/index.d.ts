@@ -21,7 +21,7 @@ declare namespace Cypress {
     getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;
     selectNthOption(select: string, nth: number): Chainable<Element>;
-    createTestData(): void;
+    createTestData(callback?: (mocks: any) => void): void;
     clearTestData(): void;
     closeNotification(): void;
     visitMoreNavLink(testId: string): void;

@@ -64,11 +64,7 @@ const ProductsContent: React.FC = () => {
 
   const columns = useProductsListColumns({
     updateTitle: 'Редактировать товар',
-    updateHandler: ({ id }) =>
-      router.push({
-        pathname: `${ROUTE_CMS}/products`,
-        query: { productId: id },
-      }),
+    updateHandler: ({ id }) => router.push(`${ROUTE_CMS}/products/${id}`),
     deleteTitle: 'Удалить товар',
     deleteHandler: deleteProductHandler,
   });

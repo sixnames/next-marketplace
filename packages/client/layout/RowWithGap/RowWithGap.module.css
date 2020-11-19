@@ -1,0 +1,7 @@
+.frame {
+  margin-bottom: var(--lineGap);
+}
+
+.frameLow {
+  margin-bottom: 0;
+}

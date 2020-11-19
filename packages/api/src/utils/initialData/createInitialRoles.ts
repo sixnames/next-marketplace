@@ -10,11 +10,21 @@ import {
 } from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
-import { LanguageType } from '../../entities/common';
+import { LanguageType } from '../../entities/commonEntities';
 import { DocumentType } from '@typegoose/typegoose';
 
+interface NavItemInterface {
+  name: { key: string; value: string }[];
+  slug: string;
+  path: string;
+  icon?: string;
+  children?: NavItemInterface[];
+  navGroup: string;
+  order?: number;
+}
+
 interface CreateInitialAppNavigationInterface {
-  navItems: typeof INITIAL_APP_NAVIGATION;
+  navItems: NavItemInterface[];
   parentId?: string;
 }
 interface CreateInitialAppNavigationPayloadInterface {
@@ -27,14 +37,15 @@ export async function createInitialAppNavigation({
   parentId,
 }: CreateInitialAppNavigationInterface): Promise<CreateInitialAppNavigationPayloadInterface[]> {
   return Promise.all(
-    navItems.map(async (navItem) => {
-      const { children, slug, icon, ...rest } = navItem;
+    navItems.map(async (navItem, topIndex) => {
+      const { children, slug, icon, order, ...rest } = navItem;
       const existingNavItem = await NavItemModel.findOne({ slug });
 
       let parentNavItemId: string;
       if (!existingNavItem) {
         const createdNavItem = await NavItemModel.create({
           ...rest,
+          order: order || topIndex,
           slug,
           parent: parentId ? parentId : null,
           icon: icon ? icon : null,

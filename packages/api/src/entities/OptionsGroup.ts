@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Option } from './Option';
-import { LanguageType } from './common';
+import { LanguageType } from './commonEntities';
 import { OPTIONS_GROUP_VARIANT_ENUMS, OPTIONS_GROUP_VARIANT_TEXT } from '@yagu/config';
 
 // Options Group variant

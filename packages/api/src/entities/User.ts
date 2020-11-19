@@ -1,4 +1,4 @@
-import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
+import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -8,11 +8,11 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import getApiMessage from '../utils/translations/getApiMessage';
 import { compare } from 'bcryptjs';
 import { ContextInterface } from '../types/context';
+import { FormattedPhone } from './commonEntities';
 
 type Request = ContextInterface['req'];
 
 @ObjectType()
-@index({ '$**': 'text' })
 @plugin(mongoosePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class User extends TimeStamps {
@@ -49,6 +49,9 @@ export class User extends TimeStamps {
   @Field((_type) => Role)
   @prop({ ref: Role })
   role: string;
+
+  @Field((_type) => FormattedPhone)
+  readonly formattedPhone: string;
 
   @Field((_type) => String)
   readonly fullName: string;

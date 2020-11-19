@@ -11,6 +11,7 @@ import {
   GENDER_HE,
   GENDER_IT,
   GENDER_SHE,
+  GEO_POINT_TYPE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
@@ -58,6 +59,24 @@ export const MOCK_SAMPLE_USER = {
   phone: '+79990002236',
 };
 
+export const MOCK_SAMPLE_USER_B = {
+  email: 'sampleb.user@gmail.com',
+  password: 'sampleB',
+  name: 'SampleB',
+  secondName: 'SecondnameB',
+  lastName: 'LastnameB',
+  phone: '+79990002237',
+};
+
+// Addresses
+export const MOCK_ADDRESS_A = {
+  formattedAddress: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',
+  point: {
+    lat: 55.790229,
+    lng: 37.549611,
+  },
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',
@@ -77,6 +96,15 @@ export const MOCK_NEW_COMPANY = {
   },
 };
 
+export const MOCK_NEW_COMPANY_B = {
+  nameString: 'New Company B',
+  slug: 'new_company_b',
+  contacts: {
+    emails: ['new.companyB1@gmail.com', 'new.companyB2@gmail.com'],
+    phones: ['+78990003333', '+78890004444'],
+  },
+};
+
 export const MOCK_COMPANIES = [MOCK_COMPANY];
 
 // Shop
@@ -88,7 +116,11 @@ export const MOCK_SHOP = {
     phones: ['+78990002245', '+78890002246'],
   },
   address: {
-    coordinates: [40, 40],
+    formattedAddress: MOCK_ADDRESS_A.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+    },
   },
 };
 
@@ -100,7 +132,11 @@ export const MOCK_NEW_SHOP = {
     phones: ['+78990002255', '+78890002256'],
   },
   address: {
-    coordinates: [40, 40],
+    formattedAddress: MOCK_ADDRESS_A.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+    },
   },
 };
 
@@ -111,22 +147,22 @@ export const ISO_LANGUAGES = [
   {
     id: DEFAULT_LANG,
     nameString: 'Russian',
-    nativeName: 'Русский',
+    nativeName: 'ru',
   },
   {
     id: SECONDARY_LANG,
     nameString: 'English',
-    nativeName: 'English',
+    nativeName: 'en',
   },
   {
     id: 'ua-UA',
     nameString: 'Украинский',
-    nativeName: 'Украинский',
+    nativeName: 'ua',
   },
   {
     id: 'pl',
     nameString: 'Польский',
-    nativeName: 'Polska',
+    nativeName: 'pl',
   },
 ];
 
@@ -421,7 +457,7 @@ export const INITIAL_LANGUAGES = [
   {
     key: DEFAULT_LANG,
     name: 'Русский',
-    nativeName: 'Русский',
+    nativeName: 'ru',
     isDefault: true,
   },
 ];
@@ -431,7 +467,7 @@ export const MOCK_LANGUAGES = [
   {
     key: SECONDARY_LANG,
     name: 'Английский',
-    nativeName: 'English',
+    nativeName: 'en',
     isDefault: false,
   },
 ];

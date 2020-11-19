@@ -7,7 +7,12 @@ interface ResponseInterface {
   message: string;
 }
 
-const useMutationCallbacks = ({ withModal = false }) => {
+interface UseMutationCallbacksInterface {
+  withModal?: boolean;
+}
+
+const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
+  const { withModal } = props || {};
   const { showModal, hideModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
 

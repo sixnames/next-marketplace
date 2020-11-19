@@ -9,6 +9,7 @@
   padding-right: var(--inputPaddingHorizontal);
   margin: 0;
   font-family: var(--font);
+  font-size: 1rem;
   color: var(--inputTextColor);
   border: 1px solid var(--inputBorder);
   background-color: var(--inputBackground);
@@ -55,5 +56,13 @@
   width: var(--inputIconSize);
   height: var(--inputIconSize);
   fill: var(--textSecondaryColor);
+  transform: translateY(-50%);
+}
+
+.clearButton {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  z-index: 2;
   transform: translateY(-50%);
 }

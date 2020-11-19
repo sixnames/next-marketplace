@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { LanguageType } from './common';
+import { LanguageType } from './commonEntities';
 
 @ObjectType()
 export class Metric {

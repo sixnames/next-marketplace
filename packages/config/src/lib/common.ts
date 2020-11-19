@@ -1,3 +1,6 @@
+// Addresses
+export const GEO_POINT_TYPE = 'Point';
+
 // Admin
 export const ADMIN_NAME = 'admin';
 export const ADMIN_LAST_NAME = 'site';

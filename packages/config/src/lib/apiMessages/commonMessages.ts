@@ -98,11 +98,11 @@ export const commonMessages: MessageInterface[] = [
     message: [
       {
         key: DEFAULT_LANG,
-        value: 'Телефон пользователя обязателен к заполнению.',
+        value: 'Телефон обязателен к заполнению.',
       },
       {
         key: SECONDARY_LANG,
-        value: 'User Phone is required.',
+        value: 'Phone is required.',
       },
     ],
   },
@@ -155,6 +155,45 @@ export const commonMessages: MessageInterface[] = [
       {
         key: SECONDARY_LANG,
         value: 'Contacts is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.address',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Адрес обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Address is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.point.lat',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Широта обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Coordinates latitude is required.',
+      },
+    ],
+  },
+  {
+    key: 'validation.point.lng',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Долгота обязательна к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Coordinates longitude is required.',
       },
     ],
   },

@@ -9,6 +9,7 @@ import { NavItemInterface } from '../../types';
 import DataLayout from '../../components/DataLayout/DataLayout';
 import useTabsConfig from '../../hooks/useTabsConfig';
 import ProductConnections from './ProductConnections';
+import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 
 const ProductRoute: React.FC = () => {
   const { query } = useRouterQuery();
@@ -51,10 +52,12 @@ const ProductRoute: React.FC = () => {
       filterResultNavConfig={navConfig}
       title={product.nameString}
       filterResult={() => (
-        <TabsContent>
-          <ProductDetails product={product} />
-          <ProductConnections product={product} />
-        </TabsContent>
+        <DataLayoutContentFrame>
+          <TabsContent>
+            <ProductDetails product={product} />
+            <ProductConnections product={product} />
+          </TabsContent>
+        </DataLayoutContentFrame>
       )}
     />
   );

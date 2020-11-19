@@ -28,7 +28,9 @@ const FormikImageUploadPreview: React.FC<FormikImageUploadPreviewInterface> = ({
       }
     }
 
-    getImageThumb();
+    getImageThumb().catch((e) => {
+      console.log(e);
+    });
   }, [file]);
 
   if (!file || !thumb) {

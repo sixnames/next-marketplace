@@ -5,6 +5,7 @@ import { InputType, OnOffType } from '../../../types';
 import classes from './Input.module.css';
 import Icon from '../../Icon/Icon';
 import { IconType } from '@yagu/config';
+import ButtonCross from '../../Buttons/ButtonCross';
 
 export interface InputPropsInterface extends InputLinePropsInterface {
   name: string;
@@ -18,6 +19,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   placeholder?: string;
   disabled?: boolean;
   icon?: IconType;
+  onClear?: (() => void) | null;
   onChange?: (e: {
     target: {
       id?: string;
@@ -46,6 +48,7 @@ const Input: React.FC<InputPropsInterface> = ({
   testId,
   labelTag,
   icon,
+  onClear,
   ...props
 }) => {
   const withIconClass = icon ? classes.withIcon : '';
@@ -79,7 +82,7 @@ const Input: React.FC<InputPropsInterface> = ({
           name={name}
           {...props}
           data-cy={testId}
-          mask='+9 (999) 999-99-99'
+          mask='+9 999 999-99-99'
         />
       ) : (
         <input
@@ -92,6 +95,10 @@ const Input: React.FC<InputPropsInterface> = ({
           {...props}
         />
       )}
+
+      {onClear ? (
+        <ButtonCross onClick={onClear} testId={`${name}-clear`} className={classes.clearButton} />
+      ) : null}
     </InputLine>
   );
 };

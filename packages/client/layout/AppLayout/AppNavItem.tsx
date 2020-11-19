@@ -23,8 +23,10 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   useEffect(() => {
     if (children) {
+      const pathnameArr = pathname.split('/[');
+      const realPathname = pathnameArr[0];
       const paths = children.map(({ path }) => path).map((path) => `${path}`.split('?')[0]);
-      const current = paths.includes(pathname);
+      const current = paths.includes(realPathname);
       if (current) {
         setIsDropdownActive(true);
       }

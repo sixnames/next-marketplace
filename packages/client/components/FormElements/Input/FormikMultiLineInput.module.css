@@ -1,0 +1,63 @@
+.inputsFrame {
+  position: relative;
+}
+
+.inputHolder {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.inputHolder:not(:first-child) {
+  margin-top: var(--lineGap);
+}
+
+.input {
+  width: 100%;
+}
+
+.inputMulti {
+  width: calc(100% - 40px);
+}
+
+.inputControl {
+  display: flex;
+  height: var(--formInputHeight);
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  width: 40px;
+}
+
+.prompt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  backdrop-filter: blur(7px);
+  border-radius: var(--borderRadius);
+}
+
+.promptTitle {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+[data-theme='dark'] .promptTitle {
+  text-shadow: 0 2px 5px var(--black);
+}
+
+.promptButtons {
+  display: flex;
+  align-items: center;
+}
+
+.promptButtons [class*='butn']:not(:first-child) {
+  margin-left: 1rem;
+}

@@ -67,7 +67,7 @@ describe('Options Groups', () => {
     cy.getByCy(`variant-${GENDER_IT}-${SECONDARY_LANG}`).type(optionName);
 
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${optionName}`).should('exist');
+    cy.getByCy(`${optionName}-row`).should('exist');
     cy.getByCy(`${optionName}-icon`).should('exist');
 
     // Should update options group
@@ -101,7 +101,7 @@ describe('Options Groups', () => {
     cy.getByCy(`variant-${GENDER_IT}-${SECONDARY_LANG}`).type(optionName);
 
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${optionName}`).should('exist');
+    cy.getByCy(`${optionName}-row`).should('exist');
     cy.getByCy(`${optionName}-${optionColor}`).should('exist');
 
     // Shouldn't delete options group connected to the attribute
@@ -147,7 +147,7 @@ describe('Options Groups', () => {
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).type(optionName);
     cy.getByCy(`option-color`).clear().type(mockOptionColor);
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${mockOptionName}`).should('have.length', 1);
+    cy.getByCy(`${mockOptionName}-row`).should('have.length', 1);
   });
 
   it('Should CRUD option in group', () => {
@@ -163,8 +163,8 @@ describe('Options Groups', () => {
     cy.getByCy(`${optionName}-option-update`).click();
     cy.getByCy(`name-${DEFAULT_LANG}`).should('have.value', optionName).clear().type(optionNewName);
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${optionName}`).should('not.exist');
-    cy.getByCy(`${optionNewName}`).should('exist');
+    cy.getByCy(`${optionName}-row`).should('not.exist');
+    cy.getByCy(`${optionNewName}-row`).should('exist');
 
     // Should update all option fields
     cy.getByCy(`${optionNewName}-option-update`).click();
@@ -174,12 +174,12 @@ describe('Options Groups', () => {
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).clear().type(optionNewName);
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${optionNewName}`).should('exist');
+    cy.getByCy(`${optionNewName}-row`).should('exist');
     cy.getByCy(`${optionNewName}-${optionNewColor}`).should('exist');
 
     // Should delete option from group
     cy.getByCy(`${optionNewName}-option-delete`).click();
     cy.getByCy(`confirm`).click();
-    cy.getByCy(`${optionNewName}`).should('not.exist');
+    cy.getByCy(`${optionNewName}-row`).should('not.exist');
   });
 });

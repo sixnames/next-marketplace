@@ -10,7 +10,6 @@ export interface CreateTestShopsPayloadInterface extends CreateTestProductsPaylo
   shopA: Shop;
   shopAProductA: ShopProduct;
   shopAProductB: ShopProduct;
-  shopAProductC: ShopProduct;
   shopAProductD: ShopProduct;
   shopAConnectionProductA: ShopProduct;
   shopAConnectionProductB: ShopProduct;
@@ -22,7 +21,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const {
     productA,
     productB,
-    productC,
     productD,
     connectionProductA,
     connectionProductB,
@@ -42,13 +40,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 180,
     oldPrices: [],
     product: productB.id,
-  });
-
-  const shopAProductC = await ShopProductModel.create({
-    available: 12,
-    price: 1200,
-    oldPrices: [],
-    product: productC.id,
   });
 
   const shopAProductD = await ShopProductModel.create({
@@ -99,7 +90,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     products: [
       shopAProductA.id,
       shopAProductB.id,
-      shopAProductC.id,
       shopAProductD.id,
       shopAConnectionProductA.id,
       shopAConnectionProductB.id,
@@ -115,7 +105,6 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopA,
     shopAProductA,
     shopAProductB,
-    shopAProductC,
     shopAProductD,
     shopAConnectionProductA,
     shopAConnectionProductB,

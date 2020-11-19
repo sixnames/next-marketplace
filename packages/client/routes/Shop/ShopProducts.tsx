@@ -2,6 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import {
   ShopProductFragment,
+  useAddProductToShopMutation,
   useDeleteProductFromShopMutation,
   useGetShopProductsQuery,
   useUpdateShopProductMutation,
@@ -21,8 +22,9 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { SHOP_PRODUCTS_QUERY } from '../../graphql/query/companiesQueries';
 import ContentItemControls from '../../components/ContentItemControls/ContentItemControls';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
-import { CONFIRM_MODAL, SHOP_PRODUCT_MODAL } from '../../config/modals';
+import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL, SHOP_PRODUCT_MODAL } from '../../config/modals';
 import { ShopProductModalInterface } from '../../components/Modal/ShopProductModal/ShopProductModal';
+import { ProductSearchModalInterface } from '../../components/Modal/ProductSearchModal/ProductSearchModal';
 
 const ShopProducts: React.FC = () => {
   const router = useRouter();
@@ -64,6 +66,12 @@ const ShopProducts: React.FC = () => {
 
   const [updateShopProductMutation] = useUpdateShopProductMutation({
     onCompleted: (data) => onCompleteCallback(data.updateShopProduct),
+    onError: onErrorCallback,
+    refetchQueries,
+  });
+
+  const [addProductToShopMutation] = useAddProductToShopMutation({
+    onCompleted: (data) => onCompleteCallback(data.addProductToShop),
     onError: onErrorCallback,
     refetchQueries,
   });
@@ -177,7 +185,51 @@ const ShopProducts: React.FC = () => {
       </RowWithGap>
 
       <RowWithGap>
-        <Button testId={'add-product'} size={'small'}>
+        <Button
+          onClick={() => {
+            showModal<ProductSearchModalInterface>({
+              type: PRODUCT_SEARCH_MODAL,
+              props: {
+                createHandler: (product) => {
+                  showModal<ShopProductModalInterface>({
+                    type: SHOP_PRODUCT_MODAL,
+                    props: {
+                      title: 'Добавление товара',
+                      shopProduct: {
+                        price: 0,
+                        available: 0,
+                        product: {
+                          id: product.id,
+                          itemId: product.itemId,
+                          mainImage: product.mainImage,
+                          nameString: product.nameString,
+                        },
+                      },
+                      confirm: (values) => {
+                        showLoading();
+                        addProductToShopMutation({
+                          variables: {
+                            input: {
+                              ...values,
+                              productId: product.id,
+                              shopId: `${shopId}`,
+                            },
+                          },
+                        }).catch(() => {
+                          showErrorNotification({});
+                        });
+                      },
+                    },
+                  });
+                },
+                createTitle: 'Выбрать товар',
+                testId: 'product-search-modal',
+              },
+            });
+          }}
+          testId={'add-shop-product'}
+          size={'small'}
+        >
           Добавить товар
         </Button>
       </RowWithGap>

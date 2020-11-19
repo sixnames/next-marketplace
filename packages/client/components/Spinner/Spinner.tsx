@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import classes from './Spinner.module.css';
 
 interface SpinnerInterface {
@@ -8,7 +7,7 @@ interface SpinnerInterface {
   isTransparent?: boolean;
   wide?: boolean;
 }
-
+//
 const Spinner: React.FC<SpinnerInterface> = ({
   className,
   isNested,
@@ -22,7 +21,17 @@ const Spinner: React.FC<SpinnerInterface> = ({
           className ? className : ''
         } ${isNested ? classes.nested : ''} ${wide ? classes.wide : ''}`}
       >
-        <CircularProgress />
+        <svg className={classes.circular}>
+          <circle
+            className={classes.path}
+            cx='50'
+            cy='50'
+            r='20'
+            fill='none'
+            strokeWidth='3'
+            strokeMiterlimit='10'
+          />
+        </svg>
       </div>
     </Fragment>
   );

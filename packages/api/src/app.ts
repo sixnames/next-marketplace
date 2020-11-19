@@ -123,30 +123,33 @@ const createApp = async (): Promise<CreateAppInterface> => {
   app.disable('x-powered-by');
 
   // Session
-  const MongoDBStore = connectMongoDBStore(session);
-  const store = new MongoDBStore(
-    {
-      uri: MONGO_URL,
-      collection: SESSION_COLLECTION,
-      connectionOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 1000,
+  // TODO fix mongo connection in jest env
+  if (process.env.NODE_ENV !== 'test') {
+    const MongoDBStore = connectMongoDBStore(session);
+    const store = new MongoDBStore(
+      {
+        uri: MONGO_URL,
+        collection: SESSION_COLLECTION,
+        connectionOptions: {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          serverSelectionTimeoutMS: 1000,
+        },
       },
-    },
-    (e) => {
-      if (e) {
-        console.log('============ MongoDBStore connection error ============');
-        console.error(e);
-      }
-    },
-  );
-  app.use(
-    session({
-      store,
-      ...SESS_OPTIONS,
-    }),
-  );
+      (e) => {
+        if (e) {
+          console.log('============ MongoDBStore connection error ============');
+          console.error(e);
+        }
+      },
+    );
+    app.use(
+      session({
+        store,
+        ...SESS_OPTIONS,
+      }),
+    );
+  }
 
   // Test data routes
   // TODO make this methods safe

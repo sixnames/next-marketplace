@@ -43,6 +43,13 @@ export const productCardFragment = gql`
     slug
     mainImage
     descriptionString
+    prices {
+      min
+      max
+    }
+    shops {
+      available
+    }
     cardFeatures {
       listFeatures {
         ...CardFeature

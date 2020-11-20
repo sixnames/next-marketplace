@@ -880,6 +880,7 @@ input ProductsCountersInput {
 type ProductShop {
   available: Int!
   createdAt: DateTime!
+  formattedPrice: String!
   id: ID!
   itemId: Int!
   node: Shop!

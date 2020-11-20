@@ -137,6 +137,7 @@ describe('Product', () => {
               id
               nameString
             }
+            formattedPrice
             available
             price
             oldPrices {

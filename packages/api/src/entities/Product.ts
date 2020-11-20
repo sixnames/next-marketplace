@@ -100,6 +100,9 @@ export class ProductCardFeatures {
 export class ProductShop extends ShopProduct {
   @Field(() => Shop)
   readonly node: Shop;
+
+  @Field(() => String)
+  readonly formattedPrice: string;
 }
 
 @ObjectType()

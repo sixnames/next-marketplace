@@ -685,7 +685,10 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => [ProductShop])
-  async shops(@Root() product: DocumentType<Product>): Promise<ProductShop[]> {
+  async shops(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Root() product: DocumentType<Product>,
+  ): Promise<ProductShop[]> {
     try {
       const shopsProducts = await ShopProductModel.find({ product: product.id }).lean().exec();
       const shopsArr = shopsProducts.map(async (shopProduct) => {
@@ -699,6 +702,7 @@ export class ProductResolver {
           node: shop,
           ...shopProduct,
           id: shopProduct._id,
+          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
         };
       });
 

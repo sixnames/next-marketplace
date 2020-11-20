@@ -109,7 +109,7 @@ export class User extends TimeStamps {
   static async attemptSignOut(req: Request) {
     return new Promise((resolve) => {
       if (req.session && req.session.destroy) {
-        req.session.destroy((error) => {
+        req.session.destroy((error: any) => {
           if (error) {
             resolve(false);
           } else {

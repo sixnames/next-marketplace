@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { InitialSiteQueryQuery } from '../generated/apolloComponents';
 import { UserContextProvider } from './userContext';
-import { DEFAULT_CURRENCY } from '@yagu/config';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
@@ -19,13 +18,11 @@ interface SiteContextStateInterface {
 
 interface SiteContextInterface extends SiteContextStateInterface {
   getRubricsTree: InitialSiteQueryQuery['getRubricsTree'];
-  currency: string;
   setState: any;
 }
 
 const SiteContext = createContext<SiteContextInterface>({
   getRubricsTree: [],
-  currency: DEFAULT_CURRENCY,
   isBurgerDropdownOpen: false,
   isSearchOpen: false,
   setState: () => null,
@@ -47,7 +44,6 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const initialValue = useMemo(() => {
     return {
       getRubricsTree: initialApolloState.getRubricsTree || [],
-      currency: initialApolloState.getSessionCurrency,
       setState,
       ...state,
     };
@@ -59,6 +55,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       cities={initialApolloState.getAllCities}
       configs={initialApolloState.getAllConfigs}
       lang={initialApolloState.getClientLanguage}
+      currency={initialApolloState.getSessionCurrency}
       languagesList={initialApolloState.getAllLanguages || []}
     >
       <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>

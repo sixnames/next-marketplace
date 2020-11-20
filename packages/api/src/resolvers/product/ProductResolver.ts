@@ -734,12 +734,23 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
   ): Promise<ProductCardPrices> {
     try {
-      const shopsProducts = await ShopProductModel.find({ product: product.id })
+      const shopsProducts = await ShopProductModel.find({
+        $or: [{ product: product.id }, { product: product._id }],
+      })
         .select('price')
         .lean()
         .exec();
       const allPrices = shopsProducts.map(({ price }) => price);
-
+      console.log(
+        JSON.stringify(
+          {
+            name: product.name,
+            allPrices,
+          },
+          null,
+          2,
+        ),
+      );
       return {
         min: getCurrencyString({ value: min(allPrices), lang }),
         max: getCurrencyString({ value: max(allPrices), lang }),

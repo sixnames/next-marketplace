@@ -13,6 +13,7 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import { useAppContext } from '../../context/appContext';
 import { noNaN } from '@yagu/shared';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
+import Currency from '../../components/Currency/Currency';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -55,7 +56,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     mainImage,
     nameString,
     cardNameString,
-    price,
+    cardPrices,
     cardConnections,
     itemId,
     cardFeatures,
@@ -66,10 +67,12 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
+  const shopsCount = shops.length;
+  const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
     { head: 'Характеристики' },
-    { head: `где купить (${shops.length})` },
+    { head: `где купить (${shopsCount})` },
     { head: 'Отзывы' },
     { head: 'мнение экспертов' },
   ];
@@ -115,10 +118,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
               </div>
 
+              {/*Connections*/}
               {cardConnections.length > 0 ? (
                 <div className={classes.connections}>
                   {cardConnections.map(({ id, nameString, products }) => {
-                    // Connections
                     return (
                       <div key={id} className={classes.connectionsGroup}>
                         <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
@@ -161,13 +164,16 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                   <div className={classes.price}>
                     <div className={classes.cardLabel}>Цена от</div>
                     <div className={classes.priceValue}>
-                      <span>{price}</span>
-                      р.
+                      <Currency className={classes.priceItem} value={cardPrices.min} />
+                      до
+                      <Currency className={classes.priceItem} value={cardPrices.max} />
                     </div>
                   </div>
 
                   <div className={classes.helpers}>
-                    <div className={classes.cardLabel}>В наличии в 16 винотеках</div>
+                    <div className={classes.cardLabel}>
+                      В наличии в {shopsCount} {isShopsPlural ? 'винотеках' : 'винотеке'}
+                    </div>
                     <div>Сравнить цены</div>
                   </div>
                 </div>

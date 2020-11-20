@@ -3223,7 +3223,11 @@ export type GetCatalogueCardQueryQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'slug' | 'mainImage'>
+  & { cardPrices: (
+    { __typename?: 'ProductCardPrices' }
+    & Pick<ProductCardPrices, 'min' | 'max'>
+  ) }
 );
 
 export type CatalogueRubricFragmentFragment = (
@@ -3504,7 +3508,7 @@ export type InitialQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitialQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
+  & Pick<Query, 'getSessionCurrency' | 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & SessionUserFragmentFragment
@@ -4288,9 +4292,12 @@ export const ProductSnippetFragmentDoc = gql`
   id
   itemId
   nameString
-  price
   slug
   mainImage
+  cardPrices {
+    min
+    max
+  }
 }
     `;
 export const CatalogueRubricFragmentFragmentDoc = gql`
@@ -7166,6 +7173,7 @@ export const InitialDocument = gql`
       }
     }
   }
+  getSessionCurrency
   getClientLanguage
   getAllLanguages {
     id

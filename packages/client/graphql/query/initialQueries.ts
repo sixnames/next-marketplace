@@ -70,6 +70,7 @@ export const INITIAL_QUERY = gql`
         }
       }
     }
+    getSessionCurrency
     getClientLanguage
     getAllLanguages {
       id

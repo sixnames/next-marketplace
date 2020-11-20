@@ -3,6 +3,7 @@ import { InitialQuery, Language } from '../generated/apolloComponents';
 import { useRouter } from 'next/router';
 import { LanguageContextProvider } from './languageContext';
 import { ConfigContextProvider } from './configContext';
+import { DEFAULT_CURRENCY } from '@yagu/config';
 
 export type MeType = InitialQuery['me'];
 export type ConfigsType = InitialQuery['getAllConfigs'];
@@ -16,9 +17,11 @@ interface ContextState {
 interface UserContextInterface {
   state: ContextState;
   setState?: any;
+  currency: string;
 }
 
 const UserContext = createContext<UserContextInterface>({
+  currency: DEFAULT_CURRENCY,
   state: {
     isAuthenticated: false,
   },
@@ -30,6 +33,7 @@ interface UserContextProviderInterface {
   languagesList: Language[];
   configs: ConfigsType;
   cities: CitiesType;
+  currency: string;
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({
@@ -39,6 +43,7 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
   languagesList,
   configs,
   cities,
+  currency,
 }) => {
   const [state, setState] = useState<ContextState>({
     isAuthenticated: false,
@@ -57,8 +62,9 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
     return {
       state,
       setState,
+      currency,
     };
-  }, [state]);
+  }, [currency, state]);
 
   return (
     <LanguageContextProvider lang={lang} languagesList={languagesList}>
@@ -77,7 +83,7 @@ function useUserContext() {
     throw new Error('useUserContext must be used within a UserContextProvider');
   }
 
-  const { state, setState } = context;
+  const { state, setState, currency } = context;
 
   function setMeIn(user: MeType) {
     if (user) {
@@ -111,6 +117,7 @@ function useUserContext() {
 
   return {
     ...state,
+    currency,
     setMeIn,
     setMeOut,
     updateMyContext,

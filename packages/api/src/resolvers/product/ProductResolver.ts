@@ -705,12 +705,13 @@ export class ProductResolver {
           node: shop,
           ...shopProduct,
           id: shopProduct._id,
-          discountedPercent: lastOldPrice
-            ? getPercentage({
-                fullValue: shopProduct.price,
-                partialValue: lastOldPrice.price,
-              })
-            : null,
+          discountedPercent:
+            lastOldPrice && lastOldPrice.price > shopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: shopProduct.price,
+                })
+              : null,
           formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
           formattedOldPrice: lastOldPrice
             ? getCurrencyString({

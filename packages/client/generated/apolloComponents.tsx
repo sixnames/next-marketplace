@@ -2080,19 +2080,19 @@ export type UpdateShopProductInput = {
 
 export type CmsProductAttributeFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<ProductAttribute, 'key' | 'showInCard' | 'viewVariant' | 'value'>
   & { node: (
     { __typename?: 'Attribute' }
-    & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
-      & Pick<Metric, '[object Object]' | '[object Object]'>
+      & Pick<Metric, 'id' | 'nameString'>
     )>, optionsGroup?: Maybe<(
       { __typename?: 'OptionsGroup' }
-      & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+      & Pick<OptionsGroup, 'id' | 'nameString'>
       & { options: Array<(
         { __typename?: 'Option' }
-        & Pick<Option, '[object Object]' | '[object Object]' | '[object Object]'>
+        & Pick<Option, 'id' | 'nameString' | 'color'>
       )> }
     )> }
   ) }
@@ -2100,10 +2100,10 @@ export type CmsProductAttributeFragment = (
 
 export type CmsProductAttributesGroupFragment = (
   { __typename?: 'ProductAttributesGroup' }
-  & Pick<ProductAttributesGroup, '[object Object]'>
+  & Pick<ProductAttributesGroup, 'showInCard'>
   & { node: (
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroup, 'id' | 'nameString'>
   ), attributes: Array<(
     { __typename?: 'ProductAttribute' }
     & CmsProductAttributeFragment
@@ -2112,19 +2112,19 @@ export type CmsProductAttributesGroupFragment = (
 
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, cardName: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, description: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, assets: Array<(
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'url' | 'index'>
   )>, attributesGroups: Array<(
     { __typename?: 'ProductAttributesGroup' }
     & CmsProductAttributesGroupFragment
@@ -2133,7 +2133,7 @@ export type CmsProductFieldsFragment = (
 
 export type CmsProductConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
-  & Pick<ProductConnectionItem, '[object Object]' | '[object Object]'>
+  & Pick<ProductConnectionItem, 'optionName' | 'value'>
   & { node: (
     { __typename?: 'Product' }
     & CmsProductFieldsFragment
@@ -2142,10 +2142,10 @@ export type CmsProductConnectionItemFragment = (
 
 export type CmsProductConnectionFragment = (
   { __typename?: 'ProductConnection' }
-  & Pick<ProductConnection, '[object Object]'>
+  & Pick<ProductConnection, 'id'>
   & { attribute: (
     { __typename?: 'Attribute' }
-    & Pick<Attribute, '[object Object]' | '[object Object]'>
+    & Pick<Attribute, 'id' | 'nameString'>
   ), products: Array<(
     { __typename?: 'ProductConnectionItem' }
     & CmsProductConnectionItemFragment
@@ -2183,7 +2183,7 @@ export type UpdateProductMutation = (
   { __typename?: 'Mutation' }
   & { updateProduct: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
     & { product?: Maybe<(
       { __typename?: 'Product' }
       & CmsProductFragment
@@ -2200,7 +2200,7 @@ export type CreateProductMutation = (
   { __typename?: 'Mutation' }
   & { createProduct: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2213,7 +2213,7 @@ export type DeleteProductMutation = (
   { __typename?: 'Mutation' }
   & { deleteProduct: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2226,7 +2226,7 @@ export type CreateProductConnectionMutation = (
   { __typename?: 'Mutation' }
   & { createProductConnection: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2239,7 +2239,7 @@ export type AddProductToConnectionMutation = (
   { __typename?: 'Mutation' }
   & { addProductToConnection: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2252,34 +2252,34 @@ export type DeleteProductFromConnectionMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromConnection: (
     { __typename?: 'ProductPayloadType' }
-    & Pick<ProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ProductPayloadType, 'success' | 'message'>
   ) }
 );
 
 export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Rubric, 'id' | 'nameString' | 'level'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, variant: (
     { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariant, 'id' | 'nameString'>
   ) }
 );
 
 export type RubricProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )> }
 );
 
 export type RubricProductsPaginationFragment = (
   { __typename?: 'PaginatedProductsResponse' }
-  & Pick<PaginatedProductsResponse, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages' | 'activeProductsCount'>
   & { docs: Array<(
     { __typename?: 'Product' }
     & RubricProductFragment
@@ -2296,13 +2296,13 @@ export type GetRubricsTreeQuery = (
   { __typename?: 'Query' }
   & { getRubricsTree: Array<(
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '[object Object]' | '[object Object]'>
+    & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
     & { children: Array<(
       { __typename?: 'Rubric' }
-      & Pick<Rubric, '[object Object]' | '[object Object]'>
+      & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
       & { children: Array<(
         { __typename?: 'Rubric' }
-        & Pick<Rubric, '[object Object]' | '[object Object]'>
+        & Pick<Rubric, 'totalProductsCount' | 'activeProductsCount'>
         & RubricFragmentFragment
       )> }
       & RubricFragmentFragment
@@ -2310,7 +2310,7 @@ export type GetRubricsTreeQuery = (
     & RubricFragmentFragment
   )>, getProductsCounters: (
     { __typename?: 'ProductsCounters' }
-    & Pick<ProductsCounters, '[object Object]' | '[object Object]'>
+    & Pick<ProductsCounters, 'totalProductsCount' | 'activeProductsCount'>
   ) }
 );
 
@@ -2325,16 +2325,16 @@ export type GetRubricQuery = (
     { __typename?: 'Rubric' }
     & { catalogueTitle: (
       { __typename?: 'RubricCatalogueTitle' }
-      & Pick<RubricCatalogueTitle, '[object Object]'>
+      & Pick<RubricCatalogueTitle, 'gender'>
       & { defaultTitle: Array<(
         { __typename?: 'LanguageType' }
-        & Pick<LanguageType, '[object Object]' | '[object Object]'>
+        & Pick<LanguageType, 'key' | 'value'>
       )>, prefix?: Maybe<Array<(
         { __typename?: 'LanguageType' }
-        & Pick<LanguageType, '[object Object]' | '[object Object]'>
+        & Pick<LanguageType, 'key' | 'value'>
       )>>, keyword: Array<(
         { __typename?: 'LanguageType' }
-        & Pick<LanguageType, '[object Object]' | '[object Object]'>
+        & Pick<LanguageType, 'key' | 'value'>
       )> }
     ) }
     & RubricFragmentFragment
@@ -2350,7 +2350,7 @@ export type CreateRubricMutation = (
   { __typename?: 'Mutation' }
   & { createRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2363,7 +2363,7 @@ export type UpdateRubricMutation = (
   { __typename?: 'Mutation' }
   & { updateRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2376,7 +2376,7 @@ export type DeleteRubricMutation = (
   { __typename?: 'Mutation' }
   & { deleteRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2391,7 +2391,7 @@ export type GetRubricProductsQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '[object Object]'>
+    & Pick<Rubric, 'id'>
     & { products: (
       { __typename?: 'PaginatedProductsResponse' }
       & RubricProductsPaginationFragment
@@ -2421,7 +2421,7 @@ export type AddProductTuRubricMutation = (
   { __typename?: 'Mutation' }
   & { addProductToRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2434,7 +2434,7 @@ export type DeleteProductFromRubricMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2453,22 +2453,22 @@ export type GetAllProductsQuery = (
 
 export type RubricAttributeFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
   & { metric?: Maybe<(
     { __typename?: 'Metric' }
-    & Pick<Metric, '[object Object]' | '[object Object]'>
+    & Pick<Metric, 'id' | 'nameString'>
   )>, optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroup, 'id' | 'nameString'>
   )> }
 );
 
 export type RubricAttributesGroupFragment = (
   { __typename?: 'RubricAttributesGroup' }
-  & Pick<RubricAttributesGroup, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<RubricAttributesGroup, 'id' | 'isOwner' | 'showInCatalogueFilter'>
   & { node: (
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroup, 'id' | 'nameString'>
     & { attributes: Array<(
       { __typename?: 'Attribute' }
       & RubricAttributeFragment
@@ -2485,7 +2485,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '[object Object]' | '[object Object]'>
+    & Pick<Rubric, 'id' | 'level'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
       & RubricAttributesGroupFragment
@@ -2502,7 +2502,7 @@ export type CreateAttributesGroupMutation = (
   { __typename?: 'Mutation' }
   & { createAttributesGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2515,7 +2515,7 @@ export type UpdateAttributesGroupMutation = (
   { __typename?: 'Mutation' }
   & { updateAttributesGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2528,7 +2528,7 @@ export type DeleteAttributesGroupMutation = (
   { __typename?: 'Mutation' }
   & { deleteAttributesGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2541,7 +2541,7 @@ export type AddAttributeToGroupMutation = (
   { __typename?: 'Mutation' }
   & { addAttributeToGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2554,7 +2554,7 @@ export type UpdateAttributeInGroupMutation = (
   { __typename?: 'Mutation' }
   & { updateAttributeInGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2567,7 +2567,7 @@ export type DeleteAttributeFromGroupMutation = (
   { __typename?: 'Mutation' }
   & { deleteAttributeFromGroup: (
     { __typename?: 'AttributesGroupPayloadType' }
-    & Pick<AttributesGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2580,7 +2580,7 @@ export type AddAttributesGroupToRubricMutation = (
   { __typename?: 'Mutation' }
   & { addAttributesGroupToRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2593,7 +2593,7 @@ export type UpdateAttributesGroupInRubricMutation = (
   { __typename?: 'Mutation' }
   & { updateAttributesGroupInRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2606,7 +2606,7 @@ export type DeleteAttributesGroupFromRubricMutation = (
   { __typename?: 'Mutation' }
   & { deleteAttributesGroupFromRubric: (
     { __typename?: 'RubricPayloadType' }
-    & Pick<RubricPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2619,7 +2619,7 @@ export type CreateCompanyMutation = (
   { __typename?: 'Mutation' }
   & { createCompany: (
     { __typename?: 'CompanyPayloadtype' }
-    & Pick<CompanyPayloadtype, '[object Object]' | '[object Object]'>
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
 );
 
@@ -2632,7 +2632,7 @@ export type DeleteCompanyMutation = (
   { __typename?: 'Mutation' }
   & { deleteCompany: (
     { __typename?: 'CompanyPayloadtype' }
-    & Pick<CompanyPayloadtype, '[object Object]' | '[object Object]'>
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
 );
 
@@ -2645,7 +2645,7 @@ export type UpdateCompanyMutation = (
   { __typename?: 'Mutation' }
   & { updateCompany: (
     { __typename?: 'CompanyPayloadtype' }
-    & Pick<CompanyPayloadtype, '[object Object]' | '[object Object]'>
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
 );
 
@@ -2658,7 +2658,7 @@ export type AddShopToCompanyMutation = (
   { __typename?: 'Mutation' }
   & { addShopToCompany: (
     { __typename?: 'CompanyPayloadtype' }
-    & Pick<CompanyPayloadtype, '[object Object]' | '[object Object]'>
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
 );
 
@@ -2671,7 +2671,7 @@ export type UpdateShopMutation = (
   { __typename?: 'Mutation' }
   & { updateShop: (
     { __typename?: 'ShopPayloadType' }
-    & Pick<ShopPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ShopPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2684,7 +2684,7 @@ export type DeleteShopFromCompanyMutation = (
   { __typename?: 'Mutation' }
   & { deleteShopFromCompany: (
     { __typename?: 'CompanyPayloadtype' }
-    & Pick<CompanyPayloadtype, '[object Object]' | '[object Object]'>
+    & Pick<CompanyPayloadtype, 'success' | 'message'>
   ) }
 );
 
@@ -2697,7 +2697,7 @@ export type AddProductToShopMutation = (
   { __typename?: 'Mutation' }
   & { addProductToShop: (
     { __typename?: 'ShopPayloadType' }
-    & Pick<ShopPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ShopPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2710,7 +2710,7 @@ export type UpdateShopProductMutation = (
   { __typename?: 'Mutation' }
   & { updateShopProduct: (
     { __typename?: 'ShopProductPayloadType' }
-    & Pick<ShopProductPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ShopProductPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2723,7 +2723,7 @@ export type DeleteProductFromShopMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromShop: (
     { __typename?: 'ShopPayloadType' }
-    & Pick<ShopPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ShopPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2736,7 +2736,7 @@ export type UpdateConfigsMutation = (
   { __typename?: 'Mutation' }
   & { updateConfigs: (
     { __typename?: 'ConfigPayloadType' }
-    & Pick<ConfigPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ConfigPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2749,7 +2749,7 @@ export type UpdateConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateConfig: (
     { __typename?: 'ConfigPayloadType' }
-    & Pick<ConfigPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ConfigPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2762,7 +2762,7 @@ export type UpdateAssetConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateAssetConfig: (
     { __typename?: 'ConfigPayloadType' }
-    & Pick<ConfigPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<ConfigPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2775,7 +2775,7 @@ export type CreateLanguageMutation = (
   { __typename?: 'Mutation' }
   & { createLanguage: (
     { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<LanguagePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2788,7 +2788,7 @@ export type UpdateLanguageMutation = (
   { __typename?: 'Mutation' }
   & { updateLanguage: (
     { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<LanguagePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2801,7 +2801,7 @@ export type DeleteLanguageMutation = (
   { __typename?: 'Mutation' }
   & { deleteLanguage: (
     { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<LanguagePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2814,7 +2814,7 @@ export type SetLanguageAsDefaultMutation = (
   { __typename?: 'Mutation' }
   & { setLanguageAsDefault: (
     { __typename?: 'LanguagePayloadType' }
-    & Pick<LanguagePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<LanguagePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2827,7 +2827,7 @@ export type CreateOptionsGroupMutation = (
   { __typename?: 'Mutation' }
   & { createOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2840,7 +2840,7 @@ export type UpdateOptionsGroupMutation = (
   { __typename?: 'Mutation' }
   & { updateOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2853,7 +2853,7 @@ export type DeleteOptionsGroupMutation = (
   { __typename?: 'Mutation' }
   & { deleteOptionsGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2866,7 +2866,7 @@ export type AddOptionToGroupMutation = (
   { __typename?: 'Mutation' }
   & { addOptionToGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2879,7 +2879,7 @@ export type UpdateOptionInGroupMutation = (
   { __typename?: 'Mutation' }
   & { updateOptionInGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2892,7 +2892,7 @@ export type DeleteOptionFromGroupMutation = (
   { __typename?: 'Mutation' }
   & { deleteOptionFromGroup: (
     { __typename?: 'OptionsGroupPayloadType' }
-    & Pick<OptionsGroupPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2905,7 +2905,7 @@ export type CreateRoleMutation = (
   { __typename?: 'Mutation' }
   & { createRole: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2918,7 +2918,7 @@ export type UpdateRoleMutation = (
   { __typename?: 'Mutation' }
   & { updateRole: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2931,7 +2931,7 @@ export type DeleteRoleMutation = (
   { __typename?: 'Mutation' }
   & { deleteRole: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2944,7 +2944,7 @@ export type SetRoleOperationPermissionMutation = (
   { __typename?: 'Mutation' }
   & { setRoleOperationPermission: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2957,7 +2957,7 @@ export type SetRoleOperationCustomFilterMutation = (
   { __typename?: 'Mutation' }
   & { setRoleOperationCustomFilter: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2970,7 +2970,7 @@ export type SetRoleRuleRestrictedFieldMutation = (
   { __typename?: 'Mutation' }
   & { setRoleRuleRestrictedField: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2983,7 +2983,7 @@ export type SetRoleAllowedNavItemMutation = (
   { __typename?: 'Mutation' }
   & { setRoleAllowedNavItem: (
     { __typename?: 'RolePayloadType' }
-    & Pick<RolePayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RolePayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -2996,7 +2996,7 @@ export type CreateRubricVariantMutation = (
   { __typename?: 'Mutation' }
   & { createRubricVariant: (
     { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -3009,7 +3009,7 @@ export type UpdateRubricVariantMutation = (
   { __typename?: 'Mutation' }
   & { updateRubricVariant: (
     { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -3022,7 +3022,7 @@ export type DeleteRubricVariantMutation = (
   { __typename?: 'Mutation' }
   & { deleteRubricVariant: (
     { __typename?: 'RubricVariantPayloadType' }
-    & Pick<RubricVariantPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariantPayloadType, 'success' | 'message'>
   ) }
 );
 
@@ -3035,7 +3035,7 @@ export type UpdateMyProfileMutation = (
   { __typename?: 'Mutation' }
   & { updateMyProfile: (
     { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<UserPayloadType, 'success' | 'message'>
     & { user?: Maybe<(
       { __typename?: 'User' }
       & SessionUserFragmentFragment
@@ -3052,7 +3052,7 @@ export type UpdateMyPasswordMutation = (
   { __typename?: 'Mutation' }
   & { updateMyPassword: (
     { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<UserPayloadType, 'success' | 'message'>
     & { user?: Maybe<(
       { __typename?: 'User' }
       & SessionUserFragmentFragment
@@ -3067,25 +3067,25 @@ export type GetAllAttributesGroupsQuery = (
   { __typename?: 'Query' }
   & { getAllAttributesGroups: Array<(
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroup, 'id' | 'nameString'>
   )> }
 );
 
 export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Attribute, 'id' | 'nameString' | 'variant'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, positioningInTitle?: Maybe<Array<(
     { __typename?: 'AttributePositioningInTitle' }
-    & Pick<AttributePositioningInTitle, '[object Object]' | '[object Object]'>
+    & Pick<AttributePositioningInTitle, 'key' | 'value'>
   )>>, optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroup, 'id' | 'nameString'>
   )>, metric?: Maybe<(
     { __typename?: 'Metric' }
-    & Pick<Metric, '[object Object]' | '[object Object]'>
+    & Pick<Metric, 'id' | 'nameString'>
   )> }
 );
 
@@ -3098,10 +3098,10 @@ export type GetAttributesGroupQuery = (
   { __typename?: 'Query' }
   & { getAttributesGroup?: Maybe<(
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroup, 'id' | 'nameString'>
     & { name: Array<(
       { __typename?: 'LanguageType' }
-      & Pick<LanguageType, '[object Object]' | '[object Object]'>
+      & Pick<LanguageType, 'key' | 'value'>
     )>, attributes: Array<(
       { __typename?: 'Attribute' }
       & AttributeInGroupFragment
@@ -3118,57 +3118,57 @@ export type GetAttributesGroupsForRubricQuery = (
   { __typename?: 'Query' }
   & { getAllAttributesGroups: Array<(
     { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+    & Pick<AttributesGroup, 'id' | 'nameString'>
   )> }
 );
 
 export type CardFeatureFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<ProductAttribute, 'showInCard' | 'viewVariant' | 'readableValue'>
   & { readableOptions: Array<(
     { __typename?: 'Option' }
-    & Pick<Option, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Option, 'id' | 'nameString' | 'icon'>
   )>, node: (
     { __typename?: 'Attribute' }
-    & Pick<Attribute, '[object Object]' | '[object Object]'>
+    & Pick<Attribute, 'id' | 'nameString'>
   ) }
 );
 
 export type CardConnectionFragment = (
   { __typename?: 'ProductCardConnection' }
-  & Pick<ProductCardConnection, '[object Object]' | '[object Object]'>
+  & Pick<ProductCardConnection, 'id' | 'nameString'>
   & { products: Array<(
     { __typename?: 'ProductCardConnectionItem' }
-    & Pick<ProductCardConnectionItem, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<ProductCardConnectionItem, 'id' | 'value' | 'isCurrent'>
     & { product: (
       { __typename?: 'Product' }
-      & Pick<Product, '[object Object]' | '[object Object]'>
+      & Pick<Product, 'id' | 'slug'>
     ) }
   )> }
 );
 
 export type ProductCardShopNodeFragment = (
   { __typename?: 'Shop' }
-  & Pick<Shop, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Shop, 'id' | 'nameString' | 'slug' | 'productsCount'>
   & { address: (
     { __typename?: 'Address' }
-    & Pick<Address, '[object Object]'>
+    & Pick<Address, 'formattedAddress'>
     & { point: (
       { __typename?: 'PointGeoJSON' }
-      & Pick<PointGeoJson, '[object Object]'>
+      & Pick<PointGeoJson, 'coordinates'>
     ) }
   ), assets: Array<(
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   )>, logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   ) }
 );
 
 export type ProductCardShopFragment = (
   { __typename?: 'ProductShop' }
-  & Pick<ProductShop, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<ProductShop, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
   & { node: (
     { __typename?: 'Shop' }
     & ProductCardShopNodeFragment
@@ -3177,10 +3177,10 @@ export type ProductCardShopFragment = (
 
 export type ProductCardFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, '[object Object]' | '[object Object]'>
+    & Pick<ProductCardPrices, 'min' | 'max'>
   ), shops: Array<(
     { __typename?: 'ProductShop' }
     & ProductCardShopFragment
@@ -3223,24 +3223,24 @@ export type GetCatalogueCardQueryQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
 );
 
 export type CatalogueRubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
   & { variant: (
     { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariant, 'id' | 'nameString'>
   ), filterAttributes: Array<(
     { __typename?: 'RubricFilterAttribute' }
-    & Pick<RubricFilterAttribute, '[object Object]'>
+    & Pick<RubricFilterAttribute, 'id'>
     & { node: (
       { __typename?: 'Attribute' }
-      & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
     ), options: Array<(
       { __typename?: 'RubricFilterAttributeOption' }
-      & Pick<RubricFilterAttributeOption, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
     )> }
   )> }
 );
@@ -3254,13 +3254,13 @@ export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
   & { getCatalogueData?: Maybe<(
     { __typename?: 'CatalogueData' }
-    & Pick<CatalogueData, '[object Object]'>
+    & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
       & CatalogueRubricFragmentFragment
     ), products: (
       { __typename?: 'PaginatedProductsResponse' }
-      & Pick<PaginatedProductsResponse, '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Product' }
         & ProductSnippetFragment
@@ -3271,13 +3271,13 @@ export type GetCatalogueRubricQuery = (
 
 export type CompanyInListFragment = (
   { __typename?: 'Company' }
-  & Pick<Company, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
   & { owner: (
     { __typename?: 'User' }
-    & Pick<User, '[object Object]' | '[object Object]'>
+    & Pick<User, 'id' | 'fullName'>
   ), logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]'>
+    & Pick<AssetType, 'url'>
   ) }
 );
 
@@ -3290,7 +3290,7 @@ export type GetAllCompaniesQuery = (
   { __typename?: 'Query' }
   & { getAllCompanies: (
     { __typename?: 'PaginatedCompaniesResponse' }
-    & Pick<PaginatedCompaniesResponse, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<PaginatedCompaniesResponse, 'totalDocs' | 'page' | 'totalPages'>
     & { docs: Array<(
       { __typename?: 'Company' }
       & CompanyInListFragment
@@ -3300,16 +3300,16 @@ export type GetAllCompaniesQuery = (
 
 export type ShopInListFragment = (
   { __typename?: 'Shop' }
-  & Pick<Shop, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
   & { logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   ) }
 );
 
 export type CompanyFragment = (
   { __typename?: 'Company' }
-  & Pick<Company, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Company, 'id' | 'itemId' | 'slug' | 'nameString'>
   & { staff: Array<(
     { __typename?: 'User' }
     & UserInListFragment
@@ -3318,10 +3318,10 @@ export type CompanyFragment = (
     & UserInListFragment
   ), logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   ), contacts: (
     { __typename?: 'ContactsType' }
-    & Pick<ContactsType, '[object Object]' | '[object Object]'>
+    & Pick<ContactsType, 'emails' | 'phones'>
   ) }
 );
 
@@ -3350,7 +3350,7 @@ export type GetCompanyShopsQuery = (
     { __typename?: 'Company' }
     & { shops: (
       { __typename?: 'PaginatedShopsResponse' }
-      & Pick<PaginatedShopsResponse, '[object Object]'>
+      & Pick<PaginatedShopsResponse, 'totalPages'>
       & { docs: Array<(
         { __typename?: 'Shop' }
         & ShopInListFragment
@@ -3368,7 +3368,7 @@ export type GetAllShopsQuery = (
   { __typename?: 'Query' }
   & { getAllShops: (
     { __typename?: 'PaginatedShopsResponse' }
-    & Pick<PaginatedShopsResponse, '[object Object]'>
+    & Pick<PaginatedShopsResponse, 'totalPages'>
     & { docs: Array<(
       { __typename?: 'Shop' }
       & ShopInListFragment
@@ -3378,12 +3378,12 @@ export type GetAllShopsQuery = (
 
 export type ShopProductNodeFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'mainImage'>
 );
 
 export type ShopProductFragment = (
   { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'price'>
   & { product: (
     { __typename?: 'Product' }
     & ShopProductNodeFragment
@@ -3392,23 +3392,23 @@ export type ShopProductFragment = (
 
 export type ShopFragment = (
   { __typename?: 'Shop' }
-  & Pick<Shop, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Shop, 'id' | 'itemId' | 'nameString'>
   & { contacts: (
     { __typename?: 'ContactsType' }
-    & Pick<ContactsType, '[object Object]' | '[object Object]'>
+    & Pick<ContactsType, 'emails' | 'phones'>
   ), address: (
     { __typename?: 'Address' }
-    & Pick<Address, '[object Object]'>
+    & Pick<Address, 'formattedAddress'>
     & { point: (
       { __typename?: 'PointGeoJSON' }
-      & Pick<PointGeoJson, '[object Object]'>
+      & Pick<PointGeoJson, 'coordinates'>
     ) }
   ), logo: (
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   ), assets: Array<(
     { __typename?: 'AssetType' }
-    & Pick<AssetType, '[object Object]' | '[object Object]'>
+    & Pick<AssetType, 'index' | 'url'>
   )> }
 );
 
@@ -3437,7 +3437,7 @@ export type GetShopProductsQuery = (
     { __typename?: 'Shop' }
     & { products: (
       { __typename?: 'PaginatedShopProductsResponse' }
-      & Pick<PaginatedShopProductsResponse, '[object Object]'>
+      & Pick<PaginatedShopProductsResponse, 'totalPages'>
       & { docs: Array<(
         { __typename?: 'ShopProduct' }
         & ShopProductFragment
@@ -3448,13 +3448,13 @@ export type GetShopProductsQuery = (
 
 export type SiteConfigFragment = (
   { __typename?: 'Config' }
-  & Pick<Config, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Config, 'id' | 'slug' | 'value' | 'nameString' | 'description' | 'variant' | 'acceptedFormats' | 'multi'>
   & { cities: Array<(
     { __typename?: 'ConfigCity' }
-    & Pick<ConfigCity, '[object Object]'>
+    & Pick<ConfigCity, 'key'>
     & { translations: Array<(
       { __typename?: 'ConfigLanguage' }
-      & Pick<ConfigLanguage, '[object Object]' | '[object Object]'>
+      & Pick<ConfigLanguage, 'key' | 'value'>
     )> }
   )> }
 );
@@ -3472,29 +3472,29 @@ export type GetAllConfigsQuery = (
 
 export type SessionUserFragmentFragment = (
   { __typename?: 'User' }
-  & Pick<User, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<User, 'id' | 'email' | 'name' | 'secondName' | 'lastName' | 'fullName' | 'shortName' | 'phone'>
 );
 
 export type SessionRoleFragmentFragment = (
   { __typename?: 'Role' }
-  & Pick<Role, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Role, 'id' | 'nameString' | 'isStuff'>
 );
 
 export type SiteRubricFragmentFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
   & { variant: (
     { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, '[object Object]' | '[object Object]'>
+    & Pick<RubricVariant, 'id' | 'nameString'>
   ), filterAttributes: Array<(
     { __typename?: 'RubricFilterAttribute' }
-    & Pick<RubricFilterAttribute, '[object Object]'>
+    & Pick<RubricFilterAttribute, 'id'>
     & { node: (
       { __typename?: 'Attribute' }
-      & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
     ), options: Array<(
       { __typename?: 'RubricFilterAttributeOption' }
-      & Pick<RubricFilterAttributeOption, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
     )> }
   )> }
 );
@@ -3504,7 +3504,7 @@ export type InitialQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitialQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, '[object Object]'>
+  & Pick<Query, 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & SessionUserFragmentFragment
@@ -3512,22 +3512,22 @@ export type InitialQuery = (
     { __typename?: 'Role' }
     & { appNavigation: Array<(
       { __typename?: 'NavItem' }
-      & Pick<NavItem, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<NavItem, 'id' | 'nameString' | 'icon' | 'path'>
       & { children?: Maybe<Array<(
         { __typename?: 'NavItem' }
-        & Pick<NavItem, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+        & Pick<NavItem, 'id' | 'nameString' | 'icon' | 'path'>
       )>> }
     )> }
     & SessionRoleFragmentFragment
   ), getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Language, 'id' | 'name' | 'nativeName' | 'key' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
     & SiteConfigFragment
   )>, getAllCities: Array<(
     { __typename?: 'City' }
-    & Pick<City, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -3536,7 +3536,7 @@ export type InitialSiteQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitialSiteQueryQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, '[object Object]' | '[object Object]'>
+  & Pick<Query, 'getSessionCurrency' | 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & SessionUserFragmentFragment
@@ -3545,7 +3545,7 @@ export type InitialSiteQueryQuery = (
     & SessionRoleFragmentFragment
   ), getAllLanguages?: Maybe<Array<(
     { __typename?: 'Language' }
-    & Pick<Language, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<Language, 'id' | 'key' | 'name' | 'nativeName' | 'isDefault'>
   )>>, getAllConfigs: Array<(
     { __typename?: 'Config' }
     & SiteConfigFragment
@@ -3554,7 +3554,7 @@ export type InitialSiteQueryQuery = (
     & SiteRubricFragmentFragment
   )>, getAllCities: Array<(
     { __typename?: 'City' }
-    & Pick<City, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<City, 'id' | 'slug' | 'nameString'>
   )> }
 );
 
@@ -3567,7 +3567,7 @@ export type SignInMutation = (
   { __typename?: 'Mutation' }
   & { signIn: (
     { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<UserPayloadType, 'success' | 'message'>
     & { user?: Maybe<(
       { __typename?: 'User' }
       & SessionUserFragmentFragment
@@ -3582,13 +3582,13 @@ export type SignOutMutation = (
   { __typename?: 'Mutation' }
   & { signOut: (
     { __typename?: 'UserPayloadType' }
-    & Pick<UserPayloadType, '[object Object]' | '[object Object]'>
+    & Pick<UserPayloadType, 'success' | 'message'>
   ) }
 );
 
 export type LanguageFragment = (
   { __typename?: 'Language' }
-  & Pick<Language, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Language, 'id' | 'name' | 'key' | 'isDefault' | 'nativeName'>
 );
 
 export type GetAllLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -3604,10 +3604,10 @@ export type GetAllLanguagesQuery = (
 
 export type MessageFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, '[object Object]'>
+  & Pick<Message, 'key'>
   & { message: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )> }
 );
 
@@ -3642,36 +3642,36 @@ export type GetAllOptionsGroupsQuery = (
   { __typename?: 'Query' }
   & { getAllOptionsGroups: Array<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroup, 'id' | 'nameString'>
     & { options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, '[object Object]'>
+      & Pick<Option, 'id'>
     )> }
   )> }
 );
 
 export type OptionInGroupFragment = (
   { __typename?: 'Option' }
-  & Pick<Option, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Option, 'id' | 'nameString' | 'color' | 'icon' | 'gender'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, variants?: Maybe<Array<(
     { __typename?: 'OptionVariant' }
-    & Pick<OptionVariant, '[object Object]'>
+    & Pick<OptionVariant, 'key'>
     & { value: Array<(
       { __typename?: 'LanguageType' }
-      & Pick<LanguageType, '[object Object]' | '[object Object]'>
+      & Pick<LanguageType, 'key' | 'value'>
     )> }
   )>> }
 );
 
 export type OptionsGroupFragment = (
   { __typename?: 'OptionsGroup' }
-  & Pick<OptionsGroup, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<OptionsGroup, 'id' | 'variant' | 'nameString'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, options: Array<(
     { __typename?: 'Option' }
     & OptionInGroupFragment
@@ -3698,25 +3698,25 @@ export type GetAllRolesQuery = (
   { __typename?: 'Query' }
   & { getAllRoles: Array<(
     { __typename?: 'Role' }
-    & Pick<Role, '[object Object]' | '[object Object]'>
+    & Pick<Role, 'id' | 'nameString'>
   )> }
 );
 
 export type RoleRuleFragment = (
   { __typename?: 'RoleRule' }
-  & Pick<RoleRule, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<RoleRule, 'id' | 'entity' | 'nameString' | 'restrictedFields'>
   & { operations: Array<(
     { __typename?: 'RoleRuleOperation' }
-    & Pick<RoleRuleOperation, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<RoleRuleOperation, 'id' | 'allow' | 'customFilter' | 'operationType'>
   )> }
 );
 
 export type RoleFragment = (
   { __typename?: 'Role' }
-  & Pick<Role, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )>, rules: Array<(
     { __typename?: 'RoleRule' }
     & RoleRuleFragment
@@ -3743,15 +3743,15 @@ export type GetEntityFieldsQueryVariables = Exact<{
 
 export type GetEntityFieldsQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, '[object Object]'>
+  & Pick<Query, 'getEntityFields'>
 );
 
 export type AppNavItemFragment = (
   { __typename?: 'NavItem' }
-  & Pick<NavItem, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<NavItem, 'id' | 'nameString' | 'path'>
   & { children?: Maybe<Array<(
     { __typename?: 'NavItem' }
-    & Pick<NavItem, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<NavItem, 'id' | 'nameString' | 'path'>
   )>> }
 );
 
@@ -3768,10 +3768,10 @@ export type GetAllAppNavItemsQuery = (
 
 export type RubricVariantFragment = (
   { __typename?: 'RubricVariant' }
-  & Pick<RubricVariant, '[object Object]' | '[object Object]'>
+  & Pick<RubricVariant, 'id' | 'nameString'>
   & { name: Array<(
     { __typename?: 'LanguageType' }
-    & Pick<LanguageType, '[object Object]' | '[object Object]'>
+    & Pick<LanguageType, 'key' | 'value'>
   )> }
 );
 
@@ -3785,7 +3785,7 @@ export type GetAllRubricVariantsQuery = (
     & RubricVariantFragment
   )>>, getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
-    & Pick<GenderOption, '[object Object]' | '[object Object]'>
+    & Pick<GenderOption, 'id' | 'nameString'>
   )> }
 );
 
@@ -3832,13 +3832,13 @@ export type GetGenderOptionsQuery = (
   { __typename?: 'Query' }
   & { getGenderOptions: Array<(
     { __typename?: 'GenderOption' }
-    & Pick<GenderOption, '[object Object]' | '[object Object]'>
+    & Pick<GenderOption, 'id' | 'nameString'>
   )> }
 );
 
 export type AttributeViewOptionFragment = (
   { __typename?: 'AttributeViewOption' }
-  & Pick<AttributeViewOption, '[object Object]' | '[object Object]'>
+  & Pick<AttributeViewOption, 'id' | 'nameString'>
 );
 
 export type AttributeViewVariantOptionsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -3854,7 +3854,7 @@ export type AttributeViewVariantOptionsQuery = (
 
 export type IconOptionFragment = (
   { __typename?: 'IconOption' }
-  & Pick<IconOption, '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<IconOption, 'id' | 'icon' | 'nameString'>
 );
 
 export type IconsOptionsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -3875,7 +3875,7 @@ export type OptionsGroupVariantsQuery = (
   { __typename?: 'Query' }
   & { getOptionsGroupVariantsOptions: Array<(
     { __typename?: 'OptionsGroupVariantOption' }
-    & Pick<OptionsGroupVariantOption, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroupVariantOption, 'id' | 'nameString'>
   )> }
 );
 
@@ -3886,7 +3886,7 @@ export type GetIsoLanguagesListQuery = (
   { __typename?: 'Query' }
   & { getISOLanguagesOptions: Array<(
     { __typename?: 'ISOLanguage' }
-    & Pick<IsoLanguage, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<IsoLanguage, 'id' | 'nameString' | 'nativeName'>
   )> }
 );
 
@@ -3897,38 +3897,38 @@ export type GetNewAttributeOptionsQuery = (
   { __typename?: 'Query' }
   & { getAllOptionsGroups: Array<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroup, 'id' | 'nameString'>
   )>, getAllMetrics?: Maybe<Array<(
     { __typename?: 'Metric' }
-    & Pick<Metric, '[object Object]' | '[object Object]'>
+    & Pick<Metric, 'id' | 'nameString'>
   )>>, getAttributeVariantsOptions?: Maybe<Array<(
     { __typename?: 'AttributeVariant' }
-    & Pick<AttributeVariant, '[object Object]' | '[object Object]'>
+    & Pick<AttributeVariant, 'id' | 'nameString'>
   )>>, getAttributePositioningOptions: Array<(
     { __typename?: 'AttributePositioningOption' }
-    & Pick<AttributePositioningOption, '[object Object]' | '[object Object]'>
+    & Pick<AttributePositioningOption, 'id' | 'nameString'>
   )> }
 );
 
 export type FeaturesAstAttributeFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<Attribute, 'id' | 'slug' | 'nameString' | 'variant'>
   & { metric?: Maybe<(
     { __typename?: 'Metric' }
-    & Pick<Metric, '[object Object]' | '[object Object]'>
+    & Pick<Metric, 'id' | 'nameString'>
   )>, optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '[object Object]' | '[object Object]'>
+    & Pick<OptionsGroup, 'id' | 'nameString'>
     & { options: Array<(
       { __typename?: 'Option' }
-      & Pick<Option, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+      & Pick<Option, 'id' | 'slug' | 'nameString' | 'color'>
     )> }
   )> }
 );
 
 export type FeaturesAstGroupFragment = (
   { __typename?: 'AttributesGroup' }
-  & Pick<AttributesGroup, '[object Object]' | '[object Object]'>
+  & Pick<AttributesGroup, 'id' | 'nameString'>
   & { attributes: Array<(
     { __typename?: 'Attribute' }
     & FeaturesAstAttributeFragment
@@ -3953,13 +3953,13 @@ export type GetFeaturesAstQuery = (
 
 export type UserInListFragment = (
   { __typename?: 'User' }
-  & Pick<User, '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]' | '[object Object]'>
+  & Pick<User, 'id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
   & { formattedPhone: (
     { __typename?: 'FormattedPhone' }
-    & Pick<FormattedPhone, '[object Object]' | '[object Object]'>
+    & Pick<FormattedPhone, 'raw' | 'readable'>
   ), role: (
     { __typename?: 'Role' }
-    & Pick<Role, '[object Object]' | '[object Object]'>
+    & Pick<Role, 'id' | 'nameString'>
   ) }
 );
 
@@ -3972,7 +3972,7 @@ export type UsersSerchQuery = (
   { __typename?: 'Query' }
   & { getAllUsers: (
     { __typename?: 'PaginatedUsersResponse' }
-    & Pick<PaginatedUsersResponse, '[object Object]' | '[object Object]' | '[object Object]'>
+    & Pick<PaginatedUsersResponse, 'totalDocs' | 'page' | 'totalPages'>
     & { docs: Array<(
       { __typename?: 'User' }
       & UserInListFragment
@@ -4669,7 +4669,7 @@ export const GetProductDocument = gql`
  *   },
  * });
  */
-export function useGetProductQuery(baseOptions?: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
+export function useGetProductQuery(baseOptions: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
         return Apollo.useQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, baseOptions);
       }
 export function useGetProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
@@ -4920,7 +4920,7 @@ export const GetRubricsTreeDocument = gql`
  *   },
  * });
  */
-export function useGetRubricsTreeQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
+export function useGetRubricsTreeQuery(baseOptions: Apollo.QueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
         return Apollo.useQuery<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>(GetRubricsTreeDocument, baseOptions);
       }
 export function useGetRubricsTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
@@ -4968,7 +4968,7 @@ export const GetRubricDocument = gql`
  *   },
  * });
  */
-export function useGetRubricQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
+export function useGetRubricQuery(baseOptions: Apollo.QueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
         return Apollo.useQuery<GetRubricQuery, GetRubricQueryVariables>(GetRubricDocument, baseOptions);
       }
 export function useGetRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
@@ -5107,7 +5107,7 @@ export const GetRubricProductsDocument = gql`
  *   },
  * });
  */
-export function useGetRubricProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
+export function useGetRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
         return Apollo.useQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, baseOptions);
       }
 export function useGetRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
@@ -5140,7 +5140,7 @@ export const GetNonRubricProductsDocument = gql`
  *   },
  * });
  */
-export function useGetNonRubricProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
+export function useGetNonRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
         return Apollo.useQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, baseOptions);
       }
 export function useGetNonRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
@@ -5239,7 +5239,7 @@ export const GetAllProductsDocument = gql`
  *   },
  * });
  */
-export function useGetAllProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+export function useGetAllProductsQuery(baseOptions: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
         return Apollo.useQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, baseOptions);
       }
 export function useGetAllProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
@@ -5276,7 +5276,7 @@ export const GetRubricAttributesDocument = gql`
  *   },
  * });
  */
-export function useGetRubricAttributesQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+export function useGetRubricAttributesQuery(baseOptions: Apollo.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
         return Apollo.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
       }
 export function useGetRubricAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
@@ -6775,7 +6775,7 @@ export const GetAttributesGroupDocument = gql`
  *   },
  * });
  */
-export function useGetAttributesGroupQuery(baseOptions?: Apollo.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
+export function useGetAttributesGroupQuery(baseOptions: Apollo.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
         return Apollo.useQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
       }
 export function useGetAttributesGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
@@ -6842,7 +6842,7 @@ export const GetCatalogueCardQueryDocument = gql`
  *   },
  * });
  */
-export function useGetCatalogueCardQueryQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+export function useGetCatalogueCardQueryQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
         return Apollo.useQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
       }
 export function useGetCatalogueCardQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
@@ -6887,7 +6887,7 @@ ${ProductSnippetFragmentDoc}`;
  *   },
  * });
  */
-export function useGetCatalogueRubricQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+export function useGetCatalogueRubricQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
         return Apollo.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
       }
 export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
@@ -6958,7 +6958,7 @@ export const GetCompanyDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+export function useGetCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
         return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
       }
 export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
@@ -6997,7 +6997,7 @@ export const GetCompanyShopsDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyShopsQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
+export function useGetCompanyShopsQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
         return Apollo.useQuery<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>(GetCompanyShopsDocument, baseOptions);
       }
 export function useGetCompanyShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
@@ -7066,7 +7066,7 @@ export const GetShopDocument = gql`
  *   },
  * });
  */
-export function useGetShopQuery(baseOptions?: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+export function useGetShopQuery(baseOptions: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
         return Apollo.useQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
       }
 export function useGetShopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
@@ -7105,7 +7105,7 @@ export const GetShopProductsDocument = gql`
  *   },
  * });
  */
-export function useGetShopProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
+export function useGetShopProductsQuery(baseOptions: Apollo.QueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
         return Apollo.useQuery<GetShopProductsQuery, GetShopProductsQueryVariables>(GetShopProductsDocument, baseOptions);
       }
 export function useGetShopProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
@@ -7393,7 +7393,7 @@ export const GetMessagesByKeysDocument = gql`
  *   },
  * });
  */
-export function useGetMessagesByKeysQuery(baseOptions?: Apollo.QueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
+export function useGetMessagesByKeysQuery(baseOptions: Apollo.QueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
         return Apollo.useQuery<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>(GetMessagesByKeysDocument, baseOptions);
       }
 export function useGetMessagesByKeysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
@@ -7494,7 +7494,7 @@ export const GetOptionsGroupDocument = gql`
  *   },
  * });
  */
-export function useGetOptionsGroupQuery(baseOptions?: Apollo.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
+export function useGetOptionsGroupQuery(baseOptions: Apollo.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
         return Apollo.useQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
       }
 export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
@@ -7560,7 +7560,7 @@ export const GetRoleDocument = gql`
  *   },
  * });
  */
-export function useGetRoleQuery(baseOptions?: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+export function useGetRoleQuery(baseOptions: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
         return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
       }
 export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
@@ -7591,7 +7591,7 @@ export const GetEntityFieldsDocument = gql`
  *   },
  * });
  */
-export function useGetEntityFieldsQuery(baseOptions?: Apollo.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+export function useGetEntityFieldsQuery(baseOptions: Apollo.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
         return Apollo.useQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
       }
 export function useGetEntityFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
@@ -7736,7 +7736,7 @@ ${ProductSnippetFragmentDoc}`;
  *   },
  * });
  */
-export function useGetCatalogueSearchResultQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
+export function useGetCatalogueSearchResultQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
         return Apollo.useQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, baseOptions);
       }
 export function useGetCatalogueSearchResultLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
@@ -7982,7 +7982,7 @@ ${AttributeViewOptionFragmentDoc}`;
  *   },
  * });
  */
-export function useGetFeaturesAstQuery(baseOptions?: Apollo.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+export function useGetFeaturesAstQuery(baseOptions: Apollo.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
         return Apollo.useQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
       }
 export function useGetFeaturesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
@@ -8020,7 +8020,7 @@ export const UsersSerchDocument = gql`
  *   },
  * });
  */
-export function useUsersSerchQuery(baseOptions?: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+export function useUsersSerchQuery(baseOptions: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
         return Apollo.useQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
       }
 export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {

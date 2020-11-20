@@ -11,5 +11,13 @@ export const getPercentage = ({ fullValue, partialValue }: GetPercentageInterfac
   const realPartialValue = noNaN(partialValue);
   const fullPercent = 100;
 
-  return (realPartialValue / realFullValue) * fullPercent;
+  if (realFullValue === 0) {
+    return fullPercent;
+  }
+
+  if (realPartialValue === 0) {
+    return 0;
+  }
+
+  return fullPercent - Math.floor((realPartialValue / realFullValue) * fullPercent);
 };

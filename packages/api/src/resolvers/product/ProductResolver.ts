@@ -741,16 +741,7 @@ export class ProductResolver {
         .lean()
         .exec();
       const allPrices = shopsProducts.map(({ price }) => price);
-      console.log(
-        JSON.stringify(
-          {
-            name: product.name,
-            allPrices,
-          },
-          null,
-          2,
-        ),
-      );
+
       return {
         min: getCurrencyString({ value: min(allPrices), lang }),
         max: getCurrencyString({ value: max(allPrices), lang }),

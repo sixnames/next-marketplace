@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import InputLine from '../Input/InputLine';
-import TTip from '../../TTip/TTip';
 import FormikDropZonePreview from './FormikDropZonePreview';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
@@ -12,6 +11,7 @@ import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
 import { NEGATIVE_INDEX } from '../../../config';
 import { alwaysArray, noNaN } from '@yagu/shared';
+import Tooltip from '../../TTip/Tooltip';
 
 interface FormikDropZoneInterface extends ErrorMessageGapsInterface {
   format?: string;
@@ -91,7 +91,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
     >
       <div className={classes.holder}>
         <div className={classes.frame} {...getRootProps()} data-cy={testId}>
-          <TTip title={tooltip}>
+          <Tooltip title={tooltip}>
             <div
               data-cy={`${testId}-text`}
               className={`${classes.frameText} ${disabled ? classes.frameTextDisabled : ''}`}
@@ -102,7 +102,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
             </div>
 
             <input {...getInputProps()} className={classes.input} />
-          </TTip>
+          </Tooltip>
         </div>
 
         <FormikDropZonePreview

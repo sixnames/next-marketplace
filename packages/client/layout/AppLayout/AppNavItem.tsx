@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import TTip from '../../components/TTip/TTip';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
 import classes from './AppNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
 import { NavItemType } from '../../context/appNavContext';
 import { IconType } from '@yagu/config';
+import Tooltip from '../../components/TTip/Tooltip';
 
 interface AppNavItemInterface {
   item: NavItemType;
@@ -49,23 +49,23 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
   if (children && children.length) {
     return (
       <li className={classes.item} data-cy={`app-nav-item-${nameString}`}>
-        <TTip
-          className={`${classes.complexItem} ${compact ? classes.complexItemCompact : ''} ${
-            isDropdownActive ? classes.complexItemActive : ''
-          }`}
-          onClick={dropdownNavHandler}
-          tooltipPlacement={'right'}
-          title={compact ? nameString : ''}
-        >
-          {icon && (
-            <span className={`${classes.linkIcon}`}>
-              <Icon name={iconType} />
+        <Tooltip title={compact ? nameString : null}>
+          <div
+            className={`${classes.complexItem} ${compact ? classes.complexItemCompact : ''} ${
+              isDropdownActive ? classes.complexItemActive : ''
+            }`}
+            onClick={dropdownNavHandler}
+          >
+            {icon && (
+              <span className={`${classes.linkIcon}`}>
+                <Icon name={iconType} />
+              </span>
+            )}
+            <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
+              {nameString}
             </span>
-          )}
-          <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-            {nameString}
-          </span>
-        </TTip>
+          </div>
+        </Tooltip>
 
         <ul
           className={`${classes.dropdown} ${isCompact ? classes.dropdownActive : ''} ${
@@ -96,24 +96,26 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
 
   return (
     <li className={classes.item} data-cy={`app-nav-item-${nameString}`}>
-      <TTip tooltipPlacement={'right'} title={compact ? nameString : ''}>
-        <Link
-          href={`${path}`}
-          className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
-          activeClassName={classes.linkActive}
-        >
-          <span className={`${classes.linkIcon}`}>
-            {icon && (
-              <span className={`${classes.linkIcon}`}>
-                <Icon name={iconType} />
-              </span>
-            )}
-          </span>
-          <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
-            {nameString}
-          </span>
-        </Link>
-      </TTip>
+      <Tooltip title={compact ? nameString : ''}>
+        <div>
+          <Link
+            href={`${path}`}
+            className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
+            activeClassName={classes.linkActive}
+          >
+            <span className={`${classes.linkIcon}`}>
+              {icon && (
+                <span className={`${classes.linkIcon}`}>
+                  <Icon name={iconType} />
+                </span>
+              )}
+            </span>
+            <span className={`${classes.linkText} ${compact ? classes.linkTextCompact : ''}`}>
+              {nameString}
+            </span>
+          </Link>
+        </div>
+      </Tooltip>
     </li>
   );
 };

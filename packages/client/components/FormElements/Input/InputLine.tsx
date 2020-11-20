@@ -2,7 +2,7 @@ import React from 'react';
 import { PostfixType } from '../../../types';
 import classes from './InputLine.module.css';
 import Icon from '../../Icon/Icon';
-import TTip from '../../TTip/TTip';
+import Tooltip from '../../TTip/Tooltip';
 
 export interface InputLinePropsInterface {
   name?: string;
@@ -88,9 +88,11 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           {labelLink && <span className={classes.labelLink}>{labelLink}</span>}
           {isRequired && <sup>*</sup>}
           {description && (
-            <TTip title={description} className={classes.description}>
-              <Icon name={'question-circle'} />
-            </TTip>
+            <Tooltip title={description}>
+              <div className={classes.description}>
+                <Icon name={'question-circle'} />
+              </div>
+            </Tooltip>
           )}
         </TagName>
       )}

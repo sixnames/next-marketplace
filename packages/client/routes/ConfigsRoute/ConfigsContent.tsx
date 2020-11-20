@@ -23,13 +23,13 @@ import FormikInput, {
 } from '../../components/FormElements/Input/FormikInput';
 import { get } from 'lodash';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import TTip from '../../components/TTip/TTip';
 import Icon from '../../components/Icon/Icon';
 import { useAppContext } from '../../context/appContext';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
 import { CONFIRM_MODAL } from '../../config/modals';
 import ButtonCross from '../../components/Buttons/ButtonCross';
 import Notification from '../../components/Notification/Notification';
+import Tooltip from '../../components/TTip/Tooltip';
 
 interface ConfigInputInterface extends FormikInputPropsInterface {
   onRemoveHandler?: (values: any) => void;
@@ -138,12 +138,11 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
             isOpen={isDefault}
             title={name}
             titleRight={
-              <TTip
-                title={accordionIconTooltip}
-                className={`${classes.accordionIcon} ${accordionIconClass}`}
-              >
-                <Icon name={accordionIcon} />
-              </TTip>
+              <Tooltip title={accordionIconTooltip}>
+                <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
+                  <Icon name={accordionIcon} />
+                </div>
+              </Tooltip>
             }
             key={`${inputName}-${key}`}
           >
@@ -272,9 +271,11 @@ const ConfigsContent: React.FC = () => {
                   {description && (
                     <Fragment>
                       {' '}
-                      <TTip title={description} className={classes.configDescription}>
-                        <Icon name={'question-circle'} />
-                      </TTip>
+                      <Tooltip title={description}>
+                        <div className={classes.configDescription}>
+                          <Icon name={'question-circle'} />
+                        </div>
+                      </Tooltip>
                     </Fragment>
                   )}
                 </div>

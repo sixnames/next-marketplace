@@ -8,7 +8,7 @@ import Accordion from '../../Accordion/Accordion';
 import InputLine from '../Input/InputLine';
 import classes from './FormikTranslationsSelect.module.css';
 import Icon from '../../Icon/Icon';
-import TTip from '../../TTip/TTip';
+import Tooltip from '../../TTip/Tooltip';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   name: inputName,
@@ -95,12 +95,11 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
             isOpen={isDefault}
             title={name}
             titleRight={
-              <TTip
-                title={accordionIconTooltip}
-                className={`${classes.accordionIcon} ${accordionIconClass}`}
-              >
-                <Icon name={accordionIcon} />
-              </TTip>
+              <Tooltip title={accordionIconTooltip}>
+                <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
+                  <Icon name={accordionIcon} />
+                </div>
+              </Tooltip>
             }
             key={`${inputName}-${key}`}
           >

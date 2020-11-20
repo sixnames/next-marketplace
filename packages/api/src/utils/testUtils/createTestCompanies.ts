@@ -11,7 +11,7 @@ export interface CreateTestCompaniesPayloadInterface extends CreateTestShopsPayl
 
 export const createTestCompanies = async (): Promise<CreateTestCompaniesPayloadInterface> => {
   const shopsPayload = await createTestShops();
-  const { shopA, companyOwner, companyManager } = shopsPayload;
+  const { shopA, shopB, companyOwner, companyManager } = shopsPayload;
 
   const companyLogo = await generateTestAsset({
     targetFileName: 'test-company-logo',
@@ -24,7 +24,7 @@ export const createTestCompanies = async (): Promise<CreateTestCompaniesPayloadI
     owner: companyOwner.id,
     logo: companyLogo,
     staff: [companyManager.id],
-    shops: [shopA.id],
+    shops: [shopA.id, shopB.id],
   });
 
   const mockCompanies = [companyA];

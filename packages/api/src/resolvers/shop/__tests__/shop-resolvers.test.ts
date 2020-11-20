@@ -21,9 +21,7 @@ describe('Shop', () => {
     const { query, mutate } = await authenticatedTestClient();
 
     // Should return shops list
-    const {
-      data: { getAllShops },
-    } = await query<any>(
+    const getAllShopsPayload = await query<any>(
       gql`
         query GetAllShops {
           getAllShops {
@@ -41,6 +39,9 @@ describe('Shop', () => {
         }
       `,
     );
+    const {
+      data: { getAllShops },
+    } = getAllShopsPayload;
     const currentShop = getAllShops.docs.find(({ slug }: any) => slug === mockData.shopA.slug);
     if (!currentShop) {
       throw Error('Test shop not found');

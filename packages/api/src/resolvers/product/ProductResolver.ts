@@ -84,7 +84,7 @@ import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
 import { min, max } from 'lodash';
-import { getCurrencyString } from '@yagu/shared';
+import { getCurrencyString, getPercentage } from '@yagu/shared';
 
 const {
   operationConfigCreate,
@@ -698,11 +698,26 @@ export class ProductResolver {
           throw Error('Product shop not found');
         }
 
+        const { oldPrices } = shopProduct;
+        const lastOldPrice = oldPrices[oldPrices.length - 1];
+
         return {
           node: shop,
           ...shopProduct,
           id: shopProduct._id,
+          discountedPercent: lastOldPrice
+            ? getPercentage({
+                fullValue: shopProduct.price,
+                partialValue: lastOldPrice.price,
+              })
+            : null,
           formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
+          formattedOldPrice: lastOldPrice
+            ? getCurrencyString({
+                value: lastOldPrice.price,
+                lang,
+              })
+            : null,
         };
       });
 
@@ -713,7 +728,7 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => ProductCardPrices)
-  async prices(
+  async cardPrices(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
   ): Promise<ProductCardPrices> {

@@ -33,6 +33,44 @@ export const cardConnectionFragment = gql`
   }
 `;
 
+export const productCardShopNodeFragment = gql`
+  fragment ProductCardShopNode on Shop {
+    id
+    nameString
+    slug
+    productsCount
+    address {
+      formattedAddress
+      point {
+        coordinates
+      }
+    }
+    assets {
+      index
+      url
+    }
+    logo {
+      index
+      url
+    }
+  }
+`;
+
+export const productCardShopFragment = gql`
+  fragment ProductCardShop on ProductShop {
+    id
+    itemId
+    available
+    formattedPrice
+    formattedOldPrice
+    discountedPercent
+    node {
+      ...ProductCardShopNode
+    }
+  }
+  ${productCardShopNodeFragment}
+`;
+
 export const productCardFragment = gql`
   fragment ProductCard on Product {
     id
@@ -43,12 +81,12 @@ export const productCardFragment = gql`
     slug
     mainImage
     descriptionString
-    prices {
+    cardPrices {
       min
       max
     }
     shops {
-      available
+      ...ProductCardShop
     }
     cardFeatures {
       listFeatures {
@@ -71,6 +109,7 @@ export const productCardFragment = gql`
       ...CardConnection
     }
   }
+  ${productCardShopFragment}
   ${cardFeatureFragment}
   ${cardConnectionFragment}
 `;

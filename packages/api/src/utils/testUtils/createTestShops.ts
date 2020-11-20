@@ -108,7 +108,11 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const shopBProductA = await ShopProductModel.create({
     available: 19,
     price: 1180,
-    oldPrices: [],
+    oldPrices: [
+      {
+        price: 1400,
+      },
+    ],
     product: productA.id,
   });
 

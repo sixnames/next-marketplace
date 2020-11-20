@@ -103,6 +103,12 @@ export class ProductShop extends ShopProduct {
 
   @Field(() => String)
   readonly formattedPrice: string;
+
+  @Field(() => String, { nullable: true })
+  readonly formattedOldPrice?: string | null;
+
+  @Field(() => Int, { nullable: true })
+  readonly discountedPercent?: number | null;
 }
 
 @ObjectType()

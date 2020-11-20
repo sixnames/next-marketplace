@@ -48,6 +48,9 @@ export class Shop extends TimeStamps {
   @prop({ ref: () => 'ShopProduct', required: true })
   products: string[];
 
+  @Field((_type) => Int)
+  readonly productsCount: number;
+
   @Field((_type) => Company)
   readonly company: Company;
 

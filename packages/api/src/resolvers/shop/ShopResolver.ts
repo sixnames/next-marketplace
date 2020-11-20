@@ -4,6 +4,7 @@ import {
   Field,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -343,5 +344,10 @@ export class ShopResolver {
       throw Error('Company not found on ShopResolver.company resolver');
     }
     return company;
+  }
+
+  @FieldResolver((_returns) => Int)
+  async productsCount(@Root() shop: DocumentType<Shop>): Promise<number> {
+    return shop.products.length;
   }
 }

@@ -98,7 +98,7 @@ describe('Product', () => {
           slug
           descriptionString
           rubrics
-          prices {
+          cardPrices {
             min
             max
           }

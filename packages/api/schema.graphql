@@ -740,7 +740,6 @@ type Product {
   name: [LanguageType!]!
   nameString: String!
   price: Int!
-  prices: ProductCardPrices!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
   shops: [ProductShop!]!
@@ -880,6 +879,8 @@ input ProductsCountersInput {
 type ProductShop {
   available: Int!
   createdAt: DateTime!
+  discountedPercent: Int
+  formattedOldPrice: String
   formattedPrice: String!
   id: ID!
   itemId: Int!
@@ -1145,6 +1146,7 @@ type Shop {
   logo: AssetType!
   nameString: String!
   products(input: ShopProductPaginateInput = {}): PaginatedShopProductsResponse!
+  productsCount: Int!
   slug: String!
   updatedAt: DateTime!
 }

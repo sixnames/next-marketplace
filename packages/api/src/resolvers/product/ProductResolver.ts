@@ -10,19 +10,7 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import {
-  Product,
-  ProductAttribute,
-  ProductAttributesGroup,
-  ProductCardFeatures,
-  ProductCardPrices,
-  ProductConnection,
-  ProductConnectionItem,
-  ProductConnectionModel,
-  ProductModel,
-  ProductsCounters,
-  ProductShop,
-} from '../../entities/Product';
+import { Product, ProductModel } from '../../entities/Product';
 import PaginateType from '../common/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
@@ -85,6 +73,14 @@ import { ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
 import { min, max } from 'lodash';
 import { getCurrencyString, getPercentage } from '@yagu/shared';
+import { ProductAttribute } from '../../entities/ProductAttribute';
+import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
+import { ProductCardFeatures } from '../../entities/ProductCardFeatures';
+import { ProductShop } from '../../entities/ProductShop';
+import { ProductCardPrices } from '../../entities/ProductCardPrices';
+import { ProductsCounters } from '../../entities/ProductsCounters';
+import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
+import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
 
 const {
   operationConfigCreate,

@@ -3,11 +3,11 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { ProductConnectionModel } from '../../../entities/Product';
 import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { ProductConnectionModel } from '../../../entities/ProductConnection';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;

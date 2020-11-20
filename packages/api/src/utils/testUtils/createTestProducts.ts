@@ -7,13 +7,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LANG,
 } from '@yagu/config';
-import {
-  Product,
-  ProductAttributeViewVariantEnum,
-  ProductConnection,
-  ProductConnectionModel,
-  ProductModel,
-} from '../../entities/Product';
+import { Product, ProductModel } from '../../entities/Product';
 import { generateTestProduct } from './generateTestProduct';
 import {
   MOCK_PRODUCT_A,
@@ -24,6 +18,8 @@ import {
   MOCK_PRODUCT_F,
 } from '@yagu/mocks';
 import { createProductSlugWithConnections } from '../connectios';
+import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
+import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;

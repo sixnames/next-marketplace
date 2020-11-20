@@ -12,6 +12,7 @@ import Button from '../../components/Buttons/Button';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { useAppContext } from '../../context/appContext';
 import { noNaN } from '@yagu/shared';
+import ReachTabs from '../../components/ReachTabs/ReachTabs';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -58,12 +59,20 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardConnections,
     itemId,
     cardFeatures,
+    shops,
   } = cardData;
   const { isMobile } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
+
+  const tabsConfig = [
+    { head: 'Характеристики' },
+    { head: `где купить (${shops.length})` },
+    { head: 'Отзывы' },
+    { head: 'мнение экспертов' },
+  ];
 
   return (
     <div className={classes.card}>
@@ -106,44 +115,46 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
               </div>
 
-              <div className={classes.connections}>
-                {cardConnections.map(({ id, nameString, products }) => {
-                  // Connections
-                  return (
-                    <div key={id} className={classes.connectionsGroup}>
-                      <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
-                      <div className={classes.connectionsList}>
-                        {products.map(({ value, id, product, isCurrent }) => {
-                          if (isCurrent) {
+              {cardConnections.length > 0 ? (
+                <div className={classes.connections}>
+                  {cardConnections.map(({ id, nameString, products }) => {
+                    // Connections
+                    return (
+                      <div key={id} className={classes.connectionsGroup}>
+                        <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
+                        <div className={classes.connectionsList}>
+                          {products.map(({ value, id, product, isCurrent }) => {
+                            if (isCurrent) {
+                              return (
+                                <span
+                                  className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
+                                  key={id}
+                                >
+                                  {value}
+                                </span>
+                              );
+                            }
                             return (
-                              <span
-                                className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
+                              <Link
+                                className={`${classes.connectionsGroupItem}`}
                                 key={id}
+                                href={{
+                                  pathname: `/product/[card]`,
+                                }}
+                                as={{
+                                  pathname: `/product/${product.slug}`,
+                                }}
                               >
                                 {value}
-                              </span>
+                              </Link>
                             );
-                          }
-                          return (
-                            <Link
-                              className={`${classes.connectionsGroupItem}`}
-                              key={id}
-                              href={{
-                                pathname: `/product/[card]`,
-                              }}
-                              as={{
-                                pathname: `/product/${product.slug}`,
-                              }}
-                            >
-                              {value}
-                            </Link>
-                          );
-                        })}
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : null}
 
               <div className={classes.mainDataBottom}>
                 <div>
@@ -201,8 +212,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         </div>
 
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
+      </Inner>
 
-        {/* Features */}
+      {/* Features */}
+      <ReachTabs config={tabsConfig}>
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
             {iconFeatures.map(({ node, readableOptions }) => {
@@ -252,7 +265,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             })}
           </div>
         </div>
-      </Inner>
+
+        <div>two</div>
+
+        <div>three</div>
+      </ReachTabs>
     </div>
   );
 };

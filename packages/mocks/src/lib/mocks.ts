@@ -77,6 +77,14 @@ export const MOCK_ADDRESS_A = {
   },
 };
 
+export const MOCK_ADDRESS_B = {
+  formattedAddress: '1001 КНИГА, Комсомольская пл., 12, Москва, Россия, 107140',
+  point: {
+    lat: 55.781155,
+    lng: 37.654028,
+  },
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',
@@ -124,6 +132,22 @@ export const MOCK_SHOP = {
   },
 };
 
+export const MOCK_SHOP_B = {
+  nameString: 'Shop B',
+  slug: 'shop_b',
+  contacts: {
+    emails: ['shopB1@gmail.com', 'shopB2@gmail.com'],
+    phones: ['+78110002245', '+78120002246'],
+  },
+  address: {
+    formattedAddress: MOCK_ADDRESS_B.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_B.point.lng, MOCK_ADDRESS_B.point.lat],
+    },
+  },
+};
+
 export const MOCK_NEW_SHOP = {
   nameString: 'New Shop',
   slug: 'new_shop',
@@ -140,7 +164,7 @@ export const MOCK_NEW_SHOP = {
   },
 };
 
-export const MOCK_SHOPS = [MOCK_SHOP];
+export const MOCK_SHOPS = [MOCK_SHOP, MOCK_SHOP_B];
 
 // Languages
 export const ISO_LANGUAGES = [

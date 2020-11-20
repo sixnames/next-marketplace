@@ -102,6 +102,15 @@ export class ProductShop extends ShopProduct {
   readonly node: Shop;
 }
 
+@ObjectType()
+export class ProductCardPrices {
+  @Field(() => String)
+  readonly min: string;
+
+  @Field(() => String)
+  readonly max: string;
+}
+
 interface InArrayInterface {
   $in: any[];
 }
@@ -177,8 +186,11 @@ export class Product extends TimeStamps {
   assets: AssetType[];
 
   @Field(() => Int)
-  @prop({ required: true })
-  price: number;
+  @prop({ default: 0 })
+  price?: number;
+
+  @Field(() => ProductCardPrices)
+  readonly cardPrices: ProductCardPrices;
 
   @Field(() => Boolean)
   @prop({ required: true, default: true })

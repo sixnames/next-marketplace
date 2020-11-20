@@ -729,6 +729,7 @@ type Product {
   cardFeatures: ProductCardFeatures!
   cardName: [LanguageType!]!
   cardNameString: String!
+  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: DateTime!
   description: [LanguageType!]!
@@ -739,6 +740,7 @@ type Product {
   name: [LanguageType!]!
   nameString: String!
   price: Int!
+  prices: ProductCardPrices!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
   shops: [ProductShop!]!
@@ -813,6 +815,11 @@ type ProductCardFeatures {
   ratingFeatures: [ProductAttribute!]!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
+}
+
+type ProductCardPrices {
+  max: String!
+  min: String!
 }
 
 type ProductConnection {

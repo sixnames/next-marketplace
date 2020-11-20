@@ -98,6 +98,10 @@ describe('Product', () => {
           slug
           descriptionString
           rubrics
+          prices {
+            min
+            max
+          }
           attributesGroups {
             node {
               id

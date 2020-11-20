@@ -15,6 +15,7 @@ import {
   ProductAttribute,
   ProductAttributesGroup,
   ProductCardFeatures,
+  ProductCardPrices,
   ProductConnection,
   ProductConnectionItem,
   ProductConnectionModel,
@@ -82,6 +83,8 @@ import { Option, OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
+import { min, max } from 'lodash';
+import { getCurrencyString } from '@yagu/shared';
 
 const {
   operationConfigCreate,
@@ -702,6 +705,30 @@ export class ProductResolver {
       return Promise.all(shopsArr);
     } catch (e) {
       return [];
+    }
+  }
+
+  @FieldResolver((_returns) => ProductCardPrices)
+  async prices(
+    @Localization() { lang }: LocalizationPayloadInterface,
+    @Root() product: DocumentType<Product>,
+  ): Promise<ProductCardPrices> {
+    try {
+      const shopsProducts = await ShopProductModel.find({ product: product.id })
+        .select('price')
+        .lean()
+        .exec();
+      const allPrices = shopsProducts.map(({ price }) => price);
+
+      return {
+        min: getCurrencyString({ value: min(allPrices), lang }),
+        max: getCurrencyString({ value: max(allPrices), lang }),
+      };
+    } catch (e) {
+      return {
+        min: '0',
+        max: '0',
+      };
     }
   }
 

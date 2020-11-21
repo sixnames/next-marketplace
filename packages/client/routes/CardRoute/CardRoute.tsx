@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -8,10 +8,7 @@ import ProductMarker from '../../components/Product/ProductMarker/ProductMarker'
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import Icon from '../../components/Icon/Icon';
-import Button from '../../components/Buttons/Button';
-import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { useAppContext } from '../../context/appContext';
-import { noNaN } from '@yagu/shared';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
 import CardShop from './CardShop';
@@ -64,7 +61,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     shops,
   } = cardData;
   const { isMobile } = useAppContext();
-  const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
@@ -195,27 +191,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
 
           <ProductMarker>Выбор покупателей</ProductMarker>
-        </div>
-
-        <div
-          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop} ${classes.mainFrameLowBottom}`}
-        >
-          <div />
-          <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
-            <div />
-            <div className={`${classes.addToCartForm}`}>
-              <SpinnerInput
-                onChange={(e) => {
-                  setAmount(noNaN(e.target.value));
-                }}
-                frameClassName={`${classes.addToCartFormInput}`}
-                min={1}
-                name={'amount'}
-                value={amount}
-              />
-              <Button className={classes.addToCartFormButton}>В корзину</Button>
-            </div>
-          </div>
         </div>
 
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}

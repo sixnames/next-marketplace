@@ -7,6 +7,8 @@ import { noNaN } from '@yagu/shared';
 import Button from '../../components/Buttons/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
+import Currency from '../../components/Currency/Currency';
+import Percent from '../../components/Percent/Percent';
 
 interface CardShopInterface {
   shop: ProductCardShopFragment;
@@ -14,7 +16,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
   const [amount, setAmount] = useState<number>(1);
-  const { node } = shop;
+  const { node, formattedOldPrice, formattedPrice, discountedPercent } = shop;
   const {
     assets,
     nameString,
@@ -50,7 +52,23 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
         </div>
       </div>
       <div className={classes.orderColumn}>
-        <div className={classes.column}>lorem</div>
+        <div className={classes.column}>
+          <div className={classes.prices}>
+            <div className={`${classes.price} ${discountedPercent ? classes.discountedPrice : ''}`}>
+              <Currency className={classes.priceValue} value={formattedPrice} />
+            </div>
+            {formattedOldPrice ? (
+              <div className={classes.oldPrice}>
+                <Currency className={classes.oldPriceValue} value={formattedOldPrice} />
+              </div>
+            ) : null}
+            {discountedPercent ? (
+              <div className={classes.discount}>
+                <Percent isNegative value={discountedPercent} />
+              </div>
+            ) : null}
+          </div>
+        </div>
         <div className={classes.column}>
           <SpinnerInput
             onChange={(e) => {

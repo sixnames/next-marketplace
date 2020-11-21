@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
-import { CardFeatureFragment, ProductCardFragment } from '../../generated/apolloComponents';
+import { CardFeatureFragment, GetCatalogueCardQueryQuery } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -48,10 +48,11 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 };
 
 interface CardRouteInterface {
-  cardData: ProductCardFragment;
+  cardData: GetCatalogueCardQueryQuery['getProductCard'];
 }
 
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
+  const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
   const {
     mainImage,
     nameString,
@@ -216,7 +217,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             return <CardShop key={shop.id} shop={shop} />;
           })}
           {hiddenShops.length > 0 ? (
-            <Disclosure>
+            <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
               <DisclosurePanel>
                 <div>
                   {hiddenShops.map((shop) => {
@@ -226,7 +227,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               </DisclosurePanel>
               <DisclosureButton as={'div'}>
                 <Button className={classes.moreShopsButton} theme={'secondary'}>
-                  Показать больше магазинов
+                  {isShopsOpen ? 'Показать меньше магазинов' : 'Показать больше магазинов'}
                 </Button>
               </DisclosureButton>
             </Disclosure>

@@ -353,13 +353,13 @@ export type PaginatedUsersResponse = {
 export type UserPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<UserSortByEnum>;
 };
 
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
+/** sortDir enum */
+export enum SortDirectionEnum {
   Asc = 'asc',
   Desc = 'desc'
 }
@@ -535,6 +535,11 @@ export type Product = {
   shops: Array<ProductShop>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+
+export type ProductShopsArgs = {
+  input?: Maybe<ProductShopsInput>;
 };
 
 export type CityCounter = {
@@ -742,7 +747,7 @@ export type ShopProduct = {
 export type ShopProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ShopProductSortByEnum>;
 };
@@ -790,7 +795,7 @@ export type PaginatedShopsResponse = {
 export type ShopPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ShopsSortByEnum>;
 };
@@ -800,6 +805,11 @@ export enum ShopsSortByEnum {
   Company = 'company',
   CreatedAt = 'createdAt'
 }
+
+export type ProductShopsInput = {
+  sortDir?: Maybe<SortDirectionEnum>;
+  sortBy?: Maybe<Scalars['String']>;
+};
 
 export type PaginatedProductsResponse = {
   __typename?: 'PaginatedProductsResponse';
@@ -819,7 +829,7 @@ export type PaginatedProductsResponse = {
 export type ProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ProductSortByEnum>;
   rubric?: Maybe<Scalars['ID']>;
@@ -956,7 +966,7 @@ export type RubricFilterAttributeOption = {
 export type RubricProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
@@ -1083,7 +1093,7 @@ export type PaginatedCompaniesResponse = {
 export type CompanyPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<CompaniesSortByEnum>;
 };
@@ -3188,10 +3198,7 @@ export type ProductCardFragment = (
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, 'min' | 'max'>
-  ), shops: Array<(
-    { __typename?: 'ProductShop' }
-    & ProductCardShopFragment
-  )>, cardFeatures: (
+  ), cardFeatures: (
     { __typename?: 'ProductCardFeatures' }
     & { listFeatures: Array<(
       { __typename?: 'ProductAttribute' }
@@ -3217,6 +3224,7 @@ export type ProductCardFragment = (
 
 export type GetCatalogueCardQueryQueryVariables = Exact<{
   slug: Scalars['String'];
+  input?: Maybe<ProductShopsInput>;
 }>;
 
 
@@ -3224,6 +3232,10 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProductCard: (
     { __typename?: 'Product' }
+    & { shops: Array<(
+      { __typename?: 'ProductShop' }
+      & ProductCardShopFragment
+    )> }
     & ProductCardFragment
   ) }
 );
@@ -4273,9 +4285,6 @@ export const ProductCardFragmentDoc = gql`
     min
     max
   }
-  shops {
-    ...ProductCardShop
-  }
   cardFeatures {
     listFeatures {
       ...CardFeature
@@ -4297,8 +4306,7 @@ export const ProductCardFragmentDoc = gql`
     ...CardConnection
   }
 }
-    ${ProductCardShopFragmentDoc}
-${CardFeatureFragmentDoc}
+    ${CardFeatureFragmentDoc}
 ${CardConnectionFragmentDoc}`;
 export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
@@ -6839,12 +6847,16 @@ export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useG
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
 export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($slug: String!) {
+    query GetCatalogueCardQuery($slug: String!, $input: ProductShopsInput) {
   getProductCard(slug: $slug) {
     ...ProductCard
+    shops(input: $input) {
+      ...ProductCardShop
+    }
   }
 }
-    ${ProductCardFragmentDoc}`;
+    ${ProductCardFragmentDoc}
+${ProductCardShopFragmentDoc}`;
 
 /**
  * __useGetCatalogueCardQueryQuery__
@@ -6859,6 +6871,7 @@ export const GetCatalogueCardQueryDocument = gql`
  * const { data, loading, error } = useGetCatalogueCardQueryQuery({
  *   variables: {
  *      slug: // value for 'slug'
+ *      input: // value for 'input'
  *   },
  * });
  */

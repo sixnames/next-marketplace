@@ -91,9 +91,6 @@ export const productCardFragment = gql`
       min
       max
     }
-    shops {
-      ...ProductCardShop
-    }
     cardFeatures {
       listFeatures {
         ...CardFeature
@@ -121,9 +118,12 @@ export const productCardFragment = gql`
 `;
 
 export const CATALOGUE_CARD_QUERY = gql`
-  query GetCatalogueCardQuery($slug: String!) {
+  query GetCatalogueCardQuery($slug: String!, $input: ProductShopsInput) {
     getProductCard(slug: $slug) {
       ...ProductCard
+      shops(input: $input) {
+        ...ProductCardShop
+      }
     }
   }
   ${productCardFragment}

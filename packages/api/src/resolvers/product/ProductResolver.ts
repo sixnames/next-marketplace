@@ -59,6 +59,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  SORT_ASC,
 } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
@@ -81,6 +82,7 @@ import { ProductsCounters } from '../../entities/ProductsCounters';
 import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
 import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
 import { Asset } from '../../entities/Asset';
+import { ProductShopsInput } from './ProductShopsInput';
 
 const {
   operationConfigCreate,
@@ -684,14 +686,20 @@ export class ProductResolver {
   async shops(
     @Localization() { lang }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
+    @Arg('input', {
+      nullable: true,
+      defaultValue: {
+        sortDir: SORT_ASC,
+        sortBy: 'price',
+      },
+    })
+    input: ProductShopsInput,
   ): Promise<ProductShop[]> {
     try {
-      // TODO sort via args
-      const shopsProducts = await ShopProductModel.find({ product: product.id }, null, {
-        sort: {
-          price: 'asc',
-        },
-      })
+      const { sortDir, sortBy } = input;
+
+      const shopsProducts = await ShopProductModel.find({ product: product.id })
+        .sort([[sortBy, sortDir]])
         .lean()
         .exec();
       const shopsArr = shopsProducts.map(async (shopProduct) => {

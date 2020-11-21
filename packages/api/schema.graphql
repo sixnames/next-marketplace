@@ -202,7 +202,7 @@ input CompanyPaginateInput {
   page: Int = 1
   search: String
   sortBy: CompaniesSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type CompanyPayloadtype {
@@ -696,12 +696,6 @@ type PaginatedUsersResponse {
   totalPages: Int!
 }
 
-"""Pagination sortDir enum"""
-enum PaginateSortDirectionEnum {
-  asc
-  desc
-}
-
 type PointGeoJSON {
   """
   Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude.
@@ -733,7 +727,7 @@ type Product {
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
-  shops: [ProductShop!]!
+  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ProductShop!]!
   slug: String!
   updatedAt: DateTime!
   views: [CityCounter!]!
@@ -846,7 +840,7 @@ input ProductPaginateInput {
   rubric: ID
   search: String
   sortBy: ProductSortByEnum = priority
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ProductPayloadType {
@@ -881,6 +875,11 @@ type ProductShop {
   product: Product!
   shop: Shop!
   updatedAt: DateTime!
+}
+
+input ProductShopsInput {
+  sortBy: String = "price"
+  sortDir: SortDirectionEnum = asc
 }
 
 """Product pagination sortBy enum"""
@@ -1088,7 +1087,7 @@ input RubricProductPaginateInput {
   page: Int = 1
   search: String
   sortBy: ProductSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type RubricVariant {
@@ -1147,7 +1146,7 @@ input ShopPaginateInput {
   page: Int = 1
   search: String
   sortBy: ShopsSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ShopPayloadType {
@@ -1181,7 +1180,7 @@ input ShopProductPaginateInput {
   page: Int = 1
   search: String
   sortBy: ShopProductSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ShopProductPayloadType {
@@ -1214,6 +1213,12 @@ input SignUpInput {
   password: String!
   phone: String
   secondName: String
+}
+
+"""sortDir enum"""
+enum SortDirectionEnum {
+  asc
+  desc
 }
 
 type Translation {
@@ -1419,7 +1424,7 @@ input UserPaginateInput {
   page: Int = 1
   search: String
   sortBy: UserSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type UserPayloadType {

@@ -45,6 +45,9 @@ export const productCardShopNodeFragment = gql`
         coordinates
       }
     }
+    contacts {
+      phones
+    }
     assets {
       index
       url

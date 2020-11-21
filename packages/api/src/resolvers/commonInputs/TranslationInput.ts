@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class LangInput {
+export class TranslationInput {
   @Field(() => String)
   key: string;
 

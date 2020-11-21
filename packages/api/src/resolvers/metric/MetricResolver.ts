@@ -9,7 +9,7 @@ import {
   FieldResolver,
   Root,
 } from 'type-graphql';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { Metric, MetricModel } from '../../entities/Metric';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateMetricInput } from './CreateMetricInput';

@@ -3157,6 +3157,9 @@ export type ProductCardShopNodeFragment = (
       { __typename?: 'PointGeoJSON' }
       & Pick<PointGeoJson, 'coordinates'>
     ) }
+  ), contacts: (
+    { __typename?: 'ContactsType' }
+    & Pick<ContactsType, 'phones'>
   ), assets: Array<(
     { __typename?: 'AssetType' }
     & Pick<AssetType, 'index' | 'url'>
@@ -4191,6 +4194,9 @@ export const ProductCardShopNodeFragmentDoc = gql`
     point {
       coordinates
     }
+  }
+  contacts {
+    phones
   }
   assets {
     index

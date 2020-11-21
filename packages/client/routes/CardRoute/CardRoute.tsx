@@ -14,6 +14,7 @@ import { useAppContext } from '../../context/appContext';
 import { noNaN } from '@yagu/shared';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
+import CardShop from './CardShop';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -72,9 +73,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
   const tabsConfig = [
     { head: 'Характеристики' },
-    { head: `где купить (${shopsCount})` },
+    { head: `Где купить (${shopsCount})` },
     { head: 'Отзывы' },
-    { head: 'мнение экспертов' },
+    { head: 'Мнение экспертов' },
   ];
 
   return (
@@ -220,8 +221,19 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
       </Inner>
 
-      {/* Features */}
+      {/* Tabs */}
       <ReachTabs config={tabsConfig}>
+        {/* Shops */}
+        <div>
+          <div>
+            {shops.map((shop) => {
+              return <CardShop key={shop.id} shop={shop} />;
+            })}
+          </div>
+          <pre>{JSON.stringify(shops, null, 2)}</pre>
+        </div>
+
+        {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
             {iconFeatures.map(({ node, readableOptions }) => {
@@ -272,9 +284,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
         </div>
 
-        <div>two</div>
+        <div>Отзывы</div>
 
-        <div>three</div>
+        <div>Мнение экспертов</div>
       </ReachTabs>
     </div>
   );

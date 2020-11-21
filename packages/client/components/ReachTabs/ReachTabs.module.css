@@ -29,6 +29,7 @@
   text-transform: uppercase;
   outline: none;
   border: none;
+  font-weight: 600;
 }
 
 .list [data-reach-tab]:before {

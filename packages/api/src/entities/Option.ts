@@ -1,8 +1,10 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { CityCounter, GenderEnum, LanguageType } from './commonEntities';
+import { GenderEnum } from './commonEntities';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
 import { GENDER_ENUMS } from '@yagu/config';
+import { CityCounter } from './CityCounter';
+import { Translation } from './Translation';
 
 @ObjectType()
 export class OptionVariant {
@@ -10,9 +12,9 @@ export class OptionVariant {
   @prop({ required: true, enum: GENDER_ENUMS, type: String })
   key: GenderEnum;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  value: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  value: Translation[];
 }
 
 @ObjectType()
@@ -36,9 +38,9 @@ export class Option {
   @Property({ required: true })
   slug: string;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
   @Field(() => [OptionVariant], { nullable: true })
   @prop({ type: OptionVariant })

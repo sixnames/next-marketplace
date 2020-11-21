@@ -4,7 +4,6 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { AssetType, CityCounter, LanguageType } from './commonEntities';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { ProductCardConnection } from './ProductCardConnection';
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
@@ -14,6 +13,9 @@ import { ProductCardFeatures } from './ProductCardFeatures';
 import { ProductShop } from './ProductShop';
 import { ProductCardPrices } from './ProductCardPrices';
 import { ProductConnection } from './ProductConnection';
+import { CityCounter } from './CityCounter';
+import { Asset } from './Asset';
+import { Translation } from './Translation';
 
 interface InArrayInterface {
   $in: any[];
@@ -61,21 +63,21 @@ export class Product extends TimeStamps {
   @prop({ type: CityCounter, required: true })
   priorities: CityCounter[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  cardName: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  cardName: Translation[];
 
   @Field(() => String)
   @prop({ required: true })
   slug: string;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  description: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  description: Translation[];
 
   @Field(() => [ID])
   @prop({ type: String, required: true })
@@ -85,9 +87,9 @@ export class Product extends TimeStamps {
   @prop({ type: ProductAttributesGroup, required: true })
   attributesGroups: ProductAttributesGroup[];
 
-  @Field(() => [AssetType])
-  @prop({ type: AssetType, required: true })
-  assets: AssetType[];
+  @Field(() => [Asset])
+  @prop({ type: Asset, required: true })
+  assets: Asset[];
 
   @Field(() => Int)
   @prop({ default: 0 })

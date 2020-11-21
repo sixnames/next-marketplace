@@ -1,22 +1,22 @@
 import { Field, ID, InputType, Int } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 import { GraphQLUpload } from 'apollo-server-express';
 import { Upload } from '../../types/upload';
-import { ProductAttributesGroupInput } from '../common/ProductAttributesGroupInput';
+import { ProductAttributesGroupInput } from '../commonInputs/ProductAttributesGroupInput';
 
 @InputType()
 export class UpdateProductInput {
   @Field(() => ID)
   id: string;
 
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 
-  @Field(() => [LangInput])
-  cardName: LangInput[];
+  @Field(() => [TranslationInput])
+  cardName: TranslationInput[];
 
-  @Field(() => [LangInput])
-  description: LangInput[];
+  @Field(() => [TranslationInput])
+  description: TranslationInput[];
 
   @Field(() => [ID])
   rubrics: string[];

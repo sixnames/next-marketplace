@@ -11,12 +11,11 @@ import {
   Root,
 } from 'type-graphql';
 import { Product, ProductModel } from '../../entities/Product';
-import PaginateType from '../common/PaginateType';
+import PaginateType from '../commonInputs/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
-import { AssetType } from '../../entities/commonEntities';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import {
@@ -81,6 +80,7 @@ import { ProductCardPrices } from '../../entities/ProductCardPrices';
 import { ProductsCounters } from '../../entities/ProductsCounters';
 import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
 import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
+import { Asset } from '../../entities/Asset';
 
 const {
   operationConfigCreate,
@@ -652,8 +652,8 @@ export class ProductResolver {
     return getLangField(product.description);
   }
 
-  @FieldResolver((_type) => [AssetType])
-  async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
+  @FieldResolver((_type) => [Asset])
+  async assets(@Root() product: DocumentType<Product>): Promise<Asset[]> {
     return product.assets.sort((a, b) => a.index - b.index);
   }
 
@@ -686,7 +686,14 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
   ): Promise<ProductShop[]> {
     try {
-      const shopsProducts = await ShopProductModel.find({ product: product.id }).lean().exec();
+      // TODO sort via args
+      const shopsProducts = await ShopProductModel.find({ product: product.id }, null, {
+        sort: {
+          price: 'asc',
+        },
+      })
+        .lean()
+        .exec();
       const shopsArr = shopsProducts.map(async (shopProduct) => {
         const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
 

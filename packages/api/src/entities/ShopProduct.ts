@@ -5,7 +5,7 @@ import { Shop } from './Shop';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import PaginateType from '../resolvers/common/PaginateType';
+import PaginateType from '../resolvers/commonInputs/PaginateType';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 
 @ObjectType({

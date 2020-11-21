@@ -1,6 +1,6 @@
 import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Currency, CurrencyModel } from '../../entities/Currency';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateCurrencyInput } from './CreateCurrencyInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCurrencyInput } from './UpdateCurrencyInput';

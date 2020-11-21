@@ -22,7 +22,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateRubricInput } from './CreateRubricInput';
 import { UpdateRubricInput } from './UpdateRubricInput';
 import { FilterQuery, Types } from 'mongoose';

@@ -21,7 +21,7 @@ import {
 import { FilterQuery } from 'mongoose';
 import { Company, CompanyModel } from '../../entities/Company';
 import { DocumentType } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToShopInput } from './AddProductToShopInput';
 import {

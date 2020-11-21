@@ -1,8 +1,8 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Option } from './Option';
-import { LanguageType } from './commonEntities';
 import { OPTIONS_GROUP_VARIANT_ENUMS, OPTIONS_GROUP_VARIANT_TEXT } from '@yagu/config';
+import { Translation } from './Translation';
 
 // Options Group variant
 export enum OptionsGroupVariantEnum {
@@ -21,9 +21,9 @@ export class OptionsGroup {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
   @Field(() => String)
   readonly nameString: string;

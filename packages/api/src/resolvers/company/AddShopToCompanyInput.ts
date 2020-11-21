@@ -1,8 +1,8 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { ContactsInput } from '../common/ContactsInput';
+import { ContactsInput } from '../commonInputs/ContactsInput';
 import { GraphQLUpload } from 'apollo-server-express';
 import { Upload } from '../../types/upload';
-import { AddressInput } from '../common/AddressInput';
+import { AddressInput } from '../commonInputs/AddressInput';
 
 @InputType()
 export class AddShopToCompanyInput {

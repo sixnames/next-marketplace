@@ -2,12 +2,14 @@ import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { DocumentType, getModelForClass, index, prop } from '@typegoose/typegoose';
 import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
-import { CityCounter, GenderEnum, LanguageType } from './commonEntities';
+import { GenderEnum } from './commonEntities';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
 import { ProductModel } from './Product';
+import { CityCounter } from './CityCounter';
+import { Translation } from './Translation';
 
 @ObjectType()
 export class RubricAttributesGroup {
@@ -50,17 +52,17 @@ export class RubricFilterAttribute {
 
 @ObjectType()
 export class RubricCatalogueTitle {
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  defaultTitle: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  defaultTitle: Translation[];
 
-  @Field(() => [LanguageType], { nullable: true })
-  @prop({ type: LanguageType })
-  prefix?: LanguageType[];
+  @Field(() => [Translation], { nullable: true })
+  @prop({ type: Translation })
+  prefix?: Translation[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  keyword: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  keyword: Translation[];
 
   @Field((_type) => GenderEnum)
   @prop({ required: true, enum: GENDER_ENUMS, type: String })
@@ -114,9 +116,9 @@ export class Rubric {
   @prop({ type: CityCounter, required: true })
   priorities: CityCounter[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
   @Field(() => RubricCatalogueTitle)
   @prop({ type: RubricCatalogueTitle, required: true })

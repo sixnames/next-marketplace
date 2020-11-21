@@ -498,6 +498,12 @@
   --outerRatingColor: var(--wp-light-gray-200);
 }
 
+@media only screen and (max-width: 1180px) {
+  :root {
+    --button-min-width: 12rem;
+  }
+}
+
 @media only screen and (max-width: 1024px) {
   :root {
     --formInputHeight: 3rem;

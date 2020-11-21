@@ -32,6 +32,11 @@
   font-weight: 600;
 }
 
+.list [data-reach-tab] span {
+  font-weight: 400;
+  color: var(--textSecondaryColor);
+}
+
 .list [data-reach-tab]:before {
   position: absolute;
   content: '';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -12,6 +12,8 @@ import { useAppContext } from '../../context/appContext';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
 import CardShop from './CardShop';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import Button from '../../components/Buttons/Button';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -68,11 +70,21 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
-    { head: 'Характеристики' },
-    { head: `Где купить (${shopsCount})` },
-    { head: 'Отзывы' },
-    { head: 'Мнение экспертов' },
+    { head: <Fragment>Характеристики</Fragment> },
+    {
+      head: (
+        <Fragment>
+          Где купить <span>{`(${shopsCount})`}</span>
+        </Fragment>
+      ),
+    },
+    { head: <Fragment>Отзывы</Fragment> },
+    { head: <Fragment>Мнение экспертов</Fragment> },
   ];
+
+  const visibleShopsLimit = 4;
+  const visibleShops = shops.slice(0, visibleShopsLimit);
+  const hiddenShops = shops.slice(visibleShopsLimit);
 
   return (
     <div className={classes.card}>
@@ -200,12 +212,25 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       <ReachTabs config={tabsConfig}>
         {/* Shops */}
         <div>
-          <div>
-            {shops.map((shop) => {
-              return <CardShop key={shop.id} shop={shop} />;
-            })}
-          </div>
-          <pre>{JSON.stringify(shops, null, 2)}</pre>
+          {visibleShops.map((shop) => {
+            return <CardShop key={shop.id} shop={shop} />;
+          })}
+          {hiddenShops.length > 0 ? (
+            <Disclosure>
+              <DisclosurePanel>
+                <div>
+                  {hiddenShops.map((shop) => {
+                    return <CardShop key={shop.id} shop={shop} />;
+                  })}
+                </div>
+              </DisclosurePanel>
+              <DisclosureButton as={'div'}>
+                <Button className={classes.moreShopsButton} theme={'secondary'}>
+                  Показать больше магазинов
+                </Button>
+              </DisclosureButton>
+            </Disclosure>
+          ) : null}
         </div>
 
         {/* Features */}

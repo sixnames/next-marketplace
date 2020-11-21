@@ -1,4 +1,4 @@
-import { AssetType } from '../generated/apolloComponents';
+import { Asset } from '../generated/apolloComponents';
 import { ASSETS_URL } from '../config';
 
 export async function getImageFromUrl(
@@ -37,7 +37,7 @@ export async function getImageBlobFromUrl(url: string, format = 'png'): Promise<
   });
 }
 
-export async function getAllImagesBlobsFromUrl(assets: AssetType[], format?: string) {
+export async function getAllImagesBlobsFromUrl(assets: Asset[], format?: string) {
   return Promise.all(
     assets.map(async ({ url }) => {
       const blob = await getImageBlobFromUrl(url, format);
@@ -46,7 +46,7 @@ export async function getAllImagesBlobsFromUrl(assets: AssetType[], format?: str
   );
 }
 
-export async function getAllFilesFromUrlsList(assets: AssetType[], format?: string, type?: string) {
+export async function getAllFilesFromUrlsList(assets: Asset[], format?: string, type?: string) {
   return Promise.all(
     assets.map(async ({ url }) => {
       const blob = await getImageBlobFromUrl(url, format);

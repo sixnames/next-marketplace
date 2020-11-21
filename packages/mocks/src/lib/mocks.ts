@@ -137,7 +137,7 @@ export const MOCK_SHOP_B = {
   slug: 'shop_b',
   contacts: {
     emails: ['shopB1@gmail.com', 'shopB2@gmail.com'],
-    phones: ['+78110002245', '+78120002246'],
+    phones: ['+78111112245', '+78121112246'],
   },
   address: {
     formattedAddress: MOCK_ADDRESS_B.formattedAddress,

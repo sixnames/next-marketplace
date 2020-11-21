@@ -62,6 +62,10 @@
   color: var(--textSecondaryColor);
 }
 
+.contacts {
+  line-height: 1.4;
+}
+
 .address {
   margin-bottom: 1rem;
 }

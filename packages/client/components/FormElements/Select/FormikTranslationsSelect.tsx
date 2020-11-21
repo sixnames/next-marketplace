@@ -1,6 +1,6 @@
 import React from 'react';
 import FormikSelect, { FormikSelectInterface } from './FormikSelect';
-import { LangInput } from '../../../generated/apolloComponents';
+import { TranslationInput } from '../../../generated/apolloComponents';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import { useLanguageContext } from '../../../context/languageContext';
@@ -29,7 +29,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
 }) => {
   const { languagesList } = useLanguageContext();
   const { values } = useFormikContext();
-  const currentField: LangInput[] = get(values, inputName) || [];
+  const currentField: TranslationInput[] = get(values, inputName) || [];
   const minimalLanguagesCount = 2;
 
   // Return just one input if site has one language

@@ -13,5 +13,5 @@ export class Contacts {
   public phones: string[];
 
   @Field((_type) => [FormattedPhone])
-  readonly formattedPhones: FormattedPhone[];
+  readonly formattedPhones?: FormattedPhone[];
 }

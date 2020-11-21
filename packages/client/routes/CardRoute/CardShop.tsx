@@ -6,6 +6,7 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import { noNaN } from '@yagu/shared';
 import Button from '../../components/Buttons/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import LinkPhone from '../../components/Link/LinkPhone';
 
 interface CardShopInterface {
   shop: ProductCardShopFragment;
@@ -18,6 +19,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
     assets,
     nameString,
     address: { formattedAddress },
+    contacts: { formattedPhones },
   } = node;
   const mainImage = assets[0].url;
 
@@ -38,9 +40,14 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
             className={classes.innerRating}
           />
           <div className={classes.schedule}>Пн - Вс: 10.00 - 22.00</div>
-          <div>{}</div>
         </div>
-        <div>{formattedAddress}</div>
+
+        <div className={classes.contacts}>
+          <div className={classes.address}>{formattedAddress}</div>
+          {formattedPhones.map((phone, index) => {
+            return <LinkPhone key={index} value={phone} />;
+          })}
+        </div>
       </div>
       <div className={classes.orderColumn}>
         <div className={classes.column}>lorem</div>

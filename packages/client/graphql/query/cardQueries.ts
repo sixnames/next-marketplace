@@ -46,7 +46,10 @@ export const productCardShopNodeFragment = gql`
       }
     }
     contacts {
-      phones
+      formattedPhones {
+        raw
+        readable
+      }
     }
     assets {
       index

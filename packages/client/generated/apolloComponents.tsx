@@ -273,7 +273,7 @@ export type User = {
 export type Role = {
   __typename?: 'Role';
   id: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   description: Scalars['String'];
   slug: Scalars['String'];
@@ -283,8 +283,8 @@ export type Role = {
   appNavigation: Array<NavItem>;
 };
 
-export type LanguageType = {
-  __typename?: 'LanguageType';
+export type Translation = {
+  __typename?: 'Translation';
   key: Scalars['String'];
   value: Scalars['String'];
 };
@@ -319,7 +319,7 @@ export enum RoleRuleOperationTypeEnum {
 export type NavItem = {
   __typename?: 'NavItem';
   id: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   path?: Maybe<Scalars['String']>;
   navGroup: Scalars['String'];
   order: Scalars['Int'];
@@ -378,7 +378,7 @@ export enum UserSortByEnum {
 export type City = {
   __typename?: 'City';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   slug: Scalars['String'];
   nameString: Scalars['String'];
 };
@@ -410,7 +410,7 @@ export type Attribute = {
   __typename?: 'Attribute';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   views: Array<AttributeCityCounter>;
   priorities: Array<AttributeCityCounter>;
@@ -438,7 +438,7 @@ export enum AttributeVariantEnum {
 export type OptionsGroup = {
   __typename?: 'OptionsGroup';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   options: Array<Option>;
   variant: OptionsGroupVariantEnum;
@@ -448,7 +448,7 @@ export type Option = {
   __typename?: 'Option';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   views: Array<OptionCityCounter>;
@@ -462,7 +462,7 @@ export type Option = {
 export type OptionVariant = {
   __typename?: 'OptionVariant';
   key: GenderEnum;
-  value: Array<LanguageType>;
+  value: Array<Translation>;
 };
 
 /** List of gender enums */
@@ -505,7 +505,7 @@ export enum AttributePositionInTitleEnum {
 export type Metric = {
   __typename?: 'Metric';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
 };
 
@@ -515,13 +515,13 @@ export type Product = {
   itemId: Scalars['Int'];
   views: Array<CityCounter>;
   priorities: Array<CityCounter>;
-  name: Array<LanguageType>;
-  cardName: Array<LanguageType>;
+  name: Array<Translation>;
+  cardName: Array<Translation>;
   slug: Scalars['String'];
-  description: Array<LanguageType>;
+  description: Array<Translation>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<AssetType>;
+  assets: Array<Asset>;
   price: Scalars['Int'];
   cardPrices: ProductCardPrices;
   active: Scalars['Boolean'];
@@ -553,7 +553,7 @@ export type ProductAttributesGroup = {
 export type AttributesGroup = {
   __typename?: 'AttributesGroup';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   attributes: Array<Attribute>;
 };
@@ -579,8 +579,8 @@ export enum ProductAttributeViewVariantEnum {
   OuterRating = 'outerRating'
 }
 
-export type AssetType = {
-  __typename?: 'AssetType';
+export type Asset = {
+  __typename?: 'Asset';
   url: Scalars['String'];
   index: Scalars['Int'];
 };
@@ -675,9 +675,9 @@ export type Shop = {
   itemId: Scalars['Int'];
   nameString: Scalars['String'];
   slug: Scalars['String'];
-  logo: AssetType;
-  assets: Array<AssetType>;
-  contacts: ContactsType;
+  logo: Asset;
+  assets: Array<Asset>;
+  contacts: Contacts;
   address: Address;
   products: PaginatedShopProductsResponse;
   productsCount: Scalars['Int'];
@@ -691,10 +691,11 @@ export type ShopProductsArgs = {
   input?: Maybe<ShopProductPaginateInput>;
 };
 
-export type ContactsType = {
-  __typename?: 'ContactsType';
+export type Contacts = {
+  __typename?: 'Contacts';
   emails: Array<Scalars['String']>;
   phones: Array<Scalars['String']>;
+  formattedPhones: Array<FormattedPhone>;
 };
 
 export type Address = {
@@ -758,10 +759,10 @@ export type Company = {
   itemId: Scalars['Int'];
   nameString: Scalars['String'];
   slug: Scalars['String'];
-  logo: AssetType;
+  logo: Asset;
   owner: User;
   staff: Array<User>;
-  contacts: ContactsType;
+  contacts: Contacts;
   shops: PaginatedShopsResponse;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -860,7 +861,7 @@ export type Rubric = {
   id: Scalars['ID'];
   views: Array<CityCounter>;
   priorities: Array<CityCounter>;
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   catalogueTitle: RubricCatalogueTitle;
   slug: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
@@ -900,9 +901,9 @@ export type RubricActiveProductsCountArgs = {
 
 export type RubricCatalogueTitle = {
   __typename?: 'RubricCatalogueTitle';
-  defaultTitle: Array<LanguageType>;
-  prefix?: Maybe<Array<LanguageType>>;
-  keyword: Array<LanguageType>;
+  defaultTitle: Array<Translation>;
+  prefix?: Maybe<Array<Translation>>;
+  keyword: Array<Translation>;
   gender: GenderEnum;
 };
 
@@ -917,7 +918,7 @@ export type RubricAttributesGroup = {
 export type RubricVariant = {
   __typename?: 'RubricVariant';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
 };
 
@@ -940,7 +941,7 @@ export type RubricFilterAttributeOption = {
   __typename?: 'RubricFilterAttributeOption';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   views: Array<OptionCityCounter>;
@@ -979,7 +980,7 @@ export type Message = {
   __typename?: 'Message';
   id: Scalars['ID'];
   key: Scalars['String'];
-  message: Array<LanguageType>;
+  message: Array<Translation>;
 };
 
 export type GenderOption = {
@@ -1605,11 +1606,11 @@ export type UpdateCountryInput = {
 
 export type AddCityToCountryInput = {
   countryId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   slug: Scalars['String'];
 };
 
-export type LangInput = {
+export type TranslationInput = {
   key: Scalars['String'];
   value: Scalars['String'];
 };
@@ -1617,7 +1618,7 @@ export type LangInput = {
 export type UpdateCityInCountryInput = {
   countryId: Scalars['ID'];
   cityId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   slug: Scalars['String'];
 };
 
@@ -1670,9 +1671,9 @@ export type ProductPayloadType = {
 };
 
 export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
+  name: Array<TranslationInput>;
+  cardName: Array<TranslationInput>;
+  description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
@@ -1697,9 +1698,9 @@ export type ProductAttributeInput = {
 
 export type UpdateProductInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
+  name: Array<TranslationInput>;
+  cardName: Array<TranslationInput>;
+  description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -1733,17 +1734,17 @@ export type AttributesGroupPayloadType = {
 };
 
 export type CreateAttributesGroupInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateAttributesGroupInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type AddAttributeToGroupInput = {
   groupId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant: AttributeVariantEnum;
   optionsGroup?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
@@ -1758,7 +1759,7 @@ export type AttributePositioningInTitleInput = {
 export type UpdateAttributeInGroupInput = {
   groupId: Scalars['ID'];
   attributeId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant: AttributeVariantEnum;
   optionsGroup?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
@@ -1778,12 +1779,12 @@ export type MetricPayloadType = {
 };
 
 export type CreateMetricInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateMetricInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type OptionsGroupPayloadType = {
@@ -1794,19 +1795,19 @@ export type OptionsGroupPayloadType = {
 };
 
 export type CreateOptionsGroupInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type UpdateOptionsGroupInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type AddOptionToGroupInput = {
   groupId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
@@ -1815,13 +1816,13 @@ export type AddOptionToGroupInput = {
 
 export type OptionVariantInput = {
   key: GenderEnum;
-  value: Array<LangInput>;
+  value: Array<TranslationInput>;
 };
 
 export type UpdateOptionInGroupInput = {
   groupId: Scalars['ID'];
   optionId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
@@ -1841,22 +1842,22 @@ export type RubricPayloadType = {
 };
 
 export type CreateRubricInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   parent?: Maybe<Scalars['ID']>;
   variant: Scalars['ID'];
   catalogueTitle: RubricCatalogueTitleInput;
 };
 
 export type RubricCatalogueTitleInput = {
-  defaultTitle: Array<LangInput>;
-  prefix?: Maybe<Array<LangInput>>;
-  keyword: Array<LangInput>;
+  defaultTitle: Array<TranslationInput>;
+  prefix?: Maybe<Array<TranslationInput>>;
+  keyword: Array<TranslationInput>;
   gender: GenderEnum;
 };
 
 export type UpdateRubricInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   catalogueTitle: RubricCatalogueTitleInput;
   parent?: Maybe<Scalars['ID']>;
   variant: Scalars['ID'];
@@ -1896,12 +1897,12 @@ export type RubricVariantPayloadType = {
 };
 
 export type CreateRubricVariantInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateRubricVariantInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type ConfigPayloadType = {
@@ -1939,14 +1940,14 @@ export type RolePayloadType = {
 };
 
 export type CreateRoleInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   description: Scalars['String'];
   isStuff: Scalars['Boolean'];
 };
 
 export type UpdateRoleInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   description: Scalars['String'];
   isStuff: Scalars['Boolean'];
 };
@@ -2114,17 +2115,17 @@ export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, cardName: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, description: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, assets: Array<(
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url' | 'index'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'url' | 'index'>
   )>, attributesGroups: Array<(
     { __typename?: 'ProductAttributesGroup' }
     & CmsProductAttributesGroupFragment
@@ -2260,8 +2261,8 @@ export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, 'id' | 'nameString' | 'level'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
@@ -2272,8 +2273,8 @@ export type RubricProductFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -2327,14 +2328,14 @@ export type GetRubricQuery = (
       { __typename?: 'RubricCatalogueTitle' }
       & Pick<RubricCatalogueTitle, 'gender'>
       & { defaultTitle: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )>, prefix?: Maybe<Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )>>, keyword: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )> }
     ) }
     & RubricFragmentFragment
@@ -3075,8 +3076,8 @@ export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
   & Pick<Attribute, 'id' | 'nameString' | 'variant'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, positioningInTitle?: Maybe<Array<(
     { __typename?: 'AttributePositioningInTitle' }
     & Pick<AttributePositioningInTitle, 'key' | 'value'>
@@ -3100,8 +3101,8 @@ export type GetAttributesGroupQuery = (
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, 'id' | 'nameString'>
     & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
+      { __typename?: 'Translation' }
+      & Pick<Translation, 'key' | 'value'>
     )>, attributes: Array<(
       { __typename?: 'Attribute' }
       & AttributeInGroupFragment
@@ -3158,14 +3159,17 @@ export type ProductCardShopNodeFragment = (
       & Pick<PointGeoJson, 'coordinates'>
     ) }
   ), contacts: (
-    { __typename?: 'ContactsType' }
-    & Pick<ContactsType, 'phones'>
+    { __typename?: 'Contacts' }
+    & { formattedPhones: Array<(
+      { __typename?: 'FormattedPhone' }
+      & Pick<FormattedPhone, 'raw' | 'readable'>
+    )> }
   ), assets: Array<(
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   )>, logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ) }
 );
 
@@ -3283,8 +3287,8 @@ export type CompanyInListFragment = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'fullName'>
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'url'>
   ) }
 );
 
@@ -3309,8 +3313,8 @@ export type ShopInListFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
   & { logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ) }
 );
 
@@ -3324,11 +3328,11 @@ export type CompanyFragment = (
     { __typename?: 'User' }
     & UserInListFragment
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ), contacts: (
-    { __typename?: 'ContactsType' }
-    & Pick<ContactsType, 'emails' | 'phones'>
+    { __typename?: 'Contacts' }
+    & Pick<Contacts, 'emails' | 'phones'>
   ) }
 );
 
@@ -3401,8 +3405,8 @@ export type ShopFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'itemId' | 'nameString'>
   & { contacts: (
-    { __typename?: 'ContactsType' }
-    & Pick<ContactsType, 'emails' | 'phones'>
+    { __typename?: 'Contacts' }
+    & Pick<Contacts, 'emails' | 'phones'>
   ), address: (
     { __typename?: 'Address' }
     & Pick<Address, 'formattedAddress'>
@@ -3411,11 +3415,11 @@ export type ShopFragment = (
       & Pick<PointGeoJson, 'coordinates'>
     ) }
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ), assets: Array<(
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   )> }
 );
 
@@ -3613,8 +3617,8 @@ export type MessageFragment = (
   { __typename?: 'Message' }
   & Pick<Message, 'key'>
   & { message: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -3661,14 +3665,14 @@ export type OptionInGroupFragment = (
   { __typename?: 'Option' }
   & Pick<Option, 'id' | 'nameString' | 'color' | 'icon' | 'gender'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, variants?: Maybe<Array<(
     { __typename?: 'OptionVariant' }
     & Pick<OptionVariant, 'key'>
     & { value: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
+      { __typename?: 'Translation' }
+      & Pick<Translation, 'key' | 'value'>
     )> }
   )>> }
 );
@@ -3677,8 +3681,8 @@ export type OptionsGroupFragment = (
   { __typename?: 'OptionsGroup' }
   & Pick<OptionsGroup, 'id' | 'variant' | 'nameString'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, options: Array<(
     { __typename?: 'Option' }
     & OptionInGroupFragment
@@ -3722,8 +3726,8 @@ export type RoleFragment = (
   { __typename?: 'Role' }
   & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, rules: Array<(
     { __typename?: 'RoleRule' }
     & RoleRuleFragment
@@ -3777,8 +3781,8 @@ export type RubricVariantFragment = (
   { __typename?: 'RubricVariant' }
   & Pick<RubricVariant, 'id' | 'nameString'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -4196,7 +4200,10 @@ export const ProductCardShopNodeFragmentDoc = gql`
     }
   }
   contacts {
-    phones
+    formattedPhones {
+      raw
+      readable
+    }
   }
   assets {
     index

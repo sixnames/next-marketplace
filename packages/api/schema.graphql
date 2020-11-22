@@ -52,6 +52,7 @@ input AddProductToShopInput {
 
 type Address {
   formattedAddress: String!
+  formattedCoordinates: Coordinates!
   point: PointGeoJSON!
 }
 
@@ -269,6 +270,11 @@ type Contacts {
 input ContactsInput {
   emails: [String!]!
   phones: [String!]!
+}
+
+type Coordinates {
+  lat: Float!
+  lng: Float!
 }
 
 input CoordinatesInput {

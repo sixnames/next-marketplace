@@ -124,7 +124,7 @@ interface CardShopsInterface {
 }
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
-  const [isMap, setIsMap] = useState<boolean>(true);
+  const [isMap, setIsMap] = useState<boolean>(false);
   const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
   const [input, setInput] = useState<GetProductShopsInput>(() => ({
     productId,

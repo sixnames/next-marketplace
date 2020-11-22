@@ -41,8 +41,9 @@ export const productCardShopNodeFragment = gql`
     productsCount
     address {
       formattedAddress
-      point {
-        coordinates
+      formattedCoordinates {
+        lat
+        lng
       }
     }
     contacts {

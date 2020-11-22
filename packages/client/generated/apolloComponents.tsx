@@ -714,6 +714,7 @@ export type Address = {
   __typename?: 'Address';
   formattedAddress: Scalars['String'];
   point: PointGeoJson;
+  formattedCoordinates: Coordinates;
 };
 
 export type PointGeoJson = {
@@ -722,6 +723,12 @@ export type PointGeoJson = {
   type: Scalars['String'];
   /** Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude. */
   coordinates: Array<Scalars['Float']>;
+};
+
+export type Coordinates = {
+  __typename?: 'Coordinates';
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
 };
 
 export type PaginatedShopProductsResponse = {
@@ -3177,9 +3184,9 @@ export type ProductCardShopNodeFragment = (
   & { address: (
     { __typename?: 'Address' }
     & Pick<Address, 'formattedAddress'>
-    & { point: (
-      { __typename?: 'PointGeoJSON' }
-      & Pick<PointGeoJson, 'coordinates'>
+    & { formattedCoordinates: (
+      { __typename?: 'Coordinates' }
+      & Pick<Coordinates, 'lat' | 'lng'>
     ) }
   ), contacts: (
     { __typename?: 'Contacts' }
@@ -4228,8 +4235,9 @@ export const ProductCardShopNodeFragmentDoc = gql`
   productsCount
   address {
     formattedAddress
-    point {
-      coordinates
+    formattedCoordinates {
+      lat
+      lng
     }
   }
   contacts {

@@ -65,6 +65,7 @@ import { ApolloContextInterface } from './types/context';
 import { ShopResolver } from './resolvers/shop/ShopResolver';
 import { ShopProductResolver } from './resolvers/shopProduct/ShopProductResolver';
 import { ContactsResolver } from './resolvers/contacts/ContactsResolver';
+import { AddressResolver } from './resolvers/address/AddressResolver';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -81,6 +82,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
   // GQL Schema
   const schema = buildSchemaSync({
     resolvers: [
+      AddressResolver,
       ConfigResolver,
       ConfigCityResolver,
       NavItemResolver,

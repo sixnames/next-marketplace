@@ -200,6 +200,7 @@ export const SITE_CONFIGS_LOGO = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo.svg',
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
@@ -210,6 +211,7 @@ export const SITE_CONFIGS_LOGO_DARK = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-dark.svg',
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
@@ -220,6 +222,7 @@ export const SITE_CONFIGS_LOGO_ICON = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-icon.svg',
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
@@ -231,6 +234,7 @@ export const SITE_CONFIGS_LOGO_NAME = {
   multiLang: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-name.svg',
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -242,6 +246,7 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   multi: false,
   acceptedFormats: ['image/jpeg'],
   cities: [],
+  sourceImage: 'og-image.jpg',
 };
 
 export const SITE_CONFIGS_INITIAL = [

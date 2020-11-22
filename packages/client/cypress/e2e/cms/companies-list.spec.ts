@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
+import { DEFAULT_CITY, QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
 import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { getFullName } from '@yagu/shared';
 
@@ -14,7 +14,7 @@ describe('Companies list', () => {
   });
 
   after(() => {
-    cy.clearTestData();
+    // cy.clearTestData();
   });
 
   it('Should display companies list in CMS', () => {
@@ -112,7 +112,7 @@ describe('Companies list', () => {
     cy.shouldSuccess();
   });
 
-  it('Should display company shops list', () => {
+  it.only('Should display company shops list', () => {
     const { companyA } = mockData;
     cy.getByCy(`${companyA.slug}-update`).click();
     cy.visitMoreNavLink('shops');
@@ -131,6 +131,9 @@ describe('Companies list', () => {
 
     // add name
     cy.getByCy('nameString').type(MOCK_NEW_SHOP.nameString);
+
+    // add city
+    cy.getByCy('city').select(DEFAULT_CITY);
 
     // add emails
     cy.getByCy(`email-0`).type(MOCK_NEW_SHOP.contacts.emails[0]);

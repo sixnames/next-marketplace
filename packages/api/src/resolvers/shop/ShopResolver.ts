@@ -215,6 +215,7 @@ export class ShopResolver {
       available,
       oldPrices: [],
       product: productId,
+      city: shop.city,
     });
     if (!shopProduct) {
       return {

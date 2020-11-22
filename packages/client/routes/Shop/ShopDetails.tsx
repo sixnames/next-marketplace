@@ -41,6 +41,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
     ...initialShop,
     logo: logoFiles,
     assets: assetsFiles,
+    city: shop.city.slug,
     contacts: {
       emails: shop.contacts.emails,
       phones: shop.contacts.phones,

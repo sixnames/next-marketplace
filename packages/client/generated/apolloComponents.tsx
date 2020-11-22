@@ -687,6 +687,7 @@ export type Shop = {
   itemId: Scalars['Int'];
   nameString: Scalars['String'];
   slug: Scalars['String'];
+  city: City;
   logo: Asset;
   assets: Array<Asset>;
   contacts: Contacts;
@@ -2037,6 +2038,7 @@ export type UpdateCompanyInput = {
 export type AddShopToCompanyInput = {
   companyId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -2056,6 +2058,7 @@ export type CoordinatesInput = {
 export type UpdateShopInCompanyInput = {
   shopId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -2078,6 +2081,7 @@ export type ShopPayloadType = {
 export type UpdateShopInput = {
   shopId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -3352,7 +3356,10 @@ export type GetAllCompaniesQuery = (
 export type ShopInListFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
-  & { logo: (
+  & { city: (
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'nameString' | 'slug'>
+  ), logo: (
     { __typename?: 'Asset' }
     & Pick<Asset, 'index' | 'url'>
   ) }
@@ -3447,6 +3454,9 @@ export type ShopFragment = (
   & { contacts: (
     { __typename?: 'Contacts' }
     & Pick<Contacts, 'emails' | 'phones'>
+  ), city: (
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'nameString' | 'slug'>
   ), address: (
     { __typename?: 'Address' }
     & Pick<Address, 'formattedAddress'>
@@ -4400,6 +4410,11 @@ export const ShopInListFragmentDoc = gql`
   itemId
   slug
   nameString
+  city {
+    id
+    nameString
+    slug
+  }
   logo {
     index
     url
@@ -4472,6 +4487,11 @@ export const ShopFragmentDoc = gql`
   contacts {
     emails
     phones
+  }
+  city {
+    id
+    nameString
+    slug
   }
   address {
     formattedAddress

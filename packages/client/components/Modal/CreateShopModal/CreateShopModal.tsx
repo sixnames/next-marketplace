@@ -38,6 +38,7 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
   const initialValues = {
     companyId,
     nameString: '',
+    city: '',
     address: null,
     logo: [],
     assets: [],

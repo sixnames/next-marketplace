@@ -4,6 +4,7 @@ import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
 import { MOCK_SHOP, MOCK_SHOP_B } from '@yagu/mocks';
+import { DEFAULT_CITY } from '@yagu/config';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   mockShops: Shop[];
@@ -52,6 +53,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 100,
     oldPrices: [],
     product: productA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAProductB = await ShopProductModel.create({
@@ -59,6 +61,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 180,
     oldPrices: [],
     product: productB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAProductD = await ShopProductModel.create({
@@ -66,6 +69,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 980,
     oldPrices: [],
     product: productD.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductA = await ShopProductModel.create({
@@ -73,6 +77,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 480,
     oldPrices: [],
     product: connectionProductA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductB = await ShopProductModel.create({
@@ -80,6 +85,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 680,
     oldPrices: [],
     product: connectionProductB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductC = await ShopProductModel.create({
@@ -87,6 +93,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 720,
     oldPrices: [],
     product: connectionProductC.id,
+    city: DEFAULT_CITY,
   });
 
   // Shop A
@@ -114,6 +121,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
       },
     ],
     product: productA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopBProductB = await ShopProductModel.create({
@@ -121,6 +129,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 1180,
     oldPrices: [],
     product: productB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopBProductD = await ShopProductModel.create({
@@ -128,6 +137,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 1980,
     oldPrices: [],
     product: productD.id,
+    city: DEFAULT_CITY,
   });
 
   const shopBConnectionProductA = await ShopProductModel.create({
@@ -135,6 +145,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 1480,
     oldPrices: [],
     product: connectionProductA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopBConnectionProductB = await ShopProductModel.create({
@@ -142,6 +153,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 1680,
     oldPrices: [],
     product: connectionProductB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopBConnectionProductC = await ShopProductModel.create({
@@ -149,6 +161,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 1720,
     oldPrices: [],
     product: connectionProductC.id,
+    city: DEFAULT_CITY,
   });
 
   // Shop B

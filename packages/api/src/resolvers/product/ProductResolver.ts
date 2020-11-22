@@ -221,12 +221,12 @@ export class ProductResolver {
   @Query(() => [ProductShop])
   async getProductShops(
     @Arg('input') input: GetProductShopsInput,
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
   ): Promise<ProductShop[]> {
     try {
       const { sortDir, sortBy, productId } = input;
 
-      const shopsProducts = await ShopProductModel.find({ product: productId })
+      const shopsProducts = await ShopProductModel.find({ product: productId, city })
         .sort([[sortBy, sortDir]])
         .lean()
         .exec();
@@ -680,6 +680,7 @@ export class ProductResolver {
     }
   }
 
+  // Field resolvers
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
@@ -733,8 +734,11 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => Int)
-  async shopsCount(@Root() product: DocumentType<Product>): Promise<number> {
-    const shopsProducts = await ShopProductModel.find({ product: product.id }, { _id: 1 })
+  async shopsCount(
+    @Root() product: DocumentType<Product>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<number> {
+    const shopsProducts = await ShopProductModel.find({ product: product.id, city }, { _id: 1 })
       .lean()
       .exec();
     const shopsProductsIds = shopsProducts.map(({ _id }) => _id);
@@ -743,7 +747,7 @@ export class ProductResolver {
 
   @FieldResolver((_returns) => [ProductShop])
   async shops(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
     @Arg('input', {
       nullable: true,
@@ -757,7 +761,7 @@ export class ProductResolver {
     try {
       const { sortDir, sortBy } = input;
 
-      const shopsProducts = await ShopProductModel.find({ product: product.id })
+      const shopsProducts = await ShopProductModel.find({ product: product.id, city })
         .sort([[sortBy, sortDir]])
         .lean()
         .exec();
@@ -800,12 +804,12 @@ export class ProductResolver {
 
   @FieldResolver((_returns) => ProductCardPrices)
   async cardPrices(
-    @Localization() { lang }: LocalizationPayloadInterface,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
   ): Promise<ProductCardPrices> {
     try {
       const shopsProducts = await ShopProductModel.find({
-        $or: [{ product: product.id }, { product: product._id }],
+        $and: [{ $or: [{ product: product.id }, { product: product._id }] }, { city }],
       })
         .select('price')
         .lean()

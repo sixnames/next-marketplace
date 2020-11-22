@@ -877,6 +877,7 @@ input ProductsCountersInput {
 
 type ProductShop {
   available: Int!
+  city: City!
   createdAt: DateTime!
   discountedPercent: Int
   formattedOldPrice: String
@@ -1173,6 +1174,7 @@ type ShopPayloadType {
 
 type ShopProduct {
   available: Int!
+  city: City!
   createdAt: DateTime!
   id: ID!
   itemId: Int!

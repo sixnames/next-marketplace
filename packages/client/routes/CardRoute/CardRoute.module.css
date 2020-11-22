@@ -365,12 +365,12 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .mainFrame:after {
-    background: var(--secondaryBackground);
-  }
-
   .card {
     padding-top: 4rem;
+  }
+
+  .mainFrame:after {
+    background: var(--secondaryBackground);
   }
 
   .mainFrame {

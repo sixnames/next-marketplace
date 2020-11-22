@@ -10,10 +10,6 @@
   overflow-x: hidden;
 }
 
-.list {
-
-}
-
 .listItem {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -89,4 +85,45 @@
 .infoAddress {
   font-size: 1rem;
   color: var(--black);
+}
+
+@media only screen and (max-width: 980px) {
+  .frame {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 18rem;
+    grid-column-gap: 1rem;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /*display: grid;*/
+    /*grid-auto-flow: column;*/
+    /*grid-gap: var(--lineGap-50);*/
+    /*grid-auto-columns: 20rem;*/
+  }
+
+  .listItem {
+    margin-bottom: 0;
+  }
+
+  .listItemContent {
+    padding-top: var(--lineGap-75);
+    padding-right: var(--lineGap-100);
+    padding-bottom: var(--lineGap-75);
+    padding-left: var(--lineGap-100);
+  }
+
+  .map {
+    height: 330px;
+  }
 }

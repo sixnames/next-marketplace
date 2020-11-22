@@ -5,12 +5,15 @@
   font-size: 1rem;
 }
 
+.frame [data-reach-menu-button] {
+  text-transform: uppercase;
+}
+
 .frame [data-reach-menu-button] svg {
   width: var(--iconSize);
   height: var(--iconSize);
   margin-right: var(--iconSize);
   fill: currentColor;
-  text-transform: uppercase;
 }
 
 .frame [data-reach-menu-button][aria-expanded="true"] svg {

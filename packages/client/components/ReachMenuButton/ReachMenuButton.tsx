@@ -16,11 +16,17 @@ interface ButtonTextPropsInterface {
 
 export interface MenuButtonInterface {
   className?: string;
+  buttonClassName?: string;
   buttonText?: (props: ButtonTextPropsInterface) => any;
   config: ReachMenuItemConfig[];
 }
 
-const ReachMenuButton: React.FC<MenuButtonInterface> = ({ className, buttonText, config }) => {
+const ReachMenuButton: React.FC<MenuButtonInterface> = ({
+  className,
+  buttonClassName,
+  buttonText,
+  config,
+}) => {
   const [internalButtonText, setInternalButtonText] = useState<string>(() => config[0].id);
 
   return (
@@ -29,7 +35,7 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({ className, buttonText,
         {({ isOpen }) => {
           return (
             <Fragment>
-              <MenuButton>
+              <MenuButton className={`${buttonClassName ? buttonClassName : ''}`}>
                 {buttonText ? buttonText({ internalButtonText, isOpen }) : internalButtonText}
               </MenuButton>
 

@@ -14,7 +14,7 @@ describe('Companies list', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should display companies list in CMS', () => {
@@ -112,7 +112,7 @@ describe('Companies list', () => {
     cy.shouldSuccess();
   });
 
-  it.only('Should display company shops list', () => {
+  it('Should display company shops list', () => {
     const { companyA } = mockData;
     cy.getByCy(`${companyA.slug}-update`).click();
     cy.visitMoreNavLink('shops');

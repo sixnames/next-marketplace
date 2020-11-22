@@ -1,7 +1,7 @@
 .frame {
   position: relative;
   z-index: 50;
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
 }
 
 .low {

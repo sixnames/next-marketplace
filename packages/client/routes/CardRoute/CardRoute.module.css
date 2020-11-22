@@ -364,10 +364,6 @@
   margin-left: 1rem;
 }
 
-.card .moreShopsButton {
-  width: 100%;
-}
-
 @media only screen and (max-width: 1024px) {
   .mainFrame:after {
     background: var(--secondaryBackground);

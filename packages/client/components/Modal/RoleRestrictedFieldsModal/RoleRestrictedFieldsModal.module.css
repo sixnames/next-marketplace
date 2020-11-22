@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
   cursor: pointer;
 }
 

@@ -38,6 +38,7 @@ export type Query = {
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
+  getProductShops: Array<ProductShop>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
@@ -145,6 +146,11 @@ export type QueryGetProductsCountersArgs = {
 
 export type QueryGetFeaturesAstArgs = {
   selectedRubrics: Array<Scalars['ID']>;
+};
+
+
+export type QueryGetProductShopsArgs = {
+  input: GetProductShopsInput;
 };
 
 
@@ -532,6 +538,7 @@ export type Product = {
   mainImage: Scalars['String'];
   cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
+  shopsCount: Scalars['Int'];
   shops: Array<ProductShop>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -857,6 +864,12 @@ export type ProductsCountersInput = {
   notInRubric?: Maybe<Scalars['ID']>;
   noRubrics?: Maybe<Scalars['Boolean']>;
   excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
+};
+
+export type GetProductShopsInput = {
+  productId: Scalars['ID'];
+  sortDir: SortDirectionEnum;
+  sortBy: Scalars['String'];
 };
 
 export type CatalogueData = {
@@ -3194,7 +3207,7 @@ export type ProductCardShopFragment = (
 
 export type ProductCardFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString' | 'shopsCount'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, 'min' | 'max'>
@@ -3222,9 +3235,21 @@ export type ProductCardFragment = (
   )> }
 );
 
+export type GetCatalogueCardShopsQueryVariables = Exact<{
+  input: GetProductShopsInput;
+}>;
+
+
+export type GetCatalogueCardShopsQuery = (
+  { __typename?: 'Query' }
+  & { getProductShops: Array<(
+    { __typename?: 'ProductShop' }
+    & ProductCardShopFragment
+  )> }
+);
+
 export type GetCatalogueCardQueryQueryVariables = Exact<{
   slug: Scalars['String'];
-  input?: Maybe<ProductShopsInput>;
 }>;
 
 
@@ -3232,10 +3257,6 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProductCard: (
     { __typename?: 'Product' }
-    & { shops: Array<(
-      { __typename?: 'ProductShop' }
-      & ProductCardShopFragment
-    )> }
     & ProductCardFragment
   ) }
 );
@@ -4285,6 +4306,7 @@ export const ProductCardFragmentDoc = gql`
     min
     max
   }
+  shopsCount
   cardFeatures {
     listFeatures {
       ...CardFeature
@@ -6846,17 +6868,46 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: Apollo.La
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
-export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($slug: String!, $input: ProductShopsInput) {
-  getProductCard(slug: $slug) {
-    ...ProductCard
-    shops(input: $input) {
-      ...ProductCardShop
-    }
+export const GetCatalogueCardShopsDocument = gql`
+    query GetCatalogueCardShops($input: GetProductShopsInput!) {
+  getProductShops(input: $input) {
+    ...ProductCardShop
   }
 }
-    ${ProductCardFragmentDoc}
-${ProductCardShopFragmentDoc}`;
+    ${ProductCardShopFragmentDoc}`;
+
+/**
+ * __useGetCatalogueCardShopsQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueCardShopsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueCardShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueCardShopsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCatalogueCardShopsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
+        return Apollo.useQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, baseOptions);
+      }
+export function useGetCatalogueCardShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, baseOptions);
+        }
+export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsQuery>;
+export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
+export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
+export const GetCatalogueCardQueryDocument = gql`
+    query GetCatalogueCardQuery($slug: String!) {
+  getProductCard(slug: $slug) {
+    ...ProductCard
+  }
+}
+    ${ProductCardFragmentDoc}`;
 
 /**
  * __useGetCatalogueCardQueryQuery__
@@ -6871,7 +6922,6 @@ ${ProductCardShopFragmentDoc}`;
  * const { data, loading, error } = useGetCatalogueCardQueryQuery({
  *   variables: {
  *      slug: // value for 'slug'
- *      input: // value for 'input'
  *   },
  * });
  */

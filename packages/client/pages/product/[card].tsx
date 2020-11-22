@@ -7,7 +7,6 @@ import RequestError from '../../components/RequestError/RequestError';
 import CardRoute from '../../routes/CardRoute/CardRoute';
 import { CATALOGUE_CARD_QUERY } from '../../graphql/query/cardQueries';
 import getSiteServerSideProps, { SitePagePropsType } from '../../utils/getSiteServerSideProps';
-import { SORT_ASC } from '@yagu/config';
 
 interface CardInterface {
   cardData: GetCatalogueCardQueryQuery;
@@ -43,7 +42,6 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     context,
     callback: async ({ initialProps, context, apolloClient }) => {
       const { query, req } = context;
-      const { card, sortBy = 'price', sortDir = SORT_ASC } = query;
 
       const cardData = await apolloClient.query({
         query: CATALOGUE_CARD_QUERY,
@@ -51,11 +49,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
           headers: req.headers,
         },
         variables: {
-          slug: card,
-          input: {
-            sortBy,
-            sortDir,
-          },
+          slug: query.card,
         },
       });
 

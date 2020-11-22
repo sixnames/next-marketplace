@@ -17,7 +17,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-300);
 }
 
 .list [data-reach-tab] {

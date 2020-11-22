@@ -28,6 +28,14 @@
   background: none;
 }
 
+.absolute {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100px;
+  width: 100%;
+}
+
 .circular {
   animation: rotate 1.5s linear infinite;
   height: 100px;

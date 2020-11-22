@@ -91,6 +91,7 @@ export const productCardFragment = gql`
       min
       max
     }
+    shopsCount
     cardFeatures {
       listFeatures {
         ...CardFeature
@@ -112,18 +113,23 @@ export const productCardFragment = gql`
       ...CardConnection
     }
   }
-  ${productCardShopFragment}
   ${cardFeatureFragment}
   ${cardConnectionFragment}
 `;
 
+export const CATALOGUE_CARD_SHOPS_QUERY = gql`
+  query GetCatalogueCardShops($input: GetProductShopsInput!) {
+    getProductShops(input: $input) {
+      ...ProductCardShop
+    }
+  }
+  ${productCardFragment}
+`;
+
 export const CATALOGUE_CARD_QUERY = gql`
-  query GetCatalogueCardQuery($slug: String!, $input: ProductShopsInput) {
+  query GetCatalogueCardQuery($slug: String!) {
     getProductCard(slug: $slug) {
       ...ProductCard
-      shops(input: $input) {
-        ...ProductCardShop
-      }
     }
   }
   ${productCardFragment}

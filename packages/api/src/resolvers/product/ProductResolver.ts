@@ -219,7 +219,6 @@ export class ProductResolver {
   }
 
   @Query(() => [ProductShop])
-  @AuthMethod(operationConfigRead)
   async getProductShops(
     @Arg('input') input: GetProductShopsInput,
     @Localization() { lang }: LocalizationPayloadInterface,

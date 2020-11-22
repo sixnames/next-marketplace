@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -11,10 +11,7 @@ import Icon from '../../components/Icon/Icon';
 import { useAppContext } from '../../context/appContext';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
-import CardShop from './CardShop';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
-import Button from '../../components/Buttons/Button';
-import MenuButtonWithName from '../../components/ReachMenuButton/MenuButtonWithName';
+import CardShops from './CardShops';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -53,8 +50,8 @@ interface CardRouteInterface {
 }
 
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
-  const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
   const {
+    id,
     mainImage,
     nameString,
     cardNameString,
@@ -62,13 +59,12 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardConnections,
     itemId,
     cardFeatures,
-    shops,
+    shopsCount,
   } = cardData;
   const { isMobile } = useAppContext();
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
-  const shopsCount = shops.length;
   const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
@@ -83,10 +79,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     { head: <Fragment>Отзывы</Fragment> },
     { head: <Fragment>Мнение экспертов</Fragment> },
   ];
-
-  const visibleShopsLimit = 4;
-  const visibleShops = shops.slice(0, visibleShopsLimit);
-  const hiddenShops = shops.slice(visibleShopsLimit);
 
   return (
     <div className={classes.card}>
@@ -212,46 +204,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       {/* Tabs */}
       <ReachTabs config={tabsConfig}>
-        {/* Shops */}
-        <div>
-          <div>
-            <MenuButtonWithName
-              config={[
-                {
-                  nameString: 'по возрастанию цены',
-                  id: 'по возрастанию цены',
-                  onSelect: () => console.log('test'),
-                },
-                {
-                  nameString: 'по убыванию цены',
-                  id: 'по убыванию цены',
-                  onSelect: () => console.log('test'),
-                },
-              ]}
-            />
-          </div>
-
-          {visibleShops.map((shop) => {
-            return <CardShop key={shop.id} shop={shop} />;
-          })}
-          {hiddenShops.length > 0 ? (
-            <Disclosure onChange={() => setIsShopsOpen((prevState) => !prevState)}>
-              <DisclosurePanel>
-                <div>
-                  {hiddenShops.map((shop) => {
-                    return <CardShop key={shop.id} shop={shop} />;
-                  })}
-                </div>
-              </DisclosurePanel>
-              <DisclosureButton as={'div'}>
-                <Button className={classes.moreShopsButton} theme={'secondary'}>
-                  {isShopsOpen ? 'Показать меньше магазинов' : 'Показать больше магазинов'}
-                </Button>
-              </DisclosureButton>
-            </Disclosure>
-          ) : null}
-        </div>
-
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
@@ -301,6 +253,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               );
             })}
           </div>
+        </div>
+
+        {/* Shops */}
+        <div>
+          <CardShops productId={id} />
         </div>
 
         <div>Отзывы</div>

@@ -441,6 +441,12 @@ type GenderOption {
   nameString: String!
 }
 
+input GetProductShopsInput {
+  productId: ID!
+  sortBy: String!
+  sortDir: SortDirectionEnum!
+}
+
 type IconOption {
   icon: String!
   id: String!
@@ -728,6 +734,7 @@ type Product {
   priorities: [CityCounter!]!
   rubrics: [ID!]!
   shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ProductShop!]!
+  shopsCount: Int!
   slug: String!
   updatedAt: DateTime!
   views: [CityCounter!]!
@@ -940,6 +947,7 @@ type Query {
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
+  getProductShops(input: GetProductShopsInput!): [ProductShop!]!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!

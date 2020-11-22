@@ -83,6 +83,7 @@ import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
 import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
 import { Asset } from '../../entities/Asset';
 import { ProductShopsInput } from './ProductShopsInput';
+import { GetProductShopsInput } from './GetProductShopsInput';
 
 const {
   operationConfigCreate,
@@ -212,6 +213,56 @@ export class ProductResolver {
       }, []);
 
       return AttributesGroupModel.find({ _id: { $in: attributesGroups } });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @Query(() => [ProductShop])
+  @AuthMethod(operationConfigRead)
+  async getProductShops(
+    @Arg('input') input: GetProductShopsInput,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<ProductShop[]> {
+    try {
+      const { sortDir, sortBy, productId } = input;
+
+      const shopsProducts = await ShopProductModel.find({ product: productId })
+        .sort([[sortBy, sortDir]])
+        .lean()
+        .exec();
+      const shopsArr = shopsProducts.map(async (shopProduct) => {
+        const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
+
+        if (!shop) {
+          throw Error('Product shop not found');
+        }
+
+        const { oldPrices } = shopProduct;
+        const lastOldPrice = oldPrices[oldPrices.length - 1];
+
+        return {
+          node: shop,
+          ...shopProduct,
+          id: shopProduct._id,
+          discountedPercent:
+            lastOldPrice && lastOldPrice.price > shopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: shopProduct.price,
+                })
+              : null,
+          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
+          formattedOldPrice: lastOldPrice
+            ? getCurrencyString({
+                value: lastOldPrice.price,
+                lang,
+              })
+            : null,
+        };
+      });
+
+      return Promise.all(shopsArr);
     } catch (e) {
       return [];
     }

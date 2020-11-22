@@ -8,6 +8,7 @@ import createTestData, {
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { ProductConnectionModel } from '../../../entities/ProductConnection';
+import { SORT_ASC } from '@yagu/config';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -165,6 +166,37 @@ describe('Product', () => {
         }
       }
     `);
+
+    // Should return product shops
+    const getProductShopsPayload = await query<any>(
+      gql`
+        query GetProductShops($input: GetProductShopsInput!) {
+          getProductShops(input: $input) {
+            node {
+              id
+              nameString
+            }
+            formattedPrice
+            available
+            price
+            oldPrices {
+              createdAt
+              price
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            sortDir: SORT_ASC,
+            sortBy: 'price',
+            productId: currentProduct.id,
+          },
+        },
+      },
+    );
+    expect(getProductShopsPayload.data.getProductShops).toBeDefined();
 
     // Should return product by ID
     const {

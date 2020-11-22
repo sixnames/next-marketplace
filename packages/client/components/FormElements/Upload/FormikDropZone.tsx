@@ -99,9 +99,8 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
               {disabled
                 ? 'Добавлено максимальное количество файлов.'
                 : 'Перетащите файлы сюда. Или нажмите для выбора.'}
+              <input {...getInputProps()} className={classes.input} />
             </div>
-
-            <input {...getInputProps()} className={classes.input} />
           </Tooltip>
         </div>
 

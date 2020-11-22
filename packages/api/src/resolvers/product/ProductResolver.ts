@@ -71,7 +71,7 @@ import { Option, OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
-import { min, max } from 'lodash';
+import { max, min } from 'lodash';
 import { getCurrencyString, getPercentage } from '@yagu/shared';
 import { ProductAttribute } from '../../entities/ProductAttribute';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
@@ -680,6 +680,15 @@ export class ProductResolver {
     } catch (e) {
       return [];
     }
+  }
+
+  @FieldResolver((_returns) => Int)
+  async shopsCount(@Root() product: DocumentType<Product>): Promise<number> {
+    const shopsProducts = await ShopProductModel.find({ product: product.id }, { _id: 1 })
+      .lean()
+      .exec();
+    const shopsProductsIds = shopsProducts.map(({ _id }) => _id);
+    return ShopModel.countDocuments({ products: { $in: shopsProductsIds } });
   }
 
   @FieldResolver((_returns) => [ProductShop])

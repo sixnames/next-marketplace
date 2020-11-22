@@ -123,6 +123,9 @@ export class Product extends TimeStamps {
   @Field(() => [ProductCardConnection])
   readonly cardConnections: ProductCardConnection[];
 
+  @Field(() => Int)
+  readonly shopsCount: number;
+
   @Field(() => [ProductShop])
   readonly shops: ProductShop[];
 

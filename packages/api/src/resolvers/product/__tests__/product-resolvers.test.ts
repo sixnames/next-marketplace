@@ -132,6 +132,7 @@ describe('Product', () => {
           connections {
             ...ConnectionFragment
           }
+          shopsCount
           shops {
             node {
               id

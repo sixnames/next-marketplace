@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--lineGap-200);
+  margin-bottom: var(--lineGap-150);
 }
 
 .sort {

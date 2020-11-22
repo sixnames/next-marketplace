@@ -13,11 +13,14 @@ import CardShop from './CardShop';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
 import classes from './CardShops.module.css';
+import ArrowTrigger from '../../components/ArrowTrigger/ArrowTrigger';
+import ShopsMap from '../../components/ShopsMap/ShopsMap';
 
-interface CardShopsListInterface extends CardShopsInterface {
+interface CardShopsListInterface {
   productId: string;
   shops: ProductCardShopFragment[];
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
+  setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
 }
 
@@ -25,6 +28,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   shops,
   loading,
   productId,
+  setIsMap,
   setInput,
 }) => {
   const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
@@ -65,6 +69,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
           <div className={classes.sortLabel}>Сортировать</div>
           <MenuButtonWithName config={sortConfig} />
         </div>
+        <ArrowTrigger name={'Ближайшие винотеки на карте'} onClick={() => setIsMap(true)} />
       </div>
 
       {visibleShops.map((shop) => {
@@ -93,11 +98,33 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   );
 };
 
+interface CardShopsMapInterface {
+  shops: ProductCardShopFragment[];
+  setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
+  return (
+    <div>
+      <div className={classes.controls}>
+        <ArrowTrigger
+          arrowPosition={'left'}
+          name={'Вернуться ко всем магазинам'}
+          onClick={() => setIsMap(false)}
+        />
+      </div>
+
+      <ShopsMap shops={shops} />
+    </div>
+  );
+};
+
 interface CardShopsInterface {
   productId: string;
 }
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
+  const [isMap, setIsMap] = useState<boolean>(true);
   const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
   const [input, setInput] = useState<GetProductShopsInput>(() => ({
     productId,
@@ -126,7 +153,17 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
 
   return (
     <div className={classes.frame}>
-      <CardShopsList productId={productId} setInput={setInput} shops={shops} loading={loading} />
+      {isMap ? (
+        <CardShopsMap shops={shops} setIsMap={setIsMap} />
+      ) : (
+        <CardShopsList
+          productId={productId}
+          setInput={setInput}
+          shops={shops}
+          loading={loading}
+          setIsMap={setIsMap}
+        />
+      )}
     </div>
   );
 };

@@ -204,6 +204,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
       {/* Tabs */}
       <ReachTabs config={tabsConfig}>
+        {/* Shops */}
+        <CardShops productId={id} />
+
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
@@ -253,11 +256,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               );
             })}
           </div>
-        </div>
-
-        {/* Shops */}
-        <div>
-          <CardShops productId={id} />
         </div>
 
         <div>Отзывы</div>

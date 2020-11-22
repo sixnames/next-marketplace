@@ -388,7 +388,10 @@
   --google: #d8634f;
 
   /*Gaps*/
+  --lineGap-50: 0.5rem;
+  --lineGap-75: 0.75rem;
   --lineGap-100: 1rem;
+  --lineGap-150: 1.5rem;
   --lineGap-200: calc(var(--lineGap-100) * 2);
   --lineGap-300: calc(var(--lineGap-100) * 3);
   --lineGap-400: calc(var(--lineGap-100) * 4);

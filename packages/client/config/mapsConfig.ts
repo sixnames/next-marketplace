@@ -171,21 +171,221 @@ export const lightMapStyles = [
 
 export const darkMapStyles = [
   {
+    featureType: 'all',
+    elementType: 'labels.text.fill',
     stylers: [
       {
-        hue: '#14181d',
+        saturation: 36,
       },
       {
-        invert_lightness: true,
-      },
-      {
-        saturation: -100,
+        color: '#000000',
       },
       {
         lightness: 40,
       },
+    ],
+  },
+  {
+    featureType: 'all',
+    elementType: 'labels.text.stroke',
+    stylers: [
       {
-        gamma: 0.5,
+        visibility: 'on',
+      },
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 16,
+      },
+    ],
+  },
+  {
+    featureType: 'all',
+    elementType: 'labels.icon',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 20,
+      },
+    ],
+  },
+  {
+    featureType: 'administrative',
+    elementType: 'geometry.stroke',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 17,
+      },
+      {
+        weight: 1.2,
+      },
+    ],
+  },
+  {
+    featureType: 'administrative',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        lightness: '44',
+      },
+    ],
+  },
+  {
+    featureType: 'landscape',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 20,
+      },
+    ],
+  },
+  {
+    featureType: 'landscape',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        lightness: '58',
+      },
+    ],
+  },
+  {
+    featureType: 'landscape.man_made',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        saturation: '0',
+      },
+      {
+        color: '#2a2d32',
+      },
+    ],
+  },
+  {
+    featureType: 'landscape.natural.landcover',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        lightness: '55',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: '20',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        lightness: '36',
+      },
+    ],
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#262e32',
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 17,
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry.stroke',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 29,
+      },
+      {
+        weight: 0.2,
+      },
+    ],
+  },
+  {
+    featureType: 'road.arterial',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 18,
+      },
+    ],
+  },
+  {
+    featureType: 'road.arterial',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#373d44',
+      },
+    ],
+  },
+  {
+    featureType: 'road.local',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 16,
+      },
+    ],
+  },
+  {
+    featureType: 'transit',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#000000',
+      },
+      {
+        lightness: 19,
       },
     ],
   },
@@ -194,7 +394,28 @@ export const darkMapStyles = [
     elementType: 'geometry',
     stylers: [
       {
-        color: '#14181d',
+        color: '#282929',
+      },
+      {
+        lightness: 17,
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        lightness: '-76',
+      },
+      {
+        saturation: '68',
+      },
+      {
+        gamma: '0.86',
+      },
+      {
+        color: '#13191e',
       },
     ],
   },

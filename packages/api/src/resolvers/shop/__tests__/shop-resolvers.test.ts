@@ -5,6 +5,7 @@ import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
 import { MOCK_ADDRESS_A, MOCK_NEW_SHOP } from '@yagu/mocks';
+import { DEFAULT_CITY } from '@yagu/config';
 
 describe('Shop', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -33,6 +34,11 @@ describe('Shop', () => {
                 id
                 nameString
                 slug
+              }
+              city {
+                id
+                slug
+                nameString
               }
             }
           }
@@ -208,6 +214,7 @@ describe('Shop', () => {
         return {
           shopId: currentShop.id,
           nameString: shopNewName,
+          city: DEFAULT_CITY,
           contacts: MOCK_NEW_SHOP.contacts,
           address: {
             formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,

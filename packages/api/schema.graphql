@@ -64,6 +64,7 @@ input AddressInput {
 input AddShopToCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   companyId: ID!
   contacts: ContactsInput!
   logo: [Upload!]!
@@ -1142,6 +1143,7 @@ input SetRoleRuleRestrictedFieldInput {
 type Shop {
   address: Address!
   assets: [Asset!]!
+  city: City!
   company: Company!
   contacts: Contacts!
   createdAt: DateTime!
@@ -1382,6 +1384,7 @@ input UpdateRubricVariantInput {
 input UpdateShopInCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   companyId: ID!
   contacts: ContactsInput!
   logo: [Upload!]!
@@ -1392,6 +1395,7 @@ input UpdateShopInCompanyInput {
 input UpdateShopInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   contacts: ContactsInput!
   logo: [Upload!]!
   nameString: String!

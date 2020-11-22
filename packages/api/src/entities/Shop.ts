@@ -10,6 +10,7 @@ import PaginateType from '../resolvers/commonInputs/PaginateType';
 import { Contacts } from './Contacts';
 import { Address } from './Address';
 import { Asset } from './Asset';
+import { City } from './City';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -29,6 +30,10 @@ export class Shop extends TimeStamps {
   @Field(() => String)
   @prop({ required: true })
   slug: string;
+
+  @Field(() => City)
+  @prop({ required: true })
+  city: string;
 
   @Field(() => Asset)
   @prop({ type: Asset, required: true })

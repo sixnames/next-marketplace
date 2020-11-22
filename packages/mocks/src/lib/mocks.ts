@@ -119,6 +119,7 @@ export const MOCK_COMPANIES = [MOCK_COMPANY];
 export const MOCK_SHOP = {
   nameString: 'Shop',
   slug: 'shop',
+  city: DEFAULT_CITY,
   contacts: {
     emails: ['shop1@gmail.com', 'shop2@gmail.com'],
     phones: ['+78990002245', '+78890002246'],
@@ -135,6 +136,7 @@ export const MOCK_SHOP = {
 export const MOCK_SHOP_B = {
   nameString: 'Shop B',
   slug: 'shop_b',
+  city: DEFAULT_CITY,
   contacts: {
     emails: ['shopB1@gmail.com', 'shopB2@gmail.com'],
     phones: ['+78111112245', '+78121112246'],

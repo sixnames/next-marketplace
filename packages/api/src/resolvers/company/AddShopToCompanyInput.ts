@@ -12,6 +12,9 @@ export class AddShopToCompanyInput {
   @Field((_type) => String)
   nameString: string;
 
+  @Field((_type) => String)
+  city: string;
+
   @Field((_type) => ContactsInput)
   contacts: ContactsInput;
 

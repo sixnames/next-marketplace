@@ -37,6 +37,12 @@ const shopCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
         key: 'validation.shops.nameString',
       }),
     ),
+  city: Yup.string().required(
+    getFieldValidationMessage({
+      ...args,
+      key: 'validation.shops.city',
+    }),
+  ),
   address: addressSchema(args),
   contacts: contactsInputSchema(args),
   logo: Yup.array()

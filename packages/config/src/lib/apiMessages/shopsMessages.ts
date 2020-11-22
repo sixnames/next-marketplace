@@ -211,6 +211,19 @@ export const shopsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.shops.city',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Город обязателен к заполнению.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Shop city is required.',
+      },
+    ],
+  },
+  {
     key: 'validation.shops.assets',
     message: [
       {

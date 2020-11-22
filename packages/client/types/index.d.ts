@@ -14,9 +14,6 @@ export type PostfixType =
   | any;
 
 export type ObjectType = Record<string, any>;
-export interface QueryInterface {
-  query?: ObjectType;
-}
 
 export interface PathInterface {
   pathname: string;

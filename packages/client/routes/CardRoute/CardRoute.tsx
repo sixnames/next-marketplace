@@ -14,6 +14,7 @@ import Currency from '../../components/Currency/Currency';
 import CardShop from './CardShop';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
+import MenuButtonWithName from '../../components/ReachMenuButton/MenuButtonWithName';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -213,6 +214,23 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       <ReachTabs config={tabsConfig}>
         {/* Shops */}
         <div>
+          <div>
+            <MenuButtonWithName
+              config={[
+                {
+                  nameString: 'по возрастанию цены',
+                  id: 'по возрастанию цены',
+                  onSelect: () => console.log('test'),
+                },
+                {
+                  nameString: 'по убыванию цены',
+                  id: 'по убыванию цены',
+                  onSelect: () => console.log('test'),
+                },
+              ]}
+            />
+          </div>
+
           {visibleShops.map((shop) => {
             return <CardShop key={shop.id} shop={shop} />;
           })}

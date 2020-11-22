@@ -4,7 +4,6 @@ import AppNavItem from './AppNavItem';
 import { UseCompactReturnInterface } from '../../hooks/useCompact';
 import Icon from '../../components/Icon/Icon';
 import AnimateOpacity from '../../components/AnimateOpacity/AnimateOpacity';
-import TTip from '../../components/TTip/TTip';
 import Link from '../../components/Link/Link';
 import { useRouter } from 'next/router';
 import useSignOut from '../../hooks/useSignOut';
@@ -12,6 +11,7 @@ import { useAppNavContext } from '../../context/appNavContext';
 import classes from './AppNav.module.css';
 import ThemeTrigger from '../../components/ThemeTrigger/ThemeTrigger';
 import { useAppContext } from '../../context/appContext';
+import Tooltip from '../../components/TTip/Tooltip';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;
@@ -54,7 +54,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
               })}
 
               <li className={`${classes.bottom} ${classes.bottomFirst}`}>
-                <TTip tooltipPlacement={'right'} title={isCompact ? 'Вернуться на сайт' : ''}>
+                <Tooltip title={isCompact ? 'Вернуться на сайт' : null}>
                   <Link
                     href={`/`}
                     className={`${classes.bottomLink} ${
@@ -70,11 +70,11 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       Вернуться в каталог
                     </span>
                   </Link>
-                </TTip>
+                </Tooltip>
               </li>
 
               <li className={`${classes.bottom} ${classes.bottom}`}>
-                <TTip tooltipPlacement={'right'} title={isCompact ? 'Выйти из аккаунта' : ''}>
+                <Tooltip title={isCompact ? 'Выйти из аккаунта' : null}>
                   <div
                     onClick={signOutHandler}
                     className={`${classes.bottomLink} ${
@@ -90,7 +90,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
                       Выйти из аккаунта
                     </span>
                   </div>
-                </TTip>
+                </Tooltip>
               </li>
 
               <li className={`${classes.bottom} ${classes.bottom}`}>

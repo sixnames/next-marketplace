@@ -8,6 +8,8 @@ import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone'
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FormikAddressInput from '../../components/FormElements/Input/FormikAddressInput';
+import { useConfigContext } from '../../context/configContext';
+import FormikSelect from '../../components/FormElements/Select/FormikSelect';
 
 type ShopFormPayloadInterface = Omit<UpdateShopInput, 'shopId'>;
 
@@ -28,6 +30,7 @@ const ShopForm: React.FC<ShopFormInterface> = ({
   onSubmitHandler,
   submitButtonText = 'Создать',
 }) => {
+  const { cities } = useConfigContext();
   const { showErrorNotification } = useMutationCallbacks();
   const logoInputFilesLimit = 1;
 
@@ -69,6 +72,16 @@ const ShopForm: React.FC<ShopFormInterface> = ({
               testId={'shop-assets'}
               isRequired
               showInlineError
+            />
+
+            <FormikSelect
+              options={cities}
+              label={'Город'}
+              name={'city'}
+              testId={'city'}
+              firstOption={'Не назначен'}
+              showInlineError
+              isRequired
             />
 
             <FormikInput

@@ -1,106 +1,21 @@
-import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, index, plugin, prop } from '@typegoose/typegoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import { AssetType, CityCounter, LanguageType } from './commonEntities';
-import { AttributesGroup } from './AttributesGroup';
-import { Attribute } from './Attribute';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { ProductCardConnection } from './ProductCardConnection';
-import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/config';
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
 import { alwaysArray } from '@yagu/shared';
-import { Option } from './Option';
-import { ShopProduct } from './ShopProduct';
-import { Shop } from './Shop';
-
-// Attribute view variant
-export enum ProductAttributeViewVariantEnum {
-  list = 'list',
-  text = 'text',
-  tag = 'tag',
-  icon = 'icon',
-  outerRating = 'outerRating',
-}
-
-registerEnumType(ProductAttributeViewVariantEnum, {
-  name: 'ProductAttributeViewVariantEnum',
-  description: 'Product attribute view variant enum',
-});
-
-@ObjectType()
-export class ProductAttribute {
-  @Field(() => Boolean)
-  @prop({ required: true, default: true })
-  showInCard: boolean;
-
-  @Field((_type) => ProductAttributeViewVariantEnum)
-  @prop({
-    required: true,
-    enum: ATTRIBUTE_VIEW_VARIANTS_ENUMS,
-    default: ATTRIBUTE_VIEW_VARIANT_LIST,
-  })
-  viewVariant: ProductAttributeViewVariantEnum;
-
-  @Field(() => Attribute)
-  @prop({ ref: Attribute })
-  node: string;
-
-  @Field(() => String, { description: 'Attribute reference via attribute slug field' })
-  @prop({ required: true })
-  key: string;
-
-  @Field(() => [String])
-  @prop({ type: String, required: true })
-  value: string[];
-
-  @Field(() => [Option])
-  readonly readableOptions?: Option[];
-
-  @Field(() => [String])
-  readonly readableValue?: string[];
-}
-
-@ObjectType()
-export class ProductAttributesGroup {
-  @Field(() => Boolean)
-  @prop({ required: true, default: true })
-  showInCard: boolean;
-
-  @Field(() => AttributesGroup)
-  @prop({ ref: AttributesGroup })
-  node: string;
-
-  @Field(() => [ProductAttribute])
-  @prop({ type: ProductAttribute, required: true })
-  attributes: ProductAttribute[];
-}
-
-@ObjectType()
-export class ProductCardFeatures {
-  @Field(() => [ProductAttribute])
-  readonly listFeatures: ProductAttribute[];
-
-  @Field(() => [ProductAttribute])
-  readonly textFeatures: ProductAttribute[];
-
-  @Field(() => [ProductAttribute])
-  readonly tagFeatures: ProductAttribute[];
-
-  @Field(() => [ProductAttribute])
-  readonly iconFeatures: ProductAttribute[];
-
-  @Field(() => [ProductAttribute])
-  readonly ratingFeatures: ProductAttribute[];
-}
-
-@ObjectType()
-export class ProductShop extends ShopProduct {
-  @Field(() => Shop)
-  readonly node: Shop;
-}
+import { ProductAttributesGroup } from './ProductAttributesGroup';
+import { ProductCardFeatures } from './ProductCardFeatures';
+import { ProductShop } from './ProductShop';
+import { ProductCardPrices } from './ProductCardPrices';
+import { ProductConnection } from './ProductConnection';
+import { CityCounter } from './CityCounter';
+import { Asset } from './Asset';
+import { Translation } from './Translation';
 
 interface InArrayInterface {
   $in: any[];
@@ -148,21 +63,21 @@ export class Product extends TimeStamps {
   @prop({ type: CityCounter, required: true })
   priorities: CityCounter[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  cardName: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  cardName: Translation[];
 
   @Field(() => String)
   @prop({ required: true })
   slug: string;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  description: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  description: Translation[];
 
   @Field(() => [ID])
   @prop({ type: String, required: true })
@@ -172,13 +87,16 @@ export class Product extends TimeStamps {
   @prop({ type: ProductAttributesGroup, required: true })
   attributesGroups: ProductAttributesGroup[];
 
-  @Field(() => [AssetType])
-  @prop({ type: AssetType, required: true })
-  assets: AssetType[];
+  @Field(() => [Asset])
+  @prop({ type: Asset, required: true })
+  assets: Asset[];
 
   @Field(() => Int)
-  @prop({ required: true })
-  price: number;
+  @prop({ default: 0 })
+  price?: number;
+
+  @Field(() => ProductCardPrices)
+  readonly cardPrices: ProductCardPrices;
 
   @Field(() => Boolean)
   @prop({ required: true, default: true })
@@ -204,6 +122,9 @@ export class Product extends TimeStamps {
 
   @Field(() => [ProductCardConnection])
   readonly cardConnections: ProductCardConnection[];
+
+  @Field(() => Int)
+  readonly shopsCount: number;
 
   @Field(() => [ProductShop])
   readonly shops: ProductShop[];
@@ -304,54 +225,4 @@ export class Product extends TimeStamps {
   }
 }
 
-@ObjectType()
-export class ProductsCounters {
-  @Field(() => Int)
-  readonly totalProductsCount: number;
-
-  @Field(() => Int)
-  readonly activeProductsCount: number;
-}
-
-@ObjectType()
-export class ProductConnectionItem {
-  @Field(() => Product)
-  node: Product;
-
-  @Field(() => String, {
-    description: 'Returns first value only because this attribute has to be Select variant',
-  })
-  value: string;
-
-  @Field(() => String, {
-    description: 'Returns name of selected attribute value',
-  })
-  optionName: string;
-}
-
-@ObjectType()
-export class ProductConnection {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field(() => String)
-  @prop({ type: String, required: true })
-  attributeId: string;
-
-  @Field(() => String)
-  @prop({ type: String, required: true })
-  attributesGroupId: string;
-
-  @Field(() => [String])
-  @prop({ type: String, required: true })
-  productsIds: string[];
-
-  @Field(() => Attribute)
-  readonly attribute: string;
-
-  @Field(() => [ProductConnectionItem])
-  readonly products: ProductConnectionItem[];
-}
-
-export const ProductConnectionModel = getModelForClass(ProductConnection);
 export const ProductModel = getModelForClass(Product);

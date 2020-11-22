@@ -1,13 +1,11 @@
 import React, { Fragment } from 'react';
 import Icon from '../Icon/Icon';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core';
-import { StyledComponentProps } from '@material-ui/styles/withStyles/withStyles';
-import { ButtonTheme, ButtonType, SizeType, TooltipPlacement } from '../../types';
+import { ButtonTheme, ButtonType, SizeType } from '../../types';
 import classes from './Button.module.css';
 import { IconType } from '@yagu/config';
+import Tooltip from '../TTip/Tooltip';
 
-export interface ButtonPropsInterface extends StyledComponentProps {
+export interface ButtonPropsInterface {
   theme?: ButtonTheme;
   size?: SizeType;
   className?: string;
@@ -17,38 +15,22 @@ export interface ButtonPropsInterface extends StyledComponentProps {
   disabled?: boolean;
   circle?: boolean;
   title?: string;
-  tooltipPlacement?: TooltipPlacement;
   icon?: IconType;
   onClick?: (e: any) => void;
   testId?: string;
-  classes?: any;
   short?: boolean;
 }
-
-const custom = {
-  popper: {
-    opacity: 1,
-  },
-  tooltip: {
-    fontSize: '0.8em',
-    color: 'white',
-    backgroundColor: '#5c626e',
-    boxShadow: `0 1px 10px -1px rgba(0, 0, 0, 0.4)`,
-  },
-};
 
 const Button: React.FC<ButtonPropsInterface> = ({
   theme = 'primary',
   size = 'normal',
   title = '',
-  tooltipPlacement = 'top',
   type = 'button',
   children,
   disabled = false,
   icon,
   iconClass,
   circle = false,
-  classes: tooltipClasses,
   className,
   testId,
   short,
@@ -65,14 +47,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
 
   return (
     <Fragment>
-      <Tooltip
-        classes={{
-          popper: tooltipClasses ? tooltipClasses.popper : '',
-          tooltip: tooltipClasses ? tooltipClasses.tooltip : '',
-        }}
-        title={!disabled ? title : ''}
-        placement={tooltipPlacement}
-      >
+      <Tooltip title={!disabled ? title : null}>
         <button data-cy={testId} disabled={disabled} className={buttonClass} type={type} {...props}>
           {icon && (
             <Icon
@@ -90,4 +65,4 @@ const Button: React.FC<ButtonPropsInterface> = ({
   );
 };
 
-export default withStyles(custom)(Button);
+export default Button;

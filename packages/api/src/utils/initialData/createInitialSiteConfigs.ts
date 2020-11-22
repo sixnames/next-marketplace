@@ -119,9 +119,9 @@ export interface CreateInitialSiteConfigsInterface {
 export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfigsInterface> {
   const getAssetsConfigs = async () => {
     return Promise.all(
-      SITE_CONFIGS_ASSETS_All.map(async (config) => {
+      SITE_CONFIGS_ASSETS_All.map(async ({ sourceImage, ...config }) => {
         return await storeConfigWithAsset({
-          sourceImage: './site-config/logo.svg',
+          sourceImage: `./site-config/${sourceImage}`,
           slug: config.slug,
           format: 'svg',
           configTemplate: {

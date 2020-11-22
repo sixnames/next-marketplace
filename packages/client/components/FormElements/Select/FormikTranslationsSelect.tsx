@@ -1,6 +1,6 @@
 import React from 'react';
 import FormikSelect, { FormikSelectInterface } from './FormikSelect';
-import { LangInput } from '../../../generated/apolloComponents';
+import { TranslationInput } from '../../../generated/apolloComponents';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import { useLanguageContext } from '../../../context/languageContext';
@@ -8,7 +8,7 @@ import Accordion from '../../Accordion/Accordion';
 import InputLine from '../Input/InputLine';
 import classes from './FormikTranslationsSelect.module.css';
 import Icon from '../../Icon/Icon';
-import TTip from '../../TTip/TTip';
+import Tooltip from '../../TTip/Tooltip';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   name: inputName,
@@ -29,7 +29,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
 }) => {
   const { languagesList } = useLanguageContext();
   const { values } = useFormikContext();
-  const currentField: LangInput[] = get(values, inputName) || [];
+  const currentField: TranslationInput[] = get(values, inputName) || [];
   const minimalLanguagesCount = 2;
 
   // Return just one input if site has one language
@@ -95,12 +95,11 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
             isOpen={isDefault}
             title={name}
             titleRight={
-              <TTip
-                title={accordionIconTooltip}
-                className={`${classes.accordionIcon} ${accordionIconClass}`}
-              >
-                <Icon name={accordionIcon} />
-              </TTip>
+              <Tooltip title={accordionIconTooltip}>
+                <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
+                  <Icon name={accordionIcon} />
+                </div>
+              </Tooltip>
             }
             key={`${inputName}-${key}`}
           >

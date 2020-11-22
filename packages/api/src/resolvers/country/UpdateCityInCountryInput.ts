@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 
 @InputType()
 export class UpdateCityInCountryInput {
@@ -9,8 +9,8 @@ export class UpdateCityInCountryInput {
   @Field(() => ID)
   cityId: string;
 
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 
   @Field(() => String)
   slug: string;

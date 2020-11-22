@@ -6,6 +6,7 @@ import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_CITY } from '@yagu/config';
 
 describe('Company', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -232,6 +233,7 @@ describe('Company', () => {
         return {
           companyId: updatedCompany.id,
           nameString: MOCK_NEW_SHOP.nameString,
+          city: DEFAULT_CITY,
           contacts: MOCK_NEW_SHOP.contacts,
           address: {
             formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
@@ -283,6 +285,7 @@ describe('Company', () => {
           companyId: updatedCompany.id,
           shopId: createdShop.id,
           nameString: shopNewName,
+          city: DEFAULT_CITY,
           contacts: MOCK_NEW_SHOP.contacts,
           address: {
             formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,

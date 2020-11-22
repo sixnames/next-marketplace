@@ -8,7 +8,7 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import getApiMessage from '../utils/translations/getApiMessage';
 import { compare } from 'bcryptjs';
 import { ContextInterface } from '../types/context';
-import { FormattedPhone } from './commonEntities';
+import { FormattedPhone } from './FormattedPhone';
 
 type Request = ContextInterface['req'];
 
@@ -51,7 +51,7 @@ export class User extends TimeStamps {
   role: string;
 
   @Field((_type) => FormattedPhone)
-  readonly formattedPhone: string;
+  readonly formattedPhone: FormattedPhone;
 
   @Field((_type) => String)
   readonly fullName: string;
@@ -109,7 +109,7 @@ export class User extends TimeStamps {
   static async attemptSignOut(req: Request) {
     return new Promise((resolve) => {
       if (req.session && req.session.destroy) {
-        req.session.destroy((error) => {
+        req.session.destroy((error: any) => {
           if (error) {
             resolve(false);
           } else {

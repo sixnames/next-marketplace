@@ -3,7 +3,8 @@ import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
-import { MOCK_SHOP } from '@yagu/mocks';
+import { MOCK_SHOP, MOCK_SHOP_B } from '@yagu/mocks';
+import { DEFAULT_CITY } from '@yagu/config';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   mockShops: Shop[];
@@ -14,6 +15,13 @@ export interface CreateTestShopsPayloadInterface extends CreateTestProductsPaylo
   shopAConnectionProductA: ShopProduct;
   shopAConnectionProductB: ShopProduct;
   shopAConnectionProductC: ShopProduct;
+  shopB: Shop;
+  shopBProductA: ShopProduct;
+  shopBProductB: ShopProduct;
+  shopBProductD: ShopProduct;
+  shopBConnectionProductA: ShopProduct;
+  shopBConnectionProductB: ShopProduct;
+  shopBConnectionProductC: ShopProduct;
 }
 
 export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface> => {
@@ -27,12 +35,25 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     connectionProductC,
   } = productsPayload;
 
+  const shopLogo = await generateTestAsset({
+    targetFileName: 'test-company-logo',
+    dist: ASSETS_DIST_SHOPS_LOGOS,
+    slug: MOCK_SHOP.slug,
+  });
+
+  const shopAsset = await generateTestAsset({
+    targetFileName: 'test-shop-asset-0',
+    dist: ASSETS_DIST_SHOPS,
+    slug: MOCK_SHOP.slug,
+  });
+
   // Shop A products
   const shopAProductA = await ShopProductModel.create({
     available: 1,
     price: 100,
     oldPrices: [],
     product: productA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAProductB = await ShopProductModel.create({
@@ -40,6 +61,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 180,
     oldPrices: [],
     product: productB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAProductD = await ShopProductModel.create({
@@ -47,6 +69,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 980,
     oldPrices: [],
     product: productD.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductA = await ShopProductModel.create({
@@ -54,6 +77,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 480,
     oldPrices: [],
     product: connectionProductA.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductB = await ShopProductModel.create({
@@ -61,6 +85,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 680,
     oldPrices: [],
     product: connectionProductB.id,
+    city: DEFAULT_CITY,
   });
 
   const shopAConnectionProductC = await ShopProductModel.create({
@@ -68,25 +93,14 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     price: 720,
     oldPrices: [],
     product: connectionProductC.id,
+    city: DEFAULT_CITY,
   });
 
-  // Shop
-  const shopLogo = await generateTestAsset({
-    targetFileName: 'test-company-logo',
-    dist: ASSETS_DIST_SHOPS_LOGOS,
-    slug: MOCK_SHOP.slug,
-  });
-
-  const shopAAssetA = await generateTestAsset({
-    targetFileName: 'test-shop-asset-0',
-    dist: ASSETS_DIST_SHOPS,
-    slug: MOCK_SHOP.slug,
-  });
-
+  // Shop A
   const shopA = await ShopModel.create({
     ...MOCK_SHOP,
     logo: shopLogo,
-    assets: [shopAAssetA],
+    assets: [shopAsset],
     products: [
       shopAProductA.id,
       shopAProductB.id,
@@ -97,7 +111,75 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     ],
   });
 
-  const mockShops = [shopA];
+  // Shop B products
+  const shopBProductA = await ShopProductModel.create({
+    available: 19,
+    price: 1180,
+    oldPrices: [
+      {
+        price: 1400,
+      },
+    ],
+    product: productA.id,
+    city: DEFAULT_CITY,
+  });
+
+  const shopBProductB = await ShopProductModel.create({
+    available: 13,
+    price: 1180,
+    oldPrices: [],
+    product: productB.id,
+    city: DEFAULT_CITY,
+  });
+
+  const shopBProductD = await ShopProductModel.create({
+    available: 2,
+    price: 1980,
+    oldPrices: [],
+    product: productD.id,
+    city: DEFAULT_CITY,
+  });
+
+  const shopBConnectionProductA = await ShopProductModel.create({
+    available: 2,
+    price: 1480,
+    oldPrices: [],
+    product: connectionProductA.id,
+    city: DEFAULT_CITY,
+  });
+
+  const shopBConnectionProductB = await ShopProductModel.create({
+    available: 3,
+    price: 1680,
+    oldPrices: [],
+    product: connectionProductB.id,
+    city: DEFAULT_CITY,
+  });
+
+  const shopBConnectionProductC = await ShopProductModel.create({
+    available: 5,
+    price: 1720,
+    oldPrices: [],
+    product: connectionProductC.id,
+    city: DEFAULT_CITY,
+  });
+
+  // Shop B
+  const shopB = await ShopModel.create({
+    ...MOCK_SHOP_B,
+    logo: shopLogo,
+    assets: [shopAsset],
+    products: [
+      shopBProductA.id,
+      shopBProductB.id,
+      shopBProductD.id,
+      shopBConnectionProductA.id,
+      shopBConnectionProductB.id,
+      shopBConnectionProductC.id,
+    ],
+  });
+
+  const mockShops = [shopA, shopB];
 
   return {
     ...productsPayload,
@@ -109,5 +191,12 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     shopAConnectionProductA,
     shopAConnectionProductB,
     shopAConnectionProductC,
+    shopB,
+    shopBProductA,
+    shopBProductB,
+    shopBProductD,
+    shopBConnectionProductA,
+    shopBConnectionProductB,
+    shopBConnectionProductC,
   };
 };

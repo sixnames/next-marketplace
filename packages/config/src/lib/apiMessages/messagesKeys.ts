@@ -180,6 +180,7 @@ const messagesKeys = [
   // Companies validation
   'validation.shops.id',
   'validation.shops.nameString',
+  'validation.shops.city',
   'validation.shops.logo',
   'validation.shops.assets',
   'validation.shops.address',

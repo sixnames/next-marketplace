@@ -11,8 +11,8 @@
   height: var(--formInputHeight);
   padding-top: 0;
   padding-bottom: 0;
-  padding-left: calc(var(--formInputHeight) + var(--inputPaddingHorizontal));
-  padding-right: calc(var(--formInputHeight) + var(--inputPaddingHorizontal));
+  padding-left: var(--formInputHeight);
+  padding-right: var(--formInputHeight);
   margin: 0;
   font-family: var(--font);
   color: var(--inputTextColor);

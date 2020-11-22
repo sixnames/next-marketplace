@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { ConfigCityInput } from '../common/ConfigCityInput';
+import { ConfigCityInput } from '../commonInputs/ConfigCityInput';
 
 @InputType()
 export class UpdateConfigInput {

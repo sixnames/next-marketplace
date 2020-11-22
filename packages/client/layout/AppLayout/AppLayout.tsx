@@ -103,6 +103,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
           cities={initialApolloState.getAllCities}
           lang={initialApolloState.getClientLanguage}
           languagesList={initialApolloState.getAllLanguages || []}
+          currency={initialApolloState.getSessionCurrency}
           configs={initialApolloState.getAllConfigs}
         >
           <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>

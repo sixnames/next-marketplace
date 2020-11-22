@@ -1,13 +1,13 @@
 import { Field, InputType, Int, registerEnumType } from 'type-graphql';
 
-enum PaginateSortDirectionEnum {
+export enum SortDirectionEnum {
   asc = 'asc',
   desc = 'desc',
 }
 
-registerEnumType(PaginateSortDirectionEnum, {
-  name: 'PaginateSortDirectionEnum',
-  description: 'Pagination sortDir enum',
+registerEnumType(SortDirectionEnum, {
+  name: 'SortDirectionEnum',
+  description: 'sortDir enum',
 });
 
 @InputType()
@@ -18,8 +18,8 @@ export class PaginateInput {
   @Field(() => Int, { defaultValue: 1, nullable: true })
   page?: number;
 
-  @Field(() => PaginateSortDirectionEnum, { defaultValue: 'desc', nullable: true })
-  sortDir?: PaginateSortDirectionEnum;
+  @Field(() => SortDirectionEnum, { defaultValue: 'desc', nullable: true })
+  sortDir?: SortDirectionEnum;
 
   @Field({ nullable: true })
   search?: string;

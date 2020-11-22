@@ -39,7 +39,7 @@
 
 .accordionContent {
   padding-left: 2rem;
-  padding-top: var(--lineGap);
+  padding-top: var(--lineGap-200);
 }
 
 .listLabel {
@@ -65,7 +65,7 @@
 }
 
 .inputsFrame {
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
 }
 
 .inputHolder {
@@ -75,7 +75,7 @@
 }
 
 .inputHolder:not(:first-child) {
-  margin-top: var(--lineGap);
+  margin-top: var(--lineGap-200);
 }
 
 .input {

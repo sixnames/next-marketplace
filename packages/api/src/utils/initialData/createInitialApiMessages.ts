@@ -1,4 +1,3 @@
-import { LanguageType } from '../../entities/commonEntities';
 import { MessagesGroup, MessagesGroupModel } from '../../entities/MessagesGroup';
 import { MessageModel } from '../../entities/Message';
 import {
@@ -20,10 +19,11 @@ import {
   shopsMessages,
   shopProductsMessages,
 } from '@yagu/config';
+import { Translation } from '../../entities/Translation';
 
 interface MessageInterface {
   key: string;
-  message: LanguageType[];
+  message: Translation[];
 }
 
 interface CreateInitialApiMessagesGroup {

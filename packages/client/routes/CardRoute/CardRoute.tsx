@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { Fragment } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
-import { CardFeatureFragment, ProductCardFragment } from '../../generated/apolloComponents';
+import { CardFeatureFragment, GetCatalogueCardQueryQuery } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import Icon from '../../components/Icon/Icon';
-import Button from '../../components/Buttons/Button';
-import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { useAppContext } from '../../context/appContext';
-import { noNaN } from '@yagu/shared';
+import ReachTabs from '../../components/ReachTabs/ReachTabs';
+import Currency from '../../components/Currency/Currency';
+import CardShops from './CardShops';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -46,24 +46,39 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 };
 
 interface CardRouteInterface {
-  cardData: ProductCardFragment;
+  cardData: GetCatalogueCardQueryQuery['getProductCard'];
 }
 
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const {
+    id,
     mainImage,
     nameString,
     cardNameString,
-    price,
+    cardPrices,
     cardConnections,
     itemId,
     cardFeatures,
+    shopsCount,
   } = cardData;
   const { isMobile } = useAppContext();
-  const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
+  const isShopsPlural = shopsCount > 1;
+
+  const tabsConfig = [
+    { head: <Fragment>Характеристики</Fragment> },
+    {
+      head: (
+        <Fragment>
+          Где купить <span>{`(${shopsCount})`}</span>
+        </Fragment>
+      ),
+    },
+    { head: <Fragment>Отзывы</Fragment> },
+    { head: <Fragment>Мнение экспертов</Fragment> },
+  ];
 
   return (
     <div className={classes.card}>
@@ -106,57 +121,62 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
               </div>
 
-              <div className={classes.connections}>
-                {cardConnections.map(({ id, nameString, products }) => {
-                  // Connections
-                  return (
-                    <div key={id} className={classes.connectionsGroup}>
-                      <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
-                      <div className={classes.connectionsList}>
-                        {products.map(({ value, id, product, isCurrent }) => {
-                          if (isCurrent) {
+              {/*Connections*/}
+              {cardConnections.length > 0 ? (
+                <div className={classes.connections}>
+                  {cardConnections.map(({ id, nameString, products }) => {
+                    return (
+                      <div key={id} className={classes.connectionsGroup}>
+                        <div className={classes.connectionsGroupLabel}>{`${nameString}:`}</div>
+                        <div className={classes.connectionsList}>
+                          {products.map(({ value, id, product, isCurrent }) => {
+                            if (isCurrent) {
+                              return (
+                                <span
+                                  className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
+                                  key={id}
+                                >
+                                  {value}
+                                </span>
+                              );
+                            }
                             return (
-                              <span
-                                className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
+                              <Link
+                                className={`${classes.connectionsGroupItem}`}
                                 key={id}
+                                href={{
+                                  pathname: `/product/[card]`,
+                                }}
+                                as={{
+                                  pathname: `/product/${product.slug}`,
+                                }}
                               >
                                 {value}
-                              </span>
+                              </Link>
                             );
-                          }
-                          return (
-                            <Link
-                              className={`${classes.connectionsGroupItem}`}
-                              key={id}
-                              href={{
-                                pathname: `/product/[card]`,
-                              }}
-                              as={{
-                                pathname: `/product/${product.slug}`,
-                              }}
-                            >
-                              {value}
-                            </Link>
-                          );
-                        })}
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : null}
 
               <div className={classes.mainDataBottom}>
                 <div>
                   <div className={classes.price}>
                     <div className={classes.cardLabel}>Цена от</div>
                     <div className={classes.priceValue}>
-                      <span>{price}</span>
-                      р.
+                      <Currency className={classes.priceItem} value={cardPrices.min} />
+                      до
+                      <Currency className={classes.priceItem} value={cardPrices.max} />
                     </div>
                   </div>
 
                   <div className={classes.helpers}>
-                    <div className={classes.cardLabel}>В наличии в 16 винотеках</div>
+                    <div className={classes.cardLabel}>
+                      В наличии в {shopsCount} {isShopsPlural ? 'винотеках' : 'винотеке'}
+                    </div>
                     <div>Сравнить цены</div>
                   </div>
                 </div>
@@ -179,29 +199,11 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           <ProductMarker>Выбор покупателей</ProductMarker>
         </div>
 
-        <div
-          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop} ${classes.mainFrameLowBottom}`}
-        >
-          <div />
-          <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
-            <div />
-            <div className={`${classes.addToCartForm}`}>
-              <SpinnerInput
-                onChange={(e) => {
-                  setAmount(noNaN(e.target.value));
-                }}
-                frameClassName={`${classes.addToCartFormInput}`}
-                min={1}
-                name={'amount'}
-                value={amount}
-              />
-              <Button className={classes.addToCartFormButton}>В корзину</Button>
-            </div>
-          </div>
-        </div>
-
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
+      </Inner>
 
+      {/* Tabs */}
+      <ReachTabs config={tabsConfig}>
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
@@ -252,7 +254,14 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
             })}
           </div>
         </div>
-      </Inner>
+
+        {/* Shops */}
+        <CardShops productId={id} />
+
+        <div>Отзывы</div>
+
+        <div>Мнение экспертов</div>
+      </ReachTabs>
     </div>
   );
 };

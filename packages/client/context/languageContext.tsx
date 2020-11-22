@@ -7,9 +7,9 @@ import {
   AttributePositioningInTitle,
   AttributePositioningInTitleInput,
   AttributePositionInTitleEnum,
-  LangInput,
+  TranslationInput,
   Language,
-  LanguageType,
+  Translation,
 } from '../generated/apolloComponents';
 
 interface LanguageContextInterface {
@@ -25,9 +25,9 @@ interface UseLanguageContextInterface {
   setLanguage: (lang: string) => void;
   isCurrentLanguage: (key: string) => boolean;
   languagesList: Language[];
-  getLanguageFieldTranslation: (field?: LanguageType[] | null) => string;
-  getLanguageFieldInitialValue: (field?: LanguageType[] | null) => LangInput[];
-  getLanguageFieldInputValue: (field: LangInput[] | null) => LangInput[];
+  getLanguageFieldTranslation: (field?: Translation[] | null) => string;
+  getLanguageFieldInitialValue: (field?: Translation[] | null) => TranslationInput[];
+  getLanguageFieldInputValue: (field: TranslationInput[] | null) => TranslationInput[];
   getAttributePositionInTitleInitialValue: (
     field?: AttributePositioningInTitle[] | null,
   ) => AttributePositioningInTitleInput[];
@@ -70,7 +70,7 @@ function useLanguageContext(): UseLanguageContextInterface {
   const defaultLang = defaultLangItem ? defaultLangItem.key : DEFAULT_LANG;
 
   const getLanguageFieldTranslation = useCallback(
-    (field?: LanguageType[] | null) => {
+    (field?: Translation[] | null) => {
       if (!field) {
         return LANG_NOT_FOUND_FIELD_MESSAGE;
       }
@@ -96,14 +96,14 @@ function useLanguageContext(): UseLanguageContextInterface {
   );
 
   const getLanguageFieldInitialValue = useCallback(
-    (field?: LanguageType[] | null) => {
+    (field?: Translation[] | null) => {
       if (!field || !field.length) {
-        return languagesList.reduce((acc: LangInput[], language) => {
+        return languagesList.reduce((acc: TranslationInput[], language) => {
           return [...acc, { key: language.key, value: '' }];
         }, []);
       }
 
-      return languagesList.reduce((acc: LangInput[], language) => {
+      return languagesList.reduce((acc: TranslationInput[], language) => {
         const fieldItem = field.find(({ key }) => language.key === key);
         if (fieldItem) {
           return [...acc, { key: language.key, value: fieldItem.value }];
@@ -114,7 +114,7 @@ function useLanguageContext(): UseLanguageContextInterface {
     [languagesList],
   );
 
-  const getLanguageFieldInputValue = useCallback((field: LangInput[] | null) => {
+  const getLanguageFieldInputValue = useCallback((field: TranslationInput[] | null) => {
     if (!field) {
       return [];
     }

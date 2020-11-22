@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './DataLayout.module.css';
-import TTip from '../TTip/TTip';
 import Icon from '../Icon/Icon';
+import Tooltip from '../TTip/Tooltip';
 
 interface DataLayoutTitleInterface {
   className?: string;
@@ -21,10 +21,14 @@ const DataLayoutTitle: React.FC<DataLayoutTitleInterface> = ({
 }) => {
   return (
     <div className={`${classes.Title} ${className ? className : ''}`} data-cy={testId}>
-      <TTip className={classes.TitleText} title={description}>
-        {children}
-        {description && <Icon name={'question-circle'} className={classes.TitleDescriptionIcon} />}
-      </TTip>
+      <Tooltip title={description}>
+        <div className={classes.TitleText}>
+          {children}
+          {description ? (
+            <Icon name={'question-circle'} className={classes.TitleDescriptionIcon} />
+          ) : null}
+        </div>
+      </Tooltip>
       <div
         className={`${classes.TitleRight} ${children ? classes.TitleRightWithGap : ''} ${
           rightClassName ? rightClassName : ''

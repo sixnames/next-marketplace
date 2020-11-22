@@ -1,15 +1,15 @@
 import { Field, Int, ObjectType } from 'type-graphql';
-import { LanguageType } from './commonEntities';
 import { getModelForClass, prop } from '@typegoose/typegoose';
+import { Translation } from './Translation';
 
 @ObjectType()
 export class NavItem {
   @Field((_type) => String)
   readonly id: string;
 
-  @Field((_type) => [LanguageType])
-  @prop({ type: LanguageType })
-  name: LanguageType[];
+  @Field((_type) => [Translation])
+  @prop({ type: Translation })
+  name: Translation[];
 
   @prop({ type: String })
   slug: string;

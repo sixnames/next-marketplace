@@ -10,8 +10,8 @@ import {
 } from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
-import { LanguageType } from '../../entities/commonEntities';
 import { DocumentType } from '@typegoose/typegoose';
+import { Translation } from '../../entities/Translation';
 
 interface NavItemInterface {
   name: { key: string; value: string }[];
@@ -133,7 +133,7 @@ export async function createRoleRules({ allow, roleId }: CreateRoleRulesInterfac
 }
 
 interface RoleTemplateInterface {
-  name: LanguageType[];
+  name: Translation[];
   description: string;
   slug: string;
   isStuff: boolean;

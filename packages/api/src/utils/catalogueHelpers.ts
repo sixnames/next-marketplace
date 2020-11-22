@@ -1,7 +1,7 @@
 import { AttributeModel } from '../entities/Attribute';
 import { OptionModel, OptionVariant } from '../entities/Option';
 import getLangField from './translations/getLangField';
-import { GenderEnum, LanguageType } from '../entities/commonEntities';
+import { GenderEnum } from '../entities/commonEntities';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
@@ -18,6 +18,7 @@ import capitalize from 'capitalize';
 import { AttributesGroupModel } from '../entities/AttributesGroup';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
 import { updateModelViews } from './updateModelViews';
+import { Translation } from '../entities/Translation';
 
 interface ProcessedAttributeInterface {
   key: string;
@@ -161,7 +162,7 @@ interface TitleConfigInterface {
   positioningInTitle: string;
   options: {
     variants?: OptionVariant[] | null;
-    name: LanguageType[];
+    name: Translation[];
     gender?: GenderEnum | null;
   }[];
 }

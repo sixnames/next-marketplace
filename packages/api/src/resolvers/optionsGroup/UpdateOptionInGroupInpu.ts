@@ -1,5 +1,5 @@
 import { Field, InputType, ID } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 import { GenderEnum } from '../../entities/commonEntities';
 import { OptionVariantInput } from './AddOptionToGroupInput';
 
@@ -11,8 +11,8 @@ export class UpdateOptionInGroupInput {
   @Field(() => ID)
   optionId: string;
 
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 
   @Field((_type) => String, { nullable: true })
   color: string;

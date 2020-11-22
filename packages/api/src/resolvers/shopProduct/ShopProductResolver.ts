@@ -4,7 +4,7 @@ import { Product, ProductModel } from '../../entities/Product';
 import { DocumentType } from '@typegoose/typegoose';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { UpdateShopProductInput } from './UpdateShopProductInput';
 import {

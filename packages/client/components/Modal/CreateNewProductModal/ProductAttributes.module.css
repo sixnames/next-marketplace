@@ -1,5 +1,5 @@
 .frame:not(:last-child) {
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
 }
 
 .titleHolder {

@@ -354,9 +354,9 @@
 
   --borderRadius: 0.5rem;
   --borderRadiusBig: 1.5rem;
-  --radius-1-3: var(--borderRadius)  0 var(--borderRadius) 0;
+  --radius-1-3: var(--borderRadius) 0 var(--borderRadius) 0;
   --radius-2-3: 0 var(--borderRadius) var(--borderRadius) 0;
-  --radius-2-4: 0 var(--borderRadius)  0 var(--borderRadius);
+  --radius-2-4: 0 var(--borderRadius) 0 var(--borderRadius);
 
   --black: #111111;
   --gray: #a2a9b5;
@@ -387,9 +387,17 @@
   --excel: #267248;
   --google: #d8634f;
 
+  /*Gaps*/
+  --lineGap-50: 0.5rem;
+  --lineGap-75: 0.75rem;
+  --lineGap-100: 1rem;
+  --lineGap-150: 1.5rem;
+  --lineGap-200: calc(var(--lineGap-100) * 2);
+  --lineGap-300: calc(var(--lineGap-100) * 3);
+  --lineGap-400: calc(var(--lineGap-100) * 4);
+  --lineGap-500: calc(var(--lineGap-100) * 5);;
+
   /*Sizes*/
-  --lineGap: 2rem;
-  --lineGapHalf: calc(var(--lineGap) / 2);
   --innerBlockMaxWidht: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
@@ -398,6 +406,7 @@
   --formLineHeight: 2rem;
   --button-min-width: 17rem;
   --minLinkHeight: 3.5rem;
+  --tabsNavHeight: 3.5rem;
   --burger-dropdown-width: 345px;
   --catalogue-filter-width: 325px;
   --burger-dropdown-side-gap: 2.5rem;
@@ -495,6 +504,12 @@
   /*Outer ratings*/
   --outerRatingBackground: var(--wp-dark-gray-100);
   --outerRatingColor: var(--wp-light-gray-200);
+}
+
+@media only screen and (max-width: 1180px) {
+  :root {
+    --button-min-width: 12rem;
+  }
 }
 
 @media only screen and (max-width: 1024px) {

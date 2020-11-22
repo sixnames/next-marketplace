@@ -7,7 +7,7 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
 import {
   CreateRubricVariantInput,
-  LanguageType,
+  Translation,
   UpdateRubricVariantInput,
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
@@ -16,7 +16,7 @@ import { rubricVariantModalSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface RubricVariantModalInterface {
-  name?: LanguageType[];
+  name?: Translation[];
   confirm: (values: CreateRubricVariantInput | Omit<UpdateRubricVariantInput, 'id'>) => void;
 }
 

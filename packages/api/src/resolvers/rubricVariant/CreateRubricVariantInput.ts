@@ -1,9 +1,9 @@
 import { Field, InputType } from 'type-graphql';
 import { RubricVariant } from '../../entities/RubricVariant';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 
 @InputType()
 export class CreateRubricVariantInput implements Partial<RubricVariant> {
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 }

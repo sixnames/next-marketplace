@@ -38,6 +38,7 @@ export type Query = {
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
+  getProductShops: Array<ProductShop>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
@@ -145,6 +146,11 @@ export type QueryGetProductsCountersArgs = {
 
 export type QueryGetFeaturesAstArgs = {
   selectedRubrics: Array<Scalars['ID']>;
+};
+
+
+export type QueryGetProductShopsArgs = {
+  input: GetProductShopsInput;
 };
 
 
@@ -273,7 +279,7 @@ export type User = {
 export type Role = {
   __typename?: 'Role';
   id: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   description: Scalars['String'];
   slug: Scalars['String'];
@@ -283,8 +289,8 @@ export type Role = {
   appNavigation: Array<NavItem>;
 };
 
-export type LanguageType = {
-  __typename?: 'LanguageType';
+export type Translation = {
+  __typename?: 'Translation';
   key: Scalars['String'];
   value: Scalars['String'];
 };
@@ -319,7 +325,7 @@ export enum RoleRuleOperationTypeEnum {
 export type NavItem = {
   __typename?: 'NavItem';
   id: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   path?: Maybe<Scalars['String']>;
   navGroup: Scalars['String'];
   order: Scalars['Int'];
@@ -353,13 +359,13 @@ export type PaginatedUsersResponse = {
 export type UserPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<UserSortByEnum>;
 };
 
-/** Pagination sortDir enum */
-export enum PaginateSortDirectionEnum {
+/** sortDir enum */
+export enum SortDirectionEnum {
   Asc = 'asc',
   Desc = 'desc'
 }
@@ -378,7 +384,7 @@ export enum UserSortByEnum {
 export type City = {
   __typename?: 'City';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   slug: Scalars['String'];
   nameString: Scalars['String'];
 };
@@ -410,7 +416,7 @@ export type Attribute = {
   __typename?: 'Attribute';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   views: Array<AttributeCityCounter>;
   priorities: Array<AttributeCityCounter>;
@@ -438,7 +444,7 @@ export enum AttributeVariantEnum {
 export type OptionsGroup = {
   __typename?: 'OptionsGroup';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   options: Array<Option>;
   variant: OptionsGroupVariantEnum;
@@ -448,7 +454,7 @@ export type Option = {
   __typename?: 'Option';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   views: Array<OptionCityCounter>;
@@ -462,7 +468,7 @@ export type Option = {
 export type OptionVariant = {
   __typename?: 'OptionVariant';
   key: GenderEnum;
-  value: Array<LanguageType>;
+  value: Array<Translation>;
 };
 
 /** List of gender enums */
@@ -505,7 +511,7 @@ export enum AttributePositionInTitleEnum {
 export type Metric = {
   __typename?: 'Metric';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
 };
 
@@ -515,14 +521,15 @@ export type Product = {
   itemId: Scalars['Int'];
   views: Array<CityCounter>;
   priorities: Array<CityCounter>;
-  name: Array<LanguageType>;
-  cardName: Array<LanguageType>;
+  name: Array<Translation>;
+  cardName: Array<Translation>;
   slug: Scalars['String'];
-  description: Array<LanguageType>;
+  description: Array<Translation>;
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<AssetType>;
+  assets: Array<Asset>;
   price: Scalars['Int'];
+  cardPrices: ProductCardPrices;
   active: Scalars['Boolean'];
   connections: Array<ProductConnection>;
   nameString: Scalars['String'];
@@ -531,9 +538,15 @@ export type Product = {
   mainImage: Scalars['String'];
   cardFeatures: ProductCardFeatures;
   cardConnections: Array<ProductCardConnection>;
+  shopsCount: Scalars['Int'];
   shops: Array<ProductShop>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+
+export type ProductShopsArgs = {
+  input?: Maybe<ProductShopsInput>;
 };
 
 export type CityCounter = {
@@ -552,7 +565,7 @@ export type ProductAttributesGroup = {
 export type AttributesGroup = {
   __typename?: 'AttributesGroup';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
   attributes: Array<Attribute>;
 };
@@ -578,10 +591,16 @@ export enum ProductAttributeViewVariantEnum {
   OuterRating = 'outerRating'
 }
 
-export type AssetType = {
-  __typename?: 'AssetType';
+export type Asset = {
+  __typename?: 'Asset';
   url: Scalars['String'];
   index: Scalars['Int'];
+};
+
+export type ProductCardPrices = {
+  __typename?: 'ProductCardPrices';
+  min: Scalars['String'];
+  max: Scalars['String'];
 };
 
 export type ProductConnection = {
@@ -648,6 +667,9 @@ export type ProductShop = {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   node: Shop;
+  formattedPrice: Scalars['String'];
+  formattedOldPrice?: Maybe<Scalars['String']>;
+  discountedPercent?: Maybe<Scalars['Int']>;
 };
 
 /** List of all old prices for shop product with dates of creation. */
@@ -665,11 +687,13 @@ export type Shop = {
   itemId: Scalars['Int'];
   nameString: Scalars['String'];
   slug: Scalars['String'];
-  logo: AssetType;
-  assets: Array<AssetType>;
-  contacts: ContactsType;
+  city: City;
+  logo: Asset;
+  assets: Array<Asset>;
+  contacts: Contacts;
   address: Address;
   products: PaginatedShopProductsResponse;
+  productsCount: Scalars['Int'];
   company: Company;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -680,16 +704,18 @@ export type ShopProductsArgs = {
   input?: Maybe<ShopProductPaginateInput>;
 };
 
-export type ContactsType = {
-  __typename?: 'ContactsType';
+export type Contacts = {
+  __typename?: 'Contacts';
   emails: Array<Scalars['String']>;
   phones: Array<Scalars['String']>;
+  formattedPhones: Array<FormattedPhone>;
 };
 
 export type Address = {
   __typename?: 'Address';
   formattedAddress: Scalars['String'];
   point: PointGeoJson;
+  formattedCoordinates: Coordinates;
 };
 
 export type PointGeoJson = {
@@ -698,6 +724,12 @@ export type PointGeoJson = {
   type: Scalars['String'];
   /** Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude. */
   coordinates: Array<Scalars['Float']>;
+};
+
+export type Coordinates = {
+  __typename?: 'Coordinates';
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
 };
 
 export type PaginatedShopProductsResponse = {
@@ -730,7 +762,7 @@ export type ShopProduct = {
 export type ShopProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ShopProductSortByEnum>;
 };
@@ -747,10 +779,10 @@ export type Company = {
   itemId: Scalars['Int'];
   nameString: Scalars['String'];
   slug: Scalars['String'];
-  logo: AssetType;
+  logo: Asset;
   owner: User;
   staff: Array<User>;
-  contacts: ContactsType;
+  contacts: Contacts;
   shops: PaginatedShopsResponse;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -778,7 +810,7 @@ export type PaginatedShopsResponse = {
 export type ShopPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ShopsSortByEnum>;
 };
@@ -788,6 +820,11 @@ export enum ShopsSortByEnum {
   Company = 'company',
   CreatedAt = 'createdAt'
 }
+
+export type ProductShopsInput = {
+  sortDir?: Maybe<SortDirectionEnum>;
+  sortBy?: Maybe<Scalars['String']>;
+};
 
 export type PaginatedProductsResponse = {
   __typename?: 'PaginatedProductsResponse';
@@ -807,7 +844,7 @@ export type PaginatedProductsResponse = {
 export type ProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ProductSortByEnum>;
   rubric?: Maybe<Scalars['ID']>;
@@ -837,6 +874,12 @@ export type ProductsCountersInput = {
   excludedProductsIds?: Maybe<Array<Scalars['ID']>>;
 };
 
+export type GetProductShopsInput = {
+  productId: Scalars['ID'];
+  sortDir: SortDirectionEnum;
+  sortBy: Scalars['String'];
+};
+
 export type CatalogueData = {
   __typename?: 'CatalogueData';
   rubric: Rubric;
@@ -849,7 +892,7 @@ export type Rubric = {
   id: Scalars['ID'];
   views: Array<CityCounter>;
   priorities: Array<CityCounter>;
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   catalogueTitle: RubricCatalogueTitle;
   slug: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
@@ -889,9 +932,9 @@ export type RubricActiveProductsCountArgs = {
 
 export type RubricCatalogueTitle = {
   __typename?: 'RubricCatalogueTitle';
-  defaultTitle: Array<LanguageType>;
-  prefix?: Maybe<Array<LanguageType>>;
-  keyword: Array<LanguageType>;
+  defaultTitle: Array<Translation>;
+  prefix?: Maybe<Array<Translation>>;
+  keyword: Array<Translation>;
   gender: GenderEnum;
 };
 
@@ -906,7 +949,7 @@ export type RubricAttributesGroup = {
 export type RubricVariant = {
   __typename?: 'RubricVariant';
   id: Scalars['ID'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   nameString: Scalars['String'];
 };
 
@@ -929,7 +972,7 @@ export type RubricFilterAttributeOption = {
   __typename?: 'RubricFilterAttributeOption';
   id: Scalars['ID'];
   slug: Scalars['String'];
-  name: Array<LanguageType>;
+  name: Array<Translation>;
   variants?: Maybe<Array<OptionVariant>>;
   gender?: Maybe<GenderEnum>;
   views: Array<OptionCityCounter>;
@@ -944,7 +987,7 @@ export type RubricFilterAttributeOption = {
 export type RubricProductPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<ProductSortByEnum>;
   notInRubric?: Maybe<Scalars['ID']>;
@@ -968,7 +1011,7 @@ export type Message = {
   __typename?: 'Message';
   id: Scalars['ID'];
   key: Scalars['String'];
-  message: Array<LanguageType>;
+  message: Array<Translation>;
 };
 
 export type GenderOption = {
@@ -1071,7 +1114,7 @@ export type PaginatedCompaniesResponse = {
 export type CompanyPaginateInput = {
   limit?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<PaginateSortDirectionEnum>;
+  sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<CompaniesSortByEnum>;
 };
@@ -1594,11 +1637,11 @@ export type UpdateCountryInput = {
 
 export type AddCityToCountryInput = {
   countryId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   slug: Scalars['String'];
 };
 
-export type LangInput = {
+export type TranslationInput = {
   key: Scalars['String'];
   value: Scalars['String'];
 };
@@ -1606,7 +1649,7 @@ export type LangInput = {
 export type UpdateCityInCountryInput = {
   countryId: Scalars['ID'];
   cityId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   slug: Scalars['String'];
 };
 
@@ -1659,9 +1702,9 @@ export type ProductPayloadType = {
 };
 
 export type CreateProductInput = {
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
+  name: Array<TranslationInput>;
+  cardName: Array<TranslationInput>;
+  description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
@@ -1686,9 +1729,9 @@ export type ProductAttributeInput = {
 
 export type UpdateProductInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
-  cardName: Array<LangInput>;
-  description: Array<LangInput>;
+  name: Array<TranslationInput>;
+  cardName: Array<TranslationInput>;
+  description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
   active: Scalars['Boolean'];
@@ -1722,17 +1765,17 @@ export type AttributesGroupPayloadType = {
 };
 
 export type CreateAttributesGroupInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateAttributesGroupInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type AddAttributeToGroupInput = {
   groupId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant: AttributeVariantEnum;
   optionsGroup?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
@@ -1747,7 +1790,7 @@ export type AttributePositioningInTitleInput = {
 export type UpdateAttributeInGroupInput = {
   groupId: Scalars['ID'];
   attributeId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant: AttributeVariantEnum;
   optionsGroup?: Maybe<Scalars['ID']>;
   metric?: Maybe<Scalars['ID']>;
@@ -1767,12 +1810,12 @@ export type MetricPayloadType = {
 };
 
 export type CreateMetricInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateMetricInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type OptionsGroupPayloadType = {
@@ -1783,19 +1826,19 @@ export type OptionsGroupPayloadType = {
 };
 
 export type CreateOptionsGroupInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type UpdateOptionsGroupInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   variant?: Maybe<OptionsGroupVariantEnum>;
 };
 
 export type AddOptionToGroupInput = {
   groupId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
@@ -1804,13 +1847,13 @@ export type AddOptionToGroupInput = {
 
 export type OptionVariantInput = {
   key: GenderEnum;
-  value: Array<LangInput>;
+  value: Array<TranslationInput>;
 };
 
 export type UpdateOptionInGroupInput = {
   groupId: Scalars['ID'];
   optionId: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   variants?: Maybe<Array<OptionVariantInput>>;
@@ -1830,22 +1873,22 @@ export type RubricPayloadType = {
 };
 
 export type CreateRubricInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   parent?: Maybe<Scalars['ID']>;
   variant: Scalars['ID'];
   catalogueTitle: RubricCatalogueTitleInput;
 };
 
 export type RubricCatalogueTitleInput = {
-  defaultTitle: Array<LangInput>;
-  prefix?: Maybe<Array<LangInput>>;
-  keyword: Array<LangInput>;
+  defaultTitle: Array<TranslationInput>;
+  prefix?: Maybe<Array<TranslationInput>>;
+  keyword: Array<TranslationInput>;
   gender: GenderEnum;
 };
 
 export type UpdateRubricInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   catalogueTitle: RubricCatalogueTitleInput;
   parent?: Maybe<Scalars['ID']>;
   variant: Scalars['ID'];
@@ -1885,12 +1928,12 @@ export type RubricVariantPayloadType = {
 };
 
 export type CreateRubricVariantInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type UpdateRubricVariantInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
 };
 
 export type ConfigPayloadType = {
@@ -1928,14 +1971,14 @@ export type RolePayloadType = {
 };
 
 export type CreateRoleInput = {
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   description: Scalars['String'];
   isStuff: Scalars['Boolean'];
 };
 
 export type UpdateRoleInput = {
   id: Scalars['ID'];
-  name: Array<LangInput>;
+  name: Array<TranslationInput>;
   description: Scalars['String'];
   isStuff: Scalars['Boolean'];
 };
@@ -1995,6 +2038,7 @@ export type UpdateCompanyInput = {
 export type AddShopToCompanyInput = {
   companyId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -2014,6 +2058,7 @@ export type CoordinatesInput = {
 export type UpdateShopInCompanyInput = {
   shopId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -2036,6 +2081,7 @@ export type ShopPayloadType = {
 export type UpdateShopInput = {
   shopId: Scalars['ID'];
   nameString: Scalars['String'];
+  city: Scalars['String'];
   contacts: ContactsInput;
   logo: Array<Scalars['Upload']>;
   assets: Array<Scalars['Upload']>;
@@ -2103,17 +2149,17 @@ export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, cardName: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, description: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, assets: Array<(
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url' | 'index'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'url' | 'index'>
   )>, attributesGroups: Array<(
     { __typename?: 'ProductAttributesGroup' }
     & CmsProductAttributesGroupFragment
@@ -2249,8 +2295,8 @@ export type RubricFragmentFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, 'id' | 'nameString' | 'level'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
@@ -2261,8 +2307,8 @@ export type RubricProductFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage' | 'active' | 'rubrics'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -2316,14 +2362,14 @@ export type GetRubricQuery = (
       { __typename?: 'RubricCatalogueTitle' }
       & Pick<RubricCatalogueTitle, 'gender'>
       & { defaultTitle: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )>, prefix?: Maybe<Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )>>, keyword: Array<(
-        { __typename?: 'LanguageType' }
-        & Pick<LanguageType, 'key' | 'value'>
+        { __typename?: 'Translation' }
+        & Pick<Translation, 'key' | 'value'>
       )> }
     ) }
     & RubricFragmentFragment
@@ -3064,8 +3110,8 @@ export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
   & Pick<Attribute, 'id' | 'nameString' | 'variant'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, positioningInTitle?: Maybe<Array<(
     { __typename?: 'AttributePositioningInTitle' }
     & Pick<AttributePositioningInTitle, 'key' | 'value'>
@@ -3089,8 +3135,8 @@ export type GetAttributesGroupQuery = (
     { __typename?: 'AttributesGroup' }
     & Pick<AttributesGroup, 'id' | 'nameString'>
     & { name: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
+      { __typename?: 'Translation' }
+      & Pick<Translation, 'key' | 'value'>
     )>, attributes: Array<(
       { __typename?: 'Attribute' }
       & AttributeInGroupFragment
@@ -3136,10 +3182,47 @@ export type CardConnectionFragment = (
   )> }
 );
 
+export type ProductCardShopNodeFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'nameString' | 'slug' | 'productsCount'>
+  & { address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { formattedCoordinates: (
+      { __typename?: 'Coordinates' }
+      & Pick<Coordinates, 'lat' | 'lng'>
+    ) }
+  ), contacts: (
+    { __typename?: 'Contacts' }
+    & { formattedPhones: Array<(
+      { __typename?: 'FormattedPhone' }
+      & Pick<FormattedPhone, 'raw' | 'readable'>
+    )> }
+  ), assets: Array<(
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
+  )>, logo: (
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
+  ) }
+);
+
+export type ProductCardShopFragment = (
+  { __typename?: 'ProductShop' }
+  & Pick<ProductShop, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
+  & { node: (
+    { __typename?: 'Shop' }
+    & ProductCardShopNodeFragment
+  ) }
+);
+
 export type ProductCardFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString'>
-  & { cardFeatures: (
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'price' | 'slug' | 'mainImage' | 'descriptionString' | 'shopsCount'>
+  & { cardPrices: (
+    { __typename?: 'ProductCardPrices' }
+    & Pick<ProductCardPrices, 'min' | 'max'>
+  ), cardFeatures: (
     { __typename?: 'ProductCardFeatures' }
     & { listFeatures: Array<(
       { __typename?: 'ProductAttribute' }
@@ -3163,6 +3246,19 @@ export type ProductCardFragment = (
   )> }
 );
 
+export type GetCatalogueCardShopsQueryVariables = Exact<{
+  input: GetProductShopsInput;
+}>;
+
+
+export type GetCatalogueCardShopsQuery = (
+  { __typename?: 'Query' }
+  & { getProductShops: Array<(
+    { __typename?: 'ProductShop' }
+    & ProductCardShopFragment
+  )> }
+);
+
 export type GetCatalogueCardQueryQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -3178,7 +3274,11 @@ export type GetCatalogueCardQueryQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'price' | 'slug' | 'mainImage'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'slug' | 'mainImage'>
+  & { cardPrices: (
+    { __typename?: 'ProductCardPrices' }
+    & Pick<ProductCardPrices, 'min' | 'max'>
+  ) }
 );
 
 export type CatalogueRubricFragmentFragment = (
@@ -3231,8 +3331,8 @@ export type CompanyInListFragment = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'fullName'>
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'url'>
   ) }
 );
 
@@ -3256,9 +3356,12 @@ export type GetAllCompaniesQuery = (
 export type ShopInListFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'itemId' | 'slug' | 'nameString'>
-  & { logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+  & { city: (
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'nameString' | 'slug'>
+  ), logo: (
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ) }
 );
 
@@ -3272,11 +3375,11 @@ export type CompanyFragment = (
     { __typename?: 'User' }
     & UserInListFragment
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ), contacts: (
-    { __typename?: 'ContactsType' }
-    & Pick<ContactsType, 'emails' | 'phones'>
+    { __typename?: 'Contacts' }
+    & Pick<Contacts, 'emails' | 'phones'>
   ) }
 );
 
@@ -3349,8 +3452,11 @@ export type ShopFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'itemId' | 'nameString'>
   & { contacts: (
-    { __typename?: 'ContactsType' }
-    & Pick<ContactsType, 'emails' | 'phones'>
+    { __typename?: 'Contacts' }
+    & Pick<Contacts, 'emails' | 'phones'>
+  ), city: (
+    { __typename?: 'City' }
+    & Pick<City, 'id' | 'nameString' | 'slug'>
   ), address: (
     { __typename?: 'Address' }
     & Pick<Address, 'formattedAddress'>
@@ -3359,11 +3465,11 @@ export type ShopFragment = (
       & Pick<PointGeoJson, 'coordinates'>
     ) }
   ), logo: (
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   ), assets: Array<(
-    { __typename?: 'AssetType' }
-    & Pick<AssetType, 'index' | 'url'>
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
   )> }
 );
 
@@ -3459,7 +3565,7 @@ export type InitialQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InitialQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'getClientLanguage'>
+  & Pick<Query, 'getSessionCurrency' | 'getClientLanguage'>
   & { me?: Maybe<(
     { __typename?: 'User' }
     & SessionUserFragmentFragment
@@ -3561,8 +3667,8 @@ export type MessageFragment = (
   { __typename?: 'Message' }
   & Pick<Message, 'key'>
   & { message: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -3609,14 +3715,14 @@ export type OptionInGroupFragment = (
   { __typename?: 'Option' }
   & Pick<Option, 'id' | 'nameString' | 'color' | 'icon' | 'gender'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, variants?: Maybe<Array<(
     { __typename?: 'OptionVariant' }
     & Pick<OptionVariant, 'key'>
     & { value: Array<(
-      { __typename?: 'LanguageType' }
-      & Pick<LanguageType, 'key' | 'value'>
+      { __typename?: 'Translation' }
+      & Pick<Translation, 'key' | 'value'>
     )> }
   )>> }
 );
@@ -3625,8 +3731,8 @@ export type OptionsGroupFragment = (
   { __typename?: 'OptionsGroup' }
   & Pick<OptionsGroup, 'id' | 'variant' | 'nameString'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, options: Array<(
     { __typename?: 'Option' }
     & OptionInGroupFragment
@@ -3670,8 +3776,8 @@ export type RoleFragment = (
   { __typename?: 'Role' }
   & Pick<Role, 'id' | 'nameString' | 'allowedAppNavigation' | 'description' | 'isStuff'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )>, rules: Array<(
     { __typename?: 'RoleRule' }
     & RoleRuleFragment
@@ -3725,8 +3831,8 @@ export type RubricVariantFragment = (
   { __typename?: 'RubricVariant' }
   & Pick<RubricVariant, 'id' | 'nameString'>
   & { name: Array<(
-    { __typename?: 'LanguageType' }
-    & Pick<LanguageType, 'key' | 'value'>
+    { __typename?: 'Translation' }
+    & Pick<Translation, 'key' | 'value'>
   )> }
 );
 
@@ -4131,6 +4237,48 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
+export const ProductCardShopNodeFragmentDoc = gql`
+    fragment ProductCardShopNode on Shop {
+  id
+  nameString
+  slug
+  productsCount
+  address {
+    formattedAddress
+    formattedCoordinates {
+      lat
+      lng
+    }
+  }
+  contacts {
+    formattedPhones {
+      raw
+      readable
+    }
+  }
+  assets {
+    index
+    url
+  }
+  logo {
+    index
+    url
+  }
+}
+    `;
+export const ProductCardShopFragmentDoc = gql`
+    fragment ProductCardShop on ProductShop {
+  id
+  itemId
+  available
+  formattedPrice
+  formattedOldPrice
+  discountedPercent
+  node {
+    ...ProductCardShopNode
+  }
+}
+    ${ProductCardShopNodeFragmentDoc}`;
 export const CardFeatureFragmentDoc = gql`
     fragment CardFeature on ProductAttribute {
   showInCard
@@ -4172,6 +4320,11 @@ export const ProductCardFragmentDoc = gql`
   slug
   mainImage
   descriptionString
+  cardPrices {
+    min
+    max
+  }
+  shopsCount
   cardFeatures {
     listFeatures {
       ...CardFeature
@@ -4200,9 +4353,12 @@ export const ProductSnippetFragmentDoc = gql`
   id
   itemId
   nameString
-  price
   slug
   mainImage
+  cardPrices {
+    min
+    max
+  }
 }
     `;
 export const CatalogueRubricFragmentFragmentDoc = gql`
@@ -4254,6 +4410,11 @@ export const ShopInListFragmentDoc = gql`
   itemId
   slug
   nameString
+  city {
+    id
+    nameString
+    slug
+  }
   logo {
     index
     url
@@ -4326,6 +4487,11 @@ export const ShopFragmentDoc = gql`
   contacts {
     emails
     phones
+  }
+  city {
+    id
+    nameString
+    slug
   }
   address {
     formattedAddress
@@ -4581,7 +4747,7 @@ export const GetProductDocument = gql`
  *   },
  * });
  */
-export function useGetProductQuery(baseOptions?: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
+export function useGetProductQuery(baseOptions: Apollo.QueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
         return Apollo.useQuery<GetProductQuery, GetProductQueryVariables>(GetProductDocument, baseOptions);
       }
 export function useGetProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductQuery, GetProductQueryVariables>) {
@@ -4832,7 +4998,7 @@ export const GetRubricsTreeDocument = gql`
  *   },
  * });
  */
-export function useGetRubricsTreeQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
+export function useGetRubricsTreeQuery(baseOptions: Apollo.QueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
         return Apollo.useQuery<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>(GetRubricsTreeDocument, baseOptions);
       }
 export function useGetRubricsTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
@@ -4880,7 +5046,7 @@ export const GetRubricDocument = gql`
  *   },
  * });
  */
-export function useGetRubricQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
+export function useGetRubricQuery(baseOptions: Apollo.QueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
         return Apollo.useQuery<GetRubricQuery, GetRubricQueryVariables>(GetRubricDocument, baseOptions);
       }
 export function useGetRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
@@ -5019,7 +5185,7 @@ export const GetRubricProductsDocument = gql`
  *   },
  * });
  */
-export function useGetRubricProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
+export function useGetRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
         return Apollo.useQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, baseOptions);
       }
 export function useGetRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
@@ -5052,7 +5218,7 @@ export const GetNonRubricProductsDocument = gql`
  *   },
  * });
  */
-export function useGetNonRubricProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
+export function useGetNonRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
         return Apollo.useQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, baseOptions);
       }
 export function useGetNonRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
@@ -5151,7 +5317,7 @@ export const GetAllProductsDocument = gql`
  *   },
  * });
  */
-export function useGetAllProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+export function useGetAllProductsQuery(baseOptions: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
         return Apollo.useQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, baseOptions);
       }
 export function useGetAllProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
@@ -5188,7 +5354,7 @@ export const GetRubricAttributesDocument = gql`
  *   },
  * });
  */
-export function useGetRubricAttributesQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
+export function useGetRubricAttributesQuery(baseOptions: Apollo.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
         return Apollo.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, baseOptions);
       }
 export function useGetRubricAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
@@ -6687,7 +6853,7 @@ export const GetAttributesGroupDocument = gql`
  *   },
  * });
  */
-export function useGetAttributesGroupQuery(baseOptions?: Apollo.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
+export function useGetAttributesGroupQuery(baseOptions: Apollo.QueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
         return Apollo.useQuery<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>(GetAttributesGroupDocument, baseOptions);
       }
 export function useGetAttributesGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttributesGroupQuery, GetAttributesGroupQueryVariables>) {
@@ -6730,6 +6896,39 @@ export function useGetAttributesGroupsForRubricLazyQuery(baseOptions?: Apollo.La
 export type GetAttributesGroupsForRubricQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricQuery>;
 export type GetAttributesGroupsForRubricLazyQueryHookResult = ReturnType<typeof useGetAttributesGroupsForRubricLazyQuery>;
 export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttributesGroupsForRubricQuery, GetAttributesGroupsForRubricQueryVariables>;
+export const GetCatalogueCardShopsDocument = gql`
+    query GetCatalogueCardShops($input: GetProductShopsInput!) {
+  getProductShops(input: $input) {
+    ...ProductCardShop
+  }
+}
+    ${ProductCardShopFragmentDoc}`;
+
+/**
+ * __useGetCatalogueCardShopsQuery__
+ *
+ * To run a query within a React component, call `useGetCatalogueCardShopsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCatalogueCardShopsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCatalogueCardShopsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCatalogueCardShopsQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
+        return Apollo.useQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, baseOptions);
+      }
+export function useGetCatalogueCardShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>(GetCatalogueCardShopsDocument, baseOptions);
+        }
+export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsQuery>;
+export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
+export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
 export const GetCatalogueCardQueryDocument = gql`
     query GetCatalogueCardQuery($slug: String!) {
   getProductCard(slug: $slug) {
@@ -6754,7 +6953,7 @@ export const GetCatalogueCardQueryDocument = gql`
  *   },
  * });
  */
-export function useGetCatalogueCardQueryQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
+export function useGetCatalogueCardQueryQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
         return Apollo.useQuery<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>(GetCatalogueCardQueryDocument, baseOptions);
       }
 export function useGetCatalogueCardQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>) {
@@ -6799,7 +6998,7 @@ ${ProductSnippetFragmentDoc}`;
  *   },
  * });
  */
-export function useGetCatalogueRubricQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
+export function useGetCatalogueRubricQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
         return Apollo.useQuery<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>(GetCatalogueRubricDocument, baseOptions);
       }
 export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>) {
@@ -6870,7 +7069,7 @@ export const GetCompanyDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+export function useGetCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
         return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, baseOptions);
       }
 export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
@@ -6909,7 +7108,7 @@ export const GetCompanyShopsDocument = gql`
  *   },
  * });
  */
-export function useGetCompanyShopsQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
+export function useGetCompanyShopsQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
         return Apollo.useQuery<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>(GetCompanyShopsDocument, baseOptions);
       }
 export function useGetCompanyShopsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyShopsQuery, GetCompanyShopsQueryVariables>) {
@@ -6978,7 +7177,7 @@ export const GetShopDocument = gql`
  *   },
  * });
  */
-export function useGetShopQuery(baseOptions?: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
+export function useGetShopQuery(baseOptions: Apollo.QueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
         return Apollo.useQuery<GetShopQuery, GetShopQueryVariables>(GetShopDocument, baseOptions);
       }
 export function useGetShopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopQuery, GetShopQueryVariables>) {
@@ -7017,7 +7216,7 @@ export const GetShopProductsDocument = gql`
  *   },
  * });
  */
-export function useGetShopProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
+export function useGetShopProductsQuery(baseOptions: Apollo.QueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
         return Apollo.useQuery<GetShopProductsQuery, GetShopProductsQueryVariables>(GetShopProductsDocument, baseOptions);
       }
 export function useGetShopProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShopProductsQuery, GetShopProductsQueryVariables>) {
@@ -7078,6 +7277,7 @@ export const InitialDocument = gql`
       }
     }
   }
+  getSessionCurrency
   getClientLanguage
   getAllLanguages {
     id
@@ -7305,7 +7505,7 @@ export const GetMessagesByKeysDocument = gql`
  *   },
  * });
  */
-export function useGetMessagesByKeysQuery(baseOptions?: Apollo.QueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
+export function useGetMessagesByKeysQuery(baseOptions: Apollo.QueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
         return Apollo.useQuery<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>(GetMessagesByKeysDocument, baseOptions);
       }
 export function useGetMessagesByKeysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMessagesByKeysQuery, GetMessagesByKeysQueryVariables>) {
@@ -7406,7 +7606,7 @@ export const GetOptionsGroupDocument = gql`
  *   },
  * });
  */
-export function useGetOptionsGroupQuery(baseOptions?: Apollo.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
+export function useGetOptionsGroupQuery(baseOptions: Apollo.QueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
         return Apollo.useQuery<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>(GetOptionsGroupDocument, baseOptions);
       }
 export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>) {
@@ -7472,7 +7672,7 @@ export const GetRoleDocument = gql`
  *   },
  * });
  */
-export function useGetRoleQuery(baseOptions?: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+export function useGetRoleQuery(baseOptions: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
         return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions);
       }
 export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
@@ -7503,7 +7703,7 @@ export const GetEntityFieldsDocument = gql`
  *   },
  * });
  */
-export function useGetEntityFieldsQuery(baseOptions?: Apollo.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
+export function useGetEntityFieldsQuery(baseOptions: Apollo.QueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
         return Apollo.useQuery<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>(GetEntityFieldsDocument, baseOptions);
       }
 export function useGetEntityFieldsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntityFieldsQuery, GetEntityFieldsQueryVariables>) {
@@ -7648,7 +7848,7 @@ ${ProductSnippetFragmentDoc}`;
  *   },
  * });
  */
-export function useGetCatalogueSearchResultQuery(baseOptions?: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
+export function useGetCatalogueSearchResultQuery(baseOptions: Apollo.QueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
         return Apollo.useQuery<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>(GetCatalogueSearchResultDocument, baseOptions);
       }
 export function useGetCatalogueSearchResultLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCatalogueSearchResultQuery, GetCatalogueSearchResultQueryVariables>) {
@@ -7894,7 +8094,7 @@ ${AttributeViewOptionFragmentDoc}`;
  *   },
  * });
  */
-export function useGetFeaturesAstQuery(baseOptions?: Apollo.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
+export function useGetFeaturesAstQuery(baseOptions: Apollo.QueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
         return Apollo.useQuery<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>(GetFeaturesAstDocument, baseOptions);
       }
 export function useGetFeaturesAstLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFeaturesAstQuery, GetFeaturesAstQueryVariables>) {
@@ -7932,7 +8132,7 @@ export const UsersSerchDocument = gql`
  *   },
  * });
  */
-export function useUsersSerchQuery(baseOptions?: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
+export function useUsersSerchQuery(baseOptions: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
         return Apollo.useQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, baseOptions);
       }
 export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {

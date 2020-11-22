@@ -1,8 +1,8 @@
-import { AssetType } from '../generated/apolloComponents';
+import { Asset } from '../generated/apolloComponents';
 import { useEffect, useState } from 'react';
 import { getAllFilesFromUrlsList } from '../utils/assetHelpers';
 
-function useUrlFiles(assets: AssetType[] | null, format?: string) {
+function useUrlFiles(assets: Asset[] | null, format?: string) {
   const [files, setFiles] = useState<File[]>([]);
   useEffect(() => {
     async function getImageThumb() {

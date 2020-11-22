@@ -14,7 +14,7 @@ import { ROLE_SLUG_GUEST, ROLE_TEMPLATE_GUEST, ROUTE_APP_NAV_GROUP } from '@yagu
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateRoleInput } from './UpdateRoleInput';
 import { UserModel } from '../../entities/User';

@@ -77,6 +77,14 @@ export const MOCK_ADDRESS_A = {
   },
 };
 
+export const MOCK_ADDRESS_B = {
+  formattedAddress: '1001 КНИГА, Комсомольская пл., 12, Москва, Россия, 107140',
+  point: {
+    lat: 55.781155,
+    lng: 37.654028,
+  },
+};
+
 // Company
 export const MOCK_COMPANY = {
   nameString: 'Company',
@@ -111,6 +119,7 @@ export const MOCK_COMPANIES = [MOCK_COMPANY];
 export const MOCK_SHOP = {
   nameString: 'Shop',
   slug: 'shop',
+  city: DEFAULT_CITY,
   contacts: {
     emails: ['shop1@gmail.com', 'shop2@gmail.com'],
     phones: ['+78990002245', '+78890002246'],
@@ -120,6 +129,23 @@ export const MOCK_SHOP = {
     point: {
       type: GEO_POINT_TYPE,
       coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+    },
+  },
+};
+
+export const MOCK_SHOP_B = {
+  nameString: 'Shop B',
+  slug: 'shop_b',
+  city: DEFAULT_CITY,
+  contacts: {
+    emails: ['shopB1@gmail.com', 'shopB2@gmail.com'],
+    phones: ['+78111112245', '+78121112246'],
+  },
+  address: {
+    formattedAddress: MOCK_ADDRESS_B.formattedAddress,
+    point: {
+      type: GEO_POINT_TYPE,
+      coordinates: [MOCK_ADDRESS_B.point.lng, MOCK_ADDRESS_B.point.lat],
     },
   },
 };
@@ -140,7 +166,7 @@ export const MOCK_NEW_SHOP = {
   },
 };
 
-export const MOCK_SHOPS = [MOCK_SHOP];
+export const MOCK_SHOPS = [MOCK_SHOP, MOCK_SHOP_B];
 
 // Languages
 export const ISO_LANGUAGES = [
@@ -176,6 +202,7 @@ export const SITE_CONFIGS_LOGO = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo.svg',
 };
 export const SITE_CONFIGS_LOGO_DARK = {
   slug: 'siteLogoDark',
@@ -186,6 +213,7 @@ export const SITE_CONFIGS_LOGO_DARK = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-dark.svg',
 };
 export const SITE_CONFIGS_LOGO_ICON = {
   slug: 'siteLogoIcon',
@@ -196,6 +224,7 @@ export const SITE_CONFIGS_LOGO_ICON = {
   multi: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-icon.svg',
 };
 export const SITE_CONFIGS_LOGO_NAME = {
   slug: 'siteLogoName',
@@ -207,6 +236,7 @@ export const SITE_CONFIGS_LOGO_NAME = {
   multiLang: false,
   acceptedFormats: ['image/svg+xml'],
   cities: [],
+  sourceImage: 'logo-name.svg',
 };
 export const SITE_CONFIGS_PREVIEW_IMAGE = {
   slug: 'pageDefaultPreviewImage',
@@ -218,6 +248,7 @@ export const SITE_CONFIGS_PREVIEW_IMAGE = {
   multi: false,
   acceptedFormats: ['image/jpeg'],
   cities: [],
+  sourceImage: 'og-image.jpg',
 };
 
 export const SITE_CONFIGS_INITIAL = [

@@ -1,4 +1,4 @@
-import { PaginateInput } from '../common/PaginateInput';
+import { PaginateInput } from '../commonInputs/PaginateInput';
 import { Field, ID, InputType, registerEnumType } from 'type-graphql';
 
 export enum ProductSortByEnum {

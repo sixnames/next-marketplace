@@ -1,0 +1,260 @@
+.frame {
+  --columnGap: 2rem;
+  --columnVerticalPadding: var(--columnGap);
+
+  position: relative;
+  background-color: var(--secondaryBackground);
+  border-radius: var(--borderRadius);
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-column-gap: var(--columnGap);
+  overflow: hidden;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 3fr 5fr;
+  grid-column-gap: var(--columnGap);
+}
+
+.column {
+  padding-top: var(--columnVerticalPadding);
+  padding-bottom: var(--columnVerticalPadding);
+}
+
+.columnLast {
+  padding-right: var(--columnVerticalPadding);
+}
+
+.orderColumn {
+  display: grid;
+  grid-template-columns: 1fr calc(var(--button-min-width) + var(--columnVerticalPadding));
+  grid-column-gap: var(--columnGap);
+  grid-row-gap: var(--columnGap);
+}
+
+.imageHolder {
+  position: relative;
+}
+
+.mobileSchedule {
+  display: none;
+  flex-grow: 1;
+  align-items: center;
+  text-align: right;
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.innerRating {
+  margin-right: 1rem;
+}
+
+.schedule {
+  color: var(--textSecondaryColor);
+}
+
+.schedule span {
+  display: inline-block;
+}
+
+.contacts {
+  line-height: 1.4;
+}
+
+.address {
+  margin-bottom: 1rem;
+}
+
+.prices {
+  display: flex;
+  min-width: 220px;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.prices > div:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.price {
+  color: var(--textSecondaryColor);
+}
+
+.priceValue span {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.discountedPrice {
+  color: var(--theme);
+}
+
+.discountedPrice .priceValue span {
+  color: var(--theme);
+}
+
+.oldPrice {
+  color: var(--textSecondaryColor);
+}
+
+.oldPriceValue span {
+  text-decoration: line-through;
+  font-size: 1.35rem;
+}
+
+.discount {
+  font-size: 1.35rem;
+  color: var(--theme);
+}
+
+.available,
+.productsCount {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  white-space: nowrap;
+}
+
+.moreLink {
+  white-space: nowrap;
+}
+
+.frame .input {
+  margin-bottom: 1rem;
+  background-color: var(--secondaryBackground);
+}
+
+.mobileButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0;
+  border-radius: var(--radius-1-3);
+  min-width: 0;
+  width: var(--formInputHeight);
+}
+
+.mobileButton svg {
+  fill: currentColor;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+@media only screen and (max-width: 1180px) {
+  .meta {
+    display: block;
+  }
+
+  .innerRating {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    --columnGap: 1.5rem;
+    grid-template-columns: 180px 1fr;
+  }
+
+  .content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .orderColumn {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  .content {
+    grid-template-columns: 1fr;
+    padding-right: var(--columnGap);
+    padding-bottom: var(--columnGap);
+  }
+
+  .column {
+    padding-bottom: 0;
+  }
+
+  .prices {
+    min-width: 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .frame {
+    --columnGap: 1rem;
+    grid-template-columns: 92px 1fr;
+  }
+
+  .imageHolder {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobileSchedule {
+    display: flex;
+  }
+
+  .desktopSchedule {
+    display: none;
+  }
+
+  .schedule span {
+    margin-top: 0.35rem;
+  }
+
+  .image {
+    position: relative;
+    height: 10rem;
+    border-radius: var(--radius-1-3);
+    overflow: hidden;
+  }
+
+  .prices > div:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
+  .priceValue span {
+    font-size: 1.35rem;
+  }
+
+  .oldPriceValue span {
+    font-size: 1.15rem;
+  }
+
+  .discount {
+    font-size: 1rem;
+  }
+}

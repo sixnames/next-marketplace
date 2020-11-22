@@ -1,11 +1,12 @@
 import { DocumentType } from '@typegoose/typegoose';
-import { Product, ProductConnectionModel } from '../entities/Product';
+import { Product } from '../entities/Product';
 import { Attribute, AttributeModel } from '../entities/Attribute';
 import { generateDefaultLangSlug } from './slug';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
 import { OptionModel } from '../entities/Option';
 import getLangField from './translations/getLangField';
 import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
+import { ProductConnectionModel } from '../entities/ProductConnection';
 
 export interface GetSelectAttributeOptionsValueInterface {
   attribute: DocumentType<Attribute>;
@@ -56,9 +57,7 @@ export const getConnectionValuesFromProduct = async ({
   attributeId,
   attributesGroupId,
   lang,
-}: GetConnectionValuesFromProductInterface): Promise<
-  GetConnectionValuesFromProductPayloadInterface
-> => {
+}: GetConnectionValuesFromProductInterface): Promise<GetConnectionValuesFromProductPayloadInterface> => {
   const attributesGroupInProduct = product.attributesGroups.find(
     ({ node }) => node.toString() === attributesGroupId,
   );
@@ -117,9 +116,7 @@ export interface GenerateDefaultLangSlugWithConnectionsPayloadInterface {
 export const createProductSlugWithConnections = async ({
   product,
   lang,
-}: GenerateDefaultLangSlugWithConnectionsInterface): Promise<
-  GenerateDefaultLangSlugWithConnectionsPayloadInterface
-> => {
+}: GenerateDefaultLangSlugWithConnectionsInterface): Promise<GenerateDefaultLangSlugWithConnectionsPayloadInterface> => {
   const initialSlug = generateDefaultLangSlug(product.cardName);
   const connections = await ProductConnectionModel.find({
     productsIds: {

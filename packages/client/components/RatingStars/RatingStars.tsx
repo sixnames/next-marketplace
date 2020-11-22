@@ -7,9 +7,17 @@ interface RatingStarsInterface {
   size?: SizeType;
   rating: number;
   className?: string;
+  showRatingNumber?: boolean;
+  smallStars?: boolean;
 }
 
-const RatingStars: React.FC<RatingStarsInterface> = ({ rating, size = 'normal', className }) => {
+const RatingStars: React.FC<RatingStarsInterface> = ({
+  rating,
+  size = 'normal',
+  className,
+  showRatingNumber = true,
+  smallStars,
+}) => {
   if (size === 'small') {
     return (
       <div className={`${classes.ratingSmall} ${className ? className : ''}`}>
@@ -26,8 +34,8 @@ const RatingStars: React.FC<RatingStarsInterface> = ({ rating, size = 'normal', 
 
   return (
     <div className={`${classes.rating} ${className ? className : ''}`}>
-      <div className={classes.ratingNumber}>{rating}</div>
-      <div className={classes.ratingStars}>
+      {showRatingNumber ? <div className={classes.ratingNumber}>{rating}</div> : null}
+      <div className={`${classes.ratingStars} ${smallStars ? classes.ratingStarsSmall : ''}`}>
         <Icon name={'star'} />
         <Icon name={'star'} />
         <Icon name={'star'} />

@@ -4,6 +4,7 @@ import {
   Field,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -20,7 +21,7 @@ import {
 import { FilterQuery } from 'mongoose';
 import { Company, CompanyModel } from '../../entities/Company';
 import { DocumentType } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { ProductModel } from '../../entities/Product';
 import { AddProductToShopInput } from './AddProductToShopInput';
 import {
@@ -43,6 +44,7 @@ import del from 'del';
 import { generateSlug } from '../../utils/slug';
 import storeUploads from '../../utils/assets/storeUploads';
 import { UpdateShopInput } from './UpdateShopInput';
+import { City, CityModel } from '../../entities/City';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,
@@ -213,6 +215,7 @@ export class ShopResolver {
       available,
       oldPrices: [],
       product: productId,
+      city: shop.city,
     });
     if (!shopProduct) {
       return {
@@ -320,6 +323,15 @@ export class ShopResolver {
   }
 
   // Field resolvers
+  @FieldResolver((_returns) => City)
+  async city(@Root() shop: DocumentType<Shop>): Promise<City> {
+    const city = await CityModel.findOne({ slug: shop.city });
+    if (!city) {
+      throw Error('City not found on Shop city field');
+    }
+    return city;
+  }
+
   @FieldResolver((_returns) => PaginatedShopProductsResponse)
   async products(
     @Root() shop: DocumentType<Shop>,
@@ -343,5 +355,10 @@ export class ShopResolver {
       throw Error('Company not found on ShopResolver.company resolver');
     }
     return company;
+  }
+
+  @FieldResolver((_returns) => Int)
+  async productsCount(@Root() shop: DocumentType<Shop>): Promise<number> {
+    return shop.products.length;
   }
 }

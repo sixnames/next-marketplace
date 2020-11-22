@@ -3,11 +3,12 @@ import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
-import { ProductConnectionModel } from '../../../entities/Product';
 import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { ProductConnectionModel } from '../../../entities/ProductConnection';
+import { SORT_ASC } from '@yagu/config';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -98,6 +99,10 @@ describe('Product', () => {
           slug
           descriptionString
           rubrics
+          cardPrices {
+            min
+            max
+          }
           attributesGroups {
             node {
               id
@@ -128,11 +133,13 @@ describe('Product', () => {
           connections {
             ...ConnectionFragment
           }
+          shopsCount
           shops {
             node {
               id
               nameString
             }
+            formattedPrice
             available
             price
             oldPrices {
@@ -159,6 +166,37 @@ describe('Product', () => {
         }
       }
     `);
+
+    // Should return product shops
+    const getProductShopsPayload = await query<any>(
+      gql`
+        query GetProductShops($input: GetProductShopsInput!) {
+          getProductShops(input: $input) {
+            node {
+              id
+              nameString
+            }
+            formattedPrice
+            available
+            price
+            oldPrices {
+              createdAt
+              price
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            sortDir: SORT_ASC,
+            sortBy: 'price',
+            productId: currentProduct.id,
+          },
+        },
+      },
+    );
+    expect(getProductShopsPayload.data.getProductShops).toBeDefined();
 
     // Should return product by ID
     const {

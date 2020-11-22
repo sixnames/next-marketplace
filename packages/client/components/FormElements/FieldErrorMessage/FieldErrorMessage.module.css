@@ -1,8 +1,8 @@
 .frame {
   font-weight: 600;
   color: var(--red);
-  margin-bottom: var(--lineGap);
-  margin-top: calc(var(--lineGap) / 2);
+  margin-bottom: var(--lineGap-200);
+  margin-top: var(--lineGap-100);
 }
 
 .frameLowTop {

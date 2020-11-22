@@ -5,8 +5,9 @@ import { Shop } from './Shop';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import PaginateType from '../resolvers/common/PaginateType';
+import PaginateType from '../resolvers/commonInputs/PaginateType';
 import { AutoIncrementID } from '@typegoose/auto-increment';
+import { City } from './City';
 
 @ObjectType({
   description: 'List of all old prices for shop product with dates of creation.',
@@ -40,6 +41,10 @@ export class ShopProduct extends TimeStamps {
   @Field(() => Int)
   @prop({ required: true })
   available: number;
+
+  @Field(() => City)
+  @prop({ required: true })
+  city: string;
 
   @Field(() => Float)
   @prop({ required: true })

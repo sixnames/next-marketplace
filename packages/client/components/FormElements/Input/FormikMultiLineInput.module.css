@@ -9,7 +9,7 @@
 }
 
 .inputHolder:not(:first-child) {
-  margin-top: var(--lineGap);
+  margin-top: var(--lineGap-200);
 }
 
 .input {

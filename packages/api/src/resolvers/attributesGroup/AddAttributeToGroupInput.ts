@@ -1,6 +1,6 @@
 import { Field, ID, InputType } from 'type-graphql';
 import { AttributePositionInTitleEnum, AttributeVariantEnum } from '../../entities/Attribute';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 
 @InputType()
 export class AttributePositioningInTitleInput {
@@ -16,8 +16,8 @@ export class AddAttributeToGroupInput {
   @Field(() => ID)
   groupId: string;
 
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 
   @Field((_type) => AttributeVariantEnum)
   variant: AttributeVariantEnum;

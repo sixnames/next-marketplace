@@ -2,12 +2,12 @@ import React from 'react';
 import { Field, FieldProps } from 'formik';
 import Icon from '../../Icon/Icon';
 import InputLine from '../Input/InputLine';
-import TTip from '../../TTip/TTip';
 import classes from './FormikImageUpload.module.css';
 import { FormikInputPropsInterface } from '../Input/FormikInput';
 import { ASSETS_URL } from '../../../config';
 import ButtonCross from '../../Buttons/ButtonCross';
 import { useDropzone } from 'react-dropzone';
+import Tooltip from '../../TTip/Tooltip';
 
 interface FormikImageUploadInterface extends FormikInputPropsInterface {
   tooltip?: any;
@@ -64,30 +64,32 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
             description={description}
             lineContentClass={lineContentClass}
           >
-            <TTip title={tooltip} className={classes.frame} style={{ width, height }}>
-              <div className={classes.inputFrame} {...getRootProps()} data-cy={testId}>
-                <input {...getInputProps()} className={classes.input} name={name} id={name} />
-              </div>
-
-              {imageSrc ? (
-                <div className={classes.preview}>
-                  <img
-                    src={imageSrc}
-                    width='100'
-                    height='100'
-                    alt={''}
-                    data-cy={`${testId}-image`}
-                  />
-                  <ButtonCross
-                    onClick={removeImageHandler}
-                    testId={`${testId}-remove`}
-                    className={classes.remove}
-                  />
+            <Tooltip title={tooltip}>
+              <div className={classes.frame} style={{ width, height }}>
+                <div className={classes.inputFrame} {...getRootProps()} data-cy={testId}>
+                  <input {...getInputProps()} className={classes.input} name={name} id={name} />
                 </div>
-              ) : (
-                <Icon name={'image'} className={classes.noImage} />
-              )}
-            </TTip>
+
+                {imageSrc ? (
+                  <div className={classes.preview}>
+                    <img
+                      src={imageSrc}
+                      width='100'
+                      height='100'
+                      alt={''}
+                      data-cy={`${testId}-image`}
+                    />
+                    <ButtonCross
+                      onClick={removeImageHandler}
+                      testId={`${testId}-remove`}
+                      className={classes.remove}
+                    />
+                  </div>
+                ) : (
+                  <Icon name={'image'} className={classes.noImage} />
+                )}
+              </div>
+            </Tooltip>
 
             {children}
           </InputLine>

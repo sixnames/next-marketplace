@@ -1,0 +1,24 @@
+.frame {
+  position: relative;
+}
+
+.moreShopsButton {
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--lineGap-150);
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+}
+
+.sortLabel {
+  color: var(--textSecondaryColor);
+  margin-right: 1.5rem;
+}

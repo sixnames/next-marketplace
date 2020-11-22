@@ -1,13 +1,16 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
-import { Address, AssetType, ContactsType } from './commonEntities';
 import { Company } from './Company';
 import { PaginatedShopProductsResponse } from './ShopProduct';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
-import PaginateType from '../resolvers/common/PaginateType';
+import PaginateType from '../resolvers/commonInputs/PaginateType';
+import { Contacts } from './Contacts';
+import { Address } from './Address';
+import { Asset } from './Asset';
+import { City } from './City';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -28,17 +31,21 @@ export class Shop extends TimeStamps {
   @prop({ required: true })
   slug: string;
 
-  @Field(() => AssetType)
-  @prop({ type: AssetType, required: true })
-  logo: AssetType;
+  @Field(() => City)
+  @prop({ required: true })
+  city: string;
 
-  @Field(() => [AssetType])
-  @prop({ type: AssetType, required: true })
-  assets: AssetType[];
+  @Field(() => Asset)
+  @prop({ type: Asset, required: true })
+  logo: Asset;
 
-  @Field((_type) => ContactsType)
-  @prop({ type: ContactsType, required: true })
-  contacts: ContactsType;
+  @Field(() => [Asset])
+  @prop({ type: Asset, required: true })
+  assets: Asset[];
+
+  @Field((_type) => Contacts)
+  @prop({ type: Contacts, required: true })
+  contacts: Contacts;
 
   @Field((_type) => Address)
   @prop({ type: Address, required: true })
@@ -47,6 +54,9 @@ export class Shop extends TimeStamps {
   @Field((_type) => PaginatedShopProductsResponse)
   @prop({ ref: () => 'ShopProduct', required: true })
   products: string[];
+
+  @Field((_type) => Int)
+  readonly productsCount: number;
 
   @Field((_type) => Company)
   readonly company: Company;

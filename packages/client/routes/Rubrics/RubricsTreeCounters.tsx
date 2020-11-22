@@ -1,6 +1,6 @@
 import React from 'react';
 import classes from './RubricsTreeCounters.module.css';
-import TTip from '../../components/TTip/TTip';
+import Tooltip from '../../components/TTip/Tooltip';
 
 interface RubricsTreeCountersInterface {
   activeProductsCount: number;
@@ -15,13 +15,13 @@ const RubricsTreeCounters: React.FC<RubricsTreeCountersInterface> = ({
 }) => {
   return (
     <div className={classes.counters}>
-      <TTip data-cy={`${testId}-active`} title={'Активные товары'}>
-        {activeProductsCount}
-      </TTip>
+      <Tooltip title={'Активные товары'}>
+        <div data-cy={`${testId}-active`}>{activeProductsCount}</div>
+      </Tooltip>
       <span>{`/`}</span>
-      <TTip data-cy={`${testId}-total`} title={'Всего товаров'}>
-        {totalProductsCount}
-      </TTip>
+      <Tooltip title={'Всего товаров'}>
+        <div data-cy={`${testId}-total`}>{totalProductsCount}</div>
+      </Tooltip>
     </div>
   );
 };

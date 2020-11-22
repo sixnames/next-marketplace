@@ -1,5 +1,5 @@
 import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { Language, LanguageModel } from '../../entities/Language';
 import { CreateLanguageInput } from './CreateLanguageInput';
 import { UpdateLanguageInput } from './UpdateLanguageInput';

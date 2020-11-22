@@ -12,7 +12,7 @@ import {
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { DocumentType } from '@typegoose/typegoose';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateAttributesGroupInput } from './CreateAttributesGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAttributesGroupInput } from './UpdateAttributesGroupInput';

@@ -6,7 +6,6 @@ export type SizeType = 'small' | 'normal';
 export type ButtonType = 'submit' | 'button' | 'reset';
 export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';
-export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left';
 export type OnOffType = 'on' | 'off';
 export type NotificationType = 'success' | 'warning' | 'error';
 export type PostfixType =
@@ -15,9 +14,6 @@ export type PostfixType =
   | any;
 
 export type ObjectType = Record<string, any>;
-export interface QueryInterface {
-  query?: ObjectType;
-}
 
 export interface PathInterface {
   pathname: string;

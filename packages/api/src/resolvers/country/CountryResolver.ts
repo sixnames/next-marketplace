@@ -12,7 +12,7 @@ import {
 import { Country, CountryModel } from '../../entities/Country';
 import { City, CityModel } from '../../entities/City';
 import { DocumentType } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { AddCityToCountryInput } from './AddCityToCountryInput';
 import { UpdateCityInCountryInput } from './UpdateCityInCountryInput';
 import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';

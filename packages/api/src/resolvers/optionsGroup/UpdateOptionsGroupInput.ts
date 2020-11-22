@@ -1,5 +1,5 @@
 import { Field, InputType, ID } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 import { OptionsGroupVariantEnum } from '../../entities/OptionsGroup';
 
 @InputType()
@@ -7,8 +7,8 @@ export class UpdateOptionsGroupInput {
   @Field(() => ID)
   id: string;
 
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 
   @Field((_type) => OptionsGroupVariantEnum, { nullable: true })
   variant?: OptionsGroupVariantEnum;

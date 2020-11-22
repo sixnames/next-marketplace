@@ -4,7 +4,7 @@ import { AuthDecoratorConfigInterface } from './methodDecorators';
 import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
-import { LanguageType } from '../entities/commonEntities';
+import { Translation } from '../entities/Translation';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
@@ -62,7 +62,7 @@ export interface LocalizationPayloadInterface {
   defaultLang: string;
   city: string;
   getApiMessage: (key: MessageKey) => Promise<string>;
-  getLangField: (translations: LanguageType[] | null | undefined) => string;
+  getLangField: (translations: Translation[] | null | undefined) => string;
 }
 
 export function Localization() {
@@ -73,7 +73,7 @@ export function Localization() {
       defaultLang,
       city,
       getApiMessage: (key: MessageKey) => getApiMessage({ lang, key }),
-      getLangField: (translations: LanguageType[] | null | undefined) => {
+      getLangField: (translations: Translation[] | null | undefined) => {
         return getLangField(translations, lang);
       },
     };

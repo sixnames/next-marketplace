@@ -11,7 +11,7 @@ input AddAttributesGroupToRubricInput {
 input AddAttributeToGroupInput {
   groupId: ID!
   metric: ID
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   optionsGroup: ID
   positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
@@ -19,7 +19,7 @@ input AddAttributeToGroupInput {
 
 input AddCityToCountryInput {
   countryId: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   slug: String!
 }
 
@@ -28,7 +28,7 @@ input AddOptionToGroupInput {
   gender: GenderEnum
   groupId: ID!
   icon: String
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   variants: [OptionVariantInput!]
 }
 
@@ -52,6 +52,7 @@ input AddProductToShopInput {
 
 type Address {
   formattedAddress: String!
+  formattedCoordinates: Coordinates!
   point: PointGeoJSON!
 }
 
@@ -63,13 +64,14 @@ input AddressInput {
 input AddShopToCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   companyId: ID!
   contacts: ContactsInput!
   logo: [Upload!]!
   nameString: String!
 }
 
-type AssetType {
+type Asset {
   index: Int!
   url: String!
 }
@@ -77,7 +79,7 @@ type AssetType {
 type Attribute {
   id: ID!
   metric: Metric
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   optionsGroup: OptionsGroup
   positioningInTitle: [AttributePositioningInTitle!]
@@ -122,7 +124,7 @@ enum AttributePositionInTitleEnum {
 type AttributesGroup {
   attributes: [Attribute!]!
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
 }
 
@@ -163,7 +165,7 @@ type CatalogueSearchResult {
 
 type City {
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   slug: String!
 }
@@ -184,11 +186,11 @@ enum CompaniesSortByEnum {
 }
 
 type Company {
-  contacts: ContactsType!
+  contacts: Contacts!
   createdAt: DateTime!
   id: ID!
   itemId: Int!
-  logo: AssetType!
+  logo: Asset!
   nameString: String!
   owner: User!
   shops(input: ShopPaginateInput = {}): PaginatedShopsResponse!
@@ -202,7 +204,7 @@ input CompanyPaginateInput {
   page: Int = 1
   search: String
   sortBy: CompaniesSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type CompanyPayloadtype {
@@ -260,14 +262,20 @@ enum ConfigVariantEnum {
   tel
 }
 
+type Contacts {
+  emails: [String!]!
+  formattedPhones: [FormattedPhone!]!
+  phones: [String!]!
+}
+
 input ContactsInput {
   emails: [String!]!
   phones: [String!]!
 }
 
-type ContactsType {
-  emails: [String!]!
-  phones: [String!]!
+type Coordinates {
+  lat: Float!
+  lng: Float!
 }
 
 input CoordinatesInput {
@@ -289,7 +297,7 @@ type CountryPayloadType {
 }
 
 input CreateAttributesGroupInput {
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input CreateCompanyInput {
@@ -316,11 +324,11 @@ input CreateLanguageInput {
 }
 
 input CreateMetricInput {
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input CreateOptionsGroupInput {
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   variant: OptionsGroupVariantEnum
 }
 
@@ -333,9 +341,9 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  cardName: [LangInput!]!
-  description: [LangInput!]!
-  name: [LangInput!]!
+  cardName: [TranslationInput!]!
+  description: [TranslationInput!]!
+  name: [TranslationInput!]!
   price: Int!
   rubrics: [ID!]!
 }
@@ -343,18 +351,18 @@ input CreateProductInput {
 input CreateRoleInput {
   description: String!
   isStuff: Boolean!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   parent: ID
   variant: ID!
 }
 
 input CreateRubricVariantInput {
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input CreateUserInput {
@@ -440,6 +448,12 @@ type GenderOption {
   nameString: String!
 }
 
+input GetProductShopsInput {
+  productId: ID!
+  sortBy: String!
+  sortDir: SortDirectionEnum!
+}
+
 type IconOption {
   icon: String!
   id: String!
@@ -450,11 +464,6 @@ type ISOLanguage {
   id: String!
   nameString: String!
   nativeName: String!
-}
-
-input LangInput {
-  key: String!
-  value: String!
 }
 
 type Language {
@@ -471,20 +480,15 @@ type LanguagePayloadType {
   success: Boolean!
 }
 
-type LanguageType {
-  key: String!
-  value: String!
-}
-
 type Message {
   id: ID!
   key: String!
-  message: [LanguageType!]!
+  message: [Translation!]!
 }
 
 type Metric {
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
 }
 
@@ -574,7 +578,7 @@ type NavItem {
   children: [NavItem!]
   icon: String
   id: String!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   navGroup: String!
   order: Int!
@@ -588,7 +592,7 @@ type Option {
   gender: GenderEnum
   icon: String
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   priorities: [OptionCityCounter!]!
   slug: String!
@@ -605,7 +609,7 @@ type OptionCityCounter {
 
 type OptionsGroup {
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   options: [Option!]!
   variant: OptionsGroupVariantEnum!
@@ -631,12 +635,12 @@ type OptionsGroupVariantOption {
 
 type OptionVariant {
   key: GenderEnum!
-  value: [LanguageType!]!
+  value: [Translation!]!
 }
 
 input OptionVariantInput {
   key: GenderEnum!
-  value: [LangInput!]!
+  value: [TranslationInput!]!
 }
 
 type PaginatedCompaniesResponse {
@@ -705,12 +709,6 @@ type PaginatedUsersResponse {
   totalPages: Int!
 }
 
-"""Pagination sortDir enum"""
-enum PaginateSortDirectionEnum {
-  asc
-  desc
-}
-
 type PointGeoJSON {
   """
   Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude.
@@ -723,25 +721,27 @@ type PointGeoJSON {
 
 type Product {
   active: Boolean!
-  assets: [AssetType!]!
+  assets: [Asset!]!
   attributesGroups: [ProductAttributesGroup!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
-  cardName: [LanguageType!]!
+  cardName: [Translation!]!
   cardNameString: String!
+  cardPrices: ProductCardPrices!
   connections: [ProductConnection!]!
   createdAt: DateTime!
-  description: [LanguageType!]!
+  description: [Translation!]!
   descriptionString: String!
   id: ID!
   itemId: Int!
   mainImage: String!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
-  shops: [ProductShop!]!
+  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ProductShop!]!
+  shopsCount: Int!
   slug: String!
   updatedAt: DateTime!
   views: [CityCounter!]!
@@ -815,6 +815,11 @@ type ProductCardFeatures {
   textFeatures: [ProductAttribute!]!
 }
 
+type ProductCardPrices {
+  max: String!
+  min: String!
+}
+
 type ProductConnection {
   attribute: Attribute!
   attributeId: String!
@@ -849,7 +854,7 @@ input ProductPaginateInput {
   rubric: ID
   search: String
   sortBy: ProductSortByEnum = priority
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ProductPayloadType {
@@ -872,7 +877,11 @@ input ProductsCountersInput {
 
 type ProductShop {
   available: Int!
+  city: City!
   createdAt: DateTime!
+  discountedPercent: Int
+  formattedOldPrice: String
+  formattedPrice: String!
   id: ID!
   itemId: Int!
   node: Shop!
@@ -881,6 +890,11 @@ type ProductShop {
   product: Product!
   shop: Shop!
   updatedAt: DateTime!
+}
+
+input ProductShopsInput {
+  sortBy: String = "price"
+  sortDir: SortDirectionEnum = asc
 }
 
 """Product pagination sortBy enum"""
@@ -941,6 +955,7 @@ type Query {
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
+  getProductShops(input: GetProductShopsInput!): [ProductShop!]!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
@@ -960,7 +975,7 @@ type Role {
   description: String!
   id: String!
   isStuff: Boolean!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   rules: [RoleRule!]!
   slug: String!
@@ -1007,7 +1022,7 @@ type Rubric {
   filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   parent: Rubric
   priorities: [CityCounter!]!
@@ -1027,10 +1042,10 @@ type RubricAttributesGroup {
 }
 
 type RubricCatalogueTitle {
-  defaultTitle: [LanguageType!]!
+  defaultTitle: [Translation!]!
   gender: GenderEnum!
-  keyword: [LanguageType!]!
-  prefix: [LanguageType!]
+  keyword: [Translation!]!
+  prefix: [Translation!]
 }
 
 type RubricCatalogueTitleField {
@@ -1041,10 +1056,10 @@ type RubricCatalogueTitleField {
 }
 
 input RubricCatalogueTitleInput {
-  defaultTitle: [LangInput!]!
+  defaultTitle: [TranslationInput!]!
   gender: GenderEnum!
-  keyword: [LangInput!]!
-  prefix: [LangInput!]
+  keyword: [TranslationInput!]!
+  prefix: [TranslationInput!]
 }
 
 type RubricFilterAttribute {
@@ -1060,7 +1075,7 @@ type RubricFilterAttributeOption {
   gender: GenderEnum
   icon: String
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
   priorities: [OptionCityCounter!]!
   slug: String!
@@ -1088,12 +1103,12 @@ input RubricProductPaginateInput {
   page: Int = 1
   search: String
   sortBy: ProductSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type RubricVariant {
   id: ID!
-  name: [LanguageType!]!
+  name: [Translation!]!
   nameString: String!
 }
 
@@ -1128,15 +1143,17 @@ input SetRoleRuleRestrictedFieldInput {
 
 type Shop {
   address: Address!
-  assets: [AssetType!]!
+  assets: [Asset!]!
+  city: City!
   company: Company!
-  contacts: ContactsType!
+  contacts: Contacts!
   createdAt: DateTime!
   id: ID!
   itemId: Int!
-  logo: AssetType!
+  logo: Asset!
   nameString: String!
   products(input: ShopProductPaginateInput = {}): PaginatedShopProductsResponse!
+  productsCount: Int!
   slug: String!
   updatedAt: DateTime!
 }
@@ -1146,7 +1163,7 @@ input ShopPaginateInput {
   page: Int = 1
   search: String
   sortBy: ShopsSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ShopPayloadType {
@@ -1157,6 +1174,7 @@ type ShopPayloadType {
 
 type ShopProduct {
   available: Int!
+  city: City!
   createdAt: DateTime!
   id: ID!
   itemId: Int!
@@ -1180,7 +1198,7 @@ input ShopProductPaginateInput {
   page: Int = 1
   search: String
   sortBy: ShopProductSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type ShopProductPayloadType {
@@ -1215,6 +1233,22 @@ input SignUpInput {
   secondName: String
 }
 
+"""sortDir enum"""
+enum SortDirectionEnum {
+  asc
+  desc
+}
+
+type Translation {
+  key: String!
+  value: String!
+}
+
+input TranslationInput {
+  key: String!
+  value: String!
+}
+
 input UpdateAssetConfigInput {
   id: ID!
   value: [Upload!]!
@@ -1224,7 +1258,7 @@ input UpdateAttributeInGroupInput {
   attributeId: ID!
   groupId: ID!
   metric: ID
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   optionsGroup: ID
   positioningInTitle: [AttributePositioningInTitleInput!]
   variant: AttributeVariantEnum!
@@ -1232,7 +1266,7 @@ input UpdateAttributeInGroupInput {
 
 input UpdateAttributesGroupInput {
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input UpdateAttributesGroupInRubricInput {
@@ -1244,7 +1278,7 @@ input UpdateAttributesGroupInRubricInput {
 input UpdateCityInCountryInput {
   cityId: ID!
   countryId: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   slug: String!
 }
 
@@ -1282,7 +1316,7 @@ input UpdateLanguageInput {
 
 input UpdateMetricInput {
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input UpdateMyPasswordInput {
@@ -1306,14 +1340,14 @@ input UpdateOptionInGroupInput {
   gender: GenderEnum
   groupId: ID!
   icon: String
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   optionId: ID!
   variants: [OptionVariantInput!]
 }
 
 input UpdateOptionsGroupInput {
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   variant: OptionsGroupVariantEnum
 }
 
@@ -1321,10 +1355,10 @@ input UpdateProductInput {
   active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  cardName: [LangInput!]!
-  description: [LangInput!]!
+  cardName: [TranslationInput!]!
+  description: [TranslationInput!]!
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   price: Int!
   rubrics: [ID!]!
 }
@@ -1333,25 +1367,26 @@ input UpdateRoleInput {
   description: String!
   id: ID!
   isStuff: Boolean!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input UpdateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
   parent: ID
   variant: ID!
 }
 
 input UpdateRubricVariantInput {
   id: ID!
-  name: [LangInput!]!
+  name: [TranslationInput!]!
 }
 
 input UpdateShopInCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   companyId: ID!
   contacts: ContactsInput!
   logo: [Upload!]!
@@ -1362,6 +1397,7 @@ input UpdateShopInCompanyInput {
 input UpdateShopInput {
   address: AddressInput!
   assets: [Upload!]!
+  city: String!
   contacts: ContactsInput!
   logo: [Upload!]!
   nameString: String!
@@ -1408,7 +1444,7 @@ input UserPaginateInput {
   page: Int = 1
   search: String
   sortBy: UserSortByEnum = createdAt
-  sortDir: PaginateSortDirectionEnum = desc
+  sortDir: SortDirectionEnum = desc
 }
 
 type UserPayloadType {

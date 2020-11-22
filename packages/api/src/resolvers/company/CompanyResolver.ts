@@ -12,7 +12,7 @@ import {
 import { Company, CompanyModel, PaginatedCompaniesResponse } from '../../entities/Company';
 import { User, UserModel } from '../../entities/User';
 import { DocumentType } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateCompanyInput } from './CreateCompanyInput';
 import { generateSlug } from '../../utils/slug';
 import storeUploads from '../../utils/assets/storeUploads';

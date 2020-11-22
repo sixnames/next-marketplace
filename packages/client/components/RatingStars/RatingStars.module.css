@@ -38,6 +38,13 @@
   margin-right: 0.125rem;
 }
 
+.ratingStarsSmall svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: var(--textSecondaryColor);
+  flex-shrink: 0;
+}
+
 .ratingStarsFilled {
   position: absolute;
   top: 0;

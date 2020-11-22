@@ -10,7 +10,7 @@ import {
   Root,
 } from 'type-graphql';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateRubricVariantInput } from './CreateRubricVariantInput';
 import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';

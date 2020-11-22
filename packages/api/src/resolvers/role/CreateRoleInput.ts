@@ -1,10 +1,10 @@
 import { Field, InputType } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 
 @InputType()
 export class CreateRoleInput {
-  @Field((_type) => [LangInput])
-  name: LangInput[];
+  @Field((_type) => [TranslationInput])
+  name: TranslationInput[];
 
   @Field((_type) => String)
   description: string;

@@ -12,7 +12,7 @@ import {
 import { OptionsGroup, OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
 import { DocumentType } from '@typegoose/typegoose';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateOptionsGroupInput } from './CreateOptionsGroupInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateOptionsGroupInput } from './UpdateOptionsGroupInput';

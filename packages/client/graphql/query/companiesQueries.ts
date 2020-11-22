@@ -37,6 +37,11 @@ export const shopInListFragment = gql`
     itemId
     slug
     nameString
+    city {
+      id
+      nameString
+      slug
+    }
     logo {
       index
       url
@@ -133,6 +138,11 @@ export const shopFragment = gql`
     contacts {
       emails
       phones
+    }
+    city {
+      id
+      nameString
+      slug
     }
     address {
       formattedAddress

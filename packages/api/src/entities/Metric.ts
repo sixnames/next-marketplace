@@ -1,15 +1,15 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { LanguageType } from './commonEntities';
+import { Translation } from './Translation';
 
 @ObjectType()
 export class Metric {
   @Field(() => ID)
   readonly id: string;
 
-  @Field(() => [LanguageType])
-  @prop({ type: LanguageType, required: true })
-  name: LanguageType[];
+  @Field(() => [Translation])
+  @prop({ type: Translation, required: true })
+  name: Translation[];
 
   @Field(() => String)
   readonly nameString: string;

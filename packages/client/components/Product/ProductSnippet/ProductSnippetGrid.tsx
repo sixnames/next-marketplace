@@ -2,11 +2,11 @@ import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from '../../Image/Image';
 import Link from '../../Link/Link';
-import { useSiteContext } from '../../../context/siteContext';
 import Icon from '../../Icon/Icon';
 import { ProductSnippetFragment } from '../../../generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
+import Currency from '../../Currency/Currency';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -14,8 +14,7 @@ interface ProductSnippetGridInterface {
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, testId }) => {
-  const { nameString, mainImage, slug, price } = product;
-  const { currency } = useSiteContext();
+  const { nameString, mainImage, slug, cardPrices } = product;
   const imageWidth = 50;
 
   return (
@@ -29,8 +28,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
           <div className={classes.attributes}>Новая Зеландия, белое, полусухое</div>
         </div>
         <div className={classes.price}>
-          от <span className={classes.priceValue}>{price}</span>
-          {` ${currency}`}
+          от <Currency className={classes.priceValue} value={cardPrices.min} />
         </div>
       </div>
 

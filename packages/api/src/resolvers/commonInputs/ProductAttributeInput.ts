@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { ProductAttributeViewVariantEnum } from '../../entities/Product';
+import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
 
 @InputType()
 export class ProductAttributeInput {

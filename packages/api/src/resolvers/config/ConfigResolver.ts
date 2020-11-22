@@ -10,7 +10,7 @@ import {
 } from 'type-graphql';
 import { Config, ConfigCity, ConfigModel } from '../../entities/Config';
 import { UpdateConfigInput } from './UpdateConfigInput';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';

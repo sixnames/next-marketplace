@@ -1,13 +1,13 @@
-import { ProductAttributesGroup } from '../../entities/Product';
 import { ASSETS_DIST_PRODUCTS } from '../../config';
 import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
-import { LanguageType } from '../../entities/commonEntities';
 import generateTestAsset from './generateTestAsset';
+import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
+import { Translation } from '../../entities/Translation';
 
 export interface GetProductCitiesInterface {
-  name: LanguageType[];
-  cardName: LanguageType[];
-  description: LanguageType[];
+  name: Translation[];
+  cardName: Translation[];
+  description: Translation[];
   rubrics: string[];
   attributesGroups: ProductAttributesGroup[];
   price: number;

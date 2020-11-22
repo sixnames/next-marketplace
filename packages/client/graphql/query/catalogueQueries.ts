@@ -5,9 +5,12 @@ export const productSnippedFragment = gql`
     id
     itemId
     nameString
-    price
     slug
     mainImage
+    cardPrices {
+      min
+      max
+    }
   }
 `;
 

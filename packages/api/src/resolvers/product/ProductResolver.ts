@@ -10,24 +10,12 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import {
-  Product,
-  ProductAttribute,
-  ProductAttributesGroup,
-  ProductCardFeatures,
-  ProductConnection,
-  ProductConnectionItem,
-  ProductConnectionModel,
-  ProductModel,
-  ProductsCounters,
-  ProductShop,
-} from '../../entities/Product';
-import PaginateType from '../common/PaginateType';
+import { Product, ProductModel } from '../../entities/Product';
+import PaginateType from '../commonInputs/PaginateType';
 import { ProductPaginateInput } from './ProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { DocumentType } from '@typegoose/typegoose';
-import { AssetType } from '../../entities/commonEntities';
-import PayloadType from '../common/PayloadType';
+import PayloadType from '../commonInputs/PayloadType';
 import { CreateProductInput } from './CreateProductInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import {
@@ -71,6 +59,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  SORT_ASC,
 } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
@@ -82,6 +71,19 @@ import { Option, OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
+import { max, min } from 'lodash';
+import { getCurrencyString, getPercentage } from '@yagu/shared';
+import { ProductAttribute } from '../../entities/ProductAttribute';
+import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
+import { ProductCardFeatures } from '../../entities/ProductCardFeatures';
+import { ProductShop } from '../../entities/ProductShop';
+import { ProductCardPrices } from '../../entities/ProductCardPrices';
+import { ProductsCounters } from '../../entities/ProductsCounters';
+import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
+import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
+import { Asset } from '../../entities/Asset';
+import { ProductShopsInput } from './ProductShopsInput';
+import { GetProductShopsInput } from './GetProductShopsInput';
 
 const {
   operationConfigCreate,
@@ -211,6 +213,55 @@ export class ProductResolver {
       }, []);
 
       return AttributesGroupModel.find({ _id: { $in: attributesGroups } });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @Query(() => [ProductShop])
+  async getProductShops(
+    @Arg('input') input: GetProductShopsInput,
+    @Localization() { lang, city }: LocalizationPayloadInterface,
+  ): Promise<ProductShop[]> {
+    try {
+      const { sortDir, sortBy, productId } = input;
+
+      const shopsProducts = await ShopProductModel.find({ product: productId, city })
+        .sort([[sortBy, sortDir]])
+        .lean()
+        .exec();
+      const shopsArr = shopsProducts.map(async (shopProduct) => {
+        const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
+
+        if (!shop) {
+          throw Error('Product shop not found');
+        }
+
+        const { oldPrices } = shopProduct;
+        const lastOldPrice = oldPrices[oldPrices.length - 1];
+
+        return {
+          node: shop,
+          ...shopProduct,
+          id: shopProduct._id,
+          discountedPercent:
+            lastOldPrice && lastOldPrice.price > shopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: shopProduct.price,
+                })
+              : null,
+          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
+          formattedOldPrice: lastOldPrice
+            ? getCurrencyString({
+                value: lastOldPrice.price,
+                lang,
+              })
+            : null,
+        };
+      });
+
+      return Promise.all(shopsArr);
     } catch (e) {
       return [];
     }
@@ -629,6 +680,7 @@ export class ProductResolver {
     }
   }
 
+  // Field resolvers
   @FieldResolver((_type) => String)
   async nameString(
     @Root() product: DocumentType<Product>,
@@ -653,8 +705,8 @@ export class ProductResolver {
     return getLangField(product.description);
   }
 
-  @FieldResolver((_type) => [AssetType])
-  async assets(@Root() product: DocumentType<Product>): Promise<AssetType[]> {
+  @FieldResolver((_type) => [Asset])
+  async assets(@Root() product: DocumentType<Product>): Promise<Asset[]> {
     return product.assets.sort((a, b) => a.index - b.index);
   }
 
@@ -681,10 +733,38 @@ export class ProductResolver {
     }
   }
 
+  @FieldResolver((_returns) => Int)
+  async shopsCount(
+    @Root() product: DocumentType<Product>,
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<number> {
+    const shopsProducts = await ShopProductModel.find({ product: product.id, city }, { _id: 1 })
+      .lean()
+      .exec();
+    const shopsProductsIds = shopsProducts.map(({ _id }) => _id);
+    return ShopModel.countDocuments({ products: { $in: shopsProductsIds } });
+  }
+
   @FieldResolver((_returns) => [ProductShop])
-  async shops(@Root() product: DocumentType<Product>): Promise<ProductShop[]> {
+  async shops(
+    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Root() product: DocumentType<Product>,
+    @Arg('input', {
+      nullable: true,
+      defaultValue: {
+        sortDir: SORT_ASC,
+        sortBy: 'price',
+      },
+    })
+    input: ProductShopsInput,
+  ): Promise<ProductShop[]> {
     try {
-      const shopsProducts = await ShopProductModel.find({ product: product.id }).lean().exec();
+      const { sortDir, sortBy } = input;
+
+      const shopsProducts = await ShopProductModel.find({ product: product.id, city })
+        .sort([[sortBy, sortDir]])
+        .lean()
+        .exec();
       const shopsArr = shopsProducts.map(async (shopProduct) => {
         const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
 
@@ -692,16 +772,59 @@ export class ProductResolver {
           throw Error('Product shop not found');
         }
 
+        const { oldPrices } = shopProduct;
+        const lastOldPrice = oldPrices[oldPrices.length - 1];
+
         return {
           node: shop,
           ...shopProduct,
           id: shopProduct._id,
+          discountedPercent:
+            lastOldPrice && lastOldPrice.price > shopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: shopProduct.price,
+                })
+              : null,
+          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
+          formattedOldPrice: lastOldPrice
+            ? getCurrencyString({
+                value: lastOldPrice.price,
+                lang,
+              })
+            : null,
         };
       });
 
       return Promise.all(shopsArr);
     } catch (e) {
       return [];
+    }
+  }
+
+  @FieldResolver((_returns) => ProductCardPrices)
+  async cardPrices(
+    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Root() product: DocumentType<Product>,
+  ): Promise<ProductCardPrices> {
+    try {
+      const shopsProducts = await ShopProductModel.find({
+        $and: [{ $or: [{ product: product.id }, { product: product._id }] }, { city }],
+      })
+        .select('price')
+        .lean()
+        .exec();
+      const allPrices = shopsProducts.map(({ price }) => price);
+
+      return {
+        min: getCurrencyString({ value: min(allPrices), lang }),
+        max: getCurrencyString({ value: max(allPrices), lang }),
+      };
+    } catch (e) {
+      return {
+        min: '0',
+        max: '0',
+      };
     }
   }
 

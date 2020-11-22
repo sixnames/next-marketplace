@@ -7,7 +7,7 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
 import {
   CreateAttributesGroupInput,
-  LanguageType,
+  Translation,
   UpdateAttributesGroupInput,
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
@@ -16,7 +16,7 @@ import { attributesGroupModalSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 
 export interface AttributesGroupModalInterface {
-  name?: LanguageType[];
+  name?: Translation[];
   confirm: (values: CreateAttributesGroupInput | Omit<UpdateAttributesGroupInput, 'id'>) => void;
 }
 

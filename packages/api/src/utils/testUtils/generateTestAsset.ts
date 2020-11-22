@@ -1,7 +1,7 @@
-import { AssetType } from '../../entities/commonEntities';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import sharp from 'sharp';
+import { Asset } from '../../entities/Asset';
 
 export interface GenerateTestAssetsInterface {
   targetFileName: string;
@@ -15,7 +15,7 @@ async function generateTestAsset({
   dist,
   slug,
   assetIndex = 0,
-}: GenerateTestAssetsInterface): Promise<AssetType> {
+}: GenerateTestAssetsInterface): Promise<Asset> {
   try {
     const initialFilePath = `./src/test/${targetFileName}.png`;
     const filesPath = `./assets/${dist}/${slug}`;
@@ -37,7 +37,7 @@ async function generateTestAsset({
       return resolveAsset;
     }
 
-    return new Promise<AssetType>((resolve, reject) => {
+    return new Promise<Asset>((resolve, reject) => {
       sharp(initialFilePath)
         .webp()
         .toFile(finalPath)

@@ -1,5 +1,5 @@
 .frame {
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
 }
 
 .frameLow {

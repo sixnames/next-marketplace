@@ -2,7 +2,7 @@ import React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import classes from './Select.module.css';
 import { InputType, OnOffType } from '../../../types';
-import { LanguageType } from '../../../generated/apolloComponents';
+import { Translation } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
 import Icon from '../../Icon/Icon';
 
@@ -10,7 +10,7 @@ export interface SelectOptionInterface {
   id: string;
   slug?: string;
   nameString?: string;
-  name?: LanguageType[];
+  name?: Translation[];
   lastName?: string;
   [key: string]: any;
 }

@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
+import { DEFAULT_CITY, QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
 import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { getFullName } from '@yagu/shared';
 
@@ -131,6 +131,9 @@ describe('Companies list', () => {
 
     // add name
     cy.getByCy('nameString').type(MOCK_NEW_SHOP.nameString);
+
+    // add city
+    cy.getByCy('city').select(DEFAULT_CITY);
 
     // add emails
     cy.getByCy(`email-0`).type(MOCK_NEW_SHOP.contacts.emails[0]);

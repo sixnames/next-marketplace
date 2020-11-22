@@ -16,10 +16,10 @@
 
   padding-top: 4rem;
   padding-bottom: 2rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 5rem;
 }
 
-.mainFrame:not(.mainFrameNoBackground):after {
+.mainFrame:after {
   position: absolute;
   content: '';
   top: 0;
@@ -30,21 +30,9 @@
   background: linear-gradient(to left, rgba(var(--secondaryBackground-RGB), 1) 30%, rgba(var(--secondaryBackground-RGB), 0));
 }
 
-.mainFrameNoBackground {
-  background: none;
-}
-
 .mainFrameFeatures {
   position: relative;
   z-index: 2;
-}
-
-.mainFrameLowTop {
-  padding-top: 0;
-}
-
-.mainFrameLowBottom {
-  padding-bottom: 0;
 }
 
 .mainData {
@@ -54,10 +42,6 @@
   grid-template-columns: var(--secondaryColumnsWidht) 1fr;
   grid-column-gap: var(--mainColumnsGap);
   padding-right: 2rem;
-}
-
-.mainDataNoRightPadding {
-  padding-right: 0;
 }
 
 .image {
@@ -273,23 +257,27 @@
   margin-bottom: 0.5rem;
 }
 
-.priceValue span {
+.priceValue {
+  color: var(--textSecondaryColor);
+}
+
+.priceItem span {
   font-size: 2.5rem;
   font-weight: 600;
+  color: var(--textColor);
+}
+
+.priceItem:first-child {
+  margin-right: 0.75rem;
+}
+
+.priceItem:last-child {
+  margin-left: 0.75rem;
 }
 
 .helpers {
   display: flex;
   align-items: center;
-}
-
-.addToCartForm {
-  display: flex;
-  align-items: center;
-}
-
-.addToCartFormInput {
-  margin-right: 2rem;
 }
 
 .cardFeatures {
@@ -377,12 +365,12 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .mainFrame:not(.mainFrameNoBackground):after {
-    background: var(--secondaryBackground);
-  }
-
   .card {
     padding-top: 4rem;
+  }
+
+  .mainFrame:after {
+    background: var(--secondaryBackground);
   }
 
   .mainFrame {
@@ -406,10 +394,6 @@
 
   .mainData {
     padding-right: var(--formInputHeight);
-  }
-
-  .mainDataNoRightPadding {
-    padding-right: 0;
   }
 
   .btns {
@@ -447,22 +431,6 @@
     font-size: 2rem;
   }
 
-  .addToCartForm {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 1rem;
-  }
-
-  .addToCartFormInput {
-    margin-right: 0;
-    min-width: auto;
-    width: auto;
-  }
-
-  .addToCartForm .addToCartFormButton {
-    min-width: auto;
-  }
-
   .cardFeatures {
     grid-template-columns: 1fr;
   }
@@ -476,10 +444,6 @@
   .mainData {
     grid-template-columns: 1fr;
     padding-right: 0.5rem;
-  }
-
-  .mainDataNoRightPadding {
-    padding-right: 0;
   }
 
   .image {

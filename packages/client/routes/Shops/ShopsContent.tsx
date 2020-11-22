@@ -55,6 +55,11 @@ const ShopsContent: React.FC = () => {
       render: ({ cellData }) => cellData,
     },
     {
+      accessor: 'city.nameString',
+      headTitle: 'Город',
+      render: ({ cellData }) => cellData,
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <ContentItemControls

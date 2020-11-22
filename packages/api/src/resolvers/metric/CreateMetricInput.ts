@@ -1,9 +1,9 @@
 import { Field, InputType } from 'type-graphql';
 import { Metric } from '../../entities/Metric';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 
 @InputType()
 export class CreateMetricInput implements Partial<Metric> {
-  @Field(() => [LangInput])
-  name: LangInput[];
+  @Field(() => [TranslationInput])
+  name: TranslationInput[];
 }

@@ -1,17 +1,17 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { LangInput } from '../common/LangInput';
+import { TranslationInput } from '../commonInputs/TranslationInput';
 import { GenderEnum } from '../../entities/commonEntities';
 
 @InputType()
 export class RubricCatalogueTitleInput {
-  @Field((_type) => [LangInput])
-  defaultTitle: LangInput[];
+  @Field((_type) => [TranslationInput])
+  defaultTitle: TranslationInput[];
 
-  @Field((_type) => [LangInput], { nullable: true })
-  prefix?: LangInput[];
+  @Field((_type) => [TranslationInput], { nullable: true })
+  prefix?: TranslationInput[];
 
-  @Field((_type) => [LangInput])
-  keyword: LangInput[];
+  @Field((_type) => [TranslationInput])
+  keyword: TranslationInput[];
 
   @Field((_type) => GenderEnum)
   gender: GenderEnum;
@@ -19,8 +19,8 @@ export class RubricCatalogueTitleInput {
 
 @InputType()
 export class CreateRubricInput {
-  @Field((_type) => [LangInput])
-  name: LangInput[];
+  @Field((_type) => [TranslationInput])
+  name: TranslationInput[];
 
   @Field((_type) => ID, { nullable: true })
   parent?: string;

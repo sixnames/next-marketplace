@@ -3,9 +3,9 @@
 
   display: grid;
   grid-template-columns: var(--imageSize) 1fr;
-  grid-column-gap: var(--lineGapHalf);
+  grid-column-gap: var(--lineGap-100);
   align-items: flex-start;
-  margin-bottom: var(--lineGap);
+  margin-bottom: var(--lineGap-200);
 }
 
 .image {

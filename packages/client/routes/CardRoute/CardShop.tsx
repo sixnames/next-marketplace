@@ -88,7 +88,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
               ) : null}
             </div>
 
-            <div className={classes.available}>В наличии {` ${available}`}шт.</div>
+            <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
             <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
 

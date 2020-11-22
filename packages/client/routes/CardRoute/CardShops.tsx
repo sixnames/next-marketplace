@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   GetProductShopsInput,
   ProductCardShopFragment,
@@ -14,37 +14,20 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure
 import Button from '../../components/Buttons/Button';
 import classes from './CardShops.module.css';
 
-interface CardShopsInterface {
+interface CardShopsListInterface extends CardShopsInterface {
   productId: string;
+  shops: ProductCardShopFragment[];
+  setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
+  loading: boolean;
 }
 
-const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
-  const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
+const CardShopsList: React.FC<CardShopsListInterface> = ({
+  shops,
+  loading,
+  productId,
+  setInput,
+}) => {
   const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
-  const [input, setInput] = useState<GetProductShopsInput>(() => ({
-    productId,
-    sortBy: 'price',
-    sortDir: SORT_ASC as SortDirectionEnum,
-  }));
-  const { data, loading, error } = useGetCatalogueCardShopsQuery({
-    variables: {
-      input,
-    },
-  });
-
-  useEffect(() => {
-    if (data && !error && !loading) {
-      setShops(data.getProductShops);
-    }
-  }, [data, loading, error]);
-
-  if (error) {
-    return <RequestError message={'Ошибка загрузки магазинов'} />;
-  }
-
-  if (!shops) {
-    return <Spinner isNested />;
-  }
 
   const visibleShopsLimit = 4;
   const visibleShops = shops.slice(0, visibleShopsLimit);
@@ -76,7 +59,7 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
   ];
 
   return (
-    <div className={classes.frame}>
+    <Fragment>
       <div className={classes.controls}>
         <div className={classes.sort}>
           <div className={classes.sortLabel}>Сортировать</div>
@@ -106,6 +89,44 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
       ) : null}
 
       {loading ? <Spinner isNestedAbsolute /> : null}
+    </Fragment>
+  );
+};
+
+interface CardShopsInterface {
+  productId: string;
+}
+
+const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
+  const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
+  const [input, setInput] = useState<GetProductShopsInput>(() => ({
+    productId,
+    sortBy: 'price',
+    sortDir: SORT_ASC as SortDirectionEnum,
+  }));
+  const { data, loading, error } = useGetCatalogueCardShopsQuery({
+    variables: {
+      input,
+    },
+  });
+
+  useEffect(() => {
+    if (data && !error && !loading) {
+      setShops(data.getProductShops);
+    }
+  }, [data, loading, error]);
+
+  if (error) {
+    return <RequestError message={'Ошибка загрузки магазинов'} />;
+  }
+
+  if (!shops) {
+    return <Spinner isNested />;
+  }
+
+  return (
+    <div className={classes.frame}>
+      <CardShopsList productId={productId} setInput={setInput} shops={shops} loading={loading} />
     </div>
   );
 };

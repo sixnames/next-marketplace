@@ -8,6 +8,7 @@ import { AddProductToCartInput } from './AddProductToCartInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateProductInCartInput } from './UpdateProductInCartInput';
 import { DeleteProductFromCartInput } from './DeleteProductFromCartInput';
+import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -19,6 +20,7 @@ class CartPayloadType extends PayloadType() {
 export class CartResolver {
   @Mutation(() => CartPayloadType)
   async addProductToCart(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req, res }: ContextInterface,
     @Arg('input') input: AddProductToCartInput,
   ): Promise<CartPayloadType> {
@@ -43,7 +45,7 @@ export class CartResolver {
         if (!newCart) {
           return {
             success: false,
-            message: 'error',
+            message: await getApiMessage('carts.addProduct.cartNotFound'),
           };
         }
 
@@ -52,7 +54,7 @@ export class CartResolver {
 
         return {
           success: true,
-          message: 'success',
+          message: await getApiMessage('carts.addProduct.success'),
           cart: newCart,
         };
       }
@@ -78,13 +80,13 @@ export class CartResolver {
         if (!updatedCart) {
           return {
             success: false,
-            message: 'error',
+            message: await getApiMessage('carts.addProduct.error'),
           };
         }
 
         return {
           success: true,
-          message: 'success',
+          message: await getApiMessage('carts.addProduct.success'),
           cart: updatedCart,
         };
       }
@@ -108,13 +110,13 @@ export class CartResolver {
       if (!updatedCart) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('carts.addProduct.error'),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage('carts.addProduct.success'),
         cart: updatedCart,
       };
     } catch (e) {
@@ -127,6 +129,7 @@ export class CartResolver {
 
   @Mutation(() => CartPayloadType)
   async updateProductInCart(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req }: ContextInterface,
     @Arg('input') input: UpdateProductInCartInput,
   ): Promise<CartPayloadType> {
@@ -141,7 +144,7 @@ export class CartResolver {
       if (!cart) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('carts.updateProduct.cartNotFound'),
         };
       }
 
@@ -161,13 +164,13 @@ export class CartResolver {
       if (!updatedCart) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('carts.updateProduct.error'),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage('carts.updateProduct.success'),
         cart: updatedCart,
       };
     } catch (e) {
@@ -180,6 +183,7 @@ export class CartResolver {
 
   @Mutation(() => CartPayloadType)
   async deleteProductFromCart(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req }: ContextInterface,
     @Arg('input') input: DeleteProductFromCartInput,
   ): Promise<CartPayloadType> {
@@ -194,7 +198,7 @@ export class CartResolver {
       if (!cart) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('carts.deleteProduct.cartNotFound'),
         };
       }
 
@@ -215,13 +219,13 @@ export class CartResolver {
       if (!updatedCart) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('carts.deleteProduct.error'),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage('carts.deleteProduct.success'),
         cart: updatedCart,
       };
     } catch (e) {

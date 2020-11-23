@@ -18,6 +18,7 @@ import {
   companiesMessages,
   shopsMessages,
   shopProductsMessages,
+  cartsMessages,
 } from '@yagu/config';
 import { Translation } from '../../entities/Translation';
 
@@ -81,6 +82,7 @@ async function createInitialApiMessages(): Promise<MessagesGroup[]> {
     { name: 'Страны', messages: countriesMessages },
     { name: 'Роли', messages: rolesMessages },
     { name: 'Пользователи', messages: usersMessages },
+    { name: 'Корзина', messages: cartsMessages },
     { name: 'Группы опций', messages: optionsGroupsMessages },
     { name: 'Группы атрибутов', messages: attributesGroupsMessages },
     { name: 'Типы рубрик', messages: rubricVariantsMessages },

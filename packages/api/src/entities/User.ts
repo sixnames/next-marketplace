@@ -9,6 +9,8 @@ import getApiMessage from '../utils/translations/getApiMessage';
 import { compare } from 'bcryptjs';
 import { ContextInterface } from '../types/context';
 import { FormattedPhone } from './FormattedPhone';
+import { ShopProduct } from './ShopProduct';
+import { Cart } from './Cart';
 
 type Request = ContextInterface['req'];
 
@@ -49,6 +51,10 @@ export class User extends TimeStamps {
   @Field((_type) => Role)
   @prop({ ref: Role })
   role: string;
+
+  @Field((_type) => ShopProduct, { nullable: true })
+  @prop({ ref: () => Cart })
+  cart?: string | null;
 
   @Field((_type) => FormattedPhone)
   readonly formattedPhone: FormattedPhone;

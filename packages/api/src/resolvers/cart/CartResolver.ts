@@ -9,6 +9,12 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateProductInCartInput } from './UpdateProductInCartInput';
 import { DeleteProductFromCartInput } from './DeleteProductFromCartInput';
 import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+import { ValidateMethod } from '../../decorators/methodDecorators';
+import {
+  addProductToCartSchema,
+  deleteProductFromCartSchema,
+  updateProductInCartSchema,
+} from '@yagu/validation';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -19,6 +25,7 @@ class CartPayloadType extends PayloadType() {
 @Resolver((_for) => Cart)
 export class CartResolver {
   @Mutation(() => CartPayloadType)
+  @ValidateMethod({ schema: addProductToCartSchema })
   async addProductToCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req, res }: ContextInterface,
@@ -128,6 +135,7 @@ export class CartResolver {
   }
 
   @Mutation(() => CartPayloadType)
+  @ValidateMethod({ schema: updateProductInCartSchema })
   async updateProductInCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req }: ContextInterface,
@@ -182,6 +190,7 @@ export class CartResolver {
   }
 
   @Mutation(() => CartPayloadType)
+  @ValidateMethod({ schema: deleteProductFromCartSchema })
   async deleteProductFromCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Ctx() { req }: ContextInterface,

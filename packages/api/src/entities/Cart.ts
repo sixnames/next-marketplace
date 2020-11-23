@@ -1,5 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { prop } from '@typegoose/typegoose';
+import { getModelForClass, prop } from '@typegoose/typegoose';
 import { CartProduct } from './CartProduct';
 
 @ObjectType()
@@ -8,8 +8,11 @@ export class Cart {
   readonly id: string;
 
   @Field((_type) => [CartProduct])
-  @prop({ ref: () => CartProduct })
+  @prop({ type: CartProduct, required: true })
   products: string[];
+
+  @Field((_type) => Int)
+  readonly productsCount?: number;
 
   @Field((_type) => Int)
   readonly totalPrice?: number;
@@ -17,3 +20,5 @@ export class Cart {
   @Field((_type) => String)
   readonly formattedTotalPrice?: string;
 }
+
+export const CartModel = getModelForClass(Cart);

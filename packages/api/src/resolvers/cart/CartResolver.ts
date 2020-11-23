@@ -7,6 +7,7 @@ import cookie from 'cookie';
 import { AddProductToCartInput } from './AddProductToCartInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateProductInCartInput } from './UpdateProductInCartInput';
+import { DeleteProductFromCartInput } from './DeleteProductFromCartInput';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -153,6 +154,60 @@ export class CartResolver {
         },
         {
           arrayFilters: [{ 'product.shopProduct': { $eq: shopProductId } }],
+          new: true,
+        },
+      );
+
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'success',
+        cart: updatedCart,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => CartPayloadType)
+  async deleteProductFromCart(
+    @Ctx() { req }: ContextInterface,
+    @Arg('input') input: DeleteProductFromCartInput,
+  ): Promise<CartPayloadType> {
+    try {
+      const { cartProductId } = input;
+      // Get cart id from cookies
+      const cookies = cookie.parse(req.headers.cookie || '');
+      const cartId = cookies[CART_COOKIE_KEY];
+      const cart = await CartModel.findById(cartId);
+
+      // If cart not exist
+      if (!cart) {
+        return {
+          success: false,
+          message: 'error',
+        };
+      }
+
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cartId,
+        {
+          $pull: {
+            products: {
+              _id: { $eq: cartProductId },
+            },
+          },
+        },
+        {
           new: true,
         },
       );

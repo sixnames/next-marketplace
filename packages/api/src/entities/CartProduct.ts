@@ -7,6 +7,9 @@ export class CartProduct {
   @Field((_type) => ID)
   readonly id?: string;
 
+  @Field((_type) => ID)
+  readonly _id?: any;
+
   @Field((_type) => ShopProduct)
   @prop({ ref: () => ShopProduct })
   shopProduct: string;

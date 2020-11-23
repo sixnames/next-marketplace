@@ -179,5 +179,63 @@ describe('Cart', () => {
     expect(secondCartProduct.amount).toEqual(10);
     expect(addProductToCartPayloadC.data.addProductToCart.success).toBeTruthy();
     expect(addProductToCartPayloadC.data.addProductToCart.cart.products).toHaveLength(2);
+
+    // Should update second product in cart
+    const nowProductAmount = 3;
+    const updateProductInCartPayload = await testClientWithHeaders.mutate<any>(
+      gql`
+        mutation UpdateProductInCart($input: UpdateProductInCartInput!) {
+          updateProductInCart(input: $input) {
+            success
+            message
+            cart {
+              ...Cart
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+      {
+        variables: {
+          input: {
+            shopProductId: mockData.shopAProductB.id,
+            amount: nowProductAmount,
+          },
+        },
+      },
+    );
+    const updatedProductInCart = updateProductInCartPayload.data.updateProductInCart.cart.products.find(
+      (product: any) => {
+        const { shopProduct } = product;
+        return shopProduct.id === mockData.shopAProductB.id;
+      },
+    );
+    expect(updatedProductInCart.amount).toEqual(nowProductAmount);
+    expect(updateProductInCartPayload.data.updateProductInCart.success).toBeTruthy();
+
+    // Should delete second product from cart
+    const deleteProductFromCartPayload = await testClientWithHeaders.mutate<any>(
+      gql`
+        mutation DeleteProductFromCart($input: DeleteProductFromCartInput!) {
+          deleteProductFromCart(input: $input) {
+            success
+            message
+            cart {
+              ...Cart
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+      {
+        variables: {
+          input: {
+            cartProductId: updatedProductInCart.id,
+          },
+        },
+      },
+    );
+    expect(deleteProductFromCartPayload.data.deleteProductFromCart.success).toBeTruthy();
+    expect(deleteProductFromCartPayload.data.deleteProductFromCart.cart.products).toHaveLength(1);
   });
 });

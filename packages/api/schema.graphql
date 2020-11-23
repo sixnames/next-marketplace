@@ -158,11 +158,13 @@ type AttributeViewOption {
 }
 
 type Cart {
+  createdAt: DateTime!
   formattedTotalPrice: String!
   id: ID!
   products: [CartProduct!]!
   productsCount: Int!
   totalPrice: Int!
+  updatedAt: DateTime!
 }
 
 type CartPayloadType {
@@ -591,6 +593,7 @@ type Mutation {
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateProduct(input: UpdateProductInput!): ProductPayloadType!
+  updateProductInCart(input: UpdateProductInCartInput!): CartPayloadType!
   updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
@@ -1361,6 +1364,11 @@ input UpdateOptionsGroupInput {
   id: ID!
   name: [TranslationInput!]!
   variant: OptionsGroupVariantEnum
+}
+
+input UpdateProductInCartInput {
+  amount: Int!
+  shopProductId: ID!
 }
 
 input UpdateProductInput {

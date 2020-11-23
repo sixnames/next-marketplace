@@ -10,12 +10,12 @@ import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricPr
 import { alwaysArray } from '@yagu/shared';
 import { ProductAttributesGroup } from './ProductAttributesGroup';
 import { ProductCardFeatures } from './ProductCardFeatures';
-import { ProductShop } from './ProductShop';
 import { ProductCardPrices } from './ProductCardPrices';
 import { ProductConnection } from './ProductConnection';
 import { CityCounter } from './CityCounter';
 import { Asset } from './Asset';
 import { Translation } from './Translation';
+import { ShopProduct } from './ShopProduct';
 
 interface InArrayInterface {
   $in: any[];
@@ -126,8 +126,8 @@ export class Product extends TimeStamps {
   @Field(() => Int)
   readonly shopsCount: number;
 
-  @Field(() => [ProductShop])
-  readonly shops: ProductShop[];
+  @Field(() => [ShopProduct])
+  readonly shops: ShopProduct[];
 
   @Field()
   readonly createdAt: Date;

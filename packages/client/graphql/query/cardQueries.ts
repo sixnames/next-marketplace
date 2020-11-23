@@ -33,8 +33,8 @@ export const cardConnectionFragment = gql`
   }
 `;
 
-export const productCardShopNodeFragment = gql`
-  fragment ProductCardShopNode on Shop {
+export const shopSnippetFragment = gql`
+  fragment ShopSnippet on Shop {
     id
     nameString
     slug
@@ -64,18 +64,18 @@ export const productCardShopNodeFragment = gql`
 `;
 
 export const productCardShopFragment = gql`
-  fragment ProductCardShop on ProductShop {
+  fragment ProductCardShop on ShopProduct {
     id
     itemId
     available
     formattedPrice
     formattedOldPrice
     discountedPercent
-    node {
-      ...ProductCardShopNode
+    shop {
+      ...ShopSnippet
     }
   }
-  ${productCardShopNodeFragment}
+  ${shopSnippetFragment}
 `;
 
 export const productCardFragment = gql`

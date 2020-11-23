@@ -1,4 +1,4 @@
-import { Arg, Field, FieldResolver, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
+import { Arg, Field, FieldResolver, Int, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { Product, ProductModel } from '../../entities/Product';
 import { DocumentType } from '@typegoose/typegoose';
@@ -14,6 +14,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { updateShopProductSchema } from '@yagu/validation';
+import { getCurrencyString, getPercentage } from '@yagu/shared';
 
 const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(ShopProduct.name);
 
@@ -88,5 +89,42 @@ export class ShopProductResolver {
       throw Error('Shop not found on ShopProductResolver.shop');
     }
     return shop;
+  }
+
+  @FieldResolver((_returns) => String)
+  async formattedPrice(
+    @Root() shopProduct: DocumentType<ShopProduct>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    return getCurrencyString({ value: shopProduct.price, lang });
+  }
+
+  @FieldResolver((_returns) => String, { nullable: true })
+  async formattedOldPrice(
+    @Root() shopProduct: DocumentType<ShopProduct>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string | null> {
+    const { oldPrices } = shopProduct;
+    const lastOldPrice = oldPrices[oldPrices.length - 1];
+
+    return lastOldPrice
+      ? getCurrencyString({
+          value: lastOldPrice.price,
+          lang,
+        })
+      : null;
+  }
+
+  @FieldResolver((_returns) => Int, { nullable: true })
+  async discountedPercent(@Root() shopProduct: DocumentType<ShopProduct>): Promise<number | null> {
+    const { oldPrices } = shopProduct;
+    const lastOldPrice = oldPrices[oldPrices.length - 1];
+
+    return lastOldPrice && lastOldPrice.price > shopProduct.price
+      ? getPercentage({
+          fullValue: lastOldPrice.price,
+          partialValue: shopProduct.price,
+        })
+      : null;
   }
 }

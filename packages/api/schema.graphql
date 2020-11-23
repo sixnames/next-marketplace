@@ -740,7 +740,7 @@ type Product {
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
-  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ProductShop!]!
+  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ShopProduct!]!
   shopsCount: Int!
   slug: String!
   updatedAt: DateTime!
@@ -875,23 +875,6 @@ input ProductsCountersInput {
   rubric: ID
 }
 
-type ProductShop {
-  available: Int!
-  city: City!
-  createdAt: DateTime!
-  discountedPercent: Int
-  formattedOldPrice: String
-  formattedPrice: String!
-  id: ID!
-  itemId: Int!
-  node: Shop!
-  oldPrices: [ShopProductOldPrice!]!
-  price: Float!
-  product: Product!
-  shop: Shop!
-  updatedAt: DateTime!
-}
-
 input ProductShopsInput {
   sortBy: String = "price"
   sortDir: SortDirectionEnum = asc
@@ -955,7 +938,7 @@ type Query {
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
-  getProductShops(input: GetProductShopsInput!): [ProductShop!]!
+  getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
@@ -1176,6 +1159,9 @@ type ShopProduct {
   available: Int!
   city: City!
   createdAt: DateTime!
+  discountedPercent: Int
+  formattedOldPrice: String
+  formattedPrice: String!
   id: ID!
   itemId: Int!
   oldPrices: [ShopProductOldPrice!]!
@@ -1424,6 +1410,7 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
+  cart: ShopProduct
   createdAt: DateTime!
   email: String!
   formattedPhone: FormattedPhone!

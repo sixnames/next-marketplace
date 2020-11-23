@@ -13,20 +13,20 @@ import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
 
 interface CardShopInterface {
-  shop: ProductCardShopFragment;
+  shopProduct: ProductCardShopFragment;
 }
 
-const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
+const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
-  const { node, formattedOldPrice, formattedPrice, discountedPercent, available } = shop;
+  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   const {
     assets,
     nameString,
     productsCount,
     address: { formattedAddress },
     contacts: { formattedPhones },
-  } = node;
+  } = shop;
   const mainImage = assets[0].url;
 
   return (

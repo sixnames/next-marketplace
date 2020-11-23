@@ -9,7 +9,7 @@ export class Cart {
 
   @Field((_type) => [CartProduct])
   @prop({ type: CartProduct, required: true })
-  products: string[];
+  products: CartProduct[];
 
   @Field((_type) => Int)
   readonly productsCount?: number;

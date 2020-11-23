@@ -109,6 +109,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
                 }}
                 className={classes.input}
                 min={1}
+                max={available}
                 name={'amount'}
                 value={amount}
               />

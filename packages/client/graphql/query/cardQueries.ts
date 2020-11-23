@@ -63,8 +63,8 @@ export const shopSnippetFragment = gql`
   }
 `;
 
-export const productCardShopFragment = gql`
-  fragment ProductCardShop on ShopProduct {
+export const shopProductSnippetFragment = gql`
+  fragment ShopProductSnippet on ShopProduct {
     id
     itemId
     available
@@ -121,7 +121,7 @@ export const productCardFragment = gql`
 export const CATALOGUE_CARD_SHOPS_QUERY = gql`
   query GetCatalogueCardShops($input: GetProductShopsInput!) {
     getProductShops(input: $input) {
-      ...ProductCardShop
+      ...ShopProductSnippet
     }
   }
   ${productCardFragment}

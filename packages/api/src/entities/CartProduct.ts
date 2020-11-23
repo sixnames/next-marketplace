@@ -5,7 +5,7 @@ import { ShopProduct } from './ShopProduct';
 @ObjectType()
 export class CartProduct {
   @Field((_type) => ID)
-  readonly id: string;
+  readonly id?: string;
 
   @Field((_type) => ShopProduct)
   @prop({ ref: () => ShopProduct })
@@ -13,5 +13,5 @@ export class CartProduct {
 
   @Field(() => Int)
   @prop({ type: Number, required: true })
-  readonly amount: number;
+  amount: number;
 }

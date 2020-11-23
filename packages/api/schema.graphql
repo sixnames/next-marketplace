@@ -32,6 +32,11 @@ input AddOptionToGroupInput {
   variants: [OptionVariantInput!]
 }
 
+input AddProductToCartInput {
+  amount: Int!
+  shopProductId: ID!
+}
+
 input AddProductToConnectionInput {
   addProductId: ID!
   connectionId: ID!
@@ -150,6 +155,26 @@ enum AttributeVariantEnum {
 type AttributeViewOption {
   id: String!
   nameString: String!
+}
+
+type Cart {
+  formattedTotalPrice: String!
+  id: ID!
+  products: [CartProduct!]!
+  productsCount: Int!
+  totalPrice: Int!
+}
+
+type CartPayloadType {
+  cart: Cart
+  message: String!
+  success: Boolean!
+}
+
+type CartProduct {
+  amount: Int!
+  id: ID!
+  shopProduct: ShopProduct!
 }
 
 type CatalogueData {
@@ -503,6 +528,7 @@ type Mutation {
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToCart(input: AddProductToCartInput!): CartPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
@@ -1410,7 +1436,7 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
-  cart: ShopProduct
+  cart: Cart
   createdAt: DateTime!
   email: String!
   formattedPhone: FormattedPhone!

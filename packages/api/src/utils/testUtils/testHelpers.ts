@@ -25,14 +25,16 @@ interface AuthenticatedUserMutationInterface {
 interface GetTestClientWithUserInterface {
   city?: string;
   lang?: string;
+  headers?: any;
 }
 
 export async function testClientWithContext(
   args?: GetTestClientWithUserInterface,
 ): Promise<WithUserMutationInterface> {
-  const { city = DEFAULT_CITY, lang = DEFAULT_LANG } = args || {
+  const { city = DEFAULT_CITY, lang = DEFAULT_LANG, headers } = args || {
     city: DEFAULT_CITY,
     lang: DEFAULT_LANG,
+    headers: undefined,
   };
 
   const { setOptions, mutate, query } = testClient;
@@ -55,6 +57,7 @@ export async function testClientWithContext(
       lang,
       defaultLang: DEFAULT_LANG,
       session,
+      headers,
     },
   });
 

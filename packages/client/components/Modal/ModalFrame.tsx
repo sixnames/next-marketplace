@@ -2,11 +2,11 @@ import React from 'react';
 import ButtonCross from '../Buttons/ButtonCross';
 import { useAppContext } from '../../context/appContext';
 import classes from './ModalFrame.module.css';
+import { ModalSizeType } from '../../types';
 
 interface ModalFrameInterface {
   className?: string;
-  wide?: boolean;
-  mid?: boolean;
+  size?: ModalSizeType;
   withInner?: boolean;
   warning?: boolean;
   testId?: string;
@@ -15,22 +15,23 @@ interface ModalFrameInterface {
 const ModalFrame: React.FC<ModalFrameInterface> = ({
   children,
   className,
-  wide,
-  mid,
   withInner,
   warning,
   testId,
+  size = 'normal',
 }) => {
   const { hideModal } = useAppContext();
+
+  const sizeClass = `${size === 'small' ? classes.small : ''} ${
+    size === 'midWide' ? classes.midWide : ''
+  } ${size === 'wide' ? classes.wide : ''}`;
 
   return (
     <div
       data-cy={testId}
-      className={`${classes.frame} ${warning ? classes.warning : ''} ${
+      className={`${classes.frame} ${sizeClass} ${warning ? classes.warning : ''} ${
         className ? className : ''
-      } ${wide ? classes.wide : ''} ${mid ? classes.midWide : ''} ${
-        withInner ? classes.withInner : ''
-      }`}
+      } ${withInner ? classes.withInner : ''}`}
     >
       <div>{children}</div>
       <ButtonCross onClick={hideModal} className={classes.close} testId={'close-modal'} />

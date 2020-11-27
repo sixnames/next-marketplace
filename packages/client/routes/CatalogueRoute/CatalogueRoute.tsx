@@ -37,8 +37,12 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
         {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}
 
         <div className={`${classes.list} ${isFilterVisible ? classes.listWithFilter : ''}`}>
-          {docs.map((product: any) => (
-            <ProductSnippetGrid product={product} key={product.id} />
+          {docs.map((product) => (
+            <ProductSnippetGrid
+              product={product}
+              key={product.id}
+              testId={`catalogue-item-${product.slug}`}
+            />
           ))}
         </div>
 

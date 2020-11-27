@@ -8,6 +8,12 @@ declare namespace Cypress {
     subjectType?: string;
   }
 
+  interface GetByTranslationFieldCyInterface {
+    languages: any[] | null | undefined;
+    chosenLanguage?: string;
+    cyPrefix?: string;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable {
     /**
@@ -15,6 +21,7 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
+    getByTranslationFieldCy(props: GetByTranslationFieldCyInterface): Chainable<Element>;
     shouldSuccess(): void;
     shouldError(): void;
     shouldNotError(): void;

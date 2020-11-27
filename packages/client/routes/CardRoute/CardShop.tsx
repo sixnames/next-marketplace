@@ -11,19 +11,21 @@ import Currency from '../../components/Currency/Currency';
 import Percent from '../../components/Percent/Percent';
 import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
+import { CART_MODAL } from '../../config/modals';
 
 interface CardShopInterface {
   shopProduct: ProductCardShopFragment;
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
-  const { isMobile } = useAppContext();
+  const { isMobile, showModal } = useAppContext();
   const [amount, setAmount] = useState<number>(1);
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   const {
     assets,
     nameString,
     productsCount,
+    slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
   } = shop;
@@ -104,6 +106,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           ) : (
             <div className={`${classes.column} ${classes.columnLast}`}>
               <SpinnerInput
+                plusTestId={`card-shops-${slug}-plus`}
+                minusTestId={`card-shops-${slug}-minus`}
+                testId={`card-shops-${slug}-input`}
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
@@ -113,7 +118,16 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
                 name={'amount'}
                 value={amount}
               />
-              <Button>В корзину</Button>
+              <Button
+                testId={`card-shops-${slug}-add-to-cart`}
+                onClick={() => {
+                  showModal({
+                    type: CART_MODAL,
+                  });
+                }}
+              >
+                В корзину
+              </Button>
             </div>
           )}
         </div>

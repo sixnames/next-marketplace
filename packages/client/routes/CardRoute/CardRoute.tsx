@@ -52,6 +52,7 @@ interface CardRouteInterface {
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const {
     id,
+    slug,
     mainImage,
     nameString,
     cardNameString,
@@ -81,7 +82,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   ];
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card} data-cy={`card-${slug}`}>
       <Breadcrumbs />
 
       <Inner>
@@ -203,7 +204,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
       </Inner>
 
       {/* Tabs */}
-      <ReachTabs config={tabsConfig}>
+      <ReachTabs config={tabsConfig} testId={`card-tabs`}>
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>

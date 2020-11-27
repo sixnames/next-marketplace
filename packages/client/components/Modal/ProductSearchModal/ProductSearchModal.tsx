@@ -279,7 +279,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   const { getRubricsTree } = data;
 
   return (
-    <ModalFrame testId={testId} wide>
+    <ModalFrame testId={testId} size={'wide'}>
       <ModalTitle
         right={
           <Button

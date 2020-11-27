@@ -16,67 +16,67 @@ describe('Cart', () => {
     await clearTestData();
   });
 
+  const shopSnippetFragment = gql`
+    fragment ShopSnippet on Shop {
+      id
+      nameString
+      slug
+      productsCount
+      address {
+        formattedAddress
+        formattedCoordinates {
+          lat
+          lng
+        }
+      }
+      contacts {
+        formattedPhones {
+          raw
+          readable
+        }
+      }
+      assets {
+        index
+        url
+      }
+      logo {
+        index
+        url
+      }
+    }
+  `;
+
+  const shopProductSnippetFragment = gql`
+    fragment ShopProductSnippet on ShopProduct {
+      id
+      itemId
+      available
+      formattedPrice
+      formattedOldPrice
+      discountedPercent
+      shop {
+        ...ShopSnippet
+      }
+    }
+    ${shopSnippetFragment}
+  `;
+
+  const cartFragment = gql`
+    fragment Cart on Cart {
+      id
+      products {
+        id
+        amount
+        shopProduct {
+          ...ShopProductSnippet
+        }
+      }
+    }
+    ${shopProductSnippetFragment}
+  `;
+
   it('Should CRUD Cart', async () => {
     const { mutate } = await testClientWithContext();
-
-    const shopSnippetFragment = gql`
-      fragment ShopSnippet on Shop {
-        id
-        nameString
-        slug
-        productsCount
-        address {
-          formattedAddress
-          formattedCoordinates {
-            lat
-            lng
-          }
-        }
-        contacts {
-          formattedPhones {
-            raw
-            readable
-          }
-        }
-        assets {
-          index
-          url
-        }
-        logo {
-          index
-          url
-        }
-      }
-    `;
-
-    const shopProductSnippetFragment = gql`
-      fragment ShopProductSnippet on ShopProduct {
-        id
-        itemId
-        available
-        formattedPrice
-        formattedOldPrice
-        discountedPercent
-        shop {
-          ...ShopSnippet
-        }
-      }
-      ${shopSnippetFragment}
-    `;
-
-    const cartFragment = gql`
-      fragment Cart on Cart {
-        id
-        products {
-          id
-          amount
-          shopProduct {
-            ...ShopProductSnippet
-          }
-        }
-      }
-      ${shopProductSnippetFragment}
-    `;
 
     // Should create cart and add one product
     const addProductToCartPayload = await mutate<any>(
@@ -237,5 +237,20 @@ describe('Cart', () => {
     );
     expect(deleteProductFromCartPayload.data.deleteProductFromCart.success).toBeTruthy();
     expect(deleteProductFromCartPayload.data.deleteProductFromCart.cart.products).toHaveLength(1);
+  });
+
+  it('Should return session Cart', async () => {
+    const { query } = await testClientWithContext();
+    const getSessionCartPayload = await query<any>(
+      gql`
+        query GetSessionCart {
+          getSessionCart {
+            ...Cart
+          }
+        }
+        ${cartFragment}
+      `,
+    );
+    expect(getSessionCartPayload.data.getSessionCart).toBeDefined();
   });
 });

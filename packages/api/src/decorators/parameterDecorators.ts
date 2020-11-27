@@ -1,14 +1,43 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { AuthDecoratorConfigInterface } from './methodDecorators';
-import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
+import { CART_COOKIE_KEY, MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
 import { Translation } from '../entities/Translation';
+import cookie from 'cookie';
+import { CartModel } from '../entities/Cart';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
     return context.req.session!.user;
+  });
+}
+
+export function SessionCart() {
+  return createParamDecorator<ContextInterface>(async ({ context }) => {
+    // Get cart id from cookies
+    const cookies = cookie.parse(context.req.headers.cookie || '');
+    const cartId = cookies[CART_COOKIE_KEY];
+    const cart = await CartModel.findById(cartId);
+
+    // If cart not exist
+    if (!cart) {
+      const newCart = await CartModel.create({
+        products: [],
+      });
+
+      if (!newCart) {
+        throw Error('Cart creation error');
+      }
+
+      // Set cart id to cookies
+      context.res.cookie(CART_COOKIE_KEY, newCart.id);
+
+      return newCart;
+    }
+
+    return cart;
   });
 }
 

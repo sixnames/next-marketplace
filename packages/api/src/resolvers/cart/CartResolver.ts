@@ -1,14 +1,15 @@
 import { Cart, CartModel } from '../../entities/Cart';
-import { Arg, Ctx, Field, Mutation, ObjectType, Resolver } from 'type-graphql';
+import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import PayloadType from '../commonInputs/PayloadType';
-import { ContextInterface } from '../../types/context';
-import { CART_COOKIE_KEY } from '@yagu/config';
-import cookie from 'cookie';
 import { AddProductToCartInput } from './AddProductToCartInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateProductInCartInput } from './UpdateProductInCartInput';
 import { DeleteProductFromCartInput } from './DeleteProductFromCartInput';
-import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+import {
+  Localization,
+  LocalizationPayloadInterface,
+  SessionCart,
+} from '../../decorators/parameterDecorators';
 import { ValidateMethod } from '../../decorators/methodDecorators';
 import {
   addProductToCartSchema,
@@ -24,47 +25,20 @@ class CartPayloadType extends PayloadType() {
 
 @Resolver((_for) => Cart)
 export class CartResolver {
+  @Query(() => Cart)
+  async getSessionCart(@SessionCart() cart: Cart): Promise<Cart> {
+    return cart;
+  }
+
   @Mutation(() => CartPayloadType)
   @ValidateMethod({ schema: addProductToCartSchema })
   async addProductToCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
-    @Ctx() { req, res }: ContextInterface,
+    @SessionCart() cart: Cart,
     @Arg('input') input: AddProductToCartInput,
   ): Promise<CartPayloadType> {
     try {
       const { shopProductId, amount } = input;
-      // Get cart id from cookies
-      const cookies = cookie.parse(req.headers.cookie || '');
-      const cartId = cookies[CART_COOKIE_KEY];
-      const cart = await CartModel.findById(cartId);
-
-      // If cart not exist
-      if (!cart) {
-        const newCart = await CartModel.create({
-          products: [
-            {
-              shopProduct: shopProductId,
-              amount,
-            },
-          ],
-        });
-
-        if (!newCart) {
-          return {
-            success: false,
-            message: await getApiMessage('carts.addProduct.cartNotFound'),
-          };
-        }
-
-        // Set cart id to cookies
-        res.cookie(CART_COOKIE_KEY, newCart.id);
-
-        return {
-          success: true,
-          message: await getApiMessage('carts.addProduct.success'),
-          cart: newCart,
-        };
-      }
 
       // If product already exist
       const productExist = cart.products.find((product) => {
@@ -72,7 +46,7 @@ export class CartResolver {
       });
       if (productExist) {
         const updatedCart = await CartModel.findByIdAndUpdate(
-          cartId,
+          cart.id,
           {
             $inc: {
               'products.$[product].amount': amount,
@@ -100,7 +74,7 @@ export class CartResolver {
 
       // Add product to cart
       const updatedCart = await CartModel.findByIdAndUpdate(
-        cartId,
+        cart.id,
         {
           $push: {
             products: {
@@ -138,26 +112,14 @@ export class CartResolver {
   @ValidateMethod({ schema: updateProductInCartSchema })
   async updateProductInCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
-    @Ctx() { req }: ContextInterface,
+    @SessionCart() cart: Cart,
     @Arg('input') input: UpdateProductInCartInput,
   ): Promise<CartPayloadType> {
     try {
       const { shopProductId, amount } = input;
-      // Get cart id from cookies
-      const cookies = cookie.parse(req.headers.cookie || '');
-      const cartId = cookies[CART_COOKIE_KEY];
-      const cart = await CartModel.findById(cartId);
-
-      // If cart not exist
-      if (!cart) {
-        return {
-          success: false,
-          message: await getApiMessage('carts.updateProduct.cartNotFound'),
-        };
-      }
 
       const updatedCart = await CartModel.findByIdAndUpdate(
-        cartId,
+        cart.id,
         {
           $set: {
             'products.$[product].amount': amount,
@@ -193,26 +155,14 @@ export class CartResolver {
   @ValidateMethod({ schema: deleteProductFromCartSchema })
   async deleteProductFromCart(
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
-    @Ctx() { req }: ContextInterface,
+    @SessionCart() cart: Cart,
     @Arg('input') input: DeleteProductFromCartInput,
   ): Promise<CartPayloadType> {
     try {
       const { cartProductId } = input;
-      // Get cart id from cookies
-      const cookies = cookie.parse(req.headers.cookie || '');
-      const cartId = cookies[CART_COOKIE_KEY];
-      const cart = await CartModel.findById(cartId);
-
-      // If cart not exist
-      if (!cart) {
-        return {
-          success: false,
-          message: await getApiMessage('carts.deleteProduct.cartNotFound'),
-        };
-      }
 
       const updatedCart = await CartModel.findByIdAndUpdate(
-        cartId,
+        cart.id,
         {
           $pull: {
             products: {

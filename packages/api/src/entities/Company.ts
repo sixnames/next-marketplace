@@ -34,11 +34,11 @@ export class Company extends TimeStamps {
   logo: Asset;
 
   @Field((_type) => User)
-  @prop({ ref: () => User })
+  @prop({ ref: () => 'User' })
   owner: string;
 
   @Field((_type) => [User])
-  @prop({ ref: () => User })
+  @prop({ ref: () => 'User' })
   staff: string[];
 
   @Field((_type) => Contacts)

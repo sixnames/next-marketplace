@@ -93,6 +93,21 @@ const messagesKeys = [
   'validation.languages.key',
   'validation.languages.nativeName',
 
+  // Carts ----------
+  'carts.addProduct.cartNotFound',
+  'carts.addProduct.error',
+  'carts.addProduct.success',
+  'carts.updateProduct.cartNotFound',
+  'carts.updateProduct.error',
+  'carts.updateProduct.success',
+  'carts.deleteProduct.cartNotFound',
+  'carts.deleteProduct.error',
+  'carts.deleteProduct.success',
+  // Carts validation
+  'validation.carts.shopProductId',
+  'validation.carts.amount',
+  'validation.carts.cartProductId',
+
   // Roles ----------
   'roles.create.duplicate',
   'roles.create.error',

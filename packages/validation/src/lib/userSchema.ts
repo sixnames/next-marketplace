@@ -1,5 +1,11 @@
 import * as Yup from 'yup';
-import { phoneSchema, minNameLength, maxNameLength, emailSchema } from './schemaTemplates';
+import {
+  phoneSchema,
+  minNameLength,
+  maxNameLength,
+  emailSchema,
+  idSchema,
+} from './schemaTemplates';
 import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
@@ -9,14 +15,7 @@ const minPasswordLength = 5;
 const maxPasswordLength = 30;
 
 const userIdSchema = (args: MultiLangSchemaMessagesInterface) =>
-  Yup.string()
-    .nullable()
-    .required(
-      getFieldValidationMessage({
-        ...args,
-        key: 'validation.users.id',
-      }),
-    );
+  idSchema({ args, key: 'validation.users.id' });
 
 const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()

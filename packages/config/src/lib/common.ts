@@ -1,3 +1,10 @@
+// Time
+export const ONE_SECOND = 1000;
+export const ONE_MINUTE = ONE_SECOND * 60;
+export const ONE_HOUR = ONE_MINUTE * 60;
+export const ONE_DAY = ONE_HOUR * 24;
+export const ONE_WEEK = ONE_DAY * 7;
+
 // Addresses
 export const GEO_POINT_TYPE = 'Point';
 
@@ -29,12 +36,15 @@ export const OPERATION_TYPES_LIST = [
   { id: OPERATION_TYPE_DELETE, nameString: 'Удаление' },
 ];
 
+// Cookies
+export const LANG_COOKIE_KEY = 'lang';
+export const CART_COOKIE_KEY = 'cart';
+
 // Internationalization
 export const THEME_COOKIE_KEY = 'theme';
 export const THEME_DARK = 'dark';
 export const THEME_LIGHT = 'light';
 
-export const LANG_COOKIE_KEY = 'lang';
 export const DEFAULT_LANG = 'ru-RU';
 export const SECONDARY_LANG = 'en-EN';
 

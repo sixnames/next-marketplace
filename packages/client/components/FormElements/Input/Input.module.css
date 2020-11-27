@@ -59,7 +59,7 @@
   transform: translateY(-50%);
 }
 
-.clearButton {
+.inputLine .clearButton {
   position: absolute;
   top: 50%;
   right: 1rem;

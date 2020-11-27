@@ -13,6 +13,7 @@ export interface SpinnerInterface {
   autoComplete?: OnOffType;
   testId?: string;
   min?: number;
+  max?: number;
   placeholder?: string;
   disabled?: boolean;
   onChange?: (e: {

@@ -61,7 +61,7 @@ const Input: React.FC<InputPropsInterface> = ({
     <InputLine
       isRequired={isRequired}
       name={name}
-      lineClass={lineClass}
+      lineClass={`${classes.inputLine} ${lineClass}`}
       label={label}
       labelTag={labelTag}
       isHorizontal={isHorizontal}

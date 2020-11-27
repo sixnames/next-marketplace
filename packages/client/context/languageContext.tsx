@@ -17,25 +17,6 @@ interface LanguageContextInterface {
   languagesList: Language[];
 }
 
-interface UseLanguageContextInterface {
-  lang: string;
-  defaultLang: string;
-  currentLangItem?: Language;
-  defaultLangItem?: Language;
-  setLanguage: (lang: string) => void;
-  isCurrentLanguage: (key: string) => boolean;
-  languagesList: Language[];
-  getLanguageFieldTranslation: (field?: Translation[] | null) => string;
-  getLanguageFieldInitialValue: (field?: Translation[] | null) => TranslationInput[];
-  getLanguageFieldInputValue: (field: TranslationInput[] | null) => TranslationInput[];
-  getAttributePositionInTitleInitialValue: (
-    field?: AttributePositioningInTitle[] | null,
-  ) => AttributePositioningInTitleInput[];
-  getAttributePositionInTitleInputValue: (
-    field: AttributePositioningInTitleInput[] | null,
-  ) => AttributePositioningInTitleInput[];
-}
-
 const LanguageContext = createContext<LanguageContextInterface>({
   lang: DEFAULT_LANG,
   languagesList: [],
@@ -55,6 +36,25 @@ const LanguageContextProvider: React.FC<LanguageContextInterface> = ({
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
+
+interface UseLanguageContextInterface {
+  lang: string;
+  defaultLang: string;
+  currentLangItem?: Language;
+  defaultLangItem?: Language;
+  setLanguage: (lang: string) => void;
+  isCurrentLanguage: (key: string) => boolean;
+  languagesList: Language[];
+  getLanguageFieldTranslation: (field?: Translation[] | null) => string;
+  getLanguageFieldInitialValue: (field?: Translation[] | null) => TranslationInput[];
+  getLanguageFieldInputValue: (field: TranslationInput[] | null) => TranslationInput[];
+  getAttributePositionInTitleInitialValue: (
+    field?: AttributePositioningInTitle[] | null,
+  ) => AttributePositioningInTitleInput[];
+  getAttributePositionInTitleInputValue: (
+    field: AttributePositioningInTitleInput[] | null,
+  ) => AttributePositioningInTitleInput[];
+}
 
 function useLanguageContext(): UseLanguageContextInterface {
   const context = useContext<LanguageContextInterface>(LanguageContext);

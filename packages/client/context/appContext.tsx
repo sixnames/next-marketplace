@@ -102,7 +102,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
 };
 
 function useAppContext() {
-  const context: AppContextType = useContext(AppContext);
+  const context = useContext<AppContextType>(AppContext);
 
   if (!context) {
     throw new Error('useAppContext must be used within a AppContextProvider');
@@ -147,47 +147,12 @@ function useAppContext() {
     }));
   }
 
-  /*function showCartDropdown() {
-    setState((prevState: ContextState) => ({
-      ...prevState,
-      isCartDropdown: true,
-    }));
-  }
-
-  function hideCartDropdown() {
-    setState((prevState: ContextState) => ({
-      ...prevState,
-      isCartDropdown: false,
-    }));
-  }*/
-
-  /*function setCart(cart) {
-    setState((prevState: ContextState) => ({
-      ...prevState,
-      cart: cart,
-    }));
-  }
-
-  function resetCart() {
-    setState((prevState: ContextState) => ({
-      ...prevState,
-      cart: {
-        id: null,
-        products: [],
-      },
-    }));
-  }*/
-
   return {
     ...state,
     showModal,
     hideModal,
     showLoading,
     hideLoading,
-    // showCartDropdown,
-    // hideCartDropdown,
-    // setCart,
-    // resetCart,
   };
 }
 

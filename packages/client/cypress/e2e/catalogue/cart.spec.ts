@@ -25,6 +25,10 @@ describe('Cart', () => {
     cy.getByCy(`card-shops-${mockData.shopA.slug}-plus`).click();
     cy.getByCy(`card-shops-${mockData.shopA.slug}-input`).should('have.value', '2');
     cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+
+    // TODO test added amount
     cy.getByCy(`cart-modal`).should('exist');
+    cy.getByCy(`close-modal`).click();
+    cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
   });
 });

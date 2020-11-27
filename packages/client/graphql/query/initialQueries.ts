@@ -29,7 +29,7 @@ export const sessionUserFragment = gql`
   }
 `;
 
-const sessionRoleFragment = gql`
+export const sessionRoleFragment = gql`
   fragment SessionRoleFragment on Role {
     id
     nameString
@@ -37,7 +37,7 @@ const sessionRoleFragment = gql`
   }
 `;
 
-const rubricFragment = gql`
+export const rubricFragment = gql`
   fragment SiteRubricFragment on Rubric {
     id
     nameString
@@ -136,7 +136,11 @@ export const INITIAL_SITE_QUERY = gql`
       slug
       nameString
     }
+    getSessionCart {
+      ...Cart
+    }
   }
+  ${cartFragment}
   ${sessionRoleFragment}
   ${sessionUserFragment}
   ${rubricFragment}

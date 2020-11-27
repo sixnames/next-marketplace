@@ -979,6 +979,7 @@ type Query {
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!] = []): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant!
+  getSessionCart: Cart!
   getSessionCurrency: String!
   getSessionRole: Role!
   getShop(id: ID!): Shop!

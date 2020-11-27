@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   GetProductShopsInput,
-  ProductCardShopFragment,
+  ShopProductSnippetFragment,
   SortDirectionEnum,
   useGetCatalogueCardShopsQuery,
 } from '../../generated/apolloComponents';
@@ -18,7 +18,7 @@ import ShopsMap from '../../components/ShopsMap/ShopsMap';
 
 interface CardShopsListInterface {
   productId: string;
-  shops: ProductCardShopFragment[];
+  shops: ShopProductSnippetFragment[];
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
@@ -99,7 +99,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
 };
 
 interface CardShopsMapInterface {
-  shops: ProductCardShopFragment[];
+  shops: ShopProductSnippetFragment[];
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -126,7 +126,7 @@ interface CardShopsInterface {
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
   const [isMap, setIsMap] = useState<boolean>(false);
-  const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
+  const [shops, setShops] = useState<ShopProductSnippetFragment[] | null>(null);
   const [input, setInput] = useState<GetProductShopsInput>(() => ({
     productId,
     sortBy: 'price',

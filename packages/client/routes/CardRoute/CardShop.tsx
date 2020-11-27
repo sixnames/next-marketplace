@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classes from './CardShop.module.css';
-import { ProductCardShopFragment } from '../../generated/apolloComponents';
+import { ShopProductSnippetFragment } from '../../generated/apolloComponents';
 import Image from '../../components/Image/Image';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { noNaN } from '@yagu/shared';
@@ -11,14 +11,15 @@ import Currency from '../../components/Currency/Currency';
 import Percent from '../../components/Percent/Percent';
 import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
-import { CART_MODAL } from '../../config/modals';
+import { useSiteContext } from '../../context/siteContext';
 
 interface CardShopInterface {
-  shopProduct: ProductCardShopFragment;
+  shopProduct: ShopProductSnippetFragment;
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
-  const { isMobile, showModal } = useAppContext();
+  const { isMobile } = useAppContext();
+  const { addProductToCart } = useSiteContext();
   const [amount, setAmount] = useState<number>(1);
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   const {
@@ -121,8 +122,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
               <Button
                 testId={`card-shops-${slug}-add-to-cart`}
                 onClick={() => {
-                  showModal({
-                    type: CART_MODAL,
+                  addProductToCart({
+                    amount,
+                    shopProductId: shopProduct.id,
                   });
                 }}
               >

@@ -447,7 +447,6 @@ export class UserResolver {
       ctx.req.session!.user = user;
       ctx.req.session!.userId = user.id;
       ctx.req.session!.roleId = userRole ? userRole._id : null;
-      // req.session.cartId = user.cart;
 
       return {
         success: true,

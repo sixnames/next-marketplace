@@ -61,6 +61,15 @@ export class ShopProduct extends TimeStamps {
   @Field((_type) => Shop)
   readonly shop: Shop;
 
+  @Field(() => String)
+  readonly formattedPrice: string;
+
+  @Field(() => String, { nullable: true })
+  readonly formattedOldPrice?: string | null;
+
+  @Field(() => Int, { nullable: true })
+  readonly discountedPercent?: number | null;
+
   @Field()
   readonly createdAt: Date;
 

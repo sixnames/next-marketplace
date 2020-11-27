@@ -69,14 +69,13 @@ import {
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { Option, OptionModel } from '../../entities/Option';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
-import { ShopProductModel } from '../../entities/ShopProduct';
+import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
 import { max, min } from 'lodash';
-import { getCurrencyString, getPercentage } from '@yagu/shared';
+import { getCurrencyString } from '@yagu/shared';
 import { ProductAttribute } from '../../entities/ProductAttribute';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
 import { ProductCardFeatures } from '../../entities/ProductCardFeatures';
-import { ProductShop } from '../../entities/ProductShop';
 import { ProductCardPrices } from '../../entities/ProductCardPrices';
 import { ProductsCounters } from '../../entities/ProductsCounters';
 import { ProductConnectionItem } from '../../entities/ProductConnectionItem';
@@ -218,50 +217,14 @@ export class ProductResolver {
     }
   }
 
-  @Query(() => [ProductShop])
+  @Query(() => [ShopProduct])
   async getProductShops(
     @Arg('input') input: GetProductShopsInput,
-    @Localization() { lang, city }: LocalizationPayloadInterface,
-  ): Promise<ProductShop[]> {
+    @Localization() { city }: LocalizationPayloadInterface,
+  ): Promise<ShopProduct[]> {
     try {
       const { sortDir, sortBy, productId } = input;
-
-      const shopsProducts = await ShopProductModel.find({ product: productId, city })
-        .sort([[sortBy, sortDir]])
-        .lean()
-        .exec();
-      const shopsArr = shopsProducts.map(async (shopProduct) => {
-        const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
-
-        if (!shop) {
-          throw Error('Product shop not found');
-        }
-
-        const { oldPrices } = shopProduct;
-        const lastOldPrice = oldPrices[oldPrices.length - 1];
-
-        return {
-          node: shop,
-          ...shopProduct,
-          id: shopProduct._id,
-          discountedPercent:
-            lastOldPrice && lastOldPrice.price > shopProduct.price
-              ? getPercentage({
-                  fullValue: lastOldPrice.price,
-                  partialValue: shopProduct.price,
-                })
-              : null,
-          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
-          formattedOldPrice: lastOldPrice
-            ? getCurrencyString({
-                value: lastOldPrice.price,
-                lang,
-              })
-            : null,
-        };
-      });
-
-      return Promise.all(shopsArr);
+      return ShopProductModel.find({ product: productId, city }).sort([[sortBy, sortDir]]);
     } catch (e) {
       return [];
     }
@@ -745,9 +708,9 @@ export class ProductResolver {
     return ShopModel.countDocuments({ products: { $in: shopsProductsIds } });
   }
 
-  @FieldResolver((_returns) => [ProductShop])
+  @FieldResolver((_returns) => [ShopProduct])
   async shops(
-    @Localization() { lang, city }: LocalizationPayloadInterface,
+    @Localization() { city }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
     @Arg('input', {
       nullable: true,
@@ -757,46 +720,10 @@ export class ProductResolver {
       },
     })
     input: ProductShopsInput,
-  ): Promise<ProductShop[]> {
+  ): Promise<ShopProduct[]> {
     try {
       const { sortDir, sortBy } = input;
-
-      const shopsProducts = await ShopProductModel.find({ product: product.id, city })
-        .sort([[sortBy, sortDir]])
-        .lean()
-        .exec();
-      const shopsArr = shopsProducts.map(async (shopProduct) => {
-        const shop = await ShopModel.findOne({ products: { $in: [shopProduct._id] } });
-
-        if (!shop) {
-          throw Error('Product shop not found');
-        }
-
-        const { oldPrices } = shopProduct;
-        const lastOldPrice = oldPrices[oldPrices.length - 1];
-
-        return {
-          node: shop,
-          ...shopProduct,
-          id: shopProduct._id,
-          discountedPercent:
-            lastOldPrice && lastOldPrice.price > shopProduct.price
-              ? getPercentage({
-                  fullValue: lastOldPrice.price,
-                  partialValue: shopProduct.price,
-                })
-              : null,
-          formattedPrice: getCurrencyString({ value: shopProduct.price, lang }),
-          formattedOldPrice: lastOldPrice
-            ? getCurrencyString({
-                value: lastOldPrice.price,
-                lang,
-              })
-            : null,
-        };
-      });
-
-      return Promise.all(shopsArr);
+      return ShopProductModel.find({ product: product.id, city }).sort([[sortBy, sortDir]]);
     } catch (e) {
       return [];
     }

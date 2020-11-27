@@ -38,7 +38,7 @@ export type Query = {
   getAllProducts: PaginatedProductsResponse;
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
-  getProductShops: Array<ProductShop>;
+  getProductShops: Array<ShopProduct>;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
@@ -269,6 +269,7 @@ export type User = {
   email: Scalars['String'];
   phone: Scalars['String'];
   role: Role;
+  cart?: Maybe<ShopProduct>;
   formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
@@ -335,51 +336,22 @@ export type NavItem = {
   children?: Maybe<Array<NavItem>>;
 };
 
-export type FormattedPhone = {
-  __typename?: 'FormattedPhone';
-  raw: Scalars['String'];
-  readable: Scalars['String'];
+export type ShopProduct = {
+  __typename?: 'ShopProduct';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  available: Scalars['Int'];
+  city: City;
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  formattedPrice: Scalars['String'];
+  formattedOldPrice?: Maybe<Scalars['String']>;
+  discountedPercent?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
-
-
-export type PaginatedUsersResponse = {
-  __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<SortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** sortDir enum */
-export enum SortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
 
 export type City = {
   __typename?: 'City';
@@ -389,27 +361,69 @@ export type City = {
   nameString: Scalars['String'];
 };
 
-export type Country = {
-  __typename?: 'Country';
+/** List of all old prices for shop product with dates of creation. */
+export type ShopProductOldPrice = {
+  __typename?: 'ShopProductOldPrice';
   id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
+  price: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
-export type Language = {
-  __typename?: 'Language';
+
+export type Product = {
+  __typename?: 'Product';
   id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  views: Array<CityCounter>;
+  priorities: Array<CityCounter>;
+  name: Array<Translation>;
+  cardName: Array<Translation>;
+  slug: Scalars['String'];
+  description: Array<Translation>;
+  rubrics: Array<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<Asset>;
+  price: Scalars['Int'];
+  cardPrices: ProductCardPrices;
+  active: Scalars['Boolean'];
+  connections: Array<ProductConnection>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  mainImage: Scalars['String'];
+  cardFeatures: ProductCardFeatures;
+  cardConnections: Array<ProductCardConnection>;
+  shopsCount: Scalars['Int'];
+  shops: Array<ShopProduct>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type ProductShopsArgs = {
+  input?: Maybe<ProductShopsInput>;
+};
+
+export type CityCounter = {
+  __typename?: 'CityCounter';
   key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
+  counter?: Maybe<Scalars['Int']>;
 };
 
-export type Currency = {
-  __typename?: 'Currency';
+export type ProductAttributesGroup = {
+  __typename?: 'ProductAttributesGroup';
+  showInCard: Scalars['Boolean'];
+  node: AttributesGroup;
+  attributes: Array<ProductAttribute>;
+};
+
+export type AttributesGroup = {
+  __typename?: 'AttributesGroup';
   id: Scalars['ID'];
+  name: Array<Translation>;
   nameString: Scalars['String'];
+  attributes: Array<Attribute>;
 };
 
 export type Attribute = {
@@ -515,61 +529,6 @@ export type Metric = {
   nameString: Scalars['String'];
 };
 
-export type Product = {
-  __typename?: 'Product';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  views: Array<CityCounter>;
-  priorities: Array<CityCounter>;
-  name: Array<Translation>;
-  cardName: Array<Translation>;
-  slug: Scalars['String'];
-  description: Array<Translation>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<Asset>;
-  price: Scalars['Int'];
-  cardPrices: ProductCardPrices;
-  active: Scalars['Boolean'];
-  connections: Array<ProductConnection>;
-  nameString: Scalars['String'];
-  cardNameString: Scalars['String'];
-  descriptionString: Scalars['String'];
-  mainImage: Scalars['String'];
-  cardFeatures: ProductCardFeatures;
-  cardConnections: Array<ProductCardConnection>;
-  shopsCount: Scalars['Int'];
-  shops: Array<ProductShop>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
-
-
-export type ProductShopsArgs = {
-  input?: Maybe<ProductShopsInput>;
-};
-
-export type CityCounter = {
-  __typename?: 'CityCounter';
-  key: Scalars['String'];
-  counter?: Maybe<Scalars['Int']>;
-};
-
-export type ProductAttributesGroup = {
-  __typename?: 'ProductAttributesGroup';
-  showInCard: Scalars['Boolean'];
-  node: AttributesGroup;
-  attributes: Array<ProductAttribute>;
-};
-
-export type AttributesGroup = {
-  __typename?: 'AttributesGroup';
-  id: Scalars['ID'];
-  name: Array<Translation>;
-  nameString: Scalars['String'];
-  attributes: Array<Attribute>;
-};
-
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
@@ -655,31 +614,16 @@ export type ProductCardConnectionItem = {
   isCurrent: Scalars['Boolean'];
 };
 
-export type ProductShop = {
-  __typename?: 'ProductShop';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  available: Scalars['Int'];
-  price: Scalars['Float'];
-  oldPrices: Array<ShopProductOldPrice>;
-  product: Product;
-  shop: Shop;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-  node: Shop;
-  formattedPrice: Scalars['String'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
-  discountedPercent?: Maybe<Scalars['Int']>;
+export type ProductShopsInput = {
+  sortDir?: Maybe<SortDirectionEnum>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
-/** List of all old prices for shop product with dates of creation. */
-export type ShopProductOldPrice = {
-  __typename?: 'ShopProductOldPrice';
-  id: Scalars['ID'];
-  price: Scalars['Float'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
+/** sortDir enum */
+export enum SortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
 
 export type Shop = {
   __typename?: 'Shop';
@@ -709,6 +653,12 @@ export type Contacts = {
   emails: Array<Scalars['String']>;
   phones: Array<Scalars['String']>;
   formattedPhones: Array<FormattedPhone>;
+};
+
+export type FormattedPhone = {
+  __typename?: 'FormattedPhone';
+  raw: Scalars['String'];
+  readable: Scalars['String'];
 };
 
 export type Address = {
@@ -744,19 +694,6 @@ export type PaginatedShopProductsResponse = {
   pagingCounter: Scalars['Int'];
   hasPrevPage: Scalars['Int'];
   hasNextPage: Scalars['Int'];
-};
-
-export type ShopProduct = {
-  __typename?: 'ShopProduct';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  available: Scalars['Int'];
-  price: Scalars['Float'];
-  oldPrices: Array<ShopProductOldPrice>;
-  product: Product;
-  shop: Shop;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
 };
 
 export type ShopProductPaginateInput = {
@@ -821,9 +758,60 @@ export enum ShopsSortByEnum {
   CreatedAt = 'createdAt'
 }
 
-export type ProductShopsInput = {
+export type PaginatedUsersResponse = {
+  __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
   sortDir?: Maybe<SortDirectionEnum>;
-  sortBy?: Maybe<Scalars['String']>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type Country = {
+  __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Language = {
+  __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
+export type Currency = {
+  __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
 };
 
 export type PaginatedProductsResponse = {
@@ -3182,7 +3170,7 @@ export type CardConnectionFragment = (
   )> }
 );
 
-export type ProductCardShopNodeFragment = (
+export type ShopSnippetFragment = (
   { __typename?: 'Shop' }
   & Pick<Shop, 'id' | 'nameString' | 'slug' | 'productsCount'>
   & { address: (
@@ -3208,11 +3196,11 @@ export type ProductCardShopNodeFragment = (
 );
 
 export type ProductCardShopFragment = (
-  { __typename?: 'ProductShop' }
-  & Pick<ProductShop, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
-  & { node: (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
+  & { shop: (
     { __typename?: 'Shop' }
-    & ProductCardShopNodeFragment
+    & ShopSnippetFragment
   ) }
 );
 
@@ -3254,7 +3242,7 @@ export type GetCatalogueCardShopsQueryVariables = Exact<{
 export type GetCatalogueCardShopsQuery = (
   { __typename?: 'Query' }
   & { getProductShops: Array<(
-    { __typename?: 'ProductShop' }
+    { __typename?: 'ShopProduct' }
     & ProductCardShopFragment
   )> }
 );
@@ -4237,8 +4225,8 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
-export const ProductCardShopNodeFragmentDoc = gql`
-    fragment ProductCardShopNode on Shop {
+export const ShopSnippetFragmentDoc = gql`
+    fragment ShopSnippet on Shop {
   id
   nameString
   slug
@@ -4267,18 +4255,18 @@ export const ProductCardShopNodeFragmentDoc = gql`
 }
     `;
 export const ProductCardShopFragmentDoc = gql`
-    fragment ProductCardShop on ProductShop {
+    fragment ProductCardShop on ShopProduct {
   id
   itemId
   available
   formattedPrice
   formattedOldPrice
   discountedPercent
-  node {
-    ...ProductCardShopNode
+  shop {
+    ...ShopSnippet
   }
 }
-    ${ProductCardShopNodeFragmentDoc}`;
+    ${ShopSnippetFragmentDoc}`;
 export const CardFeatureFragmentDoc = gql`
     fragment CardFeature on ProductAttribute {
   showInCard

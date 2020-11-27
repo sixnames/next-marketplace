@@ -9,6 +9,7 @@ export type AppRequest = Request & {
       user: User | null;
       userId: string | null;
       roleId: string | null;
+      cartId: string | null;
     };
 };
 

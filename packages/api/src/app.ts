@@ -66,6 +66,8 @@ import { ShopResolver } from './resolvers/shop/ShopResolver';
 import { ShopProductResolver } from './resolvers/shopProduct/ShopProductResolver';
 import { ContactsResolver } from './resolvers/contacts/ContactsResolver';
 import { AddressResolver } from './resolvers/address/AddressResolver';
+import { CartResolver } from './resolvers/cart/CartResolver';
+import { CartProductResolver } from './resolvers/cartProduct/CartProductResolver';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -117,6 +119,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
       AttributeViewVariantsListResolver,
       OptionsGroupVariantsListResolver,
       ContactsResolver,
+      CartResolver,
+      CartProductResolver,
     ],
     emitSchemaFile: path.resolve('./schema.graphql'),
     validate: false,
@@ -207,15 +211,6 @@ const createApp = async (): Promise<CreateAppInterface> => {
           },
         },
       };
-
-      // console.log('Session =========================\n');
-      // console.log(JSON.stringify(req.session, null, 2));
-      // console.log('User ============================\n');
-      // console.log(JSON.stringify(req.sessionID, null, 2));
-      // console.log(JSON.stringify(req.session.user, null, 2));
-      // console.log('-----------------------------------');
-      // console.log('-----------------------------------');
-      // console.log('-----------------------------------');
 
       if (req.session.user) {
         let userRole = await RoleModel.findOne({ _id: req.session!.user.role });

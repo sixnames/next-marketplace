@@ -32,6 +32,11 @@ input AddOptionToGroupInput {
   variants: [OptionVariantInput!]
 }
 
+input AddProductToCartInput {
+  amount: Int!
+  shopProductId: ID!
+}
+
 input AddProductToConnectionInput {
   addProductId: ID!
   connectionId: ID!
@@ -150,6 +155,29 @@ enum AttributeVariantEnum {
 type AttributeViewOption {
   id: String!
   nameString: String!
+}
+
+type Cart {
+  createdAt: DateTime!
+  formattedTotalPrice: String!
+  id: ID!
+  products: [CartProduct!]!
+  productsCount: Int!
+  totalPrice: Int!
+  updatedAt: DateTime!
+}
+
+type CartPayloadType {
+  cart: Cart
+  message: String!
+  success: Boolean!
+}
+
+type CartProduct {
+  _id: ID!
+  amount: Int!
+  id: ID!
+  shopProduct: ShopProduct!
 }
 
 type CatalogueData {
@@ -410,6 +438,10 @@ input DeleteOptionFromGroupInput {
   optionId: ID!
 }
 
+input DeleteProductFromCartInput {
+  cartProductId: ID!
+}
+
 input DeleteProductFromConnectionInput {
   connectionId: ID!
   deleteProductId: ID!
@@ -503,6 +535,7 @@ type Mutation {
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
+  addProductToCart(input: AddProductToCartInput!): CartPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
@@ -532,6 +565,7 @@ type Mutation {
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
   deleteProduct(id: ID!): ProductPayloadType!
+  deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayloadType!
   deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayloadType!
   deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayloadType!
   deleteProductFromShop(input: DeleteProductFromShopInput!): ShopPayloadType!
@@ -565,6 +599,7 @@ type Mutation {
   updateOptionInGroup(input: UpdateOptionInGroupInput!): OptionsGroupPayloadType!
   updateOptionsGroup(input: UpdateOptionsGroupInput!): OptionsGroupPayloadType!
   updateProduct(input: UpdateProductInput!): ProductPayloadType!
+  updateProductInCart(input: UpdateProductInCartInput!): CartPayloadType!
   updateRole(input: UpdateRoleInput!): RolePayloadType!
   updateRubric(input: UpdateRubricInput!): RubricPayloadType!
   updateRubricVariant(input: UpdateRubricVariantInput!): RubricVariantPayloadType!
@@ -740,7 +775,7 @@ type Product {
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
-  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ProductShop!]!
+  shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ShopProduct!]!
   shopsCount: Int!
   slug: String!
   updatedAt: DateTime!
@@ -875,23 +910,6 @@ input ProductsCountersInput {
   rubric: ID
 }
 
-type ProductShop {
-  available: Int!
-  city: City!
-  createdAt: DateTime!
-  discountedPercent: Int
-  formattedOldPrice: String
-  formattedPrice: String!
-  id: ID!
-  itemId: Int!
-  node: Shop!
-  oldPrices: [ShopProductOldPrice!]!
-  price: Float!
-  product: Product!
-  shop: Shop!
-  updatedAt: DateTime!
-}
-
 input ProductShopsInput {
   sortBy: String = "price"
   sortDir: SortDirectionEnum = asc
@@ -955,7 +973,7 @@ type Query {
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
-  getProductShops(input: GetProductShopsInput!): [ProductShop!]!
+  getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
   getRole(id: ID!): Role!
   getRubric(id: ID!): Rubric!
   getRubricBySlug(slug: String!): Rubric!
@@ -1176,6 +1194,9 @@ type ShopProduct {
   available: Int!
   city: City!
   createdAt: DateTime!
+  discountedPercent: Int
+  formattedOldPrice: String
+  formattedPrice: String!
   id: ID!
   itemId: Int!
   oldPrices: [ShopProductOldPrice!]!
@@ -1351,6 +1372,11 @@ input UpdateOptionsGroupInput {
   variant: OptionsGroupVariantEnum
 }
 
+input UpdateProductInCartInput {
+  amount: Int!
+  shopProductId: ID!
+}
+
 input UpdateProductInput {
   active: Boolean!
   assets: [Upload!]!
@@ -1424,6 +1450,7 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
+  cart: Cart
   createdAt: DateTime!
   email: String!
   formattedPhone: FormattedPhone!

@@ -135,11 +135,13 @@ describe('Product', () => {
           }
           shopsCount
           shops {
-            node {
+            shop {
               id
               nameString
             }
             formattedPrice
+            formattedOldPrice
+            discountedPercent
             available
             price
             oldPrices {
@@ -172,11 +174,13 @@ describe('Product', () => {
       gql`
         query GetProductShops($input: GetProductShopsInput!) {
           getProductShops(input: $input) {
-            node {
+            shop {
               id
               nameString
             }
             formattedPrice
+            formattedOldPrice
+            discountedPercent
             available
             price
             oldPrices {

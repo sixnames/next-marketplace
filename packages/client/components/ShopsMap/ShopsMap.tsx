@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import classes from './ShopsMap.module.css';
-import { Coordinates, ProductCardShopFragment } from '../../generated/apolloComponents';
+import { Coordinates, ShopSnippetFragment } from '../../generated/apolloComponents';
 import { ASSETS_URL } from '../../config';
 import { useConfigContext } from '../../context/configContext';
 import { useLoadScript, Marker, GoogleMap, InfoWindow } from '@react-google-maps/api';
@@ -12,7 +12,7 @@ import Image from '../Image/Image';
 import RatingStars from '../RatingStars/RatingStars';
 
 interface ShopsMapInterface {
-  shops: ProductCardShopFragment[];
+  shops: ShopSnippetFragment[];
 }
 
 const mapContainerStyle = {
@@ -26,7 +26,7 @@ const center = {
 };
 
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
-  const [selected, setSelected] = useState<ProductCardShopFragment | null>(null);
+  const [selected, setSelected] = useState<ShopSnippetFragment | null>(null);
   const { isDark } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoaded, loadError } = useLoadScript({
@@ -42,8 +42,8 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
 
       // Fit all markers in map window
       const bounds = new window.google.maps.LatLngBounds();
-      shops.forEach(({ node }) => {
-        bounds.extend(node.address.formattedCoordinates);
+      shops.forEach(({ address }) => {
+        bounds.extend(address.formattedCoordinates);
       });
       mapRef.current.fitBounds(bounds);
     },
@@ -71,8 +71,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
     <div className={classes.frame}>
       <div className={classes.scroller}>
         <div className={classes.list}>
-          {shops.map(({ id, node }) => {
-            const { assets, nameString, address, productsCount } = node;
+          {shops.map(({ id, assets, nameString, address, productsCount }) => {
             const mainImage = assets[0].url;
             return (
               <div
@@ -107,10 +106,10 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           options={options}
         >
           {shops.map((shop) => {
-            const { id, node } = shop;
             const {
+              id,
               address: { formattedCoordinates },
-            } = node;
+            } = shop;
             return (
               <Marker
                 key={id}
@@ -127,12 +126,12 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
           })}
           {selected ? (
             <InfoWindow
-              position={selected.node.address.formattedCoordinates}
+              position={selected.address.formattedCoordinates}
               onCloseClick={() => setSelected(null)}
             >
               <div>
-                <div className={classes.infoName}>{selected.node.nameString}</div>
-                <div className={classes.infoAddress}>{selected.node.address.formattedAddress}</div>
+                <div className={classes.infoName}>{selected.nameString}</div>
+                <div className={classes.infoAddress}>{selected.address.formattedAddress}</div>
               </div>
             </InfoWindow>
           ) : null}

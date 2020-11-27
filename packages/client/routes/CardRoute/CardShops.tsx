@@ -73,7 +73,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
       </div>
 
       {visibleShops.map((shop) => {
-        return <CardShop key={shop.id} shop={shop} />;
+        return <CardShop key={shop.id} shopProduct={shop} />;
       })}
 
       {hiddenShops.length > 0 ? (
@@ -81,7 +81,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
           <DisclosurePanel>
             <div>
               {hiddenShops.map((shop) => {
-                return <CardShop key={shop.id} shop={shop} />;
+                return <CardShop key={shop.id} shopProduct={shop} />;
               })}
             </div>
           </DisclosurePanel>
@@ -104,6 +104,7 @@ interface CardShopsMapInterface {
 }
 
 const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
+  const shopsSnippets = shops.map(({ shop }) => shop);
   return (
     <div>
       <div className={classes.controls}>
@@ -114,7 +115,7 @@ const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
         />
       </div>
 
-      <ShopsMap shops={shops} />
+      <ShopsMap shops={shopsSnippets} />
     </div>
   );
 };

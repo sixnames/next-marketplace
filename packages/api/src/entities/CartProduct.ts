@@ -22,4 +22,7 @@ export class CartProduct {
   @Field(() => Int)
   @prop({ type: Number, required: true })
   amount: number;
+
+  @Field(() => Boolean)
+  readonly isShopless?: boolean;
 }

@@ -16,4 +16,9 @@ export class CartProductResolver {
   async product(@Root() cartProduct: DocumentType<CartProduct>): Promise<Product | null> {
     return ProductModel.findById(cartProduct.product);
   }
+
+  @FieldResolver((_returns) => Boolean)
+  async isShopless(@Root() cartProduct: DocumentType<CartProduct>): Promise<boolean> {
+    return !cartProduct.shopProduct;
+  }
 }

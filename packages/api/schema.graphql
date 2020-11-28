@@ -71,6 +71,11 @@ input AddShoplessProductToCartInput {
   productId: ID!
 }
 
+input AddShopToCartProductInput {
+  cartProductId: ID!
+  shopProductId: ID!
+}
+
 input AddShopToCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
@@ -182,6 +187,7 @@ type CartProduct {
   _id: ID!
   amount: Int!
   id: ID!
+  isShopless: Boolean!
   product: Product
   shopProduct: ShopProduct
 }
@@ -546,6 +552,7 @@ type Mutation {
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
   addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayloadType!
+  addShopToCartProduct(input: AddShopToCartProductInput!): CartPayloadType!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!

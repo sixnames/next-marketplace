@@ -20,7 +20,7 @@ export function SessionCart() {
     const user = context.req.session!.user;
     const userCartId = user ? user.cart : null;
 
-    // Get cart id from cookies
+    // Get cart id from cookies or session user
     const cookies = cookie.parse(context.req.headers.cookie || '');
     const cartId = userCartId || cookies[CART_COOKIE_KEY];
     const cart = await CartModel.findById(cartId);
@@ -38,14 +38,21 @@ export function SessionCart() {
       // Set cart id to cookies
       context.res.cookie(CART_COOKIE_KEY, newCart.id);
 
+      // Update user card field and set new user to session
       if (user) {
-        await UserModel.findByIdAndUpdate(
+        const updatedUser = await UserModel.findByIdAndUpdate(
           user.id,
           {
             cart: newCart.id,
           },
           { new: true },
         );
+
+        if (!newCart) {
+          throw Error('User cart creation error');
+        }
+
+        context.req.session!.user = updatedUser;
       }
 
       return newCart;

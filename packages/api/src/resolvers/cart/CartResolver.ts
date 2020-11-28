@@ -25,12 +25,15 @@ import { DocumentType } from '@typegoose/typegoose';
 import {
   addProductToCartSchema,
   addShoplessProductToCartSchema,
+  addShopToCartProductSchema,
   deleteProductFromCartSchema,
   updateProductInCartSchema,
 } from '@yagu/validation';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { getCurrencyString } from '@yagu/shared';
 import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
+import { AddShopToCartProductInput } from './AddShopToCartProductInput';
+import { Types } from 'mongoose';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -191,6 +194,50 @@ export class CartResolver {
       return {
         success: true,
         message: await getApiMessage('carts.addProduct.success'),
+        cart: updatedCart,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => CartPayloadType)
+  @ValidateMethod({ schema: addShopToCartProductSchema })
+  async addShopToCartProduct(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @SessionCart() cart: Cart,
+    @Arg('input') input: AddShopToCartProductInput,
+  ): Promise<CartPayloadType> {
+    try {
+      const { shopProductId, cartProductId } = input;
+
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cart.id,
+        {
+          $set: {
+            'products.$[product].shopProduct': shopProductId,
+            'products.$[product].product': null,
+          },
+        },
+        {
+          arrayFilters: [{ 'product._id': { $eq: new Types.ObjectId(cartProductId) } }],
+          new: true,
+        },
+      );
+
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: await getApiMessage('carts.updateProduct.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('carts.updateProduct.success'),
         cart: updatedCart,
       };
     } catch (e) {

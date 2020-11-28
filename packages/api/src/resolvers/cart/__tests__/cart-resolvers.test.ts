@@ -85,6 +85,7 @@ describe('Cart', () => {
       products {
         id
         amount
+        isShopless
         shopProduct {
           ...ShopProductSnippet
         }
@@ -262,7 +263,7 @@ describe('Cart', () => {
     expect(deleteProductFromCartPayload.data.deleteProductFromCart.cart.productsCount).toEqual(1);
   });
 
-  it.only('Should return session Cart', async () => {
+  it('Should return session Cart', async () => {
     const { query, mutate } = await authenticatedTestClient();
     const getSessionCartPayload = await query<any>(
       gql`
@@ -276,7 +277,7 @@ describe('Cart', () => {
     );
     expect(getSessionCartPayload.data.getSessionCart).toBeDefined();
 
-    // Should add product to cart without shop
+    // Should add shopless product to cart
     const addProductToCartPayload = await mutate<any>(
       gql`
         mutation AddShoplessProductToCart($input: AddShoplessProductToCartInput!) {
@@ -299,11 +300,44 @@ describe('Cart', () => {
         },
       },
     );
-    console.log(JSON.stringify(addProductToCartPayload, null, 2));
     const {
-      data: { addProductToCart },
+      data: { addShoplessProductToCart },
     } = addProductToCartPayload;
-    expect(addProductToCart.success).toBeTruthy();
-    expect(addProductToCart.cart.productsCount).toEqual(1);
+    const shoplessCartProductA = addShoplessProductToCart.cart.products[0];
+    expect(addShoplessProductToCart.success).toBeTruthy();
+    expect(shoplessCartProductA.isShopless).toBeTruthy();
+    expect(addShoplessProductToCart.cart.productsCount).toEqual(1);
+
+    // Should add shop to shopless cart product
+    const addShopToCartProductPayload = await mutate<any>(
+      gql`
+        mutation AddShopToCartProduct($input: AddShopToCartProductInput!) {
+          addShopToCartProduct(input: $input) {
+            success
+            message
+            cart {
+              ...Cart
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+      {
+        variables: {
+          input: {
+            cartProductId: shoplessCartProductA.id,
+            shopProductId: mockData.shopAProductA.id,
+          },
+        },
+      },
+    );
+
+    const {
+      data: { addShopToCartProduct },
+    } = addShopToCartProductPayload;
+    const cartProductA = addShopToCartProduct.cart.products[0];
+    expect(addShopToCartProduct.success).toBeTruthy();
+    expect(cartProductA.isShopless).toBeFalsy();
+    expect(addShopToCartProduct.cart.productsCount).toEqual(1);
   });
 });

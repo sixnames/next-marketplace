@@ -21,6 +21,12 @@ export const addShoplessProductToCartSchema = (args: MultiLangSchemaMessagesInte
     amount: Yup.number().required('validation.carts.amount'),
   });
 
+export const addShopToCartProductSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    shopProductId: shopProductIdSchema(args),
+    cartProductId: cartProductIdSchema(args),
+  });
+
 export const updateProductInCartSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     shopProductId: shopProductIdSchema(args),

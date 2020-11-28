@@ -45,10 +45,20 @@ describe('Cart', () => {
     cy.getByCy(`card-tabs-1`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
+    cy.getByCy(`cart-counter`).should('contain', '2');
+
+    // Add shopless product from catalogue
+    cy.getByCy(`cart-modal-close`).click();
+    cy.getByTranslationFieldCy({
+      cyPrefix: 'main-rubric',
+      languages: mockData.rubricLevelOneA.name,
+    }).click();
+    cy.getByCy(`catalogue-item-${mockData.productB.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
     // Should navigate to cart
-    cy.getByCy(`cart-modal-continue`).click();
-    cy.getByCy(`cart`).should('exist');
-    cy.getByCy(`cart-counter`).should('contain', '2');
+    // cy.getByCy(`cart-modal-continue`).click();
+    // cy.getByCy(`cart`).should('exist');
+    // cy.getByCy(`cart-counter`).should('contain', '3');
   });
 });

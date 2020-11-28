@@ -1,9 +1,18 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import {
   AddProductToCartInput,
+  AddShoplessProductToCartInput,
+  AddShopToCartProductInput,
   CartFragment,
+  CartPayloadFragment,
+  DeleteProductFromCartInput,
   InitialSiteQueryQuery,
+  UpdateProductInCartInput,
   useAddProductToCartMutation,
+  useAddShoplessProductToCartMutation,
+  useAddShopToCartProductMutation,
+  useDeleteProductFromCartMutation,
+  useUpdateProductInCartMutation,
 } from '../generated/apolloComponents';
 import { UserContextProvider } from './userContext';
 import useMutationCallbacks from '../hooks/useMutationCallbacks';
@@ -80,6 +89,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   );
 };
 
+interface CartContextUpdaterInterface {
+  payload?: CartPayloadFragment | null;
+  mutationCallback?: () => void;
+}
+
 interface UseSiteContextInterface extends SiteContextInterface {
   showBurgerDropdown: () => void;
   hideBurgerDropdown: () => void;
@@ -88,28 +102,93 @@ interface UseSiteContextInterface extends SiteContextInterface {
   hideSearchDropdown: () => void;
   toggleSearchDropdown: () => void;
   addProductToCart: (input: AddProductToCartInput) => void;
+  addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
+  addShopToCartProduct: (input: AddShopToCartProductInput) => void;
+  updateProductInCart: (input: UpdateProductInCartInput) => void;
+  deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
 }
 
 function useSiteContext(): UseSiteContextInterface {
   const context = useContext<SiteContextInterface>(SiteContext);
   const { showErrorNotification, showModal } = useMutationCallbacks();
-  const [addProductToCartMutation] = useAddProductToCartMutation({
-    onCompleted: ({ addProductToCart }) => {
+
+  // Cart mutations
+  const cartContextUpdater = useCallback(
+    ({ mutationCallback, payload }: CartContextUpdaterInterface) => {
+      if (!payload) {
+        showErrorNotification();
+        return;
+      }
+
       // Update context
-      if (addProductToCart?.cart && addProductToCart?.success) {
+      const { cart, success } = payload;
+      if (cart && success) {
         context.setState({
           isSearchOpen: false,
           isBurgerDropdownOpen: false,
-          cart: addProductToCart.cart,
+          cart,
         });
 
         // Show cart modal
-        showModal({
-          type: CART_MODAL,
-        });
+        if (mutationCallback) {
+          mutationCallback();
+        }
         return;
       }
       showErrorNotification();
+    },
+    [context, showErrorNotification],
+  );
+
+  const [addProductToCartMutation] = useAddProductToCartMutation({
+    onCompleted: ({ addProductToCart }) => {
+      cartContextUpdater({
+        payload: addProductToCart,
+        mutationCallback: () => {
+          // Show cart modal
+          showModal({
+            type: CART_MODAL,
+          });
+        },
+      });
+    },
+  });
+
+  const [addShoplessProductToCartMutation] = useAddShoplessProductToCartMutation({
+    onCompleted: ({ addShoplessProductToCart }) => {
+      cartContextUpdater({
+        payload: addShoplessProductToCart,
+        mutationCallback: () => {
+          // Show cart modal
+          showModal({
+            type: CART_MODAL,
+          });
+        },
+      });
+    },
+  });
+
+  const [addShopToCartProductMutation] = useAddShopToCartProductMutation({
+    onCompleted: ({ addShopToCartProduct }) => {
+      cartContextUpdater({
+        payload: addShopToCartProduct,
+      });
+    },
+  });
+
+  const [updateProductInCartMutation] = useUpdateProductInCartMutation({
+    onCompleted: ({ updateProductInCart }) => {
+      cartContextUpdater({
+        payload: updateProductInCart,
+      });
+    },
+  });
+
+  const [deleteProductFromCartMutation] = useDeleteProductFromCartMutation({
+    onCompleted: ({ deleteProductFromCart }) => {
+      cartContextUpdater({
+        payload: deleteProductFromCart,
+      });
     },
   });
 
@@ -117,10 +196,8 @@ function useSiteContext(): UseSiteContextInterface {
     throw new Error('useSiteContext must be used within a SiteContextProvider');
   }
 
-  const { setState } = context;
-
   function showBurgerDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: true,
@@ -128,7 +205,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function hideBurgerDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
@@ -136,7 +213,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function toggleBurgerDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
@@ -144,7 +221,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function showSearchDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: true,
@@ -152,7 +229,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function hideSearchDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: false,
@@ -160,7 +237,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function toggleSearchDropdown() {
-    setState((prevState) => ({
+    context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: !prevState.isSearchOpen,
@@ -169,6 +246,46 @@ function useSiteContext(): UseSiteContextInterface {
 
   function addProductToCart(input: AddProductToCartInput) {
     addProductToCartMutation({
+      variables: {
+        input,
+      },
+    }).catch(() => {
+      showErrorNotification();
+    });
+  }
+
+  function addShoplessProductToCart(input: AddShoplessProductToCartInput) {
+    addShoplessProductToCartMutation({
+      variables: {
+        input,
+      },
+    }).catch(() => {
+      showErrorNotification();
+    });
+  }
+
+  function addShopToCartProduct(input: AddShopToCartProductInput) {
+    addShopToCartProductMutation({
+      variables: {
+        input,
+      },
+    }).catch(() => {
+      showErrorNotification();
+    });
+  }
+
+  function updateProductInCart(input: UpdateProductInCartInput) {
+    updateProductInCartMutation({
+      variables: {
+        input,
+      },
+    }).catch(() => {
+      showErrorNotification();
+    });
+  }
+
+  function deleteProductFromCart(input: DeleteProductFromCartInput) {
+    deleteProductFromCartMutation({
       variables: {
         input,
       },
@@ -186,6 +303,10 @@ function useSiteContext(): UseSiteContextInterface {
     hideSearchDropdown,
     toggleSearchDropdown,
     addProductToCart,
+    addShoplessProductToCart,
+    addShopToCartProduct,
+    updateProductInCart,
+    deleteProductFromCart,
   };
 }
 

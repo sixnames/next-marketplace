@@ -1,22 +1,6 @@
 import { gql } from '@apollo/client';
 import { siteConfigFragment } from './configsQueries';
-import { shopProductSnippetFragment } from './cardQueries';
-
-export const cartFragment = gql`
-  fragment Cart on Cart {
-    id
-    formattedTotalPrice
-    productsCount
-    products {
-      id
-      amount
-      shopProduct {
-        ...ShopProductSnippet
-      }
-    }
-  }
-  ${shopProductSnippetFragment}
-`;
+import { cartFragment } from '../mutation/cartMutations';
 
 export const sessionUserFragment = gql`
   fragment SessionUserFragment on User {

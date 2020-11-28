@@ -64,6 +64,10 @@
   text-decoration: none;
 }
 
+.middleLinkIconHolder {
+  position: relative;
+}
+
 .middleLinkIconHolder:not(.middleLinkIconHolderNoLabel){
   margin-right: 0.875rem;
 }

@@ -13,6 +13,7 @@ import { useSiteContext } from '../../../context/siteContext';
 import HeaderSearch from './HeaderSearch';
 import { useUserContext } from '../../../context/userContext';
 import { useAppContext } from '../../../context/appContext';
+import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
@@ -63,10 +64,12 @@ const HeaderProfileLink: React.FC = () => {
 };
 
 const HeaderCartLink: React.FC = () => {
+  const { cart } = useSiteContext();
   return (
     <div className={`${classes.middleLink}`}>
       <div className={`${classes.middleLinkIconHolder}`}>
         <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+        <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
       </div>
       <span>Корзина</span>
     </div>

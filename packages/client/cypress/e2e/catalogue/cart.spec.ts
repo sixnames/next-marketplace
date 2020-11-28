@@ -45,5 +45,10 @@ describe('Cart', () => {
     cy.getByCy(`card-tabs-1`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
+
+    // Should navigate to cart
+    cy.getByCy(`cart-modal-continue`).click();
+    cy.getByCy(`cart`).should('exist');
+    cy.getByCy(`cart-counter`).should('contain', '2');
   });
 });

@@ -26,9 +26,10 @@ describe('Cart', () => {
     cy.getByCy(`card-shops-${mockData.shopA.slug}-input`).should('have.value', '2');
     cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
 
-    // TODO test added amount
+    // Add same product
     cy.getByCy(`cart-modal`).should('exist');
     cy.getByCy(`close-modal`).click();
     cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-modal-counter`).should('contain', '1');
   });
 });

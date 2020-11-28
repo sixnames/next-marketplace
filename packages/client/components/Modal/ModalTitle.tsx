@@ -7,6 +7,7 @@ interface ModalTitleInterface {
   right?: ReactChild;
   subtitle?: any;
   size?: SizeType;
+  low?: boolean;
 }
 
 const ModalTitle: React.FC<ModalTitleInterface> = ({
@@ -15,9 +16,12 @@ const ModalTitle: React.FC<ModalTitleInterface> = ({
   className,
   right,
   subtitle,
+  low,
 }) => {
   return (
-    <div className={`${classes.frame} ${className ? className : null}`}>
+    <div
+      className={`${classes.frame} ${low ? classes.frameLow : ''} ${className ? className : null}`}
+    >
       <h2 className={`${classes.text} ${size === 'small' ? classes.textSmall : ''}`}>
         {children}
         {subtitle && <span className={classes.subtitle}>{subtitle}</span>}

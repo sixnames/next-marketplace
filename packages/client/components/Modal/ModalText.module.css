@@ -1,7 +1,15 @@
 .frame {
   color: var(--textSecondaryColor);
   margin-bottom: 1.75rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.frameLowTop {
+  margin-top: 0;
+}
+
+.frameLowBottom {
+  margin-bottom: 0;
 }
 
 .frame p {

@@ -10,8 +10,12 @@ const ShopProductModal: React.FC = () => {
 
   return (
     <ModalFrame testId={'cart-modal'} size={'small'}>
-      <ModalTitle size={'small'}>Товар был добавлен в корзину</ModalTitle>
-      <ModalText>Товаров в вашей корзине: {productsCount}</ModalText>
+      <ModalTitle size={'small'} low>
+        Товар был добавлен в корзину
+      </ModalTitle>
+      <ModalText>
+        Товаров в вашей корзине: <mark data-cy={'cart-modal-counter'}>{productsCount}</mark>
+      </ModalText>
     </ModalFrame>
   );
 };

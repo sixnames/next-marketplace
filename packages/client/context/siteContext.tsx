@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import {
   AddProductToCartInput,
+  CartFragment,
   InitialSiteQueryQuery,
   useAddProductToCartMutation,
 } from '../generated/apolloComponents';
@@ -28,9 +29,11 @@ interface SiteContextInterface extends SiteContextStateInterface {
   setState: React.Dispatch<React.SetStateAction<SiteContextStateInterface>>;
 }
 
-const initialCart = {
+const initialCart: CartFragment = {
   id: 'cart',
   products: [],
+  formattedTotalPrice: '',
+  productsCount: 0,
 };
 
 const SiteContext = createContext<SiteContextInterface>({

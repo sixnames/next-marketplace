@@ -124,7 +124,7 @@ const CompanyShops: React.FC = () => {
                         },
                       },
                     }).catch(() => {
-                      showErrorNotification({});
+                      showErrorNotification();
                     });
                   },
                 },

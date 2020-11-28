@@ -18,7 +18,9 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
 
   function onCompleteCallback(data: ResponseInterface) {
     if (!data.success) {
-      if (withModal) hideModal();
+      if (withModal) {
+        hideModal();
+      }
       hideLoading();
       showErrorNotification({
         title: data.message ? data.message : ERROR_NOTIFICATION_MESSAGE,
@@ -40,7 +42,9 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
       message = error.graphQLErrors.map(({ message }: any) => `${message} `);
     }
 
-    if (withModal) hideModal();
+    if (withModal) {
+      hideModal();
+    }
     hideLoading();
     showErrorNotification({ message });
   }

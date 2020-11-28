@@ -142,7 +142,7 @@ const ShopProducts: React.FC = () => {
                         },
                       },
                     }).catch(() => {
-                      showErrorNotification({});
+                      showErrorNotification();
                     });
                   },
                 },
@@ -165,7 +165,7 @@ const ShopProducts: React.FC = () => {
                         },
                       },
                     }).catch(() => {
-                      showErrorNotification({});
+                      showErrorNotification();
                     });
                   },
                 },
@@ -216,7 +216,7 @@ const ShopProducts: React.FC = () => {
                             },
                           },
                         }).catch(() => {
-                          showErrorNotification({});
+                          showErrorNotification();
                         });
                       },
                     },

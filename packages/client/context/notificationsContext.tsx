@@ -36,6 +36,13 @@ const NotificationsProvider: React.FC = ({ children }) => {
 };
 
 interface SuccessNotificationInterface {
+  key?: string;
+  title?: string;
+  message?: string;
+}
+
+interface ErrorNotificationInterface {
+  key?: string;
   title?: string;
   message?: string;
 }
@@ -84,11 +91,10 @@ function useNotificationsContext() {
     [closeSnackbar, enqueueSnackbar],
   );
 
-  function showErrorNotification({
-    key = 'error',
-    title = ERROR_NOTIFICATION_MESSAGE,
-    message = 'Попробуйте ещё раз',
-  }) {
+  function showErrorNotification(props?: ErrorNotificationInterface) {
+    const { key = 'error', title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } =
+      props || {};
+
     showNotification({
       key,
       title,
@@ -98,7 +104,8 @@ function useNotificationsContext() {
     });
   }
 
-  function showSuccessNotification({ title, message }: SuccessNotificationInterface) {
+  function showSuccessNotification(props?: SuccessNotificationInterface) {
+    const { title = 'Success', message = '' } = props || {};
     showNotification({
       key: 'success',
       title,

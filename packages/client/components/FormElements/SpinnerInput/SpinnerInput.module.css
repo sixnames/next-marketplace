@@ -1,6 +1,6 @@
 .frame {
   position: relative;
-  width: var(--button-min-width);
+  width: var(--buttonMinWidth);
 }
 
 .input {

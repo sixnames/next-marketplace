@@ -44,7 +44,7 @@
 
 .form {
   display: grid;
-  grid-template-columns: 1fr var(--button-min-width) var(--formInputHeight);
+  grid-template-columns: 1fr var(--buttonMinWidth) var(--formInputHeight);
   grid-column-gap: 1rem;
 }
 

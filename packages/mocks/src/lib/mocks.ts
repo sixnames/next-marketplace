@@ -1460,7 +1460,7 @@ export const MOCK_PRODUCT_E = {
 
 export const MOCK_PRODUCT_F = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie_E',
+  slug: 'Wine_Val_de_Vie_F',
   name: [
     { key: DEFAULT_LANG, value: 'Product_F' },
     { key: SECONDARY_LANG, value: 'Product_F' },

@@ -143,6 +143,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                             }
                             return (
                               <Link
+                                data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={id}
                                 href={{

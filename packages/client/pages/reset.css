@@ -404,7 +404,7 @@
   --fullHeight: 100vh;
   --formInputHeight: 3.5rem;
   --formLineHeight: 2rem;
-  --button-min-width: 17rem;
+  --buttonMinWidth: 14rem;
   --minLinkHeight: 3.5rem;
   --tabsNavHeight: 3.5rem;
   --burger-dropdown-width: 345px;
@@ -508,7 +508,7 @@
 
 @media only screen and (max-width: 1180px) {
   :root {
-    --button-min-width: 12rem;
+    --buttonMinWidth: 12rem;
   }
 }
 

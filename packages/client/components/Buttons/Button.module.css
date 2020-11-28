@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--button-min-width);
+  min-width: var(--buttonMinWidth);
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 1rem;

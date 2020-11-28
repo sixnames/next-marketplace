@@ -29,7 +29,7 @@
 
 .orderColumn {
   display: grid;
-  grid-template-columns: 1fr calc(var(--button-min-width) + var(--columnVerticalPadding));
+  grid-template-columns: 1fr calc(var(--buttonMinWidth) + var(--columnVerticalPadding));
   grid-column-gap: var(--columnGap);
   grid-row-gap: var(--columnGap);
 }

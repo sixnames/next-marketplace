@@ -109,7 +109,7 @@ function useSiteContext(): UseSiteContextInterface {
         });
         return;
       }
-      showErrorNotification({});
+      showErrorNotification();
     },
   });
 
@@ -173,7 +173,7 @@ function useSiteContext(): UseSiteContextInterface {
         input,
       },
     }).catch(() => {
-      showErrorNotification({});
+      showErrorNotification();
     });
   }
 

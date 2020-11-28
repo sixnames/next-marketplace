@@ -1,6 +1,7 @@
 import { MultiLangSchemaMessagesInterface } from './getFieldValidationMessage';
 import { idSchema } from './schemaTemplates';
 import * as Yup from 'yup';
+import { productIdSchema } from './productSchema';
 
 const shopProductIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.carts.shopProductId' });
@@ -11,6 +12,12 @@ const cartProductIdSchema = (args: MultiLangSchemaMessagesInterface) =>
 export const addProductToCartSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     shopProductId: shopProductIdSchema(args),
+    amount: Yup.number().required('validation.carts.amount'),
+  });
+
+export const addShoplessProductToCartSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    productId: productIdSchema(args),
     amount: Yup.number().required('validation.carts.amount'),
   });
 

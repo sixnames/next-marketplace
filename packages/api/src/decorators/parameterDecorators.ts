@@ -7,6 +7,7 @@ import getLangField from '../utils/translations/getLangField';
 import { Translation } from '../entities/Translation';
 import cookie from 'cookie';
 import { CartModel } from '../entities/Cart';
+import { UserModel } from '../entities/User';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
@@ -16,13 +17,16 @@ export function SessionUser() {
 
 export function SessionCart() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
+    const user = context.req.session!.user;
+    const userCartId = user ? user.cart : null;
+
     // Get cart id from cookies
     const cookies = cookie.parse(context.req.headers.cookie || '');
-    const cartId = cookies[CART_COOKIE_KEY];
+    const cartId = userCartId || cookies[CART_COOKIE_KEY];
     const cart = await CartModel.findById(cartId);
 
     // If cart not exist
-    if (!cart) {
+    if (!cart || !cartId) {
       const newCart = await CartModel.create({
         products: [],
       });
@@ -33,6 +37,16 @@ export function SessionCart() {
 
       // Set cart id to cookies
       context.res.cookie(CART_COOKIE_KEY, newCart.id);
+
+      if (user) {
+        await UserModel.findByIdAndUpdate(
+          user.id,
+          {
+            cart: newCart.id,
+          },
+          { new: true },
+        );
+      }
 
       return newCart;
     }

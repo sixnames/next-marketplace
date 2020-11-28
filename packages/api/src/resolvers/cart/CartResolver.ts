@@ -24,11 +24,13 @@ import { ValidateMethod } from '../../decorators/methodDecorators';
 import { DocumentType } from '@typegoose/typegoose';
 import {
   addProductToCartSchema,
+  addShoplessProductToCartSchema,
   deleteProductFromCartSchema,
   updateProductInCartSchema,
 } from '@yagu/validation';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { getCurrencyString } from '@yagu/shared';
+import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -54,8 +56,8 @@ export class CartResolver {
       const { shopProductId, amount } = input;
 
       // If product already exist
-      const productExist = cart.products.find((product) => {
-        return product.shopProduct.toString() === shopProductId;
+      const productExist = cart.products.find((cartProduct) => {
+        return cartProduct.shopProduct && cartProduct.shopProduct.toString() === shopProductId;
       });
       if (productExist) {
         const updatedCart = await CartModel.findByIdAndUpdate(
@@ -93,6 +95,84 @@ export class CartResolver {
             products: {
               amount,
               shopProduct: shopProductId,
+            },
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: await getApiMessage('carts.addProduct.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('carts.addProduct.success'),
+        cart: updatedCart,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => CartPayloadType)
+  @ValidateMethod({ schema: addShoplessProductToCartSchema })
+  async addShoplessProductToCart(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @SessionCart() cart: Cart,
+    @Arg('input') input: AddShoplessProductToCartInput,
+  ): Promise<CartPayloadType> {
+    try {
+      const { productId, amount } = input;
+
+      // If product already exist
+      const productExist = cart.products.find((cartProduct) => {
+        return cartProduct.product && cartProduct.product.toString() === productId;
+      });
+      if (productExist) {
+        const updatedCart = await CartModel.findByIdAndUpdate(
+          cart.id,
+          {
+            $inc: {
+              'products.$[product].amount': amount,
+            },
+          },
+          {
+            arrayFilters: [{ 'product.product': { $eq: productId } }],
+            new: true,
+          },
+        );
+
+        if (!updatedCart) {
+          return {
+            success: false,
+            message: await getApiMessage('carts.addProduct.error'),
+          };
+        }
+
+        return {
+          success: true,
+          message: await getApiMessage('carts.addProduct.success'),
+          cart: updatedCart,
+        };
+      }
+
+      // Add product to cart
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cart.id,
+        {
+          $push: {
+            products: {
+              amount,
+              product: productId,
             },
           },
         },

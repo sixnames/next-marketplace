@@ -2,7 +2,10 @@ import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import {
+  authenticatedTestClient,
+  testClientWithContext,
+} from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
 import { CART_COOKIE_KEY } from '@yagu/config';
 
@@ -61,6 +64,18 @@ describe('Cart', () => {
     ${shopSnippetFragment}
   `;
 
+  const productSnippetFragment = gql`
+    fragment ProductSnippet on Product {
+      id
+      itemId
+      cardPrices {
+        min
+        max
+      }
+    }
+    ${shopSnippetFragment}
+  `;
+
   const cartFragment = gql`
     fragment Cart on Cart {
       id
@@ -73,8 +88,12 @@ describe('Cart', () => {
         shopProduct {
           ...ShopProductSnippet
         }
+        product {
+          ...ProductSnippet
+        }
       }
     }
+    ${productSnippetFragment}
     ${shopProductSnippetFragment}
   `;
 
@@ -240,11 +259,11 @@ describe('Cart', () => {
       },
     );
     expect(deleteProductFromCartPayload.data.deleteProductFromCart.success).toBeTruthy();
-    expect(deleteProductFromCartPayload.data.deleteProductFromCart.cart.products).toHaveLength(1);
+    expect(deleteProductFromCartPayload.data.deleteProductFromCart.cart.productsCount).toEqual(1);
   });
 
-  it('Should return session Cart', async () => {
-    const { query } = await testClientWithContext();
+  it.only('Should return session Cart', async () => {
+    const { query, mutate } = await authenticatedTestClient();
     const getSessionCartPayload = await query<any>(
       gql`
         query GetSessionCart {
@@ -256,5 +275,35 @@ describe('Cart', () => {
       `,
     );
     expect(getSessionCartPayload.data.getSessionCart).toBeDefined();
+
+    // Should add product to cart without shop
+    const addProductToCartPayload = await mutate<any>(
+      gql`
+        mutation AddShoplessProductToCart($input: AddShoplessProductToCartInput!) {
+          addShoplessProductToCart(input: $input) {
+            success
+            message
+            cart {
+              ...Cart
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+      {
+        variables: {
+          input: {
+            productId: mockData.productA.id,
+            amount: 1,
+          },
+        },
+      },
+    );
+    console.log(JSON.stringify(addProductToCartPayload, null, 2));
+    const {
+      data: { addProductToCart },
+    } = addProductToCartPayload;
+    expect(addProductToCart.success).toBeTruthy();
+    expect(addProductToCart.cart.productsCount).toEqual(1);
   });
 });

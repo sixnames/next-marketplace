@@ -66,6 +66,11 @@ input AddressInput {
   point: CoordinatesInput!
 }
 
+input AddShoplessProductToCartInput {
+  amount: Int!
+  productId: ID!
+}
+
 input AddShopToCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
@@ -177,7 +182,8 @@ type CartProduct {
   _id: ID!
   amount: Int!
   id: ID!
-  shopProduct: ShopProduct!
+  product: Product
+  shopProduct: ShopProduct
 }
 
 type CatalogueData {
@@ -539,6 +545,7 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
+  addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayloadType!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
@@ -1451,7 +1458,6 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
-  cart: Cart
   createdAt: DateTime!
   email: String!
   formattedPhone: FormattedPhone!

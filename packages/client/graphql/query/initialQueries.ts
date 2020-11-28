@@ -5,6 +5,8 @@ import { shopProductSnippetFragment } from './cardQueries';
 export const cartFragment = gql`
   fragment Cart on Cart {
     id
+    formattedTotalPrice
+    productsCount
     products {
       id
       amount

@@ -3631,7 +3631,7 @@ export type GetAllConfigsQuery = (
 
 export type CartFragment = (
   { __typename?: 'Cart' }
-  & Pick<Cart, 'id'>
+  & Pick<Cart, 'id' | 'formattedTotalPrice' | 'productsCount'>
   & { products: Array<(
     { __typename?: 'CartProduct' }
     & Pick<CartProduct, 'id' | 'amount'>
@@ -4645,6 +4645,8 @@ export const ShopProductSnippetFragmentDoc = gql`
 export const CartFragmentDoc = gql`
     fragment Cart on Cart {
   id
+  formattedTotalPrice
+  productsCount
   products {
     id
     amount

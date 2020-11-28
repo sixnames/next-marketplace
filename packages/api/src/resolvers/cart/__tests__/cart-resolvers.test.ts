@@ -64,6 +64,9 @@ describe('Cart', () => {
   const cartFragment = gql`
     fragment Cart on Cart {
       id
+      totalPrice
+      formattedTotalPrice
+      productsCount
       products {
         id
         amount
@@ -105,7 +108,7 @@ describe('Cart', () => {
       data: { addProductToCart },
     } = addProductToCartPayload;
     expect(addProductToCart.success).toBeTruthy();
-    expect(addProductToCart.cart.products).toHaveLength(1);
+    expect(addProductToCart.cart.productsCount).toEqual(1);
 
     // Set cart id to cookies
     const testClientWithHeaders = await testClientWithContext({
@@ -145,6 +148,7 @@ describe('Cart', () => {
       },
     );
     expect(updatedCartProduct.amount).toEqual(2);
+    expect(addProductToCartPayloadB.data.addProductToCart.cart.productsCount).toEqual(1);
     expect(addProductToCartPayloadB.data.addProductToCart.success).toBeTruthy();
 
     // Should add second product to cart
@@ -178,10 +182,10 @@ describe('Cart', () => {
     );
     expect(secondCartProduct.amount).toEqual(10);
     expect(addProductToCartPayloadC.data.addProductToCart.success).toBeTruthy();
-    expect(addProductToCartPayloadC.data.addProductToCart.cart.products).toHaveLength(2);
+    expect(addProductToCartPayloadC.data.addProductToCart.cart.productsCount).toEqual(2);
 
     // Should update second product in cart
-    const nowProductAmount = 3;
+    const newProductAmount = 3;
     const updateProductInCartPayload = await testClientWithHeaders.mutate<any>(
       gql`
         mutation UpdateProductInCart($input: UpdateProductInCartInput!) {
@@ -199,7 +203,7 @@ describe('Cart', () => {
         variables: {
           input: {
             shopProductId: mockData.shopAProductB.id,
-            amount: nowProductAmount,
+            amount: newProductAmount,
           },
         },
       },
@@ -210,7 +214,7 @@ describe('Cart', () => {
         return shopProduct.id === mockData.shopAProductB.id;
       },
     );
-    expect(updatedProductInCart.amount).toEqual(nowProductAmount);
+    expect(updatedProductInCart.amount).toEqual(newProductAmount);
     expect(updateProductInCartPayload.data.updateProductInCart.success).toBeTruthy();
 
     // Should delete second product from cart

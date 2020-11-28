@@ -6,11 +6,12 @@ import { useSiteContext } from '../../../context/siteContext';
 
 const ShopProductModal: React.FC = () => {
   const { cart } = useSiteContext();
-  console.log(cart);
+  const { productsCount } = cart;
+
   return (
     <ModalFrame testId={'cart-modal'} size={'small'}>
-      <ModalTitle>Товар был добавлен в корзину</ModalTitle>
-      <ModalText>Товаров в вашей корзине: 2</ModalText>
+      <ModalTitle size={'small'}>Товар был добавлен в корзину</ModalTitle>
+      <ModalText>Товаров в вашей корзине: {productsCount}</ModalText>
     </ModalFrame>
   );
 };

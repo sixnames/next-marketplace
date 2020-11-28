@@ -1,5 +1,15 @@
 import { Cart, CartModel } from '../../entities/Cart';
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Field,
+  FieldResolver,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import PayloadType from '../commonInputs/PayloadType';
 import { AddProductToCartInput } from './AddProductToCartInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
@@ -11,11 +21,14 @@ import {
   SessionCart,
 } from '../../decorators/parameterDecorators';
 import { ValidateMethod } from '../../decorators/methodDecorators';
+import { DocumentType } from '@typegoose/typegoose';
 import {
   addProductToCartSchema,
   deleteProductFromCartSchema,
   updateProductInCartSchema,
 } from '@yagu/validation';
+import { ShopProductModel } from '../../entities/ShopProduct';
+import { getCurrencyString } from '@yagu/shared';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -193,5 +206,34 @@ export class CartResolver {
         message: getResolverErrorMessage(e),
       };
     }
+  }
+
+  // Methods
+  async getTotalPrice(cart: DocumentType<Cart>): Promise<number> {
+    const shopProductsIds = cart.products.map(({ shopProduct }) => shopProduct);
+    const shopProducts = await ShopProductModel.find({ _id: { $in: shopProductsIds } });
+    return shopProducts.reduce((acc: number, { price }) => {
+      return acc + price;
+    }, 0);
+  }
+
+  // Field resolvers
+  @FieldResolver((_returns) => String)
+  async formattedTotalPrice(
+    @Root() cart: DocumentType<Cart>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    const totalPrice = await this.getTotalPrice(cart);
+    return getCurrencyString({ value: totalPrice, lang });
+  }
+
+  @FieldResolver((_returns) => Int)
+  async totalPrice(@Root() cart: DocumentType<Cart>): Promise<number> {
+    return this.getTotalPrice(cart);
+  }
+
+  @FieldResolver((_returns) => Int)
+  async productsCount(@Root() cart: DocumentType<Cart>): Promise<number> {
+    return cart.products.length;
   }
 }

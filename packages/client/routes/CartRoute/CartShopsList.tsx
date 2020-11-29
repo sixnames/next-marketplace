@@ -36,7 +36,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
   const mainImage = assets[0].url;
 
   return (
-    <div className={`${classes.shop}`}>
+    <div className={`${classes.frame}`}>
       <div className={classes.imageHolder}>
         <div className={classes.image}>
           <Image url={mainImage} alt={nameString} title={nameString} width={215} />
@@ -75,21 +75,19 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
           </div>
         </div>
 
-        <div className={`${classes.orderColumn}`}>
-          <div className={classes.column}>
-            <ProductShopPrices
-              className={classes.prices}
-              formattedPrice={formattedPrice}
-              discountedPercent={discountedPercent}
-              formattedOldPrice={formattedOldPrice}
-            />
-            <div className={classes.available}>В наличии {` ${available} `}шт.</div>
+        <div className={`${classes.column}`}>
+          <ProductShopPrices
+            className={classes.prices}
+            formattedPrice={formattedPrice}
+            discountedPercent={discountedPercent}
+            formattedOldPrice={formattedOldPrice}
+          />
+          <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
-            <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
+          <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
 
-            <div className={classes.moreLink}>
-              <a href='#'>Узнать больше</a>
-            </div>
+          <div className={classes.moreLink}>
+            <a href='#'>Узнать больше</a>
           </div>
 
           <Button

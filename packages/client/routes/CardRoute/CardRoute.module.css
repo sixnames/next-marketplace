@@ -264,12 +264,12 @@
   align-items: center;
 }
 
-.shoplessFrom {
+.addToCartForm {
   display: flex;
   align-items: center;
 }
 
-.shoplessFromInput {
+.addToCartFormInput {
   margin-right: 2rem;
 }
 

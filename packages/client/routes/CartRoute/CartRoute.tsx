@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import { useSiteContext } from '../../context/siteContext';
 import Title from '../../components/Title/Title';
@@ -12,42 +12,51 @@ import { noNaN } from '@yagu/shared';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import ProductSnippetPrice from '../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
 import Button from '../../components/Buttons/Button';
+import CartShopsList from './CartShopsList';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;
   cartProductId: string;
+  isShopsVisible?: boolean;
 }
 
 const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   product,
   cartProductId,
   children,
+  isShopsVisible,
 }) => {
   const { deleteProductFromCart } = useSiteContext();
-  const { mainImage, nameString } = product;
+  const { mainImage, nameString, id } = product;
   const imageWidth = 45;
 
   return (
-    <div data-cy={'cart-product'} className={classes.product}>
-      <div className={classes.productImage}>
-        <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
-      </div>
-      <div className={classes.productContent}>
-        {children}
-        <ButtonCross
-          iconSize={'small'}
-          className={classes.productRemove}
-          onClick={() => {
-            deleteProductFromCart({
-              cartProductId,
-            });
-          }}
-        />
-        <div className={classes.productButns}>
-          <ControlButton iconSize={'mid'} icon={'compare'} />
-          <ControlButton iconSize={'mid'} icon={'heart'} />
+    <div className={classes.productHolder}>
+      <div data-cy={'cart-product'} className={classes.product}>
+        <div className={classes.productMainGrid}>
+          <div className={classes.productImage}>
+            <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
+          </div>
+          <div className={classes.productContent}>
+            {children}
+            <ButtonCross
+              iconSize={'small'}
+              className={classes.productRemove}
+              onClick={() => {
+                deleteProductFromCart({
+                  cartProductId,
+                });
+              }}
+            />
+            <div className={classes.productButns}>
+              <ControlButton iconSize={'mid'} icon={'compare'} />
+              <ControlButton iconSize={'mid'} icon={'heart'} />
+            </div>
+          </div>
         </div>
       </div>
+
+      {isShopsVisible ? <CartShopsList productId={id} cartProductId={cartProductId} /> : null}
     </div>
   );
 };
@@ -75,6 +84,7 @@ interface CartProductInterface {
 }
 
 const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
+  const [isShopsVisible, setIsShopsVisible] = useState<boolean>(false);
   const { updateProductInCart } = useSiteContext();
   const { product, shopProduct, id, amount } = cartProduct;
   const productData = product || shopProduct?.product;
@@ -82,10 +92,10 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
     return null;
   }
 
-  const { cardPrices } = product;
+  const { cardPrices, slug } = product;
 
   return (
-    <CartProductFrame product={productData} cartProductId={id}>
+    <CartProductFrame product={productData} cartProductId={id} isShopsVisible={isShopsVisible}>
       <div className={classes.productGrid}>
         <div>
           <CartProductMainData product={productData} />
@@ -115,9 +125,9 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
         />
         <Button
           onClick={() => {
-            console.log('show shops');
+            setIsShopsVisible(true);
           }}
-          testId={``}
+          testId={`${slug}-show-shops`}
         >
           Выбрать винотеку
         </Button>

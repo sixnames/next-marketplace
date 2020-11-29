@@ -13,13 +13,20 @@
   margin-bottom: 3rem;
 }
 
+.productHolder {
+  margin-bottom: 2rem;
+}
+
 .product {
-  display: grid;
-  grid-template-columns: 8rem 1fr;
   border-radius: var(--borderRadius);
   background-color: var(--secondaryBackground);
   box-shadow: var(--wp-shadow-100);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+}
+
+.productMainGrid {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
 }
 
 .product .amountInput {

@@ -1389,7 +1389,7 @@ input UpdateOptionsGroupInput {
 
 input UpdateProductInCartInput {
   amount: Int!
-  shopProductId: ID!
+  cartProductId: ID!
 }
 
 input UpdateProductInput {

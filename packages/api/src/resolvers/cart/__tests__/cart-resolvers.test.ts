@@ -222,7 +222,7 @@ describe('Cart', () => {
       {
         variables: {
           input: {
-            shopProductId: mockData.shopAProductB.id,
+            cartProductId: secondCartProduct.id,
             amount: newProductAmount,
           },
         },

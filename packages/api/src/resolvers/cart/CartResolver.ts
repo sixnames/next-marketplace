@@ -256,7 +256,7 @@ export class CartResolver {
     @Arg('input') input: UpdateProductInCartInput,
   ): Promise<CartPayloadType> {
     try {
-      const { shopProductId, amount } = input;
+      const { cartProductId, amount } = input;
 
       const updatedCart = await CartModel.findByIdAndUpdate(
         cart.id,
@@ -266,7 +266,7 @@ export class CartResolver {
           },
         },
         {
-          arrayFilters: [{ 'product.shopProduct': { $eq: shopProductId } }],
+          arrayFilters: [{ 'product._id': { $eq: new Types.ObjectId(cartProductId) } }],
           new: true,
         },
       );

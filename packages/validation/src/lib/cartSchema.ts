@@ -29,7 +29,7 @@ export const addShopToCartProductSchema = (args: MultiLangSchemaMessagesInterfac
 
 export const updateProductInCartSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
-    shopProductId: shopProductIdSchema(args),
+    cartProductId: cartProductIdSchema(args),
     amount: Yup.number().required('validation.carts.amount'),
   });
 

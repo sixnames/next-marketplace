@@ -2175,7 +2175,7 @@ export type AddShopToCartProductInput = {
 };
 
 export type UpdateProductInCartInput = {
-  shopProductId: Scalars['ID'];
+  cartProductId: Scalars['ID'];
   amount: Scalars['Int'];
 };
 

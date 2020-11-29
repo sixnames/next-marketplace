@@ -115,12 +115,15 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
           name={'amount'}
           value={amount}
           min={1}
+          testId={`${slug}-amount`}
+          plusTestId={`${slug}-plus`}
+          minusTestId={`${slug}-minus`}
           frameClassName={`${classes.shoplessFromInput}`}
           className={`${classes.amountInput}`}
           onChange={(e) => {
             updateProductInCart({
               amount: noNaN(e.target.value),
-              shopProductId: `${shopProduct?.id}`,
+              cartProductId: id,
             });
           }}
         />
@@ -146,6 +149,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
   }
 
   const { formattedPrice, formattedOldPrice, discountedPercent, available, shop } = shopProduct;
+  const { slug } = productData;
   const { address, nameString } = shop;
 
   return (
@@ -157,11 +161,14 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
             name={'amount'}
             value={amount}
             min={1}
+            testId={`${slug}-amount`}
+            plusTestId={`${slug}-plus`}
+            minusTestId={`${slug}-minus`}
             className={classes.amountInput}
             onChange={(e) => {
               updateProductInCart({
                 amount: noNaN(e.target.value),
-                shopProductId: `${shopProduct?.id}`,
+                cartProductId: id,
               });
             }}
           />

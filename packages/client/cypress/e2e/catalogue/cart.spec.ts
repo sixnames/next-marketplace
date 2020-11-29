@@ -80,5 +80,9 @@ describe('Cart', () => {
     cy.getByCy(`cart-shops-${mockData.shopA.slug}-add-to-cart`).click();
     cy.getByCy(`cart-shops-list`).should('not.exist');
     cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).should('not.exist');
+
+    // Should update product amount
+    cy.getByCy(`${mockData.productA.slug}-plus`).click();
+    cy.getByCy(`${mockData.productA.slug}-amount`).should('have.value', '5');
   });
 });

@@ -1368,142 +1368,123 @@ export const MOCK_RUBRIC_LEVEL_THREE_B_B = {
 };
 
 // Products
+const productDescription = [
+  { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
+  { key: SECONDARY_LANG, value: 'Very long product description' },
+];
+
 export const MOCK_PRODUCT_A = {
   priority: 10,
-  slug: 'Wine_Brancott_Estate',
+  slug: 'productA',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Brancott_Estate' },
-    { key: SECONDARY_LANG, value: 'Wine_Brancott_Estate' },
+    { key: DEFAULT_LANG, value: 'productA' },
+    { key: SECONDARY_LANG, value: 'productA' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Brancott Estate Marlborough Sauvignon Blanc' },
-    { key: SECONDARY_LANG, value: 'Wine Brancott Estate Marlborough Sauvignon Blanc' },
+    { key: DEFAULT_LANG, value: 'Card_name_productA' },
+    { key: SECONDARY_LANG, value: 'Card_name_productA' },
   ],
   price: 100,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_B = {
   priority: 9,
-  slug: 'Wine_Campo_Vieja',
+  slug: 'productB',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Campo_Vieja' },
-    { key: SECONDARY_LANG, value: 'Wine_Campo_Vieja' },
+    { key: DEFAULT_LANG, value: 'productB' },
+    { key: SECONDARY_LANG, value: 'productB' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Campo Vieja Tempranillo Rioja DOC' },
-    { key: SECONDARY_LANG, value: 'Wine Campo Vieja Tempranillo Rioja DOC' },
+    { key: DEFAULT_LANG, value: 'Card_name_productB' },
+    { key: SECONDARY_LANG, value: 'Card_name_productB' },
   ],
   price: 200,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_C = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie',
+  slug: 'productC',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie' },
-    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie' },
+    { key: DEFAULT_LANG, value: 'productC' },
+    { key: SECONDARY_LANG, value: 'productC' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Val de Vie, "Barista" Pinotage' },
-    { key: SECONDARY_LANG, value: 'Wine Val de Vie, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Card_name_productC' },
+    { key: SECONDARY_LANG, value: 'Card_name_productC' },
   ],
   price: 50,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_D = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie_C',
+  slug: 'productD',
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Val_de_Vie_C' },
-    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_C' },
+    { key: DEFAULT_LANG, value: 'productD' },
+    { key: SECONDARY_LANG, value: 'productD' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Val de "Barista" Pinotage' },
-    { key: SECONDARY_LANG, value: 'Wine Val de, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Card_name_productD' },
+    { key: SECONDARY_LANG, value: 'Card_name_productD' },
   ],
   price: 1150,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_E = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie_E',
+  slug: 'productE',
   name: [
-    { key: DEFAULT_LANG, value: 'Wine_Val_de_Vie_E' },
-    { key: SECONDARY_LANG, value: 'Wine_Val_de_Vie_E' },
+    { key: DEFAULT_LANG, value: 'productE' },
+    { key: SECONDARY_LANG, value: 'productE' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Vie, "Barista" Pinotage' },
-    { key: SECONDARY_LANG, value: 'Wine Vie, "Barista" Pinotage' },
+    { key: DEFAULT_LANG, value: 'Card_name_productE' },
+    { key: SECONDARY_LANG, value: 'Card_name_productE' },
   ],
   price: 500,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_F = {
   priority: 1,
-  slug: 'Wine_Val_de_Vie_F',
+  slug: 'productF',
   name: [
-    { key: DEFAULT_LANG, value: 'Product_F' },
-    { key: SECONDARY_LANG, value: 'Product_F' },
+    { key: DEFAULT_LANG, value: 'productF' },
+    { key: SECONDARY_LANG, value: 'productF' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Product_F' },
-    { key: SECONDARY_LANG, value: 'Product_F' },
+    { key: DEFAULT_LANG, value: 'Card_name_productF' },
+    { key: SECONDARY_LANG, value: 'Card_name_productF' },
   ],
   price: 500,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_NEW = {
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Sogrape_Vinhos' },
-    { key: SECONDARY_LANG, value: 'Wine_Sogrape_Vinhos' },
+    { key: DEFAULT_LANG, value: 'productNew' },
+    { key: SECONDARY_LANG, value: 'productNew' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Sogrape Vinhos, Gazela Vinho Verde DOC' },
-    { key: SECONDARY_LANG, value: 'Wine Sogrape Vinhos, Gazela Vinho Verde DOC' },
+    { key: DEFAULT_LANG, value: 'Card_name_productNew' },
+    { key: SECONDARY_LANG, value: 'Card_name_productNew' },
   ],
   price: 2000,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };
 
 export const MOCK_PRODUCT_CREATE = {
   name: [
-    { key: DEFAULT_LANG, value: 'Вино_Luis_Felipe_Edwards' },
-    { key: SECONDARY_LANG, value: 'Wine_Luis_Felipe_Edwards' },
+    { key: DEFAULT_LANG, value: 'productCreate' },
+    { key: SECONDARY_LANG, value: 'productCreate' },
   ],
   cardName: [
-    { key: DEFAULT_LANG, value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
-    { key: SECONDARY_LANG, value: 'Вино Luis Felipe Edwards, "Reserva" Shiraz' },
+    { key: DEFAULT_LANG, value: 'Card_name_productCreate' },
+    { key: SECONDARY_LANG, value: 'Card_name_productCreate' },
   ],
   price: 2000,
-  description: [
-    { key: DEFAULT_LANG, value: 'Очень длинное описание товара' },
-    { key: SECONDARY_LANG, value: 'Very long product description' },
-  ],
+  description: productDescription,
 };

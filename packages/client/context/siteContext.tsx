@@ -129,7 +129,6 @@ function useSiteContext(): UseSiteContextInterface {
           cart,
         });
 
-        // Show cart modal
         if (mutationCallback) {
           mutationCallback();
         }

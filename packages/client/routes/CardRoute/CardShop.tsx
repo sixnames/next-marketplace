@@ -7,11 +7,10 @@ import { noNaN } from '@yagu/shared';
 import Button from '../../components/Buttons/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
-import Currency from '../../components/Currency/Currency';
-import Percent from '../../components/Percent/Percent';
 import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
 import { useSiteContext } from '../../context/siteContext';
+import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 
 interface CardShopInterface {
   shopProduct: ShopProductSnippetFragment;
@@ -73,24 +72,11 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
 
         <div className={`${classes.orderColumn}`}>
           <div className={classes.column}>
-            <div className={classes.prices}>
-              <div
-                className={`${classes.price} ${discountedPercent ? classes.discountedPrice : ''}`}
-              >
-                <Currency className={classes.priceValue} value={formattedPrice} />
-              </div>
-              {formattedOldPrice ? (
-                <div className={classes.oldPrice}>
-                  <Currency className={classes.oldPriceValue} value={formattedOldPrice} />
-                </div>
-              ) : null}
-              {discountedPercent ? (
-                <div className={classes.discount}>
-                  <Percent isNegative value={discountedPercent} />
-                </div>
-              ) : null}
-            </div>
-
+            <ProductShopPrices
+              formattedPrice={formattedPrice}
+              discountedPercent={discountedPercent}
+              formattedOldPrice={formattedOldPrice}
+            />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
             <div className={classes.productsCount}>Всего товаров: {productsCount}</div>

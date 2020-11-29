@@ -67,5 +67,7 @@ describe('Cart', () => {
     cy.getByCy(`cart-modal-continue`).click();
     cy.getByCy(`cart`).should('exist');
     cy.getByCy(`cart-counter`).should('contain', '4');
+    cy.getByCy(`cart-products`).should('exist');
+    cy.getByCy(`cart-product`).should('have.length', 4);
   });
 });

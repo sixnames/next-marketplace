@@ -2715,23 +2715,28 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
+export type CartProductFragment = (
+  { __typename?: 'CartProduct' }
+  & Pick<CartProduct, 'id' | 'amount' | 'isShopless'>
+  & { product?: Maybe<(
+    { __typename?: 'Product' }
+    & ProductCardFragment
+  )>, shopProduct?: Maybe<(
+    { __typename?: 'ShopProduct' }
+    & { product: (
+      { __typename?: 'Product' }
+      & ProductCardFragment
+    ) }
+    & ShopProductSnippetFragment
+  )> }
+);
+
 export type CartFragment = (
   { __typename?: 'Cart' }
   & Pick<Cart, 'id' | 'formattedTotalPrice' | 'productsCount'>
   & { products: Array<(
     { __typename?: 'CartProduct' }
-    & Pick<CartProduct, 'id' | 'amount'>
-    & { product?: Maybe<(
-      { __typename?: 'Product' }
-      & ProductCardFragment
-    )>, shopProduct?: Maybe<(
-      { __typename?: 'ShopProduct' }
-      & { product: (
-        { __typename?: 'Product' }
-        & ProductCardFragment
-      ) }
-      & ShopProductSnippetFragment
-    )> }
+    & CartProductFragment
   )> }
 );
 
@@ -4492,27 +4497,33 @@ export const ShopProductSnippetFragmentDoc = gql`
   }
 }
     ${ShopSnippetFragmentDoc}`;
+export const CartProductFragmentDoc = gql`
+    fragment CartProduct on CartProduct {
+  id
+  amount
+  isShopless
+  product {
+    ...ProductCard
+  }
+  shopProduct {
+    ...ShopProductSnippet
+    product {
+      ...ProductCard
+    }
+  }
+}
+    ${ProductCardFragmentDoc}
+${ShopProductSnippetFragmentDoc}`;
 export const CartFragmentDoc = gql`
     fragment Cart on Cart {
   id
   formattedTotalPrice
   productsCount
   products {
-    id
-    amount
-    product {
-      ...ProductCard
-    }
-    shopProduct {
-      ...ShopProductSnippet
-      product {
-        ...ProductCard
-      }
-    }
+    ...CartProduct
   }
 }
-    ${ProductCardFragmentDoc}
-${ShopProductSnippetFragmentDoc}`;
+    ${CartProductFragmentDoc}`;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayloadType {
   success

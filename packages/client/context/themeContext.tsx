@@ -90,7 +90,7 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   );
 };
 
-const useThemeContext = () => {
+const useThemeContext = (): ThemeContextInterface => {
   const context = useContext(ThemeContext);
 
   if (!context) {

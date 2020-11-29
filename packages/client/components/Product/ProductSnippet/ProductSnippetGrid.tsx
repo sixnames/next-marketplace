@@ -2,12 +2,12 @@ import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from '../../Image/Image';
 import Link from '../../Link/Link';
-import Icon from '../../Icon/Icon';
 import { ProductSnippetFragment } from '../../../generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
 import Currency from '../../Currency/Currency';
 import { useSiteContext } from '../../../context/siteContext';
+import ControlButton from '../../Buttons/ControlButton';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -44,24 +44,20 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
         </div>
 
         <div className={classes.btns}>
-          <button className={`${classes.btnsItem}`}>
-            <Icon name={'compare'} />
-          </button>
-          <button className={`${classes.btnsItem}`}>
-            <Icon name={'heart'} />
-          </button>
-          <button
-            data-cy={`catalogue-item-${slug}-add-to-cart`}
+          <ControlButton icon={'compare'} />
+          <ControlButton icon={'heart'} />
+          <ControlButton
+            testId={`catalogue-item-${slug}-add-to-cart`}
             onClick={() =>
               addShoplessProductToCart({
                 amount: 1,
                 productId: id,
               })
             }
-            className={`${classes.btnsItem} ${classes.btnsItemCart}`}
-          >
-            <Icon name={'cart'} />
-          </button>
+            icon={'cart'}
+            theme={'accent'}
+            roundedTopLeft
+          />
         </div>
       </div>
 

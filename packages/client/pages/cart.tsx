@@ -6,7 +6,7 @@ import CartRoute from '../routes/CartRoute/CartRoute';
 
 const Home: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
-    <SiteLayout initialApolloState={initialApolloState}>
+    <SiteLayout initialApolloState={initialApolloState} title={'Корзина'}>
       <CartRoute />
     </SiteLayout>
   );

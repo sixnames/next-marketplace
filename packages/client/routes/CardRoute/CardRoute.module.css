@@ -235,43 +235,6 @@
   justify-content: flex-end;
 }
 
-.btnsItem {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: var(--formInputHeight);
-  width: var(--formInputHeight);
-  padding: 0;
-  margin: 0;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  background: none;
-  transition: all 0.2s;
-}
-
-.btnsItem svg {
-  fill: var(--wp-light-gray-100);
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-[data-theme='light'] .btnsItem svg {
-  fill: var(--wp-light-gray-100);
-}
-
-[data-theme='dark'] .btnsItem svg {
-  fill: var(--wp-mid-gray-100);
-}
-
-[data-theme='light'] .btnsItem:hover svg,
-[data-theme='dark'] .btnsItem:hover svg,
-.btnsItem:hover svg {
-  fill: var(--theme);
-}
-
 .price {
   display: flex;
   align-items: baseline;
@@ -436,11 +399,6 @@
     right: 0;
     z-index: 5;
     display: block;
-  }
-
-
-  .btnsItem {
-    align-items: center;
   }
 }
 

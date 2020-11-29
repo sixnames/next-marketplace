@@ -405,6 +405,7 @@
   --formInputHeight: 3.5rem;
   --formLineHeight: 2rem;
   --buttonMinWidth: 14rem;
+  --controlButtonHeight: 3.5rem;
   --minLinkHeight: 3.5rem;
   --tabsNavHeight: 3.5rem;
   --burger-dropdown-width: 345px;
@@ -496,7 +497,7 @@
   --buttonShadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   --secondaryButtonBackground: var(--wp-dark-gray-200);
 
-  --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.45);
+  --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.35);
 
   --scrollbarBG: var(--wp-dark-gray-300);
   --thumbBG: var(--wp-dark-gray-200);

@@ -1,27 +1,35 @@
 import { gql } from '@apollo/client';
 import { productCardFragment, shopProductSnippetFragment } from '../query/cardQueries';
 
+export const cartProductFragment = gql`
+  fragment CartProduct on CartProduct {
+    id
+    amount
+    isShopless
+    product {
+      ...ProductCard
+    }
+    shopProduct {
+      ...ShopProductSnippet
+      product {
+        ...ProductCard
+      }
+    }
+  }
+  ${productCardFragment}
+  ${shopProductSnippetFragment}
+`;
+
 export const cartFragment = gql`
   fragment Cart on Cart {
     id
     formattedTotalPrice
     productsCount
     products {
-      id
-      amount
-      product {
-        ...ProductCard
-      }
-      shopProduct {
-        ...ShopProductSnippet
-        product {
-          ...ProductCard
-        }
-      }
+      ...CartProduct
     }
   }
-  ${productCardFragment}
-  ${shopProductSnippetFragment}
+  ${cartProductFragment}
 `;
 
 export const cartPayloadFragment = gql`

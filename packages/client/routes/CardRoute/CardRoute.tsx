@@ -16,6 +16,7 @@ import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInpu
 import Button from '../../components/Buttons/Button';
 import { noNaN } from '@yagu/shared';
 import { useSiteContext } from '../../context/siteContext';
+import ControlButton from '../../components/Buttons/ControlButton';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -190,15 +191,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
 
                 <div className={classes.btns}>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'compare'} />
-                  </button>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'heart'} />
-                  </button>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'upload'} />
-                  </button>
+                  <ControlButton icon={'compare'} />
+                  <ControlButton icon={'heart'} />
+                  <ControlButton icon={'upload'} />
                 </div>
               </div>
             </div>

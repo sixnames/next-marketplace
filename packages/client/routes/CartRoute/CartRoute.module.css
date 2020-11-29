@@ -19,7 +19,7 @@
   border-radius: var(--borderRadius);
   background-color: var(--secondaryBackground);
   box-shadow: var(--wp-shadow-100);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .product .amountInput {
@@ -71,18 +71,24 @@
 
 .productGrid {
   display: grid;
-  grid-template-columns: 3fr 2fr;
+  grid-template-columns: 4fr 3fr;
   grid-gap: 2rem;
+}
+
+.productGridRight {
+  min-width: 220px;
 }
 
 .productArt {
   color: var(--textSecondaryColor);
   margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
 
 .productMeta {
   color: var(--textSecondaryColor);
   margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
 
 .productName {
@@ -93,7 +99,41 @@
 }
 
 .productFeatures {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  color: var(--textSecondaryColor);
+  line-height: 1.4;
+  font-size: 0.875rem;
+}
 
+.productFeaturesItem {
+  margin-right: 0.75rem;
+}
+
+.shop {
+  line-height: 1.8;
+  font-weight: 600;
+}
+
+.shop span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+}
+
+.shopMap {
+  color: var(--theme);
+  margin-top: 1rem;
+}
+
+.shoplessFrom {
+  display: flex;
+  align-items: center;
+}
+
+.shoplessFrom .shoplessFromInput {
+  margin-right: 2rem;
 }
 
 

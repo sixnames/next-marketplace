@@ -94,6 +94,10 @@
   margin-bottom: 1rem;
 }
 
+.prices {
+  margin-bottom: 1rem;
+}
+
 .available,
 .productsCount {
   color: var(--textSecondaryColor);

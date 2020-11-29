@@ -264,12 +264,12 @@
   align-items: center;
 }
 
-.addToCartForm {
+.shoplessFrom {
   display: flex;
   align-items: center;
 }
 
-.addToCartFormInput {
+.shoplessFromInput {
   margin-right: 2rem;
 }
 
@@ -423,19 +423,19 @@
     font-size: 2rem;
   }
 
-  .addToCartForm {
+  .shoplessFrom {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 1rem;
   }
 
-  .addToCartFormInput {
+  .shoplessFromInput {
     margin-right: 0;
     min-width: auto;
     width: auto;
   }
 
-  .addToCartForm .addToCartFormButton {
+  .shoplessFrom .addToCartFormButton {
     min-width: auto;
   }
 

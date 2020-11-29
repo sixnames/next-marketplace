@@ -7,15 +7,17 @@ interface ProductPricesInterface {
   discountedPercent?: number | null;
   formattedPrice: string;
   formattedOldPrice?: string | null;
+  className?: string;
 }
 
 const ProductShopPrices: React.FC<ProductPricesInterface> = ({
   discountedPercent,
   formattedOldPrice,
   formattedPrice,
+  className,
 }) => {
   return (
-    <div className={classes.prices}>
+    <div className={`${classes.prices} ${className ? className : ''}`}>
       <div className={`${classes.price} ${discountedPercent ? classes.discountedPrice : ''}`}>
         <Currency className={classes.priceValue} value={formattedPrice} />
       </div>

@@ -191,9 +191,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
 
                 <div className={classes.btns}>
-                  <ControlButton icon={'compare'} />
-                  <ControlButton icon={'heart'} />
-                  <ControlButton icon={'upload'} />
+                  <ControlButton icon={'compare'} iconSize={'mid'} />
+                  <ControlButton icon={'heart'} iconSize={'mid'} />
+                  <ControlButton icon={'upload'} iconSize={'mid'} />
                 </div>
               </div>
             </div>

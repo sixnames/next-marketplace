@@ -9,6 +9,9 @@ import ButtonCross from '../../components/Buttons/ButtonCross';
 import ControlButton from '../../components/Buttons/ControlButton';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { noNaN } from '@yagu/shared';
+import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
+import ProductSnippetPrice from '../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
+import Button from '../../components/Buttons/Button';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;
@@ -32,6 +35,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
       <div className={classes.productContent}>
         {children}
         <ButtonCross
+          iconSize={'small'}
           className={classes.productRemove}
           onClick={() => {
             deleteProductFromCart({
@@ -40,8 +44,8 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           }}
         />
         <div className={classes.productButns}>
-          <ControlButton icon={'compare'} />
-          <ControlButton icon={'heart'} />
+          <ControlButton iconSize={'mid'} icon={'compare'} />
+          <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>
       </div>
     </div>
@@ -71,11 +75,14 @@ interface CartProductInterface {
 }
 
 const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
-  const { product, shopProduct, id } = cartProduct;
+  const { updateProductInCart } = useSiteContext();
+  const { product, shopProduct, id, amount } = cartProduct;
   const productData = product || shopProduct?.product;
-  if (!productData) {
+  if (!productData || !product) {
     return null;
   }
+
+  const { cardPrices } = product;
 
   return (
     <CartProductFrame product={productData} cartProductId={id}>
@@ -83,6 +90,37 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
         <div>
           <CartProductMainData product={productData} />
         </div>
+
+        <div className={classes.productGridRight}>
+          <ProductSnippetPrice value={cardPrices.min} />
+          <div className={classes.productFeatures}>
+            <div className={classes.productFeaturesItem}>Объем 0,75 мл</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={`${classes.shoplessFrom}`}>
+        <SpinnerInput
+          name={'amount'}
+          value={amount}
+          min={1}
+          frameClassName={`${classes.shoplessFromInput}`}
+          className={`${classes.amountInput}`}
+          onChange={(e) => {
+            updateProductInCart({
+              amount: noNaN(e.target.value),
+              shopProductId: `${shopProduct?.id}`,
+            });
+          }}
+        />
+        <Button
+          onClick={() => {
+            console.log('show shops');
+          }}
+          testId={``}
+        >
+          Выбрать винотеку
+        </Button>
       </div>
     </CartProductFrame>
   );
@@ -92,9 +130,12 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
   const { updateProductInCart } = useSiteContext();
   const { product, shopProduct, amount, id } = cartProduct;
   const productData = product || shopProduct?.product;
-  if (!productData) {
+  if (!productData || !shopProduct) {
     return null;
   }
+
+  const { formattedPrice, formattedOldPrice, discountedPercent, available, shop } = shopProduct;
+  const { address, nameString } = shop;
 
   return (
     <CartProductFrame product={productData} cartProductId={id}>
@@ -115,7 +156,26 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
           />
         </div>
 
-        <div></div>
+        <div className={classes.productGridRight}>
+          <ProductShopPrices
+            formattedPrice={formattedPrice}
+            formattedOldPrice={formattedOldPrice}
+            discountedPercent={discountedPercent}
+          />
+          <div className={classes.productFeatures}>
+            <div className={classes.productFeaturesItem}>Объем 0,75 мл</div>
+            <div className={classes.productFeaturesItem}>{`В наличии ${available} шт`}</div>
+          </div>
+
+          <div className={classes.shop}>
+            <div>
+              <span>винотека: </span>
+              {nameString}
+            </div>
+            <div>{address.formattedAddress}</div>
+            <div className={classes.shopMap}>Смотреть на карте</div>
+          </div>
+        </div>
       </div>
     </CartProductFrame>
   );

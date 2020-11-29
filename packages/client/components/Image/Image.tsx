@@ -6,10 +6,11 @@ interface ImageInterface {
   alt: string;
   title: string;
   width: number;
+  height?: number;
 }
 
-const Image: React.FC<ImageInterface> = ({ url, alt, title, width }) => {
-  const src = `${ASSETS_URL}${url}?width=${width}`;
+const Image: React.FC<ImageInterface> = ({ url, alt, title, width, height }) => {
+  const src = `${ASSETS_URL}${url}?width=${width}${height ? `&height=${height}` : ''}`;
 
   return (
     <picture>

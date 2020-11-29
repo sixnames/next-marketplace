@@ -5,9 +5,9 @@ import Link from '../../Link/Link';
 import { ProductSnippetFragment } from '../../../generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
-import Currency from '../../Currency/Currency';
 import { useSiteContext } from '../../../context/siteContext';
 import ControlButton from '../../Buttons/ControlButton';
+import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -29,9 +29,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
           <div className={classes.name}>{nameString}</div>
           <div className={classes.attributes}>Новая Зеландия, белое, полусухое</div>
         </div>
-        <div className={classes.price}>
-          от <Currency className={classes.priceValue} value={cardPrices.min} />
-        </div>
+        <ProductSnippetPrice value={cardPrices.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>

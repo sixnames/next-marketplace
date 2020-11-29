@@ -73,6 +73,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
         <div className={`${classes.orderColumn}`}>
           <div className={classes.column}>
             <ProductShopPrices
+              className={classes.prices}
               formattedPrice={formattedPrice}
               discountedPercent={discountedPercent}
               formattedOldPrice={formattedOldPrice}

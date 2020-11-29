@@ -61,20 +61,9 @@
   margin-bottom: 0.5rem;
 }
 
-.price,
 .attributes {
   color: var(--textSecondaryColor);
   font-size: 0.875rem;
-}
-
-.priceValue {
-  margin-left: 0.35rem;
-}
-
-.priceValue span {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--textColor);
 }
 
 .rating {

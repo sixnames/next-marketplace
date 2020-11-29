@@ -1,9 +1,10 @@
 import React from 'react';
 import classes from './Currency.module.css';
 import { useUserContext } from '../../context/userContext';
+import { noNaN } from '@yagu/shared';
 
 interface CurrencyInterface {
-  value: string;
+  value?: string | null;
   className?: string;
 }
 
@@ -12,7 +13,7 @@ const Currency: React.FC<CurrencyInterface> = ({ value, className }) => {
 
   return (
     <span className={`${classes.frame} ${className ? className : ''}`}>
-      <span>{value}</span>
+      <span>{noNaN(value)}</span>
       {currency}
     </span>
   );

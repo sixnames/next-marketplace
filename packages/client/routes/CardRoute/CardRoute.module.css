@@ -19,7 +19,7 @@
   margin-bottom: 5rem;
 }
 
-.mainFrame:after {
+.mainFrame:not(.mainFrameNoBackground):after {
   position: absolute;
   content: '';
   top: 0;
@@ -28,6 +28,23 @@
   width: 10%;
   height: 100%;
   background: linear-gradient(to left, rgba(var(--secondaryBackground-RGB), 1) 30%, rgba(var(--secondaryBackground-RGB), 0));
+}
+
+.mainFrameNoBackground {
+  background: none;
+}
+
+.mainFrameFeatures {
+  position: relative;
+  z-index: 2;
+}
+
+.mainFrameLowTop {
+  padding-top: 0;
+}
+
+.mainFrameLowBottom {
+  padding-bottom: 0;
 }
 
 .mainFrameFeatures {
@@ -42,6 +59,10 @@
   grid-template-columns: var(--secondaryColumnsWidht) 1fr;
   grid-column-gap: var(--mainColumnsGap);
   padding-right: 2rem;
+}
+
+.mainDataNoRightPadding {
+  padding-right: 0;
 }
 
 .image {
@@ -280,6 +301,15 @@
   align-items: center;
 }
 
+.addToCartForm {
+  display: flex;
+  align-items: center;
+}
+
+.addToCartFormInput {
+  margin-right: 2rem;
+}
+
 .cardFeatures {
   display: grid;
   grid-template-columns: 2fr 5fr;
@@ -369,7 +399,7 @@
     padding-top: 4rem;
   }
 
-  .mainFrame:after {
+  .mainFrame:not(.mainFrameNoBackground):after {
     background: var(--secondaryBackground);
   }
 
@@ -394,6 +424,10 @@
 
   .mainData {
     padding-right: var(--formInputHeight);
+  }
+
+  .mainDataNoRightPadding {
+    padding-right: 0;
   }
 
   .btns {
@@ -431,6 +465,22 @@
     font-size: 2rem;
   }
 
+  .addToCartForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1rem;
+  }
+
+  .addToCartFormInput {
+    margin-right: 0;
+    min-width: auto;
+    width: auto;
+  }
+
+  .addToCartForm .addToCartFormButton {
+    min-width: auto;
+  }
+
   .cardFeatures {
     grid-template-columns: 1fr;
   }
@@ -444,6 +494,10 @@
   .mainData {
     grid-template-columns: 1fr;
     padding-right: 0.5rem;
+  }
+
+  .mainDataNoRightPadding {
+    padding-right: 0;
   }
 
   .image {

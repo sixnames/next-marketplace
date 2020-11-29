@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -12,6 +12,10 @@ import { useAppContext } from '../../context/appContext';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
 import CardShops from './CardShops';
+import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
+import Button from '../../components/Buttons/Button';
+import { noNaN } from '@yagu/shared';
+import { useSiteContext } from '../../context/siteContext';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -62,7 +66,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardFeatures,
     shopsCount,
   } = cardData;
+  const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
+  const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
@@ -199,6 +205,41 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
 
           <ProductMarker>Выбор покупателей</ProductMarker>
+        </div>
+
+        <div
+          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop} ${classes.mainFrameLowBottom}`}
+        >
+          <div />
+          <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
+            <div />
+            <div className={`${classes.addToCartForm}`}>
+              <SpinnerInput
+                onChange={(e) => {
+                  setAmount(noNaN(e.target.value));
+                }}
+                plusTestId={`card-${slug}-plus`}
+                minusTestId={`card-${slug}-minus`}
+                testId={`card-${slug}-amount`}
+                frameClassName={`${classes.addToCartFormInput}`}
+                min={1}
+                name={'amount'}
+                value={amount}
+              />
+              <Button
+                onClick={() => {
+                  addShoplessProductToCart({
+                    amount,
+                    productId: id,
+                  });
+                }}
+                testId={`card-${slug}-add-to-cart`}
+                className={classes.addToCartFormButton}
+              >
+                В корзину
+              </Button>
+            </div>
+          </div>
         </div>
 
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}

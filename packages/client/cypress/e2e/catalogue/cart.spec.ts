@@ -69,5 +69,16 @@ describe('Cart', () => {
     cy.getByCy(`cart-counter`).should('contain', '4');
     cy.getByCy(`cart-products`).should('exist');
     cy.getByCy(`cart-product`).should('have.length', 4);
+
+    // Should delete product form cart
+    cy.getByCy(`${mockData.connectionProductC.slug}-remove-from-cart`).click();
+    cy.getByCy(`cart-product`).should('have.length', 3);
+
+    // Should add shop to the shopless cart product
+    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).click();
+    cy.getByCy(`cart-shops-list`).should('exist');
+    cy.getByCy(`cart-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-shops-list`).should('not.exist');
+    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).should('not.exist');
   });
 });

@@ -27,7 +27,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   isShopsVisible,
 }) => {
   const { deleteProductFromCart } = useSiteContext();
-  const { mainImage, nameString, id } = product;
+  const { mainImage, nameString, id, slug } = product;
   const imageWidth = 45;
 
   return (
@@ -40,6 +40,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           <div className={classes.productContent}>
             {children}
             <ButtonCross
+              testId={`${slug}-remove-from-cart`}
               iconSize={'small'}
               className={classes.productRemove}
               onClick={() => {

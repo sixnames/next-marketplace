@@ -91,7 +91,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) =
           </div>
 
           <Button
-            testId={`card-shops-${slug}-add-to-cart`}
+            testId={`cart-shops-${slug}-add-to-cart`}
             onClick={() => {
               addShopToCartProduct({
                 cartProductId,

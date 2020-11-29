@@ -115,8 +115,8 @@
   align-items: center;
   justify-content: space-between;
   height: var(--mobileNavHeight);
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
+  padding-top: 0;
+  padding-bottom: 2rem;
 }
 
 .mobileNavRight {

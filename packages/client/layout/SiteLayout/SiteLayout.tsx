@@ -14,6 +14,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
+import { debounce } from 'lodash';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -51,19 +52,21 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       if (contentRef && contentRef.current && isBurgerDropdownOpen && !isMobile) {
         setBurgerDropdownSizes({
           top: contentRef.current.offsetTop,
-          height: contentRef.current.clientHeight,
+          height: window.innerHeight - contentRef.current.offsetTop,
         });
       }
     }
 
+    const debouncedResizeHandler = debounce(resizeHandler, 250);
+
     if (burgerDropdownSizes.height === 0) {
-      resizeHandler();
+      debouncedResizeHandler();
     }
 
-    window.addEventListener('resize', resizeHandler);
+    window.addEventListener('resize', debouncedResizeHandler);
 
     return () => {
-      window.removeEventListener('resize', resizeHandler);
+      window.removeEventListener('resize', debouncedResizeHandler);
     };
   }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
@@ -74,7 +77,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       <Header />
 
       <div ref={contentRef} className={classes.content}>
-        <main className={classes.main} ref={contentRef}>
+        <main className={classes.main}>
           <ErrorBoundary>
             <AnimateOpacity>{children}</AnimateOpacity>
           </ErrorBoundary>

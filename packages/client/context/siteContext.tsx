@@ -195,7 +195,24 @@ function useSiteContext(): UseSiteContextInterface {
     throw new Error('useSiteContext must be used within a SiteContextProvider');
   }
 
+  function fixBodyScroll(fixed: boolean) {
+    if (fixed) {
+      const scrollY = window.scrollY;
+      const paddingRight = window.innerWidth - document.body.clientWidth;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.paddingRight = `${paddingRight}px`;
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.paddingRight = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+  }
+
   function showBurgerDropdown() {
+    fixBodyScroll(true);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
@@ -204,6 +221,7 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function hideBurgerDropdown() {
+    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
@@ -212,11 +230,15 @@ function useSiteContext(): UseSiteContextInterface {
   }
 
   function toggleBurgerDropdown() {
-    context.setState((prevState) => ({
-      ...prevState,
-      isSearchOpen: false,
-      isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
-    }));
+    context.setState((prevState) => {
+      fixBodyScroll(!prevState.isBurgerDropdownOpen);
+
+      return {
+        ...prevState,
+        isSearchOpen: false,
+        isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
+      };
+    });
   }
 
   function showSearchDropdown() {

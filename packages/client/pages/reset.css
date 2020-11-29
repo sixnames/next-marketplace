@@ -412,7 +412,7 @@
   --catalogue-filter-width: 325px;
   --burger-dropdown-side-gap: 2.5rem;
   --catalogueGridGap: 2.5rem;
-  --mobileNavHeight: 65px;
+  --mobileNavHeight: 85px;
 
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
@@ -652,6 +652,7 @@ body {
   margin: 0;
   padding: 0;
   border: 0;
+  width: 100%;
   min-width: 320px;
   font-family: var(--font);
   font-size: 1rem;

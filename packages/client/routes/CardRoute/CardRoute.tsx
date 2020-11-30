@@ -208,7 +208,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           <div />
           <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
             <div />
-            <div className={`${classes.addToCartForm}`}>
+            <div className={`${classes.shoplessFrom}`}>
               <SpinnerInput
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
@@ -216,7 +216,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 plusTestId={`card-${slug}-plus`}
                 minusTestId={`card-${slug}-minus`}
                 testId={`card-${slug}-amount`}
-                frameClassName={`${classes.addToCartFormInput}`}
+                frameClassName={`${classes.shoplessFromInput}`}
                 min={1}
                 name={'amount'}
                 value={amount}
@@ -229,7 +229,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                   });
                 }}
                 testId={`card-${slug}-add-to-cart`}
-                className={classes.addToCartFormButton}
+                className={classes.shoplessFromButton}
               >
                 В корзину
               </Button>

@@ -423,6 +423,7 @@
 
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
   --wp-shadow-bottom-100: 0 20px 15px -15px rgba(9, 9, 9, 0.2);
   --wp-shadow-200: 0px 20px 30px rgba(0, 0, 0, 0.15);
@@ -473,6 +474,9 @@
   --secondaryButtonBackground: var(--wp-light-gray-300);
 
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.25);
+  --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.2);
+  --wp-shadow-bottom-100: 0 20px 15px -15px rgba(9, 9, 9, 0.2);
 
   /*Outer ratings*/
   --outerRatingBackground: var(--wp-light-gray-200);
@@ -505,6 +509,9 @@
   --secondaryButtonBackground: var(--wp-dark-gray-200);
 
   --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.35);
+  --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.35);
+  --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.3);
+  --wp-shadow-bottom-100: 0 20px 15px -15px rgba(9, 9, 9, 0.3);
 
   --scrollbarBG: var(--wp-dark-gray-300);
   --thumbBG: var(--wp-dark-gray-200);

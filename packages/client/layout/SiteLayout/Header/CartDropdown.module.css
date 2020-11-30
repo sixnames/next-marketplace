@@ -174,3 +174,43 @@
 .frame .totalsButton {
   width: 100%;
 }
+
+@media only screen and (max-width: 480px) {
+  .frame {
+    position: fixed;
+    bottom: var(--mobileNavHeight);
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: var(--radius-1-2);
+    background-color: var(--primaryBackground);
+    box-shadow: var(--wp-shadow-top-100);
+  }
+
+  [data-theme='dark'] .frame {
+    background-color: var(--wp-dark-gray-100);
+  }
+
+  [data-theme='dark'] .product .amountInput {
+    background-color: var(--wp-dark-gray-100);
+  }
+
+  .frameBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .totals {
+    margin-bottom: 0;
+  }
+
+  .totalsTitle {
+    margin-right: 0.5rem;
+  }
+
+  .frame .totalsButton {
+    width: auto;
+    min-width: 10rem;
+  }
+}

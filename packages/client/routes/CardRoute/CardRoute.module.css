@@ -357,6 +357,15 @@
   margin-left: 1rem;
 }
 
+.shoplessFrom {
+  display: flex;
+  align-items: center;
+}
+
+.shoplessFromInput {
+  margin-right: 2rem;
+}
+
 @media only screen and (max-width: 1024px) {
   .card {
     padding-top: 4rem;
@@ -435,7 +444,7 @@
     width: auto;
   }
 
-  .shoplessFrom .addToCartFormButton {
+  .shoplessFrom .shoplessFromButton {
     min-width: auto;
   }
 

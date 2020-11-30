@@ -67,24 +67,40 @@ const HeaderProfileLink: React.FC = () => {
 
 const HeaderCartLink: React.FC = () => {
   const { cart } = useSiteContext();
-  return (
-    <Menu>
-      <MenuButton>
-        <span
-          data-cy={'cart-dropdown-trigger'}
-          className={`${classes.middleLink} ${classes.middleLinkCart}`}
-        >
-          <span className={`${classes.middleLinkIconHolder}`}>
-            <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-            <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+
+  if (cart.productsCount > 0) {
+    return (
+      <Menu>
+        <MenuButton>
+          <span
+            data-cy={'cart-dropdown-trigger'}
+            className={`${classes.middleLink} ${classes.middleLinkCart}`}
+          >
+            <span className={`${classes.middleLinkIconHolder}`}>
+              <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+              <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+            </span>
+            <span>Корзина</span>
           </span>
-          <span>Корзина</span>
-        </span>
-      </MenuButton>
-      <MenuPopover>
-        <CartDropdown cart={cart} />
-      </MenuPopover>
-    </Menu>
+        </MenuButton>
+        <MenuPopover>
+          <CartDropdown cart={cart} />
+        </MenuPopover>
+      </Menu>
+    );
+  }
+
+  return (
+    <span
+      data-cy={'cart-dropdown-trigger'}
+      className={`${classes.middleLink} ${classes.middleLinkCart}`}
+    >
+      <span className={`${classes.middleLinkIconHolder}`}>
+        <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+        <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+      </span>
+      <span>Корзина</span>
+    </span>
   );
 };
 

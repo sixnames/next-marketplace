@@ -17,7 +17,8 @@ export interface ControlButtonInterface {
   testId?: string;
   roundedTopLeft?: boolean;
   roundedTopRight?: boolean;
-  iconSize?: 'small' | 'normal' | 'mid' | 'big';
+  iconSize?: 'smaller' | 'small' | 'normal' | 'mid' | 'big';
+  size?: 'small' | 'normal';
   theme?: 'blank' | 'accent';
 }
 
@@ -34,17 +35,19 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   theme = 'blank',
   onClick,
   iconSize = 'normal',
+  size = 'normal',
 }) => {
   const themeClass = classes[theme];
-  const iconSizeClass = `${iconSize === 'small' ? classes.smallIcon : ''} ${
-    iconSize === 'mid' ? classes.midIcon : ''
-  } ${iconSize === 'big' ? classes.bigIcon : ''}`;
+  const sizeClass = classes[size];
+  const iconSizeClass = `${iconSize === 'smaller' ? classes.smallerIcon : ''} ${
+    iconSize === 'small' ? classes.smallIcon : ''
+  } ${iconSize === 'mid' ? classes.midIcon : ''} ${iconSize === 'big' ? classes.bigIcon : ''}`;
   const roundedClass = `${roundedTopLeft ? classes.roundedTopLeft : ''} ${
     roundedTopRight ? classes.roundedTopRight : ''
   }`;
   const buttonClass = `${classes.frame} ${
     className ? className : ''
-  } ${themeClass} ${roundedClass} ${iconSizeClass}`;
+  } ${themeClass} ${roundedClass} ${iconSizeClass} ${sizeClass}`;
 
   return (
     <Fragment>

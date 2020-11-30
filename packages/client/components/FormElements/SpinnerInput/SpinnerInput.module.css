@@ -3,16 +3,17 @@
   width: var(--buttonMinWidth);
 }
 
+.frameSmall {
+  width: var(--buttonMinWidthSmall);
+}
+
 .input {
   position: relative;
   z-index: 1;
   display: block;
   width: 100%;
-  height: var(--formInputHeight);
   padding-top: 0;
   padding-bottom: 0;
-  padding-left: var(--formInputHeight);
-  padding-right: var(--formInputHeight);
   margin: 0;
   font-family: var(--font);
   color: var(--inputTextColor);
@@ -31,6 +32,18 @@
 .input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.normal {
+  height: var(--formInputHeight);
+  padding-left: var(--formInputHeight);
+  padding-right: var(--formInputHeight);
+}
+
+.small {
+  height: var(--formInputHeightSmall);
+  padding-left: var(--formInputHeightSmall);
+  padding-right: var(--formInputHeightSmall);
 }
 
 .error {

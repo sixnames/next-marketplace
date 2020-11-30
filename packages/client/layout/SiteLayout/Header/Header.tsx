@@ -14,6 +14,8 @@ import HeaderSearch from './HeaderSearch';
 import { useUserContext } from '../../../context/userContext';
 import { useAppContext } from '../../../context/appContext';
 import CounterSticker from '../../../components/CounterSticker/CounterSticker';
+import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
+import CartDropdown from './CartDropdown';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
@@ -66,13 +68,23 @@ const HeaderProfileLink: React.FC = () => {
 const HeaderCartLink: React.FC = () => {
   const { cart } = useSiteContext();
   return (
-    <div className={`${classes.middleLink}`}>
-      <div className={`${classes.middleLinkIconHolder}`}>
-        <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-        <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
-      </div>
-      <span>Корзина</span>
-    </div>
+    <Menu>
+      <MenuButton>
+        <span
+          data-cy={'cart-dropdown-trigger'}
+          className={`${classes.middleLink} ${classes.middleLinkCart}`}
+        >
+          <span className={`${classes.middleLinkIconHolder}`}>
+            <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+            <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+          </span>
+          <span>Корзина</span>
+        </span>
+      </MenuButton>
+      <MenuPopover>
+        <CartDropdown cart={cart} />
+      </MenuPopover>
+    </Menu>
   );
 };
 

@@ -48,6 +48,7 @@
   transition: all 0.2s;
 }
 
+.middleLinkCart,
 .middleLink:not(:first-child) {
   margin-left: 0.6rem;
   padding-left: 0.6rem;
@@ -135,6 +136,7 @@
     padding-bottom: 1.5rem;
   }
 
+  .middleLinkCart,
   .middleLink:not(:first-child) {
     margin-left: 0.2rem;
   }

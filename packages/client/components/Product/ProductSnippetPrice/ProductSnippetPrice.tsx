@@ -4,11 +4,12 @@ import Currency from '../../Currency/Currency';
 
 interface ProductSnippetPriceInterface {
   value?: string | null;
+  className?: string;
 }
 
-const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({ value }) => {
+const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({ value, className }) => {
   return (
-    <div className={classes.price}>
+    <div className={`${classes.price} ${className ? className : ''}`}>
       от <Currency className={classes.priceValue} value={value} />
     </div>
   );

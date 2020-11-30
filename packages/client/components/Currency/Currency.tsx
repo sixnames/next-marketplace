@@ -12,7 +12,7 @@ const Currency: React.FC<CurrencyInterface> = ({ value, className }) => {
 
   return (
     <span className={`${classes.frame} ${className ? className : ''}`}>
-      <span>{value || 0}</span>
+      <span data-price-value={value}>{value || 0}</span>
       {currency}
     </span>
   );

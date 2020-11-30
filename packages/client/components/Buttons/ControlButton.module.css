@@ -4,8 +4,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--controlButtonHeight);
-  width: var(--controlButtonHeight);
   padding: 0;
   margin: 0;
   border: none;
@@ -14,14 +12,29 @@
   transition: all 0.2s;
 }
 
+.normal {
+  height: var(--controlButtonHeight);
+  width: var(--controlButtonHeight);
+}
+
+.small {
+  height: var(--controlButtonHeightSmall);
+  width: var(--controlButtonHeightSmall);
+}
+
 .frame svg {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.smallIcon svg {
+.smallerIcon svg {
   width: 1rem;
   height: 1rem;
+}
+
+.smallIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .midIcon svg {

@@ -8,11 +8,9 @@ import Meta from '../Meta';
 import Modal from '../../components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from '../../hooks/useCompact';
-import { UserContextProvider } from '../../context/userContext';
 import { AppPageInterface } from '../../utils/getAppServerSideProps';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import { useConfigContext } from '../../context/configContext';
 import PrivateRoute from '../PrivateRoute';
 import getFieldArrayFromTree from '../../utils/getFieldArrayFromTree';
 import { AppNavContextProvider } from '../../context/appNavContext';
@@ -30,15 +28,9 @@ const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, tit
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const { isCompact } = compact;
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const themeColor = getSiteConfigSingleValue('siteThemeColor');
-  const themeStyles = {
-    '--theme': `rgb(${themeColor})`,
-    '--themeRGB': `${themeColor}`,
-  } as React.CSSProperties;
 
   return (
-    <div className={classes.frame} style={themeStyles}>
+    <div className={classes.frame}>
       <Meta title={title} />
 
       <AppNav compact={compact} />
@@ -98,16 +90,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApoll
       }}
     >
       <AppNavContextProvider navItems={appNavigation}>
-        <UserContextProvider
-          me={initialApolloState.me}
-          cities={initialApolloState.getAllCities}
-          lang={initialApolloState.getClientLanguage}
-          languagesList={initialApolloState.getAllLanguages || []}
-          currency={initialApolloState.getSessionCurrency}
-          configs={initialApolloState.getAllConfigs}
-        >
-          <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
-        </UserContextProvider>
+        <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
       </AppNavContextProvider>
     </PrivateRoute>
   );

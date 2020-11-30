@@ -5,7 +5,6 @@ import privateRouteHandler from './privateRouteHandler';
 import { InitialQuery } from '../generated/apolloComponents';
 import { parseCookies } from './parseCookies';
 import { Theme } from '../types';
-import { THEME_LIGHT } from '../config';
 
 export interface AppPageInterface {
   initialApolloState: InitialQuery;
@@ -39,7 +38,7 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         initialApolloState: initialApolloState.data,
-        initialTheme: (theme as Theme) || (THEME_LIGHT as Theme),
+        initialTheme: `${theme}` as Theme,
         isMobileDevice,
       },
     };

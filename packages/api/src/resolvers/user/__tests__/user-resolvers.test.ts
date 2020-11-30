@@ -229,9 +229,6 @@ describe('User', () => {
         me {
           id
           name
-          cart {
-            id
-          }
         }
       }
     `);

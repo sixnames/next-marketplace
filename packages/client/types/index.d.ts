@@ -1,6 +1,6 @@
 import { IconType } from '../components/Icon/Icon';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'undefined';
 export type ButtonTheme = 'primary' | 'secondary';
 export type SizeType = 'small' | 'normal';
 export type ModalSizeType = 'small' | 'normal' | 'midWide' | 'wide';

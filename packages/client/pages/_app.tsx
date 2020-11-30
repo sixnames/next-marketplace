@@ -6,6 +6,9 @@ import { ThemeContextProvider } from '../context/themeContext';
 import { AppContextProvider } from '../context/appContext';
 import { NotificationsProvider } from '../context/notificationsContext';
 import { ApolloProvider } from '@apollo/client';
+import { ConfigContextProvider } from '../context/configContext';
+import { LanguageContextProvider } from '../context/languageContext';
+import { UserContextProvider } from '../context/userContext';
 
 interface AppInterface {
   Component: any;
@@ -18,15 +21,28 @@ const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   // const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
-    <ThemeContextProvider initialTheme={pageProps.initialTheme}>
-      <ApolloProvider client={apolloClient}>
-        <AppContextProvider isMobileDevice={pageProps.isMobileDevice}>
-          <NotificationsProvider>
-            <Component {...pageProps} />
-          </NotificationsProvider>
-        </AppContextProvider>
-      </ApolloProvider>
-    </ThemeContextProvider>
+    <ApolloProvider client={apolloClient}>
+      <ConfigContextProvider
+        configs={pageProps.initialApolloState.getAllConfigs}
+        cities={pageProps.initialApolloState.getAllCities}
+      >
+        <ThemeContextProvider initialTheme={pageProps.initialTheme}>
+          <LanguageContextProvider
+            lang={pageProps.initialApolloState.getClientLanguage}
+            languagesList={pageProps.initialApolloState.getAllLanguages}
+            currency={pageProps.initialApolloState.getSessionCurrency}
+          >
+            <UserContextProvider me={pageProps.initialApolloState.me}>
+              <AppContextProvider isMobileDevice={pageProps.isMobileDevice}>
+                <NotificationsProvider>
+                  <Component {...pageProps} />
+                </NotificationsProvider>
+              </AppContextProvider>
+            </UserContextProvider>
+          </LanguageContextProvider>
+        </ThemeContextProvider>
+      </ConfigContextProvider>
+    </ApolloProvider>
   );
 };
 

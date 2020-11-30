@@ -14,7 +14,6 @@ import {
   useDeleteProductFromCartMutation,
   useUpdateProductInCartMutation,
 } from '../generated/apolloComponents';
-import { UserContextProvider } from './userContext';
 import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { CART_MODAL } from '../config/modals';
 
@@ -75,18 +74,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     };
   }, [initialApolloState, state]);
 
-  return (
-    <UserContextProvider
-      me={initialApolloState.me}
-      cities={initialApolloState.getAllCities}
-      configs={initialApolloState.getAllConfigs}
-      lang={initialApolloState.getClientLanguage}
-      currency={initialApolloState.getSessionCurrency}
-      languagesList={initialApolloState.getAllLanguages || []}
-    >
-      <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>
-    </UserContextProvider>
-  );
+  return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;
 };
 
 interface CartContextUpdaterInterface {

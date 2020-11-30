@@ -5,7 +5,6 @@ import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import privateRouteHandler from './privateRouteHandler';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { Theme } from '../types';
-import { THEME_LIGHT } from '../config';
 import { parseCookies } from './parseCookies';
 
 export type SitePagePropsType<T = undefined> = {
@@ -63,7 +62,7 @@ async function getSiteServerSideProps<T>({
     return callback({
       initialProps: {
         initialApolloState: initialApolloState.data,
-        initialTheme: (theme as Theme) || (THEME_LIGHT as Theme),
+        initialTheme: `${theme}` as Theme,
         isMobileDevice: Boolean(isMobileDevice),
       },
       context,

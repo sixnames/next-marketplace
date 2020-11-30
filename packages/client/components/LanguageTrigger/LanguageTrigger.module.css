@@ -1,67 +1,13 @@
 .frame {
   position: relative;
+}
+
+.frame .button {
   color: var(--textSecondaryColor);
   font-size: 0.875rem;
 }
 
-.trigger {
-  display: inline-flex;
-  align-items: center;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.trigger svg {
+.frame .button svg {
   width: 0.75rem;
   height: 0.75rem;
-  margin-left: 0.5rem;
-  fill: currentColor;
-}
-
-.list:not(.listActive) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: 0;
-  bottom: 0;
-  clip: rect(0 0 0 0);
-  overflow: hidden;
-}
-
-.listActive {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: auto;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  min-width: 180px;
-  height: auto;
-  border-radius: var(--borderRadius);
-  transition: all 0.2s;
-  background-color: var(--primaryBackground);
-  box-shadow: var(--wp-shadow-100);
-}
-
-.listItem {
-  display: flex;
-  align-items: center;
-  height: 2rem;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-  cursor: pointer;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transition: all 0.2s;
-}
-
-.listItem:hover {
-  color: var(--theme);
-}
-
-.listItemActive {
-  color: var(--theme);
-  cursor: default;
 }

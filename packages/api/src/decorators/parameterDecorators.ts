@@ -11,13 +11,13 @@ import { UserModel } from '../entities/User';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
-    return context.req.session!.user;
+    return UserModel.findById(context.req.session!.userId);
   });
 }
 
 export function SessionCart() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const user = context.req.session!.user;
+    const user = await UserModel.findById(context.req.session!.userId);
     const userCartId = user ? user.cart : null;
 
     // Get cart id from cookies or session user
@@ -40,7 +40,7 @@ export function SessionCart() {
 
       // Update user card field and set new user to session
       if (user) {
-        const updatedUser = await UserModel.findByIdAndUpdate(
+        await UserModel.findByIdAndUpdate(
           user.id,
           {
             cart: newCart.id,
@@ -51,8 +51,6 @@ export function SessionCart() {
         if (!newCart) {
           throw Error('User cart creation error');
         }
-
-        context.req.session!.user = updatedUser;
       }
 
       return newCart;

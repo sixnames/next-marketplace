@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { InitialQuery, Language } from '../generated/apolloComponents';
+import { InitialQuery } from '../generated/apolloComponents';
 import { useRouter } from 'next/router';
-import { LanguageContextProvider } from './languageContext';
-import { ConfigContextProvider } from './configContext';
-import { DEFAULT_CURRENCY } from '@yagu/config';
 
 export type MeType = InitialQuery['me'];
 export type ConfigsType = InitialQuery['getAllConfigs'];
@@ -17,11 +14,9 @@ interface ContextState {
 interface UserContextInterface {
   state: ContextState;
   setState?: any;
-  currency: string;
 }
 
 const UserContext = createContext<UserContextInterface>({
-  currency: DEFAULT_CURRENCY,
   state: {
     isAuthenticated: false,
   },
@@ -29,22 +24,9 @@ const UserContext = createContext<UserContextInterface>({
 
 interface UserContextProviderInterface {
   me: MeType;
-  lang: string;
-  languagesList: Language[];
-  configs: ConfigsType;
-  cities: CitiesType;
-  currency: string;
 }
 
-const UserContextProvider: React.FC<UserContextProviderInterface> = ({
-  children,
-  me,
-  lang,
-  languagesList,
-  configs,
-  cities,
-  currency,
-}) => {
+const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, me }) => {
   const [state, setState] = useState<ContextState>({
     isAuthenticated: false,
   });
@@ -62,17 +44,10 @@ const UserContextProvider: React.FC<UserContextProviderInterface> = ({
     return {
       state,
       setState,
-      currency,
     };
-  }, [currency, state]);
+  }, [state]);
 
-  return (
-    <LanguageContextProvider lang={lang} languagesList={languagesList}>
-      <ConfigContextProvider configs={configs} cities={cities}>
-        <UserContext.Provider value={value}>{children}</UserContext.Provider>
-      </ConfigContextProvider>
-    </LanguageContextProvider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 function useUserContext() {
@@ -83,7 +58,7 @@ function useUserContext() {
     throw new Error('useUserContext must be used within a UserContextProvider');
   }
 
-  const { state, setState, currency } = context;
+  const { state, setState } = context;
 
   function setMeIn(user: MeType) {
     if (user) {
@@ -117,7 +92,6 @@ function useUserContext() {
 
   return {
     ...state,
-    currency,
     setMeIn,
     setMeOut,
     updateMyContext,

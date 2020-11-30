@@ -11,7 +11,6 @@ import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 import { SiteContextProvider, useSiteContext } from '../../context/siteContext';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 import { debounce } from 'lodash';
@@ -39,13 +38,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     height: 0,
   });
 
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const themeColor = getSiteConfigSingleValue('siteThemeColor');
-  const themeStyles = {
-    '--theme': `rgb(${themeColor})`,
-    '--themeRGB': `${themeColor}`,
-  } as React.CSSProperties;
-
   // Set burger dropdown sizes
   useEffect(() => {
     function resizeHandler() {
@@ -71,7 +63,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
-    <div className={classes.frame} style={themeStyles}>
+    <div className={classes.frame}>
       <Meta title={title} description={description} />
 
       <Header />

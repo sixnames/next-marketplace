@@ -339,5 +339,23 @@ describe('Cart', () => {
     expect(addShopToCartProduct.success).toBeTruthy();
     expect(cartProductA.isShopless).toBeFalsy();
     expect(addShopToCartProduct.cart.productsCount).toEqual(1);
+
+    // Should add shop to shopless cart product
+    const clearCartPayload = await mutate<any>(
+      gql`
+        mutation AddShopToCartProduct {
+          clearCart {
+            success
+            message
+            cart {
+              ...Cart
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+    );
+    expect(clearCartPayload.data.clearCart.success).toBeTruthy();
+    expect(clearCartPayload.data.clearCart.cart.products).toHaveLength(0);
   });
 });

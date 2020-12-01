@@ -554,6 +554,7 @@ type Mutation {
   addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayloadType!
   addShopToCartProduct(input: AddShopToCartProductInput!): CartPayloadType!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
+  clearCart: CartPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!

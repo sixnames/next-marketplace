@@ -335,6 +335,42 @@ export class CartResolver {
     }
   }
 
+  @Mutation(() => CartPayloadType)
+  async clearCart(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @SessionCart() cart: Cart,
+  ): Promise<CartPayloadType> {
+    try {
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cart.id,
+        {
+          products: [],
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: await getApiMessage('carts.clear.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('carts.clear.success'),
+        cart: updatedCart,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
   // Methods
   async getTotalPrice(cart: DocumentType<Cart>): Promise<number> {
     const shopProductsIds = cart.products.map(({ shopProduct }) => shopProduct);

@@ -103,6 +103,8 @@ const messagesKeys = [
   'carts.deleteProduct.cartNotFound',
   'carts.deleteProduct.error',
   'carts.deleteProduct.success',
+  'carts.clear.error',
+  'carts.clear.success',
   // Carts validation
   'validation.carts.shopProductId',
   'validation.carts.amount',

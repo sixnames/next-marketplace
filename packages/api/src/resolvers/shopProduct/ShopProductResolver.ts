@@ -36,6 +36,7 @@ export class ShopProductResolver {
   ): Promise<ShopProductPayloadType> {
     const { productId, ...values } = input;
     const product = await ShopProductModel.findOne({ _id: productId, ...customFilter });
+
     if (!product) {
       return {
         success: false,
@@ -50,6 +51,7 @@ export class ShopProductResolver {
         $push: {
           oldPrices: {
             price: product.price,
+            createdAt: new Date(),
           },
         },
       },

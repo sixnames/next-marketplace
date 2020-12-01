@@ -1227,7 +1227,6 @@ type ShopProductOldPrice {
   createdAt: DateTime!
   id: ID!
   price: Float!
-  updatedAt: DateTime!
 }
 
 input ShopProductPaginateInput {

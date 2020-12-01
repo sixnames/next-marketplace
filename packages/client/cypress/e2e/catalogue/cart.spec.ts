@@ -91,6 +91,7 @@ describe('Cart', () => {
       cyPrefix: 'main-rubric',
       languages: mockData.rubricLevelOneA.name,
     }).click();
+    cy.getByCy('catalogue').should('exist');
     cy.getByCy(`cart-dropdown-trigger`).click();
     cy.getByCy(`cart-dropdown`).should('exist');
 

@@ -252,7 +252,7 @@ const ConfigsContent: React.FC = () => {
 
         <div className={classes.warning}>
           <Notification
-            type={'warning'}
+            variant={'warning'}
             title={'Внимание!'}
             message={`Каждая настройка содержит города и языки созданные в базе данных.
               Обязательны к заполнению только основной город и основной язык.

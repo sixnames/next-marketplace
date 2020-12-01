@@ -8,7 +8,7 @@ export type ButtonType = 'submit' | 'button' | 'reset';
 export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';
 export type OnOffType = 'on' | 'off';
-export type NotificationType = 'success' | 'warning' | 'error';
+export type NotificationVariant = 'success' | 'warning' | 'error';
 export type PostfixType =
   | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
   | undefined
@@ -39,7 +39,7 @@ export interface NavItemInterface {
   testId?: string;
 }
 
-export interface LangInterface {
+export interface TranslationInterface {
   key: string;
   value: string;
 }

@@ -8,7 +8,7 @@ import {
   useGetAllOptionsGroupsQuery,
 } from '../../generated/apolloComponents';
 import { OPTIONS_GROUP_MODAL } from '../../config/modals';
-import { LangInterface } from '../../types';
+import { TranslationInterface } from '../../types';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { OptionsGroupModalInterface } from '../../components/Modal/OptionsGroupModal/OptionsGroupModal';
 import { OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
@@ -32,7 +32,7 @@ const OptionsGroupsFilter: React.FC = () => {
     showModal<OptionsGroupModalInterface>({
       variant: OPTIONS_GROUP_MODAL,
       props: {
-        confirm: (values: { name: LangInterface[] }) => {
+        confirm: (values: { name: TranslationInterface[] }) => {
           showLoading();
           return createOptionsGroupMutation({ variables: { input: values } });
         },

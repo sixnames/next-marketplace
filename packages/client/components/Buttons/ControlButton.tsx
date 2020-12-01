@@ -18,7 +18,7 @@ export interface ControlButtonInterface {
   roundedTopLeft?: boolean;
   roundedTopRight?: boolean;
   iconSize?: 'smaller' | 'small' | 'normal' | 'mid' | 'big';
-  size?: 'small' | 'normal';
+  size?: 'smaller' | 'small' | 'normal';
   theme?: 'blank' | 'accent';
 }
 

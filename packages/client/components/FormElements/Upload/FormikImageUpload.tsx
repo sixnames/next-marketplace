@@ -66,9 +66,9 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
           >
             <Tooltip title={tooltip}>
               <div className={classes.frame} style={{ width, height }}>
-                <div className={classes.inputFrame} {...getRootProps()} data-cy={testId}>
+                <span className={classes.inputFrame} {...getRootProps()} data-cy={testId}>
                   <input {...getInputProps()} className={classes.input} name={name} id={name} />
-                </div>
+                </span>
 
                 {imageSrc ? (
                   <div className={classes.preview}>

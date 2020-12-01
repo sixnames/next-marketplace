@@ -1,35 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useSound from 'use-sound';
 import Icon from '../Icon/Icon';
-import Link from '../Link/Link';
-import ButtonCross from '../Buttons/ButtonCross';
-import { NotificationType } from '../../types';
+import { NotificationVariant } from '../../types';
 import classes from './Notification.module.css';
 import { IconType } from '@yagu/config';
+import ButtonCross from '../Buttons/ButtonCross';
 
-interface NotificationInterface {
-  type: NotificationType;
+export interface NotificationInterface {
+  variant: NotificationVariant;
   title?: string;
   message?: string;
-  path?: string;
   icon?: IconType;
   playSound?: boolean;
-  closeHandler?: () => void;
   testId?: string;
+  className?: string;
+  closeHandler?: () => void;
 }
 
 const Notification: React.FC<NotificationInterface> = ({
-  type = 'success',
+  variant = 'success',
   title = '',
   message = '',
-  path = '',
   icon = 'exclamation',
   playSound = false,
   testId,
+  className,
   closeHandler,
 }) => {
   const [play] = useSound('/sounds/definite.mp3');
-  let typeColor;
+  const [variantColor] = useState(() => {
+    if (variant === 'warning') {
+      return '#f68620';
+    }
+    if (variant === 'error') {
+      return '#ec482f';
+    }
+    return '#1fd600';
+  });
 
   useEffect(() => {
     if (playSound) {
@@ -37,43 +44,24 @@ const Notification: React.FC<NotificationInterface> = ({
     }
   }, [playSound, play]);
 
-  switch (type) {
-    case 'warning': {
-      typeColor = '#f68620';
-      break;
-    }
-
-    case 'error': {
-      typeColor = '#ec482f';
-      break;
-    }
-
-    default:
-      typeColor = '#1fd600';
-  }
-
   return (
     <div
-      style={{ borderColor: typeColor }}
-      className={`${classes.frame} notification-snack`}
+      style={{ borderColor: variantColor }}
+      className={`${classes.frame} ${className ? className : ''}`}
       data-cy={testId}
     >
-      <Icon name={icon} className={classes.icon} style={{ fill: typeColor }} />
+      <Icon name={icon} className={classes.icon} style={{ fill: variantColor }} />
 
       <div className={classes.content}>
-        <div className={classes.title}>{title}</div>
-        {path ? (
-          <Link href={`${path}`} className={classes.message} onClick={closeHandler}>
-            {message}
-          </Link>
-        ) : (
-          <div>{message}</div>
-        )}
+        {title ? <div className={classes.title}>{title}</div> : null}
+        {message ? <div className={classes.message}>{message}</div> : null}
       </div>
 
       {closeHandler ? (
         <ButtonCross
           className={classes.close}
+          size={'small'}
+          iconSize={'smaller'}
           onClick={closeHandler}
           testId={'close-notification'}
         />

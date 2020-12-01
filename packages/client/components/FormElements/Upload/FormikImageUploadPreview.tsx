@@ -49,6 +49,8 @@ const FormikImageUploadPreview: React.FC<FormikImageUploadPreviewInterface> = ({
       </div>
 
       <ButtonCross
+        iconSize={'smaller'}
+        size={'smaller'}
         className={classes.remove}
         onClick={() => removeImageHandler(index)}
         testId={`file-preview-remove-${index}`}

@@ -9,6 +9,7 @@ import { ApolloProvider } from '@apollo/client';
 import { ConfigContextProvider } from '../context/configContext';
 import { LanguageContextProvider } from '../context/languageContext';
 import { UserContextProvider } from '../context/userContext';
+import RequestError from '../components/RequestError/RequestError';
 
 interface AppInterface {
   Component: any;
@@ -19,6 +20,10 @@ const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   const apolloClient = useApollo();
   // TODO cache store
   // const apolloClient = useApollo(pageProps.initialApolloState);
+
+  if (!pageProps.initialApolloState) {
+    return <RequestError />;
+  }
 
   return (
     <ApolloProvider client={apolloClient}>

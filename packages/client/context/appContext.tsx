@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
 
@@ -6,10 +6,9 @@ interface ContextState {
   isModal: {
     show: boolean;
     props: any;
-    type: string;
+    variant: string;
   };
   isMobile: boolean;
-  isCartDropdown: boolean;
   isLoading: boolean;
 }
 
@@ -19,7 +18,7 @@ type AppContextType = {
 };
 
 type ModalProps<T> = {
-  type: string;
+  variant: string;
   props?: T;
 };
 
@@ -28,10 +27,9 @@ const AppContext = createContext<AppContextType>({
     isModal: {
       show: false,
       props: {},
-      type: '',
+      variant: '',
     },
     isMobile: false,
-    isCartDropdown: false,
     isLoading: false,
   },
 });
@@ -48,13 +46,12 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
     () => ({
       show: false,
       props: {},
-      type: '',
+      variant: '',
     }),
     [],
   );
 
   const [state, setState] = useState(() => ({
-    isCartDropdown: false,
     isMobile: isMobileDevice,
     isModal: {
       ...defaultModalState,
@@ -101,6 +98,8 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
+type ShowModalCallbackType = <T>(modalProps: ModalProps<T>) => void;
+
 function useAppContext() {
   const context = useContext<AppContextType>(AppContext);
 
@@ -108,10 +107,8 @@ function useAppContext() {
     throw new Error('useAppContext must be used within a AppContextProvider');
   }
 
-  const { state, setState } = context;
-
-  function hideModal() {
-    setState((prevState: ContextState) => ({
+  const hideModal = useCallback(() => {
+    context.setState((prevState: ContextState) => ({
       ...prevState,
       isModal: {
         show: false,
@@ -119,36 +116,39 @@ function useAppContext() {
         type: '',
       },
     }));
-  }
+  }, [context]);
 
-  function showModal<T>({ type, props }: ModalProps<T>) {
-    hideModal();
-    setState((prevState: ContextState) => ({
-      ...prevState,
-      isModal: {
-        show: true,
-        props,
-        type,
-      },
-    }));
-  }
+  const showModal = useCallback<ShowModalCallbackType>(
+    ({ variant, props }) => {
+      hideModal();
+      context.setState((prevState: ContextState) => ({
+        ...prevState,
+        isModal: {
+          show: true,
+          props,
+          variant: variant,
+        },
+      }));
+    },
+    [context, hideModal],
+  );
 
-  function showLoading() {
-    setState((prevState: ContextState) => ({
+  const showLoading = useCallback(() => {
+    context.setState((prevState: ContextState) => ({
       ...prevState,
       isLoading: true,
     }));
-  }
+  }, [context]);
 
-  function hideLoading() {
-    setState((prevState: ContextState) => ({
+  const hideLoading = useCallback(() => {
+    context.setState((prevState: ContextState) => ({
       ...prevState,
       isLoading: false,
     }));
-  }
+  }, [context]);
 
   return {
-    ...state,
+    ...context.state,
     showModal,
     hideModal,
     showLoading,

@@ -43,7 +43,7 @@ const RolesRoute: React.FC = () => {
   function deleteRoleHandler() {
     if (data && data.getRole) {
       showModal<ConfirmModalInterface>({
-        type: CONFIRM_MODAL,
+        variant: CONFIRM_MODAL,
         props: {
           testId: 'delete-role-modal',
           message:

@@ -91,29 +91,35 @@ function useNotificationsContext() {
     [closeSnackbar, enqueueSnackbar],
   );
 
-  function showErrorNotification(props?: ErrorNotificationInterface) {
-    const { key = 'error', title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } =
-      props || {};
+  const showErrorNotification = useCallback(
+    (props?: ErrorNotificationInterface) => {
+      const { key = 'error', title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } =
+        props || {};
 
-    showNotification({
-      key,
-      title,
-      message,
-      type: 'error',
-      testId: 'error-notification',
-    });
-  }
+      showNotification({
+        key,
+        title,
+        message,
+        type: 'error',
+        testId: 'error-notification',
+      });
+    },
+    [showNotification],
+  );
 
-  function showSuccessNotification(props?: SuccessNotificationInterface) {
-    const { title = 'Success', message = '' } = props || {};
-    showNotification({
-      key: 'success',
-      title,
-      message,
-      type: 'success',
-      testId: 'success-notification',
-    });
-  }
+  const showSuccessNotification = useCallback(
+    (props?: SuccessNotificationInterface) => {
+      const { title = 'Success', message = '' } = props || {};
+      showNotification({
+        key: 'success',
+        title,
+        message,
+        type: 'success',
+        testId: 'success-notification',
+      });
+    },
+    [showNotification],
+  );
 
   return {
     showNotification,

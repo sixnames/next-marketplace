@@ -29,7 +29,7 @@ const AttributesGroupsFilter: React.FC = () => {
 
   function createAttributesGroupHandler() {
     showModal<AttributesGroupModalInterface>({
-      type: ATTRIBUTES_GROUP_MODAL,
+      variant: ATTRIBUTES_GROUP_MODAL,
       props: {
         confirm: (values) => {
           showLoading();

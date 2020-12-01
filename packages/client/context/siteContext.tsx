@@ -94,6 +94,7 @@ interface UseSiteContextInterface extends SiteContextInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  fixBodyScroll: (fixed: boolean) => void;
 }
 
 function useSiteContext(): UseSiteContextInterface {
@@ -134,7 +135,7 @@ function useSiteContext(): UseSiteContextInterface {
         mutationCallback: () => {
           // Show cart modal
           showModal({
-            type: CART_MODAL,
+            variant: CART_MODAL,
           });
         },
       });
@@ -148,7 +149,7 @@ function useSiteContext(): UseSiteContextInterface {
         mutationCallback: () => {
           // Show cart modal
           showModal({
-            type: CART_MODAL,
+            variant: CART_MODAL,
           });
         },
       });
@@ -183,7 +184,7 @@ function useSiteContext(): UseSiteContextInterface {
     throw new Error('useSiteContext must be used within a SiteContextProvider');
   }
 
-  function fixBodyScroll(fixed: boolean) {
+  const fixBodyScroll = useCallback((fixed: boolean) => {
     if (fixed) {
       const scrollY = window.scrollY;
       const paddingRight = window.innerWidth - document.body.clientWidth;
@@ -197,27 +198,27 @@ function useSiteContext(): UseSiteContextInterface {
       document.body.style.paddingRight = '';
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
-  }
+  }, []);
 
-  function showBurgerDropdown() {
+  const showBurgerDropdown = useCallback(() => {
     fixBodyScroll(true);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: true,
     }));
-  }
+  }, [context, fixBodyScroll]);
 
-  function hideBurgerDropdown() {
+  const hideBurgerDropdown = useCallback(() => {
     fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
-  }
+  }, [context, fixBodyScroll]);
 
-  function toggleBurgerDropdown() {
+  const toggleBurgerDropdown = useCallback(() => {
     context.setState((prevState) => {
       fixBodyScroll(!prevState.isBurgerDropdownOpen);
 
@@ -227,84 +228,100 @@ function useSiteContext(): UseSiteContextInterface {
         isBurgerDropdownOpen: !prevState.isBurgerDropdownOpen,
       };
     });
-  }
+  }, [context, fixBodyScroll]);
 
-  function showSearchDropdown() {
+  const showSearchDropdown = useCallback(() => {
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: true,
     }));
-  }
+  }, [context]);
 
-  function hideSearchDropdown() {
+  const hideSearchDropdown = useCallback(() => {
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: false,
     }));
-  }
+  }, [context]);
 
-  function toggleSearchDropdown() {
+  const toggleSearchDropdown = useCallback(() => {
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: !prevState.isSearchOpen,
     }));
-  }
+  }, [context]);
 
-  function addProductToCart(input: AddProductToCartInput) {
-    addProductToCartMutation({
-      variables: {
-        input,
-      },
-    }).catch(() => {
-      showErrorNotification();
-    });
-  }
+  const addProductToCart = useCallback(
+    (input: AddProductToCartInput) => {
+      addProductToCartMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [addProductToCartMutation, showErrorNotification],
+  );
 
-  function addShoplessProductToCart(input: AddShoplessProductToCartInput) {
-    addShoplessProductToCartMutation({
-      variables: {
-        input,
-      },
-    }).catch(() => {
-      showErrorNotification();
-    });
-  }
+  const addShoplessProductToCart = useCallback(
+    (input: AddShoplessProductToCartInput) => {
+      addShoplessProductToCartMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [addShoplessProductToCartMutation, showErrorNotification],
+  );
 
-  function addShopToCartProduct(input: AddShopToCartProductInput) {
-    addShopToCartProductMutation({
-      variables: {
-        input,
-      },
-    }).catch(() => {
-      showErrorNotification();
-    });
-  }
+  const addShopToCartProduct = useCallback(
+    (input: AddShopToCartProductInput) => {
+      addShopToCartProductMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [addShopToCartProductMutation, showErrorNotification],
+  );
 
-  function updateProductInCart(input: UpdateProductInCartInput) {
-    updateProductInCartMutation({
-      variables: {
-        input,
-      },
-    }).catch(() => {
-      showErrorNotification();
-    });
-  }
+  const updateProductInCart = useCallback(
+    (input: UpdateProductInCartInput) => {
+      updateProductInCartMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [showErrorNotification, updateProductInCartMutation],
+  );
 
-  function deleteProductFromCart(input: DeleteProductFromCartInput) {
-    deleteProductFromCartMutation({
-      variables: {
-        input,
-      },
-    }).catch(() => {
-      showErrorNotification();
-    });
-  }
+  const deleteProductFromCart = useCallback(
+    (input: DeleteProductFromCartInput) => {
+      deleteProductFromCartMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [deleteProductFromCartMutation, showErrorNotification],
+  );
 
   return {
     ...context,
+    fixBodyScroll,
     showBurgerDropdown,
     hideBurgerDropdown,
     toggleBurgerDropdown,

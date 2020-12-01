@@ -94,7 +94,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   function deleteProductFromRubricHandler(product: RubricProductFragment) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-from-rubric-modal',
         message: `Вы уверены, что хотите удалить товар ${product.nameString} из рубрики?`,
@@ -115,7 +115,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   function addProductToRubricModalHandler() {
     showModal<ProductSearchModalInterface>({
-      type: PRODUCT_SEARCH_MODAL,
+      variant: PRODUCT_SEARCH_MODAL,
       props: {
         rubricId: rubric.id,
         createHandler: (product) => addProductToRubricHandler(product.id),

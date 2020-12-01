@@ -128,7 +128,7 @@ const ShopProducts: React.FC = () => {
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
               showModal<ShopProductModalInterface>({
-                type: SHOP_PRODUCT_MODAL,
+                variant: SHOP_PRODUCT_MODAL,
                 props: {
                   title: 'Обновление товара',
                   shopProduct: dataItem,
@@ -151,7 +151,7 @@ const ShopProducts: React.FC = () => {
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
-                type: CONFIRM_MODAL,
+                variant: CONFIRM_MODAL,
                 props: {
                   testId: 'delete-shop-product-modal',
                   message: `Вы уверенны, что хотите удалить ${dataItem.product.nameString} из магазина?`,
@@ -188,11 +188,11 @@ const ShopProducts: React.FC = () => {
         <Button
           onClick={() => {
             showModal<ProductSearchModalInterface>({
-              type: PRODUCT_SEARCH_MODAL,
+              variant: PRODUCT_SEARCH_MODAL,
               props: {
                 createHandler: (product) => {
                   showModal<ShopProductModalInterface>({
-                    type: SHOP_PRODUCT_MODAL,
+                    variant: SHOP_PRODUCT_MODAL,
                     props: {
                       title: 'Добавление товара',
                       shopProduct: {

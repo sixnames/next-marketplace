@@ -46,7 +46,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId }) =>
 
   function removeFieldHandler(removeIndex: number) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'remove-field-modal',
         message: (

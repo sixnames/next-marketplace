@@ -42,7 +42,7 @@ const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, tit
       </main>
 
       {isLoading && <Spinner />}
-      {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
+      {isModal.show && <Modal modalType={isModal.variant} modalProps={isModal.props} />}
     </div>
   );
 };

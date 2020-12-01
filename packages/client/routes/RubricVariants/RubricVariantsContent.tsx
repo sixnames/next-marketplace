@@ -55,7 +55,7 @@ const RubricVariantsContent: React.FC = () => {
 
   function createRubricVariantHandler() {
     showModal<RubricVariantModalInterface>({
-      type: RUBRIC_VARIANT_MODAL,
+      variant: RUBRIC_VARIANT_MODAL,
       props: {
         confirm: (values) => {
           showLoading();
@@ -73,7 +73,7 @@ const RubricVariantsContent: React.FC = () => {
 
   function updateRubricVariantHandler({ name, id }: RubricVariantFragment) {
     showModal<RubricVariantModalInterface>({
-      type: RUBRIC_VARIANT_MODAL,
+      variant: RUBRIC_VARIANT_MODAL,
       props: {
         name,
         confirm: (values) => {
@@ -93,7 +93,7 @@ const RubricVariantsContent: React.FC = () => {
 
   function deleteRubricVariantHandler({ nameString, id }: RubricVariantFragment) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'rubric-variant-delete-modal',
         message: `Вы уверенны, что хотите тип рубрик ${nameString}?`,

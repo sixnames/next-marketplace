@@ -47,7 +47,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
 
   function deleteAttributeFromGroupHandler(id: string, nameString: string) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         message: `Вы уверенны, что хотите удалить атрибут ${nameString}?`,
         confirm: () => {
@@ -64,7 +64,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     const { id: attributeId } = attribute;
 
     showModal<AddAttributeToGroupModalInterface>({
-      type: ATTRIBUTE_IN_GROUP_MODAL,
+      variant: ATTRIBUTE_IN_GROUP_MODAL,
       props: {
         attribute,
         confirm: (input: Omit<UpdateAttributeInGroupInput, 'groupId' | 'attributeId'>) => {

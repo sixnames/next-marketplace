@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Fragment } from 'react';
 import classes from './Header.module.css';
 import StickyNav from './StickyNav';
@@ -16,6 +16,7 @@ import { useAppContext } from '../../../context/appContext';
 import CounterSticker from '../../../components/CounterSticker/CounterSticker';
 import { Menu, MenuButton, MenuPopover } from '@reach/menu-button';
 import CartDropdown from './CartDropdown';
+import { CartFragment } from '../../../generated/apolloComponents';
 
 const HeaderBurgerDropdownTrigger: React.FC = () => {
   const { isBurgerDropdownOpen, toggleBurgerDropdown } = useSiteContext();
@@ -65,27 +66,73 @@ const HeaderProfileLink: React.FC = () => {
   );
 };
 
+interface HeaderCartDropdownButtonInterface {
+  isOpen: boolean;
+  cart: CartFragment;
+}
+
+const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
+  cart,
+  isOpen,
+}) => {
+  const { isMobile } = useAppContext();
+  const {
+    isBurgerDropdownOpen,
+    hideBurgerDropdown,
+    fixBodyScroll,
+    isSearchOpen,
+    hideSearchDropdown,
+  } = useSiteContext();
+
+  // Hide burger and search dropdown while cart dropdown open
+  useEffect(() => {
+    if (isOpen && isBurgerDropdownOpen) {
+      hideBurgerDropdown();
+    }
+    if (isOpen && isSearchOpen) {
+      hideSearchDropdown();
+    }
+  }, [hideBurgerDropdown, hideSearchDropdown, isBurgerDropdownOpen, isOpen, isSearchOpen]);
+
+  // Fix scroll on mobile while cart dropdown open
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      fixBodyScroll(true);
+    } else {
+      fixBodyScroll(false);
+    }
+  }, [fixBodyScroll, isMobile, isOpen]);
+
+  return (
+    <Fragment>
+      <MenuButton>
+        <span
+          data-cy={'cart-dropdown-trigger'}
+          className={`${classes.middleLink} ${classes.middleLinkCart}`}
+        >
+          <span className={`${classes.middleLinkIconHolder}`}>
+            <Icon name={'cart'} className={classes.middleLinkCartIcon} />
+            <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
+          </span>
+          <span>Корзина</span>
+        </span>
+      </MenuButton>
+      <MenuPopover>
+        <CartDropdown cart={cart} />
+      </MenuPopover>
+    </Fragment>
+  );
+};
+
 const HeaderCartLink: React.FC = () => {
   const { cart } = useSiteContext();
 
   if (cart.productsCount > 0) {
     return (
       <Menu>
-        <MenuButton>
-          <span
-            data-cy={'cart-dropdown-trigger'}
-            className={`${classes.middleLink} ${classes.middleLinkCart}`}
-          >
-            <span className={`${classes.middleLinkIconHolder}`}>
-              <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-              <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
-            </span>
-            <span>Корзина</span>
-          </span>
-        </MenuButton>
-        <MenuPopover>
-          <CartDropdown cart={cart} />
-        </MenuPopover>
+        {({ isOpen }) => {
+          return <HeaderCartDropdownButton isOpen={isOpen} cart={cart} />;
+        }}
       </Menu>
     );
   }
@@ -97,7 +144,6 @@ const HeaderCartLink: React.FC = () => {
     >
       <span className={`${classes.middleLinkIconHolder}`}>
         <Icon name={'cart'} className={classes.middleLinkCartIcon} />
-        <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
       </span>
       <span>Корзина</span>
     </span>

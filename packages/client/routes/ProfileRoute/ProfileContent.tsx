@@ -39,7 +39,7 @@ const ProfileContent: React.FC = () => {
 
   function updateMyPasswordHandler() {
     showModal<UpdateMyPasswordModalInterface>({
-      type: UPDATE_MY_PASSWORD_MODAL,
+      variant: UPDATE_MY_PASSWORD_MODAL,
       props: {
         confirm: async (input) => {
           showLoading();

@@ -30,7 +30,7 @@ const OptionsGroupsFilter: React.FC = () => {
 
   function createOptionsGroupHandler() {
     showModal<OptionsGroupModalInterface>({
-      type: OPTIONS_GROUP_MODAL,
+      variant: OPTIONS_GROUP_MODAL,
       props: {
         confirm: (values: { name: LangInterface[] }) => {
           showLoading();

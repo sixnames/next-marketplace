@@ -78,7 +78,7 @@ const CompanyFormConsumer: React.FC<CompanyFormConsumerInterface> = ({
     isUpdateDisabled,
   }: UsersSearchModalControlsInterface) {
     showModal<UsersSearchModalInterface>({
-      type: USERS_SEARCH_MODAL,
+      variant: USERS_SEARCH_MODAL,
       props: {
         controlsColumn: {
           render: ({ dataItem }) => {

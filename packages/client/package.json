@@ -47,7 +47,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@cypress/webpack-preprocessor": "^5.4.5",
+    "@cypress/webpack-preprocessor": "^5.5.0",
     "cypress-file-upload": "^4.1.1",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/cookie": "^0.4.0",
@@ -60,7 +60,7 @@
     "@types/react-paginate": "^6.2.1",
     "@types/yup": "^0.29.3",
     "babel-plugin-inline-react-svg": "^1.1.1",
-    "cypress": "^5.2.0",
+    "cypress": "^6.0.1",
     "dotenv": "^8.2.0",
     "env-cmd": "^10.1.0",
     "ts-loader": "^8.0.3",

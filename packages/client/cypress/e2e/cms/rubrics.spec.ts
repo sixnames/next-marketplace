@@ -134,13 +134,13 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();
     cy.getByCy(`tree-link-${mockNewRubric}`).should('exist');
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should delete rubric
     cy.getByCy(`rubric-delete`).click();
     cy.getByCy('delete-rubric-modal').should('exist');
     cy.getByCy('confirm').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`tree-link-${mockNewRubric}`).should('not.exist');
   });
 });

@@ -39,6 +39,7 @@ describe('Cart', () => {
       cyPrefix: 'main-rubric',
       languages: mockData.rubricLevelOneA.name,
     }).click();
+    cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
     cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
     cy.getByCy(`connection-${mockData.connectionProductB.slug}`).click();
@@ -84,5 +85,27 @@ describe('Cart', () => {
     // Should update product amount
     cy.getByCy(`${mockData.productA.slug}-plus`).click();
     cy.getByCy(`${mockData.productA.slug}-amount`).should('have.value', '5');
+
+    // Should have cart dropdown
+    cy.getByTranslationFieldCy({
+      cyPrefix: 'main-rubric',
+      languages: mockData.rubricLevelOneA.name,
+    }).click();
+    cy.getByCy(`cart-dropdown-trigger`).click();
+    cy.getByCy(`cart-dropdown`).should('exist');
+
+    // Should update product amount in dropdown
+    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-minus`).click();
+    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-amount`).should('have.value', '4');
+
+    // Should delete cart product form dropdown
+    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-remove-from-cart`).click();
+    cy.getByCy(`cart-dropdown-${mockData.productA.slug}-remove-from-cart`).should('not.exist');
+
+    // Should remove all cart products
+    cy.getByCy('clear-cart').click();
+    cy.getByCy(`cart-dropdown`).should('not.exist');
+    cy.getByCy(`cart-counter`).should('not.exist');
+    cy.shouldSuccess();
   });
 });

@@ -1213,6 +1213,7 @@ export type Mutation = {
   addShopToCartProduct: CartPayloadType;
   updateProductInCart: CartPayloadType;
   deleteProductFromCart: CartPayloadType;
+  clearCart: CartPayloadType;
 };
 
 
@@ -2809,6 +2810,17 @@ export type DeleteProductFromCartMutationVariables = Exact<{
 export type DeleteProductFromCartMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type ClearCartMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClearCartMutation = (
+  { __typename?: 'Mutation' }
+  & { clearCart: (
     { __typename?: 'CartPayloadType' }
     & CartPayloadFragment
   ) }
@@ -6028,6 +6040,37 @@ export function useDeleteProductFromCartMutation(baseOptions?: Apollo.MutationHo
 export type DeleteProductFromCartMutationHookResult = ReturnType<typeof useDeleteProductFromCartMutation>;
 export type DeleteProductFromCartMutationResult = Apollo.MutationResult<DeleteProductFromCartMutation>;
 export type DeleteProductFromCartMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>;
+export const ClearCartDocument = gql`
+    mutation ClearCart {
+  clearCart {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type ClearCartMutationFn = Apollo.MutationFunction<ClearCartMutation, ClearCartMutationVariables>;
+
+/**
+ * __useClearCartMutation__
+ *
+ * To run a mutation, you first call `useClearCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useClearCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [clearCartMutation, { data, loading, error }] = useClearCartMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useClearCartMutation(baseOptions?: Apollo.MutationHookOptions<ClearCartMutation, ClearCartMutationVariables>) {
+        return Apollo.useMutation<ClearCartMutation, ClearCartMutationVariables>(ClearCartDocument, baseOptions);
+      }
+export type ClearCartMutationHookResult = ReturnType<typeof useClearCartMutation>;
+export type ClearCartMutationResult = Apollo.MutationResult<ClearCartMutation>;
+export type ClearCartMutationOptions = Apollo.BaseMutationOptions<ClearCartMutation, ClearCartMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {

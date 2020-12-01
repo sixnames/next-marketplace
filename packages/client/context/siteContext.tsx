@@ -11,6 +11,7 @@ import {
   useAddProductToCartMutation,
   useAddShoplessProductToCartMutation,
   useAddShopToCartProductMutation,
+  useClearCartMutation,
   useDeleteProductFromCartMutation,
   useUpdateProductInCartMutation,
 } from '../generated/apolloComponents';
@@ -94,12 +95,16 @@ interface UseSiteContextInterface extends SiteContextInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  clearCart: () => void;
   fixBodyScroll: (fixed: boolean) => void;
 }
 
 function useSiteContext(): UseSiteContextInterface {
   const context = useContext<SiteContextInterface>(SiteContext);
-  const { showErrorNotification, showModal } = useMutationCallbacks();
+  const { showErrorNotification, showModal, showSuccessNotification } = useMutationCallbacks();
+  if (!context) {
+    throw new Error('useSiteContext must be used within a SiteContextProvider');
+  }
 
   // Cart mutations
   const cartContextUpdater = useCallback(
@@ -180,9 +185,16 @@ function useSiteContext(): UseSiteContextInterface {
     },
   });
 
-  if (!context) {
-    throw new Error('useSiteContext must be used within a SiteContextProvider');
-  }
+  const [clearCartMutation] = useClearCartMutation({
+    onCompleted: ({ clearCart }) => {
+      showSuccessNotification(clearCart);
+      cartContextUpdater({
+        payload: clearCart,
+      });
+    },
+  });
+
+  const [bodyFixed, setBodyFixed] = useState<boolean>(false);
 
   const fixBodyScroll = useCallback((fixed: boolean) => {
     if (fixed) {
@@ -191,12 +203,14 @@ function useSiteContext(): UseSiteContextInterface {
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.paddingRight = `${paddingRight}px`;
+      setBodyFixed(true);
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.paddingRight = '';
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      setBodyFixed(false);
     }
   }, []);
 
@@ -210,13 +224,15 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const hideBurgerDropdown = useCallback(() => {
-    fixBodyScroll(false);
+    if (bodyFixed) {
+      fixBodyScroll(false);
+    }
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
-  }, [context, fixBodyScroll]);
+  }, [bodyFixed, context, fixBodyScroll]);
 
   const toggleBurgerDropdown = useCallback(() => {
     context.setState((prevState) => {
@@ -319,6 +335,12 @@ function useSiteContext(): UseSiteContextInterface {
     [deleteProductFromCartMutation, showErrorNotification],
   );
 
+  const clearCart = useCallback(() => {
+    clearCartMutation().catch(() => {
+      showErrorNotification();
+    });
+  }, [clearCartMutation, showErrorNotification]);
+
   return {
     ...context,
     fixBodyScroll,
@@ -333,6 +355,7 @@ function useSiteContext(): UseSiteContextInterface {
     addShopToCartProduct,
     updateProductInCart,
     deleteProductFromCart,
+    clearCart,
   };
 }
 

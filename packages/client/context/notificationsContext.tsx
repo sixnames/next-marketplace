@@ -109,7 +109,7 @@ function useNotificationsContext() {
 
   const showSuccessNotification = useCallback(
     (props?: SuccessNotificationInterface) => {
-      const { title = 'Success', message = '' } = props || {};
+      const { title = '', message = '' } = props || {};
       showNotification({
         key: 'success',
         title,

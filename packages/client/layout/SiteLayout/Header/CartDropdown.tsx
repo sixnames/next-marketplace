@@ -21,16 +21,18 @@ interface CartDropdownInterface {
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart } = useSiteContext();
+  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
   const { productsCount, products, formattedTotalPrice } = cart;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} data-cy={'cart-dropdown'}>
       <div className={classes.frameTop}>
         <div className={classes.title}>
           Корзина <span>({productsCount})</span>
         </div>
-        <div className={classes.reset}>Очистить все</div>
+        <div className={classes.reset} data-cy={'clear-cart'} onClick={clearCart}>
+          Очистить все
+        </div>
       </div>
       <div className={classes.frameMiddle}>
         {products.map((cartProduct) => {
@@ -45,7 +47,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           const imageWidth = 40;
 
           return (
-            <div key={id} className={classes.product}>
+            <div key={id} className={classes.product} data-cy={`cart-dropdown-product`}>
               <div className={classes.productImage}>
                 <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
               </div>
@@ -81,9 +83,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     name={'amount'}
                     value={amount}
                     min={1}
-                    testId={`${slug}-amount`}
-                    plusTestId={`${slug}-plus`}
-                    minusTestId={`${slug}-minus`}
+                    testId={`cart-dropdown-${slug}-amount`}
+                    plusTestId={`cart-dropdown-${slug}-plus`}
+                    minusTestId={`cart-dropdown-${slug}-minus`}
                     size={'small'}
                     className={`${classes.amountInput}`}
                     onChange={(e) => {
@@ -96,7 +98,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                   <div className={classes.productButns}>
                     <ButtonCross
-                      testId={`${slug}-remove-from-cart`}
+                      testId={`cart-dropdown-${slug}-remove-from-cart`}
                       iconSize={'smaller'}
                       size={'small'}
                       className={classes.productRemove}

@@ -1,5 +1,6 @@
 import { InitialQuery } from '../generated/apolloComponents';
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { noNaN } from '@yagu/shared';
 
 interface ConfigContextInterface {
   configs: InitialQuery['getAllConfigs'];
@@ -57,7 +58,11 @@ function useConfigContext() {
 
   const themeStyles = useMemo(() => {
     const themeColor = getSiteConfigSingleValue('siteThemeColor');
-    return `--theme: rgb(${themeColor}); --themeRGB': ${themeColor}`;
+    const themeRGB = themeColor.split(',').map((num) => noNaN(num));
+    const themeR = themeRGB[0];
+    const themeG = themeRGB[1];
+    const themeB = themeRGB[2];
+    return `--theme: rgb(${themeColor}); --themeR: ${themeR}; --themeG: ${themeG}; --themeB: ${themeB};`;
   }, [getSiteConfigSingleValue]);
 
   return {

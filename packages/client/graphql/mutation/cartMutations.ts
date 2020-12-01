@@ -87,3 +87,12 @@ export const DELETE_PRODUCT_FROM_CART_MUTATION = gql`
   }
   ${cartPayloadFragment}
 `;
+
+export const CLEAR_CART_MUTATION = gql`
+  mutation ClearCart {
+    clearCart {
+      ...CartPayload
+    }
+  }
+  ${cartPayloadFragment}
+`;

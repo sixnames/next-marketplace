@@ -313,8 +313,12 @@
   --md-blue-gray-900: #263238;
 
   /*WP colors*/
-  --themeRGB: 219, 83, 96;
+  --themeR: 219;
+  --themeG: 83;
+  --themeB: 96;
+  --themeRGB: var(--themeR), var(--themeG), var(--themeB);
   --theme: rgb(219, 83, 96);
+
   --wp-error: rgb(219, 83, 96);
   --wp-white: #ffffff;
   --wp-dark-pink: #99093E;

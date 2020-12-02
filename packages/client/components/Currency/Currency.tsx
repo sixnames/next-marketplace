@@ -1,18 +1,18 @@
 import React from 'react';
 import classes from './Currency.module.css';
-import { useUserContext } from '../../context/userContext';
+import { useLanguageContext } from '../../context/languageContext';
 
 interface CurrencyInterface {
-  value: string;
+  value?: string | null;
   className?: string;
 }
 
 const Currency: React.FC<CurrencyInterface> = ({ value, className }) => {
-  const { currency } = useUserContext();
+  const { currency } = useLanguageContext();
 
   return (
     <span className={`${classes.frame} ${className ? className : ''}`}>
-      <span>{value}</span>
+      <span data-price-value={value}>{value || 0}</span>
       {currency}
     </span>
   );

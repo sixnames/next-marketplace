@@ -1,0 +1,148 @@
+.cart {
+  margin-bottom: 3rem;
+}
+
+.cart .cartTitle {
+  margin-bottom: 3.5rem;
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: 1fr var(--catalogue-filter-width);
+  grid-column-gap: var(--catalogueGridGap);
+  margin-bottom: 3rem;
+}
+
+.productHolder {
+  margin-bottom: 2rem;
+}
+
+.product {
+  border-radius: var(--borderRadius);
+  background-color: var(--secondaryBackground);
+  box-shadow: var(--wp-shadow-100);
+  margin-bottom: 1rem;
+}
+
+.productMainGrid {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+}
+
+.product .amountInput {
+  background-color: var(--secondaryBackground);
+}
+
+.productContent {
+  --buttonsRightGap: 0.5rem;
+  --productContentPaddingTop: 1.75rem;
+  --productContentPaddingRight: calc(var(--buttonsRightGap) + (var(--controlButtonHeight) * 2));
+  --productContentPaddingBottom: 3rem;
+
+  position: relative;
+  padding-top: var(--productContentPaddingTop);
+  padding-right: var(--productContentPaddingRight);
+  padding-bottom: var(--productContentPaddingBottom);
+}
+
+.productImage {
+  position: relative;
+}
+
+.productImage img {
+  position: absolute;
+  top: -0.74rem;
+  left: 50%;
+  display: block;
+  width: 50%;
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.product .productRemove {
+  position: absolute;
+  top: calc(var(--productContentPaddingTop) / 2);
+  right: var(--buttonsRightGap);
+  z-index: 5;
+}
+
+.productButns {
+  position: absolute;
+  bottom: calc(var(--productContentPaddingBottom) / 3);
+  right: var(--buttonsRightGap);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  grid-gap: 2rem;
+}
+
+.productGridRight {
+  min-width: 220px;
+}
+
+.productArt {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.productMeta {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.productName {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: bold;
+}
+
+.productFeatures {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  color: var(--textSecondaryColor);
+  line-height: 1.4;
+  font-size: 0.875rem;
+}
+
+.productFeaturesItem {
+  margin-right: 0.75rem;
+}
+
+.shop {
+  line-height: 1.8;
+  font-weight: 600;
+}
+
+.shop span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+}
+
+.shopMap {
+  color: var(--theme);
+  margin-top: 1rem;
+}
+
+.shoplessFrom {
+  display: flex;
+  align-items: center;
+}
+
+.shoplessFrom .shoplessFromInput {
+  margin-right: 2rem;
+}
+
+
+
+

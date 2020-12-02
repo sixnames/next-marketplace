@@ -1,0 +1,162 @@
+.moreShopsButton {
+  width: 100%;
+}
+
+.frame {
+  --columnGap: 1.5rem;
+  --columnVerticalPadding: var(--columnGap);
+
+  position: relative;
+  background-color: var(--secondaryBackground);
+  border-radius: var(--borderRadius);
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  grid-column-gap: var(--columnGap);
+  overflow: hidden;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: var(--columnGap);
+}
+
+.column {
+  padding-top: var(--columnVerticalPadding);
+  padding-bottom: var(--columnVerticalPadding);
+}
+
+.imageHolder {
+  position: relative;
+}
+
+.mobileSchedule {
+  display: none;
+  flex-grow: 1;
+  align-items: center;
+  text-align: right;
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.meta {
+  margin-bottom: 1rem;
+}
+
+.innerRating {
+  margin-bottom: 1rem;
+}
+
+.schedule {
+  color: var(--textSecondaryColor);
+}
+
+.schedule span {
+  display: inline-block;
+}
+
+.contacts {
+  line-height: 1.4;
+}
+
+.address {
+  margin-bottom: 1rem;
+}
+
+.prices {
+  margin-bottom: 1rem;
+}
+
+.available,
+.productsCount {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  white-space: nowrap;
+}
+
+.moreLink {
+  white-space: nowrap;
+  margin-bottom: 1rem;
+}
+
+/*.mobileButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0;
+  border-radius: var(--radius-1-3);
+  min-width: 0;
+  width: var(--formInputHeight);
+}
+
+.mobileButton svg {
+  fill: currentColor;
+  width: 1.25rem;
+  height: 1.25rem;
+}*/
+
+@media only screen and (max-width: 680px) {
+  .content {
+    grid-template-columns: 1fr;
+    padding-right: var(--columnGap);
+    padding-bottom: var(--columnGap);
+  }
+
+  .column {
+    padding-bottom: 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .frame {
+    --columnGap: 1rem;
+    grid-template-columns: 92px 1fr;
+  }
+
+  .imageHolder {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobileSchedule {
+    display: flex;
+  }
+
+  .desktopSchedule {
+    display: none;
+  }
+
+  .schedule span {
+    margin-top: 0.35rem;
+  }
+
+  .image {
+    position: relative;
+    height: 10rem;
+    border-radius: var(--radius-1-3);
+    overflow: hidden;
+  }
+}

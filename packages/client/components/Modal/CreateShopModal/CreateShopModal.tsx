@@ -64,7 +64,7 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
               },
             },
           }).catch(() => {
-            showErrorNotification({});
+            showErrorNotification();
           });
         }}
       />

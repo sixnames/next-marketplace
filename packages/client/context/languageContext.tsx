@@ -1,7 +1,12 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
 import { IS_BROWSER } from '../config';
-import { DEFAULT_LANG, LANG_COOKIE_KEY, LANG_NOT_FOUND_FIELD_MESSAGE } from '@yagu/config';
+import {
+  DEFAULT_CURRENCY,
+  DEFAULT_LANG,
+  LANG_COOKIE_KEY,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+} from '@yagu/config';
 import Cookies from 'js-cookie';
 import {
   AttributePositioningInTitle,
@@ -15,10 +20,35 @@ import {
 interface LanguageContextInterface {
   lang: string;
   languagesList: Language[];
+  currency: string;
 }
+
+const LanguageContext = createContext<LanguageContextInterface>({
+  lang: DEFAULT_LANG,
+  languagesList: [],
+  currency: DEFAULT_CURRENCY,
+});
+
+const LanguageContextProvider: React.FC<LanguageContextInterface> = ({
+  lang,
+  children,
+  languagesList,
+  currency,
+}) => {
+  const value = useMemo(() => {
+    return {
+      lang: lang,
+      languagesList,
+      currency,
+    };
+  }, [currency, lang, languagesList]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+};
 
 interface UseLanguageContextInterface {
   lang: string;
+  currency: string;
   defaultLang: string;
   currentLangItem?: Language;
   defaultLangItem?: Language;
@@ -36,26 +66,6 @@ interface UseLanguageContextInterface {
   ) => AttributePositioningInTitleInput[];
 }
 
-const LanguageContext = createContext<LanguageContextInterface>({
-  lang: DEFAULT_LANG,
-  languagesList: [],
-});
-
-const LanguageContextProvider: React.FC<LanguageContextInterface> = ({
-  lang,
-  children,
-  languagesList,
-}) => {
-  const value = useMemo(() => {
-    return {
-      lang: lang,
-      languagesList,
-    };
-  }, [lang, languagesList]);
-
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
-};
-
 function useLanguageContext(): UseLanguageContextInterface {
   const context = useContext<LanguageContextInterface>(LanguageContext);
 
@@ -63,7 +73,7 @@ function useLanguageContext(): UseLanguageContextInterface {
     throw new Error('useLanguageContext must be used within a LanguageContextProvider');
   }
 
-  const { lang, languagesList } = context;
+  const { lang, languagesList, currency } = context;
   const currentLangItem = languagesList.find(({ key }) => key === lang);
 
   const defaultLangItem = languagesList.find(({ isDefault }) => isDefault);
@@ -157,6 +167,7 @@ function useLanguageContext(): UseLanguageContextInterface {
 
   return {
     lang,
+    currency,
     currentLangItem,
     defaultLang,
     defaultLangItem,

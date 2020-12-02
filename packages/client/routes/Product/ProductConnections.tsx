@@ -46,7 +46,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
-          type: PRODUCT_SEARCH_MODAL,
+          variant: PRODUCT_SEARCH_MODAL,
           props: {
             createHandler: (product) => {
               showLoading();
@@ -141,7 +141,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
             justifyContent={'flex-end'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
-                type: CONFIRM_MODAL,
+                variant: CONFIRM_MODAL,
                 props: {
                   message: `Вы уверенны, что хотите удалить ${dataItem.node.nameString} из связи ${connection.attribute.nameString}?`,
                   testId: 'delete-product-from-connection-modal',
@@ -218,7 +218,7 @@ const ProductConnections: React.FC<ProductConnectionsInterface> = ({ product }) 
         testId={`create-connection`}
         onClick={() =>
           showModal<CreateConnectionModalInterface>({
-            type: CREATE_CONNECTION_MODAL,
+            variant: CREATE_CONNECTION_MODAL,
             props: {
               product,
               confirm: (input) => {

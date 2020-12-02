@@ -49,7 +49,7 @@ const RubricsFilter: React.FC = () => {
 
   function createRubricHandler() {
     showModal<CreateRubricModalInterface>({
-      type: CREATE_RUBRIC_MODAL,
+      variant: CREATE_RUBRIC_MODAL,
       props: {
         rubrics: getRubricsTree,
         confirm: (values) => {

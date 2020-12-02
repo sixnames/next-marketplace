@@ -165,8 +165,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 };
 
 const StickyNav: React.FC = () => {
-  const { isBurgerDropdownOpen } = useSiteContext();
-  const { getRubricsTree } = useSiteContext();
+  const { isBurgerDropdownOpen, getRubricsTree } = useSiteContext();
 
   return (
     <nav className={classes.nav}>

@@ -1,5 +1,6 @@
 .frame {
   --iconSize: 0.875rem;
+  --iconMargin: 0.5rem;
 
   color: var(--textColor);
   font-size: 1rem;
@@ -12,8 +13,15 @@
 .frame [data-reach-menu-button] svg {
   width: var(--iconSize);
   height: var(--iconSize);
-  margin-right: var(--iconSize);
   fill: currentColor;
+}
+
+.iconPositionLeft [data-reach-menu-button] svg {
+  margin-right: var(--iconMargin);
+}
+
+.iconPositionRight [data-reach-menu-button] svg {
+  margin-left: var(--iconMargin);
 }
 
 .frame [data-reach-menu-button][aria-expanded="true"] svg {

@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   GetProductShopsInput,
-  ProductCardShopFragment,
+  ShopProductSnippetFragment,
   SortDirectionEnum,
   useGetCatalogueCardShopsQuery,
 } from '../../generated/apolloComponents';
@@ -18,7 +18,7 @@ import ShopsMap from '../../components/ShopsMap/ShopsMap';
 
 interface CardShopsListInterface {
   productId: string;
-  shops: ProductCardShopFragment[];
+  shops: ShopProductSnippetFragment[];
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
@@ -63,7 +63,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   ];
 
   return (
-    <Fragment>
+    <div data-cy={`card-shops-list`}>
       <div className={classes.controls}>
         <div className={classes.sort}>
           <div className={classes.sortLabel}>Сортировать</div>
@@ -94,19 +94,19 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
       ) : null}
 
       {loading ? <Spinner isNestedAbsolute /> : null}
-    </Fragment>
+    </div>
   );
 };
 
 interface CardShopsMapInterface {
-  shops: ProductCardShopFragment[];
+  shops: ShopProductSnippetFragment[];
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CardShopsMap: React.FC<CardShopsMapInterface> = ({ shops, setIsMap }) => {
   const shopsSnippets = shops.map(({ shop }) => shop);
   return (
-    <div>
+    <div data-cy={`card-shops-map`}>
       <div className={classes.controls}>
         <ArrowTrigger
           arrowPosition={'left'}
@@ -126,7 +126,7 @@ interface CardShopsInterface {
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
   const [isMap, setIsMap] = useState<boolean>(false);
-  const [shops, setShops] = useState<ProductCardShopFragment[] | null>(null);
+  const [shops, setShops] = useState<ShopProductSnippetFragment[] | null>(null);
   const [input, setInput] = useState<GetProductShopsInput>(() => ({
     productId,
     sortBy: 'price',
@@ -153,7 +153,7 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
   }
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.frame} data-cy={`card-shops`}>
       {isMap ? (
         <CardShopsMap shops={shops} setIsMap={setIsMap} />
       ) : (

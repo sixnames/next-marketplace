@@ -90,7 +90,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
       low={low}
     >
       <div className={classes.holder}>
-        <div className={classes.frame} {...getRootProps()} data-cy={testId}>
+        <span className={classes.frame} {...getRootProps()} data-cy={testId}>
           <Tooltip title={tooltip}>
             <div
               data-cy={`${testId}-text`}
@@ -102,7 +102,7 @@ const FormikDropZoneConsumer: React.FC<FormikDropZoneConsumerInterface> = ({
               <input {...getInputProps()} className={classes.input} />
             </div>
           </Tooltip>
-        </div>
+        </span>
 
         <FormikDropZonePreview
           files={value}

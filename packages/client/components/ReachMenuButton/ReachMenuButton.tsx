@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react';
-import classes from './ReachMenuButton.module.css';
 import '@reach/menu-button/styles.css';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 
@@ -19,6 +18,7 @@ export interface MenuButtonInterface {
   buttonClassName?: string;
   buttonText?: (props: ButtonTextPropsInterface) => any;
   config: ReachMenuItemConfig[];
+  initialValue?: string;
 }
 
 const ReachMenuButton: React.FC<MenuButtonInterface> = ({
@@ -26,11 +26,17 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
   buttonClassName,
   buttonText,
   config,
+  initialValue,
 }) => {
-  const [internalButtonText, setInternalButtonText] = useState<string>(() => config[0].id);
+  const [internalButtonText, setInternalButtonText] = useState<string>(() => {
+    const initialValueItem = config.find(({ id }) => {
+      return id === initialValue;
+    });
+    return initialValueItem?.id || config[0].id;
+  });
 
   return (
-    <div className={`${classes.frame} ${className ? className : ''}`}>
+    <div className={`${className ? className : ''}`}>
       <Menu>
         {({ isOpen }) => {
           return (
@@ -39,7 +45,7 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
                 {buttonText ? buttonText({ internalButtonText, isOpen }) : internalButtonText}
               </MenuButton>
 
-              <MenuList portal={false}>
+              <MenuList>
                 {config.map((menuItem) => {
                   const { nameString, id, onSelect } = menuItem;
                   const isSelected = id === internalButtonText;
@@ -47,7 +53,7 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
                   return (
                     <MenuItem
                       key={id}
-                      className={`${isSelected ? classes.selectedItem : ''}`}
+                      className={`${isSelected ? 'rui-selected-item' : ''}`}
                       onSelect={() => {
                         onSelect(menuItem);
                         setInternalButtonText(id);

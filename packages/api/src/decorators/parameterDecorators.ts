@@ -1,14 +1,62 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
 import { AuthDecoratorConfigInterface } from './methodDecorators';
-import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
+import { CART_COOKIE_KEY, MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
 import { Translation } from '../entities/Translation';
+import cookie from 'cookie';
+import { CartModel } from '../entities/Cart';
+import { UserModel } from '../entities/User';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
-    return context.req.session!.user;
+    return UserModel.findById(context.req.session!.userId);
+  });
+}
+
+export function SessionCart() {
+  return createParamDecorator<ContextInterface>(async ({ context }) => {
+    const user = await UserModel.findById(context.req.session!.userId);
+    const userCartId = user ? user.cart : null;
+
+    // Get cart id from cookies or session user
+    const cookies = cookie.parse(context.req.headers.cookie || '');
+    const cartId = userCartId || cookies[CART_COOKIE_KEY];
+    const cart = await CartModel.findById(cartId);
+
+    // If cart not exist
+    if (!cart || !cartId) {
+      const newCart = await CartModel.create({
+        products: [],
+      });
+
+      if (!newCart) {
+        throw Error('Cart creation error');
+      }
+
+      // Set cart id to cookies
+      context.res.cookie(CART_COOKIE_KEY, newCart.id);
+
+      // Update user card field and set new user to session
+      if (user) {
+        await UserModel.findByIdAndUpdate(
+          user.id,
+          {
+            cart: newCart.id,
+          },
+          { new: true },
+        );
+
+        if (!newCart) {
+          throw Error('User cart creation error');
+        }
+      }
+
+      return newCart;
+    }
+
+    return cart;
   });
 }
 

@@ -33,6 +33,7 @@ describe('Shop product', () => {
               id
               available
               price
+              createdAt
               oldPrices {
                 price
                 createdAt

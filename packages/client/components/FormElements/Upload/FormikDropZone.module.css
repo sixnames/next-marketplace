@@ -3,6 +3,7 @@
 }
 
 .frame {
+  display: block;
   position: relative;
   height: 4rem;
   width: 100%;

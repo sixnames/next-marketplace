@@ -66,6 +66,16 @@ input AddressInput {
   point: CoordinatesInput!
 }
 
+input AddShoplessProductToCartInput {
+  amount: Int!
+  productId: ID!
+}
+
+input AddShopToCartProductInput {
+  cartProductId: ID!
+  shopProductId: ID!
+}
+
 input AddShopToCompanyInput {
   address: AddressInput!
   assets: [Upload!]!
@@ -177,7 +187,9 @@ type CartProduct {
   _id: ID!
   amount: Int!
   id: ID!
-  shopProduct: ShopProduct!
+  isShopless: Boolean!
+  product: Product
+  shopProduct: ShopProduct
 }
 
 type CatalogueData {
@@ -539,7 +551,10 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
   addProductToRubric(input: AddProductToRubricInput!): RubricPayloadType!
   addProductToShop(input: AddProductToShopInput!): ShopPayloadType!
+  addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayloadType!
+  addShopToCartProduct(input: AddShopToCartProductInput!): CartPayloadType!
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
+  clearCart: CartPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
@@ -979,6 +994,7 @@ type Query {
   getRubricBySlug(slug: String!): Rubric!
   getRubricsTree(excluded: [ID!] = []): [Rubric!]!
   getRubricVariant(id: ID!): RubricVariant!
+  getSessionCart: Cart!
   getSessionCurrency: String!
   getSessionRole: Role!
   getShop(id: ID!): Shop!
@@ -1211,7 +1227,6 @@ type ShopProductOldPrice {
   createdAt: DateTime!
   id: ID!
   price: Float!
-  updatedAt: DateTime!
 }
 
 input ShopProductPaginateInput {
@@ -1374,7 +1389,7 @@ input UpdateOptionsGroupInput {
 
 input UpdateProductInCartInput {
   amount: Int!
-  shopProductId: ID!
+  cartProductId: ID!
 }
 
 input UpdateProductInput {
@@ -1450,7 +1465,6 @@ input UpdateUserInput {
 scalar Upload
 
 type User {
-  cart: Cart
   createdAt: DateTime!
   email: String!
   formattedPhone: FormattedPhone!

@@ -45,12 +45,7 @@
 
 .frame .remove {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0;
+  right: 0;
   z-index: 2;
-}
-
-.inline .remove {
-  top: 5px;
-  right: 5px;
 }

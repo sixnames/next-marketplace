@@ -105,7 +105,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
             size={'small'}
             onClick={() => {
               showModal<RoleCustomFilterModalInterface>({
-                type: ROLE_CUSTOM_FILTER_MODAL,
+                variant: ROLE_CUSTOM_FILTER_MODAL,
                 props: {
                   customFilter,
                   confirm: (values) => {
@@ -191,7 +191,7 @@ const RoleRules: React.FC<RoleContentInterface> = ({ role }) => {
             theme={notEmpty ? 'primary' : 'secondary'}
             onClick={() => {
               showModal<RoleRestrictedFieldsModalInterface>({
-                type: ROLE_RESTRICTED_FIELDS_MODAL,
+                variant: ROLE_RESTRICTED_FIELDS_MODAL,
                 props: {
                   ruleId,
                   roleId: role.id,

@@ -239,7 +239,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
   function createProductModalHandler() {
     showModal<CreateNewProductModalInterface>({
-      type: CREATE_NEW_PRODUCT_MODAL,
+      variant: CREATE_NEW_PRODUCT_MODAL,
       props: {
         rubricId,
         refetchQueries: [
@@ -279,7 +279,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   const { getRubricsTree } = data;
 
   return (
-    <ModalFrame testId={testId} wide>
+    <ModalFrame testId={testId} size={'wide'}>
       <ModalTitle
         right={
           <Button

@@ -110,7 +110,7 @@ const CompanyShops: React.FC = () => {
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
-                type: CONFIRM_MODAL,
+                variant: CONFIRM_MODAL,
                 props: {
                   testId: 'delete-shop-modal',
                   message: `Вы уверенны, что хотите удалить магазин ${dataItem.nameString}?`,
@@ -124,7 +124,7 @@ const CompanyShops: React.FC = () => {
                         },
                       },
                     }).catch(() => {
-                      showErrorNotification({});
+                      showErrorNotification();
                     });
                   },
                 },
@@ -147,7 +147,7 @@ const CompanyShops: React.FC = () => {
         <Button
           onClick={() => {
             showModal<CreateShopModalInterface>({
-              type: CREATE_SHOP_MODAL,
+              variant: CREATE_SHOP_MODAL,
               props: {
                 companyId: `${companyId}`,
               },

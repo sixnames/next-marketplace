@@ -60,7 +60,7 @@ const AttributesGroupControls: React.FC<AttributesGroupControlsInterface> = ({ g
 
   function updateAttributesGroupHandler() {
     showModal<AttributesGroupModalInterface>({
-      type: ATTRIBUTES_GROUP_MODAL,
+      variant: ATTRIBUTES_GROUP_MODAL,
       props: {
         name,
         confirm: ({ name }) => {
@@ -80,7 +80,7 @@ const AttributesGroupControls: React.FC<AttributesGroupControlsInterface> = ({ g
 
   function deleteAttributesGroupHandler() {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-attributes-group-modal',
         message: `Вы уверенны, что хотите удалить группу атрибутов ${nameString}?`,
@@ -96,7 +96,7 @@ const AttributesGroupControls: React.FC<AttributesGroupControlsInterface> = ({ g
     const groupId = id;
 
     showModal<AddAttributeToGroupModalInterface>({
-      type: ATTRIBUTE_IN_GROUP_MODAL,
+      variant: ATTRIBUTE_IN_GROUP_MODAL,
       props: {
         confirm: (input: Omit<AddAttributeToGroupInput, 'groupId'>) => {
           showLoading();

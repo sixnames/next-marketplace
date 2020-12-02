@@ -2,11 +2,12 @@ import React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from '../../Image/Image';
 import Link from '../../Link/Link';
-import Icon from '../../Icon/Icon';
 import { ProductSnippetFragment } from '../../../generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
-import Currency from '../../Currency/Currency';
+import { useSiteContext } from '../../../context/siteContext';
+import ControlButton from '../../Buttons/ControlButton';
+import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -14,7 +15,8 @@ interface ProductSnippetGridInterface {
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, testId }) => {
-  const { nameString, mainImage, slug, cardPrices } = product;
+  const { addShoplessProductToCart } = useSiteContext();
+  const { nameString, mainImage, slug, cardPrices, id } = product;
   const imageWidth = 50;
 
   return (
@@ -27,9 +29,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
           <div className={classes.name}>{nameString}</div>
           <div className={classes.attributes}>Новая Зеландия, белое, полусухое</div>
         </div>
-        <div className={classes.price}>
-          от <Currency className={classes.priceValue} value={cardPrices.min} />
-        </div>
+        <ProductSnippetPrice value={cardPrices.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>
@@ -42,15 +42,20 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
         </div>
 
         <div className={classes.btns}>
-          <button className={`${classes.btnsItem}`}>
-            <Icon name={'compare'} />
-          </button>
-          <button className={`${classes.btnsItem}`}>
-            <Icon name={'heart'} />
-          </button>
-          <button className={`${classes.btnsItem} ${classes.btnsItemCart}`}>
-            <Icon name={'cart'} />
-          </button>
+          <ControlButton icon={'compare'} />
+          <ControlButton icon={'heart'} />
+          <ControlButton
+            testId={`catalogue-item-${slug}-add-to-cart`}
+            onClick={() =>
+              addShoplessProductToCart({
+                amount: 1,
+                productId: id,
+              })
+            }
+            icon={'cart'}
+            theme={'accent'}
+            roundedTopLeft
+          />
         </div>
       </div>
 

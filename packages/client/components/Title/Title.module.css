@@ -42,6 +42,12 @@
   font-size: 1.5rem;
 }
 
+.text span {
+  font-weight: 400;
+  margin-left: 0.5rem;
+  color: var(--textSecondaryColor);
+}
+
 .subtitle {
   color: var(--midGray);
 }

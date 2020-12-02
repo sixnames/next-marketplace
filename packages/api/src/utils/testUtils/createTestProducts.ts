@@ -275,23 +275,46 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     product: connectionProductA,
     lang: DEFAULT_LANG,
   });
-  await ProductModel.findByIdAndUpdate(connectionProductA.id, {
-    slug: connectionProductASlug.slug,
-  });
+  const updatedConnectionProductA = await ProductModel.findByIdAndUpdate(
+    connectionProductA.id,
+    {
+      slug: connectionProductASlug.slug,
+    },
+    { new: true },
+  );
+  if (!updatedConnectionProductA) {
+    throw Error('updatedConnectionProductA error');
+  }
+
   const connectionProductBSlug = await createProductSlugWithConnections({
     product: connectionProductB,
     lang: DEFAULT_LANG,
   });
-  await ProductModel.findByIdAndUpdate(connectionProductB.id, {
-    slug: connectionProductBSlug.slug,
-  });
+  const updatedConnectionProductB = await ProductModel.findByIdAndUpdate(
+    connectionProductB.id,
+    {
+      slug: connectionProductBSlug.slug,
+    },
+    { new: true },
+  );
+  if (!updatedConnectionProductB) {
+    throw Error('updatedConnectionProductB error');
+  }
+
   const connectionProductCSlug = await createProductSlugWithConnections({
     product: connectionProductC,
     lang: DEFAULT_LANG,
   });
-  await ProductModel.findByIdAndUpdate(connectionProductC.id, {
-    slug: connectionProductCSlug.slug,
-  });
+  const updatedConnectionProductC = await ProductModel.findByIdAndUpdate(
+    connectionProductC.id,
+    {
+      slug: connectionProductCSlug.slug,
+    },
+    { new: true },
+  );
+  if (!updatedConnectionProductC) {
+    throw Error('updatedConnectionProductC error');
+  }
 
   return {
     ...rubricsPayload,
@@ -300,9 +323,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     productC,
     productD,
     productF,
-    connectionProductA,
-    connectionProductB,
-    connectionProductC,
+    connectionProductA: updatedConnectionProductA,
+    connectionProductB: updatedConnectionProductB,
+    connectionProductC: updatedConnectionProductC,
     connectionA,
   };
 };

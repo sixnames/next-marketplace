@@ -43,7 +43,8 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.shouldError();
+    cy.getByCy(`create-rubric-modal`).should('not.exist');
+    cy.shouldError('first');
 
     // Shouldn't create a new rubric if exists on second level
     cy.getByCy(`create-rubric`).click();
@@ -55,7 +56,8 @@ describe('Rubrics', () => {
     cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.shouldError();
+    cy.getByCy(`create-rubric-modal`).should('not.exist');
+    cy.shouldError('second');
 
     // Shouldn't create a new rubric if exists on third level
     cy.getByCy(`create-rubric`).click();
@@ -68,7 +70,8 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_IT);
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
-    cy.shouldError();
+    cy.getByCy(`create-rubric-modal`).should('not.exist');
+    cy.shouldError('third');
   });
 
   it('Should create new rubrics', () => {
@@ -134,13 +137,13 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();
     cy.getByCy(`tree-link-${mockNewRubric}`).should('exist');
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
 
     // Should delete rubric
     cy.getByCy(`rubric-delete`).click();
     cy.getByCy('delete-rubric-modal').should('exist');
     cy.getByCy('confirm').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`tree-link-${mockNewRubric}`).should('not.exist');
   });
 });

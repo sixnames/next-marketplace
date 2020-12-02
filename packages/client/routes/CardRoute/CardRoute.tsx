@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Inner from '../../components/Inner/Inner';
 import Image from '../../components/Image/Image';
 import classes from './CardRoute.module.css';
@@ -12,6 +12,11 @@ import { useAppContext } from '../../context/appContext';
 import ReachTabs from '../../components/ReachTabs/ReachTabs';
 import Currency from '../../components/Currency/Currency';
 import CardShops from './CardShops';
+import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
+import Button from '../../components/Buttons/Button';
+import { noNaN } from '@yagu/shared';
+import { useSiteContext } from '../../context/siteContext';
+import ControlButton from '../../components/Buttons/ControlButton';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];
@@ -52,6 +57,7 @@ interface CardRouteInterface {
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const {
     id,
+    slug,
     mainImage,
     nameString,
     cardNameString,
@@ -61,7 +67,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardFeatures,
     shopsCount,
   } = cardData;
+  const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
+  const [amount, setAmount] = useState<number>(1);
   const imageWidth = 150;
 
   const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
@@ -81,7 +89,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   ];
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card} data-cy={`card-${slug}`}>
       <Breadcrumbs />
 
       <Inner>
@@ -142,6 +150,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                             }
                             return (
                               <Link
+                                data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={id}
                                 href={{
@@ -182,15 +191,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 </div>
 
                 <div className={classes.btns}>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'compare'} />
-                  </button>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'heart'} />
-                  </button>
-                  <button className={`${classes.btnsItem}`}>
-                    <Icon name={'upload'} />
-                  </button>
+                  <ControlButton icon={'compare'} iconSize={'mid'} />
+                  <ControlButton icon={'heart'} iconSize={'mid'} />
+                  <ControlButton icon={'upload'} iconSize={'mid'} />
                 </div>
               </div>
             </div>
@@ -199,11 +202,46 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           <ProductMarker>Выбор покупателей</ProductMarker>
         </div>
 
+        <div
+          className={`${classes.mainFrame} ${classes.mainFrameNoBackground} ${classes.mainFrameLowTop} ${classes.mainFrameLowBottom}`}
+        >
+          <div />
+          <div className={`${classes.mainData} ${classes.mainDataNoRightPadding}`}>
+            <div />
+            <div className={`${classes.shoplessFrom}`}>
+              <SpinnerInput
+                onChange={(e) => {
+                  setAmount(noNaN(e.target.value));
+                }}
+                plusTestId={`card-${slug}-plus`}
+                minusTestId={`card-${slug}-minus`}
+                testId={`card-${slug}-amount`}
+                frameClassName={`${classes.shoplessFromInput}`}
+                min={1}
+                name={'amount'}
+                value={amount}
+              />
+              <Button
+                onClick={() => {
+                  addShoplessProductToCart({
+                    amount,
+                    productId: id,
+                  });
+                }}
+                testId={`card-${slug}-add-to-cart`}
+                className={classes.shoplessFromButton}
+              >
+                В корзину
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {isMobile ? <CardRouteListFeatures features={listFeatures} /> : null}
       </Inner>
 
       {/* Tabs */}
-      <ReachTabs config={tabsConfig}>
+      <ReachTabs config={tabsConfig} testId={`card-tabs`}>
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>

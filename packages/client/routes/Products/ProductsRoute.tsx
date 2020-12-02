@@ -14,7 +14,7 @@ const ProductsRoute: React.FC = () => {
 
   function createProductModalHandler() {
     showModal<CreateNewProductModalInterface>({
-      type: CREATE_NEW_PRODUCT_MODAL,
+      variant: CREATE_NEW_PRODUCT_MODAL,
       props: {
         refetchQueries: [
           {

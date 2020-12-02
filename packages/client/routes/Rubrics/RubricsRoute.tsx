@@ -55,7 +55,7 @@ const RubricsRoute: React.FC = () => {
   function deleteRubricHandler() {
     if (data && data.getRubric) {
       showModal({
-        type: CONFIRM_MODAL,
+        variant: CONFIRM_MODAL,
         props: {
           testId: 'delete-rubric-modal',
           message: notLastLevelRubric

@@ -1,112 +1,130 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { SnackbarProvider, useSnackbar } from 'notistack';
-import Notification from '../components/Notification/Notification';
+import Notification, { NotificationInterface } from '../components/Notification/Notification';
 import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from '../config';
+import Portal from '@reach/portal';
+import classes from './NotificationsProvider.module.css';
 
-const NotificationsContext = createContext({});
+interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
+  createdAt: number;
+}
 
-const NotificationsContent: React.FC = ({ children }) => {
-  const [state, setState] = useState({});
+type ShowNotificationInterface = Omit<StateNotificationInterface, 'createdAt'>;
+
+type ApiNotificationInterface = Omit<
+  ShowNotificationInterface,
+  'testId' | 'variant' | 'closeHandler'
+>;
+
+interface NotificationsContextInterface {
+  notifications: StateNotificationInterface[];
+  setNotifications: React.Dispatch<React.SetStateAction<StateNotificationInterface[]>>;
+}
+
+const NotificationsContext = createContext<NotificationsContextInterface>({
+  notifications: [],
+  setNotifications: () => undefined,
+});
+
+const NotificationsProvider: React.FC = ({ children }) => {
+  const [notifications, setNotifications] = useState<StateNotificationInterface[]>([]);
 
   const value = useMemo(() => {
     return {
-      setState,
-      state: {
-        ...state,
-      },
+      setNotifications,
+      notifications,
     };
-  }, [state]);
+  }, [notifications]);
 
-  return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
-};
+  const closeNotificationHandler = useCallback((index: number) => {
+    setNotifications((prevState) => {
+      return prevState.reduce((acc: StateNotificationInterface[], notification, currentIndex) => {
+        if (currentIndex === index) {
+          return acc;
+        }
+        return [...acc, notification];
+      }, []);
+    });
+  }, []);
 
-const NotificationsProvider: React.FC = ({ children }) => {
   return (
-    <SnackbarProvider
-      maxSnack={8}
-      preventDuplicate
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-    >
-      <NotificationsContent>{children}</NotificationsContent>
-    </SnackbarProvider>
+    <NotificationsContext.Provider value={value}>
+      {children}
+      <Portal>
+        <div className={classes.frame}>
+          {notifications.map((notification, index) => {
+            return (
+              <Notification
+                {...notification}
+                className={classes.notification}
+                key={`${notification.title}-${notification.message}-${index}`}
+                closeHandler={() => closeNotificationHandler(index)}
+              />
+            );
+          })}
+        </div>
+      </Portal>
+    </NotificationsContext.Provider>
   );
 };
 
-interface SuccessNotificationInterface {
-  title?: string;
-  message?: string;
-}
-
 function useNotificationsContext() {
-  const context = useContext(NotificationsContext);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const context = useContext<NotificationsContextInterface>(NotificationsContext);
 
   if (!context) {
     throw new Error('useNotificationsContext must be used within a NotificationsProvider');
   }
 
   const showNotification = useCallback(
-    ({
-      key = '',
-      title = '',
-      message = '',
-      path,
-      icon = 'exclamation',
-      type,
-      autoHideDuration = NOTIFICATION_TIMEOUT,
-      playSound = false,
-      persist = false,
-      testId = '',
-    }) => {
-      enqueueSnackbar(message, {
-        key,
-        persist,
-        autoHideDuration: autoHideDuration,
-        content: (
-          <div>
-            <Notification
-              title={title}
-              message={message}
-              path={path}
-              type={type}
-              icon={icon}
-              testId={testId}
-              playSound={playSound}
-              closeHandler={() => closeSnackbar(key)}
-            />
-          </div>
-        ),
+    (args: ShowNotificationInterface) => {
+      context.setNotifications((prevState) => {
+        return prevState.concat([
+          {
+            ...args,
+            createdAt: new Date().getTime() + NOTIFICATION_TIMEOUT,
+          },
+        ]);
       });
+
+      setTimeout(() => {
+        context.setNotifications((prevState) => {
+          return prevState.reduce((acc: StateNotificationInterface[], notification) => {
+            if (new Date().getTime() > notification.createdAt) {
+              return acc;
+            }
+            return [...acc, notification];
+          }, []);
+        });
+      }, NOTIFICATION_TIMEOUT);
     },
-    [closeSnackbar, enqueueSnackbar],
+    [context],
   );
 
-  function showErrorNotification({
-    key = 'error',
-    title = ERROR_NOTIFICATION_MESSAGE,
-    message = 'Попробуйте ещё раз',
-  }) {
-    showNotification({
-      key,
-      title,
-      message,
-      type: 'error',
-      testId: 'error-notification',
-    });
-  }
+  const showErrorNotification = useCallback(
+    (props?: ApiNotificationInterface) => {
+      const { title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } = props || {};
 
-  function showSuccessNotification({ title, message }: SuccessNotificationInterface) {
-    showNotification({
-      key: 'success',
-      title,
-      message,
-      type: 'success',
-      testId: 'success-notification',
-    });
-  }
+      showNotification({
+        title,
+        message,
+        variant: 'error',
+        testId: 'error-notification',
+      });
+    },
+    [showNotification],
+  );
+
+  const showSuccessNotification = useCallback(
+    (props?: ApiNotificationInterface) => {
+      const { title = '', message = '' } = props || {};
+      showNotification({
+        title,
+        message,
+        variant: 'success',
+        testId: 'success-notification',
+      });
+    },
+    [showNotification],
+  );
 
   return {
     showNotification,

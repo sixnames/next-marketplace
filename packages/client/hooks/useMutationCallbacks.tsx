@@ -1,8 +1,9 @@
 import { useNotificationsContext } from '../context/notificationsContext';
 import { ERROR_NOTIFICATION_MESSAGE } from '../config';
 import { useAppContext } from '../context/appContext';
+import { useCallback } from 'react';
 
-interface ResponseInterface {
+interface ResponseInterface extends Record<string, any> {
   success: boolean;
   message: string;
 }
@@ -16,34 +17,44 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
   const { showModal, hideModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
 
-  function onCompleteCallback(data: ResponseInterface) {
-    if (!data.success) {
-      if (withModal) hideModal();
+  const onCompleteCallback = useCallback(
+    (data: ResponseInterface) => {
+      if (!data.success) {
+        if (withModal) {
+          hideModal();
+        }
+        hideLoading();
+        showErrorNotification({
+          title: data.message ? data.message : ERROR_NOTIFICATION_MESSAGE,
+        });
+      }
+
+      if (data.success) {
+        if (withModal) hideModal();
+        hideLoading();
+        showSuccessNotification({
+          title: data.message,
+        });
+      }
+    },
+    [hideLoading, hideModal, showErrorNotification, showSuccessNotification, withModal],
+  );
+
+  const onErrorCallback = useCallback(
+    (error: any) => {
+      let message = ERROR_NOTIFICATION_MESSAGE;
+      if (error && error.graphQLErrors) {
+        message = error.graphQLErrors.map(({ message }: any) => `${message} `);
+      }
+
+      if (withModal) {
+        hideModal();
+      }
       hideLoading();
-      showErrorNotification({
-        title: data.message ? data.message : ERROR_NOTIFICATION_MESSAGE,
-      });
-    }
-
-    if (data.success) {
-      if (withModal) hideModal();
-      hideLoading();
-      showSuccessNotification({
-        title: data.message,
-      });
-    }
-  }
-
-  function onErrorCallback(error: any) {
-    let message = ERROR_NOTIFICATION_MESSAGE;
-    if (error && error.graphQLErrors) {
-      message = error.graphQLErrors.map(({ message }: any) => `${message} `);
-    }
-
-    if (withModal) hideModal();
-    hideLoading();
-    showErrorNotification({ message });
-  }
+      showErrorNotification({ message });
+    },
+    [hideLoading, hideModal, showErrorNotification, withModal],
+  );
 
   return {
     showModal,

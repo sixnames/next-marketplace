@@ -51,7 +51,7 @@ const NoRubricProducts: React.FC = () => {
 
   function deleteProductHandler({ id, nameString }: { id: string; nameString: string }) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-modal',
         message: `Вы уверенны, что хотите удалить товар ${nameString} из базы данных?`,

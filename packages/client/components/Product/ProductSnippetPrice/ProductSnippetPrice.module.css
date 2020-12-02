@@ -1,0 +1,14 @@
+.price {
+  color: var(--textSecondaryColor);
+  font-size: 0.875rem;
+}
+
+.priceValue {
+  margin-left: 0.35rem;
+}
+
+.priceValue span {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--textColor);
+}

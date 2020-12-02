@@ -48,6 +48,7 @@
   transition: all 0.2s;
 }
 
+.middleLinkCart,
 .middleLink:not(:first-child) {
   margin-left: 0.6rem;
   padding-left: 0.6rem;
@@ -62,6 +63,10 @@
 .middleLink:hover {
   color: var(--theme);
   text-decoration: none;
+}
+
+.middleLinkIconHolder {
+  position: relative;
 }
 
 .middleLinkIconHolder:not(.middleLinkIconHolderNoLabel){
@@ -111,8 +116,8 @@
   align-items: center;
   justify-content: space-between;
   height: var(--mobileNavHeight);
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
+  padding-top: 0;
+  padding-bottom: 2rem;
 }
 
 .mobileNavRight {
@@ -131,6 +136,7 @@
     padding-bottom: 1.5rem;
   }
 
+  .middleLinkCart,
   .middleLink:not(:first-child) {
     margin-left: 0.2rem;
   }

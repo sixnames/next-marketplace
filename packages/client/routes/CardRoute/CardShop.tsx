@@ -88,7 +88,15 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           </div>
 
           {isMobile ? (
-            <Button className={classes.mobileButton}>
+            <Button
+              onClick={() => {
+                addProductToCart({
+                  amount,
+                  shopProductId: shopProduct.id,
+                });
+              }}
+              className={classes.mobileButton}
+            >
               <Icon name={'cart'} />
             </Button>
           ) : (

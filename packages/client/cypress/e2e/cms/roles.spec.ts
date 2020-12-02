@@ -33,14 +33,19 @@ describe('User roles', () => {
     cy.getByCy(`role-${newRoleName}`).should('exist');
 
     cy.getByCy(`role-${newRoleName}`).click();
+    cy.shouldSuccess();
     cy.getByCy(`role-title`).should('contain', newRoleName);
 
     // Should edit role rules
     cy.getByCy(`role-rules`).should('exist');
     cy.getByCy(`Attribute-create-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-read-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-update-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-delete-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-restricted-fields`).click();
     cy.getByCy(`role-restricted-fields-modal`).should('exist');
     cy.getByCy(`metric-checkbox`).check();

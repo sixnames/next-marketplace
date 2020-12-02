@@ -60,7 +60,7 @@ const LanguagesContent: React.FC = () => {
 
   function deleteLanguageHandler(language: LanguageFragment) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-language-modal',
         message: `Вы уверены, что хотите удалить язык ${language.name}`,
@@ -78,7 +78,7 @@ const LanguagesContent: React.FC = () => {
 
   function setLanguageAsDefaultHandler(id: string, name: string) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'set-language-as-default-modal',
         message: `Вы уверены, что хотите назначить основным язык ${name}`,
@@ -96,7 +96,7 @@ const LanguagesContent: React.FC = () => {
 
   function createLanguageHandler() {
     showModal<LanguageModalInterface>({
-      type: LANGUAGE_MODAL,
+      variant: LANGUAGE_MODAL,
       props: {
         testId: 'create-language-modal',
         confirm: (values: CreateLanguageInput) => {
@@ -114,7 +114,7 @@ const LanguagesContent: React.FC = () => {
   function updateLanguageHandler(language: LanguageFragment) {
     const { id } = language;
     showModal<LanguageModalInterface>({
-      type: LANGUAGE_MODAL,
+      variant: LANGUAGE_MODAL,
       props: {
         testId: 'update-language-modal',
         language,

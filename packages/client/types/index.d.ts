@@ -1,13 +1,14 @@
 import { IconType } from '../components/Icon/Icon';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'undefined';
 export type ButtonTheme = 'primary' | 'secondary';
 export type SizeType = 'small' | 'normal';
+export type ModalSizeType = 'small' | 'normal' | 'midWide' | 'wide';
 export type ButtonType = 'submit' | 'button' | 'reset';
 export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';
 export type OnOffType = 'on' | 'off';
-export type NotificationType = 'success' | 'warning' | 'error';
+export type NotificationVariant = 'success' | 'warning' | 'error';
 export type PostfixType =
   | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
   | undefined
@@ -38,7 +39,7 @@ export interface NavItemInterface {
   testId?: string;
 }
 
-export interface LangInterface {
+export interface TranslationInterface {
   key: string;
   value: string;
 }

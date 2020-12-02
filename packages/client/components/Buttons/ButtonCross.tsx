@@ -1,10 +1,10 @@
 import React from 'react';
-import Button, { ButtonPropsInterface } from './Button';
+import ControlButton, { ControlButtonInterface } from './ControlButton';
 
-type ButtonCrossInterface = Omit<ButtonPropsInterface, 'size' | 'theme' | 'icon'>;
+type ButtonCrossInterface = Omit<ControlButtonInterface, 'icon'>;
 
 const ButtonCross: React.FC<ButtonCrossInterface> = ({ ...props }) => {
-  return <Button size={'small'} theme={'secondary'} circle icon={'cross'} {...props} />;
+  return <ControlButton icon={'cross'} {...props} />;
 };
 
 export default ButtonCross;

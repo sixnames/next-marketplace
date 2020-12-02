@@ -1,5 +1,6 @@
 import { InitialQuery } from '../generated/apolloComponents';
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { noNaN } from '@yagu/shared';
 
 interface ConfigContextInterface {
   configs: InitialQuery['getAllConfigs'];
@@ -11,7 +12,11 @@ const ConfigContext = createContext<ConfigContextInterface>({
   cities: [],
 });
 
-const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, cities, children }) => {
+const ConfigContextProvider: React.FC<ConfigContextInterface> = ({
+  configs = [],
+  cities = [],
+  children,
+}) => {
   const initialValue = useMemo(() => {
     return {
       configs,
@@ -23,34 +28,49 @@ const ConfigContextProvider: React.FC<ConfigContextInterface> = ({ configs, citi
 };
 
 function useConfigContext() {
-  const context = useContext(ConfigContext) || {
-    configs: [],
-  };
+  const context = useContext(ConfigContext);
 
   if (!context) {
     throw new Error('useConfigContext must be used within a ConfigContextProvider');
   }
 
-  const { configs } = context;
+  const getSiteConfig = useCallback(
+    (configSlug: string) => {
+      return context.configs.find(({ slug }) => configSlug === slug);
+    },
+    [context.configs],
+  );
 
-  function getSiteConfig(configSlug: string) {
-    return configs.find(({ slug }) => configSlug === slug);
-  }
+  const getSiteConfigValue = useCallback(
+    (configSlug: string) => {
+      const config = getSiteConfig(configSlug);
+      return config ? config.value : [''];
+    },
+    [getSiteConfig],
+  );
 
-  function getSiteConfigValue(configSlug: string) {
-    const config = getSiteConfig(configSlug);
-    return config ? config.value : [''];
-  }
+  const getSiteConfigSingleValue = useCallback(
+    (configSlug: string) => {
+      return getSiteConfigValue(configSlug)[0];
+    },
+    [getSiteConfigValue],
+  );
 
-  function getSiteConfigSingleValue(configSlug: string) {
-    return getSiteConfigValue(configSlug)[0];
-  }
+  const themeStyles = useMemo(() => {
+    const themeColor = getSiteConfigSingleValue('siteThemeColor');
+    const themeRGB = themeColor.split(',').map((num) => noNaN(num));
+    const themeR = themeRGB[0];
+    const themeG = themeRGB[1];
+    const themeB = themeRGB[2];
+    return `--theme: rgb(${themeColor}); --themeR: ${themeR}; --themeG: ${themeG}; --themeB: ${themeB};`;
+  }, [getSiteConfigSingleValue]);
 
   return {
     ...context,
     getSiteConfig,
     getSiteConfigValue,
     getSiteConfigSingleValue,
+    themeStyles,
   };
 }
 

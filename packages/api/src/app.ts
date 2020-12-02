@@ -212,8 +212,8 @@ const createApp = async (): Promise<CreateAppInterface> => {
         },
       };
 
-      if (req.session.user) {
-        let userRole = await RoleModel.findOne({ _id: req.session!.user.role });
+      if (req.session.userId) {
+        let userRole = await RoleModel.findOne({ _id: req.session!.roleId });
         if (!userRole) {
           userRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
         }

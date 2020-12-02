@@ -1,0 +1,65 @@
+.prices {
+  display: flex;
+  min-width: 220px;
+  align-items: baseline;
+}
+
+.prices > div:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.price {
+  color: var(--textSecondaryColor);
+}
+
+.priceValue span {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.discountedPrice {
+  color: var(--theme);
+}
+
+.discountedPrice .priceValue span {
+  color: var(--theme);
+}
+
+.oldPrice {
+  color: var(--textSecondaryColor);
+}
+
+.oldPriceValue span {
+  text-decoration: line-through;
+  font-size: 1.35rem;
+}
+
+.discount {
+  font-size: 1.35rem;
+  color: var(--theme);
+}
+
+@media only screen and (max-width: 600px) {
+  .prices {
+    min-width: 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .prices > div:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
+  .priceValue span {
+    font-size: 1.35rem;
+  }
+
+  .oldPriceValue span {
+    font-size: 1.15rem;
+  }
+
+  .discount {
+    font-size: 1rem;
+  }
+}

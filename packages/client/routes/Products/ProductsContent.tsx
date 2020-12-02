@@ -48,7 +48,7 @@ const ProductsContent: React.FC = () => {
 
   function deleteProductHandler(product: RubricProductFragment) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-modal',
         message: `Вы уверенны, что хотите удалить товар ${product.name} из базы данных?`,

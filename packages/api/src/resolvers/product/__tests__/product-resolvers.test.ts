@@ -307,9 +307,7 @@ describe('Product', () => {
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
-    expect(createProductConnection.product.slug).toEqual(
-      `vino_brancott_estate_marlborough_sauvignon_blanc-tip_vina-heres`,
-    );
+    expect(createProductConnection.product.slug).toEqual(`cardnameproducta-tip_vina-heres`);
 
     // Should add product to connection
     const {
@@ -351,7 +349,7 @@ describe('Product', () => {
     );
 
     const addedProductSlug = slugs.find(
-      (slug: string) => slug === 'vino_campo_vieja_tempranillo_rioja_doc-tip_vina-varmut',
+      (slug: string) => slug === 'cardnameproductb-tip_vina-varmut',
     );
 
     expect(addProductToConnection.success).toBeTruthy();
@@ -411,7 +409,7 @@ describe('Product', () => {
     );
     expect(deleteProductFromConnection.success).toBeTruthy();
     expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
-    expect(removedProductFromConnection.slug).toEqual('vino_campo_vieja_tempranillo_rioja_doc');
+    expect(removedProductFromConnection.slug).toEqual('cardnameproductb');
 
     // Should delete connection if removed product is last in list
     const {

@@ -51,9 +51,8 @@ export class User extends TimeStamps {
   @prop({ ref: Role })
   role: string;
 
-  @Field((_type) => Cart, { nullable: true })
   @prop({ ref: () => Cart })
-  cart?: string | null;
+  cart?: string;
 
   @Field((_type) => FormattedPhone)
   readonly formattedPhone: FormattedPhone;

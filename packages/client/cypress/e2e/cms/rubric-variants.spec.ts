@@ -27,13 +27,14 @@ describe('Rubric variants', () => {
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricVariantName);
     cy.getByCy('rubric-variant-submit').click();
     cy.getByCy('rubric-variant-modal').should('not.exist');
-    cy.getByCy(`error-notification`).should('exist');
+    cy.shouldError();
 
     // Should create new rubric variant
     cy.getByCy('rubric-variant-create').click();
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricVariantName);
     cy.getByCy('rubric-variant-submit').click();
     cy.getByCy(`${mockNewRubricVariantName}-row`).should('exist');
+    cy.shouldSuccess();
 
     // Should update rubric variant name
     const mockUpdatedRubricTypeName = 'updated_variant';
@@ -42,6 +43,7 @@ describe('Rubric variants', () => {
     cy.getByCy('rubric-variant-submit').click();
     cy.getByCy(`${mockNewRubricVariantName}-row`).should('not.exist');
     cy.getByCy(`${mockUpdatedRubricTypeName}-row`).should('exist');
+    cy.shouldSuccess();
 
     // Shouldn't delete rubric variant connected to the rubric
     cy.getByCy(`${mockRubricVariantName}-delete`).click();
@@ -54,7 +56,7 @@ describe('Rubric variants', () => {
     cy.getByCy(`${mockRubricVariantNameForDelete}-delete`).click();
     cy.getByCy('rubric-variant-delete-modal').should('exist');
     cy.getByCy('confirm').click();
-    cy.getByCy('success-notification').should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`${mockRubricVariantNameForDelete}-row`).should('not.exist');
   });
 });

@@ -1,0 +1,114 @@
+.frame {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.normal {
+  height: var(--controlButtonHeight);
+  width: var(--controlButtonHeight);
+}
+
+.small {
+  height: var(--controlButtonHeightSmall);
+  width: var(--controlButtonHeightSmall);
+}
+
+.smaller {
+  height: var(--controlButtonHeightSmaller);
+  width: var(--controlButtonHeightSmaller);
+}
+
+.frame svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.smallerIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.smallIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.midIcon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.bigIcon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* Rounded top-left and bottom-right*/
+.roundedTopLeft {
+  border-radius: var(--radius-1-3);
+}
+
+/* Rounded top-right and bottom-left*/
+.roundedTopRight {
+  border-radius: var(--radius-2-4);
+}
+
+/* Blank theme */
+.blank {
+  background: none;
+}
+
+.blank svg {
+  fill: var(--wp-light-gray-100);
+}
+
+[data-theme='light'] .blank svg {
+  fill: var(--wp-light-gray-100);
+}
+
+[data-theme='dark'] .blank svg {
+  fill: var(--wp-mid-gray-100);
+}
+
+[data-theme='light'] .blank:hover svg,
+[data-theme='dark'] .blank:hover svg,
+.frame:hover svg {
+  fill: var(--theme);
+}
+
+/* Accent theme */
+.accent {
+  background-color: var(--wp-light-gray-200);
+}
+
+[data-theme='light'] .accent {
+  background-color: var(--wp-light-gray-200);
+}
+
+[data-theme='light'] .accent svg {
+  fill: var(--wp-mid-gray-100);
+}
+
+[data-theme='dark'] .accent {
+  background-color: var(--wp-dark-gray-100);
+}
+
+[data-theme='dark'] .accent svg {
+  fill: var(--wp-light-gray-100);
+}
+
+[data-theme='light'] .accent:hover svg,
+[data-theme='dark'] .accent:hover svg,
+.accent:hover svg {
+  fill: var(--theme);
+}
+

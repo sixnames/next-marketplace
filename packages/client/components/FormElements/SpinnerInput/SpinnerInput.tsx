@@ -12,10 +12,13 @@ export interface SpinnerInterface {
   notValid?: boolean;
   autoComplete?: OnOffType;
   testId?: string;
+  plusTestId?: string;
+  minusTestId?: string;
   min?: number;
   max?: number;
   placeholder?: string;
   disabled?: boolean;
+  size?: 'small' | 'normal';
   onChange?: (e: {
     target: {
       id?: string;
@@ -35,17 +38,27 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
   min,
   frameClassName,
   disabled,
+  plusTestId,
+  minusTestId,
+  size = 'normal',
   ...props
 }) => {
+  const sizeClass = classes[size];
   const notValidClass = notValid ? classes.error : '';
   const additionalClass = className ? className : '';
   const inputClassName = `${classes.input} ${notValidClass} ${additionalClass}`;
   const currentValue = value ? noNaN(value) : noNaN(min);
   const counterStep = 1;
+  const isSmall = size === 'small';
 
   return (
-    <div className={`${classes.frame} ${frameClassName ? frameClassName : ''}`}>
+    <div
+      className={`${classes.frame} ${isSmall ? classes.frameSmall : ''} ${
+        frameClassName ? frameClassName : ''
+      }`}
+    >
       <button
+        data-cy={minusTestId}
         disabled={disabled}
         className={`${classes.butn}`}
         onClick={() => {
@@ -63,7 +76,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
       </button>
       <input
         id={name}
-        className={`${inputClassName}`}
+        className={`${inputClassName} ${sizeClass}`}
         value={currentValue}
         name={name}
         type={'number'}
@@ -74,6 +87,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         {...props}
       />
       <button
+        data-cy={plusTestId}
         disabled={disabled}
         className={`${classes.butn} ${classes.butnPlus}`}
         onClick={() => {

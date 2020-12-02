@@ -1,40 +1,30 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo } from 'react';
 import classes from './LanguageTrigger.module.css';
 import { useLanguageContext } from '../../context/languageContext';
-import OutsideClickHandler from 'react-outside-click-handler';
-import Icon from '../Icon/Icon';
+import MenuButtonWithName from '../ReachMenuButton/MenuButtonWithName';
 
 const LanguageTrigger: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { languagesList, setLanguage, isCurrentLanguage, currentLangItem } = useLanguageContext();
-  const setIsOpenHandler = useCallback(() => setIsOpen((prevState) => !prevState), []);
+  const { languagesList, setLanguage, currentLangItem } = useLanguageContext();
+  const config = useMemo(() => {
+    return languagesList.map(({ key, nativeName }) => {
+      return {
+        id: nativeName,
+        nameString: nativeName,
+        onSelect: () => {
+          setLanguage(key);
+        },
+      };
+    });
+  }, [languagesList, setLanguage]);
 
   return (
     <div className={classes.frame}>
-      <div className={classes.trigger} onClick={setIsOpenHandler}>
-        {currentLangItem?.nativeName}
-        <Icon name={'chevron-down'} />
-      </div>
-      <OutsideClickHandler disabled={!isOpen} onOutsideClick={setIsOpenHandler}>
-        <div className={`${classes.list} ${isOpen ? classes.listActive : ''}`}>
-          {languagesList.map(({ nativeName, key }) => {
-            return (
-              <div
-                key={key}
-                onClick={() => {
-                  setIsOpenHandler();
-                  setLanguage(key);
-                }}
-                className={`${classes.listItem} ${
-                  isCurrentLanguage(key) ? classes.listItemActive : ''
-                }`}
-              >
-                {nativeName}
-              </div>
-            );
-          })}
-        </div>
-      </OutsideClickHandler>
+      <MenuButtonWithName
+        initialValue={currentLangItem?.nativeName}
+        frameClassName={classes.button}
+        config={config}
+        iconPosition={'right'}
+      />
     </div>
   );
 };

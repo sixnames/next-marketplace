@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import classes from './CardShop.module.css';
-import { ProductCardShopFragment } from '../../generated/apolloComponents';
+import { ShopProductSnippetFragment } from '../../generated/apolloComponents';
 import Image from '../../components/Image/Image';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import { noNaN } from '@yagu/shared';
 import Button from '../../components/Buttons/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
-import Currency from '../../components/Currency/Currency';
-import Percent from '../../components/Percent/Percent';
 import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
+import { useSiteContext } from '../../context/siteContext';
+import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 
 interface CardShopInterface {
-  shopProduct: ProductCardShopFragment;
+  shopProduct: ShopProductSnippetFragment;
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
+  const { addProductToCart } = useSiteContext();
   const [amount, setAmount] = useState<number>(1);
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   const {
     assets,
     nameString,
     productsCount,
+    slug,
     address: { formattedAddress },
     contacts: { formattedPhones },
   } = shop;
@@ -70,24 +72,12 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
 
         <div className={`${classes.orderColumn}`}>
           <div className={classes.column}>
-            <div className={classes.prices}>
-              <div
-                className={`${classes.price} ${discountedPercent ? classes.discountedPrice : ''}`}
-              >
-                <Currency className={classes.priceValue} value={formattedPrice} />
-              </div>
-              {formattedOldPrice ? (
-                <div className={classes.oldPrice}>
-                  <Currency className={classes.oldPriceValue} value={formattedOldPrice} />
-                </div>
-              ) : null}
-              {discountedPercent ? (
-                <div className={classes.discount}>
-                  <Percent isNegative value={discountedPercent} />
-                </div>
-              ) : null}
-            </div>
-
+            <ProductShopPrices
+              className={classes.prices}
+              formattedPrice={formattedPrice}
+              discountedPercent={discountedPercent}
+              formattedOldPrice={formattedOldPrice}
+            />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
             <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
@@ -104,6 +94,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           ) : (
             <div className={`${classes.column} ${classes.columnLast}`}>
               <SpinnerInput
+                plusTestId={`card-shops-${slug}-plus`}
+                minusTestId={`card-shops-${slug}-minus`}
+                testId={`card-shops-${slug}-input`}
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
@@ -113,7 +106,17 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
                 name={'amount'}
                 value={amount}
               />
-              <Button>В корзину</Button>
+              <Button
+                testId={`card-shops-${slug}-add-to-cart`}
+                onClick={() => {
+                  addProductToCart({
+                    amount,
+                    shopProductId: shopProduct.id,
+                  });
+                }}
+              >
+                В корзину
+              </Button>
             </div>
           )}
         </div>

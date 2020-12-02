@@ -120,6 +120,32 @@ export const cartsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'carts.clear.error',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ошибка удаления товаров из корзины.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Cart product delete error.',
+      },
+    ],
+  },
+  {
+    key: 'carts.clear.success',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товары удалены из корзины.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product removed form the cart.',
+      },
+    ],
+  },
+  {
     key: 'validation.carts.shopProductId',
     message: [
       {

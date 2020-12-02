@@ -3,6 +3,7 @@ import { IS_BROWSER, THEME_DARK, THEME_KEY, THEME_LIGHT } from '../config';
 import Cookies from 'js-cookie';
 import { Theme } from '../types';
 import { debounce } from 'lodash';
+import { useConfigContext } from './configContext';
 
 interface ThemeContextProviderInterface {
   initialTheme: Theme;
@@ -30,6 +31,7 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   const [vh, setVh] = useState(() => (IS_BROWSER ? window.innerHeight * 0.01 : 0));
   const [theme, setTheme] = useState(() => initialTheme);
   const ref = useRef<HTMLDivElement>(null);
+  const { themeStyles } = useConfigContext();
 
   useEffect(() => {
     function resizeHandler() {
@@ -46,17 +48,31 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   }, []);
 
   useEffect(() => {
-    if (ref && ref.current) {
-      ref.current.setAttribute('data-theme', theme);
-      ref.current.setAttribute(
-        'style',
-        `
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      ? THEME_DARK
+      : THEME_LIGHT;
+    const realTheme = theme === 'undefined' ? systemTheme : theme;
+    if (theme !== realTheme) {
+      setTheme(realTheme);
+    }
+
+    const themeStyle = `
       --vh: ${vh}px;
       --fullHeight: calc(${vh}px * 100);
-      `,
-      );
+      ${themeStyles}
+      `;
+
+    if (ref && ref.current) {
+      ref.current.setAttribute('data-theme', realTheme);
+      ref.current.setAttribute('style', themeStyle);
     }
-  }, [vh, ref, theme]);
+
+    const pageHtml = document.querySelector('html');
+    if (pageHtml) {
+      pageHtml.setAttribute('data-theme', realTheme);
+      pageHtml.setAttribute('style', themeStyle);
+    }
+  }, [vh, ref, theme, themeStyles]);
 
   useEffect(() => {
     // set theme to cookie
@@ -90,7 +106,7 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   );
 };
 
-const useThemeContext = () => {
+const useThemeContext = (): ThemeContextInterface => {
   const context = useContext(ThemeContext);
 
   if (!context) {

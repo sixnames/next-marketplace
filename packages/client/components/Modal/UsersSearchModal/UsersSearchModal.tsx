@@ -47,7 +47,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   const { docs, totalPages } = data.getAllUsers;
 
   return (
-    <ModalFrame testId={testId} wide>
+    <ModalFrame testId={testId} size={'wide'}>
       <ModalTitle>Выберите пользователя</ModalTitle>
 
       <FormikIndividualSearch

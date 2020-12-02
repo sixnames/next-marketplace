@@ -33,18 +33,23 @@ describe('User roles', () => {
     cy.getByCy(`role-${newRoleName}`).should('exist');
 
     cy.getByCy(`role-${newRoleName}`).click();
+    cy.shouldSuccess();
     cy.getByCy(`role-title`).should('contain', newRoleName);
 
     // Should edit role rules
     cy.getByCy(`role-rules`).should('exist');
     cy.getByCy(`Attribute-create-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-read-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-update-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-delete-checkbox`).check();
+    cy.shouldSuccess();
     cy.getByCy(`Attribute-restricted-fields`).click();
     cy.getByCy(`role-restricted-fields-modal`).should('exist');
     cy.getByCy(`metric-checkbox`).check();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`close-modal`).click();
 
     cy.getByCy(`Attribute-read-custom-filter`).click();
@@ -59,7 +64,7 @@ describe('User roles', () => {
     cy.getByCy('description').clear().type(newRoleDescription);
     cy.getByCy('isStuff-checkbox').check();
     cy.getByCy('role-submit').click();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`role-${newRoleName}`).should('exist');
   });
 
@@ -67,7 +72,7 @@ describe('User roles', () => {
     cy.getByCy(`role-Админ`).click();
     cy.visitMoreNavLink('app-navigation');
     cy.getByCy('Главная-checkbox').uncheck();
-    cy.getByCy(`success-notification`).should('exist');
+    cy.shouldSuccess();
     cy.getByCy(`app-nav-item-Главная`).click();
     cy.location('pathname').should('eq', '/');
   });

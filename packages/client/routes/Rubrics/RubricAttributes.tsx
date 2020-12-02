@@ -94,7 +94,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   function deleteAttributesGroupHandler(attributesGroup: DeleteAttributesGroupInterface) {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'attributes-group-delete-modal',
         message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.nameString} из рубрики?`,
@@ -115,7 +115,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   function addAttributesGroupToRubricHandler() {
     showModal({
-      type: ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
+      variant: ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
       props: {
         testId: 'add-attributes-group-to-rubric-modal',
         exclude: attributesGroups?.map((group) => (group ? group.node.id : '')) ?? [],

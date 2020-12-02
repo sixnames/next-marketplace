@@ -58,7 +58,7 @@ const CompaniesContent: React.FC = () => {
 
   function deleteCompanyHandler(company: CompanyInListFragment) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         message: `Вы уверены, что хотите удалить компанию ${company.nameString}? Также будут уделены все магазины компании.`,
         testId: 'delete-company-modal',

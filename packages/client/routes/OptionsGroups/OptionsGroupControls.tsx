@@ -52,7 +52,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
 
   function updateOptionsGroupHandler() {
     showModal<OptionsGroupModalInterface>({
-      type: OPTIONS_GROUP_MODAL,
+      variant: OPTIONS_GROUP_MODAL,
       props: {
         group,
         confirm: (values) => {
@@ -72,7 +72,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
 
   function deleteOptionsGroupHandler() {
     showModal({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-options-group',
         message: `Вы уверенны, что хотите удалить группу опций ${nameString}?`,
@@ -86,7 +86,7 @@ const OptionsGroupControls: React.FC<OptionsGroupControlsInterface> = ({ group }
 
   function addOptionToGroupHandler() {
     showModal<OptionInGroupModalInterface>({
-      type: OPTION_IN_GROUP_MODAL,
+      variant: OPTION_IN_GROUP_MODAL,
       props: {
         groupVariant: variant,
         confirm: (input) => {

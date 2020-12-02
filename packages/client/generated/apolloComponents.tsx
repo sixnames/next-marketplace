@@ -76,6 +76,7 @@ export type Query = {
   getAllCompanies: PaginatedCompaniesResponse;
   getShop: Shop;
   getAllShops: PaginatedShopsResponse;
+  getSessionCart: Cart;
 };
 
 
@@ -269,7 +270,6 @@ export type User = {
   email: Scalars['String'];
   phone: Scalars['String'];
   role: Role;
-  cart?: Maybe<ShopProduct>;
   formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
@@ -336,22 +336,51 @@ export type NavItem = {
   children?: Maybe<Array<NavItem>>;
 };
 
-export type ShopProduct = {
-  __typename?: 'ShopProduct';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  available: Scalars['Int'];
-  city: City;
-  price: Scalars['Float'];
-  oldPrices: Array<ShopProductOldPrice>;
-  product: Product;
-  shop: Shop;
-  formattedPrice: Scalars['String'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
-  discountedPercent?: Maybe<Scalars['Int']>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+export type FormattedPhone = {
+  __typename?: 'FormattedPhone';
+  raw: Scalars['String'];
+  readable: Scalars['String'];
 };
+
+
+export type PaginatedUsersResponse = {
+  __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** sortDir enum */
+export enum SortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
 
 export type City = {
   __typename?: 'City';
@@ -361,69 +390,27 @@ export type City = {
   nameString: Scalars['String'];
 };
 
-/** List of all old prices for shop product with dates of creation. */
-export type ShopProductOldPrice = {
-  __typename?: 'ShopProductOldPrice';
+export type Country = {
+  __typename?: 'Country';
   id: Scalars['ID'];
-  price: Scalars['Float'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
-
-
-export type Product = {
-  __typename?: 'Product';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  views: Array<CityCounter>;
-  priorities: Array<CityCounter>;
-  name: Array<Translation>;
-  cardName: Array<Translation>;
-  slug: Scalars['String'];
-  description: Array<Translation>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<Asset>;
-  price: Scalars['Int'];
-  cardPrices: ProductCardPrices;
-  active: Scalars['Boolean'];
-  connections: Array<ProductConnection>;
   nameString: Scalars['String'];
-  cardNameString: Scalars['String'];
-  descriptionString: Scalars['String'];
-  mainImage: Scalars['String'];
-  cardFeatures: ProductCardFeatures;
-  cardConnections: Array<ProductCardConnection>;
-  shopsCount: Scalars['Int'];
-  shops: Array<ShopProduct>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+  cities: Array<City>;
+  currency: Scalars['String'];
 };
 
-
-export type ProductShopsArgs = {
-  input?: Maybe<ProductShopsInput>;
-};
-
-export type CityCounter = {
-  __typename?: 'CityCounter';
+export type Language = {
+  __typename?: 'Language';
+  id: Scalars['ID'];
   key: Scalars['String'];
-  counter?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
 };
 
-export type ProductAttributesGroup = {
-  __typename?: 'ProductAttributesGroup';
-  showInCard: Scalars['Boolean'];
-  node: AttributesGroup;
-  attributes: Array<ProductAttribute>;
-};
-
-export type AttributesGroup = {
-  __typename?: 'AttributesGroup';
+export type Currency = {
+  __typename?: 'Currency';
   id: Scalars['ID'];
-  name: Array<Translation>;
   nameString: Scalars['String'];
-  attributes: Array<Attribute>;
 };
 
 export type Attribute = {
@@ -529,6 +516,61 @@ export type Metric = {
   nameString: Scalars['String'];
 };
 
+export type Product = {
+  __typename?: 'Product';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  views: Array<CityCounter>;
+  priorities: Array<CityCounter>;
+  name: Array<Translation>;
+  cardName: Array<Translation>;
+  slug: Scalars['String'];
+  description: Array<Translation>;
+  rubrics: Array<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<Asset>;
+  price: Scalars['Int'];
+  cardPrices: ProductCardPrices;
+  active: Scalars['Boolean'];
+  connections: Array<ProductConnection>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  mainImage: Scalars['String'];
+  cardFeatures: ProductCardFeatures;
+  cardConnections: Array<ProductCardConnection>;
+  shopsCount: Scalars['Int'];
+  shops: Array<ShopProduct>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type ProductShopsArgs = {
+  input?: Maybe<ProductShopsInput>;
+};
+
+export type CityCounter = {
+  __typename?: 'CityCounter';
+  key: Scalars['String'];
+  counter?: Maybe<Scalars['Int']>;
+};
+
+export type ProductAttributesGroup = {
+  __typename?: 'ProductAttributesGroup';
+  showInCard: Scalars['Boolean'];
+  node: AttributesGroup;
+  attributes: Array<ProductAttribute>;
+};
+
+export type AttributesGroup = {
+  __typename?: 'AttributesGroup';
+  id: Scalars['ID'];
+  name: Array<Translation>;
+  nameString: Scalars['String'];
+  attributes: Array<Attribute>;
+};
+
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
@@ -614,16 +656,31 @@ export type ProductCardConnectionItem = {
   isCurrent: Scalars['Boolean'];
 };
 
-export type ProductShopsInput = {
-  sortDir?: Maybe<SortDirectionEnum>;
-  sortBy?: Maybe<Scalars['String']>;
+export type ShopProduct = {
+  __typename?: 'ShopProduct';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  available: Scalars['Int'];
+  city: City;
+  price: Scalars['Float'];
+  oldPrices: Array<ShopProductOldPrice>;
+  product: Product;
+  shop: Shop;
+  formattedPrice: Scalars['String'];
+  formattedOldPrice?: Maybe<Scalars['String']>;
+  discountedPercent?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
-/** sortDir enum */
-export enum SortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
+/** List of all old prices for shop product with dates of creation. */
+export type ShopProductOldPrice = {
+  __typename?: 'ShopProductOldPrice';
+  id: Scalars['ID'];
+  price: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
 
 export type Shop = {
   __typename?: 'Shop';
@@ -653,12 +710,6 @@ export type Contacts = {
   emails: Array<Scalars['String']>;
   phones: Array<Scalars['String']>;
   formattedPhones: Array<FormattedPhone>;
-};
-
-export type FormattedPhone = {
-  __typename?: 'FormattedPhone';
-  raw: Scalars['String'];
-  readable: Scalars['String'];
 };
 
 export type Address = {
@@ -758,60 +809,9 @@ export enum ShopsSortByEnum {
   CreatedAt = 'createdAt'
 }
 
-export type PaginatedUsersResponse = {
-  __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
+export type ProductShopsInput = {
   sortDir?: Maybe<SortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
-export type Country = {
-  __typename?: 'Country';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
-};
-
-export type Language = {
-  __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Currency = {
-  __typename?: 'Currency';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type PaginatedProductsResponse = {
@@ -1112,6 +1112,27 @@ export enum CompaniesSortByEnum {
   CreatedAt = 'createdAt'
 }
 
+export type Cart = {
+  __typename?: 'Cart';
+  id: Scalars['ID'];
+  products: Array<CartProduct>;
+  productsCount: Scalars['Int'];
+  totalPrice: Scalars['Int'];
+  formattedTotalPrice: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CartProduct = {
+  __typename?: 'CartProduct';
+  id: Scalars['ID'];
+  _id: Scalars['ID'];
+  shopProduct?: Maybe<ShopProduct>;
+  product?: Maybe<Product>;
+  amount: Scalars['Int'];
+  isShopless: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: UserPayloadType;
@@ -1187,6 +1208,12 @@ export type Mutation = {
   addProductToShop: ShopPayloadType;
   deleteProductFromShop: ShopPayloadType;
   updateShopProduct: ShopProductPayloadType;
+  addProductToCart: CartPayloadType;
+  addShoplessProductToCart: CartPayloadType;
+  addShopToCartProduct: CartPayloadType;
+  updateProductInCart: CartPayloadType;
+  deleteProductFromCart: CartPayloadType;
+  clearCart: CartPayloadType;
 };
 
 
@@ -1547,6 +1574,31 @@ export type MutationDeleteProductFromShopArgs = {
 
 export type MutationUpdateShopProductArgs = {
   input: UpdateShopProductInput;
+};
+
+
+export type MutationAddProductToCartArgs = {
+  input: AddProductToCartInput;
+};
+
+
+export type MutationAddShoplessProductToCartArgs = {
+  input: AddShoplessProductToCartInput;
+};
+
+
+export type MutationAddShopToCartProductArgs = {
+  input: AddShopToCartProductInput;
+};
+
+
+export type MutationUpdateProductInCartArgs = {
+  input: UpdateProductInCartInput;
+};
+
+
+export type MutationDeleteProductFromCartArgs = {
+  input: DeleteProductFromCartInput;
 };
 
 export type UserPayloadType = {
@@ -2101,6 +2153,37 @@ export type UpdateShopProductInput = {
   available: Scalars['Int'];
 };
 
+export type CartPayloadType = {
+  __typename?: 'CartPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  cart?: Maybe<Cart>;
+};
+
+export type AddProductToCartInput = {
+  shopProductId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type AddShoplessProductToCartInput = {
+  productId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type AddShopToCartProductInput = {
+  cartProductId: Scalars['ID'];
+  shopProductId: Scalars['ID'];
+};
+
+export type UpdateProductInCartInput = {
+  cartProductId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type DeleteProductFromCartInput = {
+  cartProductId: Scalars['ID'];
+};
+
 export type CmsProductAttributeFragment = (
   { __typename?: 'ProductAttribute' }
   & Pick<ProductAttribute, 'key' | 'showInCard' | 'viewVariant' | 'value'>
@@ -2630,6 +2713,116 @@ export type DeleteAttributesGroupFromRubricMutation = (
   & { deleteAttributesGroupFromRubric: (
     { __typename?: 'RubricPayloadType' }
     & Pick<RubricPayloadType, 'success' | 'message'>
+  ) }
+);
+
+export type CartProductFragment = (
+  { __typename?: 'CartProduct' }
+  & Pick<CartProduct, 'id' | 'amount' | 'isShopless'>
+  & { product?: Maybe<(
+    { __typename?: 'Product' }
+    & ProductCardFragment
+  )>, shopProduct?: Maybe<(
+    { __typename?: 'ShopProduct' }
+    & { product: (
+      { __typename?: 'Product' }
+      & ProductCardFragment
+    ) }
+    & ShopProductSnippetFragment
+  )> }
+);
+
+export type CartFragment = (
+  { __typename?: 'Cart' }
+  & Pick<Cart, 'id' | 'formattedTotalPrice' | 'productsCount'>
+  & { products: Array<(
+    { __typename?: 'CartProduct' }
+    & CartProductFragment
+  )> }
+);
+
+export type CartPayloadFragment = (
+  { __typename?: 'CartPayloadType' }
+  & Pick<CartPayloadType, 'success' | 'message'>
+  & { cart?: Maybe<(
+    { __typename?: 'Cart' }
+    & CartFragment
+  )> }
+);
+
+export type AddProductToCartMutationVariables = Exact<{
+  input: AddProductToCartInput;
+}>;
+
+
+export type AddProductToCartMutation = (
+  { __typename?: 'Mutation' }
+  & { addProductToCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type AddShoplessProductToCartMutationVariables = Exact<{
+  input: AddShoplessProductToCartInput;
+}>;
+
+
+export type AddShoplessProductToCartMutation = (
+  { __typename?: 'Mutation' }
+  & { addShoplessProductToCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type AddShopToCartProductMutationVariables = Exact<{
+  input: AddShopToCartProductInput;
+}>;
+
+
+export type AddShopToCartProductMutation = (
+  { __typename?: 'Mutation' }
+  & { addShopToCartProduct: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type UpdateProductInCartMutationVariables = Exact<{
+  input: UpdateProductInCartInput;
+}>;
+
+
+export type UpdateProductInCartMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProductInCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type DeleteProductFromCartMutationVariables = Exact<{
+  input: DeleteProductFromCartInput;
+}>;
+
+
+export type DeleteProductFromCartMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProductFromCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
+export type ClearCartMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ClearCartMutation = (
+  { __typename?: 'Mutation' }
+  & { clearCart: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
   ) }
 );
 
@@ -3195,7 +3388,7 @@ export type ShopSnippetFragment = (
   ) }
 );
 
-export type ProductCardShopFragment = (
+export type ShopProductSnippetFragment = (
   { __typename?: 'ShopProduct' }
   & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
   & { shop: (
@@ -3243,7 +3436,7 @@ export type GetCatalogueCardShopsQuery = (
   { __typename?: 'Query' }
   & { getProductShops: Array<(
     { __typename?: 'ShopProduct' }
-    & ProductCardShopFragment
+    & ShopProductSnippetFragment
   )> }
 );
 
@@ -3604,7 +3797,10 @@ export type InitialSiteQueryQuery = (
   )>, getAllCities: Array<(
     { __typename?: 'City' }
     & Pick<City, 'id' | 'slug' | 'nameString'>
-  )> }
+  )>, getSessionCart: (
+    { __typename?: 'Cart' }
+    & CartFragment
+  ) }
 );
 
 export type SignInMutationVariables = Exact<{
@@ -4202,71 +4398,6 @@ export const RubricAttributesGroupFragmentDoc = gql`
   }
 }
     ${RubricAttributeFragmentDoc}`;
-export const AttributeInGroupFragmentDoc = gql`
-    fragment AttributeInGroup on Attribute {
-  id
-  name {
-    key
-    value
-  }
-  nameString
-  variant
-  positioningInTitle {
-    key
-    value
-  }
-  optionsGroup {
-    id
-    nameString
-  }
-  metric {
-    id
-    nameString
-  }
-}
-    `;
-export const ShopSnippetFragmentDoc = gql`
-    fragment ShopSnippet on Shop {
-  id
-  nameString
-  slug
-  productsCount
-  address {
-    formattedAddress
-    formattedCoordinates {
-      lat
-      lng
-    }
-  }
-  contacts {
-    formattedPhones {
-      raw
-      readable
-    }
-  }
-  assets {
-    index
-    url
-  }
-  logo {
-    index
-    url
-  }
-}
-    `;
-export const ProductCardShopFragmentDoc = gql`
-    fragment ProductCardShop on ShopProduct {
-  id
-  itemId
-  available
-  formattedPrice
-  formattedOldPrice
-  discountedPercent
-  shop {
-    ...ShopSnippet
-  }
-}
-    ${ShopSnippetFragmentDoc}`;
 export const CardFeatureFragmentDoc = gql`
     fragment CardFeature on ProductAttribute {
   showInCard
@@ -4336,6 +4467,107 @@ export const ProductCardFragmentDoc = gql`
 }
     ${CardFeatureFragmentDoc}
 ${CardConnectionFragmentDoc}`;
+export const ShopSnippetFragmentDoc = gql`
+    fragment ShopSnippet on Shop {
+  id
+  nameString
+  slug
+  productsCount
+  address {
+    formattedAddress
+    formattedCoordinates {
+      lat
+      lng
+    }
+  }
+  contacts {
+    formattedPhones {
+      raw
+      readable
+    }
+  }
+  assets {
+    index
+    url
+  }
+  logo {
+    index
+    url
+  }
+}
+    `;
+export const ShopProductSnippetFragmentDoc = gql`
+    fragment ShopProductSnippet on ShopProduct {
+  id
+  itemId
+  available
+  formattedPrice
+  formattedOldPrice
+  discountedPercent
+  shop {
+    ...ShopSnippet
+  }
+}
+    ${ShopSnippetFragmentDoc}`;
+export const CartProductFragmentDoc = gql`
+    fragment CartProduct on CartProduct {
+  id
+  amount
+  isShopless
+  product {
+    ...ProductCard
+  }
+  shopProduct {
+    ...ShopProductSnippet
+    product {
+      ...ProductCard
+    }
+  }
+}
+    ${ProductCardFragmentDoc}
+${ShopProductSnippetFragmentDoc}`;
+export const CartFragmentDoc = gql`
+    fragment Cart on Cart {
+  id
+  formattedTotalPrice
+  productsCount
+  products {
+    ...CartProduct
+  }
+}
+    ${CartProductFragmentDoc}`;
+export const CartPayloadFragmentDoc = gql`
+    fragment CartPayload on CartPayloadType {
+  success
+  message
+  cart {
+    ...Cart
+  }
+}
+    ${CartFragmentDoc}`;
+export const AttributeInGroupFragmentDoc = gql`
+    fragment AttributeInGroup on Attribute {
+  id
+  name {
+    key
+    value
+  }
+  nameString
+  variant
+  positioningInTitle {
+    key
+    value
+  }
+  optionsGroup {
+    id
+    nameString
+  }
+  metric {
+    id
+    nameString
+  }
+}
+    `;
 export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
   id
@@ -5648,6 +5880,197 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+export const AddProductToCartDocument = gql`
+    mutation AddProductToCart($input: AddProductToCartInput!) {
+  addProductToCart(input: $input) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type AddProductToCartMutationFn = Apollo.MutationFunction<AddProductToCartMutation, AddProductToCartMutationVariables>;
+
+/**
+ * __useAddProductToCartMutation__
+ *
+ * To run a mutation, you first call `useAddProductToCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductToCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductToCartMutation, { data, loading, error }] = useAddProductToCartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProductToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToCartMutation, AddProductToCartMutationVariables>) {
+        return Apollo.useMutation<AddProductToCartMutation, AddProductToCartMutationVariables>(AddProductToCartDocument, baseOptions);
+      }
+export type AddProductToCartMutationHookResult = ReturnType<typeof useAddProductToCartMutation>;
+export type AddProductToCartMutationResult = Apollo.MutationResult<AddProductToCartMutation>;
+export type AddProductToCartMutationOptions = Apollo.BaseMutationOptions<AddProductToCartMutation, AddProductToCartMutationVariables>;
+export const AddShoplessProductToCartDocument = gql`
+    mutation AddShoplessProductToCart($input: AddShoplessProductToCartInput!) {
+  addShoplessProductToCart(input: $input) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type AddShoplessProductToCartMutationFn = Apollo.MutationFunction<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>;
+
+/**
+ * __useAddShoplessProductToCartMutation__
+ *
+ * To run a mutation, you first call `useAddShoplessProductToCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddShoplessProductToCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addShoplessProductToCartMutation, { data, loading, error }] = useAddShoplessProductToCartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddShoplessProductToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>) {
+        return Apollo.useMutation<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>(AddShoplessProductToCartDocument, baseOptions);
+      }
+export type AddShoplessProductToCartMutationHookResult = ReturnType<typeof useAddShoplessProductToCartMutation>;
+export type AddShoplessProductToCartMutationResult = Apollo.MutationResult<AddShoplessProductToCartMutation>;
+export type AddShoplessProductToCartMutationOptions = Apollo.BaseMutationOptions<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>;
+export const AddShopToCartProductDocument = gql`
+    mutation AddShopToCartProduct($input: AddShopToCartProductInput!) {
+  addShopToCartProduct(input: $input) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type AddShopToCartProductMutationFn = Apollo.MutationFunction<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>;
+
+/**
+ * __useAddShopToCartProductMutation__
+ *
+ * To run a mutation, you first call `useAddShopToCartProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddShopToCartProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addShopToCartProductMutation, { data, loading, error }] = useAddShopToCartProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddShopToCartProductMutation(baseOptions?: Apollo.MutationHookOptions<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>) {
+        return Apollo.useMutation<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>(AddShopToCartProductDocument, baseOptions);
+      }
+export type AddShopToCartProductMutationHookResult = ReturnType<typeof useAddShopToCartProductMutation>;
+export type AddShopToCartProductMutationResult = Apollo.MutationResult<AddShopToCartProductMutation>;
+export type AddShopToCartProductMutationOptions = Apollo.BaseMutationOptions<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>;
+export const UpdateProductInCartDocument = gql`
+    mutation UpdateProductInCart($input: UpdateProductInCartInput!) {
+  updateProductInCart(input: $input) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type UpdateProductInCartMutationFn = Apollo.MutationFunction<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>;
+
+/**
+ * __useUpdateProductInCartMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductInCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductInCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductInCartMutation, { data, loading, error }] = useUpdateProductInCartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductInCartMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>) {
+        return Apollo.useMutation<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>(UpdateProductInCartDocument, baseOptions);
+      }
+export type UpdateProductInCartMutationHookResult = ReturnType<typeof useUpdateProductInCartMutation>;
+export type UpdateProductInCartMutationResult = Apollo.MutationResult<UpdateProductInCartMutation>;
+export type UpdateProductInCartMutationOptions = Apollo.BaseMutationOptions<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>;
+export const DeleteProductFromCartDocument = gql`
+    mutation DeleteProductFromCart($input: DeleteProductFromCartInput!) {
+  deleteProductFromCart(input: $input) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type DeleteProductFromCartMutationFn = Apollo.MutationFunction<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>;
+
+/**
+ * __useDeleteProductFromCartMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductFromCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductFromCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductFromCartMutation, { data, loading, error }] = useDeleteProductFromCartMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProductFromCartMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>) {
+        return Apollo.useMutation<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>(DeleteProductFromCartDocument, baseOptions);
+      }
+export type DeleteProductFromCartMutationHookResult = ReturnType<typeof useDeleteProductFromCartMutation>;
+export type DeleteProductFromCartMutationResult = Apollo.MutationResult<DeleteProductFromCartMutation>;
+export type DeleteProductFromCartMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>;
+export const ClearCartDocument = gql`
+    mutation ClearCart {
+  clearCart {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type ClearCartMutationFn = Apollo.MutationFunction<ClearCartMutation, ClearCartMutationVariables>;
+
+/**
+ * __useClearCartMutation__
+ *
+ * To run a mutation, you first call `useClearCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useClearCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [clearCartMutation, { data, loading, error }] = useClearCartMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useClearCartMutation(baseOptions?: Apollo.MutationHookOptions<ClearCartMutation, ClearCartMutationVariables>) {
+        return Apollo.useMutation<ClearCartMutation, ClearCartMutationVariables>(ClearCartDocument, baseOptions);
+      }
+export type ClearCartMutationHookResult = ReturnType<typeof useClearCartMutation>;
+export type ClearCartMutationResult = Apollo.MutationResult<ClearCartMutation>;
+export type ClearCartMutationOptions = Apollo.BaseMutationOptions<ClearCartMutation, ClearCartMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {
@@ -6887,10 +7310,10 @@ export type GetAttributesGroupsForRubricQueryResult = Apollo.QueryResult<GetAttr
 export const GetCatalogueCardShopsDocument = gql`
     query GetCatalogueCardShops($input: GetProductShopsInput!) {
   getProductShops(input: $input) {
-    ...ProductCardShop
+    ...ShopProductSnippet
   }
 }
-    ${ProductCardShopFragmentDoc}`;
+    ${ShopProductSnippetFragmentDoc}`;
 
 /**
  * __useGetCatalogueCardShopsQuery__
@@ -7339,11 +7762,15 @@ export const InitialSiteQueryDocument = gql`
     slug
     nameString
   }
+  getSessionCart {
+    ...Cart
+  }
 }
     ${SessionUserFragmentFragmentDoc}
 ${SessionRoleFragmentFragmentDoc}
 ${SiteConfigFragmentDoc}
-${SiteRubricFragmentFragmentDoc}`;
+${SiteRubricFragmentFragmentDoc}
+${CartFragmentDoc}`;
 
 /**
  * __useInitialSiteQueryQuery__

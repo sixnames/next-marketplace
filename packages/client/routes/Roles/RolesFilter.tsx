@@ -27,7 +27,7 @@ const RolesFilter: React.FC = () => {
 
   function createRoleHandler() {
     showModal<RoleModalInterface>({
-      type: ROLE_MODAL,
+      variant: ROLE_MODAL,
       props: {
         confirm: (values) => {
           showLoading();

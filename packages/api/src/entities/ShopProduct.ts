@@ -22,9 +22,6 @@ export class ShopProductOldPrice extends TimeStamps {
 
   @Field()
   readonly createdAt?: Date;
-
-  @Field()
-  readonly updatedAt?: Date;
 }
 
 @ObjectType()

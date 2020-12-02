@@ -15,7 +15,6 @@ const Home: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   );
 };
 
-// noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async (context) =>
   getSiteServerSideProps({
     context,

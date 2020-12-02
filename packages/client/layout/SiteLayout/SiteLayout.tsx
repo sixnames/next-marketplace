@@ -11,9 +11,9 @@ import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 import { SiteContextProvider, useSiteContext } from '../../context/siteContext';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import { useConfigContext } from '../../context/configContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
+import { debounce } from 'lodash';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -38,43 +38,38 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     height: 0,
   });
 
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const themeColor = getSiteConfigSingleValue('siteThemeColor');
-  const themeStyles = {
-    '--theme': `rgb(${themeColor})`,
-    '--themeRGB': `${themeColor}`,
-  } as React.CSSProperties;
-
   // Set burger dropdown sizes
   useEffect(() => {
     function resizeHandler() {
       if (contentRef && contentRef.current && isBurgerDropdownOpen && !isMobile) {
         setBurgerDropdownSizes({
           top: contentRef.current.offsetTop,
-          height: contentRef.current.clientHeight,
+          height: window.innerHeight - contentRef.current.offsetTop,
         });
       }
     }
 
+    const debouncedResizeHandler = debounce(resizeHandler, 250);
+
     if (burgerDropdownSizes.height === 0) {
-      resizeHandler();
+      debouncedResizeHandler();
     }
 
-    window.addEventListener('resize', resizeHandler);
+    window.addEventListener('resize', debouncedResizeHandler);
 
     return () => {
-      window.removeEventListener('resize', resizeHandler);
+      window.removeEventListener('resize', debouncedResizeHandler);
     };
   }, [burgerDropdownSizes.height, contentRef, isBurgerDropdownOpen, isMobile]);
 
   return (
-    <div className={classes.frame} style={themeStyles}>
+    <div className={classes.frame}>
       <Meta title={title} description={description} />
 
       <Header />
 
       <div ref={contentRef} className={classes.content}>
-        <main className={classes.main} ref={contentRef}>
+        <main className={classes.main}>
           <ErrorBoundary>
             <AnimateOpacity>{children}</AnimateOpacity>
           </ErrorBoundary>
@@ -86,7 +81,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       </div>
 
       {isLoading && <Spinner wide />}
-      {isModal.show && <Modal modalType={isModal.type} modalProps={isModal.props} />}
+      {isModal.show && <Modal modalType={isModal.variant} modalProps={isModal.props} />}
     </div>
   );
 };

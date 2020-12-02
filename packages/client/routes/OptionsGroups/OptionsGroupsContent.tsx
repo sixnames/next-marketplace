@@ -52,7 +52,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
 
   function deleteOptionFromGroupHandler(id: string, nameString: string) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         message: `Вы уверенны, что хотите удалить опцию ${nameString}?`,
         confirm: () => {
@@ -69,7 +69,7 @@ const OptionsGroupsContent: React.FC<OptionsGroupsContentInterface> = ({ query =
 
   function updateOptionInGroupHandler(id: string, option: OptionInGroupFragment) {
     showModal<OptionInGroupModalInterface>({
-      type: OPTION_IN_GROUP_MODAL,
+      variant: OPTION_IN_GROUP_MODAL,
       props: {
         option,
         groupVariant: `${data?.getOptionsGroup?.variant}` as OptionsGroupVariantEnum,

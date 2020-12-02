@@ -46,7 +46,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, testId }) =>
 
   function removeFieldHandler(removeIndex: number) {
     showModal<ConfirmModalInterface>({
-      type: CONFIRM_MODAL,
+      variant: CONFIRM_MODAL,
       props: {
         testId: 'remove-field-modal',
         message: (
@@ -252,7 +252,7 @@ const ConfigsContent: React.FC = () => {
 
         <div className={classes.warning}>
           <Notification
-            type={'warning'}
+            variant={'warning'}
             title={'Внимание!'}
             message={`Каждая настройка содержит города и языки созданные в базе данных.
               Обязательны к заполнению только основной город и основной язык.

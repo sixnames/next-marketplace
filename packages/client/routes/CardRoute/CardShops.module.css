@@ -22,3 +22,13 @@
   color: var(--textSecondaryColor);
   margin-right: 1.5rem;
 }
+
+@media only screen and (max-width: 680px) {
+  .controls {
+    display: block;
+  }
+
+  .sort {
+    margin-bottom: 1rem;
+  }
+}

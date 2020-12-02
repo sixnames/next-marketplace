@@ -1,0 +1,20 @@
+.frame {
+  --stickerSize: 20px;
+
+  position: absolute;
+  z-index: 5;
+  top: -0.75rem;
+  right: -0.75rem;
+  height: var(--stickerSize);
+  min-width: var(--stickerSize);
+  line-height: var(--stickerSize);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 0.1rem;
+  font-size: 0.875rem;
+  color: var(--wp-white);
+  font-weight: 600;
+  background-color: var(--theme);
+  border-radius: 10px;
+}

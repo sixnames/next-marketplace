@@ -11,23 +11,32 @@ export interface ReachTabsConfigItemInterface {
 interface ReachTabsInterface {
   config: ReachTabsConfigItemInterface[];
   frameClassName?: string;
+  testId?: string;
 }
 
-const ReachTabs: React.FC<ReachTabsInterface> = ({ config, frameClassName, children }) => {
+const ReachTabs: React.FC<ReachTabsInterface> = ({ config, testId, frameClassName, children }) => {
   return (
-    <div className={`${classes.frame} ${frameClassName ? frameClassName : ''}`}>
+    <div className={`${classes.frame} ${frameClassName ? frameClassName : ''}`} data-cy={testId}>
       <Tabs>
         <Inner className={`${classes.list}`} lowBottom lowTop>
           <TabList>
             {config.map(({ head }, index) => {
-              return <Tab key={index}>{head}</Tab>;
+              return (
+                <Tab key={index} data-cy={`${testId}-${index}`}>
+                  {head}
+                </Tab>
+              );
             })}
           </TabList>
         </Inner>
         <Inner lowBottom lowTop>
           <TabPanels>
             {React.Children.map(children, (child, index) => {
-              return <TabPanel key={index}>{child}</TabPanel>;
+              return (
+                <TabPanel key={index} data-cy={`${testId}-${index}-content`}>
+                  {child}
+                </TabPanel>
+              );
             })}
           </TabPanels>
         </Inner>

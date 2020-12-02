@@ -11,6 +11,7 @@
     "start:testing": "next start",
     "cy:open": "cypress open",
     "cy:start": "cypress run",
+    "cy:run-file": "cypress run --spec cypress/e2e/cms/languages.spec.ts",
     "test": "npm run cy:start"
   },
   "dependencies": {

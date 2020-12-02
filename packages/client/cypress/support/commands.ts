@@ -69,12 +69,18 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('shouldSuccess', () => {
+Cypress.Commands.add('shouldSuccess', (log?: string) => {
+  if (log) {
+    cy.log(log);
+  }
   cy.getByCy(`success-notification`);
   cy.getByCy(`close-notification`).click();
 });
 
-Cypress.Commands.add('shouldError', () => {
+Cypress.Commands.add('shouldError', (log?: string) => {
+  if (log) {
+    cy.log(log);
+  }
   cy.getByCy(`error-notification`);
   cy.getByCy(`close-notification`).click();
 });

@@ -22,8 +22,8 @@ declare namespace Cypress {
      */
     getByCy(testId: string): Chainable<Element>;
     getByTranslationFieldCy(props: GetByTranslationFieldCyInterface): Chainable<Element>;
-    shouldSuccess(): void;
-    shouldError(): void;
+    shouldSuccess(log?: string): void;
+    shouldError(log?: string): void;
     shouldNotError(): void;
     getBySelector(selector: string): Chainable<Element>;
     selectOptionByTestId(select: string, testId: string): Chainable<Element>;

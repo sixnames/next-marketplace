@@ -4,7 +4,16 @@ import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from '../config';
 import Portal from '@reach/portal';
 import classes from './NotificationsProvider.module.css';
 
-type StateNotificationInterface = Omit<NotificationInterface, 'closeHandler'>;
+interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
+  createdAt: number;
+}
+
+type ShowNotificationInterface = Omit<StateNotificationInterface, 'createdAt'>;
+
+type ApiNotificationInterface = Omit<
+  ShowNotificationInterface,
+  'testId' | 'variant' | 'closeHandler'
+>;
 
 interface NotificationsContextInterface {
   notifications: StateNotificationInterface[];
@@ -66,19 +75,32 @@ function useNotificationsContext() {
   }
 
   const showNotification = useCallback(
-    (args: StateNotificationInterface) => {
+    (args: ShowNotificationInterface) => {
       context.setNotifications((prevState) => {
-        return prevState.concat([args]);
+        return prevState.concat([
+          {
+            ...args,
+            createdAt: new Date().getTime() + NOTIFICATION_TIMEOUT,
+          },
+        ]);
       });
+
       setTimeout(() => {
-        context.setNotifications((prevState) => prevState.slice(1));
+        context.setNotifications((prevState) => {
+          return prevState.reduce((acc: StateNotificationInterface[], notification) => {
+            if (new Date().getTime() > notification.createdAt) {
+              return acc;
+            }
+            return [...acc, notification];
+          }, []);
+        });
       }, NOTIFICATION_TIMEOUT);
     },
     [context],
   );
 
   const showErrorNotification = useCallback(
-    (props?: Omit<StateNotificationInterface, 'variant'>) => {
+    (props?: ApiNotificationInterface) => {
       const { title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } = props || {};
 
       showNotification({
@@ -92,7 +114,7 @@ function useNotificationsContext() {
   );
 
   const showSuccessNotification = useCallback(
-    (props?: Omit<StateNotificationInterface, 'variant'>) => {
+    (props?: ApiNotificationInterface) => {
       const { title = '', message = '' } = props || {};
       showNotification({
         title,

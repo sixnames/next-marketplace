@@ -42,6 +42,7 @@ describe('Languages', () => {
     cy.shouldSuccess();
     cy.getByCy(`${mockDefaultLanguageName}-checkbox`).click();
     cy.getByCy('confirm').click();
+    cy.shouldSuccess();
 
     // Should update language
     cy.getByCy(`${mockNewLanguageName}-update`).click();
@@ -49,6 +50,7 @@ describe('Languages', () => {
     cy.getByCy('language-name').clear().type(mockUpdatedLanguageName);
     cy.getByCy('language-key').select(mockUpdatedLanguageKey);
     cy.getByCy('language-submit').click();
+    cy.getByCy('update-language-modal').should('not.exist');
     cy.shouldSuccess();
     cy.getByCy(`${mockUpdatedLanguageName}-row`).should('exist');
 
@@ -59,6 +61,7 @@ describe('Languages', () => {
     cy.getByCy(`${mockUpdatedLanguageName}-delete`).click();
     cy.getByCy('delete-language-modal').should('exist');
     cy.getByCy('confirm').click();
+    cy.getByCy('delete-language-modal').should('not.exist');
     cy.shouldSuccess();
     cy.getByCy(`${mockUpdatedLanguageName}-row`).should('not.exist');
   });

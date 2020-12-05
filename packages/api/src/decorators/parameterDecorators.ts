@@ -11,15 +11,21 @@ import { UserModel } from '../entities/User';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {
-    return UserModel.findById(context.req.session!.userId);
+    return context.getUser();
+  });
+}
+
+export function SessionUserId() {
+  return createParamDecorator<ContextInterface>(({ context }) => {
+    return context.getUser()?.id.toString();
   });
 }
 
 export function SessionCart() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const user = await UserModel.findById(context.req.session!.userId);
+    const user = context.getUser();
     const userCartId = user ? user.cart : null;
-
+    // console.log(user);
     // Get cart id from cookies or session user
     const cookies = cookie.parse(context.req.headers.cookie || '');
     const cartId = userCartId || cookies[CART_COOKIE_KEY];
@@ -60,18 +66,6 @@ export function SessionCart() {
   });
 }
 
-export function SessionUserId() {
-  return createParamDecorator<ContextInterface>(({ context }) => {
-    return context.req.session!.userId;
-  });
-}
-
-export function SessionRoleId() {
-  return createParamDecorator<ContextInterface>(({ context }) => {
-    return context.req.session!.roleId;
-  });
-}
-
 export function SessionRole() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
     return context.req.role;
@@ -80,7 +74,7 @@ export function SessionRole() {
 
 export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const { roleRules, session, role } = context.req;
+    const { roleRules, role } = context.req;
     if (role.slug === ROLE_SLUG_ADMIN) {
       return {};
     }
@@ -99,8 +93,9 @@ export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
       return {};
     }
 
+    const user = context.getUser();
     const { customFilter = '{}' } = currentOperation;
-    const customFilterResult = customFilter.replace(/__authenticatedUser/gi, `${session!.userId}`);
+    const customFilterResult = customFilter.replace(/__authenticatedUser/gi, `${user?.id}`);
     return JSON.parse(customFilterResult);
   });
 }

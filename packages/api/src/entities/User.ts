@@ -5,13 +5,8 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { Role } from './Role';
 import { AutoIncrementID } from '@typegoose/auto-increment';
-import getApiMessage from '../utils/translations/getApiMessage';
-import { compare } from 'bcryptjs';
-import { ContextInterface } from '../types/context';
 import { FormattedPhone } from './FormattedPhone';
 import { Cart } from './Cart';
-
-type Request = ContextInterface['req'];
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -73,58 +68,6 @@ export class User extends TimeStamps {
     query?: FilterQuery<User>,
     options?: PaginateOptions,
   ) => Promise<PaginateResult<User>>;
-
-  static signedIn(req: Request) {
-    return req.session && req.session.userId;
-  }
-
-  static ensureSignedOut(req: Request) {
-    return !this.signedIn(req);
-  }
-
-  static async attemptSignIn(email: User['email'], password: User['password'], lang: string) {
-    const emailErrorMessage = await getApiMessage({ key: `users.signIn.emailError`, lang });
-    const passwordErrorMessage = await getApiMessage({ key: `users.signIn.passwordError`, lang });
-
-    const user = await UserModel.findOne({ email });
-
-    if (!user) {
-      return {
-        user: null,
-        message: emailErrorMessage,
-      };
-    }
-
-    const matches = await compare(password, user.password);
-
-    if (!matches) {
-      return {
-        user: null,
-        message: passwordErrorMessage,
-      };
-    }
-
-    return {
-      user,
-      message: await getApiMessage({ key: `users.signIn.success`, lang }),
-    };
-  }
-
-  static async attemptSignOut(req: Request) {
-    return new Promise((resolve) => {
-      if (req.session && req.session.destroy) {
-        req.session.destroy((error: any) => {
-          if (error) {
-            resolve(false);
-          } else {
-            resolve(true);
-          }
-        });
-      } else {
-        resolve(false);
-      }
-    });
-  }
 }
 
 export const UserModel = getModelForClass(User);

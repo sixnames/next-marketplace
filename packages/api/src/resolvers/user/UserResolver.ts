@@ -66,8 +66,12 @@ class UserPayloadType extends PayloadType() {
 @Resolver((_of) => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@SessionUserId() sessionUserId: string): Promise<User | null> {
-    return UserModel.findById(sessionUserId);
+  async me(@Ctx() ctx: ContextInterface): Promise<User | null> {
+    try {
+      return ctx.getUser() || null;
+    } catch (e) {
+      return null;
+    }
   }
 
   @Query(() => User, { nullable: true })
@@ -420,38 +424,40 @@ export class UserResolver {
   })
   async signIn(
     @Ctx() ctx: ContextInterface,
-    @Localization() { getApiMessage, lang }: LocalizationPayloadInterface,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: SignInInput,
   ): Promise<UserPayloadType> {
     try {
-      const isSignedOut = UserModel.ensureSignedOut(ctx.req);
-
-      if (!isSignedOut) {
+      if (ctx.isAuthenticated()) {
         return {
           success: false,
           message: await getApiMessage(`users.signIn.authorized`),
         };
       }
 
-      const { user, message } = await UserModel.attemptSignIn(input.email, input.password, lang);
+      const { email, password } = input;
+      const { user } = await ctx.authenticate('graphql-local', {
+        email,
+        password,
+      });
 
       if (!user) {
         return {
           success: false,
-          message,
+          message: await getApiMessage(`users.signIn.emailError`),
         };
       }
 
-      const userRole = await RoleModel.findById(user.role);
-      ctx.req.session!.userId = user.id;
-      ctx.req.session!.roleId = userRole ? userRole._id : null;
+      // Set session user
+      await ctx.login(user);
 
       return {
         success: true,
-        message,
+        message: await getApiMessage(`users.signIn.success`),
         user,
       };
     } catch (e) {
+      console.log(e);
       return {
         success: false,
         message: getResolverErrorMessage(e),
@@ -465,14 +471,16 @@ export class UserResolver {
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
   ): Promise<UserPayloadType> {
     try {
-      const isSignedOut = await UserModel.attemptSignOut(ctx.req);
-
-      if (!isSignedOut) {
+      if (ctx.isUnauthenticated()) {
         return {
           success: false,
           message: await getApiMessage(`users.signOut.error`),
         };
       }
+
+      // Remove session user
+      ctx.logout();
+
       return {
         success: true,
         message: await getApiMessage(`users.signOut.success`),

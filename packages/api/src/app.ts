@@ -11,10 +11,10 @@ import {
 } from './routes/testingDataRoutes';
 import { assetsRoute } from './routes/assetsRoutes';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
-import { visitorMiddleware } from './middlewares/visitorMiddleware';
 import { schemaOptions } from './schema/schema';
 import { databaseMiddleware } from './middlewares/databaseMiddleware';
 import { sessionMiddleware } from './middlewares/sessionMiddleware';
+import passport, { visitorMiddleware } from './middlewares/passportMiddleware';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -43,7 +43,8 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
     .use(databaseMiddleware)
     .use(sessionMiddleware)
     .use(internationalisationMiddleware)
-    .use(visitorMiddleware);
+    .use(passport.initialize())
+    .use(passport.session());
 
   // GQL Schema
   const schema = buildSchemaSync(schemaOptions);
@@ -53,10 +54,7 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
     ...APOLLO_OPTIONS,
     schema,
     introspection: true,
-    context: async ({ req, res, connection }) => {
-      // Return apollo context
-      return connection ? connection.context : { req, res };
-    },
+    context: visitorMiddleware,
   });
 
   server.applyMiddleware({

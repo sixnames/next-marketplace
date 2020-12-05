@@ -264,7 +264,7 @@ describe('User', () => {
   });
 
   it('Should update user profile', async () => {
-    const { mutate, user } = await authenticatedTestClient();
+    const { mutate, authUser } = await authenticatedTestClient();
 
     const { data } = await mutate<any>(
       gql`
@@ -287,7 +287,7 @@ describe('User', () => {
       {
         variables: {
           input: {
-            id: user?.id,
+            id: authUser?.id,
             email: alex.email,
             name: alex.name,
             phone: alex.phone,
@@ -298,14 +298,14 @@ describe('User', () => {
 
     const { updateMyProfile } = data;
     expect(updateMyProfile.success).toBeTruthy();
-    expect(updateMyProfile.user.id).toEqual(user?.id);
+    expect(updateMyProfile.user.id).toEqual(authUser?.id);
     expect(updateMyProfile.user.email).toEqual(alex.email);
     expect(updateMyProfile.user.name).toEqual(alex.name);
     expect(updateMyProfile.user.phone).toEqual(alex.phone);
   });
 
   it('Should update user password', async () => {
-    const { mutate, user } = await authenticatedTestClient();
+    const { mutate, authUser } = await authenticatedTestClient();
     const newPassword = 'newPassword';
 
     const { data } = await mutate<any>(
@@ -320,7 +320,7 @@ describe('User', () => {
       {
         variables: {
           input: {
-            id: user?.id,
+            id: authUser?.id,
             oldPassword: ADMIN_PASSWORD,
             newPassword,
             newPasswordB: newPassword,

@@ -72,18 +72,6 @@ export async function testClientWithContext(
   });
   const { mutate, query, setOptions } = testClient;
 
-  const session = {
-    user: null,
-    userId: null,
-    roleId: null,
-    destroy: (callback: (arg: any) => void) => {
-      session.user = null;
-      session.userId = null;
-      session.roleId = null;
-      callback(null);
-    },
-  };
-
   // Set request role
   const roleRuleOperationsPopulate = {
     path: 'operations',

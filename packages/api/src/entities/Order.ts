@@ -6,7 +6,7 @@ import { AutoIncrementID } from '@typegoose/auto-increment';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 import { OrderStatus } from './OrderStatus';
-import { OrderUser } from './OrderUser';
+import { OrderCustomer } from './OrderCustomer';
 import { OrderProduct } from './OrderProduct';
 import { OrderLog } from './OrderLog';
 
@@ -27,9 +27,9 @@ export class Order extends TimeStamps {
   @prop({ required: true, ref: OrderStatus })
   status: string;
 
-  @Field(() => OrderUser)
-  @prop({ required: true, type: OrderUser })
-  user: OrderUser;
+  @Field(() => OrderCustomer)
+  @prop({ required: true, type: OrderCustomer })
+  customer: OrderCustomer;
 
   @Field(() => [OrderProduct])
   @prop({ required: true, type: OrderProduct })

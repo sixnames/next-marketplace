@@ -3,7 +3,7 @@ import { User } from './User';
 import { prop } from '@typegoose/typegoose';
 
 @ObjectType()
-export class OrderUser {
+export class OrderCustomer {
   @Field(() => ID)
   readonly id: string;
   readonly _id?: string;
@@ -34,5 +34,5 @@ export class OrderUser {
 
   @Field(() => User, { nullable: true })
   @prop({ required: true, ref: User })
-  node: string;
+  user: string;
 }

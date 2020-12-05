@@ -45,6 +45,9 @@ export class Order extends TimeStamps {
   @Field(() => String)
   readonly formattedTotalPrice: string;
 
+  @Field((_type) => Int)
+  readonly productsCount?: number;
+
   @Field()
   readonly createdAt: Date;
 

@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, Float, ID, Int, ObjectType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
 import { ShopProduct, ShopProductOldPrice } from './ShopProduct';
 import { Translation } from './Translation';
@@ -69,6 +69,12 @@ export class OrderProduct {
 
   @Field(() => String, { nullable: true })
   readonly formattedOldPrice?: string | null;
+
+  @Field(() => Float)
+  readonly totalPrice: number;
+
+  @Field(() => String)
+  readonly formattedTotalPrice: string;
 
   @Field(() => Int, { nullable: true })
   readonly discountedPercent?: number | null;

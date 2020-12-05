@@ -5,11 +5,16 @@ import { Localization, LocalizationPayloadInterface } from '../../decorators/par
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { Company, CompanyModel } from '../../entities/Company';
-import { getCurrencyString, getPercentage } from '@yagu/shared';
+import { getCurrencyString, getPercentage, noNaN } from '@yagu/shared';
 
 @Resolver((_for) => OrderProduct)
 export class OrderProductResolver {
   // Field resolvers
+  private async getTotalPrice(orderProduct: DocumentType<OrderProduct>): Promise<number> {
+    const { price, amount } = orderProduct;
+    return noNaN(price) * noNaN(amount);
+  }
+
   @FieldResolver((_type) => String)
   async nameString(
     @Root() orderProduct: DocumentType<OrderProduct>,
@@ -71,6 +76,20 @@ export class OrderProductResolver {
           lang,
         })
       : null;
+  }
+
+  @FieldResolver((_returns) => String)
+  async formattedTotalPrice(
+    @Root() orderProduct: DocumentType<OrderProduct>,
+    @Localization() { lang }: LocalizationPayloadInterface,
+  ): Promise<string> {
+    const totalPrice = await this.getTotalPrice(orderProduct);
+    return getCurrencyString({ value: totalPrice, lang });
+  }
+
+  @FieldResolver((_returns) => Int)
+  async totalPrice(@Root() orderProduct: DocumentType<OrderProduct>): Promise<number> {
+    return this.getTotalPrice(orderProduct);
   }
 
   @FieldResolver((_returns) => Int, { nullable: true })

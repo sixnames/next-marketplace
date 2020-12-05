@@ -372,7 +372,7 @@ export class CartResolver {
   }
 
   // Methods
-  async getTotalPrice(cart: DocumentType<Cart>): Promise<number> {
+  private async getTotalPrice(cart: DocumentType<Cart>): Promise<number> {
     const shopProductsIds = cart.products.map(({ shopProduct }) => shopProduct);
     const shopProducts = await ShopProductModel.find({ _id: { $in: shopProductsIds } });
     return shopProducts.reduce((acc: number, { price }) => {

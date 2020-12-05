@@ -29,7 +29,7 @@ export class OrderLog {
   value: string;
 
   @Field((_type) => [OrderLogVariantEnum])
-  @prop({ required: true, enum: ORDER_LOG_VARIANTS_ENUMS })
+  @prop({ required: true, enum: ORDER_LOG_VARIANTS_ENUMS, type: String })
   variant: OrderLogVariantEnum[];
 
   @Field(() => User, { nullable: true })

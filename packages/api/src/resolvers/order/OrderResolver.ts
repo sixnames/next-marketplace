@@ -1,4 +1,4 @@
-import { Field, FieldResolver, Int, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
+import { Arg, Field, FieldResolver, Int, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
 import { DocumentType } from '@typegoose/typegoose';
 import { Order, OrderModel } from '../../entities/Order';
 import { OrderStatus, OrderStatusModel } from '../../entities/OrderStatus';
@@ -6,6 +6,7 @@ import {
   DEFAULT_LANG,
   ORDER_LOG_VARIANT_STATUS,
   ORDER_STATUS_NEW,
+  ROLE_SLUG_GUEST,
   SECONDARY_LANG,
 } from '@yagu/config';
 import getLangField from '../../utils/translations/getLangField';
@@ -22,10 +23,13 @@ import { Cart } from '../../entities/Cart';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ProductModel } from '../../entities/Product';
 import { OrderProduct } from '../../entities/OrderProduct';
-import { User } from '../../entities/User';
+import { User, UserModel } from '../../entities/User';
 import { OrderLogVariantEnum } from '../../entities/OrderLog';
 import { ShopModel } from '../../entities/Shop';
 import { CompanyModel } from '../../entities/Company';
+import { MakeAnOrderInput } from './MakeAnOrderInput';
+import { RoleModel } from '../../entities/Role';
+import generator from 'generate-password';
 
 @ObjectType()
 class OrderPayloadType extends PayloadType() {
@@ -36,8 +40,42 @@ class OrderPayloadType extends PayloadType() {
 @Resolver((_for) => Order)
 export class OrderResolver {
   @Mutation((_returns) => OrderPayloadType)
-  async makeAnOrder(@SessionCart() cart: Cart, @SessionUser() user: User) {
+  async makeAnOrder(
+    @SessionCart() cart: Cart,
+    @SessionUser() sessionUser: User,
+    @Arg('input') input: MakeAnOrderInput,
+  ) {
     try {
+      let user = sessionUser;
+      if (!sessionUser) {
+        const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+
+        if (!guestRole) {
+          return {
+            success: false,
+            message: 'guestRoleNotFound',
+          };
+        }
+
+        const password = generator.generate({
+          length: 10,
+          numbers: true,
+        });
+
+        user = await UserModel.create({
+          ...input,
+          role: guestRole.id,
+          password,
+        });
+      }
+
+      if (!user) {
+        return {
+          success: false,
+          message: 'userCreationError',
+        };
+      }
+
       const populatedOrderProducts: OrderProduct[] = [];
 
       for await (const cartProduct of cart.products) {
@@ -99,12 +137,12 @@ export class OrderResolver {
         status: initialStatus.id,
         products: populatedOrderProducts,
         customer: {
+          phone: input.phone,
+          name: input.name,
+          email: input.email,
           secondName: user.secondName,
-          phone: user.phone,
-          name: user.name,
           lastName: user.lastName,
           itemId: user.itemId,
-          email: user.email,
           user: user.id,
         },
         logs: [

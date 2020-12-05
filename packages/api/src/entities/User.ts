@@ -50,19 +50,19 @@ export class User extends TimeStamps {
   cart?: string;
 
   @Field((_type) => FormattedPhone)
-  readonly formattedPhone: FormattedPhone;
+  readonly formattedPhone?: FormattedPhone;
 
   @Field((_type) => String)
-  readonly fullName: string;
+  readonly fullName?: string;
 
   @Field((_type) => String)
-  readonly shortName: string;
+  readonly shortName?: string;
 
   @Field()
-  readonly createdAt: Date;
+  readonly createdAt?: Date;
 
   @Field()
-  readonly updatedAt: Date;
+  readonly updatedAt?: Date;
 
   static paginate: (
     query?: FilterQuery<User>,

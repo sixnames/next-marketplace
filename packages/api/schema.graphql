@@ -524,6 +524,12 @@ type LanguagePayloadType {
   success: Boolean!
 }
 
+input MakeAnOrderInput {
+  email: String!
+  name: String!
+  phone: String!
+}
+
 type Message {
   id: ID!
   key: String!
@@ -589,7 +595,7 @@ type Mutation {
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayloadtype!
   deleteUser(id: ID!): UserPayloadType!
-  makeAnOrder: OrderPayloadType!
+  makeAnOrder(input: MakeAnOrderInput!): OrderPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
   setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!
   setRoleOperationCustomFilter(input: SetRoleOperationCustomFilterInput!): RolePayloadType!

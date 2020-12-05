@@ -90,10 +90,15 @@ describe('Order', () => {
     expect(addProductToCartPayloadC.data.addProductToCart.cart.productsCount).toEqual(2);
 
     // Should make an order
+    const makeAnOrderInput = {
+      name: 'name',
+      phone: '+7 999 888 77 66',
+      email: 'order@email.com',
+    };
     const makeAnOrderPayload = await testClientWithHeaders.mutate<any>(
       gql`
-        mutation MakeAnOrder {
-          makeAnOrder {
+        mutation MakeAnOrder($input: MakeAnOrderInput!) {
+          makeAnOrder(input: $input) {
             success
             message
             order {
@@ -106,6 +111,8 @@ describe('Order', () => {
               customer {
                 id
                 name
+                email
+                phone
                 user {
                   id
                   name
@@ -141,8 +148,20 @@ describe('Order', () => {
           }
         }
       `,
+      {
+        variables: {
+          input: makeAnOrderInput,
+        },
+      },
     );
     console.log(JSON.stringify(makeAnOrderPayload, null, 2));
     expect(makeAnOrderPayload.data.makeAnOrder.success).toBeTruthy();
+    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.name).toEqual(makeAnOrderInput.name);
+    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.phone).toEqual(
+      makeAnOrderInput.phone,
+    );
+    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.email).toEqual(
+      makeAnOrderInput.email,
+    );
   });
 });

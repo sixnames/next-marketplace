@@ -13,7 +13,6 @@ import {
   testSignInRoute,
 } from './routes/testingDataRoutes';
 import { assetsRoute } from './routes/assetsRoutes';
-import { ApolloContextInterface } from './types/context';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
 import { visitorMiddleware } from './middlewares/visitorMiddleware';
 import { schemaOptions } from './schema/schema';
@@ -21,12 +20,12 @@ import { schemaOptions } from './schema/schema';
 // Configure env variables
 require('dotenv-flow').config();
 
-interface CreateAppInterface {
+interface CreateAppPayloadInterface {
   app: Express;
   server: ApolloServer;
 }
 
-const createApp = async (): Promise<CreateAppInterface> => {
+const createApp = async (): Promise<CreateAppPayloadInterface> => {
   // Mongoose connection
   await mongoose.connect(MONGO_URL, DB_OPTIONS);
 
@@ -38,33 +37,30 @@ const createApp = async (): Promise<CreateAppInterface> => {
   app.disable('x-powered-by');
 
   // Session
-  // TODO fix mongo connection in jest env
-  if (process.env.NODE_ENV !== 'test') {
-    const MongoDBStore = connectMongoDBStore(session);
-    const store = new MongoDBStore(
-      {
-        uri: MONGO_URL,
-        collection: SESSION_COLLECTION,
-        connectionOptions: {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          serverSelectionTimeoutMS: 1000,
-        },
+  const MongoDBStore = connectMongoDBStore(session);
+  const store = new MongoDBStore(
+    {
+      uri: MONGO_URL,
+      collection: SESSION_COLLECTION,
+      connectionOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 1000,
       },
-      (e) => {
-        if (e) {
-          console.log('============ MongoDBStore connection error ============');
-          console.error(e);
-        }
-      },
-    );
-    app.use(
-      session({
-        store,
-        ...SESS_OPTIONS,
-      }),
-    );
-  }
+    },
+    (e) => {
+      if (e) {
+        console.log('============ MongoDBStore connection error ============');
+        console.error(e);
+      }
+    },
+  );
+  app.use(
+    session({
+      store,
+      ...SESS_OPTIONS,
+    }),
+  );
 
   // Test data routes
   // TODO make this methods safe
@@ -84,7 +80,7 @@ const createApp = async (): Promise<CreateAppInterface> => {
     ...APOLLO_OPTIONS,
     schema,
     introspection: true,
-    context: async ({ req, res, connection }: ApolloContextInterface) => {
+    context: async ({ req, res, connection }) => {
       // Return apollo context
       return connection ? connection.context : { req, res };
     },

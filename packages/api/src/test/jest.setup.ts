@@ -1,21 +1,9 @@
 import mongoose from 'mongoose';
-// import { DB_OPTIONS } from '../src/config';
-import createApp from '../app';
-import { createTestClient, TestQuery, TestSetOptions } from 'apollo-server-integration-testing';
-
-export let testClient: {
-  query: TestQuery;
-  mutate: TestQuery;
-  setOptions: TestSetOptions;
-};
+import { DB_OPTIONS } from '../config';
 
 beforeAll(async () => {
   jest.setTimeout(30000);
-  const { server } = await createApp();
-
-  testClient = createTestClient({
-    apolloServer: server,
-  });
+  await mongoose.connect(`${process.env.MONGO_URL}`, DB_OPTIONS);
 });
 
 afterAll(async () => {

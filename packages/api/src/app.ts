@@ -1,12 +1,9 @@
 import 'reflect-metadata';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS, MONGO_URL, DB_OPTIONS, SESS_OPTIONS, SESSION_COLLECTION } from './config';
+import { APOLLO_OPTIONS } from './config';
 import { buildSchemaSync } from 'type-graphql';
 import cors from 'cors';
-import mongoose from 'mongoose';
-import connectMongoDBStore from 'connect-mongodb-session';
-import session from 'express-session';
 import {
   clearTestDataRoute,
   createTestDataRoute,
@@ -16,6 +13,8 @@ import { assetsRoute } from './routes/assetsRoutes';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
 import { visitorMiddleware } from './middlewares/visitorMiddleware';
 import { schemaOptions } from './schema/schema';
+import { databaseMiddleware } from './middlewares/databaseMiddleware';
+import { sessionMiddleware } from './middlewares/sessionMiddleware';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -26,41 +25,9 @@ interface CreateAppPayloadInterface {
 }
 
 const createApp = async (): Promise<CreateAppPayloadInterface> => {
-  // Mongoose connection
-  await mongoose.connect(MONGO_URL, DB_OPTIONS);
-
-  // GQL Schema
-  const schema = buildSchemaSync(schemaOptions);
-
   // Create express app
   const app = express();
   app.disable('x-powered-by');
-
-  // Session
-  const MongoDBStore = connectMongoDBStore(session);
-  const store = new MongoDBStore(
-    {
-      uri: MONGO_URL,
-      collection: SESSION_COLLECTION,
-      connectionOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 1000,
-      },
-    },
-    (e) => {
-      if (e) {
-        console.log('============ MongoDBStore connection error ============');
-        console.error(e);
-      }
-    },
-  );
-  app.use(
-    session({
-      store,
-      ...SESS_OPTIONS,
-    }),
-  );
 
   // Test data routes
   // TODO make this methods safe
@@ -72,8 +39,14 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), assetsRoute);
 
   // Middlewares
-  app.use(internationalisationMiddleware);
-  app.use(visitorMiddleware);
+  app
+    .use(databaseMiddleware)
+    .use(sessionMiddleware)
+    .use(internationalisationMiddleware)
+    .use(visitorMiddleware);
+
+  // GQL Schema
+  const schema = buildSchemaSync(schemaOptions);
 
   // Apollo server
   const server = new ApolloServer({
@@ -89,7 +62,6 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
   server.applyMiddleware({
     app,
     cors: {
-      // origin: IN_DEV ? DEV_ORIGIN : undefined,
       origin: new RegExp('/*/'),
       credentials: true,
     },

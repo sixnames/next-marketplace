@@ -22,7 +22,7 @@
     "bcryptjs": "^2.4.3",
     "capitalize": "^2.0.3",
     "class-validator": "^0.12.2",
-    "connect-mongodb-session": "^2.4.1",
+    "connect-mongo": "^3.2.0",
     "cookie": "^0.4.1",
     "cyrillic-to-translit-js": "^3.1.0",
     "date-fns": "^2.16.1",

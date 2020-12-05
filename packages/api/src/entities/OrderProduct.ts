@@ -8,7 +8,7 @@ import { Company } from './Company';
 @ObjectType()
 export class OrderProduct {
   @Field(() => ID)
-  readonly id: string;
+  readonly id?: string;
   readonly _id?: string;
 
   @Field(() => Int)
@@ -56,25 +56,25 @@ export class OrderProduct {
   company: string;
 
   @Field(() => String)
-  readonly nameString: string;
+  readonly nameString?: string;
 
   @Field(() => String)
-  readonly cardNameString: string;
+  readonly cardNameString?: string;
 
   @Field(() => String)
-  readonly descriptionString: string;
+  readonly descriptionString?: string;
 
   @Field(() => String)
-  readonly formattedPrice: string;
+  readonly formattedPrice?: string;
 
   @Field(() => String, { nullable: true })
   readonly formattedOldPrice?: string | null;
 
   @Field(() => Float)
-  readonly totalPrice: number;
+  readonly totalPrice?: number;
 
   @Field(() => String)
-  readonly formattedTotalPrice: string;
+  readonly formattedTotalPrice?: string;
 
   @Field(() => Int, { nullable: true })
   readonly discountedPercent?: number | null;

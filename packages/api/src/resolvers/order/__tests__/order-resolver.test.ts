@@ -2,7 +2,7 @@ import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
 import { CART_COOKIE_KEY } from '@yagu/config';
 
@@ -26,7 +26,7 @@ describe('Order', () => {
   `;
 
   it('Should CRUD Order', async () => {
-    const { mutate } = await testClientWithContext();
+    const { mutate } = await authenticatedTestClient();
 
     // Should create cart and add one product
     const addProductToCartPayload = await mutate<any>(
@@ -58,7 +58,7 @@ describe('Order', () => {
     expect(addProductToCart.cart.productsCount).toEqual(1);
 
     // Set cart id to cookies
-    const testClientWithHeaders = await testClientWithContext({
+    const testClientWithHeaders = await authenticatedTestClient({
       headers: {
         cookie: `${CART_COOKIE_KEY}=${addProductToCart.cart.id}`,
       },
@@ -98,6 +98,7 @@ describe('Order', () => {
             message
             order {
               id
+              itemId
               status {
                 id
                 nameString
@@ -105,6 +106,10 @@ describe('Order', () => {
               customer {
                 id
                 name
+                user {
+                  id
+                  name
+                }
               }
               logs {
                 id

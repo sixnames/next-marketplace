@@ -20,15 +20,15 @@ export class OrderLog {
   readonly id: string;
   readonly _id?: string;
 
-  @Field((_type) => [OrderLogVariantEnum])
+  @Field((_type) => OrderLogVariantEnum)
   @prop({ required: true, enum: ORDER_LOG_VARIANTS_ENUMS, type: String })
-  variant: OrderLogVariantEnum[];
+  variant: OrderLogVariantEnum;
 
   @Field(() => User, { nullable: true })
   @prop({ required: true, ref: User })
   executor: string;
 
   @Field()
-  @prop({ required: true, type: Date })
-  readonly createdAt: Date;
+  @prop({ type: Date, default: new Date() })
+  createdAt: Date;
 }

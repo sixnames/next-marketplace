@@ -723,7 +723,7 @@ type OrderLog {
   createdAt: DateTime!
   executor: User
   id: ID!
-  variant: [OrderLogVariantEnum!]!
+  variant: OrderLogVariantEnum!
 }
 
 """Order log variant enum"""

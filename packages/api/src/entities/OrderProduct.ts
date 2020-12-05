@@ -3,6 +3,7 @@ import { prop } from '@typegoose/typegoose';
 import { ShopProduct, ShopProductOldPrice } from './ShopProduct';
 import { Translation } from './Translation';
 import { Shop } from './Shop';
+import { Company } from './Company';
 
 @ObjectType()
 export class OrderProduct {
@@ -49,6 +50,10 @@ export class OrderProduct {
   @Field((_type) => Shop, { nullable: true })
   @prop({ required: true, ref: Shop })
   shop: string;
+
+  @Field((_type) => Company, { nullable: true })
+  @prop({ required: true, ref: Company })
+  company: string;
 
   @Field(() => String)
   readonly nameString: string;

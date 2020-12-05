@@ -124,7 +124,6 @@ describe('Cart', () => {
         },
       },
     );
-    console.log(JSON.stringify(addProductToCartPayload, null, 2));
     const {
       data: { addProductToCart },
     } = addProductToCartPayload;

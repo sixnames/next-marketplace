@@ -7,6 +7,18 @@ import {
 
 const minValueLength = 1;
 
+export const configCityLangSchema = (args: MultiLangSchemaMessagesInterface) =>
+  Yup.object().shape({
+    key: Yup.string()
+      .min(minValueLength)
+      .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
+    value: Yup.array().of(
+      Yup.string()
+        .min(minValueLength)
+        .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
+    ),
+  });
+
 export const configCitySchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({
     key: Yup.string()
@@ -17,11 +29,7 @@ export const configCitySchema = (args: MultiLangSchemaMessagesInterface) =>
         .min(minValueLength)
         .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
     ),
-    translations: Yup.array().of(
-      Yup.string()
-        .min(minValueLength)
-        .required(getFieldValidationMessage({ ...args, key: 'validation.configs.translation' })),
-    ),
+    translations: Yup.array().of(configCityLangSchema(args)),
   });
 
 export const updateConfigSchema = (args: MultiLangSchemaMessagesInterface) =>

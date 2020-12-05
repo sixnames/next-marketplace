@@ -16,6 +16,7 @@ import { buildSchema } from 'type-graphql';
 import { schemaOptions } from '../../schema/schema';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 import { RoleModel } from '../../entities/Role';
+import bcrypt from 'bcryptjs';
 
 export interface TestClientInterface {
   query: TestQuery;
@@ -60,8 +61,20 @@ export async function testClientWithContext(
         isAuthenticated: () => isAuthenticated,
         isUnauthenticated: () => isUnauthenticated,
         login: (user?: User) => user,
+        logout: () => true,
         getUser: () => authUser,
-        authenticate: (_arg?: any) => {
+        authenticate: (_type?: string, arg?: any) => {
+          const { email, password } = arg;
+          if (email !== authUser?.email) {
+            return { user: null };
+          }
+
+          bcrypt.compare(password, `${authUser?.password}`, (err, success) => {
+            if (err || !success) {
+              throw Error('Wrong password');
+            }
+          });
+
           return { user: authUser };
         },
       };

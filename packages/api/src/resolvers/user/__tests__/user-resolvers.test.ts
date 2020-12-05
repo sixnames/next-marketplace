@@ -22,6 +22,102 @@ describe('User', () => {
     await clearTestData();
   });
 
+  it('Should Auth user', async () => {
+    const authUser = await UserModel.findOne({ email: ADMIN_EMAIL }).lean().exec();
+
+    if (!authUser) {
+      throw Error('authUser not found');
+    }
+
+    const id = authUser._id.toString();
+    const { mutate } = await testClientWithContext({
+      authUser: {
+        ...authUser,
+        id,
+      },
+    });
+
+    // User shouldn't signIn if user not found
+    const signInNotFoundPayload = await mutate<any>(gql`
+      mutation {
+        signIn(
+          input: {
+            email: "fake@mail.com",
+            password: "${password}"
+          }
+        )
+        { success }
+      }
+    `);
+    expect(signInNotFoundPayload.data.signIn.success).toBeFalsy();
+
+    // User shouldn't signIn on Email validation error
+    const { errors: signInEmailErrors } = await mutate<any>(gql`
+      mutation {
+        signIn(
+          input: {
+            email: "fake@g",
+            password: "${password}"
+          }
+        )
+        { success }
+      }
+    `);
+    expect(signInEmailErrors).toBeDefined();
+
+    // User shouldn't signIn if is wrong Password
+    const { errors: signInPasswordErrors } = await mutate<any>(gql`
+      mutation {
+        signIn(
+          input: {
+            email: "${email}",
+            password: "fake"
+          }
+        )
+        { success }
+      }
+    `);
+    expect(signInPasswordErrors).toBeDefined();
+
+    // User should signIn
+    const signInPayload = await mutate<any>(
+      gql`
+        mutation SignIn($input: SignInInput!) {
+          signIn(input: $input) {
+            success
+            message
+            user {
+              id
+              name
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            email: ADMIN_EMAIL,
+            password: ADMIN_PASSWORD,
+          },
+        },
+      },
+    );
+    expect(signInPayload.data.signIn.success).toBeTruthy();
+    expect(signInPayload.data.signIn.user.id).toEqual(id);
+
+    // User should sign out
+    const authenticatedClient = await authenticatedTestClient();
+    const signOutPayload = await authenticatedClient.mutate<any>(gql`
+      mutation {
+        signOut {
+          success
+          message
+        }
+      }
+    `);
+    expect(signOutPayload.data.signOut.success).toBeTruthy();
+  });
+
   it('Should CRUD user', async () => {
     const user = await UserModel.findOne({
       email: ADMIN_EMAIL,
@@ -30,7 +126,7 @@ describe('User', () => {
       throw Error('Test user not found');
     }
 
-    const { mutate, query } = await testClientWithContext();
+    const { mutate, query } = await authenticatedTestClient();
 
     // User should sign up
     const {
@@ -53,96 +149,12 @@ describe('User', () => {
     expect(signUp.user.id).not.toBeNull();
     expect(signUp.success).toBeTruthy();
 
-    // User shouldn't signIn if user not found
-    const {
-      data: {
-        signIn: { success: signInNotFoundSuccess },
-      },
-    } = await mutate<any>(gql`
-          mutation {
-            signIn(
-              input: {
-                email: "fake@mail.com",
-                password: "${password}"
-              }
-            )
-            { success }
-          }
-        `);
-
-    expect(signInNotFoundSuccess).toBeFalsy();
-
-    // User shouldn't signIn on Email validation error
-    const { errors: signInEmailErrors } = await mutate<any>(gql`
-          mutation {
-            signIn(
-              input: {
-                email: "fake@g",
-                password: "${password}"
-              }
-            )
-            { success }
-          }
-        `);
-    expect(signInEmailErrors).toBeDefined();
-
-    // User shouldn't signIn if is wrong Password
-    const { errors: signInPasswordErrors } = await mutate<any>(gql`
-          mutation {
-            signIn(
-              input: {
-                email: "${email}",
-                password: "fake"
-              }
-            )
-            { success }
-          }
-        `);
-    expect(signInPasswordErrors).toBeDefined();
-
-    // User should sign in
-    const {
-      data: {
-        signIn: { success, user: mutationUser },
-      },
-    } = await mutate<any>(
-      gql`
-        mutation SignIn($input: SignInInput!) {
-          signIn(input: $input) {
-            success
-            message
-            user {
-              id
-              itemId
-              name
-              email
-              shortName
-              fullName
-            }
-          }
-        }
-      `,
-      {
-        variables: {
-          input: {
-            email: ADMIN_EMAIL,
-            password: ADMIN_PASSWORD,
-          },
-        },
-      },
-    );
-
-    expect(success).toBeTruthy();
-    expect(mutationUser.id).toEqual(user.id);
-
     const role = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
     if (!role) {
       throw Error('guest role not found');
     }
     // Should create new user
-    const {
-      data: { createUser },
-    } = await mutate<any>(gql`
+    const createUserPayload = await mutate<any>(gql`
           mutation {
             createUser(
               input: {
@@ -162,6 +174,9 @@ describe('User', () => {
            }
           }
         `);
+    const {
+      data: { createUser },
+    } = createUserPayload;
     const createdUser = createUser.user;
     expect(createUser.success).toBeTruthy();
     expect(createdUser.email).toEqual(alex.email);
@@ -191,7 +206,7 @@ describe('User', () => {
           }
         `);
     const updatedUser = updateUser.user;
-    expect(success).toBeTruthy();
+    expect(updateUser.success).toBeTruthy();
     expect(updatedUser.id).toEqual(createdUser.id);
     expect(updatedUser.email).toEqual(alex.email);
     expect(updatedUser.name).toEqual(alex.name);
@@ -248,19 +263,6 @@ describe('User', () => {
       }
     `);
     expect(totalDocs).toBeDefined();
-
-    // User should sign out
-    const {
-      data: { signOut },
-    } = await mutate<any>(gql`
-      mutation {
-        signOut {
-          success
-          message
-        }
-      }
-    `);
-    expect(signOut.success).toBeTruthy();
   });
 
   it('Should update user profile', async () => {

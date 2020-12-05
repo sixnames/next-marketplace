@@ -1,4 +1,4 @@
-import { testClientWithContext, mutateWithImages } from '../../../utils/testUtils/testHelpers';
+import { mutateWithImages, authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { SITE_CONFIGS_All, SITE_CONFIGS_INITIAL, SITE_CONFIGS_LOGO } from '@yagu/mocks';
 import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/config';
 import { Upload } from '../../../types/upload';
@@ -18,7 +18,7 @@ describe('Config', () => {
   it('Should CRUD site config', async () => {
     const stringConfig = SITE_CONFIGS_INITIAL[0];
     const stringConfigCity = stringConfig.cities[0];
-    const { query, mutate } = await testClientWithContext();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return all site configs
     const {
@@ -138,9 +138,7 @@ describe('Config', () => {
     expect(updateConfigsValidationError).toBeDefined();
 
     // Should update single non asset config
-    const {
-      data: { updateConfig },
-    } = await mutate<any>(
+    const updateConfigPayload = await mutate<any>(
       gql`
         mutation UpdateConfig($input: UpdateConfigInput!) {
           updateConfig(input: $input) {
@@ -191,6 +189,9 @@ describe('Config', () => {
         },
       },
     );
+    const {
+      data: { updateConfig },
+    } = updateConfigPayload;
     expect(updateConfig.success).toBeTruthy();
 
     // Should update non asset configs

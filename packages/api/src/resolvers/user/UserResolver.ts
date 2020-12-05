@@ -457,10 +457,9 @@ export class UserResolver {
         user,
       };
     } catch (e) {
-      console.log(e);
       return {
         success: false,
-        message: getResolverErrorMessage(e),
+        message: await getApiMessage(`users.signIn.emailError`),
       };
     }
   }
@@ -486,9 +485,10 @@ export class UserResolver {
         message: await getApiMessage(`users.signOut.success`),
       };
     } catch (e) {
+      console.log(e);
       return {
         success: false,
-        message: getResolverErrorMessage(e),
+        message: await getApiMessage(`users.signOut.error`),
       };
     }
   }

@@ -42,6 +42,7 @@ import path from 'path';
 import { BuildSchemaOptions } from 'type-graphql/dist/utils/buildSchema';
 import { OrderProductResolver } from '../resolvers/order/OrderProductResolver';
 import { OrderCustomerResolver } from '../resolvers/order/OrderCustomerResolver';
+import { OrderLogResolver } from '../resolvers/order/OrderLogResolver';
 
 export const schemaOptions: BuildSchemaOptions = {
   resolvers: [
@@ -84,6 +85,7 @@ export const schemaOptions: BuildSchemaOptions = {
     CartProductResolver,
     OrderProductResolver,
     OrderCustomerResolver,
+    OrderLogResolver,
   ],
   emitSchemaFile: path.resolve('./schema.graphql'),
   validate: false,

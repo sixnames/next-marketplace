@@ -65,51 +65,51 @@ async function storeConfigWithAsset({
   sourceImage,
   slug,
   format,
-}: StoreConfigWithAssetInterface): Promise<Config> {
-  const dist = 'config';
-  const fileDirectory = `./assets/${dist}/${slug}`;
-  const assetDirectory = `/assets/${dist}/${slug}`;
-  const fileName = `${slug}.${format}`;
-  const filePath = `${fileDirectory}/${fileName}`;
-  let assetPath: string | null = `${assetDirectory}/${fileName}`;
+}: StoreConfigWithAssetInterface): Promise<Config | null> {
+  try {
+    const dist = 'config';
+    const fileDirectory = `./assets/${dist}/${slug}`;
+    const assetDirectory = `/assets/${dist}/${slug}`;
+    const fileName = `${slug}.${format}`;
+    const filePath = `${fileDirectory}/${fileName}`;
+    let assetPath: string | null = null;
 
-  const directoryExists = fs.existsSync(fileDirectory);
-  if (!directoryExists) {
     await mkdirp(fileDirectory);
-  }
-  //
-  const fileExist = fs.existsSync(filePath);
-  if (!fileExist) {
-    if (format === 'svg') {
-      fs.copyFileSync(sourceImage, filePath);
-    } else {
-      assetPath = await setSharpImage({
-        sourceImage,
-        slug,
-        dist,
-        format,
-      });
+
+    const fileExist = fs.existsSync(filePath);
+    if (!fileExist) {
+      if (format === 'svg') {
+        fs.copyFileSync(sourceImage, filePath);
+        assetPath = `${assetDirectory}/${fileName}`;
+      } else {
+        assetPath = await setSharpImage({
+          sourceImage,
+          slug,
+          dist,
+          format,
+        });
+      }
     }
-  }
 
-  if (!assetPath) {
-    throw Error('Error in storeConfigWithAsset');
+    return findOrCreateConfig({
+      ...configTemplate,
+      cities: [
+        {
+          key: DEFAULT_CITY,
+          translations: [
+            {
+              key: DEFAULT_LANG,
+              value: [`${assetPath}`],
+            },
+          ],
+        },
+      ],
+    });
+  } catch (e) {
+    console.log('==================== Error in storeConfigWithAsset ====================');
+    console.log(e);
+    return null;
   }
-
-  return findOrCreateConfig({
-    ...configTemplate,
-    cities: [
-      {
-        key: DEFAULT_CITY,
-        translations: [
-          {
-            key: DEFAULT_LANG,
-            value: [assetPath],
-          },
-        ],
-      },
-    ],
-  });
 }
 
 export interface CreateInitialSiteConfigsInterface {
@@ -119,16 +119,21 @@ export interface CreateInitialSiteConfigsInterface {
 export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfigsInterface> {
   const getAssetsConfigs = async () => {
     return Promise.all(
-      SITE_CONFIGS_ASSETS_All.map(async ({ sourceImage, ...config }) => {
-        return await storeConfigWithAsset({
+      SITE_CONFIGS_ASSETS_All.map(async ({ sourceImage, format, ...config }) => {
+        const createdConfig = await storeConfigWithAsset({
           sourceImage: `./site-config/${sourceImage}`,
           slug: config.slug,
-          format: 'svg',
+          format: format as StoreFileFormat,
           configTemplate: {
             ...config,
             variant: config.variant as ConfigVariantEnum,
           },
         });
+
+        if (!createdConfig) {
+          throw Error('getAssetsConfigs');
+        }
+        return createdConfig;
       }),
     );
   };

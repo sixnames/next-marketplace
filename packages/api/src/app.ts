@@ -1,7 +1,9 @@
 import 'reflect-metadata';
 import express, { Express } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { APOLLO_OPTIONS } from './config';
+import { APOLLO_OPTIONS, DB_OPTIONS, MONGO_URL, SESS_OPTIONS } from './config';
+import session from 'express-session';
+import connectMongo from 'connect-mongo';
 import { buildSchemaSync } from 'type-graphql';
 import cors from 'cors';
 import {
@@ -12,9 +14,8 @@ import {
 import { assetsRoute } from './routes/assetsRoutes';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
 import { schemaOptions } from './schema/schema';
-import { databaseMiddleware } from './middlewares/databaseMiddleware';
-import { sessionMiddleware } from './middlewares/sessionMiddleware';
 import passport, { visitorMiddleware } from './middlewares/passportMiddleware';
+import mongoose from 'mongoose';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -29,6 +30,24 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
   const app = express();
   app.disable('x-powered-by');
 
+  // Mongoose connection
+  await mongoose.connect(`${MONGO_URL}`, DB_OPTIONS);
+
+  // Session connection
+  const MongoStore = connectMongo(session);
+  const mongoStore = new MongoStore({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    client: mongoose.connection.client,
+    stringify: false,
+  });
+  app.use(
+    session({
+      store: mongoStore,
+      ...SESS_OPTIONS,
+    }),
+  );
+
   // Test data routes
   // TODO make this methods safe
   app.get('/create-test-data', createTestDataRoute);
@@ -39,12 +58,7 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), assetsRoute);
 
   // Middlewares
-  app
-    .use(databaseMiddleware)
-    .use(sessionMiddleware)
-    .use(internationalisationMiddleware)
-    .use(passport.initialize())
-    .use(passport.session());
+  app.use(internationalisationMiddleware).use(passport.initialize()).use(passport.session());
 
   // GQL Schema
   const schema = buildSchemaSync(schemaOptions);

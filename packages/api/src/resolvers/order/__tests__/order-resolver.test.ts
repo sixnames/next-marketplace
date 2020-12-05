@@ -16,40 +16,13 @@ describe('Order', () => {
     await clearTestData();
   });
 
-  const shopSnippetFragment = gql`
-    fragment ShopSnippet on Shop {
-      id
-      nameString
-      slug
-    }
-  `;
-
-  const shopProductSnippetFragment = gql`
-    fragment ShopProductSnippet on ShopProduct {
-      id
-      itemId
-      shop {
-        ...ShopSnippet
-      }
-    }
-    ${shopSnippetFragment}
-  `;
-
   const cartFragment = gql`
     fragment Cart on Cart {
       id
       totalPrice
       formattedTotalPrice
       productsCount
-      products {
-        id
-        amount
-        shopProduct {
-          ...ShopProductSnippet
-        }
-      }
     }
-    ${shopProductSnippetFragment}
   `;
 
   it('Should CRUD Order', async () => {
@@ -115,5 +88,56 @@ describe('Order', () => {
       },
     );
     expect(addProductToCartPayloadC.data.addProductToCart.cart.productsCount).toEqual(2);
+
+    // Should make an order
+    const makeAnOrderPayload = await testClientWithHeaders.mutate<any>(
+      gql`
+        mutation MakeAnOrder {
+          makeAnOrder {
+            success
+            message
+            order {
+              id
+              status {
+                id
+                nameString
+              }
+              customer {
+                id
+                name
+              }
+              logs {
+                id
+                createdAt
+                variant
+                executor {
+                  id
+                  name
+                }
+              }
+              totalPrice
+              formattedTotalPrice
+              productsCount
+              createdAt
+              updatedAt
+              products {
+                id
+                amount
+                cardNameString
+                nameString
+                descriptionString
+                discountedPercent
+                formattedOldPrice
+                formattedPrice
+                formattedTotalPrice
+                discountedPercent
+              }
+            }
+          }
+        }
+      `,
+    );
+    console.log(JSON.stringify(makeAnOrderPayload, null, 2));
+    expect(makeAnOrderPayload.data.makeAnOrder.success).toBeTruthy();
   });
 });

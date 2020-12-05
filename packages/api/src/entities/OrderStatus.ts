@@ -20,6 +20,10 @@ export class OrderStatus extends TimeStamps {
   name: Translation[];
 
   @Field(() => String)
+  @prop({ required: true })
+  slug: string;
+
+  @Field(() => String)
   readonly nameString: string;
 }
 

@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { User } from './User';
 import { prop } from '@typegoose/typegoose';
 import { ORDER_LOG_VARIANTS_ENUMS } from '@yagu/config';
@@ -19,14 +19,6 @@ export class OrderLog {
   @Field(() => ID)
   readonly id: string;
   readonly _id?: string;
-
-  @Field(() => Int)
-  @prop({ required: true })
-  index: number;
-
-  @Field((_type) => String)
-  @prop({ required: true, trim: true })
-  value: string;
 
   @Field((_type) => [OrderLogVariantEnum])
   @prop({ required: true, enum: ORDER_LOG_VARIANTS_ENUMS, type: String })

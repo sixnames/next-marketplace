@@ -20,9 +20,7 @@ export interface CreateInitialLocalizationDataPayloadInterface {
   initialLanguagePayload: Language;
 }
 
-export const createInitialLocalizationData = async (): Promise<
-  CreateInitialLocalizationDataPayloadInterface
-> => {
+export const createInitialLocalizationData = async (): Promise<CreateInitialLocalizationDataPayloadInterface> => {
   // Create all metrics
   let initialMetricsPayload = await MetricModel.find({});
   if (!initialMetricsPayload.length) {

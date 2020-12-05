@@ -589,6 +589,7 @@ type Mutation {
   deleteRubricVariant(id: ID!): RubricVariantPayloadType!
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayloadtype!
   deleteUser(id: ID!): UserPayloadType!
+  makeAnOrder: OrderPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
   setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!
   setRoleOperationCustomFilter(input: SetRoleOperationCustomFilterInput!): RolePayloadType!
@@ -691,6 +692,81 @@ type OptionVariant {
 input OptionVariantInput {
   key: GenderEnum!
   value: [TranslationInput!]!
+}
+
+type Order {
+  createdAt: DateTime!
+  customer: OrderCustomer!
+  formattedTotalPrice: String!
+  id: ID!
+  itemId: Int!
+  logs: [OrderLog!]!
+  products: [OrderProduct!]!
+  productsCount: Int!
+  status: OrderStatus!
+  totalPrice: Float!
+  updatedAt: DateTime!
+}
+
+type OrderCustomer {
+  email: String!
+  id: ID!
+  itemId: Int!
+  lastName: String
+  name: String!
+  phone: String!
+  secondName: String
+  user: User
+}
+
+type OrderLog {
+  createdAt: DateTime!
+  executor: User
+  id: ID!
+  variant: [OrderLogVariantEnum!]!
+}
+
+"""Order log variant enum"""
+enum OrderLogVariantEnum {
+  message
+  status
+}
+
+type OrderPayloadType {
+  message: String!
+  order: Order
+  success: Boolean!
+}
+
+type OrderProduct {
+  amount: Int!
+  cardName: [Translation!]!
+  cardNameString: String!
+  company: Company
+  description: [Translation!]!
+  descriptionString: String!
+  discountedPercent: Int
+  formattedOldPrice: String
+  formattedPrice: String!
+  formattedTotalPrice: String!
+  id: ID!
+  itemId: Int!
+  name: [Translation!]!
+  nameString: String!
+  oldPrices: [ShopProductOldPrice!]!
+  price: Int!
+  shop: Shop
+  shopProduct: ShopProduct
+  slug: String!
+  totalPrice: Float!
+}
+
+type OrderStatus {
+  id: ID!
+  itemId: Int!
+  name: [Translation!]!
+  nameString: String!
+  slug: String!
 }
 
 type PaginatedCompaniesResponse {

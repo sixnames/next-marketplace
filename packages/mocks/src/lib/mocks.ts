@@ -12,6 +12,10 @@ import {
   GENDER_IT,
   GENDER_SHE,
   GEO_POINT_TYPE,
+  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_DONE,
+  ORDER_STATUS_NEW,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
@@ -1493,3 +1497,40 @@ export const MOCK_PRODUCT_CREATE = {
   price: 2000,
   description: productDescription,
 };
+
+// Order statuses
+export const MOCK_ORDER_STATUS_NEW = {
+  slug: ORDER_STATUS_NEW,
+  name: [
+    { key: DEFAULT_LANG, value: 'Новый' },
+    { key: SECONDARY_LANG, value: 'New' },
+  ],
+};
+export const MOCK_ORDER_STATUS_CONFIRMED = {
+  slug: ORDER_STATUS_CONFIRMED,
+  name: [
+    { key: DEFAULT_LANG, value: 'Подтверждён' },
+    { key: SECONDARY_LANG, value: 'Confirmed' },
+  ],
+};
+export const MOCK_ORDER_STATUS_DONE = {
+  slug: ORDER_STATUS_DONE,
+  name: [
+    { key: DEFAULT_LANG, value: 'Выполнен' },
+    { key: SECONDARY_LANG, value: 'Done' },
+  ],
+};
+export const MOCK_ORDER_STATUS_CANCELED = {
+  slug: ORDER_STATUS_CANCELED,
+  name: [
+    { key: DEFAULT_LANG, value: 'Отменён' },
+    { key: SECONDARY_LANG, value: 'Canceled' },
+  ],
+};
+
+export const MOCK_ORDER_STATUSES = [
+  MOCK_ORDER_STATUS_NEW,
+  MOCK_ORDER_STATUS_CONFIRMED,
+  MOCK_ORDER_STATUS_DONE,
+  MOCK_ORDER_STATUS_CANCELED,
+];

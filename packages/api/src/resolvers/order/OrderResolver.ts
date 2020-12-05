@@ -1,16 +1,57 @@
-import { FieldResolver, Int, Resolver, Root } from 'type-graphql';
+import { Field, FieldResolver, Int, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
 import { DocumentType } from '@typegoose/typegoose';
 import { Order } from '../../entities/Order';
 import { OrderStatus, OrderStatusModel } from '../../entities/OrderStatus';
 import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 import getLangField from '../../utils/translations/getLangField';
-import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+import {
+  Localization,
+  LocalizationPayloadInterface,
+  SessionCart,
+} from '../../decorators/parameterDecorators';
 import { getCurrencyString, noNaN } from '@yagu/shared';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import PayloadType from '../commonInputs/PayloadType';
+import { Cart, CartModel } from '../../entities/Cart';
+import { ShopProductModel } from '../../entities/ShopProduct';
+import { ProductModel } from '../../entities/Product';
+
+@ObjectType()
+class OrderPayloadType extends PayloadType() {
+  @Field((_type) => Order, { nullable: true })
+  order?: Order | null;
+}
 
 @Resolver((_for) => Order)
 export class OrderResolver {
+  @Mutation((_returns) => OrderPayloadType)
+  async makeAnOrder(@SessionCart() cart: Cart) {
+    try {
+      const populatedCart: any = await CartModel.findById(cart.id).populate({
+        path: 'products.shopProduct',
+        model: ShopProductModel,
+        populate: {
+          path: 'product',
+          model: ProductModel,
+        },
+      });
+      console.log(JSON.stringify(populatedCart, null, 2));
+
+      return {
+        success: false,
+        message: 'success',
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
   // Field resolvers
-  @FieldResolver()
+  @FieldResolver((_returns) => OrderStatus)
   async status(
     @Root() orderLog: DocumentType<Order>,
     @Localization() { lang }: LocalizationPayloadInterface,
@@ -58,7 +99,7 @@ export class OrderResolver {
     return order.products.length;
   }
 
-  @FieldResolver()
+  @FieldResolver((_returns) => String)
   async id(@Root() order: DocumentType<Order>): Promise<string> {
     return `${order.id || order._id}`;
   }

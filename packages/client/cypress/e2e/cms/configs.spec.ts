@@ -12,7 +12,7 @@ describe('Site configs', () => {
   });
 
   after(() => {
-    // cy.clearTestData();
+    cy.clearTestData();
   });
 
   it('Should update asset configs', () => {

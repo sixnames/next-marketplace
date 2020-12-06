@@ -42,6 +42,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
               product={product}
               key={product.id}
               testId={`catalogue-item-${product.slug}`}
+              rubricSlug={rubric.slug}
             />
           ))}
         </div>

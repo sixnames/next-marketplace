@@ -109,7 +109,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { catalogue = [] } = query;
   const catalogueSlug = catalogue[0];
   const { nameString, slug, filterAttributes } = rubric;
-  const isCurrent = slug === catalogueSlug;
+  const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
 
   function showDropdownHandler() {
     hideBurgerDropdown();

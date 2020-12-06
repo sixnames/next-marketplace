@@ -42,14 +42,15 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     context,
     callback: async ({ initialProps, context, apolloClient }) => {
       const { query, req } = context;
-
+      const { card, rubric } = query;
+      console.log(rubric);
       const cardData = await apolloClient.query({
         query: CATALOGUE_CARD_QUERY,
         context: {
           headers: req.headers,
         },
         variables: {
-          slug: query.card,
+          slug: card,
         },
       });
 

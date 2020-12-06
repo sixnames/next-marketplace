@@ -6,11 +6,7 @@ import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import { buildSchemaSync } from 'type-graphql';
 import cors from 'cors';
-import {
-  clearTestDataRoute,
-  createTestDataRoute,
-  testSignInRoute,
-} from './routes/testingDataRoutes';
+import { clearTestDataRoute, createTestDataRoute } from './routes/testingDataRoutes';
 import { assetsRoute } from './routes/assetsRoutes';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
 import { schemaOptions } from './schema/schema';
@@ -48,17 +44,18 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
     }),
   );
 
+  // Middlewares
+  app.use(internationalisationMiddleware);
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   // Test data routes
   // TODO make this methods safe
   app.get('/create-test-data', createTestDataRoute);
   app.get('/clear-test-data', clearTestDataRoute);
-  app.get('/test-sign-in', testSignInRoute);
 
   // Assets route
   app.get('/assets/*', cors({ origin: new RegExp('/*/') }), assetsRoute);
-
-  // Middlewares
-  app.use(internationalisationMiddleware).use(passport.initialize()).use(passport.session());
 
   // GQL Schema
   const schema = buildSchemaSync(schemaOptions);

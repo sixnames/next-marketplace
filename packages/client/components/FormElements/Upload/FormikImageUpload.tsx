@@ -50,7 +50,7 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
         function removeImageHandler() {
           setFieldValue(name, []);
         }
-
+        console.log(imageSrc);
         return (
           <InputLine
             isRequired={isRequired}
@@ -80,6 +80,8 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
                       data-cy={`${testId}-image`}
                     />
                     <ButtonCross
+                      size={'small'}
+                      iconSize={'smaller'}
                       onClick={removeImageHandler}
                       testId={`${testId}-remove`}
                       className={classes.remove}

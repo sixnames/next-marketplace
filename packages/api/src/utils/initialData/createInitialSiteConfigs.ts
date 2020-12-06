@@ -89,6 +89,8 @@ async function storeConfigWithAsset({
           format,
         });
       }
+    } else {
+      assetPath = `${assetDirectory}/${fileName}`;
     }
 
     return findOrCreateConfig({

@@ -166,8 +166,6 @@ describe('Order', () => {
         },
       },
     );
-    console.log(makeAnOrderPayload.data.makeAnOrder.message);
-    // console.log(JSON.stringify(makeAnOrderPayload, null, 2));
     expect(makeAnOrderPayload.data.makeAnOrder.success).toBeTruthy();
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.name).toEqual(makeAnOrderInput.name);
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.phone).toEqual(

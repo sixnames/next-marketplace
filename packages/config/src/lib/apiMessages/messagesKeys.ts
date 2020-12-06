@@ -381,6 +381,15 @@ const messagesKeys = [
   'validation.metrics.id',
   'validation.metrics.name',
 
+  // Orders ----------
+  'orders.makeAnOrder.guestRoleNotFound',
+  'orders.makeAnOrder.userCreationError',
+  'orders.makeAnOrder.productsNotFound',
+  'orders.makeAnOrder.initialStatusNotFound',
+  'orders.makeAnOrder.error',
+  'orders.makeAnOrder.success',
+  // Orders validation
+
   // Fallback for empty key
   'none',
 ] as const;

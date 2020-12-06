@@ -46,6 +46,7 @@ export class OrderResolver {
   async makeAnOrder(
     @SessionCart() cart: Cart,
     @SessionUser() sessionUser: User,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
     @Arg('input') input: MakeAnOrderInput,
   ) {
     try {
@@ -56,7 +57,7 @@ export class OrderResolver {
         if (!guestRole) {
           return {
             success: false,
-            message: 'guestRoleNotFound',
+            message: await getApiMessage('orders.makeAnOrder.guestRoleNotFound'),
           };
         }
 
@@ -75,7 +76,7 @@ export class OrderResolver {
       if (!user) {
         return {
           success: false,
-          message: 'userCreationError',
+          message: await getApiMessage('orders.makeAnOrder.userCreationError'),
         };
       }
 
@@ -123,7 +124,7 @@ export class OrderResolver {
       if (populatedOrderProducts.length !== cart.products.length) {
         return {
           success: false,
-          message: 'productsNotFound',
+          message: await getApiMessage('orders.makeAnOrder.productsNotFound'),
         };
       }
 
@@ -131,11 +132,10 @@ export class OrderResolver {
       if (!initialStatus) {
         return {
           success: false,
-          message: 'statusNotFound',
+          message: await getApiMessage('orders.makeAnOrder.initialStatusNotFound'),
         };
       }
 
-      // TODO create customer if no session user
       const order = await OrderModel.create({
         status: initialStatus.id,
         products: populatedOrderProducts,
@@ -160,13 +160,13 @@ export class OrderResolver {
       if (!order) {
         return {
           success: false,
-          message: 'error',
+          message: await getApiMessage('orders.makeAnOrder.error'),
         };
       }
 
       return {
         success: true,
-        message: 'success',
+        message: await getApiMessage('orders.makeAnOrder.success'),
         order,
       };
     } catch (e) {

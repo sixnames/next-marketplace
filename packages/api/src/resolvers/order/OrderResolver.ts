@@ -30,6 +30,8 @@ import { CompanyModel } from '../../entities/Company';
 import { MakeAnOrderInput } from './MakeAnOrderInput';
 import { RoleModel } from '../../entities/Role';
 import generator from 'generate-password';
+import { ValidateMethod } from '../../decorators/methodDecorators';
+import { makeAnOrderSchema } from '@yagu/validation';
 
 @ObjectType()
 class OrderPayloadType extends PayloadType() {
@@ -40,6 +42,7 @@ class OrderPayloadType extends PayloadType() {
 @Resolver((_for) => Order)
 export class OrderResolver {
   @Mutation((_returns) => OrderPayloadType)
+  @ValidateMethod({ schema: makeAnOrderSchema })
   async makeAnOrder(
     @SessionCart() cart: Cart,
     @SessionUser() sessionUser: User,

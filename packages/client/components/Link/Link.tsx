@@ -3,7 +3,7 @@ import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import { isEqual } from 'lodash';
 
-interface LinkInterface extends LinkProps, PropsWithChildren<any> {
+export interface LinkInterface extends LinkProps, PropsWithChildren<any> {
   className?: string;
   activeClassName?: string;
   testId?: string;

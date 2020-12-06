@@ -90,7 +90,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
   return (
     <div className={classes.card} data-cy={`card-${slug}`}>
-      <Breadcrumbs />
+      <Breadcrumbs currentPageName={cardNameString} config={[]} />
 
       <Inner>
         <div className={classes.mainFrame}>

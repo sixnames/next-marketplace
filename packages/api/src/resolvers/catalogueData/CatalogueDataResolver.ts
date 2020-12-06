@@ -26,68 +26,90 @@ export class CatalogueDataResolver {
     catalogueFilter: string[],
     @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
-    const [slug, ...attributes] = catalogueFilter;
-    const { limit = 100, page = 1, ...args } = productsInput || {};
+    try {
+      const [slug, ...attributes] = catalogueFilter;
+      const { limit = 100, page = 1, ...args } = productsInput || {};
 
-    // get current rubric
-    const rubric = await RubricModel.findOne({ slug });
+      // get current rubric
+      const rubric = await RubricModel.findOne({ slug });
 
-    if (!rubric) {
+      if (!rubric) {
+        return null;
+      }
+
+      // get all nested rubrics
+      const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
+
+      // cast all filters from input
+      const processedAttributes = attributes.reduce(attributesReducer, []);
+
+      // increase filter priority
+      const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
+      await setCataloguePriorities({
+        attributesGroupsIds,
+        rubric: rubric,
+        processedAttributes,
+        isStuff: sessionRole.isStuff,
+        city,
+      });
+
+      // get catalogue title
+      const catalogueTitle = await getCatalogueTitle({
+        processedAttributes,
+        lang,
+        rubric,
+      });
+
+      // get products filter query
+      const query = ProductModel.getProductsFilter({
+        ...args,
+        attributes: processedAttributes,
+        rubrics: rubricsIds,
+        active: true,
+      });
+
+      const sortByViewsPipeLine = [
+        // Lookup shop products
+        { $addFields: { productId: { $toString: '$_id' } } },
+        {
+          $lookup: {
+            from: 'shopproducts',
+            localField: 'productId',
+            foreignField: 'product',
+            as: 'shops',
+          },
+        },
+        // Count shop products
+        { $addFields: { shopsCount: { $size: '$shops' } } },
+        // Filter out products not added to the shops
+        { $match: { shopsCount: { $gt: 0 } } },
+        // Unwind by views counter
+        { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+        // Filter unwinded products by current city or empty views
+        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+        // Sort by views in ASC direction
+        { $sort: { 'views.counter': -1 } },
+      ];
+
+      const productsPipeline = ProductModel.aggregate<Product>([
+        { $match: query },
+        ...sortByViewsPipeLine,
+      ]);
+
+      const products = await ProductModel.aggregatePaginate(productsPipeline, {
+        limit,
+        page,
+      });
+
+      return {
+        rubric,
+        products,
+        catalogueTitle,
+      };
+    } catch (e) {
+      console.log(e);
       return null;
     }
-
-    // get all nested rubrics
-    const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
-
-    // cast all filters from input
-    const processedAttributes = attributes.reduce(attributesReducer, []);
-
-    // increase filter priority
-    const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
-    await setCataloguePriorities({
-      attributesGroupsIds,
-      rubric: rubric,
-      processedAttributes,
-      isStuff: sessionRole.isStuff,
-      city,
-    });
-
-    // get catalogue title
-    const catalogueTitle = await getCatalogueTitle({
-      processedAttributes,
-      lang,
-      rubric,
-    });
-
-    // get products filter query
-    const query = ProductModel.getProductsFilter({
-      ...args,
-      attributes: processedAttributes,
-      rubrics: rubricsIds,
-      active: true,
-    });
-
-    const sortByViewsPipeLine = [
-      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-      { $sort: { 'views.counter': -1 } },
-    ];
-
-    const productsPipeline = ProductModel.aggregate<Product>([
-      { $match: query },
-      ...sortByViewsPipeLine,
-    ]);
-
-    const products = await ProductModel.aggregatePaginate(productsPipeline, {
-      limit,
-      page,
-    });
-
-    return {
-      rubric,
-      products,
-      catalogueTitle,
-    };
   }
 
   @Query((_returns) => CatalogueSearchResult)

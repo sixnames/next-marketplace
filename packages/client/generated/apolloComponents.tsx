@@ -2,6 +2,8 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,21 +19,6 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  me?: Maybe<User>;
-  getUser?: Maybe<User>;
-  getAllUsers: PaginatedUsersResponse;
-  getAllCities: Array<City>;
-  getCity: City;
-  getCityBySlug: City;
-  getSessionCurrency: Scalars['String'];
-  getAllCountries: Array<Country>;
-  getCountry: Country;
-  getLanguage: Language;
-  getAllLanguages?: Maybe<Array<Language>>;
-  getClientLanguage: Scalars['String'];
-  getAllCurrencies: Array<Currency>;
-  getCurrency: Currency;
-  getAttribute: Attribute;
   getProduct: Product;
   getProductBySlug: Product;
   getProductCard: Product;
@@ -39,11 +26,31 @@ export type Query = {
   getProductsCounters: ProductsCounters;
   getFeaturesAst: Array<AttributesGroup>;
   getProductShops: Array<ShopProduct>;
+  getAllConfigs: Array<Config>;
+  getConfigBySlug: Config;
+  getConfigValueBySlug: Array<Scalars['String']>;
+  getAllAppNavItems: Array<NavItem>;
+  getRole: Role;
+  getAllRoles: Array<Role>;
+  getSessionRole: Role;
+  getEntityFields: Array<Scalars['String']>;
+  getAttribute: Attribute;
   getAttributesGroup?: Maybe<AttributesGroup>;
   getAllAttributesGroups: Array<AttributesGroup>;
   getCatalogueData?: Maybe<CatalogueData>;
   getCatalogueSearchTopItems: CatalogueSearchResult;
   getCatalogueSearchResult: CatalogueSearchResult;
+  getAllCities: Array<City>;
+  getCity: City;
+  getCityBySlug: City;
+  getSessionCurrency: Scalars['String'];
+  getAllCountries: Array<Country>;
+  getCountry: Country;
+  getAllCurrencies: Array<Currency>;
+  getCurrency: Currency;
+  getLanguage: Language;
+  getAllLanguages?: Maybe<Array<Language>>;
+  getClientLanguage: Scalars['String'];
   getMessage: Message;
   getMessagesByKeys: Array<Message>;
   getValidationMessages: Array<Message>;
@@ -55,6 +62,15 @@ export type Query = {
   getRubric: Rubric;
   getRubricBySlug: Rubric;
   getRubricsTree: Array<Rubric>;
+  getRubricVariant: RubricVariant;
+  getAllRubricVariants?: Maybe<Array<RubricVariant>>;
+  me?: Maybe<User>;
+  getUser?: Maybe<User>;
+  getAllUsers: PaginatedUsersResponse;
+  getCompany: Company;
+  getAllCompanies: PaginatedCompaniesResponse;
+  getShop: Shop;
+  getAllShops: PaginatedShopsResponse;
   getGenderOptions: Array<GenderOption>;
   getAttributeVariantsOptions?: Maybe<Array<AttributeVariant>>;
   getOptionsGroupVariantsOptions: Array<OptionsGroupVariantOption>;
@@ -62,61 +78,7 @@ export type Query = {
   getISOLanguagesOptions: Array<IsoLanguage>;
   getIconsOptions: Array<IconOption>;
   getAttributeViewVariantsOptions: Array<AttributeViewOption>;
-  getRubricVariant: RubricVariant;
-  getAllRubricVariants?: Maybe<Array<RubricVariant>>;
-  getAllConfigs: Array<Config>;
-  getConfigBySlug: Config;
-  getConfigValueBySlug: Array<Scalars['String']>;
-  getRole: Role;
-  getAllRoles: Array<Role>;
-  getSessionRole: Role;
-  getEntityFields: Array<Scalars['String']>;
-  getAllAppNavItems: Array<NavItem>;
-  getCompany: Company;
-  getAllCompanies: PaginatedCompaniesResponse;
-  getShop: Shop;
-  getAllShops: PaginatedShopsResponse;
   getSessionCart: Cart;
-};
-
-
-export type QueryGetUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetAllUsersArgs = {
-  input?: Maybe<UserPaginateInput>;
-};
-
-
-export type QueryGetCityArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetCityBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetCountryArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetLanguageArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetCurrencyArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetAttributeArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -155,6 +117,31 @@ export type QueryGetProductShopsArgs = {
 };
 
 
+export type QueryGetConfigBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetConfigValueBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetRoleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetEntityFieldsArgs = {
+  entity: Scalars['String'];
+};
+
+
+export type QueryGetAttributeArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryGetAttributesGroupArgs = {
   id: Scalars['ID'];
 };
@@ -173,6 +160,31 @@ export type QueryGetCatalogueDataArgs = {
 
 export type QueryGetCatalogueSearchResultArgs = {
   search: Scalars['String'];
+};
+
+
+export type QueryGetCityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCityBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetCountryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetCurrencyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -221,23 +233,13 @@ export type QueryGetRubricVariantArgs = {
 };
 
 
-export type QueryGetConfigBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetConfigValueBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetRoleArgs = {
+export type QueryGetUserArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QueryGetEntityFieldsArgs = {
-  entity: Scalars['String'];
+export type QueryGetAllUsersArgs = {
+  input?: Maybe<UserPaginateInput>;
 };
 
 
@@ -260,34 +262,44 @@ export type QueryGetAllShopsArgs = {
   input?: Maybe<ShopPaginateInput>;
 };
 
-export type User = {
-  __typename?: 'User';
+export type Product = {
+  __typename?: 'Product';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  role: Role;
-  formattedPhone: FormattedPhone;
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
+  views: Array<CityCounter>;
+  priorities: Array<CityCounter>;
+  name: Array<Translation>;
+  cardName: Array<Translation>;
+  slug: Scalars['String'];
+  description: Array<Translation>;
+  rubrics: Array<Scalars['ID']>;
+  attributesGroups: Array<ProductAttributesGroup>;
+  assets: Array<Asset>;
+  price: Scalars['Int'];
+  cardPrices: ProductCardPrices;
+  active: Scalars['Boolean'];
+  connections: Array<ProductConnection>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  mainImage: Scalars['String'];
+  cardFeatures: ProductCardFeatures;
+  cardConnections: Array<ProductCardConnection>;
+  shopsCount: Scalars['Int'];
+  shops: Array<ShopProduct>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
 
-export type Role = {
-  __typename?: 'Role';
-  id: Scalars['String'];
-  name: Array<Translation>;
-  nameString: Scalars['String'];
-  description: Scalars['String'];
-  slug: Scalars['String'];
-  isStuff: Scalars['Boolean'];
-  rules: Array<RoleRule>;
-  allowedAppNavigation: Array<Scalars['ID']>;
-  appNavigation: Array<NavItem>;
+
+export type ProductShopsArgs = {
+  input?: Maybe<ProductShopsInput>;
+};
+
+export type CityCounter = {
+  __typename?: 'CityCounter';
+  key: Scalars['String'];
+  counter?: Maybe<Scalars['Int']>;
 };
 
 export type Translation = {
@@ -296,121 +308,19 @@ export type Translation = {
   value: Scalars['String'];
 };
 
-export type RoleRule = {
-  __typename?: 'RoleRule';
-  id: Scalars['ID'];
-  roleId: Scalars['ID'];
-  nameString: Scalars['String'];
-  entity: Scalars['String'];
-  operations: Array<RoleRuleOperation>;
-  restrictedFields: Array<Scalars['String']>;
+export type ProductAttributesGroup = {
+  __typename?: 'ProductAttributesGroup';
+  showInCard: Scalars['Boolean'];
+  node: AttributesGroup;
+  attributes: Array<ProductAttribute>;
 };
 
-export type RoleRuleOperation = {
-  __typename?: 'RoleRuleOperation';
-  id: Scalars['ID'];
-  operationType: RoleRuleOperationTypeEnum;
-  allow: Scalars['Boolean'];
-  customFilter: Scalars['String'];
-  order: Scalars['Int'];
-};
-
-/** Role rule operation type enum */
-export enum RoleRuleOperationTypeEnum {
-  Create = 'create',
-  Read = 'read',
-  Update = 'update',
-  Delete = 'delete'
-}
-
-export type NavItem = {
-  __typename?: 'NavItem';
-  id: Scalars['String'];
-  name: Array<Translation>;
-  path?: Maybe<Scalars['String']>;
-  navGroup: Scalars['String'];
-  order: Scalars['Int'];
-  nameString: Scalars['String'];
-  icon?: Maybe<Scalars['String']>;
-  parent?: Maybe<NavItem>;
-  children?: Maybe<Array<NavItem>>;
-};
-
-export type FormattedPhone = {
-  __typename?: 'FormattedPhone';
-  raw: Scalars['String'];
-  readable: Scalars['String'];
-};
-
-
-export type PaginatedUsersResponse = {
-  __typename?: 'PaginatedUsersResponse';
-  docs: Array<User>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type UserPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<SortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<UserSortByEnum>;
-};
-
-/** sortDir enum */
-export enum SortDirectionEnum {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-/** User pagination sortBy enum */
-export enum UserSortByEnum {
-  Email = 'email',
-  Name = 'name',
-  LastName = 'lastName',
-  SecondName = 'secondName',
-  Phone = 'phone',
-  Role = 'role',
-  CreatedAt = 'createdAt'
-}
-
-export type City = {
-  __typename?: 'City';
+export type AttributesGroup = {
+  __typename?: 'AttributesGroup';
   id: Scalars['ID'];
   name: Array<Translation>;
-  slug: Scalars['String'];
   nameString: Scalars['String'];
-};
-
-export type Country = {
-  __typename?: 'Country';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  cities: Array<City>;
-  currency: Scalars['String'];
-};
-
-export type Language = {
-  __typename?: 'Language';
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-  isDefault: Scalars['Boolean'];
-};
-
-export type Currency = {
-  __typename?: 'Currency';
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
+  attributes: Array<Attribute>;
 };
 
 export type Attribute = {
@@ -516,61 +426,6 @@ export type Metric = {
   nameString: Scalars['String'];
 };
 
-export type Product = {
-  __typename?: 'Product';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  views: Array<CityCounter>;
-  priorities: Array<CityCounter>;
-  name: Array<Translation>;
-  cardName: Array<Translation>;
-  slug: Scalars['String'];
-  description: Array<Translation>;
-  rubrics: Array<Scalars['ID']>;
-  attributesGroups: Array<ProductAttributesGroup>;
-  assets: Array<Asset>;
-  price: Scalars['Int'];
-  cardPrices: ProductCardPrices;
-  active: Scalars['Boolean'];
-  connections: Array<ProductConnection>;
-  nameString: Scalars['String'];
-  cardNameString: Scalars['String'];
-  descriptionString: Scalars['String'];
-  mainImage: Scalars['String'];
-  cardFeatures: ProductCardFeatures;
-  cardConnections: Array<ProductCardConnection>;
-  shopsCount: Scalars['Int'];
-  shops: Array<ShopProduct>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
-
-
-export type ProductShopsArgs = {
-  input?: Maybe<ProductShopsInput>;
-};
-
-export type CityCounter = {
-  __typename?: 'CityCounter';
-  key: Scalars['String'];
-  counter?: Maybe<Scalars['Int']>;
-};
-
-export type ProductAttributesGroup = {
-  __typename?: 'ProductAttributesGroup';
-  showInCard: Scalars['Boolean'];
-  node: AttributesGroup;
-  attributes: Array<ProductAttribute>;
-};
-
-export type AttributesGroup = {
-  __typename?: 'AttributesGroup';
-  id: Scalars['ID'];
-  name: Array<Translation>;
-  nameString: Scalars['String'];
-  attributes: Array<Attribute>;
-};
-
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
@@ -673,14 +528,22 @@ export type ShopProduct = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type City = {
+  __typename?: 'City';
+  id: Scalars['ID'];
+  name: Array<Translation>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
 /** List of all old prices for shop product with dates of creation. */
 export type ShopProductOldPrice = {
   __typename?: 'ShopProductOldPrice';
   id: Scalars['ID'];
   price: Scalars['Float'];
   createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
 };
+
 
 export type Shop = {
   __typename?: 'Shop';
@@ -710,6 +573,12 @@ export type Contacts = {
   emails: Array<Scalars['String']>;
   phones: Array<Scalars['String']>;
   formattedPhones: Array<FormattedPhone>;
+};
+
+export type FormattedPhone = {
+  __typename?: 'FormattedPhone';
+  raw: Scalars['String'];
+  readable: Scalars['String'];
 };
 
 export type Address = {
@@ -755,6 +624,12 @@ export type ShopProductPaginateInput = {
   sortBy?: Maybe<ShopProductSortByEnum>;
 };
 
+/** sortDir enum */
+export enum SortDirectionEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
 /** Shop product pagination sortBy enum */
 export enum ShopProductSortByEnum {
   Price = 'price',
@@ -779,6 +654,76 @@ export type Company = {
 
 export type CompanyShopsArgs = {
   input?: Maybe<ShopPaginateInput>;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  role: Role;
+  formattedPhone: FormattedPhone;
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type Role = {
+  __typename?: 'Role';
+  id: Scalars['String'];
+  name: Array<Translation>;
+  nameString: Scalars['String'];
+  description: Scalars['String'];
+  slug: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+  rules: Array<RoleRule>;
+  allowedAppNavigation: Array<Scalars['ID']>;
+  appNavigation: Array<NavItem>;
+};
+
+export type RoleRule = {
+  __typename?: 'RoleRule';
+  id: Scalars['ID'];
+  roleId: Scalars['ID'];
+  nameString: Scalars['String'];
+  entity: Scalars['String'];
+  operations: Array<RoleRuleOperation>;
+  restrictedFields: Array<Scalars['String']>;
+};
+
+export type RoleRuleOperation = {
+  __typename?: 'RoleRuleOperation';
+  id: Scalars['ID'];
+  operationType: RoleRuleOperationTypeEnum;
+  allow: Scalars['Boolean'];
+  customFilter: Scalars['String'];
+  order: Scalars['Int'];
+};
+
+/** Role rule operation type enum */
+export enum RoleRuleOperationTypeEnum {
+  Create = 'create',
+  Read = 'read',
+  Update = 'update',
+  Delete = 'delete'
+}
+
+export type NavItem = {
+  __typename?: 'NavItem';
+  id: Scalars['String'];
+  name: Array<Translation>;
+  path?: Maybe<Scalars['String']>;
+  navGroup: Scalars['String'];
+  order: Scalars['Int'];
+  nameString: Scalars['String'];
+  icon?: Maybe<Scalars['String']>;
+  parent?: Maybe<NavItem>;
+  children?: Maybe<Array<NavItem>>;
 };
 
 export type PaginatedShopsResponse = {
@@ -866,6 +811,45 @@ export type GetProductShopsInput = {
   productId: Scalars['ID'];
   sortDir: SortDirectionEnum;
   sortBy: Scalars['String'];
+};
+
+export type Config = {
+  __typename?: 'Config';
+  id: Scalars['ID'];
+  /** Returns current value of current city. */
+  value: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+  description: Scalars['String'];
+  order: Scalars['Float'];
+  /** Set to true if config is able to hold multiple values. */
+  multi: Scalars['Boolean'];
+  variant: ConfigVariantEnum;
+  /** Accepted formats for asset config. */
+  acceptedFormats: Array<Scalars['String']>;
+  cities: Array<ConfigCity>;
+};
+
+/** Config variant enum */
+export enum ConfigVariantEnum {
+  String = 'string',
+  Number = 'number',
+  Email = 'email',
+  Tel = 'tel',
+  Asset = 'asset'
+}
+
+export type ConfigCity = {
+  __typename?: 'ConfigCity';
+  key: Scalars['String'];
+  translations: Array<ConfigLanguage>;
+  city: City;
+};
+
+export type ConfigLanguage = {
+  __typename?: 'ConfigLanguage';
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
 };
 
 export type CatalogueData = {
@@ -995,12 +979,95 @@ export type CatalogueSearchResult = {
   products: Array<Product>;
 };
 
+export type Country = {
+  __typename?: 'Country';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  cities: Array<City>;
+  currency: Scalars['String'];
+};
+
+export type Currency = {
+  __typename?: 'Currency';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type Language = {
+  __typename?: 'Language';
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+};
+
 export type Message = {
   __typename?: 'Message';
   id: Scalars['ID'];
   key: Scalars['String'];
   message: Array<Translation>;
 };
+
+export type PaginatedUsersResponse = {
+  __typename?: 'PaginatedUsersResponse';
+  docs: Array<User>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type UserPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<UserSortByEnum>;
+};
+
+/** User pagination sortBy enum */
+export enum UserSortByEnum {
+  Email = 'email',
+  Name = 'name',
+  LastName = 'lastName',
+  SecondName = 'secondName',
+  Phone = 'phone',
+  Role = 'role',
+  CreatedAt = 'createdAt'
+}
+
+export type PaginatedCompaniesResponse = {
+  __typename?: 'PaginatedCompaniesResponse';
+  docs: Array<Company>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type CompanyPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<CompaniesSortByEnum>;
+};
+
+/** Companies pagination sortBy enum */
+export enum CompaniesSortByEnum {
+  CreatedAt = 'createdAt'
+}
 
 export type GenderOption = {
   __typename?: 'GenderOption';
@@ -1046,72 +1113,6 @@ export type AttributeViewOption = {
   nameString: Scalars['String'];
 };
 
-export type Config = {
-  __typename?: 'Config';
-  id: Scalars['ID'];
-  /** Returns current value of current city. */
-  value: Array<Scalars['String']>;
-  slug: Scalars['String'];
-  nameString: Scalars['String'];
-  description: Scalars['String'];
-  order: Scalars['Float'];
-  /** Set to true if config is able to hold multiple values. */
-  multi: Scalars['Boolean'];
-  variant: ConfigVariantEnum;
-  /** Accepted formats for asset config. */
-  acceptedFormats: Array<Scalars['String']>;
-  cities: Array<ConfigCity>;
-};
-
-/** Config variant enum */
-export enum ConfigVariantEnum {
-  String = 'string',
-  Number = 'number',
-  Email = 'email',
-  Tel = 'tel',
-  Asset = 'asset'
-}
-
-export type ConfigCity = {
-  __typename?: 'ConfigCity';
-  key: Scalars['String'];
-  translations: Array<ConfigLanguage>;
-  city: City;
-};
-
-export type ConfigLanguage = {
-  __typename?: 'ConfigLanguage';
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-export type PaginatedCompaniesResponse = {
-  __typename?: 'PaginatedCompaniesResponse';
-  docs: Array<Company>;
-  totalDocs: Scalars['Int'];
-  limit: Scalars['Int'];
-  page?: Maybe<Scalars['Int']>;
-  totalPages: Scalars['Int'];
-  nextPage?: Maybe<Scalars['Int']>;
-  prevPage?: Maybe<Scalars['Int']>;
-  pagingCounter: Scalars['Int'];
-  hasPrevPage: Scalars['Int'];
-  hasNextPage: Scalars['Int'];
-};
-
-export type CompanyPaginateInput = {
-  limit?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-  sortDir?: Maybe<SortDirectionEnum>;
-  search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<CompaniesSortByEnum>;
-};
-
-/** Companies pagination sortBy enum */
-export enum CompaniesSortByEnum {
-  CreatedAt = 'createdAt'
-}
-
 export type Cart = {
   __typename?: 'Cart';
   id: Scalars['ID'];
@@ -1135,39 +1136,41 @@ export type CartProduct = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser: UserPayloadType;
-  updateUser: UserPayloadType;
-  updateMyProfile: UserPayloadType;
-  updateMyPassword: UserPayloadType;
-  deleteUser: UserPayloadType;
-  signUp: UserPayloadType;
-  signIn: UserPayloadType;
-  signOut: UserPayloadType;
-  createCountry: CountryPayloadType;
-  updateCountry: CountryPayloadType;
-  deleteCountry: CountryPayloadType;
-  addCityToCountry: CountryPayloadType;
-  updateCityInCountry: CountryPayloadType;
-  deleteCityFromCountry: CountryPayloadType;
-  setLanguageAsDefault: LanguagePayloadType;
-  createLanguage: LanguagePayloadType;
-  updateLanguage: LanguagePayloadType;
-  deleteLanguage: LanguagePayloadType;
-  createCurrency: CurrencyPayloadType;
-  updateCurrency: CurrencyPayloadType;
-  deleteCurrency: CurrencyPayloadType;
   createProduct: ProductPayloadType;
   updateProduct: ProductPayloadType;
   deleteProduct: ProductPayloadType;
   createProductConnection: ProductPayloadType;
   addProductToConnection: ProductPayloadType;
   deleteProductFromConnection: ProductPayloadType;
+  updateConfig: ConfigPayloadType;
+  updateConfigs: ConfigPayloadType;
+  updateAssetConfig: ConfigPayloadType;
+  createRole: RolePayloadType;
+  updateRole: RolePayloadType;
+  deleteRole: RolePayloadType;
+  setRoleOperationPermission: RolePayloadType;
+  setRoleOperationCustomFilter: RolePayloadType;
+  setRoleRuleRestrictedField: RolePayloadType;
+  setRoleAllowedNavItem: RolePayloadType;
   createAttributesGroup: AttributesGroupPayloadType;
   updateAttributesGroup: AttributesGroupPayloadType;
   deleteAttributesGroup: AttributesGroupPayloadType;
   addAttributeToGroup: AttributesGroupPayloadType;
   updateAttributeInGroup: AttributesGroupPayloadType;
   deleteAttributeFromGroup: AttributesGroupPayloadType;
+  createCountry: CountryPayloadType;
+  updateCountry: CountryPayloadType;
+  deleteCountry: CountryPayloadType;
+  addCityToCountry: CountryPayloadType;
+  updateCityInCountry: CountryPayloadType;
+  deleteCityFromCountry: CountryPayloadType;
+  createCurrency: CurrencyPayloadType;
+  updateCurrency: CurrencyPayloadType;
+  deleteCurrency: CurrencyPayloadType;
+  setLanguageAsDefault: LanguagePayloadType;
+  createLanguage: LanguagePayloadType;
+  updateLanguage: LanguagePayloadType;
+  deleteLanguage: LanguagePayloadType;
   createMetric: MetricPayloadType;
   updateMetric: MetricPayloadType;
   deleteMetric: MetricPayloadType;
@@ -1188,16 +1191,14 @@ export type Mutation = {
   createRubricVariant: RubricVariantPayloadType;
   updateRubricVariant: RubricVariantPayloadType;
   deleteRubricVariant: RubricVariantPayloadType;
-  updateConfig: ConfigPayloadType;
-  updateConfigs: ConfigPayloadType;
-  updateAssetConfig: ConfigPayloadType;
-  createRole: RolePayloadType;
-  updateRole: RolePayloadType;
-  deleteRole: RolePayloadType;
-  setRoleOperationPermission: RolePayloadType;
-  setRoleOperationCustomFilter: RolePayloadType;
-  setRoleRuleRestrictedField: RolePayloadType;
-  setRoleAllowedNavItem: RolePayloadType;
+  createUser: UserPayloadType;
+  updateUser: UserPayloadType;
+  updateMyProfile: UserPayloadType;
+  updateMyPassword: UserPayloadType;
+  deleteUser: UserPayloadType;
+  signUp: UserPayloadType;
+  signIn: UserPayloadType;
+  signOut: UserPayloadType;
   createCompany: CompanyPayloadtype;
   updateCompany: CompanyPayloadtype;
   deleteCompany: CompanyPayloadtype;
@@ -1214,106 +1215,7 @@ export type Mutation = {
   updateProductInCart: CartPayloadType;
   deleteProductFromCart: CartPayloadType;
   clearCart: CartPayloadType;
-};
-
-
-export type MutationCreateUserArgs = {
-  input: CreateUserInput;
-};
-
-
-export type MutationUpdateUserArgs = {
-  input: UpdateUserInput;
-};
-
-
-export type MutationUpdateMyProfileArgs = {
-  input: UpdateMyProfileInput;
-};
-
-
-export type MutationUpdateMyPasswordArgs = {
-  input: UpdateMyPasswordInput;
-};
-
-
-export type MutationDeleteUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationSignUpArgs = {
-  input: SignUpInput;
-};
-
-
-export type MutationSignInArgs = {
-  input: SignInInput;
-};
-
-
-export type MutationCreateCountryArgs = {
-  input: CreateCountryInput;
-};
-
-
-export type MutationUpdateCountryArgs = {
-  input: UpdateCountryInput;
-};
-
-
-export type MutationDeleteCountryArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationAddCityToCountryArgs = {
-  input: AddCityToCountryInput;
-};
-
-
-export type MutationUpdateCityInCountryArgs = {
-  input: UpdateCityInCountryInput;
-};
-
-
-export type MutationDeleteCityFromCountryArgs = {
-  input: DeleteCityFromCountryInput;
-};
-
-
-export type MutationSetLanguageAsDefaultArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationCreateLanguageArgs = {
-  input: CreateLanguageInput;
-};
-
-
-export type MutationUpdateLanguageArgs = {
-  input: UpdateLanguageInput;
-};
-
-
-export type MutationDeleteLanguageArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationCreateCurrencyArgs = {
-  input: CreateCurrencyInput;
-};
-
-
-export type MutationUpdateCurrencyArgs = {
-  input: UpdateCurrencyInput;
-};
-
-
-export type MutationDeleteCurrencyArgs = {
-  id: Scalars['ID'];
+  makeAnOrder: OrderPayloadType;
 };
 
 
@@ -1347,6 +1249,56 @@ export type MutationDeleteProductFromConnectionArgs = {
 };
 
 
+export type MutationUpdateConfigArgs = {
+  input: UpdateConfigInput;
+};
+
+
+export type MutationUpdateConfigsArgs = {
+  input: Array<UpdateConfigInput>;
+};
+
+
+export type MutationUpdateAssetConfigArgs = {
+  input: UpdateAssetConfigInput;
+};
+
+
+export type MutationCreateRoleArgs = {
+  input: CreateRoleInput;
+};
+
+
+export type MutationUpdateRoleArgs = {
+  input: UpdateRoleInput;
+};
+
+
+export type MutationDeleteRoleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSetRoleOperationPermissionArgs = {
+  input: SetRoleOperationPermissionInput;
+};
+
+
+export type MutationSetRoleOperationCustomFilterArgs = {
+  input: SetRoleOperationCustomFilterInput;
+};
+
+
+export type MutationSetRoleRuleRestrictedFieldArgs = {
+  input: SetRoleRuleRestrictedFieldInput;
+};
+
+
+export type MutationSetRoleAllowedNavItemArgs = {
+  input: SetRoleAllowedNavItemInput;
+};
+
+
 export type MutationCreateAttributesGroupArgs = {
   input: CreateAttributesGroupInput;
 };
@@ -1374,6 +1326,71 @@ export type MutationUpdateAttributeInGroupArgs = {
 
 export type MutationDeleteAttributeFromGroupArgs = {
   input: DeleteAttributeFromGroupInput;
+};
+
+
+export type MutationCreateCountryArgs = {
+  input: CreateCountryInput;
+};
+
+
+export type MutationUpdateCountryArgs = {
+  input: UpdateCountryInput;
+};
+
+
+export type MutationDeleteCountryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddCityToCountryArgs = {
+  input: AddCityToCountryInput;
+};
+
+
+export type MutationUpdateCityInCountryArgs = {
+  input: UpdateCityInCountryInput;
+};
+
+
+export type MutationDeleteCityFromCountryArgs = {
+  input: DeleteCityFromCountryInput;
+};
+
+
+export type MutationCreateCurrencyArgs = {
+  input: CreateCurrencyInput;
+};
+
+
+export type MutationUpdateCurrencyArgs = {
+  input: UpdateCurrencyInput;
+};
+
+
+export type MutationDeleteCurrencyArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationSetLanguageAsDefaultArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationCreateLanguageArgs = {
+  input: CreateLanguageInput;
+};
+
+
+export type MutationUpdateLanguageArgs = {
+  input: UpdateLanguageInput;
+};
+
+
+export type MutationDeleteLanguageArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1477,53 +1494,38 @@ export type MutationDeleteRubricVariantArgs = {
 };
 
 
-export type MutationUpdateConfigArgs = {
-  input: UpdateConfigInput;
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
 };
 
 
-export type MutationUpdateConfigsArgs = {
-  input: Array<UpdateConfigInput>;
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
 };
 
 
-export type MutationUpdateAssetConfigArgs = {
-  input: UpdateAssetConfigInput;
+export type MutationUpdateMyProfileArgs = {
+  input: UpdateMyProfileInput;
 };
 
 
-export type MutationCreateRoleArgs = {
-  input: CreateRoleInput;
+export type MutationUpdateMyPasswordArgs = {
+  input: UpdateMyPasswordInput;
 };
 
 
-export type MutationUpdateRoleArgs = {
-  input: UpdateRoleInput;
-};
-
-
-export type MutationDeleteRoleArgs = {
+export type MutationDeleteUserArgs = {
   id: Scalars['ID'];
 };
 
 
-export type MutationSetRoleOperationPermissionArgs = {
-  input: SetRoleOperationPermissionInput;
+export type MutationSignUpArgs = {
+  input: SignUpInput;
 };
 
 
-export type MutationSetRoleOperationCustomFilterArgs = {
-  input: SetRoleOperationCustomFilterInput;
-};
-
-
-export type MutationSetRoleRuleRestrictedFieldArgs = {
-  input: SetRoleRuleRestrictedFieldInput;
-};
-
-
-export type MutationSetRoleAllowedNavItemArgs = {
-  input: SetRoleAllowedNavItemInput;
+export type MutationSignInArgs = {
+  input: SignInInput;
 };
 
 
@@ -1601,137 +1603,9 @@ export type MutationDeleteProductFromCartArgs = {
   input: DeleteProductFromCartInput;
 };
 
-export type UserPayloadType = {
-  __typename?: 'UserPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  user?: Maybe<User>;
-};
 
-export type CreateUserInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone: Scalars['String'];
-  role: Scalars['ID'];
-};
-
-export type UpdateUserInput = {
-  id: Scalars['ID'];
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone: Scalars['String'];
-  role: Scalars['ID'];
-};
-
-export type UpdateMyProfileInput = {
-  id: Scalars['ID'];
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone: Scalars['String'];
-};
-
-export type UpdateMyPasswordInput = {
-  id: Scalars['ID'];
-  oldPassword: Scalars['String'];
-  newPassword: Scalars['String'];
-  newPasswordB: Scalars['String'];
-};
-
-export type SignUpInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  password: Scalars['String'];
-};
-
-export type SignInInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type CountryPayloadType = {
-  __typename?: 'CountryPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  country?: Maybe<Country>;
-};
-
-export type CreateCountryInput = {
-  nameString: Scalars['String'];
-  currency: Scalars['String'];
-};
-
-export type UpdateCountryInput = {
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
-  currency: Scalars['String'];
-};
-
-export type AddCityToCountryInput = {
-  countryId: Scalars['ID'];
-  name: Array<TranslationInput>;
-  slug: Scalars['String'];
-};
-
-export type TranslationInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type UpdateCityInCountryInput = {
-  countryId: Scalars['ID'];
-  cityId: Scalars['ID'];
-  name: Array<TranslationInput>;
-  slug: Scalars['String'];
-};
-
-export type DeleteCityFromCountryInput = {
-  countryId: Scalars['ID'];
-  cityId: Scalars['ID'];
-};
-
-export type LanguagePayloadType = {
-  __typename?: 'LanguagePayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  language?: Maybe<Language>;
-};
-
-export type CreateLanguageInput = {
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-};
-
-export type UpdateLanguageInput = {
-  id: Scalars['ID'];
-  key: Scalars['String'];
-  name: Scalars['String'];
-  nativeName: Scalars['String'];
-};
-
-export type CurrencyPayloadType = {
-  __typename?: 'CurrencyPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  currency?: Maybe<Currency>;
-};
-
-export type CreateCurrencyInput = {
-  nameString: Scalars['String'];
-};
-
-export type UpdateCurrencyInput = {
-  id: Scalars['ID'];
-  nameString: Scalars['String'];
+export type MutationMakeAnOrderArgs = {
+  input: MakeAnOrderInput;
 };
 
 export type ProductPayloadType = {
@@ -1749,6 +1623,11 @@ export type CreateProductInput = {
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
+};
+
+export type TranslationInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type ProductAttributesGroupInput = {
@@ -1797,6 +1676,76 @@ export type DeleteProductFromConnectionInput = {
   deleteProductId: Scalars['ID'];
 };
 
+export type ConfigPayloadType = {
+  __typename?: 'ConfigPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  configs: Array<Config>;
+};
+
+export type UpdateConfigInput = {
+  id: Scalars['ID'];
+  cities: Array<ConfigCityInput>;
+};
+
+export type ConfigCityInput = {
+  key: Scalars['String'];
+  translations: Array<CityLangInput>;
+};
+
+export type CityLangInput = {
+  key: Scalars['String'];
+  value: Array<Scalars['String']>;
+};
+
+export type UpdateAssetConfigInput = {
+  id: Scalars['ID'];
+  value: Array<Scalars['Upload']>;
+};
+
+export type RolePayloadType = {
+  __typename?: 'RolePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  role?: Maybe<Role>;
+};
+
+export type CreateRoleInput = {
+  name: Array<TranslationInput>;
+  description: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+};
+
+export type UpdateRoleInput = {
+  id: Scalars['ID'];
+  name: Array<TranslationInput>;
+  description: Scalars['String'];
+  isStuff: Scalars['Boolean'];
+};
+
+export type SetRoleOperationPermissionInput = {
+  roleId: Scalars['ID'];
+  operationId: Scalars['ID'];
+  allow: Scalars['Boolean'];
+};
+
+export type SetRoleOperationCustomFilterInput = {
+  roleId: Scalars['ID'];
+  operationId: Scalars['ID'];
+  customFilter: Scalars['String'];
+};
+
+export type SetRoleRuleRestrictedFieldInput = {
+  roleId: Scalars['ID'];
+  ruleId: Scalars['ID'];
+  restrictedField: Scalars['String'];
+};
+
+export type SetRoleAllowedNavItemInput = {
+  roleId: Scalars['ID'];
+  navItemId: Scalars['ID'];
+};
+
 export type AttributesGroupPayloadType = {
   __typename?: 'AttributesGroupPayloadType';
   success: Scalars['Boolean'];
@@ -1840,6 +1789,78 @@ export type UpdateAttributeInGroupInput = {
 export type DeleteAttributeFromGroupInput = {
   groupId: Scalars['ID'];
   attributeId: Scalars['ID'];
+};
+
+export type CountryPayloadType = {
+  __typename?: 'CountryPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  country?: Maybe<Country>;
+};
+
+export type CreateCountryInput = {
+  nameString: Scalars['String'];
+  currency: Scalars['String'];
+};
+
+export type UpdateCountryInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  currency: Scalars['String'];
+};
+
+export type AddCityToCountryInput = {
+  countryId: Scalars['ID'];
+  name: Array<TranslationInput>;
+  slug: Scalars['String'];
+};
+
+export type UpdateCityInCountryInput = {
+  countryId: Scalars['ID'];
+  cityId: Scalars['ID'];
+  name: Array<TranslationInput>;
+  slug: Scalars['String'];
+};
+
+export type DeleteCityFromCountryInput = {
+  countryId: Scalars['ID'];
+  cityId: Scalars['ID'];
+};
+
+export type CurrencyPayloadType = {
+  __typename?: 'CurrencyPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  currency?: Maybe<Currency>;
+};
+
+export type CreateCurrencyInput = {
+  nameString: Scalars['String'];
+};
+
+export type UpdateCurrencyInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+};
+
+export type LanguagePayloadType = {
+  __typename?: 'LanguagePayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  language?: Maybe<Language>;
+};
+
+export type CreateLanguageInput = {
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
+};
+
+export type UpdateLanguageInput = {
+  id: Scalars['ID'];
+  key: Scalars['String'];
+  name: Scalars['String'];
+  nativeName: Scalars['String'];
 };
 
 export type MetricPayloadType = {
@@ -1976,74 +1997,60 @@ export type UpdateRubricVariantInput = {
   name: Array<TranslationInput>;
 };
 
-export type ConfigPayloadType = {
-  __typename?: 'ConfigPayloadType';
+export type UserPayloadType = {
+  __typename?: 'UserPayloadType';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  configs: Array<Config>;
+  user?: Maybe<User>;
 };
 
-export type UpdateConfigInput = {
+export type CreateUserInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
+  role: Scalars['ID'];
+};
+
+export type UpdateUserInput = {
   id: Scalars['ID'];
-  cities: Array<ConfigCityInput>;
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
+  role: Scalars['ID'];
 };
 
-export type ConfigCityInput = {
-  key: Scalars['String'];
-  translations: Array<CityLangInput>;
-};
-
-export type CityLangInput = {
-  key: Scalars['String'];
-  value: Array<Scalars['String']>;
-};
-
-export type UpdateAssetConfigInput = {
+export type UpdateMyProfileInput = {
   id: Scalars['ID'];
-  value: Array<Scalars['Upload']>;
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
 };
 
-export type RolePayloadType = {
-  __typename?: 'RolePayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  role?: Maybe<Role>;
-};
-
-export type CreateRoleInput = {
-  name: Array<TranslationInput>;
-  description: Scalars['String'];
-  isStuff: Scalars['Boolean'];
-};
-
-export type UpdateRoleInput = {
+export type UpdateMyPasswordInput = {
   id: Scalars['ID'];
-  name: Array<TranslationInput>;
-  description: Scalars['String'];
-  isStuff: Scalars['Boolean'];
+  oldPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+  newPasswordB: Scalars['String'];
 };
 
-export type SetRoleOperationPermissionInput = {
-  roleId: Scalars['ID'];
-  operationId: Scalars['ID'];
-  allow: Scalars['Boolean'];
+export type SignUpInput = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  password: Scalars['String'];
 };
 
-export type SetRoleOperationCustomFilterInput = {
-  roleId: Scalars['ID'];
-  operationId: Scalars['ID'];
-  customFilter: Scalars['String'];
-};
-
-export type SetRoleRuleRestrictedFieldInput = {
-  roleId: Scalars['ID'];
-  ruleId: Scalars['ID'];
-  restrictedField: Scalars['String'];
-};
-
-export type SetRoleAllowedNavItemInput = {
-  roleId: Scalars['ID'];
-  navItemId: Scalars['ID'];
+export type SignInInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type CompanyPayloadtype = {
@@ -2182,6 +2189,93 @@ export type UpdateProductInCartInput = {
 
 export type DeleteProductFromCartInput = {
   cartProductId: Scalars['ID'];
+};
+
+export type OrderPayloadType = {
+  __typename?: 'OrderPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  order?: Maybe<Order>;
+};
+
+export type Order = {
+  __typename?: 'Order';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  status: OrderStatus;
+  customer: OrderCustomer;
+  products: Array<OrderProduct>;
+  logs: Array<OrderLog>;
+  totalPrice: Scalars['Float'];
+  formattedTotalPrice: Scalars['String'];
+  productsCount: Scalars['Int'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type OrderStatus = {
+  __typename?: 'OrderStatus';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Array<Translation>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type OrderCustomer = {
+  __typename?: 'OrderCustomer';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  user?: Maybe<User>;
+};
+
+export type OrderProduct = {
+  __typename?: 'OrderProduct';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  price: Scalars['Int'];
+  oldPrices: Array<ShopProductOldPrice>;
+  amount: Scalars['Int'];
+  name: Array<Translation>;
+  cardName: Array<Translation>;
+  slug: Scalars['String'];
+  description: Array<Translation>;
+  shopProduct?: Maybe<ShopProduct>;
+  shop?: Maybe<Shop>;
+  company?: Maybe<Company>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  formattedPrice: Scalars['String'];
+  formattedOldPrice?: Maybe<Scalars['String']>;
+  totalPrice: Scalars['Float'];
+  formattedTotalPrice: Scalars['String'];
+  discountedPercent?: Maybe<Scalars['Int']>;
+};
+
+export type OrderLog = {
+  __typename?: 'OrderLog';
+  id: Scalars['ID'];
+  variant: OrderLogVariantEnum;
+  executor?: Maybe<User>;
+  createdAt: Scalars['DateTime'];
+};
+
+/** Order log variant enum */
+export enum OrderLogVariantEnum {
+  Status = 'status',
+  Message = 'message'
+}
+
+export type MakeAnOrderInput = {
+  name: Scalars['String'];
+  phone: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type CmsProductAttributeFragment = (

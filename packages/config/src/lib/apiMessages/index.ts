@@ -16,6 +16,7 @@ import { companiesMessages } from './companiesMessages';
 import { shopsMessages } from './shopsMessages';
 import { shopProductsMessages } from './shopProductsMessages';
 import { cartsMessages } from './cartsMessages';
+import { ordersMessages } from './ordersMessages';
 
 export * from './commonMessages';
 export * from './configsMessages';
@@ -35,6 +36,7 @@ export * from './companiesMessages';
 export * from './shopsMessages';
 export * from './shopProductsMessages';
 export * from './cartsMessages';
+export * from './ordersMessages';
 export * from './messagesKeys';
 export * from './iconTypes';
 
@@ -57,4 +59,5 @@ export const apiMessages = [
   ...shopsMessages,
   ...shopProductsMessages,
   ...cartsMessages,
+  ...ordersMessages,
 ];

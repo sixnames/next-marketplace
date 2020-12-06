@@ -14,7 +14,7 @@ interface ConfigsAssetFormInterface {
 
 const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
   const { id, slug, nameString, description, acceptedFormats, cities } = config;
-  const { onErrorCallback } = useMutationCallbacks({});
+  const { onErrorCallback, showErrorNotification } = useMutationCallbacks({});
   const [updateAssetConfigMutation] = useUpdateAssetConfigMutation({
     onError: onErrorCallback,
     onCompleted: () => {
@@ -54,7 +54,7 @@ const ConfigsAssetForm: React.FC<ConfigsAssetFormInterface> = ({ config }) => {
                         value: [files[0]],
                       },
                     },
-                  });
+                  }).catch(() => showErrorNotification());
                 }
               }}
             >

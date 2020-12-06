@@ -8,13 +8,8 @@
   ],
   "scripts": {
     "up": "docker-compose -f docker-compose.dev.yml up -d",
-    "up:db": "docker-compose -f docker-compose.dev.yml up -d",
     "stop": "docker-compose -f docker-compose.dev.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down && rm -rf data/*",
-    "stage": "docker-compose -f docker-compose.dev.yml up -d",
-    "up:stage": "docker-compose -f docker-compose.stage.yml up --build",
-    "stop:stage": "docker-compose -f docker-compose.stage.yml stop",
-    "down:stage": "docker-compose -f docker-compose.stage.yml down && rm -rf data/*",
     "postup": "yarn dev",
     "api": "yarn workspace @yagu/api",
     "client": "yarn workspace @yagu/client",

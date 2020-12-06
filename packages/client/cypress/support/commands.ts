@@ -151,15 +151,22 @@ Cypress.Commands.add('clearTestData', () => {
 Cypress.Commands.add(
   'testAuth',
   (redirect = '/', email = 'admin@gmail.com', password = 'admin') => {
-    const testAuthURI = `${apiHost}/test-sign-in`;
+    const mutation = `
+   mutation {
+     signIn(input: { email: "${email}" password: "${password}"}) {
+      success
+      message
+    }
+   }`;
+
     cy.request({
-      method: 'GET',
-      url: testAuthURI,
-      qs: {
-        email,
-        password,
-      },
-    }).then(() => {
+      url: `${apiHost}/graphql`,
+      method: 'POST',
+      body: { query: mutation },
+    }).then(({ body }) => {
+      if (!body.data.signIn.success) {
+        throw Error('Test authentication error');
+      }
       cy.visit(redirect);
     });
   },

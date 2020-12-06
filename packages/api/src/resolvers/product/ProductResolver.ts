@@ -895,7 +895,7 @@ export class ProductResolver {
 
   @FieldResolver()
   async id(@Root() product: DocumentType<Product>): Promise<string> {
-    return product.id || product._id;
+    return `${product.id || product._id}`;
   }
 }
 

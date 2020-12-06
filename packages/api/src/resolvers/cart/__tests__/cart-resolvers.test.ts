@@ -264,8 +264,8 @@ describe('Cart', () => {
   });
 
   it('Should return session Cart', async () => {
-    const { query, mutate } = await authenticatedTestClient();
-    const getSessionCartPayload = await query<any>(
+    const initialTestClient = await authenticatedTestClient();
+    const getSessionCartPayload = await initialTestClient.query<any>(
       gql`
         query GetSessionCart {
           getSessionCart {
@@ -275,7 +275,12 @@ describe('Cart', () => {
         ${cartFragment}
       `,
     );
-    expect(getSessionCartPayload.data.getSessionCart).toBeDefined();
+    const sessionCart = getSessionCartPayload.data.getSessionCart;
+    expect(sessionCart).toBeDefined();
+
+    const { mutate } = await authenticatedTestClient({
+      cartId: sessionCart.id,
+    });
 
     // Should add shopless product to cart
     const addProductToCartPayload = await mutate<any>(
@@ -335,6 +340,7 @@ describe('Cart', () => {
     const {
       data: { addShopToCartProduct },
     } = addShopToCartProductPayload;
+
     const cartProductA = addShopToCartProduct.cart.products[0];
     expect(addShopToCartProduct.success).toBeTruthy();
     expect(cartProductA.isShopless).toBeFalsy();

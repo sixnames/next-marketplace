@@ -17,7 +17,7 @@ const maxPasswordLength = 30;
 const userIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.users.id' });
 
-const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
+export const userNameSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.string()
     .nullable()
     .min(

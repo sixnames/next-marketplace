@@ -18,10 +18,15 @@ import {
   CreateInitialLocalizationDataPayloadInterface,
 } from './createInitialLocalizationData';
 import { MessagesGroup } from '../../entities/MessagesGroup';
+import {
+  CreateInitialOrderStatuses,
+  creteInitialOrderStatuses,
+} from './createInitialOrderStatuses';
 
 export interface CreateInitialDataPayloadInterface
   extends CreateInitialSiteConfigsInterface,
-    CreateInitialLocalizationDataPayloadInterface {
+    CreateInitialLocalizationDataPayloadInterface,
+    CreateInitialOrderStatuses {
   initialRolesIds: CreateInitialRolesPayloadInterface;
   initialApiMessages: MessagesGroup[];
   admin: User;
@@ -36,6 +41,9 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
 
   // Create api message
   const initialApiMessages = await createInitialApiMessages();
+
+  // Create order statuses
+  const initialOrderStatuses = await creteInitialOrderStatuses();
 
   // Create roles and get admin role
   const initialRolesIds = await createInitialRoles();
@@ -59,6 +67,7 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
   return {
     ...configsPayload,
     ...localizationPayload,
+    ...initialOrderStatuses,
     initialRolesIds,
     initialApiMessages,
     admin,

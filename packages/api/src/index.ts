@@ -7,11 +7,10 @@ import createInitialData from './utils/initialData/createInitialData';
   try {
     const { app, server } = await createApp();
 
-    const httpServer = http.createServer(app);
-
-    // Site initial data
+    // Create initial data
     await createInitialData();
 
+    const httpServer = http.createServer(app);
     httpServer.listen(HTTP_PORT, () => {
       console.log(`http://localhost:${HTTP_PORT}${server.graphqlPath}`);
     });

@@ -50,6 +50,7 @@ interface ProductsFiltersInterface {
 export class Product extends TimeStamps {
   @Field(() => ID)
   readonly id: string;
+  readonly _id?: string;
 
   @Field(() => Int)
   @prop()

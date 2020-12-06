@@ -26,10 +26,10 @@ describe('Order', () => {
   `;
 
   it('Should CRUD Order', async () => {
-    const { mutate } = await authenticatedTestClient();
+    const testClientWithoutHeaders = await authenticatedTestClient();
 
     // Should create cart and add one product
-    const addProductToCartPayload = await mutate<any>(
+    const addProductToCartPayload = await testClientWithoutHeaders.mutate<any>(
       gql`
         mutation AddProductToCart($input: AddProductToCartInput!) {
           addProductToCart(input: $input) {
@@ -58,14 +58,14 @@ describe('Order', () => {
     expect(addProductToCart.cart.productsCount).toEqual(1);
 
     // Set cart id to cookies
-    const testClientWithHeaders = await authenticatedTestClient({
+    const { mutate } = await authenticatedTestClient({
       headers: {
         cookie: `${CART_COOKIE_KEY}=${addProductToCart.cart.id}`,
       },
     });
 
     // Should add second product to cart
-    const addProductToCartPayloadC = await testClientWithHeaders.mutate<any>(
+    const addProductToCartPayloadC = await mutate<any>(
       gql`
         mutation AddProductToCart($input: AddProductToCartInput!) {
           addProductToCart(input: $input) {
@@ -89,76 +89,84 @@ describe('Order', () => {
     );
     expect(addProductToCartPayloadC.data.addProductToCart.cart.productsCount).toEqual(2);
 
+    // Order fragment
+    const orderFragment = gql`
+      fragment OrderFragment on Order {
+        id
+        itemId
+        status {
+          id
+          nameString
+        }
+        customer {
+          id
+          name
+          email
+          phone
+          user {
+            id
+            name
+          }
+        }
+        logs {
+          id
+          createdAt
+          variant
+          executor {
+            id
+            name
+          }
+        }
+        totalPrice
+        formattedTotalPrice
+        productsCount
+        createdAt
+        updatedAt
+        products {
+          id
+          amount
+          cardNameString
+          nameString
+          descriptionString
+          discountedPercent
+          formattedOldPrice
+          formattedPrice
+          formattedTotalPrice
+          discountedPercent
+          shopProduct {
+            id
+            available
+          }
+          shop {
+            id
+            nameString
+          }
+          company {
+            id
+            nameString
+          }
+        }
+      }
+    `;
+
     // Should make an order
     const makeAnOrderInput = {
       name: 'name',
       phone: '+7 999 888 77 66',
       email: 'order@email.com',
     };
-    const makeAnOrderPayload = await testClientWithHeaders.mutate<any>(
+    const makeAnOrderPayload = await mutate<any>(
       gql`
         mutation MakeAnOrder($input: MakeAnOrderInput!) {
           makeAnOrder(input: $input) {
             success
             message
             order {
-              id
-              itemId
-              status {
-                id
-                nameString
-              }
-              customer {
-                id
-                name
-                email
-                phone
-                user {
-                  id
-                  name
-                }
-              }
-              logs {
-                id
-                createdAt
-                variant
-                executor {
-                  id
-                  name
-                }
-              }
-              totalPrice
-              formattedTotalPrice
-              productsCount
-              createdAt
-              updatedAt
-              products {
-                id
-                amount
-                cardNameString
-                nameString
-                descriptionString
-                discountedPercent
-                formattedOldPrice
-                formattedPrice
-                formattedTotalPrice
-                discountedPercent
-                shopProduct {
-                  id
-                  available
-                }
-                shop {
-                  id
-                  nameString
-                }
-                company {
-                  id
-                  nameString
-                }
-              }
+              ...OrderFragment
             }
           }
         }
+        ${orderFragment}
       `,
       {
         variables: {

@@ -51,7 +51,7 @@ export class OrderProductResolver {
 
   @FieldResolver((_type) => String)
   async company(@Root() orderProduct: DocumentType<OrderProduct>): Promise<Company | null> {
-    return CompanyModel.findOne({ _id: orderProduct.shopProduct });
+    return CompanyModel.findOne({ _id: orderProduct.company });
   }
 
   @FieldResolver((_returns) => String)

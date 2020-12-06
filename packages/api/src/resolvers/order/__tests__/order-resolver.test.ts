@@ -143,6 +143,18 @@ describe('Order', () => {
                 formattedPrice
                 formattedTotalPrice
                 discountedPercent
+                shopProduct {
+                  id
+                  available
+                }
+                shop {
+                  id
+                  nameString
+                }
+                company {
+                  id
+                  nameString
+                }
               }
             }
           }

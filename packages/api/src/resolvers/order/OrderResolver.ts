@@ -16,7 +16,7 @@ import {
   SessionCart,
   SessionUser,
 } from '../../decorators/parameterDecorators';
-import { getCurrencyString, noNaN } from '@yagu/shared';
+import { getCurrencyString, noNaN, phoneToRaw } from '@yagu/shared';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import PayloadType from '../commonInputs/PayloadType';
 import { Cart } from '../../entities/Cart';
@@ -141,7 +141,7 @@ export class OrderResolver {
         products: populatedOrderProducts,
         comment: input.comment,
         customer: {
-          phone: input.phone,
+          phone: phoneToRaw(input.phone),
           name: input.name,
           email: input.email,
           secondName: user.secondName,

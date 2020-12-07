@@ -148,11 +148,10 @@ export class UserResolver {
         length: 10,
         numbers: true,
       });
-      const { role, ...values } = input;
       const user = await UserModel.create({
-        ...values,
+        ...input,
+        phone: phoneToRaw(input.phone),
         password,
-        role,
       });
 
       if (!user) {

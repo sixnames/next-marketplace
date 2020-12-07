@@ -4,6 +4,7 @@ import { Rubric, RubricModel } from '../../entities/Rubric';
 import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
+  getAttributesPipeline,
   getCatalogueTitle,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
@@ -28,7 +29,7 @@ export class CatalogueDataResolver {
   ): Promise<CatalogueData | null> {
     try {
       const [slug, ...attributes] = catalogueFilter;
-      const { limit = 100, page = 1, ...args } = productsInput || {};
+      const { limit = 30, page = 1 } = productsInput || {};
 
       // get current rubric
       const rubric = await RubricModel.findOne({ slug });
@@ -60,15 +61,23 @@ export class CatalogueDataResolver {
         rubric,
       });
 
-      // get products filter query
-      const query = ProductModel.getProductsFilter({
-        ...args,
-        attributes: processedAttributes,
-        rubrics: rubricsIds,
-        active: true,
-      });
+      const attributesMatch =
+        processedAttributes.length > 0
+          ? {
+              $and: getAttributesPipeline(processedAttributes),
+            }
+          : {};
 
-      const sortByViewsPipeLine = [
+      // pipeline
+      const productsPipeline = [
+        // Initial match
+        {
+          $match: {
+            ...attributesMatch,
+            rubrics: { $in: rubricsIds },
+            active: true,
+          },
+        },
         // Lookup shop products
         { $addFields: { productId: { $toString: '$_id' } } },
         {
@@ -91,12 +100,9 @@ export class CatalogueDataResolver {
         { $sort: { 'views.counter': -1 } },
       ];
 
-      const productsPipeline = ProductModel.aggregate<Product>([
-        { $match: query },
-        ...sortByViewsPipeLine,
-      ]);
+      const productsAggregation = ProductModel.aggregate<Product>(productsPipeline);
 
-      const products = await ProductModel.aggregatePaginate(productsPipeline, {
+      const products = await ProductModel.aggregatePaginate(productsAggregation, {
         limit,
         page,
       });
@@ -107,6 +113,7 @@ export class CatalogueDataResolver {
         catalogueTitle,
       };
     } catch (e) {
+      console.log(e);
       return null;
     }
   }

@@ -15,6 +15,8 @@ import Button from '../../components/Buttons/Button';
 import CartShopsList from './CartShopsList';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import CartAside from './CartAside';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { useRouter } from 'next/router';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;
@@ -202,6 +204,8 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 };
 
 const CartRoute: React.FC = () => {
+  const { showErrorNotification } = useNotificationsContext();
+  const router = useRouter();
   const { cart } = useSiteContext();
   const { productsCount, products } = cart;
 
@@ -232,7 +236,15 @@ const CartRoute: React.FC = () => {
           </div>
 
           <div className={classes.aside}>
-            <CartAside cart={cart} />
+            <CartAside
+              cart={cart}
+              buttonText={'Купить'}
+              onConfirmHandler={() => {
+                router.push('/order').catch(() => {
+                  showErrorNotification();
+                });
+              }}
+            />
           </div>
         </div>
       </Inner>

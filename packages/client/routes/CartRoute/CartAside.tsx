@@ -3,16 +3,24 @@ import classes from './CartAside.module.css';
 import { CartFragment } from '../../generated/apolloComponents';
 import Currency from '../../components/Currency/Currency';
 import Button from '../../components/Buttons/Button';
-import { useRouter } from 'next/router';
-import { useNotificationsContext } from '../../context/notificationsContext';
+import Link from '../../components/Link/Link';
+import { ButtonType } from '../../types';
 
 interface CartAsideInterface {
   cart: CartFragment;
+  buttonText: string;
+  onConfirmHandler?: () => void;
+  backLinkHref?: string;
+  buttonType?: ButtonType;
 }
 
-const CartAside: React.FC<CartAsideInterface> = ({ cart }) => {
-  const { showErrorNotification } = useNotificationsContext();
-  const router = useRouter();
+const CartAside: React.FC<CartAsideInterface> = ({
+  cart,
+  backLinkHref,
+  buttonText,
+  onConfirmHandler,
+  buttonType,
+}) => {
   const { formattedTotalPrice, productsCount, isWithShopless } = cart;
 
   let productsCountPostfix = productsCount > 1 ? 'товара' : 'товар';
@@ -53,17 +61,21 @@ const CartAside: React.FC<CartAsideInterface> = ({ cart }) => {
           </div>
         </div>
         <Button
+          type={buttonType}
           testId={'cart-aside-confirm'}
           disabled={isWithShopless}
           className={classes.totalsButton}
-          onClick={() => {
-            router.push('/order').catch(() => {
-              showErrorNotification();
-            });
-          }}
+          onClick={onConfirmHandler}
         >
-          Купить
+          {buttonText}
         </Button>
+
+        {backLinkHref ? (
+          <Link href={backLinkHref} className={classes.backLink} testId={`cart-aside-back-link`}>
+            Редактировать заказ
+          </Link>
+        ) : null}
+
         {isWithShopless ? (
           <div className={classes.warning} data-cy={`cart-aside-warning`}>
             Для оформления заказа необходимо выбрать магазины у всех товаров в корзине.

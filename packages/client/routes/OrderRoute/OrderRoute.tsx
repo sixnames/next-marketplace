@@ -4,9 +4,20 @@ import { useSiteContext } from '../../context/siteContext';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
+import CartAside from '../CartRoute/CartAside';
+// import { useNotificationsContext } from '../../context/notificationsContext';
+// import { useRouter } from 'next/router';
+import { Form, Formik } from 'formik';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { makeAnOrderSchema } from '@yagu/validation';
 
 const OrderRoute: React.FC = () => {
+  // const { showErrorNotification } = useNotificationsContext();
+  // const router = useRouter();
   const { cart } = useSiteContext();
+  const validationSchema = useValidationSchema({
+    schema: makeAnOrderSchema,
+  });
   const { productsCount } = cart;
 
   return (
@@ -18,11 +29,43 @@ const OrderRoute: React.FC = () => {
           Корзина
           <span>{`(${productsCount})`}</span>
         </Title>
-        <div className={classes.frame}>
-          <div data-cy={'order-products'}>lorem</div>
+        <Formik
+          enableReinitialize={true}
+          validationSchema={validationSchema}
+          initialValues={{
+            name: '',
+            email: '',
+            phone: '',
+            comment: '',
+          }}
+          onSubmit={(values) => {
+            console.log(values);
+          }}
+        >
+          {() => {
+            return (
+              <Form>
+                <div className={classes.frame}>
+                  <div data-cy={'order-products'}>lorem</div>
 
-          <div className={classes.aside}>Aside</div>
-        </div>
+                  <div className={classes.aside}>
+                    <CartAside
+                      cart={cart}
+                      buttonText={'подтвердить заказ'}
+                      backLinkHref={'/cart'}
+                      buttonType={'submit'}
+                      // onConfirmHandler={() => {
+                      //   router.push('/thank-you').catch(() => {
+                      //     showErrorNotification();
+                      //   });
+                      // }}
+                    />
+                  </div>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
       </Inner>
     </div>
   );

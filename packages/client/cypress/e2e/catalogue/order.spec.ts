@@ -72,5 +72,18 @@ describe('Cart', () => {
 
     // Should navigate to order form
     cy.getByCy(`order-form`).should('exist');
+    cy.getByCy(`cart-aside-back-link`).click();
+    cy.getByCy(`cart-aside-confirm`).should('exist');
+    cy.getByCy(`cart-aside-confirm`).click();
+
+    // Should validate and fill all order fields
+    cy.getByCy(`cart-aside-confirm`).click();
+    cy.getByCy('name-error').should('exist');
+    cy.getByCy('phone-error').should('exist');
+    cy.getByCy('email-error').should('exist');
+
+    cy.getByCy(`order-form-name`).type('name');
+    cy.getByCy(`order-form-phone`).type('78889990011');
+    cy.getByCy(`order-form-email`).type('email@mail.com');
   });
 });

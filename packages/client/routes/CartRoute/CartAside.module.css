@@ -105,3 +105,9 @@
   color: var(--wp-error);
   font-weight: 600;
 }
+
+.backLink {
+  display: block;
+  margin-top: var(--framePadding);
+  text-align: center;
+}

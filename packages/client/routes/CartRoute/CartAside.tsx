@@ -3,12 +3,16 @@ import classes from './CartAside.module.css';
 import { CartFragment } from '../../generated/apolloComponents';
 import Currency from '../../components/Currency/Currency';
 import Button from '../../components/Buttons/Button';
+import { useRouter } from 'next/router';
+import { useNotificationsContext } from '../../context/notificationsContext';
 
 interface CartAsideInterface {
   cart: CartFragment;
 }
 
 const CartAside: React.FC<CartAsideInterface> = ({ cart }) => {
+  const { showErrorNotification } = useNotificationsContext();
+  const router = useRouter();
   const { formattedTotalPrice, productsCount, isWithShopless } = cart;
 
   let productsCountPostfix = productsCount > 1 ? 'товара' : 'товар';
@@ -52,6 +56,11 @@ const CartAside: React.FC<CartAsideInterface> = ({ cart }) => {
           testId={'cart-aside-confirm'}
           disabled={isWithShopless}
           className={classes.totalsButton}
+          onClick={() => {
+            router.push('/order').catch(() => {
+              showErrorNotification();
+            });
+          }}
         >
           Купить
         </Button>

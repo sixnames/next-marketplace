@@ -1,0 +1,18 @@
+.cart {
+  margin-bottom: 3rem;
+}
+
+.cart .cartTitle {
+  margin-bottom: 3.5rem;
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: 1fr var(--catalogue-filter-width);
+  grid-column-gap: var(--catalogueGridGap);
+  margin-bottom: 3rem;
+}
+
+.aside {
+  position: relative;
+}

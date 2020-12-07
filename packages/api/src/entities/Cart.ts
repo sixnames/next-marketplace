@@ -22,6 +22,9 @@ export class Cart extends TimeStamps {
   @Field((_type) => String)
   readonly formattedTotalPrice?: string;
 
+  @Field((_type) => Boolean)
+  readonly isWithShopless?: boolean;
+
   @Field()
   readonly createdAt: Date;
 

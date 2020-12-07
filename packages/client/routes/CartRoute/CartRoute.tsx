@@ -13,6 +13,8 @@ import ProductShopPrices from '../../components/Product/ProductShopPrices/Produc
 import ProductSnippetPrice from '../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
 import Button from '../../components/Buttons/Button';
 import CartShopsList from './CartShopsList';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
+import CartAside from './CartAside';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;
@@ -204,31 +206,37 @@ const CartRoute: React.FC = () => {
   const { productsCount, products } = cart;
 
   return (
-    <Inner testId={'cart'} className={classes.cart}>
-      <Title className={classes.cartTitle}>
-        Корзина
-        <span>{`(${productsCount})`}</span>
-      </Title>
-      <div className={classes.frame}>
-        <div data-cy={'cart-products'}>
-          {products.map((cartProduct) => {
-            const { id, isShopless, product, shopProduct } = cartProduct;
+    <div className={classes.cart}>
+      <Breadcrumbs currentPageName={'Корзина'} config={[]} />
 
-            if (isShopless && product) {
-              return <CartShoplessProduct cartProduct={cartProduct} key={id} />;
-            }
+      <Inner lowTop testId={'cart'}>
+        <Title className={classes.cartTitle}>
+          Корзина
+          <span>{`(${productsCount})`}</span>
+        </Title>
+        <div className={classes.frame}>
+          <div data-cy={'cart-products'}>
+            {products.map((cartProduct) => {
+              const { id, isShopless, product, shopProduct } = cartProduct;
 
-            if (!isShopless && shopProduct) {
-              return <CartProduct cartProduct={cartProduct} key={id} />;
-            }
+              if (isShopless && product) {
+                return <CartShoplessProduct cartProduct={cartProduct} key={id} />;
+              }
 
-            return null;
-          })}
+              if (!isShopless && shopProduct) {
+                return <CartProduct cartProduct={cartProduct} key={id} />;
+              }
+
+              return null;
+            })}
+          </div>
+
+          <div className={classes.aside}>
+            <CartAside cart={cart} />
+          </div>
         </div>
-
-        <div>Aside</div>
-      </div>
-    </Inner>
+      </Inner>
+    </div>
   );
 };
 

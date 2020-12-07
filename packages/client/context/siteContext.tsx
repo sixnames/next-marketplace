@@ -43,6 +43,7 @@ const initialCart: CartFragment = {
   products: [],
   formattedTotalPrice: '',
   productsCount: 0,
+  isWithShopless: false,
 };
 
 const SiteContext = createContext<SiteContextInterface>({

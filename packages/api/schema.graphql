@@ -171,6 +171,7 @@ type Cart {
   createdAt: DateTime!
   formattedTotalPrice: String!
   id: ID!
+  isWithShopless: Boolean!
   products: [CartProduct!]!
   productsCount: Int!
   totalPrice: Int!

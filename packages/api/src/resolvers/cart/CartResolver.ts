@@ -34,6 +34,7 @@ import { getCurrencyString } from '@yagu/shared';
 import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';
+import getBooleanFromArray from '@yagu/client/utils/getBooleanFromArray';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -398,5 +399,12 @@ export class CartResolver {
   @FieldResolver((_returns) => Int)
   async productsCount(@Root() cart: DocumentType<Cart>): Promise<number> {
     return cart.products.length;
+  }
+
+  @FieldResolver((_returns) => Boolean)
+  async isWithShopless(@Root() cart: DocumentType<Cart>): Promise<boolean> {
+    return getBooleanFromArray(cart.products, ({ product }) => {
+      return !!product;
+    });
   }
 }

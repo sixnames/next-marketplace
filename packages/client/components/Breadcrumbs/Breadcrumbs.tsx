@@ -38,7 +38,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config }
               </li>
             );
           })}
-          <li className={classes.listItem}>{currentPageName}</li>
+          <li className={`${classes.listItem} ${classes.listItemCurrent}`}>{currentPageName}</li>
         </ul>
       </Inner>
     </div>

@@ -13,6 +13,10 @@
   margin-bottom: 3rem;
 }
 
+.aside {
+  position: relative;
+}
+
 .productHolder {
   margin-bottom: 2rem;
 }

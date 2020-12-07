@@ -44,8 +44,33 @@ describe('Cart', () => {
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
 
-    // Should navigate to cart
+    // Add shopless product from catalogue
+    cy.getByCy(`cart-modal-close`).click();
+    cy.getByTranslationFieldCy({
+      cyPrefix: 'main-rubric',
+      languages: mockData.rubricLevelOneA.name,
+    }).click();
+    cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();
+
+    // Confirm button should be disabled if there is shopless products in cart
+    cy.getByCy(`cart-aside-confirm`).should('be.disabled');
+    cy.getByCy(`cart-aside-warning`).should('exist');
+
+    // Should add shop to the shopless cart product
+    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).click();
+    cy.getByCy(`cart-shops-list`).should('exist');
+    cy.getByCy(`cart-shops-${mockData.shopA.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-shops-list`).should('not.exist');
+    cy.getByCy(`${mockData.connectionProductA.slug}-show-shops`).should('not.exist');
+
+    // Should navigate to cart
     cy.getByCy(`cart`).should('exist');
+    cy.getByCy(`cart-aside`).should('exist');
+    cy.getByCy(`cart-aside-total`).should('exist');
+    cy.getByCy(`cart-aside-confirm`).click();
+
+    // Should navigate to order form
+    cy.getByCy(`order-form`).should('exist');
   });
 });

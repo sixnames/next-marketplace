@@ -1120,6 +1120,7 @@ export type Cart = {
   productsCount: Scalars['Int'];
   totalPrice: Scalars['Int'];
   formattedTotalPrice: Scalars['String'];
+  isWithShopless: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
@@ -2828,7 +2829,7 @@ export type CartProductFragment = (
 
 export type CartFragment = (
   { __typename?: 'Cart' }
-  & Pick<Cart, 'id' | 'formattedTotalPrice' | 'productsCount'>
+  & Pick<Cart, 'id' | 'formattedTotalPrice' | 'productsCount' | 'isWithShopless'>
   & { products: Array<(
     { __typename?: 'CartProduct' }
     & CartProductFragment
@@ -4625,6 +4626,7 @@ export const CartFragmentDoc = gql`
   id
   formattedTotalPrice
   productsCount
+  isWithShopless
   products {
     ...CartProduct
   }

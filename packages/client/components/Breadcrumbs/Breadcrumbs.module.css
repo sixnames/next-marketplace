@@ -13,6 +13,10 @@
   margin-right: 0.25rem;
 }
 
+.listItemCurrent {
+  color: var(--textSecondaryColor);
+}
+
 .link {
   color: var(--textColor);
 }

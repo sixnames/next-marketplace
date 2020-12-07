@@ -25,6 +25,7 @@ export const cartFragment = gql`
     id
     formattedTotalPrice
     productsCount
+    isWithShopless
     products {
       ...CartProduct
     }

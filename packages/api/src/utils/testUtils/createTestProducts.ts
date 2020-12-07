@@ -172,7 +172,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       ...MOCK_PRODUCT_A,
       ...productAttributes({
         wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
+        wineTypeOptions: optionsSlugsWineType[2],
       }),
       rubrics: [rubricLevelThreeAA.id],
     }),

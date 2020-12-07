@@ -916,7 +916,7 @@ export const MOCK_OPTIONS_WINE_VARIANT = [
     ],
     priorities: [],
     views: [],
-    slug: 'varmut',
+    slug: 'vermut',
     gender: GENDER_HE,
   },
   {

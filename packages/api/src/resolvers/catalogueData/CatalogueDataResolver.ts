@@ -87,7 +87,7 @@ export class CatalogueDataResolver {
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
         // Filter unwinded products by current city or empty views
         { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        // Sort by views in ASC direction
+        // Sort by views in DESC direction
         { $sort: { 'views.counter': -1 } },
       ];
 

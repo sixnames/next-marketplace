@@ -307,7 +307,7 @@ describe('Product', () => {
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
-    expect(createProductConnection.product.slug).toEqual(`cardnameproducta-tip_vina-heres`);
+    expect(createProductConnection.product.slug).toEqual(`cardnameproducta-tip_vina-vermut`);
 
     // Should add product to connection
     const {
@@ -349,7 +349,7 @@ describe('Product', () => {
     );
 
     const addedProductSlug = slugs.find(
-      (slug: string) => slug === 'cardnameproductb-tip_vina-varmut',
+      (slug: string) => slug === 'cardnameproductb-tip_vina-vermut',
     );
 
     expect(addProductToConnection.success).toBeTruthy();

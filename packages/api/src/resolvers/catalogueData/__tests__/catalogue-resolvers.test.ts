@@ -57,22 +57,14 @@ describe('Catalogue', () => {
       `,
       {
         variables: {
-          catalogueFilter: [
-            'kupit_vino',
-            'tsvet_vina-krasniy',
-            'tsvet_vina-beliy',
-            'tip_vina-portvein',
-            'tip_vina-kreplenoe',
-          ],
+          catalogueFilter: ['kupit_vino', 'tsvet_vina-krasniy', 'tip_vina-vermut'],
         },
       },
     );
 
     expect(getCatalogueData.products.docs).toHaveLength(1);
     expect(getCatalogueData.rubric.filterAttributes).toHaveLength(2);
-    expect(getCatalogueData.catalogueTitle).toEqual(
-      'Купить белый или красный портвейн или крепленое',
-    );
+    expect(getCatalogueData.catalogueTitle).toEqual('Купить красный вермут');
   });
 
   it('Should return search result', async () => {

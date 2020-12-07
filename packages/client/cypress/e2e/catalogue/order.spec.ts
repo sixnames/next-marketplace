@@ -78,12 +78,13 @@ describe('Cart', () => {
 
     // Should validate and fill all order fields
     cy.getByCy(`cart-aside-confirm`).click();
-    cy.getByCy('name-error').should('exist');
-    cy.getByCy('phone-error').should('exist');
-    cy.getByCy('email-error').should('exist');
+    cy.get('[data-error="name"]').should('exist');
+    cy.get('[data-error="phone"]').should('exist');
+    cy.get('[data-error="email"]').should('exist');
 
     cy.getByCy(`order-form-name`).type('name');
     cy.getByCy(`order-form-phone`).type('78889990011');
     cy.getByCy(`order-form-email`).type('email@mail.com');
+    cy.getByCy(`order-form-comment`).type('comment');
   });
 });

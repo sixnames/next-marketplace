@@ -139,6 +139,7 @@ export class OrderResolver {
       const order = await OrderModel.create({
         status: initialStatus.id,
         products: populatedOrderProducts,
+        comment: input.comment,
         customer: {
           phone: input.phone,
           name: input.name,

@@ -10,6 +10,8 @@ import CartAside from '../CartRoute/CartAside';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { makeAnOrderSchema } from '@yagu/validation';
+import FormikInput from '../../components/FormElements/Input/FormikInput';
+import FormikTextarea from '../../components/FormElements/Textarea/FormikTextarea';
 
 const OrderRoute: React.FC = () => {
   // const { showErrorNotification } = useNotificationsContext();
@@ -19,6 +21,9 @@ const OrderRoute: React.FC = () => {
     schema: makeAnOrderSchema,
   });
   const { productsCount } = cart;
+  //   router.push('/thank-you').catch(() => {
+  //     showErrorNotification();
+  //   });
 
   return (
     <div className={classes.cart} data-cy={'order-form'}>
@@ -46,7 +51,57 @@ const OrderRoute: React.FC = () => {
             return (
               <Form>
                 <div className={classes.frame}>
-                  <div data-cy={'order-products'}>lorem</div>
+                  <div data-cy={'order-products'}>
+                    <div className={classes.form}>
+                      <div className={classes.group}>
+                        <div className={classes.groupTitle}>
+                          <div className={classes.groupTitleCounter}>1</div>
+                          Личные данные
+                        </div>
+
+                        <FormikInput
+                          testId={'order-form-name'}
+                          name={'name'}
+                          label={'Имя'}
+                          isRequired
+                        />
+                        <FormikInput
+                          testId={'order-form-phone'}
+                          name={'phone'}
+                          type={'tel'}
+                          label={'Телефон'}
+                          isRequired
+                        />
+                        <FormikInput
+                          testId={'order-form-email'}
+                          name={'email'}
+                          type={'email'}
+                          label={'E-mail'}
+                          isRequired
+                        />
+                      </div>
+
+                      <div className={classes.group}>
+                        <div className={classes.groupTitle}>
+                          <div className={classes.groupTitleCounter}>1</div>
+                          Подтверждение заказа
+                        </div>
+
+                        <div className={classes.products} data-cy={'order-products'}>
+                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda culpa
+                          et hic ipsa laudantium nostrum rerum tempora. Alias animi, aspernatur,
+                          commodi, corporis dicta dolore provident quod recusandae repudiandae sunt
+                          suscipit?
+                        </div>
+
+                        <FormikTextarea
+                          label={'Ваш комментарий к заказу'}
+                          testId={'order-form-comment'}
+                          name={'comment'}
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   <div className={classes.aside}>
                     <CartAside
@@ -54,11 +109,6 @@ const OrderRoute: React.FC = () => {
                       buttonText={'подтвердить заказ'}
                       backLinkHref={'/cart'}
                       buttonType={'submit'}
-                      // onConfirmHandler={() => {
-                      //   router.push('/thank-you').catch(() => {
-                      //     showErrorNotification();
-                      //   });
-                      // }}
                     />
                   </div>
                 </div>

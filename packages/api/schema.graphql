@@ -526,6 +526,7 @@ type LanguagePayloadType {
 }
 
 input MakeAnOrderInput {
+  comment: String
   email: String!
   name: String!
   phone: String!
@@ -702,6 +703,7 @@ input OptionVariantInput {
 }
 
 type Order {
+  comment: String
   createdAt: DateTime!
   customer: OrderCustomer!
   formattedTotalPrice: String!

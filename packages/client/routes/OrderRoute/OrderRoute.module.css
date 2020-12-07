@@ -13,6 +13,38 @@
   margin-bottom: 3rem;
 }
 
+.form {
+  max-width: 47rem;
+}
+
 .aside {
   position: relative;
+}
+
+.group {
+  margin-bottom: 3rem;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.groupTitleCounter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--controlButtonHeight);
+  height: var(--controlButtonHeight);
+  margin-right: 1.75rem;
+  border-radius: 50%;
+  background-color: var(--secondaryBackground);
+  box-shadow: var(--wp-shadow-100);
+}
+
+.products {
+  margin-bottom: 3rem;
 }

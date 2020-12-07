@@ -122,6 +122,7 @@ describe('Order', () => {
         productsCount
         createdAt
         updatedAt
+        comment
         products {
           id
           amount
@@ -154,6 +155,7 @@ describe('Order', () => {
       name: 'name',
       phone: '+7 999 888 77 66',
       email: 'order@email.com',
+      comment: 'comment',
     };
     const makeAnOrderPayload = await mutate<any>(
       gql`
@@ -182,5 +184,6 @@ describe('Order', () => {
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.email).toEqual(
       makeAnOrderInput.email,
     );
+    expect(makeAnOrderPayload.data.makeAnOrder.order.comment).toEqual(makeAnOrderInput.comment);
   });
 });

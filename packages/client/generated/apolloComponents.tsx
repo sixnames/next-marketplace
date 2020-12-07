@@ -2197,12 +2197,14 @@ export type OrderPayloadType = {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   order?: Maybe<Order>;
+  cart?: Maybe<Cart>;
 };
 
 export type Order = {
   __typename?: 'Order';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
+  comment?: Maybe<Scalars['String']>;
   status: OrderStatus;
   customer: OrderCustomer;
   products: Array<OrderProduct>;
@@ -2233,6 +2235,7 @@ export type OrderCustomer = {
   email: Scalars['String'];
   phone: Scalars['String'];
   user?: Maybe<User>;
+  formattedPhone: FormattedPhone;
 };
 
 export type OrderProduct = {
@@ -2277,6 +2280,7 @@ export type MakeAnOrderInput = {
   name: Scalars['String'];
   phone: Scalars['String'];
   email: Scalars['String'];
+  comment?: Maybe<Scalars['String']>;
 };
 
 export type CmsProductAttributeFragment = (
@@ -2918,6 +2922,23 @@ export type ClearCartMutation = (
   & { clearCart: (
     { __typename?: 'CartPayloadType' }
     & CartPayloadFragment
+  ) }
+);
+
+export type MakeAnOrderMutationVariables = Exact<{
+  input: MakeAnOrderInput;
+}>;
+
+
+export type MakeAnOrderMutation = (
+  { __typename?: 'Mutation' }
+  & { makeAnOrder: (
+    { __typename?: 'OrderPayloadType' }
+    & Pick<OrderPayloadType, 'success' | 'message'>
+    & { cart?: Maybe<(
+      { __typename?: 'Cart' }
+      & CartFragment
+    )> }
   ) }
 );
 
@@ -6167,6 +6188,42 @@ export function useClearCartMutation(baseOptions?: Apollo.MutationHookOptions<Cl
 export type ClearCartMutationHookResult = ReturnType<typeof useClearCartMutation>;
 export type ClearCartMutationResult = Apollo.MutationResult<ClearCartMutation>;
 export type ClearCartMutationOptions = Apollo.BaseMutationOptions<ClearCartMutation, ClearCartMutationVariables>;
+export const MakeAnOrderDocument = gql`
+    mutation MakeAnOrder($input: MakeAnOrderInput!) {
+  makeAnOrder(input: $input) {
+    success
+    message
+    cart {
+      ...Cart
+    }
+  }
+}
+    ${CartFragmentDoc}`;
+export type MakeAnOrderMutationFn = Apollo.MutationFunction<MakeAnOrderMutation, MakeAnOrderMutationVariables>;
+
+/**
+ * __useMakeAnOrderMutation__
+ *
+ * To run a mutation, you first call `useMakeAnOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMakeAnOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [makeAnOrderMutation, { data, loading, error }] = useMakeAnOrderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMakeAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<MakeAnOrderMutation, MakeAnOrderMutationVariables>) {
+        return Apollo.useMutation<MakeAnOrderMutation, MakeAnOrderMutationVariables>(MakeAnOrderDocument, baseOptions);
+      }
+export type MakeAnOrderMutationHookResult = ReturnType<typeof useMakeAnOrderMutation>;
+export type MakeAnOrderMutationResult = Apollo.MutationResult<MakeAnOrderMutation>;
+export type MakeAnOrderMutationOptions = Apollo.BaseMutationOptions<MakeAnOrderMutation, MakeAnOrderMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {

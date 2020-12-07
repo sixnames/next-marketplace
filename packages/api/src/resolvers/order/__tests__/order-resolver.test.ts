@@ -17,11 +17,14 @@ describe('Order', () => {
   });
 
   const cartFragment = gql`
-    fragment Cart on Cart {
+    fragment TestCartFragment on Cart {
       id
       totalPrice
       formattedTotalPrice
       productsCount
+      products {
+        id
+      }
     }
   `;
 
@@ -36,7 +39,7 @@ describe('Order', () => {
             success
             message
             cart {
-              ...Cart
+              ...TestCartFragment
             }
           }
         }
@@ -72,7 +75,7 @@ describe('Order', () => {
             success
             message
             cart {
-              ...Cart
+              ...TestCartFragment
             }
           }
         }
@@ -91,7 +94,7 @@ describe('Order', () => {
 
     // Order fragment
     const orderFragment = gql`
-      fragment OrderFragment on Order {
+      fragment TestOrderFragment on Order {
         id
         itemId
         status {
@@ -102,7 +105,10 @@ describe('Order', () => {
           id
           name
           email
-          phone
+          formattedPhone {
+            raw
+            readable
+          }
           user {
             id
             name
@@ -153,7 +159,7 @@ describe('Order', () => {
     // Should make an order
     const makeAnOrderInput = {
       name: 'name',
-      phone: '+7 999 888 77 66',
+      phone: '+7 999 888-77-66',
       email: 'order@email.com',
       comment: 'comment',
     };
@@ -164,11 +170,15 @@ describe('Order', () => {
             success
             message
             order {
-              ...OrderFragment
+              ...TestOrderFragment
+            }
+            cart {
+              ...TestCartFragment
             }
           }
         }
         ${orderFragment}
+        ${cartFragment}
       `,
       {
         variables: {
@@ -178,12 +188,14 @@ describe('Order', () => {
     );
     expect(makeAnOrderPayload.data.makeAnOrder.success).toBeTruthy();
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.name).toEqual(makeAnOrderInput.name);
-    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.phone).toEqual(
+    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.formattedPhone.readable).toEqual(
       makeAnOrderInput.phone,
     );
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.email).toEqual(
       makeAnOrderInput.email,
     );
     expect(makeAnOrderPayload.data.makeAnOrder.order.comment).toEqual(makeAnOrderInput.comment);
+    expect(makeAnOrderPayload.data.makeAnOrder.cart.products).toHaveLength(0);
+    expect(makeAnOrderPayload.data.makeAnOrder.cart.productsCount).toEqual(0);
   });
 });

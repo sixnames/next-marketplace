@@ -97,3 +97,16 @@ export const CLEAR_CART_MUTATION = gql`
   }
   ${cartPayloadFragment}
 `;
+
+export const MAKE_AN_ORDER_MUTATION = gql`
+  mutation MakeAnOrder($input: MakeAnOrderInput!) {
+    makeAnOrder(input: $input) {
+      success
+      message
+      cart {
+        ...Cart
+      }
+    }
+  }
+  ${cartFragment}
+`;

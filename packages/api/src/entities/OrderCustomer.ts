@@ -1,6 +1,7 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { User } from './User';
 import { prop } from '@typegoose/typegoose';
+import { FormattedPhone } from './FormattedPhone';
 
 @ObjectType()
 export class OrderCustomer {
@@ -35,4 +36,7 @@ export class OrderCustomer {
   @Field(() => User, { nullable: true })
   @prop({ required: true, ref: User })
   user: string;
+
+  @Field((_type) => FormattedPhone)
+  readonly formattedPhone?: FormattedPhone;
 }

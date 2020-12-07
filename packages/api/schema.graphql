@@ -719,6 +719,7 @@ type Order {
 
 type OrderCustomer {
   email: String!
+  formattedPhone: FormattedPhone!
   id: ID!
   itemId: Int!
   lastName: String
@@ -742,6 +743,7 @@ enum OrderLogVariantEnum {
 }
 
 type OrderPayloadType {
+  cart: Cart
   message: String!
   order: Order
   success: Boolean!

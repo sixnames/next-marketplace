@@ -19,7 +19,7 @@ import {
 import { getCurrencyString, noNaN, phoneToRaw } from '@yagu/shared';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import PayloadType from '../commonInputs/PayloadType';
-import { Cart } from '../../entities/Cart';
+import { Cart, CartModel } from '../../entities/Cart';
 import { ShopProductModel } from '../../entities/ShopProduct';
 import { ProductModel } from '../../entities/Product';
 import { OrderProduct } from '../../entities/OrderProduct';
@@ -37,6 +37,9 @@ import { makeAnOrderSchema } from '@yagu/validation';
 class OrderPayloadType extends PayloadType() {
   @Field((_type) => Order, { nullable: true })
   order?: Order | null;
+
+  @Field((_type) => Cart, { nullable: true })
+  cart?: Cart | null;
 }
 
 @Resolver((_for) => Order)
@@ -77,6 +80,22 @@ export class OrderResolver {
         return {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.userCreationError'),
+        };
+      }
+
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cart.id,
+        {
+          products: [],
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.error'),
         };
       }
 
@@ -169,6 +188,7 @@ export class OrderResolver {
         success: true,
         message: await getApiMessage('orders.makeAnOrder.success'),
         order,
+        cart: updatedCart,
       };
     } catch (e) {
       return {

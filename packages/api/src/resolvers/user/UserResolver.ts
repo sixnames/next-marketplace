@@ -519,4 +519,9 @@ export class UserResolver {
     }
     return role;
   }
+
+  @FieldResolver()
+  async id(@Root() user: DocumentType<User>): Promise<string> {
+    return `${user.id || user._id}`;
+  }
 }

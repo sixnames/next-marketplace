@@ -4,18 +4,27 @@
   align-items: baseline;
 }
 
+.small {
+  --primaryPriceSize: 1.5rem;
+  --secondaryPriceSize: 1rem;
+}
+
+.normal {
+  --primaryPriceSize: 1.75rem;
+  --secondaryPriceSize: 1.35rem;
+}
+
+.big {
+  --primaryPriceSize: 2rem;
+  --secondaryPriceSize: 1.5rem;
+}
+
 .prices > div:not(:last-child) {
   margin-right: 1rem;
 }
 
 .price {
   color: var(--textSecondaryColor);
-}
-
-.priceValue span {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--textColor);
 }
 
 .discountedPrice {
@@ -30,14 +39,29 @@
   color: var(--textSecondaryColor);
 }
 
+.priceValue span {
+  font-weight: 600;
+  color: var(--textColor);
+}
+
 .oldPriceValue span {
   text-decoration: line-through;
-  font-size: 1.35rem;
 }
 
 .discount {
-  font-size: 1.35rem;
   color: var(--theme);
+}
+
+.priceValue span {
+  font-size: var(--primaryPriceSize);
+}
+
+.oldPriceValue span {
+  font-size: var(--secondaryPriceSize);
+}
+
+.discount {
+  font-size: var(--secondaryPriceSize);
 }
 
 @media only screen and (max-width: 600px) {

@@ -12,6 +12,71 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import { makeAnOrderSchema } from '@yagu/validation';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikTextarea from '../../components/FormElements/Textarea/FormikTextarea';
+import { CartProductFragment } from '../../generated/apolloComponents';
+import Image from '../../components/Image/Image';
+import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
+import Icon from '../../components/Icon/Icon';
+
+interface OrderRouteProductInterface {
+  cartProduct: CartProductFragment;
+}
+
+const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
+  const { shopProduct, amount } = cartProduct;
+  if (!shopProduct) {
+    return null;
+  }
+
+  const imageWidth = 35;
+  const {
+    product: { mainImage, nameString, itemId },
+    shop,
+    formattedOldPrice,
+    discountedPercent,
+    formattedPrice,
+  } = shopProduct;
+
+  return (
+    <div className={classes.productHolder}>
+      <div data-cy={'cart-product'} className={classes.product}>
+        <div className={classes.productMainGrid}>
+          <div className={classes.productImage}>
+            <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
+          </div>
+          <div>
+            <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
+            <div className={classes.productContent}>
+              <div>
+                <div className={classes.productName}>{nameString}</div>
+                <div className={classes.shop}>
+                  <div>
+                    <span>винотека: </span>
+                    {shop.nameString}
+                  </div>
+                  <div>{shop.address.formattedAddress}</div>
+                </div>
+              </div>
+
+              <div>
+                <div className={classes.productTotals}>
+                  <ProductShopPrices
+                    className={classes.productTotalsPrice}
+                    formattedPrice={formattedPrice}
+                    formattedOldPrice={formattedOldPrice}
+                    discountedPercent={discountedPercent}
+                    size={'small'}
+                  />
+                  <Icon name={'cross'} className={classes.productTotalsIcon} />
+                  <div className={classes.productTotalsAmount}>{amount}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const OrderRoute: React.FC = () => {
   // const { showErrorNotification } = useNotificationsContext();
@@ -20,7 +85,7 @@ const OrderRoute: React.FC = () => {
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
-  const { productsCount } = cart;
+  const { productsCount, products } = cart;
   //   router.push('/thank-you').catch(() => {
   //     showErrorNotification();
   //   });
@@ -83,15 +148,16 @@ const OrderRoute: React.FC = () => {
 
                       <div className={classes.group}>
                         <div className={classes.groupTitle}>
-                          <div className={classes.groupTitleCounter}>1</div>
+                          <div className={classes.groupTitleCounter}>2</div>
                           Подтверждение заказа
                         </div>
 
                         <div className={classes.products} data-cy={'order-products'}>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda culpa
-                          et hic ipsa laudantium nostrum rerum tempora. Alias animi, aspernatur,
-                          commodi, corporis dicta dolore provident quod recusandae repudiandae sunt
-                          suscipit?
+                          {products.map((cartProduct) => {
+                            return (
+                              <OrderRouteProduct cartProduct={cartProduct} key={cartProduct.id} />
+                            );
+                          })}
                         </div>
 
                         <FormikTextarea

@@ -19,7 +19,7 @@ describe('Cart', () => {
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
 
-    // Add product
+    // Add product #1
     cy.getByCy(`card-${mockData.productA.slug}`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
@@ -32,7 +32,7 @@ describe('Cart', () => {
     cy.getByCy(`cart-modal-close`).click();
     cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
 
-    // Add second product
+    // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
     cy.getByTranslationFieldCy({
       cyPrefix: 'main-rubric',
@@ -44,7 +44,7 @@ describe('Cart', () => {
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
 
-    // Add shopless product from catalogue
+    // Add shopless product from catalogue #3
     cy.getByCy(`cart-modal-close`).click();
     cy.getByTranslationFieldCy({
       cyPrefix: 'main-rubric',
@@ -86,5 +86,9 @@ describe('Cart', () => {
     cy.getByCy(`order-form-phone`).type('78889990011');
     cy.getByCy(`order-form-email`).type('email@mail.com');
     cy.getByCy(`order-form-comment`).type('comment');
+
+    // Should have order products list
+    cy.getByCy(`order-products`).should('exist');
+    cy.getByCy(`order-product`).should('have.length', 3);
   });
 });

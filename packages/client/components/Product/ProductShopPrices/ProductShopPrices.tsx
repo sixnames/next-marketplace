@@ -8,6 +8,7 @@ interface ProductPricesInterface {
   formattedPrice: string;
   formattedOldPrice?: string | null;
   className?: string;
+  size?: 'small' | 'normal' | 'big';
 }
 
 const ProductShopPrices: React.FC<ProductPricesInterface> = ({
@@ -15,9 +16,10 @@ const ProductShopPrices: React.FC<ProductPricesInterface> = ({
   formattedOldPrice,
   formattedPrice,
   className,
+  size = 'normal',
 }) => {
   return (
-    <div className={`${classes.prices} ${className ? className : ''}`}>
+    <div className={`${classes.prices} ${classes[size]} ${className ? className : ''}`}>
       <div className={`${classes.price} ${discountedPercent ? classes.discountedPrice : ''}`}>
         <Currency className={classes.priceValue} value={formattedPrice} />
       </div>

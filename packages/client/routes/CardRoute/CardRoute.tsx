@@ -77,16 +77,26 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
   const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
-    { head: <Fragment>Характеристики</Fragment> },
+    {
+      head: <Fragment>Характеристики</Fragment>,
+      testId: 'features',
+    },
     {
       head: (
         <Fragment>
           Где купить <span>{`(${shopsCount})`}</span>
         </Fragment>
       ),
+      testId: 'shops',
     },
-    { head: <Fragment>Отзывы</Fragment> },
-    { head: <Fragment>Мнение экспертов</Fragment> },
+    {
+      head: <Fragment>Отзывы</Fragment>,
+      testId: 'feedback',
+    },
+    {
+      head: <Fragment>Мнение экспертов</Fragment>,
+      testId: 'reviews',
+    },
   ];
 
   return (

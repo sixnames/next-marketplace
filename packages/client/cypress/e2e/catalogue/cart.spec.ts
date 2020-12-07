@@ -21,7 +21,7 @@ describe('Cart', () => {
 
     // Add product
     cy.getByCy(`card-${mockData.productA.slug}`).should('exist');
-    cy.getByCy(`card-tabs-1`).click();
+    cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
     cy.getByCy(`card-shops-list`).should('exist');
     cy.getByCy(`card-shops-${mockData.shopA.slug}-plus`).click();
@@ -43,7 +43,7 @@ describe('Cart', () => {
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
     cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
     cy.getByCy(`connection-${mockData.connectionProductB.slug}`).click();
-    cy.getByCy(`card-tabs-1`).click();
+    cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
     cy.getByCy(`cart-counter`).should('contain', '2');

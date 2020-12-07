@@ -6,6 +6,7 @@ import Inner from '../Inner/Inner';
 
 export interface ReachTabsConfigItemInterface {
   head: any;
+  testId: string;
 }
 
 interface ReachTabsInterface {
@@ -20,9 +21,9 @@ const ReachTabs: React.FC<ReachTabsInterface> = ({ config, testId, frameClassNam
       <Tabs>
         <Inner className={`${classes.list}`} lowBottom lowTop>
           <TabList>
-            {config.map(({ head }, index) => {
+            {config.map(({ head, testId: tabsListItemTestId }) => {
               return (
-                <Tab key={index} data-cy={`${testId}-${index}`}>
+                <Tab key={tabsListItemTestId} data-cy={`${testId}-${tabsListItemTestId}`}>
                   {head}
                 </Tab>
               );

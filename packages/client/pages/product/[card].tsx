@@ -10,9 +10,14 @@ import getSiteServerSideProps, { SitePagePropsType } from '../../utils/getSiteSe
 
 interface CardInterface {
   cardData: GetCatalogueCardQueryQuery;
+  rubricSlug?: string;
 }
 
-const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, cardData }) => {
+const Card: React.FC<SitePagePropsType<CardInterface>> = ({
+  initialApolloState,
+  rubricSlug,
+  cardData,
+}) => {
   if (!cardData) {
     return (
       <SiteLayout initialApolloState={initialApolloState}>
@@ -26,13 +31,19 @@ const Card: React.FC<SitePagePropsType<CardInterface>> = ({ initialApolloState, 
   const { getProductCard } = cardData;
   const { cardNameString, descriptionString } = getProductCard;
 
+  const linkQuery: Record<string, any> = {};
+
+  if (rubricSlug) {
+    linkQuery.rubric = rubricSlug;
+  }
+
   return (
     <SiteLayout
       title={cardNameString}
       description={descriptionString}
       initialApolloState={initialApolloState}
     >
-      <CardRoute cardData={getProductCard} />
+      <CardRoute cardData={getProductCard} linkQuery={linkQuery} />
     </SiteLayout>
   );
 };
@@ -43,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     callback: async ({ initialProps, context, apolloClient }) => {
       const { query, req } = context;
       const { card, rubric } = query;
-      console.log(rubric);
+
       const cardData = await apolloClient.query({
         query: CATALOGUE_CARD_QUERY,
         context: {
@@ -58,6 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
         props: {
           ...initialProps,
           cardData: cardData.data,
+          rubricSlug: rubric as string,
         },
       };
     },

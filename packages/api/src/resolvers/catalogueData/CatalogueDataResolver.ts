@@ -107,7 +107,6 @@ export class CatalogueDataResolver {
         catalogueTitle,
       };
     } catch (e) {
-      console.log(e);
       return null;
     }
   }

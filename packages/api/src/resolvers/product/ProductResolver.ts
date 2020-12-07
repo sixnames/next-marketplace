@@ -845,8 +845,24 @@ export class ProductResolver {
       const cardConnections: ProductCardConnection[] = [];
       for await (const connection of connections) {
         const attribute = await AttributeModel.findById(connection.attributeId);
-        const products = await ProductModel.find({ _id: { $in: connection.productsIds } });
-
+        const products = await ProductModel.aggregate<Product>([
+          { $addFields: { productId: { $toString: '$_id' } } },
+          { $match: { productId: { $in: connection.productsIds } } },
+          // Lookup shop products
+          {
+            $lookup: {
+              from: 'shopproducts',
+              localField: 'productId',
+              foreignField: 'product',
+              as: 'shops',
+            },
+          },
+          // Count shop products
+          { $addFields: { shopsCount: { $size: '$shops' } } },
+          // Filter out products not added to the shops
+          { $match: { shopsCount: { $gt: 0 } } },
+        ]);
+        // console.log(JSON.stringify(products, null, 2));
         if (!attribute) {
           continue;
         }
@@ -865,6 +881,7 @@ export class ProductResolver {
             const productAttribute = productAttributesGroup.attributes.find(({ node }) => {
               return node.toString() === connection.attributeId.toString();
             });
+
             if (!productAttribute) {
               return acc;
             }
@@ -877,9 +894,9 @@ export class ProductResolver {
             return [
               ...acc,
               {
-                id: connectionProduct.id,
+                id: `${connectionProduct._id}`,
                 value: productConnectionValue,
-                isCurrent: connectionProduct.id.toString() === product.id.toString(),
+                isCurrent: connectionProduct._id?.toString() === product._id.toString(),
                 product: connectionProduct,
               },
             ];

@@ -33,6 +33,13 @@ export const cartFragment = gql`
   ${cartProductFragment}
 `;
 
+export const orderInCartFragment = gql`
+  fragment OrderInCart on Order {
+    id
+    itemId
+  }
+`;
+
 export const cartPayloadFragment = gql`
   fragment CartPayload on CartPayloadType {
     success
@@ -40,7 +47,26 @@ export const cartPayloadFragment = gql`
     cart {
       ...Cart
     }
+    order {
+      ...OrderInCart
+    }
   }
+  ${orderInCartFragment}
+  ${cartFragment}
+`;
+
+export const makeAnOrderPayloadFragment = gql`
+  fragment MakeAnOrderPayload on OrderPayloadType {
+    success
+    message
+    cart {
+      ...Cart
+    }
+    order {
+      ...OrderInCart
+    }
+  }
+  ${orderInCartFragment}
   ${cartFragment}
 `;
 
@@ -101,12 +127,8 @@ export const CLEAR_CART_MUTATION = gql`
 export const MAKE_AN_ORDER_MUTATION = gql`
   mutation MakeAnOrder($input: MakeAnOrderInput!) {
     makeAnOrder(input: $input) {
-      success
-      message
-      cart {
-        ...Cart
-      }
+      ...MakeAnOrderPayload
     }
   }
-  ${cartFragment}
+  ${makeAnOrderPayloadFragment}
 `;

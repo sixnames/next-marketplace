@@ -5,8 +5,6 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
 import CartAside from '../CartRoute/CartAside';
-// import { useNotificationsContext } from '../../context/notificationsContext';
-// import { useRouter } from 'next/router';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { makeAnOrderSchema } from '@yagu/validation';
@@ -38,7 +36,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 
   return (
     <div className={classes.productHolder}>
-      <div data-cy={'cart-product'} className={classes.product}>
+      <div data-cy={'order-product'} className={classes.product}>
         <div className={classes.productMainGrid}>
           <div className={classes.productImage}>
             <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
@@ -48,13 +46,6 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
             <div className={classes.productContent}>
               <div>
                 <div className={classes.productName}>{nameString}</div>
-                <div className={classes.shop}>
-                  <div>
-                    <span>винотека: </span>
-                    {shop.nameString}
-                  </div>
-                  <div>{shop.address.formattedAddress}</div>
-                </div>
               </div>
 
               <div>
@@ -70,6 +61,16 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                   <div className={classes.productTotalsAmount}>{amount}</div>
                 </div>
               </div>
+
+              <div>
+                <div className={classes.shop}>
+                  <div>
+                    <span>винотека: </span>
+                    {shop.nameString}
+                  </div>
+                  <div>{shop.address.formattedAddress}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -79,16 +80,13 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 };
 
 const OrderRoute: React.FC = () => {
-  // const { showErrorNotification } = useNotificationsContext();
-  // const router = useRouter();
+  const { makeAnOrder } = useSiteContext();
   const { cart } = useSiteContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
+
   const { productsCount, products } = cart;
-  //   router.push('/thank-you').catch(() => {
-  //     showErrorNotification();
-  //   });
 
   return (
     <div className={classes.cart} data-cy={'order-form'}>
@@ -109,7 +107,7 @@ const OrderRoute: React.FC = () => {
             comment: '',
           }}
           onSubmit={(values) => {
-            console.log(values);
+            makeAnOrder(values);
           }}
         >
           {() => {

@@ -181,6 +181,7 @@ type Cart {
 type CartPayloadType {
   cart: Cart
   message: String!
+  order: Order
   success: Boolean!
 }
 

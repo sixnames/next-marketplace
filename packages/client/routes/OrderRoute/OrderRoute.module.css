@@ -77,6 +77,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 1rem;
+  grid-row-gap: 0.5rem;
 }
 
 .productImage {
@@ -99,7 +100,6 @@
 }
 
 .productName {
-  margin-bottom: 0.5rem;
   font-size: 1.125rem;
   line-height: 1.4;
   font-weight: 700;

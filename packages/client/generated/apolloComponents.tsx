@@ -2166,38 +2166,7 @@ export type CartPayloadType = {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   cart?: Maybe<Cart>;
-};
-
-export type AddProductToCartInput = {
-  shopProductId: Scalars['ID'];
-  amount: Scalars['Int'];
-};
-
-export type AddShoplessProductToCartInput = {
-  productId: Scalars['ID'];
-  amount: Scalars['Int'];
-};
-
-export type AddShopToCartProductInput = {
-  cartProductId: Scalars['ID'];
-  shopProductId: Scalars['ID'];
-};
-
-export type UpdateProductInCartInput = {
-  cartProductId: Scalars['ID'];
-  amount: Scalars['Int'];
-};
-
-export type DeleteProductFromCartInput = {
-  cartProductId: Scalars['ID'];
-};
-
-export type OrderPayloadType = {
-  __typename?: 'OrderPayloadType';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
   order?: Maybe<Order>;
-  cart?: Maybe<Cart>;
 };
 
 export type Order = {
@@ -2275,6 +2244,38 @@ export enum OrderLogVariantEnum {
   Status = 'status',
   Message = 'message'
 }
+
+export type AddProductToCartInput = {
+  shopProductId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type AddShoplessProductToCartInput = {
+  productId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type AddShopToCartProductInput = {
+  cartProductId: Scalars['ID'];
+  shopProductId: Scalars['ID'];
+};
+
+export type UpdateProductInCartInput = {
+  cartProductId: Scalars['ID'];
+  amount: Scalars['Int'];
+};
+
+export type DeleteProductFromCartInput = {
+  cartProductId: Scalars['ID'];
+};
+
+export type OrderPayloadType = {
+  __typename?: 'OrderPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  order?: Maybe<Order>;
+  cart?: Maybe<Cart>;
+};
 
 export type MakeAnOrderInput = {
   name: Scalars['String'];
@@ -2840,12 +2841,32 @@ export type CartFragment = (
   )> }
 );
 
+export type OrderInCartFragment = (
+  { __typename?: 'Order' }
+  & Pick<Order, 'id' | 'itemId'>
+);
+
 export type CartPayloadFragment = (
   { __typename?: 'CartPayloadType' }
   & Pick<CartPayloadType, 'success' | 'message'>
   & { cart?: Maybe<(
     { __typename?: 'Cart' }
     & CartFragment
+  )>, order?: Maybe<(
+    { __typename?: 'Order' }
+    & OrderInCartFragment
+  )> }
+);
+
+export type MakeAnOrderPayloadFragment = (
+  { __typename?: 'OrderPayloadType' }
+  & Pick<OrderPayloadType, 'success' | 'message'>
+  & { cart?: Maybe<(
+    { __typename?: 'Cart' }
+    & CartFragment
+  )>, order?: Maybe<(
+    { __typename?: 'Order' }
+    & OrderInCartFragment
   )> }
 );
 
@@ -2934,11 +2955,7 @@ export type MakeAnOrderMutation = (
   { __typename?: 'Mutation' }
   & { makeAnOrder: (
     { __typename?: 'OrderPayloadType' }
-    & Pick<OrderPayloadType, 'success' | 'message'>
-    & { cart?: Maybe<(
-      { __typename?: 'Cart' }
-      & CartFragment
-    )> }
+    & MakeAnOrderPayloadFragment
   ) }
 );
 
@@ -4653,6 +4670,12 @@ export const CartFragmentDoc = gql`
   }
 }
     ${CartProductFragmentDoc}`;
+export const OrderInCartFragmentDoc = gql`
+    fragment OrderInCart on Order {
+  id
+  itemId
+}
+    `;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayloadType {
   success
@@ -4660,8 +4683,25 @@ export const CartPayloadFragmentDoc = gql`
   cart {
     ...Cart
   }
+  order {
+    ...OrderInCart
+  }
 }
-    ${CartFragmentDoc}`;
+    ${CartFragmentDoc}
+${OrderInCartFragmentDoc}`;
+export const MakeAnOrderPayloadFragmentDoc = gql`
+    fragment MakeAnOrderPayload on OrderPayloadType {
+  success
+  message
+  cart {
+    ...Cart
+  }
+  order {
+    ...OrderInCart
+  }
+}
+    ${CartFragmentDoc}
+${OrderInCartFragmentDoc}`;
 export const AttributeInGroupFragmentDoc = gql`
     fragment AttributeInGroup on Attribute {
   id
@@ -6191,14 +6231,10 @@ export type ClearCartMutationOptions = Apollo.BaseMutationOptions<ClearCartMutat
 export const MakeAnOrderDocument = gql`
     mutation MakeAnOrder($input: MakeAnOrderInput!) {
   makeAnOrder(input: $input) {
-    success
-    message
-    cart {
-      ...Cart
-    }
+    ...MakeAnOrderPayload
   }
 }
-    ${CartFragmentDoc}`;
+    ${MakeAnOrderPayloadFragmentDoc}`;
 export type MakeAnOrderMutationFn = Apollo.MutationFunction<MakeAnOrderMutation, MakeAnOrderMutationVariables>;
 
 /**

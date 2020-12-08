@@ -90,5 +90,9 @@ describe('Cart', () => {
     // Should have order products list
     cy.getByCy(`order-products`).should('exist');
     cy.getByCy(`order-product`).should('have.length', 3);
+
+    // Should make an order and redirect to the Thank you page
+    cy.getByCy(`cart-aside-confirm`).click();
+    cy.getByCy(`thank-you`).should('exist');
   });
 });

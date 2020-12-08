@@ -4,7 +4,7 @@ import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 import OrderRoute from '../routes/OrderRoute/OrderRoute';
 
-const Order: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
+const MakeAnOrder: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
     <SiteLayout initialApolloState={initialApolloState} title={'Корзина'}>
       <OrderRoute />
@@ -22,4 +22,4 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     },
   });
 
-export default Order;
+export default MakeAnOrder;

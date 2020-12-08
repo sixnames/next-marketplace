@@ -7,16 +7,20 @@ import {
   CartPayloadFragment,
   DeleteProductFromCartInput,
   InitialSiteQueryQuery,
+  MakeAnOrderInput,
+  MakeAnOrderPayloadFragment,
   UpdateProductInCartInput,
   useAddProductToCartMutation,
   useAddShoplessProductToCartMutation,
   useAddShopToCartProductMutation,
   useClearCartMutation,
   useDeleteProductFromCartMutation,
+  useMakeAnOrderMutation,
   useUpdateProductInCartMutation,
 } from '../generated/apolloComponents';
 import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { CART_MODAL } from '../config/modals';
+import { useRouter } from 'next/router';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
@@ -30,7 +34,7 @@ export interface StickyNavAttributeInterface {
 interface SiteContextStateInterface {
   isBurgerDropdownOpen: boolean;
   isSearchOpen: boolean;
-  cart: InitialSiteQueryQuery['getSessionCart'];
+  cart: CartFragment;
 }
 
 interface SiteContextInterface extends SiteContextStateInterface {
@@ -66,6 +70,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     isBurgerDropdownOpen: false,
     isSearchOpen: false,
     cart: initialApolloState.getSessionCart,
+    lastOrderItemId: null,
   }));
 
   const initialValue = useMemo(() => {
@@ -80,7 +85,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 };
 
 interface CartContextUpdaterInterface {
-  payload?: CartPayloadFragment | null;
+  payload?: CartPayloadFragment | MakeAnOrderPayloadFragment | null;
   mutationCallback?: () => void;
 }
 
@@ -96,11 +101,13 @@ interface UseSiteContextInterface extends SiteContextInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  makeAnOrder: (input: MakeAnOrderInput) => void;
   clearCart: () => void;
   fixBodyScroll: (fixed: boolean) => void;
 }
 
 function useSiteContext(): UseSiteContextInterface {
+  const router = useRouter();
   const context = useContext<SiteContextInterface>(SiteContext);
   const { showErrorNotification, showModal, showSuccessNotification } = useMutationCallbacks();
   if (!context) {
@@ -117,6 +124,7 @@ function useSiteContext(): UseSiteContextInterface {
 
       // Update context
       const { cart, success } = payload;
+
       if (cart && success) {
         context.setState({
           isSearchOpen: false,
@@ -191,6 +199,20 @@ function useSiteContext(): UseSiteContextInterface {
       showSuccessNotification(clearCart);
       cartContextUpdater({
         payload: clearCart,
+      });
+    },
+  });
+
+  const [makeAnOrderMutation] = useMakeAnOrderMutation({
+    onCompleted: ({ makeAnOrder }) => {
+      const { order } = makeAnOrder;
+      cartContextUpdater({
+        payload: makeAnOrder,
+        mutationCallback: () => {
+          router.push(`/thank-you?orderId=${order?.itemId}`).catch(() => {
+            showErrorNotification();
+          });
+        },
       });
     },
   });
@@ -342,6 +364,19 @@ function useSiteContext(): UseSiteContextInterface {
     });
   }, [clearCartMutation, showErrorNotification]);
 
+  const makeAnOrder = useCallback(
+    (input: MakeAnOrderInput) => {
+      makeAnOrderMutation({
+        variables: {
+          input,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [makeAnOrderMutation, showErrorNotification],
+  );
+
   return {
     ...context,
     fixBodyScroll,
@@ -357,6 +392,7 @@ function useSiteContext(): UseSiteContextInterface {
     updateProductInCart,
     deleteProductFromCart,
     clearCart,
+    makeAnOrder,
   };
 }
 

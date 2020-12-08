@@ -240,7 +240,7 @@ const CartRoute: React.FC = () => {
               cart={cart}
               buttonText={'Купить'}
               onConfirmHandler={() => {
-                router.push('/order').catch(() => {
+                router.push('/make-an-order').catch(() => {
                   showErrorNotification();
                 });
               }}

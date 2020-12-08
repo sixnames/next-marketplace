@@ -35,11 +35,15 @@ import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';
 import getBooleanFromArray from '@yagu/client/utils/getBooleanFromArray';
+import { Order } from '../../entities/Order';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
   @Field((_type) => Cart, { nullable: true })
   cart?: Cart;
+
+  @Field((_type) => Order, { nullable: true })
+  order?: Order | null;
 }
 
 @Resolver((_for) => Cart)

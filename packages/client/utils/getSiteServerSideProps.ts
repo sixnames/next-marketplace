@@ -69,7 +69,7 @@ async function getSiteServerSideProps<T>({
       apolloClient,
     });
   } catch (e) {
-    console.log('====== getServerSideProps error ======');
+    console.log('====== getSiteServerSideProps error ======');
     console.log(JSON.stringify(e, null, 2));
     return { props: {} };
   }

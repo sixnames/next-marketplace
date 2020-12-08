@@ -171,6 +171,7 @@ type Cart {
   createdAt: DateTime!
   formattedTotalPrice: String!
   id: ID!
+  isWithShopless: Boolean!
   products: [CartProduct!]!
   productsCount: Int!
   totalPrice: Int!
@@ -180,6 +181,7 @@ type Cart {
 type CartPayloadType {
   cart: Cart
   message: String!
+  order: Order
   success: Boolean!
 }
 
@@ -525,6 +527,7 @@ type LanguagePayloadType {
 }
 
 input MakeAnOrderInput {
+  comment: String
   email: String!
   name: String!
   phone: String!
@@ -701,6 +704,7 @@ input OptionVariantInput {
 }
 
 type Order {
+  comment: String
   createdAt: DateTime!
   customer: OrderCustomer!
   formattedTotalPrice: String!
@@ -716,6 +720,7 @@ type Order {
 
 type OrderCustomer {
   email: String!
+  formattedPhone: FormattedPhone!
   id: ID!
   itemId: Int!
   lastName: String
@@ -739,6 +744,7 @@ enum OrderLogVariantEnum {
 }
 
 type OrderPayloadType {
+  cart: Cart
   message: String!
   order: Order
   success: Boolean!

@@ -2,8 +2,18 @@ import React from 'react';
 import classes from './Breadcrumbs.module.css';
 import Inner from '../Inner/Inner';
 import { useAppContext } from '../../context/appContext';
+import Link, { LinkInterface } from '../Link/Link';
 
-const Breadcrumbs: React.FC = () => {
+interface BreadcrumbsItemInterface extends LinkInterface {
+  name: string;
+}
+
+interface BreadcrumbsInterface {
+  currentPageName: string;
+  config: BreadcrumbsItemInterface[];
+}
+
+const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config }) => {
   const { isMobile } = useAppContext();
 
   if (isMobile) {
@@ -14,11 +24,21 @@ const Breadcrumbs: React.FC = () => {
     <div className={classes.frame}>
       <Inner>
         <ul className={classes.list}>
-          <li className={classes.listItem}>Главная —</li>
-          <li className={classes.listItem}>Вино —</li>
-          <li className={classes.listItem}>Белое —</li>
-          <li className={classes.listItem}>Сухое —</li>
-          <li className={classes.listItem}>Brancott Estate</li>
+          <li className={classes.listItem}>
+            <Link className={classes.link} href={'/'}>
+              <span>Главная</span> —
+            </Link>
+          </li>
+          {config.map((configItem, index) => {
+            return (
+              <li className={classes.listItem} key={index}>
+                <Link className={classes.link} href={configItem.href}>
+                  <span>{configItem.name}</span> —
+                </Link>
+              </li>
+            );
+          })}
+          <li className={`${classes.listItem} ${classes.listItemCurrent}`}>{currentPageName}</li>
         </ul>
       </Inner>
     </div>

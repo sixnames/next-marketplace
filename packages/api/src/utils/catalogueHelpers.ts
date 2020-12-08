@@ -140,6 +140,19 @@ export function attributesReducer(
   return [...acc, { key: param.key, value: param.value }];
 }
 
+export function getAttributesPipeline(processedAttributes: ProcessedAttributeInterface[]) {
+  return processedAttributes.map(({ key, value }) => {
+    return {
+      'attributesGroups.attributes': {
+        $elemMatch: {
+          key,
+          value: { $in: value },
+        },
+      },
+    };
+  });
+}
+
 interface GetCatalogueTitleInterface {
   processedAttributes: ProcessedAttributeInterface[];
   lang: string;

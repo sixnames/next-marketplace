@@ -23,6 +23,10 @@ export class Order extends TimeStamps {
   @prop()
   readonly itemId: number;
 
+  @Field(() => String, { nullable: true })
+  @prop({ type: String })
+  comment?: string | null;
+
   @Field(() => OrderStatus)
   @prop({ required: true, ref: OrderStatus })
   status: string;

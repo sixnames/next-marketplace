@@ -52,9 +52,10 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 
 interface CardRouteInterface {
   cardData: GetCatalogueCardQueryQuery['getProductCard'];
+  linkQuery?: Record<string, any>;
 }
 
-const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
+const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) => {
   const {
     id,
     slug,
@@ -76,21 +77,31 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
-    { head: <Fragment>Характеристики</Fragment> },
+    {
+      head: <Fragment>Характеристики</Fragment>,
+      testId: 'features',
+    },
     {
       head: (
         <Fragment>
           Где купить <span>{`(${shopsCount})`}</span>
         </Fragment>
       ),
+      testId: 'shops',
     },
-    { head: <Fragment>Отзывы</Fragment> },
-    { head: <Fragment>Мнение экспертов</Fragment> },
+    {
+      head: <Fragment>Отзывы</Fragment>,
+      testId: 'feedback',
+    },
+    {
+      head: <Fragment>Мнение экспертов</Fragment>,
+      testId: 'reviews',
+    },
   ];
 
   return (
     <div className={classes.card} data-cy={`card-${slug}`}>
-      <Breadcrumbs />
+      <Breadcrumbs currentPageName={cardNameString} config={[]} />
 
       <Inner>
         <div className={classes.mainFrame}>
@@ -154,10 +165,8 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                                 className={`${classes.connectionsGroupItem}`}
                                 key={id}
                                 href={{
-                                  pathname: `/product/[card]`,
-                                }}
-                                as={{
                                   pathname: `/product/${product.slug}`,
+                                  query: linkQuery,
                                 }}
                               >
                                 {value}

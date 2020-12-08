@@ -77,7 +77,7 @@ describe('Cart', () => {
   `;
 
   const cartFragment = gql`
-    fragment Cart on Cart {
+    fragment CartTestFragment on Cart {
       id
       totalPrice
       formattedTotalPrice
@@ -109,7 +109,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -146,7 +146,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -179,7 +179,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -213,7 +213,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -245,7 +245,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -269,7 +269,7 @@ describe('Cart', () => {
       gql`
         query GetSessionCart {
           getSessionCart {
-            ...Cart
+            ...CartTestFragment
           }
         }
         ${cartFragment}
@@ -290,7 +290,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -321,7 +321,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }
@@ -354,7 +354,7 @@ describe('Cart', () => {
             success
             message
             cart {
-              ...Cart
+              ...CartTestFragment
             }
           }
         }

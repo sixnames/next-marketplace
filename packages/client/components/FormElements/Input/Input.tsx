@@ -81,8 +81,9 @@ const Input: React.FC<InputPropsInterface> = ({
           value={currentValue}
           name={name}
           {...props}
-          data-cy={testId}
           mask='+9 999 999-99-99'
+          data-cy={testId}
+          data-error={notValid ? name : ''}
         />
       ) : (
         <input
@@ -92,6 +93,7 @@ const Input: React.FC<InputPropsInterface> = ({
           name={name}
           type={type ? type : 'text'}
           data-cy={testId}
+          data-error={notValid ? name : ''}
           {...props}
         />
       )}

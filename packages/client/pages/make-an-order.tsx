@@ -2,12 +2,12 @@ import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
-import CartRoute from '../routes/CartRoute/CartRoute';
+import MakeAnOrderRoute from '../routes/MakeAnOrderRoute/MakeAnOrderRoute';
 
-const Cart: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
+const MakeAnOrder: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
     <SiteLayout initialApolloState={initialApolloState} title={'Корзина'}>
-      <CartRoute />
+      <MakeAnOrderRoute />
     </SiteLayout>
   );
 };
@@ -22,4 +22,4 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     },
   });
 
-export default Cart;
+export default MakeAnOrder;

@@ -9,11 +9,10 @@ import { useAppContext } from '../../context/appContext';
 import Modal from '../../components/Modal/Modal';
 import { SitePagePropsType } from '../../utils/getSiteServerSideProps';
 import { SiteContextProvider, useSiteContext } from '../../context/siteContext';
-import Inner from '../../components/Inner/Inner';
-import RequestError from '../../components/RequestError/RequestError';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 import { debounce } from 'lodash';
+import ErrorBoundaryFallback from '../../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -93,13 +92,7 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
   initialApolloState,
 }) => {
   if (!initialApolloState) {
-    return (
-      <div className={classes.frame}>
-        <Inner>
-          <RequestError />
-        </Inner>
-      </div>
-    );
+    return <ErrorBoundaryFallback />;
   }
 
   return (

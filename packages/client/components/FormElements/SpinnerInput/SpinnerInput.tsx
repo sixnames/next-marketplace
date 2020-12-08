@@ -41,6 +41,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
   plusTestId,
   minusTestId,
   size = 'normal',
+  max,
   ...props
 }) => {
   const sizeClass = classes[size];
@@ -62,7 +63,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         disabled={disabled}
         className={`${classes.butn}`}
         onClick={() => {
-          if (onChange && min !== currentValue) {
+          if (onChange && (min ? min <= currentValue : true)) {
             onChange({
               target: {
                 name: `${name}`,
@@ -81,8 +82,15 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         name={name}
         type={'number'}
         data-cy={testId}
-        onChange={onChange}
+        onChange={(e) => {
+          const isMinAllowed = min ? min <= noNaN(e.target.value) : true;
+          const isMaxAllowed = max ? noNaN(e.target.value) <= max : true;
+          if (onChange && isMinAllowed && isMaxAllowed) {
+            onChange(e);
+          }
+        }}
         min={min}
+        max={max}
         disabled={disabled}
         {...props}
       />
@@ -91,7 +99,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         disabled={disabled}
         className={`${classes.butn} ${classes.butnPlus}`}
         onClick={() => {
-          if (onChange) {
+          if (onChange && (max ? currentValue + counterStep <= max : true)) {
             onChange({
               target: {
                 name: `${name}`,

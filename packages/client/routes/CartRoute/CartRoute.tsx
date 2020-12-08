@@ -165,6 +165,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
             name={'amount'}
             value={amount}
             min={1}
+            max={available}
             testId={`${slug}-amount`}
             plusTestId={`${slug}-plus`}
             minusTestId={`${slug}-minus`}

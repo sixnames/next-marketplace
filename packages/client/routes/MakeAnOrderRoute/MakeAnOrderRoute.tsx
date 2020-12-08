@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './OrderRoute.module.css';
+import classes from './MakeAnOrderRoute.module.css';
 import { useSiteContext } from '../../context/siteContext';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
@@ -79,7 +79,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
   );
 };
 
-const OrderRoute: React.FC = () => {
+const MakeAnOrderRoute: React.FC = () => {
   const { makeAnOrder } = useSiteContext();
   const { cart } = useSiteContext();
   const validationSchema = useValidationSchema({
@@ -185,4 +185,4 @@ const OrderRoute: React.FC = () => {
   );
 };
 
-export default OrderRoute;
+export default MakeAnOrderRoute;

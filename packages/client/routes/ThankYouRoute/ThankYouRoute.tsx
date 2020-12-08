@@ -24,6 +24,7 @@ const ThankYouRoute: React.FC = () => {
         </div>
         <div className={classes.btns}>
           <Button
+            className={classes.btnsItem}
             theme={'secondary'}
             onClick={() => {
               router.push('/').catch(() => {
@@ -33,7 +34,9 @@ const ThankYouRoute: React.FC = () => {
           >
             на главную
           </Button>
-          <Button theme={'secondary'}>каталог вин</Button>
+          <Button className={classes.btnsItem} theme={'secondary'}>
+            каталог вин
+          </Button>
         </div>
       </Inner>
     </div>

@@ -1,8 +1,9 @@
 .frame {
   --framePadding: 1.5rem;
+  --stickyGap: 1.5rem;
 
   position: sticky;
-  top: calc(var(--minLinkHeight) + 1.5rem);
+  top: calc(var(--minLinkHeight) + var(--stickyGap));
   left: 0;
   border-radius: var(--borderRadius);
   background-color: var(--secondaryBackground);
@@ -110,4 +111,10 @@
   display: block;
   margin-top: var(--framePadding);
   text-align: center;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    top: var(--stickyGap);
+  }
 }

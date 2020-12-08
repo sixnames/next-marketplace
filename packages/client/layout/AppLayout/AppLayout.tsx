@@ -9,12 +9,11 @@ import Modal from '../../components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from '../../hooks/useCompact';
 import { AppPageInterface } from '../../utils/getAppServerSideProps';
-import Inner from '../../components/Inner/Inner';
-import RequestError from '../../components/RequestError/RequestError';
 import PrivateRoute from '../PrivateRoute';
 import getFieldArrayFromTree from '../../utils/getFieldArrayFromTree';
 import { AppNavContextProvider } from '../../context/appNavContext';
 import { ROUTE_APP } from '@yagu/config';
+import ErrorBoundaryFallback from '../../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface AppLayoutInterface extends AppPageInterface {
   title?: string;
@@ -49,13 +48,7 @@ const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, tit
 
 const AppLayout: React.FC<AppLayoutInterface> = ({ children, title, initialApolloState }) => {
   if (!initialApolloState) {
-    return (
-      <div className={classes.frame}>
-        <Inner>
-          <RequestError />
-        </Inner>
-      </div>
-    );
+    return <ErrorBoundaryFallback />;
   }
 
   const { appNavigation } = initialApolloState.getSessionRole;

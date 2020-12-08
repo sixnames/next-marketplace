@@ -1,12 +1,11 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
-import Inner from '../components/Inner/Inner';
 import { GetCatalogueRubricQuery } from '../generated/apolloComponents';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
-import RequestError from '../components/RequestError/RequestError';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
+import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface CatalogueInterface {
   rubricData: GetCatalogueRubricQuery;
@@ -17,13 +16,7 @@ const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   rubricData,
 }) => {
   if (!rubricData || !rubricData.getCatalogueData) {
-    return (
-      <SiteLayout initialApolloState={initialApolloState}>
-        <Inner>
-          <RequestError />
-        </Inner>
-      </SiteLayout>
-    );
+    return <ErrorBoundaryFallback />;
   }
 
   const { getCatalogueData } = rubricData;

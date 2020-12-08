@@ -9,7 +9,7 @@ import { ApolloProvider } from '@apollo/client';
 import { ConfigContextProvider } from '../context/configContext';
 import { LanguageContextProvider } from '../context/languageContext';
 import { UserContextProvider } from '../context/userContext';
-import RequestError from '../components/RequestError/RequestError';
+import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface AppInterface {
   Component: any;
@@ -22,7 +22,7 @@ const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   // const apolloClient = useApollo(pageProps.initialApolloState);
 
   if (!pageProps.initialApolloState) {
-    return <RequestError />;
+    return <ErrorBoundaryFallback />;
   }
 
   return (

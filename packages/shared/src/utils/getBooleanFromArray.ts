@@ -1,5 +1,5 @@
 type ConditionType<T> = (item: T) => boolean;
-function getBooleanFromArray<T>(arr: T[], condition: ConditionType<T>): boolean {
+export function getBooleanFromArray<T>(arr: T[], condition: ConditionType<T>): boolean {
   const counter = arr.reduce((acc, item) => {
     if (condition(item)) {
       return acc + 1;
@@ -8,5 +8,3 @@ function getBooleanFromArray<T>(arr: T[], condition: ConditionType<T>): boolean 
   }, 0);
   return counter > 0;
 }
-
-export default getBooleanFromArray;

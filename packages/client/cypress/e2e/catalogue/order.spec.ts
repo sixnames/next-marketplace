@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Cart', () => {
+describe('Make an order', () => {
   let mockData: any;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
@@ -11,7 +11,7 @@ describe('Cart', () => {
     cy.clearTestData();
   });
 
-  it('Should CRUD cart items', () => {
+  it('Should make an order', () => {
     cy.getByTranslationFieldCy({
       cyPrefix: 'main-rubric',
       languages: mockData.rubricLevelOneA.name,
@@ -24,8 +24,6 @@ describe('Cart', () => {
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
     cy.getByCy(`card-shops-list`).should('exist');
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-plus`).click();
-    cy.getByCy(`card-shops-${mockData.shopA.slug}-input`).should('have.value', '2');
     cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
 
     // Add same product

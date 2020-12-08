@@ -11,7 +11,7 @@ import classes from './RoleAppNavigation.module.css';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import getBooleanFromArray from '../../utils/getBooleanFromArray';
+import { getBooleanFromArray } from '@yagu/shared';
 
 const RoleAppNavigation: React.FC<RoleContentInterface> = ({ role }) => {
   const { allowedAppNavigation } = role;
@@ -51,7 +51,7 @@ const RoleAppNavigation: React.FC<RoleContentInterface> = ({ role }) => {
             return false;
           }
           const boolArray = childrenIds.map((id) =>
-            getBooleanFromArray(allowedAppNavigation, (allowedId) => allowedId === id),
+            getBooleanFromArray(allowedAppNavigation, (allowedId: string) => allowedId === id),
           );
           const filteredBoolArray = boolArray.filter((bool) => bool);
           return filteredBoolArray.length > 0;

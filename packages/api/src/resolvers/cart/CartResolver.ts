@@ -34,7 +34,7 @@ import { getCurrencyString } from '@yagu/shared';
 import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';
-import getBooleanFromArray from '@yagu/client/utils/getBooleanFromArray';
+import { getBooleanFromArray } from '@yagu/shared';
 import { Order } from '../../entities/Order';
 
 @ObjectType()

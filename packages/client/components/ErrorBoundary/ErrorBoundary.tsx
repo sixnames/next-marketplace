@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo } from 'react';
 import { ObjectType } from '../../types';
+import ErrorBoundaryFallback from './ErrorBoundaryFallback';
 
 interface ErrorBoundaryStateInterface {
   hasError: boolean;
@@ -27,23 +28,7 @@ class ErrorBoundary extends Component<ObjectType, ErrorBoundaryStateInterface> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div
-          style={{
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 40,
-            paddingBottom: 40,
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '1.25em',
-          }}
-        >
-          <p>УПС! Что-то пошло не так.</p>
-          <p>Лог ошибки отправлен разработчикам.</p>
-          <p>Просим прощения за неудобства!</p>
-        </div>
-      );
+      return <ErrorBoundaryFallback />;
     }
     return this.props.children;
   }

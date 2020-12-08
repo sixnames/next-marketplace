@@ -12,12 +12,22 @@ import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
   testId?: string;
+  rubricSlug?: string;
 }
 
-const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, testId }) => {
+const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
+  product,
+  testId,
+  rubricSlug,
+}) => {
   const { addShoplessProductToCart } = useSiteContext();
   const { nameString, mainImage, slug, cardPrices, id } = product;
   const imageWidth = 50;
+  const linkQuery: Record<string, any> = {};
+
+  if (rubricSlug) {
+    linkQuery.rubric = rubricSlug;
+  }
 
   return (
     <div className={classes.frame} data-cy={testId}>
@@ -62,13 +72,11 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({ product, te
       <ProductMarker>Выбор покупателей</ProductMarker>
 
       <Link
-        href={{
-          pathname: `/product/[card]`,
-        }}
-        as={{
-          pathname: `/product/${slug}`,
-        }}
         className={classes.link}
+        href={{
+          pathname: `/product/${slug}`,
+          query: linkQuery,
+        }}
       >
         {nameString}
       </Link>

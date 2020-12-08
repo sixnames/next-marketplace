@@ -1,0 +1,120 @@
+.frame {
+  --framePadding: 1.5rem;
+  --stickyGap: 1.5rem;
+
+  position: sticky;
+  top: calc(var(--minLinkHeight) + var(--stickyGap));
+  left: 0;
+  border-radius: var(--borderRadius);
+  background-color: var(--secondaryBackground);
+  box-shadow: var(--wp-shadow-100);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.frameTop {
+  padding-top: var(--framePadding);
+  padding-right: var(--framePadding);
+  padding-bottom: var(--framePadding);
+  padding-left: var(--framePadding);
+}
+
+.frameBottom {
+  padding-top: var(--framePadding);
+  padding-right: var(--framePadding);
+  padding-bottom: var(--framePadding);
+  padding-left: var(--framePadding);
+  background-color: var(--primaryBackground);
+  border-top: 1px solid var(--borderColor);
+}
+
+[data-theme='dark'] .frameBottom {
+  background-color: var(--wp-dark-gray-100);
+  border-color: var(--wp-dark-gray-100);
+}
+
+.title {
+  margin-bottom: var(--framePadding);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.title span {
+  font-weight: 400;
+  color: var(--textSecondaryColor);
+}
+
+.totals {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--framePadding);
+}
+
+.totalsTitle {
+  font-size: 1.5rem;
+  color: var(--textSecondaryColor);
+}
+
+.totalsPrice {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+}
+
+.totalsPrice [data-price-value] {
+  font-size: 1.5rem;
+  color: var(--textColor);
+  font-weight: 700;
+}
+
+.frame .totalsButton {
+  width: 100%;
+}
+
+.infoList:not(:last-child) {
+  margin-bottom: var(--framePadding);
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--textSecondaryColor);
+}
+
+.info:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.infoValue {
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.infoValue .price {
+  font-size: 0.876rem;
+  color: var(--textSecondaryColor);
+}
+
+.infoValue .priceValue {
+  color: var(--textColor);
+  font-size: 1rem;
+}
+
+.warning {
+  margin-top: var(--framePadding);
+  color: var(--wp-error);
+  font-weight: 600;
+}
+
+.backLink {
+  display: block;
+  margin-top: var(--framePadding);
+  text-align: center;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    top: var(--stickyGap);
+  }
+}

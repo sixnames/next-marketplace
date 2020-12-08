@@ -49,7 +49,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
 
   // Shop A products
   const shopAProductA = await ShopProductModel.create({
-    available: 1,
+    available: 20,
     price: 100,
     oldPrices: [],
     product: productA.id,

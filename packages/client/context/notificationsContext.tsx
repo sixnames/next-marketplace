@@ -101,11 +101,11 @@ function useNotificationsContext() {
 
   const showErrorNotification = useCallback(
     (props?: ApiNotificationInterface) => {
-      const { title = ERROR_NOTIFICATION_MESSAGE, message = 'Попробуйте ещё раз' } = props || {};
+      const { title = ERROR_NOTIFICATION_MESSAGE } = props || {};
 
       showNotification({
         title,
-        message,
+        message: '',
         variant: 'error',
         testId: 'error-notification',
       });

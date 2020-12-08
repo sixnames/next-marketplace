@@ -10,4 +10,7 @@ export class MakeAnOrderInput {
 
   @Field((_type) => String)
   email: string;
+
+  @Field((_type) => String, { nullable: true })
+  comment?: string | null;
 }

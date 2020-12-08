@@ -25,11 +25,19 @@ export const cartFragment = gql`
     id
     formattedTotalPrice
     productsCount
+    isWithShopless
     products {
       ...CartProduct
     }
   }
   ${cartProductFragment}
+`;
+
+export const orderInCartFragment = gql`
+  fragment OrderInCart on Order {
+    id
+    itemId
+  }
 `;
 
 export const cartPayloadFragment = gql`
@@ -39,7 +47,26 @@ export const cartPayloadFragment = gql`
     cart {
       ...Cart
     }
+    order {
+      ...OrderInCart
+    }
   }
+  ${orderInCartFragment}
+  ${cartFragment}
+`;
+
+export const makeAnOrderPayloadFragment = gql`
+  fragment MakeAnOrderPayload on OrderPayloadType {
+    success
+    message
+    cart {
+      ...Cart
+    }
+    order {
+      ...OrderInCart
+    }
+  }
+  ${orderInCartFragment}
   ${cartFragment}
 `;
 
@@ -95,4 +122,13 @@ export const CLEAR_CART_MUTATION = gql`
     }
   }
   ${cartPayloadFragment}
+`;
+
+export const MAKE_AN_ORDER_MUTATION = gql`
+  mutation MakeAnOrder($input: MakeAnOrderInput!) {
+    makeAnOrder(input: $input) {
+      ...MakeAnOrderPayload
+    }
+  }
+  ${makeAnOrderPayloadFragment}
 `;

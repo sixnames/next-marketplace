@@ -12,3 +12,24 @@
   display: inline-block;
   margin-right: 0.25rem;
 }
+
+.listItemCurrent {
+  color: var(--textSecondaryColor);
+}
+
+.link {
+  color: var(--textColor);
+}
+
+.link:hover {
+  color: var(--textColor);
+  text-decoration: none;
+}
+
+.link span {
+  transition: all 0.2s;
+}
+
+.link:hover span {
+  color: var(--theme);
+}

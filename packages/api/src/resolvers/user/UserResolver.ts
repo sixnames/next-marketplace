@@ -148,11 +148,10 @@ export class UserResolver {
         length: 10,
         numbers: true,
       });
-      const { role, ...values } = input;
       const user = await UserModel.create({
-        ...values,
+        ...input,
+        phone: phoneToRaw(input.phone),
         password,
-        role,
       });
 
       if (!user) {
@@ -519,5 +518,10 @@ export class UserResolver {
       throw new Error('Role not found');
     }
     return role;
+  }
+
+  @FieldResolver()
+  async id(@Root() user: DocumentType<User>): Promise<string> {
+    return `${user.id || user._id}`;
   }
 }

@@ -2,6 +2,8 @@ import { FieldResolver, Resolver, Root } from 'type-graphql';
 import { OrderCustomer } from '../../entities/OrderCustomer';
 import { DocumentType } from '@typegoose/typegoose';
 import { User, UserModel } from '../../entities/User';
+import { FormattedPhone } from '../../entities/FormattedPhone';
+import { phoneToRaw, phoneToReadable } from '@yagu/shared';
 
 @Resolver((_for) => OrderCustomer)
 export class OrderCustomerResolver {
@@ -9,6 +11,15 @@ export class OrderCustomerResolver {
   @FieldResolver()
   async user(@Root() orderCustomer: DocumentType<OrderCustomer>): Promise<User | null> {
     return UserModel.findOne({ _id: orderCustomer.user });
+  }
+
+  @FieldResolver(() => FormattedPhone)
+  formattedPhone(@Root() user: DocumentType<User>): FormattedPhone {
+    const { phone } = user;
+    return {
+      raw: phoneToRaw(phone),
+      readable: phoneToReadable(phone),
+    };
   }
 
   @FieldResolver()

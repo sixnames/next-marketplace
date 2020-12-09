@@ -11,10 +11,12 @@ import {
   CustomFilter,
   Localization,
   LocalizationPayloadInterface,
+  SessionCart,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { updateShopProductSchema } from '@yagu/validation';
 import { getCurrencyString, getPercentage } from '@yagu/shared';
+import { Cart } from '../../entities/Cart';
 
 const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(ShopProduct.name);
 
@@ -115,6 +117,22 @@ export class ShopProductResolver {
           lang,
         })
       : null;
+  }
+
+  @FieldResolver((_returns) => String, { nullable: true })
+  async inCartCount(
+    @Root() shopProduct: DocumentType<ShopProduct>,
+    @SessionCart() cart: DocumentType<Cart>,
+  ): Promise<number> {
+    const cartProduct = cart.products.find((cartProduct) => {
+      return cartProduct?.shopProduct?.toString() === shopProduct.id.toString();
+    });
+
+    if (!cartProduct) {
+      return 0;
+    }
+
+    return cartProduct.amount;
   }
 
   @FieldResolver((_returns) => Int, { nullable: true })

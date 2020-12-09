@@ -1302,6 +1302,7 @@ type ShopProduct {
   formattedOldPrice: String
   formattedPrice: String!
   id: ID!
+  inCartCount: Int!
   itemId: Int!
   oldPrices: [ShopProductOldPrice!]!
   price: Float!
@@ -1561,6 +1562,7 @@ type User {
   itemId: Int!
   lastName: String
   name: String!
+  orders: [Order!]!
   phone: String!
   role: Role!
   secondName: String

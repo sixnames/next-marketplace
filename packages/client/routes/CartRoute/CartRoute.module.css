@@ -147,6 +147,21 @@
   margin-right: 2rem;
 }
 
+.emptyBtns {
+  --buttonsGap: 1rem;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: var(--buttonsGap);
+  grid-row-gap: var(--buttonsGap);
+  max-width:  calc(var(--buttonsGap) + (var(--buttonMinWidth) * 2));
+}
+
+.emptyBtns .emptyBtnsItem {
+  max-width: 100%;
+}
+
+
 @media only screen and (max-width: 1024px) {
   .cart {
     margin-top: 3rem;

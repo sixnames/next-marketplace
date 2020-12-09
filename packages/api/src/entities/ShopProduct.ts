@@ -67,6 +67,9 @@ export class ShopProduct extends TimeStamps {
   @Field(() => Int, { nullable: true })
   readonly discountedPercent?: number | null;
 
+  @Field(() => Int)
+  readonly inCartCount?: number;
+
   @Field()
   readonly createdAt: Date;
 

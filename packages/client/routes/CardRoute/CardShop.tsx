@@ -20,7 +20,14 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
   const { addProductToCart } = useSiteContext();
   const [amount, setAmount] = useState<number>(1);
-  const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
+  const {
+    shop,
+    formattedOldPrice,
+    formattedPrice,
+    discountedPercent,
+    available,
+    inCartCount,
+  } = shopProduct;
   const {
     assets,
     nameString,
@@ -30,6 +37,8 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
     contacts: { formattedPhones },
   } = shop;
   const mainImage = assets[0].url;
+
+  const disabled = amount + inCartCount > available;
 
   return (
     <div className={`${classes.frame}`}>
@@ -80,6 +89,10 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
             />
             <div className={classes.available}>В наличии {` ${available} `}шт.</div>
 
+            {inCartCount > 0 ? (
+              <div className={classes.available}>В корзине {` ${inCartCount} `}шт.</div>
+            ) : null}
+
             <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
 
             <div className={classes.moreLink}>
@@ -89,13 +102,14 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
 
           {isMobile ? (
             <Button
+              className={classes.mobileButton}
+              disabled={disabled}
               onClick={() => {
                 addProductToCart({
                   amount,
                   shopProductId: shopProduct.id,
                 });
               }}
-              className={classes.mobileButton}
             >
               <Icon name={'cart'} />
             </Button>
@@ -115,6 +129,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
                 value={amount}
               />
               <Button
+                disabled={disabled}
                 testId={`card-shops-${slug}-add-to-cart`}
                 onClick={() => {
                   addProductToCart({

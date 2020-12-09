@@ -30,7 +30,7 @@ import {
   updateProductInCartSchema,
 } from '@yagu/validation';
 import { ShopProductModel } from '../../entities/ShopProduct';
-import { getCurrencyString } from '@yagu/shared';
+import { getCurrencyString, noNaN } from '@yagu/shared';
 import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';
@@ -380,8 +380,16 @@ export class CartResolver {
   private async getTotalPrice(cart: DocumentType<Cart>): Promise<number> {
     const shopProductsIds = cart.products.map(({ shopProduct }) => shopProduct);
     const shopProducts = await ShopProductModel.find({ _id: { $in: shopProductsIds } });
-    return shopProducts.reduce((acc: number, { price }) => {
-      return acc + price;
+    return shopProducts.reduce((acc: number, { price, id }) => {
+      const cartProduct = cart.products.find(({ shopProduct }) => {
+        return shopProduct?.toString() === id.toString();
+      });
+
+      if (!cartProduct) {
+        return acc;
+      }
+
+      return acc + noNaN(price) * noNaN(cartProduct.amount);
     }, 0);
   }
 

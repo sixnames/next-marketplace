@@ -210,6 +210,34 @@ const CartRoute: React.FC = () => {
   const { cart } = useSiteContext();
   const { productsCount, products } = cart;
 
+  if (products.length < 1) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} config={[]} />
+
+        <Inner lowTop testId={'cart'}>
+          <Title className={classes.cartTitle}>Корзина пуста</Title>
+          <div className={classes.emptyBtns}>
+            <Button
+              className={classes.emptyBtnsItem}
+              theme={'secondary'}
+              onClick={() => {
+                router.push('/').catch(() => {
+                  showErrorNotification();
+                });
+              }}
+            >
+              на главную
+            </Button>
+            <Button className={classes.emptyBtnsItem} theme={'secondary'}>
+              каталог вин
+            </Button>
+          </div>
+        </Inner>
+      </div>
+    );
+  }
+
   return (
     <div className={classes.cart}>
       <Breadcrumbs currentPageName={'Корзина'} config={[]} />

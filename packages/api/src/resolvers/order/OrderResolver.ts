@@ -32,6 +32,7 @@ import { RoleModel } from '../../entities/Role';
 import generator from 'generate-password';
 import { ValidateMethod } from '../../decorators/methodDecorators';
 import { makeAnOrderSchema } from '@yagu/validation';
+import { sendOrderCreatedEmail } from '../../emails/orderCreatedEmail';
 
 @ObjectType()
 class OrderPayloadType extends PayloadType() {
@@ -183,6 +184,12 @@ export class OrderResolver {
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
       }
+
+      await sendOrderCreatedEmail({
+        to: user.email,
+        userName: user.name,
+        orderItemId: order.itemId,
+      });
 
       return {
         success: true,

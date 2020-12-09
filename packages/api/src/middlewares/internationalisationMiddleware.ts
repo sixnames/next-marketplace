@@ -9,7 +9,6 @@ import cookie from 'cookie';
 import { LanguageModel } from '../entities/Language';
 import { NextFunction } from 'express';
 
-// TODO params types
 export const internationalisationMiddleware = async (req: any, res: any, next: NextFunction) => {
   // Get current city from subdomain name
   // and language from cookie or user accepted language

@@ -47,6 +47,8 @@ import { RoleRuleModel } from '../../entities/RoleRule';
 import { getFullName, getShortName, noNaN, phoneToRaw, phoneToReadable } from '@yagu/shared';
 import { FormattedPhone } from '../../entities/FormattedPhone';
 import { Order, OrderModel } from '../../entities/Order';
+import { sendPasswordUpdatedEmail } from '../../emails/passwordUpdatedEmail';
+import { signUpEmail } from '../../emails/signUpEmail';
 
 const {
   operationConfigCreate,
@@ -324,7 +326,11 @@ export class UserResolver {
         };
       }
 
-      // TODO send email confirmation
+      // Send email confirmation
+      await sendPasswordUpdatedEmail({
+        to: updatedUser.email,
+        userName: updatedUser.name,
+      });
 
       return {
         success: true,
@@ -405,7 +411,11 @@ export class UserResolver {
         };
       }
 
-      // TODO send email confirmation
+      // Send email confirmation
+      await signUpEmail({
+        to: user.email,
+        userName: user.name,
+      });
 
       return {
         success: true,

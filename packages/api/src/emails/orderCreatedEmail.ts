@@ -1,6 +1,6 @@
 import { sendEmail, SendEmailInterface } from './mailer';
 
-interface OrderCreatedEmailTemplate {
+interface OrderCreatedEmailTemplateInterface {
   orderItemId: number;
   userName: string;
 }
@@ -8,7 +8,7 @@ interface OrderCreatedEmailTemplate {
 export const orderCreatedEmailTemplate = ({
   orderItemId,
   userName,
-}: OrderCreatedEmailTemplate): string => {
+}: OrderCreatedEmailTemplateInterface): string => {
   return `
   <div>
     <h2>Здравствуйте ${userName}!</h2>
@@ -22,7 +22,7 @@ export const orderCreatedEmailTemplate = ({
 
 interface SendOrderCreatedEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject'>,
-    OrderCreatedEmailTemplate {}
+    OrderCreatedEmailTemplateInterface {}
 
 export const sendOrderCreatedEmail = async ({
   to,

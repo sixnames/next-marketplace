@@ -524,6 +524,7 @@ export type ShopProduct = {
   formattedPrice: Scalars['String'];
   formattedOldPrice?: Maybe<Scalars['String']>;
   discountedPercent?: Maybe<Scalars['Int']>;
+  inCartCount: Scalars['Int'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
@@ -3523,7 +3524,7 @@ export type ShopSnippetFragment = (
 
 export type ShopProductSnippetFragment = (
   { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent'>
+  & Pick<ShopProduct, 'id' | 'itemId' | 'available' | 'formattedPrice' | 'formattedOldPrice' | 'discountedPercent' | 'inCartCount'>
   & { shop: (
     { __typename?: 'Shop' }
     & ShopSnippetFragment
@@ -4637,6 +4638,7 @@ export const ShopProductSnippetFragmentDoc = gql`
   formattedPrice
   formattedOldPrice
   discountedPercent
+  inCartCount
   shop {
     ...ShopSnippet
   }

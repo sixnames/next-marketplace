@@ -71,6 +71,7 @@ export const shopProductSnippetFragment = gql`
     formattedPrice
     formattedOldPrice
     discountedPercent
+    inCartCount
     shop {
       ...ShopSnippet
     }

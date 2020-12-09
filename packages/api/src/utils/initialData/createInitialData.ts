@@ -61,6 +61,7 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
       phone: ADMIN_PHONE,
       password,
       role: adminRoleId,
+      orders: [],
     });
   }
 

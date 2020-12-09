@@ -25,7 +25,7 @@ export class OrderLog {
   variant: OrderLogVariantEnum;
 
   @Field(() => User, { nullable: true })
-  @prop({ required: true, ref: User })
+  @prop({ required: true, ref: 'User' })
   executor: string;
 
   @Field()

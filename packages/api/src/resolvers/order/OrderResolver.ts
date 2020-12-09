@@ -32,6 +32,7 @@ import { RoleModel } from '../../entities/Role';
 import generator from 'generate-password';
 import { ValidateMethod } from '../../decorators/methodDecorators';
 import { makeAnOrderSchema } from '@yagu/validation';
+import { sendOrderCreatedEmail } from '../../emails/orderCreatedEmail';
 
 @ObjectType()
 class OrderPayloadType extends PayloadType() {
@@ -73,6 +74,7 @@ export class OrderResolver {
           ...input,
           role: guestRole.id,
           password,
+          orders: [],
         });
       }
 
@@ -183,6 +185,32 @@ export class OrderResolver {
           message: await getApiMessage('orders.makeAnOrder.error'),
         };
       }
+
+      // Add order to user
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        user.id,
+        {
+          $push: {
+            orders: order.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedUser) {
+        return {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.error'),
+        };
+      }
+
+      // Send email to user
+      await sendOrderCreatedEmail({
+        to: user.email,
+        userName: user.name,
+        orderItemId: order.itemId,
+      });
 
       return {
         success: true,

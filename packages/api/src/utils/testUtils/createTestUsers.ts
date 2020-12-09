@@ -29,6 +29,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
     ...MOCK_SAMPLE_USER,
     role: initialRolesIds.guestRoleId,
     password: sampleUserPassword,
+    orders: [],
   });
 
   // Sample user B
@@ -37,6 +38,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
     ...MOCK_SAMPLE_USER_B,
     role: initialRolesIds.guestRoleId,
     password: sampleUserBPassword,
+    orders: [],
   });
 
   // Company owner
@@ -45,6 +47,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
     ...MOCK_COMPANY_OWNER,
     role: initialRolesIds.companyOwnerRoleId,
     password: companyOwnerPassword,
+    orders: [],
   });
 
   // Company manager
@@ -53,6 +56,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
     ...MOCK_COMPANY_MANAGER,
     role: initialRolesIds.companyManagerRoleId,
     password: companyManagerPassword,
+    orders: [],
   });
 
   return {

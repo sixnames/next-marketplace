@@ -34,7 +34,7 @@ export class OrderCustomer {
   phone: string;
 
   @Field(() => User, { nullable: true })
-  @prop({ required: true, ref: User })
+  @prop({ required: true, ref: 'User' })
   user: string;
 
   @Field((_type) => FormattedPhone)

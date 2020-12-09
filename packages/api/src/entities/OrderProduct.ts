@@ -44,15 +44,15 @@ export class OrderProduct {
   description: Translation[];
 
   @Field(() => ShopProduct, { nullable: true })
-  @prop({ required: true, ref: ShopProduct })
+  @prop({ required: true, ref: 'ShopProduct' })
   shopProduct: string;
 
   @Field((_type) => Shop, { nullable: true })
-  @prop({ required: true, ref: Shop })
+  @prop({ required: true, ref: 'Shop' })
   shop: string;
 
   @Field((_type) => Company, { nullable: true })
-  @prop({ required: true, ref: Company })
+  @prop({ required: true, ref: 'Company' })
   company: string;
 
   @Field(() => String)

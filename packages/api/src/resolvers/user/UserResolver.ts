@@ -46,6 +46,7 @@ import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { getFullName, getShortName, noNaN, phoneToRaw, phoneToReadable } from '@yagu/shared';
 import { FormattedPhone } from '../../entities/FormattedPhone';
+import { Order, OrderModel } from '../../entities/Order';
 
 const {
   operationConfigCreate,
@@ -68,7 +69,7 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() ctx: ContextInterface): Promise<User | null> {
     try {
-      return ctx.getUser() || null;
+      return UserModel.findById(ctx.getUser()?.id);
     } catch (e) {
       return null;
     }
@@ -152,6 +153,7 @@ export class UserResolver {
         ...input,
         phone: phoneToRaw(input.phone),
         password,
+        orders: [],
       });
 
       if (!user) {
@@ -393,6 +395,7 @@ export class UserResolver {
         ...input,
         password,
         role: guestRoleId,
+        orders: [],
       });
 
       if (!user) {
@@ -492,6 +495,7 @@ export class UserResolver {
     }
   }
 
+  // Field resolvers
   @FieldResolver(() => String)
   fullName(@Root() user: DocumentType<User>): string {
     return getFullName(user);
@@ -518,6 +522,11 @@ export class UserResolver {
       throw new Error('Role not found');
     }
     return role;
+  }
+
+  @FieldResolver(() => [Order])
+  async orders(@Root() user: DocumentType<User>): Promise<Order[]> {
+    return OrderModel.find({ _id: { $in: user.orders } });
   }
 
   @FieldResolver()

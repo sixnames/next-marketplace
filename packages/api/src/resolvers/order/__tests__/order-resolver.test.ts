@@ -61,7 +61,7 @@ describe('Order', () => {
     expect(addProductToCart.cart.productsCount).toEqual(1);
 
     // Set cart id to cookies
-    const { mutate } = await authenticatedTestClient({
+    const { mutate, query } = await authenticatedTestClient({
       headers: {
         cookie: `${CART_COOKIE_KEY}=${addProductToCart.cart.id}`,
       },
@@ -103,6 +103,7 @@ describe('Order', () => {
         }
         customer {
           id
+          itemId
           name
           email
           formattedPhone {
@@ -197,5 +198,25 @@ describe('Order', () => {
     expect(makeAnOrderPayload.data.makeAnOrder.order.comment).toEqual(makeAnOrderInput.comment);
     expect(makeAnOrderPayload.data.makeAnOrder.cart.products).toHaveLength(0);
     expect(makeAnOrderPayload.data.makeAnOrder.cart.productsCount).toEqual(0);
+
+    const meQueryPayload = await query<any>(gql`
+      query {
+        me {
+          name
+          itemId
+          orders {
+            id
+          }
+        }
+      }
+    `);
+    const addedOrder = meQueryPayload.data.me.orders[0];
+    if (!addedOrder) {
+      throw Error('Order not added to the user');
+    }
+    expect(makeAnOrderPayload.data.makeAnOrder.order.id).toEqual(addedOrder.id);
+    expect(makeAnOrderPayload.data.makeAnOrder.order.customer.itemId).toEqual(
+      meQueryPayload.data.me.itemId,
+    );
   });
 });

@@ -1562,6 +1562,7 @@ type User {
   itemId: Int!
   lastName: String
   name: String!
+  orders: [Order!]!
   phone: String!
   role: Role!
   secondName: String

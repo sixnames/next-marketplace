@@ -7,6 +7,7 @@ import { Role } from './Role';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { FormattedPhone } from './FormattedPhone';
 import { Cart } from './Cart';
+import { Order } from './Order';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -45,6 +46,10 @@ export class User extends TimeStamps {
   @Field((_type) => Role)
   @prop({ ref: Role })
   role: string;
+
+  @Field((_type) => [Order])
+  @prop({ ref: Order })
+  orders: string[];
 
   @prop({ ref: () => Cart })
   cart?: string;

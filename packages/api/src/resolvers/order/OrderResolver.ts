@@ -74,6 +74,7 @@ export class OrderResolver {
           ...input,
           role: guestRole.id,
           password,
+          orders: [],
         });
       }
 
@@ -185,6 +186,26 @@ export class OrderResolver {
         };
       }
 
+      // Add order to user
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        user.id,
+        {
+          $push: {
+            orders: order.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      if (!updatedUser) {
+        return {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.error'),
+        };
+      }
+
+      // Send email to user
       await sendOrderCreatedEmail({
         to: user.email,
         userName: user.name,

@@ -18,8 +18,6 @@ interface AppInterface {
 
 const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   const apolloClient = useApollo();
-  // TODO cache store
-  // const apolloClient = useApollo(pageProps.initialApolloState);
 
   if (!pageProps.initialApolloState) {
     return <ErrorBoundaryFallback />;

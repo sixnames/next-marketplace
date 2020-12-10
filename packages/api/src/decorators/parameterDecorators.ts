@@ -1,6 +1,10 @@
 import { createParamDecorator } from 'type-graphql';
 import { ContextInterface } from '../types/context';
-import { AuthDecoratorConfigInterface } from './methodDecorators';
+import {
+  AuthDecoratorConfigInterface,
+  getSessionRole,
+  getSessionRoleRules,
+} from './methodDecorators';
 import { CART_COOKIE_KEY, MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
@@ -25,7 +29,7 @@ export function SessionCart() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
     const user = context.getUser();
     const userCartId = user ? user.cart : null;
-    // console.log(user);
+
     // Get cart id from cookies or session user
     const cookies = cookie.parse(context.req.headers.cookie || '');
     const cartId = userCartId || cookies[CART_COOKIE_KEY];
@@ -68,13 +72,16 @@ export function SessionCart() {
 
 export function SessionRole() {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    return context.req.role;
+    const user = context.getUser();
+    return getSessionRole(user);
   });
 }
 
 export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
   return createParamDecorator<ContextInterface>(async ({ context }) => {
-    const { roleRules, role } = context.req;
+    const user = context.getUser();
+    const { role, roleRules } = await getSessionRoleRules(user);
+
     if (role.slug === ROLE_SLUG_ADMIN) {
       return {};
     }
@@ -93,7 +100,6 @@ export function CustomFilter(operationConfig: AuthDecoratorConfigInterface) {
       return {};
     }
 
-    const user = context.getUser();
     const { customFilter = '{}' } = currentOperation;
     const customFilterResult = customFilter.replace(/__authenticatedUser/gi, `${user?.id}`);
     return JSON.parse(customFilterResult);

@@ -1100,6 +1100,7 @@ type Query {
   getOption(id: ID!): Option!
   getOptionsGroup(id: ID!): OptionsGroup
   getOptionsGroupVariantsOptions: [OptionsGroupVariantOption!]!
+  getOrder(id: ID!): Order
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!

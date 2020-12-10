@@ -2,6 +2,7 @@ import {
   Arg,
   Field,
   FieldResolver,
+  ID,
   Int,
   Mutation,
   ObjectType,
@@ -66,6 +67,15 @@ class OrderPayloadType extends PayloadType() {
 
 @Resolver((_for) => Order)
 export class OrderResolver {
+  @Query((_type) => Order, { nullable: true })
+  @AuthMethod(operationConfigRead)
+  async getOrder(
+    @Arg('id', () => ID) id: string,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
+  ): Promise<Order | null> {
+    return OrderModel.findOne({ _id: id, ...customFilter });
+  }
+
   @Query((_type) => PaginatedOrdersResponse)
   @AuthMethod(operationConfigRead)
   async getAllOrders(

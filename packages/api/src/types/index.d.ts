@@ -7,8 +7,6 @@ declare global {
       lang: string;
       city: string;
       defaultLang: string;
-      role: import('../entities/Role').Role;
-      roleRules: import('../entities/RoleRule').RoleRule[];
     }
   }
 }

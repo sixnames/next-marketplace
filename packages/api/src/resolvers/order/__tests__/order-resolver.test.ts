@@ -218,5 +218,21 @@ describe('Order', () => {
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.itemId).toEqual(
       meQueryPayload.data.me.itemId,
     );
+
+    // Should return paginated orders list
+    const getAllOrdersPayload = await mutate<any>(gql`
+      query {
+        getAllOrders {
+          page
+          totalDocs
+          docs {
+            id
+          }
+        }
+      }
+    `);
+    expect(getAllOrdersPayload.data.getAllOrders.docs[0].id).toEqual(addedOrder.id);
+    expect(getAllOrdersPayload.data.getAllOrders.totalDocs).toEqual(1);
+    expect(getAllOrdersPayload.data.getAllOrders.page).toEqual(1);
   });
 });

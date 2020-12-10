@@ -350,6 +350,10 @@ export const ROLE_RULES_TEMPLATE = [
     nameString: 'Товар магазина',
     entity: 'ShopProduct',
   },
+  {
+    nameString: 'Заказ',
+    entity: 'Order',
+  },
 ];
 
 export const ROLE_TEMPLATE_ADMIN = {

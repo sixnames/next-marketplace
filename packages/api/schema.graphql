@@ -743,6 +743,14 @@ enum OrderLogVariantEnum {
   status
 }
 
+input OrderPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: OrderSortByEnum = createdAt
+  sortDir: SortDirectionEnum = desc
+}
+
 type OrderPayloadType {
   cart: Cart
   message: String!
@@ -773,6 +781,12 @@ type OrderProduct {
   totalPrice: Float!
 }
 
+"""Order pagination sortBy enum"""
+enum OrderSortByEnum {
+  createdAt
+  itemId
+}
+
 type OrderStatus {
   id: ID!
   itemId: Int!
@@ -783,6 +797,19 @@ type OrderStatus {
 
 type PaginatedCompaniesResponse {
   docs: [Company!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type PaginatedOrdersResponse {
+  docs: [Order!]!
   hasNextPage: Int!
   hasPrevPage: Int!
   limit: Int!
@@ -1039,6 +1066,7 @@ type Query {
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
   getAllOptionsGroups: [OptionsGroup!]!
+  getAllOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse!
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]

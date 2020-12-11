@@ -76,6 +76,17 @@ export class OrderResolver {
     return OrderModel.findOne({ _id: id, ...customFilter });
   }
 
+  @Query((_type) => Order, { nullable: true })
+  async getMyOrder(
+    @Arg('id', () => ID) id: string,
+    @SessionUser() user: User,
+  ): Promise<Order | null> {
+    if (!user) {
+      return null;
+    }
+    return OrderModel.findOne({ _id: id, 'customer.user': user.id });
+  }
+
   @Query((_type) => PaginatedOrdersResponse)
   @AuthMethod(operationConfigRead)
   async getAllOrders(
@@ -86,6 +97,27 @@ export class OrderResolver {
 
     return OrderModel.paginate(
       { ...customFilter },
+      {
+        limit,
+        page,
+        sort: `${sortBy} ${sortDir}`,
+      },
+    );
+  }
+
+  @Query((_type) => PaginatedOrdersResponse, { nullable: true })
+  async getAllMyOrders(
+    @Arg('input', { nullable: true, defaultValue: {} }) input: OrderPaginateInput,
+    @SessionUser() user: User,
+  ): Promise<PaginatedOrdersResponse | null> {
+    if (!user) {
+      return null;
+    }
+
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC } = input;
+
+    return OrderModel.paginate(
+      { 'customer.user': user.id },
       {
         limit,
         page,

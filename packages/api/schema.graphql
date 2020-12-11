@@ -1065,6 +1065,7 @@ type Query {
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
+  getAllMyOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse
   getAllOptionsGroups: [OptionsGroup!]!
   getAllOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse!
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
@@ -1097,6 +1098,7 @@ type Query {
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
+  getMyOrder(id: ID!): Order
   getOption(id: ID!): Option!
   getOptionsGroup(id: ID!): OptionsGroup
   getOptionsGroupVariantsOptions: [OptionsGroupVariantOption!]!

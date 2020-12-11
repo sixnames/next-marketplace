@@ -135,6 +135,13 @@ export class OrderResolver {
     @Arg('input') input: MakeAnOrderInput,
   ) {
     try {
+      if (cart.products.length < 1) {
+        return {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.empty'),
+        };
+      }
+
       let user = sessionUser;
       if (!sessionUser) {
         const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });

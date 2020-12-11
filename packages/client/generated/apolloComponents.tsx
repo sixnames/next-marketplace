@@ -4168,6 +4168,78 @@ export type GetAllCmsOrdersQuery = (
   ) }
 );
 
+export type CmsOrderShopProductFragment = (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id'>
+  & { product: (
+    { __typename?: 'Product' }
+    & Pick<Product, 'id' | 'mainImage'>
+  ) }
+);
+
+export type CmsOrderShopFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'nameString' | 'slug'>
+  & { address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { formattedCoordinates: (
+      { __typename?: 'Coordinates' }
+      & Pick<Coordinates, 'lat' | 'lng'>
+    ) }
+  ), contacts: (
+    { __typename?: 'Contacts' }
+    & Pick<Contacts, 'emails'>
+    & { formattedPhones: Array<(
+      { __typename?: 'FormattedPhone' }
+      & Pick<FormattedPhone, 'raw' | 'readable'>
+    )> }
+  ), logo: (
+    { __typename?: 'Asset' }
+    & Pick<Asset, 'index' | 'url'>
+  ) }
+);
+
+export type CmsOrderProductFragment = (
+  { __typename?: 'OrderProduct' }
+  & Pick<OrderProduct, 'id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice'>
+  & { shopProduct?: Maybe<(
+    { __typename?: 'ShopProduct' }
+    & CmsOrderShopProductFragment
+  )>, shop?: Maybe<(
+    { __typename?: 'Shop' }
+    & CmsOrderShopFragment
+  )> }
+);
+
+export type CmsOrderFragment = (
+  { __typename?: 'Order' }
+  & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
+  & { products: Array<(
+    { __typename?: 'OrderProduct' }
+    & CmsOrderProductFragment
+  )>, status: (
+    { __typename?: 'OrderStatus' }
+    & OrderStatusFragment
+  ), customer: (
+    { __typename?: 'OrderCustomer' }
+    & CmsOrderInListCustomerFragment
+  ) }
+);
+
+export type GetCmsOrderQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetCmsOrderQuery = (
+  { __typename?: 'Query' }
+  & { getOrder?: Maybe<(
+    { __typename?: 'Order' }
+    & CmsOrderFragment
+  )> }
+);
+
 export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5137,6 +5209,77 @@ export const CmsOrderInListFragmentDoc = gql`
   }
 }
     ${OrderStatusFragmentDoc}
+${CmsOrderInListCustomerFragmentDoc}`;
+export const CmsOrderShopProductFragmentDoc = gql`
+    fragment CmsOrderShopProduct on ShopProduct {
+  id
+  product {
+    id
+    mainImage
+  }
+}
+    `;
+export const CmsOrderShopFragmentDoc = gql`
+    fragment CmsOrderShop on Shop {
+  id
+  nameString
+  slug
+  address {
+    formattedAddress
+    formattedCoordinates {
+      lat
+      lng
+    }
+  }
+  contacts {
+    emails
+    formattedPhones {
+      raw
+      readable
+    }
+  }
+  logo {
+    index
+    url
+  }
+}
+    `;
+export const CmsOrderProductFragmentDoc = gql`
+    fragment CmsOrderProduct on OrderProduct {
+  id
+  itemId
+  amount
+  formattedPrice
+  formattedTotalPrice
+  shopProduct {
+    ...CmsOrderShopProduct
+  }
+  shop {
+    ...CmsOrderShop
+  }
+}
+    ${CmsOrderShopProductFragmentDoc}
+${CmsOrderShopFragmentDoc}`;
+export const CmsOrderFragmentDoc = gql`
+    fragment CmsOrder on Order {
+  id
+  itemId
+  productsCount
+  formattedTotalPrice
+  comment
+  createdAt
+  products {
+    ...CmsOrderProduct
+  }
+  status {
+    ...OrderStatus
+  }
+  customer {
+    ...CmsOrderInListCustomer
+  }
+}
+    ${CmsOrderProductFragmentDoc}
+${OrderStatusFragmentDoc}
 ${CmsOrderInListCustomerFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
@@ -8392,6 +8535,39 @@ export function useGetAllCmsOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAllCmsOrdersQueryHookResult = ReturnType<typeof useGetAllCmsOrdersQuery>;
 export type GetAllCmsOrdersLazyQueryHookResult = ReturnType<typeof useGetAllCmsOrdersLazyQuery>;
 export type GetAllCmsOrdersQueryResult = Apollo.QueryResult<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>;
+export const GetCmsOrderDocument = gql`
+    query GetCmsOrder($id: ID!) {
+  getOrder(id: $id) {
+    ...CmsOrder
+  }
+}
+    ${CmsOrderFragmentDoc}`;
+
+/**
+ * __useGetCmsOrderQuery__
+ *
+ * To run a query within a React component, call `useGetCmsOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCmsOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCmsOrderQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCmsOrderQuery(baseOptions: Apollo.QueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
+        return Apollo.useQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, baseOptions);
+      }
+export function useGetCmsOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCmsOrderQuery, GetCmsOrderQueryVariables>) {
+          return Apollo.useLazyQuery<GetCmsOrderQuery, GetCmsOrderQueryVariables>(GetCmsOrderDocument, baseOptions);
+        }
+export type GetCmsOrderQueryHookResult = ReturnType<typeof useGetCmsOrderQuery>;
+export type GetCmsOrderLazyQueryHookResult = ReturnType<typeof useGetCmsOrderLazyQuery>;
+export type GetCmsOrderQueryResult = Apollo.QueryResult<GetCmsOrderQuery, GetCmsOrderQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

@@ -14,6 +14,10 @@ import { CartProductFragment } from '../../generated/apolloComponents';
 import Image from '../../components/Image/Image';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import Icon from '../../components/Icon/Icon';
+import Button from '../../components/Buttons/Button';
+import { useRouter } from 'next/router';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { useUserContext } from '../../context/userContext';
 
 interface OrderRouteProductInterface {
   cartProduct: CartProductFragment;
@@ -80,13 +84,44 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 };
 
 const MakeAnOrderRoute: React.FC = () => {
+  const router = useRouter();
+  const { showErrorNotification } = useNotificationsContext();
   const { makeAnOrder } = useSiteContext();
+  const { me } = useUserContext();
   const { cart } = useSiteContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
 
   const { productsCount, products } = cart;
+
+  if (products.length < 1) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} config={[]} />
+
+        <Inner lowTop testId={'cart'}>
+          <Title className={classes.cartTitle}>Корзина пуста</Title>
+          <div className={classes.emptyBtns}>
+            <Button
+              className={classes.emptyBtnsItem}
+              theme={'secondary'}
+              onClick={() => {
+                router.push('/').catch(() => {
+                  showErrorNotification();
+                });
+              }}
+            >
+              на главную
+            </Button>
+            <Button className={classes.emptyBtnsItem} theme={'secondary'}>
+              каталог вин
+            </Button>
+          </div>
+        </Inner>
+      </div>
+    );
+  }
 
   return (
     <div className={classes.cart} data-cy={'order-form'}>
@@ -101,9 +136,9 @@ const MakeAnOrderRoute: React.FC = () => {
           enableReinitialize={true}
           validationSchema={validationSchema}
           initialValues={{
-            name: '',
-            email: '',
-            phone: '',
+            name: me ? me.name : '',
+            email: me ? me.email : '',
+            phone: me ? me.phone : '',
             comment: '',
           }}
           onSubmit={(values) => {

@@ -387,6 +387,7 @@ const messagesKeys = [
   'orders.makeAnOrder.productsNotFound',
   'orders.makeAnOrder.initialStatusNotFound',
   'orders.makeAnOrder.error',
+  'orders.makeAnOrder.empty',
   'orders.makeAnOrder.success',
   // Orders validation
 

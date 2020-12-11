@@ -79,6 +79,10 @@ export type Query = {
   getIconsOptions: Array<IconOption>;
   getAttributeViewVariantsOptions: Array<AttributeViewOption>;
   getSessionCart: Cart;
+  getOrder?: Maybe<Order>;
+  getMyOrder?: Maybe<Order>;
+  getAllOrders: PaginatedOrdersResponse;
+  getAllMyOrders?: Maybe<PaginatedOrdersResponse>;
 };
 
 
@@ -260,6 +264,26 @@ export type QueryGetShopArgs = {
 
 export type QueryGetAllShopsArgs = {
   input?: Maybe<ShopPaginateInput>;
+};
+
+
+export type QueryGetOrderArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetMyOrderArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetAllOrdersArgs = {
+  input?: Maybe<OrderPaginateInput>;
+};
+
+
+export type QueryGetAllMyOrdersArgs = {
+  input?: Maybe<OrderPaginateInput>;
 };
 
 export type Product = {
@@ -667,6 +691,7 @@ export type User = {
   email: Scalars['String'];
   phone: Scalars['String'];
   role: Role;
+  orders: Array<Order>;
   formattedPhone: FormattedPhone;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
@@ -726,6 +751,84 @@ export type NavItem = {
   parent?: Maybe<NavItem>;
   children?: Maybe<Array<NavItem>>;
 };
+
+export type Order = {
+  __typename?: 'Order';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  comment?: Maybe<Scalars['String']>;
+  status: OrderStatus;
+  customer: OrderCustomer;
+  products: Array<OrderProduct>;
+  logs: Array<OrderLog>;
+  totalPrice: Scalars['Float'];
+  formattedTotalPrice: Scalars['String'];
+  productsCount: Scalars['Int'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type OrderStatus = {
+  __typename?: 'OrderStatus';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Array<Translation>;
+  slug: Scalars['String'];
+  nameString: Scalars['String'];
+};
+
+export type OrderCustomer = {
+  __typename?: 'OrderCustomer';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  name: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  secondName?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  phone: Scalars['String'];
+  user?: Maybe<User>;
+  formattedPhone: FormattedPhone;
+  fullName: Scalars['String'];
+  shortName: Scalars['String'];
+};
+
+export type OrderProduct = {
+  __typename?: 'OrderProduct';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  price: Scalars['Int'];
+  oldPrices: Array<ShopProductOldPrice>;
+  amount: Scalars['Int'];
+  name: Array<Translation>;
+  cardName: Array<Translation>;
+  slug: Scalars['String'];
+  description: Array<Translation>;
+  shopProduct?: Maybe<ShopProduct>;
+  shop?: Maybe<Shop>;
+  company?: Maybe<Company>;
+  nameString: Scalars['String'];
+  cardNameString: Scalars['String'];
+  descriptionString: Scalars['String'];
+  formattedPrice: Scalars['String'];
+  formattedOldPrice?: Maybe<Scalars['String']>;
+  totalPrice: Scalars['Float'];
+  formattedTotalPrice: Scalars['String'];
+  discountedPercent?: Maybe<Scalars['Int']>;
+};
+
+export type OrderLog = {
+  __typename?: 'OrderLog';
+  id: Scalars['ID'];
+  variant: OrderLogVariantEnum;
+  executor?: Maybe<User>;
+  createdAt: Scalars['DateTime'];
+};
+
+/** Order log variant enum */
+export enum OrderLogVariantEnum {
+  Status = 'status',
+  Message = 'message'
+}
 
 export type PaginatedShopsResponse = {
   __typename?: 'PaginatedShopsResponse';
@@ -1135,6 +1238,34 @@ export type CartProduct = {
   amount: Scalars['Int'];
   isShopless: Scalars['Boolean'];
 };
+
+export type PaginatedOrdersResponse = {
+  __typename?: 'PaginatedOrdersResponse';
+  docs: Array<Order>;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  nextPage?: Maybe<Scalars['Int']>;
+  prevPage?: Maybe<Scalars['Int']>;
+  pagingCounter: Scalars['Int'];
+  hasPrevPage: Scalars['Int'];
+  hasNextPage: Scalars['Int'];
+};
+
+export type OrderPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<OrderSortByEnum>;
+};
+
+/** Order pagination sortBy enum */
+export enum OrderSortByEnum {
+  ItemId = 'itemId',
+  CreatedAt = 'createdAt'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2169,82 +2300,6 @@ export type CartPayloadType = {
   cart?: Maybe<Cart>;
   order?: Maybe<Order>;
 };
-
-export type Order = {
-  __typename?: 'Order';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  comment?: Maybe<Scalars['String']>;
-  status: OrderStatus;
-  customer: OrderCustomer;
-  products: Array<OrderProduct>;
-  logs: Array<OrderLog>;
-  totalPrice: Scalars['Float'];
-  formattedTotalPrice: Scalars['String'];
-  productsCount: Scalars['Int'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-};
-
-export type OrderStatus = {
-  __typename?: 'OrderStatus';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  name: Array<Translation>;
-  slug: Scalars['String'];
-  nameString: Scalars['String'];
-};
-
-export type OrderCustomer = {
-  __typename?: 'OrderCustomer';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  phone: Scalars['String'];
-  user?: Maybe<User>;
-  formattedPhone: FormattedPhone;
-};
-
-export type OrderProduct = {
-  __typename?: 'OrderProduct';
-  id: Scalars['ID'];
-  itemId: Scalars['Int'];
-  price: Scalars['Int'];
-  oldPrices: Array<ShopProductOldPrice>;
-  amount: Scalars['Int'];
-  name: Array<Translation>;
-  cardName: Array<Translation>;
-  slug: Scalars['String'];
-  description: Array<Translation>;
-  shopProduct?: Maybe<ShopProduct>;
-  shop?: Maybe<Shop>;
-  company?: Maybe<Company>;
-  nameString: Scalars['String'];
-  cardNameString: Scalars['String'];
-  descriptionString: Scalars['String'];
-  formattedPrice: Scalars['String'];
-  formattedOldPrice?: Maybe<Scalars['String']>;
-  totalPrice: Scalars['Float'];
-  formattedTotalPrice: Scalars['String'];
-  discountedPercent?: Maybe<Scalars['Int']>;
-};
-
-export type OrderLog = {
-  __typename?: 'OrderLog';
-  id: Scalars['ID'];
-  variant: OrderLogVariantEnum;
-  executor?: Maybe<User>;
-  createdAt: Scalars['DateTime'];
-};
-
-/** Order log variant enum */
-export enum OrderLogVariantEnum {
-  Status = 'status',
-  Message = 'message'
-}
 
 export type AddProductToCartInput = {
   shopProductId: Scalars['ID'];
@@ -4070,6 +4125,49 @@ export type GetOptionsGroupQuery = (
   )> }
 );
 
+export type OrderStatusFragment = (
+  { __typename?: 'OrderStatus' }
+  & Pick<OrderStatus, 'id' | 'nameString'>
+);
+
+export type CmsOrderInListCustomerFragment = (
+  { __typename?: 'OrderCustomer' }
+  & Pick<OrderCustomer, 'id' | 'itemId' | 'shortName' | 'email'>
+  & { formattedPhone: (
+    { __typename?: 'FormattedPhone' }
+    & Pick<FormattedPhone, 'raw' | 'readable'>
+  ) }
+);
+
+export type CmsOrderInListFragment = (
+  { __typename?: 'Order' }
+  & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
+  & { status: (
+    { __typename?: 'OrderStatus' }
+    & OrderStatusFragment
+  ), customer: (
+    { __typename?: 'OrderCustomer' }
+    & CmsOrderInListCustomerFragment
+  ) }
+);
+
+export type GetAllCmsOrdersQueryVariables = Exact<{
+  input?: Maybe<OrderPaginateInput>;
+}>;
+
+
+export type GetAllCmsOrdersQuery = (
+  { __typename?: 'Query' }
+  & { getAllOrders: (
+    { __typename?: 'PaginatedOrdersResponse' }
+    & Pick<PaginatedOrdersResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Order' }
+      & CmsOrderInListFragment
+    )> }
+  ) }
+);
+
 export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5005,6 +5103,41 @@ export const OptionsGroupFragmentDoc = gql`
   }
 }
     ${OptionInGroupFragmentDoc}`;
+export const OrderStatusFragmentDoc = gql`
+    fragment OrderStatus on OrderStatus {
+  id
+  nameString
+}
+    `;
+export const CmsOrderInListCustomerFragmentDoc = gql`
+    fragment CmsOrderInListCustomer on OrderCustomer {
+  id
+  itemId
+  shortName
+  formattedPhone {
+    raw
+    readable
+  }
+  email
+}
+    `;
+export const CmsOrderInListFragmentDoc = gql`
+    fragment CmsOrderInList on Order {
+  id
+  itemId
+  productsCount
+  formattedTotalPrice
+  comment
+  createdAt
+  status {
+    ...OrderStatus
+  }
+  customer {
+    ...CmsOrderInListCustomer
+  }
+}
+    ${OrderStatusFragmentDoc}
+${CmsOrderInListCustomerFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
   id
@@ -8221,6 +8354,44 @@ export function useGetOptionsGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetOptionsGroupQueryHookResult = ReturnType<typeof useGetOptionsGroupQuery>;
 export type GetOptionsGroupLazyQueryHookResult = ReturnType<typeof useGetOptionsGroupLazyQuery>;
 export type GetOptionsGroupQueryResult = Apollo.QueryResult<GetOptionsGroupQuery, GetOptionsGroupQueryVariables>;
+export const GetAllCmsOrdersDocument = gql`
+    query GetAllCMSOrders($input: OrderPaginateInput) {
+  getAllOrders(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...CmsOrderInList
+    }
+  }
+}
+    ${CmsOrderInListFragmentDoc}`;
+
+/**
+ * __useGetAllCmsOrdersQuery__
+ *
+ * To run a query within a React component, call `useGetAllCmsOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCmsOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCmsOrdersQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllCmsOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
+        return Apollo.useQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, baseOptions);
+      }
+export function useGetAllCmsOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>(GetAllCmsOrdersDocument, baseOptions);
+        }
+export type GetAllCmsOrdersQueryHookResult = ReturnType<typeof useGetAllCmsOrdersQuery>;
+export type GetAllCmsOrdersLazyQueryHookResult = ReturnType<typeof useGetAllCmsOrdersLazyQuery>;
+export type GetAllCmsOrdersQueryResult = Apollo.QueryResult<GetAllCmsOrdersQuery, GetAllCmsOrdersQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

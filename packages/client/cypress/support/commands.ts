@@ -134,6 +134,11 @@ Cypress.Commands.add('closeNotification', () => {
 
 const apiHost = 'http://localhost:4000';
 
+Cypress.Commands.add('clearTestData', () => {
+  const clearTestDataURI = `${apiHost}/clear-test-data`;
+  cy.request('GET', clearTestDataURI);
+});
+
 Cypress.Commands.add('createTestData', (callback?: (mocks: any) => void) => {
   const createTestDataURI = `${apiHost}/create-test-data`;
   cy.request('GET', createTestDataURI).then((res) => {
@@ -141,11 +146,6 @@ Cypress.Commands.add('createTestData', (callback?: (mocks: any) => void) => {
       callback(res.body);
     }
   });
-});
-
-Cypress.Commands.add('clearTestData', () => {
-  const clearTestDataURI = `${apiHost}/clear-test-data`;
-  cy.request('GET', clearTestDataURI);
 });
 
 Cypress.Commands.add(

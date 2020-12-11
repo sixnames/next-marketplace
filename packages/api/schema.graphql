@@ -721,12 +721,14 @@ type Order {
 type OrderCustomer {
   email: String!
   formattedPhone: FormattedPhone!
+  fullName: String!
   id: ID!
   itemId: Int!
   lastName: String
   name: String!
   phone: String!
   secondName: String
+  shortName: String!
   user: User
 }
 

@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
 import { useUserContext } from '../../context/userContext';
-import { useRouter } from 'next/router';
 import {
   ROUTE_PROFILE,
   ROUTE_PROFILE_BONUS,
@@ -16,27 +15,27 @@ import {
   ROUTE_PROFILE_PREFERENCES,
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
-  ROUTE_SIGN_IN,
 } from '../../config';
-import { useNotificationsContext } from '../../context/notificationsContext';
 import AsideNav, { AsideNavConfigType } from '../../components/AsideNav/AsideNav';
+import Spinner from '../../components/Spinner/Spinner';
 
 interface ProfileLayoutInterface {
   testId?: string;
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const { showErrorNotification } = useNotificationsContext();
-  const router = useRouter();
   const { me } = useUserContext();
 
-  useEffect(() => {
-    if (!me) {
-      router.push(ROUTE_SIGN_IN).catch(() => {
-        showErrorNotification();
-      });
-    }
-  }, [me, router, showErrorNotification]);
+  if (!me) {
+    return (
+      <div className={classes.frame}>
+        <Breadcrumbs currentPageName={'Профиль'} config={[]} />
+        <Inner lowTop>
+          <Spinner isNested />
+        </Inner>
+      </div>
+    );
+  }
 
   const navConfig: AsideNavConfigType = [
     {

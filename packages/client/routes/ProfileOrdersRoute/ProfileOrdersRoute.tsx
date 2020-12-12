@@ -44,7 +44,9 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
 };
 
 const ProfileOrdersRoute: React.FC = () => {
-  const { data, loading, error } = useGetAllMyOrdersQuery();
+  const { data, loading, error } = useGetAllMyOrdersQuery({
+    fetchPolicy: 'network-only',
+  });
 
   if (loading) {
     return <Spinner isNested />;

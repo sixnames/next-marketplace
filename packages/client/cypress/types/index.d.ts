@@ -14,6 +14,16 @@ declare namespace Cypress {
     cyPrefix?: string;
   }
 
+  interface MakeAnOrderInterface {
+    callback?: (orderItemId: string | undefined) => void;
+    mockData: any;
+    orderFields?: {
+      customerName: string;
+      customerPhone: string;
+      customerEmail: string;
+    };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable {
     /**
@@ -36,5 +46,6 @@ declare namespace Cypress {
     closeMoreNav(): void;
     attachFile(path: string, options?: AttachFileOptionsInterface): Chainable<Element>;
     testAuth(redirect?: string, email?: string, password?: string): Chainable<Element>;
+    makeAnOrder(props: MakeAnOrderInterface): Chainable<Element>;
   }
 }

@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 import { ADMIN_PASSWORD } from '@yagu/config';
 
-describe('Profile', () => {
+describe.skip('Profile', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`/app/profile`);
+    cy.testAuth(`/profile/details`);
   });
 
   after(() => {

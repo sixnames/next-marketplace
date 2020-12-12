@@ -5,6 +5,6 @@ export interface GetCurrencyStringInterface {
   value?: number | string | null;
 }
 
-export const getCurrencyString = ({ lang, value }: GetCurrencyStringInterface) => {
+export const getCurrencyString = ({ lang, value }: GetCurrencyStringInterface): string => {
   return new Intl.NumberFormat(lang).format(noNaN(value)).replace(',', ' ');
 };

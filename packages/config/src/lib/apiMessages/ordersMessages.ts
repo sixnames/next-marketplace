@@ -55,6 +55,19 @@ export const ordersMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'orders.makeAnOrder.empty',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Корзина пуста.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Cart is empty.',
+      },
+    ],
+  },
+  {
     key: 'orders.makeAnOrder.error',
     message: [
       {

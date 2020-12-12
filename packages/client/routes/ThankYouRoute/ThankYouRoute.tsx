@@ -12,7 +12,7 @@ const ThankYouRoute: React.FC = () => {
   const { query } = router;
 
   return (
-    <div className={classes.frame} data-cy={'thank-you'}>
+    <div className={classes.frame} data-cy={'thank-you'} data-order-item-id={query.orderId}>
       <Inner>
         <Title className={classes.title}>Спасибо за заказ!</Title>
         <div className={classes.text}>

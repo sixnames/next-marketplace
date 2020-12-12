@@ -10,8 +10,9 @@ import { clearTestDataRoute, createTestDataRoute } from './routes/testingDataRou
 import { assetsRoute } from './routes/assetsRoutes';
 import { internationalisationMiddleware } from './middlewares/internationalisationMiddleware';
 import { schemaOptions } from './schema/schema';
-import passport, { visitorMiddleware } from './middlewares/passportMiddleware';
+import passport from './middlewares/passportMiddleware';
 import mongoose from 'mongoose';
+import { buildContext } from 'graphql-passport';
 
 // Configure env variables
 require('dotenv-flow').config();
@@ -65,7 +66,7 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
     ...APOLLO_OPTIONS,
     schema,
     introspection: true,
-    context: visitorMiddleware,
+    context: (ctx) => buildContext(ctx),
   });
 
   server.applyMiddleware({

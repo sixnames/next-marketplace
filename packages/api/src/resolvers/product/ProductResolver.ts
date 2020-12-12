@@ -60,6 +60,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   SORT_ASC,
+  SORT_DESC,
 } from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
@@ -155,7 +156,7 @@ export class ProductResolver {
       limit = 100,
       page = 1,
       sortBy = 'createdAt',
-      sortDir = 'desc',
+      sortDir = SORT_DESC,
       countActiveProducts = false,
       ...args
     } = input;

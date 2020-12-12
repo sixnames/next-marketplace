@@ -19,7 +19,7 @@ export const getSessionRole = async (user?: User | null): Promise<Role> => {
     }
 
     if (!userRole) {
-      throw Error('Guest role not found for request user');
+      throw Error('>>>>>>>>>>>>>>>>>>>>>>>>Guest role not found for request user');
     }
 
     return userRole;

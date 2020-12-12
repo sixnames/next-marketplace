@@ -4240,6 +4240,64 @@ export type GetCmsOrderQuery = (
   )> }
 );
 
+export type MyOrderShopProductFragment = (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id'>
+  & { product: (
+    { __typename?: 'Product' }
+    & Pick<Product, 'id' | 'mainImage'>
+  ) }
+);
+
+export type MyOrderShopFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'nameString' | 'slug'>
+  & { address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { formattedCoordinates: (
+      { __typename?: 'Coordinates' }
+      & Pick<Coordinates, 'lat' | 'lng'>
+    ) }
+  ) }
+);
+
+export type MyOrderProductFragment = (
+  { __typename?: 'OrderProduct' }
+  & Pick<OrderProduct, 'id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice'>
+  & { shopProduct?: Maybe<(
+    { __typename?: 'ShopProduct' }
+    & MyOrderShopProductFragment
+  )>, shop?: Maybe<(
+    { __typename?: 'Shop' }
+    & MyOrderShopFragment
+  )> }
+);
+
+export type GetAllMyOrdersQueryVariables = Exact<{
+  input?: Maybe<OrderPaginateInput>;
+}>;
+
+
+export type GetAllMyOrdersQuery = (
+  { __typename?: 'Query' }
+  & { getAllMyOrders?: Maybe<(
+    { __typename?: 'PaginatedOrdersResponse' }
+    & Pick<PaginatedOrdersResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Order' }
+      & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
+      & { products: Array<(
+        { __typename?: 'OrderProduct' }
+        & MyOrderProductFragment
+      )>, status: (
+        { __typename?: 'OrderStatus' }
+        & OrderStatusFragment
+      ) }
+    )> }
+  )> }
+);
+
 export type GetAllRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5281,6 +5339,45 @@ export const CmsOrderFragmentDoc = gql`
     ${CmsOrderProductFragmentDoc}
 ${OrderStatusFragmentDoc}
 ${CmsOrderInListCustomerFragmentDoc}`;
+export const MyOrderShopProductFragmentDoc = gql`
+    fragment MyOrderShopProduct on ShopProduct {
+  id
+  product {
+    id
+    mainImage
+  }
+}
+    `;
+export const MyOrderShopFragmentDoc = gql`
+    fragment MyOrderShop on Shop {
+  id
+  nameString
+  slug
+  address {
+    formattedAddress
+    formattedCoordinates {
+      lat
+      lng
+    }
+  }
+}
+    `;
+export const MyOrderProductFragmentDoc = gql`
+    fragment MyOrderProduct on OrderProduct {
+  id
+  itemId
+  amount
+  formattedPrice
+  formattedTotalPrice
+  shopProduct {
+    ...MyOrderShopProduct
+  }
+  shop {
+    ...MyOrderShop
+  }
+}
+    ${MyOrderShopProductFragmentDoc}
+${MyOrderShopFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
   id
@@ -8568,6 +8665,56 @@ export function useGetCmsOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetCmsOrderQueryHookResult = ReturnType<typeof useGetCmsOrderQuery>;
 export type GetCmsOrderLazyQueryHookResult = ReturnType<typeof useGetCmsOrderLazyQuery>;
 export type GetCmsOrderQueryResult = Apollo.QueryResult<GetCmsOrderQuery, GetCmsOrderQueryVariables>;
+export const GetAllMyOrdersDocument = gql`
+    query GetAllMyOrders($input: OrderPaginateInput) {
+  getAllMyOrders(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      id
+      itemId
+      productsCount
+      formattedTotalPrice
+      comment
+      createdAt
+      products {
+        ...MyOrderProduct
+      }
+      status {
+        ...OrderStatus
+      }
+    }
+  }
+}
+    ${MyOrderProductFragmentDoc}
+${OrderStatusFragmentDoc}`;
+
+/**
+ * __useGetAllMyOrdersQuery__
+ *
+ * To run a query within a React component, call `useGetAllMyOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMyOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMyOrdersQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllMyOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
+        return Apollo.useQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, baseOptions);
+      }
+export function useGetAllMyOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, baseOptions);
+        }
+export type GetAllMyOrdersQueryHookResult = ReturnType<typeof useGetAllMyOrdersQuery>;
+export type GetAllMyOrdersLazyQueryHookResult = ReturnType<typeof useGetAllMyOrdersLazyQuery>;
+export type GetAllMyOrdersQueryResult = Apollo.QueryResult<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

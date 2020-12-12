@@ -7,7 +7,7 @@ import ProfileOrdersRoute from '../../routes/ProfileOrdersRoute/ProfileOrdersRou
 
 const Profile: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
-    <SiteLayout initialApolloState={initialApolloState} title={'Профиль'}>
+    <SiteLayout initialApolloState={initialApolloState} title={'История заказов'}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>

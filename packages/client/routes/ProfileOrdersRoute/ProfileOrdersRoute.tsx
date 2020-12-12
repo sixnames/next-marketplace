@@ -8,6 +8,7 @@ import ControlButtonChevron from '../../components/Buttons/ControlButtonChevron'
 import FormattedDate from '../../components/FormattedDateTime/FormattedDate';
 import ControlButton from '../../components/Buttons/ControlButton';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
+import Tooltip from '../../components/TTip/Tooltip';
 
 interface ProfileOrderInterface {
   order: MyOrderFragment;
@@ -44,12 +45,16 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
             </div>
           </div>
           <div>
-            <ControlButton
-              roundedTopRight
-              className={classes.orderCartBtn}
-              iconSize={'big'}
-              icon={'cart'}
-            />
+            <Tooltip title={'Повторить заказ'}>
+              <div>
+                <ControlButton
+                  roundedTopRight
+                  className={classes.orderCartBtn}
+                  iconSize={'big'}
+                  icon={'cart'}
+                />
+              </div>
+            </Tooltip>
           </div>
         </div>
 

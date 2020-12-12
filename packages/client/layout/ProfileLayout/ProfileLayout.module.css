@@ -1,9 +1,11 @@
 .frame {
+  --stickyGap: 1.5rem;
+
   margin-bottom: 3rem;
 }
 
 .greeting {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   font-size: 1.125rem;
   font-weight: 600;
 }
@@ -19,15 +21,29 @@
   position: relative;
 }
 
+.asideNav {
+  position: sticky;
+  top: calc(var(--minLinkHeight) + var(--stickyGap));
+  left: 0;
+}
+
 @media only screen and (max-width: 1024px) {
   .frame {
+    margin-top: 3rem;
+  }
+
+  .content {
     grid-column-gap: 2rem;
     grid-template-columns: 3fr 4fr;
+  }
+
+  .asideNav {
+    top: var(--stickyGap);
   }
 }
 
 @media only screen and (max-width: 680px) {
-  .frame {
+  .content {
     grid-template-columns: 1fr;
   }
 }

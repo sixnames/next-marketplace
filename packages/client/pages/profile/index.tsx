@@ -7,10 +7,12 @@ import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 const Profile: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
     <SiteLayout initialApolloState={initialApolloState} title={'Профиль'}>
-      <ProfileLayout>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores atque dolorum eos ipsum
-        iusto quam quos ut. Culpa eius ipsum molestias sunt unde. Beatae inventore nulla qui quis
-        quos unde.
+      <ProfileLayout testId={'profile-orders'}>
+        <div>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores atque dolorum eos
+          ipsum iusto quam quos ut. Culpa eius ipsum molestias sunt unde. Beatae inventore nulla qui
+          quis quos unde.
+        </div>
       </ProfileLayout>
     </SiteLayout>
   );

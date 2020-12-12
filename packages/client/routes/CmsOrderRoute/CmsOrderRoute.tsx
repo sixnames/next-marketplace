@@ -33,9 +33,7 @@ const CmsOrderRoute: React.FC = () => {
       filterResult={() => (
         <DataLayoutContentFrame>
           <Inner className={classes.frame} testId={'order-details'}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, animi assumenda commodi
-            consequuntur dolor eligendi enim eveniet explicabo facere in nam nesciunt nisi, porro
-            quae ratione reprehenderit unde veniam voluptas?
+            <pre>{JSON.stringify(data?.getOrder, null, 2)}</pre>
           </Inner>
         </DataLayoutContentFrame>
       )}

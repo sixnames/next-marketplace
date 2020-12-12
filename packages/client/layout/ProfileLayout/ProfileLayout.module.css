@@ -1,0 +1,33 @@
+.frame {
+  margin-bottom: 3rem;
+}
+
+.greeting {
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: var(--catalogue-filter-width) 1fr;
+  grid-column-gap: var(--catalogueGridGap);
+  margin-bottom: 3rem;
+}
+
+.aside {
+  position: relative;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    grid-column-gap: 2rem;
+    grid-template-columns: 3fr 4fr;
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  .frame {
+    grid-template-columns: 1fr;
+  }
+}

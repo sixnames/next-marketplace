@@ -1,16 +1,17 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
-import Title from '../../components/Title/Title';
 import getSiteServerSideProps, { SitePagePropsType } from '../../utils/getSiteServerSideProps';
-import Inner from '../../components/Inner/Inner';
 import SiteLayout from '../../layout/SiteLayout/SiteLayout';
+import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 
 const Profile: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
   return (
-    <SiteLayout initialApolloState={initialApolloState}>
-      <Inner>
-        <Title>Main page</Title>
-      </Inner>
+    <SiteLayout initialApolloState={initialApolloState} title={'Профиль'}>
+      <ProfileLayout>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores atque dolorum eos ipsum
+        iusto quam quos ut. Culpa eius ipsum molestias sunt unde. Beatae inventore nulla qui quis
+        quos unde.
+      </ProfileLayout>
     </SiteLayout>
   );
 };
@@ -18,6 +19,7 @@ const Profile: NextPage<SitePagePropsType> = ({ initialApolloState }) => {
 export const getServerSideProps: GetServerSideProps = async (context) =>
   getSiteServerSideProps({
     context,
+    isProtected: true,
     callback: async ({ initialProps }) => {
       return {
         props: initialProps,

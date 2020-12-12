@@ -35,7 +35,8 @@
 }
 
 .orderNumber {
-
+  font-size: 1.33rem;
+  font-weight: 600;
 }
 
 .orderCreatedAt {

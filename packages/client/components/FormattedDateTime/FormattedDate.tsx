@@ -2,12 +2,12 @@ import React from 'react';
 import classes from './FormattedDate.module.css';
 import { useLanguageContext } from '../../context/languageContext';
 
-interface FormattedDateTimeInterface {
+interface FormattedDateInterface {
   value?: string | Date | null;
   className?: string;
 }
 
-const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, className }) => {
+const FormattedDate: React.FC<FormattedDateInterface> = ({ value, className }) => {
   const { lang } = useLanguageContext();
 
   if (!value) {
@@ -20,8 +20,6 @@ const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, classN
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       dateStyle: 'short',
-      timeStyle: 'short',
-      hour12: false,
     }).format(date);
 
     return (
@@ -32,4 +30,4 @@ const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, classN
   }
 };
 
-export default FormattedDateTime;
+export default FormattedDate;

@@ -3,9 +3,9 @@ import classes from './ProfileOrdersRoute.module.css';
 import { MyOrderFragment, useGetAllMyOrdersQuery } from '../../generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
-import FormattedDateTime from '../../components/FormattedDateTime/FormattedDateTime';
 import Currency from '../../components/Currency/Currency';
 import ControlButtonChevron from '../../components/Buttons/ControlButtonChevron';
+import FormattedDate from '../../components/FormattedDateTime/FormattedDate';
 
 interface ProfileOrderInterface {
   order: MyOrderFragment;
@@ -24,7 +24,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
             <div className={classes.orderHeadGrid}>
               <div className={classes.orderNumber}>{`№ ${itemId}`}</div>
               <div className={classes.orderCreatedAt}>
-                <FormattedDateTime value={createdAt} />
+                <FormattedDate value={createdAt} />
               </div>
             </div>
           </div>

@@ -790,6 +790,7 @@ enum OrderSortByEnum {
 }
 
 type OrderStatus {
+  color: String!
   id: ID!
   itemId: Int!
   name: [Translation!]!

@@ -6,6 +6,7 @@ import RequestError from '../../components/RequestError/RequestError';
 import Currency from '../../components/Currency/Currency';
 import ControlButtonChevron from '../../components/Buttons/ControlButtonChevron';
 import FormattedDate from '../../components/FormattedDateTime/FormattedDate';
+import ControlButton from '../../components/Buttons/ControlButton';
 
 interface ProfileOrderInterface {
   order: MyOrderFragment;
@@ -24,20 +25,29 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
             <div className={classes.orderHeadGrid}>
               <div className={classes.orderNumber}>{`№ ${itemId}`}</div>
               <div className={classes.orderCreatedAt}>
-                <FormattedDate value={createdAt} />
+                от <FormattedDate value={createdAt} />
               </div>
             </div>
           </div>
           <div>
             <div className={classes.orderHeadGrid}>
               <div>
-                <Currency value={formattedTotalPrice} />
+                <Currency className={classes.orderTotalPrice} value={formattedTotalPrice} />
               </div>
-              <div>{status.nameString}</div>
+              <div className={classes.orderStatus} style={{ color: status.color }}>
+                {status.nameString}
+              </div>
             </div>
           </div>
         </div>
-        <div>3</div>
+        <div>
+          <ControlButton
+            roundedTopRight
+            className={classes.orderCartBtn}
+            iconSize={'big'}
+            icon={'cart'}
+          />
+        </div>
       </div>
     </div>
   );

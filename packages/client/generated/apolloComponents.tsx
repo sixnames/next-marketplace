@@ -774,6 +774,7 @@ export type OrderStatus = {
   itemId: Scalars['Int'];
   name: Array<Translation>;
   slug: Scalars['String'];
+  color: Scalars['String'];
   nameString: Scalars['String'];
 };
 
@@ -4127,7 +4128,7 @@ export type GetOptionsGroupQuery = (
 
 export type OrderStatusFragment = (
   { __typename?: 'OrderStatus' }
-  & Pick<OrderStatus, 'id' | 'nameString'>
+  & Pick<OrderStatus, 'id' | 'nameString' | 'color'>
 );
 
 export type CmsOrderInListCustomerFragment = (
@@ -5242,6 +5243,7 @@ export const OrderStatusFragmentDoc = gql`
     fragment OrderStatus on OrderStatus {
   id
   nameString
+  color
 }
     `;
 export const CmsOrderInListCustomerFragmentDoc = gql`

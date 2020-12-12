@@ -1501,12 +1501,14 @@ export const MOCK_PRODUCT_CREATE = {
 // Order statuses
 export const MOCK_ORDER_STATUS_NEW = {
   slug: ORDER_STATUS_NEW,
+  color: '#0097a7',
   name: [
     { key: DEFAULT_LANG, value: 'Новый' },
     { key: SECONDARY_LANG, value: 'New' },
   ],
 };
 export const MOCK_ORDER_STATUS_CONFIRMED = {
+  color: '#E7C55A',
   slug: ORDER_STATUS_CONFIRMED,
   name: [
     { key: DEFAULT_LANG, value: 'Подтверждён' },
@@ -1514,6 +1516,7 @@ export const MOCK_ORDER_STATUS_CONFIRMED = {
   ],
 };
 export const MOCK_ORDER_STATUS_DONE = {
+  color: '#93AF42',
   slug: ORDER_STATUS_DONE,
   name: [
     { key: DEFAULT_LANG, value: 'Выполнен' },
@@ -1521,6 +1524,7 @@ export const MOCK_ORDER_STATUS_DONE = {
   ],
 };
 export const MOCK_ORDER_STATUS_CANCELED = {
+  color: '#AAACB0',
   slug: ORDER_STATUS_CANCELED,
   name: [
     { key: DEFAULT_LANG, value: 'Отменён' },

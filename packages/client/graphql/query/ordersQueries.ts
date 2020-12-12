@@ -4,6 +4,7 @@ export const orderStatusFragment = gql`
   fragment OrderStatus on OrderStatus {
     id
     nameString
+    color
   }
 `;
 

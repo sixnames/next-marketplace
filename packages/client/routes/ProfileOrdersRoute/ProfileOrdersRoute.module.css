@@ -9,6 +9,7 @@
   background-color: var(--secondaryBackground);
   border-radius: var(--borderRadius);
   box-shadow: var(--wp-shadow-100);
+  overflow: hidden;
 }
 
 .orderHead {
@@ -30,6 +31,7 @@
 .orderHeadGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: baseline;
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
 }
@@ -40,5 +42,40 @@
 }
 
 .orderCreatedAt {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+}
 
+.orderTotalPrice {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+}
+
+.orderTotalPrice span {
+  font-size: 1.33rem;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.orderStatus {
+  font-weight: 600;
+}
+
+.order .orderCartBtn {
+  width: var(--orderHeadMinHeight);
+  height: var(--orderHeadMinHeight);
+  background-color: var(--secondaryBackgroundLight);
+}
+
+[data-theme="light"] .order .orderCartBtn svg {
+  fill: var(--wp-mid-gray-100);
+}
+
+[data-theme="dark"] .order .orderCartBtn svg {
+  fill: var(--wp-light-gray-100);
+}
+
+[data-theme="light"] .order .orderCartBtn:hover svg,
+[data-theme="dark"] .order .orderCartBtn:hover svg {
+  fill: var(--theme);
 }

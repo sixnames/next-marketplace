@@ -9,9 +9,10 @@ interface FormattedDateInterface {
 
 const FormattedDate: React.FC<FormattedDateInterface> = ({ value, className }) => {
   const { lang } = useLanguageContext();
-
+  const dateClass = `${classes.frame} ${className ? className : ''}`;
+  const fallback = <span className={dateClass}>--</span>;
   if (!value) {
-    return <span className={`${classes.frame} ${className ? className : ''}`}>--</span>;
+    return fallback;
   }
 
   try {
@@ -22,11 +23,9 @@ const FormattedDate: React.FC<FormattedDateInterface> = ({ value, className }) =
       dateStyle: 'short',
     }).format(date);
 
-    return (
-      <span className={`${classes.frame} ${className ? className : ''}`}>{formattedDate}</span>
-    );
+    return <span className={dateClass}>{formattedDate}</span>;
   } catch {
-    return <span className={`${classes.frame} ${className ? className : ''}`}>--</span>;
+    return fallback;
   }
 };
 

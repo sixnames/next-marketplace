@@ -35,7 +35,7 @@
 
 .productMainGrid {
   display: grid;
-  grid-template-columns: 8rem 1fr;
+  grid-template-columns: 7rem 1fr;
 }
 
 .product .amountInput {

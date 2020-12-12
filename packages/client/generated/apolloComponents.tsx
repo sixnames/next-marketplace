@@ -4274,6 +4274,18 @@ export type MyOrderProductFragment = (
   )> }
 );
 
+export type MyOrderFragment = (
+  { __typename?: 'Order' }
+  & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
+  & { products: Array<(
+    { __typename?: 'OrderProduct' }
+    & MyOrderProductFragment
+  )>, status: (
+    { __typename?: 'OrderStatus' }
+    & OrderStatusFragment
+  ) }
+);
+
 export type GetAllMyOrdersQueryVariables = Exact<{
   input?: Maybe<OrderPaginateInput>;
 }>;
@@ -4286,14 +4298,7 @@ export type GetAllMyOrdersQuery = (
     & Pick<PaginatedOrdersResponse, 'totalDocs' | 'page' | 'totalPages'>
     & { docs: Array<(
       { __typename?: 'Order' }
-      & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
-      & { products: Array<(
-        { __typename?: 'OrderProduct' }
-        & MyOrderProductFragment
-      )>, status: (
-        { __typename?: 'OrderStatus' }
-        & OrderStatusFragment
-      ) }
+      & MyOrderFragment
     )> }
   )> }
 );
@@ -5378,6 +5383,23 @@ export const MyOrderProductFragmentDoc = gql`
 }
     ${MyOrderShopProductFragmentDoc}
 ${MyOrderShopFragmentDoc}`;
+export const MyOrderFragmentDoc = gql`
+    fragment MyOrder on Order {
+  id
+  itemId
+  productsCount
+  formattedTotalPrice
+  comment
+  createdAt
+  products {
+    ...MyOrderProduct
+  }
+  status {
+    ...OrderStatus
+  }
+}
+    ${MyOrderProductFragmentDoc}
+${OrderStatusFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
   id
@@ -8672,23 +8694,11 @@ export const GetAllMyOrdersDocument = gql`
     page
     totalPages
     docs {
-      id
-      itemId
-      productsCount
-      formattedTotalPrice
-      comment
-      createdAt
-      products {
-        ...MyOrderProduct
-      }
-      status {
-        ...OrderStatus
-      }
+      ...MyOrder
     }
   }
 }
-    ${MyOrderProductFragmentDoc}
-${OrderStatusFragmentDoc}`;
+    ${MyOrderFragmentDoc}`;
 
 /**
  * __useGetAllMyOrdersQuery__

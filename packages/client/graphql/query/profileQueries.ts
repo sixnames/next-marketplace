@@ -44,6 +44,25 @@ export const myOrderProductFragment = gql`
   ${myOrderShopFragment}
 `;
 
+export const myOrderFragment = gql`
+  fragment MyOrder on Order {
+    id
+    itemId
+    productsCount
+    formattedTotalPrice
+    comment
+    createdAt
+    products {
+      ...MyOrderProduct
+    }
+    status {
+      ...OrderStatus
+    }
+  }
+  ${myOrderProductFragment}
+  ${orderStatusFragment}
+`;
+
 export const MY_ORDERS_QUERY = gql`
   query GetAllMyOrders($input: OrderPaginateInput) {
     getAllMyOrders(input: $input) {
@@ -51,21 +70,9 @@ export const MY_ORDERS_QUERY = gql`
       page
       totalPages
       docs {
-        id
-        itemId
-        productsCount
-        formattedTotalPrice
-        comment
-        createdAt
-        products {
-          ...MyOrderProduct
-        }
-        status {
-          ...OrderStatus
-        }
+        ...MyOrder
       }
     }
   }
-  ${myOrderProductFragment}
-  ${orderStatusFragment}
+  ${myOrderFragment}
 `;

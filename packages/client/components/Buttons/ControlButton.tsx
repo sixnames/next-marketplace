@@ -4,6 +4,7 @@ import Icon from '../Icon/Icon';
 import { ButtonType } from '../../types';
 import { IconType } from '@yagu/config';
 import Tooltip from '../TTip/Tooltip';
+import { noNaN } from '@yagu/shared';
 
 export interface ControlButtonInterface {
   className?: string;
@@ -13,6 +14,8 @@ export interface ControlButtonInterface {
   disabled?: boolean;
   title?: string;
   icon: IconType;
+  iconPositionTop?: number;
+  iconPositionLeft?: number;
   onClick?: (e: any) => void;
   testId?: string;
   roundedTopLeft?: boolean;
@@ -36,6 +39,8 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   onClick,
   iconSize = 'normal',
   size = 'normal',
+  iconPositionLeft,
+  iconPositionTop,
 }) => {
   const themeClass = classes[theme];
   const sizeClass = classes[size];
@@ -59,7 +64,14 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
           type={type}
           className={buttonClass}
         >
-          <Icon name={icon} className={`${iconClass ? iconClass : ''}`} />
+          <Icon
+            style={{
+              top: noNaN(iconPositionTop),
+              left: noNaN(iconPositionLeft),
+            }}
+            name={icon}
+            className={`${iconClass ? iconClass : ''}`}
+          />
         </button>
       </Tooltip>
     </Fragment>

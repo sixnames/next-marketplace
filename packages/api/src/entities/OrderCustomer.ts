@@ -39,4 +39,10 @@ export class OrderCustomer {
 
   @Field((_type) => FormattedPhone)
   readonly formattedPhone?: FormattedPhone;
+
+  @Field((_type) => String)
+  readonly fullName?: string;
+
+  @Field((_type) => String)
+  readonly shortName?: string;
 }

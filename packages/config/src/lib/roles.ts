@@ -55,6 +55,23 @@ export const cmsRoute = {
       name: [
         {
           key: DEFAULT_LANG,
+          value: 'Заказы',
+        },
+        {
+          key: SECONDARY_LANG,
+          value: 'Orders',
+        },
+      ],
+      slug: 'cms-orders',
+      path: `${ROUTE_CMS}/orders${QUERY_DATA_LAYOUT_FILTER_ENABLED}`,
+      icon: '',
+      children: [],
+      navGroup: ROUTE_APP_NAV_GROUP,
+    },
+    {
+      name: [
+        {
+          key: DEFAULT_LANG,
           value: 'Товары',
         },
         {
@@ -349,6 +366,10 @@ export const ROLE_RULES_TEMPLATE = [
   {
     nameString: 'Товар магазина',
     entity: 'ShopProduct',
+  },
+  {
+    nameString: 'Заказ',
+    entity: 'Order',
   },
 ];
 

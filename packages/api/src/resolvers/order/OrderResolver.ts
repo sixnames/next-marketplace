@@ -1,4 +1,15 @@
-import { Arg, Field, FieldResolver, Int, Mutation, ObjectType, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Field,
+  FieldResolver,
+  ID,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { DocumentType } from '@typegoose/typegoose';
 import { Order, OrderModel } from '../../entities/Order';
 import { OrderStatus, OrderStatusModel } from '../../entities/OrderStatus';
@@ -8,9 +19,11 @@ import {
   ORDER_STATUS_NEW,
   ROLE_SLUG_GUEST,
   SECONDARY_LANG,
+  SORT_DESC,
 } from '@yagu/config';
 import getLangField from '../../utils/translations/getLangField';
 import {
+  CustomFilter,
   Localization,
   LocalizationPayloadInterface,
   SessionCart,
@@ -21,7 +34,7 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import PayloadType from '../commonInputs/PayloadType';
 import { Cart, CartModel } from '../../entities/Cart';
 import { ShopProductModel } from '../../entities/ShopProduct';
-import { ProductModel } from '../../entities/Product';
+import { Product, ProductModel } from '../../entities/Product';
 import { OrderProduct } from '../../entities/OrderProduct';
 import { User, UserModel } from '../../entities/User';
 import { OrderLogVariantEnum } from '../../entities/OrderLog';
@@ -30,9 +43,18 @@ import { CompanyModel } from '../../entities/Company';
 import { MakeAnOrderInput } from './MakeAnOrderInput';
 import { RoleModel } from '../../entities/Role';
 import generator from 'generate-password';
-import { ValidateMethod } from '../../decorators/methodDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { makeAnOrderSchema } from '@yagu/validation';
 import { sendOrderCreatedEmail } from '../../emails/orderCreatedEmail';
+import { RoleRuleModel } from '../../entities/RoleRule';
+import PaginateType from '../commonInputs/PaginateType';
+import { OrderPaginateInput } from './OrderPaginateInput';
+import { FilterQuery } from 'mongoose';
+
+const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(Order.name);
+
+@ObjectType()
+export class PaginatedOrdersResponse extends PaginateType(Order) {}
 
 @ObjectType()
 class OrderPayloadType extends PayloadType() {
@@ -45,6 +67,65 @@ class OrderPayloadType extends PayloadType() {
 
 @Resolver((_for) => Order)
 export class OrderResolver {
+  @Query((_type) => Order, { nullable: true })
+  @AuthMethod(operationConfigRead)
+  async getOrder(
+    @Arg('id', () => ID) id: string,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
+  ): Promise<Order | null> {
+    return OrderModel.findOne({ _id: id, ...customFilter });
+  }
+
+  @Query((_type) => Order, { nullable: true })
+  async getMyOrder(
+    @Arg('id', () => ID) id: string,
+    @SessionUser() user: User,
+  ): Promise<Order | null> {
+    if (!user) {
+      return null;
+    }
+    return OrderModel.findOne({ _id: id, 'customer.user': user.id });
+  }
+
+  @Query((_type) => PaginatedOrdersResponse)
+  @AuthMethod(operationConfigRead)
+  async getAllOrders(
+    @Arg('input', { nullable: true, defaultValue: {} }) input: OrderPaginateInput,
+    @CustomFilter(operationConfigRead) customFilter: FilterQuery<Product>,
+  ): Promise<PaginatedOrdersResponse> {
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC } = input;
+
+    return OrderModel.paginate(
+      { ...customFilter },
+      {
+        limit,
+        page,
+        sort: `${sortBy} ${sortDir}`,
+      },
+    );
+  }
+
+  @Query((_type) => PaginatedOrdersResponse, { nullable: true })
+  async getAllMyOrders(
+    @Arg('input', { nullable: true, defaultValue: {} }) input: OrderPaginateInput,
+    @SessionUser() user: User,
+  ): Promise<PaginatedOrdersResponse | null> {
+    if (!user) {
+      return null;
+    }
+
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC } = input;
+
+    return OrderModel.paginate(
+      { 'customer.user': user.id },
+      {
+        limit,
+        page,
+        sort: `${sortBy} ${sortDir}`,
+      },
+    );
+  }
+
   @Mutation((_returns) => OrderPayloadType)
   @ValidateMethod({ schema: makeAnOrderSchema })
   async makeAnOrder(
@@ -54,6 +135,13 @@ export class OrderResolver {
     @Arg('input') input: MakeAnOrderInput,
   ) {
     try {
+      if (cart.products.length < 1) {
+        return {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.empty'),
+        };
+      }
+
       let user = sessionUser;
       if (!sessionUser) {
         const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });

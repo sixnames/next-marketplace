@@ -7,15 +7,13 @@ import {
   TestSetOptions,
 } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL } from '../../config';
-import { DEFAULT_CITY, DEFAULT_LANG, ROLE_SLUG_GUEST } from '@yagu/config';
+import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/config';
 import { User, UserModel } from '../../entities/User';
 import mime from 'mime-types';
 import { ApolloServer } from 'apollo-server-express';
 import { Upload } from '../../types/upload';
 import { buildSchema } from 'type-graphql';
 import { schemaOptions } from '../../schema/schema';
-import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
-import { RoleModel } from '../../entities/Role';
 import bcrypt from 'bcryptjs';
 
 export interface TestClientInterface {
@@ -85,53 +83,11 @@ export async function testClientWithContext(
   });
   const { mutate, query, setOptions } = testClient;
 
-  // Set request role
-  const roleRuleOperationsPopulate = {
-    path: 'operations',
-    model: RoleRuleOperationModel,
-    options: {
-      sort: {
-        order: 1,
-      },
-    },
-  };
-
-  let role;
-  let roleRules;
-
-  if (authUser) {
-    let userRole = await RoleModel.findOne({ _id: authUser.role });
-    if (!userRole) {
-      userRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
-    }
-
-    if (!userRole) {
-      throw Error('Guest role not found for request user');
-    }
-
-    role = userRole;
-    roleRules = await RoleRuleModel.find({
-      roleId: userRole.id,
-    }).populate(roleRuleOperationsPopulate);
-  } else {
-    const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
-    if (!guestRole) {
-      throw Error('Guest role not found');
-    }
-
-    role = guestRole;
-    roleRules = await RoleRuleModel.find({
-      roleId: guestRole.id,
-    }).populate(roleRuleOperationsPopulate);
-  }
-
   setOptions({
     request: {
       defaultLang: DEFAULT_LANG,
       lang,
       city,
-      role,
-      roleRules,
       headers,
     },
   });

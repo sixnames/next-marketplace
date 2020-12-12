@@ -218,5 +218,71 @@ describe('Order', () => {
     expect(makeAnOrderPayload.data.makeAnOrder.order.customer.itemId).toEqual(
       meQueryPayload.data.me.itemId,
     );
+
+    // Should return paginated orders list
+    const getAllOrdersPayload = await mutate<any>(gql`
+      query {
+        getAllOrders {
+          page
+          totalDocs
+          docs {
+            id
+          }
+        }
+      }
+    `);
+    expect(getAllOrdersPayload.data.getAllOrders.docs[0].id).toEqual(addedOrder.id);
+    expect(getAllOrdersPayload.data.getAllOrders.totalDocs).toEqual(1);
+    expect(getAllOrdersPayload.data.getAllOrders.page).toEqual(1);
+
+    // Should return order by ID
+    const getOrderPayload = await mutate<any>(
+      gql`
+        query GetOrder($id: ID!) {
+          getOrder(id: $id) {
+            id
+          }
+        }
+      `,
+      {
+        variables: {
+          id: addedOrder.id,
+        },
+      },
+    );
+    expect(getOrderPayload.data.getOrder.id).toEqual(addedOrder.id);
+
+    // Should return order by ID
+    const getMyOrderPayload = await mutate<any>(
+      gql`
+        query GetMyOrder($id: ID!) {
+          getMyOrder(id: $id) {
+            id
+          }
+        }
+      `,
+      {
+        variables: {
+          id: addedOrder.id,
+        },
+      },
+    );
+    expect(getMyOrderPayload.data.getMyOrder.id).toEqual(addedOrder.id);
+
+    // Should return paginated orders list
+    const getAllMyOrdersPayload = await mutate<any>(gql`
+      query {
+        getAllMyOrders {
+          page
+          totalDocs
+          docs {
+            id
+          }
+        }
+      }
+    `);
+    expect(getAllMyOrdersPayload.data.getAllMyOrders.docs[0].id).toEqual(addedOrder.id);
+    expect(getAllMyOrdersPayload.data.getAllMyOrders.totalDocs).toEqual(1);
+    expect(getAllMyOrdersPayload.data.getAllMyOrders.page).toEqual(1);
   });
 });

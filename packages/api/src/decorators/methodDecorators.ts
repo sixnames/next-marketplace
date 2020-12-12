@@ -1,24 +1,76 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
-import { MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
+import { MessageKey, ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '@yagu/config';
 import {
   MultiLangSchemaMessagesInterface,
   ObjectSchema,
   NotRequiredArraySchema,
 } from '@yagu/validation';
 import getMessagesByKeys from '../utils/translations/getMessagesByKeys';
+import { Role, RoleModel } from '../entities/Role';
+import { RoleRule, RoleRuleModel, RoleRuleOperationModel } from '../entities/RoleRule';
+import { User } from '../entities/User';
 
-export const AuthField: MiddlewareFn<ContextInterface> = async (
-  { info, context: { req } },
-  next,
-) => {
+export const getSessionRole = async (user?: User | null): Promise<Role> => {
+  if (user) {
+    let userRole = await RoleModel.findOne({ _id: user.role });
+    if (!userRole) {
+      userRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+    }
+
+    if (!userRole) {
+      throw Error('Guest role not found for request user');
+    }
+
+    return userRole;
+  } else {
+    const guestRole = await RoleModel.findOne({ slug: ROLE_SLUG_GUEST });
+    if (!guestRole) {
+      throw Error('Guest role not found');
+    }
+
+    return guestRole;
+  }
+};
+
+interface GetSessionRoleRulesPayloadInterface {
+  role: Role;
+  roleRules: RoleRule[];
+}
+
+export const getSessionRoleRules = async (
+  user?: User | null,
+): Promise<GetSessionRoleRulesPayloadInterface> => {
+  const roleRuleOperationsPopulate = {
+    path: 'operations',
+    model: RoleRuleOperationModel,
+    options: {
+      sort: {
+        order: 1,
+      },
+    },
+  };
+
+  const role = await getSessionRole(user);
+  const roleRules = await RoleRuleModel.find({
+    roleId: role.id,
+  }).populate(roleRuleOperationsPopulate);
+
+  return {
+    role,
+    roleRules,
+  };
+};
+
+export const AuthField: MiddlewareFn<ContextInterface> = async ({ info, context }, next) => {
   const excludedParentTypes = ['Query', 'Mutation'];
   const { fieldName, parentType } = info;
   if (excludedParentTypes.includes(`${parentType}`)) {
     return next();
   }
-
-  const currentRule = req.roleRules.find(({ entity }) => entity === `${parentType}`);
+  const user = context.getUser();
+  const { roleRules } = await getSessionRoleRules(user);
+  const currentRule = roleRules.find(({ entity }) => entity === `${parentType}`);
 
   if (!currentRule) {
     return next();
@@ -39,14 +91,16 @@ export interface AuthDecoratorConfigInterface {
   operationType: DecoratorOperationType;
 }
 export function AuthMethod(operationConfig: AuthDecoratorConfigInterface) {
-  return createMethodDecorator<ContextInterface>(async ({ context: { req }, info }, next) => {
+  return createMethodDecorator<ContextInterface>(async ({ context, info }, next) => {
     const { fieldName } = info;
+    const user = context.getUser();
+    const { role, roleRules } = await getSessionRoleRules(user);
 
-    if (req.role.slug === ROLE_SLUG_ADMIN) {
+    if (role.slug === ROLE_SLUG_ADMIN) {
       return next();
     }
 
-    const currentRule = req.roleRules.find(({ entity }) => entity === operationConfig.entity);
+    const currentRule = roleRules.find(({ entity }) => entity === operationConfig.entity);
 
     if (!currentRule) {
       return next();

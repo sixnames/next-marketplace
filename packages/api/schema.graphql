@@ -721,12 +721,14 @@ type Order {
 type OrderCustomer {
   email: String!
   formattedPhone: FormattedPhone!
+  fullName: String!
   id: ID!
   itemId: Int!
   lastName: String
   name: String!
   phone: String!
   secondName: String
+  shortName: String!
   user: User
 }
 
@@ -741,6 +743,14 @@ type OrderLog {
 enum OrderLogVariantEnum {
   message
   status
+}
+
+input OrderPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  search: String
+  sortBy: OrderSortByEnum = createdAt
+  sortDir: SortDirectionEnum = desc
 }
 
 type OrderPayloadType {
@@ -773,6 +783,12 @@ type OrderProduct {
   totalPrice: Float!
 }
 
+"""Order pagination sortBy enum"""
+enum OrderSortByEnum {
+  createdAt
+  itemId
+}
+
 type OrderStatus {
   id: ID!
   itemId: Int!
@@ -783,6 +799,19 @@ type OrderStatus {
 
 type PaginatedCompaniesResponse {
   docs: [Company!]!
+  hasNextPage: Int!
+  hasPrevPage: Int!
+  limit: Int!
+  nextPage: Int
+  page: Int
+  pagingCounter: Int!
+  prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type PaginatedOrdersResponse {
+  docs: [Order!]!
   hasNextPage: Int!
   hasPrevPage: Int!
   limit: Int!
@@ -1038,7 +1067,9 @@ type Query {
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
   getAllMetrics: [Metric!]
+  getAllMyOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse
   getAllOptionsGroups: [OptionsGroup!]!
+  getAllOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse!
   getAllProducts(input: ProductPaginateInput = {}): PaginatedProductsResponse!
   getAllRoles: [Role!]!
   getAllRubricVariants: [RubricVariant!]
@@ -1069,9 +1100,11 @@ type Query {
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
+  getMyOrder(id: ID!): Order
   getOption(id: ID!): Option!
   getOptionsGroup(id: ID!): OptionsGroup
   getOptionsGroupVariantsOptions: [OptionsGroupVariantOption!]!
+  getOrder(id: ID!): Order
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
   getProductCard(slug: String!): Product!

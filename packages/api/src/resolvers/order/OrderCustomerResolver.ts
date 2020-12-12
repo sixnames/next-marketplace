@@ -3,7 +3,7 @@ import { OrderCustomer } from '../../entities/OrderCustomer';
 import { DocumentType } from '@typegoose/typegoose';
 import { User, UserModel } from '../../entities/User';
 import { FormattedPhone } from '../../entities/FormattedPhone';
-import { phoneToRaw, phoneToReadable } from '@yagu/shared';
+import { getFullName, getShortName, phoneToRaw, phoneToReadable } from '@yagu/shared';
 
 @Resolver((_for) => OrderCustomer)
 export class OrderCustomerResolver {
@@ -11,6 +11,17 @@ export class OrderCustomerResolver {
   @FieldResolver()
   async user(@Root() orderCustomer: DocumentType<OrderCustomer>): Promise<User | null> {
     return UserModel.findOne({ _id: orderCustomer.user });
+  }
+
+  // Field resolvers
+  @FieldResolver(() => String)
+  fullName(@Root() orderCustomer: DocumentType<OrderCustomer>): string {
+    return getFullName(orderCustomer);
+  }
+
+  @FieldResolver(() => String)
+  shortName(@Root() orderCustomer: DocumentType<OrderCustomer>): string {
+    return getShortName(orderCustomer);
   }
 
   @FieldResolver(() => FormattedPhone)

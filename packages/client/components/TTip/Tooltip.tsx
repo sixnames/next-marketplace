@@ -14,6 +14,7 @@ const Tooltip: React.FC<TooltipInterface> = ({ children, title }) => {
   return (
     <TooltipRUI
       style={{
+        zIndex: 99999,
         fontSize: '1rem',
         color: 'white',
         backgroundColor: '#5c626e',

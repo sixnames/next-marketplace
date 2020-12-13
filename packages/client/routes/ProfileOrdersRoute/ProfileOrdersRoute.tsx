@@ -18,7 +18,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { itemId, createdAt, formattedTotalPrice, status } = order;
   return (
-    <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>
+    <Disclosure defaultOpen={true} onChange={() => setIsOpen((prevState) => !prevState)}>
       <div className={classes.order}>
         <div className={`${classes.orderMainGrid} ${classes.orderHead}`}>
           <DisclosureButton as={'div'} className={`${classes.orderTrigger}`}>

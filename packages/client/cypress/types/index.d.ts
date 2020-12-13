@@ -14,8 +14,14 @@ declare namespace Cypress {
     cyPrefix?: string;
   }
 
+  interface MakeAnOrderPayloadInterface {
+    productA: any;
+    connectionProductA: any;
+    orderItemId: string | undefined;
+  }
+
   interface MakeAnOrderInterface {
-    callback?: (orderItemId: string | undefined) => void;
+    callback?: (payload: MakeAnOrderPayloadInterface) => void;
     mockData: any;
     orderFields?: {
       customerName: string;

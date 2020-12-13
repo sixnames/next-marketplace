@@ -17,12 +17,14 @@ import Image from '../../components/Image/Image';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import Icon from '../../components/Icon/Icon';
 import { useSiteContext } from '../../context/siteContext';
+import { noNaN } from '@yagu/shared';
 
 interface ProfileOrderProductInterface {
   orderProduct: MyOrderProductFragment;
 }
 
 const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct }) => {
+  const { addProductToCart } = useSiteContext();
   const {
     nameString,
     shopProduct,
@@ -34,6 +36,15 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
     amount,
   } = orderProduct;
   const imageWidth = 35;
+
+  const addToCartAmount = 1;
+  let inCartCount = 1;
+  if (shopProduct) {
+    inCartCount = shopProduct.inCartCount;
+  }
+  const productNotExist = !shopProduct || !shopProduct.product;
+  const isCartButtonDisabled =
+    productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
   return (
     <div className={`${classes.orderProduct} ${classes.orderMainGrid}`}>
@@ -79,7 +90,17 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
       <div className={classes.orderProductBtn}>
         <Tooltip title={'Добавить в корзину'}>
           <div>
-            <ControlButton icon={'cart'} />
+            <ControlButton
+              disabled={isCartButtonDisabled}
+              onClick={() => {
+                addProductToCart({
+                  amount: addToCartAmount,
+                  shopProductId: `${shopProduct?.id}`,
+                });
+              }}
+              testId={`profile-order-product-${shopProduct?.product?.itemId}-add-to-cart`}
+              icon={'cart'}
+            />
           </div>
         </Tooltip>
       </div>

@@ -23,7 +23,7 @@ describe('Admin orders', () => {
     cy.makeAnOrder({
       mockData,
       orderFields,
-      callback: (orderItemId) => {
+      callback: ({ orderItemId }) => {
         // Should display all orders list
         cy.testAuth(`/app/cms/orders${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
         cy.getByCy(`${orderItemId}-row`).should('contain', orderFields.customerName);

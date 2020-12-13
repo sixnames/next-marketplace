@@ -175,15 +175,19 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'makeAnOrder',
   ({ callback, orderFields, mockData }: Cypress.MakeAnOrderInterface) => {
+    const rubricLevelOneA = mockData.rubricLevelOneA;
+    const productA = mockData.productA;
+    const connectionProductA = mockData.connectionProductA;
+
     cy.getByTranslationFieldCy({
       cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
+      languages: rubricLevelOneA.name,
     }).click();
     // Should navigate to cart
-    cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
+    cy.getByCy(`catalogue-item-${productA.slug}`).click();
 
     // Add product #1
-    cy.getByCy(`card-${mockData.productA.slug}`).should('exist');
+    cy.getByCy(`card-${productA.slug}`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
     cy.getByCy(`card-shops-list`).should('exist');
@@ -193,11 +197,11 @@ Cypress.Commands.add(
     cy.getByCy(`cart-modal-close`).click();
     cy.getByTranslationFieldCy({
       cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
+      languages: rubricLevelOneA.name,
     }).click();
     cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
-    cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
+    cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
+    cy.getByCy(`card-${connectionProductA.slug}`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();
@@ -223,7 +227,11 @@ Cypress.Commands.add(
       const orderItemId = e.attr('data-order-item-id');
 
       if (callback) {
-        callback(orderItemId);
+        callback({
+          orderItemId,
+          productA,
+          connectionProductA,
+        });
       }
     });
   },

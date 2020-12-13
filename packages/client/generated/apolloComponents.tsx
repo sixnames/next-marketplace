@@ -4262,10 +4262,10 @@ export type GetCmsOrderQuery = (
 
 export type MyOrderShopProductFragment = (
   { __typename?: 'ShopProduct' }
-  & Pick<ShopProduct, 'id'>
+  & Pick<ShopProduct, 'id' | 'available' | 'inCartCount'>
   & { product: (
     { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'mainImage'>
+    & Pick<Product, 'id' | 'itemId' | 'mainImage'>
   ) }
 );
 
@@ -5368,8 +5368,11 @@ ${CmsOrderInListCustomerFragmentDoc}`;
 export const MyOrderShopProductFragmentDoc = gql`
     fragment MyOrderShopProduct on ShopProduct {
   id
+  available
+  inCartCount
   product {
     id
+    itemId
     mainImage
   }
 }

@@ -4,8 +4,11 @@ import { orderStatusFragment } from './ordersQueries';
 export const myOrderShopProductFragment = gql`
   fragment MyOrderShopProduct on ShopProduct {
     id
+    available
+    inCartCount
     product {
       id
+      itemId
       mainImage
     }
   }

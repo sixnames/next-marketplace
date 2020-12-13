@@ -33,6 +33,9 @@ export const myOrderProductFragment = gql`
     amount
     formattedPrice
     formattedTotalPrice
+    formattedOldPrice
+    discountedPercent
+    nameString
     shopProduct {
       ...MyOrderShopProduct
     }

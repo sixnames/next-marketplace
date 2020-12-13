@@ -79,3 +79,95 @@
 [data-theme="dark"] .order .orderCartBtn:hover svg {
   fill: var(--theme);
 }
+
+.orderProduct {
+  margin-bottom: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.orderProductGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 40rem;
+}
+
+
+.productImage {
+  display: flex;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.productImage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+.productArt {
+  color: var(--textSecondaryColor);
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.productName {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.shop {
+  line-height: 1.8;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.shop span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+}
+
+
+.productTotals {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+}
+
+.productTotalsPrice {
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.productTotalsIcon {
+  width: 0.5rem;
+  height: 0.75rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  fill: var(--textColor);
+}
+
+.productTotalsAmount {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orderProductBtn {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@media only screen and (max-width: 680px) {
+  .productImage {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .productTotals {
+    justify-content: flex-start;
+  }
+}
+

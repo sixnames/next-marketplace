@@ -4265,7 +4265,7 @@ export type MyOrderShopFragment = (
 
 export type MyOrderProductFragment = (
   { __typename?: 'OrderProduct' }
-  & Pick<OrderProduct, 'id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice'>
+  & Pick<OrderProduct, 'id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice' | 'formattedOldPrice' | 'discountedPercent' | 'nameString'>
   & { shopProduct?: Maybe<(
     { __typename?: 'ShopProduct' }
     & MyOrderShopProductFragment
@@ -5376,6 +5376,9 @@ export const MyOrderProductFragmentDoc = gql`
   amount
   formattedPrice
   formattedTotalPrice
+  formattedOldPrice
+  discountedPercent
+  nameString
   shopProduct {
     ...MyOrderShopProduct
   }

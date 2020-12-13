@@ -16,6 +16,7 @@ import Tooltip from '../../components/TTip/Tooltip';
 import Image from '../../components/Image/Image';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import Icon from '../../components/Icon/Icon';
+import { useSiteContext } from '../../context/siteContext';
 
 interface ProfileOrderProductInterface {
   orderProduct: MyOrderProductFragment;
@@ -93,6 +94,8 @@ interface ProfileOrderInterface {
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { itemId, createdAt, formattedTotalPrice, status, products } = order;
+  const { repeatAnOrder } = useSiteContext();
+
   return (
     <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>
       <div className={classes.order} data-cy={`profile-order-${itemId}`}>
@@ -129,9 +132,11 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
               <div>
                 <ControlButton
                   roundedTopRight
+                  onClick={() => repeatAnOrder(order.id)}
                   className={classes.orderCartBtn}
                   iconSize={'big'}
                   icon={'cart'}
+                  testId={`profile-order-${itemId}-repeat`}
                 />
               </div>
             </Tooltip>

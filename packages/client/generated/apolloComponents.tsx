@@ -1349,6 +1349,7 @@ export type Mutation = {
   updateProductInCart: CartPayloadType;
   deleteProductFromCart: CartPayloadType;
   clearCart: CartPayloadType;
+  repeatOrder: CartPayloadType;
   makeAnOrder: OrderPayloadType;
 };
 
@@ -1735,6 +1736,11 @@ export type MutationUpdateProductInCartArgs = {
 
 export type MutationDeleteProductFromCartArgs = {
   input: DeleteProductFromCartInput;
+};
+
+
+export type MutationRepeatOrderArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -3013,6 +3019,19 @@ export type MakeAnOrderMutation = (
   & { makeAnOrder: (
     { __typename?: 'OrderPayloadType' }
     & MakeAnOrderPayloadFragment
+  ) }
+);
+
+export type RepeatAnOrderMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RepeatAnOrderMutation = (
+  { __typename?: 'Mutation' }
+  & { repeatOrder: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
   ) }
 );
 
@@ -6662,6 +6681,38 @@ export function useMakeAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type MakeAnOrderMutationHookResult = ReturnType<typeof useMakeAnOrderMutation>;
 export type MakeAnOrderMutationResult = Apollo.MutationResult<MakeAnOrderMutation>;
 export type MakeAnOrderMutationOptions = Apollo.BaseMutationOptions<MakeAnOrderMutation, MakeAnOrderMutationVariables>;
+export const RepeatAnOrderDocument = gql`
+    mutation RepeatAnOrder($id: ID!) {
+  repeatOrder(id: $id) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type RepeatAnOrderMutationFn = Apollo.MutationFunction<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
+
+/**
+ * __useRepeatAnOrderMutation__
+ *
+ * To run a mutation, you first call `useRepeatAnOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRepeatAnOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [repeatAnOrderMutation, { data, loading, error }] = useRepeatAnOrderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRepeatAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>) {
+        return Apollo.useMutation<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>(RepeatAnOrderDocument, baseOptions);
+      }
+export type RepeatAnOrderMutationHookResult = ReturnType<typeof useRepeatAnOrderMutation>;
+export type RepeatAnOrderMutationResult = Apollo.MutationResult<RepeatAnOrderMutation>;
+export type RepeatAnOrderMutationOptions = Apollo.BaseMutationOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {

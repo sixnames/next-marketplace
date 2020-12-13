@@ -3,6 +3,7 @@ import {
   Arg,
   Field,
   FieldResolver,
+  ID,
   Int,
   Mutation,
   ObjectType,
@@ -35,7 +36,9 @@ import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';
 import { getBooleanFromArray } from '@yagu/shared';
-import { Order } from '../../entities/Order';
+import { Order, OrderModel } from '../../entities/Order';
+import { CartProduct } from '../../entities/CartProduct';
+import { ProductModel } from '../../entities/Product';
 
 @ObjectType()
 class CartPayloadType extends PayloadType() {
@@ -366,6 +369,87 @@ export class CartResolver {
       return {
         success: true,
         message: await getApiMessage('carts.clear.success'),
+        cart: updatedCart,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation(() => CartPayloadType)
+  async repeatOrder(
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @SessionCart() cart: Cart,
+    @Arg('id', (_type) => ID) id: string,
+  ): Promise<CartPayloadType> {
+    try {
+      const oldOrder = await OrderModel.findById(id);
+
+      if (!oldOrder) {
+        return {
+          success: false,
+          message: await getApiMessage('carts.repeatOrder.orderNotFound'),
+        };
+      }
+
+      const cartNewProducts: CartProduct[] = [];
+
+      for await (const orderProduct of oldOrder.products) {
+        const { amount, shopProduct } = orderProduct;
+        const shopProductExist = await ShopProductModel.findById(shopProduct);
+        if (!shopProductExist) {
+          break;
+        }
+
+        const productExist = await ProductModel.findById(shopProductExist.product);
+        if (!productExist) {
+          break;
+        }
+
+        let finalAmount = amount;
+
+        if (!shopProductExist.available) {
+          break;
+        }
+
+        if (shopProductExist.available < amount) {
+          finalAmount = shopProductExist.available;
+        }
+
+        cartNewProducts.push({
+          amount: finalAmount,
+          shopProduct,
+        });
+      }
+
+      // Add products to cart
+      const updatedCart = await CartModel.findByIdAndUpdate(
+        cart.id,
+        {
+          $push: {
+            products: {
+              $each: cartNewProducts,
+            },
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedCart) {
+        return {
+          success: false,
+          message: await getApiMessage('carts.repeatOrder.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('carts.repeatOrder.success'),
         cart: updatedCart,
       };
     } catch (e) {

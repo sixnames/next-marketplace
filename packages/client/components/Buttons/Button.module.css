@@ -13,14 +13,14 @@
   box-shadow: var(--buttonShadow);
 }
 
-.short {
-  min-width: auto;
-}
-
 .butn:disabled {
   opacity: 0.5;
   pointer-events: none;
   cursor: default;
+}
+
+.butn.short {
+  min-width: auto;
 }
 
 .icon {

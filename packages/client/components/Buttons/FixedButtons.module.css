@@ -1,4 +1,4 @@
-.butn {
+.frame {
   bottom: 0;
   z-index: 90;
   display: flex;
@@ -22,12 +22,12 @@
   width: 100%;
 }
 
-.butn > * {
+.frame > * {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.butn > *:not(:first-child) {
+.frame > *:not(:first-child) {
   margin-left: 1rem;
 }
 

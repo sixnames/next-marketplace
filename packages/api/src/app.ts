@@ -33,9 +33,7 @@ const createApp = async (): Promise<CreateAppPayloadInterface> => {
   // Session connection
   const MongoStore = connectMongo(session);
   const mongoStore = new MongoStore({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    client: mongoose.connection.client,
+    mongooseConnection: mongoose.connection,
     stringify: false,
   });
   app.use(

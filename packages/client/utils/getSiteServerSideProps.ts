@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/query/initialQueries';
-import { InitialSiteQueryQueryResult } from '../generated/apolloComponents';
+import { InitialSiteQueryQuery, InitialSiteQueryQueryResult } from '../generated/apolloComponents';
 import privateRouteHandler from './privateRouteHandler';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { Theme } from '../types';
@@ -40,7 +40,7 @@ async function getSiteServerSideProps<T>({
 
     const apolloClient = initializeApollo();
 
-    const initialApolloState = await apolloClient.query({
+    const initialApolloState = await apolloClient.query<InitialSiteQueryQuery>({
       query: INITIAL_SITE_QUERY,
       context: {
         headers: req.headers,
@@ -48,10 +48,7 @@ async function getSiteServerSideProps<T>({
     });
 
     // Redirect if route is protected
-    if (
-      (!initialApolloState || !initialApolloState.data || !initialApolloState.data.me) &&
-      isProtected
-    ) {
+    if (!initialApolloState.loading && !initialApolloState.data?.me && isProtected) {
       privateRouteHandler(res);
       return { props: { initialApolloState: {} } };
     }

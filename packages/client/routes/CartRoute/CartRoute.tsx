@@ -213,7 +213,7 @@ const CartRoute: React.FC = () => {
   if (products.length < 1) {
     return (
       <div className={classes.cart}>
-        <Breadcrumbs currentPageName={'Корзина'} config={[]} />
+        <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
           <Title className={classes.cartTitle}>Корзина пуста</Title>
@@ -240,7 +240,7 @@ const CartRoute: React.FC = () => {
 
   return (
     <div className={classes.cart}>
-      <Breadcrumbs currentPageName={'Корзина'} config={[]} />
+      <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
         <Title className={classes.cartTitle}>

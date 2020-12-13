@@ -101,7 +101,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
 
   return (
     <div className={classes.card} data-cy={`card-${slug}`}>
-      <Breadcrumbs currentPageName={cardNameString} config={[]} />
+      <Breadcrumbs currentPageName={cardNameString} />
 
       <Inner>
         <div className={classes.mainFrame}>

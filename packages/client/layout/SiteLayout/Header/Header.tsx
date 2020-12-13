@@ -58,6 +58,7 @@ const HeaderProfileLink: React.FC = () => {
       testId={me ? `profile-link` : `sign-in-link`}
       href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
       className={`${classes.middleLink}`}
+      activeClassName={`${classes.middleLinkActive}`}
     >
       <span className={`${classes.middleLinkIconHolder} ${classes.middleLinkIconHolderNoLabel}`}>
         <Icon name={'user'} className={classes.middleLinkUserIcon} />

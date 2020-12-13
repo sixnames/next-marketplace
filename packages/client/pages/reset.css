@@ -326,8 +326,10 @@
   --wp-light-green: #93AF42;
   --wp-dark-green: #3A8D4C;
   --wp-dark-gray-100: #40454D;
+
   --wp-dark-gray-200-RGB: 43, 48, 57;
   --wp-dark-gray-200: rgb(var(--wp-dark-gray-200-RGB));
+  --wp-dark-gray-250: #424953;
   --wp-dark-gray-300: #1D222B;
   --wp-dark-gray-400: #14181d;
   --wp-mid-gray-100: #6B6E74;
@@ -340,6 +342,7 @@
   --primaryBackground: var(--wp-white);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
+  --secondaryBackgroundLight: var(--wp-light-gray-200);
 
   --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: var(--wp-mid-gray-100);
@@ -429,6 +432,12 @@
   --catalogueGridGap: 2.5rem;
   --mobileNavHeight: 85px;
 
+  /*Reach menu*/
+  --reachMenuItemMinimalHeight: 2.33rem;
+  --reachMenuGroupTitleMinimalHeight: 1.5rem;
+  --reachMenuItemVerticalPadding: 0.33rem;
+  --reachMenuItemHorizontalPadding: 1rem;
+
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.25);
@@ -460,6 +469,7 @@
   --primaryBackground: var(--wp-white);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
+  --secondaryBackgroundLight: var(--wp-light-gray-200);
 
   --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: var(--wp-mid-gray-100);
@@ -495,6 +505,7 @@
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
+  --secondaryBackgroundLight: var(--wp-dark-gray-250);
 
   --modalFrameBackground: var(--primaryBackground);
   --backdropBackground: #25292b;
@@ -757,6 +768,23 @@ a[href*='tel:']:hover {
   text-decoration: none;
 }
 
+/*[class*="butn"] {*/
+/*  position: relative;*/
+/*  z-index: 5;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  border: none;*/
+/*  cursor: pointer;*/
+/*  outline: none;*/
+/*  background: none;*/
+/*  color: var(--textColor);*/
+/*  font-family: var(--font);*/
+/*  transition: all 0.2s;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*}*/
+
 input::-ms-clear {
   display: none;
 }
@@ -830,12 +858,12 @@ html[data-theme='dark'] [data-reach-menu-list] {
 html [data-reach-menu-item] {
   display: flex;
   align-items: center;
-  min-height: 34px;
-  padding-top: 5px;
-  padding-left: 15px;
-  padding-bottom: 5px;
-  padding-right: 15px;
-  font-size: 15px;
+  min-height: var(--reachMenuItemMinimalHeight);
+  padding-top: var(--reachMenuItemVerticalPadding);
+  padding-left: var(--reachMenuItemHorizontalPadding);
+  padding-bottom: var(--reachMenuItemVerticalPadding);
+  padding-right: var(--reachMenuItemHorizontalPadding);
+  font-size: 1rem;
   color: var(--textColor);
   transition: all 0.2s;
   cursor: pointer;

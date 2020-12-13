@@ -9,7 +9,11 @@ import { useAppContext } from '../../../context/appContext';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../../context/notificationsContext';
 
-const ShopProductModal: React.FC = () => {
+export interface CartModalInterface {
+  title?: string;
+}
+
+const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был добавлен в корзину' }) => {
   const router = useRouter();
   const { hideModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
@@ -26,7 +30,7 @@ const ShopProductModal: React.FC = () => {
   return (
     <ModalFrame testId={'cart-modal'} size={'small'}>
       <ModalTitle size={'small'} low>
-        Товар был добавлен в корзину
+        {title}
       </ModalTitle>
       <ModalText>
         Товаров в вашей корзине: <mark data-cy={'cart-modal-counter'}>{productsCount}</mark>
@@ -43,4 +47,4 @@ const ShopProductModal: React.FC = () => {
   );
 };
 
-export default ShopProductModal;
+export default CartModal;

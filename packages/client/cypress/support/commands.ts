@@ -163,11 +163,73 @@ Cypress.Commands.add(
       url: `${apiHost}/graphql`,
       method: 'POST',
       body: { query: mutation },
-    }).then(({ body }) => {
-      if (!body.data.signIn.success) {
-        throw Error('Test authentication error');
-      }
+    }).then(() => {
       cy.visit(redirect);
+    });
+  },
+);
+
+Cypress.Commands.add(
+  'makeAnOrder',
+  ({ callback, orderFields, mockData }: Cypress.MakeAnOrderInterface) => {
+    const rubricLevelOneA = mockData.rubricLevelOneA;
+    const productA = mockData.productA;
+    const connectionProductA = mockData.connectionProductA;
+
+    cy.getByTranslationFieldCy({
+      cyPrefix: 'main-rubric',
+      languages: rubricLevelOneA.name,
+    }).click();
+    // Should navigate to cart
+    cy.getByCy(`catalogue-item-${productA.slug}`).click();
+
+    // Add product #1
+    cy.getByCy(`card-${productA.slug}`).should('exist');
+    cy.getByCy(`card-tabs-shops`).click();
+    cy.getByCy(`card-shops`).should('exist');
+    cy.getByCy(`card-shops-list`).should('exist');
+    cy.getByCy(`card-shops-${mockData.shopA.slug}-add-to-cart`).click();
+
+    // Add second product #2
+    cy.getByCy(`cart-modal-close`).click();
+    cy.getByTranslationFieldCy({
+      cyPrefix: 'main-rubric',
+      languages: rubricLevelOneA.name,
+    }).click();
+    cy.getByCy('catalogue').should('exist');
+    cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
+    cy.getByCy(`card-${connectionProductA.slug}`).should('exist');
+    cy.getByCy(`card-tabs-shops`).click();
+    cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
+    cy.getByCy(`cart-modal-continue`).click();
+
+    // Should navigate to cart
+    cy.getByCy(`cart-aside-confirm`).click();
+
+    // Should navigate to order form
+    cy.getByCy(`order-form`).should('exist');
+
+    // Should fill all order fields
+    if (orderFields) {
+      cy.getByCy(`order-form-name`).clear().type(orderFields.customerName);
+      cy.getByCy(`order-form-phone`).clear().type(orderFields.customerPhone);
+      cy.getByCy(`order-form-email`).clear().type(orderFields.customerEmail);
+    }
+    cy.getByCy(`order-form-comment`).type('comment');
+
+    // Should make an order and redirect to the Thank you page
+    cy.getByCy(`cart-aside-confirm`).click();
+    cy.get(`[data-cy="thank-you"]`).then((e) => {
+      // Get created order itemId
+      const orderItemId = e.attr('data-order-item-id');
+
+      if (callback) {
+        callback({
+          orderItemId,
+          productA,
+          connectionProductA,
+        });
+      }
     });
   },
 );

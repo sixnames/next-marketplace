@@ -1,0 +1,8 @@
+.butn {
+  border-radius: 50%;
+  background-color: var(--secondaryBackground);
+}
+
+.bordered {
+  border: 1px solid var(--borderColor);
+}

@@ -774,6 +774,7 @@ export type OrderStatus = {
   itemId: Scalars['Int'];
   name: Array<Translation>;
   slug: Scalars['String'];
+  color: Scalars['String'];
   nameString: Scalars['String'];
 };
 
@@ -1348,6 +1349,7 @@ export type Mutation = {
   updateProductInCart: CartPayloadType;
   deleteProductFromCart: CartPayloadType;
   clearCart: CartPayloadType;
+  repeatOrder: CartPayloadType;
   makeAnOrder: OrderPayloadType;
 };
 
@@ -1734,6 +1736,11 @@ export type MutationUpdateProductInCartArgs = {
 
 export type MutationDeleteProductFromCartArgs = {
   input: DeleteProductFromCartInput;
+};
+
+
+export type MutationRepeatOrderArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -3015,6 +3022,19 @@ export type MakeAnOrderMutation = (
   ) }
 );
 
+export type RepeatAnOrderMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RepeatAnOrderMutation = (
+  { __typename?: 'Mutation' }
+  & { repeatOrder: (
+    { __typename?: 'CartPayloadType' }
+    & CartPayloadFragment
+  ) }
+);
+
 export type CreateCompanyMutationVariables = Exact<{
   input: CreateCompanyInput;
 }>;
@@ -4127,7 +4147,7 @@ export type GetOptionsGroupQuery = (
 
 export type OrderStatusFragment = (
   { __typename?: 'OrderStatus' }
-  & Pick<OrderStatus, 'id' | 'nameString'>
+  & Pick<OrderStatus, 'id' | 'nameString' | 'color'>
 );
 
 export type CmsOrderInListCustomerFragment = (
@@ -4237,6 +4257,69 @@ export type GetCmsOrderQuery = (
   & { getOrder?: Maybe<(
     { __typename?: 'Order' }
     & CmsOrderFragment
+  )> }
+);
+
+export type MyOrderShopProductFragment = (
+  { __typename?: 'ShopProduct' }
+  & Pick<ShopProduct, 'id' | 'available' | 'inCartCount'>
+  & { product: (
+    { __typename?: 'Product' }
+    & Pick<Product, 'id' | 'itemId' | 'mainImage'>
+  ) }
+);
+
+export type MyOrderShopFragment = (
+  { __typename?: 'Shop' }
+  & Pick<Shop, 'id' | 'nameString' | 'slug'>
+  & { address: (
+    { __typename?: 'Address' }
+    & Pick<Address, 'formattedAddress'>
+    & { formattedCoordinates: (
+      { __typename?: 'Coordinates' }
+      & Pick<Coordinates, 'lat' | 'lng'>
+    ) }
+  ) }
+);
+
+export type MyOrderProductFragment = (
+  { __typename?: 'OrderProduct' }
+  & Pick<OrderProduct, 'id' | 'itemId' | 'amount' | 'formattedPrice' | 'formattedTotalPrice' | 'formattedOldPrice' | 'discountedPercent' | 'nameString'>
+  & { shopProduct?: Maybe<(
+    { __typename?: 'ShopProduct' }
+    & MyOrderShopProductFragment
+  )>, shop?: Maybe<(
+    { __typename?: 'Shop' }
+    & MyOrderShopFragment
+  )> }
+);
+
+export type MyOrderFragment = (
+  { __typename?: 'Order' }
+  & Pick<Order, 'id' | 'itemId' | 'productsCount' | 'formattedTotalPrice' | 'comment' | 'createdAt'>
+  & { products: Array<(
+    { __typename?: 'OrderProduct' }
+    & MyOrderProductFragment
+  )>, status: (
+    { __typename?: 'OrderStatus' }
+    & OrderStatusFragment
+  ) }
+);
+
+export type GetAllMyOrdersQueryVariables = Exact<{
+  input?: Maybe<OrderPaginateInput>;
+}>;
+
+
+export type GetAllMyOrdersQuery = (
+  { __typename?: 'Query' }
+  & { getAllMyOrders?: Maybe<(
+    { __typename?: 'PaginatedOrdersResponse' }
+    & Pick<PaginatedOrdersResponse, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Order' }
+      & MyOrderFragment
+    )> }
   )> }
 );
 
@@ -5179,6 +5262,7 @@ export const OrderStatusFragmentDoc = gql`
     fragment OrderStatus on OrderStatus {
   id
   nameString
+  color
 }
     `;
 export const CmsOrderInListCustomerFragmentDoc = gql`
@@ -5281,6 +5365,68 @@ export const CmsOrderFragmentDoc = gql`
     ${CmsOrderProductFragmentDoc}
 ${OrderStatusFragmentDoc}
 ${CmsOrderInListCustomerFragmentDoc}`;
+export const MyOrderShopProductFragmentDoc = gql`
+    fragment MyOrderShopProduct on ShopProduct {
+  id
+  available
+  inCartCount
+  product {
+    id
+    itemId
+    mainImage
+  }
+}
+    `;
+export const MyOrderShopFragmentDoc = gql`
+    fragment MyOrderShop on Shop {
+  id
+  nameString
+  slug
+  address {
+    formattedAddress
+    formattedCoordinates {
+      lat
+      lng
+    }
+  }
+}
+    `;
+export const MyOrderProductFragmentDoc = gql`
+    fragment MyOrderProduct on OrderProduct {
+  id
+  itemId
+  amount
+  formattedPrice
+  formattedTotalPrice
+  formattedOldPrice
+  discountedPercent
+  nameString
+  shopProduct {
+    ...MyOrderShopProduct
+  }
+  shop {
+    ...MyOrderShop
+  }
+}
+    ${MyOrderShopProductFragmentDoc}
+${MyOrderShopFragmentDoc}`;
+export const MyOrderFragmentDoc = gql`
+    fragment MyOrder on Order {
+  id
+  itemId
+  productsCount
+  formattedTotalPrice
+  comment
+  createdAt
+  products {
+    ...MyOrderProduct
+  }
+  status {
+    ...OrderStatus
+  }
+}
+    ${MyOrderProductFragmentDoc}
+${OrderStatusFragmentDoc}`;
 export const RoleRuleFragmentDoc = gql`
     fragment RoleRule on RoleRule {
   id
@@ -6538,6 +6684,38 @@ export function useMakeAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type MakeAnOrderMutationHookResult = ReturnType<typeof useMakeAnOrderMutation>;
 export type MakeAnOrderMutationResult = Apollo.MutationResult<MakeAnOrderMutation>;
 export type MakeAnOrderMutationOptions = Apollo.BaseMutationOptions<MakeAnOrderMutation, MakeAnOrderMutationVariables>;
+export const RepeatAnOrderDocument = gql`
+    mutation RepeatAnOrder($id: ID!) {
+  repeatOrder(id: $id) {
+    ...CartPayload
+  }
+}
+    ${CartPayloadFragmentDoc}`;
+export type RepeatAnOrderMutationFn = Apollo.MutationFunction<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
+
+/**
+ * __useRepeatAnOrderMutation__
+ *
+ * To run a mutation, you first call `useRepeatAnOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRepeatAnOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [repeatAnOrderMutation, { data, loading, error }] = useRepeatAnOrderMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRepeatAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>) {
+        return Apollo.useMutation<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>(RepeatAnOrderDocument, baseOptions);
+      }
+export type RepeatAnOrderMutationHookResult = ReturnType<typeof useRepeatAnOrderMutation>;
+export type RepeatAnOrderMutationResult = Apollo.MutationResult<RepeatAnOrderMutation>;
+export type RepeatAnOrderMutationOptions = Apollo.BaseMutationOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
 export const CreateCompanyDocument = gql`
     mutation CreateCompany($input: CreateCompanyInput!) {
   createCompany(input: $input) {
@@ -8568,6 +8746,44 @@ export function useGetCmsOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetCmsOrderQueryHookResult = ReturnType<typeof useGetCmsOrderQuery>;
 export type GetCmsOrderLazyQueryHookResult = ReturnType<typeof useGetCmsOrderLazyQuery>;
 export type GetCmsOrderQueryResult = Apollo.QueryResult<GetCmsOrderQuery, GetCmsOrderQueryVariables>;
+export const GetAllMyOrdersDocument = gql`
+    query GetAllMyOrders($input: OrderPaginateInput) {
+  getAllMyOrders(input: $input) {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...MyOrder
+    }
+  }
+}
+    ${MyOrderFragmentDoc}`;
+
+/**
+ * __useGetAllMyOrdersQuery__
+ *
+ * To run a query within a React component, call `useGetAllMyOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMyOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMyOrdersQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetAllMyOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
+        return Apollo.useQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, baseOptions);
+      }
+export function useGetAllMyOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>(GetAllMyOrdersDocument, baseOptions);
+        }
+export type GetAllMyOrdersQueryHookResult = ReturnType<typeof useGetAllMyOrdersQuery>;
+export type GetAllMyOrdersLazyQueryHookResult = ReturnType<typeof useGetAllMyOrdersLazyQuery>;
+export type GetAllMyOrdersQueryResult = Apollo.QueryResult<GetAllMyOrdersQuery, GetAllMyOrdersQueryVariables>;
 export const GetAllRolesDocument = gql`
     query GetAllRoles {
   getAllRoles {

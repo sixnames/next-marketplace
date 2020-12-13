@@ -252,6 +252,31 @@ describe('Order', () => {
     );
     expect(getOrderPayload.data.getOrder.id).toEqual(addedOrder.id);
 
+    // Should repeat order
+    const repeatOrderPayload = await mutate<any>(
+      gql`
+        mutation RepeatOrder($id: ID!) {
+          repeatOrder(id: $id) {
+            success
+            message
+            cart {
+              ...TestCartFragment
+            }
+          }
+        }
+        ${cartFragment}
+      `,
+      {
+        variables: {
+          id: addedOrder.id,
+        },
+      },
+    );
+    expect(repeatOrderPayload.data.repeatOrder.success).toBeTruthy();
+    expect(repeatOrderPayload.data.repeatOrder.cart.products).toHaveLength(
+      makeAnOrderPayload.data.makeAnOrder.order.products.length,
+    );
+
     // Should return order by ID
     const getMyOrderPayload = await mutate<any>(
       gql`

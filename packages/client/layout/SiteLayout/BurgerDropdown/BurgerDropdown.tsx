@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import useSignOut from '../../../hooks/useSignOut';
 import { useUserContext } from '../../../context/userContext';
 import { useAppContext } from '../../../context/appContext';
+import { ROUTE_APP } from '@yagu/config';
 
 export interface BurgerDropdownSizesInterface {
   top: number;
@@ -237,6 +238,14 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             <span>Выйти из аккаунта</span>
                             <BurgerDropdownChevron />
                           </div>
+                        </li>
+                      ) : null}
+                      {me ? (
+                        <li>
+                          <Link href={ROUTE_APP} className={`${classes.dropdownGroupLink}`}>
+                            <span>CRM</span>
+                            <BurgerDropdownChevron />
+                          </Link>
                         </li>
                       ) : null}
                     </ul>

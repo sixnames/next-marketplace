@@ -331,6 +331,7 @@ export class OrderResolver {
         _id: '0',
         id: '0',
         slug: 'notFound',
+        color: 'gray',
         itemId: 0,
         name: notFoundName,
         nameString: getLangField(notFoundName, lang),

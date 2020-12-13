@@ -24,6 +24,10 @@ export class OrderStatus extends TimeStamps {
   slug: string;
 
   @Field(() => String)
+  @prop({ required: true })
+  color: string;
+
+  @Field(() => String)
   readonly nameString: string;
 }
 

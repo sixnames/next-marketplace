@@ -55,21 +55,23 @@ const AppNav: React.FC<AppNavInterface> = ({ compact }) => {
 
               <li className={`${classes.bottom} ${classes.bottomFirst}`}>
                 <Tooltip title={isCompact ? 'Вернуться на сайт' : null}>
-                  <Link
-                    href={`/`}
-                    className={`${classes.bottomLink} ${
-                      isCompact ? classes.bottomLinkCompact : ''
-                    }`}
-                  >
-                    <Icon name={'chevron-left'} className={classes.bottomIcon} />
-                    <span
-                      className={`${classes.bottomText} ${
-                        isCompact ? classes.bottomTextCompact : ''
+                  <div>
+                    <Link
+                      href={`/`}
+                      className={`${classes.bottomLink} ${
+                        isCompact ? classes.bottomLinkCompact : ''
                       }`}
                     >
-                      Вернуться в каталог
-                    </span>
-                  </Link>
+                      <Icon name={'chevron-left'} className={classes.bottomIcon} />
+                      <span
+                        className={`${classes.bottomText} ${
+                          isCompact ? classes.bottomTextCompact : ''
+                        }`}
+                      >
+                        Вернуться в каталог
+                      </span>
+                    </Link>
+                  </div>
                 </Tooltip>
               </li>
 

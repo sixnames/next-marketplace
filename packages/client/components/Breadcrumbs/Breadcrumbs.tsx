@@ -10,10 +10,10 @@ interface BreadcrumbsItemInterface extends LinkInterface {
 
 interface BreadcrumbsInterface {
   currentPageName: string;
-  config: BreadcrumbsItemInterface[];
+  config?: BreadcrumbsItemInterface[];
 }
 
-const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config }) => {
+const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config = [] }) => {
   const { isMobile } = useAppContext();
 
   if (isMobile) {

@@ -1,0 +1,259 @@
+.frame {
+  margin-bottom: 2rem;
+}
+
+.order {
+  --orderHeadMinHeight: 5.5rem;
+
+  margin-bottom: 1rem;
+  background-color: var(--secondaryBackground);
+  border-radius: var(--borderRadius);
+  box-shadow: var(--wp-shadow-100);
+  overflow: hidden;
+}
+
+.orderHead {
+  position: relative;
+  min-height: var(--orderHeadMinHeight);
+  align-items: start;
+}
+
+.orderTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--orderHeadMinHeight);
+}
+
+.orderMainGrid {
+  display: grid;
+  grid-template-columns: 7rem 1fr var(--orderHeadMinHeight);
+}
+
+.orderHeadMainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  min-height: var(--orderHeadMinHeight);
+}
+
+.orderHeadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: baseline;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+}
+
+.orderNumber {
+  font-size: 1.33rem;
+  font-weight: 600;
+}
+
+.orderCreatedAt {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+}
+
+.orderTotalPrice {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+}
+
+.orderTotalPrice span {
+  font-size: 1.33rem;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.orderStatus {
+  font-weight: 600;
+}
+
+.order .orderCartBtn {
+  width: var(--orderHeadMinHeight);
+  height: var(--orderHeadMinHeight);
+  background-color: var(--secondaryBackgroundLight);
+}
+
+[data-theme="light"] .order .orderCartBtn svg {
+  fill: var(--wp-mid-gray-100);
+}
+
+[data-theme="dark"] .order .orderCartBtn svg {
+  fill: var(--wp-light-gray-100);
+}
+
+[data-theme="light"] .order .orderCartBtn:hover svg,
+[data-theme="dark"] .order .orderCartBtn:hover svg {
+  fill: var(--theme);
+}
+
+.orderProduct {
+  position: relative;
+  margin-bottom: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.orderProductGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 0.75rem;
+  max-width: 40rem;
+}
+
+
+.productImage {
+  display: flex;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.productImage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+.productArt {
+  color: var(--textSecondaryColor);
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.productName {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.shop {
+  line-height: 1.8;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.shop span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+}
+
+
+.productTotals {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+}
+
+.productTotalsPrice {
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.productTotalsIcon {
+  width: 0.5rem;
+  height: 0.75rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  fill: var(--textColor);
+}
+
+.productTotalsAmount {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orderProductBtn {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@media only screen and (max-width: 1024px) {
+  .order {
+    --orderHeadMinHeight: 4.5rem;
+  }
+
+  .order .orderCartBtn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .orderMainGrid {
+    grid-template-columns: 5rem 1fr var(--orderHeadMinHeight);
+  }
+
+  .orderHeadMainGrid {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .orderProductGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orderNumber {
+    font-size: 1.25rem;
+  }
+
+  .productImage {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .productTotals {
+    justify-content: flex-start;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .order {
+    --orderHeadMinHeight: 3rem;
+  }
+
+  .productName {
+    padding-right: var(--orderHeadMinHeight);
+  }
+
+  .orderMainGrid {
+    grid-template-columns: 4rem 1fr;
+  }
+
+  .orderHeadGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .productTotalsIcon {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .productTotalsAmount {
+    font-size: 1rem;
+  }
+
+  .orderProductBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+  }
+
+  .order .orderCartBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+  }
+
+  .order .productsTrigger {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+

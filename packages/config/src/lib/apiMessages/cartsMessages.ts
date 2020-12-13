@@ -42,6 +42,84 @@ export const cartsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'carts.repeatOrder.orderNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Заказ не найден.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Order not found.',
+      },
+    ],
+  },
+  {
+    key: 'carts.repeatOrder.error',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Ошибка добавления товаров в корзину.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Cart products addition error.',
+      },
+    ],
+  },
+  {
+    key: 'carts.repeatOrder.shopProductNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товар магазина не найден.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Shop product not found.',
+      },
+    ],
+  },
+  {
+    key: 'carts.repeatOrder.productNotFound',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товар не найден.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product not found.',
+      },
+    ],
+  },
+  {
+    key: 'carts.repeatOrder.notEnough',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'В магазине не достаточно товаров.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Not enough products in the shop.',
+      },
+    ],
+  },
+  {
+    key: 'carts.repeatOrder.success',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Товары добавлены в корзину.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Products added to the cart.',
+      },
+    ],
+  },
+  {
     key: 'carts.updateProduct.cartNotFound',
     message: [
       {

@@ -16,11 +16,13 @@ import {
   useClearCartMutation,
   useDeleteProductFromCartMutation,
   useMakeAnOrderMutation,
+  useRepeatAnOrderMutation,
   useUpdateProductInCartMutation,
 } from '../generated/apolloComponents';
 import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { CART_MODAL } from '../config/modals';
 import { useRouter } from 'next/router';
+import { CartModalInterface } from '../components/Modal/CartModal/CartModal';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
@@ -102,6 +104,7 @@ interface UseSiteContextInterface extends SiteContextInterface {
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
   makeAnOrder: (input: MakeAnOrderInput) => void;
+  repeatAnOrder: (id: string) => void;
   clearCart: () => void;
   fixBodyScroll: (fixed: boolean) => void;
 }
@@ -148,7 +151,7 @@ function useSiteContext(): UseSiteContextInterface {
         payload: addProductToCart,
         mutationCallback: () => {
           // Show cart modal
-          showModal({
+          showModal<CartModalInterface>({
             variant: CART_MODAL,
           });
         },
@@ -162,7 +165,7 @@ function useSiteContext(): UseSiteContextInterface {
         payload: addShoplessProductToCart,
         mutationCallback: () => {
           // Show cart modal
-          showModal({
+          showModal<CartModalInterface>({
             variant: CART_MODAL,
           });
         },
@@ -211,6 +214,23 @@ function useSiteContext(): UseSiteContextInterface {
         mutationCallback: () => {
           router.push(`/thank-you?orderId=${order?.itemId}`).catch(() => {
             showErrorNotification();
+          });
+        },
+      });
+    },
+  });
+
+  const [repeatAnOrderMutation] = useRepeatAnOrderMutation({
+    onCompleted: ({ repeatOrder }) => {
+      cartContextUpdater({
+        payload: repeatOrder,
+        mutationCallback: () => {
+          // Show cart modal
+          showModal<CartModalInterface>({
+            variant: CART_MODAL,
+            props: {
+              title: `Товары из заказа добавлены в корзину`,
+            },
           });
         },
       });
@@ -377,6 +397,19 @@ function useSiteContext(): UseSiteContextInterface {
     [makeAnOrderMutation, showErrorNotification],
   );
 
+  const repeatAnOrder = useCallback(
+    (id: string) => {
+      repeatAnOrderMutation({
+        variables: {
+          id,
+        },
+      }).catch(() => {
+        showErrorNotification();
+      });
+    },
+    [repeatAnOrderMutation, showErrorNotification],
+  );
+
   return {
     ...context,
     fixBodyScroll,
@@ -393,6 +426,7 @@ function useSiteContext(): UseSiteContextInterface {
     deleteProductFromCart,
     clearCart,
     makeAnOrder,
+    repeatAnOrder,
   };
 }
 

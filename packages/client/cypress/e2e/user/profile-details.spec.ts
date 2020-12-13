@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 import { ADMIN_PASSWORD } from '@yagu/config';
 
-describe('Profile', () => {
+describe('Profile details', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`/app/profile`);
+    cy.testAuth(`/profile/details`);
   });
 
   after(() => {
@@ -17,6 +17,7 @@ describe('Profile', () => {
     const newSecondName = 'newSecondName';
     const newEmail = 'newEmail@gmail.com';
     const newPhone = '39998883322';
+    cy.getByCy('profile-details').should('exist');
 
     // Should validate
     cy.getByCy('name').clear();
@@ -35,7 +36,7 @@ describe('Profile', () => {
     cy.getByCy('email').type(newEmail);
     cy.getByCy('phone').type(newPhone);
     cy.getByCy('submit-my-profile').click();
-    cy.getByCy('app-nav-user-name').should('contain', `${newName.charAt(0)}.${newLastName}`);
+    cy.shouldSuccess();
   });
 
   it('Should update user password', () => {

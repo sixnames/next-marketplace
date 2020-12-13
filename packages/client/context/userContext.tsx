@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { InitialQuery } from '../generated/apolloComponents';
 import { useRouter } from 'next/router';
 
@@ -27,18 +27,12 @@ interface UserContextProviderInterface {
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, me }) => {
-  const [state, setState] = useState<ContextState>({
-    isAuthenticated: false,
+  const [state, setState] = useState<ContextState>(() => {
+    return {
+      me,
+      isAuthenticated: Boolean(me),
+    };
   });
-
-  useEffect(() => {
-    if (me) {
-      setState({
-        me,
-        isAuthenticated: Boolean(me),
-      });
-    }
-  }, [me]);
 
   const value = useMemo(() => {
     return {

@@ -599,6 +599,7 @@ type Mutation {
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayloadtype!
   deleteUser(id: ID!): UserPayloadType!
   makeAnOrder(input: MakeAnOrderInput!): OrderPayloadType!
+  repeatOrder(id: ID!): CartPayloadType!
   setLanguageAsDefault(id: ID!): LanguagePayloadType!
   setRoleAllowedNavItem(input: SetRoleAllowedNavItemInput!): RolePayloadType!
   setRoleOperationCustomFilter(input: SetRoleOperationCustomFilterInput!): RolePayloadType!
@@ -790,6 +791,7 @@ enum OrderSortByEnum {
 }
 
 type OrderStatus {
+  color: String!
   id: ID!
   itemId: Int!
   name: [Translation!]!

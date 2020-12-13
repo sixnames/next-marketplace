@@ -2,7 +2,7 @@ import React from 'react';
 import { ASSETS_URL } from '../../config';
 
 interface ImageInterface {
-  url: string;
+  url?: string;
   alt: string;
   title: string;
   width: number;
@@ -10,6 +10,14 @@ interface ImageInterface {
 }
 
 const Image: React.FC<ImageInterface> = ({ url, alt, title, width, height }) => {
+  if (!url) {
+    return (
+      <picture>
+        <img src={'/image-fallback.png'} width={width} alt={alt} title={title} loading={'lazy'} />
+      </picture>
+    );
+  }
+
   const src = `${ASSETS_URL}${url}?width=${width}${height ? `&height=${height}` : ''}`;
 
   return (

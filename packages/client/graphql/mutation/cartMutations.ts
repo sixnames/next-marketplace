@@ -132,3 +132,12 @@ export const MAKE_AN_ORDER_MUTATION = gql`
   }
   ${makeAnOrderPayloadFragment}
 `;
+
+export const REPEAT_AN_ORDER_MUTATION = gql`
+  mutation RepeatAnOrder($id: ID!) {
+    repeatOrder(id: $id) {
+      ...CartPayload
+    }
+  }
+  ${cartPayloadFragment}
+`;

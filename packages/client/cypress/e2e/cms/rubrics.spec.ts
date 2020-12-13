@@ -119,7 +119,7 @@ describe('Rubrics', () => {
     cy.getByCy(`tree-link-${mockNewRubricC}`).should('exist');
   });
 
-  it('Should have rubric details tab', () => {
+  it('Should display rubric details tab', () => {
     const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
     const mockNewRubric = 'new_rubric_name';
     const mockRubricVariantName = MOCK_RUBRIC_VARIANT_JUICE.name[0].value;

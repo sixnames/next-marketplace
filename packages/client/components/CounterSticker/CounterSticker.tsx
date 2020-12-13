@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './CounterSticker.module.css';
 
-interface CounterStickerInterface {
+export interface CounterStickerInterface {
   value?: number | null | undefined;
   className?: string;
   testId?: string;

@@ -35,7 +35,7 @@
 
 .productMainGrid {
   display: grid;
-  grid-template-columns: 8rem 1fr;
+  grid-template-columns: 7rem 1fr;
 }
 
 .product .amountInput {
@@ -200,8 +200,7 @@
 
 @media only screen and (max-width: 680px) {
   .frame {
-    grid-column-gap: 2rem;
-    grid-template-columns: 1.5fr;
+    grid-template-columns: 1fr;
   }
 
   .product {

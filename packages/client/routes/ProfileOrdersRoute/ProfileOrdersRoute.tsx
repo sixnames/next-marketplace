@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import classes from './ProfileOrdersRoute.module.css';
 import {
   MyOrderFragment,
@@ -191,9 +191,17 @@ const ProfileOrdersRoute: React.FC = () => {
 
   return (
     <div className={classes.frame} data-cy={'profile-orders'}>
-      {docs.map((order) => {
-        return <ProfileOrder key={order.id} order={order} />;
-      })}
+      {docs.length < 1 ? (
+        <div>
+          <RequestError message={'Вы ещё не сделали ни одного заказа'} />
+        </div>
+      ) : (
+        <Fragment>
+          {docs.map((order) => {
+            return <ProfileOrder key={order.id} order={order} />;
+          })}
+        </Fragment>
+      )}
     </div>
   );
 };

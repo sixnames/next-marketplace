@@ -94,7 +94,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
   if (!me) {
     return (
       <div className={classes.frame}>
-        <Breadcrumbs currentPageName={'Профиль'} config={[]} />
+        <Breadcrumbs currentPageName={'Профиль'} />
         <Inner lowTop>
           <Spinner isNested />
         </Inner>
@@ -104,7 +104,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
 
   return (
     <div className={classes.frame}>
-      <Breadcrumbs currentPageName={'Профиль'} config={[]} />
+      <Breadcrumbs currentPageName={'Профиль'} />
       <Inner lowTop testId={'profile'}>
         <div className={classes.content}>
           <div className={classes.aside}>

@@ -1,23 +1,21 @@
 import React from 'react';
-import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
-import Inner from '../../components/Inner/Inner';
 import { useUserContext } from '../../context/userContext';
-import { Form, Formik } from 'formik';
-import FormikInput from '../../components/FormElements/Input/FormikInput';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import {
   useUpdateMyPasswordMutation,
   useUpdateMyProfileMutation,
 } from '../../generated/apolloComponents';
-import RequestError from '../../components/RequestError/RequestError';
-import Button from '../../components/Buttons/Button';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateMyProfileSchema } from '@yagu/validation';
-import classes from './ProfileContent.module.css';
 import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
 import { UPDATE_MY_PASSWORD_MODAL } from '../../config/modals';
+import RequestError from '../../components/RequestError/RequestError';
+import { Form, Formik } from 'formik';
+import FormikInput from '../../components/FormElements/Input/FormikInput';
+// import classes from './ProfileDetailsRoute.module.css';
+import Button from '../../components/Buttons/Button';
 
-const ProfileContent: React.FC = () => {
+const ProfileDetailsRoute: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
   const { onErrorCallback, onCompleteCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -60,8 +58,8 @@ const ProfileContent: React.FC = () => {
   const { id, email, phone, name, lastName, secondName } = me;
 
   return (
-    <DataLayoutContentFrame>
-      <Inner>
+    <div data-cy={'profile-details'}>
+      <div>
         <Formik
           initialValues={{
             id,
@@ -118,12 +116,12 @@ const ProfileContent: React.FC = () => {
                   isRequired
                   showInlineError
                 />
-                <div className={classes.butnLine}>
+                <div>
                   <Button type={'submit'} testId={'submit-my-profile'}>
                     Сохранить
                   </Button>
                 </div>
-                <div className={classes.butnLine}>
+                <div>
                   <Button
                     theme={'secondary'}
                     testId={'update-my-password'}
@@ -136,9 +134,10 @@ const ProfileContent: React.FC = () => {
             );
           }}
         </Formik>
-      </Inner>
-    </DataLayoutContentFrame>
+      </div>
+      <div>Card</div>
+    </div>
   );
 };
 
-export default ProfileContent;
+export default ProfileDetailsRoute;

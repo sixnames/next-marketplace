@@ -13,6 +13,7 @@
 }
 
 .orderHead {
+  position: relative;
   min-height: var(--orderHeadMinHeight);
   align-items: start;
 }
@@ -91,6 +92,7 @@
 }
 
 .orderProduct {
+  position: relative;
   margin-bottom: 2.5rem;
   margin-top: 2.5rem;
 }
@@ -176,8 +178,12 @@
     --orderHeadMinHeight: 4.5rem;
   }
 
+  .order .orderCartBtn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
   .orderMainGrid {
-    display: grid;
     grid-template-columns: 5rem 1fr var(--orderHeadMinHeight);
   }
 
@@ -205,7 +211,49 @@
   }
 }
 
-@media only screen and (max-width: 680px) {
+@media only screen and (max-width: 480px) {
+  .order {
+    --orderHeadMinHeight: 3rem;
+  }
 
+  .productName {
+    padding-right: var(--orderHeadMinHeight);
+  }
+
+  .orderMainGrid {
+    grid-template-columns: 4rem 1fr;
+  }
+
+  .orderHeadGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .productTotalsIcon {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .productTotalsAmount {
+    font-size: 1rem;
+  }
+
+  .orderProductBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+  }
+
+  .order .orderCartBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+  }
+
+  .order .productsTrigger {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 

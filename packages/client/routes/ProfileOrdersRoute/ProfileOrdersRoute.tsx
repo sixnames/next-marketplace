@@ -98,7 +98,11 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
       <div className={classes.order} data-cy={`profile-order-${itemId}`}>
         <div className={`${classes.orderMainGrid} ${classes.orderHead}`}>
           <DisclosureButton as={'div'} className={`${classes.orderTrigger}`}>
-            <ControlButtonChevron isActive={isOpen} testId={`profile-order-${itemId}-open`} />
+            <ControlButtonChevron
+              isActive={isOpen}
+              testId={`profile-order-${itemId}-open`}
+              className={classes.productsTrigger}
+            />
           </DisclosureButton>
           <div className={classes.orderHeadMainGrid}>
             <div>

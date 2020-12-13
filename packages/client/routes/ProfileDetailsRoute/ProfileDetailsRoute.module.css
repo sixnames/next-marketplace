@@ -1,0 +1,16 @@
+.frame {
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+}
+
+.card {
+  position: relative;
+}
+
+.group {
+  margin-bottom: 5rem;
+}
+
+.butn {
+  color: var(--theme);
+}

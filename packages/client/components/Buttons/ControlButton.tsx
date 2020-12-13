@@ -50,7 +50,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   const roundedClass = `${roundedTopLeft ? classes.roundedTopLeft : ''} ${
     roundedTopRight ? classes.roundedTopRight : ''
   }`;
-  const buttonClass = `${classes.frame} ${
+  const buttonClass = `${classes.butn} ${
     className ? className : ''
   } ${themeClass} ${roundedClass} ${iconSizeClass} ${sizeClass}`;
 

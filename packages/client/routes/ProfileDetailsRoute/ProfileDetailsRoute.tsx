@@ -12,8 +12,10 @@ import { UPDATE_MY_PASSWORD_MODAL } from '../../config/modals';
 import RequestError from '../../components/RequestError/RequestError';
 import { Form, Formik } from 'formik';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
-// import classes from './ProfileDetailsRoute.module.css';
+import classes from './ProfileDetailsRoute.module.css';
 import Button from '../../components/Buttons/Button';
+import Title from '../../components/Title/Title';
+import RowWithGap from '../../layout/RowWithGap/RowWithGap';
 
 const ProfileDetailsRoute: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
@@ -58,7 +60,7 @@ const ProfileDetailsRoute: React.FC = () => {
   const { id, email, phone, name, lastName, secondName } = me;
 
   return (
-    <div data-cy={'profile-details'}>
+    <div className={classes.frame} data-cy={'profile-details'}>
       <div>
         <Formik
           initialValues={{
@@ -81,61 +83,78 @@ const ProfileDetailsRoute: React.FC = () => {
           {() => {
             return (
               <Form>
-                <FormikInput
-                  label={'Имя'}
-                  name={'name'}
-                  testId={'name'}
-                  isRequired
-                  showInlineError
-                />
-                <FormikInput
-                  label={'Фамилия'}
-                  name={'lastName'}
-                  testId={'lastName'}
-                  showInlineError
-                />
-                <FormikInput
-                  label={'Отчество'}
-                  name={'secondName'}
-                  testId={'secondName'}
-                  showInlineError
-                />
-                <FormikInput
-                  label={'Email'}
-                  type={'email'}
-                  name={'email'}
-                  testId={'email'}
-                  isRequired
-                  showInlineError
-                />
-                <FormikInput
-                  label={'Телефон'}
-                  type={'tel'}
-                  name={'phone'}
-                  testId={'phone'}
-                  isRequired
-                  showInlineError
-                />
-                <div>
+                <fieldset className={classes.group}>
+                  <Title tag={'legend'} size={'small'}>
+                    Персональные данные
+                  </Title>
+
+                  <FormikInput
+                    label={'Имя'}
+                    name={'name'}
+                    testId={'name'}
+                    isRequired
+                    showInlineError
+                  />
+                  <FormikInput
+                    label={'Фамилия'}
+                    name={'lastName'}
+                    testId={'lastName'}
+                    showInlineError
+                  />
+                  <FormikInput
+                    label={'Отчество'}
+                    name={'secondName'}
+                    testId={'secondName'}
+                    showInlineError
+                  />
+                </fieldset>
+
+                <fieldset className={classes.group}>
+                  <Title tag={'legend'} size={'small'}>
+                    Контактные данные
+                  </Title>
+
+                  <FormikInput
+                    label={'Email'}
+                    type={'email'}
+                    name={'email'}
+                    testId={'email'}
+                    isRequired
+                    showInlineError
+                  />
+                  <FormikInput
+                    label={'Телефон'}
+                    type={'tel'}
+                    name={'phone'}
+                    testId={'phone'}
+                    isRequired
+                    showInlineError
+                  />
+                </fieldset>
+
+                <RowWithGap>
                   <Button type={'submit'} testId={'submit-my-profile'}>
                     Сохранить
                   </Button>
-                </div>
-                <div>
-                  <Button
-                    theme={'secondary'}
-                    testId={'update-my-password'}
+                </RowWithGap>
+
+                <RowWithGap>
+                  <button
+                    type={'button'}
+                    data-cy={'update-my-password'}
+                    className={classes.butn}
                     onClick={updateMyPasswordHandler}
                   >
                     Изменить пароль
-                  </Button>
-                </div>
+                  </button>
+                </RowWithGap>
               </Form>
             );
           }}
         </Formik>
       </div>
-      <div>Card</div>
+
+      <div className={classes.card} />
     </div>
   );
 };

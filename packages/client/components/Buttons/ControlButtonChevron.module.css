@@ -1,4 +1,4 @@
-[data-theme="light"] .frame .activeIcon,
-[data-theme="dark"] .frame .activeIcon {
+[data-theme="light"] .butn .activeIcon,
+[data-theme="dark"] .butn .activeIcon {
   fill: var(--theme);
 }

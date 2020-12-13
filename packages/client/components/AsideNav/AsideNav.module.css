@@ -3,6 +3,10 @@
   margin-bottom: 1rem;
 }
 
+.desktopFrame {
+
+}
+
 .group {
   margin-bottom: 3rem;
 }
@@ -34,4 +38,50 @@
 
 .link .counter {
 
+}
+
+.groupMobile {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.groupTitleMobile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  min-height: var(--reachMenuGroupTitleMinimalHeight);
+  padding-top: var(--reachMenuItemVerticalPadding);
+  padding-left: var(--reachMenuItemHorizontalPadding);
+  padding-bottom: var(--reachMenuItemVerticalPadding);
+  padding-right: var(--reachMenuItemHorizontalPadding);
+}
+
+.mobileFrame .mobileTrigger {
+  margin-bottom: 2rem;
+}
+
+.mobileTriggerIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 1rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .frame {
+    --linkMinHeight: 2rem;
+  }
+
+  .link {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .desktopFrame {
+    display: none;
+  }
+
+  .mobileFrame {
+    display: block;
+  }
 }

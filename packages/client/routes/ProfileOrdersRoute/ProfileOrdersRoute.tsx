@@ -95,12 +95,12 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const { itemId, createdAt, formattedTotalPrice, status, products } = order;
   return (
     <Disclosure defaultOpen={true} onChange={() => setIsOpen((prevState) => !prevState)}>
-      <div className={classes.order}>
+      <div className={classes.order} data-cy={`profile-order-${itemId}`}>
         <div className={`${classes.orderMainGrid} ${classes.orderHead}`}>
           <DisclosureButton as={'div'} className={`${classes.orderTrigger}`}>
-            <ControlButtonChevron isActive={isOpen} />
+            <ControlButtonChevron isActive={isOpen} testId={`profile-order-${itemId}-open`} />
           </DisclosureButton>
-          <div className={classes.orderHeadGrid}>
+          <div className={classes.orderHeadMainGrid}>
             <div>
               <div className={classes.orderHeadGrid}>
                 <div className={classes.orderNumber}>{`№ ${itemId}`}</div>
@@ -134,7 +134,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
           </div>
         </div>
 
-        <DisclosurePanel>
+        <DisclosurePanel data-cy={`profile-order-${itemId}-content`}>
           {products.map((orderProduct) => {
             return <ProfileOrderProduct orderProduct={orderProduct} key={orderProduct.id} />;
           })}

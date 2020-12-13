@@ -432,6 +432,12 @@
   --catalogueGridGap: 2.5rem;
   --mobileNavHeight: 85px;
 
+  /*Reach menu*/
+  --reachMenuItemMinimalHeight: 2.33rem;
+  --reachMenuGroupTitleMinimalHeight: 1.5rem;
+  --reachMenuItemVerticalPadding: 0.33rem;
+  --reachMenuItemHorizontalPadding: 1rem;
+
   /*Shadows*/
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.25);
@@ -835,12 +841,12 @@ html[data-theme='dark'] [data-reach-menu-list] {
 html [data-reach-menu-item] {
   display: flex;
   align-items: center;
-  min-height: 34px;
-  padding-top: 5px;
-  padding-left: 15px;
-  padding-bottom: 5px;
-  padding-right: 15px;
-  font-size: 15px;
+  min-height: var(--reachMenuItemMinimalHeight);
+  padding-top: var(--reachMenuItemVerticalPadding);
+  padding-left: var(--reachMenuItemHorizontalPadding);
+  padding-bottom: var(--reachMenuItemVerticalPadding);
+  padding-right: var(--reachMenuItemHorizontalPadding);
+  font-size: 1rem;
   color: var(--textColor);
   transition: all 0.2s;
   cursor: pointer;

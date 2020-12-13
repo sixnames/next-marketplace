@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import Inner from '../../components/Inner/Inner';
@@ -26,6 +26,71 @@ interface ProfileLayoutInterface {
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
   const { me } = useUserContext();
 
+  const navConfig = useMemo<AsideNavConfigType>(() => {
+    return [
+      {
+        name: 'Покупки',
+        children: [
+          {
+            name: 'История заказов',
+            href: `${ROUTE_PROFILE}`,
+            testId: 'profile-orders-link',
+          },
+          {
+            name: 'Избранное',
+            href: `${ROUTE_PROFILE_FAVORITE}`,
+            testId: 'profile-favorite-link',
+          },
+          {
+            name: 'Сравнение',
+            href: `${ROUTE_PROFILE_COMPARE}`,
+            testId: 'profile-compare-link',
+          },
+          {
+            name: 'Просмотренные товары',
+            href: `${ROUTE_PROFILE_VIEWED}`,
+            testId: 'profile-viewed-link',
+          },
+          {
+            name: 'Персональные предложения',
+            href: `${ROUTE_PROFILE_PROPOSALS}`,
+            testId: 'profile-proposals-link',
+          },
+        ],
+      },
+      {
+        name: 'Профиль',
+        children: [
+          {
+            name: 'Бонусный счет',
+            href: `${ROUTE_PROFILE_BONUS}`,
+            testId: 'profile-bonus-link',
+          },
+          {
+            name: 'Мои предпочтения',
+            href: `${ROUTE_PROFILE_PREFERENCES}`,
+            testId: 'profile-preferences-link',
+          },
+          {
+            name: 'Моя переписка',
+            href: `${ROUTE_PROFILE_CHATS}`,
+            testId: 'profile-chats-link',
+          },
+          {
+            name: 'Мои отзывы',
+            href: `${ROUTE_PROFILE_FEEDBACK}`,
+            testId: 'profile-feedback-link',
+          },
+          {
+            name: 'Профиль',
+            href: `${ROUTE_PROFILE_DETAILS}`,
+            testId: 'profile-details-link',
+          },
+        ],
+      },
+    ];
+  }, []);
+
   if (!me) {
     return (
       <div className={classes.frame}>
@@ -36,69 +101,6 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
       </div>
     );
   }
-
-  const navConfig: AsideNavConfigType = [
-    {
-      name: 'Покупки',
-      children: [
-        {
-          name: 'История заказов',
-          href: `${ROUTE_PROFILE}`,
-          testId: 'profile-orders-link',
-        },
-        {
-          name: 'Избранное',
-          href: `${ROUTE_PROFILE_FAVORITE}`,
-          testId: 'profile-favorite-link',
-        },
-        {
-          name: 'Сравнение',
-          href: `${ROUTE_PROFILE_COMPARE}`,
-          testId: 'profile-compare-link',
-        },
-        {
-          name: 'Просмотренные товары',
-          href: `${ROUTE_PROFILE_VIEWED}`,
-          testId: 'profile-viewed-link',
-        },
-        {
-          name: 'Персональные предложения',
-          href: `${ROUTE_PROFILE_PROPOSALS}`,
-          testId: 'profile-proposals-link',
-        },
-      ],
-    },
-    {
-      name: 'Профиль',
-      children: [
-        {
-          name: 'Бонусный счет',
-          href: `${ROUTE_PROFILE_BONUS}`,
-          testId: 'profile-bonus-link',
-        },
-        {
-          name: 'Мои предпочтения',
-          href: `${ROUTE_PROFILE_PREFERENCES}`,
-          testId: 'profile-preferences-link',
-        },
-        {
-          name: 'Моя переписка',
-          href: `${ROUTE_PROFILE_CHATS}`,
-          testId: 'profile-chats-link',
-        },
-        {
-          name: 'Мои отзывы',
-          href: `${ROUTE_PROFILE_FEEDBACK}`,
-          testId: 'profile-feedback-link',
-        },
-        {
-          name: 'Профиль',
-          href: `${ROUTE_PROFILE_DETAILS}`,
-          testId: 'profile-details-link',
-        },
-      ],
-    },
-  ];
 
   return (
     <div className={classes.frame}>

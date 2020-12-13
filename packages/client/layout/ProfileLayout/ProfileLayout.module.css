@@ -34,7 +34,7 @@
 
   .content {
     grid-column-gap: 2rem;
-    grid-template-columns: 3fr 4fr;
+    grid-template-columns: 2fr 5fr;
   }
 
   .asideNav {
@@ -45,5 +45,15 @@
 @media only screen and (max-width: 680px) {
   .content {
     grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .greeting {
+    margin-bottom: 2rem;
   }
 }

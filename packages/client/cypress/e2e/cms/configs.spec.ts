@@ -16,6 +16,7 @@ describe('Site configs', () => {
   });
 
   it('Should update asset configs', () => {
+    cy.getByCy('site-configs').should('exist');
     cy.getByCy('siteLogo-remove').click();
     cy.getByCy('siteLogo').attachFile('test-logo.svg', { subjectType: 'drag-n-drop' });
     cy.getByCy('siteLogo-image').should('exist');
@@ -39,6 +40,8 @@ describe('Site configs', () => {
 
     const pageDefaultTitleDefaultCityTestId = `${pageDefaultTitleConfig.slug}-${DEFAULT_CITY}`;
     const pageDefaultTitleSecondaryCityTestId = `${pageDefaultTitleConfig.slug}-${SECONDARY_CITY}`;
+
+    cy.getByCy('site-configs').should('exist');
     cy.getByCy(pageDefaultTitleDefaultCityTestId).click();
     cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-${DEFAULT_LANG}-0`)
       .clear()

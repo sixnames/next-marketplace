@@ -768,22 +768,22 @@ a[href*='tel:']:hover {
   text-decoration: none;
 }
 
-[class*="butn"] {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  background: none;
-  color: var(--textColor);
-  font-family: var(--font);
-  transition: all 0.2s;
-  margin: 0;
-  padding: 0;
-}
+/*[class*="butn"] {*/
+/*  position: relative;*/
+/*  z-index: 5;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  border: none;*/
+/*  cursor: pointer;*/
+/*  outline: none;*/
+/*  background: none;*/
+/*  color: var(--textColor);*/
+/*  font-family: var(--font);*/
+/*  transition: all 0.2s;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*}*/
 
 input::-ms-clear {
   display: none;

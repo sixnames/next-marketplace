@@ -163,10 +163,7 @@ Cypress.Commands.add(
       url: `${apiHost}/graphql`,
       method: 'POST',
       body: { query: mutation },
-    }).then(({ body }) => {
-      if (!body.data.signIn.success) {
-        throw Error('Test authentication error');
-      }
+    }).then(() => {
       cy.visit(redirect);
     });
   },

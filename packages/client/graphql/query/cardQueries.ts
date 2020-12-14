@@ -110,6 +110,8 @@ export const productCardFragment = gql`
       ratingFeatures {
         ...CardFeature
       }
+      listFeaturesString
+      ratingFeaturesValues
     }
     cardConnections {
       ...CardConnection

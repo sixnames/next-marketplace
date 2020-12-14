@@ -3616,6 +3616,7 @@ export type ProductCardFragment = (
     & Pick<ProductCardPrices, 'min' | 'max'>
   ), cardFeatures: (
     { __typename?: 'ProductCardFeatures' }
+    & Pick<ProductCardFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
     & { listFeatures: Array<(
       { __typename?: 'ProductAttribute' }
       & CardFeatureFragment
@@ -4852,6 +4853,8 @@ export const ProductCardFragmentDoc = gql`
     ratingFeatures {
       ...CardFeature
     }
+    listFeaturesString
+    ratingFeaturesValues
   }
   cardConnections {
     ...CardConnection

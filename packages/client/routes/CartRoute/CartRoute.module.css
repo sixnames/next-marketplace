@@ -109,9 +109,7 @@
   font-weight: 700;
 }
 
-.productFeatures {
-  display: flex;
-  flex-wrap: wrap;
+.productConnections {
   margin-top: 0.25rem;
   margin-bottom: 1rem;
   color: var(--textSecondaryColor);
@@ -119,8 +117,14 @@
   font-size: 0.875rem;
 }
 
-.productFeaturesItem {
-  margin-right: 0.75rem;
+.connectionsGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.connectionsGroupLabel {
+  margin-right: 0.25rem;
 }
 
 .shop {

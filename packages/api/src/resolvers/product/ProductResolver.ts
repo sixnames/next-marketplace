@@ -757,23 +757,29 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => ProductCardFeatures)
-  async cardFeatures(@Root() product: DocumentType<Product>): Promise<ProductCardFeatures> {
+  async cardFeatures(
+    @Root() product: DocumentType<Product>,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
+  ): Promise<ProductCardFeatures> {
     try {
       // Get ids of attributes used in connections
       const connections = await ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [product._id.toString()],
         },
       }).select({ attributeId: 1 });
 
       const attributesIdsInConnections = connections.map(({ attributeId }) => attributeId);
 
-      const features: ProductCardFeatures = {
+      let listFeaturesString = '';
+
+      const features: Omit<ProductCardFeatures, 'listFeaturesString'> = {
         listFeatures: [],
         textFeatures: [],
         tagFeatures: [],
         iconFeatures: [],
         ratingFeatures: [],
+        ratingFeaturesValues: [],
       };
 
       for await (const productAttributesGroup of product.attributesGroups) {
@@ -796,28 +802,47 @@ export class ProductResolver {
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
+            const currentValue = productAttribute.value.join(', ');
+            const stringSeparator = listFeaturesString.length > 0 ? ', ' : '';
+            if (currentValue) {
+              listFeaturesString = `${listFeaturesString}${stringSeparator}${currentValue}`;
+            }
+
             features.listFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
             features.textFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
             features.tagFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
             features.iconFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
+            const attributeName = getLangField(attribute.name);
+            const currentValue = productAttribute.value[0];
+            if (currentValue) {
+              features.ratingFeaturesValues.push(`${attributeName} ${currentValue}`);
+            }
+
             features.ratingFeatures.push(productAttribute);
           }
         }
       }
 
-      return features;
+      return {
+        ...features,
+        listFeaturesString,
+      };
     } catch (e) {
       return {
         listFeatures: [],
@@ -825,6 +850,8 @@ export class ProductResolver {
         tagFeatures: [],
         iconFeatures: [],
         ratingFeatures: [],
+        listFeaturesString: '',
+        ratingFeaturesValues: [],
       };
     }
   }
@@ -838,7 +865,7 @@ export class ProductResolver {
       // Get all product connections
       const connections = await ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [product._id.toString()],
         },
       });
 

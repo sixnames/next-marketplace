@@ -979,7 +979,9 @@ type ProductCardConnectionItem {
 type ProductCardFeatures {
   iconFeatures: [ProductAttribute!]!
   listFeatures: [ProductAttribute!]!
+  listFeaturesString: String!
   ratingFeatures: [ProductAttribute!]!
+  ratingFeaturesValues: [String!]!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
 }

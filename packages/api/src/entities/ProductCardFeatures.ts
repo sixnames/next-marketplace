@@ -17,4 +17,10 @@ export class ProductCardFeatures {
 
   @Field(() => [ProductAttribute])
   readonly ratingFeatures: ProductAttribute[];
+
+  @Field(() => String)
+  readonly listFeaturesString: string;
+
+  @Field(() => [String])
+  readonly ratingFeaturesValues: string[];
 }

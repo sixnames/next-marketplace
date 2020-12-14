@@ -514,6 +514,8 @@ export type ProductCardFeatures = {
   tagFeatures: Array<ProductAttribute>;
   iconFeatures: Array<ProductAttribute>;
   ratingFeatures: Array<ProductAttribute>;
+  listFeaturesString: Scalars['String'];
+  ratingFeaturesValues: Array<Scalars['String']>;
 };
 
 export type ProductCardConnection = {
@@ -3665,7 +3667,10 @@ export type GetCatalogueCardQueryQuery = (
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'itemId' | 'nameString' | 'slug' | 'mainImage'>
-  & { cardPrices: (
+  & { cardFeatures: (
+    { __typename?: 'ProductCardFeatures' }
+    & Pick<ProductCardFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
+  ), cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, 'min' | 'max'>
   ) }
@@ -4987,6 +4992,10 @@ export const ProductSnippetFragmentDoc = gql`
   nameString
   slug
   mainImage
+  cardFeatures {
+    listFeaturesString
+    ratingFeaturesValues
+  }
   cardPrices {
     min
     max

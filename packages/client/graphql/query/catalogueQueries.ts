@@ -7,6 +7,10 @@ export const productSnippedFragment = gql`
     nameString
     slug
     mainImage
+    cardFeatures {
+      listFeaturesString
+      ratingFeaturesValues
+    }
     cardPrices {
       min
       max

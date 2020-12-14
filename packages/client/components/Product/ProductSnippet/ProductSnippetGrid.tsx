@@ -21,13 +21,15 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   rubricSlug,
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
-  const { nameString, mainImage, slug, cardPrices, id } = product;
+  const { nameString, mainImage, slug, cardPrices, id, cardFeatures } = product;
   const imageWidth = 50;
   const linkQuery: Record<string, any> = {};
 
   if (rubricSlug) {
     linkQuery.rubric = rubricSlug;
   }
+
+  const { listFeaturesString, ratingFeaturesValues } = cardFeatures;
 
   return (
     <div className={classes.frame} data-cy={testId}>
@@ -37,7 +39,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <div className={classes.content}>
         <div className={classes.contentTop}>
           <div className={classes.name}>{nameString}</div>
-          <div className={classes.attributes}>Новая Зеландия, белое, полусухое</div>
+          <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
         <ProductSnippetPrice value={cardPrices.min} />
       </div>
@@ -47,8 +49,12 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       </div>
 
       <div className={classes.bottomRight}>
-        <div>
-          <div className={classes.outerRating}>vivino 4,2</div>
+        <div className={classes.outerRatingList}>
+          {ratingFeaturesValues.map((rating) => (
+            <div key={rating} className={classes.outerRating}>
+              {rating}
+            </div>
+          ))}
         </div>
 
         <div className={classes.btns}>
@@ -72,6 +78,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <ProductMarker>Выбор покупателей</ProductMarker>
 
       <Link
+        // style={{ display: 'none' }}
         className={classes.link}
         href={{
           pathname: `/product/${slug}`,

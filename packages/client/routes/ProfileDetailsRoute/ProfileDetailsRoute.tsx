@@ -16,6 +16,7 @@ import classes from './ProfileDetailsRoute.module.css';
 import Button from '../../components/Buttons/Button';
 import Title from '../../components/Title/Title';
 import RowWithGap from '../../layout/RowWithGap/RowWithGap';
+import StringButton from '../../components/Buttons/StringButton';
 
 const ProfileDetailsRoute: React.FC = () => {
   const { me, updateMyContext } = useUserContext();
@@ -139,14 +140,9 @@ const ProfileDetailsRoute: React.FC = () => {
                 </RowWithGap>
 
                 <RowWithGap>
-                  <button
-                    type={'button'}
-                    data-cy={'update-my-password'}
-                    className={classes.butn}
-                    onClick={updateMyPasswordHandler}
-                  >
+                  <StringButton testId={'update-my-password'} onClick={updateMyPasswordHandler}>
                     Изменить пароль
-                  </button>
+                  </StringButton>
                 </RowWithGap>
               </Form>
             );

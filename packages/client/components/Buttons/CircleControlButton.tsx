@@ -13,7 +13,9 @@ const CircleControlButton: React.FC<CircleControlButtonInterface> = ({
 }) => {
   return (
     <ControlButton
-      className={`${classes.frame} ${withBorder ? classes.bordered : ''} ${className}`}
+      className={`${classes.butn} ${withBorder ? classes.bordered : ''} ${
+        className ? className : ''
+      }`}
       {...props}
     />
   );

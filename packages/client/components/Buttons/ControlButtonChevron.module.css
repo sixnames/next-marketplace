@@ -1,3 +1,7 @@
+.butn {
+
+}
+
 [data-theme="light"] .butn .activeIcon,
 [data-theme="dark"] .butn .activeIcon {
   fill: var(--theme);

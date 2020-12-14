@@ -22,7 +22,7 @@
     "test:api:watch": "yarn api test:watch",
     "start:client": "yarn client start",
     "test:client": "yarn client test",
-    "dev": "lerna run --parallel dev",
+    "dev": "lerna run --parallel --scope @yagu/api --scope @yagu/client dev",
     "build": "lerna run build",
     "start": "lerna run --parallel start",
     "start:testing": "lerna run --parallel start:testing",

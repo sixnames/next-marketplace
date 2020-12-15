@@ -774,6 +774,7 @@ export class ProductResolver {
       let listFeaturesString = '';
 
       const features: Omit<ProductCardFeatures, 'listFeaturesString'> = {
+        id: `cardFeatures-${product._id.toString()}`,
         listFeatures: [],
         textFeatures: [],
         tagFeatures: [],
@@ -845,6 +846,7 @@ export class ProductResolver {
       };
     } catch (e) {
       return {
+        id: 'noID',
         listFeatures: [],
         textFeatures: [],
         tagFeatures: [],

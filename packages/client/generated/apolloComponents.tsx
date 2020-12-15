@@ -509,6 +509,7 @@ export type ProductConnectionItem = {
 
 export type ProductCardFeatures = {
   __typename?: 'ProductCardFeatures';
+  id: Scalars['ID'];
   listFeatures: Array<ProductAttribute>;
   textFeatures: Array<ProductAttribute>;
   tagFeatures: Array<ProductAttribute>;
@@ -3616,7 +3617,7 @@ export type ProductCardFragment = (
     & Pick<ProductCardPrices, 'min' | 'max'>
   ), cardFeatures: (
     { __typename?: 'ProductCardFeatures' }
-    & Pick<ProductCardFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
+    & Pick<ProductCardFeatures, 'id' | 'listFeaturesString' | 'ratingFeaturesValues'>
     & { listFeatures: Array<(
       { __typename?: 'ProductAttribute' }
       & CardFeatureFragment
@@ -4838,6 +4839,7 @@ export const ProductCardFragmentDoc = gql`
   }
   shopsCount
   cardFeatures {
+    id
     listFeatures {
       ...CardFeature
     }

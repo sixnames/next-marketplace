@@ -978,6 +978,7 @@ type ProductCardConnectionItem {
 
 type ProductCardFeatures {
   iconFeatures: [ProductAttribute!]!
+  id: ID!
   listFeatures: [ProductAttribute!]!
   listFeaturesString: String!
   ratingFeatures: [ProductAttribute!]!

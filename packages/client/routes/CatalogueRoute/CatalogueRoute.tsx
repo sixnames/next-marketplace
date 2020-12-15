@@ -8,6 +8,7 @@ import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
 import { GetCatalogueRubricQuery } from '../../generated/apolloComponents';
 import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 
 interface CatalogueRouteInterface {
   rubricData: GetCatalogueRubricQuery;
@@ -25,31 +26,34 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }
 
   const { rubric, products, catalogueTitle } = rubricData.getCatalogueData;
-  const { filterAttributes } = rubric;
+  const { filterAttributes, nameString } = rubric;
   const { docs, totalPages } = products;
   const isFilterVisible = !!filterAttributes.length;
 
   return (
-    <Inner testId={'catalogue'}>
-      <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
+    <div className={classes.catalogue}>
+      <Breadcrumbs currentPageName={nameString} />
+      <Inner lowTop testId={'catalogue'}>
+        <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
 
-      <div className={classes.frame}>
-        {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}
+        <div className={classes.catalogueContent}>
+          {isFilterVisible && <CatalogueFilter filterAttributes={filterAttributes} />}
 
-        <div className={`${classes.list} ${isFilterVisible ? classes.listWithFilter : ''}`}>
-          {docs.map((product) => (
-            <ProductSnippetGrid
-              product={product}
-              key={product.id}
-              testId={`catalogue-item-${product.slug}`}
-              rubricSlug={rubric.slug}
-            />
-          ))}
+          <div className={`${classes.list} ${isFilterVisible ? classes.listWithFilter : ''}`}>
+            {docs.map((product) => (
+              <ProductSnippetGrid
+                product={product}
+                key={product.id}
+                testId={`catalogue-item-${product.slug}`}
+                rubricSlug={rubric.slug}
+              />
+            ))}
+          </div>
+
+          <Pager page={page} setPage={setPage} totalPages={totalPages} />
         </div>
-
-        <Pager page={page} setPage={setPage} totalPages={totalPages} />
-      </div>
-    </Inner>
+      </Inner>
+    </div>
   );
 };
 

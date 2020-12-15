@@ -8,6 +8,7 @@ import RatingStars from '../../RatingStars/RatingStars';
 import { useSiteContext } from '../../../context/siteContext';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
+import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
@@ -32,7 +33,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   const { listFeaturesString, ratingFeaturesValues } = cardFeatures;
 
   return (
-    <div className={classes.frame} data-cy={testId}>
+    <LayoutCard className={classes.snippetCard} testId={testId}>
       <div className={`${classes.image} ${classes.leftColumn}`}>
         <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
       </div>
@@ -87,7 +88,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       >
         {nameString}
       </Link>
-    </div>
+    </LayoutCard>
   );
 };
 

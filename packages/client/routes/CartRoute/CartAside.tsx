@@ -5,6 +5,7 @@ import Currency from '../../components/Currency/Currency';
 import Button from '../../components/Buttons/Button';
 import Link from '../../components/Link/Link';
 import { ButtonType } from '../../types';
+import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 
 interface CartAsideInterface {
   cart: CartFragment;
@@ -29,7 +30,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
   }
 
   return (
-    <div className={classes.frame} data-cy={'cart-aside'}>
+    <LayoutCard className={classes.cartAside} testId={'cart-aside'}>
       <div className={classes.frameTop}>
         <div className={classes.title}>Ваш заказ</div>
 
@@ -82,7 +83,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
           </div>
         ) : null}
       </div>
-    </div>
+    </LayoutCard>
   );
 };
 

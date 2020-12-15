@@ -1,8 +1,11 @@
-.frame {
+.catalogue {
+  margin-bottom: 3rem;
+}
+
+.catalogueContent {
   display: grid;
   grid-template-columns: var(--catalogue-filter-width) 1fr;
   grid-column-gap: var(--catalogueGridGap);
-  margin-bottom: 50px;
 }
 
 .list {

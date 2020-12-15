@@ -21,6 +21,7 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import CartAside from './CartAside';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { useRouter } from 'next/router';
+import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;
@@ -40,7 +41,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
 
   return (
     <div className={classes.productHolder}>
-      <div data-cy={'cart-product'} className={classes.product}>
+      <LayoutCard className={classes.product} testId={'cart-product'}>
         <div className={classes.productMainGrid}>
           <div className={classes.productImage}>
             <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
@@ -63,7 +64,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
             </div>
           </div>
         </div>
-      </div>
+      </LayoutCard>
 
       {isShopsVisible ? <CartShopsList productId={id} cartProductId={cartProductId} /> : null}
     </div>

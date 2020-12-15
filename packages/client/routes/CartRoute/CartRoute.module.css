@@ -27,9 +27,6 @@
 }
 
 .product {
-  border-radius: var(--borderRadius);
-  background-color: var(--secondaryBackground);
-  box-shadow: var(--wp-shadow-100);
   margin-bottom: 1rem;
 }
 

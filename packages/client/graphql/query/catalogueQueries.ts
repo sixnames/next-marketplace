@@ -18,8 +18,27 @@ export const productSnippedFragment = gql`
   }
 `;
 
+export const catalogueRubricFilterAttributeFragment = gql`
+  fragment CatalogueRubricFilterAttribute on RubricFilterAttribute {
+    id
+    node {
+      id
+      nameString
+      slug
+    }
+    options {
+      id
+      slug
+      filterNameString
+      color
+      counter
+      color
+    }
+  }
+`;
+
 export const catalogueRubricFragment = gql`
-  fragment CatalogueRubricFragment on Rubric {
+  fragment CatalogueRubric on Rubric {
     id
     nameString
     level
@@ -29,22 +48,10 @@ export const catalogueRubricFragment = gql`
       nameString
     }
     filterAttributes {
-      id
-      node {
-        id
-        nameString
-        slug
-      }
-      options {
-        id
-        slug
-        filterNameString
-        color
-        counter
-        color
-      }
+      ...CatalogueRubricFilterAttribute
     }
   }
+  ${catalogueRubricFilterAttributeFragment}
 `;
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
@@ -52,7 +59,7 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
     getCatalogueData(catalogueFilter: $catalogueFilter) {
       catalogueTitle
       rubric {
-        ...CatalogueRubricFragment
+        ...CatalogueRubric
       }
       products {
         totalDocs

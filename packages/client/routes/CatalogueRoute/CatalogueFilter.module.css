@@ -1,13 +1,55 @@
 .filter {
-
+  position: relative;
 }
 
-.attributeTitle,
-.groupTitle {
-  margin-bottom: 0.5rem;
+.filterHolder {
+  --stickyGap: 1.5rem;
+
+  position: sticky;
+  top: calc(var(--minLinkHeight) + var(--stickyGap));
+}
+
+.totalCounter {
+  display: flex;
+  align-items: center;
+  height: var(--catalogueVieButtonSize);
+  color: var(--textSecondaryColor);
+  margin-bottom: 2rem;
+}
+
+.attributeTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+
+.attributeTitleTrigger {
   font-weight: 600;
+  color: var(--theme);
+}
+
+.attributeTitleText {
+  font-size: 1.125rem;
+  font-weight: 700;
 }
 
 .attribute {
-  margin-bottom: 0.125rem;
+  margin-bottom: 2.5rem;
+}
+
+.attributeList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.attributeOption {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .filterHolder {
+    position: relative;
+  }
 }

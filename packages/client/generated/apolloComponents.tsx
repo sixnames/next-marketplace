@@ -3678,7 +3678,19 @@ export type ProductSnippetFragment = (
   ) }
 );
 
-export type CatalogueRubricFragmentFragment = (
+export type CatalogueRubricFilterAttributeFragment = (
+  { __typename?: 'RubricFilterAttribute' }
+  & Pick<RubricFilterAttribute, 'id'>
+  & { node: (
+    { __typename?: 'Attribute' }
+    & Pick<Attribute, 'id' | 'nameString' | 'slug'>
+  ), options: Array<(
+    { __typename?: 'RubricFilterAttributeOption' }
+    & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+  )> }
+);
+
+export type CatalogueRubricFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, 'id' | 'nameString' | 'level' | 'slug'>
   & { variant: (
@@ -3686,14 +3698,7 @@ export type CatalogueRubricFragmentFragment = (
     & Pick<RubricVariant, 'id' | 'nameString'>
   ), filterAttributes: Array<(
     { __typename?: 'RubricFilterAttribute' }
-    & Pick<RubricFilterAttribute, 'id'>
-    & { node: (
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
-    ), options: Array<(
-      { __typename?: 'RubricFilterAttributeOption' }
-      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
-    )> }
+    & CatalogueRubricFilterAttributeFragment
   )> }
 );
 
@@ -3709,7 +3714,7 @@ export type GetCatalogueRubricQuery = (
     & Pick<CatalogueData, 'catalogueTitle'>
     & { rubric: (
       { __typename?: 'Rubric' }
-      & CatalogueRubricFragmentFragment
+      & CatalogueRubricFragment
     ), products: (
       { __typename?: 'PaginatedProductsResponse' }
       & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
@@ -4437,7 +4442,7 @@ export type GetCatalogueSearchTopItemsQuery = (
     { __typename?: 'CatalogueSearchResult' }
     & { rubrics: Array<(
       { __typename?: 'Rubric' }
-      & CatalogueRubricFragmentFragment
+      & CatalogueRubricFragment
     )>, products: Array<(
       { __typename?: 'Product' }
       & ProductSnippetFragment
@@ -4456,7 +4461,7 @@ export type GetCatalogueSearchResultQuery = (
     { __typename?: 'CatalogueSearchResult' }
     & { rubrics: Array<(
       { __typename?: 'Rubric' }
-      & CatalogueRubricFragmentFragment
+      & CatalogueRubricFragment
     )>, products: Array<(
       { __typename?: 'Product' }
       & ProductSnippetFragment
@@ -5007,8 +5012,26 @@ export const ProductSnippetFragmentDoc = gql`
   }
 }
     `;
-export const CatalogueRubricFragmentFragmentDoc = gql`
-    fragment CatalogueRubricFragment on Rubric {
+export const CatalogueRubricFilterAttributeFragmentDoc = gql`
+    fragment CatalogueRubricFilterAttribute on RubricFilterAttribute {
+  id
+  node {
+    id
+    nameString
+    slug
+  }
+  options {
+    id
+    slug
+    filterNameString
+    color
+    counter
+    color
+  }
+}
+    `;
+export const CatalogueRubricFragmentDoc = gql`
+    fragment CatalogueRubric on Rubric {
   id
   nameString
   level
@@ -5018,23 +5041,10 @@ export const CatalogueRubricFragmentFragmentDoc = gql`
     nameString
   }
   filterAttributes {
-    id
-    node {
-      id
-      nameString
-      slug
-    }
-    options {
-      id
-      slug
-      filterNameString
-      color
-      counter
-      color
-    }
+    ...CatalogueRubricFilterAttribute
   }
 }
-    `;
+    ${CatalogueRubricFilterAttributeFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   id
@@ -8037,7 +8047,7 @@ export const GetCatalogueRubricDocument = gql`
   getCatalogueData(catalogueFilter: $catalogueFilter) {
     catalogueTitle
     rubric {
-      ...CatalogueRubricFragment
+      ...CatalogueRubric
     }
     products {
       totalDocs
@@ -8049,7 +8059,7 @@ export const GetCatalogueRubricDocument = gql`
     }
   }
 }
-    ${CatalogueRubricFragmentFragmentDoc}
+    ${CatalogueRubricFragmentDoc}
 ${ProductSnippetFragmentDoc}`;
 
 /**
@@ -8967,14 +8977,14 @@ export const GetCatalogueSearchTopItemsDocument = gql`
     query GetCatalogueSearchTopItems {
   getCatalogueSearchTopItems {
     rubrics {
-      ...CatalogueRubricFragment
+      ...CatalogueRubric
     }
     products {
       ...ProductSnippet
     }
   }
 }
-    ${CatalogueRubricFragmentFragmentDoc}
+    ${CatalogueRubricFragmentDoc}
 ${ProductSnippetFragmentDoc}`;
 
 /**
@@ -9005,14 +9015,14 @@ export const GetCatalogueSearchResultDocument = gql`
     query GetCatalogueSearchResult($search: String!) {
   getCatalogueSearchResult(search: $search) {
     rubrics {
-      ...CatalogueRubricFragment
+      ...CatalogueRubric
     }
     products {
       ...ProductSnippet
     }
   }
 }
-    ${CatalogueRubricFragmentFragmentDoc}
+    ${CatalogueRubricFragmentDoc}
 ${ProductSnippetFragmentDoc}`;
 
 /**

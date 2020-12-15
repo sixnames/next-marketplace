@@ -1,17 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Icon from '../../Icon/Icon';
 import classes from './FilterCheckbox.module.css';
 import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
 import { alwaysArray } from '@yagu/shared';
-
-export interface FilterCheckboxItem {
-  id: string;
-  color?: string | null;
-  filterNameString: string;
-  slug: string;
-}
 
 export interface FilterCheckboxInterface {
   option: Partial<RubricFilterAttributeOption>;
@@ -46,27 +39,25 @@ const FilterCheckbox: React.FC<FilterCheckboxInterface> = ({
   }
 
   return (
-    <Fragment>
-      <Link
-        href={{
-          pathname,
-        }}
-        as={{
-          pathname: nextAsPath,
-        }}
-      >
-        <a data-cy={testId} className={`${classes.frame} ${className ? className : ''}`}>
-          <span className={`${classes.checkbox} ${isChecked ? classes.checked : ''}`}>
-            <Icon name={'check'} />
-          </span>
+    <Link
+      href={{
+        pathname,
+      }}
+      as={{
+        pathname: nextAsPath,
+      }}
+    >
+      <a data-cy={testId} className={`${classes.filterCheckbox} ${className ? className : ''}`}>
+        <span className={`${classes.checkbox} ${isChecked ? classes.checked : ''}`}>
+          <Icon name={'check'} />
+        </span>
 
-          <span className={classes.label}>
-            <span>{filterNameString}</span>
-            {/*<span className={classes.counter}>{counter}</span>*/}
-          </span>
-        </a>
-      </Link>
-    </Fragment>
+        <span className={classes.label}>
+          <span>{filterNameString}</span>
+          {/*<span className={classes.counter}>{counter}</span>*/}
+        </span>
+      </a>
+    </Link>
   );
 };
 

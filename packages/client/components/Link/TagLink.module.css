@@ -9,7 +9,7 @@
   border: 1px solid var(--secondaryBackground);
   color: var(--textSecondaryColor);
   border-radius: var(--borderRadius);
-  box-shadow: var(--wp-shadow-100);
+  box-shadow: var(--wp-shadow-25);
   transition: all 0.2s;
 }
 

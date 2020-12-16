@@ -108,7 +108,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { catalogue = [] } = query;
   const catalogueSlug = catalogue[0];
-  const { nameString, slug, filterAttributes } = rubric;
+  const { nameString, slug, catalogueFilter } = rubric;
   const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
 
   function showDropdownHandler() {
@@ -144,7 +144,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
           <Inner className={classes.dropdownInner}>
             <div className={classes.dropdownList}>
-              {filterAttributes.map((attribute) => {
+              {catalogueFilter.attributes.map((attribute) => {
                 return (
                   <StickyNavAttribute
                     key={attribute.id}

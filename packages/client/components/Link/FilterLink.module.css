@@ -1,3 +1,10 @@
 .filterLink {
 
 }
+
+.filterLink svg {
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-left: 0.55rem;
+  fill: var(--theme);
+}

@@ -1176,10 +1176,10 @@ type Rubric {
   active: Boolean
   activeProductsCount(input: ProductsCountersInput = {}): Int!
   attributesGroups: [RubricAttributesGroup!]!
+  catalogueFilter: RubricCatalogueFilter!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!] = []): [Rubric!]!
-  filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
   name: [Translation!]!
@@ -1199,6 +1199,12 @@ type RubricAttributesGroup {
   isOwner: Boolean!
   node: AttributesGroup!
   showInCatalogueFilter: [ID!]!
+}
+
+type RubricCatalogueFilter {
+  attributes: [RubricFilterAttribute!]!
+  id: ID!
+  selectedAttributes: [RubricFilterAttribute!]!
 }
 
 type RubricCatalogueTitle {
@@ -1223,7 +1229,9 @@ input RubricCatalogueTitleInput {
 }
 
 type RubricFilterAttribute {
+  clearSlug: String!
   id: ID!
+  isSelected: Boolean!
   node: Attribute!
   options: [RubricFilterAttributeOption!]!
 }
@@ -1235,8 +1243,11 @@ type RubricFilterAttributeOption {
   gender: GenderEnum
   icon: String
   id: ID!
+  isSelected: Boolean!
   name: [Translation!]!
   nameString: String!
+  optionNextSlug: String!
+  optionSlug: String!
   priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]

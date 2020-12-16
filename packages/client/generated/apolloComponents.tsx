@@ -984,7 +984,7 @@ export type Rubric = {
   nameString: Scalars['String'];
   catalogueTitleString: RubricCatalogueTitleField;
   children: Array<Rubric>;
-  filterAttributes: Array<RubricFilterAttribute>;
+  catalogueFilter: RubricCatalogueFilter;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
   activeProductsCount: Scalars['Int'];
@@ -1041,11 +1041,20 @@ export type RubricCatalogueTitleField = {
   gender: GenderEnum;
 };
 
+export type RubricCatalogueFilter = {
+  __typename?: 'RubricCatalogueFilter';
+  id: Scalars['ID'];
+  attributes: Array<RubricFilterAttribute>;
+  selectedAttributes: Array<RubricFilterAttribute>;
+};
+
 export type RubricFilterAttribute = {
   __typename?: 'RubricFilterAttribute';
   id: Scalars['ID'];
+  clearSlug: Scalars['String'];
   node: Attribute;
   options: Array<RubricFilterAttributeOption>;
+  isSelected: Scalars['Boolean'];
 };
 
 export type RubricFilterAttributeOption = {
@@ -1062,6 +1071,9 @@ export type RubricFilterAttributeOption = {
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   counter: Scalars['Int'];
+  optionSlug: Scalars['String'];
+  optionNextSlug: Scalars['String'];
+  isSelected: Scalars['Boolean'];
 };
 
 export type RubricProductPaginateInput = {
@@ -3680,13 +3692,25 @@ export type ProductSnippetFragment = (
 
 export type CatalogueRubricFilterAttributeFragment = (
   { __typename?: 'RubricFilterAttribute' }
-  & Pick<RubricFilterAttribute, 'id'>
+  & Pick<RubricFilterAttribute, 'id' | 'clearSlug' | 'isSelected'>
   & { node: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, 'id' | 'nameString' | 'slug'>
   ), options: Array<(
     { __typename?: 'RubricFilterAttributeOption' }
-    & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+    & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'color' | 'counter' | 'filterNameString' | 'optionSlug' | 'optionNextSlug' | 'isSelected'>
+  )> }
+);
+
+export type CatalogueRubricFilterFragment = (
+  { __typename?: 'RubricCatalogueFilter' }
+  & Pick<RubricCatalogueFilter, 'id'>
+  & { attributes: Array<(
+    { __typename?: 'RubricFilterAttribute' }
+    & CatalogueRubricFilterAttributeFragment
+  )>, selectedAttributes: Array<(
+    { __typename?: 'RubricFilterAttribute' }
+    & CatalogueRubricFilterAttributeFragment
   )> }
 );
 
@@ -3696,10 +3720,10 @@ export type CatalogueRubricFragment = (
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  ), filterAttributes: Array<(
-    { __typename?: 'RubricFilterAttribute' }
-    & CatalogueRubricFilterAttributeFragment
-  )> }
+  ), catalogueFilter: (
+    { __typename?: 'RubricCatalogueFilter' }
+    & CatalogueRubricFilterFragment
+  ) }
 );
 
 export type GetCatalogueRubricQueryVariables = Exact<{
@@ -3949,17 +3973,21 @@ export type SiteRubricFragmentFragment = (
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  ), filterAttributes: Array<(
-    { __typename?: 'RubricFilterAttribute' }
-    & Pick<RubricFilterAttribute, 'id'>
-    & { node: (
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'nameString' | 'slug'>
-    ), options: Array<(
-      { __typename?: 'RubricFilterAttributeOption' }
-      & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+  ), catalogueFilter: (
+    { __typename?: 'RubricCatalogueFilter' }
+    & Pick<RubricCatalogueFilter, 'id'>
+    & { attributes: Array<(
+      { __typename?: 'RubricFilterAttribute' }
+      & Pick<RubricFilterAttribute, 'id'>
+      & { node: (
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'nameString' | 'slug'>
+      ), options: Array<(
+        { __typename?: 'RubricFilterAttributeOption' }
+        & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+      )> }
     )> }
-  )> }
+  ) }
 );
 
 export type InitialQueryVariables = Exact<{ [key: string]: never; }>;
@@ -5020,16 +5048,32 @@ export const CatalogueRubricFilterAttributeFragmentDoc = gql`
     nameString
     slug
   }
+  clearSlug
+  isSelected
   options {
     id
     slug
-    filterNameString
     color
     counter
     color
+    filterNameString
+    optionSlug
+    optionNextSlug
+    isSelected
   }
 }
     `;
+export const CatalogueRubricFilterFragmentDoc = gql`
+    fragment CatalogueRubricFilter on RubricCatalogueFilter {
+  id
+  attributes {
+    ...CatalogueRubricFilterAttribute
+  }
+  selectedAttributes {
+    ...CatalogueRubricFilterAttribute
+  }
+}
+    ${CatalogueRubricFilterAttributeFragmentDoc}`;
 export const CatalogueRubricFragmentDoc = gql`
     fragment CatalogueRubric on Rubric {
   id
@@ -5040,11 +5084,11 @@ export const CatalogueRubricFragmentDoc = gql`
     id
     nameString
   }
-  filterAttributes {
-    ...CatalogueRubricFilterAttribute
+  catalogueFilter {
+    ...CatalogueRubricFilter
   }
 }
-    ${CatalogueRubricFilterAttributeFragmentDoc}`;
+    ${CatalogueRubricFilterFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   id
@@ -5213,19 +5257,22 @@ export const SiteRubricFragmentFragmentDoc = gql`
     id
     nameString
   }
-  filterAttributes {
+  catalogueFilter {
     id
-    node {
+    attributes {
       id
-      nameString
-      slug
-    }
-    options {
-      id
-      slug
-      filterNameString
-      color
-      counter
+      node {
+        id
+        nameString
+        slug
+      }
+      options {
+        id
+        slug
+        filterNameString
+        color
+        counter
+      }
     }
   }
 }

@@ -26,9 +26,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }
 
   const { rubric, products, catalogueTitle } = rubricData.getCatalogueData;
-  const { filterAttributes, nameString } = rubric;
+  const { catalogueFilter, nameString } = rubric;
   const { docs, totalPages, totalDocs } = products;
-  const isFilterVisible = !!filterAttributes.length;
+  const isFilterVisible = !!catalogueFilter.attributes.length;
 
   return (
     <div className={classes.catalogue}>
@@ -41,7 +41,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
             <CatalogueFilter
               totalDocs={totalDocs}
               rubricSlug={rubric.slug}
-              filterAttributes={filterAttributes}
+              catalogueFilter={catalogueFilter}
             />
           )}
 

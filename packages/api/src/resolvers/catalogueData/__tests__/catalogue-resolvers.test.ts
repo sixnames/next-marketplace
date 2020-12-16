@@ -28,20 +28,46 @@ describe('Catalogue', () => {
             rubric {
               id
               nameString
-              filterAttributes {
-                id
-                node {
+              catalogueFilter {
+                attributes {
                   id
-                  nameString
-                  slug
+                  clearSlug
+                  isSelected
+                  node {
+                    id
+                    nameString
+                  }
+                  options {
+                    id
+                    slug
+                    filterNameString
+                    color
+                    counter
+                    optionSlug
+                    optionNextSlug
+                    isSelected
+                    color
+                  }
                 }
-                options {
+                selectedAttributes {
                   id
-                  slug
-                  filterNameString
-                  color
-                  counter
-                  color
+                  clearSlug
+                  isSelected
+                  node {
+                    id
+                    nameString
+                  }
+                  options {
+                    id
+                    slug
+                    filterNameString
+                    color
+                    counter
+                    optionSlug
+                    optionNextSlug
+                    isSelected
+                    color
+                  }
                 }
               }
             }
@@ -63,7 +89,10 @@ describe('Catalogue', () => {
     );
 
     expect(getCatalogueData.products.docs).toHaveLength(1);
-    expect(getCatalogueData.rubric.filterAttributes).toHaveLength(2);
+    expect(getCatalogueData.rubric.catalogueFilter.attributes).toHaveLength(2);
+    expect(getCatalogueData.rubric.catalogueFilter.selectedAttributes).toHaveLength(2);
+    expect(getCatalogueData.rubric.catalogueFilter.selectedAttributes[0].options).toHaveLength(1);
+    expect(getCatalogueData.rubric.catalogueFilter.selectedAttributes[1].options).toHaveLength(1);
     expect(getCatalogueData.catalogueTitle).toEqual('Купить красный вермут');
   });
 

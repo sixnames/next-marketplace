@@ -27,7 +27,7 @@ import { CartModalInterface } from '../components/Modal/CartModal/CartModal';
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
 export interface StickyNavAttributeInterface {
-  attribute: RubricType['filterAttributes'][number];
+  attribute: RubricType['catalogueFilter']['attributes'][number];
   rubricSlug: string;
   hideDropdownHandler: () => void;
   isDropdownOpen: boolean;

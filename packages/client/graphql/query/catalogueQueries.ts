@@ -26,15 +26,33 @@ export const catalogueRubricFilterAttributeFragment = gql`
       nameString
       slug
     }
+    clearSlug
+    isSelected
     options {
       id
       slug
-      filterNameString
       color
       counter
       color
+      filterNameString
+      optionSlug
+      optionNextSlug
+      isSelected
     }
   }
+`;
+
+export const catalogueRubricFilterFragment = gql`
+  fragment CatalogueRubricFilter on RubricCatalogueFilter {
+    id
+    attributes {
+      ...CatalogueRubricFilterAttribute
+    }
+    selectedAttributes {
+      ...CatalogueRubricFilterAttribute
+    }
+  }
+  ${catalogueRubricFilterAttributeFragment}
 `;
 
 export const catalogueRubricFragment = gql`
@@ -47,11 +65,11 @@ export const catalogueRubricFragment = gql`
       id
       nameString
     }
-    filterAttributes {
-      ...CatalogueRubricFilterAttribute
+    catalogueFilter {
+      ...CatalogueRubricFilter
     }
   }
-  ${catalogueRubricFilterAttributeFragment}
+  ${catalogueRubricFilterFragment}
 `;
 
 export const CATALOGUE_RUBRIC_QUERY = gql`

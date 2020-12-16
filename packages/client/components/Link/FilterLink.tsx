@@ -2,13 +2,13 @@ import React from 'react';
 import classes from './FilterLink.module.css';
 import TagLink, { TagLinkInterface } from './TagLink';
 import { RubricFilterAttributeOption } from '../../generated/apolloComponents';
-import { useRouter } from 'next/router';
-import { alwaysArray } from '@yagu/shared';
+import Icon from '../Icon/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
   option: Partial<RubricFilterAttributeOption>;
   attributeSlug: string;
+  withCross?: boolean;
 }
 
 const FilterLink: React.FC<FilterLinkInterface> = ({
@@ -16,38 +16,20 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   option,
   attributeSlug = '',
   counter,
+  withCross,
   ...props
 }) => {
-  const router = useRouter();
-  const { query = {}, pathname = '', asPath = '' } = router;
-  const { slug, filterNameString } = option;
-
-  const currentQuery = alwaysArray(query.catalogue) || [];
-  const optionPath = `${attributeSlug}-${slug}`;
-  const isActive = currentQuery.includes(optionPath);
-
-  let nextAsPath = `${asPath}/${optionPath}`;
-
-  if (isActive) {
-    const filteredQuery = currentQuery.filter((item) => {
-      return item !== optionPath;
-    });
-    nextAsPath = `/${filteredQuery.join('/')}`;
-  }
+  const { filterNameString, optionNextSlug, isSelected } = option;
 
   return (
     <TagLink
-      href={{
-        pathname,
-      }}
-      as={{
-        pathname: nextAsPath,
-      }}
-      isActive={isActive}
+      href={optionNextSlug}
+      isActive={isSelected}
       className={`${classes.filterLink} ${className ? className : ''}`}
       {...props}
     >
       <span>{filterNameString}</span>
+      {withCross ? <Icon name={'cross'} /> : null}
       {counter ? <span>{counter}</span> : null}
     </TagLink>
   );

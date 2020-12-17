@@ -981,10 +981,17 @@ export class RubricResolver {
           return isSelected;
         });
 
+        const sortedOptions = resultOptions.sort((optionA, optionB) => {
+          const isDisabledA = optionA.isDisabled ? 0 : 1;
+          const isDisabledB = optionB.isDisabled ? 0 : 1;
+
+          return isDisabledB - isDisabledA;
+        });
+
         filterAttributes.push({
           id: attributeIdString + rubricIdString,
           node: attribute,
-          options: resultOptions,
+          options: sortedOptions,
           clearSlug,
           isSelected,
         });

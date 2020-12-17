@@ -1204,6 +1204,7 @@ type RubricAttributesGroup {
 type RubricCatalogueFilter {
   attributes: [RubricFilterAttribute!]!
   id: ID!
+  isDisabled: Boolean!
   selectedAttributes: [RubricFilterAttribute!]!
 }
 
@@ -1231,6 +1232,7 @@ input RubricCatalogueTitleInput {
 type RubricFilterAttribute {
   clearSlug: String!
   id: ID!
+  isDisabled: Boolean!
   isSelected: Boolean!
   node: Attribute!
   options: [RubricFilterAttributeOption!]!

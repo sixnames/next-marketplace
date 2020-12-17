@@ -19,7 +19,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 }) => {
   const { asPath } = useRouter();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const { id, node, options } = attribute;
+  const { id, node, options, isDisabled } = attribute;
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
@@ -34,6 +34,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
       setIsOptionsOpen(false);
     }
   }, [isDropdownOpen]);
+
+  if (isDisabled) {
+    return null;
+  }
 
   return (
     <div key={id}>
@@ -112,11 +116,14 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { catalogue = [] } = query;
   const catalogueSlug = catalogue[0];
   const { nameString, slug, catalogueFilter } = rubric;
+  const { isDisabled } = catalogueFilter;
   const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
 
   function showDropdownHandler() {
-    hideBurgerDropdown();
-    setIsDropdownOpen(true);
+    if (!isDisabled) {
+      hideBurgerDropdown();
+      setIsDropdownOpen(true);
+    }
   }
 
   function hideDropdownHandler() {

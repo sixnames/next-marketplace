@@ -28,6 +28,7 @@ export const catalogueRubricFilterAttributeFragment = gql`
     }
     clearSlug
     isSelected
+    isDisabled
     options {
       id
       slug

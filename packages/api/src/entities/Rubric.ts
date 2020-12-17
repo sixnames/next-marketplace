@@ -66,12 +66,18 @@ export class RubricFilterAttribute {
 
   @Field((_type) => Boolean)
   readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
 }
 
 @ObjectType()
 export class RubricCatalogueFilter {
   @Field(() => ID)
   readonly id: string;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
 
   @Field(() => [RubricFilterAttribute])
   readonly attributes: RubricFilterAttribute[];

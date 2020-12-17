@@ -988,12 +988,20 @@ export class RubricResolver {
           return isDisabledB - isDisabledA;
         });
 
+        const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
+          if (isDisabled) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
+
         filterAttributes.push({
           id: attributeIdString + rubricIdString,
           node: attribute,
           options: sortedOptions,
           clearSlug,
           isSelected,
+          isDisabled: disabledOptionsCount === sortedOptions.length,
         });
       }
 
@@ -1016,17 +1024,25 @@ export class RubricResolver {
         [],
       );
 
+      const disabledAttributesCount = filterAttributes.reduce((acc: number, { isDisabled }) => {
+        if (isDisabled) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+
       return {
         id: rubric._id.toString(),
         attributes: filterAttributes,
         selectedAttributes,
+        isDisabled: disabledAttributesCount === filterAttributes.length,
       };
     } catch (e) {
-      console.log(e);
       return {
         id: rubric._id.toString(),
         attributes: [],
         selectedAttributes: [],
+        isDisabled: true,
       };
     }
   }

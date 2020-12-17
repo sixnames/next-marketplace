@@ -1044,6 +1044,7 @@ export type RubricCatalogueTitleField = {
 export type RubricCatalogueFilter = {
   __typename?: 'RubricCatalogueFilter';
   id: Scalars['ID'];
+  isDisabled: Scalars['Boolean'];
   attributes: Array<RubricFilterAttribute>;
   selectedAttributes: Array<RubricFilterAttribute>;
 };
@@ -1055,6 +1056,7 @@ export type RubricFilterAttribute = {
   node: Attribute;
   options: Array<RubricFilterAttributeOption>;
   isSelected: Scalars['Boolean'];
+  isDisabled: Scalars['Boolean'];
 };
 
 export type RubricFilterAttributeOption = {
@@ -3693,7 +3695,7 @@ export type ProductSnippetFragment = (
 
 export type CatalogueRubricFilterAttributeFragment = (
   { __typename?: 'RubricFilterAttribute' }
-  & Pick<RubricFilterAttribute, 'id' | 'clearSlug' | 'isSelected'>
+  & Pick<RubricFilterAttribute, 'id' | 'clearSlug' | 'isSelected' | 'isDisabled'>
   & { node: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, 'id' | 'nameString' | 'slug'>
@@ -3976,10 +3978,10 @@ export type SiteRubricFragmentFragment = (
     & Pick<RubricVariant, 'id' | 'nameString'>
   ), catalogueFilter: (
     { __typename?: 'RubricCatalogueFilter' }
-    & Pick<RubricCatalogueFilter, 'id'>
+    & Pick<RubricCatalogueFilter, 'id' | 'isDisabled'>
     & { attributes: Array<(
       { __typename?: 'RubricFilterAttribute' }
-      & Pick<RubricFilterAttribute, 'id'>
+      & Pick<RubricFilterAttribute, 'id' | 'isDisabled'>
       & { node: (
         { __typename?: 'Attribute' }
         & Pick<Attribute, 'id' | 'nameString' | 'slug'>
@@ -5051,6 +5053,7 @@ export const CatalogueRubricFilterAttributeFragmentDoc = gql`
   }
   clearSlug
   isSelected
+  isDisabled
   options {
     id
     slug
@@ -5261,8 +5264,10 @@ export const SiteRubricFragmentFragmentDoc = gql`
   }
   catalogueFilter {
     id
+    isDisabled
     attributes {
       id
+      isDisabled
       node {
         id
         nameString

@@ -1092,7 +1092,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
-  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput = {limit: 30, page: 1, sortBy: priority}): CatalogueData
+  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!

@@ -16,6 +16,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
 import { noNaN } from '@yagu/shared';
+import { SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/config';
 // import { isEqual } from 'lodash';
 
 @Resolver((_of) => CatalogueData)
@@ -32,15 +33,17 @@ export class CatalogueDataResolver {
         limit: 30,
         page: 1,
         sortBy: 'priority',
+        sortDir: SORT_DESC,
       },
     })
     productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     try {
       const [slug, ...attributes] = catalogueFilter;
-      const { limit = 30, page = 1, sortBy } = productsInput;
+      const { limit = 30, page = 1, sortBy, sortDir = SORT_DESC } = productsInput;
       const skip = (page - 1) * limit;
-      console.log(sortBy);
+      const realSortDir = sortDir === SORT_DESC ? SORT_DESC_NUM : SORT_ASC_NUM;
+
       // get current rubric
       const rubric = await RubricModel.findOne({ slug });
 
@@ -113,17 +116,30 @@ export class CatalogueDataResolver {
         { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
       ];
 
+      // Sort pipeline
+      // sort by priority/views (default)
+      let sortPipeline: any[] = [{ $sort: { 'views.counter': realSortDir } }];
+
+      // sort by price
+      if (sortBy === 'price') {
+        sortPipeline = [
+          { $addFields: { minPrice: { $min: '$shops.price' } } },
+          { $sort: { minPrice: realSortDir } },
+        ];
+      }
+
+      // sort by create date
+      if (sortBy === 'createdAt') {
+        sortPipeline = [{ $sort: { createdAt: realSortDir } }];
+      }
+
       const productsPipeline = [
         ...allProductsPipeline,
 
+        // Facets for pagination fields
         {
           $facet: {
-            docs: [
-              // Sort by views in DESC direction
-              { $sort: { 'views.counter': -1 } },
-              { $skip: skip },
-              { $limit: limit },
-            ],
+            docs: [...sortPipeline, { $skip: skip }, { $limit: limit }],
             countAllDocs: [{ $count: 'totalDocs' }],
           },
         },

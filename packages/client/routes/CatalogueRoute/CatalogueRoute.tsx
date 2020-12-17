@@ -30,6 +30,18 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const { docs, totalPages, totalDocs } = products;
   const isFilterVisible = !!catalogueFilter.attributes.length;
 
+  if (totalDocs < 1) {
+    return (
+      <div className={classes.catalogue}>
+        <Breadcrumbs currentPageName={nameString} />
+        <Inner lowTop testId={'catalogue'}>
+          <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
+          <RequestError message={'В данном разделе нет товаров. Загляните позже'} />
+        </Inner>
+      </div>
+    );
+  }
+
   return (
     <div className={classes.catalogue}>
       <Breadcrumbs currentPageName={nameString} />

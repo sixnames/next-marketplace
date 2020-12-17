@@ -130,6 +130,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
     setIsDropdownOpen(false);
   }
 
+  if (isDisabled) {
+    return null;
+  }
+
   return (
     <li
       className={classes.navItem}

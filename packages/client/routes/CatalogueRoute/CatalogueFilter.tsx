@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
   CatalogueRubricFilterAttributeFragment,
@@ -6,18 +6,31 @@ import {
 } from '../../generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
+import { useConfigContext } from '../../context/configContext';
+import Icon from '../../components/Icon/Icon';
+import Button from '../../components/Buttons/Button';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
+  const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
+  const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
+
   const {
     node: { slug, nameString },
     clearSlug,
     options,
     isSelected,
   } = attribute;
+
+  const visibleOptions = options.slice(0, maxVisibleOptions);
+  const hiddenOptions = options.slice(+maxVisibleOptions);
+  const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
+  const moreTriggerIcon = isOptionsOpen ? 'chevron-up' : 'chevron-down';
 
   return (
     <div className={classes.attribute}>
@@ -31,7 +44,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
       </div>
 
       <div className={classes.attributeList}>
-        {options.map((option) => {
+        {visibleOptions.map((option) => {
           const key = `${slug}-${option.slug}`;
           return (
             <FilterLink
@@ -43,7 +56,31 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
             />
           );
         })}
+        {isOptionsOpen
+          ? hiddenOptions.map((option) => {
+              const key = `${slug}-${option.slug}`;
+              return (
+                <FilterLink
+                  className={classes.attributeOption}
+                  key={key}
+                  option={option}
+                  attributeSlug={slug}
+                  testId={key}
+                />
+              );
+            })
+          : null}
       </div>
+
+      {hiddenOptions.length > 0 ? (
+        <div
+          className={`${classes.moreTrigger} ${isOptionsOpen ? classes.moreTriggerActive : ''}`}
+          onClick={() => setIsOptionsOpen((prevState) => !prevState)}
+        >
+          <Icon name={moreTriggerIcon} />
+          {moreTriggerText}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -59,6 +96,20 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   rubricSlug,
   totalDocs,
 }) => {
+  const { getSiteConfigSingleValue } = useConfigContext();
+  const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
+  const maxVisibleAttributesString = getSiteConfigSingleValue(
+    'catalogueFilterVisibleAttributesCount',
+  );
+  const maxVisibleAttributes = parseInt(maxVisibleAttributesString, 10);
+  const { attributes } = catalogueFilter;
+  const visibleAttributes = attributes.slice(0, maxVisibleAttributes);
+  const hiddenAttributes = attributes.slice(+maxVisibleAttributes);
+
+  const moreTriggerText = isAttributesOpen
+    ? 'Скрыть дополнительные фильтры'
+    : 'Показать больше фильтров';
+
   return (
     <div className={classes.filter}>
       <div className={classes.filterHolder}>
@@ -93,9 +144,25 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {catalogueFilter.attributes.map((attribute) => {
+        {visibleAttributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute.id} />;
         })}
+
+        {isAttributesOpen
+          ? hiddenAttributes.map((attribute) => {
+              return <CatalogueFilterAttribute attribute={attribute} key={attribute.id} />;
+            })
+          : null}
+
+        {hiddenAttributes.length > 0 ? (
+          <Button
+            className={classes.moreAttributesTrigger}
+            onClick={() => setIsAttributesOpen((prevState) => !prevState)}
+            theme={'secondary'}
+          >
+            {moreTriggerText}
+          </Button>
+        ) : null}
       </div>
     </div>
   );

@@ -433,7 +433,7 @@ export const SITE_CONFIGS_INITIAL = [
   },
   {
     slug: 'catalogueFilterVisibleOptionsCount',
-    nameString: 'Количество видимых опций фильтре каталога.',
+    nameString: 'Количество видимых опций в фильтре каталога.',
     description: '',
     variant: 'number',
     order: 14,
@@ -446,6 +446,55 @@ export const SITE_CONFIGS_INITIAL = [
           {
             key: DEFAULT_LANG,
             value: ['3'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'catalogueFilterVisibleAttributesCount',
+    nameString: 'Количество видимых атрибутов в фильтре каталога.',
+    description: '',
+    variant: 'number',
+    order: 15,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['5'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'seoText',
+    nameString: 'SEO текст.',
+    description: 'Для корректного отображения текст должен быть в формате HTML',
+    variant: 'string',
+    order: 16,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: [
+              `
+            <div>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur excepturi illum nisi! A, adipisci dolores ea eius esse harum ipsa mollitia voluptates! Eaque explicabo illo inventore perferendis possimus quidem suscipit!</p>
+              <p>Accusantium aliquid aspernatur cumque dolore enim excepturi laborum magnam maxime minima nostrum numquam obcaecati, perferendis, quidem quisquam quod veniam vero! Alias aliquam ex harum incidunt libero maxime quae rem, temporibus?</p>
+              <p>Atque consequuntur deleniti ducimus, eius et id porro quas repudiandae. Beatae consequatur explicabo laboriosam minus sunt. Consequatur deserunt explicabo illo impedit iste iusto nesciunt saepe sint suscipit tempore? Explicabo, quo?</p>
+              <p>Aperiam asperiores assumenda beatae consequatur, cumque deserunt dignissimos doloribus id in laboriosam magni odit quae reprehenderit rerum soluta velit vero! Alias commodi ex provident quisquam ratione repellat, ut! Amet, sit!</p>
+            </div>
+            `,
+            ],
           },
         ],
       },

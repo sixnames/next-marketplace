@@ -806,6 +806,7 @@ export class RubricResolver {
       const catalogueFilterArgs = info?.variableValues?.catalogueFilter
         ? alwaysArray(info?.variableValues?.catalogueFilter)
         : [];
+      const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
 
       const { attributesGroups, catalogueTitle } = rubric;
       const rubricIdString = rubric.id.toString();
@@ -924,6 +925,41 @@ export class RubricResolver {
                 .join('/')
             : [...catalogueFilterArgs, optionSlug].join('/');
 
+          // Count products with current option
+          const products = await ProductModel.aggregate<any>([
+            // Initial products match
+            {
+              $match: {
+                rubrics: { $in: rubricsIds },
+                active: true,
+                'attributesGroups.attributes': {
+                  $elemMatch: {
+                    key: attribute.slug,
+                    value: { $in: [option.slug] },
+                  },
+                },
+              },
+            },
+            // Lookup shop products
+            { $addFields: { productId: { $toString: '$_id' } } },
+            {
+              $lookup: {
+                from: 'shopproducts',
+                localField: 'productId',
+                foreignField: 'product',
+                as: 'shops',
+              },
+            },
+            // Count shop products
+            { $addFields: { shopsCount: { $size: '$shops' } } },
+            // Filter out products not added to the shops
+            { $match: { shopsCount: { $gt: 0 } } },
+            {
+              $count: 'counter',
+            },
+          ]);
+          const counter = products[0]?.counter || 0;
+
           resultOptions.push({
             ...option,
             id: option._id?.toString() + rubricIdString,
@@ -931,7 +967,8 @@ export class RubricResolver {
             optionSlug,
             optionNextSlug: `/${optionNextSlug}`,
             isSelected,
-            counter: 0,
+            isDisabled: counter < 1,
+            counter,
           });
         }
 
@@ -978,6 +1015,7 @@ export class RubricResolver {
         selectedAttributes,
       };
     } catch (e) {
+      console.log(e);
       return {
         id: rubric._id.toString(),
         attributes: [],

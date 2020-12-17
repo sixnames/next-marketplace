@@ -1074,6 +1074,7 @@ export type RubricFilterAttributeOption = {
   optionSlug: Scalars['String'];
   optionNextSlug: Scalars['String'];
   isSelected: Scalars['Boolean'];
+  isDisabled: Scalars['Boolean'];
 };
 
 export type RubricProductPaginateInput = {
@@ -3698,7 +3699,7 @@ export type CatalogueRubricFilterAttributeFragment = (
     & Pick<Attribute, 'id' | 'nameString' | 'slug'>
   ), options: Array<(
     { __typename?: 'RubricFilterAttributeOption' }
-    & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'color' | 'counter' | 'filterNameString' | 'optionSlug' | 'optionNextSlug' | 'isSelected'>
+    & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'color' | 'counter' | 'filterNameString' | 'optionSlug' | 'optionNextSlug' | 'isSelected' | 'isDisabled'>
   )> }
 );
 
@@ -5060,6 +5061,7 @@ export const CatalogueRubricFilterAttributeFragmentDoc = gql`
     optionSlug
     optionNextSlug
     isSelected
+    isDisabled
   }
 }
     `;

@@ -38,6 +38,7 @@ export const catalogueRubricFilterAttributeFragment = gql`
       optionSlug
       optionNextSlug
       isSelected
+      isDisabled
     }
   }
 `;

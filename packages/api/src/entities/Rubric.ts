@@ -45,6 +45,9 @@ export class RubricFilterAttributeOption extends Option {
 
   @Field((_type) => Boolean)
   readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
 }
 
 @ObjectType()

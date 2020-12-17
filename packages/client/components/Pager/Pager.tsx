@@ -33,7 +33,9 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         pageLinkClassName={classes.butn}
         breakLinkClassName={classes.butn}
         containerClassName={classes.container}
-        onPageChange={(currentPage) => setPage(currentPage.selected + pageStep)}
+        onPageChange={(currentPage) => {
+          setPage(currentPage.selected + pageStep);
+        }}
       />
     </div>
   );

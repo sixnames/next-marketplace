@@ -74,23 +74,30 @@ export const catalogueRubricFragment = gql`
   ${catalogueRubricFilterFragment}
 `;
 
-export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($catalogueFilter: [String!]!) {
-    getCatalogueData(catalogueFilter: $catalogueFilter) {
-      catalogueTitle
-      rubric {
-        ...CatalogueRubric
-      }
-      products {
-        totalDocs
-        page
-        totalPages
-        docs {
-          ...ProductSnippet
-        }
+export const catalogueDataFragment = gql`
+  fragment CatalogueData on CatalogueData {
+    catalogueTitle
+    rubric {
+      ...CatalogueRubric
+    }
+    products {
+      totalDocs
+      page
+      totalPages
+      docs {
+        ...ProductSnippet
       }
     }
   }
   ${catalogueRubricFragment}
   ${productSnippedFragment}
+`;
+
+export const CATALOGUE_RUBRIC_QUERY = gql`
+  query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductPaginateInput) {
+    getCatalogueData(catalogueFilter: $catalogueFilter, productsInput: $productsInput) {
+      ...CatalogueData
+    }
+  }
+  ${catalogueDataFragment}
 `;

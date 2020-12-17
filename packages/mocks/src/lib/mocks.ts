@@ -1442,6 +1442,7 @@ export const MOCK_PRODUCT_A = {
     { key: DEFAULT_LANG, value: 'Card_name_productA' },
     { key: SECONDARY_LANG, value: 'Card_name_productA' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 10 }],
   price: 100,
   description: productDescription,
 };
@@ -1457,6 +1458,7 @@ export const MOCK_PRODUCT_B = {
     { key: DEFAULT_LANG, value: 'Card_name_productB' },
     { key: SECONDARY_LANG, value: 'Card_name_productB' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 9 }],
   price: 200,
   description: productDescription,
 };
@@ -1472,6 +1474,7 @@ export const MOCK_PRODUCT_C = {
     { key: DEFAULT_LANG, value: 'Card_name_productC' },
     { key: SECONDARY_LANG, value: 'Card_name_productC' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 8 }],
   price: 50,
   description: productDescription,
 };
@@ -1487,6 +1490,7 @@ export const MOCK_PRODUCT_D = {
     { key: DEFAULT_LANG, value: 'Card_name_productD' },
     { key: SECONDARY_LANG, value: 'Card_name_productD' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 7 }],
   price: 1150,
   description: productDescription,
 };
@@ -1502,6 +1506,7 @@ export const MOCK_PRODUCT_E = {
     { key: DEFAULT_LANG, value: 'Card_name_productE' },
     { key: SECONDARY_LANG, value: 'Card_name_productE' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 6 }],
   price: 500,
   description: productDescription,
 };
@@ -1517,6 +1522,7 @@ export const MOCK_PRODUCT_F = {
     { key: DEFAULT_LANG, value: 'Card_name_productF' },
     { key: SECONDARY_LANG, value: 'Card_name_productF' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 5 }],
   price: 500,
   description: productDescription,
 };
@@ -1530,6 +1536,7 @@ export const MOCK_PRODUCT_NEW = {
     { key: DEFAULT_LANG, value: 'Card_name_productNew' },
     { key: SECONDARY_LANG, value: 'Card_name_productNew' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 1 }],
   price: 2000,
   description: productDescription,
 };
@@ -1543,6 +1550,7 @@ export const MOCK_PRODUCT_CREATE = {
     { key: DEFAULT_LANG, value: 'Card_name_productCreate' },
     { key: SECONDARY_LANG, value: 'Card_name_productCreate' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 1 }],
   price: 2000,
   description: productDescription,
 };

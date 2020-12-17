@@ -963,7 +963,7 @@ export type ConfigLanguage = {
 export type CatalogueData = {
   __typename?: 'CatalogueData';
   rubric: Rubric;
-  products: PaginatedProductsResponse;
+  products: CatalogueDataProducts;
   catalogueTitle: Scalars['String'];
 };
 
@@ -1094,6 +1094,14 @@ export type RubricProductPaginateInput = {
 export type RubricProductAttributesFilterInput = {
   key: Scalars['String'];
   value: Array<Scalars['String']>;
+};
+
+export type CatalogueDataProducts = {
+  __typename?: 'CatalogueDataProducts';
+  docs: Array<Product>;
+  page: Scalars['Int'];
+  totalDocs: Scalars['Int'];
+  totalPages: Scalars['Int'];
 };
 
 export type CatalogueSearchResult = {
@@ -3729,8 +3737,25 @@ export type CatalogueRubricFragment = (
   ) }
 );
 
+export type CatalogueDataFragment = (
+  { __typename?: 'CatalogueData' }
+  & Pick<CatalogueData, 'catalogueTitle'>
+  & { rubric: (
+    { __typename?: 'Rubric' }
+    & CatalogueRubricFragment
+  ), products: (
+    { __typename?: 'CatalogueDataProducts' }
+    & Pick<CatalogueDataProducts, 'totalDocs' | 'page' | 'totalPages'>
+    & { docs: Array<(
+      { __typename?: 'Product' }
+      & ProductSnippetFragment
+    )> }
+  ) }
+);
+
 export type GetCatalogueRubricQueryVariables = Exact<{
   catalogueFilter: Array<Scalars['String']>;
+  productsInput?: Maybe<ProductPaginateInput>;
 }>;
 
 
@@ -3738,18 +3763,7 @@ export type GetCatalogueRubricQuery = (
   { __typename?: 'Query' }
   & { getCatalogueData?: Maybe<(
     { __typename?: 'CatalogueData' }
-    & Pick<CatalogueData, 'catalogueTitle'>
-    & { rubric: (
-      { __typename?: 'Rubric' }
-      & CatalogueRubricFragment
-    ), products: (
-      { __typename?: 'PaginatedProductsResponse' }
-      & Pick<PaginatedProductsResponse, 'totalDocs' | 'page' | 'totalPages'>
-      & { docs: Array<(
-        { __typename?: 'Product' }
-        & ProductSnippetFragment
-      )> }
-    ) }
+    & CatalogueDataFragment
   )> }
 );
 
@@ -5026,23 +5040,6 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
-export const ProductSnippetFragmentDoc = gql`
-    fragment ProductSnippet on Product {
-  id
-  itemId
-  nameString
-  slug
-  mainImage
-  cardFeatures {
-    listFeaturesString
-    ratingFeaturesValues
-  }
-  cardPrices {
-    min
-    max
-  }
-}
-    `;
 export const CatalogueRubricFilterAttributeFragmentDoc = gql`
     fragment CatalogueRubricFilterAttribute on RubricFilterAttribute {
   id
@@ -5094,6 +5091,40 @@ export const CatalogueRubricFragmentDoc = gql`
   }
 }
     ${CatalogueRubricFilterFragmentDoc}`;
+export const ProductSnippetFragmentDoc = gql`
+    fragment ProductSnippet on Product {
+  id
+  itemId
+  nameString
+  slug
+  mainImage
+  cardFeatures {
+    listFeaturesString
+    ratingFeaturesValues
+  }
+  cardPrices {
+    min
+    max
+  }
+}
+    `;
+export const CatalogueDataFragmentDoc = gql`
+    fragment CatalogueData on CatalogueData {
+  catalogueTitle
+  rubric {
+    ...CatalogueRubric
+  }
+  products {
+    totalDocs
+    page
+    totalPages
+    docs {
+      ...ProductSnippet
+    }
+  }
+}
+    ${CatalogueRubricFragmentDoc}
+${ProductSnippetFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   id
@@ -8098,24 +8129,15 @@ export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
 export type GetCatalogueCardQueryQueryResult = Apollo.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($catalogueFilter: [String!]!) {
-  getCatalogueData(catalogueFilter: $catalogueFilter) {
-    catalogueTitle
-    rubric {
-      ...CatalogueRubric
-    }
-    products {
-      totalDocs
-      page
-      totalPages
-      docs {
-        ...ProductSnippet
-      }
-    }
+    query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductPaginateInput) {
+  getCatalogueData(
+    catalogueFilter: $catalogueFilter
+    productsInput: $productsInput
+  ) {
+    ...CatalogueData
   }
 }
-    ${CatalogueRubricFragmentDoc}
-${ProductSnippetFragmentDoc}`;
+    ${CatalogueDataFragmentDoc}`;
 
 /**
  * __useGetCatalogueRubricQuery__
@@ -8130,6 +8152,7 @@ ${ProductSnippetFragmentDoc}`;
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
  *      catalogueFilter: // value for 'catalogueFilter'
+ *      productsInput: // value for 'productsInput'
  *   },
  * });
  */

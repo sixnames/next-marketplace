@@ -59,6 +59,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  DEFAULT_CITY,
   SORT_ASC,
   SORT_DESC,
 } from '@yagu/config';
@@ -247,7 +248,7 @@ export class ProductResolver {
         ...values,
         slug,
         priorities: [],
-        views: [],
+        views: [{ key: DEFAULT_CITY, counter: 1 }],
         assets: assetsResult,
         active: true,
       });

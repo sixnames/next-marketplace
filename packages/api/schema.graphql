@@ -196,8 +196,15 @@ type CartProduct {
 
 type CatalogueData {
   catalogueTitle: String!
-  products: PaginatedProductsResponse!
+  products: CatalogueDataProducts!
   rubric: Rubric!
+}
+
+type CatalogueDataProducts {
+  docs: [Product!]!
+  page: Int!
+  totalDocs: Int!
+  totalPages: Int!
 }
 
 type CatalogueSearchResult {
@@ -1085,7 +1092,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
-  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput = {limit: 30, page: 1, sortBy: priority}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!

@@ -1,15 +1,29 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Rubric } from './Rubric';
-import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { Product } from './Product';
+
+@ObjectType()
+export class CatalogueDataProducts {
+  @Field(() => [Product])
+  readonly docs: Product[];
+
+  @Field(() => Int)
+  readonly page: number;
+
+  @Field(() => Int)
+  readonly totalDocs: number;
+
+  @Field(() => Int)
+  readonly totalPages: number;
+}
 
 @ObjectType()
 export class CatalogueData {
   @Field(() => Rubric)
   readonly rubric: Rubric;
 
-  @Field(() => PaginatedProductsResponse)
-  readonly products: PaginatedProductsResponse;
+  @Field(() => CatalogueDataProducts)
+  readonly products: CatalogueDataProducts;
 
   @Field(() => String)
   readonly catalogueTitle: string;

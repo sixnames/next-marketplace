@@ -1,31 +1,23 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
-import { GetCatalogueRubricQuery } from '../generated/apolloComponents';
+import { CatalogueDataFragment } from '../generated/apolloComponents';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
-import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface CatalogueInterface {
-  rubricData: GetCatalogueRubricQuery;
+  rubricData?: CatalogueDataFragment | null;
 }
 
 const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   initialApolloState,
   rubricData,
 }) => {
-  if (!rubricData || !rubricData.getCatalogueData) {
-    return <ErrorBoundaryFallback />;
-  }
-
-  const { getCatalogueData } = rubricData;
-  const { catalogueTitle } = getCatalogueData;
-
   return (
     <SiteLayout
-      title={catalogueTitle}
-      description={catalogueTitle}
+      title={rubricData ? rubricData.catalogueTitle : undefined}
+      description={rubricData ? rubricData.catalogueTitle : undefined}
       initialApolloState={initialApolloState}
     >
       <CatalogueRoute rubricData={rubricData} />
@@ -33,7 +25,6 @@ const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   );
 };
 
-// noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps = async (context) =>
   getSiteServerSideProps<CatalogueInterface>({
     context,
@@ -54,11 +45,10 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
       return {
         props: {
           ...initialProps,
-          rubricData: rubricData.data,
+          rubricData: rubricData?.data?.getCatalogueData,
         },
       };
     },
   });
 
-// noinspection JSUnusedGlobalSymbols
 export default Catalogue;

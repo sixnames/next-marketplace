@@ -15,6 +15,7 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
+import { noNaN } from '@yagu/shared';
 // import { isEqual } from 'lodash';
 
 @Resolver((_of) => CatalogueData)
@@ -25,12 +26,21 @@ export class CatalogueDataResolver {
     @Localization() { lang, city }: LocalizationPayloadInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
-    @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
+    @Arg('productsInput', {
+      nullable: true,
+      defaultValue: {
+        limit: 30,
+        page: 1,
+        sortBy: 'priority',
+      },
+    })
+    productsInput: ProductPaginateInput,
   ): Promise<CatalogueData | null> {
     try {
       const [slug, ...attributes] = catalogueFilter;
-      const { limit = 30, page = 1 } = productsInput || {};
-
+      const { limit = 30, page = 1, sortBy } = productsInput;
+      const skip = (page - 1) * limit;
+      console.log(sortBy);
       // get current rubric
       const rubric = await RubricModel.findOne({ slug });
 
@@ -69,7 +79,7 @@ export class CatalogueDataResolver {
           : {};
 
       // pipeline
-      const productsPipeline = [
+      const allProductsPipeline = [
         // Initial match
         {
           $match: {
@@ -78,6 +88,7 @@ export class CatalogueDataResolver {
             active: true,
           },
         },
+
         // Lookup shop products
         { $addFields: { productId: { $toString: '$_id' } } },
         {
@@ -88,28 +99,59 @@ export class CatalogueDataResolver {
             as: 'shops',
           },
         },
+
         // Count shop products
         { $addFields: { shopsCount: { $size: '$shops' } } },
+
         // Filter out products not added to the shops
         { $match: { shopsCount: { $gt: 0 } } },
+
         // Unwind by views counter
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+
         // Filter unwinded products by current city or empty views
         { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        // Sort by views in DESC direction
-        { $sort: { 'views.counter': -1 } },
       ];
 
-      const productsAggregation = ProductModel.aggregate<Product>(productsPipeline);
+      const productsPipeline = [
+        ...allProductsPipeline,
 
-      const products = await ProductModel.aggregatePaginate(productsAggregation, {
-        limit,
-        page,
-      });
+        {
+          $facet: {
+            docs: [
+              // Sort by views in DESC direction
+              { $sort: { 'views.counter': -1 } },
+              { $skip: skip },
+              { $limit: limit },
+            ],
+            countAllDocs: [{ $count: 'totalDocs' }],
+          },
+        },
+      ];
+
+      interface ProductsAggregationInterface {
+        docs: Product[];
+        countAllDocs: {
+          totalDocs: number;
+        }[];
+      }
+
+      const productsAggregation = await ProductModel.aggregate<ProductsAggregationInterface>(
+        productsPipeline,
+      );
+
+      const productsResult = productsAggregation[0] ?? { docs: [] };
+      const totalDocs = noNaN(productsResult.countAllDocs[0]?.totalDocs);
+      const totalPages = Math.ceil(totalDocs / limit);
 
       return {
         rubric,
-        products,
+        products: {
+          docs: productsResult.docs,
+          page,
+          totalDocs,
+          totalPages,
+        },
         catalogueTitle,
       };
     } catch (e) {

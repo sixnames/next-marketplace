@@ -48,6 +48,7 @@ export const rubricFragment = gql`
           filterNameString
           color
           counter
+          isDisabled
         }
       }
     }

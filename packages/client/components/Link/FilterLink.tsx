@@ -19,13 +19,15 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   withCross,
   ...props
 }) => {
-  const { filterNameString, optionNextSlug, isSelected } = option;
+  const { filterNameString, optionNextSlug, isSelected, isDisabled } = option;
 
   return (
     <TagLink
       href={optionNextSlug}
       isActive={isSelected}
-      className={`${classes.filterLink} ${className ? className : ''}`}
+      className={`${classes.filterLink} ${isDisabled ? classes.filterLinkDisabled : ''} ${
+        className ? className : ''
+      }`}
       {...props}
     >
       <span>{filterNameString}</span>

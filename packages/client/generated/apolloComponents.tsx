@@ -3985,7 +3985,7 @@ export type SiteRubricFragmentFragment = (
         & Pick<Attribute, 'id' | 'nameString' | 'slug'>
       ), options: Array<(
         { __typename?: 'RubricFilterAttributeOption' }
-        & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter'>
+        & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter' | 'isDisabled'>
       )> }
     )> }
   ) }
@@ -5274,6 +5274,7 @@ export const SiteRubricFragmentFragmentDoc = gql`
         filterNameString
         color
         counter
+        isDisabled
       }
     }
   }

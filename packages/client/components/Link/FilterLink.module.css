@@ -2,6 +2,12 @@
 
 }
 
+.filterLinkDisabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .filterLink svg {
   width: 0.55rem;
   height: 0.55rem;

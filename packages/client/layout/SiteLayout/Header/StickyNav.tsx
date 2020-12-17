@@ -24,8 +24,9 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const maxVisibleOptionsString = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
-  const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(+maxVisibleOptions);
+  const enabledOptions = options.filter(({ isDisabled }) => !isDisabled);
+  const visibleOptions = enabledOptions.slice(0, maxVisibleOptions);
+  const hiddenOptions = enabledOptions.slice(+maxVisibleOptions);
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {visibleOptions.map((option) => {
           const optionPath = `/${rubricSlug}/${node.slug}-${option.slug}`;
           const isCurrent = asPath === optionPath;
+
           return (
             <li key={option.id}>
               <Link
@@ -64,6 +66,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           ? hiddenOptions.map((option) => {
               const optionPath = `/${rubricSlug}/${node.slug}-${option.slug}`;
               const isCurrent = asPath === optionPath;
+
               return (
                 <li key={option.id}>
                   <Link

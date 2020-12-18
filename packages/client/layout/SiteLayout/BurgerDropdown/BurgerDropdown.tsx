@@ -98,7 +98,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           </div>
                         ) : null}
 
-                        {currentRubric.filterAttributes.map(({ id, node, options }) => {
+                        {currentRubric.catalogueFilter.attributes.map(({ id, node, options }) => {
                           return (
                             <div className={classes.dropdownGroup} key={id}>
                               <div className={classes.dropdownGroupTitle}>{node.nameString}</div>
@@ -243,7 +243,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                       {me ? (
                         <li>
                           <Link href={ROUTE_APP} className={`${classes.dropdownGroupLink}`}>
-                            <span>CRM</span>
+                            <span>CMS</span>
                             <BurgerDropdownChevron />
                           </Link>
                         </li>

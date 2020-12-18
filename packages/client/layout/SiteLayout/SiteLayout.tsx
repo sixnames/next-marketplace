@@ -13,6 +13,10 @@ import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 import { debounce } from 'lodash';
 import ErrorBoundaryFallback from '../../components/ErrorBoundary/ErrorBoundaryFallback';
+import { useConfigContext } from '../../context/configContext';
+import Inner from '../../components/Inner/Inner';
+import Title from '../../components/Title/Title';
+import StringButton from '../../components/Buttons/StringButton';
 
 interface SiteLayoutConsumerInterface {
   title?: string;
@@ -29,6 +33,8 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
 }) => {
+  const [isSeoTextOpen, setIsSeoTextOpen] = useState<boolean>(false);
+  const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoading, isModal, isMobile } = useAppContext();
   const { isBurgerDropdownOpen } = useSiteContext();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -36,6 +42,9 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     top: 0,
     height: 0,
   });
+  const seoText = getSiteConfigSingleValue('seoText');
+  const seoTextTitle = getSiteConfigSingleValue('seoTextTitle');
+  const seoTextButtonLabel = isSeoTextOpen ? 'Скрыть' : 'Читать далее';
 
   // Set burger dropdown sizes
   useEffect(() => {
@@ -70,12 +79,27 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       <div ref={contentRef} className={classes.content}>
         <main className={classes.main}>
           <ErrorBoundary>
-            <AnimateOpacity>{children}</AnimateOpacity>
+            <AnimateOpacity>
+              {children}
+              <Inner>
+                <div className={`${classes.seoTextHolder}`}>
+                  <Title size={'small'} tag={'h3'}>
+                    {seoTextTitle}
+                  </Title>
+                  <div
+                    className={`${classes.seoText} ${isSeoTextOpen ? classes.seoTextActive : ''}`}
+                    dangerouslySetInnerHTML={{ __html: seoText }}
+                  />
+                  <StringButton onClick={() => setIsSeoTextOpen((prevState) => !prevState)}>
+                    {seoTextButtonLabel}
+                  </StringButton>
+                </div>
+              </Inner>
+            </AnimateOpacity>
           </ErrorBoundary>
         </main>
 
         <Footer />
-
         <BurgerDropdown top={burgerDropdownSizes.top} height={burgerDropdownSizes.height} />
       </div>
 

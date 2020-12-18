@@ -472,11 +472,31 @@ export const SITE_CONFIGS_INITIAL = [
     ],
   },
   {
+    slug: 'seoTextTitle',
+    nameString: 'Заголовок для SEO-текста',
+    description: '',
+    variant: 'string',
+    order: 16,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: [`Заголовок для SEO-текста`],
+          },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'seoText',
     nameString: 'SEO текст.',
     description: 'Для корректного отображения текст должен быть в формате HTML',
     variant: 'string',
-    order: 16,
+    order: 17,
     multi: false,
     acceptedFormats: [],
     cities: [
@@ -488,10 +508,10 @@ export const SITE_CONFIGS_INITIAL = [
             value: [
               `
             <div>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur excepturi illum nisi! A, adipisci dolores ea eius esse harum ipsa mollitia voluptates! Eaque explicabo illo inventore perferendis possimus quidem suscipit!</p>
-              <p>Accusantium aliquid aspernatur cumque dolore enim excepturi laborum magnam maxime minima nostrum numquam obcaecati, perferendis, quidem quisquam quod veniam vero! Alias aliquam ex harum incidunt libero maxime quae rem, temporibus?</p>
-              <p>Atque consequuntur deleniti ducimus, eius et id porro quas repudiandae. Beatae consequatur explicabo laboriosam minus sunt. Consequatur deserunt explicabo illo impedit iste iusto nesciunt saepe sint suscipit tempore? Explicabo, quo?</p>
-              <p>Aperiam asperiores assumenda beatae consequatur, cumque deserunt dignissimos doloribus id in laboriosam magni odit quae reprehenderit rerum soluta velit vero! Alias commodi ex provident quisquam ratione repellat, ut! Amet, sit!</p>
+              <p>Купить вино в сети магазинов WineStyle — вас ждет широкий выбор алкогольных напитков со всего света: вы можете купить вино классическое французское (белое французское, красное французское, замковые вина шато, бургундское вино, вина бордо) и итальянское вино (вино кьянти, тоскана), вино Нового света, демократичное и элитное вино, коньяк, виски и подарочные наборы, ну и, разумеется, шампанское и игристые вина.</p>
+              <p>Купить алкоголь — в нашем ассортименте коньяк Хеннесси, виски Чивас ригал. В сети винных магазинов WineStyle соблюдаются все условия хранения вин и крепких спиртных напитков, поэтому наши товары всегда отличаются высочайшим качеством. Поиск алкогольных напитков в нашем каталоге — это быстро, современно, удобно!</p>
+              <p>Купить вино в сети магазинов WineStyle — вас ждет широкий выбор алкогольных напитков со всего света: вы можете купить вино классическое французское (белое французское, красное французское, замковые вина шато, бургундское вино, вина бордо) и итальянское вино (вино кьянти, тоскана), вино Нового света, демократичное и элитное вино, коньяк, виски и подарочные наборы, ну и, разумеется, шампанское и игристые вина.</p>
+              <p>Купить алкоголь — в нашем ассортименте коньяк Хеннесси, виски Чивас ригал. В сети винных магазинов WineStyle соблюдаются все условия хранения вин и крепких спиртных напитков, поэтому наши товары всегда отличаются высочайшим качеством. Поиск алкогольных напитков в нашем каталоге — это быстро, современно, удобно!</p>
             </div>
             `,
             ],

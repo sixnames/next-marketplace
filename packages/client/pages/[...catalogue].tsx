@@ -5,6 +5,7 @@ import { CatalogueDataFragment } from '../generated/apolloComponents';
 import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
+import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface CatalogueInterface {
   rubricData?: CatalogueDataFragment | null;
@@ -14,10 +15,14 @@ const Catalogue: NextPage<SitePagePropsType<CatalogueInterface>> = ({
   initialApolloState,
   rubricData,
 }) => {
+  if (!rubricData || !initialApolloState) {
+    return <ErrorBoundaryFallback />;
+  }
+
   return (
     <SiteLayout
-      title={rubricData ? rubricData.catalogueTitle : undefined}
-      description={rubricData ? rubricData.catalogueTitle : undefined}
+      title={rubricData.catalogueTitle}
+      description={rubricData.catalogueTitle}
       initialApolloState={initialApolloState}
     >
       <CatalogueRoute rubricData={rubricData} />
@@ -30,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     context,
     callback: async ({ initialProps, context, apolloClient }) => {
       const { query, req } = context;
-      const { catalogue } = query;
+      const { catalogue, sortDir, sortBy } = query;
 
       const rubricData = await apolloClient.query({
         query: CATALOGUE_RUBRIC_QUERY,
@@ -39,6 +44,10 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
         },
         variables: {
           catalogueFilter: catalogue,
+          productsInput: {
+            sortDir,
+            sortBy,
+          },
         },
       });
 

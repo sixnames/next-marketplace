@@ -45,6 +45,7 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
+  SORT_DESC,
 } from '@yagu/config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
@@ -782,14 +783,14 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC, ...args } = input;
     const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
     const query = ProductModel.getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
       limit,
       page,
-      sortDir,
+      sortDir: sortDir,
       sortBy,
     });
 
@@ -803,9 +804,19 @@ export class RubricResolver {
     @Info() info: any,
   ): Promise<RubricCatalogueFilter> {
     try {
+      // Get query args
       const catalogueFilterArgs = info?.variableValues?.catalogueFilter
         ? alwaysArray(info?.variableValues?.catalogueFilter)
         : [];
+      const { sortBy, sortDir }: Record<string, any> = info?.variableValues?.productsInput
+        ? info?.variableValues?.productsInput
+        : {};
+      const sortDirQuery = sortDir ? `sortDir=${sortDir}` : '';
+      const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
+      const sortQuery = `${sortDirQuery}&${sortByQuery}`;
+      const nextQuery = sortDir || sortBy ? `?${sortQuery}` : '';
+
+      // Get id's of children rubrics
       const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
 
       const { attributesGroups, catalogueTitle } = rubric;
@@ -965,7 +976,7 @@ export class RubricResolver {
             id: option._id?.toString() + rubricIdString,
             filterNameString: filterNameString,
             optionSlug,
-            optionNextSlug: `/${optionNextSlug}`,
+            optionNextSlug: `/${optionNextSlug}${nextQuery}`,
             isSelected,
             isDisabled: counter < 1,
             counter,
@@ -999,7 +1010,7 @@ export class RubricResolver {
           id: attributeIdString + rubricIdString,
           node: attribute,
           options: sortedOptions,
-          clearSlug,
+          clearSlug: `${clearSlug}${nextQuery}`,
           isSelected,
           isDisabled: disabledOptionsCount === sortedOptions.length,
         });
@@ -1036,6 +1047,7 @@ export class RubricResolver {
         attributes: filterAttributes,
         selectedAttributes,
         isDisabled: disabledAttributesCount === filterAttributes.length,
+        clearSlug: `/${rubric.slug}${nextQuery}`,
       };
     } catch (e) {
       return {
@@ -1043,6 +1055,7 @@ export class RubricResolver {
         attributes: [],
         selectedAttributes: [],
         isDisabled: true,
+        clearSlug: ``,
       };
     }
   }

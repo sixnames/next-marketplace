@@ -1,6 +1,8 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Rubric } from './Rubric';
 import { Product } from './Product';
+import { SortDirectionEnum } from '../resolvers/commonInputs/PaginateInput';
+import { CatalogueProductsSortByEnum } from '../resolvers/catalogueData/CatalogueProductsInput';
 
 @ObjectType()
 export class CatalogueDataProducts {
@@ -15,6 +17,15 @@ export class CatalogueDataProducts {
 
   @Field(() => Int)
   readonly totalPages: number;
+
+  @Field(() => Int)
+  readonly limit: number;
+
+  @Field((_type) => CatalogueProductsSortByEnum)
+  readonly sortBy: CatalogueProductsSortByEnum;
+
+  @Field(() => SortDirectionEnum)
+  readonly sortDir: SortDirectionEnum;
 }
 
 @ObjectType()
@@ -27,6 +38,9 @@ export class CatalogueData {
 
   @Field(() => String)
   readonly catalogueTitle: string;
+
+  @Field(() => [String])
+  readonly catalogueFilter: string[];
 }
 
 @ObjectType()

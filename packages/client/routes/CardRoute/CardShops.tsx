@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   GetProductShopsInput,
   ShopProductSnippetFragment,
@@ -8,17 +8,19 @@ import {
 import { SORT_ASC, SORT_DESC } from '@yagu/config';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
-import MenuButtonWithName from '../../components/ReachMenuButton/MenuButtonWithName';
 import CardShop from './CardShop';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
 import classes from './CardShops.module.css';
 import ArrowTrigger from '../../components/ArrowTrigger/ArrowTrigger';
 import ShopsMap from '../../components/ShopsMap/ShopsMap';
+import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
+import { ReachMenuItemConfig } from '../../components/ReachMenuButton/ReachMenuButton';
 
 interface CardShopsListInterface {
   productId: string;
   shops: ShopProductSnippetFragment[];
+  input: GetProductShopsInput;
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
@@ -30,6 +32,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   productId,
   setIsMap,
   setInput,
+  input,
 }) => {
   const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
 
@@ -37,38 +40,40 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   const visibleShops = shops.slice(0, visibleShopsLimit);
   const hiddenShops = shops.slice(visibleShopsLimit);
 
-  const sortConfig = [
-    {
-      nameString: 'По возрастанию цены',
-      id: 'По возрастанию цены',
-      onSelect: () => {
-        setInput({
-          productId,
-          sortBy: 'price',
-          sortDir: SORT_ASC as SortDirectionEnum,
-        });
+  const sortConfig: ReachMenuItemConfig[] = useMemo(
+    () => [
+      {
+        nameString: 'По возрастанию цены',
+        id: 'По возрастанию цены',
+        current: input.sortBy === 'price' && input.sortDir === SORT_ASC,
+        onSelect: () => {
+          setInput({
+            productId,
+            sortBy: 'price',
+            sortDir: SORT_ASC as SortDirectionEnum,
+          });
+        },
       },
-    },
-    {
-      nameString: 'По убыванию цены',
-      id: 'По убыванию цены',
-      onSelect: () => {
-        setInput({
-          productId,
-          sortBy: 'price',
-          sortDir: SORT_DESC as SortDirectionEnum,
-        });
+      {
+        nameString: 'По убыванию цены',
+        id: 'По убыванию цены',
+        current: input.sortBy === 'price' && input.sortDir === SORT_DESC,
+        onSelect: () => {
+          setInput({
+            productId,
+            sortBy: 'price',
+            sortDir: SORT_DESC as SortDirectionEnum,
+          });
+        },
       },
-    },
-  ];
+    ],
+    [input, productId, setInput],
+  );
 
   return (
     <div data-cy={`card-shops-list`}>
       <div className={classes.controls}>
-        <div className={classes.sort}>
-          <div className={classes.sortLabel}>Сортировать</div>
-          <MenuButtonWithName config={sortConfig} />
-        </div>
+        <MenuButtonSorter config={sortConfig} className={classes.sort} />
         <ArrowTrigger name={'Ближайшие винотеки на карте'} onClick={() => setIsMap(true)} />
       </div>
 
@@ -159,6 +164,7 @@ const CardShops: React.FC<CardShopsInterface> = ({ productId }) => {
       ) : (
         <CardShopsList
           productId={productId}
+          input={input}
           setInput={setInput}
           shops={shops}
           loading={loading}

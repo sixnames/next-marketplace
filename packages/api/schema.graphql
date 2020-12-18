@@ -195,6 +195,7 @@ type CartProduct {
 }
 
 type CatalogueData {
+  catalogueFilter: [String!]!
   catalogueTitle: String!
   products: CatalogueDataProducts!
   rubric: Rubric!
@@ -202,9 +203,27 @@ type CatalogueData {
 
 type CatalogueDataProducts {
   docs: [Product!]!
+  limit: Int!
   page: Int!
+  sortBy: CatalogueProductsSortByEnum!
+  sortDir: SortDirectionEnum!
   totalDocs: Int!
   totalPages: Int!
+}
+
+input CatalogueProductsInput {
+  limit: Int = 30
+  page: Int = 1
+  search: String
+  sortBy: CatalogueProductsSortByEnum = priority
+  sortDir: SortDirectionEnum = desc
+}
+
+"""Product pagination sortBy enum"""
+enum CatalogueProductsSortByEnum {
+  createdAt
+  price
+  priority
 }
 
 type CatalogueSearchResult {
@@ -1092,7 +1111,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
-  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
+  getCatalogueData(catalogueFilter: [String!]!, productsInput: CatalogueProductsInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!
@@ -1210,6 +1229,7 @@ type RubricAttributesGroup {
 
 type RubricCatalogueFilter {
   attributes: [RubricFilterAttribute!]!
+  clearSlug: String!
   id: ID!
   isDisabled: Boolean!
   selectedAttributes: [RubricFilterAttribute!]!

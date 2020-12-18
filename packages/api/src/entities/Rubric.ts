@@ -84,6 +84,9 @@ export class RubricCatalogueFilter {
 
   @Field(() => [RubricFilterAttribute])
   readonly selectedAttributes: RubricFilterAttribute[];
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
 }
 
 @ObjectType()

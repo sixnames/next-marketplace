@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useConfigContext } from '../../../context/configContext';
+import { alwaysArray } from '@yagu/shared';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -114,7 +115,8 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { hideBurgerDropdown } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { catalogue = [] } = query;
-  const catalogueSlug = catalogue[0];
+  const realCatalogueQuery = alwaysArray(catalogue);
+  const catalogueSlug = realCatalogueQuery[0];
   const { nameString, slug, catalogueFilter } = rubric;
   const { isDisabled } = catalogueFilter;
   const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
@@ -142,12 +144,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${nameString}`}
     >
       <Link
-        href={{
-          pathname: `/[...catalogue]`,
-        }}
-        as={{
-          pathname: `/${slug}`,
-        }}
+        href={`/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${nameString}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}

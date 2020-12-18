@@ -1,7 +1,7 @@
 export interface PaginationOptions {
   limit: number;
   page: number;
-  sortDir: number;
+  sortDir: string;
   sortBy: string;
   search?: string | null;
 }

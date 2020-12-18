@@ -47,6 +47,8 @@ export const catalogueRubricFilterAttributeFragment = gql`
 export const catalogueRubricFilterFragment = gql`
   fragment CatalogueRubricFilter on RubricCatalogueFilter {
     id
+    isDisabled
+    clearSlug
     attributes {
       ...CatalogueRubricFilterAttribute
     }
@@ -77,6 +79,7 @@ export const catalogueRubricFragment = gql`
 export const catalogueDataFragment = gql`
   fragment CatalogueData on CatalogueData {
     catalogueTitle
+    catalogueFilter
     rubric {
       ...CatalogueRubric
     }
@@ -84,6 +87,8 @@ export const catalogueDataFragment = gql`
       totalDocs
       page
       totalPages
+      sortBy
+      sortDir
       docs {
         ...ProductSnippet
       }
@@ -94,7 +99,7 @@ export const catalogueDataFragment = gql`
 `;
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductPaginateInput) {
+  query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: CatalogueProductsInput) {
     getCatalogueData(catalogueFilter: $catalogueFilter, productsInput: $productsInput) {
       ...CatalogueData
     }

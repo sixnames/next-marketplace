@@ -8,7 +8,6 @@ import {
   getCatalogueTitle,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
-import { ProductPaginateInput } from '../product/ProductPaginateInput';
 import {
   Localization,
   LocalizationPayloadInterface,
@@ -16,8 +15,9 @@ import {
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
 import { noNaN } from '@yagu/shared';
-import { SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/config';
-// import { isEqual } from 'lodash';
+import { CATALOGUE_PRODUCTS_LIMIT, SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/config';
+import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
+import { SortDirectionEnum } from '../commonInputs/PaginateInput';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -30,18 +30,23 @@ export class CatalogueDataResolver {
     @Arg('productsInput', {
       nullable: true,
       defaultValue: {
-        limit: 30,
+        limit: CATALOGUE_PRODUCTS_LIMIT,
         page: 1,
         sortBy: 'priority',
         sortDir: SORT_DESC,
       },
     })
-    productsInput: ProductPaginateInput,
+    productsInput: CatalogueProductsInput,
   ): Promise<CatalogueData | null> {
     try {
       const [slug, ...attributes] = catalogueFilter;
-      const { limit = 30, page = 1, sortBy, sortDir = SORT_DESC } = productsInput;
-      const skip = (page - 1) * limit;
+      const {
+        limit = CATALOGUE_PRODUCTS_LIMIT,
+        page = 1,
+        sortBy = 'priority',
+        sortDir = SORT_DESC,
+      } = productsInput;
+      const skip = page ? (page - 1) * limit : 0;
       const realSortDir = sortDir === SORT_DESC ? SORT_DESC_NUM : SORT_ASC_NUM;
 
       // get current rubric
@@ -167,8 +172,12 @@ export class CatalogueDataResolver {
           page,
           totalDocs,
           totalPages,
+          limit,
+          sortBy: sortBy as CatalogueProductsSortByEnum,
+          sortDir: sortDir as SortDirectionEnum,
         },
         catalogueTitle,
+        catalogueFilter,
       };
     } catch (e) {
       console.log(e);

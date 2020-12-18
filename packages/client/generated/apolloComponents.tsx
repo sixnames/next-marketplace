@@ -157,7 +157,7 @@ export type QueryGetAllAttributesGroupsArgs = {
 
 
 export type QueryGetCatalogueDataArgs = {
-  productsInput?: Maybe<ProductPaginateInput>;
+  productsInput?: Maybe<CatalogueProductsInput>;
   catalogueFilter: Array<Scalars['String']>;
 };
 
@@ -965,6 +965,7 @@ export type CatalogueData = {
   rubric: Rubric;
   products: CatalogueDataProducts;
   catalogueTitle: Scalars['String'];
+  catalogueFilter: Array<Scalars['String']>;
 };
 
 export type Rubric = {
@@ -1047,6 +1048,7 @@ export type RubricCatalogueFilter = {
   isDisabled: Scalars['Boolean'];
   attributes: Array<RubricFilterAttribute>;
   selectedAttributes: Array<RubricFilterAttribute>;
+  clearSlug: Scalars['String'];
 };
 
 export type RubricFilterAttribute = {
@@ -1102,6 +1104,24 @@ export type CatalogueDataProducts = {
   page: Scalars['Int'];
   totalDocs: Scalars['Int'];
   totalPages: Scalars['Int'];
+  limit: Scalars['Int'];
+  sortBy: CatalogueProductsSortByEnum;
+  sortDir: SortDirectionEnum;
+};
+
+/** Product pagination sortBy enum */
+export enum CatalogueProductsSortByEnum {
+  Price = 'price',
+  CreatedAt = 'createdAt',
+  Priority = 'priority'
+}
+
+export type CatalogueProductsInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionEnum>;
+  search?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<CatalogueProductsSortByEnum>;
 };
 
 export type CatalogueSearchResult = {
@@ -3715,7 +3735,7 @@ export type CatalogueRubricFilterAttributeFragment = (
 
 export type CatalogueRubricFilterFragment = (
   { __typename?: 'RubricCatalogueFilter' }
-  & Pick<RubricCatalogueFilter, 'id'>
+  & Pick<RubricCatalogueFilter, 'id' | 'isDisabled' | 'clearSlug'>
   & { attributes: Array<(
     { __typename?: 'RubricFilterAttribute' }
     & CatalogueRubricFilterAttributeFragment
@@ -3739,13 +3759,13 @@ export type CatalogueRubricFragment = (
 
 export type CatalogueDataFragment = (
   { __typename?: 'CatalogueData' }
-  & Pick<CatalogueData, 'catalogueTitle'>
+  & Pick<CatalogueData, 'catalogueTitle' | 'catalogueFilter'>
   & { rubric: (
     { __typename?: 'Rubric' }
     & CatalogueRubricFragment
   ), products: (
     { __typename?: 'CatalogueDataProducts' }
-    & Pick<CatalogueDataProducts, 'totalDocs' | 'page' | 'totalPages'>
+    & Pick<CatalogueDataProducts, 'totalDocs' | 'page' | 'totalPages' | 'sortBy' | 'sortDir'>
     & { docs: Array<(
       { __typename?: 'Product' }
       & ProductSnippetFragment
@@ -3755,7 +3775,7 @@ export type CatalogueDataFragment = (
 
 export type GetCatalogueRubricQueryVariables = Exact<{
   catalogueFilter: Array<Scalars['String']>;
-  productsInput?: Maybe<ProductPaginateInput>;
+  productsInput?: Maybe<CatalogueProductsInput>;
 }>;
 
 
@@ -5068,6 +5088,8 @@ export const CatalogueRubricFilterAttributeFragmentDoc = gql`
 export const CatalogueRubricFilterFragmentDoc = gql`
     fragment CatalogueRubricFilter on RubricCatalogueFilter {
   id
+  isDisabled
+  clearSlug
   attributes {
     ...CatalogueRubricFilterAttribute
   }
@@ -5111,6 +5133,7 @@ export const ProductSnippetFragmentDoc = gql`
 export const CatalogueDataFragmentDoc = gql`
     fragment CatalogueData on CatalogueData {
   catalogueTitle
+  catalogueFilter
   rubric {
     ...CatalogueRubric
   }
@@ -5118,6 +5141,8 @@ export const CatalogueDataFragmentDoc = gql`
     totalDocs
     page
     totalPages
+    sortBy
+    sortDir
     docs {
       ...ProductSnippet
     }
@@ -8129,7 +8154,7 @@ export type GetCatalogueCardQueryQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardQueryLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardQueryLazyQuery>;
 export type GetCatalogueCardQueryQueryResult = Apollo.QueryResult<GetCatalogueCardQueryQuery, GetCatalogueCardQueryQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductPaginateInput) {
+    query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: CatalogueProductsInput) {
   getCatalogueData(
     catalogueFilter: $catalogueFilter
     productsInput: $productsInput

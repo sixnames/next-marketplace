@@ -1,11 +1,13 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import '@reach/menu-button/styles.css';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 
 export interface ReachMenuItemConfig {
   id: string;
   nameString: any;
+  slug?: string;
   onSelect: (menuItem: ReachMenuItemConfig) => void;
+  current?: boolean;
 }
 
 interface ButtonTextPropsInterface {
@@ -29,11 +31,22 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
   initialValue,
 }) => {
   const [internalButtonText, setInternalButtonText] = useState<string>(() => {
+    return config[0].id;
+  });
+
+  useEffect(() => {
+    const currentConfigItem = config.find(({ current }) => current);
+    if (currentConfigItem) {
+      setInternalButtonText(currentConfigItem.id);
+      return;
+    }
+
     const initialValueItem = config.find(({ id }) => {
       return id === initialValue;
     });
-    return initialValueItem?.id || config[0].id;
-  });
+    const updatedInitialValue = initialValueItem?.id || config[0].id;
+    setInternalButtonText(updatedInitialValue);
+  }, [config, initialValue]);
 
   return (
     <div className={`${className ? className : ''}`}>
@@ -56,7 +69,6 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
                       className={`${isSelected ? 'rui-selected-item' : ''}`}
                       onSelect={() => {
                         onSelect(menuItem);
-                        setInternalButtonText(id);
                       }}
                     >
                       <div>{nameString}</div>

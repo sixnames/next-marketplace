@@ -3,7 +3,7 @@ import classes from './MenuButtonWithName.module.css';
 import ReachMenuButton, { MenuButtonInterface } from './ReachMenuButton';
 import Icon from '../Icon/Icon';
 
-interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {
+export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {
   iconPosition?: 'left' | 'right';
   frameClassName?: string;
 }

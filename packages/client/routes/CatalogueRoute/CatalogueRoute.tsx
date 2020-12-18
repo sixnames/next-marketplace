@@ -1,72 +1,137 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
-import Pager from '../../components/Pager/Pager';
 import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
 import {
   CatalogueDataFragment,
-  ProductSortByEnum,
+  // CatalogueProductsSortByEnum,
+  // SortDirectionEnum,
   useGetCatalogueRubricLazyQuery,
 } from '../../generated/apolloComponents';
 import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from '../../context/notificationsContext';
-import { useRouter } from 'next/router';
-import { alwaysArray } from '@yagu/shared';
 import Spinner from '../../components/Spinner/Spinner';
+import { SORT_ASC, SORT_DESC } from '@yagu/config';
+import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
+import { useRouter } from 'next/router';
 
 interface CatalogueRouteInterface {
-  rubricData?: CatalogueDataFragment | null;
+  rubricData: CatalogueDataFragment;
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const [catalogueData, setCatalogueData] = useState<CatalogueDataFragment | undefined | null>(
-    () => {
-      return rubricData;
-    },
-  );
-  const [page, setPage] = useState<number>(1);
-  const [getRubricData, { loading, data, error }] = useGetCatalogueRubricLazyQuery();
+  const [catalogueData, setCatalogueData] = useState<CatalogueDataFragment>(() => {
+    return rubricData;
+  });
 
   useEffect(() => {
-    if (error) {
-      showErrorNotification();
-    }
-    if (!loading && !error && data && data.getCatalogueData) {
-      const { getCatalogueData } = data;
-      setCatalogueData(() => {
-        // const prevProducts = prevState ? prevState.products.docs : [];
-        // const nextProducts = getCatalogueData ? getCatalogueData.products.docs : [];
+    setCatalogueData(rubricData);
+  }, [rubricData]);
 
-        return getCatalogueData;
-      });
-      if (getCatalogueData?.products.page) {
-        setPage(getCatalogueData.products.page);
+  const [getRubricData, { loading }] = useGetCatalogueRubricLazyQuery({
+    // fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      if (data) {
+        const { getCatalogueData } = data;
+
+        if (getCatalogueData) {
+          setCatalogueData(() => {
+            return getCatalogueData;
+          });
+        }
       }
-    }
-  }, [loading, data, error, showErrorNotification]);
+    },
+    onError: () => showErrorNotification(),
+  });
+  // console.log(getRubricData);
 
-  const setPageHandler = useCallback(
+  /*const setPageHandler = useCallback(
     (newPage: number) => {
-      if (newPage !== page) {
-        const { query } = router;
-        const { catalogue } = query;
+      if (catalogueData) {
+        const { catalogueFilter, products } = catalogueData;
+        const { sortBy, sortDir } = products;
+
         getRubricData({
           variables: {
-            catalogueFilter: alwaysArray(catalogue),
+            catalogueFilter,
             productsInput: {
               page: newPage,
-              sortBy: 'price' as ProductSortByEnum,
+              sortDir,
+              sortBy,
             },
           },
         });
       }
     },
-    [getRubricData, page, router],
+    [catalogueData, getRubricData],
+  );*/
+
+  const sortConfig = useMemo(
+    () => [
+      {
+        nameString: 'По популярности',
+        id: 'По популярности',
+        current: router.query.sortBy === 'priority' && router.query.sortDir === SORT_DESC,
+        onSelect: () => {
+          router
+            .push({
+              href: router.asPath,
+              query: {
+                ...router.query,
+                sortBy: 'priority',
+                sortDir: SORT_DESC,
+              },
+            })
+            .catch(() => {
+              showErrorNotification();
+            });
+        },
+      },
+      {
+        nameString: 'По возрастанию цены',
+        id: 'По возрастанию цены',
+        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_ASC,
+        onSelect: () => {
+          router
+            .push({
+              href: router.asPath,
+              query: {
+                ...router.query,
+                sortBy: 'price',
+                sortDir: SORT_ASC,
+              },
+            })
+            .catch(() => {
+              showErrorNotification();
+            });
+        },
+      },
+      {
+        nameString: 'По убыванию цены',
+        id: 'По убыванию цены',
+        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_DESC,
+        onSelect: () => {
+          router
+            .push({
+              href: router.asPath,
+              query: {
+                ...router.query,
+                sortBy: 'price',
+                sortDir: SORT_DESC,
+              },
+            })
+            .catch(() => {
+              showErrorNotification();
+            });
+        },
+      },
+    ],
+    [router, showErrorNotification],
   );
 
   if (!catalogueData) {
@@ -79,7 +144,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
   const { rubric, products, catalogueTitle } = catalogueData;
   const { catalogueFilter, nameString } = rubric;
-  const { docs, totalPages, totalDocs } = products;
+  const { docs, totalDocs } = products;
 
   if (totalDocs < 1) {
     return (
@@ -102,11 +167,15 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
         <div className={classes.catalogueContent}>
           <CatalogueFilter
             totalDocs={totalDocs}
-            rubricSlug={rubric.slug}
+            rubricClearSlug={rubric.catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}
           />
 
           <div>
+            <div className={classes.controls}>
+              <MenuButtonSorter config={sortConfig} />
+            </div>
+
             <div className={`${classes.list}`}>
               {docs.map((product) => (
                 <ProductSnippetGrid
@@ -117,8 +186,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                 />
               ))}
             </div>
+
             {loading ? <Spinner isNested /> : null}
-            <Pager page={page} setPage={setPageHandler} totalPages={totalPages} />
           </div>
         </div>
       </Inner>

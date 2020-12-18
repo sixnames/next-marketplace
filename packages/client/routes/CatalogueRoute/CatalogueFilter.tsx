@@ -88,12 +88,12 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 interface CatalogueFilterInterface {
   catalogueFilter: CatalogueRubricFilterFragment;
   totalDocs: number;
-  rubricSlug: string;
+  rubricClearSlug: string;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   catalogueFilter,
-  rubricSlug,
+  rubricClearSlug,
   totalDocs,
 }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -119,7 +119,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           <div className={classes.attribute}>
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
-              <Link href={`/${rubricSlug}`} className={classes.attributeTitleTrigger}>
+              <Link href={rubricClearSlug} className={classes.attributeTitleTrigger}>
                 Очистить все
               </Link>
             </div>

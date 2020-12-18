@@ -13,16 +13,6 @@
   margin-bottom: var(--lineGap-150);
 }
 
-.sort {
-  display: flex;
-  align-items: center;
-}
-
-.sortLabel {
-  color: var(--textSecondaryColor);
-  margin-right: 1.5rem;
-}
-
 @media only screen and (max-width: 680px) {
   .controls {
     display: block;

@@ -15,6 +15,7 @@
   grid-template-columns: repeat(2, 1fr);
   grid-column-gap:var(--catalogueGridGap);
   grid-row-gap: var(--catalogueGridGap);
+  padding-top: 2rem;
 }
 
 .catalogue .list[class*='infinite-scroll-component'] {
@@ -26,7 +27,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: var(--catalogueVieButtonSize);
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .catalogueSpinner {

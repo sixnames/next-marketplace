@@ -42,10 +42,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
         if (getCatalogueData) {
           setCatalogueData((prevState) => {
             return {
-              ...prevState,
-
+              ...getCatalogueData,
               products: {
-                ...prevState.products,
+                ...getCatalogueData.products,
                 docs: [...prevState.products.docs, ...getCatalogueData.products.docs],
               },
             };

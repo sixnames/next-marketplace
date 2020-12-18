@@ -123,19 +123,22 @@ export class CatalogueDataResolver {
 
       // Sort pipeline
       // sort by priority/views (default)
-      let sortPipeline: any[] = [{ $sort: { 'views.counter': realSortDir } }];
+      const sortByIdDirection = -1;
+      let sortPipeline: any[] = [
+        { $sort: { 'views.counter': realSortDir, _id: sortByIdDirection } },
+      ];
 
       // sort by price
       if (sortBy === 'price') {
         sortPipeline = [
           { $addFields: { minPrice: { $min: '$shops.price' } } },
-          { $sort: { minPrice: realSortDir } },
+          { $sort: { minPrice: realSortDir, _id: sortByIdDirection } },
         ];
       }
 
       // sort by create date
       if (sortBy === 'createdAt') {
-        sortPipeline = [{ $sort: { createdAt: realSortDir } }];
+        sortPipeline = [{ $sort: { createdAt: realSortDir, _id: sortByIdDirection } }];
       }
 
       const productsPipeline = [

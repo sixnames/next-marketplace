@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Title from '../../components/Title/Title';
 import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
@@ -6,8 +6,6 @@ import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
 import {
   CatalogueDataFragment,
-  // CatalogueProductsSortByEnum,
-  // SortDirectionEnum,
   useGetCatalogueRubricLazyQuery,
 } from '../../generated/apolloComponents';
 import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
@@ -17,6 +15,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { SORT_ASC, SORT_DESC } from '@yagu/config';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
 import { useRouter } from 'next/router';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -34,42 +33,47 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [rubricData]);
 
   const [getRubricData, { loading }] = useGetCatalogueRubricLazyQuery({
-    // fetchPolicy: 'network-only',
+    fetchPolicy: 'network-only',
+    onError: () => showErrorNotification(),
     onCompleted: (data) => {
       if (data) {
         const { getCatalogueData } = data;
 
         if (getCatalogueData) {
-          setCatalogueData(() => {
-            return getCatalogueData;
+          setCatalogueData((prevState) => {
+            return {
+              ...prevState,
+
+              products: {
+                ...prevState.products,
+                docs: [...prevState.products.docs, ...getCatalogueData.products.docs],
+              },
+            };
           });
         }
       }
     },
-    onError: () => showErrorNotification(),
   });
-  // console.log(getRubricData);
 
-  /*const setPageHandler = useCallback(
-    (newPage: number) => {
-      if (catalogueData) {
-        const { catalogueFilter, products } = catalogueData;
-        const { sortBy, sortDir } = products;
+  const fetchMoreHandler = useCallback(() => {
+    if (catalogueData) {
+      const { catalogueFilter, products } = catalogueData;
+      const { sortBy, sortDir, page, totalPages } = products;
 
+      if (page !== totalPages) {
         getRubricData({
           variables: {
             catalogueFilter,
             productsInput: {
-              page: newPage,
+              page: page + 1,
               sortDir,
               sortBy,
             },
           },
         });
       }
-    },
-    [catalogueData, getRubricData],
-  );*/
+    }
+  }, [catalogueData, getRubricData]);
 
   const sortConfig = useMemo(
     () => [
@@ -144,7 +148,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
   const { rubric, products, catalogueTitle } = catalogueData;
   const { catalogueFilter, nameString } = rubric;
-  const { docs, totalDocs } = products;
+  const { docs, totalDocs, totalPages, page } = products;
 
   if (totalDocs < 1) {
     return (
@@ -176,7 +180,17 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
               <MenuButtonSorter config={sortConfig} />
             </div>
 
-            <div className={`${classes.list}`}>
+            <InfiniteScroll
+              className={`${classes.list}`}
+              next={fetchMoreHandler}
+              hasMore={totalPages !== page}
+              dataLength={catalogueData.products.docs.length}
+              loader={
+                <div className={`${classes.catalogueSpinner}`}>
+                  <Spinner isNested />
+                </div>
+              }
+            >
               {docs.map((product) => (
                 <ProductSnippetGrid
                   product={product}
@@ -185,7 +199,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                   rubricSlug={rubric.slug}
                 />
               ))}
-            </div>
+            </InfiniteScroll>
 
             {loading ? <Spinner isNested /> : null}
           </div>

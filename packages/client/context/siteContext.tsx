@@ -237,8 +237,6 @@ function useSiteContext(): UseSiteContextInterface {
     },
   });
 
-  const [bodyFixed, setBodyFixed] = useState<boolean>(false);
-
   const fixBodyScroll = useCallback((fixed: boolean) => {
     if (fixed) {
       const scrollY = window.scrollY;
@@ -246,14 +244,12 @@ function useSiteContext(): UseSiteContextInterface {
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.paddingRight = `${paddingRight}px`;
-      setBodyFixed(true);
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.paddingRight = '';
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      setBodyFixed(false);
     }
   }, []);
 
@@ -267,15 +263,13 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const hideBurgerDropdown = useCallback(() => {
-    if (bodyFixed) {
-      fixBodyScroll(false);
-    }
+    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
-  }, [bodyFixed, context, fixBodyScroll]);
+  }, [context, fixBodyScroll]);
 
   const toggleBurgerDropdown = useCallback(() => {
     context.setState((prevState) => {

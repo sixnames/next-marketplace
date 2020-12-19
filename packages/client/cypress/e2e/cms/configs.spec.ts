@@ -28,7 +28,7 @@ describe('Site configs', () => {
     cy.getByCy('pageDefaultPreviewImage-image').should('exist');
   });
 
-  it.only('Should update not asset configs', () => {
+  it('Should update not asset configs', () => {
     // pageDefaultTitle config
     const pageDefaultTitleConfig = SITE_CONFIGS_INITIAL.find(
       ({ slug }: any) => slug === 'pageDefaultTitle',

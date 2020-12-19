@@ -1,12 +1,7 @@
 import React from 'react';
-import FilterCheckbox, { FilterCheckboxItem } from './FilterCheckbox';
+import FilterCheckbox from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
 import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
-
-export interface FilterCheckboxGroupItem {
-  option: FilterCheckboxItem;
-  counter: number;
-}
 
 interface FilterCheckboxGroupInterface {
   checkboxItems: Partial<RubricFilterAttributeOption>[];

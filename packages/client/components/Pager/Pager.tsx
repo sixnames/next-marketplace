@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import Icon from '../Icon/Icon';
 import classes from './Pager.module.css';
@@ -13,6 +13,10 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
   const pageStep = 1;
   const marginPagesDisplayed = 2;
 
+  const initialPage = useMemo(() => {
+    return page - pageStep;
+  }, [page]);
+
   if (totalPages < 2) {
     return null;
   }
@@ -21,7 +25,7 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
     <div className={classes.frame}>
       <ReactPaginate
         pageCount={totalPages}
-        initialPage={page - pageStep}
+        initialPage={initialPage}
         pageRangeDisplayed={pageStep}
         marginPagesDisplayed={marginPagesDisplayed}
         previousLabel={<Icon name={'chevron-left'} />}
@@ -33,7 +37,9 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         pageLinkClassName={classes.butn}
         breakLinkClassName={classes.butn}
         containerClassName={classes.container}
-        onPageChange={(currentPage) => setPage(currentPage.selected + pageStep)}
+        onPageChange={(currentPage) => {
+          setPage(currentPage.selected + pageStep);
+        }}
       />
     </div>
   );

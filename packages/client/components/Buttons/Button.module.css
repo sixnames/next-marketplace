@@ -127,6 +127,29 @@
   fill: var(--theme);
 }
 
+.gray {
+  color: var(--wp-mid-gray-100);
+  background-color: var(--wp-light-gray-200);
+}
+
+[data-theme='light'] .gray {
+  color: var(--wp-mid-gray-100);
+  background-color: var(--wp-light-gray-200);
+}
+
+[data-theme='dark'] .gray {
+  color: var(--wp-light-gray-200);
+  background-color: var(--wp-dark-gray-100);
+}
+
+[data-theme='light'] .gray .icon {
+  fill: var(--wp-mid-gray-100);
+}
+
+[data-theme='dark'] .gray .icon {
+  fill: var(--wp-light-gray-200);
+}
+
 .butn:hover {
   box-shadow: 0 5px 20px rgba(var(--themeRGB), 0.6);
 }

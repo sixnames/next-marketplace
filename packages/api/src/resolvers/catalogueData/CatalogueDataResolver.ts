@@ -8,14 +8,16 @@ import {
   getCatalogueTitle,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
-import { ProductPaginateInput } from '../product/ProductPaginateInput';
 import {
   Localization,
   LocalizationPayloadInterface,
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
-// import { isEqual } from 'lodash';
+import { noNaN } from '@yagu/shared';
+import { CATALOGUE_PRODUCTS_LIMIT, SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/config';
+import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
+import { SortDirectionEnum } from '../commonInputs/PaginateInput';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -25,11 +27,27 @@ export class CatalogueDataResolver {
     @Localization() { lang, city }: LocalizationPayloadInterface,
     @Arg('catalogueFilter', (_type) => [String])
     catalogueFilter: string[],
-    @Arg('productsInput', { nullable: true }) productsInput: ProductPaginateInput,
+    @Arg('productsInput', {
+      nullable: true,
+      defaultValue: {
+        limit: CATALOGUE_PRODUCTS_LIMIT,
+        page: 1,
+        sortBy: 'priority',
+        sortDir: SORT_DESC,
+      },
+    })
+    productsInput: CatalogueProductsInput,
   ): Promise<CatalogueData | null> {
     try {
       const [slug, ...attributes] = catalogueFilter;
-      const { limit = 30, page = 1 } = productsInput || {};
+      const {
+        limit = CATALOGUE_PRODUCTS_LIMIT,
+        page = 1,
+        sortBy = 'priority',
+        sortDir = SORT_DESC,
+      } = productsInput;
+      const skip = page ? (page - 1) * limit : 0;
+      const realSortDir = sortDir === SORT_DESC ? SORT_DESC_NUM : SORT_ASC_NUM;
 
       // get current rubric
       const rubric = await RubricModel.findOne({ slug });
@@ -69,7 +87,7 @@ export class CatalogueDataResolver {
           : {};
 
       // pipeline
-      const productsPipeline = [
+      const allProductsPipeline = [
         // Initial match
         {
           $match: {
@@ -78,6 +96,7 @@ export class CatalogueDataResolver {
             active: true,
           },
         },
+
         // Lookup shop products
         { $addFields: { productId: { $toString: '$_id' } } },
         {
@@ -88,29 +107,80 @@ export class CatalogueDataResolver {
             as: 'shops',
           },
         },
+
         // Count shop products
         { $addFields: { shopsCount: { $size: '$shops' } } },
+
         // Filter out products not added to the shops
         { $match: { shopsCount: { $gt: 0 } } },
+
         // Unwind by views counter
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+
         // Filter unwinded products by current city or empty views
         { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        // Sort by views in DESC direction
-        { $sort: { 'views.counter': -1 } },
       ];
 
-      const productsAggregation = ProductModel.aggregate<Product>(productsPipeline);
+      // Sort pipeline
+      // sort by priority/views (default)
+      const sortByIdDirection = -1;
+      let sortPipeline: any[] = [
+        { $sort: { 'views.counter': realSortDir, _id: sortByIdDirection } },
+      ];
 
-      const products = await ProductModel.aggregatePaginate(productsAggregation, {
-        limit,
-        page,
-      });
+      // sort by price
+      if (sortBy === 'price') {
+        sortPipeline = [
+          { $addFields: { minPrice: { $min: '$shops.price' } } },
+          { $sort: { minPrice: realSortDir, _id: sortByIdDirection } },
+        ];
+      }
+
+      // sort by create date
+      if (sortBy === 'createdAt') {
+        sortPipeline = [{ $sort: { createdAt: realSortDir, _id: sortByIdDirection } }];
+      }
+
+      const productsPipeline = [
+        ...allProductsPipeline,
+
+        // Facets for pagination fields
+        {
+          $facet: {
+            docs: [...sortPipeline, { $skip: skip }, { $limit: limit }],
+            countAllDocs: [{ $count: 'totalDocs' }],
+          },
+        },
+      ];
+
+      interface ProductsAggregationInterface {
+        docs: Product[];
+        countAllDocs: {
+          totalDocs: number;
+        }[];
+      }
+
+      const productsAggregation = await ProductModel.aggregate<ProductsAggregationInterface>(
+        productsPipeline,
+      );
+
+      const productsResult = productsAggregation[0] ?? { docs: [] };
+      const totalDocs = noNaN(productsResult.countAllDocs[0]?.totalDocs);
+      const totalPages = Math.ceil(totalDocs / limit);
 
       return {
         rubric,
-        products,
+        products: {
+          docs: productsResult.docs,
+          page,
+          totalDocs,
+          totalPages,
+          limit,
+          sortBy: sortBy as CatalogueProductsSortByEnum,
+          sortDir: sortDir as SortDirectionEnum,
+        },
         catalogueTitle,
+        catalogueFilter,
       };
     } catch (e) {
       console.log(e);

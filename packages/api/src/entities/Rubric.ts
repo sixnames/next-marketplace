@@ -36,6 +36,18 @@ export class RubricFilterAttributeOption extends Option {
 
   @Field((_type) => Int)
   readonly counter: number;
+
+  @Field((_type) => String)
+  readonly optionSlug: string;
+
+  @Field((_type) => String)
+  readonly optionNextSlug: string;
+
+  @Field((_type) => Boolean)
+  readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
 }
 
 @ObjectType()
@@ -43,11 +55,38 @@ export class RubricFilterAttribute {
   @Field(() => ID)
   readonly id: string;
 
+  @Field((_type) => String)
+  readonly clearSlug: string;
+
   @Field(() => Attribute)
   readonly node: Attribute;
 
   @Field(() => [RubricFilterAttributeOption])
   readonly options: RubricFilterAttributeOption[];
+
+  @Field((_type) => Boolean)
+  readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+}
+
+@ObjectType()
+export class RubricCatalogueFilter {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+
+  @Field(() => [RubricFilterAttribute])
+  readonly attributes: RubricFilterAttribute[];
+
+  @Field(() => [RubricFilterAttribute])
+  readonly selectedAttributes: RubricFilterAttribute[];
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
 }
 
 @ObjectType()
@@ -161,8 +200,8 @@ export class Rubric {
   @Field(() => [Rubric])
   readonly children: Rubric[];
 
-  @Field(() => [RubricFilterAttribute])
-  readonly filterAttributes: RubricFilterAttribute[];
+  @Field(() => RubricCatalogueFilter)
+  readonly catalogueFilter: RubricCatalogueFilter;
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;

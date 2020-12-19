@@ -12,10 +12,7 @@ describe('Cart', () => {
   });
 
   it('Should CRUD cart items', () => {
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
 
@@ -35,10 +32,7 @@ describe('Cart', () => {
 
     // Add second product
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
     cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
@@ -50,10 +44,7 @@ describe('Cart', () => {
 
     // Add shopless product from catalogue
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
@@ -87,10 +78,7 @@ describe('Cart', () => {
     cy.getByCy(`${mockData.productA.slug}-amount`).should('have.value', '5');
 
     // Should have cart dropdown
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`cart-dropdown-trigger`).click();
     cy.getByCy(`cart-dropdown`).should('exist');

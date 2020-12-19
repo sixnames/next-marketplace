@@ -3,6 +3,7 @@ import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 import generateTestAsset from './generateTestAsset';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
 import { Translation } from '../../entities/Translation';
+import { CityCounter } from '../../entities/CityCounter';
 
 export interface GetProductCitiesInterface {
   name: Translation[];
@@ -13,6 +14,7 @@ export interface GetProductCitiesInterface {
   price: number;
   priority: number;
   slug: string;
+  views: CityCounter[];
 }
 
 export async function generateTestProduct(

@@ -433,7 +433,7 @@ export const SITE_CONFIGS_INITIAL = [
   },
   {
     slug: 'catalogueFilterVisibleOptionsCount',
-    nameString: 'Количество видимых опций фильтре каталога.',
+    nameString: 'Количество видимых опций в фильтре каталога.',
     description: '',
     variant: 'number',
     order: 14,
@@ -446,6 +446,75 @@ export const SITE_CONFIGS_INITIAL = [
           {
             key: DEFAULT_LANG,
             value: ['3'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'catalogueFilterVisibleAttributesCount',
+    nameString: 'Количество видимых атрибутов в фильтре каталога.',
+    description: '',
+    variant: 'number',
+    order: 15,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: ['5'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'seoTextTitle',
+    nameString: 'Заголовок для SEO-текста',
+    description: '',
+    variant: 'string',
+    order: 16,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: [`Заголовок для SEO-текста`],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'seoText',
+    nameString: 'SEO текст.',
+    description: 'Для корректного отображения текст должен быть в формате HTML',
+    variant: 'string',
+    order: 17,
+    multi: false,
+    acceptedFormats: [],
+    cities: [
+      {
+        key: DEFAULT_CITY,
+        translations: [
+          {
+            key: DEFAULT_LANG,
+            value: [
+              `
+            <div>
+              <p>Купить вино в сети магазинов WineStyle — вас ждет широкий выбор алкогольных напитков со всего света: вы можете купить вино классическое французское (белое французское, красное французское, замковые вина шато, бургундское вино, вина бордо) и итальянское вино (вино кьянти, тоскана), вино Нового света, демократичное и элитное вино, коньяк, виски и подарочные наборы, ну и, разумеется, шампанское и игристые вина.</p>
+              <p>Купить алкоголь — в нашем ассортименте коньяк Хеннесси, виски Чивас ригал. В сети винных магазинов WineStyle соблюдаются все условия хранения вин и крепких спиртных напитков, поэтому наши товары всегда отличаются высочайшим качеством. Поиск алкогольных напитков в нашем каталоге — это быстро, современно, удобно!</p>
+              <p>Купить вино в сети магазинов WineStyle — вас ждет широкий выбор алкогольных напитков со всего света: вы можете купить вино классическое французское (белое французское, красное французское, замковые вина шато, бургундское вино, вина бордо) и итальянское вино (вино кьянти, тоскана), вино Нового света, демократичное и элитное вино, коньяк, виски и подарочные наборы, ну и, разумеется, шампанское и игристые вина.</p>
+              <p>Купить алкоголь — в нашем ассортименте коньяк Хеннесси, виски Чивас ригал. В сети винных магазинов WineStyle соблюдаются все условия хранения вин и крепких спиртных напитков, поэтому наши товары всегда отличаются высочайшим качеством. Поиск алкогольных напитков в нашем каталоге — это быстро, современно, удобно!</p>
+            </div>
+            `,
+            ],
           },
         ],
       },
@@ -1393,6 +1462,7 @@ export const MOCK_PRODUCT_A = {
     { key: DEFAULT_LANG, value: 'Card_name_productA' },
     { key: SECONDARY_LANG, value: 'Card_name_productA' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 10 }],
   price: 100,
   description: productDescription,
 };
@@ -1408,6 +1478,7 @@ export const MOCK_PRODUCT_B = {
     { key: DEFAULT_LANG, value: 'Card_name_productB' },
     { key: SECONDARY_LANG, value: 'Card_name_productB' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 9 }],
   price: 200,
   description: productDescription,
 };
@@ -1423,6 +1494,7 @@ export const MOCK_PRODUCT_C = {
     { key: DEFAULT_LANG, value: 'Card_name_productC' },
     { key: SECONDARY_LANG, value: 'Card_name_productC' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 8 }],
   price: 50,
   description: productDescription,
 };
@@ -1438,6 +1510,7 @@ export const MOCK_PRODUCT_D = {
     { key: DEFAULT_LANG, value: 'Card_name_productD' },
     { key: SECONDARY_LANG, value: 'Card_name_productD' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 7 }],
   price: 1150,
   description: productDescription,
 };
@@ -1453,6 +1526,7 @@ export const MOCK_PRODUCT_E = {
     { key: DEFAULT_LANG, value: 'Card_name_productE' },
     { key: SECONDARY_LANG, value: 'Card_name_productE' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 6 }],
   price: 500,
   description: productDescription,
 };
@@ -1468,6 +1542,7 @@ export const MOCK_PRODUCT_F = {
     { key: DEFAULT_LANG, value: 'Card_name_productF' },
     { key: SECONDARY_LANG, value: 'Card_name_productF' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 5 }],
   price: 500,
   description: productDescription,
 };
@@ -1481,6 +1556,7 @@ export const MOCK_PRODUCT_NEW = {
     { key: DEFAULT_LANG, value: 'Card_name_productNew' },
     { key: SECONDARY_LANG, value: 'Card_name_productNew' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 1 }],
   price: 2000,
   description: productDescription,
 };
@@ -1494,6 +1570,7 @@ export const MOCK_PRODUCT_CREATE = {
     { key: DEFAULT_LANG, value: 'Card_name_productCreate' },
     { key: SECONDARY_LANG, value: 'Card_name_productCreate' },
   ],
+  views: [{ key: DEFAULT_CITY, counter: 1 }],
   price: 2000,
   description: productDescription,
 };

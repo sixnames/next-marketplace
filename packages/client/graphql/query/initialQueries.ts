@@ -33,19 +33,25 @@ export const rubricFragment = gql`
       id
       nameString
     }
-    filterAttributes {
+    catalogueFilter {
       id
-      node {
+      isDisabled
+      attributes {
         id
-        nameString
-        slug
-      }
-      options {
-        id
-        slug
-        filterNameString
-        color
-        counter
+        isDisabled
+        node {
+          id
+          nameString
+          slug
+        }
+        options {
+          id
+          slug
+          filterNameString
+          color
+          counter
+          isDisabled
+        }
       }
     }
   }

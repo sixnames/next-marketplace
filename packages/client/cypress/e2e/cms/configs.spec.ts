@@ -78,6 +78,7 @@ describe('Site configs', () => {
     cy.shouldNotError();
 
     // remove second email
+    cy.getByCy(emailDefaultCityTestId).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1-remove`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(`${emailConfig.slug}-submit`).click();

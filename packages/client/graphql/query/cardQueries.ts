@@ -95,6 +95,7 @@ export const productCardFragment = gql`
     }
     shopsCount
     cardFeatures {
+      id
       listFeatures {
         ...CardFeature
       }
@@ -110,6 +111,8 @@ export const productCardFragment = gql`
       ratingFeatures {
         ...CardFeature
       }
+      listFeaturesString
+      ratingFeaturesValues
     }
     cardConnections {
       ...CardConnection

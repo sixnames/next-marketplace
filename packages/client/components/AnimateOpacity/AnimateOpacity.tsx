@@ -20,6 +20,7 @@ const AnimateOpacity: React.FC<AnimateOpacityInterface> = ({
     delay,
     config: {
       tension: 220,
+      duration: 450,
     },
     to: { opacity: 1 },
     from: { opacity: 0 },

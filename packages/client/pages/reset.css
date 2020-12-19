@@ -427,10 +427,13 @@
   --tabsNavHeightSmall: var(--formInputHeightSmall);
   --tabsNavHeightSmaller: var(--formInputHeightSmaller);
   --burger-dropdown-width: 345px;
-  --catalogue-filter-width: 325px;
   --burger-dropdown-side-gap: 2.5rem;
-  --catalogueGridGap: 2.5rem;
   --mobileNavHeight: 85px;
+
+  /*Catalogue*/
+  --catalogue-filter-width: 325px;
+  --catalogueGridGap: 2.5rem;
+  --catalogueVieButtonSize: 1.8rem;
 
   /*Reach menu*/
   --reachMenuItemMinimalHeight: 2.33rem;
@@ -439,6 +442,8 @@
   --reachMenuItemHorizontalPadding: 1rem;
 
   /*Shadows*/
+  --wp-shadow-25: 0 0 5px rgba(9, 9, 9, 0.25);
+  --wp-shadow-50: 0 0 10px rgba(9, 9, 9, 0.25);
   --wp-shadow-100: 0 0 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.25);
   --wp-shadow-right-100: 20px 0 15px -15px rgba(9, 9, 9, 0.2);

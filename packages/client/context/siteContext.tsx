@@ -23,11 +23,12 @@ import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { CART_MODAL } from '../config/modals';
 import { useRouter } from 'next/router';
 import { CartModalInterface } from '../components/Modal/CartModal/CartModal';
+import { useAppContext } from './appContext';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
 export interface StickyNavAttributeInterface {
-  attribute: RubricType['filterAttributes'][number];
+  attribute: RubricType['catalogueFilter']['attributes'][number];
   rubricSlug: string;
   hideDropdownHandler: () => void;
   isDropdownOpen: boolean;
@@ -110,6 +111,7 @@ interface UseSiteContextInterface extends SiteContextInterface {
 }
 
 function useSiteContext(): UseSiteContextInterface {
+  const { isMobile } = useAppContext();
   const router = useRouter();
   const context = useContext<SiteContextInterface>(SiteContext);
   const { showErrorNotification, showModal, showSuccessNotification } = useMutationCallbacks();
@@ -237,8 +239,6 @@ function useSiteContext(): UseSiteContextInterface {
     },
   });
 
-  const [bodyFixed, setBodyFixed] = useState<boolean>(false);
-
   const fixBodyScroll = useCallback((fixed: boolean) => {
     if (fixed) {
       const scrollY = window.scrollY;
@@ -246,14 +246,12 @@ function useSiteContext(): UseSiteContextInterface {
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.paddingRight = `${paddingRight}px`;
-      setBodyFixed(true);
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.paddingRight = '';
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      setBodyFixed(false);
     }
   }, []);
 
@@ -267,15 +265,13 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const hideBurgerDropdown = useCallback(() => {
-    if (bodyFixed) {
-      fixBodyScroll(false);
-    }
+    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
-  }, [bodyFixed, context, fixBodyScroll]);
+  }, [context, fixBodyScroll]);
 
   const toggleBurgerDropdown = useCallback(() => {
     context.setState((prevState) => {
@@ -290,20 +286,24 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const showSearchDropdown = useCallback(() => {
+    if (isMobile) {
+      fixBodyScroll(true);
+    }
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: true,
     }));
-  }, [context]);
+  }, [context, fixBodyScroll, isMobile]);
 
   const hideSearchDropdown = useCallback(() => {
+    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: false,
     }));
-  }, [context]);
+  }, [context, fixBodyScroll]);
 
   const toggleSearchDropdown = useCallback(() => {
     context.setState((prevState) => ({

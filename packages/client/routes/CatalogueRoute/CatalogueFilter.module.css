@@ -1,13 +1,141 @@
 .filter {
-
+  position: relative;
 }
 
-.attributeTitle,
-.groupTitle {
-  margin-bottom: 0.5rem;
+.filterHolder {
+  --stickyGap: 1.5rem;
+
+  position: sticky;
+  top: calc(var(--minLinkHeight) + var(--stickyGap));
+}
+
+.totalCounter {
+  display: flex;
+  align-items: center;
+  height: var(--catalogueVieButtonSize);
+  color: var(--textSecondaryColor);
+  margin-bottom: 2rem;
+}
+
+.attributeTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+
+.attributeTitleTrigger {
   font-weight: 600;
+  color: var(--theme);
+}
+
+.attributeTitleText {
+  font-size: 1.125rem;
+  font-weight: 700;
 }
 
 .attribute {
-  margin-bottom: 0.125rem;
+  margin-bottom: 3rem;
+}
+
+.attributeList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.attributeOption {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.moreTrigger {
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 1.5rem;
+}
+
+.moreTrigger svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.875rem;
+  fill: currentColor;
+}
+
+.moreTriggerActive svg {
+  fill: var(--theme);
+}
+
+.moreAttributesTrigger {
+  width: 100%;
+}
+
+.filterTitle {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  justify-content: flex-end;
+}
+
+.filterTitleName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: calc(100% - (var(--burger-dropdown-side-gap) * 2));
+}
+
+.filterTitleClose {
+  display: flex;
+  justify-content: flex-end;
+  width: var(--burger-dropdown-side-gap);
+  cursor: pointer;
+}
+
+.filterTitleClose svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: var(--textSecondaryColor);
+}
+
+.filterTitleClose:hover svg {
+  fill: var(--theme);
+}
+
+.filterVisible {
+  
+}
+
+@media only screen and (max-width: 1024px) {
+  .filter {
+    position: fixed;
+    z-index: 140;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
+    overflow: auto;
+    background-color: var(--primaryBackground);
+  }
+
+  .filter:not(.filterVisible) {
+    display: none;
+  }
+
+  .filterHolder {
+    position: relative;
+    top: 0;
+    padding-top: var(--innerBlockVerticalPadding);
+    padding-bottom: var(--innerBlockVerticalPadding);
+    padding-right: var(--innerBlockHorizontalPadding);
+    padding-left: var(--innerBlockHorizontalPadding);
+  }
+
+  .totalCounter {
+    display: none;
+  }
 }

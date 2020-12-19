@@ -195,9 +195,35 @@ type CartProduct {
 }
 
 type CatalogueData {
+  catalogueFilter: [String!]!
   catalogueTitle: String!
-  products: PaginatedProductsResponse!
+  products: CatalogueDataProducts!
   rubric: Rubric!
+}
+
+type CatalogueDataProducts {
+  docs: [Product!]!
+  limit: Int!
+  page: Int!
+  sortBy: CatalogueProductsSortByEnum!
+  sortDir: SortDirectionEnum!
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+input CatalogueProductsInput {
+  limit: Int = 30
+  page: Int = 1
+  search: String
+  sortBy: CatalogueProductsSortByEnum = priority
+  sortDir: SortDirectionEnum = desc
+}
+
+"""Product pagination sortBy enum"""
+enum CatalogueProductsSortByEnum {
+  createdAt
+  price
+  priority
 }
 
 type CatalogueSearchResult {
@@ -978,8 +1004,11 @@ type ProductCardConnectionItem {
 
 type ProductCardFeatures {
   iconFeatures: [ProductAttribute!]!
+  id: ID!
   listFeatures: [ProductAttribute!]!
+  listFeaturesString: String!
   ratingFeatures: [ProductAttribute!]!
+  ratingFeaturesValues: [String!]!
   tagFeatures: [ProductAttribute!]!
   textFeatures: [ProductAttribute!]!
 }
@@ -1082,7 +1111,7 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
-  getCatalogueData(catalogueFilter: [String!]!, productsInput: ProductPaginateInput): CatalogueData
+  getCatalogueData(catalogueFilter: [String!]!, productsInput: CatalogueProductsInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
   getCity(id: ID!): City!
@@ -1173,10 +1202,10 @@ type Rubric {
   active: Boolean
   activeProductsCount(input: ProductsCountersInput = {}): Int!
   attributesGroups: [RubricAttributesGroup!]!
+  catalogueFilter: RubricCatalogueFilter!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!] = []): [Rubric!]!
-  filterAttributes: [RubricFilterAttribute!]!
   id: ID!
   level: Int!
   name: [Translation!]!
@@ -1196,6 +1225,14 @@ type RubricAttributesGroup {
   isOwner: Boolean!
   node: AttributesGroup!
   showInCatalogueFilter: [ID!]!
+}
+
+type RubricCatalogueFilter {
+  attributes: [RubricFilterAttribute!]!
+  clearSlug: String!
+  id: ID!
+  isDisabled: Boolean!
+  selectedAttributes: [RubricFilterAttribute!]!
 }
 
 type RubricCatalogueTitle {
@@ -1220,7 +1257,10 @@ input RubricCatalogueTitleInput {
 }
 
 type RubricFilterAttribute {
+  clearSlug: String!
   id: ID!
+  isDisabled: Boolean!
+  isSelected: Boolean!
   node: Attribute!
   options: [RubricFilterAttributeOption!]!
 }
@@ -1232,8 +1272,12 @@ type RubricFilterAttributeOption {
   gender: GenderEnum
   icon: String
   id: ID!
+  isDisabled: Boolean!
+  isSelected: Boolean!
   name: [Translation!]!
   nameString: String!
+  optionNextSlug: String!
+  optionSlug: String!
   priorities: [OptionCityCounter!]!
   slug: String!
   variants: [OptionVariant!]

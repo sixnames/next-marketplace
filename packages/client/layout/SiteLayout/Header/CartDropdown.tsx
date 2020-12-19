@@ -43,7 +43,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             return null;
           }
 
-          const { mainImage, nameString, slug } = productData;
+          const { mainImage, nameString, slug, cardFeatures } = productData;
+          const { listFeaturesString } = cardFeatures;
           const imageWidth = 40;
 
           return (
@@ -53,7 +54,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               </div>
               <div className={classes.productContent}>
                 <div className={classes.productName}>{nameString}</div>
-                <div className={classes.productFeatures}>Новая Зеландия, белое, полусухое</div>
+                <div className={classes.productFeatures}>{listFeaturesString}</div>
 
                 {isShopless && !shopProduct ? (
                   <Fragment>

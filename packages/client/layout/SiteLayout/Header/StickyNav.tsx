@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useConfigContext } from '../../../context/configContext';
+import { alwaysArray } from '@yagu/shared';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -19,13 +20,14 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 }) => {
   const { asPath } = useRouter();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const { id, node, options } = attribute;
+  const { id, node, options, isDisabled } = attribute;
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('stickyNavVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
-  const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(+maxVisibleOptions);
+  const enabledOptions = options.filter(({ isDisabled }) => !isDisabled);
+  const visibleOptions = enabledOptions.slice(0, maxVisibleOptions);
+  const hiddenOptions = enabledOptions.slice(+maxVisibleOptions);
   const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
 
   useEffect(() => {
@@ -34,6 +36,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     }
   }, [isDropdownOpen]);
 
+  if (isDisabled) {
+    return null;
+  }
+
   return (
     <div key={id}>
       <div className={`${classes.dropdownAttributeName}`}>{node.nameString}</div>
@@ -41,6 +47,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {visibleOptions.map((option) => {
           const optionPath = `/${rubricSlug}/${node.slug}-${option.slug}`;
           const isCurrent = asPath === optionPath;
+
           return (
             <li key={option.id}>
               <Link
@@ -64,6 +71,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           ? hiddenOptions.map((option) => {
               const optionPath = `/${rubricSlug}/${node.slug}-${option.slug}`;
               const isCurrent = asPath === optionPath;
+
               return (
                 <li key={option.id}>
                   <Link
@@ -107,17 +115,25 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { hideBurgerDropdown } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { catalogue = [] } = query;
-  const catalogueSlug = catalogue[0];
-  const { nameString, slug, filterAttributes } = rubric;
+  const realCatalogueQuery = alwaysArray(catalogue);
+  const catalogueSlug = realCatalogueQuery[0];
+  const { nameString, slug, catalogueFilter } = rubric;
+  const { isDisabled } = catalogueFilter;
   const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
 
   function showDropdownHandler() {
-    hideBurgerDropdown();
-    setIsDropdownOpen(true);
+    if (!isDisabled) {
+      hideBurgerDropdown();
+      setIsDropdownOpen(true);
+    }
   }
 
   function hideDropdownHandler() {
     setIsDropdownOpen(false);
+  }
+
+  if (isDisabled) {
+    return null;
   }
 
   return (
@@ -128,12 +144,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${nameString}`}
     >
       <Link
-        href={{
-          pathname: `/[...catalogue]`,
-        }}
-        as={{
-          pathname: `/${slug}`,
-        }}
+        href={`/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${nameString}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}
@@ -144,7 +155,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
           <Inner className={classes.dropdownInner}>
             <div className={classes.dropdownList}>
-              {filterAttributes.map((attribute) => {
+              {catalogueFilter.attributes.map((attribute) => {
                 return (
                   <StickyNavAttribute
                     key={attribute.id}

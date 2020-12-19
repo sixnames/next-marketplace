@@ -18,7 +18,7 @@ const ControlButtonChevron: React.FC<ControlButtonChevronInterface> = ({
 }) => {
   return (
     <CircleControlButton
-      className={`${className ? className : ''} ${classes.frame}`}
+      className={`${className ? className : ''} ${classes.butn}`}
       iconClass={`${isActive ? classes.activeIcon : ''} ${iconClass ? iconClass : ''}`}
       iconPositionTop={isActive ? 0 : 2}
       withBorder

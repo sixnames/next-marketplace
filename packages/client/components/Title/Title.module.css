@@ -1,19 +1,22 @@
-.frame {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+.title {
   flex-shrink: 0;
 }
 
-.small {
+.titleHolder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.title.small {
   margin-bottom: 1rem;
 }
 
-.normal {
+.title.normal {
   margin-bottom: 1.25rem;
 }
 
-.big {
+.title.big {
   margin-bottom: 1.875rem;
 }
 
@@ -54,6 +57,7 @@
 
 .subtitle {
   color: var(--midGray);
+  margin-top: 0.5rem;
 }
 
 @media only screen and (max-width: 1024px) {

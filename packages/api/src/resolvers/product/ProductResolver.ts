@@ -59,6 +59,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  DEFAULT_CITY,
   SORT_ASC,
   SORT_DESC,
 } from '@yagu/config';
@@ -247,7 +248,7 @@ export class ProductResolver {
         ...values,
         slug,
         priorities: [],
-        views: [],
+        views: [{ key: DEFAULT_CITY, counter: 1 }],
         assets: assetsResult,
         active: true,
       });
@@ -687,9 +688,10 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductConnection])
   async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
     try {
+      const productId = product.id || product._id.toString();
       return ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [productId],
         },
       });
     } catch (e) {
@@ -702,7 +704,8 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
-    const shopsProducts = await ShopProductModel.find({ product: product.id, city }, { _id: 1 })
+    const productId = product.id || product._id.toString();
+    const shopsProducts = await ShopProductModel.find({ product: productId, city }, { _id: 1 })
       .lean()
       .exec();
     const shopsProductsIds = shopsProducts.map(({ _id }) => _id);
@@ -757,23 +760,30 @@ export class ProductResolver {
   }
 
   @FieldResolver((_returns) => ProductCardFeatures)
-  async cardFeatures(@Root() product: DocumentType<Product>): Promise<ProductCardFeatures> {
+  async cardFeatures(
+    @Root() product: DocumentType<Product>,
+    @Localization() { getLangField }: LocalizationPayloadInterface,
+  ): Promise<ProductCardFeatures> {
     try {
       // Get ids of attributes used in connections
       const connections = await ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [product._id.toString()],
         },
       }).select({ attributeId: 1 });
 
       const attributesIdsInConnections = connections.map(({ attributeId }) => attributeId);
 
-      const features: ProductCardFeatures = {
+      let listFeaturesString = '';
+
+      const features: Omit<ProductCardFeatures, 'listFeaturesString'> = {
+        id: `cardFeatures-${product._id.toString()}`,
         listFeatures: [],
         textFeatures: [],
         tagFeatures: [],
         iconFeatures: [],
         ratingFeatures: [],
+        ratingFeaturesValues: [],
       };
 
       for await (const productAttributesGroup of product.attributesGroups) {
@@ -796,35 +806,57 @@ export class ProductResolver {
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
+            const currentValue = productAttribute.value.join(', ');
+            const stringSeparator = listFeaturesString.length > 0 ? ', ' : '';
+            if (currentValue) {
+              listFeaturesString = `${listFeaturesString}${stringSeparator}${currentValue}`;
+            }
+
             features.listFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
             features.textFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
             features.tagFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
             features.iconFeatures.push(productAttribute);
+            continue;
           }
 
           if (productAttribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
+            const attributeName = getLangField(attribute.name);
+            const currentValue = productAttribute.value[0];
+            if (currentValue) {
+              features.ratingFeaturesValues.push(`${attributeName} ${currentValue}`);
+            }
+
             features.ratingFeatures.push(productAttribute);
           }
         }
       }
 
-      return features;
+      return {
+        ...features,
+        listFeaturesString,
+      };
     } catch (e) {
       return {
+        id: 'noID',
         listFeatures: [],
         textFeatures: [],
         tagFeatures: [],
         iconFeatures: [],
         ratingFeatures: [],
+        listFeaturesString: '',
+        ratingFeaturesValues: [],
       };
     }
   }
@@ -835,10 +867,12 @@ export class ProductResolver {
     @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<ProductCardConnection[]> {
     try {
+      const rootProductId = product._id.toString();
+
       // Get all product connections
       const connections = await ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [rootProductId],
         },
       });
 
@@ -863,13 +897,13 @@ export class ProductResolver {
           // Filter out products not added to the shops
           { $match: { shopsCount: { $gt: 0 } } },
         ]);
-        // console.log(JSON.stringify(products, null, 2));
+
         if (!attribute) {
           continue;
         }
 
         cardConnections.push({
-          id: connection.id,
+          id: `${connection.id}${rootProductId}`,
           nameString: getLangField(attribute.name),
           products: products.reduce((acc: ProductCardConnectionItem[], connectionProduct) => {
             const productAttributesGroup = connectionProduct.attributesGroups.find(({ node }) => {
@@ -892,19 +926,20 @@ export class ProductResolver {
               return acc;
             }
 
+            const connectionProductId = connectionProduct._id?.toString();
+
             return [
               ...acc,
               {
-                id: `${connectionProduct._id}`,
+                id: `${connectionProductId}${rootProductId}`,
                 value: productConnectionValue,
-                isCurrent: connectionProduct._id?.toString() === product._id.toString(),
+                isCurrent: connectionProductId === rootProductId,
                 product: connectionProduct,
               },
             ];
           }, []),
         });
       }
-
       return cardConnections;
     } catch (e) {
       return [];

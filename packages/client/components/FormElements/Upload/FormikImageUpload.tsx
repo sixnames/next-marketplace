@@ -50,7 +50,7 @@ const FormikImageUpload: React.FC<FormikImageUploadInterface> = ({
         function removeImageHandler() {
           setFieldValue(name, []);
         }
-        console.log(imageSrc);
+
         return (
           <InputLine
             isRequired={isRequired}

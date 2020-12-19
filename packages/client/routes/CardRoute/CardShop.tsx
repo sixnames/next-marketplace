@@ -11,6 +11,7 @@ import { useAppContext } from '../../context/appContext';
 import Icon from '../../components/Icon/Icon';
 import { useSiteContext } from '../../context/siteContext';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
+import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 
 interface CardShopInterface {
   shopProduct: ShopProductSnippetFragment;
@@ -41,7 +42,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const disabled = amount + inCartCount > available;
 
   return (
-    <div className={`${classes.frame}`}>
+    <LayoutCard className={`${classes.cardShop}`}>
       <div className={classes.imageHolder}>
         <div className={classes.image}>
           <Image url={mainImage} alt={nameString} title={nameString} width={215} />
@@ -144,7 +145,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
           )}
         </div>
       </div>
-    </div>
+    </LayoutCard>
   );
 };
 

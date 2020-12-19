@@ -95,7 +95,7 @@
   align-items: start;
   flex-grow: 1;
   grid-template-columns: repeat(3, 1fr);
-  grid-column-gap:var(--catalogueGridGap);
+  grid-column-gap: var(--catalogueGridGap);
   grid-row-gap: var(--catalogueGridGap);
 }
 

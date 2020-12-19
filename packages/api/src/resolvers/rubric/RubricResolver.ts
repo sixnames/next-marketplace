@@ -3,6 +3,7 @@ import {
   Field,
   FieldResolver,
   ID,
+  Info,
   Int,
   Mutation,
   ObjectType,
@@ -15,8 +16,9 @@ import {
   RubricAttributesGroup,
   RubricCatalogueTitleField,
   RubricModel,
-  RubricFilterAttribute,
   RubricFilterAttributeOption,
+  RubricCatalogueFilter,
+  RubricFilterAttribute,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
@@ -43,6 +45,7 @@ import {
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
+  SORT_DESC,
 } from '@yagu/config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
@@ -67,6 +70,7 @@ import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { alwaysArray, getBooleanFromArray } from '@yagu/shared';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -779,84 +783,52 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
-    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = 'desc', ...args } = input;
+    const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC, ...args } = input;
     const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
     const query = ProductModel.getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
       limit,
       page,
-      sortDir,
+      sortDir: sortDir,
       sortBy,
     });
 
     return ProductModel.paginate(query, options);
   }
 
-  @FieldResolver((_returns) => [RubricFilterAttribute])
-  async filterAttributes(
+  @FieldResolver((_returns) => RubricCatalogueFilter)
+  async catalogueFilter(
     @Root() rubric: DocumentType<Rubric>,
     @Localization() { getLangField, city }: LocalizationPayloadInterface,
-  ): Promise<RubricFilterAttribute[]> {
-    const { attributesGroups, catalogueTitle } = rubric;
-    const rubricIdString = rubric.id.toString();
+    @Info() info: any,
+  ): Promise<RubricCatalogueFilter> {
+    try {
+      // Get query args
+      const catalogueFilterArgs = info?.variableValues?.catalogueFilter
+        ? alwaysArray(info?.variableValues?.catalogueFilter)
+        : [];
+      const { sortBy, sortDir }: Record<string, any> = info?.variableValues?.productsInput
+        ? info?.variableValues?.productsInput
+        : {};
+      const sortDirQuery = sortDir ? `sortDir=${sortDir}` : '';
+      const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
+      const sortQuery = `${sortDirQuery}&${sortByQuery}`;
+      const nextQuery = sortDir || sortBy ? `?${sortQuery}` : '';
 
-    // get all visible attributes id's
-    const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
-      return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
-    }, []);
+      // Get id's of children rubrics
+      const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
 
-    const attributes = await AttributeModel.aggregate<Attribute>([
-      { $match: { _id: { $in: visibleAttributes } } },
-      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          viewsCounter: {
-            $cond: {
-              if: {
-                $and: [
-                  {
-                    $eq: ['$views.key', city],
-                  },
-                  {
-                    $eq: ['$views.rubricId', rubricIdString],
-                  },
-                ],
-              },
-              then: '$views.counter',
-              else: 0,
-            },
-          },
-        },
-      },
-      { $sort: { viewsCounter: -1 } },
-    ]);
+      const { attributesGroups, catalogueTitle } = rubric;
+      const rubricIdString = rubric.id.toString();
 
-    const reducedAttributes = attributes.reduce((acc: Attribute[], attribute) => {
-      const { _id } = attribute;
-      const exist = acc.find(({ _id: existingId }) => {
-        return existingId?.toString() === _id?.toString();
-      });
-      if (exist) {
-        return acc;
-      }
-      return [...acc, attribute];
-    }, []);
+      // get all visible attributes id's
+      const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
+        return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
+      }, []);
 
-    const result = reducedAttributes.map(async (attribute) => {
-      const attributeIdString = attribute._id?.toString();
-
-      const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
-      if (!optionsGroup) {
-        return {
-          id: attributeIdString + rubricIdString,
-          node: attribute,
-          options: [],
-        };
-      }
-
-      const options = await OptionModel.aggregate<Option>([
-        { $match: { _id: { $in: optionsGroup.options } } },
+      const attributes = await AttributeModel.aggregate<Attribute>([
+        { $match: { _id: { $in: visibleAttributes } } },
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
         {
           $addFields: {
@@ -870,9 +842,6 @@ export class RubricResolver {
                     {
                       $eq: ['$views.rubricId', rubricIdString],
                     },
-                    {
-                      $eq: ['$views.attributeId', attributeIdString],
-                    },
                   ],
                 },
                 then: '$views.counter',
@@ -884,46 +853,211 @@ export class RubricResolver {
         { $sort: { viewsCounter: -1 } },
       ]);
 
-      const reducedOptions = options.reduce((acc: Option[], option) => {
-        const { _id } = option;
+      const reducedAttributes = attributes.reduce((acc: Attribute[], attribute) => {
+        const { _id } = attribute;
         const exist = acc.find(({ _id: existingId }) => {
           return existingId?.toString() === _id?.toString();
         });
         if (exist) {
           return acc;
         }
-        return [...acc, option];
+        return [...acc, attribute];
       }, []);
 
-      const resultOptions: RubricFilterAttributeOption[] = [];
+      const filterAttributes: RubricFilterAttribute[] = [];
 
-      for await (const option of reducedOptions) {
-        const { variants, name } = option;
-        let filterNameString: string;
-        const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
-        const currentVariantName = getLangField(currentVariant?.value);
-        if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
-          filterNameString = getLangField(name);
-        } else {
-          filterNameString = currentVariantName;
+      for await (const attribute of reducedAttributes) {
+        const attributeIdString = attribute._id?.toString();
+        const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
+        if (!optionsGroup) {
+          continue;
         }
 
-        resultOptions.push({
-          ...option,
-          id: option._id?.toString() + rubricIdString,
-          filterNameString: filterNameString,
-          counter: 0,
+        const options = await OptionModel.aggregate<Option>([
+          { $match: { _id: { $in: optionsGroup.options } } },
+          { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+          {
+            $addFields: {
+              viewsCounter: {
+                $cond: {
+                  if: {
+                    $and: [
+                      {
+                        $eq: ['$views.key', city],
+                      },
+                      {
+                        $eq: ['$views.rubricId', rubricIdString],
+                      },
+                      {
+                        $eq: ['$views.attributeId', attributeIdString],
+                      },
+                    ],
+                  },
+                  then: '$views.counter',
+                  else: 0,
+                },
+              },
+            },
+          },
+          { $sort: { viewsCounter: -1 } },
+        ]);
+
+        const reducedOptions = options.reduce((acc: Option[], option) => {
+          const { _id } = option;
+          const exist = acc.find(({ _id: existingId }) => {
+            return existingId?.toString() === _id?.toString();
+          });
+          if (exist) {
+            return acc;
+          }
+          return [...acc, option];
+        }, []);
+
+        const resultOptions: RubricFilterAttributeOption[] = [];
+
+        for await (const option of reducedOptions) {
+          const { variants, name } = option;
+          let filterNameString: string;
+          const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
+          const currentVariantName = getLangField(currentVariant?.value);
+          if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
+            filterNameString = getLangField(name);
+          } else {
+            filterNameString = currentVariantName;
+          }
+
+          const optionSlug = `${attribute.slug}-${option.slug}`;
+          const isSelected = catalogueFilterArgs.includes(optionSlug);
+          const optionNextSlug = isSelected
+            ? catalogueFilterArgs
+                .filter((pathArg) => {
+                  return pathArg !== optionSlug;
+                })
+                .join('/')
+            : [...catalogueFilterArgs, optionSlug].join('/');
+
+          // Count products with current option
+          const products = await ProductModel.aggregate<any>([
+            // Initial products match
+            {
+              $match: {
+                rubrics: { $in: rubricsIds },
+                active: true,
+                'attributesGroups.attributes': {
+                  $elemMatch: {
+                    key: attribute.slug,
+                    value: { $in: [option.slug] },
+                  },
+                },
+              },
+            },
+            // Lookup shop products
+            { $addFields: { productId: { $toString: '$_id' } } },
+            {
+              $lookup: {
+                from: 'shopproducts',
+                localField: 'productId',
+                foreignField: 'product',
+                as: 'shops',
+              },
+            },
+            // Count shop products
+            { $addFields: { shopsCount: { $size: '$shops' } } },
+            // Filter out products not added to the shops
+            { $match: { shopsCount: { $gt: 0 } } },
+            {
+              $count: 'counter',
+            },
+          ]);
+          const counter = products[0]?.counter || 0;
+
+          resultOptions.push({
+            ...option,
+            id: option._id?.toString() + rubricIdString,
+            filterNameString: filterNameString,
+            optionSlug,
+            optionNextSlug: `/${optionNextSlug}${nextQuery}`,
+            isSelected,
+            isDisabled: counter < 1,
+            counter,
+          });
+        }
+
+        const otherAttributesSelectedValues = catalogueFilterArgs.filter((option) => {
+          return !option.includes(attribute.slug);
+        });
+        const clearSlug = `/${otherAttributesSelectedValues.join('/')}`;
+
+        const isSelected = getBooleanFromArray(resultOptions, ({ isSelected }) => {
+          return isSelected;
+        });
+
+        const sortedOptions = resultOptions.sort((optionA, optionB) => {
+          const isDisabledA = optionA.isDisabled ? 0 : 1;
+          const isDisabledB = optionB.isDisabled ? 0 : 1;
+
+          return isDisabledB - isDisabledA;
+        });
+
+        const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
+          if (isDisabled) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
+
+        filterAttributes.push({
+          id: attributeIdString + rubricIdString,
+          node: attribute,
+          options: sortedOptions,
+          clearSlug: `${clearSlug}${nextQuery}`,
+          isSelected,
+          isDisabled: disabledOptionsCount === sortedOptions.length,
         });
       }
 
-      return {
-        id: attributeIdString + rubricIdString,
-        node: attribute,
-        options: resultOptions,
-      };
-    });
+      const selectedAttributes = filterAttributes.reduce(
+        (acc: RubricFilterAttribute[], attribute) => {
+          if (!attribute.isSelected) {
+            return acc;
+          }
+          return [
+            ...acc,
+            {
+              ...attribute,
+              id: `selected-${attribute.id}`,
+              options: attribute.options.filter((option) => {
+                return option.isSelected;
+              }),
+            },
+          ];
+        },
+        [],
+      );
 
-    return Promise.all(result);
+      const disabledAttributesCount = filterAttributes.reduce((acc: number, { isDisabled }) => {
+        if (isDisabled) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+
+      return {
+        id: rubric._id.toString(),
+        attributes: filterAttributes,
+        selectedAttributes,
+        isDisabled: disabledAttributesCount === filterAttributes.length,
+        clearSlug: `/${rubric.slug}${nextQuery}`,
+      };
+    } catch (e) {
+      return {
+        id: rubric._id.toString(),
+        attributes: [],
+        selectedAttributes: [],
+        isDisabled: true,
+        clearSlug: ``,
+      };
+    }
   }
 
   @FieldResolver((_type) => Int)

@@ -181,7 +181,12 @@ export const RUBRIC_LEVEL_STEP = 1;
 
 // SORT
 export const SORT_ASC = 'asc';
+export const SORT_ASC_NUM = 1;
 export const SORT_DESC = 'desc';
+export const SORT_DESC_NUM = -1;
+
+// CATALOGUE
+export const CATALOGUE_PRODUCTS_LIMIT = 30;
 
 // ORDER LOG VARIANTS
 export const ORDER_LOG_VARIANT_STATUS = 'status';

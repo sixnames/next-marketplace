@@ -1,4 +1,4 @@
-.frame {
+.filterCheckbox {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -7,7 +7,7 @@
   color: var(--textColor);
 }
 
-.frame:hover {
+.filterCheckbox:hover {
   text-decoration: none;
   color: var(--theme);
 }

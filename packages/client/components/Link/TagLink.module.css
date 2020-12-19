@@ -1,0 +1,32 @@
+.tagLink {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-weight: 600;
+  background-color: var(--secondaryBackground);
+  border: 1px solid var(--secondaryBackground);
+  color: var(--textSecondaryColor);
+  border-radius: var(--borderRadius);
+  box-shadow: var(--wp-shadow-25);
+  transition: all 0.2s;
+}
+
+.tagLinkDark {
+  background-color: var(--primaryBackground);
+  border: 1px solid var(--primaryBackground);
+}
+
+.tagLinkActive:hover,
+.tagLink:hover {
+  text-decoration: none;
+  color: var(--textColor);
+}
+
+.tagLinkActive {
+  border-color: var(--theme);
+  color: var(--textColor);
+  cursor: default;
+  text-decoration: none;
+}

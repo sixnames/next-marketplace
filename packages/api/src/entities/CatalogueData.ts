@@ -1,18 +1,46 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Rubric } from './Rubric';
-import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { Product } from './Product';
+import { SortDirectionEnum } from '../resolvers/commonInputs/PaginateInput';
+import { CatalogueProductsSortByEnum } from '../resolvers/catalogueData/CatalogueProductsInput';
+
+@ObjectType()
+export class CatalogueDataProducts {
+  @Field(() => [Product])
+  readonly docs: Product[];
+
+  @Field(() => Int)
+  readonly page: number;
+
+  @Field(() => Int)
+  readonly totalDocs: number;
+
+  @Field(() => Int)
+  readonly totalPages: number;
+
+  @Field(() => Int)
+  readonly limit: number;
+
+  @Field((_type) => CatalogueProductsSortByEnum)
+  readonly sortBy: CatalogueProductsSortByEnum;
+
+  @Field(() => SortDirectionEnum)
+  readonly sortDir: SortDirectionEnum;
+}
 
 @ObjectType()
 export class CatalogueData {
   @Field(() => Rubric)
   readonly rubric: Rubric;
 
-  @Field(() => PaginatedProductsResponse)
-  readonly products: PaginatedProductsResponse;
+  @Field(() => CatalogueDataProducts)
+  readonly products: CatalogueDataProducts;
 
   @Field(() => String)
   readonly catalogueTitle: string;
+
+  @Field(() => [String])
+  readonly catalogueFilter: string[];
 }
 
 @ObjectType()

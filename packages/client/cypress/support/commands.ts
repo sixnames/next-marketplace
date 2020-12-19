@@ -176,10 +176,7 @@ Cypress.Commands.add(
     const productA = mockData.productA;
     const connectionProductA = mockData.connectionProductA;
 
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${rubricLevelOneA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${productA.slug}`).click();
 
@@ -192,10 +189,7 @@ Cypress.Commands.add(
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
     cy.getByCy(`card-${connectionProductA.slug}`).should('exist');

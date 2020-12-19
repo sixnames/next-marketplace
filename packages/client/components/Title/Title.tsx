@@ -26,12 +26,14 @@ const Title: React.FC<TitlePropsInterface> = ({
   const sizeClassName = classes[size];
   const lightClassName = light ? classes.light : '';
   const lowClassName = low ? classes.low : '';
-  const titleClassName = `${classes.frame} ${sizeClassName} ${lightClassName} ${lowClassName} ${
+  const titleClassName = `${classes.title} ${sizeClassName} ${lightClassName} ${lowClassName} ${
     className ? className : ''
   }`;
   return (
     <div className={titleClassName} data-cy={testId}>
-      <TagName className={classes.text}>{children}</TagName>
+      <div className={`${classes.titleHolder} ${sizeClassName}`}>
+        <TagName className={classes.text}>{children}</TagName>
+      </div>
       {subtitle && <div className={classes.subtitle}>{subtitle}</div>}
     </div>
   );

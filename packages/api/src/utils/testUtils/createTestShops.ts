@@ -4,7 +4,17 @@ import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
 import { MOCK_SHOP, MOCK_SHOP_B } from '@yagu/mocks';
-import { DEFAULT_CITY } from '@yagu/config';
+import {
+  DEFAULT_CITY,
+  // ATTRIBUTE_VIEW_VARIANT_ICON,
+  // ATTRIBUTE_VIEW_VARIANT_LIST,
+  // ATTRIBUTE_VIEW_VARIANT_TEXT,
+  // DEFAULT_LANG,
+  // SECONDARY_LANG,
+} from '@yagu/config';
+// import { ProductModel } from '../../entities/Product';
+// import { generateTestProduct } from './generateTestProduct';
+// import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   mockShops: Shop[];
@@ -33,6 +43,14 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     connectionProductA,
     connectionProductB,
     connectionProductC,
+    // rubricLevelOneA,
+    // attributesGroupWineFeatures,
+    // attributeString,
+    // attributeWineCombinations,
+    // attributeNumber,
+    // optionsSlugsCombination,
+    // attributeWineType,
+    // optionsSlugsWineType,
   } = productsPayload;
 
   const shopLogo = await generateTestAsset({
@@ -110,6 +128,86 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
       shopAConnectionProductC.id,
     ],
   });
+
+  // Create 100 mock products
+  /*let n = 0;
+  while (n < 100) {
+    const name = `product-${n}`;
+    const shopAMoreProduct = await ProductModel.create(
+      await generateTestProduct({
+        priority: 10,
+        slug: name,
+        name: [
+          { key: DEFAULT_LANG, value: name },
+          { key: SECONDARY_LANG, value: name },
+        ],
+        cardName: [
+          { key: DEFAULT_LANG, value: name },
+          { key: SECONDARY_LANG, value: name },
+        ],
+        // views: [{ key: DEFAULT_CITY, counter: n + 100 }],
+        views: [{ key: DEFAULT_CITY, counter: 10 }],
+        price: 100,
+        description: [
+          { key: DEFAULT_LANG, value: name },
+          { key: SECONDARY_LANG, value: name },
+        ],
+        rubrics: [rubricLevelOneA.id],
+        attributesGroups: [
+          {
+            node: attributesGroupWineFeatures.id,
+            showInCard: true,
+            attributes: [
+              {
+                node: attributeWineType.id,
+                showInCard: true,
+                key: attributeWineType.slug,
+                value: [optionsSlugsWineType[2]],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeString.id,
+                showInCard: true,
+                key: attributeString.slug,
+                value: ['Very long string attribute.'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeWineCombinations.id,
+                showInCard: true,
+                key: attributeWineCombinations.slug,
+                value: optionsSlugsCombination,
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON as ProductAttributeViewVariantEnum,
+              },
+              {
+                node: attributeNumber.id,
+                showInCard: true,
+                key: attributeNumber.slug,
+                value: ['123'],
+                viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as ProductAttributeViewVariantEnum,
+              },
+            ],
+          },
+        ],
+      }),
+    );
+
+    const shopMoreProduct = await ShopProductModel.create({
+      available: 20,
+      price: 100 + n,
+      oldPrices: [],
+      product: shopAMoreProduct.id,
+      city: DEFAULT_CITY,
+    });
+
+    await ShopModel.findByIdAndUpdate(shopA.id, {
+      $push: {
+        products: shopMoreProduct.id,
+      },
+    });
+    ///////
+    n++;
+  }*/
 
   // Shop B products
   const shopBProductA = await ShopProductModel.create({

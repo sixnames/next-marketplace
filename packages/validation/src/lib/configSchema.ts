@@ -13,9 +13,9 @@ export const configCityLangSchema = (args: MultiLangSchemaMessagesInterface) =>
       .min(minValueLength)
       .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
     value: Yup.array().of(
-      Yup.string()
-        .min(minValueLength)
-        .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
+      Yup.string().nullable(),
+      // .min(minValueLength)
+      // .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
     ),
   });
 
@@ -25,9 +25,9 @@ export const configCitySchema = (args: MultiLangSchemaMessagesInterface) =>
       .min(minValueLength)
       .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
     value: Yup.array().of(
-      Yup.string()
-        .min(minValueLength)
-        .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
+      Yup.string().nullable(),
+      // .min(minValueLength)
+      // .required(getFieldValidationMessage({ ...args, key: 'validation.configs.value' })),
     ),
     translations: Yup.array().of(configCityLangSchema(args)),
   });

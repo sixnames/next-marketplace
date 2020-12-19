@@ -61,7 +61,12 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
       <div className={classes.resultList}>
         {products.map((product) => {
           return (
-            <ProductSnippetGrid product={product} key={product.id} testId={'search-product'} />
+            <ProductSnippetGrid
+              size={'small'}
+              product={product}
+              key={product.id}
+              testId={'search-product'}
+            />
           );
         })}
       </div>

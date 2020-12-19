@@ -40,11 +40,6 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   const imageWidth = 50;
   const linkQuery: Record<string, any> = {};
 
-  // TODO
-  const inCartCount = 0;
-  const available = 0;
-  const disabled = amount + inCartCount > available;
-
   const { listFeatures, ratingFeaturesValues } = cardFeatures;
 
   if (rubricSlug) {
@@ -126,15 +121,13 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 }}
                 className={classes.input}
                 min={1}
-                // max={available}
                 name={'amount'}
                 value={amount}
               />
             </div>
-            {/*Add Gray button theme*/}
+
             <Button
-              theme={'secondary'}
-              disabled={disabled}
+              theme={'gray'}
               testId={`card-shops-${slug}-add-to-cart`}
               onClick={() => {
                 addShoplessProductToCart({
@@ -152,7 +145,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
       <ProductMarker>Выбор покупателей</ProductMarker>
 
       <Link
-        style={{ display: 'none' }}
+        // style={{ display: 'none' }}
         className={classes.link}
         href={{
           pathname: `/product/${slug}`,

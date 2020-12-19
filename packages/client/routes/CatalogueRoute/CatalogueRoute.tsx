@@ -18,6 +18,7 @@ import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter'
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Icon from '../../components/Icon/Icon';
+import { useAppContext } from '../../context/appContext';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -25,6 +26,7 @@ interface CatalogueRouteInterface {
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const router = useRouter();
+  const { isMobile } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const [isRowView, setIsRowView] = useState<boolean>(false);
   const [catalogueData, setCatalogueData] = useState<CatalogueDataFragment>(() => {
@@ -212,7 +214,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                 </div>
               }
             >
-              {isRowView
+              {isRowView && !isMobile
                 ? docs.map((product) => (
                     <ProductSnippetRow
                       product={product}

@@ -688,9 +688,10 @@ export class ProductResolver {
   @FieldResolver((_returns) => [ProductConnection])
   async connections(@Root() product: DocumentType<Product>): Promise<ProductConnection[]> {
     try {
+      const productId = product.id || product._id.toString();
       return ProductConnectionModel.find({
         productsIds: {
-          $in: [product.id],
+          $in: [productId],
         },
       });
     } catch (e) {
@@ -703,7 +704,8 @@ export class ProductResolver {
     @Root() product: DocumentType<Product>,
     @Localization() { city }: LocalizationPayloadInterface,
   ): Promise<number> {
-    const shopsProducts = await ShopProductModel.find({ product: product.id, city }, { _id: 1 })
+    const productId = product.id || product._id.toString();
+    const shopsProducts = await ShopProductModel.find({ product: productId, city }, { _id: 1 })
       .lean()
       .exec();
     const shopsProductsIds = shopsProducts.map(({ _id }) => _id);
@@ -865,10 +867,12 @@ export class ProductResolver {
     @Localization() { getLangField }: LocalizationPayloadInterface,
   ): Promise<ProductCardConnection[]> {
     try {
+      const rootProductId = product._id.toString();
+
       // Get all product connections
       const connections = await ProductConnectionModel.find({
         productsIds: {
-          $in: [product._id.toString()],
+          $in: [rootProductId],
         },
       });
 
@@ -893,13 +897,13 @@ export class ProductResolver {
           // Filter out products not added to the shops
           { $match: { shopsCount: { $gt: 0 } } },
         ]);
-        // console.log(JSON.stringify(products, null, 2));
+
         if (!attribute) {
           continue;
         }
 
         cardConnections.push({
-          id: connection.id,
+          id: `${connection.id}${rootProductId}`,
           nameString: getLangField(attribute.name),
           products: products.reduce((acc: ProductCardConnectionItem[], connectionProduct) => {
             const productAttributesGroup = connectionProduct.attributesGroups.find(({ node }) => {
@@ -922,19 +926,20 @@ export class ProductResolver {
               return acc;
             }
 
+            const connectionProductId = connectionProduct._id?.toString();
+
             return [
               ...acc,
               {
-                id: `${connectionProduct._id}`,
+                id: `${connectionProductId}${rootProductId}`,
                 value: productConnectionValue,
-                isCurrent: connectionProduct._id?.toString() === product._id.toString(),
+                isCurrent: connectionProductId === rootProductId,
                 product: connectionProduct,
               },
             ];
           }, []),
         });
       }
-
       return cardConnections;
     } catch (e) {
       return [];

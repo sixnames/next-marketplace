@@ -89,6 +89,8 @@
 }
 
 .inputs {
+  position: relative;
+  z-index: 3;
   margin-top: auto;
 }
 

@@ -42,6 +42,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
   const { listFeatures, ratingFeaturesValues } = cardFeatures;
 
+  const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
+
   if (rubricSlug) {
     linkQuery.rubric = rubricSlug;
   }
@@ -110,7 +112,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             </div>
 
             <div className={classes.inputs}>
-              <div className={classes.shopsCounter}>{`В наличии в ${shopsCount} винотеках`}</div>
+              <div
+                className={classes.shopsCounter}
+              >{`В наличии в ${shopsCount} ${shopsCounterPostfix}`}</div>
 
               <SpinnerInput
                 plusTestId={`card-shops-${slug}-plus`}

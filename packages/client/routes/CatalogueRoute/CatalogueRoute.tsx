@@ -16,6 +16,7 @@ import { SORT_ASC, SORT_DESC } from '@yagu/config';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Icon from '../../components/Icon/Icon';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -24,6 +25,7 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
+  const [isRowView, setIsRowView] = useState<boolean>(false);
   const [catalogueData, setCatalogueData] = useState<CatalogueDataFragment>(() => {
     return rubricData;
   });
@@ -177,10 +179,29 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
           <div>
             <div className={classes.controls}>
               <MenuButtonSorter config={sortConfig} />
+
+              <div className={`${classes.viewControls}`}>
+                <button
+                  className={`${classes.viewControlsItem} ${
+                    isRowView ? '' : classes.viewControlsItemActive
+                  }`}
+                  onClick={() => setIsRowView(false)}
+                >
+                  <Icon name={'grid'} />
+                </button>
+                <button
+                  className={`${classes.viewControlsItem} ${
+                    isRowView ? classes.viewControlsItemActive : ''
+                  }`}
+                  onClick={() => setIsRowView(true)}
+                >
+                  <Icon name={'rows'} />
+                </button>
+              </div>
             </div>
 
             <InfiniteScroll
-              className={`${classes.list}`}
+              className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
               next={fetchMoreHandler}
               hasMore={totalPages !== page}
               dataLength={catalogueData.products.docs.length}

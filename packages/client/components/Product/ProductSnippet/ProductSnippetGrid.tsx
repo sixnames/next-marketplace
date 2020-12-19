@@ -31,6 +31,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   }
 
   const { listFeaturesString, ratingFeaturesValues } = cardFeatures;
+  const firstRatingFeature = ratingFeaturesValues[0];
 
   return (
     <LayoutCard className={classes.snippetCard} testId={testId}>
@@ -51,11 +52,11 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
 
       <div className={classes.bottomRight}>
         <div className={classes.outerRatingList}>
-          {ratingFeaturesValues.map((rating) => (
-            <div key={rating} className={classes.outerRating}>
-              {rating}
+          {firstRatingFeature ? (
+            <div key={firstRatingFeature} className={classes.outerRating}>
+              {firstRatingFeature}
             </div>
-          ))}
+          ) : null}
         </div>
 
         <div className={classes.btns}>

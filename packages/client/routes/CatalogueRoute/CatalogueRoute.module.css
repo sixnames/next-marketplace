@@ -12,10 +12,17 @@
   display: grid;
   align-items: start;
   flex-grow: 1;
-  grid-template-columns: repeat(2, 1fr);
-  grid-column-gap:var(--catalogueGridGap);
+  grid-column-gap: var(--catalogueGridGap);
   grid-row-gap: var(--catalogueGridGap);
   padding-top: 2rem;
+}
+
+.listRows {
+  grid-template-columns: 1fr;
+}
+
+.listColumns {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .catalogue .list[class*='infinite-scroll-component'] {
@@ -30,9 +37,56 @@
   margin-bottom: 1rem;
 }
 
-.catalogueSpinner {
+.listColumns .catalogueSpinner {
   grid-column-start: 1;
   grid-column-end: 3;
+}
+
+.viewControls {
+  display: flex;
+}
+
+.viewControlsItem {
+  height: var(--catalogueVieButtonSize);
+  width: var(--catalogueVieButtonSize);
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  color: var(--wp-mid-gray-100);
+  cursor: pointer;
+}
+
+[data-theme='light'] .viewControlsItem {
+  color: var(--wp-light-gray-100);
+}
+
+[data-theme='dark'] .viewControlsItem {
+  color: var(--wp-mid-gray-100);
+}
+
+.viewControlsItemActive {
+  color: var(--wp-light-gray-100);
+}
+
+[data-theme='light'] .viewControlsItemActive {
+  color: var(--wp-mid-gray-100);
+}
+
+[data-theme='dark'] .viewControlsItemActive {
+  color: var(--wp-light-gray-100);
+}
+
+.viewControlsItem:not(:first-child) {
+  margin-left: 1rem;
+}
+
+.viewControlsItem svg {
+  height: var(--catalogueVieButtonSize);
+  width: var(--catalogueVieButtonSize);
+  fill: currentColor;
+  transition: color 0.2s;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -40,11 +94,11 @@
 }
 
 @media only screen and (max-width: 480px) {
-  .list {
-    grid-template-columns: repeat(1, 1fr);
+  .listColumns {
+    grid-template-columns: 1fr;
   }
 
-  .catalogueSpinner {
+  .listColumns .catalogueSpinner {
     grid-column-start: 1;
     grid-column-end: 2;
   }

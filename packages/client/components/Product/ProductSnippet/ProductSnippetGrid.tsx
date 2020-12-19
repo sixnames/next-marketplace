@@ -14,12 +14,14 @@ interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
   testId?: string;
   rubricSlug?: string;
+  size?: 'small' | 'normal';
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   product,
   testId,
   rubricSlug,
+  size = 'normal',
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
   const { nameString, mainImage, slug, cardPrices, id, cardFeatures } = product;
@@ -33,8 +35,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   const { listFeaturesString, ratingFeaturesValues } = cardFeatures;
   const firstRatingFeature = ratingFeaturesValues[0];
 
+  const sizeClass = classes[size];
+
   return (
-    <LayoutCard className={classes.snippetCard} testId={testId}>
+    <LayoutCard className={`${classes.snippetCard} ${sizeClass}`} testId={testId}>
       <div className={`${classes.image} ${classes.leftColumn}`}>
         <Image url={mainImage} alt={nameString} title={nameString} width={imageWidth} />
       </div>
@@ -80,7 +84,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <ProductMarker>Выбор покупателей</ProductMarker>
 
       <Link
-        // style={{ display: 'none' }}
+        style={{ display: 'none' }}
         className={classes.link}
         href={{
           pathname: `/product/${slug}`,

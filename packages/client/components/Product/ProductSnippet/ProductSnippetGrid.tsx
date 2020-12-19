@@ -84,7 +84,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <ProductMarker>Выбор покупателей</ProductMarker>
 
       <Link
-        style={{ display: 'none' }}
+        // style={{ display: 'none' }}
         className={classes.link}
         href={{
           pathname: `/product/${slug}`,

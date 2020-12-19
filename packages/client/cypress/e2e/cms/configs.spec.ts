@@ -28,7 +28,7 @@ describe('Site configs', () => {
     cy.getByCy('pageDefaultPreviewImage-image').should('exist');
   });
 
-  it('Should update not asset configs', () => {
+  it.only('Should update not asset configs', () => {
     // pageDefaultTitle config
     const pageDefaultTitleConfig = SITE_CONFIGS_INITIAL.find(
       ({ slug }: any) => slug === 'pageDefaultTitle',
@@ -78,6 +78,7 @@ describe('Site configs', () => {
     cy.shouldNotError();
 
     // remove second email
+    cy.getByCy(emailDefaultCityTestId).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1-remove`).click();
     cy.getByCy('confirm').click();
     cy.getByCy(`${emailConfig.slug}-submit`).click();

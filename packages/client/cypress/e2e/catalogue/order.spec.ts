@@ -12,10 +12,7 @@ describe('Make an order', () => {
   });
 
   it('Should make an order', () => {
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${mockData.productA.slug}`).click();
 
@@ -32,10 +29,7 @@ describe('Make an order', () => {
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}`).click();
     cy.getByCy(`card-${mockData.connectionProductA.slug}`).should('exist');
@@ -44,10 +38,7 @@ describe('Make an order', () => {
 
     // Add shopless product from catalogue #3
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByTranslationFieldCy({
-      cyPrefix: 'main-rubric',
-      languages: mockData.rubricLevelOneA.name,
-    }).click();
+    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
     cy.getByCy(`catalogue-item-${mockData.connectionProductA.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();
 

@@ -89,12 +89,6 @@ describe('Catalogue', () => {
         },
       },
     );
-    console.log(
-      JSON.stringify(getCatalogueData.rubric.catalogueFilter.attributes[0].options, null, 2),
-    );
-    console.log(
-      JSON.stringify(getCatalogueData.rubric.catalogueFilter.attributes[1].options, null, 2),
-    );
     expect(getCatalogueData.products.docs).toHaveLength(1);
     expect(getCatalogueData.rubric.catalogueFilter.attributes).toHaveLength(2);
     expect(getCatalogueData.rubric.catalogueFilter.selectedAttributes).toHaveLength(2);

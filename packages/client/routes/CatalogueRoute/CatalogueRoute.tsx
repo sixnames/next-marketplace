@@ -9,6 +9,7 @@ import {
   useGetCatalogueRubricLazyQuery,
 } from '../../generated/apolloComponents';
 import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
+import ProductSnippetRow from '../../components/Product/ProductSnippet/ProductSnippetRow';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Spinner from '../../components/Spinner/Spinner';
@@ -211,14 +212,23 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                 </div>
               }
             >
-              {docs.map((product) => (
-                <ProductSnippetGrid
-                  product={product}
-                  key={product.id}
-                  testId={`catalogue-item-${product.slug}`}
-                  rubricSlug={rubric.slug}
-                />
-              ))}
+              {isRowView
+                ? docs.map((product) => (
+                    <ProductSnippetRow
+                      product={product}
+                      key={product.id}
+                      testId={`catalogue-item-${product.slug}`}
+                      rubricSlug={rubric.slug}
+                    />
+                  ))
+                : docs.map((product) => (
+                    <ProductSnippetGrid
+                      product={product}
+                      key={product.id}
+                      testId={`catalogue-item-${product.slug}`}
+                      rubricSlug={rubric.slug}
+                    />
+                  ))}
             </InfiniteScroll>
 
             {loading ? <Spinner isNested /> : null}

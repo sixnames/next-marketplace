@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { cardConnectionFragment } from './cardQueries';
 
 export const productSnippedFragment = gql`
   fragment ProductSnippet on Product {
@@ -7,7 +8,19 @@ export const productSnippedFragment = gql`
     nameString
     slug
     mainImage
+    shopsCount
+    cardConnections {
+      ...CardConnection
+    }
     cardFeatures {
+      id
+      listFeatures {
+        readableValue
+        node {
+          id
+          nameString
+        }
+      }
       listFeaturesString
       ratingFeaturesValues
     }
@@ -16,6 +29,7 @@ export const productSnippedFragment = gql`
       max
     }
   }
+  ${cardConnectionFragment}
 `;
 
 export const catalogueRubricFilterAttributeFragment = gql`

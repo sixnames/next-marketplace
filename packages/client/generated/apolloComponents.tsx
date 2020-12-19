@@ -3711,10 +3711,21 @@ export type GetCatalogueCardQueryQuery = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'slug' | 'mainImage'>
-  & { cardFeatures: (
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'slug' | 'mainImage' | 'shopsCount'>
+  & { cardConnections: Array<(
+    { __typename?: 'ProductCardConnection' }
+    & CardConnectionFragment
+  )>, cardFeatures: (
     { __typename?: 'ProductCardFeatures' }
-    & Pick<ProductCardFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
+    & Pick<ProductCardFeatures, 'id' | 'listFeaturesString' | 'ratingFeaturesValues'>
+    & { listFeatures: Array<(
+      { __typename?: 'ProductAttribute' }
+      & Pick<ProductAttribute, 'readableValue'>
+      & { node: (
+        { __typename?: 'Attribute' }
+        & Pick<Attribute, 'id' | 'nameString'>
+      ) }
+    )> }
   ), cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, 'min' | 'max'>
@@ -5120,7 +5131,19 @@ export const ProductSnippetFragmentDoc = gql`
   nameString
   slug
   mainImage
+  shopsCount
+  cardConnections {
+    ...CardConnection
+  }
   cardFeatures {
+    id
+    listFeatures {
+      readableValue
+      node {
+        id
+        nameString
+      }
+    }
     listFeaturesString
     ratingFeaturesValues
   }
@@ -5129,7 +5152,7 @@ export const ProductSnippetFragmentDoc = gql`
     max
   }
 }
-    `;
+    ${CardConnectionFragmentDoc}`;
 export const CatalogueDataFragmentDoc = gql`
     fragment CatalogueData on CatalogueData {
   catalogueTitle

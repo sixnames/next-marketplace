@@ -23,6 +23,7 @@ import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { CART_MODAL } from '../config/modals';
 import { useRouter } from 'next/router';
 import { CartModalInterface } from '../components/Modal/CartModal/CartModal';
+import { useAppContext } from './appContext';
 
 export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
 
@@ -110,6 +111,7 @@ interface UseSiteContextInterface extends SiteContextInterface {
 }
 
 function useSiteContext(): UseSiteContextInterface {
+  const { isMobile } = useAppContext();
   const router = useRouter();
   const context = useContext<SiteContextInterface>(SiteContext);
   const { showErrorNotification, showModal, showSuccessNotification } = useMutationCallbacks();
@@ -284,20 +286,24 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const showSearchDropdown = useCallback(() => {
+    if (isMobile) {
+      fixBodyScroll(true);
+    }
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: true,
     }));
-  }, [context]);
+  }, [context, fixBodyScroll, isMobile]);
 
   const hideSearchDropdown = useCallback(() => {
+    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isBurgerDropdownOpen: false,
       isSearchOpen: false,
     }));
-  }, [context]);
+  }, [context, fixBodyScroll]);
 
   const toggleSearchDropdown = useCallback(() => {
     context.setState((prevState) => ({

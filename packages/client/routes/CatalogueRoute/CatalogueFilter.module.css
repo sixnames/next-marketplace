@@ -71,8 +71,71 @@
   width: 100%;
 }
 
+.filterTitle {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  justify-content: flex-end;
+}
+
+.filterTitleName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: calc(100% - (var(--burger-dropdown-side-gap) * 2));
+}
+
+.filterTitleClose {
+  display: flex;
+  justify-content: flex-end;
+  width: var(--burger-dropdown-side-gap);
+  cursor: pointer;
+}
+
+.filterTitleClose svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: var(--textSecondaryColor);
+}
+
+.filterTitleClose:hover svg {
+  fill: var(--theme);
+}
+
+.filterVisible {
+  
+}
+
 @media only screen and (max-width: 1024px) {
+  .filter {
+    position: fixed;
+    z-index: 140;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--fullHeight, 100vh) - var(--mobileNavHeight));
+    overflow: auto;
+    background-color: var(--primaryBackground);
+  }
+
+  .filter:not(.filterVisible) {
+    display: none;
+  }
+
   .filterHolder {
     position: relative;
+    top: 0;
+    padding-top: var(--innerBlockVerticalPadding);
+    padding-bottom: var(--innerBlockVerticalPadding);
+    padding-right: var(--innerBlockHorizontalPadding);
+    padding-left: var(--innerBlockHorizontalPadding);
+  }
+
+  .totalCounter {
+    display: none;
   }
 }

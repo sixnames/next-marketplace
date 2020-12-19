@@ -19,6 +19,9 @@ import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Icon from '../../components/Icon/Icon';
 import { useAppContext } from '../../context/appContext';
+import Button from '../../components/Buttons/Button';
+import ReachMenuButton from '../../components/ReachMenuButton/ReachMenuButton';
+import { useSiteContext } from '../../context/siteContext';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -27,7 +30,9 @@ interface CatalogueRouteInterface {
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const router = useRouter();
   const { isMobile } = useAppContext();
+  const { fixBodyScroll } = useSiteContext();
   const { showErrorNotification } = useNotificationsContext();
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [isRowView, setIsRowView] = useState<boolean>(false);
   const [catalogueData, setCatalogueData] = useState<CatalogueDataFragment>(() => {
     return rubricData;
@@ -58,6 +63,16 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
       }
     },
   });
+
+  const showFilterHandler = useCallback(() => {
+    setIsFilterVisible(true);
+    fixBodyScroll(true);
+  }, [fixBodyScroll]);
+
+  const hideFilterHandler = useCallback(() => {
+    setIsFilterVisible(false);
+    fixBodyScroll(false);
+  }, [fixBodyScroll]);
 
   const fetchMoreHandler = useCallback(() => {
     if (catalogueData) {
@@ -170,38 +185,63 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     <div className={classes.catalogue}>
       <Breadcrumbs currentPageName={nameString} />
       <Inner lowTop testId={'catalogue'}>
-        <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
+        <Title testId={'catalogue-title'} subtitle={`Найдено ${totalDocs}`}>
+          {catalogueTitle}
+        </Title>
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
             totalDocs={totalDocs}
             rubricClearSlug={rubric.catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}
+            isFilterVisible={isFilterVisible}
+            hideFilterHandler={hideFilterHandler}
           />
 
           <div>
-            <div className={classes.controls}>
-              <MenuButtonSorter config={sortConfig} />
-
-              <div className={`${classes.viewControls}`}>
-                <button
-                  className={`${classes.viewControlsItem} ${
-                    isRowView ? '' : classes.viewControlsItemActive
-                  }`}
-                  onClick={() => setIsRowView(false)}
+            {isMobile ? (
+              <div className={classes.controlsMobile}>
+                <Button
+                  className={classes.controlsMobileButn}
+                  theme={'secondary'}
+                  onClick={showFilterHandler}
                 >
-                  <Icon name={'grid'} />
-                </button>
-                <button
-                  className={`${classes.viewControlsItem} ${
-                    isRowView ? classes.viewControlsItemActive : ''
-                  }`}
-                  onClick={() => setIsRowView(true)}
-                >
-                  <Icon name={'rows'} />
-                </button>
+                  Фильтр
+                </Button>
+                <ReachMenuButton
+                  config={sortConfig}
+                  buttonAs={'div'}
+                  buttonText={() => (
+                    <Button className={classes.controlsMobileButn} theme={'secondary'}>
+                      Сортировать
+                    </Button>
+                  )}
+                />
               </div>
-            </div>
+            ) : (
+              <div className={classes.controls}>
+                <MenuButtonSorter config={sortConfig} />
+
+                <div className={`${classes.viewControls}`}>
+                  <button
+                    className={`${classes.viewControlsItem} ${
+                      isRowView ? '' : classes.viewControlsItemActive
+                    }`}
+                    onClick={() => setIsRowView(false)}
+                  >
+                    <Icon name={'grid'} />
+                  </button>
+                  <button
+                    className={`${classes.viewControlsItem} ${
+                      isRowView ? classes.viewControlsItemActive : ''
+                    }`}
+                    onClick={() => setIsRowView(true)}
+                  >
+                    <Icon name={'rows'} />
+                  </button>
+                </div>
+              </div>
+            )}
 
             <InfiniteScroll
               className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}

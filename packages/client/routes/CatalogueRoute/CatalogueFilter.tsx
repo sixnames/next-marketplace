@@ -9,6 +9,7 @@ import Link from '../../components/Link/Link';
 import { useConfigContext } from '../../context/configContext';
 import Icon from '../../components/Icon/Icon';
 import Button from '../../components/Buttons/Button';
+import { useAppContext } from '../../context/appContext';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -89,13 +90,18 @@ interface CatalogueFilterInterface {
   catalogueFilter: CatalogueRubricFilterFragment;
   totalDocs: number;
   rubricClearSlug: string;
+  isFilterVisible: boolean;
+  hideFilterHandler: () => void;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   catalogueFilter,
   rubricClearSlug,
   totalDocs,
+  hideFilterHandler,
+  isFilterVisible,
 }) => {
+  const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
   const maxVisibleAttributesString = getSiteConfigSingleValue(
@@ -111,9 +117,18 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
     : 'Показать больше фильтров';
 
   return (
-    <div className={classes.filter}>
+    <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
       <div className={classes.filterHolder}>
         <div className={classes.totalCounter}>{`Найдено ${totalDocs}`}</div>
+
+        {isMobile ? (
+          <div className={classes.filterTitle}>
+            <div className={classes.filterTitleName}>Поиск</div>
+            <div className={classes.filterTitleClose} onClick={hideFilterHandler}>
+              <Icon name={'cross'} />
+            </div>
+          </div>
+        ) : null}
 
         {catalogueFilter.selectedAttributes.length > 0 ? (
           <div className={classes.attribute}>

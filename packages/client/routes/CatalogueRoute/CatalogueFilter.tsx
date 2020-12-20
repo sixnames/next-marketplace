@@ -166,9 +166,14 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
               <Link
-                onClick={resetPricesValueHandler}
                 href={rubricClearSlug}
                 className={classes.attributeTitleTrigger}
+                onClick={() => {
+                  if (isMobile) {
+                    hideFilterHandler();
+                  }
+                  resetPricesValueHandler();
+                }}
               >
                 Очистить все
               </Link>

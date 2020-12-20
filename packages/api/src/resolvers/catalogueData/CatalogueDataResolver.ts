@@ -88,21 +88,6 @@ export class CatalogueDataResolver {
             }
           : {};
 
-      // price range pipeline
-      const priceRangePipeline =
-        minPrice && maxPrice
-          ? [
-              {
-                $match: {
-                  minPrice: {
-                    $gte: minPrice,
-                    $lte: maxPrice,
-                  },
-                },
-              },
-            ]
-          : [];
-
       // pipeline
       const allProductsPipeline = [
         // Initial match
@@ -161,6 +146,21 @@ export class CatalogueDataResolver {
         sortPipeline = [{ $sort: { createdAt: realSortDir, _id: sortByIdDirection } }];
       }
 
+      // price range pipeline
+      const priceRangePipeline =
+        minPrice && maxPrice
+          ? [
+              {
+                $match: {
+                  minPrice: {
+                    $gte: minPrice,
+                    $lte: maxPrice,
+                  },
+                },
+              },
+            ]
+          : [];
+
       const productsPipeline = [
         ...allProductsPipeline,
 
@@ -168,7 +168,7 @@ export class CatalogueDataResolver {
         {
           $facet: {
             docs: [...priceRangePipeline, ...sortPipeline, { $skip: skip }, { $limit: limit }],
-            countAllDocs: [{ $count: 'totalDocs' }],
+            countAllDocs: [...priceRangePipeline, { $count: 'totalDocs' }],
             minPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: 1 } }, { $limit: 1 }],
             maxPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: -1 } }, { $limit: 1 }],
           },

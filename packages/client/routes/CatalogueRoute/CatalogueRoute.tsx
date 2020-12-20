@@ -181,11 +181,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
+  const catalogueCounter = isMobile ? `Найдено ${totalDocs}` : undefined;
+
   return (
     <div className={classes.catalogue}>
       <Breadcrumbs currentPageName={nameString} />
       <Inner lowTop testId={'catalogue'}>
-        <Title testId={'catalogue-title'} subtitle={`Найдено ${totalDocs}`}>
+        <Title testId={'catalogue-title'} subtitle={catalogueCounter}>
           {catalogueTitle}
         </Title>
 

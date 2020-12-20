@@ -320,7 +320,8 @@
   --theme: rgb(219, 83, 96);
 
   --wp-error: rgb(219, 83, 96);
-  --wp-white: #ffffff;
+  --wp-white-RGB: 255, 255, 255;
+  --wp-white: rgb(var(--wp-white-RGB));
   --wp-dark-pink: #99093E;
   --wp-yellow: #E7C55A;
   --wp-light-green: #93AF42;
@@ -330,7 +331,8 @@
   --wp-dark-gray-200-RGB: 43, 48, 57;
   --wp-dark-gray-200: rgb(var(--wp-dark-gray-200-RGB));
   --wp-dark-gray-250: #424953;
-  --wp-dark-gray-300: #1D222B;
+  --wp-dark-gray-300-RGB: 29, 34, 43;
+  --wp-dark-gray-300: rgb(var(--wp-dark-gray-300-RGB));
   --wp-dark-gray-400: #14181d;
   --wp-mid-gray-100: #6B6E74;
   --wp-light-gray-100: #aaacb0;
@@ -339,6 +341,7 @@
   --wp-light-gray-300: rgb(var(--wp-light-gray-300-RGB));
 
   /*Main styles*/
+  --primaryBackground-RGB: var(--wp-white-RGB);
   --primaryBackground: var(--wp-white);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
@@ -471,6 +474,7 @@
 }
 
 [data-theme='light'] {
+  --primaryBackground-RGB: var(--wp-white-RGB);
   --primaryBackground: var(--wp-white);
   --secondaryBackground-RGB: var(--wp-light-gray-300-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));
@@ -507,6 +511,7 @@
 }
 
 [data-theme='dark'] {
+  --primaryBackground-RGB: var(--wp-dark-gray-300-RGB);
   --primaryBackground: var(--wp-dark-gray-300);
   --secondaryBackground-RGB: var(--wp-dark-gray-200-RGB);
   --secondaryBackground: rgb(var(--secondaryBackground-RGB));

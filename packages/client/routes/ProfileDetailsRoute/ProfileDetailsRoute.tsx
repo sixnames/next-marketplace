@@ -61,8 +61,8 @@ const ProfileDetailsRoute: React.FC = () => {
   const { id, email, phone, name, lastName, secondName } = me;
 
   return (
-    <div className={classes.frame} data-cy={'profile-details'}>
-      <div>
+    <div className={classes.profile} data-cy={'profile-details'}>
+      <div className={classes.form}>
         <Formik
           initialValues={{
             id,
@@ -150,7 +150,7 @@ const ProfileDetailsRoute: React.FC = () => {
         </Formik>
       </div>
 
-      <div className={classes.card} />
+      <div className={classes.card}>User card with avatar</div>
     </div>
   );
 };

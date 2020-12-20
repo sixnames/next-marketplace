@@ -197,6 +197,8 @@ type CartProduct {
 type CatalogueData {
   catalogueFilter: [String!]!
   catalogueTitle: String!
+  maxPrice: Int!
+  minPrice: Int!
   products: CatalogueDataProducts!
   rubric: Rubric!
 }
@@ -213,6 +215,8 @@ type CatalogueDataProducts {
 
 input CatalogueProductsInput {
   limit: Int = 30
+  maxPrice: Int
+  minPrice: Int
   page: Int = 1
   search: String
   sortBy: CatalogueProductsSortByEnum = priority
@@ -1233,6 +1237,7 @@ type RubricCatalogueFilter {
   id: ID!
   isDisabled: Boolean!
   selectedAttributes: [RubricFilterAttribute!]!
+  selectedPrices: RubricFilterSelectedPrices
 }
 
 type RubricCatalogueTitle {
@@ -1282,6 +1287,13 @@ type RubricFilterAttributeOption {
   slug: String!
   variants: [OptionVariant!]
   views: [OptionCityCounter!]!
+}
+
+type RubricFilterSelectedPrices {
+  clearSlug: String!
+  formattedMaxPrice: String!
+  formattedMinPrice: String!
+  id: ID!
 }
 
 type RubricPayloadType {

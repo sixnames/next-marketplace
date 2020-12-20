@@ -48,6 +48,28 @@
   margin-bottom: 0.5rem;
 }
 
+.pricesFilterValues {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.pricesFilterValuesItem {
+  display: flex;
+  align-items: baseline;
+  font-weight: 600;
+}
+
+.pricesFilterValuesItem > span {
+  margin-left: 0.5rem;
+}
+
+.pricesFilterSlider {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
 .moreTrigger {
   display: flex;
   align-items: center;
@@ -107,7 +129,7 @@
 }
 
 .filterVisible {
-  
+
 }
 
 @media only screen and (max-width: 1024px) {

@@ -72,6 +72,21 @@ export class RubricFilterAttribute {
 }
 
 @ObjectType()
+export class RubricFilterSelectedPrices {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
+
+  @Field((_type) => String)
+  readonly formattedMinPrice: string;
+
+  @Field((_type) => String)
+  readonly formattedMaxPrice: string;
+}
+
+@ObjectType()
 export class RubricCatalogueFilter {
   @Field(() => ID)
   readonly id: string;
@@ -84,6 +99,9 @@ export class RubricCatalogueFilter {
 
   @Field(() => [RubricFilterAttribute])
   readonly selectedAttributes: RubricFilterAttribute[];
+
+  @Field(() => RubricFilterSelectedPrices, { nullable: true })
+  readonly selectedPrices?: RubricFilterSelectedPrices | null;
 
   @Field((_type) => String)
   readonly clearSlug: string;

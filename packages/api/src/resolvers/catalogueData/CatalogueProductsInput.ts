@@ -24,6 +24,12 @@ export class CatalogueProductsInput extends PaginateInput {
   @Field(() => Int, { defaultValue: 1, nullable: true })
   page?: number;
 
+  @Field(() => Int, { nullable: true })
+  minPrice?: number;
+
+  @Field(() => Int, { nullable: true })
+  maxPrice?: number;
+
   @Field(() => SortDirectionEnum, { defaultValue: SORT_DESC, nullable: true })
   sortDir?: SortDirectionEnum;
 }

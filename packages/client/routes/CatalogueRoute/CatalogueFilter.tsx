@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
   CatalogueRubricFilterAttributeFragment,
@@ -10,6 +10,12 @@ import { useConfigContext } from '../../context/configContext';
 import Icon from '../../components/Icon/Icon';
 import Button from '../../components/Buttons/Button';
 import { useAppContext } from '../../context/appContext';
+import { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import { useRouter } from 'next/router';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import Currency from '../../components/Currency/Currency';
+import { useLanguageContext } from '../../context/languageContext';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -52,7 +58,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
               className={classes.attributeOption}
               key={key}
               option={option}
-              attributeSlug={slug}
               testId={key}
             />
           );
@@ -65,7 +70,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
                   className={classes.attributeOption}
                   key={key}
                   option={option}
-                  attributeSlug={slug}
                   testId={key}
                 />
               );
@@ -88,6 +92,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
 interface CatalogueFilterInterface {
   catalogueFilter: CatalogueRubricFilterFragment;
+  minPrice: number;
+  maxPrice: number;
   totalDocs: number;
   rubricClearSlug: string;
   isFilterVisible: boolean;
@@ -100,21 +106,46 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   totalDocs,
   hideFilterHandler,
   isFilterVisible,
+  minPrice,
+  maxPrice,
 }) => {
+  const router = useRouter();
+  const { currency } = useLanguageContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
+  const [pricesValue, setPricesValue] = useState<number[]>(() => [minPrice, maxPrice]);
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPricesValue([minPrice, maxPrice]);
+  }, [minPrice, maxPrice]);
+
+  const resetPricesValueHandler = useCallback(() => {
+    setPricesValue([minPrice, maxPrice]);
+  }, [maxPrice, minPrice]);
+
   const maxVisibleAttributesString = getSiteConfigSingleValue(
     'catalogueFilterVisibleAttributesCount',
   );
   const maxVisibleAttributes = parseInt(maxVisibleAttributesString, 10);
-  const { attributes } = catalogueFilter;
+  const { attributes, selectedPrices } = catalogueFilter;
   const visibleAttributes = attributes.slice(0, maxVisibleAttributes);
   const hiddenAttributes = attributes.slice(+maxVisibleAttributes);
 
   const moreTriggerText = isAttributesOpen
     ? 'Скрыть дополнительные фильтры'
     : 'Показать больше фильтров';
+
+  const priceRangeHandleStyle = {
+    backgroundColor: 'var(--primaryBackground)',
+    borderWidth: 1,
+    borderColor: 'var(--theme)',
+    height: 28,
+    width: 28,
+    marginTop: -12,
+    boxShadow: '0 0 0 rgba(var(--themeRGB), 0.1)',
+  };
 
   return (
     <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
@@ -130,11 +161,20 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {catalogueFilter.selectedAttributes.length > 0 ? (
+        {catalogueFilter.selectedAttributes.length > 0 || selectedPrices ? (
           <div className={classes.attribute}>
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
-              <Link href={rubricClearSlug} className={classes.attributeTitleTrigger}>
+              <Link
+                href={rubricClearSlug}
+                className={classes.attributeTitleTrigger}
+                onClick={() => {
+                  if (isMobile) {
+                    hideFilterHandler();
+                  }
+                  resetPricesValueHandler();
+                }}
+              >
                 Очистить все
               </Link>
             </div>
@@ -149,15 +189,78 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                       className={classes.attributeOption}
                       key={key}
                       option={option}
-                      attributeSlug={attribute.node.slug}
                       testId={key}
                     />
                   );
                 });
               })}
+              {selectedPrices ? (
+                <div>
+                  <FilterLink
+                    withCross
+                    className={classes.attributeOption}
+                    onClick={resetPricesValueHandler}
+                    testId={'selected-prices'}
+                    option={{
+                      id: selectedPrices.id,
+                      optionNextSlug: selectedPrices.clearSlug,
+                      filterNameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
+                      isSelected: true,
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         ) : null}
+
+        <div className={classes.attribute}>
+          <div className={classes.attributeTitle}>
+            <span className={classes.attributeTitleText}>Цена</span>
+          </div>
+          <div className={classes.pricesFilterValues}>
+            <div className={classes.pricesFilterValuesItem}>
+              от
+              <Currency value={pricesValue[0]} />
+            </div>
+            <div className={classes.pricesFilterValuesItem}>
+              до
+              <Currency value={pricesValue[1]} />
+            </div>
+          </div>
+          <div className={classes.pricesFilterSlider}>
+            <Range
+              value={pricesValue}
+              min={minPrice}
+              max={maxPrice}
+              onChange={setPricesValue}
+              trackStyle={[
+                {
+                  backgroundColor: 'var(--theme)',
+                },
+              ]}
+              railStyle={{
+                height: 2,
+                backgroundColor: 'var(--rangeRailBackground)',
+              }}
+              handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
+              onAfterChange={(val) => {
+                router
+                  .push({
+                    href: router.asPath,
+                    query: {
+                      ...router.query,
+                      minPrice: val[0],
+                      maxPrice: val[1],
+                    },
+                  })
+                  .catch(() => {
+                    showErrorNotification();
+                  });
+              }}
+            />
+          </div>
+        </div>
 
         {visibleAttributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute.id} />;

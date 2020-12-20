@@ -41,6 +41,12 @@ export class CatalogueData {
 
   @Field(() => [String])
   readonly catalogueFilter: string[];
+
+  @Field(() => Int)
+  readonly minPrice: number;
+
+  @Field(() => Int)
+  readonly maxPrice: number;
 }
 
 @ObjectType()

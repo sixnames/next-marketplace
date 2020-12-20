@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
   CatalogueRubricFilterAttributeFragment,
@@ -15,6 +15,7 @@ import 'rc-slider/assets/index.css';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Currency from '../../components/Currency/Currency';
+import { useLanguageContext } from '../../context/languageContext';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -57,7 +58,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
               className={classes.attributeOption}
               key={key}
               option={option}
-              attributeSlug={slug}
               testId={key}
             />
           );
@@ -70,7 +70,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
                   className={classes.attributeOption}
                   key={key}
                   option={option}
-                  attributeSlug={slug}
                   testId={key}
                 />
               );
@@ -111,6 +110,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   maxPrice,
 }) => {
   const router = useRouter();
+  const { currency } = useLanguageContext();
   const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
@@ -121,11 +121,15 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
     setPricesValue([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
+  const resetPricesValueHandler = useCallback(() => {
+    setPricesValue([minPrice, maxPrice]);
+  }, [maxPrice, minPrice]);
+
   const maxVisibleAttributesString = getSiteConfigSingleValue(
     'catalogueFilterVisibleAttributesCount',
   );
   const maxVisibleAttributes = parseInt(maxVisibleAttributesString, 10);
-  const { attributes } = catalogueFilter;
+  const { attributes, selectedPrices } = catalogueFilter;
   const visibleAttributes = attributes.slice(0, maxVisibleAttributes);
   const hiddenAttributes = attributes.slice(+maxVisibleAttributes);
 
@@ -157,11 +161,15 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {catalogueFilter.selectedAttributes.length > 0 ? (
+        {catalogueFilter.selectedAttributes.length > 0 || selectedPrices ? (
           <div className={classes.attribute}>
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
-              <Link href={rubricClearSlug} className={classes.attributeTitleTrigger}>
+              <Link
+                onClick={resetPricesValueHandler}
+                href={rubricClearSlug}
+                className={classes.attributeTitleTrigger}
+              >
                 Очистить все
               </Link>
             </div>
@@ -176,12 +184,27 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                       className={classes.attributeOption}
                       key={key}
                       option={option}
-                      attributeSlug={attribute.node.slug}
                       testId={key}
                     />
                   );
                 });
               })}
+              {selectedPrices ? (
+                <div>
+                  <FilterLink
+                    withCross
+                    className={classes.attributeOption}
+                    onClick={resetPricesValueHandler}
+                    testId={'selected-prices'}
+                    option={{
+                      id: selectedPrices.id,
+                      optionNextSlug: selectedPrices.clearSlug,
+                      filterNameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
+                      isSelected: true,
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         ) : null}

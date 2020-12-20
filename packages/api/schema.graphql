@@ -1237,6 +1237,7 @@ type RubricCatalogueFilter {
   id: ID!
   isDisabled: Boolean!
   selectedAttributes: [RubricFilterAttribute!]!
+  selectedPrices: RubricFilterSelectedPrices
 }
 
 type RubricCatalogueTitle {
@@ -1286,6 +1287,13 @@ type RubricFilterAttributeOption {
   slug: String!
   variants: [OptionVariant!]
   views: [OptionCityCounter!]!
+}
+
+type RubricFilterSelectedPrices {
+  clearSlug: String!
+  formattedMaxPrice: String!
+  formattedMinPrice: String!
+  id: ID!
 }
 
 type RubricPayloadType {

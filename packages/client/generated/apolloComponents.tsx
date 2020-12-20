@@ -1050,6 +1050,7 @@ export type RubricCatalogueFilter = {
   isDisabled: Scalars['Boolean'];
   attributes: Array<RubricFilterAttribute>;
   selectedAttributes: Array<RubricFilterAttribute>;
+  selectedPrices?: Maybe<RubricFilterSelectedPrices>;
   clearSlug: Scalars['String'];
 };
 
@@ -1081,6 +1082,14 @@ export type RubricFilterAttributeOption = {
   optionNextSlug: Scalars['String'];
   isSelected: Scalars['Boolean'];
   isDisabled: Scalars['Boolean'];
+};
+
+export type RubricFilterSelectedPrices = {
+  __typename?: 'RubricFilterSelectedPrices';
+  id: Scalars['ID'];
+  clearSlug: Scalars['String'];
+  formattedMinPrice: Scalars['String'];
+  formattedMaxPrice: Scalars['String'];
 };
 
 export type RubricProductPaginateInput = {
@@ -1124,6 +1133,8 @@ export type CatalogueProductsInput = {
   sortDir?: Maybe<SortDirectionEnum>;
   search?: Maybe<Scalars['String']>;
   sortBy?: Maybe<CatalogueProductsSortByEnum>;
+  minPrice?: Maybe<Scalars['Int']>;
+  maxPrice?: Maybe<Scalars['Int']>;
 };
 
 export type CatalogueSearchResult = {
@@ -3746,10 +3757,18 @@ export type CatalogueRubricFilterAttributeFragment = (
   )> }
 );
 
+export type CatalogueRubricSelectedPricesFragment = (
+  { __typename?: 'RubricFilterSelectedPrices' }
+  & Pick<RubricFilterSelectedPrices, 'id' | 'clearSlug' | 'formattedMinPrice' | 'formattedMaxPrice'>
+);
+
 export type CatalogueRubricFilterFragment = (
   { __typename?: 'RubricCatalogueFilter' }
   & Pick<RubricCatalogueFilter, 'id' | 'isDisabled' | 'clearSlug'>
-  & { attributes: Array<(
+  & { selectedPrices?: Maybe<(
+    { __typename?: 'RubricFilterSelectedPrices' }
+    & CatalogueRubricSelectedPricesFragment
+  )>, attributes: Array<(
     { __typename?: 'RubricFilterAttribute' }
     & CatalogueRubricFilterAttributeFragment
   )>, selectedAttributes: Array<(
@@ -5073,6 +5092,14 @@ export const AttributeInGroupFragmentDoc = gql`
   }
 }
     `;
+export const CatalogueRubricSelectedPricesFragmentDoc = gql`
+    fragment CatalogueRubricSelectedPrices on RubricFilterSelectedPrices {
+  id
+  clearSlug
+  formattedMinPrice
+  formattedMaxPrice
+}
+    `;
 export const CatalogueRubricFilterAttributeFragmentDoc = gql`
     fragment CatalogueRubricFilterAttribute on RubricFilterAttribute {
   id
@@ -5103,6 +5130,9 @@ export const CatalogueRubricFilterFragmentDoc = gql`
   id
   isDisabled
   clearSlug
+  selectedPrices {
+    ...CatalogueRubricSelectedPrices
+  }
   attributes {
     ...CatalogueRubricFilterAttribute
   }
@@ -5110,7 +5140,8 @@ export const CatalogueRubricFilterFragmentDoc = gql`
     ...CatalogueRubricFilterAttribute
   }
 }
-    ${CatalogueRubricFilterAttributeFragmentDoc}`;
+    ${CatalogueRubricSelectedPricesFragmentDoc}
+${CatalogueRubricFilterAttributeFragmentDoc}`;
 export const CatalogueRubricFragmentDoc = gql`
     fragment CatalogueRubric on Rubric {
   id

@@ -9,6 +9,7 @@ export interface LinkInterface extends LinkProps, PropsWithChildren<any> {
   testId?: string;
   exact?: boolean;
   isTab?: boolean;
+  onClick?: () => void;
 }
 
 const Link: React.FC<LinkInterface> = ({
@@ -20,6 +21,7 @@ const Link: React.FC<LinkInterface> = ({
   exact = false,
   isTab = false,
   replace,
+  onClick,
   as,
   ...props
 }) => {
@@ -51,6 +53,7 @@ const Link: React.FC<LinkInterface> = ({
   return (
     <NextLink href={href} as={as} replace={replace}>
       <a
+        onClick={onClick}
         className={`${className ? className : ''} ${isCurrent ? activeClassName : ''}`}
         data-cy={testId}
         {...props}

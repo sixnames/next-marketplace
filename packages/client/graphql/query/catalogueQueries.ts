@@ -58,11 +58,23 @@ export const catalogueRubricFilterAttributeFragment = gql`
   }
 `;
 
+export const catalogueRubricSelectedPricesFragment = gql`
+  fragment CatalogueRubricSelectedPrices on RubricFilterSelectedPrices {
+    id
+    clearSlug
+    formattedMinPrice
+    formattedMaxPrice
+  }
+`;
+
 export const catalogueRubricFilterFragment = gql`
   fragment CatalogueRubricFilter on RubricCatalogueFilter {
     id
     isDisabled
     clearSlug
+    selectedPrices {
+      ...CatalogueRubricSelectedPrices
+    }
     attributes {
       ...CatalogueRubricFilterAttribute
     }
@@ -70,6 +82,7 @@ export const catalogueRubricFilterFragment = gql`
       ...CatalogueRubricFilterAttribute
     }
   }
+  ${catalogueRubricSelectedPricesFragment}
   ${catalogueRubricFilterAttributeFragment}
 `;
 

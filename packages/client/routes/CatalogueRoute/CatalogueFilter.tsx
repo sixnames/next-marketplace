@@ -12,6 +12,9 @@ import Button from '../../components/Buttons/Button';
 import { useAppContext } from '../../context/appContext';
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { useRouter } from 'next/router';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import Currency from '../../components/Currency/Currency';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -107,9 +110,11 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   minPrice,
   maxPrice,
 }) => {
+  const router = useRouter();
+  const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [pricesValue, setPricesValue] = useState<number[]>(() => [0, 0]);
+  const [pricesValue, setPricesValue] = useState<number[]>(() => [minPrice, maxPrice]);
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -127,6 +132,16 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const moreTriggerText = isAttributesOpen
     ? 'Скрыть дополнительные фильтры'
     : 'Показать больше фильтров';
+
+  const priceRangeHandleStyle = {
+    backgroundColor: 'var(--primaryBackground)',
+    borderWidth: 1,
+    borderColor: 'var(--theme)',
+    height: 28,
+    width: 28,
+    marginTop: -12,
+    boxShadow: '0 0 0 rgba(var(--themeRGB), 0.1)',
+  };
 
   return (
     <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
@@ -171,16 +186,52 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {/*prices query variables*/}
         <div className={classes.attribute}>
-          <div className={classes.attributeTitle}>Цена</div>
-          <Range
-            value={pricesValue}
-            min={minPrice}
-            max={maxPrice}
-            onChange={setPricesValue}
-            onAfterChange={(val) => console.log(val)}
-          />
+          <div className={classes.attributeTitle}>
+            <span className={classes.attributeTitleText}>Цена</span>
+          </div>
+          <div className={classes.pricesFilterValues}>
+            <div className={classes.pricesFilterValuesItem}>
+              от
+              <Currency value={pricesValue[0]} />
+            </div>
+            <div className={classes.pricesFilterValuesItem}>
+              до
+              <Currency value={pricesValue[1]} />
+            </div>
+          </div>
+          <div className={classes.pricesFilterSlider}>
+            <Range
+              value={pricesValue}
+              min={minPrice}
+              max={maxPrice}
+              onChange={setPricesValue}
+              trackStyle={[
+                {
+                  backgroundColor: 'var(--theme)',
+                },
+              ]}
+              railStyle={{
+                height: 2,
+                backgroundColor: 'var(--rangeRailBackground)',
+              }}
+              handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
+              onAfterChange={(val) => {
+                router
+                  .push({
+                    href: router.asPath,
+                    query: {
+                      ...router.query,
+                      minPrice: val[0],
+                      maxPrice: val[1],
+                    },
+                  })
+                  .catch(() => {
+                    showErrorNotification();
+                  });
+              }}
+            />
+          </div>
         </div>
 
         {visibleAttributes.map((attribute) => {

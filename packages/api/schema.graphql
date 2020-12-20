@@ -215,6 +215,8 @@ type CatalogueDataProducts {
 
 input CatalogueProductsInput {
   limit: Int = 30
+  maxPrice: Int
+  minPrice: Int
   page: Int = 1
   search: String
   sortBy: CatalogueProductsSortByEnum = priority

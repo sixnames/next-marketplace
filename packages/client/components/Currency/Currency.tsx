@@ -1,16 +1,24 @@
 import React from 'react';
 import classes from './Currency.module.css';
 import { useLanguageContext } from '../../context/languageContext';
+import { getCurrencyString } from '@yagu/shared';
 
 interface CurrencyInterface {
-  value?: string | null;
+  value?: string | number | null;
   className?: string;
   valueClassName?: string;
   testId?: string;
 }
 
 const Currency: React.FC<CurrencyInterface> = ({ value, className, valueClassName, testId }) => {
-  const { currency } = useLanguageContext();
+  const { currency, lang } = useLanguageContext();
+  const finalValue =
+    typeof value === 'number'
+      ? getCurrencyString({
+          lang,
+          value,
+        })
+      : value;
 
   return (
     <span className={`${classes.frame} ${className ? className : ''}`}>
@@ -19,7 +27,7 @@ const Currency: React.FC<CurrencyInterface> = ({ value, className, valueClassNam
         data-price-value={value}
         className={`${valueClassName ? valueClassName : ''}`}
       >
-        {value || 0}
+        {finalValue || 0}
       </span>
       {currency}
     </span>

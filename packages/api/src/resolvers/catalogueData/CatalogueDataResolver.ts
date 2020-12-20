@@ -45,6 +45,8 @@ export class CatalogueDataResolver {
         page = 1,
         sortBy = 'priority',
         sortDir = SORT_DESC,
+        minPrice,
+        maxPrice,
       } = productsInput;
       const skip = page ? (page - 1) * limit : 0;
       const realSortDir = sortDir === SORT_DESC ? SORT_DESC_NUM : SORT_ASC_NUM;
@@ -86,6 +88,21 @@ export class CatalogueDataResolver {
             }
           : {};
 
+      // price range pipeline
+      const priceRangePipeline =
+        minPrice && maxPrice
+          ? [
+              {
+                $match: {
+                  minPrice: {
+                    $gte: minPrice,
+                    $lte: maxPrice,
+                  },
+                },
+              },
+            ]
+          : [];
+
       // pipeline
       const allProductsPipeline = [
         // Initial match
@@ -117,6 +134,9 @@ export class CatalogueDataResolver {
         // Filter out products not added to the shops
         { $match: { shopsCount: { $gt: 0 } } },
 
+        // Filter out products that out of price range
+        // ...priceRangePipeline,
+
         // Unwind by views counter
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
 
@@ -147,7 +167,7 @@ export class CatalogueDataResolver {
         // Facets for pagination fields
         {
           $facet: {
-            docs: [...sortPipeline, { $skip: skip }, { $limit: limit }],
+            docs: [...priceRangePipeline, ...sortPipeline, { $skip: skip }, { $limit: limit }],
             countAllDocs: [{ $count: 'totalDocs' }],
             minPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: 1 } }, { $limit: 1 }],
             maxPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: -1 } }, { $limit: 1 }],
@@ -175,8 +195,8 @@ export class CatalogueDataResolver {
       const productsResult = productsAggregation[0] ?? { docs: [] };
       const totalDocs = noNaN(productsResult.countAllDocs[0]?.totalDocs);
       const totalPages = Math.ceil(totalDocs / limit);
-      const minPrice = noNaN(productsResult.minPrice[0]?._id);
-      const maxPrice = noNaN(productsResult.maxPrice[0]?._id);
+      const minPriceResult = noNaN(productsResult.minPrice[0]?._id);
+      const maxPriceResult = noNaN(productsResult.maxPrice[0]?._id);
 
       return {
         rubric,
@@ -191,8 +211,8 @@ export class CatalogueDataResolver {
         },
         catalogueTitle,
         catalogueFilter,
-        minPrice,
-        maxPrice,
+        minPrice: minPriceResult,
+        maxPrice: maxPriceResult,
       };
     } catch (e) {
       console.log(e);

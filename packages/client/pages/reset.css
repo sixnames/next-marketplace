@@ -463,6 +463,7 @@
   --inputPaddingHorizontal: 1.5rem;
   --inputIconSize: 1.25rem;
   --inputDisabledOpacity: 0.5;
+  --rangeRailBackground: var(--wp-light-gray-200);
 
   /*Scrollbar*/
   --scrollbarBG: var(--wp-white);
@@ -494,6 +495,7 @@
   --inputBorderFocus: rgba(var(--inputBorderRGB), 1);
   --inputBorderError: var(--wp-error);
   --inputPaddingHorizontal: 1.5rem;
+  --rangeRailBackground: var(--wp-light-gray-200);
 
   --borderColor: var(--wp-light-gray-100);
 
@@ -531,6 +533,7 @@
   --inputBorderFocus: rgba(var(--inputBorderRGB), 0.6);
   --inputBorderError: var(--wp-error);
   --inputPaddingHorizontal: 1.5rem;
+  --rangeRailBackground: var(--wp-mid-gray-100);
 
   --borderColor: rgba(255, 255, 255, 0.3);
 

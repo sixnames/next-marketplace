@@ -94,6 +94,8 @@ export const catalogueDataFragment = gql`
   fragment CatalogueData on CatalogueData {
     catalogueTitle
     catalogueFilter
+    minPrice
+    maxPrice
     rubric {
       ...CatalogueRubric
     }

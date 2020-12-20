@@ -165,7 +165,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products, catalogueTitle } = catalogueData;
+  const { rubric, products, catalogueTitle, minPrice, maxPrice } = catalogueData;
   const { catalogueFilter, nameString } = rubric;
   const { docs, totalDocs, totalPages, page } = products;
 
@@ -193,6 +193,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
+            minPrice={minPrice}
+            maxPrice={maxPrice}
             totalDocs={totalDocs}
             rubricClearSlug={rubric.catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}

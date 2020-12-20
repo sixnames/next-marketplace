@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
   CatalogueRubricFilterAttributeFragment,
@@ -10,6 +10,8 @@ import { useConfigContext } from '../../context/configContext';
 import Icon from '../../components/Icon/Icon';
 import Button from '../../components/Buttons/Button';
 import { useAppContext } from '../../context/appContext';
+import { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -88,6 +90,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
 interface CatalogueFilterInterface {
   catalogueFilter: CatalogueRubricFilterFragment;
+  minPrice: number;
+  maxPrice: number;
   totalDocs: number;
   rubricClearSlug: string;
   isFilterVisible: boolean;
@@ -100,10 +104,18 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   totalDocs,
   hideFilterHandler,
   isFilterVisible,
+  minPrice,
+  maxPrice,
 }) => {
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
+  const [pricesValue, setPricesValue] = useState<number[]>(() => [0, 0]);
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPricesValue([minPrice, maxPrice]);
+  }, [minPrice, maxPrice]);
+
   const maxVisibleAttributesString = getSiteConfigSingleValue(
     'catalogueFilterVisibleAttributesCount',
   );
@@ -158,6 +170,18 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             </div>
           </div>
         ) : null}
+
+        {/*prices query variables*/}
+        <div className={classes.attribute}>
+          <div className={classes.attributeTitle}>Цена</div>
+          <Range
+            value={pricesValue}
+            min={minPrice}
+            max={maxPrice}
+            onChange={setPricesValue}
+            onAfterChange={(val) => console.log(val)}
+          />
+        </div>
 
         {visibleAttributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute.id} />;

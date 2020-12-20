@@ -111,6 +111,9 @@ export class CatalogueDataResolver {
         // Count shop products
         { $addFields: { shopsCount: { $size: '$shops' } } },
 
+        // Add minPrice field
+        { $addFields: { minPrice: { $min: '$shops.price' } } },
+
         // Filter out products not added to the shops
         { $match: { shopsCount: { $gt: 0 } } },
 
@@ -130,10 +133,7 @@ export class CatalogueDataResolver {
 
       // sort by price
       if (sortBy === 'price') {
-        sortPipeline = [
-          { $addFields: { minPrice: { $min: '$shops.price' } } },
-          { $sort: { minPrice: realSortDir, _id: sortByIdDirection } },
-        ];
+        sortPipeline = [{ $sort: { minPrice: realSortDir, _id: sortByIdDirection } }];
       }
 
       // sort by create date
@@ -149,6 +149,8 @@ export class CatalogueDataResolver {
           $facet: {
             docs: [...sortPipeline, { $skip: skip }, { $limit: limit }],
             countAllDocs: [{ $count: 'totalDocs' }],
+            minPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: 1 } }, { $limit: 1 }],
+            maxPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: -1 } }, { $limit: 1 }],
           },
         },
       ];
@@ -157,6 +159,12 @@ export class CatalogueDataResolver {
         docs: Product[];
         countAllDocs: {
           totalDocs: number;
+        }[];
+        minPrice: {
+          _id: number;
+        }[];
+        maxPrice: {
+          _id: number;
         }[];
       }
 
@@ -167,6 +175,8 @@ export class CatalogueDataResolver {
       const productsResult = productsAggregation[0] ?? { docs: [] };
       const totalDocs = noNaN(productsResult.countAllDocs[0]?.totalDocs);
       const totalPages = Math.ceil(totalDocs / limit);
+      const minPrice = noNaN(productsResult.minPrice[0]?._id);
+      const maxPrice = noNaN(productsResult.maxPrice[0]?._id);
 
       return {
         rubric,
@@ -181,6 +191,8 @@ export class CatalogueDataResolver {
         },
         catalogueTitle,
         catalogueFilter,
+        minPrice,
+        maxPrice,
       };
     } catch (e) {
       console.log(e);

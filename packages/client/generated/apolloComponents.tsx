@@ -966,6 +966,8 @@ export type CatalogueData = {
   products: CatalogueDataProducts;
   catalogueTitle: Scalars['String'];
   catalogueFilter: Array<Scalars['String']>;
+  minPrice: Scalars['Int'];
+  maxPrice: Scalars['Int'];
 };
 
 export type Rubric = {
@@ -3770,7 +3772,7 @@ export type CatalogueRubricFragment = (
 
 export type CatalogueDataFragment = (
   { __typename?: 'CatalogueData' }
-  & Pick<CatalogueData, 'catalogueTitle' | 'catalogueFilter'>
+  & Pick<CatalogueData, 'catalogueTitle' | 'catalogueFilter' | 'minPrice' | 'maxPrice'>
   & { rubric: (
     { __typename?: 'Rubric' }
     & CatalogueRubricFragment
@@ -5157,6 +5159,8 @@ export const CatalogueDataFragmentDoc = gql`
     fragment CatalogueData on CatalogueData {
   catalogueTitle
   catalogueFilter
+  minPrice
+  maxPrice
   rubric {
     ...CatalogueRubric
   }

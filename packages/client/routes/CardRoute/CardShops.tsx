@@ -15,7 +15,10 @@ import classes from './CardShops.module.css';
 import ArrowTrigger from '../../components/ArrowTrigger/ArrowTrigger';
 import ShopsMap from '../../components/ShopsMap/ShopsMap';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
-import { ReachMenuItemConfig } from '../../components/ReachMenuButton/ReachMenuButton';
+import ReachMenuButton, {
+  ReachMenuItemConfig,
+} from '../../components/ReachMenuButton/ReachMenuButton';
+import { useAppContext } from '../../context/appContext';
 
 interface CardShopsListInterface {
   productId: string;
@@ -34,6 +37,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
   setInput,
   input,
 }) => {
+  const { isMobile } = useAppContext();
   const [isShopsOpen, setIsShopsOpen] = useState<boolean>(false);
 
   const visibleShopsLimit = 4;
@@ -72,10 +76,31 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
 
   return (
     <div data-cy={`card-shops-list`}>
-      <div className={classes.controls}>
-        <MenuButtonSorter config={sortConfig} className={classes.sort} />
-        <ArrowTrigger name={'Ближайшие винотеки на карте'} onClick={() => setIsMap(true)} />
-      </div>
+      {isMobile ? (
+        <div className={classes.controlsMobile}>
+          <ReachMenuButton
+            config={sortConfig}
+            buttonAs={'div'}
+            buttonText={() => (
+              <Button className={classes.controlsMobileButn} theme={'secondary'}>
+                Сортировать
+              </Button>
+            )}
+          />
+          <Button
+            className={classes.controlsMobileButn}
+            theme={'secondary'}
+            onClick={() => setIsMap(true)}
+          >
+            Показать ближайшие
+          </Button>
+        </div>
+      ) : (
+        <div className={classes.controls}>
+          <MenuButtonSorter config={sortConfig} />
+          <ArrowTrigger name={'Ближайшие винотеки на карте'} onClick={() => setIsMap(true)} />
+        </div>
+      )}
 
       {visibleShops.map((shop) => {
         return <CardShop key={shop.id} shopProduct={shop} />;

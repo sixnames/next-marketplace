@@ -45,7 +45,8 @@
     "type-graphql": "^1.0.0",
     "passport": "^0.4.1",
     "graphql-passport": "^0.6.3",
-    "nodemailer": "^6.4.16"
+    "nodemailer": "^6.4.16",
+    "query-string": "^6.13.7"
   },
   "devDependencies": {
     "ts-node": "^9.0.0",

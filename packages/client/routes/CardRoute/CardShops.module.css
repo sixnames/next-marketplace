@@ -13,12 +13,21 @@
   margin-bottom: var(--lineGap-150);
 }
 
-@media only screen and (max-width: 680px) {
-  .controls {
-    display: block;
-  }
+.controlsMobile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  margin-bottom: 2rem;
+}
 
-  .sort {
-    margin-bottom: 1rem;
+.controlsMobileButn {
+  min-width: 0;
+  width: 100%;
+}
+
+@media only screen and (max-width: 680px) {
+  .controlsMobile {
+    grid-template-columns: 1fr;
   }
 }

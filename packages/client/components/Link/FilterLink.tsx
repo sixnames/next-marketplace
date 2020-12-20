@@ -7,14 +7,12 @@ import Icon from '../Icon/Icon';
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
   option: Partial<RubricFilterAttributeOption>;
-  attributeSlug: string;
   withCross?: boolean;
 }
 
 const FilterLink: React.FC<FilterLinkInterface> = ({
   className,
   option,
-  attributeSlug = '',
   counter,
   withCross,
   ...props

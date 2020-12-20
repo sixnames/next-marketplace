@@ -165,7 +165,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products, catalogueTitle } = catalogueData;
+  const { rubric, products, catalogueTitle, minPrice, maxPrice } = catalogueData;
   const { catalogueFilter, nameString } = rubric;
   const { docs, totalDocs, totalPages, page } = products;
 
@@ -181,16 +181,20 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
+  const catalogueCounter = isMobile ? `Найдено ${totalDocs}` : undefined;
+
   return (
     <div className={classes.catalogue}>
       <Breadcrumbs currentPageName={nameString} />
       <Inner lowTop testId={'catalogue'}>
-        <Title testId={'catalogue-title'} subtitle={`Найдено ${totalDocs}`}>
+        <Title testId={'catalogue-title'} subtitle={catalogueCounter}>
           {catalogueTitle}
         </Title>
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
+            minPrice={minPrice}
+            maxPrice={maxPrice}
             totalDocs={totalDocs}
             rubricClearSlug={rubric.catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}

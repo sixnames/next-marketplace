@@ -6,6 +6,7 @@ import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
+import { noNaN } from '@yagu/shared';
 
 interface CatalogueInterface {
   rubricData?: CatalogueDataFragment | null;
@@ -35,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     context,
     callback: async ({ initialProps, context, apolloClient }) => {
       const { query, req } = context;
-      const { catalogue, sortDir, sortBy } = query;
+      const { catalogue, sortDir, sortBy, minPrice, maxPrice } = query;
 
       const rubricData = await apolloClient.query({
         query: CATALOGUE_RUBRIC_QUERY,
@@ -47,6 +48,8 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
           productsInput: {
             sortDir,
             sortBy,
+            minPrice: minPrice ? noNaN(minPrice) : null,
+            maxPrice: maxPrice ? noNaN(maxPrice) : null,
           },
         },
       });

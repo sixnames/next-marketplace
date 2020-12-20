@@ -19,6 +19,7 @@ import {
   RubricFilterAttributeOption,
   RubricCatalogueFilter,
   RubricFilterAttribute,
+  RubricFilterSelectedPrices,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
@@ -70,7 +71,8 @@ import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { alwaysArray, getBooleanFromArray } from '@yagu/shared';
+import { alwaysArray, getBooleanFromArray, getCurrencyString } from '@yagu/shared';
+import queryString from 'query-string';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -800,7 +802,7 @@ export class RubricResolver {
   @FieldResolver((_returns) => RubricCatalogueFilter)
   async catalogueFilter(
     @Root() rubric: DocumentType<Rubric>,
-    @Localization() { getLangField, city }: LocalizationPayloadInterface,
+    @Localization() { getLangField, city, lang }: LocalizationPayloadInterface,
     @Info() info: any,
   ): Promise<RubricCatalogueFilter> {
     try {
@@ -808,13 +810,28 @@ export class RubricResolver {
       const catalogueFilterArgs = info?.variableValues?.catalogueFilter
         ? alwaysArray(info?.variableValues?.catalogueFilter)
         : [];
-      const { sortBy, sortDir }: Record<string, any> = info?.variableValues?.productsInput
+      const { sortBy, sortDir, minPrice, maxPrice }: Record<string, any> = info?.variableValues
+        ?.productsInput
         ? info?.variableValues?.productsInput
         : {};
-      const sortDirQuery = sortDir ? `sortDir=${sortDir}` : '';
-      const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
-      const sortQuery = `${sortDirQuery}&${sortByQuery}`;
-      const nextQuery = sortDir || sortBy ? `?${sortQuery}` : '';
+      const sortQuery = queryString.stringify(
+        {
+          sortDir,
+          sortBy,
+        },
+        { skipNull: true, skipEmptyString: true },
+      );
+
+      const pricesQuery = queryString.stringify(
+        {
+          minPrice,
+          maxPrice,
+        },
+        { skipNull: true, skipEmptyString: true },
+      );
+
+      const nextSortQuery = sortDir || sortBy ? `?${sortQuery}` : '';
+      const nextPricesQuery = minPrice && maxPrice ? `&${pricesQuery}` : '';
 
       // Get id's of children rubrics
       const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
@@ -976,7 +993,7 @@ export class RubricResolver {
             id: option._id?.toString() + rubricIdString,
             filterNameString: filterNameString,
             optionSlug,
-            optionNextSlug: `/${optionNextSlug}${nextQuery}`,
+            optionNextSlug: `/${optionNextSlug}${nextSortQuery}${nextPricesQuery}`,
             isSelected,
             isDisabled: counter < 1,
             counter,
@@ -1010,7 +1027,7 @@ export class RubricResolver {
           id: attributeIdString + rubricIdString,
           node: attribute,
           options: sortedOptions,
-          clearSlug: `${clearSlug}${nextQuery}`,
+          clearSlug: `${clearSlug}${nextSortQuery}${nextPricesQuery}`,
           isSelected,
           isDisabled: disabledOptionsCount === sortedOptions.length,
         });
@@ -1042,12 +1059,24 @@ export class RubricResolver {
         return acc;
       }, 0);
 
+      const selectedPricesClearPathname = alwaysArray(catalogueFilterArgs).join('/');
+      const selectedPrices: RubricFilterSelectedPrices | null =
+        minPrice && maxPrice
+          ? {
+              id: `${rubric.slug}-selectedPrices`,
+              clearSlug: `/${selectedPricesClearPathname}${nextSortQuery}`,
+              formattedMinPrice: getCurrencyString({ lang, value: minPrice }),
+              formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
+            }
+          : null;
+
       return {
         id: rubric._id.toString(),
         attributes: filterAttributes,
         selectedAttributes,
         isDisabled: disabledAttributesCount === filterAttributes.length,
-        clearSlug: `/${rubric.slug}${nextQuery}`,
+        clearSlug: `/${rubric.slug}${nextSortQuery}`,
+        selectedPrices,
       };
     } catch (e) {
       return {

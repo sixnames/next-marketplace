@@ -364,6 +364,7 @@ const messagesKeys = [
   'validation.products.id',
   'validation.productConnections.id',
   'validation.products.name',
+  'validation.products.originalName',
   'validation.products.cardName',
   'validation.products.description',
   'validation.products.rubrics',

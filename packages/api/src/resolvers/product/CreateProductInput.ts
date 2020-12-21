@@ -12,6 +12,9 @@ export class CreateProductInput {
   @Field(() => [TranslationInput])
   cardName: TranslationInput[];
 
+  @Field(() => String)
+  originalName: string;
+
   @Field(() => [TranslationInput])
   description: TranslationInput[];
 

@@ -1454,6 +1454,7 @@ const productDescription = [
 export const MOCK_PRODUCT_A = {
   priority: 10,
   slug: 'productA',
+  originalName: 'productA',
   name: [
     { key: DEFAULT_LANG, value: 'productA' },
     { key: SECONDARY_LANG, value: 'productA' },
@@ -1470,6 +1471,7 @@ export const MOCK_PRODUCT_A = {
 export const MOCK_PRODUCT_B = {
   priority: 9,
   slug: 'productB',
+  originalName: 'productB',
   name: [
     { key: DEFAULT_LANG, value: 'productB' },
     { key: SECONDARY_LANG, value: 'productB' },
@@ -1486,6 +1488,7 @@ export const MOCK_PRODUCT_B = {
 export const MOCK_PRODUCT_C = {
   priority: 1,
   slug: 'productC',
+  originalName: 'productC',
   name: [
     { key: DEFAULT_LANG, value: 'productC' },
     { key: SECONDARY_LANG, value: 'productC' },
@@ -1502,6 +1505,7 @@ export const MOCK_PRODUCT_C = {
 export const MOCK_PRODUCT_D = {
   priority: 1,
   slug: 'productD',
+  originalName: 'productD',
   name: [
     { key: DEFAULT_LANG, value: 'productD' },
     { key: SECONDARY_LANG, value: 'productD' },
@@ -1518,6 +1522,7 @@ export const MOCK_PRODUCT_D = {
 export const MOCK_PRODUCT_E = {
   priority: 1,
   slug: 'productE',
+  originalName: 'productE',
   name: [
     { key: DEFAULT_LANG, value: 'productE' },
     { key: SECONDARY_LANG, value: 'productE' },
@@ -1534,6 +1539,7 @@ export const MOCK_PRODUCT_E = {
 export const MOCK_PRODUCT_F = {
   priority: 1,
   slug: 'productF',
+  originalName: 'productF',
   name: [
     { key: DEFAULT_LANG, value: 'productF' },
     { key: SECONDARY_LANG, value: 'productF' },
@@ -1548,6 +1554,7 @@ export const MOCK_PRODUCT_F = {
 };
 
 export const MOCK_PRODUCT_NEW = {
+  originalName: 'productNew',
   name: [
     { key: DEFAULT_LANG, value: 'productNew' },
     { key: SECONDARY_LANG, value: 'productNew' },
@@ -1562,6 +1569,7 @@ export const MOCK_PRODUCT_NEW = {
 };
 
 export const MOCK_PRODUCT_CREATE = {
+  originalName: 'productCreate',
   name: [
     { key: DEFAULT_LANG, value: 'productCreate' },
     { key: SECONDARY_LANG, value: 'productCreate' },

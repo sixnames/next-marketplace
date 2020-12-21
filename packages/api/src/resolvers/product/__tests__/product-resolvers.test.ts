@@ -96,6 +96,7 @@ describe('Product', () => {
           itemId
           nameString
           cardNameString
+          originalName
           slug
           descriptionString
           rubrics
@@ -589,6 +590,7 @@ describe('Product', () => {
         return {
           name: testProduct.name,
           cardName: testProduct.cardName,
+          originalName: testProduct.originalName,
           price: testProduct.price,
           description: testProduct.description,
           rubrics: [rubricLevelTree.id],
@@ -655,6 +657,7 @@ describe('Product', () => {
           id: createdProduct.id,
           name: anotherProduct.name,
           cardName: anotherProduct.cardName,
+          originalName: anotherProduct.originalName,
           price: anotherProduct.price,
           description: anotherProduct.description,
           rubrics: [rubricLevelTree.id],

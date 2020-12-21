@@ -9,6 +9,7 @@ export const testProduct = {
     { key: DEFAULT_LANG, value: 'new_product' },
     { key: SECONDARY_LANG, value: 'new_product' },
   ],
+  originalName: 'new_product',
   price: 200,
   description: [
     { key: DEFAULT_LANG, value: 'very long item description' },
@@ -25,6 +26,7 @@ export const anotherProduct = {
     { key: DEFAULT_LANG, value: 'another_product' },
     { key: SECONDARY_LANG, value: 'another_product' },
   ],
+  originalName: 'another_product',
   price: 200,
   description: [
     { key: DEFAULT_LANG, value: 'very long item description' },

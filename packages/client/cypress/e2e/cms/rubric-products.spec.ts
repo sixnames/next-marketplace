@@ -147,6 +147,7 @@ describe('Rubric products', () => {
     cy.getByCy(`name-${SECONDARY_LANG}`).type(mockProductNewName);
     cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductNewCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductNewCardName);
+    cy.getByCy(`originalName`).clear().type(mockProductNewCardName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductNewCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductNewCarDescription);

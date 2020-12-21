@@ -63,6 +63,12 @@ const productCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
     max: maxDescriptionLength,
     requiredMessageKey: 'validation.products.description',
   }),
+  originalName: Yup.string().required(
+    getFieldValidationMessage({
+      ...args,
+      key: 'validation.products.originalName',
+    }),
+  ),
   rubrics: Yup.array().of(
     Yup.string().required(
       getFieldValidationMessage({

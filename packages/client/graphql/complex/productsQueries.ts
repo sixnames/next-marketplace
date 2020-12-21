@@ -56,6 +56,7 @@ export const cmsProductFieldsFragment = gql`
       value
     }
     cardNameString
+    originalName
     slug
     price
     description {

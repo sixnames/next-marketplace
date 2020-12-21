@@ -413,6 +413,7 @@ describe('Rubrics', () => {
         return {
           name: testProduct.name,
           cardName: testProduct.cardName,
+          originalName: testProduct.originalName,
           price: testProduct.price,
           description: testProduct.description,
           rubrics: [rubricLevelTreeForNewProduct.id],

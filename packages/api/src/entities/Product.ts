@@ -75,6 +75,10 @@ export class Product extends TimeStamps {
 
   @Field(() => String)
   @prop({ required: true })
+  originalName: string;
+
+  @Field(() => String)
+  @prop({ required: true })
   slug: string;
 
   @Field(() => [Translation])

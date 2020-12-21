@@ -15,6 +15,9 @@ export class UpdateProductInput {
   @Field(() => [TranslationInput])
   cardName: TranslationInput[];
 
+  @Field(() => String)
+  originalName: string;
+
   @Field(() => [TranslationInput])
   description: TranslationInput[];
 

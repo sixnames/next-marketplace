@@ -418,6 +418,7 @@ input CreateProductInput {
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
   name: [TranslationInput!]!
+  originalName: String!
   price: Int!
   rubrics: [ID!]!
 }
@@ -939,6 +940,7 @@ type Product {
   mainImage: String!
   name: [Translation!]!
   nameString: String!
+  originalName: String!
   price: Int!
   priorities: [CityCounter!]!
   rubrics: [ID!]!
@@ -1591,6 +1593,7 @@ input UpdateProductInput {
   description: [TranslationInput!]!
   id: ID!
   name: [TranslationInput!]!
+  originalName: String!
   price: Int!
   rubrics: [ID!]!
 }

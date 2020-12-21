@@ -87,6 +87,7 @@ describe('Products', () => {
     cy.getByCy(`name-${SECONDARY_LANG}`).clear().type(mockProductNewName);
     cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
+    cy.getByCy(`originalName`).clear().type(mockProductNewName);
     cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
@@ -125,6 +126,7 @@ describe('Products', () => {
     cy.getByCy(`name-${SECONDARY_LANG}`).type(mockProductCreateName);
     cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductCreateCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductCreateCardName);
+    cy.getByCy(`originalName`).clear().type(mockProductCreateName);
     cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductCreateCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductCreateCarDescription);

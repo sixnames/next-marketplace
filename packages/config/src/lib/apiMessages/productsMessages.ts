@@ -250,6 +250,19 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.products.originalName',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Оригинальное название товара обязательно.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product original name is required.',
+      },
+    ],
+  },
+  {
     key: 'validation.products.cardName',
     message: [
       {

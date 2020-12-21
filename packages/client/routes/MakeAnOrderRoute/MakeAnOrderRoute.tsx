@@ -18,13 +18,14 @@ import Button from '../../components/Buttons/Button';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { useUserContext } from '../../context/userContext';
+import Currency from '../../components/Currency/Currency';
 
 interface OrderRouteProductInterface {
   cartProduct: CartProductFragment;
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
-  const { shopProduct, amount } = cartProduct;
+  const { shopProduct, amount, formattedTotalPrice } = cartProduct;
   if (!shopProduct) {
     return null;
   }
@@ -63,6 +64,9 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
                   />
                   <Icon name={'cross'} className={classes.productTotalsIcon} />
                   <div className={classes.productTotalsAmount}>{amount}</div>
+                </div>
+                <div className={classes.productTotalPrice}>
+                  Итого <Currency value={formattedTotalPrice} />
                 </div>
               </div>
 
@@ -148,7 +152,7 @@ const MakeAnOrderRoute: React.FC = () => {
           {() => {
             return (
               <Form>
-                <div className={classes.frame}>
+                <div className={classes.order}>
                   <div data-cy={'order-products'}>
                     <div className={classes.form}>
                       <div className={classes.group}>

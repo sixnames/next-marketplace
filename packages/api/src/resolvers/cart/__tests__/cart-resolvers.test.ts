@@ -85,6 +85,8 @@ describe('Cart', () => {
       products {
         id
         amount
+        totalPrice
+        formattedTotalPrice
         isShopless
         shopProduct {
           ...ShopProductSnippet

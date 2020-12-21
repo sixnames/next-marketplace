@@ -188,10 +188,12 @@ type CartPayloadType {
 type CartProduct {
   _id: ID!
   amount: Int!
+  formattedTotalPrice: String!
   id: ID!
   isShopless: Boolean!
   product: Product
   shopProduct: ShopProduct
+  totalPrice: Int!
 }
 
 type CatalogueData {

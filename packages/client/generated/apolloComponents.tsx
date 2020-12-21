@@ -1311,6 +1311,8 @@ export type CartProduct = {
   product?: Maybe<Product>;
   amount: Scalars['Int'];
   isShopless: Scalars['Boolean'];
+  totalPrice: Scalars['Int'];
+  formattedTotalPrice: Scalars['String'];
 };
 
 export type PaginatedOrdersResponse = {
@@ -2955,7 +2957,7 @@ export type DeleteAttributesGroupFromRubricMutation = (
 
 export type CartProductFragment = (
   { __typename?: 'CartProduct' }
-  & Pick<CartProduct, 'id' | 'amount' | 'isShopless'>
+  & Pick<CartProduct, 'id' | 'amount' | 'formattedTotalPrice' | 'isShopless'>
   & { product?: Maybe<(
     { __typename?: 'Product' }
     & ProductCardFragment
@@ -5033,6 +5035,7 @@ export const CartProductFragmentDoc = gql`
     fragment CartProduct on CartProduct {
   id
   amount
+  formattedTotalPrice
   isShopless
   product {
     ...ProductCard

@@ -56,6 +56,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     id: product.id,
     name: getLanguageFieldInitialValue(product.name),
     cardName: getLanguageFieldInitialValue(product.cardName),
+    originalName: product.originalName,
     price: product.price,
     description: getLanguageFieldInitialValue(product.description),
     assets: files,
@@ -141,6 +142,14 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
                 testId={'cardName'}
                 showInlineError
                 isRequired
+              />
+
+              <FormikInput
+                isRequired
+                label={'Оригинальное название'}
+                name={'originalName'}
+                testId={'originalName'}
+                showInlineError
               />
 
               <FormikInput

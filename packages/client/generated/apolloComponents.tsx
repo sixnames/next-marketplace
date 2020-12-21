@@ -294,6 +294,7 @@ export type Product = {
   priorities: Array<CityCounter>;
   name: Array<Translation>;
   cardName: Array<Translation>;
+  originalName: Scalars['String'];
   slug: Scalars['String'];
   description: Array<Translation>;
   rubrics: Array<Scalars['ID']>;
@@ -1833,6 +1834,7 @@ export type ProductPayloadType = {
 export type CreateProductInput = {
   name: Array<TranslationInput>;
   cardName: Array<TranslationInput>;
+  originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
@@ -1866,6 +1868,7 @@ export type UpdateProductInput = {
   id: Scalars['ID'];
   name: Array<TranslationInput>;
   cardName: Array<TranslationInput>;
+  originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
   price: Scalars['Int'];
@@ -2457,7 +2460,7 @@ export type CmsProductAttributesGroupFragment = (
 
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
+  & Pick<Product, 'id' | 'itemId' | 'nameString' | 'cardNameString' | 'originalName' | 'slug' | 'price' | 'descriptionString' | 'active' | 'mainImage' | 'rubrics'>
   & { name: Array<(
     { __typename?: 'Translation' }
     & Pick<Translation, 'key' | 'value'>
@@ -4796,6 +4799,7 @@ export const CmsProductFieldsFragmentDoc = gql`
     value
   }
   cardNameString
+  originalName
   slug
   price
   description {

@@ -74,6 +74,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   const initialValues: CreateProductInput = {
     name: getLanguageFieldInitialValue(),
     cardName: getLanguageFieldInitialValue(),
+    originalName: '',
     price: 0,
     description: getLanguageFieldInitialValue(),
     assets: [],
@@ -142,6 +143,14 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 testId={'cardName'}
                 showInlineError
                 isRequired
+              />
+
+              <FormikInput
+                isRequired
+                label={'Оригинальное название'}
+                name={'originalName'}
+                testId={'originalName'}
+                showInlineError
               />
 
               <FormikInput

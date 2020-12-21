@@ -132,9 +132,14 @@ export const CATALOGUE_CARD_SHOPS_QUERY = gql`
 `;
 
 export const CATALOGUE_CARD_QUERY = gql`
-  query GetCatalogueCardQuery($slug: String!) {
+  query GetCatalogueCardQuery($slug: String!, $rubricSlug: String) {
     getProductCard(slug: $slug) {
       ...ProductCard
+      cardBreadcrumbs(rubricSlug: $rubricSlug) {
+        id
+        name
+        slug
+      }
     }
   }
   ${productCardFragment}

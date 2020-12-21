@@ -5,7 +5,7 @@ import classes from './CardRoute.module.css';
 import { CardFeatureFragment, GetCatalogueCardQueryQuery } from '../../generated/apolloComponents';
 import Link from '../../components/Link/Link';
 import ProductMarker from '../../components/Product/ProductMarker/ProductMarker';
-import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { BreadcrumbsItemInterface } from '../../components/Breadcrumbs/Breadcrumbs';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import Icon from '../../components/Icon/Icon';
 import { useAppContext } from '../../context/appContext';
@@ -67,6 +67,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
     itemId,
     cardFeatures,
     shopsCount,
+    cardBreadcrumbs,
   } = cardData;
   const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
@@ -99,9 +100,17 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
     },
   ];
 
+  const breadcrumbsConfig: BreadcrumbsItemInterface[] = cardBreadcrumbs.map(
+    ({ name, slug, id }) => ({
+      id,
+      name,
+      href: slug,
+    }),
+  );
+
   return (
     <div className={classes.card} data-cy={`card-${slug}`}>
-      <Breadcrumbs currentPageName={cardNameString} />
+      <Breadcrumbs currentPageName={cardNameString} config={breadcrumbsConfig} />
 
       <Inner>
         <div className={classes.mainFrame}>

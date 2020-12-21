@@ -25,4 +25,10 @@ export class CartProduct {
 
   @Field(() => Boolean)
   readonly isShopless?: boolean;
+
+  @Field((_type) => Int)
+  readonly totalPrice?: number;
+
+  @Field((_type) => String)
+  readonly formattedTotalPrice?: string;
 }

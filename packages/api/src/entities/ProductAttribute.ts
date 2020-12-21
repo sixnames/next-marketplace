@@ -24,6 +24,10 @@ export class ProductAttribute {
   @prop({ required: true, default: true })
   showInCard: boolean;
 
+  @Field(() => Boolean)
+  @prop({ required: true, default: false })
+  showAsBreadcrumb: boolean;
+
   @Field((_type) => ProductAttributeViewVariantEnum)
   @prop({
     required: true,

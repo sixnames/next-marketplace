@@ -2,10 +2,10 @@ import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_SITE_QUERY } from '../graphql/query/initialQueries';
 import { InitialSiteQueryQuery, InitialSiteQueryQueryResult } from '../generated/apolloComponents';
-import privateRouteHandler from './privateRouteHandler';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { Theme } from '../types';
 import { parseCookies } from './parseCookies';
+import { ROUTE_SIGN_IN } from '../config';
 
 export type SitePagePropsType<T = undefined> = {
   initialApolloState: InitialSiteQueryQueryResult['data'];
@@ -33,7 +33,7 @@ async function getSiteServerSideProps<T>({
   isProtected,
 }: GetSitePageServerSidePropsArg<T>) {
   try {
-    const { req, res } = context;
+    const { req } = context;
     const isMobileDevice = `${req ? req.headers['user-agent'] : navigator.userAgent}`.match(
       /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
     );
@@ -49,8 +49,12 @@ async function getSiteServerSideProps<T>({
 
     // Redirect if route is protected
     if (!initialApolloState.loading && !initialApolloState.data?.me && isProtected) {
-      privateRouteHandler(res);
-      return { props: { initialApolloState: {} } };
+      return {
+        redirect: {
+          permanent: false,
+          destination: ROUTE_SIGN_IN,
+        },
+      };
     }
 
     // Get theme settings

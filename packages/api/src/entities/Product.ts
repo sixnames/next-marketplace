@@ -16,6 +16,7 @@ import { CityCounter } from './CityCounter';
 import { Asset } from './Asset';
 import { Translation } from './Translation';
 import { ShopProduct } from './ShopProduct';
+import { ProductCardBreadcrumb } from './ProductCardBreadcrumb';
 
 interface InArrayInterface {
   $in: any[];
@@ -105,6 +106,9 @@ export class Product extends TimeStamps {
 
   @Field(() => [ProductConnection])
   readonly connections: ProductConnection[];
+
+  @Field(() => [ProductCardBreadcrumb])
+  readonly cardBreadcrumbs: ProductCardBreadcrumb[];
 
   @Field(() => String)
   readonly nameString: string;

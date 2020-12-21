@@ -12,6 +12,9 @@ export class ProductAttributeInput {
   @Field(() => ID)
   node: string;
 
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  showAsBreadcrumb: boolean;
+
   @Field(() => String, { description: 'Attribute reference via attribute slug field' })
   key: string;
 

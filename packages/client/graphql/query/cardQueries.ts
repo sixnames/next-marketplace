@@ -138,7 +138,7 @@ export const CATALOGUE_CARD_QUERY = gql`
       cardBreadcrumbs(rubricSlug: $rubricSlug) {
         id
         name
-        slug
+        href
       }
     }
   }

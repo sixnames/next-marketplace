@@ -6,7 +6,7 @@ export class ProductCardBreadcrumb {
   id: string;
 
   @Field(() => String)
-  readonly slug: string;
+  readonly href: string;
 
   @Field(() => String)
   readonly name: string;

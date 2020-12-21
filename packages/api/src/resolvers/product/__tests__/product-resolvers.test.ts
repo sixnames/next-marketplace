@@ -130,7 +130,7 @@ describe('Product', () => {
           cardBreadcrumbs(rubricSlug: "${mockData.rubricLevelOneA.slug}") {
             id
             name
-            slug
+            href
           }
           cardFeatures {
             ...CardFeaturesFragment

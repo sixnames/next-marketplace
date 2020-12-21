@@ -991,9 +991,9 @@ enum ProductAttributeViewVariantEnum {
 }
 
 type ProductCardBreadcrumb {
+  href: String!
   id: ID!
   name: String!
-  slug: String!
 }
 
 type ProductCardConnection {

@@ -815,7 +815,7 @@ export class ProductResolver {
           result.push({
             id: attribute._id,
             name: filterNameString,
-            slug: `/${rubricSlug}/${attribute.slug}-${firstSelectedOption.slug}`,
+            href: `/${rubricSlug}/${attribute.slug}-${firstSelectedOption.slug}`,
           });
         }
       }
@@ -824,7 +824,7 @@ export class ProductResolver {
         {
           id: rubric._id,
           name: getLangField(rubric.name),
-          slug: `/${rubricSlug}`,
+          href: `/${rubricSlug}`,
         },
         ...result,
       ];

@@ -517,7 +517,7 @@ export type ProductConnectionItem = {
 export type ProductCardBreadcrumb = {
   __typename?: 'ProductCardBreadcrumb';
   id: Scalars['ID'];
-  slug: Scalars['String'];
+  href: Scalars['String'];
   name: Scalars['String'];
 };
 
@@ -3736,7 +3736,7 @@ export type GetCatalogueCardQueryQuery = (
     { __typename?: 'Product' }
     & { cardBreadcrumbs: Array<(
       { __typename?: 'ProductCardBreadcrumb' }
-      & Pick<ProductCardBreadcrumb, 'id' | 'name' | 'slug'>
+      & Pick<ProductCardBreadcrumb, 'id' | 'name' | 'href'>
     )> }
     & ProductCardFragment
   ) }
@@ -8205,7 +8205,7 @@ export const GetCatalogueCardQueryDocument = gql`
     cardBreadcrumbs(rubricSlug: $rubricSlug) {
       id
       name
-      slug
+      href
     }
   }
 }

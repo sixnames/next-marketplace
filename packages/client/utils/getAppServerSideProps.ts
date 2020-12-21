@@ -1,10 +1,10 @@
 import { GetServerSidePropsContext } from 'next';
 import { initializeApollo } from '../apollo/client';
 import { INITIAL_QUERY } from '../graphql/query/initialQueries';
-import privateRouteHandler from './privateRouteHandler';
 import { InitialQuery } from '../generated/apolloComponents';
 import { parseCookies } from './parseCookies';
 import { Theme } from '../types';
+import { ROUTE_SIGN_IN } from '../config';
 
 export interface AppPageInterface {
   initialApolloState: InitialQuery;
@@ -12,7 +12,7 @@ export interface AppPageInterface {
 
 async function getAppServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const { req, res } = context;
+    const { req } = context;
     const isMobileDevice = `${req ? req.headers['user-agent'] : navigator.userAgent}`.match(
       /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
     );
@@ -28,8 +28,12 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
 
     // Redirect to sign in page if user is not authorized
     if (!initialApolloState || !initialApolloState.data || !initialApolloState.data.me) {
-      privateRouteHandler(res);
-      return { props: { initialApolloState: {} } };
+      return {
+        redirect: {
+          permanent: false,
+          destination: ROUTE_SIGN_IN,
+        },
+      };
     }
 
     // Get theme settings
@@ -43,9 +47,14 @@ async function getAppServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } catch (e) {
-    console.log('====== getServerSideProps error ======');
+    console.log('====== getAppServerSideProps error ======');
     console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
   }
 }
 

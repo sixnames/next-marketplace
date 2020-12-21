@@ -5,6 +5,7 @@ export const cartProductFragment = gql`
   fragment CartProduct on CartProduct {
     id
     amount
+    formattedTotalPrice
     isShopless
     product {
       ...ProductCard

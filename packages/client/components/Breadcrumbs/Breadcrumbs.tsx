@@ -4,7 +4,7 @@ import Inner from '../Inner/Inner';
 import { useAppContext } from '../../context/appContext';
 import Link, { LinkInterface } from '../Link/Link';
 
-interface BreadcrumbsItemInterface extends LinkInterface {
+export interface BreadcrumbsItemInterface extends LinkInterface {
   name: string;
 }
 

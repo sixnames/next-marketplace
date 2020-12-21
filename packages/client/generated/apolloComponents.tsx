@@ -303,6 +303,7 @@ export type Product = {
   cardPrices: ProductCardPrices;
   active: Scalars['Boolean'];
   connections: Array<ProductConnection>;
+  cardBreadcrumbs: Array<ProductCardBreadcrumb>;
   nameString: Scalars['String'];
   cardNameString: Scalars['String'];
   descriptionString: Scalars['String'];
@@ -313,6 +314,11 @@ export type Product = {
   shops: Array<ShopProduct>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+
+export type ProductCardBreadcrumbsArgs = {
+  rubricSlug?: Maybe<Scalars['String']>;
 };
 
 
@@ -453,6 +459,7 @@ export type Metric = {
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   showInCard: Scalars['Boolean'];
+  showAsBreadcrumb: Scalars['Boolean'];
   viewVariant: ProductAttributeViewVariantEnum;
   node: Attribute;
   /** Attribute reference via attribute slug field */
@@ -505,6 +512,13 @@ export type ProductConnectionItem = {
   value: Scalars['String'];
   /** Returns name of selected attribute value */
   optionName: Scalars['String'];
+};
+
+export type ProductCardBreadcrumb = {
+  __typename?: 'ProductCardBreadcrumb';
+  id: Scalars['ID'];
+  href: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type ProductCardFeatures = {
@@ -1297,6 +1311,8 @@ export type CartProduct = {
   product?: Maybe<Product>;
   amount: Scalars['Int'];
   isShopless: Scalars['Boolean'];
+  totalPrice: Scalars['Int'];
+  formattedTotalPrice: Scalars['String'];
 };
 
 export type PaginatedOrdersResponse = {
@@ -1839,6 +1855,7 @@ export type ProductAttributeInput = {
   showInCard: Scalars['Boolean'];
   viewVariant?: Maybe<ProductAttributeViewVariantEnum>;
   node: Scalars['ID'];
+  showAsBreadcrumb?: Maybe<Scalars['Boolean']>;
   /** Attribute reference via attribute slug field */
   key: Scalars['String'];
   value: Array<Scalars['String']>;
@@ -2940,7 +2957,7 @@ export type DeleteAttributesGroupFromRubricMutation = (
 
 export type CartProductFragment = (
   { __typename?: 'CartProduct' }
-  & Pick<CartProduct, 'id' | 'amount' | 'isShopless'>
+  & Pick<CartProduct, 'id' | 'amount' | 'formattedTotalPrice' | 'isShopless'>
   & { product?: Maybe<(
     { __typename?: 'Product' }
     & ProductCardFragment
@@ -3711,6 +3728,7 @@ export type GetCatalogueCardShopsQuery = (
 
 export type GetCatalogueCardQueryQueryVariables = Exact<{
   slug: Scalars['String'];
+  rubricSlug?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -3718,6 +3736,10 @@ export type GetCatalogueCardQueryQuery = (
   { __typename?: 'Query' }
   & { getProductCard: (
     { __typename?: 'Product' }
+    & { cardBreadcrumbs: Array<(
+      { __typename?: 'ProductCardBreadcrumb' }
+      & Pick<ProductCardBreadcrumb, 'id' | 'name' | 'href'>
+    )> }
     & ProductCardFragment
   ) }
 );
@@ -5013,6 +5035,7 @@ export const CartProductFragmentDoc = gql`
     fragment CartProduct on CartProduct {
   id
   amount
+  formattedTotalPrice
   isShopless
   product {
     ...ProductCard
@@ -8179,9 +8202,14 @@ export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
 export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
 export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($slug: String!) {
+    query GetCatalogueCardQuery($slug: String!, $rubricSlug: String) {
   getProductCard(slug: $slug) {
     ...ProductCard
+    cardBreadcrumbs(rubricSlug: $rubricSlug) {
+      id
+      name
+      href
+    }
   }
 }
     ${ProductCardFragmentDoc}`;
@@ -8199,6 +8227,7 @@ export const GetCatalogueCardQueryDocument = gql`
  * const { data, loading, error } = useGetCatalogueCardQueryQuery({
  *   variables: {
  *      slug: // value for 'slug'
+ *      rubricSlug: // value for 'rubricSlug'
  *   },
  * });
  */

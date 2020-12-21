@@ -188,10 +188,12 @@ type CartPayloadType {
 type CartProduct {
   _id: ID!
   amount: Int!
+  formattedTotalPrice: String!
   id: ID!
   isShopless: Boolean!
   product: Product
   shopProduct: ShopProduct
+  totalPrice: Int!
 }
 
 type CatalogueData {
@@ -922,6 +924,7 @@ type Product {
   active: Boolean!
   assets: [Asset!]!
   attributesGroups: [ProductAttributesGroup!]!
+  cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
   cardName: [Translation!]!
@@ -952,6 +955,7 @@ type ProductAttribute {
   node: Attribute!
   readableOptions: [Option!]!
   readableValue: [String!]!
+  showAsBreadcrumb: Boolean!
   showInCard: Boolean!
   value: [String!]!
   viewVariant: ProductAttributeViewVariantEnum!
@@ -961,6 +965,7 @@ input ProductAttributeInput {
   """Attribute reference via attribute slug field"""
   key: String!
   node: ID!
+  showAsBreadcrumb: Boolean = false
   showInCard: Boolean!
   value: [String!]!
   viewVariant: ProductAttributeViewVariantEnum
@@ -985,6 +990,12 @@ enum ProductAttributeViewVariantEnum {
   outerRating
   tag
   text
+}
+
+type ProductCardBreadcrumb {
+  href: String!
+  id: ID!
+  name: String!
 }
 
 type ProductCardConnection {

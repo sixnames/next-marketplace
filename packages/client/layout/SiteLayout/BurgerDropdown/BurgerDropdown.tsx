@@ -167,6 +167,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <ul>
                       <li>
                         <span
+                          onClick={hideBurgerDropdown}
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkAccent} ${classes.dropdownGroupLinkBig}`}
                         >
                           <span>Скидки</span>
@@ -175,6 +176,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                       </li>
                       <li>
                         <span
+                          onClick={hideBurgerDropdown}
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkBig}`}
                         >
                           <span>Бестселлеры</span>
@@ -192,6 +194,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                       </li>
                       <li>
                         <span
+                          onClick={hideBurgerDropdown}
                           className={`${classes.dropdownGroupLink} ${classes.dropdownGroupLinkBig}`}
                         >
                           <span>Банкетный калькулятор</span>
@@ -206,6 +209,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <ul>
                       <li>
                         <Link
+                          onClick={hideBurgerDropdown}
                           testId={me ? `burger-profile-link` : `burger-sign-in-link`}
                           href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
                           className={`${classes.dropdownGroupLink}`}
@@ -221,13 +225,19 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Сравнение</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Избранное</span>
                           <BurgerDropdownChevron />
                         </span>
@@ -249,7 +259,11 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                       ) : null}
                       {me ? (
                         <li>
-                          <Link href={ROUTE_APP} className={`${classes.dropdownGroupLink}`}>
+                          <Link
+                            onClick={hideBurgerDropdown}
+                            href={ROUTE_APP}
+                            className={`${classes.dropdownGroupLink}`}
+                          >
                             <span>CMS</span>
                             <BurgerDropdownChevron />
                           </Link>
@@ -262,37 +276,55 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     <div className={classes.dropdownGroupTitle}>{configSiteName}</div>
                     <ul>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>О компании</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Контакты</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Служба поддержки</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Винотеки</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Вакансии</span>
                           <BurgerDropdownChevron />
                         </span>
                       </li>
                       <li>
-                        <span className={`${classes.dropdownGroupLink}`}>
+                        <span
+                          onClick={hideBurgerDropdown}
+                          className={`${classes.dropdownGroupLink}`}
+                        >
                           <span>Блог компании</span>
                           <BurgerDropdownChevron />
                         </span>

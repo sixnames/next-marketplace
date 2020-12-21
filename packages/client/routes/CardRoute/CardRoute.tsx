@@ -67,6 +67,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
     itemId,
     cardFeatures,
     shopsCount,
+    cardBreadcrumbs,
   } = cardData;
   const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
@@ -101,7 +102,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
 
   return (
     <div className={classes.card} data-cy={`card-${slug}`}>
-      <Breadcrumbs currentPageName={cardNameString} />
+      <Breadcrumbs currentPageName={cardNameString} config={cardBreadcrumbs} />
 
       <Inner>
         <div className={classes.mainFrame}>

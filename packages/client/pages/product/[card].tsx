@@ -62,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
         },
         variables: {
           slug: card,
+          rubricSlug: rubric,
         },
       });
 

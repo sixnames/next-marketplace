@@ -922,6 +922,7 @@ type Product {
   active: Boolean!
   assets: [Asset!]!
   attributesGroups: [ProductAttributesGroup!]!
+  cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
   cardName: [Translation!]!
@@ -962,6 +963,7 @@ input ProductAttributeInput {
   """Attribute reference via attribute slug field"""
   key: String!
   node: ID!
+  showAsBreadcrumb: Boolean = false
   showInCard: Boolean!
   value: [String!]!
   viewVariant: ProductAttributeViewVariantEnum
@@ -986,6 +988,12 @@ enum ProductAttributeViewVariantEnum {
   outerRating
   tag
   text
+}
+
+type ProductCardBreadcrumb {
+  id: ID!
+  name: String!
+  slug: String!
 }
 
 type ProductCardConnection {

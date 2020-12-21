@@ -60,6 +60,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_CITY,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
   SORT_ASC,
   SORT_DESC,
 } from '@yagu/config';
@@ -85,6 +86,7 @@ import { ProductConnection, ProductConnectionModel } from '../../entities/Produc
 import { Asset } from '../../entities/Asset';
 import { ProductShopsInput } from './ProductShopsInput';
 import { GetProductShopsInput } from './GetProductShopsInput';
+import { ProductCardBreadcrumb } from '../../entities/ProductCardBreadcrumb';
 
 const {
   operationConfigCreate,
@@ -756,6 +758,78 @@ export class ProductResolver {
         min: '0',
         max: '0',
       };
+    }
+  }
+
+  @FieldResolver((_returns) => [ProductCardBreadcrumb])
+  async cardBreadcrumbs(
+    @Localization() { getLangField }: LocalizationPayloadInterface,
+    @Root() product: DocumentType<Product>,
+    @Arg('rubricSlug', { nullable: true }) rubricSlug: string,
+  ): Promise<ProductCardBreadcrumb[]> {
+    try {
+      if (!rubricSlug) {
+        return [];
+      }
+
+      const rubric = await RubricModel.findOne({ slug: rubricSlug });
+      if (!rubric) {
+        return [];
+      }
+
+      const result: ProductCardBreadcrumb[] = [];
+
+      for await (const productAttributesGroup of product.attributesGroups) {
+        if (!productAttributesGroup.showInCard) {
+          continue;
+        }
+        for await (const productAttribute of productAttributesGroup.attributes) {
+          if (!productAttribute.showAsBreadcrumb) {
+            continue;
+          }
+
+          const attribute = await AttributeModel.findOne({ _id: productAttribute.node });
+          if (!attribute) {
+            continue;
+          }
+          if (!productAttribute.value || productAttribute.value.length < 1) {
+            continue;
+          }
+
+          const options = await OptionModel.find({ slug: { $in: productAttribute.value } });
+          const firstSelectedOption = options[0];
+          if (!firstSelectedOption) {
+            continue;
+          }
+
+          const { variants, name } = firstSelectedOption;
+          let filterNameString: string;
+          const currentVariant = variants?.find(({ key }) => key === rubric.catalogueTitle.gender);
+          const currentVariantName = getLangField(currentVariant?.value);
+          if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
+            filterNameString = getLangField(name);
+          } else {
+            filterNameString = currentVariantName;
+          }
+
+          result.push({
+            id: attribute._id,
+            name: filterNameString,
+            slug: `/${rubricSlug}/${attribute.slug}-${firstSelectedOption.slug}`,
+          });
+        }
+      }
+
+      return [
+        {
+          id: rubric._id,
+          name: getLangField(rubric.name),
+          slug: `/${rubricSlug}`,
+        },
+        ...result,
+      ];
+    } catch (e) {
+      return [];
     }
   }
 

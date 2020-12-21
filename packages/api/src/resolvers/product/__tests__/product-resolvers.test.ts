@@ -114,9 +114,6 @@ describe('Product', () => {
               }
             }
           }
-          cardFeatures {
-            ...CardFeaturesFragment
-          }
           cardConnections {
             id
             nameString
@@ -129,6 +126,14 @@ describe('Product', () => {
                 slug
               }
             }
+          }
+          cardBreadcrumbs(rubricSlug: "${mockData.rubricLevelOneA.slug}") {
+            id
+            name
+            slug
+          }
+          cardFeatures {
+            ...CardFeaturesFragment
           }
           connections {
             ...ConnectionFragment
@@ -156,6 +161,7 @@ describe('Product', () => {
     `);
     const currentProduct = getProductBySlug;
     expect(currentProduct.slug).toEqual(mockData.productA.slug);
+    expect(currentProduct.cardBreadcrumbs).toBeDefined();
 
     const {
       data: { getProductBySlug: secondaryProduct },

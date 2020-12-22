@@ -15,7 +15,7 @@ interface AppInterface {
   Component: any;
   pageProps: any;
 }
-
+// Master branch renamed to main
 const App: NextPage<AppInterface> = ({ Component, pageProps }) => {
   const apolloClient = useApollo();
 

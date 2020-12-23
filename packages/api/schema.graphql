@@ -167,6 +167,27 @@ type AttributeViewOption {
   nameString: String!
 }
 
+type Brand {
+  collections: [ID!]!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  itemId: Int!
+  name: String!
+  slug: String!
+  updatedAt: DateTime!
+  url: String
+}
+
+type BrandCollection {
+  createdAt: DateTime!
+  id: ID!
+  itemId: Int!
+  name: String!
+  slug: String!
+  updatedAt: DateTime!
+}
+
 type Cart {
   createdAt: DateTime!
   formattedTotalPrice: String!
@@ -566,6 +587,17 @@ input MakeAnOrderInput {
   phone: String!
 }
 
+type Manufacturer {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  itemId: Int!
+  name: String!
+  slug: String!
+  updatedAt: DateTime!
+  url: String
+}
+
 type Message {
   id: ID!
   key: String!
@@ -925,6 +957,8 @@ type Product {
   active: Boolean!
   assets: [Asset!]!
   attributesGroups: [ProductAttributesGroup!]!
+  brand: Brand
+  brandCollection: BrandCollection
   cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
@@ -938,6 +972,7 @@ type Product {
   id: ID!
   itemId: Int!
   mainImage: String!
+  manufacturer: Manufacturer!
   name: [Translation!]!
   nameString: String!
   originalName: String!

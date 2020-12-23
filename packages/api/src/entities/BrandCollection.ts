@@ -20,6 +20,10 @@ export class BrandCollection extends TimeStamps {
   @prop({ required: true, trim: true })
   name: string;
 
+  @Field((_type) => String)
+  @prop({ type: String, required: true, trim: true })
+  slug: string;
+
   @Field()
   readonly createdAt?: Date;
 
@@ -32,4 +36,4 @@ export class BrandCollection extends TimeStamps {
   ) => Promise<PaginateResult<BrandCollection>>;
 }
 
-export const BrandModel = getModelForClass(BrandCollection);
+export const BrandCollectionModel = getModelForClass(BrandCollection);

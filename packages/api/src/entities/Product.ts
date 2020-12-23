@@ -17,6 +17,9 @@ import { Asset } from './Asset';
 import { Translation } from './Translation';
 import { ShopProduct } from './ShopProduct';
 import { ProductCardBreadcrumb } from './ProductCardBreadcrumb';
+import { Brand } from './Brand';
+import { BrandCollection } from './BrandCollection';
+import { Manufacturer } from './Manufacturer';
 
 interface InArrayInterface {
   $in: any[];
@@ -100,6 +103,18 @@ export class Product extends TimeStamps {
   @Field(() => Int)
   @prop({ default: 0 })
   price?: number;
+
+  @Field(() => Brand, { nullable: true })
+  @prop({ type: String })
+  brand?: string;
+
+  @Field(() => BrandCollection, { nullable: true })
+  @prop({ type: String })
+  brandCollection?: string;
+
+  @Field(() => Manufacturer)
+  @prop({ type: String, required: true })
+  manufacturer: string;
 
   @Field(() => ProductCardPrices)
   readonly cardPrices: ProductCardPrices;

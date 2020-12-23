@@ -17,16 +17,24 @@ export class Brand extends TimeStamps {
   readonly itemId: number;
 
   @Field((_type) => String)
-  @prop({ required: true, trim: true })
+  @prop({ type: String, required: true, trim: true })
   name: string;
 
-  @Field((_type) => String, { nullable: true })
-  @prop()
-  url?: string | null;
+  @Field((_type) => String)
+  @prop({ type: String, required: true, trim: true })
+  slug: string;
 
   @Field((_type) => String, { nullable: true })
-  @prop()
-  description?: string | null;
+  @prop({ type: String })
+  url?: string;
+
+  @Field((_type) => String, { nullable: true })
+  @prop({ type: String })
+  description?: string;
+
+  @Field(() => [ID])
+  @prop({ type: String })
+  collections: string[];
 
   @Field()
   readonly createdAt?: Date;

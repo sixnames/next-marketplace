@@ -253,6 +253,8 @@ export class ProductResolver {
         views: [{ key: DEFAULT_CITY, counter: 1 }],
         assets: assetsResult,
         active: true,
+        // TODO
+        manufacturer: '',
       });
 
       if (!product) {

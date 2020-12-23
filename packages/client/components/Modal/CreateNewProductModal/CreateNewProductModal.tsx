@@ -20,11 +20,11 @@ import FormikArrayCheckbox from '../../FormElements/Checkbox/FormikArrayCheckbox
 import InputLine from '../../FormElements/Input/InputLine';
 import ProductAttributes from './ProductAttributes';
 import classes from './CreateNewProductModal.module.css';
-import { createProductSchema } from '@yagu/validation';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import { MutationUpdaterFn, PureQueryOptions, RefetchQueriesFunction } from '@apollo/client';
+import { createProductSchema } from '@yagu/shared';
 
 export interface CreateNewProductModalInterface {
   rubricId?: string;

@@ -9,7 +9,7 @@ import ModalButtons from '../../components/Modal/ModalButtons';
 import Button from '../../components/Buttons/Button';
 import { useLanguageContext } from '../../context/languageContext';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateRoleSchema } from '@yagu/validation';
+import { updateRoleSchema } from '@yagu/shared';
 import { useUpdateRoleMutation } from '../../generated/apolloComponents';
 import { GET_ALL_ROLES_QUERY, GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

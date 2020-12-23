@@ -3,7 +3,7 @@ import useSound from 'use-sound';
 import Icon from '../Icon/Icon';
 import { NotificationVariant } from '../../types';
 import classes from './Notification.module.css';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 import ButtonCross from '../Buttons/ButtonCross';
 
 export interface NotificationInterface {

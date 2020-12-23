@@ -7,7 +7,6 @@ import { Aggregate, FilterQuery, PaginateOptions, PaginateResult } from 'mongoos
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { ProductCardConnection } from './ProductCardConnection';
 import { RubricProductAttributesFilterInput } from '../resolvers/rubric/RubricProductPaginateInput';
-import { alwaysArray } from '@yagu/shared';
 import { ProductAttributesGroup } from './ProductAttributesGroup';
 import { ProductCardFeatures } from './ProductCardFeatures';
 import { ProductCardPrices } from './ProductCardPrices';
@@ -20,6 +19,7 @@ import { ProductCardBreadcrumb } from './ProductCardBreadcrumb';
 import { Brand } from './Brand';
 import { BrandCollection } from './BrandCollection';
 import { Manufacturer } from './Manufacturer';
+import { alwaysArray } from '../utils/alwaysArray';
 
 interface InArrayInterface {
   $in: any[];

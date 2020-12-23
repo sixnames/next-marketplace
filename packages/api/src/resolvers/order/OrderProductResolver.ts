@@ -5,7 +5,8 @@ import { Localization, LocalizationPayloadInterface } from '../../decorators/par
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { Shop, ShopModel } from '../../entities/Shop';
 import { Company, CompanyModel } from '../../entities/Company';
-import { getCurrencyString, getPercentage, noNaN } from '@yagu/shared';
+import { getPercentage, noNaN } from '../../utils/numbers';
+import { getCurrencyString } from '../../utils/intl';
 
 @Resolver((_for) => OrderProduct)
 export class OrderProductResolver {

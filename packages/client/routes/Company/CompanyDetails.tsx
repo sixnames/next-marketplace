@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { CompanyFragment, useUpdateCompanyMutation } from '../../generated/apolloComponents';
 import Inner from '../../components/Inner/Inner';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateCompanyClientSchema } from '@yagu/validation';
+import { updateCompanyClientSchema } from '@yagu/shared';
 import CompanyForm from './CompanyForm';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { COMPANY_QUERY } from '../../graphql/query/companiesQueries';

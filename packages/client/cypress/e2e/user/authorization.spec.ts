@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { ME_AS_ADMIN } from '@yagu/mocks';
+import { ME_AS_ADMIN } from '@yagu/shared';
 const fakeEmail = 'fake@gm';
 const fakePassword = 'fake';
 

@@ -1,3 +1,4 @@
+import { noNaN } from '../../utils/numbers';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { CatalogueData, CatalogueSearchResult } from '../../entities/CatalogueData';
 import { Rubric, RubricModel } from '../../entities/Rubric';
@@ -14,13 +15,7 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
-import {
-  CATALOGUE_PRODUCTS_LIMIT,
-  noNaN,
-  SORT_ASC_NUM,
-  SORT_DESC,
-  SORT_DESC_NUM,
-} from '@yagu/shared';
+import { CATALOGUE_PRODUCTS_LIMIT, SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/shared';
 import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
 import { SortDirectionEnum } from '../commonInputs/PaginateInput';
 

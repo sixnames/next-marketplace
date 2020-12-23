@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import { SetRoleOperationCustomFilterInput } from '../../../generated/apolloComponents';
-import { ROLE_EMPTY_CUSTOM_FILTER } from '@yagu/config';
 import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
 import ModalText from '../ModalText';
 import JsonEditor from '../../JSONEditor/JSONEditor';
+import { ROLE_EMPTY_CUSTOM_FILTER } from '@yagu/shared';
 
 export interface RoleCustomFilterModalInterface {
   customFilter: string;

@@ -10,8 +10,9 @@ import FieldErrorMessage, {
 import Button from '../../Buttons/Button';
 import classes from './FormikDropZone.module.css';
 import { NEGATIVE_INDEX } from '../../../config';
-import { alwaysArray, noNaN } from '@yagu/shared';
 import Tooltip from '../../TTip/Tooltip';
+import { alwaysArray } from '../../../utils/alwaysArray';
+import { noNaN } from '../../../utils/numbers';
 
 interface FormikDropZoneInterface extends ErrorMessageGapsInterface {
   format?: string;

@@ -8,10 +8,10 @@ import RatingStars from '../../RatingStars/RatingStars';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import Link from '../../Link/Link';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
-import { noNaN } from '@yagu/shared';
 import SpinnerInput from '../../FormElements/SpinnerInput/SpinnerInput';
 import Button from '../../Buttons/Button';
 import ControlButton from '../../Buttons/ControlButton';
+import { noNaN } from '../../../utils/numbers';
 
 interface ProductSnippetRowInterface {
   product: ProductSnippetFragment;

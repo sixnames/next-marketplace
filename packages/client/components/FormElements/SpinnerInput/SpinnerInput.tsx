@@ -2,7 +2,7 @@ import React from 'react';
 import { OnOffType } from '../../../types';
 import classes from './SpinnerInput.module.css';
 import Icon from '../../Icon/Icon';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../../../utils/numbers';
 
 export interface SpinnerInterface {
   name: string;

@@ -14,12 +14,11 @@ import {
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
-import { optionsGroupModalSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
-import { OPTIONS_GROUP_VARIANT_TEXT } from '@yagu/config';
+import { OPTIONS_GROUP_VARIANT_TEXT, optionsGroupModalSchema } from '@yagu/shared';
 
 export interface OptionsGroupModalInterface {
   group?: OptionsGroupFragment;

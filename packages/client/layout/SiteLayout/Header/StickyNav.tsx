@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useConfigContext } from '../../../context/configContext';
-import { alwaysArray } from '@yagu/shared';
+import { alwaysArray } from '../../../utils/alwaysArray';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,

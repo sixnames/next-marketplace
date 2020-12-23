@@ -1,6 +1,11 @@
 /// <reference types="cypress" />
-import { DEFAULT_CITY, QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
-import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
+import {
+  DEFAULT_CITY,
+  MOCK_ADDRESS_A,
+  MOCK_NEW_COMPANY,
+  MOCK_NEW_SHOP,
+  QUERY_DATA_LAYOUT_FILTER_ENABLED,
+} from '@yagu/shared';
 import { getFullName } from '@yagu/shared';
 
 describe('Companies list', () => {

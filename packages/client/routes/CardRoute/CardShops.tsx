@@ -5,7 +5,7 @@ import {
   SortDirectionEnum,
   useGetCatalogueCardShopsQuery,
 } from '../../generated/apolloComponents';
-import { SORT_ASC, SORT_DESC } from '@yagu/config';
+import { SORT_ASC, SORT_DESC } from '@yagu/shared';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import CardShop from './CardShop';

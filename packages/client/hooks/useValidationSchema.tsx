@@ -1,6 +1,5 @@
-import { MessageKey } from '@yagu/config';
 import { useGetValidationMessagesQuery } from '../generated/apolloComponents';
-import { MultiLangSchemaMessagesInterface } from '@yagu/validation';
+import { MessageKey, MultiLangSchemaMessagesInterface } from '@yagu/shared';
 import { useLanguageContext } from '../context/languageContext';
 import * as Yup from 'yup';
 

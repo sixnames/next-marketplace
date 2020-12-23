@@ -1,8 +1,8 @@
 import { FieldResolver, Resolver, Root } from 'type-graphql';
 import { Contacts } from '../../entities/Contacts';
 import { FormattedPhone } from '../../entities/FormattedPhone';
-import { phoneToRaw, phoneToReadable } from '@yagu/shared';
 import { DocumentType } from '@typegoose/typegoose';
+import { phoneToRaw, phoneToReadable } from '../../utils/phoneUtils';
 
 @Resolver((_for) => Contacts)
 export class ContactsResolver {

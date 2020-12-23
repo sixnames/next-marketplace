@@ -55,7 +55,6 @@ import { RoleRuleModel } from '../../entities/RoleRule';
 import {
   addAttributesGroupToRubricInputSchema,
   addProductToRubricInputSchema,
-  alwaysArray,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   createRubricInputSchema,
@@ -63,7 +62,6 @@ import {
   DEFAULT_PRIORITY,
   deleteAttributesGroupFromRubricInputSchema,
   deleteProductFromRubricInputSchema,
-  getBooleanFromArray,
   getCurrencyString,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
@@ -73,6 +71,8 @@ import {
   updateRubricInputSchema,
 } from '@yagu/shared';
 import queryString from 'query-string';
+import { alwaysArray } from '../../utils/alwaysArray';
+import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
 
 interface ParentRelatedDataInterface {
   variant: string;

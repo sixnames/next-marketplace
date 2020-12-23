@@ -5,11 +5,10 @@ import {
   useUpdateConfigMutation,
 } from '../../generated/apolloComponents';
 import { IS_BROWSER } from '../../config';
-import { CONFIG_VARIANT_ASSET } from '@yagu/config';
+import { CONFIG_VARIANT_ASSET, updateConfigSchema } from '@yagu/shared';
 import InnerWide from '../../components/Inner/InnerWide';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateConfigSchema } from '@yagu/validation';
 import Button from '../../components/Buttons/Button';
 import classes from './ConfigsContent.module.css';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

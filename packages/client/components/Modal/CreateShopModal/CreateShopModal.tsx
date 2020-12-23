@@ -3,10 +3,10 @@ import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import ShopForm from '../../../routes/Company/ShopForm';
 import useValidationSchema from '../../../hooks/useValidationSchema';
-import { addShopToCompanySchema } from '@yagu/validation';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import { useAddShopToCompanyMutation } from '../../../generated/apolloComponents';
 import { COMPANY_QUERY } from '../../../graphql/query/companiesQueries';
+import { addShopToCompanySchema } from '@yagu/shared';
 
 export interface CreateShopModalInterface {
   companyId: string;

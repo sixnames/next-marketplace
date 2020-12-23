@@ -1,5 +1,5 @@
 import 'cypress-file-upload';
-import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/config';
+import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/shared';
 import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterface;
 // ***********************************************
 // This example commands.js shows you how to

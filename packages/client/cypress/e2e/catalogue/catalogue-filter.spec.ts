@@ -5,7 +5,7 @@ import {
   MOCK_OPTIONS_WINE_COLOR,
   MOCK_OPTIONS_WINE_VARIANT,
   MOCK_RUBRIC_LEVEL_ONE,
-} from '@yagu/mocks';
+} from '@yagu/shared';
 
 describe('Catalogue filter', () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
-import { DEFAULT_LANG } from '@yagu/config';
+import { DEFAULT_LANG } from '@yagu/shared';
 
 const newRoleName = 'newRoleName';
 const newRoleDescription = 'newRoleName vary long description';

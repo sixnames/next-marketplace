@@ -1,15 +1,16 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
-import { MOCK_OPTIONS_GROUP_COLORS, MOCK_OPTIONS_WINE_COLOR } from '@yagu/mocks';
 import {
-  GENDER_SHE,
+  DEFAULT_LANG,
   GENDER_HE,
   GENDER_IT,
-  DEFAULT_LANG,
-  SECONDARY_LANG,
-  OPTIONS_GROUP_VARIANT_ICON,
+  GENDER_SHE,
   iconTypesList,
-} from '@yagu/config';
+  MOCK_OPTIONS_GROUP_COLORS,
+  MOCK_OPTIONS_WINE_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+  SECONDARY_LANG,
+} from '@yagu/shared';
 
 describe('Options Groups', () => {
   beforeEach(() => {

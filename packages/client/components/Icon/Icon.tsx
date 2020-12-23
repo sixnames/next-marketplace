@@ -60,7 +60,7 @@ import { ReactComponent as QuestionCircle } from './icons/app/question-circle.sv
 import { ReactComponent as ThreeDots } from './icons/app/three-dots.svg';
 import { ReactComponent as ThreeDotsVertical } from './icons/app/three-dots-vertical.svg';
 import { ReactComponent as Trash } from './icons/app/trash.svg';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 
 interface IconPropsInterface {
   name: IconType;

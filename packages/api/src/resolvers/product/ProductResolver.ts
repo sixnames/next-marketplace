@@ -68,7 +68,6 @@ import {
   createProductSchema,
   DEFAULT_CITY,
   deleteProductFromConnectionSchema,
-  getCurrencyString,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   SORT_ASC,
   SORT_DESC,
@@ -85,6 +84,7 @@ import { Asset } from '../../entities/Asset';
 import { ProductShopsInput } from './ProductShopsInput';
 import { GetProductShopsInput } from './GetProductShopsInput';
 import { ProductCardBreadcrumb } from '../../entities/ProductCardBreadcrumb';
+import { getCurrencyString } from '../../utils/intl';
 
 const {
   operationConfigCreate,

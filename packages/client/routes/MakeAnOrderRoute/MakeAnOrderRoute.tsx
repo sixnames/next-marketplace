@@ -7,7 +7,7 @@ import Title from '../../components/Title/Title';
 import CartAside from '../CartRoute/CartAside';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { makeAnOrderSchema } from '@yagu/validation';
+import { makeAnOrderSchema } from '@yagu/shared';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikTextarea from '../../components/FormElements/Textarea/FormikTextarea';
 import { CartProductFragment } from '../../generated/apolloComponents';

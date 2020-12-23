@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { ADMIN_PASSWORD } from '@yagu/config';
+import { ADMIN_PASSWORD } from '@yagu/shared';
 
 describe('Profile details', () => {
   beforeEach(() => {

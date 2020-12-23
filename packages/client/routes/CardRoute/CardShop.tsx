@@ -3,7 +3,6 @@ import classes from './CardShop.module.css';
 import { ShopProductSnippetFragment } from '../../generated/apolloComponents';
 import Image from '../../components/Image/Image';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
-import { noNaN } from '@yagu/shared';
 import Button from '../../components/Buttons/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
@@ -12,6 +11,7 @@ import Icon from '../../components/Icon/Icon';
 import { useSiteContext } from '../../context/siteContext';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import LayoutCard from '../../layout/LayoutCard/LayoutCard';
+import { noNaN } from '../../utils/numbers';
 
 interface CardShopInterface {
   shopProduct: ShopProductSnippetFragment;

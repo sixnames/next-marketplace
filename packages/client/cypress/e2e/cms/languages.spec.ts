@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { ISO_LANGUAGES } from '@yagu/mocks';
+import { ISO_LANGUAGES } from '@yagu/shared';
 
 describe('Languages', () => {
   beforeEach(() => {

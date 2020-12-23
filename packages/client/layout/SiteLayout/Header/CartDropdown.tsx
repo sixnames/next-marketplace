@@ -8,11 +8,11 @@ import ButtonCross from '../../../components/Buttons/ButtonCross';
 import { useSiteContext } from '../../../context/siteContext';
 import ControlButton from '../../../components/Buttons/ControlButton';
 import SpinnerInput from '../../../components/FormElements/SpinnerInput/SpinnerInput';
-import { noNaN } from '@yagu/shared';
 import Currency from '../../../components/Currency/Currency';
 import Button from '../../../components/Buttons/Button';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../../context/notificationsContext';
+import { noNaN } from '../../../utils/numbers';
 
 interface CartDropdownInterface {
   cart: CartFragment;

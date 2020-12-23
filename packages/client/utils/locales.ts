@@ -3,7 +3,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
-} from '@yagu/config';
+} from '@yagu/shared';
 
 export const localeString = (value: string | number) => {
   const finalValue = typeof value === 'string' ? parseInt(value) : value;

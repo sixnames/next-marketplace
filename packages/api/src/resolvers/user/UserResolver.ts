@@ -37,11 +37,6 @@ import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import {
   createUserSchema,
-  getFullName,
-  getShortName,
-  noNaN,
-  phoneToRaw,
-  phoneToReadable,
   ROLE_SLUG_GUEST,
   signInValidationSchema,
   signUpValidationSchema,
@@ -53,6 +48,9 @@ import { FormattedPhone } from '../../entities/FormattedPhone';
 import { Order, OrderModel } from '../../entities/Order';
 import { sendPasswordUpdatedEmail } from '../../emails/passwordUpdatedEmail';
 import { signUpEmail } from '../../emails/signUpEmail';
+import { phoneToRaw, phoneToReadable } from '../../utils/phoneUtils';
+import { getFullName, getShortName } from '../../utils/nameUtils';
+import { noNaN } from '../../utils/numbers';
 
 const {
   operationConfigCreate,

@@ -1,6 +1,6 @@
 import { InitialQuery } from '../generated/apolloComponents';
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../utils/numbers';
 
 interface ConfigContextInterface {
   configs: InitialQuery['getAllConfigs'];

@@ -195,7 +195,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAA.id],
       brand: brandA.id,
       brandCollection: brandCollectionA.id,
-      manufacturer: manufacturerA,
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -210,7 +210,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         rubrics: [rubricLevelThreeAA.id],
         brand: brandB.id,
         brandCollection: brandCollectionB.id,
-        manufacturer: manufacturerB,
+        manufacturer: manufacturerB.id,
       },
       false,
     ),
@@ -226,7 +226,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAB.id],
       brand: brandA.id,
       brandCollection: brandCollectionA.id,
-      manufacturer: manufacturerA,
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -240,7 +240,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAA.id],
       brand: brandB.id,
       brandCollection: brandCollectionB.id,
-      manufacturer: manufacturerB,
+      manufacturer: manufacturerB.id,
     }),
   );
 
@@ -252,7 +252,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineTypeOptions: optionsSlugsWineType[1],
       }),
       rubrics: [rubricLevelThreeAA.id],
-      manufacturer: manufacturerA,
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -267,7 +267,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAA.id],
       brand: brandC.id,
       brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC,
+      manufacturer: manufacturerC.id,
     }),
   );
 
@@ -283,7 +283,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAA.id],
       brand: brandC.id,
       brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC,
+      manufacturer: manufacturerC.id,
     }),
   );
 
@@ -299,7 +299,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       rubrics: [rubricLevelThreeAA.id],
       brand: brandC.id,
       brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC,
+      manufacturer: manufacturerC.id,
     }),
   );
 

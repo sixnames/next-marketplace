@@ -14,6 +14,9 @@ export interface GetProductCitiesInterface {
   price: number;
   priority: number;
   slug: string;
+  brand?: string;
+  brandCollection?: string;
+  manufacturer: string;
   views: CityCounter[];
 }
 

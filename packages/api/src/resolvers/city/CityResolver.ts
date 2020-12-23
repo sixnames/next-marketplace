@@ -9,8 +9,8 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { CountryModel } from '../../entities/Country';
-import { DEFAULT_CURRENCY } from '@yagu/config';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { DEFAULT_CURRENCY } from '@yagu/shared';
 
 const { operationConfigRead } = RoleRuleModel.getOperationsConfigs(City.name);
 

@@ -1,16 +1,19 @@
 import { Currency, CurrencyModel } from '../../entities/Currency';
+import { City, CityModel } from '../../entities/City';
+import { Country, CountryModel } from '../../entities/Country';
+import { Language, LanguageModel } from '../../entities/Language';
+import { Metric, MetricModel } from '../../entities/Metric';
 import {
+  DEFAULT_CITY,
+  DEFAULT_COUNTRY,
+  DEFAULT_CURRENCY,
+  DEFAULT_LANG,
   INITIAL_CITIES,
   INITIAL_COUNTRIES,
   INITIAL_LANGUAGES,
   MOCK_CURRENCIES,
   MOCK_METRICS,
-} from '@yagu/mocks';
-import { DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_CURRENCY, DEFAULT_LANG } from '@yagu/config';
-import { City, CityModel } from '../../entities/City';
-import { Country, CountryModel } from '../../entities/Country';
-import { Language, LanguageModel } from '../../entities/Language';
-import { Metric, MetricModel } from '../../entities/Metric';
+} from '@yagu/shared';
 
 export interface CreateInitialLocalizationDataPayloadInterface {
   initialMetricsPayload: Metric[];

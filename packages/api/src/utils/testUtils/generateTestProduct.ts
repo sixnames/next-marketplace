@@ -1,9 +1,9 @@
 import { ASSETS_DIST_PRODUCTS } from '../../config';
-import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
 import generateTestAsset from './generateTestAsset';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
 import { Translation } from '../../entities/Translation';
 import { CityCounter } from '../../entities/CityCounter';
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/shared';
 
 export interface GetProductCitiesInterface {
   name: Translation[];

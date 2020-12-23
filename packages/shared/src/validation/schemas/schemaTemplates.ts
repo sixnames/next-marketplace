@@ -6,7 +6,7 @@ import {
   MultiLangSchemaMessagesInterface,
   SchemaMessagesInterface,
 } from './getFieldValidationMessage';
-import { MessageKey } from '@yagu/config';
+import { MessageKey } from '../../config';
 
 export const minLongNameLength = 5;
 export const maxLongNameLength = 150;

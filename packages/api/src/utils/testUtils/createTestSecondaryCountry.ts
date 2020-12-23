@@ -1,5 +1,5 @@
 import { Country, CountryModel } from '../../entities/Country';
-import { MOCK_COUNTRIES } from '@yagu/mocks';
+import { MOCK_COUNTRIES } from '@yagu/shared';
 
 interface CreateTestSecondaryCountryInterface {
   citiesIds: string[];

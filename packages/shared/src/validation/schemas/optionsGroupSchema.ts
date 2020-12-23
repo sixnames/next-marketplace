@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
 import { colorSchema, langStringInputSchema } from './schemaTemplates';
-import { GENDER_ENUMS } from '@yagu/config';
 import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
+import { GENDER_ENUMS } from '../../config';
 
 export const optionVariantSchema = (args: MultiLangSchemaMessagesInterface) =>
   Yup.object().shape({

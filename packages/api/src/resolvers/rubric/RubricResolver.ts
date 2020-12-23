@@ -38,28 +38,9 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_LANG,
-  DEFAULT_PRIORITY,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_STEP,
-  SORT_DESC,
-} from '@yagu/config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleIdInArray from '../../utils/toggleIdInArray';
-import {
-  addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  deleteProductFromRubricInputSchema,
-  updateAttributesGroupInRubricInputSchema,
-  updateRubricInputSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -71,7 +52,26 @@ import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { alwaysArray, getBooleanFromArray, getCurrencyString } from '@yagu/shared';
+import {
+  addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
+  alwaysArray,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  createRubricInputSchema,
+  DEFAULT_LANG,
+  DEFAULT_PRIORITY,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
+  getBooleanFromArray,
+  getCurrencyString,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_STEP,
+  SORT_DESC,
+  updateAttributesGroupInRubricInputSchema,
+  updateRubricInputSchema,
+} from '@yagu/shared';
 import queryString from 'query-string';
 
 interface ParentRelatedDataInterface {

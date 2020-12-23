@@ -1,4 +1,4 @@
-import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/shared';
 
 export const testRubric = {
   name: 'new_rubric',

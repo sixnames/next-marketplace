@@ -1,4 +1,10 @@
 import { Rubric, RubricModel } from '../../entities/Rubric';
+import { generateDefaultLangSlug } from '../slug';
+import { GenderEnum } from '../../entities/commonEntities';
+import {
+  createTestRubricVariants,
+  CreateTestRubricVariantsInterface,
+} from './createTestRubricVariants';
 import {
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_ONE_B,
@@ -10,13 +16,7 @@ import {
   MOCK_RUBRIC_LEVEL_THREE_B_B,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_LEVEL_TWO_B,
-} from '@yagu/mocks';
-import { generateDefaultLangSlug } from '../slug';
-import { GenderEnum } from '../../entities/commonEntities';
-import {
-  createTestRubricVariants,
-  CreateTestRubricVariantsInterface,
-} from './createTestRubricVariants';
+} from '@yagu/shared';
 
 export interface CreateTestRubricsPayloadInterface extends CreateTestRubricVariantsInterface {
   rubricLevelOneA: Rubric;

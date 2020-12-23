@@ -1,10 +1,9 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { Metric } from '../../../entities/Metric';
-import { MOCK_METRICS } from '@yagu/mocks';
-import { DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_LANG, MOCK_METRICS } from '@yagu/shared';
 
 describe('Metric', () => {
   beforeEach(async () => {

@@ -1,10 +1,9 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { DEFAULT_LANG } from '@yagu/config';
-import { ISO_LANGUAGES, MOCK_LANGUAGES } from '@yagu/mocks';
 import { Language } from '../../../entities/Language';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_LANG, ISO_LANGUAGES, MOCK_LANGUAGES } from '@yagu/shared';
 
 describe('Language', () => {
   beforeEach(async () => {

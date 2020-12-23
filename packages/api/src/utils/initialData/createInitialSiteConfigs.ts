@@ -1,9 +1,13 @@
 import { setSharpImage, StoreFileFormat } from '../assets/setSharpImage';
 import { Config, ConfigModel, ConfigVariantEnum } from '../../entities/Config';
-import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/config';
-import { SITE_CONFIGS_ASSETS_All, SITE_CONFIGS_INITIAL } from '@yagu/mocks';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import {
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  SITE_CONFIGS_ASSETS_All,
+  SITE_CONFIGS_INITIAL,
+} from '@yagu/shared';
 
 interface StoreConfigWithAssetInterface {
   configTemplate: Pick<

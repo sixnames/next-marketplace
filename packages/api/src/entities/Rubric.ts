@@ -4,12 +4,12 @@ import { AttributesGroup } from './AttributesGroup';
 import { RubricVariant } from './RubricVariant';
 import { GenderEnum } from './commonEntities';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
-import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
 import { ProductModel } from './Product';
 import { CityCounter } from './CityCounter';
 import { Translation } from './Translation';
+import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/shared';
 
 @ObjectType()
 export class RubricAttributesGroup {

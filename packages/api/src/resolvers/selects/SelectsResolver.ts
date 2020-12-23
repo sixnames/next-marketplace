@@ -7,6 +7,8 @@ import {
   AttributeViewOption,
   OptionsGroupVariantOption,
 } from '../../entities/SelectsOptions';
+import { AttributeVariant } from '../../entities/AttributeVariant';
+import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_ENUMS,
@@ -14,11 +16,9 @@ import {
   GENDER_ENUMS,
   getFieldTranslation,
   iconTypesList,
+  ISO_LANGUAGES,
   OPTIONS_GROUP_VARIANT_ENUMS,
-} from '@yagu/config';
-import { ISO_LANGUAGES } from '@yagu/mocks';
-import { AttributeVariant } from '../../entities/AttributeVariant';
-import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+} from '@yagu/shared';
 
 @Resolver((_of) => GenderOption)
 export class GendersListResolver {

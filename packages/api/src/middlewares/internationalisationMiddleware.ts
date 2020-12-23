@@ -1,13 +1,13 @@
+import cookie from 'cookie';
+import { LanguageModel } from '../entities/Language';
+import { NextFunction } from 'express';
 import {
   CITY_COOKIE_KEY,
   DEFAULT_CITY,
   DEFAULT_LANG,
   LANG_COOKIE_HEADER,
   LANG_COOKIE_KEY,
-} from '@yagu/config';
-import cookie from 'cookie';
-import { LanguageModel } from '../entities/Language';
-import { NextFunction } from 'express';
+} from '@yagu/shared';
 
 export const internationalisationMiddleware = async (req: any, res: any, next: NextFunction) => {
   // Get current city from subdomain name

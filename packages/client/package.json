@@ -15,9 +15,6 @@
     "test": "npm run cy:start"
   },
   "dependencies": {
-    "@yagu/config": "1.0.0",
-    "@yagu/validation": "1.0.0",
-    "@yagu/mocks": "1.0.0",
     "@yagu/shared": "1.0.0",
     "@apollo/client": "^3.1.4",
     "@reach/alert": "^0.12.1",

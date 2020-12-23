@@ -1,6 +1,6 @@
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
-import { MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '@yagu/mocks';
 import { createTestAttributes, CreateTestAttributesPayloadInterface } from './createTestAttributes';
+import { MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '@yagu/shared';
 
 export interface CreateTestRubricVariantsInterface extends CreateTestAttributesPayloadInterface {
   rubricVariantAlcohol: RubricVariant;

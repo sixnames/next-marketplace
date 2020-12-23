@@ -4,7 +4,7 @@ import createTestData, {
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { CART_COOKIE_KEY } from '@yagu/config';
+import { CART_COOKIE_KEY } from '@yagu/shared';
 
 describe('Order', () => {
   let mockData: CreateTestDataPayloadInterface;

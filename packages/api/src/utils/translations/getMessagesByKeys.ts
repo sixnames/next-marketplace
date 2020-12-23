@@ -1,5 +1,5 @@
 import { MessageModel } from '../../entities/Message';
-import { MessageInterface, MessageKey } from '@yagu/config';
+import { MessageInterface, MessageKey } from '@yagu/shared';
 
 async function getMessagesByKeys(keys: MessageKey[]): Promise<MessageInterface[]> {
   const validationMessages = await MessageModel.find({

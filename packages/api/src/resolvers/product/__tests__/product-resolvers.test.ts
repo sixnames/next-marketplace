@@ -8,7 +8,7 @@ import createTestData, {
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { ProductConnectionModel } from '../../../entities/ProductConnection';
-import { SORT_ASC } from '@yagu/config';
+import { SORT_ASC } from '@yagu/shared';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;

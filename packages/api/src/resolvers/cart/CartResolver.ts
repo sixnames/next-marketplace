@@ -23,15 +23,16 @@ import {
 } from '../../decorators/parameterDecorators';
 import { ValidateMethod } from '../../decorators/methodDecorators';
 import { DocumentType } from '@typegoose/typegoose';
+import { ShopProductModel } from '../../entities/ShopProduct';
 import {
   addProductToCartSchema,
   addShoplessProductToCartSchema,
   addShopToCartProductSchema,
   deleteProductFromCartSchema,
+  getCurrencyString,
+  noNaN,
   updateProductInCartSchema,
-} from '@yagu/validation';
-import { ShopProductModel } from '../../entities/ShopProduct';
-import { getCurrencyString, noNaN } from '@yagu/shared';
+} from '@yagu/shared';
 import { AddShoplessProductToCartInput } from './AddShoplessProductToCartInput';
 import { AddShopToCartProductInput } from './AddShopToCartProductInput';
 import { Types } from 'mongoose';

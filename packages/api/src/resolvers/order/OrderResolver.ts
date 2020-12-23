@@ -13,14 +13,6 @@ import {
 import { DocumentType } from '@typegoose/typegoose';
 import { Order, OrderModel } from '../../entities/Order';
 import { OrderStatus, OrderStatusModel } from '../../entities/OrderStatus';
-import {
-  DEFAULT_LANG,
-  ORDER_LOG_VARIANT_STATUS,
-  ORDER_STATUS_NEW,
-  ROLE_SLUG_GUEST,
-  SECONDARY_LANG,
-  SORT_DESC,
-} from '@yagu/config';
 import getLangField from '../../utils/translations/getLangField';
 import {
   CustomFilter,
@@ -29,7 +21,18 @@ import {
   SessionCart,
   SessionUser,
 } from '../../decorators/parameterDecorators';
-import { getCurrencyString, noNaN, phoneToRaw } from '@yagu/shared';
+import {
+  DEFAULT_LANG,
+  getCurrencyString,
+  makeAnOrderSchema,
+  noNaN,
+  ORDER_LOG_VARIANT_STATUS,
+  ORDER_STATUS_NEW,
+  phoneToRaw,
+  ROLE_SLUG_GUEST,
+  SECONDARY_LANG,
+  SORT_DESC,
+} from '@yagu/shared';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import PayloadType from '../commonInputs/PayloadType';
 import { Cart, CartModel } from '../../entities/Cart';
@@ -44,7 +47,6 @@ import { MakeAnOrderInput } from './MakeAnOrderInput';
 import { RoleModel } from '../../entities/Role';
 import generator from 'generate-password';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
-import { makeAnOrderSchema } from '@yagu/validation';
 import { sendOrderCreatedEmail } from '../../emails/orderCreatedEmail';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import PaginateType from '../commonInputs/PaginateType';

@@ -1,16 +1,16 @@
 import * as Yup from 'yup';
 import { idSchema, langStringInputSchema } from './schemaTemplates';
 import {
-  ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  ATTRIBUTE_VARIANTS_ENUMS,
-} from '@yagu/config';
-import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
 } from './getFieldValidationMessage';
 import { ArraySchema } from 'yup';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANTS_ENUMS,
+} from '../../config';
 
 export const attributesGroupIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.attributesGroups.id' });

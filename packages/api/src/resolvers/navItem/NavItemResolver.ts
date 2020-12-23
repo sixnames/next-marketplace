@@ -1,9 +1,9 @@
 import { FieldResolver, Query, Resolver, Root } from 'type-graphql';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { DocumentType } from '@typegoose/typegoose';
-import { OPERATION_TYPE_READ, ROUTE_APP_NAV_GROUP } from '@yagu/config';
 import { AuthMethod } from '../../decorators/methodDecorators';
 import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
+import { OPERATION_TYPE_READ, ROUTE_APP_NAV_GROUP } from '@yagu/shared';
 
 @Resolver((_for) => NavItem)
 export class NavItemResolver {

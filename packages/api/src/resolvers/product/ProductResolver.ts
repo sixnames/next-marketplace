@@ -30,13 +30,6 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
-import {
-  addProductToConnectionSchema,
-  createProductConnectionSchema,
-  createProductSchema,
-  deleteProductFromConnectionSchema,
-  updateProductSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -52,18 +45,6 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
-import {
-  ATTRIBUTE_VARIANT_SELECT,
-  ATTRIBUTE_VIEW_VARIANT_ICON,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ATTRIBUTE_VIEW_VARIANT_TAG,
-  ATTRIBUTE_VIEW_VARIANT_TEXT,
-  DEFAULT_CITY,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
-  SORT_ASC,
-  SORT_DESC,
-} from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
   ProductCardConnection,
@@ -75,7 +56,24 @@ import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
 import { max, min } from 'lodash';
-import { getCurrencyString } from '@yagu/shared';
+import {
+  addProductToConnectionSchema,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+  createProductConnectionSchema,
+  createProductSchema,
+  DEFAULT_CITY,
+  deleteProductFromConnectionSchema,
+  getCurrencyString,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+  SORT_ASC,
+  SORT_DESC,
+  updateProductSchema,
+} from '@yagu/shared';
 import { ProductAttribute } from '../../entities/ProductAttribute';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
 import { ProductCardFeatures } from '../../entities/ProductCardFeatures';

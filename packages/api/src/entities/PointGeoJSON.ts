@@ -1,6 +1,6 @@
 import { Field, Float, ObjectType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
-import { GEO_POINT_TYPE } from '@yagu/config';
+import { GEO_POINT_TYPE } from '@yagu/shared';
 
 @ObjectType()
 export class PointGeoJSON {

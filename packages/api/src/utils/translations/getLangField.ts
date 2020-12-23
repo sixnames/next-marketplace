@@ -1,5 +1,5 @@
-import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/config';
 import { Translation } from '../../entities/Translation';
+import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/shared';
 
 function getLangField(languages: Translation[] | null | undefined, chosenLanguage: string): string {
   if (!languages) {

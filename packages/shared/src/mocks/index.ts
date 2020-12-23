@@ -23,7 +23,7 @@ import {
   SECONDARY_COUNTRY,
   SECONDARY_CURRENCY,
   SECONDARY_LANG,
-} from '@yagu/config';
+} from '../config';
 
 // Users
 export const ME_AS_ADMIN = {

@@ -1,15 +1,15 @@
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
+import { gql } from 'apollo-server-express';
+import createTestData from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_LIST,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   GENDER_ENUMS,
   iconTypesList,
-} from '@yagu/config';
-import { ISO_LANGUAGES } from '@yagu/mocks';
-import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
-import clearTestData from '../../../utils/testUtils/clearTestData';
+  ISO_LANGUAGES,
+} from '@yagu/shared';
 
 describe('Select options', () => {
   beforeEach(async () => {

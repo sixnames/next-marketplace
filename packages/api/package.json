@@ -12,9 +12,6 @@
     "test": "jest --runInBand --coverage"
   },
   "dependencies": {
-    "@yagu/config": "1.0.0",
-    "@yagu/validation": "1.0.0",
-    "@yagu/mocks": "1.0.0",
     "@yagu/shared": "1.0.0",
     "@typegoose/auto-increment": "^0.5.0",
     "@typegoose/typegoose": "^7.3.4",

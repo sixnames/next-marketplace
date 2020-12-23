@@ -1,3 +1,9 @@
+import { Product, ProductModel } from '../../entities/Product';
+import { generateTestProduct } from './generateTestProduct';
+import { createProductSlugWithConnections } from '../connectios';
+import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
+import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
+import { createTestBrands, CreateTestBrandsPayloadInterface } from './createTestBrands';
 import {
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -5,21 +11,13 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LANG,
-} from '@yagu/config';
-import { Product, ProductModel } from '../../entities/Product';
-import { generateTestProduct } from './generateTestProduct';
-import {
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_B,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
   MOCK_PRODUCT_F,
-} from '@yagu/mocks';
-import { createProductSlugWithConnections } from '../connectios';
-import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
-import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
-import { createTestBrands, CreateTestBrandsPayloadInterface } from './createTestBrands';
+} from '@yagu/shared';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;

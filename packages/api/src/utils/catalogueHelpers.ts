@@ -2,6 +2,12 @@ import { AttributeModel } from '../entities/Attribute';
 import { OptionModel, OptionVariant } from '../entities/Option';
 import getLangField from './translations/getLangField';
 import { GenderEnum } from '../entities/commonEntities';
+import { Rubric, RubricModel } from '../entities/Rubric';
+import capitalize from 'capitalize';
+import { AttributesGroupModel } from '../entities/AttributesGroup';
+import { OptionsGroupModel } from '../entities/OptionsGroup';
+import { updateModelViews } from './updateModelViews';
+import { Translation } from '../entities/Translation';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
@@ -12,13 +18,7 @@ import {
   LANG_DEFAULT_TITLE_SEPARATOR,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
-} from '@yagu/config';
-import { Rubric, RubricModel } from '../entities/Rubric';
-import capitalize from 'capitalize';
-import { AttributesGroupModel } from '../entities/AttributesGroup';
-import { OptionsGroupModel } from '../entities/OptionsGroup';
-import { updateModelViews } from './updateModelViews';
-import { Translation } from '../entities/Translation';
+} from '@yagu/shared';
 
 interface ProcessedAttributeInterface {
   key: string;

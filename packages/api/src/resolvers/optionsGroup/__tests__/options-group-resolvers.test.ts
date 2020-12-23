@@ -1,12 +1,5 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/translations/getLangField';
-import {
-  DEFAULT_LANG,
-  GENDER_IT,
-  OPTIONS_GROUP_VARIANT_COLOR,
-  OPTIONS_GROUP_VARIANT_ENUMS,
-  OPTIONS_GROUP_VARIANT_ICON,
-} from '@yagu/config';
 import { anotherOptionsGroup, optionForGroup, optionsGroup } from '../__fixtures__';
 import { gql } from 'apollo-server-express';
 import clearTestData from '../../../utils/testUtils/clearTestData';
@@ -14,6 +7,13 @@ import {
   createTestOptions,
   CreateTestOptionsInterface,
 } from '../../../utils/testUtils/createTestOptions';
+import {
+  DEFAULT_LANG,
+  GENDER_IT,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ENUMS,
+  OPTIONS_GROUP_VARIANT_ICON,
+} from '@yagu/shared';
 
 const addOptionToGroupMutation = gql`
   mutation AddOptionToGroup($input: AddOptionToGroupInput!) {

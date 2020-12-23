@@ -1,10 +1,9 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
-import { MOCK_RUBRIC_VARIANT_ALCOHOL } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
-import { DEFAULT_LANG } from '@yagu/config';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_LANG, MOCK_RUBRIC_VARIANT_ALCOHOL } from '@yagu/shared';
 
 describe('Rubric variant', () => {
   beforeEach(async () => {

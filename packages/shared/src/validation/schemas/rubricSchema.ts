@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import { langStringInputSchema } from './schemaTemplates';
-import { GENDER_ENUMS } from '@yagu/config';
 import {
   getFieldValidationMessage,
   MultiLangSchemaMessagesInterface,
@@ -8,6 +7,7 @@ import {
 } from './getFieldValidationMessage';
 import { attributeIdSchema, attributesGroupIdSchema } from './attributesGroupSchema';
 import { productIdSchema } from './productSchema';
+import { GENDER_ENUMS } from '../../config';
 
 const parent = Yup.string().nullable();
 

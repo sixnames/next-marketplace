@@ -1,9 +1,8 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { DEFAULT_LANG } from '@yagu/config';
-import { MOCK_COUNTRIES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_LANG, MOCK_COUNTRIES } from '@yagu/shared';
 
 describe('Country', () => {
   beforeEach(async () => {

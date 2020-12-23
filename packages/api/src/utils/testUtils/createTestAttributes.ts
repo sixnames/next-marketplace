@@ -4,7 +4,13 @@ import {
   AttributePositionInTitleEnum,
   AttributeVariantEnum,
 } from '../../entities/Attribute';
+import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
+import { createTestOptions, CreateTestOptionsInterface } from './createTestOptions';
 import {
+  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  DEFAULT_LANG,
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTE_OUTER_RATING_A,
   MOCK_ATTRIBUTE_OUTER_RATING_B,
@@ -18,16 +24,8 @@ import {
   MOCK_ATTRIBUTES_GROUP_OUTER_RATING,
   MOCK_ATTRIBUTES_GROUP_WHISKEY_FEATURES,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-} from '@yagu/mocks';
-import {
-  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
-  DEFAULT_LANG,
   SECONDARY_LANG,
-} from '@yagu/config';
-import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
-import { createTestOptions, CreateTestOptionsInterface } from './createTestOptions';
+} from '@yagu/shared';
 
 export interface CreateTestAttributesPayloadInterface extends CreateTestOptionsInterface {
   attributeOuterRatingA: Attribute;

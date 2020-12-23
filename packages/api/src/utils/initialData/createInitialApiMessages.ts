@@ -1,27 +1,27 @@
 import { MessagesGroup, MessagesGroupModel } from '../../entities/MessagesGroup';
 import { MessageModel } from '../../entities/Message';
+import { Translation } from '../../entities/Translation';
 import {
   attributesGroupsMessages,
+  cartsMessages,
   citiesMessages,
   commonMessages,
+  companiesMessages,
   configsMessages,
   countriesMessages,
   currenciesMessages,
   languagesMessages,
   metricsMessages,
   optionsGroupsMessages,
+  ordersMessages,
   productsMessages,
   rolesMessages,
   rubricsMessages,
   rubricVariantsMessages,
-  usersMessages,
-  companiesMessages,
-  shopsMessages,
   shopProductsMessages,
-  cartsMessages,
-  ordersMessages,
-} from '@yagu/config';
-import { Translation } from '../../entities/Translation';
+  shopsMessages,
+  usersMessages,
+} from '@yagu/shared';
 
 interface MessageInterface {
   key: string;

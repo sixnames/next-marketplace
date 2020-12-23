@@ -1,13 +1,12 @@
 import { anotherRubric, testProduct, testRubric } from '../__fixtures__';
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/translations/getLangField';
-import { MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '@yagu/mocks';
-import { DEFAULT_LANG } from '@yagu/config';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '@yagu/shared';
 
 describe('Rubrics', () => {
   beforeEach(async () => {

@@ -4,7 +4,6 @@ import { Language, LanguageModel } from '../../entities/Language';
 import { CreateLanguageInput } from './CreateLanguageInput';
 import { UpdateLanguageInput } from './UpdateLanguageInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { createLanguageSchema, updateLanguageSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -13,6 +12,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { createLanguageSchema, updateLanguageSchema } from '@yagu/shared';
 
 const {
   operationConfigCreate,

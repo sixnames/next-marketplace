@@ -1,6 +1,4 @@
-import { DEFAULT_LANG } from '@yagu/config';
-import { reverseGeocode } from '@yagu/shared';
-import { MOCK_ADDRESS_A } from '@yagu/mocks';
+import { DEFAULT_LANG, MOCK_ADDRESS_A, reverseGeocode } from '@yagu/shared';
 
 describe('Geocode', () => {
   it('Should return address by coordinates', async () => {

@@ -1,10 +1,10 @@
 import {
-  MessageInterface,
-  MessageKey,
   DEFAULT_LANG,
   LANG_NOT_FOUND_FIELD_MESSAGE,
+  MessageInterface,
+  MessageKey,
   SECONDARY_LANG,
-} from '@yagu/config';
+} from '../../config';
 
 export interface SchemaMessagesInterface {
   lang: string;

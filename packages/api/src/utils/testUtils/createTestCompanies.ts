@@ -2,7 +2,7 @@ import { Company, CompanyModel } from '../../entities/Company';
 import { createTestShops, CreateTestShopsPayloadInterface } from './createTestShops';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_COMPANIES } from '../../config';
-import { MOCK_COMPANY } from '@yagu/mocks';
+import { MOCK_COMPANY } from '@yagu/shared';
 
 export interface CreateTestCompaniesPayloadInterface extends CreateTestShopsPayloadInterface {
   companyA: Company;

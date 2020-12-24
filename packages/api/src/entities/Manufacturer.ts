@@ -18,7 +18,7 @@ export class Manufacturer extends TimeStamps {
 
   @Field((_type) => String)
   @prop({ type: String, required: true, trim: true })
-  name: string;
+  nameString: string;
 
   @Field((_type) => String)
   @prop({ type: String, required: true, trim: true })

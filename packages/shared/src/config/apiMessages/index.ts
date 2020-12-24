@@ -17,6 +17,9 @@ import { shopsMessages } from './shopsMessages';
 import { shopProductsMessages } from './shopProductsMessages';
 import { cartsMessages } from './cartsMessages';
 import { ordersMessages } from './ordersMessages';
+import { brandsMessages } from './brandsMessages';
+import { manufacturersMessages } from './manufacturersMessages';
+import { brandCollectionsMessages } from './brandCollectionsMessages';
 
 export * from './commonMessages';
 export * from './configsMessages';
@@ -37,6 +40,9 @@ export * from './shopsMessages';
 export * from './shopProductsMessages';
 export * from './cartsMessages';
 export * from './ordersMessages';
+export * from './brandsMessages';
+export * from './manufacturersMessages';
+export * from './brandCollectionsMessages';
 export * from './messagesKeys';
 export * from './iconTypes';
 
@@ -60,4 +66,7 @@ export const apiMessages = [
   ...shopProductsMessages,
   ...cartsMessages,
   ...ordersMessages,
+  ...brandsMessages,
+  ...manufacturersMessages,
+  ...brandCollectionsMessages,
 ];

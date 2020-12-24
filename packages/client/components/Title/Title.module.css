@@ -21,6 +21,7 @@
 }
 
 .light {
+  display: flex;
   height: 60px;
   align-items: center;
   background-color: var(--primaryBackground);

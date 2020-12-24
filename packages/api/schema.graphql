@@ -173,7 +173,7 @@ type Brand {
   description: String
   id: ID!
   itemId: Int!
-  name: String!
+  nameString: String!
   slug: String!
   updatedAt: DateTime!
   url: String
@@ -181,9 +181,10 @@ type Brand {
 
 type BrandCollection {
   createdAt: DateTime!
+  description: String
   id: ID!
   itemId: Int!
-  name: String!
+  nameString: String!
   slug: String!
   updatedAt: DateTime!
 }
@@ -593,7 +594,7 @@ type Manufacturer {
   description: String
   id: ID!
   itemId: Int!
-  name: String!
+  nameString: String!
   slug: String!
   updatedAt: DateTime!
   url: String

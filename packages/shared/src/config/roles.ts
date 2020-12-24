@@ -352,6 +352,18 @@ export const ROLE_RULES_TEMPLATE = [
     nameString: 'Заказ',
     entity: 'Order',
   },
+  {
+    nameString: 'Бренд',
+    entity: 'Brand',
+  },
+  {
+    nameString: 'Линейка бренда',
+    entity: 'BrandCollection',
+  },
+  {
+    nameString: 'Производитель',
+    entity: 'Manufacturer',
+  },
 ];
 
 export const ROLE_TEMPLATE_ADMIN = {

@@ -375,6 +375,59 @@ const messagesKeys = [
   'validation.products.attributeKey',
   'validation.products.assets',
 
+  // Brands ----------
+  'brands.create.duplicate',
+  'brands.create.error',
+  'brands.create.success',
+  'brands.update.duplicate',
+  'brands.update.notFound',
+  'brands.update.error',
+  'brands.update.success',
+  'brands.delete.notFound',
+  'brands.delete.used',
+  'brands.delete.error',
+  'brands.delete.success',
+  // Brands validation
+  'validation.brands.id',
+  'validation.brands.name',
+  'validation.brands.url',
+  'validation.brands.description',
+
+  // BrandCollections ----------
+  'brandCollections.create.duplicate',
+  'brandCollections.create.error',
+  'brandCollections.create.success',
+  'brandCollections.update.duplicate',
+  'brandCollections.update.notFound',
+  'brandCollections.update.error',
+  'brandCollections.update.success',
+  'brandCollections.delete.notFound',
+  'brandCollections.delete.used',
+  'brandCollections.delete.error',
+  'brandCollections.delete.success',
+  // BrandCollections validation
+  'validation.brandCollections.id',
+  'validation.brandCollections.name',
+  'validation.brandCollections.description',
+
+  // Manufacturers ----------
+  'manufacturers.create.duplicate',
+  'manufacturers.create.error',
+  'manufacturers.create.success',
+  'manufacturers.update.duplicate',
+  'manufacturers.update.notFound',
+  'manufacturers.update.error',
+  'manufacturers.update.success',
+  'manufacturers.delete.notFound',
+  'manufacturers.delete.used',
+  'manufacturers.delete.error',
+  'manufacturers.delete.success',
+  // Manufacturers validation
+  'validation.manufacturers.id',
+  'validation.manufacturers.name',
+  'validation.manufacturers.url',
+  'validation.manufacturers.description',
+
   // Metrics ----------
   'metrics.create.duplicate',
   'metrics.create.error',

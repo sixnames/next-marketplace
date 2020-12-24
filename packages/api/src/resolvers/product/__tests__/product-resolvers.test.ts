@@ -100,16 +100,16 @@ describe('Product', () => {
           rubrics
           brand {
             id
-            name
+            nameString
             url
           }
           brandCollection {
             id
-            name
+            nameString
           }
           manufacturer {
             id
-            name
+            nameString
             url
           }
           cardPrices {

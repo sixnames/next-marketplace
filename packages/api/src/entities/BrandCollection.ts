@@ -18,11 +18,15 @@ export class BrandCollection extends TimeStamps {
 
   @Field((_type) => String)
   @prop({ required: true, trim: true })
-  name: string;
+  nameString: string;
 
   @Field((_type) => String)
   @prop({ type: String, required: true, trim: true })
   slug: string;
+
+  @Field((_type) => String, { nullable: true })
+  @prop({ type: String })
+  description?: string;
 
   @Field()
   readonly createdAt?: Date;

@@ -13,13 +13,14 @@ export interface GetFakeBrandPayloadInterface {
 export async function getFakeBrand(): Promise<GetFakeBrandPayloadInterface> {
   const brandCollectionName = faker.commerce.productName();
   const brandCollection = await BrandCollectionModel.create({
-    name: brandCollectionName,
+    nameString: brandCollectionName,
     slug: generateSlug(brandCollectionName),
+    description: faker.lorem.paragraph(),
   });
 
   const brandName = faker.company.companyName();
   const brand = await BrandModel.create({
-    name: brandName,
+    nameString: brandName,
     slug: generateSlug(brandName),
     url: faker.internet.url(),
     description: faker.lorem.paragraph(),
@@ -35,7 +36,7 @@ export async function getFakeBrand(): Promise<GetFakeBrandPayloadInterface> {
 export async function getFakeManufacturer(): Promise<Manufacturer> {
   const manufacturerName = faker.company.companyName();
   return ManufacturerModel.create({
-    name: manufacturerName,
+    nameString: manufacturerName,
     slug: generateSlug(manufacturerName),
     url: faker.internet.url(),
     description: faker.lorem.paragraph(),

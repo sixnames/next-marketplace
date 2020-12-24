@@ -3,6 +3,7 @@ import { MessageModel } from '../../entities/Message';
 import { Translation } from '../../entities/Translation';
 import {
   attributesGroupsMessages,
+  brandsMessages,
   cartsMessages,
   citiesMessages,
   commonMessages,
@@ -21,6 +22,8 @@ import {
   shopProductsMessages,
   shopsMessages,
   usersMessages,
+  brandCollectionsMessages,
+  manufacturersMessages,
 } from '@yagu/shared';
 
 interface MessageInterface {
@@ -94,6 +97,9 @@ async function createInitialApiMessages(): Promise<MessagesGroup[]> {
     { name: 'Товары магазина', messages: shopProductsMessages },
     { name: 'Корзина', messages: cartsMessages },
     { name: 'Заказы', messages: ordersMessages },
+    { name: 'Бренды', messages: brandsMessages },
+    { name: 'Коллекции бренда', messages: brandCollectionsMessages },
+    { name: 'Производители', messages: manufacturersMessages },
   ];
 
   return Promise.all(

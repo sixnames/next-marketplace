@@ -4,13 +4,16 @@ import getLangField from '../../../utils/translations/getLangField';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, MOCK_RUBRIC_LEVEL_ONE, MOCK_RUBRIC_LEVEL_TWO_A } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
 
 describe('Rubrics', () => {
+  let mockData: CreateTestDataPayloadInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -84,11 +87,11 @@ describe('Rubrics', () => {
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
     expect(getRubricsTree.length).toEqual(4);
     expect(rubricLevelOne.nameString).toEqual(
-      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+      getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
     );
     expect(rubricLevelOne.children.length).toEqual(2);
     expect(rubricLevelTwo.nameString).toEqual(
-      getLangField(MOCK_RUBRIC_LEVEL_TWO_A.name, DEFAULT_LANG),
+      getLangField(mockData.rubricLevelTwoA.name, DEFAULT_LANG),
     );
 
     // Should return current rubric and it's products
@@ -125,7 +128,7 @@ describe('Rubrics', () => {
     `);
     expect(data.getRubric.id).toEqual(rubricLevelOne.id);
     expect(data.getRubric.nameString).toEqual(
-      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+      getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
     );
     expect(data.getRubric.products.docs).toBeDefined();
 
@@ -148,12 +151,12 @@ describe('Rubrics', () => {
     `);
     expect(getRubricBySlug.id).toEqual(rubricLevelOne.id);
     expect(getRubricBySlug.nameString).toEqual(
-      getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG),
+      getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
     );
 
     // Should return duplicate rubric error on rubric create
     const { mutate } = await authenticatedTestClient();
-    const duplicateName = getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG);
+    const duplicateName = getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG);
     const { data: exists } = await mutate<any>(gql`
       mutation {
         createRubric(
@@ -163,7 +166,7 @@ describe('Rubrics', () => {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
               keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
             }
             variant: "${getAllRubricVariants[0].id}"
           }
@@ -191,7 +194,7 @@ describe('Rubrics', () => {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
               keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
             }
             variant: "${getAllRubricVariants[0].id}"
           }
@@ -219,7 +222,7 @@ describe('Rubrics', () => {
     expect(createRubric.rubric.nameString).toEqual(testRubric.name);
 
     // Should return duplicate rubric error on rubric update
-    const duplicateNameOnUpdate = getLangField(MOCK_RUBRIC_LEVEL_ONE.name, DEFAULT_LANG);
+    const duplicateNameOnUpdate = getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG);
     const {
       data: { updateRubric: falseUpdateRubric },
     } = await mutate<any>(gql`
@@ -232,7 +235,7 @@ describe('Rubrics', () => {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
               keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
             }
             variant: "${createRubric.rubric.variant.id}"
           }
@@ -261,7 +264,7 @@ describe('Rubrics', () => {
               defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
               prefix: [],
               keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender},
+              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
             }
             variant: "${createRubric.rubric.variant.id}"
           }
@@ -416,6 +419,7 @@ describe('Rubrics', () => {
           price: testProduct.price,
           description: testProduct.description,
           rubrics: [rubricLevelTreeForNewProduct.id],
+          manufacturer: mockData.manufacturerA.id,
           assets: images,
           ...productAttributes,
         };

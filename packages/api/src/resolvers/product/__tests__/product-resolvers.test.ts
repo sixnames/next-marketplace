@@ -175,7 +175,6 @@ describe('Product', () => {
     const {
       data: { getProductBySlug },
     } = getProductBySlugPayload;
-    console.log(JSON.stringify(getProductBySlug, null, 2));
     const currentProduct = getProductBySlug;
     expect(currentProduct.slug).toEqual(mockData.productA.slug);
     expect(currentProduct.cardBreadcrumbs).toBeDefined();

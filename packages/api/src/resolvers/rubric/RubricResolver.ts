@@ -62,7 +62,6 @@ import {
   DEFAULT_PRIORITY,
   deleteAttributesGroupFromRubricInputSchema,
   deleteProductFromRubricInputSchema,
-  getCurrencyString,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
@@ -73,6 +72,7 @@ import {
 import queryString from 'query-string';
 import { alwaysArray } from '../../utils/alwaysArray';
 import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
+import { getCurrencyString } from '../../utils/intl';
 
 interface ParentRelatedDataInterface {
   variant: string;

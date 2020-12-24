@@ -22,6 +22,9 @@ export * from './schemas/shopSchema';
 export * from './schemas/shopProductSchema';
 export * from './schemas/cartSchema';
 export * from './schemas/orderSchema';
+export * from './schemas/brandSchema';
+export * from './schemas/brandCollectionSchema';
+export * from './schemas/manufacturerSchema';
 
 export type ObjectSchema<
   T extends Record<string, any> | null | undefined = Record<string, any> | undefined,

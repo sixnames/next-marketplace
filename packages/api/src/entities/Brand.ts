@@ -4,6 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
+import { BrandCollection } from './BrandCollection';
 
 @ObjectType()
 @plugin(mongoosePaginate)
@@ -32,7 +33,7 @@ export class Brand extends TimeStamps {
   @prop({ type: String })
   description?: string;
 
-  @Field(() => [ID])
+  @Field(() => [BrandCollection])
   @prop({ type: String })
   collections: string[];
 

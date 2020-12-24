@@ -1,0 +1,87 @@
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
+import clearTestData from '../../../utils/testUtils/clearTestData';
+import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
+import { gql } from 'apollo-server-express';
+
+describe('Brand', () => {
+  let mockData: CreateTestDataPayloadInterface;
+  beforeEach(async () => {
+    mockData = await createTestData();
+  });
+
+  afterEach(async () => {
+    await clearTestData();
+  });
+
+  const brandCollectionFragment = gql`
+    fragment TestBrandCollection on BrandCollection {
+      id
+      nameString
+      slug
+      description
+      createdAt
+      updatedAt
+    }
+  `;
+
+  it('Should CRUD brands', async () => {
+    const brandA = mockData.brandA;
+    const { query } = await authenticatedTestClient();
+
+    // Should return brand by ID
+    const getBrandPayload = await query<any>(
+      gql`
+        query GetBrand($id: ID!) {
+          getBrand(id: $id) {
+            id
+            nameString
+            slug
+            url
+            description
+            collections {
+              ...TestBrandCollection
+            }
+            createdAt
+            updatedAt
+          }
+        }
+        ${brandCollectionFragment}
+      `,
+      {
+        variables: {
+          id: brandA.id,
+        },
+      },
+    );
+    expect(getBrandPayload.data.getBrand.id).toEqual(brandA.id);
+
+    // Should return brand by slug
+    const getBrandBySlugPayload = await query<any>(
+      gql`
+        query GetBrandBySlug($slug: String!) {
+          getBrandBySlug(slug: $slug) {
+            id
+            nameString
+            slug
+            url
+            description
+            collections {
+              ...TestBrandCollection
+            }
+            createdAt
+            updatedAt
+          }
+        }
+        ${brandCollectionFragment}
+      `,
+      {
+        variables: {
+          slug: brandA.slug,
+        },
+      },
+    );
+    expect(getBrandBySlugPayload.data.getBrandBySlug.id).toEqual(brandA.id);
+  });
+});

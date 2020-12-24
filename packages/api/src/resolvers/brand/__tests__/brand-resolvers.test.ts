@@ -83,5 +83,38 @@ describe('Brand', () => {
       },
     );
     expect(getBrandBySlugPayload.data.getBrandBySlug.id).toEqual(brandA.id);
+
+    // Should return paginated brands
+    const getAllBrandsPayload = await query<any>(
+      gql`
+        query GetAllBrands($input: BrandPaginateInput) {
+          getAllBrands(input: $input) {
+            page
+            limit
+            totalDocs
+            totalPages
+            sortBy
+            sortDir
+            hasPrevPage
+            hasNextPage
+            docs {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            limit: 1,
+          },
+        },
+      },
+    );
+    expect(getAllBrandsPayload.data.getAllBrands.totalDocs).toEqual(mockData.allBrands.length);
+    expect(getAllBrandsPayload.data.getAllBrands.totalPages).toEqual(mockData.allBrands.length);
+    expect(getAllBrandsPayload.data.getAllBrands.hasPrevPage).toBeFalsy();
+    expect(getAllBrandsPayload.data.getAllBrands.hasNextPage).toBeTruthy();
   });
 });

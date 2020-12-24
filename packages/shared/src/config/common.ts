@@ -188,6 +188,12 @@ export const SORT_DESC_NUM = -1;
 // CATALOGUE
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 
+// PAGINATION
+export const PAGINATION_DEFAULT_LIMIT = 100;
+export const SORT_BY_ID_DIRECTION = SORT_DESC_NUM;
+export const SORT_BY_CREATED_AT = 'createdAt';
+export const PAGE_DEFAULT = 1;
+
 // ORDER LOG VARIANTS
 export const ORDER_LOG_VARIANT_STATUS = 'status';
 export const ORDER_LOG_VARIANT_MESSAGE = 'message';

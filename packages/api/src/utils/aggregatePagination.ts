@@ -29,6 +29,18 @@ interface CollectionAggregationInterface<TModel> {
   hasNextPage: boolean;
 }
 
+const aggregationFallback = {
+  sortBy: SORT_BY_CREATED_AT,
+  sortDir: SORT_DESC_NUM as SortDirectionNumEnum,
+  docs: [],
+  page: 1,
+  limit: 0,
+  totalDocs: 0,
+  totalPages: 0,
+  hasPrevPage: false,
+  hasNextPage: false,
+};
+
 export async function aggregatePagination<
   TModel,
   TInput extends AggregatePaginationInputInterface
@@ -103,31 +115,20 @@ export async function aggregatePagination<
       .toArray();
 
     const aggregationResult = aggregated[0];
-    const { totalDocs, totalPages, hasPrevPage, hasNextPage } = aggregationResult;
+
+    if (!aggregationResult) {
+      return aggregationFallback;
+    }
 
     return {
+      ...aggregationResult,
       sortBy,
       sortDir,
       page,
       limit,
-      totalDocs,
-      totalPages,
-      docs: aggregationResult.docs,
-      hasPrevPage,
-      hasNextPage,
     };
   } catch (e) {
     console.log(e);
-    return {
-      sortBy: SORT_BY_CREATED_AT,
-      sortDir: SORT_DESC_NUM as SortDirectionNumEnum,
-      docs: [],
-      page: 1,
-      limit: 0,
-      totalDocs: 0,
-      totalPages: 0,
-      hasPrevPage: false,
-      hasNextPage: false,
-    };
+    return aggregationFallback;
   }
 }

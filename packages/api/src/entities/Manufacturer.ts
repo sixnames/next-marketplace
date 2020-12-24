@@ -1,12 +1,9 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { FilterQuery, PaginateOptions, PaginateResult } from 'mongoose';
 
 @ObjectType()
-@plugin(mongoosePaginate)
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class Manufacturer extends TimeStamps {
   @Field(() => ID)
@@ -37,11 +34,6 @@ export class Manufacturer extends TimeStamps {
 
   @Field()
   readonly updatedAt?: Date;
-
-  static paginate: (
-    query?: FilterQuery<Manufacturer>,
-    options?: PaginateOptions,
-  ) => Promise<PaginateResult<Manufacturer>>;
 }
 
 export const ManufacturerModel = getModelForClass(Manufacturer);

@@ -1169,7 +1169,7 @@ type Query {
     """list of excluded groups id's"""
     exclude: [ID!] = []
   ): [AttributesGroup!]!
-  getAllBrands(input: BrandPaginateInput = {limit: 100, page: 1, sortBy: createdAt, sortDir: desc}): PaginatedBrands!
+  getAllBrands(input: BrandPaginateInput): PaginatedBrands!
   getAllCities: [City!]!
   getAllCompanies(input: CompanyPaginateInput = {}): PaginatedCompaniesResponse!
   getAllConfigs: [Config!]!

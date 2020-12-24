@@ -112,6 +112,7 @@ describe('Brand', () => {
         },
       },
     );
+    // console.log(JSON.stringify(getAllBrandsPayload.data.getAllBrands, null, 2));
     expect(getAllBrandsPayload.data.getAllBrands.totalDocs).toEqual(mockData.allBrands.length);
     expect(getAllBrandsPayload.data.getAllBrands.totalPages).toEqual(mockData.allBrands.length);
     expect(getAllBrandsPayload.data.getAllBrands.hasPrevPage).toBeFalsy();

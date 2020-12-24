@@ -85,6 +85,9 @@ import { ProductShopsInput } from './ProductShopsInput';
 import { GetProductShopsInput } from './GetProductShopsInput';
 import { ProductCardBreadcrumb } from '../../entities/ProductCardBreadcrumb';
 import { getCurrencyString } from '../../utils/intl';
+import { Manufacturer, ManufacturerModel } from '../../entities/Manufacturer';
+import { Brand, BrandModel } from '../../entities/Brand';
+import { BrandCollection, BrandCollectionModel } from '../../entities/BrandCollection';
 
 const {
   operationConfigCreate,
@@ -251,8 +254,6 @@ export class ProductResolver {
         views: [{ key: DEFAULT_CITY, counter: 1 }],
         assets: assetsResult,
         active: true,
-        // TODO
-        manufacturer: '',
       });
 
       if (!product) {
@@ -699,6 +700,21 @@ export class ProductResolver {
     } catch (e) {
       return [];
     }
+  }
+
+  @FieldResolver((_returns) => Manufacturer, { nullable: true })
+  async manufacturer(@Root() product: DocumentType<Product>): Promise<Manufacturer | null> {
+    return ManufacturerModel.findOne({ _id: product.manufacturer });
+  }
+
+  @FieldResolver((_returns) => Brand, { nullable: true })
+  async brand(@Root() product: DocumentType<Product>): Promise<Brand | null> {
+    return BrandModel.findOne({ _id: product.brand });
+  }
+
+  @FieldResolver((_returns) => BrandCollection, { nullable: true })
+  async brandCollection(@Root() product: DocumentType<Product>): Promise<BrandCollection | null> {
+    return BrandCollectionModel.findOne({ _id: product.brandCollection });
   }
 
   @FieldResolver((_returns) => Int)

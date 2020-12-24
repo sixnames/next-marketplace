@@ -112,7 +112,7 @@ export class Product extends TimeStamps {
   @prop({ type: String })
   brandCollection?: string;
 
-  @Field(() => Manufacturer)
+  @Field(() => Manufacturer, { nullable: true })
   @prop({ type: String, required: true })
   manufacturer: string;
 

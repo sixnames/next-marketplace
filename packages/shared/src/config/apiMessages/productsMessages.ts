@@ -302,6 +302,19 @@ export const productsMessages: MessageInterface[] = [
     ],
   },
   {
+    key: 'validation.products.manufacturer',
+    message: [
+      {
+        key: DEFAULT_LANG,
+        value: 'Производитель товара обязателен.',
+      },
+      {
+        key: SECONDARY_LANG,
+        value: 'Product manufacturer is required.',
+      },
+    ],
+  },
+  {
     key: 'validation.products.price',
     message: [
       {

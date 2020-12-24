@@ -438,6 +438,7 @@ input CreateProductInput {
   attributesGroups: [ProductAttributesGroupInput!]!
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
+  manufacturer: ID!
   name: [TranslationInput!]!
   originalName: String!
   price: Int!
@@ -972,7 +973,7 @@ type Product {
   id: ID!
   itemId: Int!
   mainImage: String!
-  manufacturer: Manufacturer!
+  manufacturer: Manufacturer
   name: [Translation!]!
   nameString: String!
   originalName: String!
@@ -1627,6 +1628,7 @@ input UpdateProductInput {
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
   id: ID!
+  manufacturer: ID!
   name: [TranslationInput!]!
   originalName: String!
   price: Int!

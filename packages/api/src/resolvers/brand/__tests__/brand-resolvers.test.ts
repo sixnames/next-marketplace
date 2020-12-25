@@ -4,6 +4,7 @@ import createTestData, {
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
+import * as faker from 'faker';
 
 describe('Brand', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -28,7 +29,7 @@ describe('Brand', () => {
 
   it('Should CRUD brands', async () => {
     const brandA = mockData.brandA;
-    const { query } = await authenticatedTestClient();
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return brand by ID
     const getBrandPayload = await query<any>(
@@ -112,10 +113,35 @@ describe('Brand', () => {
         },
       },
     );
-    // console.log(JSON.stringify(getAllBrandsPayload.data.getAllBrands, null, 2));
     expect(getAllBrandsPayload.data.getAllBrands.totalDocs).toEqual(mockData.allBrands.length);
     expect(getAllBrandsPayload.data.getAllBrands.totalPages).toEqual(mockData.allBrands.length);
     expect(getAllBrandsPayload.data.getAllBrands.hasPrevPage).toBeFalsy();
     expect(getAllBrandsPayload.data.getAllBrands.hasNextPage).toBeTruthy();
+
+    // Should create brand
+    const newBrandName = faker.lorem.words(2);
+    const createBrandPayload = await mutate<any>(
+      gql`
+        mutation CreateBrand($input: CreateBrandInput!) {
+          createBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            nameString: newBrandName,
+          },
+        },
+      },
+    );
+    expect(createBrandPayload.data.createBrand.success).toBeTruthy();
+    expect(createBrandPayload.data.createBrand.brand.nameString).toEqual(newBrandName);
   });
 });

@@ -196,6 +196,12 @@ input BrandPaginateInput {
   sortDir: SortDirectionNumEnum = desc
 }
 
+type BrandPayloadType {
+  brand: Brand
+  message: String!
+  success: Boolean!
+}
+
 """Brand pagination sortBy enum"""
 enum BrandSortByEnum {
   createdAt
@@ -406,6 +412,12 @@ type CountryPayloadType {
 
 input CreateAttributesGroupInput {
   name: [TranslationInput!]!
+}
+
+input CreateBrandInput {
+  description: String
+  nameString: String!
+  url: String
 }
 
 input CreateCompanyInput {
@@ -644,6 +656,7 @@ type Mutation {
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   clearCart: CartPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createBrand(input: CreateBrandInput!): BrandPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
   createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!

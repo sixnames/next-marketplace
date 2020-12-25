@@ -60,6 +60,10 @@ export class Product extends TimeStamps {
   @prop()
   readonly itemId: number;
 
+  @Field(() => Boolean)
+  @prop({ required: true, default: true })
+  active: boolean;
+
   @Field(() => [CityCounter])
   @prop({ type: CityCounter, required: true })
   views: CityCounter[];
@@ -118,10 +122,6 @@ export class Product extends TimeStamps {
 
   @Field(() => ProductCardPrices)
   readonly cardPrices: ProductCardPrices;
-
-  @Field(() => Boolean)
-  @prop({ required: true, default: true })
-  active: boolean;
 
   @Field(() => [ProductConnection])
   readonly connections: ProductConnection[];

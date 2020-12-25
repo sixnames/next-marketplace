@@ -30,6 +30,7 @@ import { RoleRuleModel } from '../../entities/RoleRule';
 import { UpdateBrandInput } from './UpdateBrandInput';
 import { FilterQuery } from 'mongoose';
 import { ProductModel } from '../../entities/Product';
+import { AddCollectionToBrandInput } from './AddCollectionToBrandInput';
 
 const {
   operationConfigCreate,
@@ -37,6 +38,11 @@ const {
   operationConfigUpdate,
   operationConfigDelete,
 } = RoleRuleModel.getOperationsConfigs(Brand.name);
+
+const {
+  operationConfigCreate: operationConfigCollectionCreate,
+  // operationConfigDelete: operationConfigCollectionDelete,
+} = RoleRuleModel.getOperationsConfigs(BrandCollection.name);
 
 @ObjectType()
 export class PaginatedBrands extends PaginatedAggregationType(Brand) {}
@@ -234,6 +240,80 @@ export class BrandResolver {
       return {
         success: true,
         message: await getApiMessage('brands.delete.success'),
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => BrandPayloadType)
+  @AuthMethod(operationConfigCollectionCreate)
+  async addCollectionToBrand(
+    @Arg('input') input: AddCollectionToBrandInput,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Brand>,
+  ): Promise<BrandPayloadType> {
+    try {
+      const { brandId, description, nameString } = input;
+      const brand = await BrandModel.findOne({ _id: brandId, ...customFilter });
+      if (!brand) {
+        return {
+          success: false,
+          message: await getApiMessage('brands.update.notFound'),
+        };
+      }
+
+      const exist = await BrandCollectionModel.exists({
+        _id: { $in: brand.collections },
+        nameString,
+      });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.create.duplicate'),
+        };
+      }
+
+      const slug = generateSlug(nameString);
+      const createdCollection = await BrandCollectionModel.create({
+        nameString,
+        description,
+        slug,
+      });
+      if (!createdCollection) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.create.error'),
+        };
+      }
+
+      const updatedBrand = await BrandModel.findByIdAndUpdate(
+        brandId,
+        {
+          $push: {
+            collections: createdCollection.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedBrand) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.create.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('brandCollections.create.success'),
+        brand: updatedBrand,
       };
     } catch (e) {
       console.log(e);

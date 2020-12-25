@@ -205,6 +205,71 @@ describe('Brand', () => {
     expect(updateBrandPayload.data.updateBrand.brand.url).toEqual(updatedBrandUrl);
     expect(updateBrandPayload.data.updateBrand.brand.description).toEqual(updatedBrandDescription);
 
+    // Shouldn't add collection to the brand on duplicate error
+    const existingCollectionName = getBrandPayload.data.getBrand.collections[0].nameString;
+    const addCollectionToBrandDuplicatePayload = await mutate<any>(
+      gql`
+        mutation AddCollectionToBrand($input: AddCollectionToBrandInput!) {
+          addCollectionToBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+              nameString
+              collections {
+                ...TestBrandCollection
+              }
+            }
+          }
+        }
+        ${brandCollectionFragment}
+      `,
+      {
+        variables: {
+          input: {
+            brandId: brandA.id,
+            nameString: existingCollectionName,
+          },
+        },
+      },
+    );
+    expect(addCollectionToBrandDuplicatePayload.data.addCollectionToBrand.success).toBeFalsy();
+
+    // Should add collection to the brand
+    const newCollectionName = faker.lorem.words(3);
+    const newCollectionDescription = faker.lorem.paragraph();
+    const addCollectionToBrandPayload = await mutate<any>(
+      gql`
+        mutation AddCollectionToBrand($input: AddCollectionToBrandInput!) {
+          addCollectionToBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+              nameString
+              collections {
+                ...TestBrandCollection
+              }
+            }
+          }
+        }
+        ${brandCollectionFragment}
+      `,
+      {
+        variables: {
+          input: {
+            brandId: brandA.id,
+            nameString: newCollectionName,
+            description: newCollectionDescription,
+          },
+        },
+      },
+    );
+    expect(addCollectionToBrandPayload.data.addCollectionToBrand.success).toBeTruthy();
+    expect(addCollectionToBrandPayload.data.addCollectionToBrand.brand.collections).toHaveLength(
+      brandA.collections.length + 1,
+    );
+
     // Shouldn't delete brand used in products
     const deleteBrandUsedPayload = await mutate<any>(
       gql`

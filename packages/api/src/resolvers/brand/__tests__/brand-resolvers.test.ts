@@ -204,5 +204,41 @@ describe('Brand', () => {
     expect(updateBrandPayload.data.updateBrand.brand.nameString).toEqual(updatedBrandName);
     expect(updateBrandPayload.data.updateBrand.brand.url).toEqual(updatedBrandUrl);
     expect(updateBrandPayload.data.updateBrand.brand.description).toEqual(updatedBrandDescription);
+
+    // Shouldn't delete brand used in products
+    const deleteBrandUsedPayload = await mutate<any>(
+      gql`
+        mutation DeleteteBrand($id: ID!) {
+          deleteBrand(id: $id) {
+            message
+            success
+          }
+        }
+      `,
+      {
+        variables: {
+          id: brandA.id,
+        },
+      },
+    );
+    expect(deleteBrandUsedPayload.data.deleteBrand.success).toBeFalsy();
+
+    // Should delete brand
+    const deleteBrandPayload = await mutate<any>(
+      gql`
+        mutation DeleteteBrand($id: ID!) {
+          deleteBrand(id: $id) {
+            message
+            success
+          }
+        }
+      `,
+      {
+        variables: {
+          id: createBrandPayload.data.createBrand.brand.id,
+        },
+      },
+    );
+    expect(deleteBrandPayload.data.deleteBrand.success).toBeTruthy();
   });
 });

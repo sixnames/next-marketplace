@@ -29,12 +29,13 @@ import { createBrandSchema, updateBrandSchema } from '@yagu/shared';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { UpdateBrandInput } from './UpdateBrandInput';
 import { FilterQuery } from 'mongoose';
+import { ProductModel } from '../../entities/Product';
 
 const {
   operationConfigCreate,
   operationConfigRead,
   operationConfigUpdate,
-  // operationConfigDelete,
+  operationConfigDelete,
 } = RoleRuleModel.getOperationsConfigs(Brand.name);
 
 @ObjectType()
@@ -134,6 +135,7 @@ export class BrandResolver {
       };
     }
   }
+
   @Mutation((_returns) => BrandPayloadType)
   @AuthMethod(operationConfigUpdate)
   @ValidateMethod({ schema: updateBrandSchema })
@@ -186,6 +188,52 @@ export class BrandResolver {
         success: true,
         message: await getApiMessage('brands.update.success'),
         brand: updatedBrand,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => BrandPayloadType)
+  @AuthMethod(operationConfigDelete)
+  async deleteBrand(
+    @Arg('id', () => ID) id: string,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigDelete) customFilter: FilterQuery<Brand>,
+  ): Promise<BrandPayloadType> {
+    try {
+      const brand = await BrandModel.findOne({ _id: id, ...customFilter });
+      if (!brand) {
+        return {
+          success: false,
+          message: await getApiMessage('brands.delete.notFound'),
+        };
+      }
+
+      const used = await ProductModel.exists({ brand: id });
+      if (used) {
+        return {
+          success: false,
+          message: await getApiMessage('brands.delete.used'),
+        };
+      }
+
+      const removedBrand = await BrandModel.findByIdAndDelete(id);
+
+      if (!removedBrand) {
+        return {
+          success: false,
+          message: await getApiMessage('brands.delete.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('brands.delete.success'),
       };
     } catch (e) {
       console.log(e);

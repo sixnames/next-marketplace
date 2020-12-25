@@ -4,6 +4,7 @@ import createTestData, {
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
+import * as faker from 'faker';
 
 describe('Brand collection', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -17,7 +18,8 @@ describe('Brand collection', () => {
 
   it('Should CRUD brand collections', async () => {
     const brandCollectionA = mockData.brandCollectionA;
-    const { query } = await authenticatedTestClient();
+    const brandCollectionB = mockData.brandCollectionB;
+    const { query, mutate } = await authenticatedTestClient();
 
     // Should return brand collection by ID
     const getBrandCollectionPayload = await query<any>(
@@ -44,7 +46,7 @@ describe('Brand collection', () => {
     // Should return brand collection by ID
     const getBrandCollectionBySlugPayload = await query<any>(
       gql`
-        query GetBrandCollection($slug: String!) {
+        query GetBrandCollectionBySlug($slug: String!) {
           getBrandCollectionBySlug(slug: $slug) {
             id
             nameString
@@ -68,7 +70,7 @@ describe('Brand collection', () => {
     // Should return paginated brand collections
     const getAllBrandCollectionsPayload = await query<any>(
       gql`
-        query GetBrandCollection($input: BrandCollectionPaginateInput) {
+        query GetAllBrandCollections($input: BrandCollectionPaginateInput) {
           getAllBrandCollections(input: $input) {
             page
             limit
@@ -101,5 +103,68 @@ describe('Brand collection', () => {
     );
     expect(getAllBrandCollectionsPayload.data.getAllBrandCollections.hasPrevPage).toBeFalsy();
     expect(getAllBrandCollectionsPayload.data.getAllBrandCollections.hasNextPage).toBeTruthy();
+
+    // Shouldn't update brand collection on duplicate error
+    const updateBrandCollectionDuplicatePayload = await mutate<any>(
+      gql`
+        mutation UpdateBrandCollection($input: UpdateBrandCollectionInput!) {
+          updateBrandCollection(input: $input) {
+            success
+            message
+            collection {
+              id
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: brandCollectionA.id,
+            nameString: brandCollectionB.nameString,
+            description: brandCollectionB.description,
+          },
+        },
+      },
+    );
+    expect(updateBrandCollectionDuplicatePayload.data.updateBrandCollection.success).toBeFalsy();
+
+    // Should update brand collection
+    const updatedCollectionName = faker.lorem.words(2);
+    const updatedCollectionDescription = faker.lorem.paragraph();
+    const updateBrandCollectionPayload = await mutate<any>(
+      gql`
+        mutation UpdateBrandCollection($input: UpdateBrandCollectionInput!) {
+          updateBrandCollection(input: $input) {
+            success
+            message
+            collection {
+              id
+              nameString
+              description
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: brandCollectionA.id,
+            nameString: updatedCollectionName,
+            description: updatedCollectionDescription,
+          },
+        },
+      },
+    );
+    expect(updateBrandCollectionPayload.data.updateBrandCollection.success).toBeTruthy();
+    expect(updateBrandCollectionPayload.data.updateBrandCollection.collection.nameString).toEqual(
+      updatedCollectionName,
+    );
+    expect(updateBrandCollectionPayload.data.updateBrandCollection.collection.description).toEqual(
+      updatedCollectionDescription,
+    );
+    expect(updateBrandCollectionPayload.data.updateBrandCollection.collection.id).toEqual(
+      brandCollectionA.id,
+    );
   });
 });

@@ -202,6 +202,12 @@ input BrandCollectionPaginateInput {
   sortDir: SortDirectionNumEnum = desc
 }
 
+type BrandCollectionPayloadType {
+  collection: BrandCollection
+  message: String!
+  success: Boolean!
+}
+
 """Brand pagination sortBy enum"""
 enum BrandCollectionSortByEnum {
   createdAt
@@ -731,6 +737,7 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
   updateBrand(input: UpdateBrandInput!): BrandPayloadType!
+  updateBrandCollection(input: UpdateBrandCollectionInput!): BrandCollectionPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
   updateCompany(input: UpdateCompanyInput!): CompanyPayloadtype!
   updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
@@ -1615,6 +1622,12 @@ input UpdateAttributesGroupInRubricInput {
   attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input UpdateBrandCollectionInput {
+  description: String
+  id: ID!
+  nameString: String!
 }
 
 input UpdateBrandInput {

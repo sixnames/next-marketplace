@@ -195,6 +195,18 @@ type BrandCollection {
   updatedAt: DateTime!
 }
 
+input BrandCollectionPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  sortBy: BrandCollectionSortByEnum = createdAt
+  sortDir: SortDirectionNumEnum = desc
+}
+
+"""Brand pagination sortBy enum"""
+enum BrandCollectionSortByEnum {
+  createdAt
+}
+
 input BrandPaginateInput {
   limit: Int = 100
   page: Int = 1
@@ -1197,6 +1209,7 @@ type Query {
     """list of excluded groups id's"""
     exclude: [ID!] = []
   ): [AttributesGroup!]!
+  getAllBrandCollections(input: BrandCollectionPaginateInput): PaginatedBrands!
   getAllBrands(input: BrandPaginateInput): PaginatedBrands!
   getAllCities: [City!]!
   getAllCompanies(input: CompanyPaginateInput = {}): PaginatedCompaniesResponse!
@@ -1220,6 +1233,8 @@ type Query {
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
   getBrand(id: ID!): Brand!
   getBrandBySlug(slug: String!): Brand
+  getBrandCollection(id: ID!): BrandCollection!
+  getBrandCollectionBySlug(slug: String!): BrandCollection
   getCatalogueData(catalogueFilter: [String!]!, productsInput: CatalogueProductsInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!

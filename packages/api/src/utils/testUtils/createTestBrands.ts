@@ -51,6 +51,7 @@ export interface CreateTestBrandsPayloadInterface extends CreateTestRubricsPaylo
   brandCollectionA: BrandCollection;
   brandCollectionB: BrandCollection;
   brandCollectionC: BrandCollection;
+  allBrandCollections: BrandCollection[];
   manufacturerA: Manufacturer;
   manufacturerB: Manufacturer;
   manufacturerC: Manufacturer;
@@ -78,6 +79,7 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
   const manufacturerC = await getFakeManufacturer();
 
   const allBrands = [brandA, brandB, brandC];
+  const allBrandCollections = [brandCollectionA, brandCollectionB, brandCollectionC];
 
   return {
     brandA,
@@ -87,6 +89,7 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
     brandCollectionA,
     brandCollectionB,
     brandCollectionC,
+    allBrandCollections,
     manufacturerA,
     manufacturerB,
     manufacturerC,

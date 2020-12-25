@@ -80,8 +80,8 @@ export class BrandResolver {
     return BrandModel.findOne({ slug });
   }
 
-  @AuthMethod(operationConfigRead)
   @Query((_returns) => PaginatedBrands)
+  @AuthMethod(operationConfigRead)
   async getAllBrands(
     @Arg('input', (_type) => BrandPaginateInput, {
       nullable: true,

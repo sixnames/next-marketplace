@@ -1,5 +1,5 @@
 import { MultiLangSchemaMessagesInterface } from './getFieldValidationMessage';
-import { idSchema, langStringInputSchema } from './schemaTemplates';
+import { idSchema, requiredNameSchema } from './schemaTemplates';
 import * as Yup from 'yup';
 import { brandCollectionCommonFields, brandCollectionIdSchema } from './brandCollectionSchema';
 
@@ -7,7 +7,7 @@ export const brandIdSchema = (args: MultiLangSchemaMessagesInterface) =>
   idSchema({ args, key: 'validation.brands.id' });
 
 const brandCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
-  nameString: langStringInputSchema({
+  nameString: requiredNameSchema({
     ...args,
     requiredMessageKey: 'validation.brands.name',
   }),

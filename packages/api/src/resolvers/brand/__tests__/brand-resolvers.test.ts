@@ -141,7 +141,68 @@ describe('Brand', () => {
         },
       },
     );
+
     expect(createBrandPayload.data.createBrand.success).toBeTruthy();
     expect(createBrandPayload.data.createBrand.brand.nameString).toEqual(newBrandName);
+
+    // Shouldn't update brand on duplicate error
+    const updateBrandDuplicatePayload = await mutate<any>(
+      gql`
+        mutation UpdateBrand($input: UpdateBrandInput!) {
+          updateBrand(input: $input) {
+            message
+            success
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: createBrandPayload.data.createBrand.brand.id,
+            nameString: brandA.nameString,
+          },
+        },
+      },
+    );
+    expect(updateBrandDuplicatePayload.data.updateBrand.success).toBeFalsy();
+
+    // Should update brand
+    const updatedBrandName = faker.lorem.words(2);
+    const updatedBrandUrl = faker.internet.url();
+    const updatedBrandDescription = faker.lorem.paragraph();
+    const updateBrandPayload = await mutate<any>(
+      gql`
+        mutation UpdateBrand($input: UpdateBrandInput!) {
+          updateBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+              nameString
+              url
+              description
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: createBrandPayload.data.createBrand.brand.id,
+            nameString: updatedBrandName,
+            url: updatedBrandUrl,
+            description: updatedBrandDescription,
+          },
+        },
+      },
+    );
+
+    expect(updateBrandPayload.data.updateBrand.success).toBeTruthy();
+    expect(updateBrandPayload.data.updateBrand.brand.id).toEqual(
+      updateBrandPayload.data.updateBrand.brand.id,
+    );
+    expect(updateBrandPayload.data.updateBrand.brand.nameString).toEqual(updatedBrandName);
+    expect(updateBrandPayload.data.updateBrand.brand.url).toEqual(updatedBrandUrl);
+    expect(updateBrandPayload.data.updateBrand.brand.description).toEqual(updatedBrandDescription);
   });
 });

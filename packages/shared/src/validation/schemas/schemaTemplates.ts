@@ -77,6 +77,35 @@ export const idSchema = ({ args, key }: IdSchemaInterface) =>
       }),
     );
 
+interface RequiredNameSchemaInterface extends SchemaMessagesInterface {
+  requiredMessageKey: MessageKey;
+  required?: boolean;
+  min?: number;
+  max?: number;
+}
+
+export const requiredNameSchema = ({
+  messages,
+  lang,
+  min,
+  max,
+  requiredMessageKey,
+}: RequiredNameSchemaInterface) => {
+  const minLength = min || minNameLength;
+  const maxLength = max || maxNameLength;
+
+  return Yup.string()
+    .min(
+      minLength,
+      getFieldValidationMessage({ messages, lang, key: 'validation.string.min' }) + ` ${minLength}`,
+    )
+    .max(
+      maxLength,
+      getFieldValidationMessage({ messages, lang, key: 'validation.string.max' }) + ` ${maxLength}`,
+    )
+    .required(getFieldValidationMessage({ messages, lang, key: requiredMessageKey }));
+};
+
 export const colorSchema = ({ messages, lang }: SchemaMessagesInterface) =>
   Yup.lazy((value?: string | null) => {
     return !value

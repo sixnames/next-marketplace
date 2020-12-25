@@ -704,6 +704,7 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
+  updateBrand(input: UpdateBrandInput!): BrandPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
   updateCompany(input: UpdateCompanyInput!): CompanyPayloadtype!
   updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
@@ -1585,6 +1586,13 @@ input UpdateAttributesGroupInRubricInput {
   attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input UpdateBrandInput {
+  description: String
+  id: ID!
+  nameString: String!
+  url: String
 }
 
 input UpdateCityInCountryInput {

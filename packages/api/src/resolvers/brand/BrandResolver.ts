@@ -25,12 +25,18 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
-import { createBrandSchema, updateBrandSchema } from '@yagu/shared';
+import {
+  addCollectionToBrandSchema,
+  createBrandSchema,
+  deleteCollectionFromBrandSchema,
+  updateBrandSchema,
+} from '@yagu/shared';
 import { RoleRuleModel } from '../../entities/RoleRule';
 import { UpdateBrandInput } from './UpdateBrandInput';
 import { FilterQuery } from 'mongoose';
 import { ProductModel } from '../../entities/Product';
 import { AddCollectionToBrandInput } from './AddCollectionToBrandInput';
+import { DeleteCollectionFromBrandInput } from './DeleteCollectionFromBrandInput';
 
 const {
   operationConfigCreate,
@@ -41,7 +47,7 @@ const {
 
 const {
   operationConfigCreate: operationConfigCollectionCreate,
-  // operationConfigDelete: operationConfigCollectionDelete,
+  operationConfigDelete: operationConfigCollectionDelete,
 } = RoleRuleModel.getOperationsConfigs(BrandCollection.name);
 
 @ObjectType()
@@ -252,6 +258,7 @@ export class BrandResolver {
 
   @Mutation((_returns) => BrandPayloadType)
   @AuthMethod(operationConfigCollectionCreate)
+  @ValidateMethod({ schema: addCollectionToBrandSchema })
   async addCollectionToBrand(
     @Arg('input') input: AddCollectionToBrandInput,
     @Localization() { getApiMessage }: LocalizationPayloadInterface,
@@ -313,6 +320,87 @@ export class BrandResolver {
       return {
         success: true,
         message: await getApiMessage('brandCollections.create.success'),
+        brand: updatedBrand,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => BrandPayloadType)
+  @AuthMethod(operationConfigCollectionDelete)
+  @ValidateMethod({ schema: deleteCollectionFromBrandSchema })
+  async deleteCollectionFromBrand(
+    @Arg('input') input: DeleteCollectionFromBrandInput,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Brand>,
+    @CustomFilter(operationConfigCollectionDelete)
+    collectionCustomFilter: FilterQuery<BrandCollection>,
+  ): Promise<BrandPayloadType> {
+    try {
+      const { brandId, collectionId } = input;
+      const brand = await BrandModel.findOne({ _id: brandId, ...customFilter });
+      if (!brand) {
+        return {
+          success: false,
+          message: await getApiMessage('brands.update.notFound'),
+        };
+      }
+
+      const collection = await BrandCollectionModel.findOne({
+        _id: collectionId,
+        ...collectionCustomFilter,
+      });
+      if (!collection) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.delete.notFound'),
+        };
+      }
+
+      const used = await ProductModel.exists({
+        brandCollection: collectionId,
+      });
+      if (used) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.delete.used'),
+        };
+      }
+      const removedCollection = await BrandCollectionModel.findByIdAndDelete(collectionId);
+      if (!removedCollection) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.delete.error'),
+        };
+      }
+
+      const updatedBrand = await BrandModel.findByIdAndUpdate(
+        brandId,
+        {
+          $pull: {
+            collections: removedCollection.id,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedBrand) {
+        return {
+          success: false,
+          message: await getApiMessage('brandCollections.delete.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('brandCollections.delete.success'),
         brand: updatedBrand,
       };
     } catch (e) {

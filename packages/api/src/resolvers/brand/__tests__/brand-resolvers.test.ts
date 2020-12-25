@@ -206,7 +206,8 @@ describe('Brand', () => {
     expect(updateBrandPayload.data.updateBrand.brand.description).toEqual(updatedBrandDescription);
 
     // Shouldn't add collection to the brand on duplicate error
-    const existingCollectionName = getBrandPayload.data.getBrand.collections[0].nameString;
+    const existingCollection = getBrandPayload.data.getBrand.collections[0];
+    const existingCollectionName = existingCollection.nameString;
     const addCollectionToBrandDuplicatePayload = await mutate<any>(
       gql`
         mutation AddCollectionToBrand($input: AddCollectionToBrandInput!) {
@@ -265,10 +266,73 @@ describe('Brand', () => {
         },
       },
     );
+    const createdCollection = addCollectionToBrandPayload.data.addCollectionToBrand.brand.collections.find(
+      ({ nameString }: any) => {
+        return nameString === newCollectionName;
+      },
+    );
     expect(addCollectionToBrandPayload.data.addCollectionToBrand.success).toBeTruthy();
     expect(addCollectionToBrandPayload.data.addCollectionToBrand.brand.collections).toHaveLength(
       brandA.collections.length + 1,
     );
+
+    // Shouldn't delete collection if it's used in products
+    const deleteCollectionFromBrandUsedPayload = await mutate<any>(
+      gql`
+        mutation DeleteCollectionFromBrand($input: DeleteCollectionFromBrandInput!) {
+          deleteCollectionFromBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            brandId: brandA.id,
+            collectionId: existingCollection.id,
+          },
+        },
+      },
+    );
+    expect(deleteCollectionFromBrandUsedPayload.data.deleteCollectionFromBrand.success).toBeFalsy();
+
+    // Should delete collection from brand and db
+    const deleteCollectionFromBrandPayload = await mutate<any>(
+      gql`
+        mutation DeleteCollectionFromBrand($input: DeleteCollectionFromBrandInput!) {
+          deleteCollectionFromBrand(input: $input) {
+            message
+            success
+            brand {
+              id
+              collections {
+                ...TestBrandCollection
+              }
+            }
+          }
+        }
+        ${brandCollectionFragment}
+      `,
+      {
+        variables: {
+          input: {
+            brandId: brandA.id,
+            collectionId: createdCollection.id,
+          },
+        },
+      },
+    );
+    const removedCollection = deleteCollectionFromBrandPayload.data.deleteCollectionFromBrand.brand.collections.find(
+      ({ id }: any) => {
+        return id === createdCollection.id;
+      },
+    );
+    expect(deleteCollectionFromBrandPayload.data.deleteCollectionFromBrand.success).toBeTruthy();
+    expect(removedCollection).toBeUndefined();
 
     // Shouldn't delete brand used in products
     const deleteBrandUsedPayload = await mutate<any>(

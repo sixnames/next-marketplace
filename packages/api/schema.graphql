@@ -533,6 +533,11 @@ input DeleteCityFromCountryInput {
   countryId: ID!
 }
 
+input DeleteCollectionFromBrandInput {
+  brandId: ID!
+  collectionId: ID!
+}
+
 input DeleteOptionFromGroupInput {
   groupId: ID!
   optionId: ID!
@@ -681,6 +686,7 @@ type Mutation {
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
   deleteBrand(id: ID!): BrandPayloadType!
   deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
+  deleteCollectionFromBrand(input: DeleteCollectionFromBrandInput!): BrandPayloadType!
   deleteCompany(id: ID!): CompanyPayloadtype!
   deleteCountry(id: ID!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!

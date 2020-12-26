@@ -16,6 +16,16 @@ import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Currency from '../../components/Currency/Currency';
 import { useLanguageContext } from '../../context/languageContext';
+import {
+  CATALOGUE_FILTER_PRICE_KEYS,
+  CATALOGUE_MAX_PRICE_KEY,
+  CATALOGUE_MIN_PRICE_KEY,
+} from '@yagu/shared';
+import {
+  getCatalogueFilterNextPath,
+  getCatalogueFilterValueByKey,
+} from '../../utils/catalogueHelpers';
+import { noNaN } from '../../utils/numbers';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueRubricFilterAttributeFragment;
@@ -114,11 +124,27 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [pricesValue, setPricesValue] = useState<number[]>(() => [minPrice, maxPrice]);
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
+  const [pricesRanges, setPricesRanges] = useState<number[]>(() => [minPrice, maxPrice]);
+  const [pricesValue, setPricesValue] = useState<number[]>(() => {
+    const selectedMinPrice = getCatalogueFilterValueByKey({
+      asPath: router.asPath,
+      key: CATALOGUE_MIN_PRICE_KEY,
+    });
+    const selectedMaxPrice = getCatalogueFilterValueByKey({
+      asPath: router.asPath,
+      key: CATALOGUE_MAX_PRICE_KEY,
+    });
+
+    if (!selectedMinPrice || !selectedMaxPrice) {
+      return [minPrice, maxPrice];
+    }
+
+    return [noNaN(selectedMinPrice), noNaN(selectedMaxPrice)];
+  });
 
   useEffect(() => {
-    setPricesValue([minPrice, maxPrice]);
+    setPricesRanges([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
   const resetPricesValueHandler = useCallback(() => {
@@ -231,8 +257,8 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           <div className={classes.pricesFilterSlider}>
             <Range
               value={pricesValue}
-              min={minPrice}
-              max={maxPrice}
+              min={pricesRanges[0]}
+              max={pricesRanges[1]}
               onChange={setPricesValue}
               trackStyle={[
                 {
@@ -245,18 +271,16 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
               }}
               handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
               onAfterChange={(val) => {
-                router
-                  .push({
-                    href: router.asPath,
-                    query: {
-                      ...router.query,
-                      minPrice: val[0],
-                      maxPrice: val[1],
-                    },
-                  })
-                  .catch(() => {
-                    showErrorNotification();
-                  });
+                const [minPrice, maxPrice] = val;
+                const options = getCatalogueFilterNextPath({
+                  asPath: router.asPath,
+                  excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
+                });
+                const nextPath = `${options}/${CATALOGUE_MIN_PRICE_KEY}-${minPrice}/${CATALOGUE_MAX_PRICE_KEY}-${maxPrice}`;
+
+                router.push(nextPath).catch(() => {
+                  showErrorNotification();
+                });
               }}
             />
           </div>

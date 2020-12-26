@@ -7,6 +7,9 @@ import {
   attributesReducer,
   getAttributesPipeline,
   getCatalogueTitle,
+  getOptionFromParam,
+  GetOptionFromParamPayloadInterface,
+  getParamOptionFirstValueByKey,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
 import {
@@ -15,7 +18,17 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
-import { CATALOGUE_PRODUCTS_LIMIT, SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/shared';
+import {
+  CATALOGUE_FILTER_EXCLUDED_KEYS,
+  CATALOGUE_MAX_PRICE_KEY,
+  CATALOGUE_MIN_PRICE_KEY,
+  CATALOGUE_PRODUCTS_LIMIT,
+  SORT_ASC_NUM,
+  SORT_BY_KEY,
+  SORT_DESC,
+  SORT_DESC_NUM,
+  SORT_DIR_KEY,
+} from '@yagu/shared';
 import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
 import { SortDirectionEnum } from '../commonInputs/PaginateInput';
 import { getRubricsTreeIds } from '../../utils/rubricHelpers';
@@ -40,15 +53,39 @@ export class CatalogueDataResolver {
     productsInput: CatalogueProductsInput,
   ): Promise<CatalogueData | null> {
     try {
-      const [slug, ...attributes] = catalogueFilter;
-      const {
-        limit = CATALOGUE_PRODUCTS_LIMIT,
-        page = 1,
-        sortBy = 'priority',
-        sortDir = SORT_DESC,
-        minPrice,
-        maxPrice,
-      } = productsInput;
+      const [slug, ...params] = catalogueFilter;
+      const additionalFilters: GetOptionFromParamPayloadInterface[] = [];
+
+      const attributes = params.filter((param) => {
+        const paramObject = getOptionFromParam(param);
+        const excluded = CATALOGUE_FILTER_EXCLUDED_KEYS.includes(paramObject.key);
+        if (excluded) {
+          additionalFilters.push(paramObject);
+          return false;
+        }
+        return true;
+      });
+
+      const { limit = CATALOGUE_PRODUCTS_LIMIT, page = 1 } = productsInput;
+
+      const sortBy = getParamOptionFirstValueByKey({
+        defaultValue: 'priority',
+        paramOptions: additionalFilters,
+        key: SORT_BY_KEY,
+      });
+      const sortDir = getParamOptionFirstValueByKey({
+        defaultValue: SORT_DESC,
+        paramOptions: additionalFilters,
+        key: SORT_DIR_KEY,
+      });
+      const minPrice = getParamOptionFirstValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MIN_PRICE_KEY,
+      });
+      const maxPrice = getParamOptionFirstValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MAX_PRICE_KEY,
+      });
       const skip = page ? (page - 1) * limit : 0;
       const realSortDir = sortDir === SORT_DESC ? SORT_DESC_NUM : SORT_ASC_NUM;
 
@@ -114,14 +151,11 @@ export class CatalogueDataResolver {
         // Count shop products
         { $addFields: { shopsCount: { $size: '$shops' } } },
 
-        // Add minPrice field
-        { $addFields: { minPrice: { $min: '$shops.price' } } },
-
         // Filter out products not added to the shops
         { $match: { shopsCount: { $gt: 0 } } },
 
-        // Filter out products that out of price range
-        // ...priceRangePipeline,
+        // Add minPrice field
+        { $addFields: { minPrice: { $min: '$shops.price' } } },
 
         // Unwind by views counter
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
@@ -154,8 +188,8 @@ export class CatalogueDataResolver {
               {
                 $match: {
                   minPrice: {
-                    $gte: minPrice,
-                    $lte: maxPrice,
+                    $gte: noNaN(minPrice),
+                    $lte: noNaN(maxPrice),
                   },
                 },
               },

@@ -118,9 +118,48 @@ export async function setCataloguePriorities({
   }
 }
 
-export function getOptionFromParam(paramString: string): { key: string; value: string[] } {
+export interface GetOptionFromParamPayloadInterface {
+  key: string;
+  value: string[];
+}
+
+export function getOptionFromParam(paramString: string): GetOptionFromParamPayloadInterface {
   const param = paramString.split('-');
   return { key: `${param[0]}`, value: [`${param[1]}`] };
+}
+
+interface GetParamOptionValueByKeyInterface {
+  paramOptions: GetOptionFromParamPayloadInterface[];
+  key: string;
+}
+
+export function getParamOptionValueByKey({
+  key,
+  paramOptions,
+}: GetParamOptionValueByKeyInterface): string[] {
+  const currentOption = paramOptions.find((option) => option.key === key);
+  if (!currentOption) {
+    return [];
+  }
+  return currentOption.value;
+}
+
+interface GetParamOptionFirstValueByKey extends GetParamOptionValueByKeyInterface {
+  defaultValue?: string | null;
+}
+
+export function getParamOptionFirstValueByKey({
+  key,
+  paramOptions,
+  defaultValue,
+}: GetParamOptionFirstValueByKey): string | null | undefined {
+  const currentOptionValues = getParamOptionValueByKey({ key, paramOptions });
+  const firstValue = currentOptionValues[0];
+
+  if (!firstValue) {
+    return defaultValue;
+  }
+  return firstValue;
 }
 
 export function attributesReducer(

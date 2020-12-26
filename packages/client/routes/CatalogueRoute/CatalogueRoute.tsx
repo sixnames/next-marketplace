@@ -13,7 +13,13 @@ import ProductSnippetRow from '../../components/Product/ProductSnippet/ProductSn
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Spinner from '../../components/Spinner/Spinner';
-import { SORT_ASC, SORT_DESC } from '@yagu/shared';
+import {
+  CATALOGUE_FILTER_SORT_KEYS,
+  SORT_ASC,
+  SORT_BY_KEY,
+  SORT_DESC,
+  SORT_DIR_KEY,
+} from '@yagu/shared';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -22,6 +28,10 @@ import { useAppContext } from '../../context/appContext';
 import Button from '../../components/Buttons/Button';
 import ReachMenuButton from '../../components/ReachMenuButton/ReachMenuButton';
 import { useSiteContext } from '../../context/siteContext';
+import {
+  getCatalogueFilterNextPath,
+  getCatalogueFilterValueByKey,
+} from '../../utils/catalogueHelpers';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -99,58 +109,72 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
       {
         nameString: 'По популярности',
         id: 'По популярности',
-        current: router.query.sortBy === 'priority' && router.query.sortDir === SORT_DESC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          return sortBy === 'priority';
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'priority',
-                sortDir: SORT_DESC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-priority`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
       {
         nameString: 'По возрастанию цены',
         id: 'По возрастанию цены',
-        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_ASC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          const sortDir = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_DIR_KEY,
+          });
+          return sortBy === 'price' && sortDir === SORT_ASC;
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'price',
-                sortDir: SORT_ASC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC}`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
       {
         nameString: 'По убыванию цены',
         id: 'По убыванию цены',
-        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_DESC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          const sortDir = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_DIR_KEY,
+          });
+          return sortBy === 'price' && sortDir === SORT_DESC;
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'price',
-                sortDir: SORT_DESC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC}`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
     ],

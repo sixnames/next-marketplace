@@ -14,14 +14,16 @@ import { aggregatePagination } from '../../utils/aggregatePagination';
 import { ManufacturerPaginateInput } from './ManufacturerPaginateInput';
 import { generateSlug } from '../../utils/slug';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { createManufacturerSchema } from '@yagu/shared';
 import { CreateManufacturerInput } from './CreateManufacturerInput';
+import { ProductModel } from '../../entities/Product';
+import { UpdateManufacturerInput } from './UpdateManufacturerInput';
+import { createManufacturerSchema, updateManufacturerSchema } from '@yagu/shared';
 
 const {
   operationConfigCreate,
   operationConfigRead,
-  // operationConfigUpdate,
-  // operationConfigDelete,
+  operationConfigUpdate,
+  operationConfigDelete,
 } = RoleRuleModel.getOperationsConfigs(Manufacturer.name);
 
 @ObjectType()
@@ -113,6 +115,114 @@ export class ManufacturerResolver {
         success: true,
         message: await getApiMessage('manufacturers.create.success'),
         manufacturer,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => ManufacturerPayloadType)
+  @AuthMethod(operationConfigUpdate)
+  @ValidateMethod({ schema: updateManufacturerSchema })
+  async updateManufacturer(
+    @Arg('input') input: UpdateManufacturerInput,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigUpdate) customFilter: FilterQuery<Manufacturer>,
+  ): Promise<ManufacturerPayloadType> {
+    try {
+      const { id, nameString, ...values } = input;
+      const manufacturer = await ManufacturerModel.findOne({ _id: id, ...customFilter });
+      if (!manufacturer) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.update.notFound'),
+        };
+      }
+
+      const slug = generateSlug(nameString);
+
+      const exist = await ManufacturerModel.exists({ _id: { $ne: id }, nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.update.duplicate'),
+        };
+      }
+
+      const updatedManufacturer = await ManufacturerModel.findByIdAndUpdate(
+        id,
+        {
+          ...values,
+          nameString,
+          slug,
+          collections: [],
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!updatedManufacturer) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.update.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('manufacturers.update.success'),
+        manufacturer: updatedManufacturer,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
+  }
+
+  @Mutation((_returns) => ManufacturerPayloadType)
+  @AuthMethod(operationConfigDelete)
+  async deleteManufacturer(
+    @Arg('id', () => ID) id: string,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+    @CustomFilter(operationConfigDelete) customFilter: FilterQuery<Manufacturer>,
+  ): Promise<ManufacturerPayloadType> {
+    try {
+      const manufacturer = await ManufacturerModel.findOne({ _id: id, ...customFilter });
+      if (!manufacturer) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.delete.notFound'),
+        };
+      }
+
+      const used = await ProductModel.exists({ manufacturer: id });
+      if (used) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.delete.used'),
+        };
+      }
+
+      const removedManufacturer = await ManufacturerModel.findByIdAndDelete(id);
+
+      if (!removedManufacturer) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.delete.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('manufacturers.delete.success'),
       };
     } catch (e) {
       console.log(e);

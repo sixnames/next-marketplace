@@ -467,6 +467,12 @@ input CreateLanguageInput {
   nativeName: String!
 }
 
+input CreateManufacturerInput {
+  description: String
+  nameString: String!
+  url: String
+}
+
 input CreateMetricInput {
   name: [TranslationInput!]!
 }
@@ -660,6 +666,12 @@ input ManufacturerPaginateInput {
   sortDir: SortDirectionNumEnum = desc
 }
 
+type ManufacturerPayloadType {
+  manufacturer: Manufacturer
+  message: String!
+  success: Boolean!
+}
+
 """Manufacturer pagination sortBy enum"""
 enum ManufacturerSortByEnum {
   createdAt
@@ -703,6 +715,7 @@ type Mutation {
   createCountry(input: CreateCountryInput!): CountryPayloadType!
   createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!
   createLanguage(input: CreateLanguageInput!): LanguagePayloadType!
+  createManufacturer(input: CreateManufacturerInput!): ManufacturerPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
@@ -721,6 +734,7 @@ type Mutation {
   deleteCountry(id: ID!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
+  deleteManufacturer(id: ID!): ManufacturerPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
@@ -757,6 +771,7 @@ type Mutation {
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
+  updateManufacturer(input: UpdateManufacturerInput!): ManufacturerPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateMyPassword(input: UpdateMyPasswordInput!): UserPayloadType!
   updateMyProfile(input: UpdateMyProfileInput!): UserPayloadType!
@@ -1701,6 +1716,13 @@ input UpdateLanguageInput {
   key: String!
   name: String!
   nativeName: String!
+}
+
+input UpdateManufacturerInput {
+  description: String
+  id: ID!
+  nameString: String!
+  url: String
 }
 
 input UpdateMetricInput {

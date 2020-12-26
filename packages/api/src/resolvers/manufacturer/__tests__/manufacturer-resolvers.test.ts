@@ -5,7 +5,6 @@ import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
 import faker from 'faker';
-// import * as faker from 'faker';
 
 describe('Manufacturer', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -177,7 +176,7 @@ describe('Manufacturer', () => {
       {
         variables: {
           input: {
-            id: createManufacturerPayload.data.createManufacturer.Manufacturer.id,
+            id: createManufacturerPayload.data.createManufacturer.manufacturer.id,
             nameString: updatedManufacturerName,
             url: updatedManufacturerUrl,
             description: updatedManufacturerDescription,
@@ -185,10 +184,9 @@ describe('Manufacturer', () => {
         },
       },
     );
-
     expect(updateManufacturerPayload.data.updateManufacturer.success).toBeTruthy();
     expect(updateManufacturerPayload.data.updateManufacturer.manufacturer.id).toEqual(
-      createManufacturerPayload.data.updateManufacturer.manufacturer.id,
+      createManufacturerPayload.data.createManufacturer.manufacturer.id,
     );
     expect(updateManufacturerPayload.data.updateManufacturer.manufacturer.nameString).toEqual(
       updatedManufacturerName,

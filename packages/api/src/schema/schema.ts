@@ -47,6 +47,7 @@ import { OrderResolver } from '../resolvers/order/OrderResolver';
 import { OrderStatusResolver } from '../resolvers/order/OrderStatusResolver';
 import { BrandResolver } from '../resolvers/brand/BrandResolver';
 import { BrandCollectionResolver } from '../resolvers/brandCollection/BrandCollectionResolver';
+import { ManufacturerResolver } from '../resolvers/manufacturer/ManufacturerResolver';
 
 export const schemaOptions: BuildSchemaOptions = {
   resolvers: [
@@ -94,6 +95,7 @@ export const schemaOptions: BuildSchemaOptions = {
     OrderResolver,
     BrandResolver,
     BrandCollectionResolver,
+    ManufacturerResolver,
   ],
   emitSchemaFile: path.resolve('./schema.graphql'),
   validate: false,

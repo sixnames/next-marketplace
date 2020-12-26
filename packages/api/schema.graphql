@@ -653,6 +653,18 @@ type Manufacturer {
   url: String
 }
 
+input ManufacturerPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  sortBy: ManufacturerSortByEnum = createdAt
+  sortDir: SortDirectionNumEnum = desc
+}
+
+"""Manufacturer pagination sortBy enum"""
+enum ManufacturerSortByEnum {
+  createdAt
+}
+
 type Message {
   id: ID!
   key: String!
@@ -950,6 +962,18 @@ type PaginatedCompaniesResponse {
   totalPages: Int!
 }
 
+type PaginatedManufacturers {
+  docs: [Manufacturer!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Int!
+  page: Int
+  sortBy: String!
+  sortDir: SortDirectionNumEnum!
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedOrdersResponse {
   docs: [Order!]!
   hasNextPage: Int!
@@ -1224,6 +1248,7 @@ type Query {
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
+  getAllManufacturers(input: ManufacturerPaginateInput): PaginatedManufacturers!
   getAllMetrics: [Metric!]
   getAllMyOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse
   getAllOptionsGroups: [OptionsGroup!]!
@@ -1259,6 +1284,8 @@ type Query {
   getIconsOptions: [IconOption!]!
   getISOLanguagesOptions: [ISOLanguage!]!
   getLanguage(id: ID!): Language!
+  getManufacturer(id: ID!): Manufacturer!
+  getManufacturerBySlug(slug: String!): Manufacturer!
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric

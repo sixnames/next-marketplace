@@ -24,8 +24,14 @@ export class UpdateProductInput {
   @Field(() => [ID])
   rubrics: string[];
 
-  @Field(() => ID)
-  manufacturer: string;
+  @Field(() => ID, { nullable: true })
+  manufacturer?: string;
+
+  @Field(() => ID, { nullable: true })
+  brand?: string;
+
+  @Field(() => ID, { nullable: true })
+  brandCollection?: string;
 
   @Field(() => Int)
   price: number;

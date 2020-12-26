@@ -6,7 +6,7 @@ import {
   MOCK_NEW_SHOP,
   QUERY_DATA_LAYOUT_FILTER_ENABLED,
 } from '@yagu/shared';
-import { getFullName } from '@yagu/shared';
+import { getFullName } from '../../../utils/nameUtils';
 
 describe('Companies list', () => {
   let mockData: any;

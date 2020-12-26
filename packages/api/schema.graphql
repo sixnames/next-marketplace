@@ -491,9 +491,11 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
+  brand: ID
+  brandCollection: ID
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
-  manufacturer: ID!
+  manufacturer: ID
   name: [TranslationInput!]!
   originalName: String!
   price: Int!
@@ -1771,10 +1773,12 @@ input UpdateProductInput {
   active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
+  brand: ID
+  brandCollection: ID
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
   id: ID!
-  manufacturer: ID!
+  manufacturer: ID
   name: [TranslationInput!]!
   originalName: String!
   price: Int!

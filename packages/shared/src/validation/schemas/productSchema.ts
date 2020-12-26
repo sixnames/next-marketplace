@@ -77,12 +77,12 @@ const productCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
       }),
     ),
   ),
-  manufacturer: Yup.string().required(
+  /*manufacturer: Yup.string().required(
     getFieldValidationMessage({
       ...args,
       key: 'validation.products.manufacturer',
     }),
-  ),
+  ),*/
   price: Yup.number()
     .min(
       minPrice,

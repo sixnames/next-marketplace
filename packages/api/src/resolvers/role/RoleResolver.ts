@@ -10,7 +10,6 @@ import {
   Root,
 } from 'type-graphql';
 import { Role, RoleModel } from '../../entities/Role';
-import { ROLE_SLUG_GUEST, ROLE_TEMPLATE_GUEST, ROUTE_APP_NAV_GROUP } from '@yagu/config';
 import { DocumentType } from '@typegoose/typegoose';
 import { NavItem, NavItemModel } from '../../entities/NavItem';
 import { CreateRoleInput } from './CreateRoleInput';
@@ -27,14 +26,6 @@ import { SetRoleRuleRestrictedFieldInput } from './SetRoleRuleRestrictedFieldInp
 import toggleIdInArray from '../../utils/toggleIdInArray';
 import { SetRoleAllowedNavItemInput } from './SetRoleAllowedNavItemInput';
 import fs from 'fs';
-import {
-  createRoleSchema,
-  setRoleAllowedNavItemSchema,
-  setRoleOperationCustomFilterSchema,
-  setRoleOperationPermissionSchema,
-  setRoleRuleRestrictedFieldSchema,
-  updateRoleSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -43,6 +34,17 @@ import {
   SessionRole,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
+import {
+  createRoleSchema,
+  ROLE_SLUG_GUEST,
+  ROLE_TEMPLATE_GUEST,
+  ROUTE_APP_NAV_GROUP,
+  setRoleAllowedNavItemSchema,
+  setRoleOperationCustomFilterSchema,
+  setRoleOperationPermissionSchema,
+  setRoleRuleRestrictedFieldSchema,
+  updateRoleSchema,
+} from '@yagu/shared';
 
 const {
   operationConfigCreate,

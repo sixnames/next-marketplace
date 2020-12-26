@@ -1,12 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { createContext } from 'react';
 import { IS_BROWSER } from '../config';
-import {
-  DEFAULT_CURRENCY,
-  DEFAULT_LANG,
-  LANG_COOKIE_KEY,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
-} from '@yagu/config';
 import Cookies from 'js-cookie';
 import {
   AttributePositioningInTitle,
@@ -16,6 +10,12 @@ import {
   Language,
   Translation,
 } from '../generated/apolloComponents';
+import {
+  DEFAULT_CURRENCY,
+  DEFAULT_LANG,
+  LANG_COOKIE_KEY,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+} from '@yagu/shared';
 
 interface LanguageContextInterface {
   lang: string;

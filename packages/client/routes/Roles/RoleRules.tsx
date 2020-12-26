@@ -7,7 +7,7 @@ import {
   OPERATION_TYPE_READ,
   OPERATION_TYPE_UPDATE,
   ROLE_EMPTY_CUSTOM_FILTER,
-} from '@yagu/config';
+} from '@yagu/shared';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import {
   RoleRuleFragment,

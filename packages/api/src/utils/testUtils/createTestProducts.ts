@@ -1,4 +1,9 @@
-import { createTestRubrics, CreateTestRubricsPayloadInterface } from './createTestRubrics';
+import { Product, ProductModel } from '../../entities/Product';
+import { generateTestProduct } from './generateTestProduct';
+import { createProductSlugWithConnections } from '../connectios';
+import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
+import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
+import { createTestBrands, CreateTestBrandsPayloadInterface } from './createTestBrands';
 import {
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -6,20 +11,13 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LANG,
-} from '@yagu/config';
-import { Product, ProductModel } from '../../entities/Product';
-import { generateTestProduct } from './generateTestProduct';
-import {
   MOCK_PRODUCT_A,
   MOCK_PRODUCT_B,
   MOCK_PRODUCT_C,
   MOCK_PRODUCT_D,
   MOCK_PRODUCT_E,
   MOCK_PRODUCT_F,
-} from '@yagu/mocks';
-import { createProductSlugWithConnections } from '../connectios';
-import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
-import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
+} from '@yagu/shared';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
@@ -27,7 +25,7 @@ interface ProductAttributesInterface {
   wineVintageOptions?: string;
 }
 
-export interface CreateTestProductsPayloadInterface extends CreateTestRubricsPayloadInterface {
+export interface CreateTestProductsPayloadInterface extends CreateTestBrandsPayloadInterface {
   productA: Product;
   productB: Product;
   productC: Product;
@@ -40,7 +38,7 @@ export interface CreateTestProductsPayloadInterface extends CreateTestRubricsPay
 }
 
 export const createTestProducts = async (): Promise<CreateTestProductsPayloadInterface> => {
-  const rubricsPayload = await createTestRubrics();
+  const brandsPayload = await createTestBrands();
   const {
     attributeWineVintage,
     attributeWineColor,
@@ -59,7 +57,16 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     rubricLevelThreeAA,
     rubricLevelThreeAB,
     optionsSlugsVintage,
-  } = rubricsPayload;
+    brandA,
+    brandB,
+    brandC,
+    manufacturerA,
+    manufacturerB,
+    manufacturerC,
+    brandCollectionA,
+    brandCollectionB,
+    brandCollectionC,
+  } = brandsPayload;
 
   const productAttributes = ({
     wineColorOptions,
@@ -184,6 +191,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineTypeOptions: optionsSlugsWineType[2],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      brand: brandA.id,
+      brandCollection: brandCollectionA.id,
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -196,6 +206,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           wineTypeOptions: optionsSlugsWineType[2],
         }),
         rubrics: [rubricLevelThreeAA.id],
+        brand: brandB.id,
+        brandCollection: brandCollectionB.id,
+        manufacturer: manufacturerB.id,
       },
       false,
     ),
@@ -209,6 +222,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineTypeOptions: optionsSlugsWineType[0],
       }),
       rubrics: [rubricLevelThreeAB.id],
+      brand: brandA.id,
+      brandCollection: brandCollectionA.id,
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -220,6 +236,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineTypeOptions: optionsSlugsWineType[1],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      brand: brandB.id,
+      brandCollection: brandCollectionB.id,
+      manufacturer: manufacturerB.id,
     }),
   );
 
@@ -231,6 +250,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineTypeOptions: optionsSlugsWineType[1],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      manufacturer: manufacturerA.id,
     }),
   );
 
@@ -243,6 +263,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineVintageOptions: optionsSlugsVintage[0],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      brand: brandC.id,
+      brandCollection: brandCollectionC.id,
+      manufacturer: manufacturerC.id,
     }),
   );
 
@@ -256,6 +279,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineVintageOptions: optionsSlugsVintage[1],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      brand: brandC.id,
+      brandCollection: brandCollectionC.id,
+      manufacturer: manufacturerC.id,
     }),
   );
 
@@ -269,6 +295,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         wineVintageOptions: optionsSlugsVintage[2],
       }),
       rubrics: [rubricLevelThreeAA.id],
+      brand: brandC.id,
+      brandCollection: brandCollectionC.id,
+      manufacturer: manufacturerC.id,
     }),
   );
 
@@ -326,7 +355,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   }
 
   return {
-    ...rubricsPayload,
+    ...brandsPayload,
     productA,
     productB,
     productC,

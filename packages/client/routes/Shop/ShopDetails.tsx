@@ -4,7 +4,7 @@ import Inner from '../../components/Inner/Inner';
 import useUrlFiles from '../../hooks/useUrlFiles';
 import ShopForm from '../Company/ShopForm';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateShopClientSchema } from '@yagu/validation';
+import { updateShopClientSchema } from '@yagu/shared';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { SHOP_QUERY } from '../../graphql/query/companiesQueries';
 import { removeApolloFields } from '../../utils/apolloHelpers';

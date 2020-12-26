@@ -1,13 +1,13 @@
 import React from 'react';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { createCompanySchema } from '@yagu/validation';
+import { createCompanySchema } from '@yagu/shared';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { useCreateCompanyMutation } from '../../generated/apolloComponents';
 import Inner from '../../components/Inner/Inner';
 import { useRouter } from 'next/router';
-import { ROUTE_CMS } from '@yagu/config';
 import CompanyForm from './CompanyForm';
+import { ROUTE_CMS } from '../../config';
 
 const CreateCompanyContent: React.FC = () => {
   const router = useRouter();

@@ -13,7 +13,7 @@ import {
   createTestSecondaryLanguage,
   CreateTestSecondaryLanguageInterface,
 } from './createTestSecondaryLanguage';
-import { SECONDARY_CURRENCY } from '@yagu/config';
+import { SECONDARY_CURRENCY } from '@yagu/shared';
 
 export interface CreateInitialTestDataPayloadInterface
   extends CreateInitialDataPayloadInterface,

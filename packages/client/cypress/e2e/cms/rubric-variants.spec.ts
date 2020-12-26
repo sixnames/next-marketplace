@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
-import { MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '@yagu/mocks';
-import { DEFAULT_LANG } from '@yagu/config';
+import { DEFAULT_LANG, MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '@yagu/shared';
 
 describe('Rubric variants', () => {
   beforeEach(() => {

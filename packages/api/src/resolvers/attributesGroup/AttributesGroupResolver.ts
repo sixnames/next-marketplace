@@ -21,13 +21,6 @@ import { UpdateAttributeInGroupInput } from './UpdateAttributeInGroupInput';
 import { DeleteAttributeFromGroupInput } from './DeleteAttributeFromGroupInput';
 import { RubricModel } from '../../entities/Rubric';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import {
-  addAttributeToGroupSchema,
-  createAttributesGroupSchema,
-  deleteAttributeFromGroupSchema,
-  updateAttributeInGroupSchema,
-  updateAttributesGroupSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -36,6 +29,13 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import {
+  addAttributeToGroupSchema,
+  createAttributesGroupSchema,
+  deleteAttributeFromGroupSchema,
+  updateAttributeInGroupSchema,
+  updateAttributesGroupSchema,
+} from '@yagu/shared';
 
 const {
   operationConfigCreate,

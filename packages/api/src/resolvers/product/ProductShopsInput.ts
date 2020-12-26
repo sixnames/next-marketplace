@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { SortDirectionEnum } from '../commonInputs/PaginateInput';
-import { SORT_ASC } from '@yagu/config';
+import { SORT_ASC } from '@yagu/shared';
 
 @InputType()
 export class ProductShopsInput {

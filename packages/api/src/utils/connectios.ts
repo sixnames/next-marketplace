@@ -5,8 +5,8 @@ import { generateDefaultLangSlug } from './slug';
 import { OptionsGroupModel } from '../entities/OptionsGroup';
 import { OptionModel } from '../entities/Option';
 import getLangField from './translations/getLangField';
-import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
 import { ProductConnectionModel } from '../entities/ProductConnection';
+import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/shared';
 
 export interface GetSelectAttributeOptionsValueInterface {
   attribute: DocumentType<Attribute>;

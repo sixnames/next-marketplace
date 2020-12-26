@@ -12,8 +12,8 @@ import {
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
-import { attributesGroupModalSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import { attributesGroupModalSchema } from '@yagu/shared';
 
 export interface AttributesGroupModalInterface {
   name?: Translation[];

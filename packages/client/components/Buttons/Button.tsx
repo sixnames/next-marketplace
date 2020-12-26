@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Icon from '../Icon/Icon';
 import { ButtonTheme, ButtonType, SizeType } from '../../types';
 import classes from './Button.module.css';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 import Tooltip from '../TTip/Tooltip';
 
 export interface ButtonPropsInterface {

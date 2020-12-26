@@ -15,12 +15,15 @@ import {
 } from '../../../generated/apolloComponents';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
-import { attributeInGroupSchema } from '@yagu/validation';
-import { ATTRIBUTE_VARIANT_MULTIPLE_SELECT, ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import FormikTranslationsSelect from '../../FormElements/Select/FormikTranslationsSelect';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  attributeInGroupSchema,
+} from '@yagu/shared';
 
 export interface AddAttributeToGroupModalInterface {
   attribute?: AttributeInGroupFragment;

@@ -21,13 +21,6 @@ import { AddOptionToGroupInput } from './AddOptionToGroupInput';
 import { UpdateOptionInGroupInput } from './UpdateOptionInGroupInpu';
 import { DeleteOptionFromGroupInput } from './DeleteOptionFromGroupInput';
 import { generateDefaultLangSlug } from '../../utils/slug';
-import {
-  addOptionToGroupSchema,
-  createOptionsGroupSchema,
-  deleteOptionFromGroupSchema,
-  updateOptionInGroupSchema,
-  updateOptionsGroupSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -36,7 +29,15 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
+import {
+  addOptionToGroupSchema,
+  createOptionsGroupSchema,
+  deleteOptionFromGroupSchema,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+  updateOptionInGroupSchema,
+  updateOptionsGroupSchema,
+} from '@yagu/shared';
 
 const {
   operationConfigCreate,

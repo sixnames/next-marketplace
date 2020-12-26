@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
-import { DEFAULT_PRIORITY } from '@yagu/config';
+import { DEFAULT_PRIORITY } from '@yagu/shared';
 
 @ObjectType()
 export class CityCounter {

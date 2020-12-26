@@ -8,8 +8,8 @@ import FieldErrorMessage, {
 } from '../FieldErrorMessage/FieldErrorMessage';
 import classes from './FormikAddressInput.module.css';
 import Spinner from '../../Spinner/Spinner';
-import { GeocodeResultInterface, ReverseGeocodePayload } from '@yagu/shared';
 import { useDebounce } from 'use-debounce';
+import { GeocodeResultInterface, ReverseGeocodePayload } from '../../../utils/geocode';
 
 type AddressInputType = Omit<InputPropsInterface, 'autoComplete' | 'type'>;
 

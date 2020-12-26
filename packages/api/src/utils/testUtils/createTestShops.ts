@@ -3,18 +3,7 @@ import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
-import { MOCK_SHOP, MOCK_SHOP_B } from '@yagu/mocks';
-import {
-  DEFAULT_CITY,
-  // ATTRIBUTE_VIEW_VARIANT_ICON,
-  // ATTRIBUTE_VIEW_VARIANT_LIST,
-  // ATTRIBUTE_VIEW_VARIANT_TEXT,
-  // DEFAULT_LANG,
-  // SECONDARY_LANG,
-} from '@yagu/config';
-// import { ProductModel } from '../../entities/Product';
-// import { generateTestProduct } from './generateTestProduct';
-// import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
+import { DEFAULT_CITY, MOCK_SHOP, MOCK_SHOP_B } from '@yagu/shared';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   mockShops: Shop[];

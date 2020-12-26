@@ -1,5 +1,11 @@
 import { Option, OptionModel } from '../../entities/Option';
 import {
+  OptionsGroup,
+  OptionsGroupModel,
+  OptionsGroupVariantEnum,
+} from '../../entities/OptionsGroup';
+import { createTestUsers, CreateTestUsersPayloadInterface } from './createTestUsers';
+import {
   MOCK_OPTIONS_COMBINATION,
   MOCK_OPTIONS_GROUP_COLORS,
   MOCK_OPTIONS_GROUP_COMBINATIONS,
@@ -8,14 +14,9 @@ import {
   MOCK_OPTIONS_VINTAGE,
   MOCK_OPTIONS_WINE_COLOR,
   MOCK_OPTIONS_WINE_VARIANT,
-} from '@yagu/mocks';
-import {
-  OptionsGroup,
-  OptionsGroupModel,
-  OptionsGroupVariantEnum,
-} from '../../entities/OptionsGroup';
-import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
-import { createTestUsers, CreateTestUsersPayloadInterface } from './createTestUsers';
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+} from '@yagu/shared';
 
 export interface CreateTestOptionsInterface extends CreateTestUsersPayloadInterface {
   optionsVintage: Option[];

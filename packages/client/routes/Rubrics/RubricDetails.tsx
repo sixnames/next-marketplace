@@ -14,7 +14,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
-import { updateRubricInputSchema } from '@yagu/validation';
+import { updateRubricInputSchema } from '@yagu/shared';
 import { RUBRICS_TREE_QUERY } from '../../graphql/complex/rubricsQueries';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import { useLanguageContext } from '../../context/languageContext';

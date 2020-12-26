@@ -9,7 +9,7 @@ import Button from '../../components/Buttons/Button';
 import Inner from '../../components/Inner/Inner';
 import classes from './SignInRoute.module.css';
 import useSignIn from '../../hooks/useSignIn';
-import { signInValidationSchema } from '@yagu/validation';
+import { signInValidationSchema } from '@yagu/shared';
 import useValidationSchema from '../../hooks/useValidationSchema';
 
 const SignInRoute: React.FC = () => {

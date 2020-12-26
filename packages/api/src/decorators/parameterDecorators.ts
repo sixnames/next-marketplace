@@ -5,13 +5,13 @@ import {
   getSessionRole,
   getSessionRoleRules,
 } from './methodDecorators';
-import { CART_COOKIE_KEY, MessageKey, ROLE_SLUG_ADMIN } from '@yagu/config';
 import getApiMessage from '../utils/translations/getApiMessage';
 import getLangField from '../utils/translations/getLangField';
 import { Translation } from '../entities/Translation';
 import cookie from 'cookie';
 import { CartModel } from '../entities/Cart';
 import { UserModel } from '../entities/User';
+import { CART_COOKIE_KEY, MessageKey, ROLE_SLUG_ADMIN } from '@yagu/shared';
 
 export function SessionUser() {
   return createParamDecorator<ContextInterface>(({ context }) => {

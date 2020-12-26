@@ -1,17 +1,17 @@
 import { Role, RoleModel } from '../../entities/Role';
-import {
-  INITIAL_APP_NAVIGATION,
-  ROLE_TEMPLATE_ADMIN,
-  ROLE_TEMPLATE_GUEST,
-  ROLE_RULES_TEMPLATE,
-  ROLE_RULE_OPERATIONS_TEMPLATE,
-  ROLE_TEMPLATE_COMPANY_OWNER,
-  ROLE_TEMPLATE_COMPANY_MANAGER,
-} from '@yagu/config';
 import { NavItemModel } from '../../entities/NavItem';
 import { RoleRuleModel, RoleRuleOperationModel } from '../../entities/RoleRule';
 import { DocumentType } from '@typegoose/typegoose';
 import { Translation } from '../../entities/Translation';
+import {
+  INITIAL_APP_NAVIGATION,
+  ROLE_RULE_OPERATIONS_TEMPLATE,
+  ROLE_RULES_TEMPLATE,
+  ROLE_TEMPLATE_ADMIN,
+  ROLE_TEMPLATE_COMPANY_MANAGER,
+  ROLE_TEMPLATE_COMPANY_OWNER,
+  ROLE_TEMPLATE_GUEST,
+} from '@yagu/shared';
 
 interface NavItemInterface {
   name: { key: string; value: string }[];

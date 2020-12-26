@@ -3,13 +3,13 @@ import {
   authenticatedTestClient,
 } from '../../../utils/testUtils/testHelpers';
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../../config';
-import { ROLE_SLUG_GUEST } from '@yagu/config';
 import { max, alex } from '../__fixtures__';
 import { RoleModel } from '../../../entities/Role';
 import { UserModel } from '../../../entities/User';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { ROLE_SLUG_GUEST } from '@yagu/shared';
 
 const { email, password, phone, name } = max;
 

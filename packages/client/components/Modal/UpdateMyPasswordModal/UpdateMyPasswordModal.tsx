@@ -7,10 +7,10 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
 import { UpdateMyPasswordInput } from '../../../generated/apolloComponents';
 import useValidationSchema from '../../../hooks/useValidationSchema';
-import { updateMyPasswordSchema } from '@yagu/validation';
 import { useUserContext } from '../../../context/userContext';
 import RequestError from '../../RequestError/RequestError';
 import FormikInput from '../../FormElements/Input/FormikInput';
+import { updateMyPasswordSchema } from '@yagu/shared';
 
 export interface UpdateMyPasswordModalInterface {
   confirm: (input: UpdateMyPasswordInput) => void;

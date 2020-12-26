@@ -1,4 +1,4 @@
-import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/config';
+import { DEFAULT_LANG, LANG_NOT_FOUND_FIELD_MESSAGE, SECONDARY_LANG } from '@yagu/shared';
 
 export interface LanguageWithMultipleValuesInterface {
   key: string;

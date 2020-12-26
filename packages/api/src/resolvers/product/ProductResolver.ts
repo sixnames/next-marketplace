@@ -30,13 +30,6 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { ProductsCountersInput } from './ProductsCountersInput';
 import { AttributesGroup, AttributesGroupModel } from '../../entities/AttributesGroup';
 import { RubricModel } from '../../entities/Rubric';
-import {
-  addProductToConnectionSchema,
-  createProductConnectionSchema,
-  createProductSchema,
-  deleteProductFromConnectionSchema,
-  updateProductSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -52,18 +45,6 @@ import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { CreateProductConnectionInput } from './CreateProductConnectionInput';
 import { AddProductToConnectionInput } from './AddProductToConnectionInput';
 import { DeleteProductFromConnectionInput } from './DeleteProductFromConnectionInput';
-import {
-  ATTRIBUTE_VARIANT_SELECT,
-  ATTRIBUTE_VIEW_VARIANT_ICON,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ATTRIBUTE_VIEW_VARIANT_TAG,
-  ATTRIBUTE_VIEW_VARIANT_TEXT,
-  DEFAULT_CITY,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
-  SORT_ASC,
-  SORT_DESC,
-} from '@yagu/config';
 import { generateDefaultLangSlug } from '../../utils/slug';
 import {
   ProductCardConnection,
@@ -75,7 +56,23 @@ import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { ShopModel } from '../../entities/Shop';
 import { max, min } from 'lodash';
-import { getCurrencyString } from '@yagu/shared';
+import {
+  addProductToConnectionSchema,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+  createProductConnectionSchema,
+  createProductSchema,
+  DEFAULT_CITY,
+  deleteProductFromConnectionSchema,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+  SORT_ASC,
+  SORT_DESC,
+  updateProductSchema,
+} from '@yagu/shared';
 import { ProductAttribute } from '../../entities/ProductAttribute';
 import { ProductAttributesGroup } from '../../entities/ProductAttributesGroup';
 import { ProductCardFeatures } from '../../entities/ProductCardFeatures';
@@ -87,6 +84,10 @@ import { Asset } from '../../entities/Asset';
 import { ProductShopsInput } from './ProductShopsInput';
 import { GetProductShopsInput } from './GetProductShopsInput';
 import { ProductCardBreadcrumb } from '../../entities/ProductCardBreadcrumb';
+import { getCurrencyString } from '../../utils/intl';
+import { Manufacturer, ManufacturerModel } from '../../entities/Manufacturer';
+import { Brand, BrandModel } from '../../entities/Brand';
+import { BrandCollection, BrandCollectionModel } from '../../entities/BrandCollection';
 
 const {
   operationConfigCreate,
@@ -699,6 +700,21 @@ export class ProductResolver {
     } catch (e) {
       return [];
     }
+  }
+
+  @FieldResolver((_returns) => Manufacturer, { nullable: true })
+  async manufacturer(@Root() product: DocumentType<Product>): Promise<Manufacturer | null> {
+    return ManufacturerModel.findOne({ _id: product.manufacturer });
+  }
+
+  @FieldResolver((_returns) => Brand, { nullable: true })
+  async brand(@Root() product: DocumentType<Product>): Promise<Brand | null> {
+    return BrandModel.findOne({ _id: product.brand });
+  }
+
+  @FieldResolver((_returns) => BrandCollection, { nullable: true })
+  async brandCollection(@Root() product: DocumentType<Product>): Promise<BrandCollection | null> {
+    return BrandCollectionModel.findOne({ _id: product.brandCollection });
   }
 
   @FieldResolver((_returns) => Int)

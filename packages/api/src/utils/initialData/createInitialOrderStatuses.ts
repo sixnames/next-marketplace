@@ -1,5 +1,5 @@
 import { OrderStatus, OrderStatusModel } from '../../entities/OrderStatus';
-import { MOCK_ORDER_STATUS_NEW } from '@yagu/mocks';
+import { MOCK_ORDER_STATUS_NEW } from '@yagu/shared';
 
 export interface CreateInitialOrderStatuses {
   initialOrderStatusNew?: OrderStatus;

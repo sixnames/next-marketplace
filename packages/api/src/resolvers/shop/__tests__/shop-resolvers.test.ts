@@ -4,8 +4,7 @@ import createTestData, {
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { MOCK_ADDRESS_A, MOCK_NEW_SHOP } from '@yagu/mocks';
-import { DEFAULT_CITY } from '@yagu/config';
+import { DEFAULT_CITY, MOCK_ADDRESS_A, MOCK_NEW_SHOP } from '@yagu/shared';
 
 describe('Shop', () => {
   let mockData: CreateTestDataPayloadInterface;

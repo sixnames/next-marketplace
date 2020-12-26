@@ -4,11 +4,11 @@ import ModalTitle from '../ModalTitle';
 import { ShopProductFragment, UpdateShopProductInput } from '../../../generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import useValidationSchema from '../../../hooks/useValidationSchema';
-import { updateShopProductClientSchema } from '@yagu/validation';
 import FormikInput from '../../FormElements/Input/FormikInput';
 import Button from '../../Buttons/Button';
 import classes from './ShopProductModal.module.css';
 import Image from '../../Image/Image';
+import { updateShopProductClientSchema } from '@yagu/shared';
 
 export interface ShopProductModalInterface {
   shopProduct: Pick<ShopProductFragment, 'product' | 'available' | 'price'>;

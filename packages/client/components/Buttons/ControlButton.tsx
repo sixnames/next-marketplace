@@ -2,9 +2,9 @@ import React, { Fragment } from 'react';
 import classes from './ControlButton.module.css';
 import Icon from '../Icon/Icon';
 import { ButtonType } from '../../types';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 import Tooltip from '../TTip/Tooltip';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../../utils/numbers';
 
 export interface ControlButtonInterface {
   className?: string;

@@ -4,7 +4,7 @@ import Link from '../../components/Link/Link';
 import classes from './AppNavItem.module.css';
 import useCompact from '../../hooks/useCompact';
 import { NavItemType } from '../../context/appNavContext';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 import Tooltip from '../../components/TTip/Tooltip';
 
 interface AppNavItemInterface {

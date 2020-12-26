@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { User } from './User';
 import { prop } from '@typegoose/typegoose';
-import { ORDER_LOG_VARIANTS_ENUMS } from '@yagu/config';
+import { ORDER_LOG_VARIANTS_ENUMS } from '@yagu/shared';
 
 // Order log variant
 export enum OrderLogVariantEnum {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../../utils/numbers';
 
 interface PercentInterface {
   value: string | number | null;

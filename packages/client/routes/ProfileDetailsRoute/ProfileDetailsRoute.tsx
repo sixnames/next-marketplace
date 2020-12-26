@@ -6,7 +6,7 @@ import {
   useUpdateMyProfileMutation,
 } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateMyProfileSchema } from '@yagu/validation';
+import { updateMyProfileSchema } from '@yagu/shared';
 import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyPasswordModal/UpdateMyPasswordModal';
 import { UPDATE_MY_PASSWORD_MODAL } from '../../config/modals';
 import RequestError from '../../components/RequestError/RequestError';

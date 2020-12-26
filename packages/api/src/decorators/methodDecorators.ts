@@ -1,15 +1,17 @@
 import { createMethodDecorator, MiddlewareFn } from 'type-graphql';
 import { ContextInterface } from '../types/context';
-import { MessageKey, ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '@yagu/config';
-import {
-  MultiLangSchemaMessagesInterface,
-  ObjectSchema,
-  NotRequiredArraySchema,
-} from '@yagu/validation';
 import getMessagesByKeys from '../utils/translations/getMessagesByKeys';
 import { Role, RoleModel } from '../entities/Role';
 import { RoleRule, RoleRuleModel, RoleRuleOperationModel } from '../entities/RoleRule';
 import { User } from '../entities/User';
+import {
+  MessageKey,
+  MultiLangSchemaMessagesInterface,
+  NotRequiredArraySchema,
+  ObjectSchema,
+  ROLE_SLUG_ADMIN,
+  ROLE_SLUG_GUEST,
+} from '@yagu/shared';
 
 export const getSessionRole = async (user?: User | null): Promise<Role> => {
   if (user) {

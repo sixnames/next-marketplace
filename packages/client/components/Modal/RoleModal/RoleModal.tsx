@@ -9,9 +9,9 @@ import { CreateRoleInput, Role, UpdateRoleInput } from '../../../generated/apoll
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
-import { createRoleSchema } from '@yagu/validation';
 import FormikTextarea from '../../FormElements/Textarea/FormikTextarea';
 import FormikCheckboxLine from '../../FormElements/Checkbox/FormikCheckboxLine';
+import { createRoleSchema } from '@yagu/shared';
 
 export interface RoleModalInterface {
   role?: Pick<Role, 'name' | 'description' | 'isStuff'>;

@@ -4,7 +4,7 @@ import MaskedField from 'react-masked-field';
 import { InputType, OnOffType } from '../../../types';
 import classes from './Input.module.css';
 import Icon from '../../Icon/Icon';
-import { IconType } from '@yagu/config';
+import { IconType } from '@yagu/shared';
 import ButtonCross from '../../Buttons/ButtonCross';
 
 export interface InputPropsInterface extends InputLinePropsInterface {

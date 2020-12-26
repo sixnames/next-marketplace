@@ -1,6 +1,11 @@
 /// <reference types="cypress" />
-import { SITE_CONFIGS_INITIAL } from '@yagu/mocks';
-import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_LANG, SECONDARY_CITY } from '@yagu/config';
+import {
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  SECONDARY_CITY,
+  SECONDARY_LANG,
+  SITE_CONFIGS_INITIAL,
+} from '@yagu/shared';
 
 const newEmail = 'new-email@email.com';
 const newSiteDefaultTitle = 'new default title';

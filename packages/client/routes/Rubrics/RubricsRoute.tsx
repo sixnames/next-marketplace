@@ -5,7 +5,7 @@ import RubricsContent from './RubricsContent';
 import { useDeleteRubricMutation, useGetRubricQuery } from '../../generated/apolloComponents';
 import NoRubricProducts from './NoRubricProducts';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../config';
-import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_THREE } from '@yagu/config';
+import { RUBRIC_LEVEL_ZERO, RUBRIC_LEVEL_THREE } from '@yagu/shared';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CONFIRM_MODAL } from '../../config/modals';

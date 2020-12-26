@@ -8,7 +8,7 @@ import {
   MOCK_ATTRIBUTE_WINE_COLOR,
   MOCK_ATTRIBUTE_STRING,
   MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-} from '@yagu/mocks';
+} from '@yagu/shared';
 
 describe('Rubric attributes', () => {
   beforeEach(() => {

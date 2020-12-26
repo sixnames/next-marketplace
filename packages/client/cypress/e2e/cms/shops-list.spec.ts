@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
-import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '@yagu/config';
 import {
   MOCK_ADDRESS_A,
   MOCK_NEW_SHOP,
   MOCK_PRODUCT_C,
   MOCK_RUBRIC_LEVEL_THREE_A_B,
-} from '@yagu/mocks';
+} from '@yagu/shared';
+import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 
 describe('Shops list', () => {
   let mockData: any;

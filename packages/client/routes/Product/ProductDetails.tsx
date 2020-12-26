@@ -18,7 +18,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import FormikDropZone from '../../components/FormElements/Upload/FormikDropZone';
 import useUrlFiles from '../../hooks/useUrlFiles';
 import classes from './ProductDetails.module.css';
-import { updateProductSchema } from '@yagu/validation';
+import { updateProductSchema } from '@yagu/shared';
 import { useLanguageContext } from '../../context/languageContext';
 import FormikTranslationsInput from '../../components/FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../hooks/useValidationSchema';

@@ -7,11 +7,10 @@ import {
 } from '../../../generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
-import { createProductConnectionSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import Button from '../../Buttons/Button';
 import { SelectOptionInterface } from '../../FormElements/Select/Select';
-import { ATTRIBUTE_VARIANT_SELECT } from '@yagu/config';
+import { ATTRIBUTE_VARIANT_SELECT, createProductConnectionSchema } from '@yagu/shared';
 
 export interface CreateConnectionModalInterface {
   product: CmsProductFragment;

@@ -1,12 +1,11 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
-import { MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import { omit } from 'lodash';
 import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_CITY } from '@yagu/config';
+import { DEFAULT_CITY, MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/shared';
 
 describe('Company', () => {
   let mockData: CreateTestDataPayloadInterface;

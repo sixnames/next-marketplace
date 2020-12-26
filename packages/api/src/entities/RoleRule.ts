@@ -1,7 +1,7 @@
 import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { OPERATION_TYPE_ENUM } from '@yagu/config';
 import { DecoratorOperationType } from '../decorators/methodDecorators';
+import { OPERATION_TYPE_ENUM } from '@yagu/shared';
 
 export enum RoleRuleOperationTypeEnum {
   create = 'create',

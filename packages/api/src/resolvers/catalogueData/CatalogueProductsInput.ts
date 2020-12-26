@@ -1,6 +1,6 @@
 import { PaginateInput, SortDirectionEnum } from '../commonInputs/PaginateInput';
 import { Field, InputType, Int, registerEnumType } from 'type-graphql';
-import { CATALOGUE_PRODUCTS_LIMIT, SORT_DESC } from '@yagu/config';
+import { CATALOGUE_PRODUCTS_LIMIT, SORT_DESC } from '@yagu/shared';
 
 export enum CatalogueProductsSortByEnum {
   price = 'price',

@@ -4,7 +4,8 @@ import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import { DocumentType } from '@typegoose/typegoose';
 import { Product, ProductModel } from '../../entities/Product';
 import { Localization, LocalizationPayloadInterface } from '../../decorators/parameterDecorators';
-import { getCurrencyString, noNaN } from '@yagu/shared';
+import { noNaN } from '../../utils/numbers';
+import { getCurrencyString } from '../../utils/intl';
 
 @Resolver((_for) => CartProduct)
 export class CartProductResolver {

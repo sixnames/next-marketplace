@@ -14,9 +14,10 @@ import {
   SessionCart,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import { updateShopProductSchema } from '@yagu/validation';
-import { getCurrencyString, getPercentage } from '@yagu/shared';
 import { Cart } from '../../entities/Cart';
+import { updateShopProductSchema } from '@yagu/shared';
+import { getCurrencyString } from '../../utils/intl';
+import { getPercentage } from '../../utils/numbers';
 
 const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(ShopProduct.name);
 

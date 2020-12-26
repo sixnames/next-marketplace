@@ -1,8 +1,8 @@
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { prop } from '@typegoose/typegoose';
-import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/config';
 import { Attribute } from './Attribute';
 import { Option } from './Option';
+import { ATTRIBUTE_VIEW_VARIANT_LIST, ATTRIBUTE_VIEW_VARIANTS_ENUMS } from '@yagu/shared';
 
 // Attribute view variant
 export enum ProductAttributeViewVariantEnum {

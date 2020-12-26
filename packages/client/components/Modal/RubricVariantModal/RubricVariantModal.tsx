@@ -12,8 +12,8 @@ import {
 } from '../../../generated/apolloComponents';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
-import { rubricVariantModalSchema } from '@yagu/validation';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import { rubricVariantModalSchema } from '@yagu/shared';
 
 export interface RubricVariantModalInterface {
   name?: Translation[];

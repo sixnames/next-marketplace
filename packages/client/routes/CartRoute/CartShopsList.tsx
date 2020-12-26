@@ -5,7 +5,7 @@ import {
   SortDirectionEnum,
   useGetCatalogueCardShopsQuery,
 } from '../../generated/apolloComponents';
-import { SORT_ASC } from '@yagu/config';
+import { SORT_ASC } from '@yagu/shared';
 import RequestError from '../../components/RequestError/RequestError';
 import Spinner from '../../components/Spinner/Spinner';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';

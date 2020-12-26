@@ -8,7 +8,7 @@ import createTestData, {
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { ProductConnectionModel } from '../../../entities/ProductConnection';
-import { SORT_ASC } from '@yagu/config';
+import { SORT_ASC } from '@yagu/shared';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -87,9 +87,7 @@ describe('Product', () => {
     `;
 
     // Should return current product by slug
-    const {
-      data: { getProductBySlug },
-    } = await query<any>(gql`
+    const getProductBySlugPayload = await query<any>(gql`
       query {
         getProductBySlug(slug: "${mockData.productA.slug}") {
           id
@@ -100,6 +98,20 @@ describe('Product', () => {
           slug
           descriptionString
           rubrics
+          brand {
+            id
+            nameString
+            url
+          }
+          brandCollection {
+            id
+            nameString
+          }
+          manufacturer {
+            id
+            nameString
+            url
+          }
           cardPrices {
             min
             max
@@ -160,6 +172,9 @@ describe('Product', () => {
       ${connectionFragment}
       ${cardFeaturesFragment}
     `);
+    const {
+      data: { getProductBySlug },
+    } = getProductBySlugPayload;
     const currentProduct = getProductBySlug;
     expect(currentProduct.slug).toEqual(mockData.productA.slug);
     expect(currentProduct.cardBreadcrumbs).toBeDefined();
@@ -561,6 +576,9 @@ describe('Product', () => {
               slug
               descriptionString
               rubrics
+              manufacturer {
+                id
+              }
               attributesGroups {
                 showInCard
                 node {
@@ -594,12 +612,12 @@ describe('Product', () => {
           price: testProduct.price,
           description: testProduct.description,
           rubrics: [rubricLevelTree.id],
+          manufacturer: mockData.manufacturerA.id,
           assets: images,
           ...productAttributes,
         };
       },
     });
-
     const { product: createdProduct, success: createSuccess } = createProduct;
 
     expect(createSuccess).toBeTruthy();
@@ -611,9 +629,7 @@ describe('Product', () => {
     expect(createdProduct.assets).toHaveLength(3);
 
     // Should update product.
-    const {
-      data: { updateProduct },
-    } = await mutateWithImages({
+    const updateProductPayload = await mutateWithImages({
       mutation: gql`
         mutation UpdateProduct($input: UpdateProductInput!) {
           updateProduct(input: $input) {
@@ -661,13 +677,16 @@ describe('Product', () => {
           price: anotherProduct.price,
           description: anotherProduct.description,
           rubrics: [rubricLevelTree.id],
+          manufacturer: createdProduct.manufacturer.id,
           assets: images,
           active: true,
           ...productAttributes,
         };
       },
     });
-
+    const {
+      data: { updateProduct },
+    } = updateProductPayload;
     const { product: updatedProduct, success: updateSuccess } = updateProduct;
 
     expect(updateSuccess).toBeTruthy();

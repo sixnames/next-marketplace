@@ -14,8 +14,9 @@ import {
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTE_WINE_COLOR,
-} from '@yagu/mocks';
-import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+  DEFAULT_LANG,
+  SECONDARY_LANG,
+} from '@yagu/shared';
 
 const modal = 'add-product-to-rubric-modal';
 

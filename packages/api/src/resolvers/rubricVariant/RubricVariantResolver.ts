@@ -16,7 +16,6 @@ import { CreateRubricVariantInput } from './CreateRubricVariantInput';
 import { UpdateRubricVariantInput } from './UpdateRubricVariantInput';
 import { RubricModel } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
-import { createRubricVariantInputSchema, updateRubricVariantSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -25,6 +24,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { createRubricVariantInputSchema, updateRubricVariantSchema } from '@yagu/shared';
 
 const {
   operationConfigCreate,

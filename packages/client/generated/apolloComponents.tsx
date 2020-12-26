@@ -83,6 +83,15 @@ export type Query = {
   getMyOrder?: Maybe<Order>;
   getAllOrders: PaginatedOrdersResponse;
   getAllMyOrders?: Maybe<PaginatedOrdersResponse>;
+  getBrand: Brand;
+  getBrandBySlug?: Maybe<Brand>;
+  getAllBrands: PaginatedBrands;
+  getBrandCollection: BrandCollection;
+  getBrandCollectionBySlug?: Maybe<BrandCollection>;
+  getAllBrandCollections: PaginatedBrands;
+  getManufacturer: Manufacturer;
+  getManufacturerBySlug: Manufacturer;
+  getAllManufacturers: PaginatedManufacturers;
 };
 
 
@@ -286,10 +295,56 @@ export type QueryGetAllMyOrdersArgs = {
   input?: Maybe<OrderPaginateInput>;
 };
 
+
+export type QueryGetBrandArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetBrandBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllBrandsArgs = {
+  input?: Maybe<BrandPaginateInput>;
+};
+
+
+export type QueryGetBrandCollectionArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetBrandCollectionBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllBrandCollectionsArgs = {
+  input?: Maybe<BrandCollectionPaginateInput>;
+};
+
+
+export type QueryGetManufacturerArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetManufacturerBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryGetAllManufacturersArgs = {
+  input?: Maybe<ManufacturerPaginateInput>;
+};
+
 export type Product = {
   __typename?: 'Product';
   id: Scalars['ID'];
   itemId: Scalars['Int'];
+  active: Scalars['Boolean'];
   views: Array<CityCounter>;
   priorities: Array<CityCounter>;
   name: Array<Translation>;
@@ -301,8 +356,10 @@ export type Product = {
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<Asset>;
   price: Scalars['Int'];
+  brand?: Maybe<Brand>;
+  brandCollection?: Maybe<BrandCollection>;
+  manufacturer?: Maybe<Manufacturer>;
   cardPrices: ProductCardPrices;
-  active: Scalars['Boolean'];
   connections: Array<ProductConnection>;
   cardBreadcrumbs: Array<ProductCardBreadcrumb>;
   nameString: Scalars['String'];
@@ -485,6 +542,43 @@ export type Asset = {
   index: Scalars['Int'];
 };
 
+export type Brand = {
+  __typename?: 'Brand';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  collections: Array<BrandCollection>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type BrandCollection = {
+  __typename?: 'BrandCollection';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type Manufacturer = {
+  __typename?: 'Manufacturer';
+  id: Scalars['ID'];
+  itemId: Scalars['Int'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
 export type ProductCardPrices = {
   __typename?: 'ProductCardPrices';
   min: Scalars['String'];
@@ -586,7 +680,6 @@ export type ShopProductOldPrice = {
   price: Scalars['Float'];
   createdAt: Scalars['DateTime'];
 };
-
 
 export type Shop = {
   __typename?: 'Shop';
@@ -1344,6 +1437,74 @@ export enum OrderSortByEnum {
   CreatedAt = 'createdAt'
 }
 
+export type PaginatedBrands = {
+  __typename?: 'PaginatedBrands';
+  docs: Array<Brand>;
+  sortBy: Scalars['String'];
+  sortDir: SortDirectionNumEnum;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  hasPrevPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean'];
+};
+
+/** sortDir enum for mongo */
+export enum SortDirectionNumEnum {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+export type BrandPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionNumEnum>;
+  sortBy?: Maybe<BrandSortByEnum>;
+};
+
+/** Brand pagination sortBy enum */
+export enum BrandSortByEnum {
+  CreatedAt = 'createdAt'
+}
+
+export type BrandCollectionPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionNumEnum>;
+  sortBy?: Maybe<BrandCollectionSortByEnum>;
+};
+
+/** Brand pagination sortBy enum */
+export enum BrandCollectionSortByEnum {
+  CreatedAt = 'createdAt'
+}
+
+export type PaginatedManufacturers = {
+  __typename?: 'PaginatedManufacturers';
+  docs: Array<Manufacturer>;
+  sortBy: Scalars['String'];
+  sortDir: SortDirectionNumEnum;
+  totalDocs: Scalars['Int'];
+  limit: Scalars['Int'];
+  page?: Maybe<Scalars['Int']>;
+  totalPages: Scalars['Int'];
+  hasPrevPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean'];
+};
+
+export type ManufacturerPaginateInput = {
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  sortDir?: Maybe<SortDirectionNumEnum>;
+  sortBy?: Maybe<ManufacturerSortByEnum>;
+};
+
+/** Manufacturer pagination sortBy enum */
+export enum ManufacturerSortByEnum {
+  CreatedAt = 'createdAt'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createProduct: ProductPayloadType;
@@ -1427,6 +1588,15 @@ export type Mutation = {
   clearCart: CartPayloadType;
   repeatOrder: CartPayloadType;
   makeAnOrder: OrderPayloadType;
+  createBrand: BrandPayloadType;
+  updateBrand: BrandPayloadType;
+  deleteBrand: BrandPayloadType;
+  addCollectionToBrand: BrandPayloadType;
+  deleteCollectionFromBrand: BrandPayloadType;
+  updateBrandCollection: BrandCollectionPayloadType;
+  createManufacturer: ManufacturerPayloadType;
+  updateManufacturer: ManufacturerPayloadType;
+  deleteManufacturer: ManufacturerPayloadType;
 };
 
 
@@ -1824,6 +1994,51 @@ export type MutationMakeAnOrderArgs = {
   input: MakeAnOrderInput;
 };
 
+
+export type MutationCreateBrandArgs = {
+  input: CreateBrandInput;
+};
+
+
+export type MutationUpdateBrandArgs = {
+  input: UpdateBrandInput;
+};
+
+
+export type MutationDeleteBrandArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddCollectionToBrandArgs = {
+  input: AddCollectionToBrandInput;
+};
+
+
+export type MutationDeleteCollectionFromBrandArgs = {
+  input: DeleteCollectionFromBrandInput;
+};
+
+
+export type MutationUpdateBrandCollectionArgs = {
+  input: UpdateBrandCollectionInput;
+};
+
+
+export type MutationCreateManufacturerArgs = {
+  input: CreateManufacturerInput;
+};
+
+
+export type MutationUpdateManufacturerArgs = {
+  input: UpdateManufacturerInput;
+};
+
+
+export type MutationDeleteManufacturerArgs = {
+  id: Scalars['ID'];
+};
+
 export type ProductPayloadType = {
   __typename?: 'ProductPayloadType';
   success: Scalars['Boolean'];
@@ -1837,6 +2052,9 @@ export type CreateProductInput = {
   originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
+  manufacturer?: Maybe<Scalars['ID']>;
+  brand?: Maybe<Scalars['ID']>;
+  brandCollection?: Maybe<Scalars['ID']>;
   price: Scalars['Int'];
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
@@ -1871,6 +2089,9 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
+  manufacturer?: Maybe<Scalars['ID']>;
+  brand?: Maybe<Scalars['ID']>;
+  brandCollection?: Maybe<Scalars['ID']>;
   price: Scalars['Int'];
   active: Scalars['Boolean'];
   attributesGroups: Array<ProductAttributesGroupInput>;
@@ -2424,6 +2645,70 @@ export type MakeAnOrderInput = {
   phone: Scalars['String'];
   email: Scalars['String'];
   comment?: Maybe<Scalars['String']>;
+};
+
+export type BrandPayloadType = {
+  __typename?: 'BrandPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  brand?: Maybe<Brand>;
+};
+
+export type CreateBrandInput = {
+  nameString: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type UpdateBrandInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type AddCollectionToBrandInput = {
+  brandId: Scalars['ID'];
+  nameString: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type DeleteCollectionFromBrandInput = {
+  brandId: Scalars['ID'];
+  collectionId: Scalars['ID'];
+};
+
+export type BrandCollectionPayloadType = {
+  __typename?: 'BrandCollectionPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  collection?: Maybe<BrandCollection>;
+};
+
+export type UpdateBrandCollectionInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ManufacturerPayloadType = {
+  __typename?: 'ManufacturerPayloadType';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  manufacturer?: Maybe<Manufacturer>;
+};
+
+export type CreateManufacturerInput = {
+  nameString: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type UpdateManufacturerInput = {
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type CmsProductAttributeFragment = (

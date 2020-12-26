@@ -18,7 +18,7 @@ import { Role } from '../../entities/Role';
 import { CATALOGUE_PRODUCTS_LIMIT, SORT_ASC_NUM, SORT_DESC, SORT_DESC_NUM } from '@yagu/shared';
 import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
 import { SortDirectionEnum } from '../commonInputs/PaginateInput';
-import { mongoose } from '@typegoose/typegoose';
+import { getRubricsTreeIds } from '../../utils/rubricHelpers';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -60,51 +60,7 @@ export class CatalogueDataResolver {
       }
 
       // get all nested rubrics
-      const rubricChildrenIds = await mongoose.connection.db
-        .collection('rubrics')
-        .aggregate([
-          { $match: { parent: rubric._id } },
-          {
-            $graphLookup: {
-              from: 'rubrics',
-              startWith: '$_id',
-              connectFromField: '_id',
-              connectToField: 'parent',
-              as: 'children',
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              childrenIds: '$children._id',
-            },
-          },
-          { $addFields: { allIds: { $concatArrays: ['$childrenIds', ['$_id']] } } },
-          {
-            $group: {
-              _id: null,
-              allIds: { $push: '$allIds' },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              allIds: {
-                $reduce: {
-                  input: '$allIds',
-                  initialValue: [],
-                  in: {
-                    $concatArrays: ['$$this', '$$value'],
-                  },
-                },
-              },
-            },
-          },
-        ])
-        .toArray();
-      const rubricsIds = [...rubricChildrenIds[0].allIds, rubric.id].map((id) => {
-        return id.toString();
-      });
+      const rubricsIds = await getRubricsTreeIds(rubric._id);
 
       // cast all filters from input
       const processedAttributes = attributes.reduce(attributesReducer, []);

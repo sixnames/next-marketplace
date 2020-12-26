@@ -25,9 +25,7 @@ describe('Rubrics', () => {
     const { query } = await authenticatedTestClient();
 
     // Should return rubrics tree
-    const {
-      data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
-    } = await query<any>(gql`
+    const rubricsTreePayload = await query<any>(gql`
       query {
         getAllRubricVariants {
           id
@@ -79,9 +77,11 @@ describe('Rubrics', () => {
       }
     `);
 
+    const {
+      data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
+    } = rubricsTreePayload;
     const attributesGroup = getAllAttributesGroups[0];
     const rubricLevelOne = getRubricsTree[0];
-    // console.log(JSON.stringify(rubricLevelOne, null, 2));
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelThree = rubricLevelTwo.children[0];
     const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];

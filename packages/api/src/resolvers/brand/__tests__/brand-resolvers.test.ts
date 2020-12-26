@@ -141,7 +141,6 @@ describe('Brand', () => {
         },
       },
     );
-
     expect(createBrandPayload.data.createBrand.success).toBeTruthy();
     expect(createBrandPayload.data.createBrand.brand.nameString).toEqual(newBrandName);
 
@@ -199,7 +198,7 @@ describe('Brand', () => {
 
     expect(updateBrandPayload.data.updateBrand.success).toBeTruthy();
     expect(updateBrandPayload.data.updateBrand.brand.id).toEqual(
-      updateBrandPayload.data.updateBrand.brand.id,
+      createBrandPayload.data.createBrand.brand.id,
     );
     expect(updateBrandPayload.data.updateBrand.brand.nameString).toEqual(updatedBrandName);
     expect(updateBrandPayload.data.updateBrand.brand.url).toEqual(updatedBrandUrl);

@@ -1,16 +1,24 @@
-import { Arg, Field, ID, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Field, ID, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { Manufacturer, ManufacturerModel } from '../../entities/Manufacturer';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { AuthMethod } from '../../decorators/methodDecorators';
+import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import PaginatedAggregationType from '../commonInputs/PaginatedAggregationType';
 import PayloadType from '../commonInputs/PayloadType';
-import { CustomFilter } from '../../decorators/parameterDecorators';
+import {
+  CustomFilter,
+  Localization,
+  LocalizationPayloadInterface,
+} from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { aggregatePagination } from '../../utils/aggregatePagination';
 import { ManufacturerPaginateInput } from './ManufacturerPaginateInput';
+import { generateSlug } from '../../utils/slug';
+import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
+import { createManufacturerSchema } from '@yagu/shared';
+import { CreateManufacturerInput } from './CreateManufacturerInput';
 
 const {
-  // operationConfigCreate,
+  operationConfigCreate,
   operationConfigRead,
   // operationConfigUpdate,
   // operationConfigDelete,
@@ -22,7 +30,7 @@ export class PaginatedManufacturers extends PaginatedAggregationType(Manufacture
 @ObjectType()
 export class ManufacturerPayloadType extends PayloadType() {
   @Field((_type) => Manufacturer, { nullable: true })
-  brand?: Manufacturer | null;
+  manufacturer?: Manufacturer | null;
 }
 
 @Resolver((_for) => Manufacturer)
@@ -66,7 +74,52 @@ export class ManufacturerResolver {
         },
       ],
     });
+  }
 
-    // Mutations
+  // Mutations
+  @Mutation((_returns) => ManufacturerPayloadType)
+  @AuthMethod(operationConfigCreate)
+  @ValidateMethod({ schema: createManufacturerSchema })
+  async createManufacturer(
+    @Arg('input') input: CreateManufacturerInput,
+    @Localization() { getApiMessage }: LocalizationPayloadInterface,
+  ): Promise<ManufacturerPayloadType> {
+    try {
+      const { nameString, ...values } = input;
+      const slug = generateSlug(nameString);
+
+      const exist = await ManufacturerModel.exists({ nameString });
+      if (exist) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.create.duplicate'),
+        };
+      }
+
+      const manufacturer = await ManufacturerModel.create({
+        ...values,
+        nameString,
+        slug,
+      });
+
+      if (!manufacturer) {
+        return {
+          success: false,
+          message: await getApiMessage('manufacturers.create.error'),
+        };
+      }
+
+      return {
+        success: true,
+        message: await getApiMessage('manufacturers.create.success'),
+        manufacturer,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        success: false,
+        message: getResolverErrorMessage(e),
+      };
+    }
   }
 }

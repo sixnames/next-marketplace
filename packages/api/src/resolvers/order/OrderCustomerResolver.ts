@@ -3,7 +3,8 @@ import { OrderCustomer } from '../../entities/OrderCustomer';
 import { DocumentType } from '@typegoose/typegoose';
 import { User, UserModel } from '../../entities/User';
 import { FormattedPhone } from '../../entities/FormattedPhone';
-import { getFullName, getShortName, phoneToRaw, phoneToReadable } from '@yagu/shared';
+import { getFullName, getShortName } from '../../utils/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../utils/phoneUtils';
 
 @Resolver((_for) => OrderCustomer)
 export class OrderCustomerResolver {

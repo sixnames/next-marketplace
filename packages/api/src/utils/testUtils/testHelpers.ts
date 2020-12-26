@@ -7,7 +7,6 @@ import {
   TestSetOptions,
 } from 'apollo-server-integration-testing';
 import { ADMIN_EMAIL } from '../../config';
-import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/config';
 import { User, UserModel } from '../../entities/User';
 import mime from 'mime-types';
 import { ApolloServer } from 'apollo-server-express';
@@ -15,6 +14,7 @@ import { Upload } from '../../types/upload';
 import { buildSchema } from 'type-graphql';
 import { schemaOptions } from '../../schema/schema';
 import bcrypt from 'bcryptjs';
+import { DEFAULT_CITY, DEFAULT_LANG } from '@yagu/shared';
 
 export interface TestClientInterface {
   query: TestQuery;

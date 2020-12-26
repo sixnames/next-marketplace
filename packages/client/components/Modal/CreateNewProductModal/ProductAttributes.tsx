@@ -10,17 +10,17 @@ import {
   useGetFeaturesAstQuery,
 } from '../../../generated/apolloComponents';
 import RequestError from '../../RequestError/RequestError';
+import FormikInput from '../../FormElements/Input/FormikInput';
+import FormikSelect from '../../FormElements/Select/FormikSelect';
+import InputLine from '../../FormElements/Input/InputLine';
+import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VIEW_VARIANT_LIST,
-} from '@yagu/config';
-import FormikInput from '../../FormElements/Input/FormikInput';
-import FormikSelect from '../../FormElements/Select/FormikSelect';
-import InputLine from '../../FormElements/Input/InputLine';
-import FormikArrayCheckboxLine from '../../FormElements/Checkbox/FormikArrayCheckboxLine';
+} from '@yagu/shared';
 
 interface ProductAttributesItemInterface {
   attribute: FeaturesAstAttributeFragment;

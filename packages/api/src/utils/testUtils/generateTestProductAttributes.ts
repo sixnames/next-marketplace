@@ -5,7 +5,7 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VIEW_VARIANT_LIST,
-} from '@yagu/config';
+} from '@yagu/shared';
 
 interface GenerateTestProductAttributesInterface {
   rubric: Rubric;

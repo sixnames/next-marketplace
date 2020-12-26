@@ -8,9 +8,9 @@ import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
 import ModalButtons from '../ModalButtons';
 import Button from '../../Buttons/Button';
-import { addAttributesGroupToRubricSchema } from '@yagu/validation';
 import { AddAttributesGroupToRubricValues } from '../../../routes/Rubrics/RubricAttributes';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import { addAttributesGroupToRubricSchema } from '@yagu/shared';
 
 interface AddAttributesGroupToRubricModalInterface {
   testId: string;

@@ -1,8 +1,8 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { MOCK_CITIES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { MOCK_CITIES } from '@yagu/shared';
 
 describe('City', () => {
   beforeEach(async () => {

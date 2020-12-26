@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Icon from '../../Icon/Icon';
 import classes from './FilterCheckbox.module.css';
 import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
-import { alwaysArray } from '@yagu/shared';
+import { alwaysArray } from '../../../utils/alwaysArray';
 
 export interface FilterCheckboxInterface {
   option: Partial<RubricFilterAttributeOption>;

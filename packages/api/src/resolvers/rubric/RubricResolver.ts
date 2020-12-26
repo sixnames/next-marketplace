@@ -38,28 +38,9 @@ import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { PaginatedProductsResponse } from '../product/ProductResolver';
 import { RubricProductPaginateInput } from './RubricProductPaginateInput';
 import { DeleteProductFromRubricInput } from './DeleteProductFromRubricInput';
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_LANG,
-  DEFAULT_PRIORITY,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_STEP,
-  SORT_DESC,
-} from '@yagu/config';
 import { UpdateAttributesGroupInRubricInput } from './UpdateAttributesGroupInRubric';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import toggleIdInArray from '../../utils/toggleIdInArray';
-import {
-  addAttributesGroupToRubricInputSchema,
-  addProductToRubricInputSchema,
-  createRubricInputSchema,
-  deleteAttributesGroupFromRubricInputSchema,
-  deleteProductFromRubricInputSchema,
-  updateAttributesGroupInRubricInputSchema,
-  updateRubricInputSchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -71,8 +52,32 @@ import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { alwaysArray, getBooleanFromArray, getCurrencyString } from '@yagu/shared';
+import {
+  addAttributesGroupToRubricInputSchema,
+  addProductToRubricInputSchema,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  createRubricInputSchema,
+  DEFAULT_LANG,
+  DEFAULT_PRIORITY,
+  deleteAttributesGroupFromRubricInputSchema,
+  deleteProductFromRubricInputSchema,
+  LANG_NOT_FOUND_FIELD_MESSAGE,
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_STEP,
+  SORT_DESC,
+  updateAttributesGroupInRubricInputSchema,
+  updateRubricInputSchema,
+} from '@yagu/shared';
 import queryString from 'query-string';
+import { alwaysArray } from '../../utils/alwaysArray';
+import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
+import { getCurrencyString } from '../../utils/intl';
+import {
+  getRubricChildrenIds,
+  getRubricCounters,
+  getRubricsTreeIds,
+} from '../../utils/rubricHelpers';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -313,7 +318,7 @@ export class RubricResolver {
         };
       }
 
-      const allRubrics = await RubricModel.getRubricsTreeIds({ rubricId: rubric._id });
+      const allRubrics = await getRubricsTreeIds(rubric._id);
 
       const updatedProducts = await ProductModel.updateMany(
         {
@@ -388,7 +393,7 @@ export class RubricResolver {
         [],
       );
 
-      const childrenIds = await RubricModel.getDeepRubricChildrenIds({ rubricId });
+      const childrenIds = await getRubricChildrenIds(rubricId);
 
       const updatedOwnerRubric = await RubricModel.findOneAndUpdate(
         {
@@ -556,10 +561,10 @@ export class RubricResolver {
         };
       }
 
-      const childrenIds = await RubricModel.getRubricsTreeIds({ rubricId });
+      const treeIds = await getRubricsTreeIds(rubricId);
       const updatedRubrics = await RubricModel.updateMany(
         {
-          _id: { $in: [...childrenIds, rubricId] },
+          _id: { $in: treeIds },
         },
         {
           $pull: {
@@ -786,7 +791,7 @@ export class RubricResolver {
     @Arg('input', { nullable: true, defaultValue: {} }) input: RubricProductPaginateInput,
   ): Promise<PaginatedProductsResponse> {
     const { limit = 100, page = 1, sortBy = 'createdAt', sortDir = SORT_DESC, ...args } = input;
-    const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
+    const rubricsIds = await getRubricsTreeIds(rubric.id);
     const query = ProductModel.getProductsFilter({ ...args, rubrics: rubricsIds });
 
     const { options } = generatePaginationOptions({
@@ -834,7 +839,7 @@ export class RubricResolver {
       const nextPricesQuery = minPrice && maxPrice ? `&${pricesQuery}` : '';
 
       // Get id's of children rubrics
-      const rubricsIds = await RubricModel.getRubricsTreeIds({ rubricId: rubric.id });
+      const rubricsIds = await getRubricsTreeIds(rubric.id);
 
       const { attributesGroups, catalogueTitle } = rubric;
       const rubricIdString = rubric.id.toString();
@@ -1094,7 +1099,7 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<number> {
-    return RubricModel.getRubricCounters({ rubric, args: input });
+    return getRubricCounters({ rubricId: rubric._id, args: input });
   }
 
   @FieldResolver((_type) => Int)
@@ -1102,12 +1107,12 @@ export class RubricResolver {
     @Root() rubric: DocumentType<Rubric>,
     @Arg('input', { nullable: true, defaultValue: {} }) input: ProductsCountersInput,
   ): Promise<number> {
-    return RubricModel.getRubricCounters({ rubric, args: { ...input, active: true } });
+    return getRubricCounters({ rubricId: rubric._id, args: { ...input, active: true } });
   }
 
   // This resolver for id field after aggregation
   @FieldResolver((_type) => String)
-  async id(@Root() rubric: DocumentType<Rubric>): Promise<number> {
+  async id(@Root() rubric: DocumentType<Rubric>): Promise<string> {
     return rubric.id || rubric._id;
   }
 }

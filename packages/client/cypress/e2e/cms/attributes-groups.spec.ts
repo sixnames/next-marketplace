@@ -1,18 +1,16 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 import {
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS_GROUP_COLORS,
-} from '@yagu/mocks';
-import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   SECONDARY_LANG,
   DEFAULT_LANG,
-} from '@yagu/config';
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
+  MOCK_OPTIONS_GROUP_COLORS,
+} from '@yagu/shared';
 
 describe('Attributes Groups', () => {
   beforeEach(() => {

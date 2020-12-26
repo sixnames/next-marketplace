@@ -1,6 +1,6 @@
 import { MessageModel } from '../../entities/Message';
-import { LANG_NOT_FOUND_FIELD_MESSAGE, MessageKey } from '@yagu/config';
 import getLangField from './getLangField';
+import { LANG_NOT_FOUND_FIELD_MESSAGE, MessageKey } from '@yagu/shared';
 
 interface GetApiMessageInterface {
   key: MessageKey;

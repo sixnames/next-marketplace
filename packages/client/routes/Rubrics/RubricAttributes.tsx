@@ -16,7 +16,7 @@ import ContentItemControls from '../../components/ContentItemControls/ContentIte
 import Table, { TableColumn } from '../../components/Table/Table';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from '../../config/modals';
-import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/config';
+import { ATTRIBUTE_VARIANT_NUMBER, ATTRIBUTE_VARIANT_STRING } from '@yagu/shared';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import Accordion from '../../components/Accordion/Accordion';
 import { getAttributeVariantName } from '../../utils/locales';

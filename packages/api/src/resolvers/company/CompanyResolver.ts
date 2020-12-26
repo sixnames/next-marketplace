@@ -25,12 +25,6 @@ import {
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
-import {
-  addShopToCompanySchema,
-  createCompanySchema,
-  updateCompanySchema,
-  updateShopInCompanySchema,
-} from '@yagu/validation';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCompanyInput } from './UpdateCompanyInput';
 import { PaginatedShopsResponse, Shop, ShopModel } from '../../entities/Shop';
@@ -42,6 +36,12 @@ import { DeleteShopFromCompanyInput } from './DeleteShopFromCompanyInput';
 import { CompanyPaginateInput } from './CompanyPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ShopPaginateInput } from '../shop/ShopPaginateInput';
+import {
+  addShopToCompanySchema,
+  createCompanySchema,
+  updateCompanySchema,
+  updateShopInCompanySchema,
+} from '@yagu/shared';
 
 const {
   operationConfigCreate,

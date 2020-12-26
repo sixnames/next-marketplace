@@ -1,5 +1,15 @@
 import { Field, InputType, Int, registerEnumType } from 'type-graphql';
 
+export enum SortDirectionNumEnum {
+  asc = 1,
+  desc = -1,
+}
+
+registerEnumType(SortDirectionNumEnum, {
+  name: 'SortDirectionNumEnum',
+  description: 'sortDir enum for mongo',
+});
+
 export enum SortDirectionEnum {
   asc = 'asc',
   desc = 'desc',

@@ -1,4 +1,4 @@
-import { ATTRIBUTE_VARIANT_STRING, DEFAULT_LANG } from '@yagu/config';
+import { ATTRIBUTE_VARIANT_STRING, DEFAULT_LANG } from '@yagu/shared';
 
 export const attributesGroup = {
   name: [{ key: DEFAULT_LANG, value: 'group_name' }],

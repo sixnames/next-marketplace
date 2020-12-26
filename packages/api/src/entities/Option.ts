@@ -2,9 +2,9 @@ import { Field, ID, ObjectType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { GenderEnum } from './commonEntities';
 import { prop as Property } from '@typegoose/typegoose/lib/prop';
-import { GENDER_ENUMS } from '@yagu/config';
 import { CityCounter } from './CityCounter';
 import { Translation } from './Translation';
+import { GENDER_ENUMS } from '@yagu/shared';
 
 @ObjectType()
 export class OptionVariant {

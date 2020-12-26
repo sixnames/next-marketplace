@@ -1,10 +1,13 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
-import { MOCK_ATTRIBUTES_GROUP_WINE_FEATURES } from '@yagu/mocks';
-import { ATTRIBUTE_POSITION_IN_TITLE_BEGIN, DEFAULT_LANG } from '@yagu/config';
 import { gql } from 'apollo-server-express';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { createTestAttributes } from '../../../utils/testUtils/createTestAttributes';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  DEFAULT_LANG,
+  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
+} from '@yagu/shared';
 
 interface AddAttributeToGroupMutationInterface {
   groupId: string;

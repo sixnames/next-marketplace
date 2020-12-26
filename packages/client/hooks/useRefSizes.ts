@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../utils/numbers';
 
 interface UseRefSizesInterface {
   width: number;

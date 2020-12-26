@@ -4,7 +4,6 @@ import PayloadType from '../commonInputs/PayloadType';
 import { CreateCurrencyInput } from './CreateCurrencyInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateCurrencyInput } from './UpdateCurrencyInput';
-import { createCurrencySchema, updateCurrencySchema } from '@yagu/validation';
 import { CountryModel } from '../../entities/Country';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
@@ -14,6 +13,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { createCurrencySchema, updateCurrencySchema } from '@yagu/shared';
 
 const {
   operationConfigCreate,

@@ -5,7 +5,7 @@ import {
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_RUBRIC_LEVEL_THREE_A_A,
   MOCK_PRODUCT_A,
-} from '@yagu/mocks';
+} from '@yagu/shared';
 
 describe('Product connections', () => {
   beforeEach(() => {

@@ -2,9 +2,8 @@ import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { MOCK_PRODUCT_A } from '@yagu/mocks';
 import getLangField from '../../../utils/translations/getLangField';
-import { DEFAULT_LANG } from '@yagu/config';
+import { DEFAULT_LANG, MOCK_PRODUCT_A } from '@yagu/shared';
 
 describe('Catalogue', () => {
   beforeEach(async () => {

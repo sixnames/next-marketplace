@@ -8,7 +8,7 @@ import {
 } from '../config';
 import { ObjectType } from '../types';
 import { ParsedUrlQuery } from 'querystring';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../utils/numbers';
 
 export interface UseDataLayoutMethodsInterface {
   toggleFilter: () => void;

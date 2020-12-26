@@ -13,7 +13,7 @@ import ProductSnippetRow from '../../components/Product/ProductSnippet/ProductSn
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Spinner from '../../components/Spinner/Spinner';
-import { SORT_ASC, SORT_DESC } from '@yagu/config';
+import { SORT_ASC, SORT_DESC } from '@yagu/shared';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';

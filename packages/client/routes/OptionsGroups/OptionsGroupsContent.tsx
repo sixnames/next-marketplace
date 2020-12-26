@@ -20,7 +20,7 @@ import { ObjectType } from '../../types';
 import { OptionInGroupModalInterface } from '../../components/Modal/OptionInGroupModal/OptionInGroupModal';
 import { OPTIONS_GROUP_QUERY, OPTIONS_GROUPS_QUERY } from '../../graphql/query/optionsQueries';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal/ConfirmModal';
-import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/config';
+import { OPTIONS_GROUP_VARIANT_COLOR, OPTIONS_GROUP_VARIANT_ICON } from '@yagu/shared';
 import Icon from '../../components/Icon/Icon';
 import classes from './OptionsGroupsContent.module.css';
 

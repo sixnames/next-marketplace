@@ -6,7 +6,7 @@ import { CATALOGUE_RUBRIC_QUERY } from '../graphql/query/catalogueQueries';
 import CatalogueRoute from '../routes/CatalogueRoute/CatalogueRoute';
 import getSiteServerSideProps, { SitePagePropsType } from '../utils/getSiteServerSideProps';
 import ErrorBoundaryFallback from '../components/ErrorBoundary/ErrorBoundaryFallback';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../utils/numbers';
 
 interface CatalogueInterface {
   rubricData?: CatalogueDataFragment | null;

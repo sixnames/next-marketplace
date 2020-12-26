@@ -12,7 +12,6 @@ import Image from '../../components/Image/Image';
 import ButtonCross from '../../components/Buttons/ButtonCross';
 import ControlButton from '../../components/Buttons/ControlButton';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
-import { noNaN } from '@yagu/shared';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import ProductSnippetPrice from '../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
 import Button from '../../components/Buttons/Button';
@@ -22,6 +21,7 @@ import CartAside from './CartAside';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { useRouter } from 'next/router';
 import LayoutCard from '../../layout/LayoutCard/LayoutCard';
+import { noNaN } from '../../utils/numbers';
 
 interface CartProductFrameInterface {
   product: ProductCardFragment;

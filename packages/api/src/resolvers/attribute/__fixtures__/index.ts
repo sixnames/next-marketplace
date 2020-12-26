@@ -4,7 +4,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LANG,
   SECONDARY_LANG,
-} from '@yagu/config';
+} from '@yagu/shared';
 
 export const stringAttribute = {
   name: [

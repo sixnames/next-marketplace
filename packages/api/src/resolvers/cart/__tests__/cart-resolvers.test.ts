@@ -7,7 +7,7 @@ import {
   testClientWithContext,
 } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { CART_COOKIE_KEY } from '@yagu/config';
+import { CART_COOKIE_KEY } from '@yagu/shared';
 
 describe('Cart', () => {
   let mockData: CreateTestDataPayloadInterface;

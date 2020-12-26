@@ -15,7 +15,6 @@ import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { UpdateAssetConfigInput } from './UpdateAssetConfigInput';
 import storeUploads from '../../utils/assets/storeUploads';
 import { removeUpload } from '../../utils/assets/removeUpload';
-import { updateAssetConfigSchema, updateConfigSchema, updateConfigsSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -25,10 +24,15 @@ import {
 import { FilterQuery } from 'mongoose';
 import getCityData from '../../utils/getCityData';
 import { DocumentType } from '@typegoose/typegoose';
-import { DEFAULT_CITY } from '@yagu/config';
 import { City, CityModel } from '../../entities/City';
 import getLangFieldValues from '../../utils/translations/getLangFieldValues';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import {
+  DEFAULT_CITY,
+  updateAssetConfigSchema,
+  updateConfigSchema,
+  updateConfigsSchema,
+} from '@yagu/shared';
 
 const { operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(Config.name);
 

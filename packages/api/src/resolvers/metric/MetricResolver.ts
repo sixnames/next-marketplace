@@ -16,7 +16,6 @@ import { CreateMetricInput } from './CreateMetricInput';
 import { UpdateMetricInput } from './UpdateMetricInput';
 import { AttributeModel } from '../../entities/Attribute';
 import { DocumentType } from '@typegoose/typegoose';
-import { createMetricInputSchema, updateMetricSchema } from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -25,6 +24,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import { createMetricInputSchema, updateMetricSchema } from '@yagu/shared';
 
 const {
   operationConfigCreate,

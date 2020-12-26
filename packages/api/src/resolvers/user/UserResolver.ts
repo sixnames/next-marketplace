@@ -25,16 +25,7 @@ import { UserPaginateInput } from './UserPaginateInput';
 import PaginateType from '../commonInputs/PaginateType';
 import PayloadType from '../commonInputs/PayloadType';
 import { DocumentType } from '@typegoose/typegoose';
-import { ROLE_SLUG_GUEST } from '@yagu/config';
 import { Role, RoleModel } from '../../entities/Role';
-import {
-  createUserSchema,
-  signInValidationSchema,
-  signUpValidationSchema,
-  updateMyPasswordSchema,
-  updateMyProfileSchema,
-  updateUserSchema,
-} from '@yagu/validation';
 import {
   CustomFilter,
   Localization,
@@ -44,11 +35,22 @@ import {
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
-import { getFullName, getShortName, noNaN, phoneToRaw, phoneToReadable } from '@yagu/shared';
+import {
+  createUserSchema,
+  ROLE_SLUG_GUEST,
+  signInValidationSchema,
+  signUpValidationSchema,
+  updateMyPasswordSchema,
+  updateMyProfileSchema,
+  updateUserSchema,
+} from '@yagu/shared';
 import { FormattedPhone } from '../../entities/FormattedPhone';
 import { Order, OrderModel } from '../../entities/Order';
 import { sendPasswordUpdatedEmail } from '../../emails/passwordUpdatedEmail';
 import { signUpEmail } from '../../emails/signUpEmail';
+import { phoneToRaw, phoneToReadable } from '../../utils/phoneUtils';
+import { getFullName, getShortName } from '../../utils/nameUtils';
+import { noNaN } from '../../utils/numbers';
 
 const {
   operationConfigCreate,

@@ -14,11 +14,10 @@ import {
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import { useAppContext } from '../../../context/appContext';
-import { createRubricInputSchema } from '@yagu/validation';
-import { RUBRIC_LEVEL_TWO } from '@yagu/config';
 import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import { createRubricInputSchema, RUBRIC_LEVEL_TWO } from '@yagu/shared';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;

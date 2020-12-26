@@ -15,8 +15,10 @@ import {
   MOCK_ATTRIBUTE_NUMBER,
   MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
   MOCK_ATTRIBUTE_WINE_COLOR,
-} from '@yagu/mocks';
-import { ATTRIBUTE_VIEW_VARIANT_TAG, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+  DEFAULT_LANG,
+  SECONDARY_LANG,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+} from '@yagu/shared';
 
 describe('Products', () => {
   beforeEach(() => {

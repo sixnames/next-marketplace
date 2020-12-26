@@ -1,27 +1,30 @@
 import { MessagesGroup, MessagesGroupModel } from '../../entities/MessagesGroup';
 import { MessageModel } from '../../entities/Message';
+import { Translation } from '../../entities/Translation';
 import {
   attributesGroupsMessages,
+  brandsMessages,
+  cartsMessages,
   citiesMessages,
   commonMessages,
+  companiesMessages,
   configsMessages,
   countriesMessages,
   currenciesMessages,
   languagesMessages,
   metricsMessages,
   optionsGroupsMessages,
+  ordersMessages,
   productsMessages,
   rolesMessages,
   rubricsMessages,
   rubricVariantsMessages,
-  usersMessages,
-  companiesMessages,
-  shopsMessages,
   shopProductsMessages,
-  cartsMessages,
-  ordersMessages,
-} from '@yagu/config';
-import { Translation } from '../../entities/Translation';
+  shopsMessages,
+  usersMessages,
+  brandCollectionsMessages,
+  manufacturersMessages,
+} from '@yagu/shared';
 
 interface MessageInterface {
   key: string;
@@ -94,6 +97,9 @@ async function createInitialApiMessages(): Promise<MessagesGroup[]> {
     { name: 'Товары магазина', messages: shopProductsMessages },
     { name: 'Корзина', messages: cartsMessages },
     { name: 'Заказы', messages: ordersMessages },
+    { name: 'Бренды', messages: brandsMessages },
+    { name: 'Коллекции бренда', messages: brandCollectionsMessages },
+    { name: 'Производители', messages: manufacturersMessages },
   ];
 
   return Promise.all(

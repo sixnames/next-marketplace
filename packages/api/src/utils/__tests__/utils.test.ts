@@ -1,4 +1,4 @@
-import { phoneToRaw, phoneToReadable } from '@yagu/shared';
+import { phoneToRaw, phoneToReadable } from '../phoneUtils';
 
 describe('Utils', () => {
   it('Should format phones', async () => {

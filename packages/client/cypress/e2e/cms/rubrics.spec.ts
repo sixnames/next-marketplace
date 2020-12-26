@@ -1,13 +1,17 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 import {
+  DEFAULT_LANG,
+  GENDER_HE,
+  GENDER_IT,
+  GENDER_SHE,
   MOCK_RUBRIC_LEVEL_ONE,
   MOCK_RUBRIC_LEVEL_THREE_A_A,
   MOCK_RUBRIC_LEVEL_TWO_A,
   MOCK_RUBRIC_VARIANT_ALCOHOL,
   MOCK_RUBRIC_VARIANT_JUICE,
-} from '@yagu/mocks';
-import { GENDER_IT, GENDER_SHE, GENDER_HE, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/config';
+  SECONDARY_LANG,
+} from '@yagu/shared';
 
 describe('Rubrics', () => {
   beforeEach(() => {

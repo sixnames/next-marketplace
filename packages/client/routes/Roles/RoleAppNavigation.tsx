@@ -11,7 +11,7 @@ import classes from './RoleAppNavigation.module.css';
 import Checkbox from '../../components/FormElements/Checkbox/Checkbox';
 import { GET_ROLE_QUERY } from '../../graphql/query/rolesQueries';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { getBooleanFromArray } from '@yagu/shared';
+import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
 
 const RoleAppNavigation: React.FC<RoleContentInterface> = ({ role }) => {
   const { allowedAppNavigation } = role;

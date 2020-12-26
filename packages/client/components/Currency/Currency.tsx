@@ -1,7 +1,7 @@
 import React from 'react';
 import classes from './Currency.module.css';
 import { useLanguageContext } from '../../context/languageContext';
-import { getCurrencyString } from '@yagu/shared';
+import { getCurrencyString } from '../../utils/intl';
 
 interface CurrencyInterface {
   value?: string | number | null;

@@ -1,6 +1,6 @@
-import { DEFAULT_PRIORITY } from '@yagu/config';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { CityCounter } from '../entities/CityCounter';
+import { DEFAULT_PRIORITY } from '@yagu/shared';
 
 export interface ExtendedCityCounter extends CityCounter {
   [key: string]: any;

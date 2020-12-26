@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
-import { CONFIG_VARIANTS_ENUMS } from '@yagu/config';
 import { City } from './City';
+import { CONFIG_VARIANTS_ENUMS } from '@yagu/shared';
 
 export enum ConfigVariantEnum {
   string = 'string',

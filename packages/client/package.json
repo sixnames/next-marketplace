@@ -15,9 +15,6 @@
     "test": "npm run cy:start"
   },
   "dependencies": {
-    "@yagu/config": "1.0.0",
-    "@yagu/validation": "1.0.0",
-    "@yagu/mocks": "1.0.0",
     "@yagu/shared": "1.0.0",
     "@apollo/client": "^3.1.4",
     "@reach/alert": "^0.12.1",
@@ -47,6 +44,7 @@
     "react-spring": "^8.0.27",
     "use-sound": "^1.0.2",
     "use-debounce": "^5.1.0",
+    "@googlemaps/google-maps-services-js": "^3.1.13",
     "yup": "^0.29.3"
   },
   "devDependencies": {

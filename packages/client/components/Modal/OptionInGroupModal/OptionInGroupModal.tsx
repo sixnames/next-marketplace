@@ -6,7 +6,6 @@ import FormikInput from '../../FormElements/Input/FormikInput';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
 import { useAppContext } from '../../../context/appContext';
-import { optionInGroupSchema } from '@yagu/validation';
 import {
   AddOptionToGroupInput,
   GenderEnum,
@@ -15,13 +14,6 @@ import {
   OptionInGroupFragment,
   OptionsGroupVariantEnum,
 } from '../../../generated/apolloComponents';
-import {
-  GENDER_ENUMS,
-  GENDER_HE,
-  GENDER_SHE,
-  OPTIONS_GROUP_VARIANT_COLOR,
-  OPTIONS_GROUP_VARIANT_ICON,
-} from '@yagu/config';
 import InputLine from '../../FormElements/Input/InputLine';
 import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
@@ -30,6 +22,14 @@ import { useLanguageContext } from '../../../context/languageContext';
 import FormikTranslationsInput from '../../FormElements/Input/FormikTranslationsInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import FormikIconSelect from '../../FormElements/IconSelect/FormikIconSelect';
+import {
+  GENDER_ENUMS,
+  GENDER_HE,
+  GENDER_SHE,
+  optionInGroupSchema,
+  OPTIONS_GROUP_VARIANT_COLOR,
+  OPTIONS_GROUP_VARIANT_ICON,
+} from '@yagu/shared';
 
 export interface OptionInGroupModalInterface {
   confirm: (

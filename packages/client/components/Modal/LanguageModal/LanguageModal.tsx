@@ -13,9 +13,9 @@ import RequestError from '../../RequestError/RequestError';
 import Spinner from '../../Spinner/Spinner';
 import { Formik, Form } from 'formik';
 import FormikSelect from '../../FormElements/Select/FormikSelect';
-import { languageSchema } from '@yagu/validation';
 import FormikInput from '../../FormElements/Input/FormikInput';
 import useValidationSchema from '../../../hooks/useValidationSchema';
+import { languageSchema } from '@yagu/shared';
 
 export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'id'>;
 

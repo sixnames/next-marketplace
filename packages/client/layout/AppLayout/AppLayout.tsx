@@ -12,7 +12,7 @@ import { AppPageInterface } from '../../utils/getAppServerSideProps';
 import PrivateRoute from '../PrivateRoute';
 import getFieldArrayFromTree from '../../utils/getFieldArrayFromTree';
 import { AppNavContextProvider } from '../../context/appNavContext';
-import { ROUTE_APP } from '@yagu/config';
+import { ROUTE_APP } from '@yagu/shared';
 import ErrorBoundaryFallback from '../../components/ErrorBoundary/ErrorBoundaryFallback';
 
 interface AppLayoutInterface extends AppPageInterface {

@@ -2,19 +2,19 @@ import {
   authenticatedTestClient,
   testClientWithContext,
 } from '../../../utils/testUtils/testHelpers';
-import {
-  cmsRoute,
-  DEFAULT_LANG,
-  OPERATION_TYPE_READ,
-  ROLE_SLUG_ADMIN,
-  ROLE_SLUG_GUEST,
-} from '@yagu/config';
 import { Role, RoleModel } from '../../../entities/Role';
 import { RoleRule, RoleRuleOperation } from '../../../entities/RoleRule';
 import { NavItemModel } from '../../../entities/NavItem';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import {
+  cmsRoute,
+  DEFAULT_LANG,
+  OPERATION_TYPE_READ,
+  ROLE_SLUG_ADMIN,
+  ROLE_SLUG_GUEST,
+} from '@yagu/shared';
 
 describe('Roles', () => {
   beforeEach(async () => {

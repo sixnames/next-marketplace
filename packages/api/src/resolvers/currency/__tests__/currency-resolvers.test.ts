@@ -1,8 +1,8 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { MOCK_CURRENCIES } from '@yagu/mocks';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import { MOCK_CURRENCIES } from '@yagu/shared';
 
 describe('Currency', () => {
   beforeEach(async () => {

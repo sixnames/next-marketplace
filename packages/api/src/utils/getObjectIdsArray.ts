@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { alwaysArray } from '@yagu/shared';
+import { alwaysArray } from './alwaysArray';
 
 export function getObjectIdsArray(arr: string[] | string): Types.ObjectId[] {
   const castedIds = alwaysArray(arr).map((id) => {

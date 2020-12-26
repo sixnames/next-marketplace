@@ -17,7 +17,7 @@ import Image from '../../components/Image/Image';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import Icon from '../../components/Icon/Icon';
 import { useSiteContext } from '../../context/siteContext';
-import { noNaN } from '@yagu/shared';
+import { noNaN } from '../../utils/numbers';
 
 interface ProfileOrderProductInterface {
   orderProduct: MyOrderProductFragment;

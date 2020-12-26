@@ -5,15 +5,14 @@ import { RubricType, useSiteContext } from '../../../context/siteContext';
 import classes from './BurgerDropdown.module.css';
 import { useConfigContext } from '../../../context/configContext';
 import Link from '../../../components/Link/Link';
-import { ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
+import { ROUTE_APP, ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../../config';
 import Icon from '../../../components/Icon/Icon';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import useSignOut from '../../../hooks/useSignOut';
 import { useUserContext } from '../../../context/userContext';
 import { useAppContext } from '../../../context/appContext';
-import { ROUTE_APP } from '@yagu/config';
-import { alwaysArray } from '@yagu/shared';
+import { alwaysArray } from '../../../utils/alwaysArray';
 
 export interface BurgerDropdownSizesInterface {
   top: number;

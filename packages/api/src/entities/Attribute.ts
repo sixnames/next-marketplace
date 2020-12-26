@@ -2,16 +2,16 @@ import { Field, ID, Int, ObjectType, registerEnumType } from 'type-graphql';
 import { getModelForClass, prop } from '@typegoose/typegoose';
 import { OptionsGroup } from './OptionsGroup';
 import { Metric } from './Metric';
+import { prop as Property } from '@typegoose/typegoose/lib/prop';
+import { Option } from './Option';
+import { CityCounter } from './CityCounter';
+import { Translation } from './Translation';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANTS_ENUMS,
-} from '@yagu/config';
-import { prop as Property } from '@typegoose/typegoose/lib/prop';
-import { Option } from './Option';
-import { CityCounter } from './CityCounter';
-import { Translation } from './Translation';
+} from '@yagu/shared';
 
 // Attribute variant
 export enum AttributeVariantEnum {

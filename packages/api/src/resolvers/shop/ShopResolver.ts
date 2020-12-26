@@ -29,11 +29,6 @@ import {
   ShopProduct,
   ShopProductModel,
 } from '../../entities/ShopProduct';
-import {
-  addProductToShopSchema,
-  deleteProductFromShopSchema,
-  updateShopSchema,
-} from '@yagu/validation';
 import { ShopProductPaginateInput } from './ShopProductPaginateInput';
 import generatePaginationOptions from '../../utils/generatePaginationOptions';
 import { ShopPaginateInput } from './ShopPaginateInput';
@@ -45,6 +40,11 @@ import { generateSlug } from '../../utils/slug';
 import storeUploads from '../../utils/assets/storeUploads';
 import { UpdateShopInput } from './UpdateShopInput';
 import { City, CityModel } from '../../entities/City';
+import {
+  addProductToShopSchema,
+  deleteProductFromShopSchema,
+  updateShopSchema,
+} from '@yagu/shared';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
   Shop.name,

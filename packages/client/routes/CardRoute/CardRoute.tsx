@@ -14,9 +14,9 @@ import Currency from '../../components/Currency/Currency';
 import CardShops from './CardShops';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import Button from '../../components/Buttons/Button';
-import { noNaN } from '@yagu/shared';
 import { useSiteContext } from '../../context/siteContext';
 import ControlButton from '../../components/Buttons/ControlButton';
+import { noNaN } from '../../utils/numbers';
 
 interface CardRouteFeaturesInterface {
   features: CardFeatureFragment[];

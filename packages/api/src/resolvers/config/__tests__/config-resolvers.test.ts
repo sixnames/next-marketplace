@@ -1,10 +1,17 @@
 import { mutateWithImages, authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { SITE_CONFIGS_All, SITE_CONFIGS_INITIAL, SITE_CONFIGS_LOGO } from '@yagu/mocks';
-import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/config';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
+import {
+  DEFAULT_CITY,
+  DEFAULT_LANG,
+  SECONDARY_CITY,
+  SECONDARY_LANG,
+  SITE_CONFIGS_All,
+  SITE_CONFIGS_INITIAL,
+  SITE_CONFIGS_LOGO,
+} from '@yagu/shared';
 
 describe('Config', () => {
   beforeEach(async () => {

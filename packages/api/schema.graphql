@@ -23,6 +23,12 @@ input AddCityToCountryInput {
   slug: String!
 }
 
+input AddCollectionToBrandInput {
+  brandId: ID!
+  description: String
+  nameString: String!
+}
+
 input AddOptionToGroupInput {
   color: String
   gender: GenderEnum
@@ -165,6 +171,64 @@ enum AttributeVariantEnum {
 type AttributeViewOption {
   id: String!
   nameString: String!
+}
+
+type Brand {
+  collections: [BrandCollection!]!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  itemId: Int!
+  nameString: String!
+  slug: String!
+  updatedAt: DateTime!
+  url: String
+}
+
+type BrandCollection {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  itemId: Int!
+  nameString: String!
+  slug: String!
+  updatedAt: DateTime!
+}
+
+input BrandCollectionPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  sortBy: BrandCollectionSortByEnum = createdAt
+  sortDir: SortDirectionNumEnum = desc
+}
+
+type BrandCollectionPayloadType {
+  collection: BrandCollection
+  message: String!
+  success: Boolean!
+}
+
+"""Brand pagination sortBy enum"""
+enum BrandCollectionSortByEnum {
+  createdAt
+}
+
+input BrandPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  sortBy: BrandSortByEnum = createdAt
+  sortDir: SortDirectionNumEnum = desc
+}
+
+type BrandPayloadType {
+  brand: Brand
+  message: String!
+  success: Boolean!
+}
+
+"""Brand pagination sortBy enum"""
+enum BrandSortByEnum {
+  createdAt
 }
 
 type Cart {
@@ -374,6 +438,12 @@ input CreateAttributesGroupInput {
   name: [TranslationInput!]!
 }
 
+input CreateBrandInput {
+  description: String
+  nameString: String!
+  url: String
+}
+
 input CreateCompanyInput {
   contacts: ContactsInput!
   logo: [Upload!]!
@@ -397,6 +467,12 @@ input CreateLanguageInput {
   nativeName: String!
 }
 
+input CreateManufacturerInput {
+  description: String
+  nameString: String!
+  url: String
+}
+
 input CreateMetricInput {
   name: [TranslationInput!]!
 }
@@ -415,8 +491,11 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
+  brand: ID
+  brandCollection: ID
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
+  manufacturer: ID
   name: [TranslationInput!]!
   originalName: String!
   price: Int!
@@ -478,6 +557,11 @@ input DeleteAttributesGroupFromRubricInput {
 input DeleteCityFromCountryInput {
   cityId: ID!
   countryId: ID!
+}
+
+input DeleteCollectionFromBrandInput {
+  brandId: ID!
+  collectionId: ID!
 }
 
 input DeleteOptionFromGroupInput {
@@ -566,6 +650,35 @@ input MakeAnOrderInput {
   phone: String!
 }
 
+type Manufacturer {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  itemId: Int!
+  nameString: String!
+  slug: String!
+  updatedAt: DateTime!
+  url: String
+}
+
+input ManufacturerPaginateInput {
+  limit: Int = 100
+  page: Int = 1
+  sortBy: ManufacturerSortByEnum = createdAt
+  sortDir: SortDirectionNumEnum = desc
+}
+
+type ManufacturerPayloadType {
+  manufacturer: Manufacturer
+  message: String!
+  success: Boolean!
+}
+
+"""Manufacturer pagination sortBy enum"""
+enum ManufacturerSortByEnum {
+  createdAt
+}
+
 type Message {
   id: ID!
   key: String!
@@ -588,6 +701,7 @@ type Mutation {
   addAttributesGroupToRubric(input: AddAttributesGroupToRubricInput!): RubricPayloadType!
   addAttributeToGroup(input: AddAttributeToGroupInput!): AttributesGroupPayloadType!
   addCityToCountry(input: AddCityToCountryInput!): CountryPayloadType!
+  addCollectionToBrand(input: AddCollectionToBrandInput!): BrandPayloadType!
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayloadType!
   addProductToCart(input: AddProductToCartInput!): CartPayloadType!
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayloadType!
@@ -598,10 +712,12 @@ type Mutation {
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayloadtype!
   clearCart: CartPayloadType!
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayloadType!
+  createBrand(input: CreateBrandInput!): BrandPayloadType!
   createCompany(input: CreateCompanyInput!): CompanyPayloadtype!
   createCountry(input: CreateCountryInput!): CountryPayloadType!
   createCurrency(input: CreateCurrencyInput!): CurrencyPayloadType!
   createLanguage(input: CreateLanguageInput!): LanguagePayloadType!
+  createManufacturer(input: CreateManufacturerInput!): ManufacturerPayloadType!
   createMetric(input: CreateMetricInput!): MetricPayloadType!
   createOptionsGroup(input: CreateOptionsGroupInput!): OptionsGroupPayloadType!
   createProduct(input: CreateProductInput!): ProductPayloadType!
@@ -613,11 +729,14 @@ type Mutation {
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayloadType!
   deleteAttributesGroup(id: ID!): AttributesGroupPayloadType!
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayloadType!
+  deleteBrand(id: ID!): BrandPayloadType!
   deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayloadType!
+  deleteCollectionFromBrand(input: DeleteCollectionFromBrandInput!): BrandPayloadType!
   deleteCompany(id: ID!): CompanyPayloadtype!
   deleteCountry(id: ID!): CountryPayloadType!
   deleteCurrency(id: ID!): CurrencyPayloadType!
   deleteLanguage(id: ID!): LanguagePayloadType!
+  deleteManufacturer(id: ID!): ManufacturerPayloadType!
   deleteMetric(id: ID!): MetricPayloadType!
   deleteOptionFromGroup(input: DeleteOptionFromGroupInput!): OptionsGroupPayloadType!
   deleteOptionsGroup(id: ID!): OptionsGroupPayloadType!
@@ -645,6 +764,8 @@ type Mutation {
   updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayloadType!
   updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayloadType!
+  updateBrand(input: UpdateBrandInput!): BrandPayloadType!
+  updateBrandCollection(input: UpdateBrandCollectionInput!): BrandCollectionPayloadType!
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayloadType!
   updateCompany(input: UpdateCompanyInput!): CompanyPayloadtype!
   updateConfig(input: UpdateConfigInput!): ConfigPayloadType!
@@ -652,6 +773,7 @@ type Mutation {
   updateCountry(input: UpdateCountryInput!): CountryPayloadType!
   updateCurrency(input: UpdateCurrencyInput!): CurrencyPayloadType!
   updateLanguage(input: UpdateLanguageInput!): LanguagePayloadType!
+  updateManufacturer(input: UpdateManufacturerInput!): ManufacturerPayloadType!
   updateMetric(input: UpdateMetricInput!): MetricPayloadType!
   updateMyPassword(input: UpdateMyPasswordInput!): UserPayloadType!
   updateMyProfile(input: UpdateMyProfileInput!): UserPayloadType!
@@ -832,6 +954,18 @@ type OrderStatus {
   slug: String!
 }
 
+type PaginatedBrands {
+  docs: [Brand!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Int!
+  page: Int
+  sortBy: String!
+  sortDir: SortDirectionNumEnum!
+  totalDocs: Int!
+  totalPages: Int!
+}
+
 type PaginatedCompaniesResponse {
   docs: [Company!]!
   hasNextPage: Int!
@@ -841,6 +975,18 @@ type PaginatedCompaniesResponse {
   page: Int
   pagingCounter: Int!
   prevPage: Int
+  totalDocs: Int!
+  totalPages: Int!
+}
+
+type PaginatedManufacturers {
+  docs: [Manufacturer!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Int!
+  page: Int
+  sortBy: String!
+  sortDir: SortDirectionNumEnum!
   totalDocs: Int!
   totalPages: Int!
 }
@@ -925,6 +1071,8 @@ type Product {
   active: Boolean!
   assets: [Asset!]!
   attributesGroups: [ProductAttributesGroup!]!
+  brand: Brand
+  brandCollection: BrandCollection
   cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
@@ -938,6 +1086,7 @@ type Product {
   id: ID!
   itemId: Int!
   mainImage: String!
+  manufacturer: Manufacturer
   name: [Translation!]!
   nameString: String!
   originalName: String!
@@ -1108,12 +1257,15 @@ type Query {
     """list of excluded groups id's"""
     exclude: [ID!] = []
   ): [AttributesGroup!]!
+  getAllBrandCollections(input: BrandCollectionPaginateInput): PaginatedBrands!
+  getAllBrands(input: BrandPaginateInput): PaginatedBrands!
   getAllCities: [City!]!
   getAllCompanies(input: CompanyPaginateInput = {}): PaginatedCompaniesResponse!
   getAllConfigs: [Config!]!
   getAllCountries: [Country!]!
   getAllCurrencies: [Currency!]!
   getAllLanguages: [Language!]
+  getAllManufacturers(input: ManufacturerPaginateInput): PaginatedManufacturers!
   getAllMetrics: [Metric!]
   getAllMyOrders(input: OrderPaginateInput = {}): PaginatedOrdersResponse
   getAllOptionsGroups: [OptionsGroup!]!
@@ -1128,6 +1280,10 @@ type Query {
   getAttributesGroup(id: ID!): AttributesGroup
   getAttributeVariantsOptions: [AttributeVariant!]
   getAttributeViewVariantsOptions: [AttributeViewOption!]!
+  getBrand(id: ID!): Brand!
+  getBrandBySlug(slug: String!): Brand
+  getBrandCollection(id: ID!): BrandCollection!
+  getBrandCollectionBySlug(slug: String!): BrandCollection
   getCatalogueData(catalogueFilter: [String!]!, productsInput: CatalogueProductsInput = {limit: 30, page: 1, sortBy: priority, sortDir: desc}): CatalogueData
   getCatalogueSearchResult(search: String!): CatalogueSearchResult!
   getCatalogueSearchTopItems: CatalogueSearchResult!
@@ -1145,6 +1301,8 @@ type Query {
   getIconsOptions: [IconOption!]!
   getISOLanguagesOptions: [ISOLanguage!]!
   getLanguage(id: ID!): Language!
+  getManufacturer(id: ID!): Manufacturer!
+  getManufacturerBySlug(slug: String!): Manufacturer!
   getMessage(key: String!): Message!
   getMessagesByKeys(keys: [String!]!): [Message!]!
   getMetric(id: ID!): Metric
@@ -1468,6 +1626,12 @@ enum SortDirectionEnum {
   desc
 }
 
+"""sortDir enum for mongo"""
+enum SortDirectionNumEnum {
+  asc
+  desc
+}
+
 type Translation {
   key: String!
   value: String!
@@ -1502,6 +1666,19 @@ input UpdateAttributesGroupInRubricInput {
   attributeId: ID!
   attributesGroupId: ID!
   rubricId: ID!
+}
+
+input UpdateBrandCollectionInput {
+  description: String
+  id: ID!
+  nameString: String!
+}
+
+input UpdateBrandInput {
+  description: String
+  id: ID!
+  nameString: String!
+  url: String
 }
 
 input UpdateCityInCountryInput {
@@ -1541,6 +1718,13 @@ input UpdateLanguageInput {
   key: String!
   name: String!
   nativeName: String!
+}
+
+input UpdateManufacturerInput {
+  description: String
+  id: ID!
+  nameString: String!
+  url: String
 }
 
 input UpdateMetricInput {
@@ -1589,9 +1773,12 @@ input UpdateProductInput {
   active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
+  brand: ID
+  brandCollection: ID
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
   id: ID!
+  manufacturer: ID
   name: [TranslationInput!]!
   originalName: String!
   price: Int!

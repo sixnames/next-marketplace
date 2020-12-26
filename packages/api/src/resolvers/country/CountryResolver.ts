@@ -19,13 +19,6 @@ import { DeleteCityFromCountryInput } from './DeleteCityFromCountryInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
 import { CreateCountryInput } from './CreateCountryInput';
 import { UpdateCountryInput } from './UpdateCountryInput';
-import {
-  addCityToCountrySchema,
-  createCountrySchema,
-  deleteCityFromCountrySchema,
-  updateCityInCountrySchema,
-  updateCountrySchema,
-} from '@yagu/validation';
 import { AuthMethod, ValidateMethod } from '../../decorators/methodDecorators';
 import {
   CustomFilter,
@@ -34,6 +27,13 @@ import {
 } from '../../decorators/parameterDecorators';
 import { FilterQuery } from 'mongoose';
 import { RoleRuleModel } from '../../entities/RoleRule';
+import {
+  addCityToCountrySchema,
+  createCountrySchema,
+  deleteCityFromCountrySchema,
+  updateCityInCountrySchema,
+  updateCountrySchema,
+} from '@yagu/shared';
 
 const {
   operationConfigCreate,

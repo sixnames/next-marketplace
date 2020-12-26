@@ -126,7 +126,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const { getSiteConfigSingleValue } = useConfigContext();
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
   const [pricesRanges, setPricesRanges] = useState<number[]>(() => [minPrice, maxPrice]);
-  const [pricesValue, setPricesValue] = useState<number[]>(() => {
+  const [pricesValue, setPricesValue] = useState<number[]>([0, 0]);
+
+  useEffect(() => {
     const selectedMinPrice = getCatalogueFilterValueByKey({
       asPath: router.asPath,
       key: CATALOGUE_MIN_PRICE_KEY,
@@ -135,21 +137,27 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
       asPath: router.asPath,
       key: CATALOGUE_MAX_PRICE_KEY,
     });
-
     if (!selectedMinPrice || !selectedMaxPrice) {
-      return [minPrice, maxPrice];
+      setPricesValue([minPrice, maxPrice]);
+      return;
     }
 
-    return [noNaN(selectedMinPrice), noNaN(selectedMaxPrice)];
-  });
+    setPricesValue([noNaN(selectedMinPrice), noNaN(selectedMaxPrice)]);
+  }, [maxPrice, minPrice, router]);
 
   useEffect(() => {
     setPricesRanges([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
   const resetPricesValueHandler = useCallback(() => {
-    setPricesValue([minPrice, maxPrice]);
-  }, [maxPrice, minPrice]);
+    const nextPath = getCatalogueFilterNextPath({
+      asPath: router.asPath,
+      excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
+    });
+    router.push(nextPath).catch(() => {
+      showErrorNotification();
+    });
+  }, [router, showErrorNotification]);
 
   const maxVisibleAttributesString = getSiteConfigSingleValue(
     'catalogueFilterVisibleAttributesCount',
@@ -198,7 +206,6 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                   if (isMobile) {
                     hideFilterHandler();
                   }
-                  resetPricesValueHandler();
                 }}
               >
                 Очистить все
@@ -224,6 +231,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                 <div>
                   <FilterLink
                     withCross
+                    asLink={false}
                     className={classes.attributeOption}
                     onClick={resetPricesValueHandler}
                     testId={'selected-prices'}

@@ -57,6 +57,9 @@ import {
   addProductToRubricInputSchema,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
+  CATALOGUE_FILTER_PRICE_KEYS,
+  CATALOGUE_MAX_PRICE_KEY,
+  CATALOGUE_MIN_PRICE_KEY,
   createRubricInputSchema,
   DEFAULT_LANG,
   DEFAULT_PRIORITY,
@@ -69,7 +72,6 @@ import {
   updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '@yagu/shared';
-import queryString from 'query-string';
 import { alwaysArray } from '../../utils/alwaysArray';
 import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
 import { getCurrencyString } from '../../utils/intl';
@@ -78,6 +80,12 @@ import {
   getRubricCounters,
   getRubricsTreeIds,
 } from '../../utils/rubricHelpers';
+import {
+  getOptionFromParam,
+  GetOptionFromParamPayloadInterface,
+  getParamOptionFirstValueByKey,
+} from '../../utils/catalogueHelpers';
+import { noNaN } from '../../utils/numbers';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -815,28 +823,38 @@ export class RubricResolver {
       const catalogueFilterArgs = info?.variableValues?.catalogueFilter
         ? alwaysArray(info?.variableValues?.catalogueFilter)
         : [];
-      const { sortBy, sortDir, minPrice, maxPrice }: Record<string, any> = info?.variableValues
-        ?.productsInput
-        ? info?.variableValues?.productsInput
-        : {};
-      const sortQuery = queryString.stringify(
-        {
-          sortDir,
-          sortBy,
-        },
-        { skipNull: true, skipEmptyString: true },
-      );
 
-      const pricesQuery = queryString.stringify(
-        {
-          minPrice,
-          maxPrice,
-        },
-        { skipNull: true, skipEmptyString: true },
-      );
+      const additionalFilters: GetOptionFromParamPayloadInterface[] = [];
+      catalogueFilterArgs.forEach((param) => {
+        const paramObject = getOptionFromParam(param);
+        const excluded = CATALOGUE_FILTER_PRICE_KEYS.includes(paramObject.key);
+        if (excluded) {
+          additionalFilters.push(paramObject);
+        }
+      });
+      const minPrice = getParamOptionFirstValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MIN_PRICE_KEY,
+      });
+      const maxPrice = getParamOptionFirstValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MAX_PRICE_KEY,
+      });
 
-      const nextSortQuery = sortDir || sortBy ? `?${sortQuery}` : '';
-      const nextPricesQuery = minPrice && maxPrice ? `&${pricesQuery}` : '';
+      // price range pipeline
+      const priceRangePipeline =
+        minPrice && maxPrice
+          ? [
+              {
+                $match: {
+                  minPrice: {
+                    $gte: noNaN(minPrice),
+                    $lte: noNaN(maxPrice),
+                  },
+                },
+              },
+            ]
+          : [];
 
       // Get id's of children rubrics
       const rubricsIds = await getRubricsTreeIds(rubric.id);
@@ -985,8 +1003,16 @@ export class RubricResolver {
             },
             // Count shop products
             { $addFields: { shopsCount: { $size: '$shops' } } },
+
             // Filter out products not added to the shops
             { $match: { shopsCount: { $gt: 0 } } },
+
+            // Add minPrice field
+            { $addFields: { minPrice: { $min: '$shops.price' } } },
+
+            // Filter out products that out of price range
+            ...priceRangePipeline,
+
             {
               $count: 'counter',
             },
@@ -998,7 +1024,7 @@ export class RubricResolver {
             id: option._id?.toString() + rubricIdString,
             filterNameString: filterNameString,
             optionSlug,
-            optionNextSlug: `/${optionNextSlug}${nextSortQuery}${nextPricesQuery}`,
+            optionNextSlug: `/${optionNextSlug}`,
             isSelected,
             isDisabled: counter < 1,
             counter,
@@ -1032,7 +1058,7 @@ export class RubricResolver {
           id: attributeIdString + rubricIdString,
           node: attribute,
           options: sortedOptions,
-          clearSlug: `${clearSlug}${nextSortQuery}${nextPricesQuery}`,
+          clearSlug: `${clearSlug}`,
           isSelected,
           isDisabled: disabledOptionsCount === sortedOptions.length,
         });
@@ -1069,7 +1095,7 @@ export class RubricResolver {
         minPrice && maxPrice
           ? {
               id: `${rubric.slug}-selectedPrices`,
-              clearSlug: `/${selectedPricesClearPathname}${nextSortQuery}`,
+              clearSlug: `/${selectedPricesClearPathname}`,
               formattedMinPrice: getCurrencyString({ lang, value: minPrice }),
               formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
             }
@@ -1080,7 +1106,7 @@ export class RubricResolver {
         attributes: filterAttributes,
         selectedAttributes,
         isDisabled: disabledAttributesCount === filterAttributes.length,
-        clearSlug: `/${rubric.slug}${nextSortQuery}`,
+        clearSlug: `/${rubric.slug}`,
         selectedPrices,
       };
     } catch (e) {

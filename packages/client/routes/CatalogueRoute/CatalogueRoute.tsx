@@ -264,7 +264,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product.id}
                       testId={`catalogue-item-${product.slug}`}
-                      rubricSlug={rubric.slug}
+                      additionalSlug={`/rubric-${rubric.slug}`}
                     />
                   ))
                 : docs.map((product) => (
@@ -272,7 +272,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product.id}
                       testId={`catalogue-item-${product.slug}`}
-                      rubricSlug={rubric.slug}
+                      additionalSlug={`/rubric-${rubric.slug}`}
                     />
                   ))}
             </InfiniteScroll>

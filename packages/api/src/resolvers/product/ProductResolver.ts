@@ -129,9 +129,10 @@ export class ProductResolver {
   async getProductCard(
     @SessionRole() sessionRole: Role,
     @Localization() { city }: LocalizationPayloadInterface,
-    @Arg('slug', (_type) => String) slug: string,
+    @Arg('slug', (_type) => [String!]) slug: string[],
   ): Promise<Product> {
-    const product = await ProductModel.findOne({ slug });
+    const productSlug = slug[slug.length - 1];
+    const product = await ProductModel.findOne({ slug: productSlug });
     if (!product) {
       throw new Error('Product not found');
     }
@@ -781,9 +782,23 @@ export class ProductResolver {
   async cardBreadcrumbs(
     @Localization() { getLangField }: LocalizationPayloadInterface,
     @Root() product: DocumentType<Product>,
-    @Arg('rubricSlug', { nullable: true }) rubricSlug: string,
+    @Arg('slug', (_type) => [String!], { nullable: true }) slug: string[],
   ): Promise<ProductCardBreadcrumb[]> {
     try {
+      if (!slug || slug.length < 2) {
+        return [];
+      }
+
+      const cardSlugs = slug.slice(0, slug.length - 1);
+      const cardSlugsParts = cardSlugs.map((slug) => {
+        return slug.split('-');
+      });
+      const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
+      if (!rubricSlugArr) {
+        return [];
+      }
+
+      const rubricSlug = rubricSlugArr[1];
       if (!rubricSlug) {
         return [];
       }

@@ -1073,7 +1073,7 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   brand: Brand
   brandCollection: BrandCollection
-  cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
+  cardBreadcrumbs(slug: [String!]): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
   cardName: [Translation!]!
@@ -1313,7 +1313,7 @@ type Query {
   getOrder(id: ID!): Order
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
-  getProductCard(slug: String!): Product!
+  getProductCard(slug: [String!]!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
   getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
   getRole(id: ID!): Role!

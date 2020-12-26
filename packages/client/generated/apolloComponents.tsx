@@ -106,7 +106,7 @@ export type QueryGetProductBySlugArgs = {
 
 
 export type QueryGetProductCardArgs = {
-  slug: Scalars['String'];
+  slug: Array<Scalars['String']>;
 };
 
 
@@ -376,7 +376,7 @@ export type Product = {
 
 
 export type ProductCardBreadcrumbsArgs = {
-  rubricSlug?: Maybe<Scalars['String']>;
+  slug?: Maybe<Array<Scalars['String']>>;
 };
 
 
@@ -4015,8 +4015,7 @@ export type GetCatalogueCardShopsQuery = (
 );
 
 export type GetCatalogueCardQueryQueryVariables = Exact<{
-  slug: Scalars['String'];
-  rubricSlug?: Maybe<Scalars['String']>;
+  slug: Array<Scalars['String']>;
 }>;
 
 
@@ -8491,10 +8490,10 @@ export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
 export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
 export const GetCatalogueCardQueryDocument = gql`
-    query GetCatalogueCardQuery($slug: String!, $rubricSlug: String) {
+    query GetCatalogueCardQuery($slug: [String!]!) {
   getProductCard(slug: $slug) {
     ...ProductCard
-    cardBreadcrumbs(rubricSlug: $rubricSlug) {
+    cardBreadcrumbs(slug: $slug) {
       id
       name
       href
@@ -8516,7 +8515,6 @@ export const GetCatalogueCardQueryDocument = gql`
  * const { data, loading, error } = useGetCatalogueCardQueryQuery({
  *   variables: {
  *      slug: // value for 'slug'
- *      rubricSlug: // value for 'rubricSlug'
  *   },
  * });
  */

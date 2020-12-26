@@ -52,10 +52,9 @@ const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features 
 
 interface CardRouteInterface {
   cardData: GetCatalogueCardQueryQuery['getProductCard'];
-  linkQuery?: Record<string, any>;
 }
 
-const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) => {
+const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const {
     id,
     slug,
@@ -167,7 +166,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData, linkQuery = {} }) =
                                 key={id}
                                 href={{
                                   pathname: `/product/${product.slug}`,
-                                  query: linkQuery,
                                 }}
                               >
                                 {value}

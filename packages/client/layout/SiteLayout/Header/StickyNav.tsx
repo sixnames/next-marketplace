@@ -114,12 +114,20 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { query } = useRouter();
   const { hideBurgerDropdown } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const { catalogue = [] } = query;
+  const { catalogue = [], card = [] } = query;
   const realCatalogueQuery = alwaysArray(catalogue);
   const catalogueSlug = realCatalogueQuery[0];
   const { nameString, slug, catalogueFilter } = rubric;
   const { isDisabled } = catalogueFilter;
-  const isCurrent = slug === catalogueSlug || query.rubric === rubric.slug;
+
+  // Get rubric slug from product card path
+  const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
+  const cardSlugsParts = cardSlugs.map((slug) => {
+    return slug.split('-');
+  });
+  const rubricSlugArr = cardSlugsParts.find((part) => part[0] === 'rubric');
+  const rubricSlug = rubricSlugArr ? rubricSlugArr[1] : '';
+  const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
 
   function showDropdownHandler() {
     if (!isDisabled) {

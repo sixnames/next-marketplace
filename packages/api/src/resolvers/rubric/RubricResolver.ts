@@ -17,8 +17,8 @@ import {
   RubricCatalogueTitleField,
   RubricModel,
   RubricFilterAttributeOption,
-  RubricCatalogueFilter,
   RubricFilterAttribute,
+  RubricCatalogueFilter,
   RubricFilterSelectedPrices,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
@@ -57,7 +57,6 @@ import {
   addProductToRubricInputSchema,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_BRAND_KEY,
   CATALOGUE_FILTER_EXCLUDED_KEYS,
   CATALOGUE_MAX_PRICE_KEY,
   CATALOGUE_MIN_PRICE_KEY,
@@ -70,6 +69,7 @@ import {
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   SORT_DESC,
+  SORT_DESC_NUM,
   updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '@yagu/shared';
@@ -82,11 +82,9 @@ import {
   getRubricsTreeIds,
 } from '../../utils/rubricHelpers';
 import {
-  getCatalogueAdditionalFilterOptions,
   getOptionFromParam,
   GetOptionFromParamPayloadInterface,
   getParamOptionFirstValueByKey,
-  getParamOptionValueByKey,
 } from '../../utils/catalogueHelpers';
 import { noNaN } from '../../utils/numbers';
 
@@ -844,10 +842,15 @@ export class RubricResolver {
         paramOptions: additionalFilters,
         key: CATALOGUE_MAX_PRICE_KEY,
       });
-      const brandsInArguments = getParamOptionValueByKey({
+      // TODO
+      /*const brandsInArguments = getParamOptionValueByKey({
         paramOptions: additionalFilters,
         key: CATALOGUE_BRAND_KEY,
       });
+      const manufacturersInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MANUFACTURER_KEY,
+      });*/
 
       // price range pipeline
       const priceRangePipeline =
@@ -924,6 +927,7 @@ export class RubricResolver {
         const options = await OptionModel.aggregate<Option>([
           { $match: { _id: { $in: optionsGroup.options } } },
           { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+          { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
           {
             $addFields: {
               viewsCounter: {
@@ -947,7 +951,7 @@ export class RubricResolver {
               },
             },
           },
-          { $sort: { viewsCounter: -1 } },
+          { $sort: { viewsCounter: SORT_DESC_NUM } },
         ]);
 
         const reducedOptions = options.reduce((acc: Option[], option) => {
@@ -1109,8 +1113,8 @@ export class RubricResolver {
             }
           : null;
 
-      // Brands
-      const brandsAggregation = await getCatalogueAdditionalFilterOptions({
+      // TODO Brands
+      /*const brandsAggregation = await getCatalogueAdditionalFilterOptions({
         productForeignField: '$brand',
         collectionSlugs: brandsInArguments,
         filterKey: CATALOGUE_BRAND_KEY,
@@ -1120,7 +1124,16 @@ export class RubricResolver {
         city,
       });
 
-      console.log(brandsAggregation);
+      // TODO Manufacturers
+      const manufacturersAggregation = await getCatalogueAdditionalFilterOptions({
+        productForeignField: '$manufacturer',
+        collectionSlugs: manufacturersInArguments,
+        filterKey: CATALOGUE_MANUFACTURER_KEY,
+        collection: 'manufacturers',
+        catalogueFilterArgs,
+        rubricsIds,
+        city,
+      });*/
 
       return {
         id: rubric._id.toString(),

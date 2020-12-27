@@ -23,6 +23,7 @@ import {
   CATALOGUE_MAX_PRICE_KEY,
   CATALOGUE_MIN_PRICE_KEY,
   CATALOGUE_PRODUCTS_LIMIT,
+  PAGE_DEFAULT,
   SORT_ASC_NUM,
   SORT_BY_KEY,
   SORT_DESC,
@@ -32,6 +33,7 @@ import {
 import { CatalogueProductsInput, CatalogueProductsSortByEnum } from './CatalogueProductsInput';
 import { SortDirectionEnum } from '../commonInputs/PaginateInput';
 import { getRubricsTreeIds } from '../../utils/rubricHelpers';
+import { paginationTotalStages } from '../../utils/aggregatePagination';
 
 @Resolver((_of) => CatalogueData)
 export class CatalogueDataResolver {
@@ -196,7 +198,21 @@ export class CatalogueDataResolver {
             ]
           : [];
 
-      const productsPipeline = [
+      interface ProductsAggregationInterface {
+        docs: Product[];
+        totalDocs: number;
+        totalPages: number;
+        hasPrevPage: boolean;
+        hasNextPage: boolean;
+        minPrice: {
+          _id: number;
+        }[];
+        maxPrice: {
+          _id: number;
+        }[];
+      }
+
+      const productsAggregation = await ProductModel.aggregate<ProductsAggregationInterface>([
         ...allProductsPipeline,
 
         // Facets for pagination fields
@@ -208,28 +224,26 @@ export class CatalogueDataResolver {
             maxPrice: [{ $group: { _id: '$minPrice' } }, { $sort: { _id: -1 } }, { $limit: 1 }],
           },
         },
-      ];
-
-      interface ProductsAggregationInterface {
-        docs: Product[];
-        countAllDocs: {
-          totalDocs: number;
-        }[];
-        minPrice: {
-          _id: number;
-        }[];
-        maxPrice: {
-          _id: number;
-        }[];
-      }
-
-      const productsAggregation = await ProductModel.aggregate<ProductsAggregationInterface>(
-        productsPipeline,
-      );
+        ...paginationTotalStages(limit),
+        {
+          $project: {
+            docs: 1,
+            totalDocs: 1,
+            totalPages: 1,
+            minPrice: 1,
+            maxPrice: 1,
+            hasPrevPage: {
+              $gt: [page, PAGE_DEFAULT],
+            },
+            hasNextPage: {
+              $lt: [page, '$totalPages'],
+            },
+          },
+        },
+      ]);
 
       const productsResult = productsAggregation[0] ?? { docs: [] };
-      const totalDocs = noNaN(productsResult.countAllDocs[0]?.totalDocs);
-      const totalPages = Math.ceil(totalDocs / limit);
+      const { totalDocs, totalPages } = productsResult;
       const minPriceResult = noNaN(productsResult.minPrice[0]?._id);
       const maxPriceResult = noNaN(productsResult.maxPrice[0]?._id);
 

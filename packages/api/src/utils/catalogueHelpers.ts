@@ -390,9 +390,9 @@ export async function getCatalogueAdditionalFilterOptions({
   collection,
   city,
   filterKey,
-}: GetCatalogueAdditionalFilterOptionsInterface) {
+}: GetCatalogueAdditionalFilterOptionsInterface): Promise<AdditionalFilterOptionInterface[]> {
   const currentCatalogueSlug = catalogueFilterArgs.join('/');
-  const options = await mongoose.connection.db
+  return mongoose.connection.db
     .collection<AdditionalFilterOptionInterface>(collection)
     .aggregate([
       // Lookup products
@@ -509,10 +509,9 @@ export async function getCatalogueAdditionalFilterOptions({
           optionNextSlug: 1,
           isSelected: 1,
           isDisabled: 1,
+          productsCount: 1,
         },
       },
     ])
     .toArray();
-
-  return options;
 }

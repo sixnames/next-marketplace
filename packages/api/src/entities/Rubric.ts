@@ -107,6 +107,48 @@ export class RubricCatalogueFilter {
 }
 
 @ObjectType()
+export class RubricNavItemAttributeOption {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => String)
+  readonly nameString: string;
+
+  @Field((_type) => String)
+  readonly slug: string;
+}
+
+@ObjectType()
+export class RubricNavItemAttribute {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => String)
+  readonly nameString: string;
+
+  @Field(() => [RubricNavItemAttributeOption])
+  readonly visibleOptions: RubricNavItemAttributeOption[];
+
+  @Field(() => [RubricNavItemAttributeOption])
+  readonly hiddenOptions: RubricNavItemAttributeOption[];
+
+  @Field(() => [RubricNavItemAttributeOption])
+  readonly options: RubricNavItemAttributeOption[];
+}
+
+@ObjectType()
+export class RubricNavItems {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+
+  @Field(() => [RubricNavItemAttribute])
+  readonly attributes: RubricNavItemAttribute[];
+}
+
+@ObjectType()
 export class RubricCatalogueTitle {
   @Field(() => [Translation])
   @prop({ type: Translation, required: true })
@@ -201,6 +243,9 @@ export class Rubric {
 
   @Field(() => RubricCatalogueFilter)
   readonly catalogueFilter: RubricCatalogueFilter;
+
+  @Field(() => RubricNavItems)
+  readonly navItems: RubricNavItems;
 
   @Field(() => PaginatedProductsResponse)
   readonly products: PaginatedProductsResponse;

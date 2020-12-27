@@ -244,13 +244,20 @@ export class ProductResolver {
     @Arg('input') input: CreateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { assets, ...values } = input;
+      const { assets, manufacturer, brand, brandCollection, ...values } = input;
       const slug = generateDefaultLangSlug(values.cardName);
       const assetsResult = await storeUploads({ files: assets, slug, dist: ASSETS_DIST_PRODUCTS });
+
+      const manufacturerEntity = await ManufacturerModel.findOne({ slug: manufacturer });
+      const brandEntity = await BrandModel.findOne({ slug: brand });
+      const brandCollectionEntity = await BrandCollectionModel.findOne({ slug: brandCollection });
 
       const product = await ProductModel.create({
         ...values,
         slug,
+        manufacturer: manufacturerEntity ? manufacturerEntity.slug : undefined,
+        brand: brandEntity ? brandEntity.slug : undefined,
+        brandCollection: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
         priorities: [],
         views: [{ key: DEFAULT_CITY, counter: 1 }],
         assets: assetsResult,
@@ -286,7 +293,11 @@ export class ProductResolver {
     @Arg('input') input: UpdateProductInput,
   ): Promise<ProductPayloadType> {
     try {
-      const { id, assets, ...values } = input;
+      const { id, assets, manufacturer, brand, brandCollection, ...values } = input;
+
+      const manufacturerEntity = await ManufacturerModel.findOne({ slug: manufacturer });
+      const brandEntity = await BrandModel.findOne({ slug: brand });
+      const brandCollectionEntity = await BrandCollectionModel.findOne({ slug: brandCollection });
 
       const product = await ProductModel.findOne({ _id: id, ...customFilter });
       if (!product) {
@@ -309,6 +320,9 @@ export class ProductResolver {
         },
         {
           ...values,
+          manufacturer: manufacturerEntity ? manufacturerEntity.slug : undefined,
+          brand: brandEntity ? brandEntity.slug : undefined,
+          brandCollection: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
           slug,
           assets: assetsResult,
         },
@@ -705,17 +719,17 @@ export class ProductResolver {
 
   @FieldResolver((_returns) => Manufacturer, { nullable: true })
   async manufacturer(@Root() product: DocumentType<Product>): Promise<Manufacturer | null> {
-    return ManufacturerModel.findOne({ _id: product.manufacturer });
+    return ManufacturerModel.findOne({ slug: product.manufacturer });
   }
 
   @FieldResolver((_returns) => Brand, { nullable: true })
   async brand(@Root() product: DocumentType<Product>): Promise<Brand | null> {
-    return BrandModel.findOne({ _id: product.brand });
+    return BrandModel.findOne({ slug: product.brand });
   }
 
   @FieldResolver((_returns) => BrandCollection, { nullable: true })
   async brandCollection(@Root() product: DocumentType<Product>): Promise<BrandCollection | null> {
-    return BrandCollectionModel.findOne({ _id: product.brandCollection });
+    return BrandCollectionModel.findOne({ slug: product.brandCollection });
   }
 
   @FieldResolver((_returns) => Int)

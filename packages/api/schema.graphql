@@ -1090,7 +1090,7 @@ type Product {
   name: [Translation!]!
   nameString: String!
   originalName: String!
-  price: Int!
+  price: Int
   priorities: [CityCounter!]!
   rubrics: [ID!]!
   shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ShopProduct!]!

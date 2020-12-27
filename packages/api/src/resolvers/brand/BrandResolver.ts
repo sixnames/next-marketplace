@@ -166,8 +166,6 @@ export class BrandResolver {
         };
       }
 
-      const slug = generateSlug(nameString);
-
       const exist = await BrandModel.exists({ _id: { $ne: id }, nameString });
       if (exist) {
         return {
@@ -181,7 +179,6 @@ export class BrandResolver {
         {
           ...values,
           nameString,
-          slug,
           collections: [],
         },
         {
@@ -226,7 +223,7 @@ export class BrandResolver {
         };
       }
 
-      const used = await ProductModel.exists({ brand: id });
+      const used = await ProductModel.exists({ brand: brand.slug });
       if (used) {
         return {
           success: false,
@@ -363,7 +360,7 @@ export class BrandResolver {
       }
 
       const used = await ProductModel.exists({
-        brandCollection: collectionId,
+        brandCollection: collection.slug,
       });
       if (used) {
         return {

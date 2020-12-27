@@ -104,9 +104,9 @@ export class Product extends TimeStamps {
   @prop({ type: Asset, required: true })
   assets: Asset[];
 
-  @Field(() => Int)
-  @prop({ default: 0 })
-  price?: number;
+  @Field(() => Int, { nullable: true })
+  @prop({ type: Number })
+  price?: number | null;
 
   @Field(() => Brand, { nullable: true })
   @prop({ type: String })

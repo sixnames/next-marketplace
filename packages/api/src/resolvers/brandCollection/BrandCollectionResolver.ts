@@ -15,7 +15,6 @@ import { BrandCollectionPaginateInput } from './BrandCollectionPaginateInput';
 import PayloadType from '../commonInputs/PayloadType';
 import { UpdateBrandCollectionInput } from './UpdateBrandCollectionInput';
 import getResolverErrorMessage from '../../utils/getResolverErrorMessage';
-import { generateSlug } from '../../utils/slug';
 import { updateBrandCollectionSchema } from '@yagu/shared';
 
 const { operationConfigRead, operationConfigUpdate } = RoleRuleModel.getOperationsConfigs(
@@ -102,12 +101,9 @@ export class BrandCollectionResolver {
         };
       }
 
-      const slug = generateSlug(nameString);
-
       const updatedCollection = await BrandCollectionModel.findByIdAndUpdate(
         id,
         {
-          slug,
           nameString,
           description,
         },

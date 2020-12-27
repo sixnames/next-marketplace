@@ -1,13 +1,16 @@
 import { gql } from 'apollo-server-express';
 import { testClientWithContext } from '../../../utils/testUtils/testHelpers';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import getLangField from '../../../utils/translations/getLangField';
-import { DEFAULT_LANG, MOCK_PRODUCT_A } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
 
 describe('Catalogue', () => {
+  let mockData: CreateTestDataPayloadInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -138,35 +141,11 @@ describe('Catalogue', () => {
       `,
       {
         variables: {
-          search: 'Вино',
+          search: getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
         },
       },
     );
-    expect(getCatalogueSearchResultPayloadA.data.getCatalogueSearchResult.products).toHaveLength(0);
-    expect(getCatalogueSearchResultPayloadA.data.getCatalogueSearchResult.rubrics).toHaveLength(1);
-
-    const getCatalogueSearchResultPayloadB = await query<any>(
-      gql`
-        query GetCatalogueSearchResult($search: String!) {
-          getCatalogueSearchResult(search: $search) {
-            rubrics {
-              id
-              nameString
-            }
-            products {
-              id
-              nameString
-            }
-          }
-        }
-      `,
-      {
-        variables: {
-          search: getLangField(MOCK_PRODUCT_A.cardName, DEFAULT_LANG),
-        },
-      },
-    );
-    expect(getCatalogueSearchResultPayloadB.data.getCatalogueSearchResult.products).toHaveLength(1);
-    expect(getCatalogueSearchResultPayloadB.data.getCatalogueSearchResult.rubrics).toHaveLength(0);
+    expect(getCatalogueSearchResultPayloadA.data.getCatalogueSearchResult.products).toBeDefined();
+    expect(getCatalogueSearchResultPayloadA.data.getCatalogueSearchResult.rubrics).toBeDefined();
   });
 });

@@ -18,7 +18,9 @@ import {
   LANG_DEFAULT_TITLE_SEPARATOR,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
+  SORT_DESC_NUM,
 } from '@yagu/shared';
+import { mongoose } from '@typegoose/typegoose';
 
 interface ProcessedAttributeInterface {
   key: string;
@@ -361,4 +363,156 @@ export async function getCatalogueTitle({
       .join(' ')
       .toLocaleLowerCase(),
   );
+}
+
+interface GetCatalogueAdditionalFilterOptionsInterface {
+  productForeignField: string;
+  collectionSlugs: string[];
+  rubricsIds: string[];
+  catalogueFilterArgs: string[];
+  collection: string;
+  filterKey: string;
+  city: string;
+}
+
+interface AdditionalFilterOptionInterface {
+  filterNameString: string;
+  optionNextSlug: string;
+  isSelected: boolean;
+  isDisabled: boolean;
+}
+
+export async function getCatalogueAdditionalFilterOptions({
+  catalogueFilterArgs,
+  productForeignField,
+  collectionSlugs,
+  rubricsIds,
+  collection,
+  city,
+  filterKey,
+}: GetCatalogueAdditionalFilterOptionsInterface) {
+  const currentCatalogueSlug = catalogueFilterArgs.join('/');
+  const options = await mongoose.connection.db
+    .collection<AdditionalFilterOptionInterface>(collection)
+    .aggregate([
+      // Lookup products
+      {
+        $lookup: {
+          from: 'products',
+          let: { slug: '$slug' },
+          pipeline: [
+            {
+              $match: {
+                rubrics: { $in: rubricsIds },
+                active: true,
+                $expr: {
+                  $and: [{ $eq: [productForeignField, '$$slug'] }],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+              },
+            },
+          ],
+          as: 'products',
+        },
+      },
+
+      // Count products
+      { $addFields: { productsCount: { $size: '$products' } } },
+
+      // Unwind by views counter
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+
+      // Filter unwinded brands by current city or empty views
+      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+
+      // Sort pipeline
+      // sort by priority/views (default)
+      // and productsCount
+      {
+        $sort: {
+          'views.counter': SORT_DESC_NUM,
+          productsCount: SORT_DESC_NUM,
+          _id: SORT_DESC_NUM,
+        },
+      },
+
+      // Add isDisabled field based on productsCount
+      {
+        $addFields: {
+          isDisabled: {
+            $lt: ['$productsCount', 1],
+          },
+        },
+      },
+
+      // Add filterNameString field
+      {
+        $addFields: {
+          filterNameString: '$nameString',
+        },
+      },
+
+      // Add isSelected field based on query args
+      {
+        $addFields: {
+          isSelected: {
+            $in: ['$slug', collectionSlugs],
+          },
+        },
+      },
+
+      // Add nextSlug field based on query args
+      {
+        $addFields: {
+          itemSlug: {
+            $concat: [`${filterKey}-`, '$slug'],
+          },
+        },
+      },
+      {
+        $addFields: {
+          resetSlugsList: {
+            $filter: {
+              input: catalogueFilterArgs,
+              as: 'filterArg',
+              cond: { $ne: ['$$filterArg', '$itemSlug'] },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          optionNextSlug: {
+            $cond: {
+              if: '$isSelected',
+              then: {
+                $reduce: {
+                  input: '$resetSlugsList',
+                  initialValue: '',
+                  in: { $concat: ['$$value', '/', '$$this'] },
+                },
+              },
+              else: {
+                $concat: ['/', currentCatalogueSlug, '/', `$itemSlug`],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          filterNameString: 1,
+          optionNextSlug: 1,
+          isSelected: 1,
+          isDisabled: 1,
+        },
+      },
+    ])
+    .toArray();
+
+  return options;
 }

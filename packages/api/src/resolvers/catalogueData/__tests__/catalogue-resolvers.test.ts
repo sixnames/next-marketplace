@@ -5,7 +5,7 @@ import createTestData, {
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import getLangField from '../../../utils/translations/getLangField';
-import { DEFAULT_LANG } from '@yagu/shared';
+import { CATALOGUE_BRAND_KEY, DEFAULT_LANG } from '@yagu/shared';
 
 describe('Catalogue', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -87,10 +87,16 @@ describe('Catalogue', () => {
       `,
       {
         variables: {
-          catalogueFilter: ['kupit_vino', 'tsvet_vina-krasniy', 'tip_vina-vermut'],
+          catalogueFilter: [
+            mockData.rubricLevelOneA.slug,
+            `${mockData.attributeWineColor.slug}-krasniy`,
+            `${mockData.attributeWineType.slug}-vermut`,
+            `${CATALOGUE_BRAND_KEY}-${mockData.brandA.slug}`,
+          ],
         },
       },
     );
+    //
     expect(getCatalogueData.products.docs).toHaveLength(1);
     expect(getCatalogueData.rubric.catalogueFilter.attributes).toHaveLength(2);
     expect(getCatalogueData.rubric.catalogueFilter.selectedAttributes).toHaveLength(2);

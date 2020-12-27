@@ -57,7 +57,8 @@ import {
   addProductToRubricInputSchema,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_FILTER_PRICE_KEYS,
+  CATALOGUE_BRAND_KEY,
+  CATALOGUE_FILTER_EXCLUDED_KEYS,
   CATALOGUE_MAX_PRICE_KEY,
   CATALOGUE_MIN_PRICE_KEY,
   createRubricInputSchema,
@@ -81,9 +82,11 @@ import {
   getRubricsTreeIds,
 } from '../../utils/rubricHelpers';
 import {
+  getCatalogueAdditionalFilterOptions,
   getOptionFromParam,
   GetOptionFromParamPayloadInterface,
   getParamOptionFirstValueByKey,
+  getParamOptionValueByKey,
 } from '../../utils/catalogueHelpers';
 import { noNaN } from '../../utils/numbers';
 
@@ -820,14 +823,15 @@ export class RubricResolver {
   ): Promise<RubricCatalogueFilter> {
     try {
       // Get query args
-      const catalogueFilterArgs = info?.variableValues?.catalogueFilter
+      const catalogueFilterArgs: string[] = info?.variableValues?.catalogueFilter
         ? alwaysArray(info?.variableValues?.catalogueFilter)
         : [];
 
       const additionalFilters: GetOptionFromParamPayloadInterface[] = [];
+
       catalogueFilterArgs.forEach((param) => {
         const paramObject = getOptionFromParam(param);
-        const excluded = CATALOGUE_FILTER_PRICE_KEYS.includes(paramObject.key);
+        const excluded = CATALOGUE_FILTER_EXCLUDED_KEYS.includes(paramObject.key);
         if (excluded) {
           additionalFilters.push(paramObject);
         }
@@ -839,6 +843,10 @@ export class RubricResolver {
       const maxPrice = getParamOptionFirstValueByKey({
         paramOptions: additionalFilters,
         key: CATALOGUE_MAX_PRICE_KEY,
+      });
+      const brandsInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_BRAND_KEY,
       });
 
       // price range pipeline
@@ -1100,6 +1108,19 @@ export class RubricResolver {
               formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
             }
           : null;
+
+      // Brands
+      const brandsAggregation = await getCatalogueAdditionalFilterOptions({
+        productForeignField: '$brand',
+        collectionSlugs: brandsInArguments,
+        filterKey: CATALOGUE_BRAND_KEY,
+        collection: 'brands',
+        catalogueFilterArgs,
+        rubricsIds,
+        city,
+      });
+
+      console.log(brandsAggregation);
 
       return {
         id: rubric._id.toString(),

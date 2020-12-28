@@ -11,6 +11,7 @@ import { Rubric, RubricModel } from '../../entities/Rubric';
 import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
+  getAttributeSelectedOptionsValues,
   getAttributesPipeline,
   getCatalogueAdditionalFilterOptions,
   getCatalogueAttribute,
@@ -18,7 +19,6 @@ import {
   getOptionFromParam,
   GetOptionFromParamPayloadInterface,
   getParamOptionFirstValueByKey,
-  getParamOptionValueByKey,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
 import {
@@ -417,7 +417,8 @@ export class CatalogueDataResolver {
           resultOptions.push({
             id: option._id?.toString() + rubricIdString,
             nameString: filterNameString,
-            optionNextSlug: `/${optionNextSlug}`,
+            slug: option.slug,
+            nextSlug: `/${optionNextSlug}`,
             isSelected,
             isDisabled: counter < 1,
             counter,
@@ -426,6 +427,7 @@ export class CatalogueDataResolver {
 
         const filterAttribute = await getCatalogueAttribute({
           id: attributeIdString + rubricIdString,
+          slug: attribute.slug,
           nameString: getLangField(attribute.name),
           options: resultOptions,
           catalogueFilter,
@@ -435,15 +437,15 @@ export class CatalogueDataResolver {
       }
 
       // Casted additional filters
-      const brandsInArguments = getParamOptionValueByKey({
+      const brandsInArguments = getAttributeSelectedOptionsValues({
         paramOptions: additionalFilters,
         key: CATALOGUE_BRAND_KEY,
       });
-      const brandCollectionsInArguments = getParamOptionValueByKey({
+      const brandCollectionsInArguments = getAttributeSelectedOptionsValues({
         paramOptions: additionalFilters,
         key: CATALOGUE_BRAND_COLLECTION_KEY,
       });
-      const manufacturersInArguments = getParamOptionValueByKey({
+      const manufacturersInArguments = getAttributeSelectedOptionsValues({
         paramOptions: additionalFilters,
         key: CATALOGUE_MANUFACTURER_KEY,
       });
@@ -480,6 +482,7 @@ export class CatalogueDataResolver {
       // TODO nameString
       const brandsAttribute = await getCatalogueAttribute({
         id: CATALOGUE_BRAND_KEY,
+        slug: CATALOGUE_BRAND_KEY,
         nameString: 'Бренды',
         options: brandOptions,
         catalogueFilter,
@@ -491,7 +494,7 @@ export class CatalogueDataResolver {
         allProductsPipeline: [...allProductsPipeline, ...brandsMatch, ...manufacturersMatch],
         productForeignField: '$brandCollection',
         collectionSlugs: brandCollectionsInArguments,
-        filterKey: CATALOGUE_BRAND_KEY,
+        filterKey: CATALOGUE_BRAND_COLLECTION_KEY,
         collection: 'brandcollections',
         catalogueFilterArgs: catalogueFilter,
         rubricsIds,
@@ -500,6 +503,7 @@ export class CatalogueDataResolver {
       // TODO nameString
       const brandCollectionsAttribute = await getCatalogueAttribute({
         id: CATALOGUE_BRAND_COLLECTION_KEY,
+        slug: CATALOGUE_BRAND_COLLECTION_KEY,
         nameString: 'Линейки',
         options: brandCollectionOptions,
         catalogueFilter,
@@ -520,6 +524,7 @@ export class CatalogueDataResolver {
       // TODO nameString
       const manufacturersAttribute = await getCatalogueAttribute({
         id: CATALOGUE_MANUFACTURER_KEY,
+        slug: CATALOGUE_MANUFACTURER_KEY,
         nameString: 'Производители',
         options: manufacturerOptions,
         catalogueFilter,

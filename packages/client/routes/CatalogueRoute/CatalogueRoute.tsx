@@ -32,6 +32,7 @@ import {
   getCatalogueFilterNextPath,
   getCatalogueFilterValueByKey,
 } from '../../utils/catalogueHelpers';
+import { alwaysArray } from '../../utils/alwaysArray';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -86,13 +87,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
   const fetchMoreHandler = useCallback(() => {
     if (catalogueData) {
-      const { catalogueFilter, products } = catalogueData;
+      const { products } = catalogueData;
       const { sortBy, sortDir, page, totalPages } = products;
 
       if (page !== totalPages) {
         getRubricData({
           variables: {
-            catalogueFilter,
+            catalogueFilter: alwaysArray(router.query.rubric),
             productsInput: {
               page: page + 1,
               sortDir,
@@ -189,8 +190,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products, catalogueTitle, minPrice, maxPrice } = catalogueData;
-  const { catalogueFilter, nameString } = rubric;
+  const { rubric, products, catalogueTitle, minPrice, maxPrice, catalogueFilter } = catalogueData;
+  const { nameString } = rubric;
   const { docs, totalDocs, totalPages, page } = products;
 
   if (totalDocs < 1) {
@@ -220,7 +221,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
             minPrice={minPrice}
             maxPrice={maxPrice}
             totalDocs={totalDocs}
-            rubricClearSlug={rubric.catalogueFilter.clearSlug}
+            rubricClearSlug={catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}

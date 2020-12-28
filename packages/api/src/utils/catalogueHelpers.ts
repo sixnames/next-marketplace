@@ -140,6 +140,16 @@ interface GetParamOptionValueByKeyInterface {
   key: string;
 }
 
+export function getAttributeSelectedOptionsValues({
+  key,
+  paramOptions,
+}: GetParamOptionValueByKeyInterface): string[] {
+  const currentOptions = paramOptions.filter((option) => option.key === key);
+  return currentOptions.reduce((acc: string[], { value }) => {
+    return [...acc, ...value];
+  }, []);
+}
+
 export function getParamOptionValueByKey({
   key,
   paramOptions,
@@ -480,7 +490,7 @@ export async function getCatalogueAdditionalFilterOptions({
       },
       {
         $addFields: {
-          optionNextSlug: {
+          nextSlug: {
             $cond: {
               if: '$isSelected',
               then: {
@@ -500,8 +510,9 @@ export async function getCatalogueAdditionalFilterOptions({
       {
         $project: {
           id: '$_id',
+          slug: 1,
           nameString: 1,
-          optionNextSlug: 1,
+          nextSlug: 1,
           isSelected: 1,
           isDisabled: 1,
           counter: '$productsCount',
@@ -513,6 +524,7 @@ export async function getCatalogueAdditionalFilterOptions({
 
 export interface GetCatalogueAttributeInterface {
   id: string;
+  slug: string;
   nameString: string;
   options: CatalogueFilterAttributeOption[];
   catalogueFilter: string[];
@@ -521,6 +533,7 @@ export interface GetCatalogueAttributeInterface {
 
 export async function getCatalogueAttribute({
   id,
+  slug,
   nameString,
   options,
   catalogueFilter,
@@ -546,6 +559,7 @@ export async function getCatalogueAttribute({
   }, 0);
   return {
     id,
+    slug,
     nameString,
     clearSlug,
     options: sortedOptions,

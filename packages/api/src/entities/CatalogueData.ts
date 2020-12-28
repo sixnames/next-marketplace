@@ -34,13 +34,16 @@ export class CatalogueFilterAttributeOption {
   readonly id: string;
 
   @Field(() => String)
+  readonly slug: string;
+
+  @Field(() => String)
   readonly nameString: string;
 
   @Field((_type) => Int)
   readonly counter: number;
 
   @Field((_type) => String)
-  readonly optionNextSlug: string;
+  readonly nextSlug: string;
 
   @Field((_type) => Boolean)
   readonly isSelected: boolean;
@@ -56,6 +59,9 @@ export class CatalogueFilterAttribute {
 
   @Field((_type) => String)
   readonly clearSlug: string;
+
+  @Field(() => String)
+  readonly slug: string;
 
   @Field(() => String)
   readonly nameString: string;

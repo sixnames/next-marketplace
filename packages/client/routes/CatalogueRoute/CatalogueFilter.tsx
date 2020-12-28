@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
-  CatalogueRubricFilterAttributeFragment,
-  CatalogueRubricFilterFragment,
+  CatalogueFilterAttributeFragment,
+  CatalogueFilterFragment,
 } from '../../generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
@@ -28,7 +28,7 @@ import {
 import { noNaN } from '../../utils/numbers';
 
 interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueRubricFilterAttributeFragment;
+  attribute: CatalogueFilterAttributeFragment;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
@@ -37,12 +37,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
-  const {
-    node: { slug, nameString },
-    clearSlug,
-    options,
-    isSelected,
-  } = attribute;
+  const { nameString, clearSlug, options, isSelected } = attribute;
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
   const hiddenOptions = options.slice(+maxVisibleOptions);
@@ -62,25 +57,23 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
       <div className={classes.attributeList}>
         {visibleOptions.map((option) => {
-          const key = `${slug}-${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}
-              key={key}
               option={option}
-              testId={key}
+              key={option.nextSlug}
+              testId={option.slug}
             />
           );
         })}
         {isOptionsOpen
           ? hiddenOptions.map((option) => {
-              const key = `${slug}-${option.slug}`;
               return (
                 <FilterLink
                   className={classes.attributeOption}
-                  key={key}
                   option={option}
-                  testId={key}
+                  key={option.nextSlug}
+                  testId={option.slug}
                 />
               );
             })
@@ -101,7 +94,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  catalogueFilter: CatalogueRubricFilterFragment;
+  catalogueFilter: CatalogueFilterFragment;
   minPrice: number;
   maxPrice: number;
   totalDocs: number;
@@ -215,14 +208,13 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeList}>
               {catalogueFilter.selectedAttributes.map((attribute) => {
                 return attribute.options.map((option) => {
-                  const key = `${attribute.node.slug}-${option.slug}`;
                   return (
                     <FilterLink
                       withCross
                       className={classes.attributeOption}
-                      key={key}
                       option={option}
-                      testId={key}
+                      key={option.nextSlug}
+                      testId={option.slug}
                     />
                   );
                 });
@@ -237,8 +229,8 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                     testId={'selected-prices'}
                     option={{
                       id: selectedPrices.id,
-                      optionNextSlug: selectedPrices.clearSlug,
-                      filterNameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
+                      nextSlug: selectedPrices.clearSlug,
+                      nameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
                       isSelected: true,
                     }}
                   />

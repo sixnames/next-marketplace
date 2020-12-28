@@ -94,7 +94,7 @@ describe('Catalogue', () => {
                   id
                   nameString
                   counter
-                  optionNextSlug
+                  nextSlug
                   isSelected
                   isDisabled
                 }
@@ -108,7 +108,7 @@ describe('Catalogue', () => {
                   id
                   nameString
                   counter
-                  optionNextSlug
+                  nextSlug
                   isSelected
                   isDisabled
                 }

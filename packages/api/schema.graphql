@@ -295,6 +295,7 @@ type CatalogueFilterAttribute {
   isSelected: Boolean!
   nameString: String!
   options: [CatalogueFilterAttributeOption!]!
+  slug: String!
 }
 
 type CatalogueFilterAttributeOption {
@@ -303,7 +304,8 @@ type CatalogueFilterAttributeOption {
   isDisabled: Boolean!
   isSelected: Boolean!
   nameString: String!
-  optionNextSlug: String!
+  nextSlug: String!
+  slug: String!
 }
 
 type CatalogueFilterSelectedPrices {

@@ -34,6 +34,8 @@ describe('Site configs', () => {
   });
 
   it('Should update not asset configs', () => {
+    cy.getByCy('site-configs').should('exist');
+
     // pageDefaultTitle config
     const pageDefaultTitleConfig = SITE_CONFIGS_INITIAL.find(
       ({ slug }: any) => slug === 'pageDefaultTitle',
@@ -45,8 +47,6 @@ describe('Site configs', () => {
 
     const pageDefaultTitleDefaultCityTestId = `${pageDefaultTitleConfig.slug}-${DEFAULT_CITY}`;
     const pageDefaultTitleSecondaryCityTestId = `${pageDefaultTitleConfig.slug}-${SECONDARY_CITY}`;
-
-    cy.getByCy('site-configs').should('exist');
     cy.getByCy(pageDefaultTitleDefaultCityTestId).click();
     cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-${DEFAULT_LANG}-0`)
       .clear()

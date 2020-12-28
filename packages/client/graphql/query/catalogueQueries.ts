@@ -32,34 +32,34 @@ export const productSnippedFragment = gql`
   ${cardConnectionFragment}
 `;
 
-export const catalogueRubricFilterAttributeFragment = gql`
-  fragment CatalogueRubricFilterAttribute on RubricFilterAttribute {
+export const catalogueFilterAttributeOptionFragment = gql`
+  fragment CatalogueFilterAttributeOption on CatalogueFilterAttributeOption {
     id
-    node {
-      id
-      nameString
-      slug
-    }
-    clearSlug
+    nameString
+    counter
+    slug
+    nextSlug
     isSelected
     isDisabled
-    options {
-      id
-      slug
-      color
-      counter
-      color
-      filterNameString
-      optionSlug
-      optionNextSlug
-      isSelected
-      isDisabled
-    }
   }
 `;
 
-export const catalogueRubricSelectedPricesFragment = gql`
-  fragment CatalogueRubricSelectedPrices on RubricFilterSelectedPrices {
+export const catalogueFilterAttributeFragment = gql`
+  fragment CatalogueFilterAttribute on CatalogueFilterAttribute {
+    id
+    slug
+    clearSlug
+    isSelected
+    nameString
+    options {
+      ...CatalogueFilterAttributeOption
+    }
+  }
+  ${catalogueFilterAttributeOptionFragment}
+`;
+
+export const catalogueSelectedPricesFragment = gql`
+  fragment CatalogueSelectedPrices on CatalogueFilterSelectedPrices {
     id
     clearSlug
     formattedMinPrice
@@ -67,23 +67,22 @@ export const catalogueRubricSelectedPricesFragment = gql`
   }
 `;
 
-export const catalogueRubricFilterFragment = gql`
-  fragment CatalogueRubricFilter on RubricCatalogueFilter {
+export const catalogueFilterFragment = gql`
+  fragment CatalogueFilter on CatalogueFilter {
     id
-    isDisabled
     clearSlug
     selectedPrices {
-      ...CatalogueRubricSelectedPrices
+      ...CatalogueSelectedPrices
     }
     attributes {
-      ...CatalogueRubricFilterAttribute
+      ...CatalogueFilterAttribute
     }
     selectedAttributes {
-      ...CatalogueRubricFilterAttribute
+      ...CatalogueFilterAttribute
     }
   }
-  ${catalogueRubricSelectedPricesFragment}
-  ${catalogueRubricFilterAttributeFragment}
+  ${catalogueSelectedPricesFragment}
+  ${catalogueFilterAttributeFragment}
 `;
 
 export const catalogueRubricFragment = gql`
@@ -96,19 +95,17 @@ export const catalogueRubricFragment = gql`
       id
       nameString
     }
-    catalogueFilter {
-      ...CatalogueRubricFilter
-    }
   }
-  ${catalogueRubricFilterFragment}
 `;
 
 export const catalogueDataFragment = gql`
   fragment CatalogueData on CatalogueData {
     catalogueTitle
-    catalogueFilter
     minPrice
     maxPrice
+    catalogueFilter {
+      ...CatalogueFilter
+    }
     rubric {
       ...CatalogueRubric
     }
@@ -123,6 +120,7 @@ export const catalogueDataFragment = gql`
       }
     }
   }
+  ${catalogueFilterFragment}
   ${catalogueRubricFragment}
   ${productSnippedFragment}
 `;

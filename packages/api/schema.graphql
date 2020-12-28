@@ -261,8 +261,9 @@ type CartProduct {
 }
 
 type CatalogueData {
-  catalogueFilter: [String!]!
+  catalogueFilter: CatalogueFilter!
   catalogueTitle: String!
+  id: ID!
   maxPrice: Int!
   minPrice: Int!
   products: CatalogueDataProducts!
@@ -277,6 +278,41 @@ type CatalogueDataProducts {
   sortDir: SortDirectionEnum!
   totalDocs: Int!
   totalPages: Int!
+}
+
+type CatalogueFilter {
+  attributes: [CatalogueFilterAttribute!]!
+  clearSlug: String!
+  id: ID!
+  selectedAttributes: [CatalogueFilterAttribute!]!
+  selectedPrices: CatalogueFilterSelectedPrices
+}
+
+type CatalogueFilterAttribute {
+  clearSlug: String!
+  id: ID!
+  isDisabled: Boolean!
+  isSelected: Boolean!
+  nameString: String!
+  options: [CatalogueFilterAttributeOption!]!
+  slug: String!
+}
+
+type CatalogueFilterAttributeOption {
+  counter: Int!
+  id: ID!
+  isDisabled: Boolean!
+  isSelected: Boolean!
+  nameString: String!
+  nextSlug: String!
+  slug: String!
+}
+
+type CatalogueFilterSelectedPrices {
+  clearSlug: String!
+  formattedMaxPrice: String!
+  formattedMinPrice: String!
+  id: ID!
 }
 
 input CatalogueProductsInput {
@@ -491,14 +527,14 @@ input CreateProductConnectionInput {
 input CreateProductInput {
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  brand: ID
-  brandCollection: ID
+  brand: String
+  brandCollection: String
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
-  manufacturer: ID
+  manufacturer: String
   name: [TranslationInput!]!
   originalName: String!
-  price: Int!
+  price: Int
   rubrics: [ID!]!
 }
 
@@ -1073,7 +1109,7 @@ type Product {
   attributesGroups: [ProductAttributesGroup!]!
   brand: Brand
   brandCollection: BrandCollection
-  cardBreadcrumbs(rubricSlug: String): [ProductCardBreadcrumb!]!
+  cardBreadcrumbs(slug: [String!]): [ProductCardBreadcrumb!]!
   cardConnections: [ProductCardConnection!]!
   cardFeatures: ProductCardFeatures!
   cardName: [Translation!]!
@@ -1090,7 +1126,7 @@ type Product {
   name: [Translation!]!
   nameString: String!
   originalName: String!
-  price: Int!
+  price: Int
   priorities: [CityCounter!]!
   rubrics: [ID!]!
   shops(input: ProductShopsInput = {sortBy: "price", sortDir: asc}): [ShopProduct!]!
@@ -1313,7 +1349,7 @@ type Query {
   getOrder(id: ID!): Order
   getProduct(id: ID!): Product!
   getProductBySlug(slug: String!): Product!
-  getProductCard(slug: String!): Product!
+  getProductCard(slug: [String!]!): Product!
   getProductsCounters(input: ProductsCountersInput = {}): ProductsCounters!
   getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
   getRole(id: ID!): Role!
@@ -1377,7 +1413,6 @@ type Rubric {
   active: Boolean
   activeProductsCount(input: ProductsCountersInput = {}): Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueFilter: RubricCatalogueFilter!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!] = []): [Rubric!]!
@@ -1385,6 +1420,7 @@ type Rubric {
   level: Int!
   name: [Translation!]!
   nameString: String!
+  navItems: RubricNavItems!
   parent: Rubric
   priorities: [CityCounter!]!
   priority: Int
@@ -1400,15 +1436,6 @@ type RubricAttributesGroup {
   isOwner: Boolean!
   node: AttributesGroup!
   showInCatalogueFilter: [ID!]!
-}
-
-type RubricCatalogueFilter {
-  attributes: [RubricFilterAttribute!]!
-  clearSlug: String!
-  id: ID!
-  isDisabled: Boolean!
-  selectedAttributes: [RubricFilterAttribute!]!
-  selectedPrices: RubricFilterSelectedPrices
 }
 
 type RubricCatalogueTitle {
@@ -1432,39 +1459,27 @@ input RubricCatalogueTitleInput {
   prefix: [TranslationInput!]
 }
 
-type RubricFilterAttribute {
-  clearSlug: String!
+type RubricNavItemAttribute {
+  hiddenOptions: [RubricNavItemAttributeOption!]!
   id: ID!
   isDisabled: Boolean!
-  isSelected: Boolean!
-  node: Attribute!
-  options: [RubricFilterAttributeOption!]!
-}
-
-type RubricFilterAttributeOption {
-  color: String
-  counter: Int!
-  filterNameString: String!
-  gender: GenderEnum
-  icon: String
-  id: ID!
-  isDisabled: Boolean!
-  isSelected: Boolean!
-  name: [Translation!]!
   nameString: String!
-  optionNextSlug: String!
-  optionSlug: String!
-  priorities: [OptionCityCounter!]!
-  slug: String!
-  variants: [OptionVariant!]
-  views: [OptionCityCounter!]!
+  options: [RubricNavItemAttributeOption!]!
+  visibleOptions: [RubricNavItemAttributeOption!]!
 }
 
-type RubricFilterSelectedPrices {
-  clearSlug: String!
-  formattedMaxPrice: String!
-  formattedMinPrice: String!
+type RubricNavItemAttributeOption {
+  counter: Int!
   id: ID!
+  isDisabled: Boolean!
+  nameString: String!
+  slug: String!
+}
+
+type RubricNavItems {
+  attributes: [RubricNavItemAttribute!]!
+  id: ID!
+  isDisabled: Boolean!
 }
 
 type RubricPayloadType {
@@ -1773,15 +1788,15 @@ input UpdateProductInput {
   active: Boolean!
   assets: [Upload!]!
   attributesGroups: [ProductAttributesGroupInput!]!
-  brand: ID
-  brandCollection: ID
+  brand: String
+  brandCollection: String
   cardName: [TranslationInput!]!
   description: [TranslationInput!]!
   id: ID!
-  manufacturer: ID
+  manufacturer: String
   name: [TranslationInput!]!
   originalName: String!
-  price: Int!
+  price: Int
   rubrics: [ID!]!
 }
 

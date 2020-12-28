@@ -13,4 +13,5 @@
   height: 0.55rem;
   margin-left: 0.55rem;
   fill: var(--theme);
+  cursor: pointer;
 }

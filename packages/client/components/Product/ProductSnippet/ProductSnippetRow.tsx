@@ -16,13 +16,13 @@ import { noNaN } from '../../../utils/numbers';
 interface ProductSnippetRowInterface {
   product: ProductSnippetFragment;
   testId?: string;
-  rubricSlug?: string;
+  additionalSlug?: string;
 }
 
 const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   product,
   testId,
-  rubricSlug,
+  additionalSlug,
 }) => {
   const [amount, setAmount] = useState<number>(1);
   const { addShoplessProductToCart } = useSiteContext();
@@ -38,15 +38,11 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     shopsCount,
   } = product;
   const imageWidth = 50;
-  const linkQuery: Record<string, any> = {};
+  const additionalLinkSlug = additionalSlug ? additionalSlug : '';
 
   const { listFeatures, ratingFeaturesValues } = cardFeatures;
-
   const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
 
-  if (rubricSlug) {
-    linkQuery.rubric = rubricSlug;
-  }
   return (
     <LayoutCard className={classes.snippetCard} testId={testId}>
       <div className={`${classes.leftColumn}`}>
@@ -152,8 +148,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         // style={{ display: 'none' }}
         className={classes.link}
         href={{
-          pathname: `/product/${slug}`,
-          query: linkQuery,
+          pathname: `/product${additionalLinkSlug}/${slug}`,
         }}
       >
         {nameString}

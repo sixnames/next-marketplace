@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classes from './CatalogueFilter.module.css';
 import {
-  CatalogueRubricFilterAttributeFragment,
-  CatalogueRubricFilterFragment,
+  CatalogueFilterAttributeFragment,
+  CatalogueFilterFragment,
 } from '../../generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
@@ -16,9 +16,19 @@ import { useRouter } from 'next/router';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Currency from '../../components/Currency/Currency';
 import { useLanguageContext } from '../../context/languageContext';
+import {
+  CATALOGUE_FILTER_PRICE_KEYS,
+  CATALOGUE_MAX_PRICE_KEY,
+  CATALOGUE_MIN_PRICE_KEY,
+} from '@yagu/shared';
+import {
+  getCatalogueFilterNextPath,
+  getCatalogueFilterValueByKey,
+} from '../../utils/catalogueHelpers';
+import { noNaN } from '../../utils/numbers';
 
 interface CatalogueFilterAttributeInterface {
-  attribute: CatalogueRubricFilterAttributeFragment;
+  attribute: CatalogueFilterAttributeFragment;
 }
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
@@ -27,12 +37,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
-  const {
-    node: { slug, nameString },
-    clearSlug,
-    options,
-    isSelected,
-  } = attribute;
+  const { nameString, clearSlug, options, isSelected } = attribute;
 
   const visibleOptions = options.slice(0, maxVisibleOptions);
   const hiddenOptions = options.slice(+maxVisibleOptions);
@@ -52,24 +57,24 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
       <div className={classes.attributeList}>
         {visibleOptions.map((option) => {
-          const key = `${slug}-${option.slug}`;
+          const key = `${attribute.slug}-${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}
-              key={key}
               option={option}
+              key={key}
               testId={key}
             />
           );
         })}
         {isOptionsOpen
           ? hiddenOptions.map((option) => {
-              const key = `${slug}-${option.slug}`;
+              const key = `${attribute.slug}-${option.slug}`;
               return (
                 <FilterLink
                   className={classes.attributeOption}
-                  key={key}
                   option={option}
+                  key={key}
                   testId={key}
                 />
               );
@@ -91,7 +96,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  catalogueFilter: CatalogueRubricFilterFragment;
+  catalogueFilter: CatalogueFilterFragment;
   minPrice: number;
   maxPrice: number;
   totalDocs: number;
@@ -114,16 +119,40 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [pricesValue, setPricesValue] = useState<number[]>(() => [minPrice, maxPrice]);
   const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
+  const [pricesRanges, setPricesRanges] = useState<number[]>(() => [minPrice, maxPrice]);
+  const [pricesValue, setPricesValue] = useState<number[]>([0, 0]);
 
   useEffect(() => {
-    setPricesValue([minPrice, maxPrice]);
+    const selectedMinPrice = getCatalogueFilterValueByKey({
+      asPath: router.asPath,
+      key: CATALOGUE_MIN_PRICE_KEY,
+    });
+    const selectedMaxPrice = getCatalogueFilterValueByKey({
+      asPath: router.asPath,
+      key: CATALOGUE_MAX_PRICE_KEY,
+    });
+    if (!selectedMinPrice || !selectedMaxPrice) {
+      setPricesValue([minPrice, maxPrice]);
+      return;
+    }
+
+    setPricesValue([noNaN(selectedMinPrice), noNaN(selectedMaxPrice)]);
+  }, [maxPrice, minPrice, router]);
+
+  useEffect(() => {
+    setPricesRanges([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
   const resetPricesValueHandler = useCallback(() => {
-    setPricesValue([minPrice, maxPrice]);
-  }, [maxPrice, minPrice]);
+    const nextPath = getCatalogueFilterNextPath({
+      asPath: router.asPath,
+      excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
+    });
+    router.push(nextPath).catch(() => {
+      showErrorNotification();
+    });
+  }, [router, showErrorNotification]);
 
   const maxVisibleAttributesString = getSiteConfigSingleValue(
     'catalogueFilterVisibleAttributesCount',
@@ -172,7 +201,6 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                   if (isMobile) {
                     hideFilterHandler();
                   }
-                  resetPricesValueHandler();
                 }}
               >
                 Очистить все
@@ -182,13 +210,13 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeList}>
               {catalogueFilter.selectedAttributes.map((attribute) => {
                 return attribute.options.map((option) => {
-                  const key = `${attribute.node.slug}-${option.slug}`;
+                  const key = `${attribute.slug}-${option.slug}`;
                   return (
                     <FilterLink
                       withCross
                       className={classes.attributeOption}
-                      key={key}
                       option={option}
+                      key={key}
                       testId={key}
                     />
                   );
@@ -198,14 +226,18 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                 <div>
                   <FilterLink
                     withCross
+                    asLink={false}
                     className={classes.attributeOption}
                     onClick={resetPricesValueHandler}
                     testId={'selected-prices'}
                     option={{
                       id: selectedPrices.id,
-                      optionNextSlug: selectedPrices.clearSlug,
-                      filterNameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
+                      nextSlug: selectedPrices.clearSlug,
+                      nameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
                       isSelected: true,
+                      counter: 0,
+                      isDisabled: false,
+                      slug: 'selected-prices',
                     }}
                   />
                 </div>
@@ -231,8 +263,8 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           <div className={classes.pricesFilterSlider}>
             <Range
               value={pricesValue}
-              min={minPrice}
-              max={maxPrice}
+              min={pricesRanges[0]}
+              max={pricesRanges[1]}
               onChange={setPricesValue}
               trackStyle={[
                 {
@@ -245,18 +277,16 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
               }}
               handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
               onAfterChange={(val) => {
-                router
-                  .push({
-                    href: router.asPath,
-                    query: {
-                      ...router.query,
-                      minPrice: val[0],
-                      maxPrice: val[1],
-                    },
-                  })
-                  .catch(() => {
-                    showErrorNotification();
-                  });
+                const [minPrice, maxPrice] = val;
+                const options = getCatalogueFilterNextPath({
+                  asPath: router.asPath,
+                  excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
+                });
+                const nextPath = `${options}/${CATALOGUE_MIN_PRICE_KEY}-${minPrice}/${CATALOGUE_MAX_PRICE_KEY}-${maxPrice}`;
+
+                router.push(nextPath).catch(() => {
+                  showErrorNotification();
+                });
               }}
             />
           </div>

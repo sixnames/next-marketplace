@@ -39,7 +39,7 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
   const noContentControls = !filterContent && !filterResultNavConfig && !contentControlsConfig;
 
   return (
-    <div className={classes.frame}>
+    <div className={classes.dataLayout}>
       <Title light>{title}</Title>
 
       <Inner className={classes.Inner} wide lowTop>

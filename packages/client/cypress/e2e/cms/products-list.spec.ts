@@ -1,28 +1,13 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
-import {
-  MOCK_PRODUCT_B,
-  MOCK_PRODUCT_C,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_RUBRIC_LEVEL_THREE_A_B,
-  MOCK_RUBRIC_LEVEL_THREE_B_A,
-  MOCK_PRODUCT_NEW,
-  MOCK_PRODUCT_CREATE,
-  MOCK_OPTIONS_WINE_COLOR,
-  MOCK_ATTRIBUTE_WINE_VARIANT,
-  MOCK_OPTIONS_WINE_VARIANT,
-  MOCK_ATTRIBUTE_STRING,
-  MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-  MOCK_ATTRIBUTE_WINE_COLOR,
-  DEFAULT_LANG,
-  SECONDARY_LANG,
-  ATTRIBUTE_VIEW_VARIANT_TAG,
-} from '@yagu/shared';
+import { DEFAULT_LANG, SECONDARY_LANG, ATTRIBUTE_VIEW_VARIANT_TAG } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
+import * as faker from 'faker';
 
 describe('Products', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -31,42 +16,48 @@ describe('Products', () => {
   });
 
   it('Should CRUD products', () => {
-    const mockProductForDelete = MOCK_PRODUCT_B.name[0].value;
-    const mockProductC = MOCK_PRODUCT_C.name[0].value;
-    const mockRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-    const mockRubricLevelThreeB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
-    const mockTablesRubricLevelThree = MOCK_RUBRIC_LEVEL_THREE_B_A.name[0].value;
+    const mockProductForDeleteName = getTestLangField(mockData.productB.name);
+    const mockProductCName = getTestLangField(mockData.productC.name);
+    const mockRubricLevelThreeName = getTestLangField(mockData.rubricLevelThreeAA.name);
+    const mockRubricLevelThreeBName = getTestLangField(mockData.rubricLevelThreeAB.name);
+    const mockTablesRubricLevelThreeName = getTestLangField(mockData.rubricLevelThreeBA.name);
 
-    const mockProductNewName = MOCK_PRODUCT_NEW.name[0].value;
-    const mockProductNewCardName = MOCK_PRODUCT_NEW.cardName[0].value;
-    const mockProductNewCardPrice = MOCK_PRODUCT_NEW.price;
-    const mockProductNewCarDescription = MOCK_PRODUCT_NEW.description[0].value;
+    const mockProductNewName = faker.commerce.productName();
+    const mockProductNewCardName = mockProductNewName;
+    const mockProductNewCarDescription = faker.commerce.productDescription();
 
-    const mockProductCreateName = MOCK_PRODUCT_CREATE.name[0].value;
-    const mockProductCreateCardName = MOCK_PRODUCT_CREATE.cardName[0].value;
-    const mockProductCreateCardPrice = MOCK_PRODUCT_CREATE.price;
-    const mockProductCreateCarDescription = MOCK_PRODUCT_CREATE.description[0].value;
+    const mockProductCreateName = faker.commerce.productName();
+    const mockProductCreateCardName = mockProductCreateName;
+    const mockProductCreateCarDescription = faker.commerce.productDescription();
+    const mockAttributeColorName = getTestLangField(mockData.attributeWineColor.name);
 
-    const mockAttributeColorName = MOCK_ATTRIBUTE_WINE_COLOR.name[0].value;
-    const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
-    const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
+    const mockAttributeMultipleSelects = mockData.optionsColor;
+    const mockAttributeMultipleSelectValueA = getTestLangField(
+      mockAttributeMultipleSelects[0].name,
+    );
+    const mockAttributeMultipleSelectValueB = getTestLangField(
+      mockAttributeMultipleSelects[1].name,
+    );
 
-    const mockAttributesGroupWineFeaturesName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
+    const mockAttributesGroupWineFeaturesName = getTestLangField(
+      mockData.attributesGroupWineFeatures.name,
+    );
 
-    const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
-    const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
-    const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
-    const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
+    const mockAttributeSelectName = getTestLangField(mockData.attributeWineType.name);
+    const mockAttributeSelectValue = getTestLangField(mockData.optionsWineType[0].name);
+
+    const mockAttributeStringName = getTestLangField(mockData.attributeString.name);
+    const mockAttributeNumberName = getTestLangField(mockData.attributeNumber.name);
 
     // Should delete product from city or DB
     cy.getByCy(`products-list`).should('exist');
-    cy.getByCy(`${mockProductForDelete}-delete`).click();
+    cy.getByCy(`${mockProductForDeleteName}-delete`).click();
     cy.getByCy('confirm').click();
-    cy.getByCy(`${mockProductForDelete}-row`).should('not.exist');
+    cy.getByCy(`${mockProductForDeleteName}-row`).should('not.exist');
     cy.shouldSuccess();
 
     // Should open product details
-    cy.getByCy(`${mockProductC}-update`).click();
+    cy.getByCy(`${mockProductCName}-update`).click();
     cy.getByCy(`product-details`).should('exist');
 
     // Should update product activity
@@ -90,15 +81,14 @@ describe('Products', () => {
     cy.getByCy(`cardName-${DEFAULT_LANG}`).clear().type(mockProductNewCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).clear().type(mockProductNewCardName);
     cy.getByCy(`originalName`).clear().type(mockProductNewName);
-    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).clear().type(mockProductNewCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).clear().type(mockProductNewCarDescription);
     cy.getByCy('submit-product').click();
     cy.shouldSuccess();
 
     // Should update product attributes
-    cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
-    cy.getByCy(`tree-link-${mockTablesRubricLevelThree}-checkbox`).check();
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}-checkbox`).check();
+    cy.getByCy(`tree-link-${mockTablesRubricLevelThreeName}-checkbox`).check();
     cy.getByCy(`${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}`).type('string');
     cy.getByCy(
       `${mockAttributesGroupWineFeaturesName}-${mockAttributeStringName}-showInCard-checkbox`,
@@ -129,11 +119,10 @@ describe('Products', () => {
     cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductCreateCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductCreateCardName);
     cy.getByCy(`originalName`).clear().type(mockProductCreateName);
-    cy.getByCy('product-price').clear().type(`${mockProductCreateCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductCreateCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductCreateCarDescription);
-    cy.getByCy(`tree-link-${mockRubricLevelThree}-checkbox`).check();
-    cy.getByCy(`tree-link-${mockRubricLevelThreeB}-checkbox`).check();
+    cy.getByCy(`tree-link-${mockRubricLevelThreeName}-checkbox`).check();
+    cy.getByCy(`tree-link-${mockRubricLevelThreeBName}-checkbox`).check();
 
     // fill attributes
     cy.getByCy(

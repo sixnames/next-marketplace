@@ -48,6 +48,7 @@ import { OrderStatusResolver } from '../resolvers/order/OrderStatusResolver';
 import { BrandResolver } from '../resolvers/brand/BrandResolver';
 import { BrandCollectionResolver } from '../resolvers/brandCollection/BrandCollectionResolver';
 import { ManufacturerResolver } from '../resolvers/manufacturer/ManufacturerResolver';
+import { RubricNavResolver } from '../resolvers/rubric/RubricNavResolver';
 
 export const schemaOptions: BuildSchemaOptions = {
   resolvers: [
@@ -73,6 +74,7 @@ export const schemaOptions: BuildSchemaOptions = {
     ProductAttributesGroupResolver,
     ProductAttributeResolver,
     RubricResolver,
+    RubricNavResolver,
     RubricVariantResolver,
     UserResolver,
     CompanyResolver,

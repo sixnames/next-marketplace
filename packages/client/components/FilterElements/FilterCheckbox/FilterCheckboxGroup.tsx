@@ -1,10 +1,10 @@
 import React from 'react';
 import FilterCheckbox from './FilterCheckbox';
 import classes from './FilterCheckboxGroup.module.css';
-import { RubricFilterAttributeOption } from '../../../generated/apolloComponents';
+import { CatalogueFilterAttributeOptionFragment } from '../../../generated/apolloComponents';
 
 interface FilterCheckboxGroupInterface {
-  checkboxItems: Partial<RubricFilterAttributeOption>[];
+  checkboxItems: CatalogueFilterAttributeOptionFragment[];
   className?: string;
   checkboxClassName?: string;
   label?: string;
@@ -27,7 +27,6 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
           <FilterCheckbox
             key={key}
             option={option}
-            attributeSlug={attributeSlug}
             testId={key}
             className={`${classes.item} ${checkboxClassName ? checkboxClassName : ''}`}
           />

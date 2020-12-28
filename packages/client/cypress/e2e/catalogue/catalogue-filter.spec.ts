@@ -1,15 +1,10 @@
 /// <reference types="cypress" />
-import {
-  MOCK_ATTRIBUTE_WINE_COLOR,
-  MOCK_ATTRIBUTE_WINE_VARIANT,
-  MOCK_OPTIONS_WINE_COLOR,
-  MOCK_OPTIONS_WINE_VARIANT,
-  MOCK_RUBRIC_LEVEL_ONE,
-} from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
 
 describe('Catalogue filter', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.visit('/');
   });
 
@@ -18,28 +13,56 @@ describe('Catalogue filter', () => {
   });
 
   it('Should have catalogue and filters', () => {
-    const mockRubricLevelOne = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-    const mockAttributeWineColor = MOCK_ATTRIBUTE_WINE_COLOR.slug;
-    const mockAttributeWineType = MOCK_ATTRIBUTE_WINE_VARIANT.slug;
-    const mockAttributeWineColorValueRed = MOCK_OPTIONS_WINE_COLOR[1].slug;
-    const mockAttributeWineTypeValueVermut = MOCK_OPTIONS_WINE_VARIANT[2].slug;
-    const mockAttributeWineTypeValueHeres = MOCK_OPTIONS_WINE_VARIANT[1].slug;
+    const wineRubric = mockData.rubricLevelOneA;
+    const wineRubricName = getTestLangField(wineRubric.name);
+    const wineRubricTitle = mockData.rubricLevelOneA.catalogueTitle;
+    const wineRubricDefaultTitle = getTestLangField(wineRubricTitle.defaultTitle);
+    const wineRubricKeyword = getTestLangField(wineRubricTitle.keyword);
+    const wineRubricPrefix = getTestLangField(wineRubricTitle.prefix);
+    const wineRubricTitleGender = wineRubricTitle.gender;
 
-    cy.getByCy(`main-rubric-list-item-${mockRubricLevelOne}`).trigger('mouseover');
+    const mockAttributeWineColorSlug = mockData.attributeWineColor.slug;
+    const mockAttributeWineTypeSlug = mockData.attributeWineType.slug;
+
+    const colorOptionIndex = 1;
+    const mockWineColorOption = mockData.optionsColor[colorOptionIndex];
+    const mockWineColorOptionSlug = mockWineColorOption.slug;
+    const mockWineColorOptionVariant = mockWineColorOption.variants.find(
+      ({ key }: any) => key === wineRubricTitleGender,
+    );
+    const mockWineColorOptionFinalVariant = mockWineColorOptionVariant
+      ? mockWineColorOptionVariant.value
+      : mockWineColorOption.name;
+    const mockWineColorOptionVariantValue = getTestLangField(mockWineColorOptionFinalVariant);
+
+    const variantOptionIndex = 2;
+    const mockWineVariantOption = mockData.optionsWineType[variantOptionIndex];
+    const mockWineVariantOptionSlug = mockWineVariantOption.slug;
+    const mockWineVariantOptionVariant = mockWineVariantOption.variants.find(
+      ({ key }: any) => key === wineRubricTitleGender,
+    );
+    const mockWineVariantOptionFinalVariant = mockWineVariantOptionVariant
+      ? mockWineVariantOptionVariant.value
+      : mockWineVariantOption.name;
+    const mockWineVariantOptionVariantValue = getTestLangField(mockWineVariantOptionFinalVariant);
+
+    cy.getByCy(`main-rubric-list-item-${wineRubricName}`).trigger('mouseover');
     cy.getByCy('burger-dropdown').should('be.visible');
-    cy.getByCy(`main-rubric-list-item-${mockRubricLevelOne}`).trigger('mouseout');
+    cy.getByCy(`main-rubric-list-item-${wineRubricName}`).trigger('mouseout');
 
-    cy.getByCy(`main-rubric-${mockRubricLevelOne}`).click();
+    cy.getByCy(`main-rubric-${wineRubricName}`).click();
     cy.getByCy('catalogue-title').should('exist');
-    cy.getByCy('catalogue-title').contains('Купить вино');
+    cy.getByCy('catalogue-title').contains(wineRubricDefaultTitle, { matchCase: false });
 
     // Should update page title
-    cy.getByCy(`${mockAttributeWineColor}-${mockAttributeWineColorValueRed}`).click();
-    cy.getByCy('catalogue-title').should('contain', 'красное');
+    cy.getByCy(`${mockAttributeWineColorSlug}-${mockWineColorOptionSlug}`).click();
+    cy.getByCy('catalogue-title').contains(wineRubricKeyword, { matchCase: false });
+    cy.getByCy('catalogue-title').contains(wineRubricPrefix, { matchCase: false });
+    cy.getByCy('catalogue-title').contains(mockWineColorOptionVariantValue, {
+      matchCase: false,
+    });
 
-    cy.getByCy(`${mockAttributeWineType}-${mockAttributeWineTypeValueVermut}`).click();
-    cy.getByCy('catalogue-title').should('contain', 'вермут');
-    cy.getByCy(`${mockAttributeWineType}-${mockAttributeWineTypeValueHeres}`).click();
-    cy.getByCy('catalogue-title').should('contain', 'херес');
+    cy.getByCy(`${mockAttributeWineTypeSlug}-${mockWineVariantOptionSlug}`).click();
+    cy.getByCy('catalogue-title').contains(mockWineVariantOptionVariantValue, { matchCase: false });
   });
 });

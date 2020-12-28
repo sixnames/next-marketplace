@@ -1,5 +1,4 @@
 import { mutateWithImages, authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { anotherProduct, testProduct } from '../__fixtures__';
 import { Upload } from '../../../types/upload';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
 import { gql } from 'apollo-server-express';
@@ -8,7 +7,8 @@ import createTestData, {
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { ProductConnectionModel } from '../../../entities/ProductConnection';
-import { SORT_ASC } from '@yagu/shared';
+import { DEFAULT_LANG, SECONDARY_LANG, SORT_ASC } from '@yagu/shared';
+import * as faker from 'faker';
 
 describe('Product', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -121,6 +121,7 @@ describe('Product', () => {
               id
             }
             attributes {
+              value
               node {
                 id
                 slug
@@ -140,7 +141,7 @@ describe('Product', () => {
               }
             }
           }
-          cardBreadcrumbs(rubricSlug: "${mockData.rubricLevelOneA.slug}") {
+          cardBreadcrumbs(slug: "${mockData.rubricLevelOneA.slug}") {
             id
             name
             href
@@ -175,12 +176,12 @@ describe('Product', () => {
     const {
       data: { getProductBySlug },
     } = getProductBySlugPayload;
-    const currentProduct = getProductBySlug;
-    expect(currentProduct.slug).toEqual(mockData.productA.slug);
-    expect(currentProduct.cardBreadcrumbs).toBeDefined();
+    const productA = getProductBySlug;
+    expect(productA.slug).toEqual(mockData.productA.slug);
+    expect(productA.cardBreadcrumbs).toBeDefined();
 
     const {
-      data: { getProductBySlug: secondaryProduct },
+      data: { getProductBySlug: productB },
     } = await query<any>(gql`
       query {
         getProductBySlug(slug: "${mockData.productB.slug}") {
@@ -217,7 +218,7 @@ describe('Product', () => {
           input: {
             sortDir: SORT_ASC,
             sortBy: 'price',
-            productId: currentProduct.id,
+            productId: productA.id,
           },
         },
       },
@@ -229,7 +230,7 @@ describe('Product', () => {
       data: { getProduct, getRubricsTree },
     } = await query<any>(gql`
       query {
-        getProduct(id: "${currentProduct.id}") {
+        getProduct(id: "${productA.id}") {
           id
           nameString
           slug
@@ -267,12 +268,11 @@ describe('Product', () => {
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelTree = rubricLevelTwo.children[0];
-    expect(getProduct.id).toEqual(currentProduct.id);
-    expect(getProduct.nameString).toEqual(currentProduct.nameString);
-    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
+    expect(getProduct.id).toEqual(productA.id);
+    expect(getProduct.nameString).toEqual(productA.nameString);
 
     // Should create product connection
-    const currentAttributesGroup = currentProduct.attributesGroups.find(({ attributes }: any) => {
+    const currentAttributesGroup = productA.attributesGroups.find(({ attributes }: any) => {
       return attributes.find(({ node }: any) => node.slug === mockData.attributeWineType.slug);
     });
 
@@ -317,7 +317,7 @@ describe('Product', () => {
           input: {
             attributesGroupId: currentAttributesGroup.node.id,
             attributeId: currentAttribute.node.id,
-            productId: currentProduct.id,
+            productId: productA.id,
           },
         },
       },
@@ -329,7 +329,9 @@ describe('Product', () => {
     const createdConnection = createProductConnection.product.connections[0];
     expect(createProductConnection.success).toBeTruthy();
     expect(createdConnection.productsIds).toHaveLength(1);
-    expect(createProductConnection.product.slug).toEqual(`cardnameproducta-tip_vina-vermut`);
+    expect(createProductConnection.product.slug).toEqual(
+      `${mockData.productA.slug}-${currentAttribute.node.slug}-${currentAttribute.value[0]}`,
+    );
 
     // Should add product to connection
     const {
@@ -360,23 +362,14 @@ describe('Product', () => {
         variables: {
           input: {
             connectionId: createdConnection.id,
-            productId: currentProduct.id,
-            addProductId: secondaryProduct.id,
+            productId: productA.id,
+            addProductId: productB.id,
           },
         },
       },
     );
-    const slugs = addProductToConnection.product.connections[0].products.map(
-      ({ node }: any) => node.slug,
-    );
-
-    const addedProductSlug = slugs.find(
-      (slug: string) => slug === 'cardnameproductb-tip_vina-vermut',
-    );
-
     expect(addProductToConnection.success).toBeTruthy();
     expect(addProductToConnection.product.connections[0].productsIds).toHaveLength(2);
-    expect(addedProductSlug).toBeDefined();
 
     // Should delete product from connection
     const {
@@ -407,8 +400,8 @@ describe('Product', () => {
         variables: {
           input: {
             connectionId: createdConnection.id,
-            productId: currentProduct.id,
-            deleteProductId: secondaryProduct.id,
+            productId: productA.id,
+            deleteProductId: productB.id,
           },
         },
       },
@@ -425,13 +418,13 @@ describe('Product', () => {
       `,
       {
         variables: {
-          id: secondaryProduct.id,
+          id: productB.id,
         },
       },
     );
     expect(deleteProductFromConnection.success).toBeTruthy();
     expect(deleteProductFromConnection.product.connections[0].productsIds).toHaveLength(1);
-    expect(removedProductFromConnection.slug).toEqual('cardnameproductb');
+    expect(removedProductFromConnection.slug).toEqual(mockData.productB.slug);
 
     // Should delete connection if removed product is last in list
     const {
@@ -462,8 +455,8 @@ describe('Product', () => {
         variables: {
           input: {
             connectionId: createdConnection.id,
-            productId: currentProduct.id,
-            deleteProductId: currentProduct.id,
+            productId: productA.id,
+            deleteProductId: productA.id,
           },
         },
       },
@@ -479,6 +472,8 @@ describe('Product', () => {
       gql`
         query GetAllProducts($input: ProductPaginateInput!) {
           getAllProducts(input: $input) {
+            page
+            totalDocs
             docs {
               id
               itemId
@@ -514,8 +509,6 @@ describe('Product', () => {
               createdAt
               updatedAt
             }
-            page
-            totalDocs
           }
         }
         ${connectionFragment}
@@ -531,7 +524,8 @@ describe('Product', () => {
         },
       },
     );
-    expect(getAllProducts).toBeDefined();
+    expect(getAllProducts.totalDocs).toEqual(mockData.allProducts.length);
+    expect(getAllProducts.docs).toHaveLength(mockData.allProducts.length);
 
     // Should return features AST
     const {
@@ -560,9 +554,25 @@ describe('Product', () => {
     expect(getFeaturesAst).toBeDefined();
 
     // Should create product.
-    const {
-      data: { createProduct },
-    } = await mutateWithImages({
+    const newProductName = faker.commerce.productName();
+    const newProductDescription = faker.commerce.productDescription();
+    const newProduct = {
+      name: [
+        { key: DEFAULT_LANG, value: newProductName },
+        { key: SECONDARY_LANG, value: newProductName },
+      ],
+      cardName: [
+        { key: DEFAULT_LANG, value: newProductName },
+        { key: SECONDARY_LANG, value: newProductName },
+      ],
+      originalName: newProductName,
+      description: [
+        { key: DEFAULT_LANG, value: newProductDescription },
+        { key: SECONDARY_LANG, value: newProductDescription },
+      ],
+    };
+    const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
+    const createProductPayload = await mutateWithImages({
       mutation: gql`
         mutation CreateProduct($input: CreateProductInput!) {
           createProduct(input: $input) {
@@ -606,29 +616,47 @@ describe('Product', () => {
       `,
       input: (images) => {
         return {
-          name: testProduct.name,
-          cardName: testProduct.cardName,
-          originalName: testProduct.originalName,
-          price: testProduct.price,
-          description: testProduct.description,
+          name: newProduct.name,
+          cardName: newProduct.cardName,
+          originalName: newProduct.originalName,
+          description: newProduct.description,
           rubrics: [rubricLevelTree.id],
-          manufacturer: mockData.manufacturerA.id,
+          manufacturer: mockData.manufacturerA.slug,
           assets: images,
           ...productAttributes,
         };
       },
     });
+    const {
+      data: { createProduct },
+    } = createProductPayload;
     const { product: createdProduct, success: createSuccess } = createProduct;
-
     expect(createSuccess).toBeTruthy();
-    expect(createdProduct.nameString).toEqual(testProduct.name[0].value);
-    expect(createdProduct.cardNameString).toEqual(testProduct.cardName[0].value);
-    expect(createdProduct.descriptionString).toEqual(testProduct.description[0].value);
-    expect(createdProduct.price).toEqual(testProduct.price);
+    expect(createdProduct.nameString).toEqual(newProductName);
+    expect(createdProduct.cardNameString).toEqual(newProductName);
+    expect(createdProduct.descriptionString).toEqual(newProductDescription);
     expect(createdProduct.rubrics).toEqual([rubricLevelTree.id]);
+    expect(createdProduct.manufacturer.id).toEqual(mockData.manufacturerA.id);
     expect(createdProduct.assets).toHaveLength(3);
 
     // Should update product.
+    const updateProductValuesName = faker.commerce.productName();
+    const updateProductValuesDescription = faker.commerce.productDescription();
+    const updateProductValues = {
+      name: [
+        { key: DEFAULT_LANG, value: updateProductValuesName },
+        { key: SECONDARY_LANG, value: updateProductValuesName },
+      ],
+      cardName: [
+        { key: DEFAULT_LANG, value: updateProductValuesName },
+        { key: SECONDARY_LANG, value: updateProductValuesName },
+      ],
+      originalName: newProductName,
+      description: [
+        { key: DEFAULT_LANG, value: updateProductValuesDescription },
+        { key: SECONDARY_LANG, value: updateProductValuesDescription },
+      ],
+    };
     const updateProductPayload = await mutateWithImages({
       mutation: gql`
         mutation UpdateProduct($input: UpdateProductInput!) {
@@ -671,13 +699,11 @@ describe('Product', () => {
       input: (images: Promise<Upload>[]) => {
         return {
           id: createdProduct.id,
-          name: anotherProduct.name,
-          cardName: anotherProduct.cardName,
-          originalName: anotherProduct.originalName,
-          price: anotherProduct.price,
-          description: anotherProduct.description,
+          name: updateProductValues.name,
+          cardName: updateProductValues.cardName,
+          originalName: updateProductValues.originalName,
+          description: updateProductValues.description,
           rubrics: [rubricLevelTree.id],
-          manufacturer: createdProduct.manufacturer.id,
           assets: images,
           active: true,
           ...productAttributes,
@@ -688,14 +714,11 @@ describe('Product', () => {
       data: { updateProduct },
     } = updateProductPayload;
     const { product: updatedProduct, success: updateSuccess } = updateProduct;
-
     expect(updateSuccess).toBeTruthy();
-    expect(updatedProduct.nameString).toEqual(anotherProduct.name[0].value);
-    expect(updatedProduct.cardNameString).toEqual(anotherProduct.cardName[0].value);
-    expect(updatedProduct.descriptionString).toEqual(anotherProduct.description[0].value);
-    expect(updatedProduct.price).toEqual(anotherProduct.price);
+    expect(updatedProduct.nameString).toEqual(updateProductValuesName);
+    expect(updatedProduct.cardNameString).toEqual(updateProductValuesName);
+    expect(updatedProduct.descriptionString).toEqual(updateProductValuesDescription);
     expect(updatedProduct.rubrics).toEqual([rubricLevelTree.id]);
-    expect(updatedProduct.assets).toHaveLength(3);
 
     // Should delete product
     const {

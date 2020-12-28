@@ -4,7 +4,6 @@ import {
   langStringInputSchema,
   maxDescriptionLength,
   minDescriptionLength,
-  minPrice,
 } from './schemaTemplates';
 import {
   getFieldValidationMessage,
@@ -83,7 +82,7 @@ const productCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
       key: 'validation.products.manufacturer',
     }),
   ),*/
-  price: Yup.number()
+  /*price: Yup.number()
     .min(
       minPrice,
       getFieldValidationMessage({
@@ -96,7 +95,7 @@ const productCommonFields = (args: MultiLangSchemaMessagesInterface) => ({
         ...args,
         key: 'validation.products.price',
       }),
-    ),
+    ),*/
   attributesGroups: Yup.array().of(productAttributesGroupSchema(args)),
   assets: Yup.array()
     .of(Yup.mixed())

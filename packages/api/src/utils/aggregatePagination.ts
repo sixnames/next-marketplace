@@ -41,6 +41,33 @@ const aggregationFallback = {
   hasNextPage: false,
 };
 
+export const paginationTotalStages = (limit: number) => [
+  {
+    $addFields: {
+      totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+    },
+  },
+  {
+    $addFields: {
+      totalDocs: '$totalDocsObject.totalDocs',
+    },
+  },
+  {
+    $addFields: {
+      totalPagesFloat: {
+        $divide: ['$totalDocs', limit],
+      },
+    },
+  },
+  {
+    $addFields: {
+      totalPages: {
+        $ceil: '$totalPagesFloat',
+      },
+    },
+  },
+];
+
 export async function aggregatePagination<
   TModel,
   TInput extends AggregatePaginationInputInterface
@@ -72,30 +99,7 @@ export async function aggregatePagination<
               countAllDocs: [{ $count: 'totalDocs' }],
             },
           },
-          {
-            $addFields: {
-              totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-            },
-          },
-          {
-            $addFields: {
-              totalDocs: '$totalDocsObject.totalDocs',
-            },
-          },
-          {
-            $addFields: {
-              totalPagesFloat: {
-                $divide: ['$totalDocs', limit],
-              },
-            },
-          },
-          {
-            $addFields: {
-              totalPages: {
-                $ceil: '$totalPagesFloat',
-              },
-            },
-          },
+          ...paginationTotalStages(limit),
           {
             $project: {
               docs: 1,

@@ -1,8 +1,8 @@
-.frame {
+.dataLayout {
   display: flex;
   flex-direction: column;
   background-color: var(--secondaryBackground);
-  height: var(--fullHeight, 100vh);
+  min-height: var(--fullHeight, 100vh);
 }
 
 .Inner {
@@ -10,7 +10,6 @@
   flex-grow: 1;
   width: 100%;
   padding-bottom: 1rem;
-  height: calc(var(--fullHeight, 100vh) - 100px);
 }
 
 .Title {
@@ -50,12 +49,17 @@
 }
 
 .Filter {
+  position: relative;
   flex-shrink: 0;
   width: 240px;
   max-height: 100%;
   margin-right: 15px;
-  overflow-x: hidden;
-  overflow-y: auto;
+}
+
+.FilterContent {
+  position: sticky;
+  top: 2rem;
+  left: 0;
 }
 
 .Content {
@@ -63,19 +67,15 @@
   flex-direction: column;
   flex-grow: 1;
   z-index: 6;
-  max-height: 100%;
   max-width: 100%;
   background-color: var(--primaryBackground);
   box-shadow: var(--wp-shadow-100);
-  border-radius: 3px;
+  border-radius: var(--borderRadius);
 }
 
 .ContentFrame {
   position: relative;
   z-index: 1;
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 100%;
   max-width: 100%;
   flex-grow: 1;
 }
@@ -83,7 +83,6 @@
 .Preview {
   flex-shrink: 0;
   width: 340px;
-  max-height: 100%;
   margin-left: 15px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -132,14 +131,12 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .frame {
+  .dataLayout {
     display: block;
-    height: auto;
     min-height: calc(var(--fullHeight, 100vh) - 36px);
   }
 
   .Inner {
-    height: auto;
     display: block;
   }
 
@@ -158,9 +155,6 @@
     background-color: var(--primaryBackground);
     box-shadow: var(--wp-shadow-100);
     border-radius: 3px;
-  }
-
-  .FilterContent {
   }
 }
 

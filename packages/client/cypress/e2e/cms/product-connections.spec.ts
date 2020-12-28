@@ -1,15 +1,10 @@
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
-import {
-  MOCK_PRODUCT_C,
-  MOCK_ATTRIBUTE_WINE_VARIANT,
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_PRODUCT_A,
-} from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
 
 describe('Product connections', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/products${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -18,15 +13,24 @@ describe('Product connections', () => {
   });
 
   it('Should CRUD product connection', () => {
-    const mockProductC = MOCK_PRODUCT_C.name[0].value;
-    const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
-    const mockAttributeName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
-    const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-    const mockProductForAdd = MOCK_PRODUCT_A.name[0].value;
+    const mockProduct = mockData.productC;
+    const mockProductCName = getTestLangField(mockProduct.name);
+
+    const mockGroup = mockData.attributesGroupWineFeatures;
+    const mockGroupName = getTestLangField(mockGroup.name);
+
+    const mockAttribute = mockData.attributeWineType;
+    const mockAttributeName = getTestLangField(mockAttribute.name);
+
+    const mockRubricLevelThree = mockData.rubricLevelThreeAA;
+    const mockRubricLevelThreeNameB = getTestLangField(mockRubricLevelThree.name);
+
+    const mockProductForAdd = mockData.productA;
+    const mockProductForAddName = getTestLangField(mockProductForAdd.name);
 
     // Should create new connection
     cy.getByCy(`products-list`).should('exist');
-    cy.getByCy(`${mockProductC}-update`).click();
+    cy.getByCy(`${mockProductCName}-update`).click();
     cy.visitMoreNavLink('connections');
 
     cy.getByCy(`create-connection`).click();
@@ -39,7 +43,7 @@ describe('Product connections', () => {
     cy.getByCy(`${mockAttributeName}-connection`).should('exist');
     cy.getByCy(`${mockAttributeName}-connection-list`).should('exist');
     cy.get(
-      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductC}-row"]`,
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductCName}-row"]`,
     ).should('exist');
 
     // Shouldn't create new connection on duplicate error
@@ -57,19 +61,19 @@ describe('Product connections', () => {
     cy.getBySelector(
       `[data-cy=${addProductToConnectionModal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`,
     ).click();
-    cy.getByCy(`${mockProductForAdd}-create`).click();
+    cy.getByCy(`${mockProductForAddName}-create`).click();
     cy.getByCy(addProductToConnectionModal).should('not.exist');
     cy.get(
-      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}-row"]`,
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAddName}-row"]`,
     ).should('exist');
 
     // Should delete product from connection
-    cy.getByCy(`${mockProductForAdd}-delete`).click();
+    cy.getByCy(`${mockProductForAddName}-delete`).click();
     cy.getByCy(`delete-product-from-connection-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.getByCy(`delete-product-from-connection-modal`).should('not.exist');
     cy.get(
-      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAdd}-row"]`,
+      `[data-cy="${mockAttributeName}-connection-list"] [data-cy="${mockProductForAddName}-row"]`,
     ).should('not.exist');
   });
 });

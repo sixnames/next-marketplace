@@ -1,47 +1,11 @@
-import { Field, ID, InputType, Int } from 'type-graphql';
-import { TranslationInput } from '../commonInputs/TranslationInput';
-import { GraphQLUpload } from 'apollo-server-express';
-import { Upload } from '../../types/upload';
-import { ProductAttributesGroupInput } from '../commonInputs/ProductAttributesGroupInput';
+import { Field, ID, InputType } from 'type-graphql';
+import { CreateProductInput } from './CreateProductInput';
 
 @InputType()
-export class UpdateProductInput {
+export class UpdateProductInput extends CreateProductInput {
   @Field(() => ID)
   id: string;
 
-  @Field(() => [TranslationInput])
-  name: TranslationInput[];
-
-  @Field(() => [TranslationInput])
-  cardName: TranslationInput[];
-
-  @Field(() => String)
-  originalName: string;
-
-  @Field(() => [TranslationInput])
-  description: TranslationInput[];
-
-  @Field(() => [ID])
-  rubrics: string[];
-
-  @Field(() => ID, { nullable: true })
-  manufacturer?: string;
-
-  @Field(() => ID, { nullable: true })
-  brand?: string;
-
-  @Field(() => ID, { nullable: true })
-  brandCollection?: string;
-
-  @Field(() => Int)
-  price: number;
-
   @Field(() => Boolean)
   active: boolean;
-
-  @Field(() => [ProductAttributesGroupInput])
-  attributesGroups: ProductAttributesGroupInput[];
-
-  @Field(() => [GraphQLUpload])
-  assets: Upload[];
 }

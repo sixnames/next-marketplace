@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { Rubric } from './Rubric';
 import { Product } from './Product';
 import { SortDirectionEnum } from '../resolvers/commonInputs/PaginateInput';
@@ -29,7 +29,91 @@ export class CatalogueDataProducts {
 }
 
 @ObjectType()
+export class CatalogueFilterAttributeOption {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => String)
+  readonly slug: string;
+
+  @Field(() => String)
+  readonly nameString: string;
+
+  @Field((_type) => Int)
+  readonly counter: number;
+
+  @Field((_type) => String)
+  readonly nextSlug: string;
+
+  @Field((_type) => Boolean)
+  readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+}
+
+@ObjectType()
+export class CatalogueFilterAttribute {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
+
+  @Field(() => String)
+  readonly slug: string;
+
+  @Field(() => String)
+  readonly nameString: string;
+
+  @Field(() => [CatalogueFilterAttributeOption])
+  readonly options: CatalogueFilterAttributeOption[];
+
+  @Field((_type) => Boolean)
+  readonly isSelected: boolean;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+}
+
+@ObjectType()
+export class CatalogueFilterSelectedPrices {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
+
+  @Field((_type) => String)
+  readonly formattedMinPrice: string;
+
+  @Field((_type) => String)
+  readonly formattedMaxPrice: string;
+}
+
+@ObjectType()
+export class CatalogueFilter {
+  @Field(() => ID)
+  readonly id: string;
+
+  @Field(() => [CatalogueFilterAttribute])
+  readonly attributes: CatalogueFilterAttribute[];
+
+  @Field(() => [CatalogueFilterAttribute])
+  readonly selectedAttributes: CatalogueFilterAttribute[];
+
+  @Field(() => CatalogueFilterSelectedPrices, { nullable: true })
+  readonly selectedPrices?: CatalogueFilterSelectedPrices | null;
+
+  @Field((_type) => String)
+  readonly clearSlug: string;
+}
+
+@ObjectType()
 export class CatalogueData {
+  @Field(() => ID)
+  readonly id: string;
+
   @Field(() => Rubric)
   readonly rubric: Rubric;
 
@@ -39,8 +123,8 @@ export class CatalogueData {
   @Field(() => String)
   readonly catalogueTitle: string;
 
-  @Field(() => [String])
-  readonly catalogueFilter: string[];
+  @Field(() => CatalogueFilter)
+  readonly catalogueFilter: CatalogueFilter;
 
   @Field(() => Int)
   readonly minPrice: number;

@@ -1,5 +1,4 @@
 import { Product, ProductModel } from '../../entities/Product';
-import { generateTestProduct } from './generateTestProduct';
 import { createProductSlugWithConnections } from '../connectios';
 import { ProductConnection, ProductConnectionModel } from '../../entities/ProductConnection';
 import { ProductAttributeViewVariantEnum } from '../../entities/ProductAttribute';
@@ -10,19 +9,27 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
+  DEFAULT_CITY,
   DEFAULT_LANG,
-  MOCK_PRODUCT_A,
-  MOCK_PRODUCT_B,
-  MOCK_PRODUCT_C,
-  MOCK_PRODUCT_D,
-  MOCK_PRODUCT_E,
-  MOCK_PRODUCT_F,
+  SECONDARY_LANG,
 } from '@yagu/shared';
+import * as faker from 'faker';
+import { generateSlug } from '../slug';
+import generateTestAsset from './generateTestAsset';
+import { ASSETS_DIST_PRODUCTS } from '../../config';
 
 interface ProductAttributesInterface {
   wineColorOptions?: string;
   wineTypeOptions?: string;
   wineVintageOptions?: string;
+}
+
+interface CreateTestProductInterface extends ProductAttributesInterface {
+  rubrics: string[];
+  brand?: string;
+  brandCollection?: string;
+  manufacturer?: string;
+  active?: boolean;
 }
 
 export interface CreateTestProductsPayloadInterface extends CreateTestBrandsPayloadInterface {
@@ -34,6 +41,7 @@ export interface CreateTestProductsPayloadInterface extends CreateTestBrandsPayl
   connectionProductA: Product;
   connectionProductB: Product;
   connectionProductC: Product;
+  allProducts: Product[];
   connectionA: ProductConnection;
 }
 
@@ -183,123 +191,135 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     };
   };
 
-  const productA = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_A,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[2],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      brand: brandA.id,
-      brandCollection: brandCollectionA.id,
-      manufacturer: manufacturerA.id,
-    }),
-  );
+  async function createTestProduct({
+    wineColorOptions,
+    wineTypeOptions,
+    wineVintageOptions,
+    rubrics,
+    brand,
+    brandCollection,
+    manufacturer,
+    active = true,
+  }: CreateTestProductInterface) {
+    const name = faker.commerce.productName();
+    const cardName = `Card name ${name}`;
+    const description = faker.commerce.productDescription();
+    const slug = generateSlug(cardName);
 
-  const productB = await ProductModel.create(
-    await generateTestProduct(
-      {
-        ...MOCK_PRODUCT_B,
-        ...productAttributes({
-          wineColorOptions: optionsSlugsColor[2],
-          wineTypeOptions: optionsSlugsWineType[2],
-        }),
-        rubrics: [rubricLevelThreeAA.id],
-        brand: brandB.id,
-        brandCollection: brandCollectionB.id,
-        manufacturer: manufacturerB.id,
-      },
-      false,
-    ),
-  );
+    const assetA = await generateTestAsset({
+      targetFileName: 'test-image-0',
+      dist: ASSETS_DIST_PRODUCTS,
+      slug,
+    });
 
-  const productC = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_C,
+    const product = await ProductModel.create({
+      name: [
+        { key: DEFAULT_LANG, value: name },
+        { key: SECONDARY_LANG, value: name },
+      ],
+      cardName: [
+        { key: DEFAULT_LANG, value: cardName },
+        { key: SECONDARY_LANG, value: cardName },
+      ],
+      views: [{ key: DEFAULT_CITY, counter: faker.random.number(20) }],
+      priorities: [{ key: DEFAULT_CITY, counter: faker.random.number(20) }],
+      description: [
+        { key: DEFAULT_LANG, value: description },
+        { key: SECONDARY_LANG, value: description },
+      ],
+      originalName: name,
+      assets: [assetA],
+      rubrics,
+      brand,
+      brandCollection,
+      manufacturer,
+      slug,
+      active,
       ...productAttributes({
-        wineColorOptions: optionsSlugsColor[0],
-        wineTypeOptions: optionsSlugsWineType[0],
+        wineColorOptions,
+        wineTypeOptions,
+        wineVintageOptions,
       }),
-      rubrics: [rubricLevelThreeAB.id],
-      brand: brandA.id,
-      brandCollection: brandCollectionA.id,
-      manufacturer: manufacturerA.id,
-    }),
-  );
+    });
+    if (!product) {
+      throw Error('Error in createTestProduct');
+    }
+    return product;
+  }
 
-  const productD = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_D,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      brand: brandB.id,
-      brandCollection: brandCollectionB.id,
-      manufacturer: manufacturerB.id,
-    }),
-  );
+  const productA = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[2],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandA.slug,
+    brandCollection: brandCollectionA.slug,
+    manufacturer: manufacturerA.slug,
+  });
 
-  const productF = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_F,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      manufacturer: manufacturerA.id,
-    }),
-  );
+  const productB = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[2],
+    wineTypeOptions: optionsSlugsWineType[2],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandB.slug,
+    brandCollection: brandCollectionB.slug,
+    manufacturer: manufacturerB.slug,
+    active: false,
+  });
 
-  const connectionProductA = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_E,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
-        wineVintageOptions: optionsSlugsVintage[0],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      brand: brandC.id,
-      brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC.id,
-    }),
-  );
+  const productC = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[0],
+    wineTypeOptions: optionsSlugsWineType[0],
+    rubrics: [rubricLevelThreeAB.id],
+    brand: brandA.slug,
+    brandCollection: brandCollectionA.slug,
+    manufacturer: manufacturerA.slug,
+  });
 
-  const connectionProductB = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_E,
-      price: 300,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
-        wineVintageOptions: optionsSlugsVintage[1],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      brand: brandC.id,
-      brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC.id,
-    }),
-  );
+  const productD = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[1],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandB.slug,
+    brandCollection: brandCollectionB.slug,
+    manufacturer: manufacturerB.slug,
+  });
 
-  const connectionProductC = await ProductModel.create(
-    await generateTestProduct({
-      ...MOCK_PRODUCT_E,
-      price: 100,
-      ...productAttributes({
-        wineColorOptions: optionsSlugsColor[1],
-        wineTypeOptions: optionsSlugsWineType[1],
-        wineVintageOptions: optionsSlugsVintage[2],
-      }),
-      rubrics: [rubricLevelThreeAA.id],
-      brand: brandC.id,
-      brandCollection: brandCollectionC.id,
-      manufacturer: manufacturerC.id,
-    }),
-  );
+  const productF = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[1],
+    rubrics: [rubricLevelThreeAA.id],
+    manufacturer: manufacturerA.slug,
+  });
+
+  const connectionProductA = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[1],
+    wineVintageOptions: optionsSlugsVintage[0],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandC.slug,
+    brandCollection: brandCollectionC.slug,
+    manufacturer: manufacturerC.slug,
+  });
+
+  const connectionProductB = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[1],
+    wineVintageOptions: optionsSlugsVintage[1],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandC.slug,
+    brandCollection: brandCollectionC.slug,
+    manufacturer: manufacturerC.slug,
+  });
+
+  const connectionProductC = await createTestProduct({
+    wineColorOptions: optionsSlugsColor[1],
+    wineTypeOptions: optionsSlugsWineType[1],
+    wineVintageOptions: optionsSlugsVintage[2],
+    rubrics: [rubricLevelThreeAA.id],
+    brand: brandC.slug,
+    brandCollection: brandCollectionC.slug,
+    manufacturer: manufacturerC.slug,
+  });
 
   // Product connections
   const connectionA = await ProductConnectionModel.create({
@@ -354,6 +374,17 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     throw Error('updatedConnectionProductC error');
   }
 
+  const allProducts = [
+    productA,
+    productB,
+    productC,
+    productD,
+    productF,
+    connectionProductA,
+    connectionProductB,
+    connectionProductC,
+  ];
+
   return {
     ...brandsPayload,
     productA,
@@ -365,5 +396,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connectionProductB: updatedConnectionProductB,
     connectionProductC: updatedConnectionProductC,
     connectionA,
+    allProducts,
   };
 };

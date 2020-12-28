@@ -1,11 +1,8 @@
 /// <reference types="cypress" />
-import {
-  MOCK_ADDRESS_A,
-  MOCK_NEW_SHOP,
-  MOCK_PRODUCT_C,
-  MOCK_RUBRIC_LEVEL_THREE_A_B,
-} from '@yagu/shared';
+import { MOCK_ADDRESS_A } from '@yagu/shared';
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
+import * as faker from 'faker';
+import { getTestLangField } from '../../../utils/getLangField';
 
 describe('Shops list', () => {
   let mockData: any;
@@ -30,11 +27,13 @@ describe('Shops list', () => {
     cy.getByCy('shop-details').should('exist');
 
     // Should update shop
+    const shopNewEmail = faker.internet.email();
+    const shopNewPhone = `7${faker.phone.phoneNumberFormat()}`;
     // emails
-    cy.getByCy(`email-0`).clear().type(MOCK_NEW_SHOP.contacts.emails[0]);
+    cy.getByCy(`email-0`).clear().type(shopNewEmail);
 
     // phones
-    cy.getByCy(`phone-0`).clear().type(MOCK_NEW_SHOP.contacts.phones[0]);
+    cy.getByCy(`phone-0`).clear().type(shopNewPhone);
 
     // address
     cy.getByCy(`address-clear`).click();
@@ -79,8 +78,8 @@ describe('Shops list', () => {
     const modal = 'product-search-modal';
     const newProductAvailableAmount = `77777`;
     const newProductPriceAmount = `88888`;
-    const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
-    const newProductName = MOCK_PRODUCT_C.name[0].value;
+    const mockRubricLevelThreeNameB = getTestLangField(mockData.rubricLevelThreeAB.name);
+    const newProductName = getTestLangField(mockData.productC.name);
     cy.getByCy(`add-shop-product`).click();
     cy.getByCy(modal).should('exist');
     cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`).click();

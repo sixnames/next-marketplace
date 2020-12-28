@@ -128,6 +128,8 @@ export class CatalogueDataResolver {
 
       // increase filter priority
       const attributesGroupsIds = rubric.attributesGroups.map(({ node }) => node);
+
+      // TODO update views in brands, manufacturers and brandCollections
       await setCataloguePriorities({
         attributesGroupsIds,
         rubric: rubric,
@@ -446,6 +448,7 @@ export class CatalogueDataResolver {
         key: CATALOGUE_MANUFACTURER_KEY,
       });
 
+      // Additional filters matchers
       const brandsMatch =
         brandsInArguments.length > 0 ? [{ $match: { brand: { $in: brandsInArguments } } }] : [];
 

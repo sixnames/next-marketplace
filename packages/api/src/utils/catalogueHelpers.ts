@@ -21,6 +21,11 @@ import {
   SORT_DESC_NUM,
 } from '@yagu/shared';
 import { mongoose } from '@typegoose/typegoose';
+import {
+  CatalogueFilterAttribute,
+  CatalogueFilterAttributeOption,
+} from '../entities/CatalogueData';
+import { getBooleanFromArray } from './getBooleanFromArray';
 
 interface ProcessedAttributeInterface {
   key: string;
@@ -376,13 +381,6 @@ interface GetCatalogueAdditionalFilterOptionsInterface {
   city: string;
 }
 
-interface AdditionalFilterOptionInterface {
-  filterNameString: string;
-  optionNextSlug: string;
-  isSelected: boolean;
-  isDisabled: boolean;
-}
-
 export async function getCatalogueAdditionalFilterOptions({
   allProductsPipeline,
   catalogueFilterArgs,
@@ -392,10 +390,10 @@ export async function getCatalogueAdditionalFilterOptions({
   collection,
   filterKey,
   city,
-}: GetCatalogueAdditionalFilterOptionsInterface): Promise<AdditionalFilterOptionInterface[]> {
+}: GetCatalogueAdditionalFilterOptionsInterface): Promise<CatalogueFilterAttributeOption[]> {
   const currentCatalogueSlug = catalogueFilterArgs.join('/');
   return mongoose.connection.db
-    .collection<AdditionalFilterOptionInterface>(collection)
+    .collection<CatalogueFilterAttributeOption>(collection)
     .aggregate([
       // Unwind by views counter
       { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
@@ -452,13 +450,6 @@ export async function getCatalogueAdditionalFilterOptions({
         },
       },
 
-      // Add filterNameString field
-      {
-        $addFields: {
-          filterNameString: '$nameString',
-        },
-      },
-
       // Add isSelected field based on query args
       {
         $addFields: {
@@ -508,13 +499,57 @@ export async function getCatalogueAdditionalFilterOptions({
       },
       {
         $project: {
-          filterNameString: 1,
+          id: '$_id',
+          nameString: 1,
           optionNextSlug: 1,
           isSelected: 1,
           isDisabled: 1,
-          productsCount: 1,
+          counter: '$productsCount',
         },
       },
     ])
     .toArray();
+}
+
+export interface GetCatalogueAttributeInterface {
+  id: string;
+  nameString: string;
+  options: CatalogueFilterAttributeOption[];
+  catalogueFilter: string[];
+  catalogueFilterExcludeKey: string;
+}
+
+export async function getCatalogueAttribute({
+  id,
+  nameString,
+  options,
+  catalogueFilter,
+  catalogueFilterExcludeKey,
+}: GetCatalogueAttributeInterface): Promise<CatalogueFilterAttribute> {
+  const otherSelectedValues = catalogueFilter.filter((option) => {
+    return !option.includes(catalogueFilterExcludeKey);
+  });
+  const clearSlug = `/${otherSelectedValues.join('/')}`;
+  const isSelected = getBooleanFromArray(options, ({ isSelected }) => {
+    return isSelected;
+  });
+  const sortedOptions = options.sort((optionA, optionB) => {
+    const isDisabledA = optionA.isDisabled ? 0 : 1;
+    const isDisabledB = optionB.isDisabled ? 0 : 1;
+    return isDisabledB - isDisabledA;
+  });
+  const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
+    if (isDisabled) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+  return {
+    id,
+    nameString,
+    clearSlug,
+    options: sortedOptions,
+    isDisabled: disabledOptionsCount === sortedOptions.length,
+    isSelected,
+  };
 }

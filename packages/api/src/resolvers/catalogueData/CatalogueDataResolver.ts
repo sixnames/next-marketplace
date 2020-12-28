@@ -13,6 +13,7 @@ import {
   attributesReducer,
   getAttributesPipeline,
   getCatalogueAdditionalFilterOptions,
+  getCatalogueAttribute,
   getCatalogueTitle,
   getOptionFromParam,
   GetOptionFromParamPayloadInterface,
@@ -51,7 +52,6 @@ import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { Attribute, AttributeModel } from '../../entities/Attribute';
 import { OptionsGroupModel } from '../../entities/OptionsGroup';
 import { Option, OptionModel } from '../../entities/Option';
-import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
 import { alwaysArray } from '../../utils/alwaysArray';
 import { getCurrencyString } from '../../utils/intl';
 
@@ -413,10 +413,8 @@ export class CatalogueDataResolver {
           const counter = products[0]?.counter || 0;
 
           resultOptions.push({
-            ...option,
             id: option._id?.toString() + rubricIdString,
-            filterNameString: filterNameString,
-            optionSlug,
+            nameString: filterNameString,
             optionNextSlug: `/${optionNextSlug}`,
             isSelected,
             isDisabled: counter < 1,
@@ -424,67 +422,15 @@ export class CatalogueDataResolver {
           });
         }
 
-        const otherAttributesSelectedValues = catalogueFilter.filter((option) => {
-          return !option.includes(attribute.slug);
-        });
-        const clearSlug = `/${otherAttributesSelectedValues.join('/')}`;
-
-        const isSelected = getBooleanFromArray(resultOptions, ({ isSelected }) => {
-          return isSelected;
-        });
-
-        const sortedOptions = resultOptions.sort((optionA, optionB) => {
-          const isDisabledA = optionA.isDisabled ? 0 : 1;
-          const isDisabledB = optionB.isDisabled ? 0 : 1;
-
-          return isDisabledB - isDisabledA;
-        });
-
-        const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
-          if (isDisabled) {
-            return acc + 1;
-          }
-          return acc;
-        }, 0);
-
-        filterAttributes.push({
+        const filterAttribute = await getCatalogueAttribute({
           id: attributeIdString + rubricIdString,
-          node: attribute,
-          options: sortedOptions,
-          clearSlug: `${clearSlug}`,
-          isSelected,
-          isDisabled: disabledOptionsCount === sortedOptions.length,
+          nameString: getLangField(attribute.name),
+          options: resultOptions,
+          catalogueFilter,
+          catalogueFilterExcludeKey: attribute.slug,
         });
+        filterAttributes.push(filterAttribute);
       }
-
-      const selectedAttributes = filterAttributes.reduce(
-        (acc: CatalogueFilterAttribute[], attribute) => {
-          if (!attribute.isSelected) {
-            return acc;
-          }
-          return [
-            ...acc,
-            {
-              ...attribute,
-              id: `selected-${attribute.id}`,
-              options: attribute.options.filter((option) => {
-                return option.isSelected;
-              }),
-            },
-          ];
-        },
-        [],
-      );
-
-      const selectedPrices: CatalogueFilterSelectedPrices | null =
-        minPrice && maxPrice
-          ? {
-              id: `${rubric.slug}-selectedPrices`,
-              clearSlug: `/${alwaysArray(catalogueFilter).join('/')}`,
-              formattedMinPrice: getCurrencyString({ lang, value: minPrice }),
-              formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
-            }
-          : null;
 
       // Casted additional filters
       const brandsInArguments = getParamOptionValueByKey({
@@ -514,7 +460,7 @@ export class CatalogueDataResolver {
           : [];
 
       // Brands
-      const brandsAggregation = await getCatalogueAdditionalFilterOptions({
+      const brandOptions = await getCatalogueAdditionalFilterOptions({
         allProductsPipeline: [
           ...allProductsPipeline,
           ...brandCollectionsMatch,
@@ -528,9 +474,17 @@ export class CatalogueDataResolver {
         rubricsIds,
         city,
       });
+      // TODO nameString
+      const brandsAttribute = await getCatalogueAttribute({
+        id: CATALOGUE_BRAND_KEY,
+        nameString: 'Бренды',
+        options: brandOptions,
+        catalogueFilter,
+        catalogueFilterExcludeKey: CATALOGUE_BRAND_KEY,
+      });
 
-      // Brands
-      const brandCollectionsAggregation = await getCatalogueAdditionalFilterOptions({
+      // Brand collections
+      const brandCollectionOptions = await getCatalogueAdditionalFilterOptions({
         allProductsPipeline: [...allProductsPipeline, ...brandsMatch, ...manufacturersMatch],
         productForeignField: '$brandCollection',
         collectionSlugs: brandCollectionsInArguments,
@@ -540,9 +494,17 @@ export class CatalogueDataResolver {
         rubricsIds,
         city,
       });
+      // TODO nameString
+      const brandCollectionsAttribute = await getCatalogueAttribute({
+        id: CATALOGUE_BRAND_COLLECTION_KEY,
+        nameString: 'Линейки',
+        options: brandCollectionOptions,
+        catalogueFilter,
+        catalogueFilterExcludeKey: CATALOGUE_BRAND_COLLECTION_KEY,
+      });
 
       // Manufacturers
-      const manufacturersAggregation = await getCatalogueAdditionalFilterOptions({
+      const manufacturerOptions = await getCatalogueAdditionalFilterOptions({
         allProductsPipeline: [...allProductsPipeline, ...brandCollectionsMatch, ...brandsMatch],
         productForeignField: '$manufacturer',
         collectionSlugs: manufacturersInArguments,
@@ -552,16 +514,56 @@ export class CatalogueDataResolver {
         rubricsIds,
         city,
       });
+      // TODO nameString
+      const manufacturersAttribute = await getCatalogueAttribute({
+        id: CATALOGUE_MANUFACTURER_KEY,
+        nameString: 'Производители',
+        options: manufacturerOptions,
+        catalogueFilter,
+        catalogueFilterExcludeKey: CATALOGUE_MANUFACTURER_KEY,
+      });
 
-      console.log(
-        JSON.stringify(
-          { brandsAggregation, manufacturersAggregation, brandCollectionsAggregation },
-          null,
-          2,
-        ),
+      // Final attributes list
+      const finalAttributes = [
+        ...filterAttributes,
+        brandsAttribute,
+        brandCollectionsAttribute,
+        manufacturersAttribute,
+      ];
+
+      // Get selected attributes
+      const selectedAttributes = finalAttributes.reduce(
+        (acc: CatalogueFilterAttribute[], attribute) => {
+          if (!attribute.isSelected) {
+            return acc;
+          }
+          return [
+            ...acc,
+            {
+              ...attribute,
+              id: `selected-${attribute.id}`,
+              options: attribute.options.filter((option) => {
+                return option.isSelected;
+              }),
+            },
+          ];
+        },
+        [],
       );
 
+      // Get selected prices
+      const selectedPrices: CatalogueFilterSelectedPrices | null =
+        minPrice && maxPrice
+          ? {
+              id: `${rubric.slug}-selectedPrices`,
+              clearSlug: `/${alwaysArray(catalogueFilter).join('/')}`,
+              formattedMinPrice: getCurrencyString({ lang, value: minPrice }),
+              formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
+            }
+          : null;
+
       return {
+        id: `catalogueData-${rubric.id}`,
         rubric,
         catalogueTitle,
         minPrice: minPriceResult,
@@ -576,8 +578,8 @@ export class CatalogueDataResolver {
           sortDir: sortDir as SortDirectionEnum,
         },
         catalogueFilter: {
-          id: rubric.id,
-          attributes: filterAttributes,
+          id: `catalogueFilter-${rubric.id}`,
+          attributes: finalAttributes,
           selectedAttributes,
           selectedPrices,
           clearSlug: `/${rubric.slug}`,

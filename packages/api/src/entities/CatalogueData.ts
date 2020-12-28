@@ -3,8 +3,6 @@ import { Rubric } from './Rubric';
 import { Product } from './Product';
 import { SortDirectionEnum } from '../resolvers/commonInputs/PaginateInput';
 import { CatalogueProductsSortByEnum } from '../resolvers/catalogueData/CatalogueProductsInput';
-import { Option } from './Option';
-import { Attribute } from './Attribute';
 
 @ObjectType()
 export class CatalogueDataProducts {
@@ -31,15 +29,15 @@ export class CatalogueDataProducts {
 }
 
 @ObjectType()
-export class CatalogueFilterAttributeOption extends Option {
+export class CatalogueFilterAttributeOption {
   @Field(() => ID)
   readonly id: string;
 
+  @Field(() => String)
+  readonly nameString: string;
+
   @Field((_type) => Int)
   readonly counter: number;
-
-  @Field((_type) => String)
-  readonly optionSlug: string;
 
   @Field((_type) => String)
   readonly optionNextSlug: string;
@@ -59,8 +57,8 @@ export class CatalogueFilterAttribute {
   @Field((_type) => String)
   readonly clearSlug: string;
 
-  @Field(() => Attribute)
-  readonly node: Attribute;
+  @Field(() => String)
+  readonly nameString: string;
 
   @Field(() => [CatalogueFilterAttributeOption])
   readonly options: CatalogueFilterAttributeOption[];
@@ -107,6 +105,9 @@ export class CatalogueFilter {
 
 @ObjectType()
 export class CatalogueData {
+  @Field(() => ID)
+  readonly id: string;
+
   @Field(() => Rubric)
   readonly rubric: Rubric;
 

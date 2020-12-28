@@ -263,6 +263,7 @@ type CartProduct {
 type CatalogueData {
   catalogueFilter: CatalogueFilter!
   catalogueTitle: String!
+  id: ID!
   maxPrice: Int!
   minPrice: Int!
   products: CatalogueDataProducts!
@@ -292,27 +293,17 @@ type CatalogueFilterAttribute {
   id: ID!
   isDisabled: Boolean!
   isSelected: Boolean!
-  node: Attribute!
+  nameString: String!
   options: [CatalogueFilterAttributeOption!]!
 }
 
 type CatalogueFilterAttributeOption {
-  color: String
   counter: Int!
-  filterNameString: String!
-  gender: GenderEnum
-  icon: String
   id: ID!
   isDisabled: Boolean!
   isSelected: Boolean!
-  name: [Translation!]!
   nameString: String!
   optionNextSlug: String!
-  optionSlug: String!
-  priorities: [OptionCityCounter!]!
-  slug: String!
-  variants: [OptionVariant!]
-  views: [OptionCityCounter!]!
 }
 
 type CatalogueFilterSelectedPrices {

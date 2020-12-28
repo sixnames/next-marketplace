@@ -116,6 +116,12 @@ export class RubricNavItemAttributeOption {
 
   @Field((_type) => String)
   readonly slug: string;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
+
+  @Field(() => Int)
+  readonly counter: number;
 }
 
 @ObjectType()
@@ -125,6 +131,9 @@ export class RubricNavItemAttribute {
 
   @Field(() => String)
   readonly nameString: string;
+
+  @Field((_type) => Boolean)
+  readonly isDisabled: boolean;
 
   @Field(() => [RubricNavItemAttributeOption])
   readonly visibleOptions: RubricNavItemAttributeOption[];

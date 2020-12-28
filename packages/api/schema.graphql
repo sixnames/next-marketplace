@@ -1471,13 +1471,16 @@ type RubricFilterSelectedPrices {
 type RubricNavItemAttribute {
   hiddenOptions: [RubricNavItemAttributeOption!]!
   id: ID!
+  isDisabled: Boolean!
   nameString: String!
   options: [RubricNavItemAttributeOption!]!
   visibleOptions: [RubricNavItemAttributeOption!]!
 }
 
 type RubricNavItemAttributeOption {
+  counter: Int!
   id: ID!
+  isDisabled: Boolean!
   nameString: String!
   slug: String!
 }

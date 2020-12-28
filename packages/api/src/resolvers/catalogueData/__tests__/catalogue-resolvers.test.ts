@@ -17,6 +17,52 @@ describe('Catalogue', () => {
     await clearTestData();
   });
 
+  it.only('Should return catalogue nav', async () => {
+    const { query } = await testClientWithContext();
+
+    const rubricNavItemsPayload = await query<any>(
+      gql`
+        query GetRubric($slug: String!) {
+          getRubricBySlug(slug: $slug) {
+            id
+            navItems {
+              id
+              isDisabled
+              attributes {
+                id
+                isDisabled
+                visibleOptions {
+                  id
+                  slug
+                  nameString
+                  isDisabled
+                }
+                hiddenOptions {
+                  id
+                  slug
+                  nameString
+                  isDisabled
+                }
+                options {
+                  id
+                  slug
+                  nameString
+                  isDisabled
+                }
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          slug: mockData.rubricLevelOneA.slug,
+        },
+      },
+    );
+    expect(rubricNavItemsPayload).toBeDefined();
+  });
+
   it('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 

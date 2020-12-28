@@ -881,6 +881,7 @@ export class RubricResolver {
       const attributes = await AttributeModel.aggregate<Attribute>([
         { $match: { _id: { $in: visibleAttributes } } },
         { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
         {
           $addFields: {
             viewsCounter: {

@@ -5,7 +5,6 @@ import { RubricVariant } from './RubricVariant';
 import { GenderEnum } from './commonEntities';
 import { PaginatedProductsResponse } from '../resolvers/product/ProductResolver';
 import { Attribute } from './Attribute';
-import { Option } from './Option';
 import { CityCounter } from './CityCounter';
 import { Translation } from './Translation';
 import { DEFAULT_PRIORITY, GENDER_ENUMS, RUBRIC_LEVEL_ONE } from '@yagu/shared';
@@ -26,84 +25,6 @@ export class RubricAttributesGroup {
   @Field(() => AttributesGroup)
   @prop({ ref: AttributesGroup })
   node: string;
-}
-
-@ObjectType()
-export class RubricFilterAttributeOption extends Option {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field((_type) => Int)
-  readonly counter: number;
-
-  @Field((_type) => String)
-  readonly optionSlug: string;
-
-  @Field((_type) => String)
-  readonly optionNextSlug: string;
-
-  @Field((_type) => Boolean)
-  readonly isSelected: boolean;
-
-  @Field((_type) => Boolean)
-  readonly isDisabled: boolean;
-}
-
-@ObjectType()
-export class RubricFilterAttribute {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field((_type) => String)
-  readonly clearSlug: string;
-
-  @Field(() => Attribute)
-  readonly node: Attribute;
-
-  @Field(() => [RubricFilterAttributeOption])
-  readonly options: RubricFilterAttributeOption[];
-
-  @Field((_type) => Boolean)
-  readonly isSelected: boolean;
-
-  @Field((_type) => Boolean)
-  readonly isDisabled: boolean;
-}
-
-@ObjectType()
-export class RubricFilterSelectedPrices {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field((_type) => String)
-  readonly clearSlug: string;
-
-  @Field((_type) => String)
-  readonly formattedMinPrice: string;
-
-  @Field((_type) => String)
-  readonly formattedMaxPrice: string;
-}
-
-@ObjectType()
-export class RubricCatalogueFilter {
-  @Field(() => ID)
-  readonly id: string;
-
-  @Field((_type) => Boolean)
-  readonly isDisabled: boolean;
-
-  @Field(() => [RubricFilterAttribute])
-  readonly attributes: RubricFilterAttribute[];
-
-  @Field(() => [RubricFilterAttribute])
-  readonly selectedAttributes: RubricFilterAttribute[];
-
-  @Field(() => RubricFilterSelectedPrices, { nullable: true })
-  readonly selectedPrices?: RubricFilterSelectedPrices | null;
-
-  @Field((_type) => String)
-  readonly clearSlug: string;
 }
 
 @ObjectType()
@@ -249,9 +170,6 @@ export class Rubric {
 
   @Field(() => [Rubric])
   readonly children: Rubric[];
-
-  @Field(() => RubricCatalogueFilter)
-  readonly catalogueFilter: RubricCatalogueFilter;
 
   @Field(() => RubricNavItems)
   readonly navItems: RubricNavItems;

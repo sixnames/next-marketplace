@@ -1420,7 +1420,6 @@ type Rubric {
   active: Boolean
   activeProductsCount(input: ProductsCountersInput = {}): Int!
   attributesGroups: [RubricAttributesGroup!]!
-  catalogueFilter: RubricCatalogueFilter!
   catalogueTitle: RubricCatalogueTitle!
   catalogueTitleString: RubricCatalogueTitleField!
   children(excluded: [ID!] = []): [Rubric!]!
@@ -1446,15 +1445,6 @@ type RubricAttributesGroup {
   showInCatalogueFilter: [ID!]!
 }
 
-type RubricCatalogueFilter {
-  attributes: [RubricFilterAttribute!]!
-  clearSlug: String!
-  id: ID!
-  isDisabled: Boolean!
-  selectedAttributes: [RubricFilterAttribute!]!
-  selectedPrices: RubricFilterSelectedPrices
-}
-
 type RubricCatalogueTitle {
   defaultTitle: [Translation!]!
   gender: GenderEnum!
@@ -1474,41 +1464,6 @@ input RubricCatalogueTitleInput {
   gender: GenderEnum!
   keyword: [TranslationInput!]!
   prefix: [TranslationInput!]
-}
-
-type RubricFilterAttribute {
-  clearSlug: String!
-  id: ID!
-  isDisabled: Boolean!
-  isSelected: Boolean!
-  node: Attribute!
-  options: [RubricFilterAttributeOption!]!
-}
-
-type RubricFilterAttributeOption {
-  color: String
-  counter: Int!
-  filterNameString: String!
-  gender: GenderEnum
-  icon: String
-  id: ID!
-  isDisabled: Boolean!
-  isSelected: Boolean!
-  name: [Translation!]!
-  nameString: String!
-  optionNextSlug: String!
-  optionSlug: String!
-  priorities: [OptionCityCounter!]!
-  slug: String!
-  variants: [OptionVariant!]
-  views: [OptionCityCounter!]!
-}
-
-type RubricFilterSelectedPrices {
-  clearSlug: String!
-  formattedMaxPrice: String!
-  formattedMinPrice: String!
-  id: ID!
 }
 
 type RubricNavItemAttribute {

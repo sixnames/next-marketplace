@@ -63,7 +63,7 @@ describe('Catalogue', () => {
     expect(rubricNavItemsPayload).toBeDefined();
   });
 
-  it('Should return catalogue data', async () => {
+  it.only('Should return catalogue data', async () => {
     const { query } = await testClientWithContext();
 
     const {

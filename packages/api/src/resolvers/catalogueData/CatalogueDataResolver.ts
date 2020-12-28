@@ -3,23 +3,21 @@ import { Arg, Query, Resolver } from 'type-graphql';
 import {
   CatalogueData,
   CatalogueFilterAttribute,
+  CatalogueFilterAttributeOption,
+  CatalogueFilterSelectedPrices,
   CatalogueSearchResult,
 } from '../../entities/CatalogueData';
-import {
-  Rubric,
-  RubricFilterAttribute,
-  RubricFilterAttributeOption,
-  RubricFilterSelectedPrices,
-  RubricModel,
-} from '../../entities/Rubric';
+import { Rubric, RubricModel } from '../../entities/Rubric';
 import { Product, ProductModel } from '../../entities/Product';
 import {
   attributesReducer,
   getAttributesPipeline,
+  getCatalogueAdditionalFilterOptions,
   getCatalogueTitle,
   getOptionFromParam,
   GetOptionFromParamPayloadInterface,
   getParamOptionFirstValueByKey,
+  getParamOptionValueByKey,
   setCataloguePriorities,
 } from '../../utils/catalogueHelpers';
 import {
@@ -29,7 +27,9 @@ import {
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
 import {
+  CATALOGUE_BRAND_KEY,
   CATALOGUE_FILTER_EXCLUDED_KEYS,
+  CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_MAX_PRICE_KEY,
   CATALOGUE_MIN_PRICE_KEY,
   CATALOGUE_PRODUCTS_LIMIT,
@@ -361,7 +361,7 @@ export class CatalogueDataResolver {
           return [...acc, option];
         }, []);
 
-        const resultOptions: RubricFilterAttributeOption[] = [];
+        const resultOptions: CatalogueFilterAttributeOption[] = [];
 
         for await (const option of reducedOptions) {
           const { variants, name } = option;
@@ -473,7 +473,7 @@ export class CatalogueDataResolver {
       }
 
       const selectedAttributes = filterAttributes.reduce(
-        (acc: RubricFilterAttribute[], attribute) => {
+        (acc: CatalogueFilterAttribute[], attribute) => {
           if (!attribute.isSelected) {
             return acc;
           }
@@ -491,7 +491,7 @@ export class CatalogueDataResolver {
         [],
       );
 
-      const selectedPrices: RubricFilterSelectedPrices | null =
+      const selectedPrices: CatalogueFilterSelectedPrices | null =
         minPrice && maxPrice
           ? {
               id: `${rubric.slug}-selectedPrices`,
@@ -500,6 +500,38 @@ export class CatalogueDataResolver {
               formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
             }
           : null;
+
+      // Brands
+      const brandsInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_BRAND_KEY,
+      });
+      const brandsAggregation = await getCatalogueAdditionalFilterOptions({
+        productForeignField: '$brand',
+        collectionSlugs: brandsInArguments,
+        filterKey: CATALOGUE_BRAND_KEY,
+        collection: 'brands',
+        catalogueFilterArgs: catalogueFilter,
+        rubricsIds,
+        city,
+      });
+
+      // Manufacturers
+      const manufacturersInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MANUFACTURER_KEY,
+      });
+      const manufacturersAggregation = await getCatalogueAdditionalFilterOptions({
+        productForeignField: '$manufacturer',
+        collectionSlugs: manufacturersInArguments,
+        filterKey: CATALOGUE_MANUFACTURER_KEY,
+        collection: 'manufacturers',
+        catalogueFilterArgs: catalogueFilter,
+        rubricsIds,
+        city,
+      });
+
+      console.log(JSON.stringify({ brandsAggregation, manufacturersAggregation }, null, 2));
 
       return {
         rubric,

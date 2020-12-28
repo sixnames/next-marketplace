@@ -3,7 +3,6 @@ import {
   Field,
   FieldResolver,
   ID,
-  Info,
   Int,
   Mutation,
   ObjectType,
@@ -16,10 +15,6 @@ import {
   RubricAttributesGroup,
   RubricCatalogueTitleField,
   RubricModel,
-  RubricFilterAttributeOption,
-  RubricFilterAttribute,
-  RubricCatalogueFilter,
-  RubricFilterSelectedPrices,
 } from '../../entities/Rubric';
 import { DocumentType } from '@typegoose/typegoose';
 import { RubricVariant, RubricVariantModel } from '../../entities/RubricVariant';
@@ -47,8 +42,6 @@ import {
   Localization,
   LocalizationPayloadInterface,
 } from '../../decorators/parameterDecorators';
-import { OptionsGroupModel } from '../../entities/OptionsGroup';
-import { Option, OptionModel } from '../../entities/Option';
 import { getObjectIdsArray } from '../../utils/getObjectIdsArray';
 import { ProductsCountersInput } from '../product/ProductsCountersInput';
 import { RoleRuleModel } from '../../entities/RoleRule';
@@ -57,36 +50,22 @@ import {
   addProductToRubricInputSchema,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_FILTER_EXCLUDED_KEYS,
-  CATALOGUE_MAX_PRICE_KEY,
-  CATALOGUE_MIN_PRICE_KEY,
   createRubricInputSchema,
   DEFAULT_LANG,
   DEFAULT_PRIORITY,
   deleteAttributesGroupFromRubricInputSchema,
   deleteProductFromRubricInputSchema,
-  LANG_NOT_FOUND_FIELD_MESSAGE,
   RUBRIC_LEVEL_ONE,
   RUBRIC_LEVEL_STEP,
   SORT_DESC,
-  SORT_DESC_NUM,
   updateAttributesGroupInRubricInputSchema,
   updateRubricInputSchema,
 } from '@yagu/shared';
-import { alwaysArray } from '../../utils/alwaysArray';
-import { getBooleanFromArray } from '../../utils/getBooleanFromArray';
-import { getCurrencyString } from '../../utils/intl';
 import {
   getRubricChildrenIds,
   getRubricCounters,
   getRubricsTreeIds,
 } from '../../utils/rubricHelpers';
-import {
-  getOptionFromParam,
-  GetOptionFromParamPayloadInterface,
-  getParamOptionFirstValueByKey,
-} from '../../utils/catalogueHelpers';
-import { noNaN } from '../../utils/numbers';
 
 interface ParentRelatedDataInterface {
   variant: string;
@@ -811,348 +790,6 @@ export class RubricResolver {
     });
 
     return ProductModel.paginate(query, options);
-  }
-
-  @FieldResolver((_returns) => RubricCatalogueFilter)
-  async catalogueFilter(
-    @Root() rubric: DocumentType<Rubric>,
-    @Localization() { getLangField, city, lang }: LocalizationPayloadInterface,
-    @Info() info: any,
-  ): Promise<RubricCatalogueFilter> {
-    try {
-      // Get query args
-      const catalogueFilterArgs: string[] = info?.variableValues?.catalogueFilter
-        ? alwaysArray(info?.variableValues?.catalogueFilter)
-        : [];
-
-      const additionalFilters: GetOptionFromParamPayloadInterface[] = [];
-
-      catalogueFilterArgs.forEach((param) => {
-        const paramObject = getOptionFromParam(param);
-        const excluded = CATALOGUE_FILTER_EXCLUDED_KEYS.includes(paramObject.key);
-        if (excluded) {
-          additionalFilters.push(paramObject);
-        }
-      });
-      const minPrice = getParamOptionFirstValueByKey({
-        paramOptions: additionalFilters,
-        key: CATALOGUE_MIN_PRICE_KEY,
-      });
-      const maxPrice = getParamOptionFirstValueByKey({
-        paramOptions: additionalFilters,
-        key: CATALOGUE_MAX_PRICE_KEY,
-      });
-      // TODO
-      /*const brandsInArguments = getParamOptionValueByKey({
-        paramOptions: additionalFilters,
-        key: CATALOGUE_BRAND_KEY,
-      });
-      const manufacturersInArguments = getParamOptionValueByKey({
-        paramOptions: additionalFilters,
-        key: CATALOGUE_MANUFACTURER_KEY,
-      });*/
-
-      // price range pipeline
-      const priceRangePipeline =
-        minPrice && maxPrice
-          ? [
-              {
-                $match: {
-                  minPrice: {
-                    $gte: noNaN(minPrice),
-                    $lte: noNaN(maxPrice),
-                  },
-                },
-              },
-            ]
-          : [];
-
-      // Get id's of children rubrics
-      const rubricsIds = await getRubricsTreeIds(rubric.id);
-
-      const { attributesGroups, catalogueTitle } = rubric;
-      const rubricIdString = rubric.id.toString();
-
-      // get all visible attributes id's
-      const visibleAttributes = attributesGroups.reduce((acc: Types.ObjectId[], group) => {
-        return [...acc, ...getObjectIdsArray(group.showInCatalogueFilter)];
-      }, []);
-
-      const attributes = await AttributeModel.aggregate<Attribute>([
-        { $match: { _id: { $in: visibleAttributes } } },
-        { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-        { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-        {
-          $addFields: {
-            viewsCounter: {
-              $cond: {
-                if: {
-                  $and: [
-                    {
-                      $eq: ['$views.key', city],
-                    },
-                    {
-                      $eq: ['$views.rubricId', rubricIdString],
-                    },
-                  ],
-                },
-                then: '$views.counter',
-                else: 0,
-              },
-            },
-          },
-        },
-        { $sort: { viewsCounter: -1 } },
-      ]);
-
-      const reducedAttributes = attributes.reduce((acc: Attribute[], attribute) => {
-        const { _id } = attribute;
-        const exist = acc.find(({ _id: existingId }) => {
-          return existingId?.toString() === _id?.toString();
-        });
-        if (exist) {
-          return acc;
-        }
-        return [...acc, attribute];
-      }, []);
-
-      const filterAttributes: RubricFilterAttribute[] = [];
-
-      for await (const attribute of reducedAttributes) {
-        const attributeIdString = attribute._id?.toString();
-        const optionsGroup = await OptionsGroupModel.findById(attribute.optionsGroup);
-        if (!optionsGroup) {
-          continue;
-        }
-
-        const options = await OptionModel.aggregate<Option>([
-          { $match: { _id: { $in: optionsGroup.options } } },
-          { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-          { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
-          {
-            $addFields: {
-              viewsCounter: {
-                $cond: {
-                  if: {
-                    $and: [
-                      {
-                        $eq: ['$views.key', city],
-                      },
-                      {
-                        $eq: ['$views.rubricId', rubricIdString],
-                      },
-                      {
-                        $eq: ['$views.attributeId', attributeIdString],
-                      },
-                    ],
-                  },
-                  then: '$views.counter',
-                  else: 0,
-                },
-              },
-            },
-          },
-          { $sort: { viewsCounter: SORT_DESC_NUM } },
-        ]);
-
-        const reducedOptions = options.reduce((acc: Option[], option) => {
-          const { _id } = option;
-          const exist = acc.find(({ _id: existingId }) => {
-            return existingId?.toString() === _id?.toString();
-          });
-          if (exist) {
-            return acc;
-          }
-          return [...acc, option];
-        }, []);
-
-        const resultOptions: RubricFilterAttributeOption[] = [];
-
-        for await (const option of reducedOptions) {
-          const { variants, name } = option;
-          let filterNameString: string;
-          const currentVariant = variants?.find(({ key }) => key === catalogueTitle.gender);
-          const currentVariantName = getLangField(currentVariant?.value);
-          if (currentVariantName === LANG_NOT_FOUND_FIELD_MESSAGE) {
-            filterNameString = getLangField(name);
-          } else {
-            filterNameString = currentVariantName;
-          }
-
-          const optionSlug = `${attribute.slug}-${option.slug}`;
-          const isSelected = catalogueFilterArgs.includes(optionSlug);
-          const optionNextSlug = isSelected
-            ? catalogueFilterArgs
-                .filter((pathArg) => {
-                  return pathArg !== optionSlug;
-                })
-                .join('/')
-            : [...catalogueFilterArgs, optionSlug].join('/');
-
-          // Count products with current option
-          const products = await ProductModel.aggregate<any>([
-            // Initial products match
-            {
-              $match: {
-                rubrics: { $in: rubricsIds },
-                active: true,
-                'attributesGroups.attributes': {
-                  $elemMatch: {
-                    key: attribute.slug,
-                    value: { $in: [option.slug] },
-                  },
-                },
-              },
-            },
-            // Lookup shop products
-            { $addFields: { productId: { $toString: '$_id' } } },
-            {
-              $lookup: {
-                from: 'shopproducts',
-                localField: 'productId',
-                foreignField: 'product',
-                as: 'shops',
-              },
-            },
-            // Count shop products
-            { $addFields: { shopsCount: { $size: '$shops' } } },
-
-            // Filter out products not added to the shops
-            { $match: { shopsCount: { $gt: 0 } } },
-
-            // Add minPrice field
-            { $addFields: { minPrice: { $min: '$shops.price' } } },
-
-            // Filter out products that out of price range
-            ...priceRangePipeline,
-
-            {
-              $count: 'counter',
-            },
-          ]);
-          const counter = products[0]?.counter || 0;
-
-          resultOptions.push({
-            ...option,
-            id: option._id?.toString() + rubricIdString,
-            filterNameString: filterNameString,
-            optionSlug,
-            optionNextSlug: `/${optionNextSlug}`,
-            isSelected,
-            isDisabled: counter < 1,
-            counter,
-          });
-        }
-
-        const otherAttributesSelectedValues = catalogueFilterArgs.filter((option) => {
-          return !option.includes(attribute.slug);
-        });
-        const clearSlug = `/${otherAttributesSelectedValues.join('/')}`;
-
-        const isSelected = getBooleanFromArray(resultOptions, ({ isSelected }) => {
-          return isSelected;
-        });
-
-        const sortedOptions = resultOptions.sort((optionA, optionB) => {
-          const isDisabledA = optionA.isDisabled ? 0 : 1;
-          const isDisabledB = optionB.isDisabled ? 0 : 1;
-
-          return isDisabledB - isDisabledA;
-        });
-
-        const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
-          if (isDisabled) {
-            return acc + 1;
-          }
-          return acc;
-        }, 0);
-
-        filterAttributes.push({
-          id: attributeIdString + rubricIdString,
-          node: attribute,
-          options: sortedOptions,
-          clearSlug: `${clearSlug}`,
-          isSelected,
-          isDisabled: disabledOptionsCount === sortedOptions.length,
-        });
-      }
-
-      const selectedAttributes = filterAttributes.reduce(
-        (acc: RubricFilterAttribute[], attribute) => {
-          if (!attribute.isSelected) {
-            return acc;
-          }
-          return [
-            ...acc,
-            {
-              ...attribute,
-              id: `selected-${attribute.id}`,
-              options: attribute.options.filter((option) => {
-                return option.isSelected;
-              }),
-            },
-          ];
-        },
-        [],
-      );
-
-      const disabledAttributesCount = filterAttributes.reduce((acc: number, { isDisabled }) => {
-        if (isDisabled) {
-          return acc + 1;
-        }
-        return acc;
-      }, 0);
-
-      const selectedPricesClearPathname = alwaysArray(catalogueFilterArgs).join('/');
-      const selectedPrices: RubricFilterSelectedPrices | null =
-        minPrice && maxPrice
-          ? {
-              id: `${rubric.slug}-selectedPrices`,
-              clearSlug: `/${selectedPricesClearPathname}`,
-              formattedMinPrice: getCurrencyString({ lang, value: minPrice }),
-              formattedMaxPrice: getCurrencyString({ lang, value: maxPrice }),
-            }
-          : null;
-
-      // TODO Brands
-      /*const brandsAggregation = await getCatalogueAdditionalFilterOptions({
-        productForeignField: '$brand',
-        collectionSlugs: brandsInArguments,
-        filterKey: CATALOGUE_BRAND_KEY,
-        collection: 'brands',
-        catalogueFilterArgs,
-        rubricsIds,
-        city,
-      });
-
-      // TODO Manufacturers
-      const manufacturersAggregation = await getCatalogueAdditionalFilterOptions({
-        productForeignField: '$manufacturer',
-        collectionSlugs: manufacturersInArguments,
-        filterKey: CATALOGUE_MANUFACTURER_KEY,
-        collection: 'manufacturers',
-        catalogueFilterArgs,
-        rubricsIds,
-        city,
-      });*/
-
-      return {
-        id: rubric._id.toString(),
-        attributes: filterAttributes,
-        selectedAttributes,
-        isDisabled: disabledAttributesCount === filterAttributes.length,
-        clearSlug: `/${rubric.slug}`,
-        selectedPrices,
-      };
-    } catch (e) {
-      return {
-        id: rubric._id.toString(),
-        attributes: [],
-        selectedAttributes: [],
-        isDisabled: true,
-        clearSlug: ``,
-      };
-    }
   }
 
   @FieldResolver((_type) => Int)

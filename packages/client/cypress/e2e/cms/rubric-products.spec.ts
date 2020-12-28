@@ -1,28 +1,15 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED, QUERY_DATA_LAYOUT_NO_RUBRIC } from '../../../config';
-import {
-  MOCK_RUBRIC_LEVEL_THREE_A_B,
-  MOCK_PRODUCT_C,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_PRODUCT_A,
-  MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_PRODUCT_NEW,
-  MOCK_OPTIONS_WINE_COLOR,
-  MOCK_ATTRIBUTE_WINE_VARIANT,
-  MOCK_ATTRIBUTE_STRING,
-  MOCK_OPTIONS_WINE_VARIANT,
-  MOCK_ATTRIBUTE_NUMBER,
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-  MOCK_ATTRIBUTE_WINE_COLOR,
-  DEFAULT_LANG,
-  SECONDARY_LANG,
-} from '@yagu/shared';
+import { DEFAULT_LANG, SECONDARY_LANG } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
+import faker from 'faker';
 
 const modal = 'add-product-to-rubric-modal';
 
 describe('Rubric products', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -31,81 +18,84 @@ describe('Rubric products', () => {
   });
 
   it('Should delete product from rubric and db', () => {
-    const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
-    const mockProductForDelete = MOCK_PRODUCT_C.name[0].value;
+    const mockRubricLevelThreeBName = getTestLangField(mockData.rubricLevelThreeAB.name);
+    const mockProductForDeleteName = getTestLangField(mockData.productC.name);
 
     // Should delete product from rubric
-    cy.getByCy(`tree-link-${mockRubricLevelThreeNameB}`).click();
+    cy.getByCy(`tree-link-${mockRubricLevelThreeBName}`).click();
     cy.getByCy('rubric-products').should('exist');
-    cy.getByCy(`${mockProductForDelete}-delete`).click();
+    cy.getByCy(`${mockProductForDeleteName}-delete`).click();
     cy.getByCy('delete-product-from-rubric-modal').should('exist');
     cy.getByCy(`confirm`).click();
-    cy.getByCy('rubric-products').should('not.contain', mockProductForDelete);
-    cy.getByCy(`${mockRubricLevelThreeNameB}-total`).should('contain', '0');
+    cy.getByCy('rubric-products').should('not.contain', mockProductForDeleteName);
+    cy.getByCy(`${mockRubricLevelThreeBName}-total`).should('contain', '0');
 
     // Should display not in rubric products and should delete product from DB
     cy.getByCy(QUERY_DATA_LAYOUT_NO_RUBRIC).click();
-    cy.getByCy(`${mockProductForDelete}-row`).should('exist');
-    cy.getByCy(`${mockProductForDelete}-delete`).click();
+    cy.getByCy(`${mockProductForDeleteName}-row`).should('exist');
+    cy.getByCy(`${mockProductForDeleteName}-delete`).click();
     cy.getByCy(`confirm`).click();
 
     cy.getByCy('delete-product-modal').should('not.exist');
-    cy.getByCy(`${mockProductForDelete}-row`).should('not.exist');
+    cy.getByCy(`${mockProductForDeleteName}-row`).should('not.exist');
   });
 
   it('Should add product to rubric', () => {
-    const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-    const mockRubricLevelThreeNameB = MOCK_RUBRIC_LEVEL_THREE_A_B.name[0].value;
+    const mockRubricLevelThreeName = getTestLangField(mockData.rubricLevelThreeAA.name);
+    const mockRubricLevelThreeBName = getTestLangField(mockData.rubricLevelThreeAB.name);
 
-    const mockProduct = MOCK_PRODUCT_A.name[0].value;
-    const mockProductForDelete = MOCK_PRODUCT_C.name[0].value;
+    const mockProductName = getTestLangField(mockData.productA.name);
+    const mockProductForDeleteName = getTestLangField(mockData.productC.name);
 
     // Should add product from tree to the rubric
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
     cy.getByCy('product-create').click();
-    cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeNameB}]`).click();
-    cy.getByCy(`${mockProductForDelete}-create`).click();
-    cy.getByCy(`${mockProductForDelete}-row`).should('exist');
+    cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelThreeBName}]`).click();
+    cy.getByCy(`${mockProductForDeleteName}-create`).click();
+    cy.getByCy(`${mockProductForDeleteName}-row`).should('exist');
 
     // Should add product from not in rubric list to the rubric
-    cy.getByCy(`${mockProduct}-delete`).click();
+    cy.getByCy(`${mockProductName}-delete`).click();
     cy.getByCy(`confirm`).click();
     cy.getByCy('product-create').click();
     cy.get(`[data-cy=${modal}] [data-cy=${QUERY_DATA_LAYOUT_NO_RUBRIC}]`).click();
-    cy.getByCy(`${mockProduct}-create`).click();
-    cy.getByCy(`${mockProduct}-row`).should('exist');
+    cy.getByCy(`${mockProductName}-create`).click();
+    cy.getByCy(`${mockProductName}-row`).should('exist');
 
     // Should add product from search result to the rubric
-    cy.getByCy(`${mockProduct}-delete`).click();
+    cy.getByCy(`${mockProductName}-delete`).click();
     cy.getByCy(`confirm`).click();
     cy.getByCy('product-create').click();
-    cy.getByCy('product-search-input').type(mockProduct);
+    cy.getByCy('product-search-input').type(mockProductName);
     cy.getByCy('product-search-reset').click();
-    cy.getByCy('product-search-input').should('not.have.value', mockProduct);
-    cy.getByCy('product-search-input').type(mockProduct);
+    cy.getByCy('product-search-input').should('not.have.value', mockProductName);
+    cy.getByCy('product-search-input').type(mockProductName);
     cy.getByCy('product-search-submit').click();
-    cy.getByCy(`${mockProduct}-create`).click();
-    cy.getByCy(`${mockProduct}-row`).should('exist');
+    cy.getByCy(`${mockProductName}-create`).click();
+    cy.getByCy(`${mockProductName}-row`).should('exist');
   });
 
   it('Should create products in rubric', () => {
-    const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-    const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
+    const mockRubricLevelOneName = getTestLangField(mockData.rubricLevelOneA.name);
+    const mockRubricLevelThreeName = getTestLangField(mockData.rubricLevelThreeAA.name);
 
-    const mockProductNewName = MOCK_PRODUCT_NEW.name[0].value;
-    const mockProductNewCardName = MOCK_PRODUCT_NEW.cardName[0].value;
-    const mockProductNewCardPrice = MOCK_PRODUCT_NEW.price;
-    const mockProductNewCarDescription = MOCK_PRODUCT_NEW.description[0].value;
+    const mockProductNewName = faker.commerce.productName();
+    const mockProductNewCardName = mockProductNewName;
+    const mockProductNewCarDescription = faker.commerce.productDescription();
 
-    const mockAttributesGroupWineFeaturesName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
-    const mockAttributeColorName = MOCK_ATTRIBUTE_WINE_COLOR.name[0].value;
+    const mockAttributesGroupWineFeaturesName = getTestLangField(
+      mockData.attributesGroupWineFeatures.name,
+    );
 
-    const mockAttributeMultipleSelectValueA = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
-    const mockAttributeMultipleSelectValueB = MOCK_OPTIONS_WINE_COLOR[1].name[0].value;
-    const mockAttributeSelectName = MOCK_ATTRIBUTE_WINE_VARIANT.name[0].value;
-    const mockAttributeSelectValue = MOCK_OPTIONS_WINE_VARIANT[0].name[0].value;
-    const mockAttributeStringName = MOCK_ATTRIBUTE_STRING.name[0].value;
-    const mockAttributeNumberName = MOCK_ATTRIBUTE_NUMBER.name[0].value;
+    const mockAttributeColorName = getTestLangField(mockData.attributeWineColor.name);
+
+    const mockAttributeMultipleSelectValueA = getTestLangField(mockData.optionsColor[0].name);
+    const mockAttributeMultipleSelectValueB = getTestLangField(mockData.optionsColor[1].name);
+
+    const mockAttributeSelectName = getTestLangField(mockData.attributeWineType.name);
+    const mockAttributeSelectValue = getTestLangField(mockData.optionsWineType[0].name);
+    const mockAttributeStringName = getTestLangField(mockData.attributeString.name);
+    const mockAttributeNumberName = getTestLangField(mockData.attributeNumber.name);
 
     cy.getByCy(`tree-link-${mockRubricLevelThreeName}`).click();
 
@@ -117,7 +107,6 @@ describe('Rubric products', () => {
     cy.getByCy('submit-new-product').click();
     cy.getByCy('name[0].value-error').should('exist');
     cy.getByCy('cardName[0].value-error').should('exist');
-    cy.getByCy('price-error').should('exist');
     cy.getByCy('description[0].value-error').should('exist');
     cy.getByCy('close-modal').click();
 
@@ -149,7 +138,6 @@ describe('Rubric products', () => {
     cy.getByCy(`cardName-${DEFAULT_LANG}`).type(mockProductNewCardName);
     cy.getByCy(`cardName-${SECONDARY_LANG}`).type(mockProductNewCardName);
     cy.getByCy(`originalName`).clear().type(mockProductNewCardName);
-    cy.getByCy('product-price').clear().type(`${mockProductNewCardPrice}`);
     cy.getByCy(`description-${DEFAULT_LANG}`).type(mockProductNewCarDescription);
     cy.getByCy(`description-${SECONDARY_LANG}`).type(mockProductNewCarDescription);
 

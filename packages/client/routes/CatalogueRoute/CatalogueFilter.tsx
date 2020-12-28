@@ -57,23 +57,25 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
       <div className={classes.attributeList}>
         {visibleOptions.map((option) => {
+          const key = `${attribute.slug}-${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}
               option={option}
-              key={option.nextSlug}
-              testId={option.slug}
+              key={key}
+              testId={key}
             />
           );
         })}
         {isOptionsOpen
           ? hiddenOptions.map((option) => {
+              const key = `${attribute.slug}-${option.slug}`;
               return (
                 <FilterLink
                   className={classes.attributeOption}
                   option={option}
-                  key={option.nextSlug}
-                  testId={option.slug}
+                  key={key}
+                  testId={key}
                 />
               );
             })
@@ -208,13 +210,14 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeList}>
               {catalogueFilter.selectedAttributes.map((attribute) => {
                 return attribute.options.map((option) => {
+                  const key = `${attribute.slug}-${option.slug}`;
                   return (
                     <FilterLink
                       withCross
                       className={classes.attributeOption}
                       option={option}
-                      key={option.nextSlug}
-                      testId={option.slug}
+                      key={key}
+                      testId={key}
                     />
                   );
                 });
@@ -232,6 +235,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                       nextSlug: selectedPrices.clearSlug,
                       nameString: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
                       isSelected: true,
+                      counter: 0,
+                      isDisabled: false,
+                      slug: 'selected-prices',
                     }}
                   />
                 </div>

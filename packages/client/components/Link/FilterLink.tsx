@@ -6,7 +6,7 @@ import Icon from '../Icon/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
-  option: Partial<CatalogueFilterAttributeOptionFragment>;
+  option: CatalogueFilterAttributeOptionFragment;
   withCross?: boolean;
 }
 

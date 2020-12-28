@@ -129,7 +129,7 @@ describe('Catalogue', () => {
       },
     );
 
-    console.log(JSON.stringify(getCatalogueData.catalogueFilter.attributes.length, null, 2));
+    // TODO test filter attributes
     expect(getCatalogueData.products.docs).toHaveLength(1);
     // expect(getCatalogueData.catalogueFilter.attributes).toHaveLength(2);
     // expect(getCatalogueData.catalogueFilter.selectedAttributes).toHaveLength(2);

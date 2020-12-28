@@ -367,6 +367,7 @@ export async function getCatalogueTitle({
 
 interface GetCatalogueAdditionalFilterOptionsInterface {
   productForeignField: string;
+  allProductsPipeline: Record<string, any>[];
   collectionSlugs: string[];
   rubricsIds: string[];
   catalogueFilterArgs: string[];
@@ -383,28 +384,36 @@ interface AdditionalFilterOptionInterface {
 }
 
 export async function getCatalogueAdditionalFilterOptions({
+  allProductsPipeline,
   catalogueFilterArgs,
   productForeignField,
   collectionSlugs,
   rubricsIds,
   collection,
-  city,
   filterKey,
+  city,
 }: GetCatalogueAdditionalFilterOptionsInterface): Promise<AdditionalFilterOptionInterface[]> {
   const currentCatalogueSlug = catalogueFilterArgs.join('/');
   return mongoose.connection.db
     .collection<AdditionalFilterOptionInterface>(collection)
     .aggregate([
+      // Unwind by views counter
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+
+      // Filter unwinded brands by current city or empty views
+      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+
       // Lookup products
       {
         $lookup: {
           from: 'products',
           let: { slug: '$slug' },
           pipeline: [
+            ...allProductsPipeline,
             {
               $match: {
-                rubrics: { $in: rubricsIds },
                 active: true,
+                rubrics: { $in: rubricsIds },
                 $expr: {
                   $and: [{ $eq: [productForeignField, '$$slug'] }],
                 },
@@ -422,12 +431,6 @@ export async function getCatalogueAdditionalFilterOptions({
 
       // Count products
       { $addFields: { productsCount: { $size: '$products' } } },
-
-      // Unwind by views counter
-      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
-
-      // Filter unwinded brands by current city or empty views
-      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
 
       // Sort pipeline
       // sort by priority/views (default)

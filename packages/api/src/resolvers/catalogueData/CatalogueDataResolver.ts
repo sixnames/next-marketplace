@@ -27,6 +27,7 @@ import {
 } from '../../decorators/parameterDecorators';
 import { Role } from '../../entities/Role';
 import {
+  CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_FILTER_EXCLUDED_KEYS,
   CATALOGUE_MANUFACTURER_KEY,
@@ -142,14 +143,16 @@ export class CatalogueDataResolver {
         rubric,
       });
 
+      const selectedAttributesPipeline = getAttributesPipeline(processedAttributes);
+
       const attributesMatch =
         processedAttributes.length > 0
           ? {
-              $and: getAttributesPipeline(processedAttributes),
+              $and: selectedAttributesPipeline,
             }
           : {};
 
-      // pipeline
+      // All products pipeline
       const allProductsPipeline = [
         // Initial match
         {
@@ -386,11 +389,11 @@ export class CatalogueDataResolver {
 
           // Count products with current option
           const products = await ProductModel.aggregate<any>([
-            // Initial products match
+            ...allProductsPipeline,
+
+            // Option products match
             {
               $match: {
-                rubrics: { $in: rubricsIds },
-                active: true,
                 'attributesGroups.attributes': {
                   $elemMatch: {
                     key: attribute.slug,
@@ -399,24 +402,6 @@ export class CatalogueDataResolver {
                 },
               },
             },
-            // Lookup shop products
-            { $addFields: { productId: { $toString: '$_id' } } },
-            {
-              $lookup: {
-                from: 'shopproducts',
-                localField: 'productId',
-                foreignField: 'product',
-                as: 'shops',
-              },
-            },
-            // Count shop products
-            { $addFields: { shopsCount: { $size: '$shops' } } },
-
-            // Filter out products not added to the shops
-            { $match: { shopsCount: { $gt: 0 } } },
-
-            // Add minPrice field
-            { $addFields: { minPrice: { $min: '$shops.price' } } },
 
             // Filter out products that out of price range
             ...priceRangePipeline,
@@ -501,12 +486,40 @@ export class CatalogueDataResolver {
             }
           : null;
 
-      // Brands
+      // Casted additional filters
       const brandsInArguments = getParamOptionValueByKey({
         paramOptions: additionalFilters,
         key: CATALOGUE_BRAND_KEY,
       });
+      const brandCollectionsInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_BRAND_COLLECTION_KEY,
+      });
+      const manufacturersInArguments = getParamOptionValueByKey({
+        paramOptions: additionalFilters,
+        key: CATALOGUE_MANUFACTURER_KEY,
+      });
+
+      const brandsMatch =
+        brandsInArguments.length > 0 ? [{ $match: { brand: { $in: brandsInArguments } } }] : [];
+
+      const brandCollectionsMatch =
+        brandCollectionsInArguments.length > 0
+          ? [{ $match: { brandCollection: { $in: brandCollectionsInArguments } } }]
+          : [];
+
+      const manufacturersMatch =
+        manufacturersInArguments.length > 0
+          ? [{ $match: { manufacturer: { $in: manufacturersInArguments } } }]
+          : [];
+
+      // Brands
       const brandsAggregation = await getCatalogueAdditionalFilterOptions({
+        allProductsPipeline: [
+          ...allProductsPipeline,
+          ...brandCollectionsMatch,
+          ...manufacturersMatch,
+        ],
         productForeignField: '$brand',
         collectionSlugs: brandsInArguments,
         filterKey: CATALOGUE_BRAND_KEY,
@@ -516,12 +529,21 @@ export class CatalogueDataResolver {
         city,
       });
 
-      // Manufacturers
-      const manufacturersInArguments = getParamOptionValueByKey({
-        paramOptions: additionalFilters,
-        key: CATALOGUE_MANUFACTURER_KEY,
+      // Brands
+      const brandCollectionsAggregation = await getCatalogueAdditionalFilterOptions({
+        allProductsPipeline: [...allProductsPipeline, ...brandsMatch, ...manufacturersMatch],
+        productForeignField: '$brandCollection',
+        collectionSlugs: brandCollectionsInArguments,
+        filterKey: CATALOGUE_BRAND_KEY,
+        collection: 'brandcollections',
+        catalogueFilterArgs: catalogueFilter,
+        rubricsIds,
+        city,
       });
+
+      // Manufacturers
       const manufacturersAggregation = await getCatalogueAdditionalFilterOptions({
+        allProductsPipeline: [...allProductsPipeline, ...brandCollectionsMatch, ...brandsMatch],
         productForeignField: '$manufacturer',
         collectionSlugs: manufacturersInArguments,
         filterKey: CATALOGUE_MANUFACTURER_KEY,
@@ -531,7 +553,13 @@ export class CatalogueDataResolver {
         city,
       });
 
-      console.log(JSON.stringify({ brandsAggregation, manufacturersAggregation }, null, 2));
+      console.log(
+        JSON.stringify(
+          { brandsAggregation, manufacturersAggregation, brandCollectionsAggregation },
+          null,
+          2,
+        ),
+      );
 
       return {
         rubric,

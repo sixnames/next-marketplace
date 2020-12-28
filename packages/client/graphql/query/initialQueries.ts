@@ -23,6 +23,33 @@ export const sessionRoleFragment = gql`
   }
 `;
 
+export const setRubricNavItemAttributeOptionFragment = gql`
+  fragment RubricNavItemAttributeOption on RubricNavItemAttributeOption {
+    id
+    slug
+    nameString
+    isDisabled
+  }
+`;
+
+export const setRubricNavItemAttributeFragment = gql`
+  fragment RubricNavItemAttribute on RubricNavItemAttribute {
+    id
+    isDisabled
+    nameString
+    options {
+      ...RubricNavItemAttributeOption
+    }
+    visibleOptions {
+      ...RubricNavItemAttributeOption
+    }
+    hiddenOptions {
+      ...RubricNavItemAttributeOption
+    }
+  }
+  ${setRubricNavItemAttributeOptionFragment}
+`;
+
 export const rubricFragment = gql`
   fragment SiteRubricFragment on Rubric {
     id
@@ -33,28 +60,15 @@ export const rubricFragment = gql`
       id
       nameString
     }
-    catalogueFilter {
+    navItems {
       id
       isDisabled
       attributes {
-        id
-        isDisabled
-        node {
-          id
-          nameString
-          slug
-        }
-        options {
-          id
-          slug
-          filterNameString
-          color
-          counter
-          isDisabled
-        }
+        ...RubricNavItemAttribute
       }
     }
   }
+  ${setRubricNavItemAttributeFragment}
 `;
 
 export const INITIAL_QUERY = gql`

@@ -355,7 +355,7 @@ export type Product = {
   rubrics: Array<Scalars['ID']>;
   attributesGroups: Array<ProductAttributesGroup>;
   assets: Array<Asset>;
-  price: Scalars['Int'];
+  price?: Maybe<Scalars['Int']>;
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
@@ -1096,6 +1096,7 @@ export type Rubric = {
   catalogueTitleString: RubricCatalogueTitleField;
   children: Array<Rubric>;
   catalogueFilter: RubricCatalogueFilter;
+  navItems: RubricNavItems;
   products: PaginatedProductsResponse;
   totalProductsCount: Scalars['Int'];
   activeProductsCount: Scalars['Int'];
@@ -1198,6 +1199,32 @@ export type RubricFilterSelectedPrices = {
   clearSlug: Scalars['String'];
   formattedMinPrice: Scalars['String'];
   formattedMaxPrice: Scalars['String'];
+};
+
+export type RubricNavItems = {
+  __typename?: 'RubricNavItems';
+  id: Scalars['ID'];
+  isDisabled: Scalars['Boolean'];
+  attributes: Array<RubricNavItemAttribute>;
+};
+
+export type RubricNavItemAttribute = {
+  __typename?: 'RubricNavItemAttribute';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  isDisabled: Scalars['Boolean'];
+  visibleOptions: Array<RubricNavItemAttributeOption>;
+  hiddenOptions: Array<RubricNavItemAttributeOption>;
+  options: Array<RubricNavItemAttributeOption>;
+};
+
+export type RubricNavItemAttributeOption = {
+  __typename?: 'RubricNavItemAttributeOption';
+  id: Scalars['ID'];
+  nameString: Scalars['String'];
+  slug: Scalars['String'];
+  isDisabled: Scalars['Boolean'];
+  counter: Scalars['Int'];
 };
 
 export type RubricProductPaginateInput = {
@@ -2052,10 +2079,10 @@ export type CreateProductInput = {
   originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
-  manufacturer?: Maybe<Scalars['ID']>;
-  brand?: Maybe<Scalars['ID']>;
-  brandCollection?: Maybe<Scalars['ID']>;
-  price: Scalars['Int'];
+  manufacturer?: Maybe<Scalars['String']>;
+  brand?: Maybe<Scalars['String']>;
+  brandCollection?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Int']>;
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
 };
@@ -2083,19 +2110,19 @@ export type ProductAttributeInput = {
 
 
 export type UpdateProductInput = {
-  id: Scalars['ID'];
   name: Array<TranslationInput>;
   cardName: Array<TranslationInput>;
   originalName: Scalars['String'];
   description: Array<TranslationInput>;
   rubrics: Array<Scalars['ID']>;
-  manufacturer?: Maybe<Scalars['ID']>;
-  brand?: Maybe<Scalars['ID']>;
-  brandCollection?: Maybe<Scalars['ID']>;
-  price: Scalars['Int'];
-  active: Scalars['Boolean'];
+  manufacturer?: Maybe<Scalars['String']>;
+  brand?: Maybe<Scalars['String']>;
+  brandCollection?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Int']>;
   attributesGroups: Array<ProductAttributesGroupInput>;
   assets: Array<Scalars['Upload']>;
+  id: Scalars['ID'];
+  active: Scalars['Boolean'];
 };
 
 export type CreateProductConnectionInput = {
@@ -4345,25 +4372,38 @@ export type SessionRoleFragmentFragment = (
   & Pick<Role, 'id' | 'nameString' | 'isStuff'>
 );
 
+export type RubricNavItemAttributeOptionFragment = (
+  { __typename?: 'RubricNavItemAttributeOption' }
+  & Pick<RubricNavItemAttributeOption, 'id' | 'slug' | 'nameString' | 'isDisabled'>
+);
+
+export type RubricNavItemAttributeFragment = (
+  { __typename?: 'RubricNavItemAttribute' }
+  & Pick<RubricNavItemAttribute, 'id' | 'isDisabled' | 'nameString'>
+  & { options: Array<(
+    { __typename?: 'RubricNavItemAttributeOption' }
+    & RubricNavItemAttributeOptionFragment
+  )>, visibleOptions: Array<(
+    { __typename?: 'RubricNavItemAttributeOption' }
+    & RubricNavItemAttributeOptionFragment
+  )>, hiddenOptions: Array<(
+    { __typename?: 'RubricNavItemAttributeOption' }
+    & RubricNavItemAttributeOptionFragment
+  )> }
+);
+
 export type SiteRubricFragmentFragment = (
   { __typename?: 'Rubric' }
   & Pick<Rubric, 'id' | 'nameString' | 'slug' | 'level'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, 'id' | 'nameString'>
-  ), catalogueFilter: (
-    { __typename?: 'RubricCatalogueFilter' }
-    & Pick<RubricCatalogueFilter, 'id' | 'isDisabled'>
+  ), navItems: (
+    { __typename?: 'RubricNavItems' }
+    & Pick<RubricNavItems, 'id' | 'isDisabled'>
     & { attributes: Array<(
-      { __typename?: 'RubricFilterAttribute' }
-      & Pick<RubricFilterAttribute, 'id' | 'isDisabled'>
-      & { node: (
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'nameString' | 'slug'>
-      ), options: Array<(
-        { __typename?: 'RubricFilterAttributeOption' }
-        & Pick<RubricFilterAttributeOption, 'id' | 'slug' | 'filterNameString' | 'color' | 'counter' | 'isDisabled'>
-      )> }
+      { __typename?: 'RubricNavItemAttribute' }
+      & RubricNavItemAttributeFragment
     )> }
   ) }
 );
@@ -5677,6 +5717,30 @@ export const SessionRoleFragmentFragmentDoc = gql`
   isStuff
 }
     `;
+export const RubricNavItemAttributeOptionFragmentDoc = gql`
+    fragment RubricNavItemAttributeOption on RubricNavItemAttributeOption {
+  id
+  slug
+  nameString
+  isDisabled
+}
+    `;
+export const RubricNavItemAttributeFragmentDoc = gql`
+    fragment RubricNavItemAttribute on RubricNavItemAttribute {
+  id
+  isDisabled
+  nameString
+  options {
+    ...RubricNavItemAttributeOption
+  }
+  visibleOptions {
+    ...RubricNavItemAttributeOption
+  }
+  hiddenOptions {
+    ...RubricNavItemAttributeOption
+  }
+}
+    ${RubricNavItemAttributeOptionFragmentDoc}`;
 export const SiteRubricFragmentFragmentDoc = gql`
     fragment SiteRubricFragment on Rubric {
   id
@@ -5687,29 +5751,15 @@ export const SiteRubricFragmentFragmentDoc = gql`
     id
     nameString
   }
-  catalogueFilter {
+  navItems {
     id
     isDisabled
     attributes {
-      id
-      isDisabled
-      node {
-        id
-        nameString
-        slug
-      }
-      options {
-        id
-        slug
-        filterNameString
-        color
-        counter
-        isDisabled
-      }
+      ...RubricNavItemAttribute
     }
   }
 }
-    `;
+    ${RubricNavItemAttributeFragmentDoc}`;
 export const LanguageFragmentDoc = gql`
     fragment Language on Language {
   id

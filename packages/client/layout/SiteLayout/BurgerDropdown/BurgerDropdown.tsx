@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Inner from '../../../components/Inner/Inner';
 import HeaderTop from '../Header/HeaderTop';
-import { RubricType, useSiteContext } from '../../../context/siteContext';
+import { useSiteContext } from '../../../context/siteContext';
 import classes from './BurgerDropdown.module.css';
 import { useConfigContext } from '../../../context/configContext';
 import Link from '../../../components/Link/Link';
@@ -13,6 +13,8 @@ import useSignOut from '../../../hooks/useSignOut';
 import { useUserContext } from '../../../context/userContext';
 import { useAppContext } from '../../../context/appContext';
 import { alwaysArray } from '../../../utils/alwaysArray';
+import { SiteRubricFragmentFragment } from '../../../generated/apolloComponents';
+import { useNotificationsContext } from '../../../context/notificationsContext';
 
 export interface BurgerDropdownSizesInterface {
   top: number;
@@ -24,9 +26,10 @@ const BurgerDropdownChevron: React.FC = () => {
 };
 
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
+  const { showErrorNotification } = useNotificationsContext();
   const { isBurgerDropdownOpen, hideBurgerDropdown, getRubricsTree } = useSiteContext();
   const [isCatalogueVisible, setIsCatalogueVisible] = useState<boolean>(true);
-  const [currentRubric, setCurrentRubric] = useState<RubricType | null>(null);
+  const [currentRubric, setCurrentRubric] = useState<SiteRubricFragmentFragment | null>(null);
   const { getSiteConfigSingleValue } = useConfigContext();
   const { me } = useUserContext();
   const signOutHandler = useSignOut();
@@ -94,32 +97,30 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           </div>
                         ) : null}
 
-                        {currentRubric.catalogueFilter.attributes.map(
-                          ({ id, node, isDisabled, options }) => {
+                        {currentRubric.navItems.attributes.map(
+                          ({ id, isDisabled, options, nameString }) => {
                             if (isDisabled) {
                               return null;
                             }
                             return (
                               <div className={classes.dropdownGroup} key={id}>
-                                <div className={classes.dropdownGroupTitle}>{node.nameString}</div>
+                                <div className={classes.dropdownGroupTitle}>{nameString}</div>
                                 <ul>
                                   {options.map((option) => {
                                     if (option.isDisabled) {
                                       return null;
                                     }
-
-                                    const optionPath = `/${currentRubric?.slug}/${node.slug}-${option.slug}`;
-                                    const isCurrent = asPath === optionPath;
+                                    const isCurrent = asPath === option.slug;
                                     return (
                                       <li key={option.id}>
                                         <Link
-                                          href={optionPath}
+                                          href={option.slug}
                                           onClick={hideBurgerDropdown}
                                           className={`${classes.dropdownGroupLink} ${
                                             isCurrent ? classes.dropdownGroupLinkCurrent : ''
                                           }`}
                                         >
-                                          <span>{option.filterNameString}</span>
+                                          <span>{option.nameString}</span>
                                           <BurgerDropdownChevron />
                                         </Link>
                                       </li>
@@ -134,9 +135,9 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                     ) : (
                       <ul>
                         {getRubricsTree.map((rubric) => {
-                          const { id, nameString, slug, catalogueFilter } = rubric;
+                          const { id, nameString, slug, navItems } = rubric;
                           const isCurrent = slug === catalogueSlug;
-                          const { isDisabled } = catalogueFilter;
+                          const { isDisabled } = navItems;
 
                           if (isDisabled) {
                             return null;
@@ -248,7 +249,9 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             className={`${classes.dropdownGroupLink}`}
                             onClick={() => {
                               hideBurgerDropdown();
-                              signOutHandler();
+                              signOutHandler().catch(() => {
+                                showErrorNotification();
+                              });
                             }}
                           >
                             <span>Выйти из аккаунта</span>

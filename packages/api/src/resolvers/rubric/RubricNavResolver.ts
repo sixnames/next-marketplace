@@ -223,10 +223,17 @@ export class RubricNavResolver {
         });
       }
 
+      const disabledAttributesCount = navAttributes.reduce((acc: number, { isDisabled }) => {
+        if (isDisabled) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+
       return {
         id: rubric._id.toString(),
         attributes: navAttributes,
-        isDisabled: true,
+        isDisabled: disabledAttributesCount === navAttributes.length,
       };
     } catch (e) {
       console.log(e);

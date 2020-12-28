@@ -17,7 +17,7 @@ describe('Catalogue', () => {
     await clearTestData();
   });
 
-  it.only('Should return catalogue nav', async () => {
+  it('Should return catalogue nav', async () => {
     const { query } = await testClientWithContext();
 
     const rubricNavItemsPayload = await query<any>(

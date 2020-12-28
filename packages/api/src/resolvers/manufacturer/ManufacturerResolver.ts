@@ -143,8 +143,6 @@ export class ManufacturerResolver {
         };
       }
 
-      const slug = generateSlug(nameString);
-
       const exist = await ManufacturerModel.exists({ _id: { $ne: id }, nameString });
       if (exist) {
         return {
@@ -158,7 +156,6 @@ export class ManufacturerResolver {
         {
           ...values,
           nameString,
-          slug,
           collections: [],
         },
         {
@@ -203,7 +200,7 @@ export class ManufacturerResolver {
         };
       }
 
-      const used = await ProductModel.exists({ manufacturer: id });
+      const used = await ProductModel.exists({ manufacturer: manufacturer.slug });
       if (used) {
         return {
           success: false,

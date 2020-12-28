@@ -21,17 +21,17 @@ export class CreateProductInput {
   @Field(() => [ID])
   rubrics: string[];
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => String, { nullable: true })
   manufacturer?: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => String, { nullable: true })
   brand?: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => String, { nullable: true })
   brandCollection?: string;
 
-  @Field(() => Int)
-  price: number;
+  @Field(() => Int, { nullable: true })
+  price?: number | null;
 
   @Field(() => [ProductAttributesGroupInput])
   attributesGroups: ProductAttributesGroupInput[];

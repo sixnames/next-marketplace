@@ -25,15 +25,6 @@ import { useRouter } from 'next/router';
 import { CartModalInterface } from '../components/Modal/CartModal/CartModal';
 import { useAppContext } from './appContext';
 
-export type RubricType = InitialSiteQueryQuery['getRubricsTree'][number];
-
-export interface StickyNavAttributeInterface {
-  attribute: RubricType['catalogueFilter']['attributes'][number];
-  rubricSlug: string;
-  hideDropdownHandler: () => void;
-  isDropdownOpen: boolean;
-}
-
 interface SiteContextStateInterface {
   isBurgerDropdownOpen: boolean;
   isSearchOpen: boolean;

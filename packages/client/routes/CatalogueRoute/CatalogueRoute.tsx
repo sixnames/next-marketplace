@@ -13,7 +13,13 @@ import ProductSnippetRow from '../../components/Product/ProductSnippet/ProductSn
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import Spinner from '../../components/Spinner/Spinner';
-import { SORT_ASC, SORT_DESC } from '@yagu/shared';
+import {
+  CATALOGUE_FILTER_SORT_KEYS,
+  SORT_ASC,
+  SORT_BY_KEY,
+  SORT_DESC,
+  SORT_DIR_KEY,
+} from '@yagu/shared';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -22,6 +28,11 @@ import { useAppContext } from '../../context/appContext';
 import Button from '../../components/Buttons/Button';
 import ReachMenuButton from '../../components/ReachMenuButton/ReachMenuButton';
 import { useSiteContext } from '../../context/siteContext';
+import {
+  getCatalogueFilterNextPath,
+  getCatalogueFilterValueByKey,
+} from '../../utils/catalogueHelpers';
+import { alwaysArray } from '../../utils/alwaysArray';
 
 interface CatalogueRouteInterface {
   rubricData: CatalogueDataFragment;
@@ -76,13 +87,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
   const fetchMoreHandler = useCallback(() => {
     if (catalogueData) {
-      const { catalogueFilter, products } = catalogueData;
+      const { products } = catalogueData;
       const { sortBy, sortDir, page, totalPages } = products;
 
       if (page !== totalPages) {
         getRubricData({
           variables: {
-            catalogueFilter,
+            catalogueFilter: alwaysArray(router.query.rubric),
             productsInput: {
               page: page + 1,
               sortDir,
@@ -99,58 +110,72 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
       {
         nameString: 'По популярности',
         id: 'По популярности',
-        current: router.query.sortBy === 'priority' && router.query.sortDir === SORT_DESC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          return sortBy === 'priority';
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'priority',
-                sortDir: SORT_DESC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-priority`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
       {
         nameString: 'По возрастанию цены',
         id: 'По возрастанию цены',
-        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_ASC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          const sortDir = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_DIR_KEY,
+          });
+          return sortBy === 'price' && sortDir === SORT_ASC;
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'price',
-                sortDir: SORT_ASC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC}`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
       {
         nameString: 'По убыванию цены',
         id: 'По убыванию цены',
-        current: router.query.sortBy === 'price' && router.query.sortDir === SORT_DESC,
+        current: () => {
+          const sortBy = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_BY_KEY,
+          });
+          const sortDir = getCatalogueFilterValueByKey({
+            asPath: router.asPath,
+            key: SORT_DIR_KEY,
+          });
+          return sortBy === 'price' && sortDir === SORT_DESC;
+        },
         onSelect: () => {
-          router
-            .push({
-              href: router.asPath,
-              query: {
-                ...router.query,
-                sortBy: 'price',
-                sortDir: SORT_DESC,
-              },
-            })
-            .catch(() => {
-              showErrorNotification();
-            });
+          const options = getCatalogueFilterNextPath({
+            asPath: router.asPath,
+            excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+          });
+          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC}`;
+          router.push(nextPath).catch(() => {
+            showErrorNotification();
+          });
         },
       },
     ],
@@ -165,8 +190,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products, catalogueTitle, minPrice, maxPrice } = catalogueData;
-  const { catalogueFilter, nameString } = rubric;
+  const { rubric, products, catalogueTitle, minPrice, maxPrice, catalogueFilter } = catalogueData;
+  const { nameString } = rubric;
   const { docs, totalDocs, totalPages, page } = products;
 
   if (totalDocs < 1) {
@@ -196,7 +221,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
             minPrice={minPrice}
             maxPrice={maxPrice}
             totalDocs={totalDocs}
-            rubricClearSlug={rubric.catalogueFilter.clearSlug}
+            rubricClearSlug={catalogueFilter.clearSlug}
             catalogueFilter={catalogueFilter}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
@@ -264,7 +289,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product.id}
                       testId={`catalogue-item-${product.slug}`}
-                      rubricSlug={rubric.slug}
+                      additionalSlug={`/rubric-${rubric.slug}`}
                     />
                   ))
                 : docs.map((product) => (
@@ -272,7 +297,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product.id}
                       testId={`catalogue-item-${product.slug}`}
-                      rubricSlug={rubric.slug}
+                      additionalSlug={`/rubric-${rubric.slug}`}
                     />
                   ))}
             </InfiniteScroll>

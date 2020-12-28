@@ -13,11 +13,13 @@ const DataLayoutFilter: React.FC<DataLayoutFilterInterface> = ({ filterContent }
   if (isFilterVisible) {
     return (
       <div className={classes.Filter}>
-        <div className={classes.FilterClose}>
-          <ButtonCross onClick={toggleFilter} />
-        </div>
+        <div className={classes.FilterContent}>
+          <div className={classes.FilterClose}>
+            <ButtonCross onClick={toggleFilter} />
+          </div>
 
-        {filterContent}
+          {filterContent}
+        </div>
       </div>
     );
   }

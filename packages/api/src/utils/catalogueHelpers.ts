@@ -18,7 +18,14 @@ import {
   LANG_DEFAULT_TITLE_SEPARATOR,
   LANG_NOT_FOUND_FIELD_MESSAGE,
   LANG_SECONDARY_TITLE_SEPARATOR,
+  SORT_DESC_NUM,
 } from '@yagu/shared';
+import { mongoose } from '@typegoose/typegoose';
+import {
+  CatalogueFilterAttribute,
+  CatalogueFilterAttributeOption,
+} from '../entities/CatalogueData';
+import { getBooleanFromArray } from './getBooleanFromArray';
 
 interface ProcessedAttributeInterface {
   key: string;
@@ -118,9 +125,58 @@ export async function setCataloguePriorities({
   }
 }
 
-export function getOptionFromParam(paramString: string): { key: string; value: string[] } {
+export interface GetOptionFromParamPayloadInterface {
+  key: string;
+  value: string[];
+}
+
+export function getOptionFromParam(paramString: string): GetOptionFromParamPayloadInterface {
   const param = paramString.split('-');
   return { key: `${param[0]}`, value: [`${param[1]}`] };
+}
+
+interface GetParamOptionValueByKeyInterface {
+  paramOptions: GetOptionFromParamPayloadInterface[];
+  key: string;
+}
+
+export function getAttributeSelectedOptionsValues({
+  key,
+  paramOptions,
+}: GetParamOptionValueByKeyInterface): string[] {
+  const currentOptions = paramOptions.filter((option) => option.key === key);
+  return currentOptions.reduce((acc: string[], { value }) => {
+    return [...acc, ...value];
+  }, []);
+}
+
+export function getParamOptionValueByKey({
+  key,
+  paramOptions,
+}: GetParamOptionValueByKeyInterface): string[] {
+  const currentOption = paramOptions.find((option) => option.key === key);
+  if (!currentOption) {
+    return [];
+  }
+  return currentOption.value;
+}
+
+interface GetParamOptionFirstValueByKey extends GetParamOptionValueByKeyInterface {
+  defaultValue?: string | null;
+}
+
+export function getParamOptionFirstValueByKey({
+  key,
+  paramOptions,
+  defaultValue,
+}: GetParamOptionFirstValueByKey): string | null | undefined {
+  const currentOptionValues = getParamOptionValueByKey({ key, paramOptions });
+  const firstValue = currentOptionValues[0];
+
+  if (!firstValue) {
+    return defaultValue;
+  }
+  return firstValue;
 }
 
 export function attributesReducer(
@@ -322,4 +378,192 @@ export async function getCatalogueTitle({
       .join(' ')
       .toLocaleLowerCase(),
   );
+}
+
+interface GetCatalogueAdditionalFilterOptionsInterface {
+  productForeignField: string;
+  allProductsPipeline: Record<string, any>[];
+  collectionSlugs: string[];
+  rubricsIds: string[];
+  catalogueFilterArgs: string[];
+  collection: string;
+  filterKey: string;
+  city: string;
+}
+
+export async function getCatalogueAdditionalFilterOptions({
+  allProductsPipeline,
+  catalogueFilterArgs,
+  productForeignField,
+  collectionSlugs,
+  rubricsIds,
+  collection,
+  filterKey,
+  city,
+}: GetCatalogueAdditionalFilterOptionsInterface): Promise<CatalogueFilterAttributeOption[]> {
+  const currentCatalogueSlug = catalogueFilterArgs.join('/');
+  return mongoose.connection.db
+    .collection<CatalogueFilterAttributeOption>(collection)
+    .aggregate([
+      // Unwind by views counter
+      { $unwind: { path: '$views', preserveNullAndEmptyArrays: true } },
+
+      // Filter unwinded brands by current city or empty views
+      { $match: { $or: [{ 'views.key': city }, { 'views.key': { $exists: false } }] } },
+
+      // Lookup products
+      {
+        $lookup: {
+          from: 'products',
+          let: { slug: '$slug' },
+          pipeline: [
+            ...allProductsPipeline,
+            {
+              $match: {
+                active: true,
+                rubrics: { $in: rubricsIds },
+                $expr: {
+                  $and: [{ $eq: [productForeignField, '$$slug'] }],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+              },
+            },
+          ],
+          as: 'products',
+        },
+      },
+
+      // Count products
+      { $addFields: { productsCount: { $size: '$products' } } },
+
+      // Sort pipeline
+      // sort by priority/views (default)
+      // and productsCount
+      {
+        $sort: {
+          'views.counter': SORT_DESC_NUM,
+          productsCount: SORT_DESC_NUM,
+          _id: SORT_DESC_NUM,
+        },
+      },
+
+      // Add isDisabled field based on productsCount
+      {
+        $addFields: {
+          isDisabled: {
+            $lt: ['$productsCount', 1],
+          },
+        },
+      },
+
+      // Add isSelected field based on query args
+      {
+        $addFields: {
+          isSelected: {
+            $in: ['$slug', collectionSlugs],
+          },
+        },
+      },
+
+      // Add nextSlug field based on query args
+      {
+        $addFields: {
+          itemSlug: {
+            $concat: [`${filterKey}-`, '$slug'],
+          },
+        },
+      },
+      {
+        $addFields: {
+          resetSlugsList: {
+            $filter: {
+              input: catalogueFilterArgs,
+              as: 'filterArg',
+              cond: { $ne: ['$$filterArg', '$itemSlug'] },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          nextSlug: {
+            $cond: {
+              if: '$isSelected',
+              then: {
+                $reduce: {
+                  input: '$resetSlugsList',
+                  initialValue: '',
+                  in: { $concat: ['$$value', '/', '$$this'] },
+                },
+              },
+              else: {
+                $concat: ['/', currentCatalogueSlug, '/', `$itemSlug`],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          id: '$_id',
+          slug: 1,
+          nameString: 1,
+          nextSlug: 1,
+          isSelected: 1,
+          isDisabled: 1,
+          counter: '$productsCount',
+        },
+      },
+    ])
+    .toArray();
+}
+
+export interface GetCatalogueAttributeInterface {
+  id: string;
+  slug: string;
+  nameString: string;
+  options: CatalogueFilterAttributeOption[];
+  catalogueFilter: string[];
+  catalogueFilterExcludeKey: string;
+}
+
+export async function getCatalogueAttribute({
+  id,
+  slug,
+  nameString,
+  options,
+  catalogueFilter,
+  catalogueFilterExcludeKey,
+}: GetCatalogueAttributeInterface): Promise<CatalogueFilterAttribute> {
+  const otherSelectedValues = catalogueFilter.filter((option) => {
+    return !option.includes(catalogueFilterExcludeKey);
+  });
+  const clearSlug = `/${otherSelectedValues.join('/')}`;
+  const isSelected = getBooleanFromArray(options, ({ isSelected }) => {
+    return isSelected;
+  });
+  const sortedOptions = options.sort((optionA, optionB) => {
+    const isDisabledA = optionA.isDisabled ? 0 : 1;
+    const isDisabledB = optionB.isDisabled ? 0 : 1;
+    return isDisabledB - isDisabledA;
+  });
+  const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
+    if (isDisabled) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+  return {
+    id,
+    slug,
+    nameString,
+    clearSlug,
+    options: sortedOptions,
+    isDisabled: disabledOptionsCount === sortedOptions.length,
+    isSelected,
+  };
 }

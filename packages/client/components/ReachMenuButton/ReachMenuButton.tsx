@@ -2,12 +2,14 @@ import React, { Fragment, useEffect, useState } from 'react';
 import '@reach/menu-button/styles.css';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 
+type CurrentAction = () => boolean;
+
 export interface ReachMenuItemConfig {
   id: string;
   nameString: any;
   slug?: string;
   onSelect: (menuItem: ReachMenuItemConfig) => void;
-  current?: boolean;
+  current?: boolean | CurrentAction;
 }
 
 interface ButtonTextPropsInterface {
@@ -37,7 +39,12 @@ const ReachMenuButton: React.FC<MenuButtonInterface> = ({
   });
 
   useEffect(() => {
-    const currentConfigItem = config.find(({ current }) => current);
+    const currentConfigItem = config.find(({ current }) => {
+      if (typeof current === 'function') {
+        return current();
+      }
+      return current;
+    });
     if (currentConfigItem) {
       setInternalButtonText(currentConfigItem.id);
       return;

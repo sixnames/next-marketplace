@@ -13,24 +13,20 @@ import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 interface ProductSnippetGridInterface {
   product: ProductSnippetFragment;
   testId?: string;
-  rubricSlug?: string;
+  additionalSlug?: string;
   size?: 'small' | 'normal';
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   product,
   testId,
-  rubricSlug,
+  additionalSlug,
   size = 'normal',
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
   const { nameString, mainImage, slug, cardPrices, id, cardFeatures } = product;
   const imageWidth = 50;
-  const linkQuery: Record<string, any> = {};
-
-  if (rubricSlug) {
-    linkQuery.rubric = rubricSlug;
-  }
+  const additionalLinkSlug = additionalSlug ? additionalSlug : '';
 
   const { listFeaturesString, ratingFeaturesValues } = cardFeatures;
   const firstRatingFeature = ratingFeaturesValues[0];
@@ -87,8 +83,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         // style={{ display: 'none' }}
         className={classes.link}
         href={{
-          pathname: `/product/${slug}`,
-          query: linkQuery,
+          pathname: `/product${additionalLinkSlug}/${slug}`,
         }}
       >
         {nameString}

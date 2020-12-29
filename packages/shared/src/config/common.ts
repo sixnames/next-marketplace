@@ -16,6 +16,10 @@ export const ADMIN_PHONE = '+79998884433';
 export const ADMIN_PASSWORD = 'admin';
 
 // Roles
+export const ROLE_SLUG_GUEST = 'guest';
+export const ROLE_SLUG_ADMIN = 'admin';
+export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
+export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 export const OPERATION_TYPE_CREATE = 'create';
 export const OPERATION_TYPE_READ = 'read';
 export const OPERATION_TYPE_UPDATE = 'update';

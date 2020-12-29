@@ -7,7 +7,9 @@ import {
 } from '../../config';
 import { User, UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
-import createInitialApiMessages from './createInitialApiMessages';
+import createInitialApiMessages, {
+  CreateInitialApiMessagesPayloadInterface,
+} from './createInitialApiMessages';
 import {
   createInitialSiteConfigs,
   CreateInitialSiteConfigsPayloadInterface,
@@ -17,7 +19,6 @@ import {
   createInitialLocalizationData,
   CreateInitialLocalizationDataPayloadInterface,
 } from './createInitialLocalizationData';
-import { MessagesGroup } from '../../entities/MessagesGroup';
 import {
   CreateInitialOrderStatuses,
   creteInitialOrderStatuses,
@@ -26,9 +27,9 @@ import {
 export interface CreateInitialDataPayloadInterface
   extends CreateInitialSiteConfigsPayloadInterface,
     CreateInitialLocalizationDataPayloadInterface,
+    CreateInitialApiMessagesPayloadInterface,
     CreateInitialOrderStatuses {
   initialRolesIds: CreateInitialRolesPayloadInterface;
-  initialApiMessages: MessagesGroup[];
   admin: User;
 }
 
@@ -69,9 +70,9 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
     ...configsPayload,
     ...localizationPayload,
     ...initialOrderStatuses,
-    initialRolesIds,
-    initialApiMessages,
+    ...initialApiMessages,
     admin,
+    initialRolesIds,
   };
 }
 

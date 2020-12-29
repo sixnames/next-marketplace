@@ -32,15 +32,15 @@ interface MessageInterface {
 }
 
 interface CreateInitialApiMessagesGroup {
-  name: string;
+  nameString: string;
   messages: MessageInterface[];
 }
 
 async function createInitialApiMessagesGroup({
-  name,
+  nameString,
   messages,
 }: CreateInitialApiMessagesGroup): Promise<MessagesGroup> {
-  let group = await MessagesGroupModel.findOne({ name });
+  let group = await MessagesGroupModel.findOne({ nameString });
   const messagesIds = [];
 
   for await (const message of messages) {
@@ -54,11 +54,11 @@ async function createInitialApiMessagesGroup({
   }
 
   if (!group) {
-    group = await MessagesGroupModel.create({ name, messages: messagesIds });
+    group = await MessagesGroupModel.create({ nameString, messages: messagesIds });
   } else {
     group = await MessagesGroupModel.findOneAndUpdate(
       {
-        name,
+        _id: group._id,
       },
       {
         messages: messagesIds,
@@ -76,37 +76,166 @@ async function createInitialApiMessagesGroup({
   return group;
 }
 
-async function createInitialApiMessages(): Promise<MessagesGroup[]> {
-  const config = [
-    { name: 'Общее', messages: commonMessages },
-    { name: 'Настройки сайта', messages: configsMessages },
-    { name: 'Валюта', messages: currenciesMessages },
-    { name: 'Языки', messages: languagesMessages },
-    { name: 'Города', messages: citiesMessages },
-    { name: 'Страны', messages: countriesMessages },
-    { name: 'Роли', messages: rolesMessages },
-    { name: 'Пользователи', messages: usersMessages },
-    { name: 'Группы опций', messages: optionsGroupsMessages },
-    { name: 'Группы атрибутов', messages: attributesGroupsMessages },
-    { name: 'Типы рубрик', messages: rubricVariantsMessages },
-    { name: 'Рубрики', messages: rubricsMessages },
-    { name: 'Товары', messages: productsMessages },
-    { name: 'Метрические значения', messages: metricsMessages },
-    { name: 'Компании', messages: companiesMessages },
-    { name: 'Магазины', messages: shopsMessages },
-    { name: 'Товары магазина', messages: shopProductsMessages },
-    { name: 'Корзина', messages: cartsMessages },
-    { name: 'Заказы', messages: ordersMessages },
-    { name: 'Бренды', messages: brandsMessages },
-    { name: 'Коллекции бренда', messages: brandCollectionsMessages },
-    { name: 'Производители', messages: manufacturersMessages },
-  ];
+export interface CreateInitialApiMessagesPayloadInterface {
+  commonMessagesGroup: MessagesGroup;
+  configMessagesGroup: MessagesGroup;
+  currencyMessagesGroup: MessagesGroup;
+  languageMessagesGroup: MessagesGroup;
+  cityMessagesGroup: MessagesGroup;
+  countryMessagesGroup: MessagesGroup;
+  roleMessagesGroup: MessagesGroup;
+  userMessagesGroup: MessagesGroup;
+  optionsGroupMessagesGroup: MessagesGroup;
+  attributesGroupMessagesGroup: MessagesGroup;
+  rubricVariantGroupMessagesGroup: MessagesGroup;
+  rubricMessagesGroup: MessagesGroup;
+  productMessagesGroup: MessagesGroup;
+  metricMessagesGroup: MessagesGroup;
+  companyMessagesGroup: MessagesGroup;
+  shopMessagesGroup: MessagesGroup;
+  shopProductMessagesGroup: MessagesGroup;
+  cartMessagesGroup: MessagesGroup;
+  orderMessagesGroup: MessagesGroup;
+  brandMessagesGroup: MessagesGroup;
+  brandCollectionMessagesGroup: MessagesGroup;
+  manufacturerMessagesGroup: MessagesGroup;
+}
 
-  return Promise.all(
-    config.map((group) => {
-      return createInitialApiMessagesGroup(group);
-    }),
-  );
+async function createInitialApiMessages(): Promise<CreateInitialApiMessagesPayloadInterface> {
+  const commonMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Общее',
+    messages: commonMessages,
+  });
+
+  const configMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Настройки сайта',
+    messages: configsMessages,
+  });
+
+  const currencyMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Валюта',
+    messages: currenciesMessages,
+  });
+
+  const languageMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Языки',
+    messages: languagesMessages,
+  });
+
+  const cityMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Города',
+    messages: citiesMessages,
+  });
+
+  const countryMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Страны',
+    messages: countriesMessages,
+  });
+
+  const roleMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Роли',
+    messages: rolesMessages,
+  });
+
+  const userMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Пользователи',
+    messages: usersMessages,
+  });
+
+  const optionsGroupMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Группы опций',
+    messages: optionsGroupsMessages,
+  });
+
+  const attributesGroupMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Группы атрибутов',
+    messages: attributesGroupsMessages,
+  });
+
+  const rubricVariantGroupMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Типы рубрик',
+    messages: rubricVariantsMessages,
+  });
+
+  const rubricMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Рубрики',
+    messages: rubricsMessages,
+  });
+
+  const productMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Товары',
+    messages: productsMessages,
+  });
+
+  const metricMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Метрические значения',
+    messages: metricsMessages,
+  });
+
+  const companyMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Компании',
+    messages: companiesMessages,
+  });
+
+  const shopMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Магазины',
+    messages: shopsMessages,
+  });
+
+  const shopProductMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Товары магазина',
+    messages: shopProductsMessages,
+  });
+
+  const cartMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Корзина',
+    messages: cartsMessages,
+  });
+
+  const orderMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Заказы',
+    messages: ordersMessages,
+  });
+
+  const brandMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Бренды',
+    messages: brandsMessages,
+  });
+
+  const brandCollectionMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Линейки бренда',
+    messages: brandCollectionsMessages,
+  });
+
+  const manufacturerMessagesGroup = await createInitialApiMessagesGroup({
+    nameString: 'Производители',
+    messages: manufacturersMessages,
+  });
+
+  return {
+    commonMessagesGroup,
+    configMessagesGroup,
+    currencyMessagesGroup,
+    languageMessagesGroup,
+    cityMessagesGroup,
+    countryMessagesGroup,
+    roleMessagesGroup,
+    userMessagesGroup,
+    optionsGroupMessagesGroup,
+    attributesGroupMessagesGroup,
+    rubricVariantGroupMessagesGroup,
+    rubricMessagesGroup,
+    productMessagesGroup,
+    metricMessagesGroup,
+    companyMessagesGroup,
+    shopMessagesGroup,
+    shopProductMessagesGroup,
+    cartMessagesGroup,
+    orderMessagesGroup,
+    brandMessagesGroup,
+    brandCollectionMessagesGroup,
+    manufacturerMessagesGroup,
+  };
 }
 
 export default createInitialApiMessages;

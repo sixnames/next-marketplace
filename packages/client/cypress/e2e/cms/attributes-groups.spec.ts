@@ -7,14 +7,14 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   SECONDARY_LANG,
   DEFAULT_LANG,
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
-  MOCK_ATTRIBUTES_GROUP_FOR_DELETE,
-  MOCK_OPTIONS_GROUP_COLORS,
 } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
+import * as faker from 'faker';
 
 describe('Attributes Groups', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/attributes-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -23,11 +23,11 @@ describe('Attributes Groups', () => {
   });
 
   it('Should CRUD attributes group', () => {
-    const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
-    const mockGroupForDeleteName = MOCK_ATTRIBUTES_GROUP_FOR_DELETE.name[0].value;
-    const createdGroupName = 'new_group';
-    const updatedGroupName = 'updated_group';
-    const fakeName = 'f';
+    const mockGroupName = getTestLangField(mockData.attributesGroupWineFeatures.name);
+    const mockGroupForDeleteName = getTestLangField(mockData.attributesGroupForDelete.name);
+    const createdGroupName = faker.commerce.department();
+    const updatedGroupName = faker.commerce.department();
+    const fakeName = faker.random.alpha();
 
     cy.getByCy(`create-attributes-group`).click();
     cy.getByCy(`attributes-group-modal`).should('exist');
@@ -76,10 +76,10 @@ describe('Attributes Groups', () => {
   });
 
   it('Should CRUD attribute in group', () => {
-    const mockGroupName = MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name[0].value;
-    const mockOptionsGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
-    const mockAttributeNewName = 'new_attribute';
-    const updatedAttributeName = 'updated_attribute';
+    const mockGroupName = getTestLangField(mockData.attributesGroupWineFeatures.name);
+    const mockOptionsGroupName = getTestLangField(mockData.optionsGroupColors.name);
+    const mockAttributeNewName = faker.commerce.department();
+    const updatedAttributeName = faker.commerce.department();
 
     // Shouldn't create attribute in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();

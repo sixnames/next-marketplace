@@ -1,4 +1,9 @@
 import {
+  ADMIN_EMAIL,
+  ADMIN_LAST_NAME,
+  ADMIN_NAME,
+  ADMIN_PASSWORD,
+  ADMIN_PHONE,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
@@ -28,12 +33,12 @@ import {
 // Users
 export const ME_AS_ADMIN = {
   id: 'adminBro',
-  email: 'admin@gmail.com',
-  password: 'admin',
-  name: 'Admin',
-  secondName: 'Secondname',
-  lastName: 'Lastname',
-  phone: '+79990002233',
+  email: ADMIN_EMAIL,
+  password: ADMIN_PASSWORD,
+  name: ADMIN_NAME,
+  secondName: 'SecondName',
+  lastName: ADMIN_LAST_NAME,
+  phone: ADMIN_PHONE,
 };
 
 export const MOCK_COMPANY_OWNER = {

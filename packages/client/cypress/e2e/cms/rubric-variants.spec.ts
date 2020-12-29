@@ -1,9 +1,12 @@
 /// <reference types="cypress" />
-import { DEFAULT_LANG, MOCK_RUBRIC_VARIANT_ALCOHOL, MOCK_RUBRIC_VARIANT_JUICE } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
+import * as faker from 'faker';
 
 describe('Rubric variants', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/rubric-variants`);
   });
 
@@ -12,9 +15,9 @@ describe('Rubric variants', () => {
   });
 
   it(`Should CRUD rubric variant`, () => {
-    const mockRubricVariantName = MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value;
-    const mockRubricVariantNameForDelete = MOCK_RUBRIC_VARIANT_JUICE.name[0].value;
-    const mockNewRubricVariantName = 'new_variant';
+    const mockRubricVariantName = getTestLangField(mockData.rubricVariantAlcohol.name);
+    const mockRubricVariantNameForDelete = getTestLangField(mockData.rubricVariantJuice.name);
+    const mockNewRubricVariantName = faker.commerce.department();
 
     // Shouldn't create new rubric variant on validation error
     cy.getByCy('rubric-variant-create').click();

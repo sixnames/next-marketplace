@@ -10,6 +10,7 @@ import {
 const newEmail = 'new-email@email.com';
 const newSiteDefaultTitle = 'new default title';
 
+// TODO
 describe('Site configs', () => {
   beforeEach(() => {
     cy.createTestData();

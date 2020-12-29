@@ -22,8 +22,8 @@ describe('Companies list', () => {
     const newCompanyName = faker.commerce.productName();
     const newCompanyEmailA = faker.internet.email();
     const newCompanyEmailB = faker.internet.email();
-    const newCompanyPhoneA = `7${faker.phone.phoneNumberFormat()}`;
-    const newCompanyPhoneB = `7${faker.phone.phoneNumberFormat()}`;
+    const newCompanyPhoneA = `8${faker.phone.phoneNumberFormat()}`;
+    const newCompanyPhoneB = `5${faker.phone.phoneNumberFormat()}`;
 
     cy.getByCy('companies-list').should('exist');
     cy.getByCy('company-create').click();

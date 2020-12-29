@@ -4,66 +4,81 @@ import {
   createInitialTestData,
   CreateInitialTestDataPayloadInterface,
 } from './createInitialTestData';
-import {
-  MOCK_COMPANY_MANAGER,
-  MOCK_COMPANY_OWNER,
-  MOCK_SAMPLE_USER,
-  MOCK_SAMPLE_USER_B,
-} from '@yagu/shared';
+import * as faker from 'faker';
 
 export interface CreateTestUsersPayloadInterface extends CreateInitialTestDataPayloadInterface {
   sampleUser: User;
+  sampleUserPassword: string;
   sampleUserB: User;
+  sampleUserBPassword: string;
   companyOwner: User;
+  companyOwnerPassword: string;
   companyManager: User;
+  companyManagerPassword: string;
 }
 
 export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface> => {
   // Initial data
   const initialTestData = await createInitialTestData();
-  const { initialRolesIds } = initialTestData;
+  const { guestRole, companyOwnerRole, companyManagerRole } = initialTestData;
+
+  const getUserBase = () => ({
+    email: faker.internet.email(),
+    name: faker.name.firstName(),
+    secondName: faker.name.middleName(),
+    lastName: faker.name.lastName(),
+    phone: `7${faker.phone.phoneNumberFormat()}`,
+  });
 
   // Sample user
-  const sampleUserPassword = await hash(MOCK_SAMPLE_USER.password, 10);
+  const sampleUserPassword = 'sample';
+  const sampleUserPasswordHash = await hash(sampleUserPassword, 10);
   const sampleUser = await UserModel.create({
-    ...MOCK_SAMPLE_USER,
-    role: initialRolesIds.guestRoleId,
-    password: sampleUserPassword,
+    ...getUserBase(),
+    role: guestRole.id,
+    password: sampleUserPasswordHash,
     orders: [],
   });
 
   // Sample user B
-  const sampleUserBPassword = await hash(MOCK_SAMPLE_USER_B.password, 10);
+  const sampleUserBPassword = 'sampleB';
+  const sampleUserBPasswordHash = await hash(sampleUserBPassword, 10);
   const sampleUserB = await UserModel.create({
-    ...MOCK_SAMPLE_USER_B,
-    role: initialRolesIds.guestRoleId,
-    password: sampleUserBPassword,
+    ...getUserBase(),
+    role: guestRole.id,
+    password: sampleUserBPasswordHash,
     orders: [],
   });
 
   // Company owner
-  const companyOwnerPassword = await hash(MOCK_COMPANY_OWNER.password, 10);
+  const companyOwnerPassword = 'owner';
+  const companyOwnerPasswordHash = await hash(companyOwnerPassword, 10);
   const companyOwner = await UserModel.create({
-    ...MOCK_COMPANY_OWNER,
-    role: initialRolesIds.companyOwnerRoleId,
-    password: companyOwnerPassword,
+    ...getUserBase(),
+    role: companyOwnerRole.id,
+    password: companyOwnerPasswordHash,
     orders: [],
   });
 
   // Company manager
-  const companyManagerPassword = await hash(MOCK_COMPANY_MANAGER.password, 10);
+  const companyManagerPassword = 'manager';
+  const companyManagerPasswordHash = await hash(companyManagerPassword, 10);
   const companyManager = await UserModel.create({
-    ...MOCK_COMPANY_MANAGER,
-    role: initialRolesIds.companyManagerRoleId,
-    password: companyManagerPassword,
+    ...getUserBase(),
+    role: companyManagerRole.id,
+    password: companyManagerPasswordHash,
     orders: [],
   });
 
   return {
     ...initialTestData,
     sampleUser,
-    companyOwner,
-    companyManager,
+    sampleUserPassword,
     sampleUserB,
+    sampleUserBPassword,
+    companyOwner,
+    companyOwnerPassword,
+    companyManager,
+    companyManagerPassword,
   };
 };

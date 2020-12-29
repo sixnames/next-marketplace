@@ -33,42 +33,6 @@ export const ME_AS_ADMIN = {
   phone: ADMIN_PHONE,
 };
 
-export const MOCK_COMPANY_OWNER = {
-  email: 'company.owner@gmail.com',
-  password: 'owner',
-  name: 'Owner',
-  secondName: 'Secondname',
-  lastName: 'Lastname',
-  phone: '+79990002234',
-};
-
-export const MOCK_COMPANY_MANAGER = {
-  email: 'company.manager@gmail.com',
-  password: 'manager',
-  name: 'Manager',
-  secondName: 'Secondname',
-  lastName: 'Lastname',
-  phone: '+79990002235',
-};
-
-export const MOCK_SAMPLE_USER = {
-  email: 'sample.user@gmail.com',
-  password: 'sample',
-  name: 'Sample',
-  secondName: 'Secondname',
-  lastName: 'Lastname',
-  phone: '+79990002236',
-};
-
-export const MOCK_SAMPLE_USER_B = {
-  email: 'sampleb.user@gmail.com',
-  password: 'sampleB',
-  name: 'SampleB',
-  secondName: 'SecondnameB',
-  lastName: 'LastnameB',
-  phone: '+79990002237',
-};
-
 // Addresses
 export const MOCK_ADDRESS_A = {
   formattedAddress: 'Ленинградский пр-т., 35 строение 5, Москва, Россия, 125284',

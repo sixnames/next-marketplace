@@ -25,7 +25,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const getUserBase = () => ({
     email: faker.internet.email(),
     name: faker.name.firstName(),
-    secondName: faker.name.middleName(),
+    secondName: faker.name.lastName(),
     lastName: faker.name.lastName(),
     phone: `7${faker.phone.phoneNumberFormat()}`,
   });

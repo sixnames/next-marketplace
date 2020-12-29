@@ -178,7 +178,7 @@ export class ConfigResolver {
       }
 
       for await (const oldAsset of defaultCity.translations[0].value) {
-        await removeUpload(`.${oldAsset}`);
+        await removeUpload(oldAsset);
       }
 
       const assetsResult = await storeUploads({

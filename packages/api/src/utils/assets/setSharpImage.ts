@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
+import path from 'path';
 
 export type StoreFileFormat = 'jpg' | 'png' | 'svg' | 'webp';
 
@@ -22,11 +23,14 @@ export async function setSharpImage({
   height,
 }: SetSharpImageInterface): Promise<string | null> {
   try {
-    const filesPath = `./assets/${dist}/${slug}`;
+    const sourceImageFilePath = path.join(process.cwd(), sourceImage);
+
     const filesResolvePath = `/assets/${dist}/${slug}`;
     const fileName = `${slug}.${format}`;
     const resolvePath = `${filesResolvePath}/${fileName}`;
-    const finalPath = `${filesPath}/${fileName}`;
+
+    const finalDirPath = path.join(process.cwd(), filesResolvePath);
+    const finalPath = path.join(finalDirPath, fileName);
 
     const exists = fs.existsSync(finalPath);
 
@@ -34,9 +38,14 @@ export async function setSharpImage({
       return resolvePath;
     }
 
-    await mkdirp(filesPath);
+    await mkdirp(finalDirPath);
 
-    let transform = sharp(sourceImage);
+    if (format === 'svg') {
+      fs.copyFileSync(sourceImageFilePath, finalPath);
+      return resolvePath;
+    }
+
+    let transform = sharp(sourceImageFilePath);
 
     if (width || height) {
       transform = transform.resize(width, height);

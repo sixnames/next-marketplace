@@ -10,7 +10,7 @@ import { hash } from 'bcryptjs';
 import createInitialApiMessages from './createInitialApiMessages';
 import {
   createInitialSiteConfigs,
-  CreateInitialSiteConfigsInterface,
+  CreateInitialSiteConfigsPayloadInterface,
 } from './createInitialSiteConfigs';
 import { createInitialRoles, CreateInitialRolesPayloadInterface } from './createInitialRoles';
 import {
@@ -24,7 +24,7 @@ import {
 } from './createInitialOrderStatuses';
 
 export interface CreateInitialDataPayloadInterface
-  extends CreateInitialSiteConfigsInterface,
+  extends CreateInitialSiteConfigsPayloadInterface,
     CreateInitialLocalizationDataPayloadInterface,
     CreateInitialOrderStatuses {
   initialRolesIds: CreateInitialRolesPayloadInterface;

@@ -9,8 +9,6 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_CITY,
-  DEFAULT_COUNTRY,
-  DEFAULT_CURRENCY,
   DEFAULT_LANG,
   DEFAULT_PRIORITY,
   GENDER_HE,
@@ -25,8 +23,6 @@ import {
   RUBRIC_LEVEL_THREE,
   RUBRIC_LEVEL_TWO,
   SECONDARY_CITY,
-  SECONDARY_COUNTRY,
-  SECONDARY_CURRENCY,
   SECONDARY_LANG,
 } from '../config';
 
@@ -201,34 +197,13 @@ export const ISO_LANGUAGES = [
   },
 ];
 
-// Currency
-export const INITIAL_CURRENCIES = [{ nameString: DEFAULT_CURRENCY }];
-export const MOCK_CURRENCIES = [...INITIAL_CURRENCIES, { nameString: SECONDARY_CURRENCY }];
-
-// Countries and cities
-export const INITIAL_COUNTRIES = [{ nameString: DEFAULT_COUNTRY }];
-export const MOCK_COUNTRIES = [...INITIAL_COUNTRIES, { nameString: SECONDARY_COUNTRY }];
-
-export const INITIAL_CITIES = [
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'Москва' },
-      { key: SECONDARY_LANG, value: 'Moscow' },
-    ],
-    slug: DEFAULT_CITY,
-  },
-];
-
-export const MOCK_CITIES = [
-  ...INITIAL_CITIES,
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'Нью Йорк' },
-      { key: SECONDARY_LANG, value: 'New York' },
-    ],
-    slug: SECONDARY_CITY,
-  },
-];
+export const SECONDARY_CITY_OBJ = {
+  name: [
+    { key: DEFAULT_LANG, value: 'Нью Йорк' },
+    { key: SECONDARY_LANG, value: 'New York' },
+  ],
+  slug: SECONDARY_CITY,
+};
 
 // Languages
 export const INITIAL_LANGUAGES = [
@@ -240,180 +215,12 @@ export const INITIAL_LANGUAGES = [
   },
 ];
 
-export const MOCK_LANGUAGES = [
-  ...INITIAL_LANGUAGES,
-  {
-    key: SECONDARY_LANG,
-    name: 'Английский',
-    nativeName: 'en',
-    isDefault: false,
-  },
-];
-
-export const MOCK_METRICS = [
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'км/ч' },
-      { key: SECONDARY_LANG, value: 'km/h' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'мм' },
-      { key: SECONDARY_LANG, value: 'mm' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'шт.' },
-      { key: SECONDARY_LANG, value: 'units' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'м2' },
-      { key: SECONDARY_LANG, value: 'm2' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'мест' },
-      { key: SECONDARY_LANG, value: 'places' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'км' },
-      { key: SECONDARY_LANG, value: 'km' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'кВт' },
-      { key: SECONDARY_LANG, value: 'kw' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'р.' },
-      { key: SECONDARY_LANG, value: 'rub.' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'лет' },
-      { key: SECONDARY_LANG, value: 'years' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'см' },
-      { key: SECONDARY_LANG, value: 'cm' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: '%' },
-      { key: SECONDARY_LANG, value: '%' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'м' },
-      { key: SECONDARY_LANG, value: 'm' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'часов' },
-      { key: SECONDARY_LANG, value: 'hours' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'кг' },
-      { key: SECONDARY_LANG, value: 'kg' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'чел.' },
-      { key: SECONDARY_LANG, value: 'people' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'м/с' },
-      { key: SECONDARY_LANG, value: 'm/s' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'год' },
-      { key: SECONDARY_LANG, value: 'year' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'мин.' },
-      { key: SECONDARY_LANG, value: 'minutes' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'ед.' },
-      { key: SECONDARY_LANG, value: 'units' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'мл.' },
-      { key: SECONDARY_LANG, value: 'ml' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'л/ч.' },
-      { key: SECONDARY_LANG, value: 'p/h' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'Hz' },
-      { key: SECONDARY_LANG, value: 'Hz' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'Вт' },
-      { key: SECONDARY_LANG, value: 'Wt' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: '°' },
-      { key: SECONDARY_LANG, value: '°' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: '°C' },
-      { key: SECONDARY_LANG, value: '°C' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'кд/м2' },
-      { key: SECONDARY_LANG, value: 'kd/m2' },
-    ],
-  },
-  {
-    name: [
-      { key: DEFAULT_LANG, value: 'м3/ч' },
-      { key: SECONDARY_LANG, value: 'm3/h' },
-    ],
-  },
-];
+export const SECONDARY_LANGUAGES_OBJ = {
+  key: SECONDARY_LANG,
+  name: 'Английский',
+  nativeName: 'en',
+  isDefault: false,
+};
 
 // Options
 export const MOCK_OPTIONS_VINTAGE = [

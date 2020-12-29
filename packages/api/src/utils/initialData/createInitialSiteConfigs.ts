@@ -1,8 +1,5 @@
 import { setSharpImage, StoreFileFormat } from '../assets/setSharpImage';
 import { Config, ConfigModel, ConfigVariantEnum } from '../../entities/Config';
-// import fs from 'fs';
-// import mkdirp from 'mkdirp';
-// import path from 'path';
 import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_LANG } from '@yagu/shared';
 
 type FindOrCreateConfigTemplate = Pick<
@@ -23,10 +20,7 @@ async function findOrCreateConfig(configTemplate: FindOrCreateConfigTemplate): P
     return entityExists;
   }
 
-  const config = ConfigModel.create({
-    ...configTemplate,
-    variant: configTemplate.variant as ConfigVariantEnum,
-  });
+  const config = ConfigModel.create(configTemplate);
 
   if (!config) {
     throw Error('Error in findOrCreateConfig');

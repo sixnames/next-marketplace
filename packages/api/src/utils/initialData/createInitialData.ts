@@ -28,8 +28,8 @@ export interface CreateInitialDataPayloadInterface
   extends CreateInitialSiteConfigsPayloadInterface,
     CreateInitialLocalizationDataPayloadInterface,
     CreateInitialApiMessagesPayloadInterface,
-    CreateInitialOrderStatuses {
-  initialRolesIds: CreateInitialRolesPayloadInterface;
+    CreateInitialOrderStatuses,
+    CreateInitialRolesPayloadInterface {
   admin: User;
 }
 
@@ -71,8 +71,8 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
     ...localizationPayload,
     ...initialOrderStatuses,
     ...initialApiMessages,
+    ...initialRolesIds,
     admin,
-    initialRolesIds,
   };
 }
 

@@ -179,20 +179,6 @@ export const SECONDARY_LANGUAGES_OBJ = {
 };
 
 // Rubrics
-export const MOCK_RUBRIC_VARIANT_ALCOHOL = {
-  name: [
-    { key: DEFAULT_LANG, value: 'Алкоголь' },
-    { key: SECONDARY_LANG, value: 'Alcohol' },
-  ],
-};
-
-export const MOCK_RUBRIC_VARIANT_JUICE = {
-  name: [
-    { key: DEFAULT_LANG, value: 'Соки' },
-    { key: SECONDARY_LANG, value: 'Juice' },
-  ],
-};
-
 export const MOCK_RUBRIC_LEVEL_ONE = {
   name: [
     { key: DEFAULT_LANG, value: 'Вино' },

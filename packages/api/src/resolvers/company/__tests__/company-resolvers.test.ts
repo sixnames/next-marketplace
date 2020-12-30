@@ -1,11 +1,11 @@
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { omit } from 'lodash';
 import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_CITY, MOCK_ADDRESS_A, MOCK_NEW_COMPANY, MOCK_NEW_SHOP } from '@yagu/shared';
+import { DEFAULT_CITY, MOCK_ADDRESS_A } from '@yagu/shared';
+import { fakerEn, getFakePhone } from '../../../utils/testUtils/fakerLocales';
 
 describe('Company', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -87,6 +87,7 @@ describe('Company', () => {
     expect(getCompany.id).toEqual(mockData.companyA.id);
 
     // Should create company
+    const newCompanyName = 'newCompanyName';
     const createCompanyPayload = await mutateWithImages({
       mutation: gql`
         mutation CreateCompany($input: CreateCompanyInput!) {
@@ -119,10 +120,14 @@ describe('Company', () => {
       `,
       input: (images) => {
         return {
-          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          nameString: newCompanyName,
           logo: images,
           owner: mockData.sampleUser.id,
           staff: [],
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
         };
       },
     });
@@ -143,10 +148,14 @@ describe('Company', () => {
       `,
       input: (images) => {
         return {
-          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          nameString: newCompanyName,
           logo: images,
           owner: mockData.sampleUser.id,
           staff: [],
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
         };
       },
     });
@@ -164,7 +173,10 @@ describe('Company', () => {
       `,
       input: (images) => {
         return {
-          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
           nameString: 'n',
           logo: images,
           owner: mockData.sampleUser.id,
@@ -192,7 +204,10 @@ describe('Company', () => {
       `,
       input: (images) => {
         return {
-          ...omit(MOCK_NEW_COMPANY, 'slug'),
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
           nameString: companyNewName,
           logo: images,
           owner: mockData.sampleUser.id,
@@ -231,11 +246,14 @@ describe('Company', () => {
         const [logo, ...assets] = images;
         return {
           companyId: updatedCompany.id,
-          nameString: MOCK_NEW_SHOP.nameString,
           city: DEFAULT_CITY,
-          contacts: MOCK_NEW_SHOP.contacts,
+          nameString: fakerEn.commerce.productName(),
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
           address: {
-            formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
+            formattedAddress: MOCK_ADDRESS_A.formattedAddress,
             point: MOCK_ADDRESS_A.point,
           },
           logo: [logo],
@@ -285,9 +303,12 @@ describe('Company', () => {
           shopId: createdShop.id,
           nameString: shopNewName,
           city: DEFAULT_CITY,
-          contacts: MOCK_NEW_SHOP.contacts,
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
           address: {
-            formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
+            formattedAddress: MOCK_ADDRESS_A.formattedAddress,
             point: MOCK_ADDRESS_A.point,
           },
           logo: [logo],

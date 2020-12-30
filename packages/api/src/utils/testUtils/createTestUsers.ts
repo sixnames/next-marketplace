@@ -5,6 +5,7 @@ import {
   CreateInitialTestDataPayloadInterface,
 } from './createInitialTestData';
 import * as faker from 'faker';
+import { getFakePhone } from './fakerLocales';
 
 export interface CreateTestUsersPayloadInterface extends CreateInitialTestDataPayloadInterface {
   sampleUser: User;
@@ -27,7 +28,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
     name: faker.name.firstName(),
     secondName: faker.name.lastName(),
     lastName: faker.name.lastName(),
-    phone: `7${faker.phone.phoneNumberFormat()}`,
+    phone: getFakePhone(),
   });
 
   // Sample user

@@ -228,3 +228,27 @@ export const ORDER_STATUS_NEW = 'new';
 export const ORDER_STATUS_CONFIRMED = 'confirmed';
 export const ORDER_STATUS_DONE = 'done';
 export const ORDER_STATUS_CANCELED = 'canceled';
+
+// LANGUAGES
+export const ISO_LANGUAGES = [
+  {
+    id: DEFAULT_LANG,
+    nameString: 'Russian',
+    nativeName: 'ru',
+  },
+  {
+    id: SECONDARY_LANG,
+    nameString: 'English',
+    nativeName: 'en',
+  },
+  {
+    id: 'ua-UA',
+    nameString: 'Украинский',
+    nativeName: 'ua',
+  },
+  {
+    id: 'pl',
+    nameString: 'Польский',
+    nativeName: 'pl',
+  },
+];

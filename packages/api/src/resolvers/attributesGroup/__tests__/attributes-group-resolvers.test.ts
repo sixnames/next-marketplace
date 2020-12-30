@@ -1,13 +1,16 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
-import { attributesGroup, anotherAttributesGroup, attributeForGroup } from '../__fixtures__';
 import { gql } from 'apollo-server-express';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { createTestAttributes } from '../../../utils/testUtils/createTestAttributes';
+import {
+  createTestAttributes,
+  CreateTestAttributesPayloadInterface,
+} from '../../../utils/testUtils/createTestAttributes';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LANG,
-  MOCK_ATTRIBUTES_GROUP_WINE_FEATURES,
 } from '@yagu/shared';
+import { fakerRu } from '../../../utils/testUtils/fakerLocales';
 
 interface AddAttributeToGroupMutationInterface {
   groupId: string;
@@ -17,8 +20,8 @@ interface AddAttributeToGroupMutationInterface {
 
 const addAttributeToGroupMutation = ({
   groupId,
-  name = attributeForGroup.name[0].value,
-  variant = attributeForGroup.variant,
+  name = fakerRu.commerce.productMaterial(),
+  variant = ATTRIBUTE_VARIANT_STRING,
 }: AddAttributeToGroupMutationInterface) => {
   return {
     mutation: gql`
@@ -60,8 +63,9 @@ const addAttributeToGroupMutation = ({
 };
 
 describe('Attributes Groups', () => {
+  let mockData: CreateTestAttributesPayloadInterface;
   beforeEach(async () => {
-    await createTestAttributes();
+    mockData = await createTestAttributes();
   });
 
   afterEach(async () => {
@@ -78,6 +82,10 @@ describe('Attributes Groups', () => {
         getAllAttributesGroups {
           id
           nameString
+          attributes {
+            id
+            nameString
+          }
         }
       }
     `);
@@ -138,7 +146,7 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: MOCK_ATTRIBUTES_GROUP_WINE_FEATURES.name,
+            name: mockData.attributesGroupWineFeaturesName,
           },
         },
       },
@@ -146,6 +154,8 @@ describe('Attributes Groups', () => {
     expect(createDuplicateAttributesGroupSuccess).toBeFalsy();
 
     // Should create attributes group.
+    const newAttributesGroupName = fakerRu.commerce.department();
+    const newAttributesGroupTranslation = [{ key: DEFAULT_LANG, value: newAttributesGroupName }];
     const {
       data: { createAttributesGroup },
     } = await mutate<any>(
@@ -163,15 +173,19 @@ describe('Attributes Groups', () => {
       {
         variables: {
           input: {
-            name: attributesGroup.name,
+            name: newAttributesGroupTranslation,
           },
         },
       },
     );
     expect(createAttributesGroup.success).toBeTruthy();
-    expect(createAttributesGroup.group.nameString).toEqual(attributesGroup.name[0].value);
+    expect(createAttributesGroup.group.nameString).toEqual(newAttributesGroupName);
 
     // Should update attributes group.
+    const updatedAttributesGroupName = fakerRu.commerce.department();
+    const updatedAttributesGroupTranslation = [
+      { key: DEFAULT_LANG, value: updatedAttributesGroupName },
+    ];
     const {
       data: { updateAttributesGroup },
     } = await mutate<any>(
@@ -190,19 +204,19 @@ describe('Attributes Groups', () => {
         variables: {
           input: {
             id: createAttributesGroup.group.id,
-            name: anotherAttributesGroup.name,
+            name: updatedAttributesGroupTranslation,
           },
         },
       },
     );
     expect(updateAttributesGroup.success).toBeTruthy();
     expect(updateAttributesGroup.group.id).toEqual(createAttributesGroup.group.id);
-    expect(updateAttributesGroup.group.nameString).toEqual(anotherAttributesGroup.name[0].value);
+    expect(updateAttributesGroup.group.nameString).toEqual(updatedAttributesGroupName);
 
     // Shouldn't create attribute and return validation error.
     const addAttributeToGroupErrorsArgs = addAttributeToGroupMutation({
       groupId: group.id,
-      name: 'f',
+      name: fakerRu.random.alpha(),
     });
     const { errors: addAttributeToGroupErrors } = await mutate<any>(
       addAttributeToGroupErrorsArgs.mutation,
@@ -211,29 +225,29 @@ describe('Attributes Groups', () => {
     expect(addAttributeToGroupErrors).toBeDefined();
 
     // Should create attribute and add it to the group.
-    const addAttributeToGroupMutationArgs = addAttributeToGroupMutation({ groupId: group.id });
+    const newAttributeName = fakerRu.commerce.productMaterial();
+    const addAttributeToGroupMutationArgs = addAttributeToGroupMutation({
+      groupId: group.id,
+      name: newAttributeName,
+    });
     const {
-      data: {
-        addAttributeToGroup: {
-          group: { attributes },
-          success,
-        },
-      },
+      data: { addAttributeToGroup },
     } = await mutate<any>(
       addAttributeToGroupMutationArgs.mutation,
       addAttributeToGroupMutationArgs.options,
     );
-    const addedAttribute = attributes.find((attribute: any) => {
-      return attribute.nameString === attributeForGroup.name[0].value;
+    const addedAttribute = addAttributeToGroup.group.attributes.find((attribute: any) => {
+      return attribute.nameString === newAttributeName;
     });
 
-    expect(success).toBeTruthy();
-    expect(attributes.length).toEqual(5);
+    const newAttributesLength = group.attributes.length + 1;
+    expect(addAttributeToGroup.success).toBeTruthy();
+    expect(addAttributeToGroup.group.attributes).toHaveLength(newAttributesLength);
     expect(addedAttribute).toBeDefined();
-    expect(addedAttribute.variant).toEqual(attributeForGroup.variant);
 
     // Should update attribute in the group.
-    const newName = 'attributes_group_name_new';
+    const newName = fakerRu.commerce.productMaterial();
+    const newPositioningInTitle = [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }];
     const {
       data: {
         updateAttributeInGroup: { group: updatedGroup },
@@ -266,7 +280,7 @@ describe('Attributes Groups', () => {
             attributeId: addedAttribute.id,
             name: [{ key: DEFAULT_LANG, value: newName }],
             variant: addedAttribute.variant,
-            positioningInTitle: [{ key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN }],
+            positioningInTitle: newPositioningInTitle,
           },
         },
       },
@@ -276,9 +290,7 @@ describe('Attributes Groups', () => {
     );
     expect(updateAttributeInGroup.success).toBeTruthy();
     expect(updatedAttribute.nameString).toEqual(newName);
-    expect(updatedAttribute.positioningInTitle).toEqual([
-      { key: DEFAULT_LANG, value: ATTRIBUTE_POSITION_IN_TITLE_BEGIN },
-    ]);
+    expect(updatedAttribute.positioningInTitle).toEqual(newPositioningInTitle);
 
     // Should delete attribute from the group.
     const {
@@ -308,7 +320,7 @@ describe('Attributes Groups', () => {
         }
       `);
     expect(successAfterAttributeDelete).toBeTruthy();
-    expect(groupAfterAttributeDelete.attributes.length).toEqual(4);
+    expect(groupAfterAttributeDelete.attributes.length).toEqual(newAttributesLength - 1);
 
     // Should delete attributes group.
     const {

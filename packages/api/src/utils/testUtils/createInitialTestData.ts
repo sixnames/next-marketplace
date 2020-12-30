@@ -8,7 +8,7 @@ import {
   SECONDARY_CURRENCY,
   SECONDARY_LANG,
 } from '@yagu/shared';
-import { CurrencyModel } from '../../entities/Currency';
+import { Currency, CurrencyModel } from '../../entities/Currency';
 import { City, CityModel } from '../../entities/City';
 import { Country, CountryModel } from '../../entities/Country';
 import { Language, LanguageModel } from '../../entities/Language';
@@ -17,6 +17,7 @@ export interface CreateInitialTestDataPayloadInterface extends CreateInitialData
   secondaryCity: City;
   secondaryCountry: Country;
   secondaryLanguage: Language;
+  secondaryCurrency: Currency;
 }
 
 export const createInitialTestData = async (): Promise<CreateInitialTestDataPayloadInterface> => {
@@ -54,5 +55,6 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
     secondaryCity,
     secondaryCountry,
     secondaryLanguage,
+    secondaryCurrency,
   };
 };

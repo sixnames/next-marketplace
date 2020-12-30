@@ -27,29 +27,3 @@ export const MOCK_ADDRESS_B = {
     lng: 37.654028,
   },
 };
-/*
-
-export const SECONDARY_CITY_OBJ = {
-  name: [
-    { key: DEFAULT_LANG, value: 'Нью Йорк' },
-    { key: SECONDARY_LANG, value: 'New York' },
-  ],
-  slug: SECONDARY_CITY,
-};
-
-export const INITIAL_LANGUAGES = [
-  {
-    key: DEFAULT_LANG,
-    name: 'Русский',
-    nativeName: 'ru',
-    isDefault: true,
-  },
-];
-
-export const SECONDARY_LANGUAGES_OBJ = {
-  key: SECONDARY_LANG,
-  name: 'Английский',
-  nativeName: 'en',
-  isDefault: false,
-};
-*/

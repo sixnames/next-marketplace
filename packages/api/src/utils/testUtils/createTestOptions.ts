@@ -52,6 +52,7 @@ export interface CreateTestOptionsInterface extends CreateTestUsersPayloadInterf
 export const createTestOptions = async (): Promise<CreateTestOptionsInterface> => {
   // Users
   const usersPayload = await createTestUsers();
+
   const genderHe = GENDER_HE as GenderEnum;
   const genderShe = GENDER_SHE as GenderEnum;
   const genderIt = GENDER_IT as GenderEnum;

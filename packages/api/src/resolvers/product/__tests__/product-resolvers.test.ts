@@ -267,17 +267,17 @@ describe('Product', () => {
     `);
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];
-    const rubricLevelTree = rubricLevelTwo.children[0];
+    const rubricLevelThree = rubricLevelTwo.children[0];
     expect(getProduct.id).toEqual(productA.id);
     expect(getProduct.nameString).toEqual(productA.nameString);
 
     // Should create product connection
     const currentAttributesGroup = productA.attributesGroups.find(({ attributes }: any) => {
-      return attributes.find(({ node }: any) => node.slug === mockData.attributeWineType.slug);
+      return attributes.find(({ node }: any) => node.slug === mockData.attributeWineVariant.slug);
     });
 
     const currentAttribute = currentAttributesGroup.attributes.find(({ node }: any) => {
-      return node.slug === mockData.attributeWineType.slug;
+      return node.slug === mockData.attributeWineVariant.slug;
     });
 
     const createConnectionResult = await mutate<any>(
@@ -620,7 +620,7 @@ describe('Product', () => {
           cardName: newProduct.cardName,
           originalName: newProduct.originalName,
           description: newProduct.description,
-          rubrics: [rubricLevelTree.id],
+          rubrics: [rubricLevelThree.id],
           manufacturer: mockData.manufacturerA.slug,
           assets: images,
           ...productAttributes,
@@ -635,7 +635,7 @@ describe('Product', () => {
     expect(createdProduct.nameString).toEqual(newProductName);
     expect(createdProduct.cardNameString).toEqual(newProductName);
     expect(createdProduct.descriptionString).toEqual(newProductDescription);
-    expect(createdProduct.rubrics).toEqual([rubricLevelTree.id]);
+    expect(createdProduct.rubrics).toEqual([rubricLevelThree.id]);
     expect(createdProduct.manufacturer.id).toEqual(mockData.manufacturerA.id);
     expect(createdProduct.assets).toHaveLength(3);
 
@@ -703,7 +703,7 @@ describe('Product', () => {
           cardName: updateProductValues.cardName,
           originalName: updateProductValues.originalName,
           description: updateProductValues.description,
-          rubrics: [rubricLevelTree.id],
+          rubrics: [rubricLevelThree.id],
           assets: images,
           active: true,
           ...productAttributes,
@@ -718,7 +718,7 @@ describe('Product', () => {
     expect(updatedProduct.nameString).toEqual(updateProductValuesName);
     expect(updatedProduct.cardNameString).toEqual(updateProductValuesName);
     expect(updatedProduct.descriptionString).toEqual(updateProductValuesDescription);
-    expect(updatedProduct.rubrics).toEqual([rubricLevelTree.id]);
+    expect(updatedProduct.rubrics).toEqual([rubricLevelThree.id]);
 
     // Should delete product
     const {

@@ -234,8 +234,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: rubricAttributesGroups(true),
   });
 
-  const rubricLevelTwoADefaultName = fakerRu.commerce.department();
-  const rubricLevelTwoASecondaryName = fakerRu.commerce.department();
+  const rubricLevelTwoADefaultName = 'rubricLevelTwoADefaultName';
+  const rubricLevelTwoASecondaryName = 'rubricLevelTwoASecondaryName';
   const rubricLevelTwoAName = [
     { key: DEFAULT_LANG, value: rubricLevelTwoADefaultName },
     { key: SECONDARY_LANG, value: rubricLevelTwoASecondaryName },
@@ -264,8 +264,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: rubricAttributesGroups(false),
   });
 
-  const rubricLevelThreeAADefaultName = fakerRu.commerce.department();
-  const rubricLevelThreeAASecondaryName = fakerRu.commerce.department();
+  const rubricLevelThreeAADefaultName = 'rubricLevelThreeAADefaultName';
+  const rubricLevelThreeAASecondaryName = 'rubricLevelThreeAASecondaryName';
   const rubricLevelThreeAAName = [
     { key: DEFAULT_LANG, value: rubricLevelThreeAADefaultName },
     { key: SECONDARY_LANG, value: rubricLevelThreeAASecondaryName },
@@ -294,8 +294,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: rubricAttributesGroups(false),
   });
 
-  const rubricLevelThreeABDefaultName = fakerRu.commerce.department();
-  const rubricLevelThreeABSecondaryName = fakerRu.commerce.department();
+  const rubricLevelThreeABDefaultName = 'rubricLevelThreeABDefaultName';
+  const rubricLevelThreeABSecondaryName = 'rubricLevelThreeABSecondaryName';
   const rubricLevelThreeABName = [
     { key: DEFAULT_LANG, value: rubricLevelThreeABDefaultName },
     { key: SECONDARY_LANG, value: rubricLevelThreeABSecondaryName },
@@ -324,8 +324,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: rubricAttributesGroups(false),
   });
 
-  const rubricLevelTwoBDefaultName = fakerRu.commerce.department();
-  const rubricLevelTwoBSecondaryName = fakerRu.commerce.department();
+  const rubricLevelTwoBDefaultName = 'rubricLevelTwoBDefaultName';
+  const rubricLevelTwoBSecondaryName = 'rubricLevelTwoBSecondaryName';
   const rubricLevelTwoBName = [
     { key: DEFAULT_LANG, value: rubricLevelTwoBDefaultName },
     { key: SECONDARY_LANG, value: rubricLevelTwoBSecondaryName },
@@ -354,8 +354,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
   });
 
-  const rubricLevelThreeBADefaultName = fakerRu.commerce.department();
-  const rubricLevelThreeBASecondaryName = fakerRu.commerce.department();
+  const rubricLevelThreeBADefaultName = 'rubricLevelThreeBADefaultName';
+  const rubricLevelThreeBASecondaryName = 'rubricLevelThreeBASecondaryName';
   const rubricLevelThreeBAName = [
     { key: DEFAULT_LANG, value: rubricLevelThreeBADefaultName },
     { key: SECONDARY_LANG, value: rubricLevelThreeBASecondaryName },
@@ -384,8 +384,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
   });
 
-  const rubricLevelThreeBBDefaultName = fakerRu.commerce.department();
-  const rubricLevelThreeBBSecondaryName = fakerRu.commerce.department();
+  const rubricLevelThreeBBDefaultName = 'rubricLevelThreeBBDefaultName';
+  const rubricLevelThreeBBSecondaryName = 'rubricLevelThreeBBSecondaryName';
   const rubricLevelThreeBBName = [
     { key: DEFAULT_LANG, value: rubricLevelThreeBBDefaultName },
     { key: SECONDARY_LANG, value: rubricLevelThreeBBSecondaryName },

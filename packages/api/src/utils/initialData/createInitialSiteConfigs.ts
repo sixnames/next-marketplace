@@ -175,7 +175,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
         'Данное поле будет добавлено в атрибуты og:image и twitter:image если страница не имеет таковых. Нужно для корректного отображения ссылки при отправке в соцсетях и чатах.',
       order: 5,
       multi: false,
-      acceptedFormats: ['image/svg+xml'],
+      acceptedFormats: ['image/jpeg'],
       cities: [],
     },
   });

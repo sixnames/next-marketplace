@@ -8,8 +8,13 @@ import { NavItemModel } from '../../../entities/NavItem';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, OPERATION_TYPE_READ, ROLE_SLUG_ADMIN, ROLE_SLUG_GUEST } from '@yagu/shared';
-import { cmsRoute } from '../../../utils/initialData/createInitialRoles';
+import {
+  cmsRoute,
+  DEFAULT_LANG,
+  OPERATION_TYPE_READ,
+  ROLE_SLUG_ADMIN,
+  ROLE_SLUG_GUEST,
+} from '@yagu/shared';
 
 describe('Roles', () => {
   beforeEach(async () => {

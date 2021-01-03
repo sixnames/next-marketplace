@@ -1,19 +1,13 @@
 /// <reference types="cypress" />
-import {
-  DEFAULT_CITY,
-  DEFAULT_LANG,
-  SECONDARY_CITY,
-  SECONDARY_LANG,
-  SITE_CONFIGS_INITIAL,
-} from '@yagu/shared';
+import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/shared';
 
 const newEmail = 'new-email@email.com';
 const newSiteDefaultTitle = 'new default title';
 
-// TODO
 describe('Site configs', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/config`);
   });
 
@@ -38,7 +32,7 @@ describe('Site configs', () => {
     cy.getByCy('site-configs').should('exist');
 
     // pageDefaultTitle config
-    const pageDefaultTitleConfig = SITE_CONFIGS_INITIAL.find(
+    const pageDefaultTitleConfig = mockData.allConfigs.find(
       ({ slug }: any) => slug === 'pageDefaultTitle',
     );
 
@@ -69,7 +63,7 @@ describe('Site configs', () => {
     cy.shouldNotError();
 
     // email config with multiple values
-    const emailConfig = SITE_CONFIGS_INITIAL.find(({ slug }: any) => slug === 'contactEmail');
+    const emailConfig = mockData.allConfigs.find(({ slug }: any) => slug === 'contactEmail');
 
     if (!emailConfig) {
       throw Error('emailConfig not found');

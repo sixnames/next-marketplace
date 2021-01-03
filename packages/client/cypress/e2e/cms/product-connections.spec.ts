@@ -19,7 +19,7 @@ describe('Product connections', () => {
     const mockGroup = mockData.attributesGroupWineFeatures;
     const mockGroupName = getTestLangField(mockGroup.name);
 
-    const mockAttribute = mockData.attributeWineType;
+    const mockAttribute = mockData.attributeWineVariant;
     const mockAttributeName = getTestLangField(mockAttribute.name);
 
     const mockRubricLevelThree = mockData.rubricLevelThreeAA;

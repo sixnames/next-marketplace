@@ -1,12 +1,14 @@
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
 import { DEFAULT_LANG } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
 
 const newRoleName = 'newRoleName';
 const newRoleDescription = 'newRoleName vary long description';
 
 describe('User roles', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/roles${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -58,7 +60,9 @@ describe('User roles', () => {
   });
 
   it('Should have role details', () => {
-    cy.getByCy(`role-Админ`).click();
+    const adminRoleName = getTestLangField(mockData.adminRole.name);
+
+    cy.getByCy(`role-${adminRoleName}`).click();
     cy.visitMoreNavLink('details');
     cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(newRoleName);
     cy.getByCy('description').clear().type(newRoleDescription);
@@ -69,7 +73,9 @@ describe('User roles', () => {
   });
 
   it('Should have role navigation config', () => {
-    cy.getByCy(`role-Админ`).click();
+    const adminRoleName = getTestLangField(mockData.adminRole.name);
+
+    cy.getByCy(`role-${adminRoleName}`).click();
     cy.visitMoreNavLink('app-navigation');
     cy.getByCy('Главная-checkbox').uncheck();
     cy.shouldSuccess();

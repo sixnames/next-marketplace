@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 import { ISO_LANGUAGES } from '@yagu/shared';
 
-// TODO
 describe('Languages', () => {
   beforeEach(() => {
     cy.createTestData();

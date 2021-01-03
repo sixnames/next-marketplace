@@ -1,9 +1,6 @@
 /// <reference types="cypress" />
 import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/shared';
 
-const newEmail = 'new-email@email.com';
-const newSiteDefaultTitle = 'new default title';
-
 describe('Site configs', () => {
   let mockData: any;
   beforeEach(() => {
@@ -29,19 +26,19 @@ describe('Site configs', () => {
   });
 
   it('Should update not asset configs', () => {
+    const newEmail = 'new-email@email.com';
+    const newSiteDefaultTitle = 'new default title';
+
     cy.getByCy('site-configs').should('exist');
 
     // pageDefaultTitle config
-    const pageDefaultTitleConfig = mockData.allConfigs.find(
-      ({ slug }: any) => slug === 'pageDefaultTitle',
-    );
-
-    if (!pageDefaultTitleConfig) {
+    const pageDefaultTitleConfigSlug = mockData.configPageDefaultTitle?.slug;
+    if (!pageDefaultTitleConfigSlug) {
       throw Error('pageDefaultTitleConfig not found');
     }
 
-    const pageDefaultTitleDefaultCityTestId = `${pageDefaultTitleConfig.slug}-${DEFAULT_CITY}`;
-    const pageDefaultTitleSecondaryCityTestId = `${pageDefaultTitleConfig.slug}-${SECONDARY_CITY}`;
+    const pageDefaultTitleDefaultCityTestId = `${pageDefaultTitleConfigSlug}-${DEFAULT_CITY}`;
+    const pageDefaultTitleSecondaryCityTestId = `${pageDefaultTitleConfigSlug}-${SECONDARY_CITY}`;
     cy.getByCy(pageDefaultTitleDefaultCityTestId).click();
     cy.getByCy(`${pageDefaultTitleDefaultCityTestId}-${DEFAULT_LANG}-0`)
       .clear()
@@ -59,29 +56,29 @@ describe('Site configs', () => {
     cy.getByCy(`${pageDefaultTitleSecondaryCityTestId}-${SECONDARY_LANG}-0`)
       .clear()
       .type(newSiteDefaultTitle);
-    cy.getByCy(`${pageDefaultTitleConfig.slug}-submit`).click();
+    cy.getByCy(`${pageDefaultTitleConfigSlug}-submit`).click();
     cy.shouldNotError();
 
     // email config with multiple values
-    const emailConfig = mockData.allConfigs.find(({ slug }: any) => slug === 'contactEmail');
+    const emailConfigSlug = mockData.configContactEmail?.slug;
 
-    if (!emailConfig) {
+    if (!emailConfigSlug) {
       throw Error('emailConfig not found');
     }
 
-    const emailDefaultCityTestId = `${emailConfig.slug}-${DEFAULT_CITY}`;
+    const emailDefaultCityTestId = `${emailConfigSlug}-${DEFAULT_CITY}`;
     cy.getByCy(emailDefaultCityTestId).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-0`).clear().type(newEmail);
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-0-add`).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1`).clear().type(newEmail);
-    cy.getByCy(`${emailConfig.slug}-submit`).click();
+    cy.getByCy(`${emailConfigSlug}-submit`).click();
     cy.shouldNotError();
 
     // remove second email
     cy.getByCy(emailDefaultCityTestId).click();
     cy.getByCy(`${emailDefaultCityTestId}-${DEFAULT_LANG}-1-remove`).click();
     cy.getByCy('confirm').click();
-    cy.getByCy(`${emailConfig.slug}-submit`).click();
+    cy.getByCy(`${emailConfigSlug}-submit`).click();
     cy.shouldNotError();
   });
 });

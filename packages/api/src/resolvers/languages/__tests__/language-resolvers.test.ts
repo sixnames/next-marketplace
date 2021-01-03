@@ -1,13 +1,17 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { Language } from '../../../entities/Language';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, ISO_LANGUAGES, MOCK_LANGUAGES } from '@yagu/shared';
+import { DEFAULT_LANG, ISO_LANGUAGES } from '@yagu/shared';
 
 describe('Language', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -45,7 +49,9 @@ describe('Language', () => {
         }
       }
     `);
-    expect(getAllLanguages).toHaveLength(MOCK_LANGUAGES.length);
+    expect(getAllLanguages).toHaveLength(
+      [mockData.defaultLanguage, mockData.secondaryLanguage].length,
+    );
     expect(getISOLanguagesOptions).toHaveLength(ISO_LANGUAGES.length);
 
     // Should return current language

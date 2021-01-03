@@ -43,8 +43,8 @@ describe('Products', () => {
       mockData.attributesGroupWineFeatures.name,
     );
 
-    const mockAttributeSelectName = getTestLangField(mockData.attributeWineType.name);
-    const mockAttributeSelectValue = getTestLangField(mockData.optionsWineType[0].name);
+    const mockAttributeSelectName = getTestLangField(mockData.attributeWineVariant.name);
+    const mockAttributeSelectValue = mockData.optionsWineVariant[0].slug;
 
     const mockAttributeStringName = getTestLangField(mockData.attributeString.name);
     const mockAttributeNumberName = getTestLangField(mockData.attributeNumber.name);

@@ -22,7 +22,7 @@ describe('Catalogue filter', () => {
     const wineRubricTitleGender = wineRubricTitle.gender;
 
     const mockAttributeWineColorSlug = mockData.attributeWineColor.slug;
-    const mockAttributeWineTypeSlug = mockData.attributeWineType.slug;
+    const mockAttributeWineVariantSlug = mockData.attributeWineVariant.slug;
 
     const colorOptionIndex = 1;
     const mockWineColorOption = mockData.optionsColor[colorOptionIndex];
@@ -36,7 +36,7 @@ describe('Catalogue filter', () => {
     const mockWineColorOptionVariantValue = getTestLangField(mockWineColorOptionFinalVariant);
 
     const variantOptionIndex = 2;
-    const mockWineVariantOption = mockData.optionsWineType[variantOptionIndex];
+    const mockWineVariantOption = mockData.optionsWineVariant[variantOptionIndex];
     const mockWineVariantOptionSlug = mockWineVariantOption.slug;
     const mockWineVariantOptionVariant = mockWineVariantOption.variants.find(
       ({ key }: any) => key === wineRubricTitleGender,
@@ -62,7 +62,7 @@ describe('Catalogue filter', () => {
       matchCase: false,
     });
 
-    cy.getByCy(`${mockAttributeWineTypeSlug}-${mockWineVariantOptionSlug}`).click();
+    cy.getByCy(`${mockAttributeWineVariantSlug}-${mockWineVariantOptionSlug}`).click();
     cy.getByCy('catalogue-title').contains(mockWineVariantOptionVariantValue, { matchCase: false });
   });
 });

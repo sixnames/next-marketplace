@@ -8,12 +8,17 @@ import { phoneToRaw, phoneToReadable } from '../../utils/phoneUtils';
 export class ContactsResolver {
   @FieldResolver((_returns) => [FormattedPhone])
   async formattedPhones(@Root() contacts: DocumentType<Contacts>): Promise<FormattedPhone[]> {
-    const { phones } = contacts;
-    return phones.map((phone) => {
-      return {
-        raw: phoneToRaw(phone),
-        readable: phoneToReadable(phone),
-      };
-    });
+    try {
+      const { phones } = contacts;
+      return phones.map((phone) => {
+        return {
+          raw: phoneToRaw(phone),
+          readable: phoneToReadable(phone),
+        };
+      });
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
   }
 }

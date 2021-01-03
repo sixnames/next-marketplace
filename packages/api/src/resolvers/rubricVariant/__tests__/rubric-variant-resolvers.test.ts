@@ -1,13 +1,18 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { RubricVariant } from '../../../entities/RubricVariant';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, MOCK_RUBRIC_VARIANT_ALCOHOL } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
+import {
+  createTestRubricVariants,
+  CreateTestRubricVariantsInterface,
+} from '../../../utils/testUtils/createTestRubricVariants';
+import { fakerRu } from '../../../utils/testUtils/fakerLocales';
 
 describe('Rubric variant', () => {
+  let mockData: CreateTestRubricVariantsInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestRubricVariants();
   });
 
   afterEach(async () => {
@@ -60,7 +65,7 @@ describe('Rubric variant', () => {
       {
         variables: {
           input: {
-            name: [{ key: DEFAULT_LANG, value: MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value }],
+            name: [{ key: DEFAULT_LANG, value: mockData.rubricVariantAlcoholDefaultName }],
           },
         },
       },
@@ -68,7 +73,7 @@ describe('Rubric variant', () => {
     expect(createRubricVariantWithDuplicateError.success).toBeFalsy();
 
     // Should create rubric variant
-    const newRubricVariantName = 'new';
+    const newRubricVariantName = fakerRu.commerce.department();
     const {
       data: { createRubricVariant },
     } = await mutate<any>(
@@ -129,7 +134,7 @@ describe('Rubric variant', () => {
     expect(getRubricVariant.id).toEqual(currentRubricVariant.id);
 
     // Should update rubric variant
-    const updatedRubricVariantName = 'newName';
+    const updatedRubricVariantName = fakerRu.commerce.department();
     const {
       data: { updateRubricVariant },
     } = await mutate<any>(

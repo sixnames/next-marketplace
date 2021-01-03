@@ -1,4 +1,3 @@
-import { anotherRubric, testProduct, testRubric } from '../__fixtures__';
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import getLangField from '../../../utils/translations/getLangField';
 import { generateTestProductAttributes } from '../../../utils/testUtils/generateTestProductAttributes';
@@ -8,7 +7,9 @@ import createTestData, {
   CreateTestDataPayloadInterface,
 } from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG } from '@yagu/shared';
+import { DEFAULT_LANG, GENDER_IT, SECONDARY_LANG } from '@yagu/shared';
+import { fakerRu } from '../../../utils/testUtils/fakerLocales';
+import faker from 'faker';
 
 describe('Rubrics', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -27,21 +28,15 @@ describe('Rubrics', () => {
     // Should return rubrics tree
     const rubricsTreePayload = await query<any>(gql`
       query {
-        getAllRubricVariants {
-          id
-          nameString
-        }
-        getAllAttributesGroups {
-          id
-          nameString
-        }
         getRubricsTree {
           id
+          slug
           nameString
           totalProductsCount
           activeProductsCount
           children {
             id
+            slug
             nameString
             totalProductsCount
             activeProductsCount
@@ -63,6 +58,7 @@ describe('Rubrics', () => {
             }
             children {
               id
+              slug
               nameString
               totalProductsCount
               activeProductsCount
@@ -78,289 +74,320 @@ describe('Rubrics', () => {
     `);
 
     const {
-      data: { getRubricsTree, getAllRubricVariants, getAllAttributesGroups },
+      data: { getRubricsTree },
     } = rubricsTreePayload;
-    const attributesGroup = getAllAttributesGroups[0];
+    expect(getRubricsTree.length).toEqual(
+      [
+        mockData.rubricLevelOneA,
+        mockData.rubricLevelOneB,
+        mockData.rubricLevelOneC,
+        mockData.rubricLevelOneD,
+      ].length,
+    );
+
     const rubricLevelOne = getRubricsTree[0];
     const rubricLevelTwo = rubricLevelOne.children[0];
     const rubricLevelThree = rubricLevelTwo.children[0];
-    const rubricLevelTreeForNewProduct = rubricLevelTwo.children[1];
-    expect(getRubricsTree.length).toEqual(4);
-    expect(rubricLevelOne.nameString).toEqual(
-      getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
-    );
-    expect(rubricLevelOne.children.length).toEqual(2);
-    expect(rubricLevelTwo.nameString).toEqual(
-      getLangField(mockData.rubricLevelTwoA.name, DEFAULT_LANG),
-    );
+    const rubricLevelThreeForNewProduct = mockData.rubricLevelThreeAB;
 
     // Should return current rubric and it's products
-    const { data } = await query<any>(gql`
-      query {
-        getRubric(id: "${rubricLevelOne.id}") {
-          id
-          slug
-          nameString
-          catalogueTitleString {
-            defaultTitle
-            prefix
-            keyword
-            gender
-          }
-          products {
-            totalDocs
-            page
-            totalPages
-            activeProductsCount
-            docs {
-              id
-              rubrics
-              itemId
-              nameString
-              price
-              slug
-              mainImage
-              active
+    const getRubricPayload = await query<any>(
+      gql`
+        query GetRubric($id: ID!) {
+          getRubric(id: $id) {
+            id
+            slug
+            nameString
+            catalogueTitleString {
+              defaultTitle
+              prefix
+              keyword
+              gender
+            }
+            products {
+              totalDocs
+              page
+              totalPages
+              activeProductsCount
+              docs {
+                id
+                rubrics
+                itemId
+                nameString
+                price
+                slug
+                mainImage
+                active
+              }
             }
           }
         }
-      }
-    `);
-    expect(data.getRubric.id).toEqual(rubricLevelOne.id);
-    expect(data.getRubric.nameString).toEqual(
+      `,
+      {
+        variables: {
+          id: rubricLevelOne.id,
+        },
+      },
+    );
+    expect(getRubricPayload.data.getRubric.id).toEqual(rubricLevelOne.id);
+    expect(getRubricPayload.data.getRubric.nameString).toEqual(
       getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
     );
-    expect(data.getRubric.products.docs).toBeDefined();
+    expect(getRubricPayload.data.getRubric.products.docs).toBeDefined();
 
     // Should return current rubric by slug
-    const {
-      data: { getRubricBySlug },
-    } = await query<any>(gql`
-      query {
-        getRubricBySlug(slug: "${data.getRubric.slug}") {
-          id
-          nameString
-          catalogueTitleString {
-            defaultTitle
-            prefix
-            keyword
-            gender
+    const getRubricBySlugPayload = await query<any>(
+      gql`
+        query GetRubricBySlug($slug: String!) {
+          getRubricBySlug(slug: $slug) {
+            id
+            nameString
+            catalogueTitleString {
+              defaultTitle
+              prefix
+              keyword
+              gender
+            }
           }
         }
-      }
-    `);
-    expect(getRubricBySlug.id).toEqual(rubricLevelOne.id);
-    expect(getRubricBySlug.nameString).toEqual(
-      getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG),
+      `,
+      {
+        variables: {
+          slug: rubricLevelOne.slug,
+        },
+      },
+    );
+    expect(getRubricBySlugPayload.data.getRubricBySlug.id).toEqual(rubricLevelOne.id);
+    expect(getRubricBySlugPayload.data.getRubricBySlug.nameString).toEqual(
+      mockData.rubricLevelOneADefaultName,
     );
 
     // Should return duplicate rubric error on rubric create
     const { mutate } = await authenticatedTestClient();
-    const duplicateName = getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG);
-    const { data: exists } = await mutate<any>(gql`
-      mutation {
-        createRubric(
-          input: {
-            name: [{key: "${DEFAULT_LANG}", value: "${duplicateName}"}]
-            catalogueTitle: {
-              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
-              prefix: [],
-              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
-            }
-            variant: "${getAllRubricVariants[0].id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-          }
-        }
-      }
-    `);
-    expect(exists.createRubric.success).toBeFalsy();
-
-    // Should create rubric
-    const {
-      data: { createRubric },
-    } = await mutate<any>(gql`
-      mutation {
-        createRubric(
-          input: {
-            name: [{key: "${DEFAULT_LANG}", value: "${testRubric.name}"}]
-            catalogueTitle: {
-              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
-              prefix: [],
-              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
-            }
-            variant: "${getAllRubricVariants[0].id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-            catalogueTitleString {
-              defaultTitle
-              prefix
-              keyword
-              gender
-            }
-            variant {
+    const { data: exists } = await mutate<any>(
+      gql`
+        mutation CreateRubric($input: CreateRubricInput!) {
+          createRubric(input: $input) {
+            success
+            message
+            rubric {
               id
               nameString
             }
           }
         }
-      }
-    `);
-    expect(createRubric.success).toBeTruthy();
-    expect(createRubric.rubric.nameString).toEqual(testRubric.name);
-
-    // Should return duplicate rubric error on rubric update
-    const duplicateNameOnUpdate = getLangField(mockData.rubricLevelOneA.name, DEFAULT_LANG);
-    const {
-      data: { updateRubric: falseUpdateRubric },
-    } = await mutate<any>(gql`
-      mutation {
-        updateRubric(
+      `,
+      {
+        variables: {
           input: {
-            id: "${createRubric.rubric.id}"
-            name: [{key: "${DEFAULT_LANG}", value: "${duplicateNameOnUpdate}"}]
+            name: mockData.rubricLevelOneAName,
             catalogueTitle: {
-              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
+              defaultTitle: [],
               prefix: [],
-              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
-            }
-            variant: "${createRubric.rubric.variant.id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-          }
-        }
-      }
-    `);
-    expect(falseUpdateRubric.success).toBeFalsy();
-
-    // Should update rubric
-    const {
-      data: { updateRubric },
-    } = await mutate<any>(gql`
-      mutation {
-        updateRubric(
-          input: {
-            id: "${createRubric.rubric.id}"
-            name: [{key: "${DEFAULT_LANG}", value: "${anotherRubric.name}"}]
-            catalogueTitle: {
-              defaultTitle: [{key: "${DEFAULT_LANG}", value: "test"}],
-              prefix: [],
-              keyword: [{key: "${DEFAULT_LANG}", value: "test"}],
-              gender: ${mockData.rubricLevelOneA.catalogueTitle.gender},
-            }
-            variant: "${createRubric.rubric.variant.id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-            catalogueTitleString {
-              defaultTitle
-              prefix
-              keyword
-              gender
-            }
-          }
-        }
-      }
-    `);
-    expect(updateRubric.success).toBeTruthy();
-    expect(updateRubric.rubric.nameString).toEqual(anotherRubric.name);
-
-    // Should add attributes group to the second level rubric
-    const {
-      data: {
-        addAttributesGroupToRubric: { rubric, success },
+              keyword: [],
+              gender: mockData.rubricLevelOneA.catalogueTitle.gender,
+            },
+            variant: mockData.rubricVariantAlcohol.id,
+          },
+        },
       },
-    } = await mutate<any>(gql`
-      mutation {
-        addAttributesGroupToRubric(
-          input: {
-            rubricId: "${rubricLevelTwo.id}"
-            attributesGroupId: "${attributesGroup.id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-            level
-            attributesGroups {
-              showInCatalogueFilter
-              isOwner
-              node {
+    );
+    expect(exists.createRubric.success).toBeFalsy();
+
+    // Should create rubric
+    const newRubricName = fakerRu.commerce.department();
+    const createRubricPayload = await mutate<any>(
+      gql`
+        mutation CreateRubric($input: CreateRubricInput!) {
+          createRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+              catalogueTitleString {
+                defaultTitle
+                prefix
+                keyword
+                gender
+              }
+              variant {
                 id
                 nameString
-                attributes {
+              }
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            name: [{ key: DEFAULT_LANG, value: newRubricName }],
+            catalogueTitle: {
+              defaultTitle: [{ key: DEFAULT_LANG, value: newRubricName }],
+              prefix: [],
+              keyword: [{ key: DEFAULT_LANG, value: newRubricName }],
+              gender: GENDER_IT,
+            },
+            variant: mockData.rubricVariantAlcohol.id,
+          },
+        },
+      },
+    );
+    const {
+      data: { createRubric },
+    } = createRubricPayload;
+    expect(createRubric.success).toBeTruthy();
+    expect(createRubric.rubric.nameString).toEqual(newRubricName);
+
+    // Should return duplicate rubric error on rubric update
+    const updateRubricErrorPayload = await mutate<any>(
+      gql`
+        mutation UpdateRubric($input: UpdateRubricInput!) {
+          updateRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: createRubric.rubric.id,
+            name: mockData.rubricLevelOneAName,
+            catalogueTitle: {
+              defaultTitle: [],
+              prefix: [],
+              keyword: [],
+              gender: GENDER_IT,
+            },
+            variant: mockData.rubricVariantAlcohol.id,
+          },
+        },
+      },
+    );
+    expect(updateRubricErrorPayload.data.updateRubric.success).toBeFalsy();
+
+    // Should update rubric
+    const rubricNewName = 'rubricNewName';
+    const updateRubricPayload = await mutate<any>(
+      gql`
+        mutation UpdateRubric($input: UpdateRubricInput!) {
+          updateRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+            }
+          }
+        }
+      `,
+      {
+        variables: {
+          input: {
+            id: createRubric.rubric.id,
+            name: [{ key: DEFAULT_LANG, value: rubricNewName }],
+            catalogueTitle: {
+              defaultTitle: [],
+              prefix: [],
+              keyword: [],
+              gender: GENDER_IT,
+            },
+            variant: mockData.rubricVariantAlcohol.id,
+          },
+        },
+      },
+    );
+    const {
+      data: { updateRubric },
+    } = updateRubricPayload;
+    expect(updateRubric.success).toBeTruthy();
+    expect(updateRubric.rubric.nameString).toEqual(rubricNewName);
+
+    // Should add attributes group to the second level rubric
+    const rubricNewAttributesGroupId = mockData.attributesGroupForDelete.id;
+    const {
+      data: { addAttributesGroupToRubric },
+    } = await mutate<any>(
+      gql`
+        mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
+          addAttributesGroupToRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+              level
+              attributesGroups {
+                showInCatalogueFilter
+                isOwner
+                node {
                   id
+                  nameString
+                  attributes {
+                    id
+                  }
                 }
               }
             }
           }
         }
-      }
-    `);
-
-    const { attributesGroups } = rubric;
-    const addedAttributesGroup = attributesGroups.find((group: any) => {
-      return group.node.id === attributesGroup.id;
-    });
-    expect(success).toBeTruthy();
+      `,
+      {
+        variables: {
+          input: {
+            rubricId: rubricLevelTwo.id,
+            attributesGroupId: rubricNewAttributesGroupId,
+          },
+        },
+      },
+    );
+    expect(addAttributesGroupToRubric.success).toBeTruthy();
 
     // Should update attributes group in rubric
-    const {
-      data: { updateAttributesGroupInRubric },
-    } = await mutate<any>(gql`
-      mutation {
-        updateAttributesGroupInRubric(
-          input: {
-            rubricId: "${rubricLevelTwo.id}"
-            attributesGroupId: "${attributesGroup.id}"
-            attributeId: "${addedAttributesGroup.showInCatalogueFilter[0]}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-            level
-            attributesGroups {
-              showInCatalogueFilter
-              node {
-                id
-                nameString
+    const updateAttributesGroupInRubricPayload = await mutate<any>(
+      gql`
+        mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
+          updateAttributesGroupInRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+              level
+              attributesGroups {
+                showInCatalogueFilter
+                node {
+                  id
+                  nameString
+                }
               }
             }
           }
         }
-      }
-    `);
+      `,
+      {
+        variables: {
+          input: {
+            rubricId: rubricLevelTwo.id,
+            attributesGroupId: rubricNewAttributesGroupId,
+            attributeId: mockData.attributesGroupForDelete.attributes[0].toString(),
+          },
+        },
+      },
+    );
+    const {
+      data: { updateAttributesGroupInRubric },
+    } = updateAttributesGroupInRubricPayload;
     expect(updateAttributesGroupInRubric.success).toBeTruthy();
     const updatedGroup: any = updateAttributesGroupInRubric.rubric.attributesGroups.find(
       ({ node }: any) => {
-        return node.id === attributesGroup.id;
+        return node.id === mockData.attributesGroupForDelete.id;
       },
     );
     expect(updatedGroup.showInCatalogueFilter).toHaveLength(1);
@@ -368,36 +395,58 @@ describe('Rubrics', () => {
     // Should delete attributes group from rubric
     const {
       data: { deleteAttributesGroupFromRubric },
-    } = await mutate<any>(gql`
-      mutation {
-        deleteAttributesGroupFromRubric(
-          input: {
-            rubricId: "${rubricLevelTwo.id}"
-            attributesGroupId: "${attributesGroup.id}"
-          }
-        ) {
-          success
-          message
-          rubric {
-            id
-            nameString
-            level
-            attributesGroups {
-              node {
-                id
-                nameString
+    } = await mutate<any>(
+      gql`
+        mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
+          deleteAttributesGroupFromRubric(input: $input) {
+            success
+            message
+            rubric {
+              id
+              nameString
+              level
+              attributesGroups {
+                node {
+                  id
+                  nameString
+                }
               }
             }
           }
         }
-      }
-    `);
+      `,
+      {
+        variables: {
+          input: {
+            rubricId: rubricLevelTwo.id,
+            attributesGroupId: rubricNewAttributesGroupId,
+          },
+        },
+      },
+    );
     expect(deleteAttributesGroupFromRubric.success).toBeTruthy();
 
     // Should add product to the third level rubric
     const productAttributes = generateTestProductAttributes({ rubric: rubricLevelTwo });
 
     // Create new product for rubric.
+    const newProductName = faker.commerce.productName();
+    const newProductDescription = faker.commerce.productDescription();
+    const newProduct = {
+      name: [
+        { key: DEFAULT_LANG, value: newProductName },
+        { key: SECONDARY_LANG, value: newProductName },
+      ],
+      cardName: [
+        { key: DEFAULT_LANG, value: newProductName },
+        { key: SECONDARY_LANG, value: newProductName },
+      ],
+      originalName: newProductName,
+      description: [
+        { key: DEFAULT_LANG, value: newProductDescription },
+        { key: SECONDARY_LANG, value: newProductDescription },
+      ],
+    };
     const {
       data: { createProduct },
     } = await mutateWithImages({
@@ -413,13 +462,12 @@ describe('Rubrics', () => {
           }`,
       input: (images: Promise<Upload>[]) => {
         return {
-          name: testProduct.name,
-          cardName: testProduct.cardName,
-          originalName: testProduct.originalName,
-          price: testProduct.price,
-          description: testProduct.description,
-          rubrics: [rubricLevelTreeForNewProduct.id],
-          manufacturer: mockData.manufacturerA.id,
+          name: newProduct.name,
+          cardName: newProduct.cardName,
+          originalName: newProduct.originalName,
+          description: newProduct.description,
+          rubrics: [rubricLevelThreeForNewProduct.id],
+          manufacturer: mockData.manufacturerA.slug,
           assets: images,
           ...productAttributes,
         };

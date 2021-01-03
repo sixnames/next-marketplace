@@ -190,7 +190,7 @@ export class RubricResolver {
         name: input.name,
         priority: DEFAULT_PRIORITY,
         catalogueTitle: input.catalogueTitle,
-        slug: generateDefaultLangSlug(input.catalogueTitle.defaultTitle),
+        slug: generateDefaultLangSlug(input.name),
         attributesGroups: [],
         ...parentRelatedData,
       });
@@ -236,7 +236,7 @@ export class RubricResolver {
         };
       }
 
-      const { catalogueTitle, parent, name } = values;
+      const { parent, name } = values;
 
       const nameValues = name.map(({ value }) => value);
       const exists = await RubricModel.exists({
@@ -259,7 +259,7 @@ export class RubricResolver {
         },
         {
           ...values,
-          slug: generateDefaultLangSlug(catalogueTitle.defaultTitle),
+          slug: generateDefaultLangSlug(name),
         },
         {
           new: true,
@@ -461,7 +461,7 @@ export class RubricResolver {
       }
 
       const currentAttributesGroup = rubric.attributesGroups.find((group) => {
-        return group.node === attributesGroupId;
+        return group.node.toString() === attributesGroupId.toString();
       });
 
       if (!currentAttributesGroup) {

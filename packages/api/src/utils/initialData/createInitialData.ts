@@ -7,28 +7,29 @@ import {
 } from '../../config';
 import { User, UserModel } from '../../entities/User';
 import { hash } from 'bcryptjs';
-import createInitialApiMessages from './createInitialApiMessages';
+import createInitialApiMessages, {
+  CreateInitialApiMessagesPayloadInterface,
+} from './createInitialApiMessages';
 import {
   createInitialSiteConfigs,
-  CreateInitialSiteConfigsInterface,
+  CreateInitialSiteConfigsPayloadInterface,
 } from './createInitialSiteConfigs';
 import { createInitialRoles, CreateInitialRolesPayloadInterface } from './createInitialRoles';
 import {
   createInitialLocalizationData,
   CreateInitialLocalizationDataPayloadInterface,
 } from './createInitialLocalizationData';
-import { MessagesGroup } from '../../entities/MessagesGroup';
 import {
   CreateInitialOrderStatuses,
   creteInitialOrderStatuses,
 } from './createInitialOrderStatuses';
 
 export interface CreateInitialDataPayloadInterface
-  extends CreateInitialSiteConfigsInterface,
+  extends CreateInitialSiteConfigsPayloadInterface,
     CreateInitialLocalizationDataPayloadInterface,
-    CreateInitialOrderStatuses {
-  initialRolesIds: CreateInitialRolesPayloadInterface;
-  initialApiMessages: MessagesGroup[];
+    CreateInitialApiMessagesPayloadInterface,
+    CreateInitialOrderStatuses,
+    CreateInitialRolesPayloadInterface {
   admin: User;
 }
 
@@ -47,7 +48,7 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
 
   // Create roles and get admin role
   const initialRolesIds = await createInitialRoles();
-  const { adminRoleId } = initialRolesIds;
+  const { adminRole } = initialRolesIds;
 
   // Create admin user
   let admin = await UserModel.findOne({ email: ADMIN_EMAIL });
@@ -60,7 +61,7 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
       email: ADMIN_EMAIL,
       phone: ADMIN_PHONE,
       password,
-      role: adminRoleId,
+      role: adminRole.id,
       orders: [],
     });
   }
@@ -69,8 +70,8 @@ async function createInitialData(): Promise<CreateInitialDataPayloadInterface> {
     ...configsPayload,
     ...localizationPayload,
     ...initialOrderStatuses,
-    initialRolesIds,
-    initialApiMessages,
+    ...initialApiMessages,
+    ...initialRolesIds,
     admin,
   };
 }

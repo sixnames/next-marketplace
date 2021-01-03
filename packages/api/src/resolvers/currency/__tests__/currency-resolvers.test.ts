@@ -1,12 +1,15 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { MOCK_CURRENCIES } from '@yagu/shared';
 
 describe('Currency', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -28,7 +31,9 @@ describe('Currency', () => {
       }
     `);
     const currentCurrency = getAllCurrencies[0];
-    expect(getAllCurrencies).toHaveLength(MOCK_CURRENCIES.length);
+    expect(getAllCurrencies).toHaveLength(
+      [mockData.defaultCurrency, mockData.secondaryCurrency].length,
+    );
 
     const {
       data: { getCurrency },

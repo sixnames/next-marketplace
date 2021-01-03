@@ -1,21 +1,13 @@
 /// <reference types="cypress" />
 import { QUERY_DATA_LAYOUT_FILTER_ENABLED } from '../../../config';
-import {
-  DEFAULT_LANG,
-  GENDER_HE,
-  GENDER_IT,
-  GENDER_SHE,
-  MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_RUBRIC_LEVEL_TWO_A,
-  MOCK_RUBRIC_VARIANT_ALCOHOL,
-  MOCK_RUBRIC_VARIANT_JUICE,
-  SECONDARY_LANG,
-} from '@yagu/shared';
+import { DEFAULT_LANG, GENDER_HE, GENDER_IT, GENDER_SHE, SECONDARY_LANG } from '@yagu/shared';
+import { getTestLangField } from '../../../utils/getLangField';
+import * as faker from 'faker';
 
 describe('Rubrics', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/rubrics${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -24,10 +16,10 @@ describe('Rubrics', () => {
   });
 
   it('Should validate rubric creation', () => {
-    const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-    const mockRubricLevelTwoName = MOCK_RUBRIC_LEVEL_TWO_A.name[0].value;
-    const mockRubricLevelThreeName = MOCK_RUBRIC_LEVEL_THREE_A_A.name[0].value;
-    const mockRubricType = MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value;
+    const mockRubricLevelOneName = getTestLangField(mockData.rubricLevelOneA.name);
+    const mockRubricLevelTwoName = getTestLangField(mockData.rubricLevelTwoA.name);
+    const mockRubricLevelThreeName = getTestLangField(mockData.rubricLevelThreeAA.name);
+    const mockRubricVariantName = getTestLangField(mockData.rubricVariantAlcohol.name);
 
     // Should show validation errors on new rubric creation
     cy.getByCy(`create-rubric`).click();
@@ -44,7 +36,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
     cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelOneName);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
@@ -57,7 +49,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
     cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelTwoName);
     cy.selectOptionByTestId(`parent`, mockRubricLevelOneName);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
@@ -70,7 +62,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_IT);
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockRubricLevelThreeName);
     cy.getByCy(`rubric-submit`).click();
@@ -79,10 +71,10 @@ describe('Rubrics', () => {
   });
 
   it('Should create new rubrics', () => {
-    const mockRubricType = MOCK_RUBRIC_VARIANT_ALCOHOL.name[0].value;
-    const mockNewRubricA = 'new_rubric_a';
-    const mockNewRubricB = 'new_rubric_b';
-    const mockNewRubricC = 'new_rubric_c';
+    const mockRubricVariantName = getTestLangField(mockData.rubricVariantAlcohol.name);
+    const mockNewRubricA = faker.commerce.department();
+    const mockNewRubricB = faker.commerce.department();
+    const mockNewRubricC = faker.commerce.department();
 
     // Should create a new rubric on first level
     cy.getByCy(`create-rubric`).click();
@@ -90,7 +82,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricA);
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricA);
     cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockNewRubricA);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`tree-link-${mockNewRubricA}`).should('exist');
@@ -100,7 +92,7 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric-modal`).should('exist');
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricB);
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricB);
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricB);
     cy.getByCy(`catalogueTitle-keyword-${DEFAULT_LANG}`).type(mockNewRubricB);
@@ -113,7 +105,7 @@ describe('Rubrics', () => {
     cy.getByCy(`create-rubric-modal`).should('exist');
     cy.selectOptionByTestId(`parent`, mockNewRubricA);
     cy.getByCy(`name-${DEFAULT_LANG}`).type(mockNewRubricC);
-    cy.selectOptionByTestId(`rubric-variant`, mockRubricType);
+    cy.selectOptionByTestId(`rubric-variant`, mockRubricVariantName);
     cy.selectOptionByTestId(`subParent`, mockNewRubricB);
     cy.getByCy(`catalogueTitle-defaultTitle-${DEFAULT_LANG}`).type(mockNewRubricC);
     cy.getByCy(`catalogueTitle-prefix-${DEFAULT_LANG}`).type(mockNewRubricC);
@@ -124,9 +116,9 @@ describe('Rubrics', () => {
   });
 
   it('Should display rubric details tab', () => {
-    const mockRubricLevelOneName = MOCK_RUBRIC_LEVEL_ONE.name[0].value;
-    const mockNewRubric = 'new_rubric_name';
-    const mockRubricVariantName = MOCK_RUBRIC_VARIANT_JUICE.name[0].value;
+    const mockRubricLevelOneName = getTestLangField(mockData.rubricLevelOneA.name);
+    const mockNewRubric = faker.commerce.department();
+    const mockRubricVariantName = getTestLangField(mockData.rubricVariantJuice.name);
 
     // Should have rubric details tab and should update rubric
     cy.getByCy(`tree-link-${mockRubricLevelOneName}`).click();

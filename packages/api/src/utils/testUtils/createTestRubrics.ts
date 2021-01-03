@@ -6,28 +6,58 @@ import {
   CreateTestRubricVariantsInterface,
 } from './createTestRubricVariants';
 import {
-  MOCK_RUBRIC_LEVEL_ONE,
-  MOCK_RUBRIC_LEVEL_ONE_B,
-  MOCK_RUBRIC_LEVEL_ONE_C,
-  MOCK_RUBRIC_LEVEL_ONE_D,
-  MOCK_RUBRIC_LEVEL_THREE_A_A,
-  MOCK_RUBRIC_LEVEL_THREE_A_B,
-  MOCK_RUBRIC_LEVEL_THREE_B_A,
-  MOCK_RUBRIC_LEVEL_THREE_B_B,
-  MOCK_RUBRIC_LEVEL_TWO_A,
-  MOCK_RUBRIC_LEVEL_TWO_B,
+  DEFAULT_LANG,
+  DEFAULT_PRIORITY,
+  GENDER_HE,
+  GENDER_IT,
+  GENDER_SHE,
+  RUBRIC_LEVEL_ONE,
+  RUBRIC_LEVEL_THREE,
+  RUBRIC_LEVEL_TWO,
+  SECONDARY_LANG,
 } from '@yagu/shared';
+import { Translation } from '../../entities/Translation';
+import { fakerEn, fakerRu } from './fakerLocales';
 
 export interface CreateTestRubricsPayloadInterface extends CreateTestRubricVariantsInterface {
+  rubricLevelOneADefaultName: string;
+  rubricLevelOneAName: Translation[];
   rubricLevelOneA: Rubric;
+
+  rubricLevelOneBDefaultName: string;
+  rubricLevelOneBName: Translation[];
   rubricLevelOneB: Rubric;
+
+  rubricLevelOneCDefaultName: string;
+  rubricLevelOneCName: Translation[];
   rubricLevelOneC: Rubric;
+
+  rubricLevelOneDDefaultName: string;
+  rubricLevelOneDName: Translation[];
   rubricLevelOneD: Rubric;
+
+  rubricLevelTwoADefaultName: string;
+  rubricLevelTwoAName: Translation[];
   rubricLevelTwoA: Rubric;
+
+  rubricLevelThreeAADefaultName: string;
+  rubricLevelThreeAAName: Translation[];
   rubricLevelThreeAA: Rubric;
+
+  rubricLevelThreeABDefaultName: string;
+  rubricLevelThreeABName: Translation[];
   rubricLevelThreeAB: Rubric;
+
+  rubricLevelTwoBDefaultName: string;
+  rubricLevelTwoBName: Translation[];
   rubricLevelTwoB: Rubric;
+
+  rubricLevelThreeBADefaultName: string;
+  rubricLevelThreeBAName: Translation[];
   rubricLevelThreeBA: Rubric;
+
+  rubricLevelThreeBBDefaultName: string;
+  rubricLevelThreeBBName: Translation[];
   rubricLevelThreeBB: Rubric;
 }
 
@@ -35,7 +65,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
   const rubricVariantsPayload = await createTestRubricVariants();
   const {
     attributeWineColor,
-    attributeWineType,
+    attributeWineVariant,
     attributesGroupOuterRating,
     attributesGroupWineFeatures,
     attributesGroupWhiskeyFeatures,
@@ -44,7 +74,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
 
   const rubricAttributesGroups = (isOwner: boolean) => [
     {
-      showInCatalogueFilter: [attributeWineColor.id, attributeWineType.id],
+      showInCatalogueFilter: [attributeWineColor.id, attributeWineVariant.id],
       showInSiteNav: true,
       node: attributesGroupWineFeatures.id,
       isOwner,
@@ -72,153 +102,358 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     },
   ];
 
+  const genderHe = GENDER_HE as GenderEnum;
+  const genderShe = GENDER_SHE as GenderEnum;
+  const genderIt = GENDER_IT as GenderEnum;
+
+  const rubricLevelOneADefaultName = 'Вино';
+  const rubricLevelOneAName = [
+    { key: DEFAULT_LANG, value: rubricLevelOneADefaultName },
+    { key: SECONDARY_LANG, value: 'Wine' },
+  ];
   const rubricLevelOneA = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_ONE,
+    name: rubricLevelOneAName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: 'Купить вино' },
+        { key: SECONDARY_LANG, value: 'Buy a wine' },
+      ],
+      prefix: [
+        { key: DEFAULT_LANG, value: 'Купить' },
+        { key: SECONDARY_LANG, value: 'Buy a' },
+      ],
+      keyword: [
+        { key: DEFAULT_LANG, value: 'вино' },
+        { key: SECONDARY_LANG, value: 'wine' },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_ONE,
+    priority: DEFAULT_PRIORITY,
+    parent: null,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelOneAName),
     variant: rubricVariantAlcohol.id,
     attributesGroups: rubricAttributesGroups(true),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_ONE.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_ONE.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelOneBDefaultName = 'Шампанское и игристое';
+  const rubricLevelOneBName = [
+    { key: DEFAULT_LANG, value: rubricLevelOneBDefaultName },
+    { key: SECONDARY_LANG, value: 'Champagne' },
+  ];
   const rubricLevelOneB = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_ONE_B,
+    name: rubricLevelOneBName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: 'Купить шампанское' },
+        { key: SECONDARY_LANG, value: 'Buy a champagne' },
+      ],
+      prefix: [
+        { key: DEFAULT_LANG, value: 'Купить' },
+        { key: SECONDARY_LANG, value: 'Buy a' },
+      ],
+      keyword: [
+        { key: DEFAULT_LANG, value: 'шампанское' },
+        { key: SECONDARY_LANG, value: 'champagne' },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_ONE,
+    priority: DEFAULT_PRIORITY,
+    parent: null,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelOneBName),
     variant: rubricVariantAlcohol.id,
     attributesGroups: rubricAttributesGroups(true),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_ONE_B.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelOneCDefaultName = 'Виски';
+  const rubricLevelOneCName = [
+    { key: DEFAULT_LANG, value: rubricLevelOneCDefaultName },
+    { key: SECONDARY_LANG, value: 'Whiskey' },
+  ];
   const rubricLevelOneC = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_ONE_C,
+    name: rubricLevelOneCName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: 'Купить Виски' },
+        { key: SECONDARY_LANG, value: 'Buy a Whiskey' },
+      ],
+      prefix: [
+        { key: DEFAULT_LANG, value: 'Купить' },
+        { key: SECONDARY_LANG, value: 'Buy a' },
+      ],
+      keyword: [
+        { key: DEFAULT_LANG, value: 'Виски' },
+        { key: SECONDARY_LANG, value: 'Whiskey' },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_ONE,
+    priority: DEFAULT_PRIORITY,
+    parent: null,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelOneCName),
     variant: rubricVariantAlcohol.id,
     attributesGroups: rubricAttributesGroups(true),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_ONE_C.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelOneDDefaultName = 'Коньяк';
+  const rubricLevelOneDName = [
+    { key: DEFAULT_LANG, value: rubricLevelOneDDefaultName },
+    { key: SECONDARY_LANG, value: 'Cognac' },
+  ];
   const rubricLevelOneD = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_ONE_D,
+    name: rubricLevelOneDName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: 'Купить коньяк' },
+        { key: SECONDARY_LANG, value: 'Buy a cognac' },
+      ],
+      prefix: [
+        { key: DEFAULT_LANG, value: 'Купить' },
+        { key: SECONDARY_LANG, value: 'Buy a' },
+      ],
+      keyword: [
+        { key: DEFAULT_LANG, value: 'коньяк' },
+        { key: SECONDARY_LANG, value: 'cognac' },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_ONE,
+    priority: DEFAULT_PRIORITY,
+    parent: null,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelOneDName),
     variant: rubricVariantAlcohol.id,
     attributesGroups: rubricAttributesGroups(true),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_ONE_D.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelTwoADefaultName = 'rubricLevelTwoADefaultName';
+  const rubricLevelTwoASecondaryName = 'rubricLevelTwoASecondaryName';
+  const rubricLevelTwoAName = [
+    { key: DEFAULT_LANG, value: rubricLevelTwoADefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelTwoASecondaryName },
+  ];
   const rubricLevelTwoA = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_TWO_A,
+    name: rubricLevelTwoAName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelTwoADefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelTwoASecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderShe,
+    },
+    level: RUBRIC_LEVEL_TWO,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelTwoAName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelOneA.id,
     attributesGroups: rubricAttributesGroups(false),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_TWO_A.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelThreeAADefaultName = 'rubricLevelThreeAADefaultName';
+  const rubricLevelThreeAASecondaryName = 'rubricLevelThreeAASecondaryName';
+  const rubricLevelThreeAAName = [
+    { key: DEFAULT_LANG, value: rubricLevelThreeAADefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelThreeAASecondaryName },
+  ];
   const rubricLevelThreeAA = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_A_A,
+    name: rubricLevelThreeAAName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelThreeAADefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelThreeAASecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderHe,
+    },
+    level: RUBRIC_LEVEL_THREE,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelThreeAAName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelTwoA.id,
     attributesGroups: rubricAttributesGroups(false),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_THREE_A_A.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelThreeABDefaultName = 'rubricLevelThreeABDefaultName';
+  const rubricLevelThreeABSecondaryName = 'rubricLevelThreeABSecondaryName';
+  const rubricLevelThreeABName = [
+    { key: DEFAULT_LANG, value: rubricLevelThreeABDefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelThreeABSecondaryName },
+  ];
   const rubricLevelThreeAB = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_A_B,
+    name: rubricLevelThreeABName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelThreeABDefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelThreeABSecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderHe,
+    },
+    level: RUBRIC_LEVEL_THREE,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelThreeABName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelTwoA.id,
     attributesGroups: rubricAttributesGroups(false),
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_THREE_A_B.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelTwoBDefaultName = 'rubricLevelTwoBDefaultName';
+  const rubricLevelTwoBSecondaryName = 'rubricLevelTwoBSecondaryName';
+  const rubricLevelTwoBName = [
+    { key: DEFAULT_LANG, value: rubricLevelTwoBDefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelTwoBSecondaryName },
+  ];
   const rubricLevelTwoB = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_TWO_B,
+    name: rubricLevelTwoBName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelTwoBDefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelTwoBSecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderHe,
+    },
+    level: RUBRIC_LEVEL_TWO,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelTwoBName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelOneA.id,
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_TWO_B.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelThreeBADefaultName = 'rubricLevelThreeBADefaultName';
+  const rubricLevelThreeBASecondaryName = 'rubricLevelThreeBASecondaryName';
+  const rubricLevelThreeBAName = [
+    { key: DEFAULT_LANG, value: rubricLevelThreeBADefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelThreeBASecondaryName },
+  ];
   const rubricLevelThreeBA = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_B_A,
+    name: rubricLevelThreeBAName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelThreeBADefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelThreeBASecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_THREE,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelThreeBAName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelTwoB.id,
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_THREE_B_A.catalogueTitle.gender as GenderEnum,
-    },
   });
 
+  const rubricLevelThreeBBDefaultName = 'rubricLevelThreeBBDefaultName';
+  const rubricLevelThreeBBSecondaryName = 'rubricLevelThreeBBSecondaryName';
+  const rubricLevelThreeBBName = [
+    { key: DEFAULT_LANG, value: rubricLevelThreeBBDefaultName },
+    { key: SECONDARY_LANG, value: rubricLevelThreeBBSecondaryName },
+  ];
   const rubricLevelThreeBB = await RubricModel.create({
-    ...MOCK_RUBRIC_LEVEL_THREE_B_B,
+    name: rubricLevelThreeBBName,
+    catalogueTitle: {
+      defaultTitle: [
+        { key: DEFAULT_LANG, value: rubricLevelThreeBBDefaultName },
+        { key: SECONDARY_LANG, value: rubricLevelThreeBBSecondaryName },
+      ],
+      prefix: [],
+      keyword: [
+        { key: DEFAULT_LANG, value: fakerRu.lorem.word() },
+        { key: SECONDARY_LANG, value: fakerEn.lorem.word() },
+      ],
+      gender: genderIt,
+    },
+    level: RUBRIC_LEVEL_THREE,
+    priority: DEFAULT_PRIORITY,
     views: [],
     priorities: [],
-    slug: generateDefaultLangSlug(MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.defaultTitle),
+    slug: generateDefaultLangSlug(rubricLevelThreeBBName),
     variant: rubricVariantAlcohol.id,
     parent: rubricLevelTwoB.id,
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(false)],
-    catalogueTitle: {
-      ...MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle,
-      gender: MOCK_RUBRIC_LEVEL_THREE_B_B.catalogueTitle.gender as GenderEnum,
-    },
   });
 
   return {
     ...rubricVariantsPayload,
+    rubricLevelOneADefaultName,
+    rubricLevelOneAName,
     rubricLevelOneA,
+
+    rubricLevelOneBDefaultName,
+    rubricLevelOneBName,
     rubricLevelOneB,
+
+    rubricLevelOneCDefaultName,
+    rubricLevelOneCName,
     rubricLevelOneC,
+
+    rubricLevelOneDDefaultName,
+    rubricLevelOneDName,
     rubricLevelOneD,
+
+    rubricLevelTwoADefaultName,
+    rubricLevelTwoAName,
     rubricLevelTwoA,
+
+    rubricLevelThreeAADefaultName,
+    rubricLevelThreeAAName,
     rubricLevelThreeAA,
+
+    rubricLevelThreeABDefaultName,
+    rubricLevelThreeABName,
     rubricLevelThreeAB,
+
+    rubricLevelTwoBDefaultName,
+    rubricLevelTwoBName,
     rubricLevelTwoB,
+
+    rubricLevelThreeBADefaultName,
+    rubricLevelThreeBAName,
     rubricLevelThreeBA,
+
+    rubricLevelThreeBBDefaultName,
+    rubricLevelThreeBBName,
     rubricLevelThreeBB,
   };
 };

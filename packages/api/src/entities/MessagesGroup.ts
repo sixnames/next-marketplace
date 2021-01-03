@@ -9,7 +9,7 @@ export class MessagesGroup {
 
   @Field((_type) => String)
   @prop({ type: String, required: true })
-  name: string;
+  nameString: string;
 
   @Field((_type) => [Message])
   @prop({ ref: Message })

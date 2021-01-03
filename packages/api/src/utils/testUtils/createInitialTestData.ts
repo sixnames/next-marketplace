@@ -2,53 +2,59 @@ import createInitialData, {
   CreateInitialDataPayloadInterface,
 } from '../initialData/createInitialData';
 import {
-  createTestSecondaryCity,
-  CreateTestSecondaryCityInterface,
-} from './createTestSecondaryCity';
-import {
-  createTestSecondaryCountry,
-  CreateTestSecondaryCountryPayloadInterface,
-} from './createTestSecondaryCountry';
-import {
-  createTestSecondaryLanguage,
-  CreateTestSecondaryLanguageInterface,
-} from './createTestSecondaryLanguage';
-import { SECONDARY_CURRENCY } from '@yagu/shared';
+  DEFAULT_LANG,
+  SECONDARY_CITY,
+  SECONDARY_COUNTRY,
+  SECONDARY_CURRENCY,
+  SECONDARY_LANG,
+} from '@yagu/shared';
+import { Currency, CurrencyModel } from '../../entities/Currency';
+import { City, CityModel } from '../../entities/City';
+import { Country, CountryModel } from '../../entities/Country';
+import { Language, LanguageModel } from '../../entities/Language';
 
-export interface CreateInitialTestDataPayloadInterface
-  extends CreateInitialDataPayloadInterface,
-    CreateTestSecondaryCityInterface,
-    CreateTestSecondaryCountryPayloadInterface,
-    CreateTestSecondaryLanguageInterface {}
+export interface CreateInitialTestDataPayloadInterface extends CreateInitialDataPayloadInterface {
+  secondaryCity: City;
+  secondaryCountry: Country;
+  secondaryLanguage: Language;
+  secondaryCurrency: Currency;
+}
 
 export const createInitialTestData = async (): Promise<CreateInitialTestDataPayloadInterface> => {
   const initialPayload = await createInitialData();
 
   // Currencies
-  const secondaryCurrency = initialPayload.initialCurrenciesPayload.find(({ nameString }) => {
-    return nameString === SECONDARY_CURRENCY;
-  });
-  if (!secondaryCurrency) {
-    throw Error('secondaryCurrency not fond on createInitialTestData');
-  }
+  const secondaryCurrency = await CurrencyModel.create({ nameString: SECONDARY_CURRENCY });
 
   // Cities
-  const citiesPayload = await createTestSecondaryCity();
-  const { secondaryCity } = citiesPayload;
+  const secondaryCity = await CityModel.create({
+    name: [
+      { key: DEFAULT_LANG, value: 'Нью Йорк' },
+      { key: SECONDARY_LANG, value: 'New York' },
+    ],
+    slug: SECONDARY_CITY,
+  });
 
   // Countries
-  const countriesPayload = await createTestSecondaryCountry({
-    citiesIds: [secondaryCity.id],
-    currencySlug: secondaryCurrency.nameString,
+  const secondaryCountry = await CountryModel.create({
+    nameString: SECONDARY_COUNTRY,
+    cities: [secondaryCity.id],
+    currency: secondaryCurrency.nameString,
   });
 
   // Languages
-  const languagesPayload = await createTestSecondaryLanguage();
+  const secondaryLanguage = await LanguageModel.create({
+    key: SECONDARY_LANG,
+    name: 'English',
+    nativeName: 'en',
+    isDefault: false,
+  });
 
   return {
     ...initialPayload,
-    ...citiesPayload,
-    ...countriesPayload,
-    ...languagesPayload,
+    secondaryCity,
+    secondaryCountry,
+    secondaryLanguage,
+    secondaryCurrency,
   };
 };

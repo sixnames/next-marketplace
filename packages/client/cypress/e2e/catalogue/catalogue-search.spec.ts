@@ -1,8 +1,11 @@
 /// <reference types="cypress" />
 
+import { getTestLangField } from '../../../utils/getLangField';
+
 describe('Catalogue search', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.visit('/');
   });
 
@@ -11,6 +14,7 @@ describe('Catalogue search', () => {
   });
 
   it('Should show search result', () => {
+    const mockRubricLevelOneName = getTestLangField(mockData.rubricLevelOneA.name);
     cy.getByCy('search-trigger').click();
     cy.getByCy('search-dropdown').should('exist');
     cy.getByCy('search-rubric').should(($rubric) => {
@@ -20,7 +24,7 @@ describe('Catalogue search', () => {
       expect($rubric).to.have.length(3);
     });
 
-    cy.getByCy('search-input').type('вино');
+    cy.getByCy('search-input').type(mockRubricLevelOneName);
     cy.getByCy('search-rubric').should(($rubric) => {
       expect($rubric).to.have.length(1);
     });

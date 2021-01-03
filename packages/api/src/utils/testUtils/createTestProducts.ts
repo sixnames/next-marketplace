@@ -50,7 +50,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const {
     attributeWineVintage,
     attributeWineColor,
-    attributeWineType,
+    attributeWineVariant,
     attributesGroupOuterRating,
     attributeOuterRatingA,
     attributeOuterRatingB,
@@ -110,9 +110,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const wineTypeAttribute = wineTypeOptions
       ? [
           {
-            node: attributeWineType.id,
+            node: attributeWineVariant.id,
             showInCard: true,
-            key: attributeWineType.slug,
+            key: attributeWineVariant.slug,
             showAsBreadcrumb: true,
             value: [wineTypeOptions],
             viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as ProductAttributeViewVariantEnum,

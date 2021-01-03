@@ -1,12 +1,15 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { MOCK_CITIES } from '@yagu/shared';
 
 describe('City', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -31,7 +34,7 @@ describe('City', () => {
       `,
     );
     const currentCity = getAllCities[0];
-    expect(getAllCities).toHaveLength(MOCK_CITIES.length);
+    expect(getAllCities).toHaveLength([mockData.defaultCity, mockData.secondaryCity].length);
 
     // Should return current city
     const {

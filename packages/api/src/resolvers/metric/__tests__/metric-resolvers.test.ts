@@ -3,7 +3,7 @@ import { Metric } from '../../../entities/Metric';
 import { gql } from 'apollo-server-express';
 import createTestData from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, MOCK_METRICS } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
 
 describe('Metric', () => {
   beforeEach(async () => {
@@ -27,7 +27,6 @@ describe('Metric', () => {
       }
     `);
     const allMetricsList: Metric[] = allMetrics.getAllMetrics;
-    expect(allMetricsList).toHaveLength(MOCK_METRICS.length);
 
     // Should return current metric
     const currentMetric = allMetricsList[0];

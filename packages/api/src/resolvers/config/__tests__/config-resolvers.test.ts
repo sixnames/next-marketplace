@@ -1,21 +1,16 @@
 import { mutateWithImages, authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { Upload } from '../../../types/upload';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import {
-  DEFAULT_CITY,
-  DEFAULT_LANG,
-  SECONDARY_CITY,
-  SECONDARY_LANG,
-  SITE_CONFIGS_All,
-  SITE_CONFIGS_INITIAL,
-  SITE_CONFIGS_LOGO,
-} from '@yagu/shared';
+import { DEFAULT_CITY, DEFAULT_LANG, SECONDARY_CITY, SECONDARY_LANG } from '@yagu/shared';
 
 describe('Config', () => {
+  let mockData: CreateTestDataPayloadInterface;
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -23,7 +18,7 @@ describe('Config', () => {
   });
 
   it('Should CRUD site config', async () => {
-    const stringConfig = SITE_CONFIGS_INITIAL[0];
+    const stringConfig = mockData.configSiteName;
     const stringConfigCity = stringConfig.cities[0];
     const { query, mutate } = await authenticatedTestClient();
 
@@ -42,7 +37,7 @@ describe('Config', () => {
         }
       `,
     );
-    expect(getAllConfigs).toHaveLength(SITE_CONFIGS_All.length);
+    expect(getAllConfigs).toHaveLength(mockData.allConfigs.length);
 
     // Should return site config by slug
     const {
@@ -60,11 +55,11 @@ describe('Config', () => {
       `,
       {
         variables: {
-          slug: SITE_CONFIGS_LOGO.slug,
+          slug: mockData.configSiteLogo.slug,
         },
       },
     );
-    expect(getConfigBySlug.nameString).toEqual(SITE_CONFIGS_LOGO.nameString);
+    expect(getConfigBySlug.id).toEqual(mockData.configSiteLogo.id);
 
     // Should return site config value by slug
     const {
@@ -81,8 +76,8 @@ describe('Config', () => {
         },
       },
     );
-    expect(getConfigValueBySlug).toEqual(stringConfigCity.translations[0].value);
-
+    expect(getConfigValueBySlug[0]).toEqual(stringConfigCity.translations[0].value[0]);
+    //
     // Should update asset config
     const {
       data: { updateAssetConfig },
@@ -240,7 +235,7 @@ describe('Config', () => {
     );
     const updatedConfig = updateConfigs.configs.find(({ slug }: any) => slug === stringConfig.slug);
     expect(updateConfigs.success).toBeTruthy();
-    expect(updateConfigs.configs).toHaveLength(SITE_CONFIGS_All.length);
+    expect(updateConfigs.configs).toHaveLength(mockData.allConfigs.length);
     expect(updatedConfig.value).not.toEqual(stringConfigCity.translations[0].value);
   });
 });

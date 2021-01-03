@@ -1,9 +1,12 @@
 import fs from 'fs';
+import path from 'path';
 
-export async function removeUpload(path: string) {
+export async function removeUpload(resource: string) {
   try {
-    if (fs.existsSync(path)) {
-      fs.unlinkSync(path);
+    const filePath = path.join(process.cwd(), resource);
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
     }
   } catch (e) {
     console.log(`Error in removeUpload`);

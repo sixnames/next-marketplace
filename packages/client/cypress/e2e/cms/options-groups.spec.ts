@@ -6,15 +6,16 @@ import {
   GENDER_IT,
   GENDER_SHE,
   iconTypesList,
-  MOCK_OPTIONS_GROUP_COLORS,
-  MOCK_OPTIONS_WINE_COLOR,
   OPTIONS_GROUP_VARIANT_ICON,
   SECONDARY_LANG,
 } from '@yagu/shared';
+import * as faker from 'faker';
+import { getTestLangField } from '../../../utils/getLangField';
 
 describe('Options Groups', () => {
+  let mockData: any;
   beforeEach(() => {
-    cy.createTestData();
+    cy.createTestData((mocks) => (mockData = mocks));
     cy.testAuth(`/app/cms/options-groups${QUERY_DATA_LAYOUT_FILTER_ENABLED}`);
   });
 
@@ -23,12 +24,12 @@ describe('Options Groups', () => {
   });
 
   it('Should CRUD options group', () => {
-    const optionName = 'option';
-    const mockGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
-    const createdGroupName = 'new_group';
-    const groupNewName = 'updated_name';
+    const mockGroupName = getTestLangField(mockData.optionsGroupColors.name);
+    const optionName = faker.commerce.color();
+    const createdGroupName = faker.commerce.department();
+    const groupNewName = faker.commerce.department();
     const optionColor = '333333';
-    const fakeName = 'f';
+    const fakeName = faker.random.alpha();
 
     cy.getByCy(`create-options-group`).click();
 
@@ -121,12 +122,13 @@ describe('Options Groups', () => {
   });
 
   it('Should validate option inputs', () => {
-    const mockGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
-    const mockOptionName = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
-    const mockOptionColor = MOCK_OPTIONS_WINE_COLOR[0].color;
-    const fakeName = 'f';
-    const fakeColor = 'b';
-    const optionName = 'option';
+    const mockGroupName = getTestLangField(mockData.optionsGroupColors.name);
+    const colorOption = mockData.optionsColor[0];
+    const mockOptionName = getTestLangField(colorOption.name);
+    const mockOptionColor = colorOption.color;
+    const fakeName = faker.random.alpha();
+    const fakeColor = faker.random.alpha();
+    const optionNewName = faker.commerce.color();
 
     // Shouldn't create option in group on validation error
     cy.getByCy(`group-${mockGroupName}`).click();
@@ -143,33 +145,37 @@ describe('Options Groups', () => {
     //Shouldn't create option in group if there is an option with the same name
     cy.getByCy(`name-${DEFAULT_LANG}`).clear().type(mockOptionName);
     cy.getByCy(`option-gender`).select(GENDER_SHE);
-    cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`).type(optionName);
-    cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).type(optionName);
-    cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).type(optionName);
+    cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`).type(optionNewName);
+    cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).type(optionNewName);
+    cy.getByCy(`variant-${GENDER_IT}-${DEFAULT_LANG}`).type(optionNewName);
     cy.getByCy(`option-color`).clear().type(mockOptionColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${mockOptionName}-row`).should('have.length', 1);
   });
 
   it('Should CRUD option in group', () => {
-    const mockGroupName = MOCK_OPTIONS_GROUP_COLORS.name[0].value;
-    const optionName = MOCK_OPTIONS_WINE_COLOR[0].name[0].value;
-    const optionColor = MOCK_OPTIONS_WINE_COLOR[0].color;
-    const optionNewName = 'new_option_name';
+    const mockGroupName = getTestLangField(mockData.optionsGroupColors.name);
+    const colorOption = mockData.optionsColor[0];
+    const mockOptionName = getTestLangField(colorOption.name);
+    const mockOptionColor = colorOption.color;
+    const optionNewName = faker.commerce.color();
     const optionNewColor = 'fafafa';
 
     cy.getByCy(`group-${mockGroupName}`).click();
 
     // Should update option name in group
-    cy.getByCy(`${optionName}-option-update`).click();
-    cy.getByCy(`name-${DEFAULT_LANG}`).should('have.value', optionName).clear().type(optionNewName);
+    cy.getByCy(`${mockOptionName}-option-update`).click();
+    cy.getByCy(`name-${DEFAULT_LANG}`)
+      .should('have.value', mockOptionName)
+      .clear()
+      .type(optionNewName);
     cy.getByCy(`option-submit`).click();
-    cy.getByCy(`${optionName}-row`).should('not.exist');
+    cy.getByCy(`${mockOptionName}-row`).should('not.exist');
     cy.getByCy(`${optionNewName}-row`).should('exist');
 
     // Should update all option fields
     cy.getByCy(`${optionNewName}-option-update`).click();
-    cy.getByCy(`option-color`).should('have.value', optionColor).clear().type(optionNewColor);
+    cy.getByCy(`option-color`).should('have.value', mockOptionColor).clear().type(optionNewColor);
     cy.getByCy(`option-gender`).should('have.value', GENDER_HE).select(GENDER_SHE);
     cy.getByCy(`variant-${GENDER_SHE}-${DEFAULT_LANG}`).clear().type(optionNewName);
     cy.getByCy(`variant-${GENDER_HE}-${DEFAULT_LANG}`).clear().type(optionNewName);

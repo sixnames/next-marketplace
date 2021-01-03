@@ -4,7 +4,8 @@ import createTestData, {
 import clearTestData from '../../../utils/testUtils/clearTestData';
 import { authenticatedTestClient, mutateWithImages } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import { DEFAULT_CITY, MOCK_ADDRESS_A, MOCK_NEW_SHOP } from '@yagu/shared';
+import { DEFAULT_CITY, MOCK_ADDRESS_A } from '@yagu/shared';
+import { fakerEn, getFakePhone } from '../../../utils/testUtils/fakerLocales';
 
 describe('Shop', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -214,9 +215,12 @@ describe('Shop', () => {
           shopId: currentShop.id,
           nameString: shopNewName,
           city: DEFAULT_CITY,
-          contacts: MOCK_NEW_SHOP.contacts,
+          contacts: {
+            emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+            phones: [getFakePhone(), getFakePhone()],
+          },
           address: {
-            formattedAddress: MOCK_NEW_SHOP.address.formattedAddress,
+            formattedAddress: MOCK_ADDRESS_A.formattedAddress,
             point: MOCK_ADDRESS_A.point,
           },
           logo: [logo],

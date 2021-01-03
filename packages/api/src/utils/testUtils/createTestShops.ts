@@ -3,7 +3,9 @@ import { Shop, ShopModel } from '../../entities/Shop';
 import { ShopProduct, ShopProductModel } from '../../entities/ShopProduct';
 import generateTestAsset from './generateTestAsset';
 import { ASSETS_DIST_SHOPS, ASSETS_DIST_SHOPS_LOGOS } from '../../config';
-import { DEFAULT_CITY, MOCK_SHOP, MOCK_SHOP_B } from '@yagu/shared';
+import { DEFAULT_CITY, MOCK_ADDRESS_A, MOCK_ADDRESS_B } from '@yagu/shared';
+import { fakerEn, getFakePhone } from './fakerLocales';
+import { generateSlug } from '../slug';
 
 export interface CreateTestShopsPayloadInterface extends CreateTestProductsPayloadInterface {
   mockShops: Shop[];
@@ -42,16 +44,20 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     // optionsSlugsWineType,
   } = productsPayload;
 
+  // Shop A
+  const shopAName = fakerEn.commerce.productName();
+  const shopASlug = generateSlug(shopAName);
+
   const shopLogo = await generateTestAsset({
     targetFileName: 'test-company-logo',
     dist: ASSETS_DIST_SHOPS_LOGOS,
-    slug: MOCK_SHOP.slug,
+    slug: shopASlug,
   });
 
   const shopAsset = await generateTestAsset({
     targetFileName: 'test-shop-asset-0',
     dist: ASSETS_DIST_SHOPS,
-    slug: MOCK_SHOP.slug,
+    slug: shopASlug,
   });
 
   // Shop A products
@@ -103,9 +109,20 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     city: DEFAULT_CITY,
   });
 
-  // Shop A
   const shopA = await ShopModel.create({
-    ...MOCK_SHOP,
+    nameString: shopAName,
+    slug: shopASlug,
+    city: DEFAULT_CITY,
+    contacts: {
+      emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+      phones: [getFakePhone(), getFakePhone()],
+    },
+    address: {
+      formattedAddress: MOCK_ADDRESS_A.formattedAddress,
+      point: {
+        coordinates: [MOCK_ADDRESS_A.point.lng, MOCK_ADDRESS_A.point.lat],
+      },
+    },
     logo: shopLogo,
     assets: [shopAsset],
     products: [
@@ -252,8 +269,21 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   });
 
   // Shop B
+  const shopBName = fakerEn.commerce.productName();
   const shopB = await ShopModel.create({
-    ...MOCK_SHOP_B,
+    nameString: shopBName,
+    slug: generateSlug(shopBName),
+    city: DEFAULT_CITY,
+    contacts: {
+      emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+      phones: [getFakePhone(), getFakePhone()],
+    },
+    address: {
+      formattedAddress: MOCK_ADDRESS_B.formattedAddress,
+      point: {
+        coordinates: [MOCK_ADDRESS_B.point.lng, MOCK_ADDRESS_B.point.lat],
+      },
+    },
     logo: shopLogo,
     assets: [shopAsset],
     products: [

@@ -122,7 +122,7 @@ describe('Catalogue', () => {
           catalogueFilter: [
             mockData.rubricLevelOneA.slug,
             `${mockData.attributeWineColor.slug}-krasniy`,
-            `${mockData.attributeWineType.slug}-vermut`,
+            `${mockData.attributeWineVariant.slug}-vermut`,
             `${CATALOGUE_BRAND_KEY}-${mockData.brandA.slug}`,
           ],
         },

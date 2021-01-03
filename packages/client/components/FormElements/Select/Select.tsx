@@ -70,11 +70,11 @@ const Select: React.FC<SelectInterface> = ({
 
   function getOptionName(name = '', lastName?: string) {
     const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
-    const optionTestIdName = name.split(' ').join('_');
+    // const optionTestIdName = name.split(' ').join('_');
 
     return {
       optionName,
-      optionTestIdName,
+      // optionTestIdName,
     };
   }
 
@@ -103,11 +103,10 @@ const Select: React.FC<SelectInterface> = ({
         >
           {withFirstOptions.map(({ nameString, name, lastName, id, slug }) => {
             const finalName = nameString ? nameString : getLanguageFieldTranslation(name);
-            const { optionName, optionTestIdName } = getOptionName(finalName, lastName);
+            const { optionName } = getOptionName(finalName, lastName);
             const value = slug ? slug : setNameToValue ? optionName : id;
-
             return (
-              <option key={id} value={value} data-cy={`option-${optionTestIdName}`}>
+              <option key={id} value={value} data-cy={`option-${slug || optionName}`}>
                 {optionName}
               </option>
             );

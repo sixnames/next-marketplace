@@ -161,10 +161,10 @@ export async function createRole({
 }
 
 export interface CreateInitialRolesPayloadInterface {
-  adminRoleId: string;
-  guestRoleId: string;
-  companyOwnerRoleId: string;
-  companyManagerRoleId: string;
+  adminRole: Role;
+  guestRole: Role;
+  companyOwnerRole: Role;
+  companyManagerRole: Role;
 }
 
 export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInterface> {
@@ -212,9 +212,9 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   await createRoleRules({ allow: true, roleId: adminRole.id });
 
   return {
-    adminRoleId: adminRole.id,
-    guestRoleId: guestRole.id,
-    companyOwnerRoleId: companyOwnerRole.id,
-    companyManagerRoleId: companyManagerRole.id,
+    adminRole,
+    guestRole,
+    companyOwnerRole,
+    companyManagerRole,
   };
 }

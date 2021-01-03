@@ -1,12 +1,16 @@
 import { authenticatedTestClient } from '../../../utils/testUtils/testHelpers';
 import { gql } from 'apollo-server-express';
-import createTestData from '../../../utils/testUtils/createTestData';
+import createTestData, {
+  CreateTestDataPayloadInterface,
+} from '../../../utils/testUtils/createTestData';
 import clearTestData from '../../../utils/testUtils/clearTestData';
-import { DEFAULT_LANG, MOCK_COUNTRIES } from '@yagu/shared';
+import { DEFAULT_LANG } from '@yagu/shared';
 
 describe('Country', () => {
+  let mockData: CreateTestDataPayloadInterface;
+
   beforeEach(async () => {
-    await createTestData();
+    mockData = await createTestData();
   });
 
   afterEach(async () => {
@@ -41,7 +45,9 @@ describe('Country', () => {
     const countryForDelete = getAllCountries[1];
     const currentCountryCity = currentCountry.cities[0];
     const countryForDeleteCity = countryForDelete.cities[0];
-    expect(getAllCountries).toHaveLength(MOCK_COUNTRIES.length);
+    expect(getAllCountries).toHaveLength(
+      [mockData.defaultCountry, mockData.secondaryCountry].length,
+    );
     expect(currentCountry.cities).toHaveLength(1);
 
     // Should return current country

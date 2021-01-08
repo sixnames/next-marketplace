@@ -3,7 +3,7 @@ import { getModelForClass, plugin, prop } from '@typegoose/typegoose';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { BrandCollection } from './BrandCollection';
-
+//
 @ObjectType()
 @plugin(AutoIncrementID, { field: 'itemId', startAt: 1 })
 export class Brand extends TimeStamps {

@@ -8,7 +8,6 @@ import {
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
 } from 'config/common';
-import { fakerEn, fakerRu } from 'tests/fakerLocales';
 import { ObjectId } from 'mongodb';
 import { setCollectionItemId } from 'lib/itemIdUtils';
 import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
@@ -130,8 +129,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           selectedOptionsSlugs: [],
           attributeSlugs: [],
           textI18n: {
-            [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-            [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
+            [DEFAULT_LOCALE]: 'Описание',
+            [SECONDARY_LOCALE]: 'description',
           },
         },
         {
@@ -153,7 +152,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
           attributeSlugs: [],
-          number: fakerRu.random.number({ max: 100, min: 5 }),
+          number: 99,
         },
 
         // Outer rating attributes
@@ -165,7 +164,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
           attributeSlugs: [],
-          number: fakerRu.random.number({ max: 5, min: 1 }),
+          number: 18,
         },
         {
           attributesGroupId: attributesGroupOuterRating._id,
@@ -175,7 +174,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
           attributeSlugs: [],
-          number: fakerRu.random.number({ max: 5, min: 1 }),
+          number: 89,
         },
         {
           attributesGroupId: attributesGroupOuterRating._id,
@@ -185,7 +184,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
           attributeSlugs: [],
-          number: fakerRu.random.number({ max: 5, min: 1 }),
+          number: 4,
         },
       ],
     };
@@ -215,8 +214,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     active = true,
     itemId,
   }: CreateTestProductInterface) {
-    const defaultDescription = fakerRu.commerce.productDescription();
-    const secondaryDescription = fakerEn.commerce.productDescription();
+    const defaultDescription = 'defaultDescription';
+    const secondaryDescription = 'secondaryDescription';
     const slug = generateSlug(defaultLocaleName);
 
     const localFilePath = path.join(process.cwd(), 'tests', 'mockAssets', 'test-product-0.png');

@@ -1,6 +1,5 @@
 import { getDatabase } from 'db/mongodb';
 import { createTestProducts, CreateTestProductsPayloadInterface } from './createTestProducts';
-import { fakerEn } from './fakerLocales';
 import {
   ASSETS_DIST_COMPANIES,
   ASSETS_DIST_SHOPS,
@@ -178,7 +177,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   });
 
   // Shop A
-  const shopAName = fakerEn.commerce.productName();
+  const shopAName = 'shopA';
   const shopA: ShopModel = {
     _id: shopAId,
     archive: false,
@@ -188,7 +187,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     companyId: companyAId,
     citySlug: DEFAULT_CITY,
     contacts: {
-      emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+      emails: [`shopA@mail.com`, 'shopAB@mail.com'],
       phones: ['+78889990055', '+78889990066'],
     },
     address: {
@@ -326,7 +325,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     fileName: 1,
   });
 
-  const shopBName = fakerEn.commerce.productName();
+  const shopBName = 'shopB';
   const shopB: ShopModel = {
     _id: shopBId,
     archive: false,
@@ -336,7 +335,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     slug: generateSlug(shopBName),
     citySlug: DEFAULT_CITY,
     contacts: {
-      emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+      emails: [`shopB@mail.com`, 'shopBB@mail.com'],
       phones: ['+78889990077', '+78889990088'],
     },
     address: {
@@ -367,7 +366,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   };
 
   // Company A
-  const companyName = fakerEn.company.companyName();
+  const companyName = 'companyA';
   const companySlug = generateSlug(companyName);
   const companyItemId = 1;
   const companyLocalFilePath = path.join(
@@ -389,7 +388,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     name: companyName,
     slug: companySlug,
     contacts: {
-      emails: [fakerEn.internet.email(), fakerEn.internet.email()],
+      emails: [`companyA@mail.com`, 'companyAB@mail.com'],
       phones: ['+78889990099', '+78889990199'],
     },
     ownerId: companyOwner._id,

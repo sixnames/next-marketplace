@@ -7,7 +7,6 @@ import {
   ROUTE_CMS,
   SECONDARY_LOCALE,
 } from 'config/common';
-import * as faker from 'faker';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { iconTypesList } from 'types/iconTypes';
 
@@ -24,11 +23,11 @@ describe('Options Groups', () => {
 
   it('Should CRUD options group', () => {
     const mockGroupName = mockData.optionsGroupColors.nameI18n[DEFAULT_LOCALE];
-    const optionName = faker.commerce.color();
-    const createdGroupName = faker.commerce.department();
-    const groupNewName = faker.commerce.department();
+    const optionName = 'optionName';
+    const createdGroupName = 'createdGroupName';
+    const groupNewName = 'groupNewName';
     const optionColor = '333333';
-    const fakeName = faker.random.alpha();
+    const fakeName = 'f';
 
     cy.getByCy(`create-options-group`).click();
 
@@ -125,9 +124,9 @@ describe('Options Groups', () => {
     const colorOption = mockData.optionsColor[0];
     const mockOptionName = colorOption.nameI18n[DEFAULT_LOCALE];
     const mockOptionColor = colorOption.color;
-    const fakeName = faker.random.alpha();
-    const fakeColor = faker.random.alpha();
-    const optionNewName = faker.commerce.color();
+    const fakeName = 'f';
+    const fakeColor = 'b';
+    const optionNewName = 'optionNewName';
 
     // Shouldn't create option in group on validation error
     cy.getByCy(`optionsGroupId-${mockGroupName}`).click();
@@ -159,7 +158,7 @@ describe('Options Groups', () => {
     const colorOption = mockData.optionsColor[0];
     const mockOptionName = colorOption.nameI18n[DEFAULT_LOCALE];
     const mockOptionColor = colorOption.color;
-    const optionNewName = faker.commerce.color();
+    const optionNewName = 'optionNewName';
     const optionNewColor = 'fafafa';
 
     cy.getByCy(`optionsGroupId-${mockGroupName}`).click();

@@ -3,7 +3,6 @@ import {
   createTestRubricVariants,
   CreateTestRubricVariantsInterface,
 } from './createTestRubricVariants';
-import { fakerEn, fakerRu } from './fakerLocales';
 import {
   GenderModel,
   RubricAttributesGroupModel,
@@ -98,6 +97,11 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
   const genderShe = GENDER_SHE as GenderModel;
   const genderIt = GENDER_IT as GenderModel;
 
+  const description = {
+    [DEFAULT_LOCALE]: 'Описание',
+    [SECONDARY_LOCALE]: 'description',
+  };
+
   const rubricLevelOneADefaultName = 'Вино';
   const rubricLevelOneAName = {
     [DEFAULT_LOCALE]: rubricLevelOneADefaultName,
@@ -113,14 +117,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     variantId: rubricVariantAlcohol._id,
     attributesGroups: rubricAttributesGroups(true),
     active: true,
-    descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
-    shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
+    descriptionI18n: description,
+    shortDescriptionI18n: description,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить вино',
@@ -155,12 +153,12 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributesGroups: rubricAttributesGroups(true),
     active: true,
     descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
+      [DEFAULT_LOCALE]: 'Описание',
+      [SECONDARY_LOCALE]: 'description',
     },
     shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
+      [DEFAULT_LOCALE]: 'Описание',
+      [SECONDARY_LOCALE]: 'description',
     },
     catalogueTitle: {
       defaultTitleI18n: {
@@ -195,14 +193,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     variantId: rubricVariantAlcohol._id,
     attributesGroups: rubricAttributesGroups(true),
     active: true,
-    descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
-    shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
+    descriptionI18n: description,
+    shortDescriptionI18n: description,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить Виски',
@@ -236,14 +228,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     variantId: rubricVariantAlcohol._id,
     attributesGroups: rubricAttributesGroups(true),
     active: true,
-    descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
-    shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
+    descriptionI18n: description,
+    shortDescriptionI18n: description,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить коньяк',
@@ -278,14 +264,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     parentId: rubricLevelOneAId,
     attributesGroups: rubricAttributesGroups(false),
     active: true,
-    descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
-    shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
+    descriptionI18n: description,
+    shortDescriptionI18n: description,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: rubricLevelTwoADefaultName,
@@ -293,8 +273,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       prefixI18n: {},
       keywordI18n: {
-        [DEFAULT_LOCALE]: fakerRu.lorem.word(),
-        [SECONDARY_LOCALE]: fakerEn.lorem.word(),
+        [DEFAULT_LOCALE]: 'rubricLevelTwoA',
+        [SECONDARY_LOCALE]: 'rubricLevelTwoA',
       },
       gender: genderShe,
     },
@@ -317,14 +297,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     parentId: rubricLevelOneA._id,
     attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
     active: true,
-    descriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
-    shortDescriptionI18n: {
-      [DEFAULT_LOCALE]: fakerRu.commerce.productDescription(),
-      [SECONDARY_LOCALE]: fakerEn.commerce.productDescription(),
-    },
+    descriptionI18n: description,
+    shortDescriptionI18n: description,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: rubricLevelTwoBDefaultName,
@@ -332,8 +306,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       prefixI18n: {},
       keywordI18n: {
-        [DEFAULT_LOCALE]: fakerRu.lorem.word(),
-        [SECONDARY_LOCALE]: fakerEn.lorem.word(),
+        [DEFAULT_LOCALE]: 'rubricLevelTwoB',
+        [SECONDARY_LOCALE]: 'rubricLevelTwoB',
       },
       gender: genderHe,
     },

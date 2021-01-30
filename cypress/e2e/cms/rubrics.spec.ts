@@ -1,5 +1,4 @@
 import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
-import * as faker from 'faker';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Rubrics', () => {
@@ -62,8 +61,8 @@ describe('Rubrics', () => {
 
   it('Should create new rubrics', () => {
     const mockRubricVariantName = mockData.rubricVariantAlcohol.nameI18n[DEFAULT_LOCALE];
-    const mockNewRubricA = faker.commerce.department();
-    const mockNewRubricB = faker.commerce.department();
+    const mockNewRubricA = 'mockNewRubricA';
+    const mockNewRubricB = 'mockNewRubricB';
 
     // Should create a new rubric on first level
     cy.getByCy(`create-rubric`).click();
@@ -95,7 +94,7 @@ describe('Rubrics', () => {
 
   it('Should display rubric details tab', () => {
     const mockRubricLevelOneName = mockData.rubricLevelOneADefaultName;
-    const mockNewRubric = faker.commerce.department();
+    const mockNewRubric = 'mockNewRubric';
     const mockRubricVariantName = mockData.rubricVariantJuice.nameI18n[DEFAULT_LOCALE];
 
     // Should have rubric details tab and should update rubric

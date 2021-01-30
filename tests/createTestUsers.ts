@@ -3,7 +3,6 @@ import {
   createInitialTestData,
   CreateInitialTestDataPayloadInterface,
 } from './createInitialTestData';
-import * as faker from 'faker';
 import { UserModel } from 'db/dbModels';
 import { createDbNode } from 'db/createDbNode';
 import { COL_USERS } from 'db/collectionNames';
@@ -25,27 +24,23 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const initialTestData = await createInitialTestData();
   const { guestRole, companyOwnerRole, companyManagerRole } = initialTestData;
 
-  const getUserBase = () => ({
-    email: faker.internet.email(),
-    name: faker.name.firstName(),
-    secondName: faker.name.lastName(),
-    lastName: faker.name.lastName(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-
   // Sample user
   const sampleUserPassword = 'sample';
   const sampleUserPasswordHash = await hash(sampleUserPassword, 10);
   const sampleUser = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
-      ...getUserBase(),
+      email: 'sampleUser@mail.com',
+      name: 'sampleUserN',
+      secondName: 'sampleUserS',
+      lastName: 'sampleUserL',
       phone: '+78889990011',
       itemId: 2,
       roleId: guestRole._id,
       password: sampleUserPasswordHash,
       archive: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 
@@ -55,12 +50,17 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const sampleUserB = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
-      ...getUserBase(),
+      email: 'sampleUserB@mail.com',
+      name: 'sampleUserBN',
+      secondName: 'sampleUserBS',
+      lastName: 'sampleUserBL',
       phone: '+78889990022',
       itemId: 3,
       roleId: guestRole._id,
       password: sampleUserBPasswordHash,
       archive: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 
@@ -70,12 +70,17 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyOwner = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
-      ...getUserBase(),
+      email: 'companyOwner@mail.com',
+      name: 'companyOwnerN',
+      secondName: 'companyOwnerS',
+      lastName: 'companyOwnerL',
       phone: '+78889990033',
       itemId: 4,
       roleId: companyOwnerRole._id,
       password: companyOwnerPasswordHash,
       archive: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 
@@ -85,12 +90,17 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyManager = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
-      ...getUserBase(),
+      email: 'companyManager@mail.com',
+      name: 'companyManagerN',
+      secondName: 'companyManagerS',
+      lastName: 'companyManagerL',
       phone: '+78889990044',
       itemId: 5,
       roleId: companyManagerRole._id,
       password: companyManagerPasswordHash,
       archive: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 

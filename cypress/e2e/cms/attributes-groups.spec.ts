@@ -9,7 +9,6 @@ import {
   SECONDARY_LOCALE,
 } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
-import * as faker from 'faker';
 
 describe('Attributes Groups', () => {
   let mockData: CreateTestDataPayloadInterface;
@@ -25,9 +24,9 @@ describe('Attributes Groups', () => {
   it('Should CRUD attributes group', () => {
     const mockGroupName = mockData.attributesGroupWineFeatures.nameI18n[DEFAULT_LOCALE];
     const mockGroupForDeleteName = mockData.attributesGroupForDelete.nameI18n[DEFAULT_LOCALE];
-    const createdGroupName = faker.commerce.department();
-    const updatedGroupName = faker.commerce.department();
-    const fakeName = faker.random.alpha();
+    const createdGroupName = 'createdGroupName';
+    const updatedGroupName = 'updatedGroupName';
+    const fakeName = 'f';
 
     cy.getByCy(`create-attributes-group`).click();
     cy.getByCy(`attributes-group-modal`).should('exist');
@@ -78,8 +77,8 @@ describe('Attributes Groups', () => {
   it('Should CRUD attribute in group', () => {
     const mockGroupName = mockData.attributesGroupWineFeatures.nameI18n[DEFAULT_LOCALE];
     const mockOptionsGroupName = mockData.optionsGroupColors.nameI18n[DEFAULT_LOCALE];
-    const mockAttributeNewName = faker.commerce.department();
-    const updatedAttributeName = faker.commerce.department();
+    const mockAttributeNewName = 'mockAttributeNewName';
+    const updatedAttributeName = 'updatedAttributeName';
 
     // Shouldn't create attribute in group on validation error
     cy.getByCy(`attributesGroupId-${mockGroupName}`).click();
@@ -129,7 +128,7 @@ describe('Attributes Groups', () => {
     // Should delete attribute from group
     cy.getByCy(`${updatedAttributeName}-attribute-delete`).click();
     cy.getByCy(`confirm`).click();
+    cy.getByCy(`${updatedAttributeName}-row`).should('not.exist');
     cy.shouldSuccess();
-    cy.getByCy(`${updatedAttributeName}`).should('not.exist');
   });
 });

@@ -1,20 +1,28 @@
 import { getDatabase } from 'db/mongodb';
 import { ObjectId } from 'mongodb';
 import { createTestRubrics, CreateTestRubricsPayloadInterface } from './createTestRubrics';
-import faker from 'faker';
 import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
 import { generateSlug } from 'lib/slugUtils';
 import { setCollectionItemId } from 'lib/itemIdUtils';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
+export interface GetFakeBrandInterface {
+  itemId: number;
+  brandCollectionName: string;
+  brandName: string;
+}
+
 export interface GetFakeBrandPayloadInterface {
   brand: BrandModel;
   brandCollection: BrandCollectionModel;
 }
 
-export async function getFakeBrand(itemId: number): Promise<GetFakeBrandPayloadInterface> {
-  const brandCollectionName = faker.commerce.productName();
+export async function getFakeBrand({
+  itemId,
+  brandCollectionName,
+  brandName,
+}: GetFakeBrandInterface): Promise<GetFakeBrandPayloadInterface> {
   const brandCollectionId = new ObjectId();
   const brandCollection: BrandCollectionModel = {
     _id: brandCollectionId,
@@ -25,14 +33,13 @@ export async function getFakeBrand(itemId: number): Promise<GetFakeBrandPayloadI
     },
     slug: generateSlug(brandCollectionName),
     descriptionI18n: {
-      [DEFAULT_LOCALE]: faker.lorem.paragraph(),
-      [SECONDARY_LOCALE]: faker.lorem.paragraph(),
+      [DEFAULT_LOCALE]: 'Описание',
+      [SECONDARY_LOCALE]: 'description',
     },
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 
-  const brandName = faker.company.companyName();
   const brand: BrandModel = {
     _id: new ObjectId(),
     itemId,
@@ -41,10 +48,10 @@ export async function getFakeBrand(itemId: number): Promise<GetFakeBrandPayloadI
       [SECONDARY_LOCALE]: brandName,
     },
     slug: generateSlug(brandName),
-    url: faker.internet.url(),
+    url: `https://${brandName}.com`,
     descriptionI18n: {
-      [DEFAULT_LOCALE]: faker.lorem.paragraph(),
-      [SECONDARY_LOCALE]: faker.lorem.paragraph(),
+      [DEFAULT_LOCALE]: 'Описание',
+      [SECONDARY_LOCALE]: 'description',
     },
     collectionsIds: [brandCollectionId],
     createdAt: new Date(),
@@ -57,8 +64,15 @@ export async function getFakeBrand(itemId: number): Promise<GetFakeBrandPayloadI
   };
 }
 
-export async function getFakeManufacturer(itemId: number): Promise<ManufacturerModel> {
-  const manufacturerName = faker.company.companyName();
+interface GetFakeManufacturerInterface {
+  itemId: number;
+  manufacturerName: string;
+}
+
+export async function getFakeManufacturer({
+  itemId,
+  manufacturerName,
+}: GetFakeManufacturerInterface): Promise<ManufacturerModel> {
   return {
     _id: new ObjectId(),
     itemId,
@@ -67,10 +81,10 @@ export async function getFakeManufacturer(itemId: number): Promise<ManufacturerM
       [SECONDARY_LOCALE]: manufacturerName,
     },
     slug: generateSlug(manufacturerName),
-    url: faker.internet.url(),
+    url: `https://${manufacturerName}.com`,
     descriptionI18n: {
-      [DEFAULT_LOCALE]: faker.lorem.paragraph(),
-      [SECONDARY_LOCALE]: faker.lorem.paragraph(),
+      [DEFAULT_LOCALE]: 'Описание',
+      [SECONDARY_LOCALE]: 'description',
     },
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -101,22 +115,43 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
   const rubricsPayload = await createTestRubrics();
 
   // Brand A
-  const { brandCollection: brandCollectionA, brand: brandA } = await getFakeBrand(1);
+  const { brandCollection: brandCollectionA, brand: brandA } = await getFakeBrand({
+    itemId: 1,
+    brandName: 'brandA',
+    brandCollectionName: 'brandCollectionA',
+  });
 
   // Brand B
-  const { brandCollection: brandCollectionB, brand: brandB } = await getFakeBrand(2);
+  const { brandCollection: brandCollectionB, brand: brandB } = await getFakeBrand({
+    itemId: 2,
+    brandName: 'brandB',
+    brandCollectionName: 'brandCollectionB',
+  });
 
   // Brand C
-  const { brandCollection: brandCollectionC, brand: brandC } = await getFakeBrand(3);
+  const { brandCollection: brandCollectionC, brand: brandC } = await getFakeBrand({
+    itemId: 3,
+    brandName: 'brandC',
+    brandCollectionName: 'brandCollectionC',
+  });
 
   // Manufacturer A
-  const manufacturerA = await getFakeManufacturer(1);
+  const manufacturerA = await getFakeManufacturer({
+    itemId: 1,
+    manufacturerName: 'manufacturerA',
+  });
 
   // Manufacturer B
-  const manufacturerB = await getFakeManufacturer(2);
+  const manufacturerB = await getFakeManufacturer({
+    itemId: 2,
+    manufacturerName: 'manufacturerB',
+  });
 
   // Manufacturer C
-  const manufacturerC = await getFakeManufacturer(3);
+  const manufacturerC = await getFakeManufacturer({
+    itemId: 3,
+    manufacturerName: 'manufacturerC',
+  });
 
   const allBrands = [brandA, brandB, brandC];
   const allBrandCollections = [brandCollectionA, brandCollectionB, brandCollectionC];

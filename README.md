@@ -1,1 +1,30 @@
-# Winepoint!
+## Getting Started
+- [x] Custom scalars (ObjectId, Date, Upload)
+- [x] Internationalized Routing
+- [x] User password
+- [x] Nexus context type
+- [x] Session user type
+- [x] client request locale
+- [x] request city
+- [x] docker compose dev db
+- [x] createInitialData 
+- [x] Custom JSON scalar for TranslationModel
+- [x] resolvers
+- [x] shop product ids list in product
+- [x] shop products minPrice in product
+- [x] shop products maxPrice in product
+- [x] shop products count in product
+- [x] catalogue query shop products data
+- [x] attribute options ids in attribute
+- [x] validation
+- [x] S3 bucket for images https://github.com/leerob/nextjs-aws-s3
+- [x] codegen files
+- [ ] UI
+- [ ] Assets UI
+- [ ] cypress testing environment
+- [ ] github actions
+- [ ] vercel preview on develop branch
+- [ ] vercel deploy on main branch
+- [ ] test data ids
+- [ ] permissions (role rules)
+- [ ] i18n with https://www.npmjs.com/package/next-rosetta ??? or i18next

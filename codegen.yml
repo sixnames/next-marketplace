@@ -1,8 +1,8 @@
 overwrite: true
-schema: 'http://localhost:4000/graphql'
-documents: 'packages/client/graphql/**/*.ts'
+schema: 'http://localhost:3000/api/graphql'
+documents: 'graphql/**/*.ts'
 generates:
-  packages/client/generated/apolloComponents.tsx:
+  generated/apolloComponents.tsx:
     config:
       noNamespaces: true
       withHooks: true
@@ -14,13 +14,8 @@ generates:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-react-apollo'
-  packages/client/generated/introspectionSchema.json:
+  generated/introspectionSchema.json:
     plugins:
-      - introspection
-    config:
-      minify: true
-  packages/api/introspectionSchema.json:
-    plugins:
-      - introspection
+      - 'introspection'
     config:
       minify: true

@@ -1,0 +1,164 @@
+.dataLayout {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secondaryBackground);
+  min-height: var(--fullHeight, 100vh);
+}
+
+.Inner {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  padding-bottom: 1rem;
+}
+
+.Title {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+  background-color: var(--primaryBackground);
+  box-shadow: var(--wp-shadow-100);
+}
+
+.TitleText {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.Title .TitleDescriptionIcon {
+  position: relative;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  margin-top: 1px;
+  fill: currentColor;
+}
+
+.TitleRight {
+  margin-left: auto;
+}
+
+.Filter {
+  position: relative;
+  flex-shrink: 0;
+  width: 240px;
+  max-height: 100%;
+  margin-right: 15px;
+}
+
+.FilterContent {
+  position: sticky;
+  top: 2rem;
+  left: 0;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  z-index: 6;
+  max-width: 100%;
+  background-color: var(--primaryBackground);
+  box-shadow: var(--wp-shadow-100);
+  border-radius: var(--borderRadius);
+}
+
+.ContentFrame {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+.Controls {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding-right: var(--innerBlockHorizontalPadding);
+  padding-left: var(--innerBlockHorizontalPadding);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.ControlsLeft {
+  margin-right: auto;
+}
+
+.NoControls {
+  padding-top: 0;
+  padding-bottom: 0;
+  border: none;
+}
+
+.MoreNav {
+  margin-left: 1rem;
+}
+
+.ControlsButton:not(:first-child) {
+  margin-left: 0.5rem;
+}
+
+.FilterClose {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+@media only screen and (min-width: 1025px) {
+  .FilterClose {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .dataLayout {
+    display: block;
+    min-height: calc(var(--fullHeight, 100vh) - 36px);
+  }
+
+  .Inner {
+    display: block;
+  }
+
+  .Title {
+    font-size: 1.25rem;
+  }
+
+  .Filter {
+    width: auto;
+    padding-top: 0.5rem;
+    padding-right: var(--innerBlockHorizontalPadding);
+    padding-bottom: 1rem;
+    padding-left: var(--innerBlockHorizontalPadding);
+    margin-right: 0;
+    margin-bottom: 1rem;
+    background-color: var(--primaryBackground);
+    box-shadow: var(--wp-shadow-100);
+    border-radius: 3px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .Title {
+    display: block;
+    font-size: 1.125rem;
+  }
+
+  .TitleRightWithGap {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

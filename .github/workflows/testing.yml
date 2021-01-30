@@ -5,25 +5,6 @@ on:
     branches: [ develop ]
 
 jobs:
-  apiTest:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Development
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - run: yarn install
-      - run: npx lerna run --ignore @yagu/client --ignore @yagu/api build
-      - run: yarn test:api
-        env:
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-
   clientTest:
     runs-on: ubuntu-latest
     strategy:
@@ -39,10 +20,49 @@ jobs:
 
       - run: docker-compose -f docker-compose.dev.yml up -d
       - run: yarn install
-      - run: npx lerna run --ignore @yagu/client build
-      - run: npx lerna run --scope @yagu/client build:testing
-      - name: Start the app and run Cypress tests
-        run: npx lerna run --parallel start:testing & yarn test:client
+      - name: Build app
+        run: yarn build
         env:
-          NODE_ENV: development
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          ADMIN_NAME: ${{ secrets.NEXT_DEV_ADMIN_NAME }}
+          ADMIN_LAST_NAME: ${{ secrets.NEXT_DEV_ADMIN_LAST_NAME }}
+          ADMIN_SECOND_NAME: ${{ secrets.NEXT_DEV_ADMIN_SECOND_NAME }}
+          ADMIN_EMAIL: ${{ secrets.NEXT_DEV_ADMIN_EMAIL }}
+          ADMIN_PHONE: ${{ secrets.NEXT_DEV_ADMIN_PHONE }}
+          ADMIN_PASSWORD: ${{ secrets.NEXT_DEV_ADMIN_PASSWORD }}
+          MONGO_URL: ${{ secrets.NEXT_DEV_MONGO_URL }}
+          MONGO_DB_NAME: ${{ secrets.NEXT_DEV_MONGO_DB_NAME }}
+          HOST: ${{ secrets.NEXT_DEV_HOST }}
+          SITE: ${{ secrets.NEXT_DEV_SITE }}
+          NEXTAUTH_URL: ${{ secrets.NEXT_DEV_NEXTAUTH_URL }}
+          TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}
+          INITIAL_DATA_KEY: ${{ secrets.NEXT_DEV_INITIAL_DATA_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
+          AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
+          AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
+          AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}
+      - name: Start the app and run Cypress tests
+        run: yarn start & yarn test
+        env:
+          ADMIN_NAME: ${{ secrets.NEXT_DEV_ADMIN_NAME }}
+          ADMIN_LAST_NAME: ${{ secrets.NEXT_DEV_ADMIN_LAST_NAME }}
+          ADMIN_SECOND_NAME: ${{ secrets.NEXT_DEV_ADMIN_SECOND_NAME }}
+          ADMIN_EMAIL: ${{ secrets.NEXT_DEV_ADMIN_EMAIL }}
+          ADMIN_PHONE: ${{ secrets.NEXT_DEV_ADMIN_PHONE }}
+          ADMIN_PASSWORD: ${{ secrets.NEXT_DEV_ADMIN_PASSWORD }}
+          MONGO_URL: ${{ secrets.NEXT_DEV_MONGO_URL }}
+          MONGO_DB_NAME: ${{ secrets.NEXT_DEV_MONGO_DB_NAME }}
+          HOST: ${{ secrets.NEXT_DEV_HOST }}
+          SITE: ${{ secrets.NEXT_DEV_SITE }}
+          NEXTAUTH_URL: ${{ secrets.NEXT_DEV_NEXTAUTH_URL }}
+          TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}
+          INITIAL_DATA_KEY: ${{ secrets.NEXT_DEV_INITIAL_DATA_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
+          AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
+          AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
+          AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}

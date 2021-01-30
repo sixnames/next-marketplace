@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "lib": [
-      "ES2019",
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es2018",
+      "esnext.asynciterable"
     ],
-    "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
-    "target": "ES2019",
-    "declaration": false,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "declaration": false,
     "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
@@ -26,12 +32,16 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
     "allowJs": false,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "baseUrl": "."
   },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "cypress"
   ]
 }

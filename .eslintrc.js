@@ -40,6 +40,7 @@ module.exports = {
     'css-modules/no-unused-class': 'warn',
     'css-modules/no-undef-class': [2, { camelCase: true }],
     'react-app/jsx-a11y/anchor-is-valid': 'off',
+    '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

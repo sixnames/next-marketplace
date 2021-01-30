@@ -1,0 +1,21 @@
+.listLabel {
+  margin-bottom: 10px;
+}
+
+.languageInput {
+  margin-top: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.accordionIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.accordionIcon.iconDone {
+  color: var(--md-green-A700);
+}
+
+.accordionIcon.iconEmpty {
+  color: var(--md-red-700);
+}

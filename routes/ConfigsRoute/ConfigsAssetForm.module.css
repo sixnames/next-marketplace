@@ -1,0 +1,13 @@
+.line {
+  display: flex;
+  align-items: flex-start;
+}
+
+.info {
+  padding-left: 1rem;
+}
+
+.error {
+  font-weight: 600;
+  color: var(--red);
+}

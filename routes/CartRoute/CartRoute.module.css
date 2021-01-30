@@ -1,0 +1,245 @@
+.cart {
+  --buttonsRightGap: 0.5rem;
+  --productContentPaddingTop: 1.75rem;
+  --productContentPaddingRight: calc(var(--buttonsRightGap) + (var(--controlButtonHeight) * 2));
+  --productContentPaddingBottom: 3rem;
+
+  margin-bottom: 3rem;
+}
+
+.cart .cartTitle {
+  margin-bottom: 3.5rem;
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: 1fr var(--catalogue-filter-width);
+  grid-column-gap: var(--catalogueGridGap);
+  margin-bottom: 3rem;
+}
+
+.aside {
+  position: relative;
+}
+
+.productHolder {
+  margin-bottom: 2rem;
+}
+
+.product {
+  margin-bottom: 1rem;
+}
+
+.productMainGrid {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+}
+
+.product .amountInput {
+  background-color: var(--secondaryBackground);
+}
+
+.productContent {
+  position: relative;
+  padding-top: var(--productContentPaddingTop);
+  padding-right: var(--productContentPaddingRight);
+  padding-bottom: var(--productContentPaddingBottom);
+}
+
+.productImage {
+  position: relative;
+  min-height: 15rem;
+  margin-bottom: 1rem;
+}
+
+.productImageHolder {
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  width: 70%;
+  height: calc(100% + 1.5rem);
+}
+
+.product .productRemove {
+  position: absolute;
+  top: calc(var(--productContentPaddingTop) / 2);
+  right: var(--buttonsRightGap);
+  z-index: 5;
+}
+
+.productButns {
+  position: absolute;
+  bottom: calc(var(--productContentPaddingBottom) / 3);
+  right: var(--buttonsRightGap);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  grid-gap: 2rem;
+}
+
+.productGridRight {
+  min-width: 220px;
+}
+
+.productArt {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.productMeta {
+  color: var(--textSecondaryColor);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.productName {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.productConnections {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  color: var(--textSecondaryColor);
+  line-height: 1.4;
+  font-size: 0.875rem;
+}
+
+.connectionsGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.connectionsGroupLabel {
+  margin-right: 0.25rem;
+}
+
+.shop {
+  line-height: 1.8;
+  font-weight: 600;
+}
+
+.shop span {
+  color: var(--textSecondaryColor);
+  font-weight: 400;
+}
+
+.shopMap {
+  color: var(--theme);
+  margin-top: 1rem;
+}
+
+.shoplessFrom {
+  display: flex;
+  align-items: center;
+}
+
+.shoplessFrom .shoplessFromInput {
+  margin-right: 2rem;
+}
+
+.emptyBtns {
+  --buttonsGap: 1rem;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: var(--buttonsGap);
+  grid-row-gap: var(--buttonsGap);
+  max-width:  calc(var(--buttonsGap) + (var(--buttonMinWidth) * 2));
+}
+
+.emptyBtns .emptyBtnsItem {
+  max-width: 100%;
+}
+
+
+@media only screen and (max-width: 1024px) {
+  .cart {
+    margin-top: 3rem;
+  }
+
+  .frame {
+    grid-column-gap: 2rem;
+    grid-template-columns: 4fr 3fr;
+  }
+
+  .productContent {
+    --productContentPaddingRight: calc(var(--buttonsRightGap) + var(--controlButtonHeight));
+    --productContentPaddingBottom: var(--productContentPaddingTop);
+  }
+
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .productGridRight {
+    min-width: 0;
+  }
+
+  .product .productRemove {
+    right: 0;
+  }
+
+  .productButns {
+    position: absolute;
+    top: calc(var(--controlButtonHeight) + (var(--productContentPaddingTop) / 2));
+    right: 0;
+    display: block;
+    height: calc(var(--controlButtonHeight) * 2);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .frame {
+    grid-template-columns: 1fr;
+  }
+  
+  .frame .product {
+    background-color: transparent;
+    box-shadow: 0 0 transparent;
+    margin-bottom: 3.5rem;
+  }
+
+  .productContent {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .productMainGrid {
+    grid-template-columns: 3rem 1fr;
+    grid-column-gap: 1rem;
+  }
+
+  .product .amountInput {
+    background-color: var(--primaryBackground);
+  }
+  
+  .productImageHolder {
+    left: 5%;
+    width: 90%;
+    height: 100%;
+  }
+
+  .shoplessFrom {
+    display: block;
+  }
+
+  .shoplessFrom .shoplessFromInput {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+
+
+

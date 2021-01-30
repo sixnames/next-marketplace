@@ -21,6 +21,7 @@ const RoleDetails: React.FC<RoleDetailsInterface> = ({ role }) => {
   const [updateRoleMutation] = useUpdateRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.updateRole),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: GET_ROLE_QUERY,

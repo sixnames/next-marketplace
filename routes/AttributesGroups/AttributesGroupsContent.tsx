@@ -32,16 +32,31 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
     withModal: true,
   });
 
+  const { data, loading, error } = useGetAttributesGroupQuery({
+    skip: !attributesGroupId,
+    variables: { _id: `${attributesGroupId}` },
+    fetchPolicy: 'network-only',
+  });
+
+  const refetchQueries = [
+    {
+      query: ATTRIBUTES_GROUP_QUERY,
+      variables: {
+        _id: `${attributesGroupId}`,
+      },
+    },
+  ];
+
   const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
     awaitRefetchQueries: true,
-    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { _id: `${attributesGroupId}` } }],
+    refetchQueries,
     onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
     onError: onErrorCallback,
   });
 
   const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
     awaitRefetchQueries: true,
-    refetchQueries: [{ query: ATTRIBUTES_GROUP_QUERY, variables: { _id: `${attributesGroupId}` } }],
+    refetchQueries,
     onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
     onError: onErrorCallback,
   });
@@ -86,12 +101,6 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
       },
     });
   }
-
-  const { data, loading, error } = useGetAttributesGroupQuery({
-    skip: !attributesGroupId,
-    variables: { _id: attributesGroupId },
-    fetchPolicy: 'network-only',
-  });
 
   if (!attributesGroupId) {
     return <DataLayoutTitle>Выберите группу</DataLayoutTitle>;

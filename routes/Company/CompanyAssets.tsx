@@ -21,6 +21,7 @@ const CompanyAssets: React.FC<CompanyAssetsInterface> = ({ company }) => {
   const { logo, slug, _id } = company;
   const [updateCompanyLogoMutation] = useUpdateCompanyLogoMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateCompanyLogo),
     refetchQueries: [
       {

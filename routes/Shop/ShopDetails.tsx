@@ -22,6 +22,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop }) => {
     showErrorNotification,
   } = useMutationCallbacks();
   const [updateShopMutation] = useUpdateShopMutation({
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateShop),
     refetchQueries: [

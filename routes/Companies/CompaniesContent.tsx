@@ -28,6 +28,7 @@ const CompaniesContent: React.FC = () => {
   });
   const [deleteCompanyMutation] = useDeleteCompanyMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => {
       onCompleteCallback(data.deleteCompany);
     },

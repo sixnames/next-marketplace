@@ -35,6 +35,7 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
   const [addShopToCompanyMutation] = useAddShopToCompanyMutation({
     onCompleted: (data) => onCompleteCallback(data.addShopToCompany),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: COMPANY_SHOPS_QUERY,

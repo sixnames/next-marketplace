@@ -44,24 +44,28 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop }) => {
   ];
 
   const [updateShopLogoMutation] = useUpdateShopLogoMutation({
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateShopLogo),
     refetchQueries,
   });
 
   const [addShopAssetsMutation] = useAddShopAssetsMutation({
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.addShopAssets),
     refetchQueries,
   });
 
   const [deleteShopAssetMutation] = useDeleteShopAssetMutation({
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.deleteShopAsset),
     refetchQueries,
   });
 
   const [updateShopAssetIndexMutation] = useUpdateShopAssetIndexMutation({
+    awaitRefetchQueries: true,
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateShopAssetIndex),
     refetchQueries,

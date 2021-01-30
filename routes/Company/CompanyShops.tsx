@@ -52,6 +52,7 @@ const CompanyShops: React.FC<CompanyShopsInterface> = ({ company }) => {
   const [deleteShopFromCompanyMutation] = useDeleteShopFromCompanyMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteShopFromCompany),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: COMPANY_SHOPS_QUERY,

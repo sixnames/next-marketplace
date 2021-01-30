@@ -37,12 +37,14 @@ const RolesContent: React.FC = () => {
   const [deleteRoleMutation] = useDeleteRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteRole),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries,
   });
 
   const [createRoleMutation] = useCreateRoleMutation({
     onCompleted: (data) => onCompleteCallback(data.createRole),
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     refetchQueries,
   });
 

@@ -59,18 +59,21 @@ const ShopProducts: React.FC = () => {
   ];
 
   const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromShop),
     onError: onErrorCallback,
     refetchQueries,
   });
 
   const [updateShopProductMutation] = useUpdateShopProductMutation({
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateShopProduct),
     onError: onErrorCallback,
     refetchQueries,
   });
 
   const [addProductToShopMutation] = useAddProductToShopMutation({
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.addProductToShop),
     onError: onErrorCallback,
     refetchQueries,

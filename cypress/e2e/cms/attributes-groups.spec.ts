@@ -109,6 +109,7 @@ describe('Attributes Groups', () => {
     );
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}-row`).should('exist');
+    cy.shouldSuccess();
 
     // Should update attribute in group
     cy.getByCy(`${mockAttributeNewName}-attribute-update`).click();
@@ -123,10 +124,12 @@ describe('Attributes Groups', () => {
     cy.getByCy(`attribute-submit`).click();
     cy.getByCy(`${mockAttributeNewName}-row`).should('not.exist');
     cy.getByCy(`${updatedAttributeName}-row`).should('exist');
+    cy.shouldSuccess();
 
     // Should delete attribute from group
     cy.getByCy(`${updatedAttributeName}-attribute-delete`).click();
     cy.getByCy(`confirm`).click();
+    cy.shouldSuccess();
     cy.getByCy(`${updatedAttributeName}`).should('not.exist');
   });
 });

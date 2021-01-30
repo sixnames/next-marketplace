@@ -22,6 +22,7 @@ const CompanyDetails: React.FC<CompanyDetailsInterface> = ({ company }) => {
   const { showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks();
   const [updateCompanyMutation] = useUpdateCompanyMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateCompany),
     refetchQueries: [
       {

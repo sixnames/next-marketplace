@@ -36,18 +36,21 @@ const ProductAssets: React.FC<ProductDetailsInterface> = ({ product }) => {
 
   const [addProductAssetsMutation] = useAddProductAssetsMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.addProductAssets),
     refetchQueries,
   });
 
   const [deleteProductAssetMutation] = useDeleteProductAssetMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.deleteProductAsset),
     refetchQueries,
   });
 
   const [updateProductAssetIndexMutation] = useUpdateProductAssetIndexMutation({
     onError: onErrorCallback,
+    awaitRefetchQueries: true,
     onCompleted: (data) => onCompleteCallback(data.updateProductAssetIndex),
     refetchQueries,
   });

@@ -1,4 +1,11 @@
-import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, OPTIONS_GROUP_VARIANT_TEXT } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_LOCALE,
+  OPTIONS_GROUP_VARIANT_TEXT,
+  RUBRIC_LEVEL_ONE,
+} from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
@@ -8,6 +15,7 @@ import {
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
   COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
 } from 'db/collectionNames';
 import {
   AttributeModel,
@@ -16,10 +24,13 @@ import {
   AttributeViewVariantModel,
   BrandCollectionModel,
   BrandModel,
+  GenderModel,
   ManufacturerModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupVariantModel,
+  RubricAttributesGroupModel,
+  RubricModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -28,12 +39,14 @@ import {
   ParsedBrandInterface,
   ParsedManufacturerInterface,
   ParsedOptionsGroupInterface,
+  ParsedRubricInterface,
 } from 'db/parsedDataModels';
 import optionsData from 'db/seedData/optionsGroups.json';
 import attributesData from 'db/seedData/attributesGroups.json';
 import brandCollectionsData from 'db/seedData/brandCollections.json';
 import brandsData from 'db/seedData/brands.json';
 import manufacturersData from 'db/seedData/manufacturers.json';
+import rubricsData from 'db/seedData/rubrics.json';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { ObjectId } from 'mongodb';
 
@@ -73,7 +86,7 @@ export const seedInitial = async () => {
     // Attributes
     const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
     const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-    const attributesGroups: AttributesGroupModel[] = [];
+    const insertedAttributesGroups: AttributesGroupModel[] = [];
 
     for await (const attributesGroupItem of attributesData) {
       const attributesGroup: ParsedAttributesGroupInterface = attributesGroupItem;
@@ -111,7 +124,7 @@ export const seedInitial = async () => {
           [DEFAULT_LOCALE]: attributesGroup.name,
         },
       });
-      attributesGroups.push(insertedAttributesGroupResult.ops[0]);
+      insertedAttributesGroups.push(insertedAttributesGroupResult.ops[0]);
     }
 
     // Brand collections
@@ -192,8 +205,69 @@ export const seedInitial = async () => {
       },
     });
 
+    if (!rubricVariantAlcohol.result.ok) {
+      return false;
+    }
+
     // Rubrics
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    for await (const rubric of rubricsData) {
+      const initialRubric: ParsedRubricInterface = rubric;
+      const attributesGroups = insertedAttributesGroups.filter(({ nameI18n }) => {
+        return initialRubric.attributesGroupNames.includes(nameI18n[DEFAULT_LOCALE]);
+      });
+
+      const rubricAttributesGroups: RubricAttributesGroupModel[] = [];
+      for await (const attributesGroup of attributesGroups) {
+        const { _id, attributesIds } = attributesGroup;
+        const filterAttributes = await attributesCollection
+          .find({
+            _id: { $in: attributesIds },
+            $or: [
+              { variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel },
+              { variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT as AttributeVariantModel },
+            ],
+          })
+          .toArray();
+
+        const selectAttributesIds = filterAttributes.map(({ _id }) => _id);
+        rubricAttributesGroups.push({
+          _id: new ObjectId(),
+          showInCatalogueFilter: selectAttributesIds,
+          attributesGroupId: _id,
+          isOwner: true,
+        });
+      }
+
+      const rubricName = {
+        [DEFAULT_LOCALE]: initialRubric.name,
+      };
+
+      await rubricsCollection.insertOne({
+        active: true,
+        level: RUBRIC_LEVEL_ONE,
+        slug: initialRubric.slug,
+        attributesGroups: rubricAttributesGroups,
+        variantId: rubricVariantAlcohol.ops[0]._id,
+        nameI18n: rubricName,
+        catalogueTitle: {
+          gender: initialRubric.gender as GenderModel,
+          defaultTitleI18n: rubricName,
+          keywordI18n: rubricName,
+        },
+        descriptionI18n: {
+          [DEFAULT_LOCALE]: '',
+        },
+        shortDescriptionI18n: {
+          [DEFAULT_LOCALE]: '',
+        },
+        ...DEFAULT_COUNTERS_OBJECT,
+      });
+    }
+
+    return true;
   } catch (e) {
     console.log(e);
+    return false;
   }
 };

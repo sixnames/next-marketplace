@@ -45,6 +45,7 @@ export interface ParsedManufacturerInterface {
 export interface ParsedRubricInterface {
   name: string;
   slug: string;
+  gender: string;
   attributesGroupNames: string[];
 }
 

@@ -1,0 +1,1530 @@
+[
+  {
+    "name": "1410",
+    "slug": "1410"
+  },
+  {
+    "name": "Balta Pinta",
+    "slug": "balta_pinta"
+  },
+  {
+    "name": "Rinktinis",
+    "slug": "rinktinis"
+  },
+  {
+    "name": "Anbai",
+    "slug": "anbai"
+  },
+  {
+    "name": "Nipponia",
+    "slug": "nipponia"
+  },
+  {
+    "name": "Extra High",
+    "slug": "extra_high"
+  },
+  {
+    "name": "Granat",
+    "slug": "granat"
+  },
+  {
+    "name": "Kvasar",
+    "slug": "kvasar"
+  },
+  {
+    "name": "Fiordipesco",
+    "slug": "fiordipesco"
+  },
+  {
+    "name": "Брют д'Ор",
+    "slug": "bryut_dor"
+  },
+  {
+    "name": "Винтаж",
+    "slug": "vintazh"
+  },
+  {
+    "name": "Amatista",
+    "slug": "amatista"
+  },
+  {
+    "name": "Резерв",
+    "slug": "rezerv"
+  },
+  {
+    "name": "Belle Epoque",
+    "slug": "belle_epoque"
+  },
+  {
+    "name": "Blason Rouge",
+    "slug": "blason_rouge"
+  },
+  {
+    "name": "La Grande Annee",
+    "slug": "la_grande_annee"
+  },
+  {
+    "name": "James Bond 007",
+    "slug": "james_bond_007"
+  },
+  {
+    "name": "R.D.",
+    "slug": "rd"
+  },
+  {
+    "name": "Special Cuvee",
+    "slug": "special_cuvee"
+  },
+  {
+    "name": "Premier",
+    "slug": "premier"
+  },
+  {
+    "name": "Золотое",
+    "slug": "zolotoe"
+  },
+  {
+    "name": "Таманское",
+    "slug": "tamanskoe"
+  },
+  {
+    "name": "Grande Cuvee 1531",
+    "slug": "grande_cuvee_1531"
+  },
+  {
+    "name": "Luminous",
+    "slug": "luminous"
+  },
+  {
+    "name": "P2",
+    "slug": "p2"
+  },
+  {
+    "name": "P3",
+    "slug": "p3"
+  },
+  {
+    "name": "Mosaique",
+    "slug": "mosaique"
+  },
+  {
+    "name": "Cristalino",
+    "slug": "cristalino"
+  },
+  {
+    "name": "Cuvee Prestige",
+    "slug": "cuvee_prestige"
+  },
+  {
+    "name": "Cuvee 1887",
+    "slug": "cuvee_1887"
+  },
+  {
+    "name": "Vintage",
+    "slug": "vintage"
+  },
+  {
+    "name": "Cuvee Vittoria",
+    "slug": "cuvee_vittoria"
+  },
+  {
+    "name": "Carte Blanche",
+    "slug": "carte_blanche"
+  },
+  {
+    "name": "1551",
+    "slug": "1551"
+  },
+  {
+    "name": "Clasico",
+    "slug": "clasico"
+  },
+  {
+    "name": "Crest",
+    "slug": "crest"
+  },
+  {
+    "name": "Grande Cuvee",
+    "slug": "grande_cuvee"
+  },
+  {
+    "name": "Krug Collection",
+    "slug": "krug_collection"
+  },
+  {
+    "name": "Fleurs du Sud",
+    "slug": "fleurs_du_sud"
+  },
+  {
+    "name": "Laugel",
+    "slug": "laugel"
+  },
+  {
+    "name": "Наследие Мастера",
+    "slug": "nasledie_mastera"
+  },
+  {
+    "name": "Nature",
+    "slug": "nature"
+  },
+  {
+    "name": "Ice",
+    "slug": "ice"
+  },
+  {
+    "name": "Коронационное",
+    "slug": "koronatsionnoe"
+  },
+  {
+    "name": "Коллекционное",
+    "slug": "kollektsionnoe"
+  },
+  {
+    "name": "Кюве де Престиж",
+    "slug": "kyuve_de_prestizh"
+  },
+  {
+    "name": "Юбилейное",
+    "slug": "yubileinoe"
+  },
+  {
+    "name": "Blason Rose",
+    "slug": "blason_rose"
+  },
+  {
+    "name": "Grand Brut",
+    "slug": "grand_brut"
+  },
+  {
+    "name": "Элитное",
+    "slug": "elitnoe"
+  },
+  {
+    "name": "Sangre de Toro",
+    "slug": "sangre_de_toro"
+  },
+  {
+    "name": "Мускатное",
+    "slug": "muskatnoe"
+  },
+  {
+    "name": "Premiere Bulle",
+    "slug": "premiere_bulle"
+  },
+  {
+    "name": "Stamp",
+    "slug": "stamp"
+  },
+  {
+    "name": "Выдержанное",
+    "slug": "viderzhannoe"
+  },
+  {
+    "name": "Dessert",
+    "slug": "dessert"
+  },
+  {
+    "name": "Piu",
+    "slug": "piu"
+  },
+  {
+    "name": "Ретро",
+    "slug": "retro"
+  },
+  {
+    "name": "Selection",
+    "slug": "selection"
+  },
+  {
+    "name": "Charles Gardet",
+    "slug": "charles_gardet"
+  },
+  {
+    "name": "Роза Тамани",
+    "slug": "roza_tamani"
+  },
+  {
+    "name": "Селект",
+    "slug": "selekt"
+  },
+  {
+    "name": "La Cote aux Enfants",
+    "slug": "la_cote_aux_enfants"
+  },
+  {
+    "name": "Ани",
+    "slug": "ani"
+  },
+  {
+    "name": "Ахтамар",
+    "slug": "akhtamar"
+  },
+  {
+    "name": "Васпуракан",
+    "slug": "vaspurakan"
+  },
+  {
+    "name": "Двин",
+    "slug": "dvin"
+  },
+  {
+    "name": "Наири",
+    "slug": "nairi"
+  },
+  {
+    "name": "Отборный",
+    "slug": "otbornii"
+  },
+  {
+    "name": "Эребуни",
+    "slug": "erebuni"
+  },
+  {
+    "name": "Араспел",
+    "slug": "araspel"
+  },
+  {
+    "name": "Властелин",
+    "slug": "vlastelin"
+  },
+  {
+    "name": "Классик",
+    "slug": "klassik"
+  },
+  {
+    "name": "Подарочный",
+    "slug": "podarochnii"
+  },
+  {
+    "name": "Традиционный",
+    "slug": "traditsionnii"
+  },
+  {
+    "name": "Гринлайн",
+    "slug": "grinlain"
+  },
+  {
+    "name": "Зубровая",
+    "slug": "zubrovaya"
+  },
+  {
+    "name": "Infusion",
+    "slug": "infusion"
+  },
+  {
+    "name": "100",
+    "slug": "100"
+  },
+  {
+    "name": "Ледяная",
+    "slug": "ledyanaya"
+  },
+  {
+    "name": "Ледяная Мягкая",
+    "slug": "ledyanaya_myagkaya"
+  },
+  {
+    "name": "Можжевеловая",
+    "slug": "mozhzhevelovaya"
+  },
+  {
+    "name": "Северная Выдержка",
+    "slug": "severnaya_viderzhka"
+  },
+  {
+    "name": "Хлебная",
+    "slug": "khlebnaya"
+  },
+  {
+    "name": "Чесночная",
+    "slug": "chesnochnaya"
+  },
+  {
+    "name": "Кизиловый",
+    "slug": "kizilovii"
+  },
+  {
+    "name": "Тутовая",
+    "slug": "tutovaya"
+  },
+  {
+    "name": "Айс",
+    "slug": "ais"
+  },
+  {
+    "name": "Лайт",
+    "slug": "lait"
+  },
+  {
+    "name": "Золотая",
+    "slug": "zolotaya"
+  },
+  {
+    "name": "Клюква",
+    "slug": "klyukva"
+  },
+  {
+    "name": "Экспорт",
+    "slug": "eksport"
+  },
+  {
+    "name": "Классическая",
+    "slug": "klassicheskaya"
+  },
+  {
+    "name": "Классика",
+    "slug": "klassika"
+  },
+  {
+    "name": "Вороная",
+    "slug": "voronaya"
+  },
+  {
+    "name": "Люкс",
+    "slug": "lyuks"
+  },
+  {
+    "name": "Пять Злаков",
+    "slug": "pyat_zlakov"
+  },
+  {
+    "name": "Премиум",
+    "slug": "premium"
+  },
+  {
+    "name": "Аллюр",
+    "slug": "allyur"
+  },
+  {
+    "name": "Нобл Селебрейшн",
+    "slug": "nobl_selebreishn"
+  },
+  {
+    "name": "Трансатлантик Рейсинг",
+    "slug": "transatlantik_reising"
+  },
+  {
+    "name": "Эпикур",
+    "slug": "epikur"
+  },
+  {
+    "name": "Нано",
+    "slug": "nano"
+  },
+  {
+    "name": "Черная Линия",
+    "slug": "chernaya_liniya"
+  },
+  {
+    "name": "Черный лед",
+    "slug": "chernii_led"
+  },
+  {
+    "name": "Блэк",
+    "slug": "blek"
+  },
+  {
+    "name": "Арктик",
+    "slug": "arktik"
+  },
+  {
+    "name": "VX",
+    "slug": "vx"
+  },
+  {
+    "name": "Чача золотая",
+    "slug": "chacha_zolotaya"
+  },
+  {
+    "name": "Чача серебряная",
+    "slug": "chacha_serebryanaya"
+  },
+  {
+    "name": "Еврейский Стандарт",
+    "slug": "yevreiskii_standart"
+  },
+  {
+    "name": "Мягкая",
+    "slug": "myagkaya"
+  },
+  {
+    "name": "Серебряная",
+    "slug": "serebryanaya"
+  },
+  {
+    "name": "Кедровая",
+    "slug": "kedrovaya"
+  },
+  {
+    "name": "Ржаная",
+    "slug": "rzhanaya"
+  },
+  {
+    "name": "Спец.заказ",
+    "slug": "spetszakaz"
+  },
+  {
+    "name": "Традиционная",
+    "slug": "traditsionnaya"
+  },
+  {
+    "name": "Солодовая",
+    "slug": "solodovaya"
+  },
+  {
+    "name": "Таежная",
+    "slug": "taezhnaya"
+  },
+  {
+    "name": "Ночная",
+    "slug": "nochnaya"
+  },
+  {
+    "name": "Частная Коллекция",
+    "slug": "chastnaya_kollektsiya"
+  },
+  {
+    "name": "Отборная Жесткая",
+    "slug": "otbornaya_zhestkaya"
+  },
+  {
+    "name": "Отборная",
+    "slug": "otbornaya"
+  },
+  {
+    "name": "Отборная Мягкая",
+    "slug": "otbornaya_myagkaya"
+  },
+  {
+    "name": "Выдержанная",
+    "slug": "viderzhannaya"
+  },
+  {
+    "name": "Оригинальная",
+    "slug": "originalnaya"
+  },
+  {
+    "name": "Original",
+    "slug": "original"
+  },
+  {
+    "name": "Органик",
+    "slug": "organik"
+  },
+  {
+    "name": "Блэк Лейбл",
+    "slug": "blek_leibl"
+  },
+  {
+    "name": "Эксклюзив",
+    "slug": "eksklyuziv"
+  },
+  {
+    "name": "Платинум",
+    "slug": "platinum"
+  },
+  {
+    "name": "Традиция",
+    "slug": "traditsiya"
+  },
+  {
+    "name": "Медиум",
+    "slug": "medium"
+  },
+  {
+    "name": "Особая",
+    "slug": "osobaya"
+  },
+  {
+    "name": "Горилка",
+    "slug": "gorilka"
+  },
+  {
+    "name": "Деликат",
+    "slug": "delikat"
+  },
+  {
+    "name": "Лекс",
+    "slug": "leks"
+  },
+  {
+    "name": "Нерпа",
+    "slug": "nerpa"
+  },
+  {
+    "name": "Лайф",
+    "slug": "laif"
+  },
+  {
+    "name": "Блэкджек",
+    "slug": "blekdzhek"
+  },
+  {
+    "name": "Интернешнл",
+    "slug": "interneshnl"
+  },
+  {
+    "name": "Домашний",
+    "slug": "domashnii"
+  },
+  {
+    "name": "Деревенская",
+    "slug": "derevenskaya"
+  },
+  {
+    "name": "Фермерская",
+    "slug": "fermerskaya"
+  },
+  {
+    "name": "Пшеничная",
+    "slug": "pshenichnaya"
+  },
+  {
+    "name": "Черный лебедь",
+    "slug": "chernii_lebed"
+  },
+  {
+    "name": "Угольная",
+    "slug": "ugolnaya"
+  },
+  {
+    "name": "Скай",
+    "slug": "skai"
+  },
+  {
+    "name": "Вездеход",
+    "slug": "vezdekhod"
+  },
+  {
+    "name": "Голд",
+    "slug": "gold"
+  },
+  {
+    "name": "Империя",
+    "slug": "imperiya"
+  },
+  {
+    "name": "Ориджинал",
+    "slug": "oridzhinal"
+  },
+  {
+    "name": "Оушен",
+    "slug": "oushen"
+  },
+  {
+    "name": "Смирновъ 21",
+    "slug": "smirnov_21"
+  },
+  {
+    "name": "Black",
+    "slug": "black"
+  },
+  {
+    "name": "Gold",
+    "slug": "gold"
+  },
+  {
+    "name": "Classic",
+    "slug": "classic"
+  },
+  {
+    "name": "Аутентик",
+    "slug": "autentik"
+  },
+  {
+    "name": "Нордик Нейче",
+    "slug": "nordik_neiche"
+  },
+  {
+    "name": "Grapefruit",
+    "slug": "grapefruit"
+  },
+  {
+    "name": "Cranberry",
+    "slug": "cranberry"
+  },
+  {
+    "name": "Lime",
+    "slug": "lime"
+  },
+  {
+    "name": "Nordic Berries",
+    "slug": "nordic_berries"
+  },
+  {
+    "name": "Platinum",
+    "slug": "platinum"
+  },
+  {
+    "name": "Blackcurrant",
+    "slug": "blackcurrant"
+  },
+  {
+    "name": "Standart",
+    "slug": "standart"
+  },
+  {
+    "name": "Лимитед Эдишн",
+    "slug": "limited_edishn"
+  },
+  {
+    "name": "Репаблик Эдишн",
+    "slug": "repablik_edishn"
+  },
+  {
+    "name": "Red Berry",
+    "slug": "red_berry"
+  },
+  {
+    "name": "White",
+    "slug": "white"
+  },
+  {
+    "name": "Беспохмельная",
+    "slug": "bespokhmelnaya"
+  },
+  {
+    "name": "Снег",
+    "slug": "sneg"
+  },
+  {
+    "name": "Ducasse",
+    "slug": "ducasse"
+  },
+  {
+    "name": "Double Cask",
+    "slug": "double_cask"
+  },
+  {
+    "name": "Sherry Cask",
+    "slug": "sherry_cask"
+  },
+  {
+    "name": "Traditional cask",
+    "slug": "traditional_cask"
+  },
+  {
+    "name": "Triple Wood",
+    "slug": "triple_wood"
+  },
+  {
+    "name": "Founder's Reserve",
+    "slug": "founders_reserve"
+  },
+  {
+    "name": "Stories",
+    "slug": "stories"
+  },
+  {
+    "name": "Curiositas",
+    "slug": "curiositas"
+  },
+  {
+    "name": "Arumaticus Fumosus",
+    "slug": "arumaticus_fumosus"
+  },
+  {
+    "name": "Authenticus",
+    "slug": "authenticus"
+  },
+  {
+    "name": "Horizons",
+    "slug": "horizons"
+  },
+  {
+    "name": "Importanticus Fumosus",
+    "slug": "importanticus_fumosus"
+  },
+  {
+    "name": "Cask Bottling",
+    "slug": "cask_bottling"
+  },
+  {
+    "name": "Classic Speyside",
+    "slug": "classic_speyside"
+  },
+  {
+    "name": "Septendecim",
+    "slug": "septendecim"
+  },
+  {
+    "name": "Temporis",
+    "slug": "temporis"
+  },
+  {
+    "name": "Heart of Speyside",
+    "slug": "heart_of_speyside"
+  },
+  {
+    "name": "Heredotus Fumosus",
+    "slug": "heredotus_fumosus"
+  },
+  {
+    "name": "Wood Finish",
+    "slug": "wood_finish"
+  },
+  {
+    "name": "Organic",
+    "slug": "organic"
+  },
+  {
+    "name": "Distiller's Choice",
+    "slug": "distillers_choice"
+  },
+  {
+    "name": "Special Reserve",
+    "slug": "special_reserve"
+  },
+  {
+    "name": "Black Label",
+    "slug": "black_label"
+  },
+  {
+    "name": "Raw Cask",
+    "slug": "raw_cask"
+  },
+  {
+    "name": "Gold Edition",
+    "slug": "gold_edition"
+  },
+  {
+    "name": "Blue Label",
+    "slug": "blue_label"
+  },
+  {
+    "name": "Irish Honey",
+    "slug": "irish_honey"
+  },
+  {
+    "name": "Black Bush",
+    "slug": "black_bush"
+  },
+  {
+    "name": "Glengarriff",
+    "slug": "glengarriff"
+  },
+  {
+    "name": "Family Reserve",
+    "slug": "family_reserve"
+  },
+  {
+    "name": "Rare Cask Releases",
+    "slug": "rare_cask_releases"
+  },
+  {
+    "name": "Poitin",
+    "slug": "poitin"
+  },
+  {
+    "name": "Master Distiller's Reserve",
+    "slug": "master_distillers_reserve"
+  },
+  {
+    "name": "Nadurra",
+    "slug": "nadurra"
+  },
+  {
+    "name": "The Original",
+    "slug": "the_original"
+  },
+  {
+    "name": "105",
+    "slug": "105"
+  },
+  {
+    "name": "Family Casks",
+    "slug": "family_casks"
+  },
+  {
+    "name": "Cask Collection",
+    "slug": "cask_collection"
+  },
+  {
+    "name": "Gold Label",
+    "slug": "gold_label"
+  },
+  {
+    "name": "Cask Strength",
+    "slug": "cask_strength"
+  },
+  {
+    "name": "Private Collection",
+    "slug": "private_collection"
+  },
+  {
+    "name": "Rarest of the Rare",
+    "slug": "rarest_of_the_rare"
+  },
+  {
+    "name": "Double Oak",
+    "slug": "double_oak"
+  },
+  {
+    "name": "Green Label",
+    "slug": "green_label"
+  },
+  {
+    "name": "Double Black",
+    "slug": "double_black"
+  },
+  {
+    "name": "Red Label",
+    "slug": "red_label"
+  },
+  {
+    "name": "Supreme Selection",
+    "slug": "supreme_selection"
+  },
+  {
+    "name": "White Label",
+    "slug": "white_label"
+  },
+  {
+    "name": "Solist",
+    "slug": "solist"
+  },
+  {
+    "name": "Super Spiced",
+    "slug": "super_spiced"
+  },
+  {
+    "name": "Distiller's Edition",
+    "slug": "distillers_edition"
+  },
+  {
+    "name": "Distillers Edition",
+    "slug": "distillers_edition"
+  },
+  {
+    "name": "Classic Cut",
+    "slug": "classic_cut"
+  },
+  {
+    "name": "The 1824 Collection",
+    "slug": "the_1824_collection"
+  },
+  {
+    "name": "Lalique",
+    "slug": "lalique"
+  },
+  {
+    "name": "Fine Oak",
+    "slug": "fine_oak"
+  },
+  {
+    "name": "Rare Cask",
+    "slug": "rare_cask"
+  },
+  {
+    "name": "The 1824 Series",
+    "slug": "the_1824_series"
+  },
+  {
+    "name": "Triple Cask Matured",
+    "slug": "triple_cask_matured"
+  },
+  {
+    "name": "Sherry Oak",
+    "slug": "sherry_oak"
+  },
+  {
+    "name": "Collection",
+    "slug": "collection"
+  },
+  {
+    "name": "Pure Malt",
+    "slug": "pure_malt"
+  },
+  {
+    "name": "Slow Matured",
+    "slug": "slow_matured"
+  },
+  {
+    "name": "Peaky Blinder",
+    "slug": "peaky_blinder"
+  },
+  {
+    "name": "Kakubin",
+    "slug": "kakubin"
+  },
+  {
+    "name": "Cask Strength Collection",
+    "slug": "cask_strength_collection"
+  },
+  {
+    "name": "Green",
+    "slug": "green"
+  },
+  {
+    "name": "Vintage Reserve",
+    "slug": "vintage_reserve"
+  },
+  {
+    "name": "Brabazon Bottling",
+    "slug": "brabazon_bottling"
+  },
+  {
+    "name": "Revival",
+    "slug": "revival"
+  },
+  {
+    "name": "Limited Edition",
+    "slug": "limited_edition"
+  },
+  {
+    "name": "The Murray",
+    "slug": "the_murray"
+  },
+  {
+    "name": "1900",
+    "slug": "1900"
+  },
+  {
+    "name": "Special",
+    "slug": "special"
+  },
+  {
+    "name": "Valhalla",
+    "slug": "valhalla"
+  },
+  {
+    "name": "Finest",
+    "slug": "finest"
+  },
+  {
+    "name": "Viking Legend",
+    "slug": "viking_legend"
+  },
+  {
+    "name": "Majesty",
+    "slug": "majesty"
+  },
+  {
+    "name": "Warrior",
+    "slug": "warrior"
+  },
+  {
+    "name": "1865",
+    "slug": "1865"
+  },
+  {
+    "name": "Купаж",
+    "slug": "kupazh"
+  },
+  {
+    "name": "Adobe",
+    "slug": "adobe"
+  },
+  {
+    "name": "Aetos",
+    "slug": "aetos"
+  },
+  {
+    "name": "Vive",
+    "slug": "vive"
+  },
+  {
+    "name": "Premium",
+    "slug": "premium"
+  },
+  {
+    "name": "Unusual",
+    "slug": "unusual"
+  },
+  {
+    "name": "Pomegranate",
+    "slug": "pomegranate"
+  },
+  {
+    "name": "Юбилейный Выпуск",
+    "slug": "yubileinii_vipusk"
+  },
+  {
+    "name": "Barrica Selection",
+    "slug": "barrica_selection"
+  },
+  {
+    "name": "Belford",
+    "slug": "belford"
+  },
+  {
+    "name": "Seleccion",
+    "slug": "seleccion"
+  },
+  {
+    "name": "Bosco del Gal",
+    "slug": "bosco_del_gal"
+  },
+  {
+    "name": "Broquel",
+    "slug": "broquel"
+  },
+  {
+    "name": "Буссо",
+    "slug": "busso"
+  },
+  {
+    "name": "Бухта Омега",
+    "slug": "bukhta_omega"
+  },
+  {
+    "name": "Winemaster's Reserve",
+    "slug": "winemasters_reserve"
+  },
+  {
+    "name": "Winemaker's Selection",
+    "slug": "winemakers_selection"
+  },
+  {
+    "name": "Reserva",
+    "slug": "reserva"
+  },
+  {
+    "name": "Vicar's Choice",
+    "slug": "vicars_choice"
+  },
+  {
+    "name": "Villa da Vinci",
+    "slug": "villa_da_vinci"
+  },
+  {
+    "name": "Авторское вино",
+    "slug": "avtorskoe_vino"
+  },
+  {
+    "name": "Cellar Selection",
+    "slug": "cellar_selection"
+  },
+  {
+    "name": "Винодел & Сомелье",
+    "slug": "vinodel__somele"
+  },
+  {
+    "name": "Zolla",
+    "slug": "zolla"
+  },
+  {
+    "name": "Vinas de Balbo",
+    "slug": "vinas_de_balbo"
+  },
+  {
+    "name": "Estate Collection",
+    "slug": "estate_collection"
+  },
+  {
+    "name": "9 Lives",
+    "slug": "9_lives"
+  },
+  {
+    "name": "Winemaker's Reserve",
+    "slug": "winemakers_reserve"
+  },
+  {
+    "name": "Gran Medalla",
+    "slug": "gran_medalla"
+  },
+  {
+    "name": "Vina Esmeralda",
+    "slug": "vina_esmeralda"
+  },
+  {
+    "name": "Secreto",
+    "slug": "secreto"
+  },
+  {
+    "name": "Hatters Hill",
+    "slug": "hatters_hill"
+  },
+  {
+    "name": "Azeitao",
+    "slug": "azeitao"
+  },
+  {
+    "name": "Demoiselle de Gascogne",
+    "slug": "demoiselle_de_gascogne"
+  },
+  {
+    "name": "Grands Terroirs",
+    "slug": "grands_terroirs"
+  },
+  {
+    "name": "Dourthe №1",
+    "slug": "dourthe_№1"
+  },
+  {
+    "name": "Жемчужина Массандры",
+    "slug": "zhemchuzhina_massandri"
+  },
+  {
+    "name": "OgniGiorno",
+    "slug": "ognigiorno"
+  },
+  {
+    "name": "Крымская Ривьера",
+    "slug": "krimskaya_rivera"
+  },
+  {
+    "name": "Эритаж",
+    "slug": "eritazh"
+  },
+  {
+    "name": "Iscay",
+    "slug": "iscay"
+  },
+  {
+    "name": "Calappiano",
+    "slug": "calappiano"
+  },
+  {
+    "name": "Casasole",
+    "slug": "casasole"
+  },
+  {
+    "name": "Campofiorin",
+    "slug": "campofiorin"
+  },
+  {
+    "name": "Marquesa de Alorna",
+    "slug": "marquesa_de_alorna"
+  },
+  {
+    "name": "Bicicleta",
+    "slug": "bicicleta"
+  },
+  {
+    "name": "Glicine",
+    "slug": "glicine"
+  },
+  {
+    "name": "Cote des Roses",
+    "slug": "cote_des_roses"
+  },
+  {
+    "name": "Cru Lermont",
+    "slug": "cru_lermont"
+  },
+  {
+    "name": "Cape Classics",
+    "slug": "cape_classics"
+  },
+  {
+    "name": "Reserve",
+    "slug": "reserve"
+  },
+  {
+    "name": "Linticlarus",
+    "slug": "linticlarus"
+  },
+  {
+    "name": "Lacryma Christi del Vesuvio",
+    "slug": "lacryma_christi_del_vesuvio"
+  },
+  {
+    "name": "Library Release",
+    "slug": "library_release"
+  },
+  {
+    "name": "Le Volpare",
+    "slug": "le_volpare"
+  },
+  {
+    "name": "Le Serre Nuove",
+    "slug": "le_serre_nuove"
+  },
+  {
+    "name": "Коллекция Эрмитажа",
+    "slug": "kollektsiya_ermitazha"
+  },
+  {
+    "name": "Супрули",
+    "slug": "supruli"
+  },
+  {
+    "name": "Gran Reserva",
+    "slug": "gran_reserva"
+  },
+  {
+    "name": "Тбилиси",
+    "slug": "tbilisi"
+  },
+  {
+    "name": "Twin Oaks",
+    "slug": "twin_oaks"
+  },
+  {
+    "name": "the Reserve Collection",
+    "slug": "the_reserve_collection"
+  },
+  {
+    "name": "Terralis",
+    "slug": "terralis"
+  },
+  {
+    "name": "Vineyard",
+    "slug": "vineyard"
+  },
+  {
+    "name": "Limited Reserve",
+    "slug": "limited_reserve"
+  },
+  {
+    "name": "Magna",
+    "slug": "magna"
+  },
+  {
+    "name": "Terroir Series",
+    "slug": "terroir_series"
+  },
+  {
+    "name": "Hunter Valley",
+    "slug": "hunter_valley"
+  },
+  {
+    "name": "Brokenback",
+    "slug": "brokenback"
+  },
+  {
+    "name": "Turmhof",
+    "slug": "turmhof"
+  },
+  {
+    "name": "Villa Fontana",
+    "slug": "villa_fontana"
+  },
+  {
+    "name": "Le Rosse",
+    "slug": "le_rosse"
+  },
+  {
+    "name": "Rafael",
+    "slug": "rafael"
+  },
+  {
+    "name": "Natureo",
+    "slug": "natureo"
+  },
+  {
+    "name": "Maglen",
+    "slug": "maglen"
+  },
+  {
+    "name": "Rungg",
+    "slug": "rungg"
+  },
+  {
+    "name": "Urban",
+    "slug": "urban"
+  },
+  {
+    "name": "Epokale",
+    "slug": "epokale"
+  },
+  {
+    "name": "Vineyards",
+    "slug": "vineyards"
+  },
+  {
+    "name": "Oak Cask",
+    "slug": "oak_cask"
+  },
+  {
+    "name": "Perfiles",
+    "slug": "perfiles"
+  },
+  {
+    "name": "Tribu",
+    "slug": "tribu"
+  },
+  {
+    "name": "Павел Швец",
+    "slug": "pavel_shvets"
+  },
+  {
+    "name": "Familae Piccini",
+    "slug": "familae_piccini"
+  },
+  {
+    "name": "Авторское Вино",
+    "slug": "avtorskoe_vino"
+  },
+  {
+    "name": "Номерной резерв 1957",
+    "slug": "nomernoi_rezerv_1957"
+  },
+  {
+    "name": "Номерной резерв",
+    "slug": "nomernoi_rezerv"
+  },
+  {
+    "name": "Faustino I",
+    "slug": "faustino_i"
+  },
+  {
+    "name": "Feldmarschall",
+    "slug": "feldmarschall"
+  },
+  {
+    "name": "Dona Antonia",
+    "slug": "dona_antonia"
+  },
+  {
+    "name": "Nussbaumer",
+    "slug": "nussbaumer"
+  },
+  {
+    "name": "Faustino V",
+    "slug": "faustino_v"
+  },
+  {
+    "name": "Faustino VII",
+    "slug": "faustino_vii"
+  },
+  {
+    "name": "Crianza",
+    "slug": "crianza"
+  },
+  {
+    "name": "Food Time",
+    "slug": "food_time"
+  },
+  {
+    "name": "1840",
+    "slug": "1840"
+  },
+  {
+    "name": "Legacy",
+    "slug": "legacy"
+  },
+  {
+    "name": "Block Series",
+    "slug": "block_series"
+  },
+  {
+    "name": "Хороший год",
+    "slug": "khoroshii_god"
+  },
+  {
+    "name": "Moon Mountain",
+    "slug": "moon_mountain"
+  },
+  {
+    "name": "Дуо",
+    "slug": "duo"
+  },
+  {
+    "name": "Esse Unplugged",
+    "slug": "esse_unplugged"
+  },
+  {
+    "name": "Yasmin",
+    "slug": "yasmin"
+  },
+  {
+    "name": "Ca' Florian",
+    "slug": "ca_florian"
+  },
+  {
+    "name": "Campogrande",
+    "slug": "campogrande"
+  },
+  {
+    "name": "Le Fornaci",
+    "slug": "le_fornaci"
+  },
+  {
+    "name": "Lost Block",
+    "slug": "lost_block"
+  },
+  {
+    "name": "Kondoli",
+    "slug": "kondoli"
+  },
+  {
+    "name": "Меганом",
+    "slug": "meganom"
+  },
+  {
+    "name": "Modello",
+    "slug": "modello"
+  },
+  {
+    "name": "Moore's Creek",
+    "slug": "moores_creek"
+  },
+  {
+    "name": "Old Winery",
+    "slug": "old_winery"
+  },
+  {
+    "name": "Orca Bay",
+    "slug": "orca_bay"
+  },
+  {
+    "name": "Vendemmia D'Artista",
+    "slug": "vendemmia_dartista"
+  },
+  {
+    "name": "Le Volte",
+    "slug": "le_volte"
+  },
+  {
+    "name": "Poggio alle Gazze",
+    "slug": "poggio_alle_gazze"
+  },
+  {
+    "name": "Pioneer Block",
+    "slug": "pioneer_block"
+  },
+  {
+    "name": "Генезис",
+    "slug": "genezis"
+  },
+  {
+    "name": "Ренессанс",
+    "slug": "renessans"
+  },
+  {
+    "name": "Upper Galilee",
+    "slug": "upper_galilee"
+  },
+  {
+    "name": "Riserva Ducale",
+    "slug": "riserva_ducale"
+  },
+  {
+    "name": "Rufus Stone",
+    "slug": "rufus_stone"
+  },
+  {
+    "name": "San Valentin",
+    "slug": "san_valentin"
+  },
+  {
+    "name": "Reserva de Familia",
+    "slug": "reserva_de_familia"
+  },
+  {
+    "name": "Montegradella",
+    "slug": "montegradella"
+  },
+  {
+    "name": "Wairau Reserve",
+    "slug": "wairau_reserve"
+  },
+  {
+    "name": "Montan",
+    "slug": "montan"
+  },
+  {
+    "name": "Pure",
+    "slug": "pure"
+  },
+  {
+    "name": "Stoan",
+    "slug": "stoan"
+  },
+  {
+    "name": "Arele",
+    "slug": "arele"
+  }
+]

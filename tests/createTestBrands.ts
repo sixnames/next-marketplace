@@ -8,7 +8,7 @@ import { setCollectionItemId } from 'lib/itemIdUtils';
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
 export interface GetFakeBrandInterface {
-  itemId: number;
+  itemId: string;
   brandCollectionName: string;
   brandName: string;
 }
@@ -65,7 +65,7 @@ export async function getFakeBrand({
 }
 
 interface GetFakeManufacturerInterface {
-  itemId: number;
+  itemId: string;
   manufacturerName: string;
 }
 
@@ -116,40 +116,40 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
 
   // Brand A
   const { brandCollection: brandCollectionA, brand: brandA } = await getFakeBrand({
-    itemId: 1,
+    itemId: '1',
     brandName: 'brandA',
     brandCollectionName: 'brandCollectionA',
   });
 
   // Brand B
   const { brandCollection: brandCollectionB, brand: brandB } = await getFakeBrand({
-    itemId: 2,
+    itemId: '2',
     brandName: 'brandB',
     brandCollectionName: 'brandCollectionB',
   });
 
   // Brand C
   const { brandCollection: brandCollectionC, brand: brandC } = await getFakeBrand({
-    itemId: 3,
+    itemId: '3',
     brandName: 'brandC',
     brandCollectionName: 'brandCollectionC',
   });
 
   // Manufacturer A
   const manufacturerA = await getFakeManufacturer({
-    itemId: 1,
+    itemId: '1',
     manufacturerName: 'manufacturerA',
   });
 
   // Manufacturer B
   const manufacturerB = await getFakeManufacturer({
-    itemId: 2,
+    itemId: '2',
     manufacturerName: 'manufacturerB',
   });
 
   // Manufacturer C
   const manufacturerC = await getFakeManufacturer({
-    itemId: 3,
+    itemId: '3',
     manufacturerName: 'manufacturerC',
   });
 

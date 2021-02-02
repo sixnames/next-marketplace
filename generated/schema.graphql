@@ -172,7 +172,7 @@ type AttributesGroupPayload implements Payload {
 
 interface Base {
   _id: ObjectId!
-  itemId: Int!
+  itemId: String!
 }
 
 type Brand implements Base & Timestamp {
@@ -183,7 +183,7 @@ type Brand implements Base & Timestamp {
   createdAt: Date!
   description: String
   descriptionI18n: JSONObject
-  itemId: Int!
+  itemId: String!
   name: String!
   nameI18n: String!
   slug: String!
@@ -196,7 +196,7 @@ type BrandCollection implements Base & Timestamp {
   createdAt: Date!
   description: String
   descriptionI18n: JSONObject
-  itemId: Int!
+  itemId: String!
   name: String!
   nameI18n: JSONObject!
   slug: String!
@@ -255,7 +255,7 @@ type CartProduct implements Base {
   amount: Int!
   formattedTotalPrice: String!
   isShopless: Boolean!
-  itemId: Int!
+  itemId: String!
   product: Product
   productId: ObjectId
   shopProduct: ShopProduct
@@ -349,7 +349,7 @@ type Company implements Base & Timestamp {
   archive: Boolean!
   contacts: Contacts!
   createdAt: Date!
-  itemId: Int!
+  itemId: String!
   logo: Asset!
   name: String!
   owner: User!
@@ -691,7 +691,7 @@ type Manufacturer implements Base & Timestamp {
   createdAt: Date!
   description: String
   descriptionI18n: JSONObject
-  itemId: Int!
+  itemId: String!
   name: String!
   nameI18n: JSONObject!
   slug: String!
@@ -1275,7 +1275,7 @@ type Order implements Base & Timestamp {
   createdAt: Date!
   customer: OrderCustomer!
   formattedTotalPrice: String!
-  itemId: Int!
+  itemId: String!
   logs: [OrderLog!]!
   products: [OrderProduct!]!
   productsCount: Int!
@@ -1454,7 +1454,7 @@ type Product implements Base & Timestamp {
   createdAt: Date!
   description: String!
   descriptionI18n: JSONObject!
-  itemId: Int!
+  itemId: String!
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
@@ -1527,7 +1527,7 @@ type ProductAttributesGroupAst implements Base {
   astAttributes: [ProductAttribute!]!
   attributes: [Attribute!]!
   attributesIds: [ObjectId!]!
-  itemId: Int!
+  itemId: String!
   name: String!
   nameI18n: JSONObject!
 }
@@ -2112,7 +2112,7 @@ type Shop implements Base & Timestamp {
   companyId: ObjectId!
   contacts: Contacts!
   createdAt: Date!
-  itemId: Int!
+  itemId: String!
   logo: Asset!
   name: String!
   productsCount: Int!
@@ -2432,7 +2432,7 @@ type User implements Base & Timestamp {
   email: EmailAddress!
   formattedPhone: FormattedPhone!
   fullName: String!
-  itemId: Int!
+  itemId: String!
   lastName: String
   name: String!
   orders(input: PaginationInput): OrdersPaginationPayload!

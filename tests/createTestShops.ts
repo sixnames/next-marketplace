@@ -164,7 +164,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   };
 
   // Shop A assets
-  const shopAItemId = 1;
+  const shopAItemId = '1';
   const shopALogoUrl = await findOrCreateTestAsset({
     localFilePath: shopLogoLocalFilePath,
     dist: `${ASSETS_DIST_SHOPS_LOGOS}/${shopAItemId}`,
@@ -308,7 +308,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   };
 
   // Shop B
-  const shopBItemId = 2;
+  const shopBItemId = '2';
   const shopBLogoUrl = await findOrCreateTestAsset({
     localFilePath: shopLogoLocalFilePath,
     dist: `${ASSETS_DIST_SHOPS_LOGOS}/${shopBItemId}`,
@@ -368,7 +368,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   // Company A
   const companyName = 'companyA';
   const companySlug = generateSlug(companyName);
-  const companyItemId = 1;
+  const companyItemId = '1';
   const companyLocalFilePath = path.join(
     process.cwd(),
     'tests',
@@ -384,7 +384,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const companyA: CompanyModel = {
     _id: companyAId,
     archive: false,
-    itemId: 1,
+    itemId: companyItemId,
     name: companyName,
     slug: companySlug,
     contacts: {
@@ -405,7 +405,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   // Insert all
   const createdMockShops = await shopsCollection.insertMany([shopA, shopB]);
   const mockShops = createdMockShops.ops;
-  await setCollectionItemId(COL_SHOPS, shopBItemId);
+  await setCollectionItemId(COL_SHOPS, 2);
 
   await shopProductsCollection.insertMany([
     shopAProductA,
@@ -424,7 +424,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
 
   const createdMockCompanies = await companiesCollection.insertMany([companyA]);
   const mockCompanies = createdMockCompanies.ops;
-  await setCollectionItemId(COL_COMPANIES, companyItemId);
+  await setCollectionItemId(COL_COMPANIES, 1);
 
   // Update products shops data
   const updatedProductA = await updateProductShopsData({ productId: productA._id });

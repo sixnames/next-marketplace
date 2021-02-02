@@ -49,7 +49,7 @@ export interface IdCounterModel {
 
 export interface BaseModel {
   _id: ObjectIdModel;
-  itemId: number;
+  itemId: string;
   type?: any;
 }
 
@@ -393,7 +393,7 @@ export interface OrderLogModel extends TimestampModel {
 
 export interface OrderProductModel {
   _id: ObjectIdModel;
-  itemId: number;
+  itemId: string;
   price: number;
   amount: number;
   slug: string;
@@ -410,7 +410,7 @@ export interface OrderProductModel {
 export interface OrderCustomerModel {
   _id: ObjectIdModel;
   userId: ObjectIdModel;
-  itemId: number;
+  itemId: string;
   name: string;
   lastName?: string | null;
   secondName?: string | null;

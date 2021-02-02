@@ -1,6 +1,7 @@
 // ID Counters
 export const DEFAULT_ID_COUNTER = 1;
 export const ID_COUNTER_STEP = 1;
+export const ID_COUNTER_DIGITS = 6;
 
 // Time
 export const ONE_SECOND = 1000;

@@ -198,7 +198,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     active?: boolean;
     defaultLocaleName: string;
     secondaryLocaleName: string;
-    itemId: number;
+    itemId: string;
   }
 
   async function createTestProduct({
@@ -274,7 +274,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerA.slug,
     defaultLocaleName: `Product A ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product A ${SECONDARY_LOCALE}`,
-    itemId: 1,
+    itemId: '1',
   });
 
   const productB = await createTestProduct({
@@ -287,7 +287,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     active: false,
     defaultLocaleName: `Product B ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product B ${SECONDARY_LOCALE}`,
-    itemId: 2,
+    itemId: '2',
   });
 
   const productC = await createTestProduct({
@@ -299,7 +299,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerA.slug,
     defaultLocaleName: `Product C ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product C ${SECONDARY_LOCALE}`,
-    itemId: 3,
+    itemId: '3',
   });
 
   const productD = await createTestProduct({
@@ -311,7 +311,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerB.slug,
     defaultLocaleName: `Product D ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product D ${SECONDARY_LOCALE}`,
-    itemId: 4,
+    itemId: '4',
   });
 
   const productF = await createTestProduct({
@@ -321,7 +321,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerA.slug,
     defaultLocaleName: `Product F ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product F ${SECONDARY_LOCALE}`,
-    itemId: 5,
+    itemId: '5',
   });
 
   const connectionProductA = await createTestProduct({
@@ -334,7 +334,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerC.slug,
     defaultLocaleName: `Connection Product ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Connection Product ${SECONDARY_LOCALE}`,
-    itemId: 6,
+    itemId: '6',
   });
 
   const connectionProductB = await createTestProduct({
@@ -347,7 +347,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerC.slug,
     defaultLocaleName: `Connection Product ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Connection Product ${SECONDARY_LOCALE}`,
-    itemId: 7,
+    itemId: '7',
   });
 
   const connectionProductC = await createTestProduct({
@@ -360,7 +360,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     manufacturerSlug: manufacturerC.slug,
     defaultLocaleName: `Connection Product ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Connection Product ${SECONDARY_LOCALE}`,
-    itemId: 8,
+    itemId: '8',
   });
 
   await setCollectionItemId(COL_PRODUCTS, 8);

@@ -1,7 +1,7 @@
 import { sendEmail, SendEmailInterface } from './mailer';
 
 interface OrderCreatedEmailTemplateInterface {
-  orderItemId: number;
+  orderItemId: string;
   userName: string;
 }
 

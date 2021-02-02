@@ -131,7 +131,7 @@ export const Base = interfaceType({
   },
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.int('itemId');
+    t.nonNull.string('itemId');
   },
 });
 

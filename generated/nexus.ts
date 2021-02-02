@@ -863,7 +863,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    itemId: number; // Int!
+    itemId: string; // String!
     name: string; // String!
     nameI18n: string; // String!
     slug: string; // String!
@@ -876,7 +876,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    itemId: number; // Int!
+    itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -935,7 +935,7 @@ export interface NexusGenFieldTypes {
     amount: number; // Int!
     formattedTotalPrice: string; // String!
     isShopless: boolean; // Boolean!
-    itemId: number; // Int!
+    itemId: string; // String!
     product: NexusGenRootTypes['Product'] | null; // Product
     productId: NexusGenScalars['ObjectId'] | null; // ObjectId
     shopProduct: NexusGenRootTypes['ShopProduct'] | null; // ShopProduct
@@ -1029,7 +1029,7 @@ export interface NexusGenFieldTypes {
     archive: boolean; // Boolean!
     contacts: NexusGenRootTypes['Contacts']; // Contacts!
     createdAt: NexusGenScalars['Date']; // Date!
-    itemId: number; // Int!
+    itemId: string; // String!
     logo: NexusGenRootTypes['Asset']; // Asset!
     name: string; // String!
     owner: NexusGenRootTypes['User']; // User!
@@ -1133,7 +1133,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     description: string | null; // String
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    itemId: number; // Int!
+    itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -1343,7 +1343,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     customer: NexusGenRootTypes['OrderCustomer']; // OrderCustomer!
     formattedTotalPrice: string; // String!
-    itemId: number; // Int!
+    itemId: string; // String!
     logs: NexusGenRootTypes['OrderLog'][]; // [OrderLog!]!
     products: NexusGenRootTypes['OrderProduct'][]; // [OrderProduct!]!
     productsCount: number; // Int!
@@ -1458,7 +1458,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date']; // Date!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    itemId: number; // Int!
+    itemId: string; // String!
     mainImage: string; // String!
     manufacturer: NexusGenRootTypes['Manufacturer'] | null; // Manufacturer
     manufacturerSlug: string | null; // String
@@ -1499,7 +1499,7 @@ export interface NexusGenFieldTypes {
     astAttributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     attributes: NexusGenRootTypes['Attribute'][]; // [Attribute!]!
     attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-    itemId: number; // Int!
+    itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -1774,7 +1774,7 @@ export interface NexusGenFieldTypes {
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     contacts: NexusGenRootTypes['Contacts']; // Contacts!
     createdAt: NexusGenScalars['Date']; // Date!
-    itemId: number; // Int!
+    itemId: string; // String!
     logo: NexusGenRootTypes['Asset']; // Asset!
     name: string; // String!
     productsCount: number; // Int!
@@ -1854,7 +1854,7 @@ export interface NexusGenFieldTypes {
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     formattedPhone: NexusGenRootTypes['FormattedPhone']; // FormattedPhone!
     fullName: string; // String!
-    itemId: number; // Int!
+    itemId: string; // String!
     lastName: string | null; // String
     name: string; // String!
     orders: NexusGenRootTypes['OrdersPaginationPayload']; // OrdersPaginationPayload!
@@ -1887,7 +1887,7 @@ export interface NexusGenFieldTypes {
   Base: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    itemId: number; // Int!
+    itemId: string; // String!
   };
   PaginationPayload: {
     // field return type
@@ -1966,7 +1966,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
-    itemId: 'Int';
+    itemId: 'String';
     name: 'String';
     nameI18n: 'String';
     slug: 'String';
@@ -1979,7 +1979,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
-    itemId: 'Int';
+    itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     slug: 'String';
@@ -2038,7 +2038,7 @@ export interface NexusGenFieldTypeNames {
     amount: 'Int';
     formattedTotalPrice: 'String';
     isShopless: 'Boolean';
-    itemId: 'Int';
+    itemId: 'String';
     product: 'Product';
     productId: 'ObjectId';
     shopProduct: 'ShopProduct';
@@ -2132,7 +2132,7 @@ export interface NexusGenFieldTypeNames {
     archive: 'Boolean';
     contacts: 'Contacts';
     createdAt: 'Date';
-    itemId: 'Int';
+    itemId: 'String';
     logo: 'Asset';
     name: 'String';
     owner: 'User';
@@ -2236,7 +2236,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
-    itemId: 'Int';
+    itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     slug: 'String';
@@ -2446,7 +2446,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     customer: 'OrderCustomer';
     formattedTotalPrice: 'String';
-    itemId: 'Int';
+    itemId: 'String';
     logs: 'OrderLog';
     products: 'OrderProduct';
     productsCount: 'Int';
@@ -2561,7 +2561,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date';
     description: 'String';
     descriptionI18n: 'JSONObject';
-    itemId: 'Int';
+    itemId: 'String';
     mainImage: 'String';
     manufacturer: 'Manufacturer';
     manufacturerSlug: 'String';
@@ -2602,7 +2602,7 @@ export interface NexusGenFieldTypeNames {
     astAttributes: 'ProductAttribute';
     attributes: 'Attribute';
     attributesIds: 'ObjectId';
-    itemId: 'Int';
+    itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
   };
@@ -2877,7 +2877,7 @@ export interface NexusGenFieldTypeNames {
     companyId: 'ObjectId';
     contacts: 'Contacts';
     createdAt: 'Date';
-    itemId: 'Int';
+    itemId: 'String';
     logo: 'Asset';
     name: 'String';
     productsCount: 'Int';
@@ -2957,7 +2957,7 @@ export interface NexusGenFieldTypeNames {
     email: 'EmailAddress';
     formattedPhone: 'FormattedPhone';
     fullName: 'String';
-    itemId: 'Int';
+    itemId: 'String';
     lastName: 'String';
     name: 'String';
     orders: 'OrdersPaginationPayload';
@@ -2990,7 +2990,7 @@ export interface NexusGenFieldTypeNames {
   Base: {
     // field return type name
     _id: 'ObjectId';
-    itemId: 'Int';
+    itemId: 'String';
   };
   PaginationPayload: {
     // field return type name

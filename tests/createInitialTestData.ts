@@ -48,7 +48,7 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
   const adminPassword = await hash(`${process.env.ADMIN_PASSWORD}`, 10);
 
   const createdAdmin = await usersCollection.insertOne({
-    itemId: 1,
+    itemId: '1',
     name: `${process.env.ADMIN_NAME}`,
     lastName: `${process.env.ADMIN_LAST_NAME}`,
     secondName: `${process.env.ADMIN_SECOND_NAME}`,

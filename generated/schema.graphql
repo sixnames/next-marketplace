@@ -188,7 +188,7 @@ type Brand implements Base & Timestamp {
   nameI18n: String!
   slug: String!
   updatedAt: Date!
-  url: URL
+  url: [URL!]
 }
 
 type BrandCollection implements Base & Timestamp {
@@ -461,7 +461,7 @@ input CreateAttributesGroupInput {
 input CreateBrandInput {
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
-  url: URL
+  url: [URL!]
 }
 
 input CreateCompanyInput {
@@ -490,7 +490,7 @@ input CreateLanguageInput {
 input CreateManufacturerInput {
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
-  url: URL
+  url: [URL!]
 }
 
 input CreateMetricInput {
@@ -696,7 +696,7 @@ type Manufacturer implements Base & Timestamp {
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
-  url: URL
+  url: [URL!]
 }
 
 type ManufacturerPayload implements Payload {
@@ -2243,7 +2243,7 @@ input UpdateBrandInput {
   brandId: ObjectId!
   descriptionI18n: JSONObject
   nameI18n: JSONObject!
-  url: URL
+  url: [URL!]
 }
 
 input UpdateCityInCountryInput {
@@ -2300,7 +2300,7 @@ input UpdateManufacturerInput {
   descriptionI18n: JSONObject
   manufacturerId: ObjectId!
   nameI18n: JSONObject!
-  url: URL
+  url: [URL!]
 }
 
 input UpdateMetricInput {

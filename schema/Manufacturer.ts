@@ -20,7 +20,7 @@ export const Manufacturer = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.url('url');
+    t.list.nonNull.url('url');
     t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
@@ -149,7 +149,7 @@ export const ManufacturerPayload = objectType({
 export const CreateManufacturerInput = inputObjectType({
   name: 'CreateManufacturerInput',
   definition(t) {
-    t.url('url');
+    t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
   },
@@ -160,7 +160,7 @@ export const UpdateManufacturerInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('manufacturerId');
     t.nonNull.json('nameI18n');
-    t.url('url');
+    t.list.nonNull.url('url');
     t.json('descriptionI18n');
   },
 });

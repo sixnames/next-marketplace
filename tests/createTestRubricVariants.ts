@@ -22,6 +22,7 @@ export const createTestRubricVariants = async (): Promise<CreateTestRubricVarian
   const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
 
   const attributes = await createTestAttributes();
+
   const rubricVariantAlcoholDefaultName = 'Алкоголь';
   const rubricVariantAlcoholName = {
     [DEFAULT_LOCALE]: rubricVariantAlcoholDefaultName,

@@ -201,7 +201,7 @@ export interface AttributesGroupModel {
 
 export interface BrandModel extends BaseModel, TimestampModel {
   slug: string;
-  url?: URLModel | null;
+  url?: URLModel[] | null;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
   collectionsIds: ObjectIdModel[];
@@ -298,7 +298,7 @@ export interface LanguageModel {
 export interface ManufacturerModel extends BaseModel, TimestampModel {
   nameI18n: TranslationModel;
   slug: string;
-  url?: URLModel | null;
+  url?: URLModel[] | null;
   descriptionI18n?: TranslationModel | null;
 }
 

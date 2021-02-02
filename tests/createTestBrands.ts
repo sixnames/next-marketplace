@@ -48,7 +48,7 @@ export async function getFakeBrand({
       [SECONDARY_LOCALE]: brandName,
     },
     slug: generateSlug(brandName),
-    url: `https://${brandName}.com`,
+    url: [`https://${brandName}.com`],
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
@@ -81,7 +81,7 @@ export async function getFakeManufacturer({
       [SECONDARY_LOCALE]: manufacturerName,
     },
     slug: generateSlug(manufacturerName),
-    url: `https://${manufacturerName}.com`,
+    url: [`https://${manufacturerName}.com`],
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',

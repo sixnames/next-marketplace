@@ -230,7 +230,7 @@ export interface NexusGenInputs {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    url?: NexusGenScalars['URL'] | null; // URL
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   CreateCompanyInput: {
     // input type
@@ -259,7 +259,7 @@ export interface NexusGenInputs {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    url?: NexusGenScalars['URL'] | null; // URL
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   CreateMetricInput: {
     // input type
@@ -495,7 +495,7 @@ export interface NexusGenInputs {
     brandId: NexusGenScalars['ObjectId']; // ObjectId!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    url?: NexusGenScalars['URL'] | null; // URL
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   UpdateCityInCountryInput: {
     // input type
@@ -552,7 +552,7 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     manufacturerId: NexusGenScalars['ObjectId']; // ObjectId!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    url?: NexusGenScalars['URL'] | null; // URL
+    url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
   UpdateMetricInput: {
     // input type
@@ -868,7 +868,7 @@ export interface NexusGenFieldTypes {
     nameI18n: string; // String!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
-    url: NexusGenScalars['URL'] | null; // URL
+    url: NexusGenScalars['URL'][] | null; // [URL!]
   };
   BrandCollection: {
     // field return type
@@ -1138,7 +1138,7 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
-    url: NexusGenScalars['URL'] | null; // URL
+    url: NexusGenScalars['URL'][] | null; // [URL!]
   };
   ManufacturerPayload: {
     // field return type

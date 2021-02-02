@@ -38,7 +38,7 @@ export const Brand = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.url('url');
+    t.list.nonNull.url('url');
     t.nonNull.string('slug');
     t.nonNull.string('nameI18n');
     t.json('descriptionI18n');
@@ -201,7 +201,7 @@ export const BrandPayload = objectType({
 export const CreateBrandInput = inputObjectType({
   name: 'CreateBrandInput',
   definition(t) {
-    t.url('url');
+    t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
   },
@@ -211,7 +211,7 @@ export const UpdateBrandInput = inputObjectType({
   name: 'UpdateBrandInput',
   definition(t) {
     t.nonNull.objectId('brandId');
-    t.url('url');
+    t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
   },

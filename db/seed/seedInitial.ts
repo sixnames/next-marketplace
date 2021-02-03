@@ -217,12 +217,35 @@ export const seedInitial = async () => {
         return initialRubric.attributesGroupNames.includes(nameI18n[DEFAULT_LOCALE]);
       });
 
+      const excludedRubricCatalogueAttributes = [
+        'Пиво',
+        'Состав',
+        'Вид',
+        'Температура сервировки',
+        'Содержание хмеля',
+        'Температура ферментации',
+        'Страна производства',
+        'Регион',
+        'Капсула',
+        'Игристое вино/шампанское',
+        'Биодинамическое',
+        'Органическое',
+        'Самый старый спирт',
+        'Добавки',
+        'Сырье',
+        'Основа',
+        'Дистилляция',
+        'Выдержка в бочках',
+      ];
       const rubricAttributesGroups: RubricAttributesGroupModel[] = [];
       for await (const attributesGroup of attributesGroups) {
         const { _id, attributesIds } = attributesGroup;
         const filterAttributes = await attributesCollection
           .find({
             _id: { $in: attributesIds },
+            [`nameI18n.${DEFAULT_LOCALE}`]: {
+              $nin: excludedRubricCatalogueAttributes,
+            },
             $or: [
               { variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel },
               { variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT as AttributeVariantModel },

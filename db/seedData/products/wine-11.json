@@ -86,11 +86,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 90%",
+            "name": "Неббиоло: 90%",
             "slug": "nebbiolo_90"
           },
           {
-            "name": "барбера: 10%",
+            "name": "Барбера: 10%",
             "slug": "barbera_10"
           }
         ]
@@ -114,7 +114,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -174,7 +174,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -274,11 +274,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 90%",
+            "name": "Неббиоло: 90%",
             "slug": "nebbiolo_90"
           },
           {
-            "name": "барбера: 10%",
+            "name": "Барбера: 10%",
             "slug": "barbera_10"
           }
         ]
@@ -302,7 +302,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -362,7 +362,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -462,11 +462,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 90%",
+            "name": "Неббиоло: 90%",
             "slug": "nebbiolo_90"
           },
           {
-            "name": "барбера: 10%",
+            "name": "Барбера: 10%",
             "slug": "barbera_10"
           }
         ]
@@ -490,7 +490,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -550,7 +550,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -650,11 +650,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 90%",
+            "name": "Неббиоло: 90%",
             "slug": "nebbiolo_90"
           },
           {
-            "name": "барбера: 10%",
+            "name": "Барбера: 10%",
             "slug": "barbera_10"
           }
         ]
@@ -678,7 +678,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -738,7 +738,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -838,11 +838,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 90%",
+            "name": "Неббиоло: 90%",
             "slug": "nebbiolo_90"
           },
           {
-            "name": "барбера: 10%",
+            "name": "Барбера: 10%",
             "slug": "barbera_10"
           }
         ]
@@ -866,7 +866,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -938,7 +938,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1038,11 +1038,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "зинфандель: 91%",
+            "name": "Зинфандель: 91%",
             "slug": "zinfandel_91"
           },
           {
-            "name": "пти шираз: 9%",
+            "name": "Пти Шираз: 9%",
             "slug": "pti_shiraz_9"
           }
         ]
@@ -1066,7 +1066,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния, сонома кантри",
+            "name": "США, Калифорния, Сонома Кантри",
             "slug": "ssha_kaliforniya_sonoma_kantri"
           }
         ]
@@ -1126,7 +1126,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1226,15 +1226,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "зинфандель: 89%",
+            "name": "Зинфандель: 89%",
             "slug": "zinfandel_89"
           },
           {
-            "name": "пти шираз: 10%",
+            "name": "Пти Шираз: 10%",
             "slug": "pti_shiraz_10"
           },
           {
-            "name": "кариньяно: 1%",
+            "name": "Кариньяно: 1%",
             "slug": "karinyano_1"
           }
         ]
@@ -1258,7 +1258,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния, сонома кантри",
+            "name": "США, Калифорния, Сонома Кантри",
             "slug": "ssha_kaliforniya_sonoma_kantri"
           }
         ]
@@ -1318,7 +1318,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1422,7 +1422,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе гроссо (брунелло): 100%",
+            "name": "Санджовезе Гроссо (Брунелло): 100%",
             "slug": "sandzhoveze_grosso_brunello_100"
           }
         ]
@@ -1446,7 +1446,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, брунелло ди монтальчино",
+            "name": "Италия, Тоскана, Брунелло ди Монтальчино",
             "slug": "italiya_toskana_brunello_di_montalchino"
           }
         ]
@@ -1506,7 +1506,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1610,11 +1610,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 50%",
+            "name": "Корвина: 50%",
             "slug": "korvina_50"
           },
           {
-            "name": "рондинелла: 50%",
+            "name": "Рондинелла: 50%",
             "slug": "rondinella_50"
           }
         ]
@@ -1638,7 +1638,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, вальполичелла",
+            "name": "Италия, Венето, Вальполичелла",
             "slug": "italiya_veneto_valpolichella"
           }
         ]
@@ -1698,7 +1698,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1798,11 +1798,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 97%",
+            "name": "Санджовезе: 97%",
             "slug": "sandzhoveze_97"
           },
           {
-            "name": "колорино: 3%",
+            "name": "Колорино: 3%",
             "slug": "kolorino_3"
           }
         ]
@@ -1826,7 +1826,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти классико",
+            "name": "Италия, Тоскана, Кьянти Классико",
             "slug": "italiya_toskana_kyanti_klassiko"
           }
         ]
@@ -1886,7 +1886,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -1986,11 +1986,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 80%",
+            "name": "Корвина: 80%",
             "slug": "korvina_80"
           },
           {
-            "name": "рондинелла: 20%",
+            "name": "Рондинелла: 20%",
             "slug": "rondinella_20"
           }
         ]
@@ -2014,7 +2014,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, амароне делла вальполичелла классико",
+            "name": "Италия, Венето, Амароне делла Вальполичелла Классико",
             "slug": "italiya_veneto_amarone_della_valpolichella_klassiko"
           }
         ]
@@ -2086,7 +2086,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -2190,7 +2190,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "кортезе: 100%",
+            "name": "Кортезе: 100%",
             "slug": "korteze_100"
           }
         ]
@@ -2214,7 +2214,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, гави",
+            "name": "Италия, Пьемонт, Гави",
             "slug": "italiya_pemont_gavi"
           }
         ]
@@ -2286,7 +2286,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -2386,11 +2386,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 95%",
+            "name": "Санджовезе: 95%",
             "slug": "sandzhoveze_95"
           },
           {
-            "name": "пунителло: 5%",
+            "name": "Пунителло: 5%",
             "slug": "punitello_5"
           }
         ]
@@ -2414,7 +2414,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти классико",
+            "name": "Италия, Тоскана, Кьянти Классико",
             "slug": "italiya_toskana_kyanti_klassiko"
           }
         ]
@@ -2474,7 +2474,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -2574,11 +2574,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "гренаш",
+            "name": "Гренаш",
             "slug": "grenash"
           },
           {
-            "name": "гарнача: 100%",
+            "name": "Гарнача: 100%",
             "slug": "garnacha_100"
           }
         ]
@@ -2602,7 +2602,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "испания, риоха",
+            "name": "Испания, Риоха",
             "slug": "ispaniya_riokha"
           }
         ]
@@ -2662,7 +2662,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -2755,27 +2755,27 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "тинта као",
+            "name": "Тинта Као",
             "slug": "tinta_kao"
           },
           {
-            "name": "тинта рориз",
+            "name": "Тинта Рориз",
             "slug": "tinta_roriz"
           },
           {
-            "name": "тинта баррока",
+            "name": "Тинта Баррока",
             "slug": "tinta_barroka"
           },
           {
-            "name": "турига франсеса",
+            "name": "Турига Франсеса",
             "slug": "turiga_fransesa"
           },
           {
-            "name": "турига франка",
+            "name": "Турига Франка",
             "slug": "turiga_franka"
           },
           {
-            "name": "турига насьональ",
+            "name": "Турига Насьональ",
             "slug": "turiga_nasonal"
           }
         ]
@@ -2799,7 +2799,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "португалия, дору",
+            "name": "Португалия, Дору",
             "slug": "portugaliya_doru"
           }
         ]
@@ -2847,7 +2847,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "портвейн",
+            "name": "Портвейн",
             "slug": "portvein"
           }
         ]
@@ -2951,7 +2951,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "примитиво: 100%",
+            "name": "Примитиво: 100%",
             "slug": "primitivo_100"
           }
         ]
@@ -2975,7 +2975,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, апулия, примитиво ди мандурия",
+            "name": "Италия, Апулия, Примитиво ди Мандурия",
             "slug": "italiya_apuliya_primitivo_di_manduriya"
           }
         ]
@@ -3035,7 +3035,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -3135,7 +3135,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -3159,7 +3159,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -3231,7 +3231,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -3331,7 +3331,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -3355,7 +3355,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -3427,7 +3427,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -3527,7 +3527,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -3551,7 +3551,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -3623,7 +3623,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -3723,7 +3723,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -3747,7 +3747,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, маконе",
+            "name": "Франция, Бургундия, Маконе",
             "slug": "frantsiya_burgundiya_makone"
           }
         ]
@@ -3807,7 +3807,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -3907,7 +3907,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -3931,7 +3931,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, лангедок-руссийон, лиму",
+            "name": "Франция, Лангедок-Руссийон, Лиму",
             "slug": "frantsiya_langedok_russiion_limu"
           }
         ]
@@ -3967,7 +3967,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -4015,7 +4015,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -4120,7 +4120,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -4144,7 +4144,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -4216,7 +4216,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -4321,7 +4321,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -4345,7 +4345,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -4417,7 +4417,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -4515,7 +4515,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -4539,7 +4539,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де бон",
+            "name": "Франция, Бургундия, Кот де Бон",
             "slug": "frantsiya_burgundiya_kot_de_bon"
           }
         ]
@@ -4611,7 +4611,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -4716,7 +4716,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -4740,7 +4740,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де бон",
+            "name": "Франция, Бургундия, Кот де Бон",
             "slug": "frantsiya_burgundiya_kot_de_bon"
           }
         ]
@@ -4776,7 +4776,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -4824,7 +4824,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -4928,7 +4928,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "педро хименес: 100%",
+            "name": "Педро Хименес: 100%",
             "slug": "pedro_khimenes_100"
           }
         ]
@@ -4952,7 +4952,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "испания, андалусия",
+            "name": "Испания, Андалусия",
             "slug": "ispaniya_andalusiya"
           }
         ]
@@ -5012,7 +5012,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "херес",
+            "name": "Херес",
             "slug": "kheres"
           }
         ]
@@ -5119,15 +5119,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "совиньон блан",
+            "name": "Совиньон Блан",
             "slug": "sovinon_blan"
           },
           {
-            "name": "семильон",
+            "name": "Семильон",
             "slug": "semilon"
           },
           {
-            "name": "мюскадель",
+            "name": "Мюскадель",
             "slug": "myuskadel"
           }
         ]
@@ -5151,7 +5151,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, бордо сюпериёр",
+            "name": "Франция, Бордо, Бордо Сюпериёр",
             "slug": "frantsiya_bordo_bordo_syuperiyor"
           }
         ]
@@ -5211,7 +5211,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -5325,15 +5325,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 80%",
+            "name": "Мерло: 80%",
             "slug": "merlo_80"
           },
           {
-            "name": "каберне совиньон: 15%",
+            "name": "Каберне Совиньон: 15%",
             "slug": "kaberne_sovinon_15"
           },
           {
-            "name": "каберне фран: 5%",
+            "name": "Каберне Фран: 5%",
             "slug": "kaberne_fran_5"
           }
         ]
@@ -5357,7 +5357,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо",
+            "name": "Франция, Бордо",
             "slug": "frantsiya_bordo"
           }
         ]
@@ -5417,7 +5417,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -5531,15 +5531,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 75%",
+            "name": "Мерло: 75%",
             "slug": "merlo_75"
           },
           {
-            "name": "каберне совиньон: 20%",
+            "name": "Каберне Совиньон: 20%",
             "slug": "kaberne_sovinon_20"
           },
           {
-            "name": "пти вердо: 5%",
+            "name": "Пти Вердо: 5%",
             "slug": "pti_verdo_5"
           }
         ]
@@ -5563,7 +5563,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо",
+            "name": "Франция, Бордо",
             "slug": "frantsiya_bordo"
           }
         ]
@@ -5623,7 +5623,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -5730,7 +5730,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "совиньон блан: 100%",
+            "name": "Совиньон Блан: 100%",
             "slug": "sovinon_blan_100"
           }
         ]
@@ -5754,7 +5754,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, бордо сюпериёр",
+            "name": "Франция, Бордо, Бордо Сюпериёр",
             "slug": "frantsiya_bordo_bordo_syuperiyor"
           }
         ]
@@ -5814,7 +5814,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -5914,23 +5914,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "токай фриулано",
+            "name": "Токай Фриулано",
             "slug": "tokai_friulano"
           },
           {
-            "name": "риболла джалла",
+            "name": "Риболла Джалла",
             "slug": "ribolla_dzhalla"
           },
           {
-            "name": "мальвазия истриана",
+            "name": "Мальвазия Истриана",
             "slug": "malvaziya_istriana"
           },
           {
-            "name": "пиколит",
+            "name": "Пиколит",
             "slug": "pikolit"
           },
           {
-            "name": "пино бьянко",
+            "name": "Пино Бьянко",
             "slug": "pino_byanko"
           }
         ]
@@ -5954,7 +5954,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, фриули-венеция-джулия, коллио",
+            "name": "Италия, Фриули-Венеция-Джулия, Коллио",
             "slug": "italiya_friuli_venetsiya_dzhuliya_kollio"
           }
         ]
@@ -6014,7 +6014,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -6114,7 +6114,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "рислинг: 100%",
+            "name": "Рислинг: 100%",
             "slug": "risling_100"
           }
         ]
@@ -6138,7 +6138,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "германия",
+            "name": "Германия",
             "slug": "germaniya"
           }
         ]
@@ -6198,7 +6198,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -6298,7 +6298,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "рислинг: 100%",
+            "name": "Рислинг: 100%",
             "slug": "risling_100"
           }
         ]
@@ -6322,7 +6322,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "германия",
+            "name": "Германия",
             "slug": "germaniya"
           }
         ]
@@ -6394,7 +6394,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -6494,7 +6494,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 100%",
+            "name": "Мерло: 100%",
             "slug": "merlo_100"
           }
         ]
@@ -6518,7 +6518,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана",
+            "name": "Италия, Тоскана",
             "slug": "italiya_toskana"
           }
         ]
@@ -6578,7 +6578,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -6678,7 +6678,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "ркацители: 100%",
+            "name": "Ркацители: 100%",
             "slug": "rkatsiteli_100"
           }
         ]
@@ -6702,7 +6702,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "грузия, кахетия, алазанская долина",
+            "name": "Грузия, Кахетия, Алазанская долина",
             "slug": "gruziya_kakhetiya_alazanskaya_dolina"
           }
         ]
@@ -6762,7 +6762,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -6862,7 +6862,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "саперави: 100%",
+            "name": "Саперави: 100%",
             "slug": "saperavi_100"
           }
         ]
@@ -6886,7 +6886,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "грузия, кахетия, алазанская долина",
+            "name": "Грузия, Кахетия, Алазанская долина",
             "slug": "gruziya_kakhetiya_alazanskaya_dolina"
           }
         ]
@@ -6946,7 +6946,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -7046,15 +7046,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "гро мансенг: 60%",
+            "name": "Гро Мансенг: 60%",
             "slug": "gro_manseng_60"
           },
           {
-            "name": "пти мансенг: 30%",
+            "name": "Пти Мансенг: 30%",
             "slug": "pti_manseng_30"
           },
           {
-            "name": "курбю: 10%",
+            "name": "Курбю: 10%",
             "slug": "kurbyu_10"
           }
         ]
@@ -7078,7 +7078,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, юго-запад франции, жюрансон",
+            "name": "Франция, Юго-запад Франции, Жюрансон",
             "slug": "frantsiya_yugo_zapad_frantsii_zhyuranson"
           }
         ]
@@ -7102,7 +7102,7 @@
         "attributeSlug": "biodinamicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -7126,7 +7126,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -7174,7 +7174,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -7278,11 +7278,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "совиньон блан: 51%",
+            "name": "Совиньон Блан: 51%",
             "slug": "sovinon_blan_51"
           },
           {
-            "name": "семильон: 49%",
+            "name": "Семильон: 49%",
             "slug": "semilon_49"
           }
         ]
@@ -7306,7 +7306,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, грав",
+            "name": "Франция, Бордо, Грав",
             "slug": "frantsiya_bordo_grav"
           }
         ]
@@ -7378,7 +7378,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -7492,7 +7492,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -7516,7 +7516,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "чили, центральная долина, рапель",
+            "name": "Чили, Центральная Долина, Рапель",
             "slug": "chili_tsentralnaya_dolina_rapel"
           }
         ]
@@ -7576,7 +7576,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -7674,15 +7674,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе",
+            "name": "Санджовезе",
             "slug": "sandzhoveze"
           },
           {
-            "name": "канайоло",
+            "name": "Канайоло",
             "slug": "kanaiolo"
           },
           {
-            "name": "колорино",
+            "name": "Колорино",
             "slug": "kolorino"
           }
         ]
@@ -7706,7 +7706,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти классико",
+            "name": "Италия, Тоскана, Кьянти Классико",
             "slug": "italiya_toskana_kyanti_klassiko"
           }
         ]
@@ -7742,7 +7742,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -7790,7 +7790,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -7888,15 +7888,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе",
+            "name": "Санджовезе",
             "slug": "sandzhoveze"
           },
           {
-            "name": "канайоло",
+            "name": "Канайоло",
             "slug": "kanaiolo"
           },
           {
-            "name": "колорино",
+            "name": "Колорино",
             "slug": "kolorino"
           }
         ]
@@ -7920,7 +7920,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти классико",
+            "name": "Италия, Тоскана, Кьянти Классико",
             "slug": "italiya_toskana_kyanti_klassiko"
           }
         ]
@@ -7956,7 +7956,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -7992,7 +7992,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -8090,15 +8090,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе",
+            "name": "Санджовезе",
             "slug": "sandzhoveze"
           },
           {
-            "name": "канайоло",
+            "name": "Канайоло",
             "slug": "kanaiolo"
           },
           {
-            "name": "колорино",
+            "name": "Колорино",
             "slug": "kolorino"
           }
         ]
@@ -8122,7 +8122,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти классико",
+            "name": "Италия, Тоскана, Кьянти Классико",
             "slug": "italiya_toskana_kyanti_klassiko"
           }
         ]
@@ -8158,7 +8158,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -8194,7 +8194,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -8292,11 +8292,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -8320,7 +8320,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -8356,7 +8356,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -8392,7 +8392,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -8490,11 +8490,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -8518,7 +8518,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -8554,7 +8554,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -8590,7 +8590,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -8688,11 +8688,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -8716,7 +8716,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -8752,7 +8752,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -8788,7 +8788,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -8886,11 +8886,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -8914,7 +8914,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -8950,7 +8950,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -8986,7 +8986,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -9084,11 +9084,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -9112,7 +9112,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -9148,7 +9148,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -9184,7 +9184,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -9282,11 +9282,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -9310,7 +9310,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -9346,7 +9346,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -9382,7 +9382,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -9480,11 +9480,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -9508,7 +9508,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -9544,7 +9544,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -9580,7 +9580,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -9678,11 +9678,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 60%",
+            "name": "Мерло: 60%",
             "slug": "merlo_60"
           },
           {
-            "name": "каберне совиньон: 40%",
+            "name": "Каберне Совиньон: 40%",
             "slug": "kaberne_sovinon_40"
           }
         ]
@@ -9706,7 +9706,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -9742,7 +9742,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -9778,7 +9778,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -9876,11 +9876,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 65%",
+            "name": "Мерло: 65%",
             "slug": "merlo_65"
           },
           {
-            "name": "каберне совиньон: 35%",
+            "name": "Каберне Совиньон: 35%",
             "slug": "kaberne_sovinon_35"
           }
         ]
@@ -9904,7 +9904,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -9940,7 +9940,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -9976,7 +9976,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -10074,11 +10074,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 65%",
+            "name": "Мерло: 65%",
             "slug": "merlo_65"
           },
           {
-            "name": "каберне совиньон: 35%",
+            "name": "Каберне Совиньон: 35%",
             "slug": "kaberne_sovinon_35"
           }
         ]
@@ -10102,7 +10102,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -10138,7 +10138,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -10174,7 +10174,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -10272,15 +10272,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 65%",
+            "name": "Мерло: 65%",
             "slug": "merlo_65"
           },
           {
-            "name": "каберне совиньон: 33%",
+            "name": "Каберне Совиньон: 33%",
             "slug": "kaberne_sovinon_33"
           },
           {
-            "name": "колорино: 2%",
+            "name": "Колорино: 2%",
             "slug": "kolorino_2"
           }
         ]
@@ -10304,7 +10304,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -10340,7 +10340,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -10376,7 +10376,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -10474,15 +10474,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 65%",
+            "name": "Мерло: 65%",
             "slug": "merlo_65"
           },
           {
-            "name": "каберне совиньон: 33%",
+            "name": "Каберне Совиньон: 33%",
             "slug": "kaberne_sovinon_33"
           },
           {
-            "name": "колорино: 2%",
+            "name": "Колорино: 2%",
             "slug": "kolorino_2"
           }
         ]
@@ -10506,7 +10506,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -10542,7 +10542,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -10578,7 +10578,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -10678,7 +10678,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "кортезе: 100%",
+            "name": "Кортезе: 100%",
             "slug": "korteze_100"
           }
         ]
@@ -10702,7 +10702,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, гави",
+            "name": "Италия, Пьемонт, Гави",
             "slug": "italiya_pemont_gavi"
           }
         ]
@@ -10738,7 +10738,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -10838,7 +10838,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -10862,7 +10862,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -10934,7 +10934,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -11034,7 +11034,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -11058,7 +11058,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -11130,7 +11130,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -11230,7 +11230,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -11254,7 +11254,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия",
+            "name": "Франция, Бургундия",
             "slug": "frantsiya_burgundiya"
           }
         ]
@@ -11326,7 +11326,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -11426,7 +11426,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -11450,7 +11450,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, шабли",
+            "name": "Франция, Бургундия, Шабли",
             "slug": "frantsiya_burgundiya_shabli"
           }
         ]
@@ -11522,7 +11522,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -11622,7 +11622,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -11646,7 +11646,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -11718,7 +11718,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -11818,7 +11818,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -11842,7 +11842,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де бон",
+            "name": "Франция, Бургундия, Кот де Бон",
             "slug": "frantsiya_burgundiya_kot_de_bon"
           }
         ]
@@ -11914,7 +11914,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -12014,11 +12014,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 55%",
+            "name": "Мерло: 55%",
             "slug": "merlo_55"
           },
           {
-            "name": "санджовезе: 45%",
+            "name": "Санджовезе: 45%",
             "slug": "sandzhoveze_45"
           }
         ]
@@ -12042,7 +12042,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, монтальчино",
+            "name": "Италия, Тоскана, Монтальчино",
             "slug": "italiya_toskana_montalchino"
           }
         ]
@@ -12102,7 +12102,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -12209,11 +12209,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 55%",
+            "name": "Мерло: 55%",
             "slug": "merlo_55"
           },
           {
-            "name": "санджовезе: 45%",
+            "name": "Санджовезе: 45%",
             "slug": "sandzhoveze_45"
           }
         ]
@@ -12237,7 +12237,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, монтальчино",
+            "name": "Италия, Тоскана, Монтальчино",
             "slug": "italiya_toskana_montalchino"
           }
         ]
@@ -12297,7 +12297,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -12397,11 +12397,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 55%",
+            "name": "Мерло: 55%",
             "slug": "merlo_55"
           },
           {
-            "name": "санджовезе: 45%",
+            "name": "Санджовезе: 45%",
             "slug": "sandzhoveze_45"
           }
         ]
@@ -12425,7 +12425,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, монтальчино",
+            "name": "Италия, Тоскана, Монтальчино",
             "slug": "italiya_toskana_montalchino"
           }
         ]
@@ -12485,7 +12485,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -12589,7 +12589,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "монтепульчано д'абруццо: 100%",
+            "name": "Монтепульчано д'Абруццо: 100%",
             "slug": "montepulchano_dabrutstso_100"
           }
         ]
@@ -12613,7 +12613,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, абруццо",
+            "name": "Италия, Абруццо",
             "slug": "italiya_abrutstso"
           }
         ]
@@ -12673,7 +12673,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -12777,7 +12777,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "треббьяно д'абруццо: 100%",
+            "name": "Треббьяно д'Абруццо: 100%",
             "slug": "trebbyano_dabrutstso_100"
           }
         ]
@@ -12801,7 +12801,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, абруццо",
+            "name": "Италия, Абруццо",
             "slug": "italiya_abrutstso"
           }
         ]
@@ -12861,7 +12861,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -12965,7 +12965,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "треббьяно д'абруццо: 100%",
+            "name": "Треббьяно д'Абруццо: 100%",
             "slug": "trebbyano_dabrutstso_100"
           }
         ]
@@ -12989,7 +12989,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, абруццо",
+            "name": "Италия, Абруццо",
             "slug": "italiya_abrutstso"
           }
         ]
@@ -13049,7 +13049,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -13149,23 +13149,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "темпранильо: 90%",
+            "name": "Темпранильо: 90%",
             "slug": "tempranilo_90"
           },
           {
-            "name": "масуэло: 5%",
+            "name": "Масуэло: 5%",
             "slug": "masuelo_5"
           },
           {
-            "name": "гренаш",
+            "name": "Гренаш",
             "slug": "grenash"
           },
           {
-            "name": "гарнача: 3%",
+            "name": "Гарнача: 3%",
             "slug": "garnacha_3"
           },
           {
-            "name": "грасиано: 2%",
+            "name": "Грасиано: 2%",
             "slug": "grasiano_2"
           }
         ]
@@ -13189,7 +13189,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "испания, риоха",
+            "name": "Испания, Риоха",
             "slug": "ispaniya_riokha"
           }
         ]
@@ -13249,7 +13249,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -13349,7 +13349,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 100%",
+            "name": "Неббиоло: 100%",
             "slug": "nebbiolo_100"
           }
         ]
@@ -13373,7 +13373,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, бароло",
+            "name": "Италия, Пьемонт, Бароло",
             "slug": "italiya_pemont_barolo"
           }
         ]
@@ -13445,7 +13445,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -13545,15 +13545,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "сира: 60%",
+            "name": "Сира: 60%",
             "slug": "sira_60"
           },
           {
-            "name": "мерло: 20%",
+            "name": "Мерло: 20%",
             "slug": "merlo_20"
           },
           {
-            "name": "каберне совиньон: 20%",
+            "name": "Каберне Совиньон: 20%",
             "slug": "kaberne_sovinon_20"
           }
         ]
@@ -13577,7 +13577,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -13649,7 +13649,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -13749,23 +13749,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 35%",
+            "name": "Корвина: 35%",
             "slug": "korvina_35"
           },
           {
-            "name": "корвиноне: 35%",
+            "name": "Корвиноне: 35%",
             "slug": "korvinone_35"
           },
           {
-            "name": "рондинелла: 20%",
+            "name": "Рондинелла: 20%",
             "slug": "rondinella_20"
           },
           {
-            "name": "оселета: 5%",
+            "name": "Оселета: 5%",
             "slug": "oseleta_5"
           },
           {
-            "name": "кроатина: 5%",
+            "name": "Кроатина: 5%",
             "slug": "kroatina_5"
           }
         ]
@@ -13789,7 +13789,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, рипассо вальполичелла",
+            "name": "Италия, Венето, Рипассо Вальполичелла",
             "slug": "italiya_veneto_ripasso_valpolichella"
           }
         ]
@@ -13861,7 +13861,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -13961,23 +13961,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 35%",
+            "name": "Корвина: 35%",
             "slug": "korvina_35"
           },
           {
-            "name": "корвиноне: 35%",
+            "name": "Корвиноне: 35%",
             "slug": "korvinone_35"
           },
           {
-            "name": "рондинелла: 20%",
+            "name": "Рондинелла: 20%",
             "slug": "rondinella_20"
           },
           {
-            "name": "оселета: 5%",
+            "name": "Оселета: 5%",
             "slug": "oseleta_5"
           },
           {
-            "name": "кроатина: 5%",
+            "name": "Кроатина: 5%",
             "slug": "kroatina_5"
           }
         ]
@@ -14001,7 +14001,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, рипассо вальполичелла",
+            "name": "Италия, Венето, Рипассо Вальполичелла",
             "slug": "italiya_veneto_ripasso_valpolichella"
           }
         ]
@@ -14073,7 +14073,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -14177,23 +14177,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 90%",
+            "name": "Санджовезе: 90%",
             "slug": "sandzhoveze_90"
           },
           {
-            "name": "каберне совиньон: 3%",
+            "name": "Каберне Совиньон: 3%",
             "slug": "kaberne_sovinon_3"
           },
           {
-            "name": "мерло: 3%",
+            "name": "Мерло: 3%",
             "slug": "merlo_3"
           },
           {
-            "name": "мальвазия нера: 2%",
+            "name": "Мальвазия Нера: 2%",
             "slug": "malvaziya_nera_2"
           },
           {
-            "name": "колорино: 2%",
+            "name": "Колорино: 2%",
             "slug": "kolorino_2"
           }
         ]
@@ -14217,7 +14217,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти",
+            "name": "Италия, Тоскана, Кьянти",
             "slug": "italiya_toskana_kyanti"
           }
         ]
@@ -14289,7 +14289,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -14393,19 +14393,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 56%",
+            "name": "Каберне Совиньон: 56%",
             "slug": "kaberne_sovinon_56"
           },
           {
-            "name": "мерло: 27%",
+            "name": "Мерло: 27%",
             "slug": "merlo_27"
           },
           {
-            "name": "каберне фран: 12%",
+            "name": "Каберне Фран: 12%",
             "slug": "kaberne_fran_12"
           },
           {
-            "name": "пти вердо: 5%",
+            "name": "Пти Вердо: 5%",
             "slug": "pti_verdo_5"
           }
         ]
@@ -14429,7 +14429,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, болгери",
+            "name": "Италия, Тоскана, Болгери",
             "slug": "italiya_toskana_bolgeri"
           }
         ]
@@ -14489,7 +14489,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -14589,19 +14589,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 85%",
+            "name": "Санджовезе: 85%",
             "slug": "sandzhoveze_85"
           },
           {
-            "name": "мерло: 5%",
+            "name": "Мерло: 5%",
             "slug": "merlo_5"
           },
           {
-            "name": "канайоло: 5%",
+            "name": "Канайоло: 5%",
             "slug": "kanaiolo_5"
           },
           {
-            "name": "колорино: 5%",
+            "name": "Колорино: 5%",
             "slug": "kolorino_5"
           }
         ]
@@ -14625,7 +14625,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, нобиле ди монтепульчано",
+            "name": "Италия, Тоскана, Нобиле ди Монтепульчано",
             "slug": "italiya_toskana_nobile_di_montepulchano"
           }
         ]
@@ -14697,7 +14697,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -14797,19 +14797,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 85%",
+            "name": "Санджовезе: 85%",
             "slug": "sandzhoveze_85"
           },
           {
-            "name": "мерло: 5%",
+            "name": "Мерло: 5%",
             "slug": "merlo_5"
           },
           {
-            "name": "канайоло: 5%",
+            "name": "Канайоло: 5%",
             "slug": "kanaiolo_5"
           },
           {
-            "name": "колорино: 5%",
+            "name": "Колорино: 5%",
             "slug": "kolorino_5"
           }
         ]
@@ -14833,7 +14833,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, нобиле ди монтепульчано",
+            "name": "Италия, Тоскана, Нобиле ди Монтепульчано",
             "slug": "italiya_toskana_nobile_di_montepulchano"
           }
         ]
@@ -14905,7 +14905,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -15005,19 +15005,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 85%",
+            "name": "Санджовезе: 85%",
             "slug": "sandzhoveze_85"
           },
           {
-            "name": "канайоло: 5%",
+            "name": "Канайоло: 5%",
             "slug": "kanaiolo_5"
           },
           {
-            "name": "маммоло: 5%",
+            "name": "Маммоло: 5%",
             "slug": "mammolo_5"
           },
           {
-            "name": "мальвазия: 5%",
+            "name": "Мальвазия: 5%",
             "slug": "malvaziya_5"
           }
         ]
@@ -15041,7 +15041,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, кьянти",
+            "name": "Италия, Тоскана, Кьянти",
             "slug": "italiya_toskana_kyanti"
           }
         ]
@@ -15113,7 +15113,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -15213,7 +15213,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -15237,7 +15237,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, орегон",
+            "name": "США, Орегон",
             "slug": "ssha_oregon"
           }
         ]
@@ -15297,7 +15297,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -15397,7 +15397,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 100%",
+            "name": "Неббиоло: 100%",
             "slug": "nebbiolo_100"
           }
         ]
@@ -15421,7 +15421,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, альба",
+            "name": "Италия, Пьемонт, Альба",
             "slug": "italiya_pemont_alba"
           }
         ]
@@ -15481,7 +15481,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -15581,7 +15581,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "дольчетто: 100%",
+            "name": "Дольчетто: 100%",
             "slug": "dolchetto_100"
           }
         ]
@@ -15605,7 +15605,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, альба",
+            "name": "Италия, Пьемонт, Альба",
             "slug": "italiya_pemont_alba"
           }
         ]
@@ -15677,7 +15677,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -15777,7 +15777,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -15801,7 +15801,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, пти шабли",
+            "name": "Франция, Бургундия, Пти Шабли",
             "slug": "frantsiya_burgundiya_pti_shabli"
           }
         ]
@@ -15861,7 +15861,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -15961,15 +15961,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 80%",
+            "name": "Санджовезе: 80%",
             "slug": "sandzhoveze_80"
           },
           {
-            "name": "мерло: 15%",
+            "name": "Мерло: 15%",
             "slug": "merlo_15"
           },
           {
-            "name": "канайоло: 5%",
+            "name": "Канайоло: 5%",
             "slug": "kanaiolo_5"
           }
         ]
@@ -15993,7 +15993,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, тоскана igt",
+            "name": "Италия, Тоскана, Тоскана IGT",
             "slug": "italiya_toskana_toskana_igt"
           }
         ]
@@ -16053,7 +16053,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -16153,7 +16153,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 100%",
+            "name": "Санджовезе: 100%",
             "slug": "sandzhoveze_100"
           }
         ]
@@ -16177,7 +16177,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, монтальчино",
+            "name": "Италия, Тоскана, Монтальчино",
             "slug": "italiya_toskana_montalchino"
           }
         ]
@@ -16237,7 +16237,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -16337,7 +16337,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "семильон: 100%",
+            "name": "Семильон: 100%",
             "slug": "semilon_100"
           }
         ]
@@ -16361,7 +16361,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "новая зеландия, хокс бей",
+            "name": "Новая Зеландия, Хокс Бей",
             "slug": "novaya_zelandiya_khoks_bei"
           }
         ]
@@ -16421,7 +16421,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -16521,7 +16521,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "санджовезе: 100%",
+            "name": "Санджовезе: 100%",
             "slug": "sandzhoveze_100"
           }
         ]
@@ -16545,7 +16545,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана, брунелло ди монтальчино",
+            "name": "Италия, Тоскана, Брунелло ди Монтальчино",
             "slug": "italiya_toskana_brunello_di_montalchino"
           }
         ]
@@ -16617,7 +16617,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -16717,15 +16717,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 35%",
+            "name": "Неббиоло: 35%",
             "slug": "nebbiolo_35"
           },
           {
-            "name": "мерло: 35%",
+            "name": "Мерло: 35%",
             "slug": "merlo_35"
           },
           {
-            "name": "каберне совиньон: 30%",
+            "name": "Каберне Совиньон: 30%",
             "slug": "kaberne_sovinon_30"
           }
         ]
@@ -16749,7 +16749,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, ланге",
+            "name": "Италия, Пьемонт, Ланге",
             "slug": "italiya_pemont_lange"
           }
         ]
@@ -16821,7 +16821,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -16921,19 +16921,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 35%",
+            "name": "Каберне Совиньон: 35%",
             "slug": "kaberne_sovinon_35"
           },
           {
-            "name": "сира: 30%",
+            "name": "Сира: 30%",
             "slug": "sira_30"
           },
           {
-            "name": "карменере: 25%",
+            "name": "Карменере: 25%",
             "slug": "karmenere_25"
           },
           {
-            "name": "темпранильо: 10%",
+            "name": "Темпранильо: 10%",
             "slug": "tempranilo_10"
           }
         ]
@@ -16957,7 +16957,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "чили, центральная долина, кольчагуа",
+            "name": "Чили, Центральная Долина, Кольчагуа",
             "slug": "chili_tsentralnaya_dolina_kolchagua"
           }
         ]
@@ -17017,7 +17017,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -17117,11 +17117,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 90%",
+            "name": "Корвина: 90%",
             "slug": "korvina_90"
           },
           {
-            "name": "рондинелла: 10%",
+            "name": "Рондинелла: 10%",
             "slug": "rondinella_10"
           }
         ]
@@ -17145,7 +17145,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето",
+            "name": "Италия, Венето",
             "slug": "italiya_veneto"
           }
         ]
@@ -17217,7 +17217,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -17317,7 +17317,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "барбера: 100%",
+            "name": "Барбера: 100%",
             "slug": "barbera_100"
           }
         ]
@@ -17341,7 +17341,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт, асти",
+            "name": "Италия, Пьемонт, Асти",
             "slug": "italiya_pemont_asti"
           }
         ]
@@ -17413,7 +17413,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -17517,15 +17517,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 75%",
+            "name": "Корвина: 75%",
             "slug": "korvina_75"
           },
           {
-            "name": "рондинелла: 20%",
+            "name": "Рондинелла: 20%",
             "slug": "rondinella_20"
           },
           {
-            "name": "молинара: 5%",
+            "name": "Молинара: 5%",
             "slug": "molinara_5"
           }
         ]
@@ -17549,7 +17549,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, амароне делла вальполичелла классико",
+            "name": "Италия, Венето, Амароне делла Вальполичелла Классико",
             "slug": "italiya_veneto_amarone_della_valpolichella_klassiko"
           }
         ]
@@ -17621,7 +17621,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -17721,15 +17721,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "корвина: 65%",
+            "name": "Корвина: 65%",
             "slug": "korvina_65"
           },
           {
-            "name": "рондинелла: 30%",
+            "name": "Рондинелла: 30%",
             "slug": "rondinella_30"
           },
           {
-            "name": "молинара: 5%",
+            "name": "Молинара: 5%",
             "slug": "molinara_5"
           }
         ]
@@ -17753,7 +17753,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, венето, вальполичелла",
+            "name": "Италия, Венето, Вальполичелла",
             "slug": "italiya_veneto_valpolichella"
           }
         ]
@@ -17825,7 +17825,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -17925,7 +17925,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "сира: 100%",
+            "name": "Сира: 100%",
             "slug": "sira_100"
           }
         ]
@@ -17949,7 +17949,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, долина роны, кроз-эрмитаж",
+            "name": "Франция, Долина Роны, Кроз-Эрмитаж",
             "slug": "frantsiya_dolina_roni_kroz_ermitazh"
           }
         ]
@@ -17973,7 +17973,7 @@
         "attributeSlug": "biodinamicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -18033,7 +18033,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -18133,7 +18133,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "нерелло маскалезе: 100%",
+            "name": "Нерелло Маскалезе: 100%",
             "slug": "nerello_maskaleze_100"
           }
         ]
@@ -18157,7 +18157,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, сицилия",
+            "name": "Италия, Сицилия",
             "slug": "italiya_sitsiliya"
           }
         ]
@@ -18181,7 +18181,7 @@
         "attributeSlug": "biodinamicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -18205,7 +18205,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -18253,7 +18253,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -18353,7 +18353,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 100%",
+            "name": "Каберне Совиньон: 100%",
             "slug": "kaberne_sovinon_100"
           }
         ]
@@ -18377,7 +18377,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния, долина напа",
+            "name": "США, Калифорния, Долина Напа",
             "slug": "ssha_kaliforniya_dolina_napa"
           }
         ]
@@ -18449,7 +18449,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -18549,7 +18549,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "шардоне: 100%",
+            "name": "Шардоне: 100%",
             "slug": "shardone_100"
           }
         ]
@@ -18573,7 +18573,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния, долина напа",
+            "name": "США, Калифорния, Долина Напа",
             "slug": "ssha_kaliforniya_dolina_napa"
           }
         ]
@@ -18645,7 +18645,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -18749,7 +18749,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -18773,7 +18773,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния, центральное побережье",
+            "name": "США, Калифорния, Центральное побережье",
             "slug": "ssha_kaliforniya_tsentralnoe_poberezhe"
           }
         ]
@@ -18833,7 +18833,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -18937,23 +18937,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пти шираз",
+            "name": "Пти Шираз",
             "slug": "pti_shiraz"
           },
           {
-            "name": "сира",
+            "name": "Сира",
             "slug": "sira"
           },
           {
-            "name": "зинфандель",
+            "name": "Зинфандель",
             "slug": "zinfandel"
           },
           {
-            "name": "мерло",
+            "name": "Мерло",
             "slug": "merlo"
           },
           {
-            "name": "мальбек",
+            "name": "Мальбек",
             "slug": "malbek"
           }
         ]
@@ -18977,7 +18977,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "сша, калифорния",
+            "name": "США, Калифорния",
             "slug": "ssha_kaliforniya"
           }
         ]
@@ -19037,7 +19037,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -19137,15 +19137,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло",
+            "name": "Мерло",
             "slug": "merlo"
           },
           {
-            "name": "каберне фран",
+            "name": "Каберне Фран",
             "slug": "kaberne_fran"
           },
           {
-            "name": "каберне совиньон",
+            "name": "Каберне Совиньон",
             "slug": "kaberne_sovinon"
           }
         ]
@@ -19169,7 +19169,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо",
+            "name": "Франция, Бордо",
             "slug": "frantsiya_bordo"
           }
         ]
@@ -19241,7 +19241,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -19341,7 +19341,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -19365,7 +19365,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бургундия, кот де нюи",
+            "name": "Франция, Бургундия, Кот де Нюи",
             "slug": "frantsiya_burgundiya_kot_de_nyui"
           }
         ]
@@ -19425,7 +19425,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -19525,19 +19525,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 62%",
+            "name": "Каберне Совиньон: 62%",
             "slug": "kaberne_sovinon_62"
           },
           {
-            "name": "мерло: 31%",
+            "name": "Мерло: 31%",
             "slug": "merlo_31"
           },
           {
-            "name": "каберне фран: 5%",
+            "name": "Каберне Фран: 5%",
             "slug": "kaberne_fran_5"
           },
           {
-            "name": "пти вердо: 2%",
+            "name": "Пти Вердо: 2%",
             "slug": "pti_verdo_2"
           }
         ]
@@ -19561,7 +19561,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сен-жюльен",
+            "name": "Франция, Бордо, Сен-Жюльен",
             "slug": "frantsiya_bordo_sen_zhyulen"
           }
         ]
@@ -19621,7 +19621,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -19721,19 +19721,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 55%",
+            "name": "Каберне Совиньон: 55%",
             "slug": "kaberne_sovinon_55"
           },
           {
-            "name": "мерло: 35%",
+            "name": "Мерло: 35%",
             "slug": "merlo_35"
           },
           {
-            "name": "каберне фран: 5%",
+            "name": "Каберне Фран: 5%",
             "slug": "kaberne_fran_5"
           },
           {
-            "name": "пти вердо: 5%",
+            "name": "Пти Вердо: 5%",
             "slug": "pti_verdo_5"
           }
         ]
@@ -19757,7 +19757,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сен-жюльен",
+            "name": "Франция, Бордо, Сен-Жюльен",
             "slug": "frantsiya_bordo_sen_zhyulen"
           }
         ]
@@ -19817,7 +19817,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -19915,11 +19915,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "совиньон блан",
+            "name": "Совиньон Блан",
             "slug": "sovinon_blan"
           },
           {
-            "name": "семильон",
+            "name": "Семильон",
             "slug": "semilon"
           }
         ]
@@ -19943,7 +19943,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сент-круа-дю-мон",
+            "name": "Франция, Бордо, Сент-Круа-дю-Мон",
             "slug": "frantsiya_bordo_sent_krua_dyumon"
           }
         ]
@@ -20003,7 +20003,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -20101,11 +20101,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "семильон: 85%",
+            "name": "Семильон: 85%",
             "slug": "semilon_85"
           },
           {
-            "name": "совиньон блан: 15%",
+            "name": "Совиньон Блан: 15%",
             "slug": "sovinon_blan_15"
           }
         ]
@@ -20129,7 +20129,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сотерн",
+            "name": "Франция, Бордо, Сотерн",
             "slug": "frantsiya_bordo_sotern"
           }
         ]
@@ -20201,7 +20201,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -20301,15 +20301,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 76%",
+            "name": "Каберне Совиньон: 76%",
             "slug": "kaberne_sovinon_76"
           },
           {
-            "name": "пти вердо: 16%",
+            "name": "Пти Вердо: 16%",
             "slug": "pti_verdo_16"
           },
           {
-            "name": "мерло: 8%",
+            "name": "Мерло: 8%",
             "slug": "merlo_8"
           }
         ]
@@ -20333,7 +20333,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, о'медок",
+            "name": "Франция, Бордо, О'Медок",
             "slug": "frantsiya_bordo_omedok"
           }
         ]
@@ -20393,7 +20393,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -20500,19 +20500,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 76%",
+            "name": "Каберне Совиньон: 76%",
             "slug": "kaberne_sovinon_76"
           },
           {
-            "name": "мерло: 13%",
+            "name": "Мерло: 13%",
             "slug": "merlo_13"
           },
           {
-            "name": "каберне фран: 9%",
+            "name": "Каберне Фран: 9%",
             "slug": "kaberne_fran_9"
           },
           {
-            "name": "пти вердо: 2%",
+            "name": "Пти Вердо: 2%",
             "slug": "pti_verdo_2"
           }
         ]
@@ -20536,7 +20536,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сент-эстеф",
+            "name": "Франция, Бордо, Сент-Эстеф",
             "slug": "frantsiya_bordo_sent_estef"
           }
         ]
@@ -20608,7 +20608,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -20708,15 +20708,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 86%",
+            "name": "Каберне Совиньон: 86%",
             "slug": "kaberne_sovinon_86"
           },
           {
-            "name": "мерло: 12%",
+            "name": "Мерло: 12%",
             "slug": "merlo_12"
           },
           {
-            "name": "пти вердо: 2%",
+            "name": "Пти Вердо: 2%",
             "slug": "pti_verdo_2"
           }
         ]
@@ -20740,7 +20740,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сент-эстеф",
+            "name": "Франция, Бордо, Сент-Эстеф",
             "slug": "frantsiya_bordo_sent_estef"
           }
         ]
@@ -20800,7 +20800,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -20900,15 +20900,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 60%",
+            "name": "Каберне Совиньон: 60%",
             "slug": "kaberne_sovinon_60"
           },
           {
-            "name": "мерло: 36%",
+            "name": "Мерло: 36%",
             "slug": "merlo_36"
           },
           {
-            "name": "пти вердо: 4%",
+            "name": "Пти Вердо: 4%",
             "slug": "pti_verdo_4"
           }
         ]
@@ -20932,7 +20932,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, о'медок",
+            "name": "Франция, Бордо, О'Медок",
             "slug": "frantsiya_bordo_omedok"
           }
         ]
@@ -21004,7 +21004,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -21104,15 +21104,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 70%",
+            "name": "Мерло: 70%",
             "slug": "merlo_70"
           },
           {
-            "name": "каберне фран: 25%",
+            "name": "Каберне Фран: 25%",
             "slug": "kaberne_fran_25"
           },
           {
-            "name": "каберне совиньон: 5%",
+            "name": "Каберне Совиньон: 5%",
             "slug": "kaberne_sovinon_5"
           }
         ]
@@ -21136,7 +21136,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сент-эмилион",
+            "name": "Франция, Бордо, Сент-Эмилион",
             "slug": "frantsiya_bordo_sent_emilion"
           }
         ]
@@ -21208,7 +21208,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -21308,19 +21308,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 75%",
+            "name": "Каберне Совиньон: 75%",
             "slug": "kaberne_sovinon_75"
           },
           {
-            "name": "мерло: 20%",
+            "name": "Мерло: 20%",
             "slug": "merlo_20"
           },
           {
-            "name": "каберне фран: 4%",
+            "name": "Каберне Фран: 4%",
             "slug": "kaberne_fran_4"
           },
           {
-            "name": "пти вердо: 1%",
+            "name": "Пти Вердо: 1%",
             "slug": "pti_verdo_1"
           }
         ]
@@ -21344,7 +21344,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, пойяк",
+            "name": "Франция, Бордо, Пойяк",
             "slug": "frantsiya_bordo_poiyak"
           }
         ]
@@ -21404,7 +21404,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -21504,15 +21504,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло",
+            "name": "Мерло",
             "slug": "merlo"
           },
           {
-            "name": "каберне совиньон",
+            "name": "Каберне Совиньон",
             "slug": "kaberne_sovinon"
           },
           {
-            "name": "каберне фран",
+            "name": "Каберне Фран",
             "slug": "kaberne_fran"
           }
         ]
@@ -21536,7 +21536,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо",
+            "name": "Франция, Бордо",
             "slug": "frantsiya_bordo"
           }
         ]
@@ -21596,7 +21596,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -21696,11 +21696,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 80%",
+            "name": "Мерло: 80%",
             "slug": "merlo_80"
           },
           {
-            "name": "каберне фран: 20%",
+            "name": "Каберне Фран: 20%",
             "slug": "kaberne_fran_20"
           }
         ]
@@ -21724,7 +21724,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, помроль",
+            "name": "Франция, Бордо, Помроль",
             "slug": "frantsiya_bordo_pomrol"
           }
         ]
@@ -21784,7 +21784,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -21884,19 +21884,19 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 65%",
+            "name": "Каберне Совиньон: 65%",
             "slug": "kaberne_sovinon_65"
           },
           {
-            "name": "мерло: 25%",
+            "name": "Мерло: 25%",
             "slug": "merlo_25"
           },
           {
-            "name": "каберне фран: 5%",
+            "name": "Каберне Фран: 5%",
             "slug": "kaberne_fran_5"
           },
           {
-            "name": "пти вердо: 5%",
+            "name": "Пти Вердо: 5%",
             "slug": "pti_verdo_5"
           }
         ]
@@ -21920,7 +21920,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сен-жюльен",
+            "name": "Франция, Бордо, Сен-Жюльен",
             "slug": "frantsiya_bordo_sen_zhyulen"
           }
         ]
@@ -21980,7 +21980,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -22080,11 +22080,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 80%",
+            "name": "Каберне Совиньон: 80%",
             "slug": "kaberne_sovinon_80"
           },
           {
-            "name": "мерло: 20%",
+            "name": "Мерло: 20%",
             "slug": "merlo_20"
           }
         ]
@@ -22108,7 +22108,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, пойяк",
+            "name": "Франция, Бордо, Пойяк",
             "slug": "frantsiya_bordo_poiyak"
           }
         ]
@@ -22180,7 +22180,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -22280,11 +22280,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 90%",
+            "name": "Мерло: 90%",
             "slug": "merlo_90"
           },
           {
-            "name": "каберне совиньон: 10%",
+            "name": "Каберне Совиньон: 10%",
             "slug": "kaberne_sovinon_10"
           }
         ]
@@ -22308,7 +22308,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, бордо кот де фран",
+            "name": "Франция, Бордо, Бордо Кот де Фран",
             "slug": "frantsiya_bordo_bordo_kot_de_fran"
           }
         ]
@@ -22380,7 +22380,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -22480,11 +22480,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 75%",
+            "name": "Мерло: 75%",
             "slug": "merlo_75"
           },
           {
-            "name": "каберне фран: 25%",
+            "name": "Каберне Фран: 25%",
             "slug": "kaberne_fran_25"
           }
         ]
@@ -22508,7 +22508,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сент-эмилион",
+            "name": "Франция, Бордо, Сент-Эмилион",
             "slug": "frantsiya_bordo_sent_emilion"
           }
         ]
@@ -22568,7 +22568,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -22668,15 +22668,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 68%",
+            "name": "Каберне Совиньон: 68%",
             "slug": "kaberne_sovinon_68"
           },
           {
-            "name": "мерло: 25%",
+            "name": "Мерло: 25%",
             "slug": "merlo_25"
           },
           {
-            "name": "пти вердо: 7%",
+            "name": "Пти Вердо: 7%",
             "slug": "pti_verdo_7"
           }
         ]
@@ -22700,7 +22700,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, сен-жюльен",
+            "name": "Франция, Бордо, Сен-Жюльен",
             "slug": "frantsiya_bordo_sen_zhyulen"
           }
         ]
@@ -22772,7 +22772,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -22872,15 +22872,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 57%",
+            "name": "Каберне Совиньон: 57%",
             "slug": "kaberne_sovinon_57"
           },
           {
-            "name": "мерло: 40%",
+            "name": "Мерло: 40%",
             "slug": "merlo_40"
           },
           {
-            "name": "пти вердо: 3%",
+            "name": "Пти Вердо: 3%",
             "slug": "pti_verdo_3"
           }
         ]
@@ -22904,7 +22904,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, марго",
+            "name": "Франция, Бордо, Марго",
             "slug": "frantsiya_bordo_margo"
           }
         ]
@@ -22976,7 +22976,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -23076,15 +23076,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 58%",
+            "name": "Каберне Совиньон: 58%",
             "slug": "kaberne_sovinon_58"
           },
           {
-            "name": "мерло: 39%",
+            "name": "Мерло: 39%",
             "slug": "merlo_39"
           },
           {
-            "name": "пти вердо: 3%",
+            "name": "Пти Вердо: 3%",
             "slug": "pti_verdo_3"
           }
         ]
@@ -23108,7 +23108,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, марго",
+            "name": "Франция, Бордо, Марго",
             "slug": "frantsiya_bordo_margo"
           }
         ]
@@ -23180,7 +23180,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -23280,11 +23280,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 58%",
+            "name": "Каберне Совиньон: 58%",
             "slug": "kaberne_sovinon_58"
           },
           {
-            "name": "мерло: 42%",
+            "name": "Мерло: 42%",
             "slug": "merlo_42"
           }
         ]
@@ -23308,7 +23308,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, марго",
+            "name": "Франция, Бордо, Марго",
             "slug": "frantsiya_bordo_margo"
           }
         ]
@@ -23380,7 +23380,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -23478,7 +23478,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "совиньон блан: 100%",
+            "name": "Совиньон Блан: 100%",
             "slug": "sovinon_blan_100"
           }
         ]
@@ -23502,7 +23502,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо",
+            "name": "Франция, Бордо",
             "slug": "frantsiya_bordo"
           }
         ]
@@ -23574,7 +23574,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -23674,15 +23674,15 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 55%",
+            "name": "Каберне Совиньон: 55%",
             "slug": "kaberne_sovinon_55"
           },
           {
-            "name": "мерло: 40%",
+            "name": "Мерло: 40%",
             "slug": "merlo_40"
           },
           {
-            "name": "каберне фран: 5%",
+            "name": "Каберне Фран: 5%",
             "slug": "kaberne_fran_5"
           }
         ]
@@ -23706,7 +23706,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, бордо, пессак-леоньян",
+            "name": "Франция, Бордо, Пессак-Леоньян",
             "slug": "frantsiya_bordo_pessak_leonyan"
           }
         ]
@@ -23766,7 +23766,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -23866,11 +23866,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "инзолия: 50%",
+            "name": "Инзолия: 50%",
             "slug": "inzoliya_50"
           },
           {
-            "name": "катарратто: 50%",
+            "name": "Катарратто: 50%",
             "slug": "katarratto_50"
           }
         ]
@@ -23894,7 +23894,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, сицилия",
+            "name": "Италия, Сицилия",
             "slug": "italiya_sitsiliya"
           }
         ]
@@ -23954,7 +23954,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -24054,11 +24054,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неро д'авола",
+            "name": "Неро д'Авола",
             "slug": "nero_davola"
           },
           {
-            "name": "мерло",
+            "name": "Мерло",
             "slug": "merlo"
           }
         ]
@@ -24082,7 +24082,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, сицилия",
+            "name": "Италия, Сицилия",
             "slug": "italiya_sitsiliya"
           }
         ]
@@ -24142,7 +24142,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -24242,23 +24242,23 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "вионье: 55%",
+            "name": "Вионье: 55%",
             "slug": "vione_55"
           },
           {
-            "name": "руссан: 20%",
+            "name": "Руссан: 20%",
             "slug": "russan_20"
           },
           {
-            "name": "марсан: 10%",
+            "name": "Марсан: 10%",
             "slug": "marsan_10"
           },
           {
-            "name": "кларет: 10%",
+            "name": "Кларет: 10%",
             "slug": "klaret_10"
           },
           {
-            "name": "бурбуленк: 5%",
+            "name": "Бурбуленк: 5%",
             "slug": "burbulenk_5"
           }
         ]
@@ -24282,7 +24282,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "франция, долина роны, кот-дю-рон",
+            "name": "Франция, Долина Роны, Кот-дю-Рон",
             "slug": "frantsiya_dolina_roni_kot_dyu_ron"
           }
         ]
@@ -24354,7 +24354,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -24454,11 +24454,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 50%",
+            "name": "Мерло: 50%",
             "slug": "merlo_50"
           },
           {
-            "name": "санджовезе: 50%",
+            "name": "Санджовезе: 50%",
             "slug": "sandzhoveze_50"
           }
         ]
@@ -24482,7 +24482,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, тоскана",
+            "name": "Италия, Тоскана",
             "slug": "italiya_toskana"
           }
         ]
@@ -24554,7 +24554,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -24652,11 +24652,11 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неро д'авола: 80%",
+            "name": "Неро д'Авола: 80%",
             "slug": "nero_davola_80"
           },
           {
-            "name": "сира: 20%",
+            "name": "Сира: 20%",
             "slug": "sira_20"
           }
         ]
@@ -24680,7 +24680,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, сицилия",
+            "name": "Италия, Сицилия",
             "slug": "italiya_sitsiliya"
           }
         ]
@@ -24704,7 +24704,7 @@
         "attributeSlug": "biodinamicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -24728,7 +24728,7 @@
         "attributeSlug": "organicheskoe",
         "selectedOptions": [
           {
-            "name": "да",
+            "name": "Да",
             "slug": "da"
           }
         ]
@@ -24764,7 +24764,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -24864,7 +24864,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "пино нуар: 100%",
+            "name": "Пино Нуар: 100%",
             "slug": "pino_nuar_100"
           }
         ]
@@ -24888,7 +24888,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "крым",
+            "name": "Крым",
             "slug": "krim"
           }
         ]
@@ -24948,7 +24948,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -25048,7 +25048,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "ассиртико: 100%",
+            "name": "Ассиртико: 100%",
             "slug": "assirtiko_100"
           }
         ]
@@ -25072,7 +25072,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "греция, македония",
+            "name": "Греция, Македония",
             "slug": "gretsiya_makedoniya"
           }
         ]
@@ -25144,7 +25144,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -25244,7 +25244,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "каберне совиньон: 100%",
+            "name": "Каберне Совиньон: 100%",
             "slug": "kaberne_sovinon_100"
           }
         ]
@@ -25268,7 +25268,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "чили, центральная долина, долина рапель",
+            "name": "Чили, Центральная Долина, Долина Рапель",
             "slug": "chili_tsentralnaya_dolina_dolina_rapel"
           }
         ]
@@ -25328,7 +25328,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -25428,7 +25428,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "мерло: 100%",
+            "name": "Мерло: 100%",
             "slug": "merlo_100"
           }
         ]
@@ -25452,7 +25452,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "чили, центральная долина, долина рапель",
+            "name": "Чили, Центральная Долина, Долина Рапель",
             "slug": "chili_tsentralnaya_dolina_dolina_rapel"
           }
         ]
@@ -25512,7 +25512,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]
@@ -25603,7 +25603,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "эрбалуче: 100%",
+            "name": "Эрбалуче: 100%",
             "slug": "erbaluche_100"
           }
         ]
@@ -25627,7 +25627,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт",
+            "name": "Италия, Пьемонт",
             "slug": "italiya_pemont"
           }
         ]
@@ -25687,7 +25687,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "белое",
+            "name": "Белое",
             "slug": "beloe"
           }
         ]
@@ -25778,7 +25778,7 @@
         "attributeSlug": "vinograd",
         "selectedOptions": [
           {
-            "name": "неббиоло: 100%",
+            "name": "Неббиоло: 100%",
             "slug": "nebbiolo_100"
           }
         ]
@@ -25802,7 +25802,7 @@
         "attributeSlug": "region",
         "selectedOptions": [
           {
-            "name": "италия, пьемонт",
+            "name": "Италия, Пьемонт",
             "slug": "italiya_pemont"
           }
         ]
@@ -25862,7 +25862,7 @@
         "attributeSlug": "tip_vina",
         "selectedOptions": [
           {
-            "name": "красное",
+            "name": "Красное",
             "slug": "krasnoe"
           }
         ]

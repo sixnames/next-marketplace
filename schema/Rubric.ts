@@ -313,6 +313,7 @@ export const Rubric = objectType({
       },
     });
 
+    // TODO optimize
     // Rubric navItems field resolver
     t.nonNull.field('navItems', {
       type: 'RubricNavItems',

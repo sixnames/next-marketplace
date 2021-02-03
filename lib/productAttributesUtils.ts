@@ -1,3 +1,4 @@
+import { LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
 import {
   AttributeModel,
   ObjectIdModel,
@@ -61,7 +62,7 @@ export async function getProductAttributeValue(
 
   let readableValue = null;
 
-  if (isText) {
+  if (isText && text !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
     readableValue = text;
   }
 

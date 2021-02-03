@@ -94,7 +94,7 @@ export interface AssetModel {
   index: number;
 }
 
-export interface CoordinatesInputModel {
+/*export interface CoordinatesInputModel {
   lat: number;
   lng: number;
 }
@@ -102,7 +102,7 @@ export interface CoordinatesInputModel {
 export interface AddressInputModel {
   formattedAddress: string;
   point: CoordinatesInputModel;
-}
+}*/
 
 // Sort direction
 export enum SortDirectionModel {
@@ -179,12 +179,19 @@ export interface AttributePositioningInTitleModel {
 // I18n model. Each key is locale with value for current locale
 export type TranslationModel = JSONObjectModel;
 
-export interface AttributeModel {
+export interface CountersItemModel {
+  [key: string]: number;
+}
+
+export interface CountersModel {
+  views: CountersItemModel;
+  priorities: CountersItemModel;
+}
+
+export interface AttributeModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  views: JSONObjectModel;
-  priorities: JSONObjectModel;
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
@@ -343,14 +350,12 @@ export interface OptionVariantModel {
   value: TranslationModel;
 }
 
-export interface OptionModel {
+export interface OptionModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
   variants?: OptionVariantModel[] | null;
   gender?: GenderModel | null;
-  views: JSONObjectModel;
-  priorities: JSONObjectModel;
   color?: string | null;
   icon?: string | null;
 }
@@ -456,14 +461,12 @@ export interface ProductAttributesGroupAstModel extends AttributesGroupModel {
   astAttributes: ProductAttributeModel[];
 }
 
-export interface ProductModel extends BaseModel, TimestampModel {
+export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   active: boolean;
   slug: string;
   originalName: string;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
-  views: JSONObjectModel;
-  priorities: JSONObjectModel;
   rubricsIds: ObjectIdModel[];
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
@@ -556,10 +559,8 @@ export interface RubricCatalogueTitleModel {
   gender: GenderModel;
 }
 
-export interface RubricModel {
+export interface RubricModel extends CountersModel {
   _id: ObjectIdModel;
-  views: JSONObjectModel;
-  priorities: JSONObjectModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;

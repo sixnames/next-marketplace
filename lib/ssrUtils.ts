@@ -2,7 +2,7 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { initializeApollo } from 'apollo/apolloClient';
-import { INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
+import { INITIAL_APP_QUERY, INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
 import { getSession } from 'next-auth/client';
 import { Theme } from 'types/clientTypes';
 import { parseCookies } from './parseCookies';
@@ -58,6 +58,33 @@ export async function getSiteInitialData(
   };
 }
 
+export async function getAppInitialApolloState(
+  context: GetServerSidePropsContext,
+): Promise<ApolloClient<NormalizedCacheObject>> {
+  const apolloClient = initializeApollo(null, context);
+  await apolloClient.query({
+    query: INITIAL_APP_QUERY,
+    context,
+  });
+  return apolloClient;
+}
+
+export interface GetAppInitialDataPayloadInterface extends GetSSRSessionDataPayloadInterface {
+  apolloClient: ApolloClient<NormalizedCacheObject>;
+}
+
+export async function getAppInitialData(
+  context: GetServerSidePropsContext,
+): Promise<GetAppInitialDataPayloadInterface> {
+  const apolloClient = await getAppInitialApolloState(context);
+  const userDeviceInfo = getUserDeviceInfo(context);
+
+  return {
+    ...userDeviceInfo,
+    apolloClient,
+  };
+}
+
 export async function getCmsSsrProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
@@ -73,7 +100,7 @@ export async function getCmsSsrProps(
       };
     }
 
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { initialTheme, isMobileDevice, apolloClient } = await getAppInitialData(context);
 
     return {
       props: {

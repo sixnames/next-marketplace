@@ -20,7 +20,6 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
   className,
   queryKey,
   radioClassName,
-  asPath,
   ...props
 }) => {
   return (
@@ -35,7 +34,6 @@ const FilterRadioGroup: React.FC<FilterRadioGroupInterface> = ({
             queryKey={queryKey}
             testId={key}
             key={key}
-            asPath={asPath}
             className={`${classes.item} ${radioClassName ? radioClassName : ''}`}
             {...props}
           />

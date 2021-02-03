@@ -13,8 +13,11 @@ import { QUERY_DATA_LAYOUT_NO_RUBRIC, RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_ZERO } fr
 
 const RubricsRoute: React.FC = () => {
   const { query, removeQuery } = useRouterQuery();
-  const { rubricId } = query;
-  const isCurrentRubric = rubricId && rubricId !== QUERY_DATA_LAYOUT_NO_RUBRIC;
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+
+  const isCurrentRubric = React.useMemo(() => {
+    return selectedId && selectedId !== QUERY_DATA_LAYOUT_NO_RUBRIC;
+  }, [selectedId]);
 
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -22,11 +25,17 @@ const RubricsRoute: React.FC = () => {
   const { generateTabsConfig } = useTabsConfig();
   const queryResult = useGetRubricQuery({
     fetchPolicy: 'network-only',
-    skip: !isCurrentRubric,
+    skip: !selectedId,
     variables: {
-      _id: `${rubricId}`,
+      _id: `${selectedId}`,
     },
   });
+
+  React.useEffect(() => {
+    if (query.rubricId && query.rubricId !== selectedId) {
+      setSelectedId(`${query.rubricId}`);
+    }
+  }, [query, selectedId]);
 
   const [deleteRubricMutation] = useDeleteRubricMutation({
     onCompleted: (data) => {
@@ -49,7 +58,7 @@ const RubricsRoute: React.FC = () => {
 
   const { data } = queryResult;
   const level = data && data.getRubric ? data.getRubric.level : RUBRIC_LEVEL_ZERO;
-  // TODO fix this
+  // TODO fix hardcoded rubric last level
   const notLastLevelRubric = level !== RUBRIC_LEVEL_THREE;
 
   function deleteRubricHandler() {
@@ -105,7 +114,7 @@ const RubricsRoute: React.FC = () => {
       contentControlsConfig={isCurrentRubric ? contentControlsConfig : null}
       filterResultNavConfig={isCurrentRubric ? filterResultNavConfig : null}
       filterResult={() => {
-        if (rubricId === QUERY_DATA_LAYOUT_NO_RUBRIC) {
+        if (selectedId === QUERY_DATA_LAYOUT_NO_RUBRIC) {
           return <NoRubricProducts />;
         }
 

@@ -16,9 +16,7 @@ const RubricsFilter: React.FC = () => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
-  const { data, error, loading } = useGetRubricsTreeQuery({
-    fetchPolicy: 'network-only',
-  });
+  const { data, error, loading } = useGetRubricsTreeQuery();
 
   const [createRubricMutation] = useCreateRubricMutation({
     refetchQueries: [

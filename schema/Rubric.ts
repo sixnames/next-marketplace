@@ -408,6 +408,7 @@ export const Rubric = objectType({
                     $match: {
                       rubricsIds: { $in: rubricsIds },
                       active: true,
+                      archive: false,
                       'attributes.attributeSlugs': optionSlug,
                     },
                   },

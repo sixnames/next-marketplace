@@ -70,7 +70,7 @@ const useRouterQuery = (): UseRouterQueryInterface => {
       setQuery,
       removeQuery,
       toggleQuery,
-      query: router.query || {},
+      query: router.query,
       pathname: router.pathname || '',
     }),
     [router, removeQuery, setQuery, toggleQuery],

@@ -29,72 +29,78 @@ const RubricsTree: React.FC<RubricsTreeInterface> = ({
   low = false,
   testIdPrefix,
 }) => {
-  const finalTestIdPrefix = testIdPrefix ? `${testIdPrefix}-` : '';
-  function renderChildren(item: RubricsTreeItemInterface, isFirst?: boolean) {
-    const { _id, productsCounters, name, children } = item;
-    const { totalDocs, totalActiveDocs } = productsCounters;
-    const isLast = !children || !children.length;
+  const finalTestIdPrefix = React.useMemo(() => {
+    return testIdPrefix ? `${testIdPrefix}-` : '';
+  }, [testIdPrefix]);
 
-    const titleLeftContent = titleLeft
-      ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`)
-      : null;
+  const renderChildren = React.useCallback(
+    (item: RubricsTreeItemInterface, isFirst?: boolean) => {
+      const { _id, productsCounters, name, children } = item;
+      const { totalDocs, totalActiveDocs } = productsCounters;
+      const isLast = !children || !children.length;
 
-    if (isLast) {
-      return (
-        <Accordion
-          titleLeft={
-            lastTitleLeft
-              ? () => lastTitleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`)
-              : titleLeftContent
-          }
-          titleClassName={isFirst ? classes.first : ''}
-          disabled={totalDocs === 0 || isLastDisabled}
-          titleRight={
-            <RubricsTreeCounters
-              activeProductsCount={totalActiveDocs}
-              totalProductsCount={totalDocs}
-              testId={name}
-            />
-          }
-          title={name}
-          key={_id}
-          testId={`tree-${name}`}
-        >
-          {render ? render(_id) : null}
-        </Accordion>
-      );
-    } else {
-      return (
-        <Accordion
-          isOpen={true}
-          titleLeft={
-            titleLeft ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null
-          }
-          titleClassName={isFirst ? classes.first : ''}
-          titleRight={
-            <RubricsTreeCounters
-              testId={_id}
-              activeProductsCount={totalActiveDocs}
-              totalProductsCount={totalDocs}
-            />
-          }
-          title={name}
-          key={name}
-          testId={`tree-${name}`}
-        >
-          {children
-            ? children.map((item, index) => {
-                return (
-                  <div key={index} className={classes.nested}>
-                    {renderChildren(item)}
-                  </div>
-                );
-              })
-            : null}
-        </Accordion>
-      );
-    }
-  }
+      const titleLeftContent = titleLeft
+        ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`)
+        : null;
+
+      if (isLast) {
+        return (
+          <Accordion
+            titleLeft={
+              lastTitleLeft
+                ? () => lastTitleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`)
+                : titleLeftContent
+            }
+            titleClassName={isFirst ? classes.first : ''}
+            disabled={totalDocs === 0 || isLastDisabled}
+            titleRight={
+              <RubricsTreeCounters
+                activeProductsCount={totalActiveDocs}
+                totalProductsCount={totalDocs}
+                testId={name}
+              />
+            }
+            title={name}
+            key={_id}
+            testId={`tree-${name}`}
+          >
+            {render ? render(_id) : null}
+          </Accordion>
+        );
+      } else {
+        return (
+          <Accordion
+            isOpen={true}
+            titleLeft={
+              titleLeft ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null
+            }
+            titleClassName={isFirst ? classes.first : ''}
+            titleRight={
+              <RubricsTreeCounters
+                testId={_id}
+                activeProductsCount={totalActiveDocs}
+                totalProductsCount={totalDocs}
+              />
+            }
+            title={name}
+            key={name}
+            testId={`tree-${name}`}
+          >
+            {children
+              ? children.map((item, index) => {
+                  return (
+                    <div key={index} className={classes.nested}>
+                      {renderChildren(item)}
+                    </div>
+                  );
+                })
+              : null}
+          </Accordion>
+        );
+      }
+    },
+    [finalTestIdPrefix, isLastDisabled, lastTitleLeft, render, titleLeft],
+  );
 
   if (!tree) {
     return <RequestError message={'Ошибка загрузки дерева рубрик'} />;

@@ -58,13 +58,13 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
       ) : null}
 
       <Inner className={classes.Inner} wide lowTop>
-        {filterContent && (
+        {filterContent ? (
           <DataLayoutFilter
             isFilterVisible={filterVisible}
             toggleFilter={toggleFilter}
             filterContent={filterContent}
           />
-        )}
+        ) : null}
 
         <div className={classes.Content}>
           <div className={`${classes.Controls} ${noContentControls ? classes.NoControls : ''}`}>

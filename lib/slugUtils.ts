@@ -4,7 +4,12 @@ import { DEFAULT_LOCALE } from 'config/common';
 
 export const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();
-  const cleanString = name ? name.replace(/[$-/:-?{-~!"^_`\[\]]/g, '').toLocaleLowerCase() : '';
+  const cleanString = name
+    ? name
+        .replace('-', ' ')
+        .replace(/[$-/:-?{-~!"^_`\[\]]/g, '')
+        .toLocaleLowerCase()
+    : '';
   return translit.transform(cleanString, '_');
 };
 

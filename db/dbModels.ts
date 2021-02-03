@@ -549,7 +549,6 @@ export interface RubricAttributesGroupModel {
   _id: ObjectIdModel;
   showInCatalogueFilter: ObjectIdModel[];
   attributesGroupId: ObjectIdModel;
-  isOwner: boolean;
 }
 
 export interface RubricCatalogueTitleModel {
@@ -566,9 +565,7 @@ export interface RubricModel extends CountersModel {
   shortDescriptionI18n: TranslationModel;
   catalogueTitle: RubricCatalogueTitleModel;
   slug: string;
-  level: number;
   active: boolean;
-  parentId?: ObjectIdModel | null;
   attributesGroups: RubricAttributesGroupModel[];
   variantId: ObjectIdModel;
 }

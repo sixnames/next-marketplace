@@ -4,7 +4,6 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   OPTIONS_GROUP_VARIANT_TEXT,
-  RUBRIC_LEVEL_ONE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -258,7 +257,6 @@ export const seedInitial = async () => {
           _id: new ObjectId(),
           showInCatalogueFilter: selectAttributesIds,
           attributesGroupId: _id,
-          isOwner: true,
         });
       }
 
@@ -268,7 +266,6 @@ export const seedInitial = async () => {
 
       await rubricsCollection.insertOne({
         active: true,
-        level: RUBRIC_LEVEL_ONE,
         slug: initialRubric.slug,
         attributesGroups: rubricAttributesGroups,
         variantId: rubricVariantAlcohol.ops[0]._id,

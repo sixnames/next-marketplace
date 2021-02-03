@@ -50,7 +50,6 @@ import {
   getParamOptionFirstValueByKey,
   SelectedFilterInterface,
 } from 'lib/catalogueUtils';
-import { getRubricsTreeIds } from 'lib/rubricUtils';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { getCurrencyString } from 'lib/i18n';
@@ -178,9 +177,6 @@ export const CatalogueQueries = extendType({
             queryFilter: { slug: rubricSlug },
           });
 
-          // Get all nested rubrics ids
-          const rubricsIds = await getRubricsTreeIds(rubric._id);
-
           // Get selected filters and additional filters
           // and cast it to the objects
           const mainFilters: string[] = [];
@@ -294,7 +290,7 @@ export const CatalogueQueries = extendType({
             // initial match
             {
               $match: {
-                rubricsIds: { $in: rubricsIds },
+                rubricsIds: rubric._id,
                 active: true,
                 archive: false,
                 ...selectedFiltersPipeline,

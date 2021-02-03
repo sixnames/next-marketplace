@@ -13,9 +13,8 @@ describe('Rubric attributes', () => {
   });
 
   it('Should CRUD rubric attributes list', () => {
-    // const mockRubricLevelOneName = getTestLangField(mockData.rubricLevelOneA.name);
-    const mockRubricLevelOneName = mockData.rubricLevelOneADefaultName;
-    const mockRubricLevelTwoName = mockData.rubricLevelTwoADefaultName;
+    const mockRubricLevelOneName = mockData.rubricADefaultName;
+    const mockRubricLevelTwoName = mockData.rubricADefaultName;
 
     const mockAttributesGroupName = mockData.attributesGroupWineFeatures.nameI18n[DEFAULT_LOCALE];
     const mockMultipleSelectAttributeName = mockData.attributeWineColor.nameI18n[DEFAULT_LOCALE];

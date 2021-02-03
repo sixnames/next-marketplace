@@ -20,11 +20,8 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_STEP,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { getRubricChildrenIds, getRubricsTreeIds } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { toggleIdInArray } from 'db/toggleIdInArray';
 import {
@@ -65,7 +62,6 @@ export const CreateRubricInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
-    t.objectId('parentId');
     t.nonNull.objectId('variantId');
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitleInput',
@@ -156,16 +152,12 @@ export const RubricMutations = extendType({
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { parentId, ...values } = input;
 
           // Check if rubric already exist
           const exist = await findDocumentByI18nField<RubricModel>({
             collectionName: COL_RUBRICS,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
-            additionalQuery: {
-              parentId: parentId || null,
-            },
           });
           if (exist) {
             return {
@@ -175,14 +167,10 @@ export const RubricMutations = extendType({
           }
 
           // Create rubric
-          const parentRubric = parentId ? await rubricsCollection.findOne({ _id: parentId }) : null;
-          const level = parentRubric ? parentRubric.level + RUBRIC_LEVEL_STEP : RUBRIC_LEVEL_ONE;
-          const slug = generateDefaultLangSlug(values.nameI18n);
+          const slug = generateDefaultLangSlug(input.nameI18n);
           const createdRubricResult = await rubricsCollection.insertOne({
-            ...values,
+            ...input,
             slug,
-            parentId,
-            level,
             active: true,
             attributesGroups: [],
             ...DEFAULT_COUNTERS_OBJECT,
@@ -249,9 +237,6 @@ export const RubricMutations = extendType({
             collectionName: COL_RUBRICS,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
-            additionalQuery: {
-              parentId: rubric.parentId,
-            },
           });
           if (exist) {
             return {
@@ -324,19 +309,14 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Get all child rubrics ids
-          const allRubricsIds = await getRubricsTreeIds(rubric._id);
-
           // Remove rubric and child rubrics ids from all connected products
           const updatedProductsResult = await productsCollection.updateMany(
             {
-              rubricsIds: { $in: allRubricsIds },
+              rubricsIds: _id,
             },
             {
               $pull: {
-                rubricsIds: {
-                  $in: allRubricsIds,
-                },
+                rubricsIds: _id,
               },
             },
           );
@@ -348,8 +328,8 @@ export const RubricMutations = extendType({
           }
 
           // Delete rubric and it's children
-          const removedRubricsResult = await rubricsCollection.deleteMany({
-            _id: { $in: allRubricsIds },
+          const removedRubricsResult = await rubricsCollection.deleteOne({
+            _id,
           });
           if (!removedRubricsResult.result.ok) {
             return {
@@ -430,7 +410,7 @@ export const RubricMutations = extendType({
             return acc;
           }, []);
 
-          // Update rubric and set it as an owner of attributes group
+          // Update rubric
           const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
             {
               _id: rubricId,
@@ -441,7 +421,6 @@ export const RubricMutations = extendType({
                   _id: new ObjectId(),
                   showInCatalogueFilter: showInCatalogueAttributes,
                   attributesGroupId,
-                  isOwner: true,
                 },
               },
             },
@@ -449,31 +428,6 @@ export const RubricMutations = extendType({
           );
           const updatedOwnerRubric = updatedOwnerRubricResult.value;
           if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addAttributesGroup.error'),
-            };
-          }
-
-          // Get all child rubrics ids
-          const childRubricsIds = await getRubricChildrenIds(rubricId);
-
-          // Update child rubrics
-          const updatedChildRubricsResult = await rubricsCollection.updateMany(
-            {
-              _id: { $in: childRubricsIds },
-            },
-            {
-              $addToSet: {
-                attributesGroups: {
-                  showInCatalogueFilter: showInCatalogueAttributes,
-                  attributesGroupId,
-                  isOwner: true,
-                },
-              },
-            },
-          );
-          if (!updatedChildRubricsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('rubrics.addAttributesGroup.error'),
@@ -645,14 +599,6 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Check if rubric is owner of the attributes group
-          if (!currentAttributesGroup || !currentAttributesGroup.isOwner) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.deleteAttributesGroup.ownerError`),
-            };
-          }
-
           // Update rubric
           const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
             {
@@ -669,31 +615,6 @@ export const RubricMutations = extendType({
           );
           const updatedOwnerRubric = updatedOwnerRubricResult.value;
           if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
-            };
-          }
-
-          // Get all child rubrics ids
-          const childRubricsIds = await getRubricChildrenIds(rubricId);
-
-          // Update child rubrics
-          // TODO test this
-          const updatedChildRubricsResult = await rubricsCollection.updateMany(
-            {
-              _id: { $in: childRubricsIds },
-            },
-            {
-              $pull: {
-                attributesGroups: {
-                  attributesGroupId,
-                  isOwner: false,
-                },
-              },
-            },
-          );
-          if (!updatedChildRubricsResult.result.ok) {
             return {
               success: false,
               message: await getApiMessage('rubrics.deleteAttributesGroup.error'),

@@ -12,7 +12,7 @@ describe('Make an order', () => {
   });
 
   it('Should make an order', () => {
-    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
+    cy.visit(`/${mockData.rubricA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${mockData.productA._id}`).click();
 
@@ -29,7 +29,7 @@ describe('Make an order', () => {
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
+    cy.visit(`/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA._id}`).click();
     cy.getByCy(`card-${mockData.connectionProductA._id}`).should('exist');
@@ -38,7 +38,7 @@ describe('Make an order', () => {
 
     // Add shopless product from catalogue #3
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${mockData.rubricLevelOneA.slug}`);
+    cy.visit(`/${mockData.rubricA.slug}`);
     cy.getByCy(`catalogue-item-${mockData.connectionProductA._id}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();
 

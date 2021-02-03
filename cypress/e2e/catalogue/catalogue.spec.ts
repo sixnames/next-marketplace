@@ -14,7 +14,7 @@ describe('Catalogue filter', () => {
   });
 
   it('Should have catalogue and filters', () => {
-    const wineRubric: RubricModel = mockData.rubricLevelOneA;
+    const wineRubric: RubricModel = mockData.rubricA;
     const wineRubricTitle = wineRubric.catalogueTitle;
     const wineRubricDefaultTitle = wineRubricTitle.defaultTitleI18n[DEFAULT_LOCALE];
     const wineRubricKeyword = wineRubricTitle.keywordI18n[DEFAULT_LOCALE];

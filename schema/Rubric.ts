@@ -7,7 +7,6 @@ import {
   ProductModel,
   ProductsPaginationPayloadModel,
   RubricCountersModel,
-  RubricModel,
   RubricNavItemAttributeModel,
   RubricNavItemAttributeOptionModel,
   RubricNavItemsModel,
@@ -20,12 +19,10 @@ import {
   COL_OPTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 import { ObjectId } from 'mongodb';
-import { getRubricsTreeIds } from 'lib/rubricUtils';
 import { noNaN } from 'lib/numbers';
 import { LOCALE_NOT_FOUND_FIELD_MESSAGE, SORT_DESC } from 'config/common';
 
@@ -98,9 +95,7 @@ export const Rubric = objectType({
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.string('slug');
-    t.nonNull.int('level');
     t.nonNull.boolean('active');
-    t.objectId('parentId');
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
@@ -153,46 +148,6 @@ export const Rubric = objectType({
       },
     });
 
-    // Rubric parent field resolver
-    t.field('parent', {
-      type: 'Rubric',
-      resolve: async (source): Promise<RubricModel | null> => {
-        if (!source.parentId) {
-          return null;
-        }
-        const db = await getDatabase();
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const parent = await rubricsCollection.findOne({ _id: source.parentId });
-        return parent;
-      },
-    });
-
-    // Rubric children field resolver
-    t.nonNull.list.nonNull.field('children', {
-      type: 'Rubric',
-      args: {
-        input: arg({
-          type: 'GetRubricsTreeInput',
-          default: {},
-        }),
-      },
-      resolve: async (source, args): Promise<RubricModel[]> => {
-        try {
-          const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { input } = args;
-          const excludedIds = input?.excludedRubricsIds || [];
-          const children = await rubricsCollection
-            .find({ parentId: source._id, _id: { $nin: excludedIds } })
-            .toArray();
-
-          return children;
-        } catch (e) {
-          return [];
-        }
-      },
-    });
-
     // Rubric paginated products field resolver
     t.nonNull.field('products', {
       type: 'ProductsPaginationPayload',
@@ -226,7 +181,6 @@ export const Rubric = objectType({
         try {
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const rubricsIds = await getRubricsTreeIds(source._id);
 
           const attributesStage = args?.input?.attributesIds
             ? [
@@ -252,7 +206,7 @@ export const Rubric = objectType({
             .aggregate<RubricCountersModel>([
               {
                 $match: {
-                  rubricsIds: { $in: rubricsIds },
+                  rubricsIds: source._id,
                 },
               },
               ...attributesStage,
@@ -340,9 +294,6 @@ export const Rubric = objectType({
             }
           }
 
-          // Get id's of children rubrics
-          const rubricsIds = await getRubricsTreeIds(source._id);
-
           // Get all visible attributes id's
           const visibleAttributesIds = attributesGroups.reduce((acc: ObjectId[], group) => {
             return [...acc, ...group.showInCatalogueFilter];
@@ -406,7 +357,7 @@ export const Rubric = objectType({
                   // Initial products match
                   {
                     $match: {
-                      rubricsIds: { $in: rubricsIds },
+                      rubricsIds: source._id,
                       active: true,
                       archive: false,
                       'attributes.attributeSlugs': optionSlug,

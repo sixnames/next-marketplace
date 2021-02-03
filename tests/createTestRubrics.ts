@@ -12,11 +12,7 @@ import {
 import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
-  GENDER_HE,
   GENDER_IT,
-  GENDER_SHE,
-  RUBRIC_LEVEL_ONE,
-  RUBRIC_LEVEL_TWO,
   SECONDARY_LOCALE,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -24,29 +20,21 @@ import { COL_RUBRICS } from 'db/collectionNames';
 import { ObjectId } from 'mongodb';
 
 export interface CreateTestRubricsPayloadInterface extends CreateTestRubricVariantsInterface {
-  rubricLevelOneADefaultName: string;
-  rubricLevelOneAName: TranslationModel;
-  rubricLevelOneA: RubricModel;
+  rubricADefaultName: string;
+  rubricAName: TranslationModel;
+  rubricA: RubricModel;
 
-  rubricLevelOneBDefaultName: string;
-  rubricLevelOneBName: TranslationModel;
-  rubricLevelOneB: RubricModel;
+  rubricBDefaultName: string;
+  rubricBName: TranslationModel;
+  rubricB: RubricModel;
 
-  rubricLevelOneCDefaultName: string;
-  rubricLevelOneCName: TranslationModel;
-  rubricLevelOneC: RubricModel;
+  rubricCDefaultName: string;
+  rubricCName: TranslationModel;
+  rubricC: RubricModel;
 
-  rubricLevelOneDDefaultName: string;
-  rubricLevelOneDName: TranslationModel;
-  rubricLevelOneD: RubricModel;
-
-  rubricLevelTwoADefaultName: string;
-  rubricLevelTwoAName: TranslationModel;
-  rubricLevelTwoA: RubricModel;
-
-  rubricLevelTwoBDefaultName: string;
-  rubricLevelTwoBName: TranslationModel;
-  rubricLevelTwoB: RubricModel;
+  rubricDDefaultName: string;
+  rubricDName: TranslationModel;
+  rubricD: RubricModel;
 }
 
 export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInterface> => {
@@ -59,42 +47,22 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     attributeWineVariant,
     attributesGroupOuterRating,
     attributesGroupWineFeatures,
-    attributesGroupWhiskeyFeatures,
     rubricVariantAlcohol,
   } = rubricVariantsPayload;
 
-  const rubricAttributesGroups = (isOwner: boolean): RubricAttributesGroupModel[] => [
+  const rubricAttributesGroups = (): RubricAttributesGroupModel[] => [
     {
       _id: new ObjectId(),
       showInCatalogueFilter: [attributeWineColor._id, attributeWineVariant._id],
       attributesGroupId: attributesGroupWineFeatures._id,
-      isOwner,
     },
     {
       _id: new ObjectId(),
       showInCatalogueFilter: [],
       attributesGroupId: attributesGroupOuterRating._id,
-      isOwner,
     },
   ];
 
-  const rubricAttributesGroupsB = (isOwner: boolean): RubricAttributesGroupModel[] => [
-    {
-      _id: new ObjectId(),
-      showInCatalogueFilter: [],
-      attributesGroupId: attributesGroupWhiskeyFeatures._id,
-      isOwner,
-    },
-    {
-      _id: new ObjectId(),
-      showInCatalogueFilter: [],
-      attributesGroupId: attributesGroupOuterRating._id,
-      isOwner,
-    },
-  ];
-
-  const genderHe = GENDER_HE as GenderModel;
-  const genderShe = GENDER_SHE as GenderModel;
   const genderIt = GENDER_IT as GenderModel;
 
   const description = {
@@ -102,20 +70,18 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [SECONDARY_LOCALE]: 'description',
   };
 
-  const rubricLevelOneADefaultName = 'Вино';
-  const rubricLevelOneAName = {
-    [DEFAULT_LOCALE]: rubricLevelOneADefaultName,
+  const rubricADefaultName = 'Вино';
+  const rubricAName = {
+    [DEFAULT_LOCALE]: rubricADefaultName,
     [SECONDARY_LOCALE]: 'Wine',
   };
   const rubricLevelOneAId = new ObjectId();
-  const rubricLevelOneA: RubricModel = {
+  const rubricA: RubricModel = {
     _id: rubricLevelOneAId,
-    nameI18n: rubricLevelOneAName,
-    level: RUBRIC_LEVEL_ONE,
-    parentId: null,
-    slug: generateDefaultLangSlug(rubricLevelOneAName),
+    nameI18n: rubricAName,
+    slug: generateDefaultLangSlug(rubricAName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(true),
+    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
@@ -137,20 +103,18 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
-  const rubricLevelOneBDefaultName = 'Шампанское и игристое';
-  const rubricLevelOneBName = {
-    [DEFAULT_LOCALE]: rubricLevelOneBDefaultName,
+  const rubricBDefaultName = 'Шампанское и игристое';
+  const rubricBName = {
+    [DEFAULT_LOCALE]: rubricBDefaultName,
     [SECONDARY_LOCALE]: 'Champagne',
   };
   const rubricLevelOneBId = new ObjectId();
-  const rubricLevelOneB: RubricModel = {
+  const rubricB: RubricModel = {
     _id: rubricLevelOneBId,
-    nameI18n: rubricLevelOneBName,
-    level: RUBRIC_LEVEL_ONE,
-    parentId: null,
-    slug: generateDefaultLangSlug(rubricLevelOneBName),
+    nameI18n: rubricBName,
+    slug: generateDefaultLangSlug(rubricBName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(true),
+    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
@@ -178,20 +142,18 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
-  const rubricLevelOneCDefaultName = 'Виски';
-  const rubricLevelOneCName = {
-    [DEFAULT_LOCALE]: rubricLevelOneCDefaultName,
+  const rubricCDefaultName = 'Виски';
+  const rubricCName = {
+    [DEFAULT_LOCALE]: rubricCDefaultName,
     [SECONDARY_LOCALE]: 'Whiskey',
   };
   const rubricLevelOneCId = new ObjectId();
-  const rubricLevelOneC: RubricModel = {
+  const rubricC: RubricModel = {
     _id: rubricLevelOneCId,
-    nameI18n: rubricLevelOneCName,
-    level: RUBRIC_LEVEL_ONE,
-    parentId: null,
-    slug: generateDefaultLangSlug(rubricLevelOneCName),
+    nameI18n: rubricCName,
+    slug: generateDefaultLangSlug(rubricCName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(true),
+    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
@@ -213,20 +175,18 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
-  const rubricLevelOneDDefaultName = 'Коньяк';
-  const rubricLevelOneDName = {
-    [DEFAULT_LOCALE]: rubricLevelOneDDefaultName,
+  const rubricDDefaultName = 'Коньяк';
+  const rubricDName = {
+    [DEFAULT_LOCALE]: rubricDDefaultName,
     [SECONDARY_LOCALE]: 'Cognac',
   };
   const rubricLevelOneDId = new ObjectId();
-  const rubricLevelOneD: RubricModel = {
+  const rubricD: RubricModel = {
     _id: rubricLevelOneDId,
-    nameI18n: rubricLevelOneDName,
-    level: RUBRIC_LEVEL_ONE,
-    parentId: null,
-    slug: generateDefaultLangSlug(rubricLevelOneDName),
+    nameI18n: rubricDName,
+    slug: generateDefaultLangSlug(rubricDName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(true),
+    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
@@ -248,105 +208,24 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
-  const rubricLevelTwoADefaultName = 'levelTwoARu';
-  const rubricLevelTwoASecondaryName = 'levelTwoAEn';
-  const rubricLevelTwoAName = {
-    [DEFAULT_LOCALE]: rubricLevelTwoADefaultName,
-    [SECONDARY_LOCALE]: rubricLevelTwoASecondaryName,
-  };
-  const rubricLevelTwoAId = new ObjectId();
-  const rubricLevelTwoA: RubricModel = {
-    _id: rubricLevelTwoAId,
-    nameI18n: rubricLevelTwoAName,
-    level: RUBRIC_LEVEL_TWO,
-    slug: generateDefaultLangSlug(rubricLevelTwoAName),
-    variantId: rubricVariantAlcohol._id,
-    parentId: rubricLevelOneAId,
-    attributesGroups: rubricAttributesGroups(false),
-    active: true,
-    descriptionI18n: description,
-    shortDescriptionI18n: description,
-    catalogueTitle: {
-      defaultTitleI18n: {
-        [DEFAULT_LOCALE]: rubricLevelTwoADefaultName,
-        [SECONDARY_LOCALE]: rubricLevelTwoASecondaryName,
-      },
-      prefixI18n: {},
-      keywordI18n: {
-        [DEFAULT_LOCALE]: 'rubricLevelTwoA',
-        [SECONDARY_LOCALE]: 'rubricLevelTwoA',
-      },
-      gender: genderShe,
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  };
-
-  const rubricLevelTwoBDefaultName = 'levelTwoBRu';
-  const rubricLevelTwoBSecondaryName = 'levelTwoBEn';
-  const rubricLevelTwoBName = {
-    [DEFAULT_LOCALE]: rubricLevelTwoBDefaultName,
-    [SECONDARY_LOCALE]: rubricLevelTwoBSecondaryName,
-  };
-  const rubricLevelTwoBId = new ObjectId();
-  const rubricLevelTwoB: RubricModel = {
-    _id: rubricLevelTwoBId,
-    nameI18n: rubricLevelTwoBName,
-    level: RUBRIC_LEVEL_TWO,
-    slug: generateDefaultLangSlug(rubricLevelTwoBName),
-    variantId: rubricVariantAlcohol._id,
-    parentId: rubricLevelOneA._id,
-    attributesGroups: [...rubricAttributesGroups(false), ...rubricAttributesGroupsB(true)],
-    active: true,
-    descriptionI18n: description,
-    shortDescriptionI18n: description,
-    catalogueTitle: {
-      defaultTitleI18n: {
-        [DEFAULT_LOCALE]: rubricLevelTwoBDefaultName,
-        [SECONDARY_LOCALE]: rubricLevelTwoBSecondaryName,
-      },
-      prefixI18n: {},
-      keywordI18n: {
-        [DEFAULT_LOCALE]: 'rubricLevelTwoB',
-        [SECONDARY_LOCALE]: 'rubricLevelTwoB',
-      },
-      gender: genderHe,
-    },
-    ...DEFAULT_COUNTERS_OBJECT,
-  };
-
-  await rubricsCollection.insertMany([
-    rubricLevelOneA,
-    rubricLevelOneB,
-    rubricLevelOneC,
-    rubricLevelOneD,
-    rubricLevelTwoA,
-    rubricLevelTwoB,
-  ]);
+  await rubricsCollection.insertMany([rubricA, rubricB, rubricC, rubricD]);
 
   return {
     ...rubricVariantsPayload,
-    rubricLevelOneADefaultName,
-    rubricLevelOneAName,
-    rubricLevelOneA,
+    rubricADefaultName,
+    rubricAName,
+    rubricA,
 
-    rubricLevelOneBDefaultName,
-    rubricLevelOneBName,
-    rubricLevelOneB,
+    rubricBDefaultName,
+    rubricBName,
+    rubricB,
 
-    rubricLevelOneCDefaultName,
-    rubricLevelOneCName,
-    rubricLevelOneC,
+    rubricCDefaultName,
+    rubricCName,
+    rubricC,
 
-    rubricLevelOneDDefaultName,
-    rubricLevelOneDName,
-    rubricLevelOneD,
-
-    rubricLevelTwoADefaultName,
-    rubricLevelTwoAName,
-    rubricLevelTwoA,
-
-    rubricLevelTwoBDefaultName,
-    rubricLevelTwoBName,
-    rubricLevelTwoB,
+    rubricDDefaultName,
+    rubricDName,
+    rubricD,
   };
 };

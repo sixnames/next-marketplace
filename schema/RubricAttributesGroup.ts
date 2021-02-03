@@ -9,7 +9,6 @@ export const RubricAttributesGroup = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.list.nonNull.objectId('showInCatalogueFilter');
     t.nonNull.objectId('attributesGroupId');
-    t.nonNull.boolean('isOwner');
 
     // RubricAttributesGroup attributesGroup field resolver
     t.nonNull.field('attributesGroup', {

@@ -27,7 +27,6 @@ import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { updateModelViews } from 'lib/updateModelViews';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 import { ObjectId } from 'mongodb';
-import { getRubricsTreeIds } from 'lib/rubricUtils';
 
 export const ProductsPaginationPayload = objectType({
   name: 'ProductsPaginationPayload',
@@ -260,17 +259,14 @@ export const ProductQueries = extendType({
 
           // Get all attributes groups ids
           const attributesGroupsIds: ObjectId[] = [];
-          for await (const rubricId of rubricsIds) {
-            const currentTreeIds = await getRubricsTreeIds(rubricId);
-            const rubrics = await rubricsCollection
-              .find({ _id: { $in: currentTreeIds } }, { projection: { attributesGroups: 1 } })
-              .toArray();
-            rubrics.forEach(({ attributesGroups }) => {
-              attributesGroups.forEach((rubricAttributesGroup) => {
-                attributesGroupsIds.push(rubricAttributesGroup.attributesGroupId);
-              });
+          const rubrics = await rubricsCollection
+            .find({ _id: { $in: rubricsIds } }, { projection: { attributesGroups: 1 } })
+            .toArray();
+          rubrics.forEach(({ attributesGroups }) => {
+            attributesGroups.forEach((rubricAttributesGroup) => {
+              attributesGroupsIds.push(rubricAttributesGroup.attributesGroupId);
             });
-          }
+          });
 
           // Get all attributes groups
           const attributesGroups = await attributesGroupsCollection

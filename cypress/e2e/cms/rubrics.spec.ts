@@ -13,7 +13,7 @@ describe('Rubrics', () => {
   });
 
   it('Should validate rubric creation', () => {
-    const mockRubricLevelOneName = mockData.rubricLevelOneADefaultName;
+    const mockRubricLevelOneName = mockData.rubricADefaultName;
     const mockRubricLevelTwoName = mockData.rubricLevelTwoADefaultName;
     const mockRubricVariantName = mockData.rubricVariantAlcohol.nameI18n[DEFAULT_LOCALE];
 
@@ -93,7 +93,7 @@ describe('Rubrics', () => {
   });
 
   it('Should display rubric details tab', () => {
-    const mockRubricLevelOneName = mockData.rubricLevelOneADefaultName;
+    const mockRubricLevelOneName = mockData.rubricADefaultName;
     const mockNewRubric = 'mockNewRubric';
     const mockRubricVariantName = mockData.rubricVariantJuice.nameI18n[DEFAULT_LOCALE];
 

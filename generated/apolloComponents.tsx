@@ -95,7 +95,7 @@ export type AddressInput = {
 
 export type Base = {
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
 };
 
 export type Timestamp = {
@@ -388,7 +388,7 @@ export type MessagesGroup = {
 export type User = Base & Timestamp & {
   __typename?: 'User';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   archive: Scalars['Boolean'];
@@ -1677,7 +1677,7 @@ export type DeleteAttributeFromGroupInput = {
 export type BrandCollection = Base & Timestamp & {
   __typename?: 'BrandCollection';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   slug: Scalars['String'];
@@ -1704,10 +1704,10 @@ export type BrandCollectionsPaginationPayload = PaginationPayload & {
 export type Brand = Base & Timestamp & {
   __typename?: 'Brand';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   slug: Scalars['String'];
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -1745,14 +1745,14 @@ export type BrandPayload = Payload & {
 };
 
 export type CreateBrandInput = {
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
 };
 
 export type UpdateBrandInput = {
   brandId: Scalars['ObjectId'];
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
 };
@@ -1778,10 +1778,10 @@ export type DeleteCollectionFromBrandInput = {
 export type Manufacturer = Base & Timestamp & {
   __typename?: 'Manufacturer';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -1811,7 +1811,7 @@ export type ManufacturerPayload = Payload & {
 };
 
 export type CreateManufacturerInput = {
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
 };
@@ -1819,7 +1819,7 @@ export type CreateManufacturerInput = {
 export type UpdateManufacturerInput = {
   manufacturerId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  url?: Maybe<Scalars['URL']>;
+  url?: Maybe<Array<Scalars['URL']>>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
 };
 
@@ -2037,7 +2037,7 @@ export type ProductSnippetFeatures = {
 export type ProductAttributesGroupAst = Base & {
   __typename?: 'ProductAttributesGroupAst';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
   astAttributes: Array<ProductAttribute>;
@@ -2048,7 +2048,7 @@ export type ProductAttributesGroupAst = Base & {
 export type Product = Base & Timestamp & {
   __typename?: 'Product';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   active: Scalars['Boolean'];
@@ -2338,7 +2338,7 @@ export type ShopProductsPaginationPayload = PaginationPayload & {
 export type Shop = Base & Timestamp & {
   __typename?: 'Shop';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   archive: Scalars['Boolean'];
@@ -2427,7 +2427,7 @@ export type UpdateShopAssetIndexInput = {
 export type Company = Base & Timestamp & {
   __typename?: 'Company';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   archive: Scalars['Boolean'];
@@ -2508,7 +2508,7 @@ export type CompanyPayload = Payload & {
 export type CartProduct = Base & {
   __typename?: 'CartProduct';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   amount: Scalars['Int'];
   shopProductId?: Maybe<Scalars['ObjectId']>;
   productId?: Maybe<Scalars['ObjectId']>;
@@ -2622,7 +2622,7 @@ export type OrderCustomer = {
 export type Order = Base & Timestamp & {
   __typename?: 'Order';
   _id: Scalars['ObjectId'];
-  itemId: Scalars['Int'];
+  itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
@@ -4533,6 +4533,15 @@ export type GetValidationMessagesQuery = (
   )> }
 );
 
+export type OptionsGroupInlistFragment = (
+  { __typename?: 'OptionsGroup' }
+  & Pick<OptionsGroup, '_id' | 'name'>
+  & { options: Array<(
+    { __typename?: 'Option' }
+    & Pick<Option, '_id'>
+  )> }
+);
+
 export type GetAllOptionsGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4540,11 +4549,7 @@ export type GetAllOptionsGroupsQuery = (
   { __typename?: 'Query' }
   & { getAllOptionsGroups: Array<(
     { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '_id' | 'name'>
-    & { options: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id'>
-    )> }
+    & OptionsGroupInlistFragment
   )> }
 );
 
@@ -5762,6 +5767,15 @@ export const MessageFragmentDoc = gql`
   slug
   messageI18n
   message
+}
+    `;
+export const OptionsGroupInlistFragmentDoc = gql`
+    fragment OptionsGroupInlist on OptionsGroup {
+  _id
+  name
+  options {
+    _id
+  }
 }
     `;
 export const OptionInGroupFragmentDoc = gql`
@@ -9080,14 +9094,10 @@ export type GetValidationMessagesQueryResult = Apollo.QueryResult<GetValidationM
 export const GetAllOptionsGroupsDocument = gql`
     query GetAllOptionsGroups {
   getAllOptionsGroups {
-    _id
-    name
-    options {
-      _id
-    }
+    ...OptionsGroupInlist
   }
 }
-    `;
+    ${OptionsGroupInlistFragmentDoc}`;
 
 /**
  * __useGetAllOptionsGroupsQuery__

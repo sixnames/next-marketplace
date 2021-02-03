@@ -1,15 +1,22 @@
 import { gql } from '@apollo/client';
 
+export const optionsGroupInlistFragment = gql`
+  fragment OptionsGroupInlist on OptionsGroup {
+    _id
+    name
+    options {
+      _id
+    }
+  }
+`;
+
 export const OPTIONS_GROUPS_QUERY = gql`
   query GetAllOptionsGroups {
     getAllOptionsGroups {
-      _id
-      name
-      options {
-        _id
-      }
+      ...OptionsGroupInlist
     }
   }
+  ${optionsGroupInlistFragment}
 `;
 
 export const optionInGroupFragment = gql`

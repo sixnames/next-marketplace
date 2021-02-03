@@ -19,7 +19,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_LANGUAGES,
-  COL_OPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -157,7 +156,6 @@ export const CatalogueQueries = extendType({
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
           // Args
@@ -465,12 +463,7 @@ export const CatalogueQueries = extendType({
               const isSelected = mainFilters.includes(optionSlug);
 
               if (isSelected) {
-                // Increase option views counter if isSelected
-                await updateModelViews({
-                  sessionCity: city,
-                  collectionName: COL_OPTIONS,
-                  queryFilter: { slug: attribute.slug },
-                });
+                // TODO Increase option views counter if isSelected
 
                 // Push to the selected options list for catalogue title config
                 selectedOptions.push(option);

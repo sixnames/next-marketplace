@@ -370,7 +370,7 @@ export enum OptionsGroupVariantModel {
 export interface OptionsGroupModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  optionsIds: ObjectIdModel[];
+  options: OptionModel[];
   variant: OptionsGroupVariantModel;
 }
 

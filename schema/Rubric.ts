@@ -3,7 +3,6 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributeModel,
   ConfigModel,
-  OptionModel,
   ProductModel,
   ProductsPaginationPayloadModel,
   RubricCountersModel,
@@ -16,7 +15,6 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_CONFIGS,
-  COL_OPTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_SHOP_PRODUCTS,
@@ -277,7 +275,6 @@ export const Rubric = objectType({
           const db = await getDatabase();
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { attributesGroups, catalogueTitle } = source;
 
@@ -320,17 +317,7 @@ export const Rubric = objectType({
               continue;
             }
 
-            const options = await optionsCollection
-              .aggregate([
-                { $match: { _id: { $in: attribute.optionsIds } } },
-                {
-                  $sort: {
-                    [`views.${city}`]: SORT_DESC,
-                    [`priority.${city}`]: SORT_DESC,
-                  },
-                },
-              ])
-              .toArray();
+            const options: any = [];
 
             const resultOptions: RubricNavItemAttributeOptionModel[] = [];
 

@@ -15,7 +15,6 @@ export const COL_MESSAGES = 'messages';
 export const COL_MESSAGES_GROUPS = 'messagesGroups';
 export const COL_METRICS = 'metrics';
 export const COL_NAV_ITEMS = 'navItems';
-export const COL_OPTIONS = 'options';
 export const COL_OPTIONS_GROUPS = 'optionsGroups';
 export const COL_ORDERS = 'orders';
 export const COL_ORDER_LOGS = 'orderLogs';

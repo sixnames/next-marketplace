@@ -11,7 +11,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_OPTIONS,
   COL_OPTIONS_GROUPS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -55,13 +54,13 @@ export const seedInitial = async () => {
 
     // Options
     const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-    const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
     const insertedOptionsGroups: OptionsGroupModel[] = [];
 
     for await (const optionsGroupItem of optionsData) {
       const optionsGroup: ParsedOptionsGroupInterface = optionsGroupItem;
-      const castedOptions = optionsGroup.options.map((option) => {
+      const castedOptions: OptionModel[] = optionsGroup.options.map((option) => {
         return {
+          _id: new ObjectId(),
           nameI18n: {
             [DEFAULT_LOCALE]: option.name,
           },
@@ -70,11 +69,9 @@ export const seedInitial = async () => {
         };
       });
 
-      const insertedOptions = await optionsCollection.insertMany(castedOptions);
-
       const insertedOptionsGroupResult = await optionsGroupsCollection.insertOne({
         variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
-        optionsIds: Object.values(insertedOptions.insertedIds),
+        options: castedOptions,
         nameI18n: {
           [DEFAULT_LOCALE]: optionsGroup.name,
         },

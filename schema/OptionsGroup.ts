@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -6,14 +7,9 @@ import {
   OPTIONS_GROUP_VARIANT_ICON,
   SORT_ASC,
 } from 'config/common';
-import {
-  AttributeModel,
-  OptionModel,
-  OptionsGroupModel,
-  OptionsGroupPayloadModel,
-} from 'db/dbModels';
+import { AttributeModel, OptionsGroupModel, OptionsGroupPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -36,7 +32,9 @@ export const OptionsGroup = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
-    t.nonNull.list.nonNull.objectId('optionsIds');
+    t.nonNull.list.nonNull.field('options', {
+      type: 'Option',
+    });
     t.nonNull.field('variant', {
       type: 'OptionsGroupVariant',
     });
@@ -47,17 +45,6 @@ export const OptionsGroup = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
-      },
-    });
-
-    // OptionsGroup options list field resolver
-    t.nonNull.list.nonNull.field('options', {
-      type: 'Option',
-      resolve: async (source): Promise<OptionModel[]> => {
-        const db = await getDatabase();
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-        const options = await optionsCollection.find({ _id: { $in: source.optionsIds } }).toArray();
-        return options;
       },
     });
   },
@@ -239,7 +226,7 @@ export const OptionsGroupMutations = extendType({
           // Create options group
           const createdOptionsGroupResult = await optionsGroupsCollection.insertOne({
             ...input,
-            optionsIds: [],
+            options: [],
           });
           const createdOptionsGroup = createdOptionsGroupResult.ops[0];
           if (!createdOptionsGroupResult.result.ok || !createdOptionsGroup) {
@@ -354,7 +341,6 @@ export const OptionsGroupMutations = extendType({
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { _id } = args;
 
           // Check options group availability
@@ -372,17 +358,6 @@ export const OptionsGroupMutations = extendType({
             return {
               success: false,
               message: await getApiMessage('optionsGroups.delete.used'),
-            };
-          }
-
-          // Delete all group options
-          const removedGroupOptionsResult = await optionsCollection.deleteMany({
-            _id: { $in: optionsGroup.optionsIds },
-          });
-          if (!removedGroupOptionsResult.result.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.delete.optionsError'),
             };
           }
 
@@ -431,7 +406,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, ...values } = input;
@@ -460,12 +434,13 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const exist = await findDocumentByI18nField({
-            collectionName: COL_OPTIONS,
-            fieldArg: values.nameI18n,
-            fieldName: 'nameI18n',
-            additionalQuery: { _id: { $in: optionsGroup.optionsIds } },
+          const exist = optionsGroup.options.find(({ nameI18n }) => {
+            const inputNameKeys = Object.keys(values.nameI18n);
+            return inputNameKeys.some((key) => {
+              return nameI18n[key] === values.nameI18n[key];
+            });
           });
+
           if (exist) {
             return {
               success: false,
@@ -473,28 +448,21 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Create option
+          // Create option slug
           const slug = generateDefaultLangSlug(values.nameI18n);
-          const createdOptionResult = await optionsCollection.insertOne({
-            ...values,
-            slug,
-            views: {},
-            priorities: {},
-          });
-          const createdOption = createdOptionResult.ops[0];
-          if (!createdOptionResult.result.ok || !createdOption) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.addOption.error'),
-            };
-          }
 
           // Add option id to the options group
           const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
             { _id: optionsGroupId },
             {
               $push: {
-                optionsIds: createdOption._id,
+                options: {
+                  ...values,
+                  _id: new ObjectId(),
+                  slug,
+                  views: {},
+                  priorities: {},
+                },
               },
             },
             {
@@ -514,7 +482,12 @@ export const OptionsGroupMutations = extendType({
             { optionsGroupId },
             {
               $push: {
-                optionsIds: createdOption._id,
+                options: {
+                  ...values,
+                  slug,
+                  views: {},
+                  priorities: {},
+                },
               },
             },
           );
@@ -562,7 +535,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { optionsGroupId, optionId, ...values } = input;
 
@@ -590,13 +562,11 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Check if option already exist in the group
-          const exist = await findDocumentByI18nField({
-            collectionName: COL_OPTIONS,
-            fieldArg: values.nameI18n,
-            fieldName: 'nameI18n',
-            additionalQuery: {
-              $and: [{ _id: { $in: optionsGroup.optionsIds } }, { _id: { $ne: optionId } }],
-            },
+          const exist = optionsGroup.options.find(({ nameI18n }) => {
+            const inputNameKeys = Object.keys(values.nameI18n);
+            return inputNameKeys.some((key) => {
+              return nameI18n[key] === values.nameI18n[key];
+            });
           });
           if (exist) {
             return {
@@ -606,16 +576,20 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Update option
-          const updatedOptionResult = await optionsCollection.findOneAndUpdate(
-            { _id: optionId },
+          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
+            { _id: optionsGroupId },
             {
               $set: {
-                ...values,
+                'options.$[option]': values,
               },
             },
+            {
+              arrayFilters: [{ 'option._id': { $eq: optionId } }],
+              returnOriginal: false,
+            },
           );
-          const updatedOption = updatedOptionResult.value;
-          if (!updatedOptionResult.ok || !updatedOption) {
+          const updatedOptionsGroup = updatedOptionsGroupResult.value;
+          if (!updatedOptionsGroupResult.ok || !updatedOptionsGroup) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
@@ -625,7 +599,7 @@ export const OptionsGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('optionsGroups.updateOption.success'),
-            payload: optionsGroup,
+            payload: updatedOptionsGroup,
           };
         } catch (e) {
           return {
@@ -659,19 +633,9 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
-
-          // Check option availability
-          const option = await optionsCollection.findOne({ _id: optionId });
-          if (!option) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.deleteOption.notFound'),
-            };
-          }
 
           // Check options group availability
           const optionsGroup = await optionsGroupsCollection.findOne({ _id: optionsGroupId });
@@ -682,15 +646,6 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Delete option
-          const updatedOptionResult = await optionsCollection.findOneAndDelete({ _id: optionId });
-          if (!updatedOptionResult.ok) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.deleteOption.error'),
-            };
-          }
-
           // Update options group options list
           const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
             {
@@ -698,7 +653,7 @@ export const OptionsGroupMutations = extendType({
             },
             {
               $pull: {
-                optionsIds: optionId,
+                options: { _id: optionId },
               },
             },
             {

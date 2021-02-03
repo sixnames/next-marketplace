@@ -12,7 +12,7 @@ import {
   OPTIONS_GROUP_VARIANT_TEXT,
   SECONDARY_LOCALE,
 } from 'config/common';
-import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { ObjectId } from 'mongodb';
 
 export interface CreateTestOptionsInterface extends CreateTestUsersPayloadInterface {
@@ -50,7 +50,6 @@ export interface CreateTestOptionsInterface extends CreateTestUsersPayloadInterf
 
 export const createTestOptions = async (): Promise<CreateTestOptionsInterface> => {
   const db = await getDatabase();
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
   const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
   const usersPayload = await createTestUsers();
 
@@ -109,7 +108,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsGroupWineVintage: OptionsGroupModel = {
     _id: optionsGroupWineVintageId,
     variant: optionsGroupVariantText,
-    optionsIds: optionsIdsVintage,
+    options: optionsVintage,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Винтаж вина',
       [SECONDARY_LOCALE]: 'Wine vintage',
@@ -236,7 +235,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsGroupColors: OptionsGroupModel = {
     _id: optionsGroupColorsId,
     variant: optionsGroupVariantColor,
-    optionsIds: optionsIdsColor,
+    options: optionsColor,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Цвета',
       [SECONDARY_LOCALE]: 'Colors',
@@ -314,7 +313,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsGroupWineVariants: OptionsGroupModel = {
     _id: optionsGroupWineVariantsId,
     variant: optionsGroupVariantText,
-    optionsIds: optionsIdsWineVariant,
+    options: optionsWineVariant,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Типы вина',
       [SECONDARY_LOCALE]: 'Wine types',
@@ -396,7 +395,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsGroupCombination: OptionsGroupModel = {
     _id: optionsGroupCombinationId,
     variant: optionsGroupVariantIcon,
-    optionsIds: optionsIdsCombination,
+    options: optionsCombination,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Сочетания',
       [SECONDARY_LOCALE]: 'Combinations',
@@ -404,13 +403,6 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Insert all
-  await optionsCollection.insertMany([
-    ...optionsVintage,
-    ...optionsColor,
-    ...optionsWineVariant,
-    ...optionsCombination,
-  ]);
-
   await optionsGroupsCollection.insertMany([
     optionsGroupWineVintage,
     optionsGroupWineVariants,

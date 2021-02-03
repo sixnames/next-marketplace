@@ -19,8 +19,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { ObjectId } from 'mongodb';
-import { COL_OPTIONS, COL_PRODUCTS } from 'db/collectionNames';
-import { updateModelViews } from 'lib/updateModelViews';
+import { COL_PRODUCTS } from 'db/collectionNames';
 import capitalize from 'capitalize';
 import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
@@ -214,16 +213,7 @@ export async function getCatalogueAdditionalFilterOptions({
     ])
     .toArray();
 
-  // Increase option views counter if isSelected
-  for await (const option of aggregationResult) {
-    if (option.isSelected) {
-      await updateModelViews({
-        sessionCity: city,
-        collectionName: COL_OPTIONS,
-        queryFilter: { slug: option.slug },
-      });
-    }
-  }
+  // TODO Increase option views counter if isSelected
 
   return aggregationResult;
 }

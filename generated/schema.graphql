@@ -34,6 +34,7 @@ input AddOptionToGroupInput {
   icon: String
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
+  parentOptionId: ObjectId
   variants: [OptionVariantInput!]!
 }
 
@@ -115,7 +116,6 @@ type Attribute {
   options: [Option!]!
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
-  optionsIds: [ObjectId!]!
   positioningInTitle: JSONObject
   priorities: JSONObject!
   slug: String
@@ -531,7 +531,6 @@ input CreateRubricInput {
   catalogueTitle: RubricCatalogueTitleInput!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
-  parentId: ObjectId
   shortDescriptionI18n: JSONObject!
   variantId: ObjectId!
 }
@@ -1224,14 +1223,12 @@ scalar ObjectId
 type Option {
   _id: ObjectId!
   color: String
-  gender: Gender
   icon: String
   name: String!
   nameI18n: JSONObject!
-  priorities: JSONObject!
+  options: [Option!]!
   slug: String!
   variants: [OptionVariant!]
-  views: JSONObject!
 }
 
 type OptionVariant {
@@ -1249,7 +1246,6 @@ type OptionsGroup {
   name: String!
   nameI18n: JSONObject!
   options: [Option!]!
-  optionsIds: [ObjectId!]!
   variant: OptionsGroupVariant!
 }
 
@@ -1988,15 +1984,11 @@ type Rubric {
   active: Boolean!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
-  children(input: GetRubricsTreeInput = {}): [Rubric!]!
   description: String!
   descriptionI18n: JSONObject!
-  level: Int!
   name: String!
   nameI18n: JSONObject!
   navItems: RubricNavItems!
-  parent: Rubric
-  parentId: ObjectId
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   productsCounters(input: RubricProductsCountersInput): RubricCounters!
@@ -2012,7 +2004,6 @@ type RubricAttributesGroup {
   _id: ObjectId!
   attributesGroup: AttributesGroup!
   attributesGroupId: ObjectId!
-  isOwner: Boolean!
   showInCatalogueFilter: [ObjectId!]!
 }
 

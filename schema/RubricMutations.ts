@@ -22,8 +22,6 @@ import {
   DEFAULT_COUNTERS_OBJECT,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { ObjectId } from 'mongodb';
-import { toggleIdInArray } from 'db/toggleIdInArray';
 import {
   addAttributesGroupToRubricSchema,
   addProductToRubricSchema,
@@ -101,10 +99,9 @@ export const DeleteAttributesGroupFromRubricInput = inputObjectType({
 });
 
 export const UpdateAttributesGroupInRubricInput = inputObjectType({
-  name: 'UpdateAttributesGroupInRubricInput',
+  name: 'UpdateAttributeInRubricInput',
   definition(t) {
     t.nonNull.objectId('rubricId');
-    t.nonNull.objectId('attributesGroupId');
     t.nonNull.objectId('attributeId');
   },
 });
@@ -172,7 +169,8 @@ export const RubricMutations = extendType({
             ...input,
             slug,
             active: true,
-            attributesGroups: [],
+            attributes: [],
+            attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdRubric = createdRubricResult.ops[0];
@@ -399,35 +397,40 @@ export const RubricMutations = extendType({
               _id: { $in: attributesGroup.attributesIds },
             })
             .toArray();
-          const showInCatalogueAttributes = groupAttributes.reduce((acc: ObjectId[], attribute) => {
-            const { _id, variant } = attribute;
-            if (
-              variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-              variant === ATTRIBUTE_VARIANT_SELECT
-            ) {
-              return [...acc, _id];
-            }
-            return acc;
-          }, []);
 
           // Update rubric
-          const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
+          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
             {
               _id: rubricId,
             },
             {
-              $addToSet: {
-                attributesGroups: {
-                  _id: new ObjectId(),
-                  showInCatalogueFilter: showInCatalogueAttributes,
-                  attributesGroupId,
+              $push: {
+                attributesGroupsIds: attributesGroup._id,
+                attributes: {
+                  $each: groupAttributes.map((attribute) => {
+                    const visible =
+                      attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
+                      attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
+                    return {
+                      ...attribute,
+                      showInCatalogueFilter: visible,
+                      showInCatalogueNav: visible,
+                      options: attribute.options.map((option) => {
+                        return {
+                          ...option,
+                          ...DEFAULT_COUNTERS_OBJECT,
+                        };
+                      }),
+                      ...DEFAULT_COUNTERS_OBJECT,
+                    };
+                  }),
                 },
               },
             },
             { returnOriginal: false },
           );
-          const updatedOwnerRubric = updatedOwnerRubricResult.value;
-          if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
+          const updatedRubric = updatedRubricResult.value;
+          if (!updatedRubricResult.ok || !updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('rubrics.addAttributesGroup.error'),
@@ -437,7 +440,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.addAttributesGroup.success'),
-            payload: updatedOwnerRubric,
+            payload: updatedRubric,
           };
         } catch (e) {
           return {
@@ -448,14 +451,14 @@ export const RubricMutations = extendType({
       },
     });
 
-    // Should toggle attribute in the rubric showInCatalogueFilter ids list
-    t.nonNull.field('updateAttributesGroupInRubric', {
+    // Should toggle attribute in the rubric attribute showInCatalogueFilter field
+    t.nonNull.field('toggleAttributeInRubricCatalogue', {
       type: 'RubricPayload',
-      description: 'Should toggle attribute in the rubric showInCatalogueFilter ids list',
+      description: 'Should toggle attribute in the rubric attribute showInCatalogueFilter field',
       args: {
         input: nonNull(
           arg({
-            type: 'UpdateAttributesGroupInRubricInput',
+            type: 'UpdateAttributeInRubricInput',
           }),
         ),
       },
@@ -471,58 +474,119 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
           const { input } = args;
-          const { rubricId, attributeId, attributesGroupId } = input;
+          const { rubricId, attributeId } = input;
 
           // Check rubric and attributes group availability
-          const attributesGroup = await attributesGroupsCollection.findOne({
-            _id: attributesGroupId,
-          });
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric || !attributesGroup) {
+          if (!rubric) {
             return {
               success: false,
               message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
             };
           }
 
-          // Check if attributes group exist in the rubric
-          const currentAttributesGroup = rubric.attributesGroups.find((group) => {
-            return group.attributesGroupId.equals(attributesGroupId);
+          // Update rubric attribute
+          const updatedRubricAttributes = rubric.attributes.map((attribute) => {
+            if (attributeId.equals(attribute._id)) {
+              return {
+                ...attribute,
+                showInCatalogueFilter: !attribute.showInCatalogueFilter,
+              };
+            }
+            return attribute;
           });
-          if (!currentAttributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.updateAttributesGroup.notFound`),
-            };
-          }
-
-          // Toggle attribute id in the showInCatalogueFilter ids list
-          const updatedShowInCatalogueFilterIds = toggleIdInArray(
-            currentAttributesGroup.showInCatalogueFilter,
-            attributeId,
-          );
-
-          // Update rubric attributes group
           const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
             {
               _id: rubricId,
             },
             {
               $set: {
-                'attributesGroups.$[element].showInCatalogueFilter': updatedShowInCatalogueFilterIds,
+                attributes: updatedRubricAttributes,
               },
             },
             {
               returnOriginal: false,
-              arrayFilters: [
-                {
-                  'element.attributesGroupId': attributesGroupId,
-                },
-              ],
+            },
+          );
+          const updatedOwnerRubric = updatedOwnerRubricResult.value;
+          if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.updateAttributesGroup.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('rubrics.updateAttributesGroup.success'),
+            payload: updatedOwnerRubric,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should toggle attribute in the rubric attribute showInCatalogueNav field
+    t.nonNull.field('toggleAttributeInRubricNav', {
+      type: 'RubricPayload',
+      description: 'Should toggle attribute in the rubric attribute showInCatalogueNav field',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateAttributeInRubricInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        try {
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updateAttributesGroupInRubricSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const { input } = args;
+          const { rubricId, attributeId } = input;
+
+          // Check rubric and attributes group availability
+          const rubric = await rubricsCollection.findOne({ _id: rubricId });
+          if (!rubric) {
+            return {
+              success: false,
+              message: await getApiMessage('rubrics.updateAttributesGroup.notFound'),
+            };
+          }
+
+          // Update rubric attribute
+          const updatedRubricAttributes = rubric.attributes.map((attribute) => {
+            if (attributeId.equals(attribute._id)) {
+              return {
+                ...attribute,
+                showInCatalogueNav: !attribute.showInCatalogueNav,
+              };
+            }
+            return attribute;
+          });
+          const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
+            {
+              _id: rubricId,
+            },
+            {
+              $set: {
+                attributes: updatedRubricAttributes,
+              },
+            },
+            {
+              returnOriginal: false,
             },
           );
           const updatedOwnerRubric = updatedOwnerRubricResult.value;
@@ -588,33 +652,23 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Check if attributes group exist in the rubric
-          const currentAttributesGroup = rubric.attributesGroups.find((group) => {
-            return group.attributesGroupId.equals(attributesGroupId);
-          });
-          if (!currentAttributesGroup) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.updateAttributesGroup.notFound`),
-            };
-          }
-
           // Update rubric
-          const updatedOwnerRubricResult = await rubricsCollection.findOneAndUpdate(
+          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
             {
               _id: rubricId,
             },
             {
               $pull: {
-                attributesGroups: {
-                  attributesGroupId,
+                attributesGroupsIds: attributesGroupId,
+                attributes: {
+                  _id: { $in: attributesGroup.attributesIds },
                 },
               },
             },
             { returnOriginal: false },
           );
-          const updatedOwnerRubric = updatedOwnerRubricResult.value;
-          if (!updatedOwnerRubricResult.ok || !updatedOwnerRubric) {
+          const updatedRubric = updatedRubricResult.value;
+          if (!updatedRubricResult.ok || !updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
@@ -624,7 +678,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.deleteAttributesGroup.success'),
-            payload: updatedOwnerRubric,
+            payload: updatedRubric,
           };
         } catch (e) {
           return {

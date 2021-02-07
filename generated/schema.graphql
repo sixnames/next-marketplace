@@ -110,18 +110,15 @@ type Asset {
 type Attribute {
   _id: ObjectId!
   metric: Metric
-  metricId: ObjectId
   name: String!
   nameI18n: JSONObject!
   options: [Option!]!
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
-  priorities: JSONObject!
   slug: String
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
-  views: JSONObject!
 }
 
 """
@@ -1051,6 +1048,16 @@ type Mutation {
   signUp(input: SignUpInput!): UserPayload!
 
   """
+  Should toggle attribute in the rubric attribute showInCatalogueFilter field
+  """
+  toggleAttributeInRubricCatalogue(input: UpdateAttributeInRubricInput!): RubricPayload!
+
+  """
+  Should toggle attribute in the rubric attribute showInCatalogueNav field
+  """
+  toggleAttributeInRubricNav(input: UpdateAttributeInRubricInput!): RubricPayload!
+
+  """
   Should asset update config
   """
   updateAssetConfig(input: UpdateAssetConfigInput!): ConfigPayload!
@@ -1064,11 +1071,6 @@ type Mutation {
   Should update attributes group
   """
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayload!
-
-  """
-  Should toggle attribute in the rubric showInCatalogueFilter ids list
-  """
-  updateAttributesGroupInRubric(input: UpdateAttributesGroupInRubricInput!): RubricPayload!
 
   """
   Should update brand
@@ -1482,8 +1484,6 @@ type ProductAttribute {
   List of selected options slug combined with attribute slug in for of attributeSlug-optionSlug
   """
   attributeSlugs: [String!]!
-  attributesGroup: AttributesGroup!
-  attributesGroupId: ObjectId!
   number: Float
   readableValue: String
   selectedOptions: [Option!]!
@@ -1868,7 +1868,7 @@ type Query {
   """
   Should return product attributes AST for selected rubrics
   """
-  getProductAttributesAST(input: ProductAttributesASTInput!): [ProductAttributesGroupAst!]!
+  getProductAttributesAST(input: ProductAttributesASTInput!): [ProductAttribute!]!
 
   """
   Should return product by given slug
@@ -1982,6 +1982,7 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
+  attributes: [RubricAttribute!]!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
   description: String!
@@ -2000,11 +2001,28 @@ type Rubric {
   views: JSONObject!
 }
 
+type RubricAttribute {
+  _id: ObjectId!
+  metric: Metric
+  nameI18n: JSONObject!
+  options: [RubricOption!]!
+  optionsGroupId: ObjectId
+  positioningInTitle: JSONObject
+  priorities: JSONObject!
+  showInCatalogueFilter: Boolean!
+  showInCatalogueNav: Boolean!
+  slug: String
+  variant: AttributeVariant!
+  viewVariant: AttributeViewVariant!
+  views: JSONObject!
+}
+
 type RubricAttributesGroup {
   _id: ObjectId!
-  attributesGroup: AttributesGroup!
-  attributesGroupId: ObjectId!
-  showInCatalogueFilter: [ObjectId!]!
+  attributes: [RubricAttribute!]!
+  attributesIds: [ObjectId!]!
+  name: String!
+  nameI18n: JSONObject!
 }
 
 type RubricCatalogueTitle {
@@ -2051,6 +2069,19 @@ type RubricNavItems {
   _id: ObjectId!
   attributes: [RubricNavItemAttribute!]!
   isDisabled: Boolean!
+}
+
+type RubricOption {
+  _id: ObjectId!
+  color: String
+  icon: String
+  name: String!
+  nameI18n: JSONObject!
+  options: [Option!]!
+  priorities: JSONObject!
+  slug: String!
+  variants: [OptionVariant!]
+  views: JSONObject!
 }
 
 type RubricPayload implements Payload {
@@ -2219,9 +2250,8 @@ input UpdateAttributeInGroupInput {
   viewVariant: AttributeViewVariant!
 }
 
-input UpdateAttributesGroupInRubricInput {
+input UpdateAttributeInRubricInput {
   attributeId: ObjectId!
-  attributesGroupId: ObjectId!
   rubricId: ObjectId!
 }
 

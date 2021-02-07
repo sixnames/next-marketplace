@@ -195,6 +195,7 @@ export const MetricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { metricId, ...values } = input;
 
@@ -241,6 +242,16 @@ export const MetricMutations = extendType({
             };
           }
 
+          // Update attributes metric
+          await attributesCollection.updateMany(
+            { 'metric._id': metricId },
+            {
+              $set: {
+                metric: updatedMetric,
+              },
+            },
+          );
+
           return {
             success: true,
             message: await getApiMessage('metrics.update.success'),
@@ -284,7 +295,7 @@ export const MetricMutations = extendType({
           }
 
           // Check if metric is used in attributes
-          const used = await attributesCollection.findOne({ metricId: _id });
+          const used = await attributesCollection.findOne({ 'metric._id': _id });
           if (used) {
             return {
               success: false,

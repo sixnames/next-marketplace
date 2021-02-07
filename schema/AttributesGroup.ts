@@ -4,6 +4,7 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
+  MetricModel,
   OptionModel,
   OptionsGroupModel,
   RubricModel,
@@ -12,6 +13,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_METRICS,
   COL_OPTIONS_GROUPS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -433,7 +435,7 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const {
-            input: { attributesGroupId, ...values },
+            input: { attributesGroupId, metricId, ...values },
           } = args;
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
@@ -442,6 +444,7 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
 
           // Check if attributes group exist
           const attributesGroup = await attributesGroupCollection.findOne({
@@ -471,7 +474,6 @@ export const attributesGroupMutations = extendType({
           }
 
           // Get options
-          // TODO nested options slugs
           const slug = generateDefaultLangSlug(values.nameI18n);
           let options: OptionModel[] = [];
           if (values.optionsGroupId) {
@@ -486,13 +488,18 @@ export const attributesGroupMutations = extendType({
             });
           }
 
+          // Get metric
+          let metric = null;
+          if (metricId) {
+            metric = await metricsCollection.findOne({ _id: metricId });
+          }
+
           // Create attribute
           const createdAttributeResult = await attributesCollection.insertOne({
             ...values,
             slug,
-            views: {},
-            priorities: {},
             options,
+            metric,
           });
           const createdAttribute = createdAttributeResult.ops[0];
           if (!createdAttributeResult.result.ok || !createdAttribute) {
@@ -556,7 +563,7 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const {
-            input: { attributesGroupId, attributeId, ...values },
+            input: { attributesGroupId, attributeId, metricId, ...values },
           } = args;
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
@@ -565,6 +572,7 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
 
           // Check if attributes group exist
           const group = await attributesGroupCollection.findOne({
@@ -605,7 +613,6 @@ export const attributesGroupMutations = extendType({
           }
 
           // Get options
-          // TODO nested options slugs
           let options: OptionModel[] = [];
           if (values.optionsGroupId) {
             const optionsGroup = await optionsGroupsCollection.findOne({
@@ -619,6 +626,12 @@ export const attributesGroupMutations = extendType({
             });
           }
 
+          // Get metric
+          let metric = null;
+          if (metricId) {
+            metric = await metricsCollection.findOne({ _id: metricId });
+          }
+
           // Update attribute
           const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
             { _id: attributeId },
@@ -626,6 +639,7 @@ export const attributesGroupMutations = extendType({
               $set: {
                 ...values,
                 options,
+                metric,
               },
             },
           );

@@ -24,10 +24,11 @@ import {
   BrandModel,
   GenderModel,
   ManufacturerModel,
+  ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupVariantModel,
-  RubricAttributesGroupModel,
+  RubricAttributeModel,
   RubricModel,
   RubricVariantModel,
 } from 'db/dbModels';
@@ -102,7 +103,6 @@ export const seedInitial = async () => {
           nameI18n: {
             [DEFAULT_LOCALE]: attribute.attributeName,
           },
-          ...DEFAULT_COUNTERS_OBJECT,
         };
       });
 
@@ -221,7 +221,6 @@ export const seedInitial = async () => {
         'Содержание хмеля',
         'Температура ферментации',
         'Страна производства',
-        'Регион',
         'Капсула',
         'Игристое вино/шампанское',
         'Биодинамическое',
@@ -233,27 +232,36 @@ export const seedInitial = async () => {
         'Дистилляция',
         'Выдержка в бочках',
       ];
-      const rubricAttributesGroups: RubricAttributesGroupModel[] = [];
+      const rubricAttributes: RubricAttributeModel[] = [];
+      const attributesGroupsIds: ObjectIdModel[] = [];
       for await (const attributesGroup of attributesGroups) {
-        const { _id, attributesIds } = attributesGroup;
-        const filterAttributes = await attributesCollection
+        const { attributesIds } = attributesGroup;
+        attributesGroupsIds.push(attributesGroup._id);
+
+        const groupAttributes = await attributesCollection
           .find({
             _id: { $in: attributesIds },
-            [`nameI18n.${DEFAULT_LOCALE}`]: {
-              $nin: excludedRubricCatalogueAttributes,
-            },
-            $or: [
-              { variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel },
-              { variant: ATTRIBUTE_VARIANT_MULTIPLE_SELECT as AttributeVariantModel },
-            ],
           })
           .toArray();
 
-        const selectAttributesIds = filterAttributes.map(({ _id }) => _id);
-        rubricAttributesGroups.push({
-          _id: new ObjectId(),
-          showInCatalogueFilter: selectAttributesIds,
-          attributesGroupId: _id,
+        groupAttributes.forEach((attribute) => {
+          const visible =
+            (attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
+              attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) &&
+            !excludedRubricCatalogueAttributes.includes(attribute.nameI18n[DEFAULT_LOCALE]);
+
+          rubricAttributes.push({
+            ...attribute,
+            showInCatalogueNav: visible,
+            showInCatalogueFilter: visible,
+            options: attribute.options.map((option) => {
+              return {
+                ...option,
+                ...DEFAULT_COUNTERS_OBJECT,
+              };
+            }),
+            ...DEFAULT_COUNTERS_OBJECT,
+          });
         });
       }
 
@@ -264,7 +272,8 @@ export const seedInitial = async () => {
       await rubricsCollection.insertOne({
         active: true,
         slug: initialRubric.slug,
-        attributesGroups: rubricAttributesGroups,
+        attributesGroupsIds,
+        attributes: rubricAttributes,
         variantId: rubricVariantAlcohol.ops[0]._id,
         nameI18n: rubricName,
         catalogueTitle: {

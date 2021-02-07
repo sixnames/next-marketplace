@@ -7,26 +7,18 @@ import {
   SORT_DESC,
 } from 'config/common';
 import {
-  AttributeModel,
-  AttributesGroupModel,
-  ProductAttributesGroupAstModel,
+  ProductAttributeModel,
   ProductModel,
   ProductsPaginationPayloadModel,
+  RubricAttributeModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { updateModelViews } from 'lib/updateModelViews';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
-import { ObjectId } from 'mongodb';
 
 export const ProductsPaginationPayload = objectType({
   name: 'ProductsPaginationPayload',
@@ -236,7 +228,7 @@ export const ProductQueries = extendType({
 
     // Should return product attributes AST for selected rubrics
     t.nonNull.list.nonNull.field('getProductAttributesAST', {
-      type: 'ProductAttributesGroupAst',
+      type: 'ProductAttribute',
       description: 'Should return product attributes AST for selected rubrics',
       args: {
         input: nonNull(
@@ -245,35 +237,30 @@ export const ProductQueries = extendType({
           }),
         ),
       },
-      resolve: async (_root, args): Promise<ProductAttributesGroupAstModel[]> => {
+      resolve: async (_root, args): Promise<ProductAttributeModel[]> => {
         try {
           const db = await getDatabase();
           const { input } = args;
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
           const { rubricsIds, productId } = input;
 
           // Get all attributes groups ids
-          const attributesGroupsIds: ObjectId[] = [];
           const rubrics = await rubricsCollection
             .find({ _id: { $in: rubricsIds } }, { projection: { attributesGroups: 1 } })
             .toArray();
-          rubrics.forEach(({ attributesGroups }) => {
-            attributesGroups.forEach((rubricAttributesGroup) => {
-              attributesGroupsIds.push(rubricAttributesGroup.attributesGroupId);
-            });
-          });
 
           // Get all attributes groups
-          const attributesGroups = await attributesGroupsCollection
-            .find({
-              _id: { $in: attributesGroupsIds },
-            })
-            .toArray();
+          const attributes = rubrics.reduce((acc: RubricAttributeModel[], rubric) => {
+            rubric.attributes.forEach((rubricAttribute) => {
+              const exist = acc.some(({ _id }) => rubricAttribute._id.equals(_id));
+              if (exist) {
+                return;
+              }
+              acc.push(rubricAttribute);
+            });
+            return acc;
+          }, []);
 
           // Get product
           let product: ProductModel | null = null;
@@ -282,33 +269,21 @@ export const ProductQueries = extendType({
           }
 
           // Get all attributes and cast it to ast
-          const attributesAST: ProductAttributesGroupAstModel[] = [];
-          for await (const attributesGroup of attributesGroups) {
-            const groupAttributes = await attributesCollection
-              .find({
-                _id: { $in: attributesGroup.attributesIds },
-              })
-              .toArray();
+          const attributesAST: ProductAttributeModel[] = [];
+          for await (const attribute of attributes) {
+            const productAttribute = product?.attributes.find(({ attributeId }) => {
+              return attributeId.equals(attribute._id);
+            });
 
             attributesAST.push({
-              ...attributesGroup,
-              astAttributes: groupAttributes.map((groupAttribute) => {
-                const productAttribute = product?.attributes.find(({ attributeId }) => {
-                  return attributeId.equals(groupAttribute._id);
-                });
-
-                return {
-                  attributesGroupId: attributesGroup._id,
-                  attributeId: groupAttribute._id,
-                  attributeSlug: groupAttribute.slug,
-                  selectedOptionsSlugs: productAttribute?.selectedOptionsSlugs || [],
-                  attributeSlugs: productAttribute?.attributeSlugs || [],
-                  number: productAttribute?.number || null,
-                  textI18n: productAttribute?.textI18n || {},
-                  showAsBreadcrumb: productAttribute?.showAsBreadcrumb || false,
-                  showInCard: productAttribute?.showInCard || true,
-                };
-              }),
+              attributeId: attribute._id,
+              attributeSlug: attribute.slug,
+              selectedOptionsSlugs: productAttribute?.selectedOptionsSlugs || [],
+              attributeSlugs: productAttribute?.attributeSlugs || [],
+              number: productAttribute?.number || null,
+              textI18n: productAttribute?.textI18n || {},
+              showAsBreadcrumb: productAttribute?.showAsBreadcrumb || false,
+              showInCard: productAttribute?.showInCard || true,
             });
           }
 

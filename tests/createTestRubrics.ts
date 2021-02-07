@@ -4,12 +4,16 @@ import {
   CreateTestRubricVariantsInterface,
 } from './createTestRubricVariants';
 import {
+  AttributeModel,
   GenderModel,
-  RubricAttributesGroupModel,
+  ObjectIdModel,
+  RubricAttributeModel,
   RubricModel,
   TranslationModel,
 } from 'db/dbModels';
 import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   GENDER_IT,
@@ -43,25 +47,59 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
 
   const rubricVariantsPayload = await createTestRubricVariants();
   const {
+    attributeWineCombinations,
+    attributeWineVintage,
     attributeWineColor,
     attributeWineVariant,
+    attributeString,
+    attributeNumber,
+    attributeOuterRatingA,
+    attributeOuterRatingB,
+    attributeOuterRatingC,
     attributesGroupOuterRating,
     attributesGroupWineFeatures,
     rubricVariantAlcohol,
   } = rubricVariantsPayload;
 
-  const rubricAttributesGroups = (): RubricAttributesGroupModel[] => [
-    {
-      _id: new ObjectId(),
-      showInCatalogueFilter: [attributeWineColor._id, attributeWineVariant._id],
-      attributesGroupId: attributesGroupWineFeatures._id,
-    },
-    {
-      _id: new ObjectId(),
-      showInCatalogueFilter: [],
-      attributesGroupId: attributesGroupOuterRating._id,
-    },
-  ];
+  function getRubricAttributes(attributes: AttributeModel[]): RubricAttributeModel[] {
+    return attributes.map((attribute) => {
+      const visible =
+        attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
+        attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
+      return {
+        ...attribute,
+        showInCatalogueFilter: visible,
+        showInCatalogueNav: visible,
+        options: attribute.options.map((option) => {
+          return {
+            ...option,
+            ...DEFAULT_COUNTERS_OBJECT,
+          };
+        }),
+        ...DEFAULT_COUNTERS_OBJECT,
+      };
+    });
+  }
+
+  interface RubricAttributesGroupsInterface {
+    attributesGroupsIds: ObjectIdModel[];
+    attributes: RubricAttributeModel[];
+  }
+
+  const rubricAttributesGroups: RubricAttributesGroupsInterface = {
+    attributesGroupsIds: [attributesGroupOuterRating._id, attributesGroupWineFeatures._id],
+    attributes: [
+      ...getRubricAttributes([
+        attributeWineCombinations,
+        attributeWineVintage,
+        attributeWineColor,
+        attributeWineVariant,
+        attributeString,
+        attributeNumber,
+      ]),
+      ...getRubricAttributes([attributeOuterRatingA, attributeOuterRatingB, attributeOuterRatingC]),
+    ],
+  };
 
   const genderIt = GENDER_IT as GenderModel;
 
@@ -81,10 +119,10 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     nameI18n: rubricAName,
     slug: generateDefaultLangSlug(rubricAName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
+    ...rubricAttributesGroups,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить вино',
@@ -114,8 +152,8 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     nameI18n: rubricBName,
     slug: generateDefaultLangSlug(rubricBName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(),
     active: true,
+    ...rubricAttributesGroups,
     descriptionI18n: {
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
@@ -153,10 +191,10 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     nameI18n: rubricCName,
     slug: generateDefaultLangSlug(rubricCName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
+    ...rubricAttributesGroups,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить Виски',
@@ -186,10 +224,10 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     nameI18n: rubricDName,
     slug: generateDefaultLangSlug(rubricDName),
     variantId: rubricVariantAlcohol._id,
-    attributesGroups: rubricAttributesGroups(),
     active: true,
     descriptionI18n: description,
     shortDescriptionI18n: description,
+    ...rubricAttributesGroups,
     catalogueTitle: {
       defaultTitleI18n: {
         [DEFAULT_LOCALE]: 'Купить коньяк',

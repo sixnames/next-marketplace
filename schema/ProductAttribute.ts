@@ -1,7 +1,7 @@
 import { objectType } from 'nexus';
-import { AttributeModel, AttributesGroupModel, OptionModel } from 'db/dbModels';
+import { AttributeModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { COL_ATTRIBUTES } from 'db/collectionNames';
 import { getRequestParams } from 'lib/sessionHelpers';
 
 export const ProductAttribute = objectType({
@@ -10,7 +10,6 @@ export const ProductAttribute = objectType({
     t.nonNull.boolean('showInCard');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
-    t.nonNull.objectId('attributesGroupId');
     t.nonNull.string('attributeSlug');
     t.json('textI18n');
     t.float('number');
@@ -63,24 +62,6 @@ export const ProductAttribute = objectType({
       type: 'String',
       resolve: async (_source, _args, _context): Promise<string | null> => {
         return '';
-      },
-    });
-
-    // ProductAttributesGroup attributesGroup field Resolver
-    t.nonNull.field('attributesGroup', {
-      type: 'AttributesGroup',
-      resolve: async (source): Promise<AttributesGroupModel> => {
-        const db = await getDatabase();
-        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-          COL_ATTRIBUTES_GROUPS,
-        );
-        const attributesGroup = await attributesGroupsCollection.findOne({
-          _id: source.attributesGroupId,
-        });
-        if (!attributesGroup) {
-          throw Error('Attribute group not found in ProductAttribute');
-        }
-        return attributesGroup;
       },
     });
   },

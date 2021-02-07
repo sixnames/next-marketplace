@@ -21,7 +21,6 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
-  DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
 } from 'config/common';
@@ -87,7 +86,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
     options: [],
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeOuterRatingBId = new ObjectId();
@@ -101,7 +99,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
     options: [],
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeOuterRatingCId = new ObjectId();
@@ -115,7 +112,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
     options: [],
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributesGroupOuterRatingId = new ObjectId();
@@ -141,7 +137,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     viewVariant: attributeViewVariantIcon,
     optionsGroupId: optionsGroupCombination._id,
     options: optionsCombination,
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeWineVintageId = new ObjectId();
@@ -160,7 +155,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
       [DEFAULT_LOCALE]: attributePositionInTitleAfterKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleAfterKeyword,
     },
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeWineColorId = new ObjectId();
@@ -179,7 +173,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
       [DEFAULT_LOCALE]: attributePositionInTitleBeforeKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleBeforeKeyword,
     },
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeWineVariantId = new ObjectId();
@@ -198,7 +191,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
       [DEFAULT_LOCALE]: attributePositionInTitleReplaceKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleReplaceKeyword,
     },
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeStringId = new ObjectId();
@@ -212,7 +204,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantString,
     viewVariant: attributeViewVariantText,
     options: [],
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributeNumberId = new ObjectId();
@@ -226,7 +217,6 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantText,
     options: [],
-    ...DEFAULT_COUNTERS_OBJECT,
   };
 
   const attributesGroupWineFeatures: AttributesGroupModel = {

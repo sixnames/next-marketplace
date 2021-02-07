@@ -1,14 +1,16 @@
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
+  AttributesGroupModel,
   ProductModel,
   ProductsPaginationPayloadModel,
+  RubricAttributesGroupModel,
   RubricCountersModel,
   RubricNavItemsModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_PRODUCTS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_PRODUCTS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 import { ObjectId } from 'mongodb';
 
@@ -85,11 +87,36 @@ export const Rubric = objectType({
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
+    t.nonNull.list.nonNull.field('attributes', {
+      type: 'RubricAttribute',
+    });
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',
     });
+
+    // Rubric attributesGroups field resolver
     t.nonNull.list.nonNull.field('attributesGroups', {
       type: 'RubricAttributesGroup',
+      resolve: async (source): Promise<RubricAttributesGroupModel[]> => {
+        const db = await getDatabase();
+        const attributesGroupsCollection = db.collection<AttributesGroupModel>(
+          COL_ATTRIBUTES_GROUPS,
+        );
+        const attributesGroups = await attributesGroupsCollection
+          .find({
+            _id: { $in: source.attributesGroupsIds },
+          })
+          .toArray();
+
+        return attributesGroups.map((attributesGroup) => {
+          return {
+            ...attributesGroup,
+            attributes: source.attributes.filter(({ _id }) => {
+              return attributesGroup.attributesIds.some((attributeId) => attributeId.equals(_id));
+            }),
+          };
+        });
+      },
     });
 
     // Rubric name translation field resolver

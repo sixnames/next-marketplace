@@ -533,6 +533,8 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // TODO update rubrics attributes
+
           return {
             success: true,
             message: await getApiMessage('optionsGroups.addOption.success'),
@@ -664,6 +666,8 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // TODO update rubrics attributes
+
           return {
             success: true,
             message: await getApiMessage('optionsGroups.updateOption.success'),
@@ -759,6 +763,8 @@ export const OptionsGroupMutations = extendType({
               message: await getApiMessage('optionsGroups.deleteOption.error'),
             };
           }
+
+          // TODO update rubrics attributes
 
           return {
             success: true,

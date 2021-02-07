@@ -39,7 +39,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     attributeWineVintage,
     attributeWineColor,
     attributeWineVariant,
-    attributesGroupOuterRating,
     attributeOuterRatingA,
     attributeOuterRatingB,
     attributeOuterRatingC,
@@ -74,7 +73,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const vintageAttribute: ProductAttributeModel[] = wineVintageOptionsSlug
       ? [
           {
-            attributesGroupId: attributesGroupWineFeatures._id,
             attributeId: attributeWineVintage._id,
             attributeSlug: attributeWineVintage.slug,
             showInCard: true,
@@ -88,7 +86,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const colorAttribute: ProductAttributeModel[] = wineColorOptionsSlug
       ? [
           {
-            attributesGroupId: attributesGroupWineFeatures._id,
             attributeId: attributeWineColor._id,
             attributeSlug: attributeWineColor.slug,
             showInCard: true,
@@ -102,7 +99,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const wineTypeAttribute: ProductAttributeModel[] = wineTypeOptionsSlug
       ? [
           {
-            attributesGroupId: attributesGroupWineFeatures._id,
             attributeId: attributeWineVariant._id,
             attributeSlug: attributeWineVariant.slug,
             showInCard: true,
@@ -120,7 +116,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         ...colorAttribute,
         ...wineTypeAttribute,
         {
-          attributesGroupId: attributesGroupWineFeatures._id,
           attributeId: attributeString._id,
           attributeSlug: attributeString.slug,
           showInCard: true,
@@ -133,7 +128,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           },
         },
         {
-          attributesGroupId: attributesGroupWineFeatures._id,
           attributeId: attributeWineCombinations._id,
           attributeSlug: attributeWineCombinations.slug,
           showInCard: true,
@@ -144,7 +138,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           }),
         },
         {
-          attributesGroupId: attributesGroupWineFeatures._id,
           attributeId: attributeNumber._id,
           attributeSlug: attributeNumber.slug,
           showInCard: true,
@@ -156,7 +149,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
         // Outer rating attributes
         {
-          attributesGroupId: attributesGroupOuterRating._id,
           attributeId: attributeOuterRatingA._id,
           attributeSlug: attributeOuterRatingA.slug,
           showInCard: true,
@@ -166,7 +158,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           number: 18,
         },
         {
-          attributesGroupId: attributesGroupOuterRating._id,
           attributeId: attributeOuterRatingB._id,
           attributeSlug: attributeOuterRatingB.slug,
           showInCard: true,
@@ -176,7 +167,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           number: 89,
         },
         {
-          attributesGroupId: attributesGroupOuterRating._id,
           attributeId: attributeOuterRatingC._id,
           attributeSlug: attributeOuterRatingC.slug,
           showInCard: true,

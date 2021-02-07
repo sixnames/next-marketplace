@@ -5,9 +5,9 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
 } from 'config/common';
-import { MetricModel, OptionsGroupModel } from 'db/dbModels';
+import { OptionsGroupModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_METRICS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
 
 export const AttributeVariant = enumType({
   name: 'AttributeVariant',
@@ -37,15 +37,15 @@ export const Attribute = objectType({
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',
     });
-    t.objectId('metricId');
     t.json('positioningInTitle');
-    t.nonNull.json('views');
-    t.nonNull.json('priorities');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',
     });
     t.nonNull.field('viewVariant', {
       type: 'AttributeViewVariant',
+    });
+    t.field('metric', {
+      type: 'Metric',
     });
 
     // Attribute name translation field resolver
@@ -68,20 +68,6 @@ export const Attribute = objectType({
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
         return optionsGroup;
-      },
-    });
-
-    // Attribute metric field resolver
-    t.field('metric', {
-      type: 'Metric',
-      resolve: async (source): Promise<MetricModel | null> => {
-        if (!source.metricId) {
-          return null;
-        }
-        const db = await getDatabase();
-        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const metric = await metricsCollection.findOne({ _id: source.metricId });
-        return metric;
       },
     });
   },

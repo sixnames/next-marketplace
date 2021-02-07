@@ -188,7 +188,7 @@ export interface CountersModel {
   priorities: CountersItemModel;
 }
 
-export interface AttributeModel extends CountersModel {
+export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
@@ -196,7 +196,7 @@ export interface AttributeModel extends CountersModel {
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
   options: OptionModel[];
-  metricId?: ObjectIdModel | null;
+  metric?: MetricModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
 }
 
@@ -450,16 +450,11 @@ export interface ProductAttributeModel {
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
-  attributesGroupId: ObjectIdModel;
   attributeSlug: string;
   selectedOptionsSlugs: string[];
   attributeSlugs: string[];
   textI18n?: TranslationModel | null;
   number?: number | null;
-}
-
-export interface ProductAttributesGroupAstModel extends AttributesGroupModel {
-  astAttributes: ProductAttributeModel[];
 }
 
 export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
@@ -546,10 +541,18 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricAttributesGroupModel {
+export interface RubricOptionModel extends OptionModel, CountersModel {}
+
+export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;
-  showInCatalogueFilter: ObjectIdModel[];
-  attributesGroupId: ObjectIdModel;
+  showInCatalogueFilter: boolean;
+  showInCatalogueNav: boolean;
+  options: RubricOptionModel[];
+}
+
+export interface RubricAttributesGroupModel extends AttributesGroupModel {
+  _id: ObjectIdModel;
+  attributes: RubricAttributeModel[];
 }
 
 export interface RubricCatalogueTitleModel {
@@ -567,7 +570,8 @@ export interface RubricModel extends CountersModel {
   catalogueTitle: RubricCatalogueTitleModel;
   slug: string;
   active: boolean;
-  attributesGroups: RubricAttributesGroupModel[];
+  attributes: RubricAttributeModel[];
+  attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
 }
 

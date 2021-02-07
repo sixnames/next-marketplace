@@ -79,6 +79,14 @@ export const addOptionToGroupSchema = (args: ValidationSchemaArgsInterface) => {
   });
 };
 
+export const addOptionToOptionSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    optionsGroupId: optionsGroupIdSchema(args),
+    optionId: optionIdSchema(args),
+    ...optionInGroupCommonSchema(args),
+  });
+};
+
 export const optionInGroupModalSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     ...optionInGroupCommonSchema(args),

@@ -24,6 +24,7 @@ import {
   createOptionsGroupSchema,
   deleteOptionFromGroupSchema,
   updateOptionInGroupSchema,
+  updateOptionInOptionSchema,
   updateOptionsGroupSchema,
 } from 'validation/optionsGroupSchema';
 
@@ -182,6 +183,24 @@ export const AddOptionToOptionInput = inputObjectType({
 export const UpdateOptionInGroupInput = inputObjectType({
   name: 'UpdateOptionInGroupInput',
   definition(t) {
+    t.nonNull.objectId('optionId');
+    t.nonNull.objectId('optionsGroupId');
+    t.nonNull.json('nameI18n');
+    t.string('color');
+    t.string('icon');
+    t.field('gender', {
+      type: 'Gender',
+    });
+    t.nonNull.list.nonNull.field('variants', {
+      type: 'OptionVariantInput',
+    });
+  },
+});
+
+export const UpdateOptionInOptionInput = inputObjectType({
+  name: 'UpdateOptionInOptionInput',
+  definition(t) {
+    t.nonNull.objectId('parentOptionId');
     t.nonNull.objectId('optionId');
     t.nonNull.objectId('optionsGroupId');
     t.nonNull.json('nameI18n');
@@ -753,6 +772,137 @@ export const OptionsGroupMutations = extendType({
             },
             {
               arrayFilters: [{ 'option._id': { $eq: optionId } }],
+              returnOriginal: false,
+            },
+          );
+          const updatedOptionsGroup = updatedOptionsGroupResult.value;
+          if (!updatedOptionsGroupResult.ok || !updatedOptionsGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('optionsGroups.updateOption.success'),
+            payload: updatedOptionsGroup,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update option in the option
+    t.nonNull.field('updateOptionInOption', {
+      type: 'OptionsGroupPayload',
+      description: 'Should update option in the group',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateOptionInOptionInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
+        try {
+          // Validate
+          const validationSchema = await getResolverValidationSchema({
+            context,
+            schema: updateOptionInOptionSchema,
+          });
+          await validationSchema.validate(args.input);
+
+          const { getApiMessage } = await getRequestParams(context);
+          const db = await getDatabase();
+          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const { input } = args;
+          const { optionsGroupId, optionId, parentOptionId, ...values } = input;
+
+          // Check options group availability
+          const optionsGroup = await optionsGroupsCollection.findOne({ _id: optionsGroupId });
+          if (!optionsGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.groupError'),
+            };
+          }
+
+          // Check option availability
+          const option = optionsGroup.options.find(({ _id }) => parentOptionId.equal(_id));
+          if (!option) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+          const optionForUpdate = option.options.find(({ _id }) => optionId.equal(_id));
+          if (!optionForUpdate) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          // Check input fields based on options group variant
+          if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_ICON && !values.icon) {
+            return {
+              success: false,
+              message: await getApiMessage(`optionsGroups.addOption.iconError`),
+            };
+          }
+          if (optionsGroup.variant === OPTIONS_GROUP_VARIANT_COLOR && !values.color) {
+            return {
+              success: false,
+              message: await getApiMessage(`optionsGroups.addOption.colorError`),
+            };
+          }
+
+          // Check if option already exist in the group
+          const exist = option.options.find(({ nameI18n }) => {
+            const inputNameKeys = Object.keys(values.nameI18n);
+            return inputNameKeys.some((key) => {
+              return nameI18n[key] === values.nameI18n[key];
+            });
+          });
+          if (exist) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.duplicate'),
+            };
+          }
+
+          // Find option and update
+          const updatedOptionsList = option.options.reduce((acc: OptionModel[], option) => {
+            if (option._id.equals(optionId)) {
+              return [
+                ...acc,
+                {
+                  ...option,
+                  ...values,
+                },
+              ];
+            }
+            return [...acc, option];
+          }, []);
+
+          // Update options group
+          const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
+            { _id: optionsGroupId },
+            {
+              $set: {
+                'options.$[option]': {
+                  ...option,
+                  options: updatedOptionsList,
+                },
+              },
+            },
+            {
+              arrayFilters: [{ 'option._id': { $eq: parentOptionId } }],
               returnOriginal: false,
             },
           );

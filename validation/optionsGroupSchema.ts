@@ -101,6 +101,15 @@ export const updateOptionInGroupSchema = (args: ValidationSchemaArgsInterface) =
   });
 };
 
+export const updateOptionInOptionSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    optionsGroupId: optionsGroupIdSchema(args),
+    optionId: optionIdSchema(args),
+    parentOptionId: optionIdSchema(args),
+    ...optionInGroupCommonSchema(args),
+  });
+};
+
 export const deleteOptionFromGroupSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     optionsGroupId: optionsGroupIdSchema(args),

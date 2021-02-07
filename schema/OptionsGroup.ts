@@ -460,8 +460,7 @@ export const OptionsGroupMutations = extendType({
                   ...values,
                   _id: new ObjectId(),
                   slug,
-                  views: {},
-                  priorities: {},
+                  options: [],
                 },
               },
             },
@@ -477,7 +476,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Add option id to the connected attributes
+          // Add option to the connected attributes
           const updatedAttributesResult = await attributesCollection.updateMany(
             { optionsGroupId },
             {
@@ -485,8 +484,7 @@ export const OptionsGroupMutations = extendType({
                 options: {
                   ...values,
                   slug,
-                  views: {},
-                  priorities: {},
+                  options: [],
                 },
               },
             },

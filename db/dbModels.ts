@@ -195,7 +195,7 @@ export interface AttributeModel extends CountersModel {
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
-  optionsIds: ObjectIdModel[];
+  options: OptionModel[];
   metricId?: ObjectIdModel | null;
   positioningInTitle?: AttributePositioningInTitleModel | null;
 }
@@ -350,7 +350,7 @@ export interface OptionVariantModel {
   value: TranslationModel;
 }
 
-export interface OptionModel extends CountersModel {
+export interface OptionModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
@@ -358,6 +358,7 @@ export interface OptionModel extends CountersModel {
   gender?: GenderModel | null;
   color?: string | null;
   icon?: string | null;
+  options: OptionModel[];
 }
 
 // Options Group variant

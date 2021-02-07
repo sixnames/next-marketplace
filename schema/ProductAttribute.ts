@@ -1,9 +1,8 @@
 import { objectType } from 'nexus';
 import { AttributeModel, AttributesGroupModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { getProductAttributeValue } from 'lib/productAttributesUtils';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',
@@ -28,29 +27,8 @@ export const ProductAttribute = objectType({
     // ProductAttribute selectedOptions field resolver
     t.nonNull.list.nonNull.field('selectedOptions', {
       type: 'Option',
-      resolve: async (source): Promise<OptionModel[]> => {
-        const db = await getDatabase();
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-
-        const attribute = await attributesCollection.findOne({ _id: source.attributeId });
-        if (!attribute || !attribute.optionsGroupId) {
-          return [];
-        }
-
-        const options = await optionsCollection
-          .find({
-            $and: [
-              {
-                _id: { $in: attribute.optionsIds },
-              },
-              {
-                slug: { $in: source.selectedOptionsSlugs },
-              },
-            ],
-          })
-          .toArray();
-        return options;
+      resolve: async (_source): Promise<OptionModel[]> => {
+        return [];
       },
     });
 
@@ -83,10 +61,8 @@ export const ProductAttribute = objectType({
     // ProductAttribute readableValue field resolver
     t.field('readableValue', {
       type: 'String',
-      resolve: async (source, _args, context): Promise<string | null> => {
-        const { getFieldLocale } = await getRequestParams(context);
-        const { readableValue } = await getProductAttributeValue(source, getFieldLocale);
-        return readableValue;
+      resolve: async (_source, _args, _context): Promise<string | null> => {
+        return '';
       },
     });
 

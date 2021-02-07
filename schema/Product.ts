@@ -5,7 +5,6 @@ import {
   BrandCollectionModel,
   BrandModel,
   ManufacturerModel,
-  OptionModel,
   ProductCardBreadcrumbModel,
   ProductCardConnectionItemModel,
   ProductCardConnectionModel,
@@ -23,28 +22,15 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_OPTIONS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import {
-  ATTRIBUTE_VIEW_VARIANT_ICON,
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  ATTRIBUTE_VIEW_VARIANT_TAG,
-  ATTRIBUTE_VIEW_VARIANT_TEXT,
-  LOCALE_NOT_FOUND_FIELD_MESSAGE,
-} from 'config/common';
+import { LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
 import { getCurrencyString } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import {
-  getAttributesIdsInProductConnections,
-  getAttributesListFromProductAttributes,
-  getProductAttributeValue,
-  getProductConnections,
-} from 'lib/productAttributesUtils';
+import { getProductConnections } from 'lib/productAttributesUtils';
 import { noNaN } from 'lib/numbers';
 
 export const ProductCardBreadcrumb = objectType({
@@ -345,6 +331,7 @@ export const Product = objectType({
       },
     });
 
+    // TODO optimise this resolver
     // Product cardBreadcrumbs field resolver
     t.nonNull.list.nonNull.field('cardBreadcrumbs', {
       type: 'ProductCardBreadcrumb',
@@ -358,7 +345,6 @@ export const Product = objectType({
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { slug } = args;
 
           // Return empty configs list if slug arg is empty
@@ -416,9 +402,9 @@ export const Product = objectType({
             }
 
             // Get all selected options
-            const options = await optionsCollection
-              .find({ slug: { $in: productAttribute.selectedOptionsSlugs } })
-              .toArray();
+            const options = await attribute.options.filter(({ slug }) => {
+              return productAttribute.selectedOptionsSlugs.includes(slug);
+            });
             // Get first selected option
             const firstSelectedOption = options[0];
             if (!firstSelectedOption) {
@@ -463,97 +449,17 @@ export const Product = objectType({
       },
     });
 
+    // TODO optimise this resolver
     // Product snippetFeatures field resolver
     t.nonNull.field('snippetFeatures', {
       type: 'ProductSnippetFeatures',
       description: `Returns all list view product attributes as one string and all rating view product attributes as strings array. Each string contains attribute name and product attribute value.`,
-      resolve: async (source, _args, context): Promise<ProductSnippetFeaturesModel> => {
+      resolve: async (_source, _args, _context): Promise<ProductSnippetFeaturesModel> => {
         try {
-          const db = await getDatabase();
-          const { getFieldLocale } = await getRequestParams(context);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-
-          const ratingFeaturesValues: string[] = [];
-          let listFeaturesString = '';
-
-          // All needed attributes
-          const attributes = await getAttributesListFromProductAttributes({
-            product: source,
-          });
-
-          for await (const attribute of attributes) {
-            // Find current product attribute
-            const productAttribute = source.attributes.find(({ attributeId }) =>
-              attributeId.equals(attribute._id),
-            );
-
-            // Continue if product attribute not found
-            if (!productAttribute) {
-              continue;
-            }
-
-            // listFeaturesString
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
-              const { isOptions, value, selectedOptionsSlugs } = await getProductAttributeValue(
-                productAttribute,
-                getFieldLocale,
-              );
-              const stringSeparator = listFeaturesString.length > 0 ? ', ' : '';
-
-              if (value && selectedOptionsSlugs) {
-                if (isOptions && attribute.optionsGroupId) {
-                  const options = await optionsCollection
-                    .find(
-                      {
-                        $and: [
-                          {
-                            _id: { $in: attribute.optionsIds },
-                          },
-                          {
-                            slug: { $in: selectedOptionsSlugs },
-                          },
-                        ],
-                      },
-                      {
-                        projection: {
-                          nameI18n: 1,
-                        },
-                      },
-                    )
-                    .toArray();
-
-                  if (options.length < 1) {
-                    continue;
-                  }
-
-                  const optionsNames = options.map(({ nameI18n }) => getFieldLocale(nameI18n));
-                  listFeaturesString = `${listFeaturesString}${stringSeparator}${optionsNames.join(
-                    ', ',
-                  )}`;
-                } else {
-                  listFeaturesString = `${listFeaturesString}${stringSeparator}${value}`;
-                }
-              }
-            }
-
-            // ratingFeatures
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
-              const { value, isNumber } = await getProductAttributeValue(
-                productAttribute,
-                getFieldLocale,
-              );
-              if (!isNumber || !value) {
-                continue;
-              }
-              const attributeName = getFieldLocale(attribute.nameI18n);
-              ratingFeaturesValues.push(`${attributeName} ${value}`);
-            }
-          }
-
           return {
             _id: new ObjectId(),
-            ratingFeaturesValues,
-            listFeaturesString,
+            ratingFeaturesValues: [],
+            listFeaturesString: '',
           };
         } catch (e) {
           console.log(e);
@@ -570,7 +476,7 @@ export const Product = objectType({
     t.nonNull.field('cardFeatures', {
       type: 'ProductCardFeatures',
       description: 'Should return product card features in readable form',
-      resolve: async (source, _args, context): Promise<ProductCardFeaturesModel> => {
+      resolve: async (_source, _args, _context): Promise<ProductCardFeaturesModel> => {
         const features: Omit<ProductCardFeaturesModel, 'listFeaturesString'> = {
           _id: new ObjectId(),
           listFeatures: [],
@@ -581,91 +487,6 @@ export const Product = objectType({
         };
 
         try {
-          const { getFieldLocale } = await getRequestParams(context);
-          const db = await getDatabase();
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-
-          // Get ids of attributes used in connections
-          const attributesIdsInConnections = await getAttributesIdsInProductConnections(source._id);
-
-          // Find all attributes values
-          for await (const productAttribute of source.attributes) {
-            const noSelectedOptionsSlugs =
-              !productAttribute.selectedOptionsSlugs ||
-              productAttribute.selectedOptionsSlugs.length < 1;
-            const attributeValueNotSet =
-              !productAttribute.textI18n && !productAttribute.number && noSelectedOptionsSlugs;
-            // Continue if product attribute value is not set
-            if (!productAttribute.showInCard || attributeValueNotSet) {
-              continue;
-            }
-
-            // Find current attribute
-            const attribute = await attributesCollection.findOne({
-              $and: [
-                { _id: productAttribute.attributeId },
-                // Exclude attributes used in connections
-                { _id: { $nin: attributesIdsInConnections } },
-              ],
-            });
-            // Continue if attribute not found
-            if (!attribute) {
-              continue;
-            }
-
-            // listFeatures and listFeaturesString
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST) {
-              const { value, selectedOptionsSlugs } = await getProductAttributeValue(
-                productAttribute,
-                getFieldLocale,
-              );
-
-              if (value && selectedOptionsSlugs) {
-                features.listFeatures.push(productAttribute);
-              }
-              continue;
-            }
-
-            // textFeatures
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
-              const { value } = await getProductAttributeValue(productAttribute, getFieldLocale);
-              if (value) {
-                features.textFeatures.push(productAttribute);
-              }
-              continue;
-            }
-
-            // tagFeatures
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_TAG) {
-              const { value } = await getProductAttributeValue(productAttribute, getFieldLocale);
-              if (value) {
-                features.tagFeatures.push(productAttribute);
-              }
-              continue;
-            }
-
-            // iconFeatures
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_ICON) {
-              const { value } = await getProductAttributeValue(productAttribute, getFieldLocale);
-              if (value) {
-                features.iconFeatures.push(productAttribute);
-              }
-              continue;
-            }
-
-            // ratingFeatures
-            if (attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING) {
-              const { value, isNumber } = await getProductAttributeValue(
-                productAttribute,
-                getFieldLocale,
-              );
-              if (!isNumber || !value) {
-                continue;
-              }
-              features.ratingFeatures.push(productAttribute);
-            }
-          }
-
           return features;
         } catch {
           return features;

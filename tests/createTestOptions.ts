@@ -2,7 +2,6 @@ import { getDatabase } from 'db/mongodb';
 import { createTestUsers, CreateTestUsersPayloadInterface } from './createTestUsers';
 import { GenderModel, OptionModel, OptionsGroupModel, OptionsGroupVariantModel } from 'db/dbModels';
 import {
-  DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   GENDER_HE,
   GENDER_IT,
@@ -70,9 +69,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: '1950',
     },
     gender: genderIt,
-    priorities: {},
-    views: {},
     slug: '1950',
+    options: [],
   };
 
   const optionVintageBId = new ObjectId();
@@ -84,7 +82,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     },
     gender: genderIt,
     slug: '1978',
-    ...DEFAULT_COUNTERS_OBJECT,
+    options: [],
   };
 
   const optionVintageCId = new ObjectId();
@@ -95,9 +93,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: '2001',
     },
     gender: genderIt,
-    priorities: {},
-    views: {},
     slug: '2001',
+    options: [],
   };
 
   const optionsVintage = [optionVintageA, optionVintageB, optionVintageC];
@@ -124,10 +121,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'White',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'beliy',
     color: 'ffffff',
+    options: [],
     variants: [
       {
         gender: genderShe,
@@ -161,10 +157,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Red',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'krasniy',
     color: '99020b',
+    options: [],
     variants: [
       {
         gender: genderShe,
@@ -198,10 +193,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Pink',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'rozoviy',
     color: 'db8ce0',
+    options: [],
     variants: [
       {
         gender: genderShe,
@@ -251,9 +245,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Port wine',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'portvein',
+    options: [],
   };
 
   const optionWineVariantBId = new ObjectId();
@@ -264,9 +257,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Heres',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'heres',
+    options: [],
   };
 
   const optionWineVariantCId = new ObjectId();
@@ -277,9 +269,8 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Vermut',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     slug: 'vermut',
+    options: [],
   };
 
   const optionWineVariantDId = new ObjectId();
@@ -293,6 +284,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     priorities: {},
     views: {},
     slug: 'kreplenoe',
+    options: [],
   };
 
   const optionsWineVariant = [
@@ -329,10 +321,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'White meat',
     },
     gender: genderIt,
-    priorities: {},
-    views: {},
     icon: 'white-meat',
     slug: 'white_meat',
+    options: [],
   };
 
   const optionCombinationBId = new ObjectId();
@@ -343,10 +334,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Soup',
     },
     gender: genderHe,
-    priorities: {},
-    views: {},
     icon: 'soup',
     slug: 'soup',
+    options: [],
   };
 
   const optionCombinationCId = new ObjectId();
@@ -357,10 +347,9 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [SECONDARY_LOCALE]: 'Fish',
     },
     gender: genderShe,
-    priorities: {},
-    views: {},
     icon: 'fish',
     slug: 'fish',
+    options: [],
   };
 
   const optionCombinationDId = new ObjectId();
@@ -370,11 +359,10 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
       [DEFAULT_LOCALE]: 'Дары моря',
       [SECONDARY_LOCALE]: 'Seafood',
     },
-    priorities: {},
-    views: {},
     icon: 'seafood',
     slug: 'seafood',
     gender: genderIt,
+    options: [],
   };
 
   const optionsCombination = [

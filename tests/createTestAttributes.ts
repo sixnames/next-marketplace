@@ -54,10 +54,10 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     optionsGroupWineVariants,
     optionsGroupColors,
     optionsGroupCombination,
-    optionsIdsCombination,
-    optionsIdsColor,
-    optionsIdsVintage,
-    optionsIdsWineVariant,
+    optionsCombination,
+    optionsColor,
+    optionsVintage,
+    optionsWineVariant,
   } = optionsPayload;
 
   const attributeVariantNumber = ATTRIBUTE_VARIANT_NUMBER as AttributeVariantModel;
@@ -86,7 +86,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     slug: 'vivino',
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
-    optionsIds: [],
+    options: [],
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
@@ -100,7 +100,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     slug: 'pr',
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
-    optionsIds: [],
+    options: [],
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
@@ -114,7 +114,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     slug: 'ws',
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantOuterRating,
-    optionsIds: [],
+    options: [],
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
@@ -140,7 +140,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantMultipleSelect,
     viewVariant: attributeViewVariantIcon,
     optionsGroupId: optionsGroupCombination._id,
-    optionsIds: optionsIdsCombination,
+    options: optionsCombination,
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
@@ -155,7 +155,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantSelect,
     viewVariant: attributeViewVariantList,
     optionsGroupId: optionsGroupWineVintage._id,
-    optionsIds: optionsIdsVintage,
+    options: optionsVintage,
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleAfterKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleAfterKeyword,
@@ -174,7 +174,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantMultipleSelect,
     viewVariant: attributeViewVariantTag,
     optionsGroupId: optionsGroupColors._id,
-    optionsIds: optionsIdsColor,
+    options: optionsColor,
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleBeforeKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleBeforeKeyword,
@@ -193,7 +193,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     variant: attributeVariantSelect,
     viewVariant: attributeViewVariantList,
     optionsGroupId: optionsGroupWineVariants._id,
-    optionsIds: optionsIdsWineVariant,
+    options: optionsWineVariant,
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleReplaceKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleReplaceKeyword,
@@ -211,7 +211,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     slug: 'attribute_stroka',
     variant: attributeVariantString,
     viewVariant: attributeViewVariantText,
-    optionsIds: [],
+    options: [],
     ...DEFAULT_COUNTERS_OBJECT,
   };
 
@@ -225,7 +225,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     slug: 'attribute_chislo',
     variant: attributeVariantNumber,
     viewVariant: attributeViewVariantText,
-    optionsIds: [],
+    options: [],
     ...DEFAULT_COUNTERS_OBJECT,
   };
 

@@ -1,28 +1,16 @@
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
-  AttributeModel,
-  ConfigModel,
   ProductModel,
   ProductsPaginationPayloadModel,
   RubricCountersModel,
-  RubricNavItemAttributeModel,
-  RubricNavItemAttributeOptionModel,
   RubricNavItemsModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  COL_ATTRIBUTES,
-  COL_CONFIGS,
-  COL_PRODUCTS,
-  COL_RUBRIC_VARIANTS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 import { ObjectId } from 'mongodb';
-import { noNaN } from 'lib/numbers';
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE, SORT_DESC } from 'config/common';
 
 export const RubricNavItemAttributeOption = objectType({
   name: 'RubricNavItemAttributeOption',
@@ -269,156 +257,12 @@ export const Rubric = objectType({
     // Rubric navItems field resolver
     t.nonNull.field('navItems', {
       type: 'RubricNavItems',
-      resolve: async (source, _args, context): Promise<RubricNavItemsModel> => {
+      resolve: async (): Promise<RubricNavItemsModel> => {
         try {
-          const { city, getFieldLocale, getCityLocale } = await getRequestParams(context);
-          const db = await getDatabase();
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const { attributesGroups, catalogueTitle } = source;
-
-          // Get nav config
-          let maxVisibleOptions = 5;
-          const navConfig = await configsCollection.findOne({
-            slug: 'stickyNavVisibleOptionsCount',
-          });
-          if (navConfig) {
-            const configCityData = getCityLocale(navConfig.cities) || [];
-            const value = configCityData[0];
-            if (value) {
-              maxVisibleOptions = noNaN(value);
-            }
-          }
-
-          // Get all visible attributes id's
-          const visibleAttributesIds = attributesGroups.reduce((acc: ObjectId[], group) => {
-            return [...acc, ...group.showInCatalogueFilter];
-          }, []);
-
-          // Fetch sorted attributes
-          const attributes = await attributesCollection
-            .aggregate([
-              { $match: { _id: { $in: visibleAttributesIds } } },
-              {
-                $sort: {
-                  [`views.${city}`]: SORT_DESC,
-                  [`priority.${city}`]: SORT_DESC,
-                },
-              },
-            ])
-            .toArray();
-
-          // Cast attributes to RubricNavItemAttribute
-          const navAttributes: RubricNavItemAttributeModel[] = [];
-
-          for await (const attribute of attributes) {
-            if (!attribute.optionsGroupId) {
-              continue;
-            }
-
-            const options: any = [];
-
-            const resultOptions: RubricNavItemAttributeOptionModel[] = [];
-
-            for await (const option of options) {
-              // Get option name based on rubric catalogue title gender
-              const { variants, nameI18n } = option;
-              let filterNameString: string;
-              const currentVariant = variants?.find(
-                ({ gender }) => gender === catalogueTitle.gender,
-              );
-              const currentVariantName = getFieldLocale(currentVariant?.value);
-              if (currentVariantName === LOCALE_NOT_FOUND_FIELD_MESSAGE || !currentVariant) {
-                filterNameString = getFieldLocale(nameI18n);
-              } else {
-                filterNameString = currentVariantName;
-              }
-
-              // Get option slug for current attribute
-              const optionSlug = `${attribute.slug}-${option.slug}`;
-
-              // Count products with current option
-              const products = await productsCollection
-                .aggregate<any>([
-                  // Initial products match
-                  {
-                    $match: {
-                      rubricsIds: source._id,
-                      active: true,
-                      archive: false,
-                      'attributes.attributeSlugs': optionSlug,
-                    },
-                  },
-                  // Lookup shop products
-                  {
-                    $lookup: {
-                      from: COL_SHOP_PRODUCTS,
-                      localField: '_id',
-                      foreignField: 'productId',
-                      as: 'shops',
-                    },
-                  },
-                  // Count shop products
-                  { $addFields: { shopsCount: { $size: '$shops' } } },
-
-                  // Filter out products not added to the shops
-                  { $match: { shopsCount: { $gt: 0 } } },
-                  {
-                    $count: 'counter',
-                  },
-                ])
-                .toArray();
-              const counter = noNaN(products[0]?.counter);
-
-              resultOptions.push({
-                _id: new ObjectId(),
-                isDisabled: counter < 1,
-                name: filterNameString,
-                slug: `/${source.slug}/${optionSlug}`,
-                counter,
-              });
-            }
-
-            const sortedOptions = resultOptions.sort((optionA, optionB) => {
-              const isDisabledA = optionA.isDisabled ? 0 : 1;
-              const isDisabledB = optionB.isDisabled ? 0 : 1;
-
-              return isDisabledB - isDisabledA;
-            });
-
-            const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
-              if (isDisabled) {
-                return acc + 1;
-              }
-              return acc;
-            }, 0);
-
-            const enabledOptions = sortedOptions.filter(({ isDisabled }) => !isDisabled);
-            const visibleOptions = enabledOptions.slice(0, maxVisibleOptions);
-            const hiddenOptions = enabledOptions.slice(+maxVisibleOptions);
-
-            navAttributes.push({
-              _id: new ObjectId(),
-              options: sortedOptions,
-              visibleOptions,
-              hiddenOptions,
-              name: getFieldLocale(attribute.nameI18n),
-              isDisabled: disabledOptionsCount === sortedOptions.length,
-            });
-          }
-
-          const disabledAttributesCount = navAttributes.reduce((acc: number, { isDisabled }) => {
-            if (isDisabled) {
-              return acc + 1;
-            }
-            return acc;
-          }, 0);
-
           return {
             _id: new ObjectId(),
-            attributes: navAttributes,
-            isDisabled: disabledAttributesCount === navAttributes.length,
+            attributes: [],
+            isDisabled: true,
           };
         } catch (e) {
           console.log(e);

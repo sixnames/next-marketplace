@@ -4,6 +4,7 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
+  OptionModel,
   OptionsGroupModel,
   RubricModel,
 } from 'db/dbModels';
@@ -18,7 +19,6 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { SORT_ASC } from 'config/common';
-import { ObjectId } from 'mongodb';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
@@ -470,23 +470,29 @@ export const attributesGroupMutations = extendType({
             };
           }
 
-          // Get options ids
-          let optionsIds: ObjectId[] = [];
+          // Get options
+          // TODO nested options slugs
+          const slug = generateDefaultLangSlug(values.nameI18n);
+          let options: OptionModel[] = [];
           if (values.optionsGroupId) {
             const optionsGroup = await optionsGroupsCollection.findOne({
               _id: values.optionsGroupId,
             });
-            optionsIds = optionsGroup?.optionsIds || [];
+            options = (optionsGroup?.options || []).map((option) => {
+              return {
+                ...option,
+                slug: `${slug}-${option.slug}`,
+              };
+            });
           }
 
           // Create attribute
-          const slug = generateDefaultLangSlug(values.nameI18n);
           const createdAttributeResult = await attributesCollection.insertOne({
             ...values,
             slug,
             views: {},
             priorities: {},
-            optionsIds,
+            options,
           });
           const createdAttribute = createdAttributeResult.ops[0];
           if (!createdAttributeResult.result.ok || !createdAttribute) {
@@ -571,6 +577,17 @@ export const attributesGroupMutations = extendType({
             };
           }
 
+          // Check if attribute exist
+          const attribute = await attributesCollection.findOne({
+            _id: attributeId,
+          });
+          if (!attribute) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
+            };
+          }
+
           // Check attribute duplicate
           const exist = await findDocumentByI18nField({
             fieldArg: values.nameI18n,
@@ -587,13 +604,19 @@ export const attributesGroupMutations = extendType({
             };
           }
 
-          // Get options ids
-          let optionsIds: ObjectId[] = [];
+          // Get options
+          // TODO nested options slugs
+          let options: OptionModel[] = [];
           if (values.optionsGroupId) {
             const optionsGroup = await optionsGroupsCollection.findOne({
               _id: values.optionsGroupId,
             });
-            optionsIds = optionsGroup?.optionsIds || [];
+            options = (optionsGroup?.options || []).map((option) => {
+              return {
+                ...option,
+                slug: `${attribute.slug}-${option.slug}`,
+              };
+            });
           }
 
           // Update attribute
@@ -602,7 +625,7 @@ export const attributesGroupMutations = extendType({
             {
               $set: {
                 ...values,
-                optionsIds,
+                options,
               },
             },
           );

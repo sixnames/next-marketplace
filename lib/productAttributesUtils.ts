@@ -1,15 +1,6 @@
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
-import {
-  AttributeModel,
-  ObjectIdModel,
-  OptionModel,
-  ProductAttributeModel,
-  ProductConnectionModel,
-  ProductModel,
-} from 'db/dbModels';
-import { GetFieldLocaleType } from 'lib/sessionHelpers';
+import { AttributeModel, ObjectIdModel, ProductConnectionModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_CONNECTIONS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_PRODUCT_CONNECTIONS } from 'db/collectionNames';
 import { FilterQuery, FindOneOptions } from 'mongodb';
 
 type ProductAttributeValue = 'TEXT' | 'NUMBER' | 'OPTIONS';
@@ -17,81 +8,6 @@ type ProductAttributeValue = 'TEXT' | 'NUMBER' | 'OPTIONS';
 export const PRODUCT_ATTRIBUTE_VALUE_TYPE_TEXT = 'TEXT' as ProductAttributeValue;
 export const PRODUCT_ATTRIBUTE_VALUE_TYPE_NUMBER = 'NUMBER' as ProductAttributeValue;
 export const PRODUCT_ATTRIBUTE_VALUE_TYPE_OPTIONS = 'OPTIONS' as ProductAttributeValue;
-
-interface GetProductAttributeValuePayloadInterface {
-  selectedOptionsSlugs?: string[] | null;
-  text?: string | null;
-  number?: number | null;
-  valueType?: ProductAttributeValue | null;
-  isText: boolean;
-  isNumber: boolean;
-  isOptions: boolean;
-  value?: string[] | string | number | null;
-  readableValue: string | null;
-}
-
-export async function getProductAttributeValue(
-  productAttribute: ProductAttributeModel,
-  getFieldLocale: GetFieldLocaleType,
-): Promise<GetProductAttributeValuePayloadInterface> {
-  const db = await getDatabase();
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-
-  let valueType;
-  const selectedOptionsSlugs = productAttribute.selectedOptionsSlugs;
-  const text = getFieldLocale(productAttribute.textI18n);
-  const number = productAttribute.number;
-
-  if (text) {
-    valueType = PRODUCT_ATTRIBUTE_VALUE_TYPE_TEXT;
-  }
-
-  if (number) {
-    valueType = PRODUCT_ATTRIBUTE_VALUE_TYPE_NUMBER;
-  }
-
-  const selectedOptionsSlugsValue =
-    selectedOptionsSlugs && selectedOptionsSlugs.length > 0 ? selectedOptionsSlugs : null;
-  if (selectedOptionsSlugsValue) {
-    valueType = PRODUCT_ATTRIBUTE_VALUE_TYPE_OPTIONS;
-  }
-
-  const isText = valueType === PRODUCT_ATTRIBUTE_VALUE_TYPE_TEXT;
-  const isNumber = valueType === PRODUCT_ATTRIBUTE_VALUE_TYPE_NUMBER;
-  const isOptions = valueType === PRODUCT_ATTRIBUTE_VALUE_TYPE_OPTIONS;
-
-  let readableValue = null;
-
-  if (isText && text !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-    readableValue = text;
-  }
-
-  if (isNumber) {
-    readableValue = number ? `${number}` : null;
-  }
-
-  if (isOptions) {
-    const options = await optionsCollection.find({ slug: { $in: selectedOptionsSlugs } });
-    const optionsNames: string[] = [];
-    for await (const option of options) {
-      const optionName = getFieldLocale(option.nameI18n);
-      optionsNames.push(optionName);
-    }
-    readableValue = optionsNames.join(', ');
-  }
-
-  return {
-    selectedOptionsSlugs,
-    text,
-    number,
-    valueType,
-    isText,
-    isNumber,
-    isOptions,
-    value: text || number || selectedOptionsSlugs,
-    readableValue,
-  };
-}
 
 export async function getProductConnections(
   productId: ObjectIdModel,

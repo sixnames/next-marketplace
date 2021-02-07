@@ -65,7 +65,7 @@ export const seedInitial = async () => {
             [DEFAULT_LOCALE]: option.name,
           },
           slug: option.slug,
-          ...DEFAULT_COUNTERS_OBJECT,
+          options: [],
         };
       });
 
@@ -98,7 +98,7 @@ export const seedInitial = async () => {
           variant: attribute.variant as AttributeVariantModel,
           viewVariant: attribute.viewVariant as AttributeViewVariantModel,
           optionsGroupId: currentOptionsGroup?._id || null,
-          optionsIds: currentOptionsGroup?.optionsIds || [],
+          options: currentOptionsGroup?.options || [],
           nameI18n: {
             [DEFAULT_LOCALE]: attribute.attributeName,
           },

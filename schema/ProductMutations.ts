@@ -20,10 +20,6 @@ import {
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
 } from 'db/collectionNames';
-import {
-  checkIsAllConnectionOptionsUsed,
-  createProductSlugWithConnections,
-} from 'lib/productConnectiosUtils';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -283,7 +279,7 @@ export const ProductMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage, locale } = await getRequestParams(context);
+          const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
@@ -298,14 +294,7 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Create new slug for product
-          const { slug } = await createProductSlugWithConnections({
-            product: {
-              ...product,
-              nameI18n: values.nameI18n,
-            },
-            locale,
-          });
+          // TODO Create new slug for product
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -315,7 +304,7 @@ export const ProductMutations = extendType({
             {
               $set: {
                 ...values,
-                slug,
+                slug: 'slug',
                 updatedAt: new Date(),
                 attributes: values.attributes.map((attributeInput) => {
                   const attributeSlugs: string[] = [];
@@ -628,7 +617,7 @@ export const ProductMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage, locale } = await getRequestParams(context);
+          const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,
@@ -689,11 +678,7 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Create new slug for product
-          const { slug } = await createProductSlugWithConnections({
-            product,
-            locale,
-          });
+          // TODO Create new slug for product
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -702,7 +687,7 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                slug,
+                slug: 'slug',
                 updatedAt: new Date(),
               },
             },
@@ -753,7 +738,7 @@ export const ProductMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage, locale } = await getRequestParams(context);
+          const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productConnectionsCollection = db.collection<ProductConnectionModel>(
             COL_PRODUCT_CONNECTIONS,
@@ -773,8 +758,8 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Check if all attribute options are used for connection
-          const allOptionsAreUsed = await checkIsAllConnectionOptionsUsed({ connectionId });
+          // TODO Check if all attribute options are used for connection
+          const allOptionsAreUsed = false;
           if (allOptionsAreUsed) {
             return {
               success: false,
@@ -851,11 +836,7 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Create new slug for added product
-          const { slug } = await createProductSlugWithConnections({
-            product: addProduct,
-            locale,
-          });
+          // TODO Create new slug for added product
 
           // Update product with new slug
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -864,7 +845,7 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                slug,
+                slug: 'slug',
                 updatedAt: new Date(),
               },
             },

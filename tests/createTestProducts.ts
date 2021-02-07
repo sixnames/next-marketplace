@@ -10,7 +10,6 @@ import {
 } from 'config/common';
 import { ObjectId } from 'mongodb';
 import { setCollectionItemId } from 'lib/itemIdUtils';
-import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
 import { getDatabase } from 'db/mongodb';
 import path from 'path';
 import { findOrCreateTestAsset } from 'lib/s3';
@@ -392,15 +391,12 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
   // Get updated slugs for products in connection
   // A
-  const connectionProductASlug = await createProductSlugWithConnections({
-    product: connectionProductA,
-    locale: DEFAULT_LOCALE,
-  });
+  const connectionProductASlug = 'connectionProductASlug';
   const updatedConnectionProductAOperation = await productsCollection.findOneAndUpdate(
     { _id: connectionProductA._id },
     {
       $set: {
-        slug: connectionProductASlug.slug,
+        slug: connectionProductASlug,
       },
     },
     {
@@ -413,15 +409,12 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const updatedConnectionProductA = updatedConnectionProductAOperation.value;
 
   // B
-  const connectionProductBSlug = await createProductSlugWithConnections({
-    product: connectionProductB,
-    locale: DEFAULT_LOCALE,
-  });
+  const connectionProductBSlug = 'connectionProductBSlug';
   const updatedConnectionProductBOperation = await productsCollection.findOneAndUpdate(
     { _id: connectionProductB._id },
     {
       $set: {
-        slug: connectionProductBSlug.slug,
+        slug: connectionProductBSlug,
       },
     },
     { returnOriginal: false },
@@ -432,15 +425,12 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const updatedConnectionProductB = updatedConnectionProductBOperation.value;
 
   // C
-  const connectionProductCSlug = await createProductSlugWithConnections({
-    product: connectionProductC,
-    locale: DEFAULT_LOCALE,
-  });
+  const connectionProductCSlug = 'connectionProductCSlug';
   const updatedConnectionProductCOperation = await productsCollection.findOneAndUpdate(
     { _id: connectionProductC._id },
     {
       $set: {
-        slug: connectionProductCSlug.slug,
+        slug: connectionProductCSlug,
       },
     },
     { returnOriginal: false },

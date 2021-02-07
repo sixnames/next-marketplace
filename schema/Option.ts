@@ -19,13 +19,11 @@ export const Option = objectType({
     t.nonNull.json('nameI18n');
     t.string('color');
     t.string('icon');
-    t.nonNull.json('views');
-    t.nonNull.json('priorities');
-    t.field('gender', {
-      type: 'Gender',
-    });
     t.list.nonNull.field('variants', {
       type: 'OptionVariant',
+    });
+    t.nonNull.list.nonNull.field('options', {
+      type: 'Option',
     });
 
     // Option name translation field resolver

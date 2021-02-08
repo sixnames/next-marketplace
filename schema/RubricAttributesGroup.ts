@@ -1,3 +1,4 @@
+import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
 
@@ -15,13 +16,22 @@ export const RubricOption = objectType({
       type: 'OptionVariant',
     });
     t.nonNull.list.nonNull.field('options', {
-      type: 'Option',
+      type: 'RubricOption',
     });
 
-    // Option name translation field resolver
+    // RubricOption shopProductsCount field resolver
+    t.nonNull.field('shopProductsCount', {
+      type: 'Int',
+      resolve: async (source, _args, context): Promise<number> => {
+        const { getCityData } = await getRequestParams(context);
+        return noNaN(getCityData(source.shopProductsCountCities));
+      },
+    });
+
+    // RubricOption name translation field resolver
     t.nonNull.field('name', {
       type: 'String',
-      resolve: async (source, _args, context) => {
+      resolve: async (source, _args, context): Promise<string> => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
@@ -52,6 +62,15 @@ export const RubricAttribute = objectType({
     });
     t.field('metric', {
       type: 'Metric',
+    });
+
+    // RubricAttribute name translation field resolver
+    t.nonNull.field('name', {
+      type: 'String',
+      resolve: async (source, _args, context) => {
+        const { getI18nLocale } = await getRequestParams(context);
+        return getI18nLocale(source.nameI18n);
+      },
     });
   },
 });

@@ -1,4 +1,5 @@
-import { OptionModel } from 'db/dbModels';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { OptionModel, RubricOptionModel } from 'db/dbModels';
 
 export interface FindOptionInGroupInterface {
   options: OptionModel[];
@@ -64,5 +65,34 @@ export function deleteOptionFromTree({
       };
     }
     return treeOption;
+  });
+}
+
+export function castOptionsForRubric(options: OptionModel[]): RubricOptionModel[] {
+  return options.map((option) => {
+    return {
+      ...option,
+      ...DEFAULT_COUNTERS_OBJECT,
+      shopProductsCountCities: {},
+      options: castOptionsForRubric(option.options),
+    };
+  });
+}
+
+export interface CastOptionsForAttributeInterface {
+  options: OptionModel[];
+  attributeSlug: string;
+}
+
+export function castOptionsForAttribute({
+  options,
+  attributeSlug,
+}: CastOptionsForAttributeInterface): OptionModel[] {
+  return options.map((option) => {
+    return {
+      ...option,
+      slug: `${attributeSlug}-${option.slug}`,
+      options: castOptionsForAttribute({ options: option.options, attributeSlug }),
+    };
   });
 }

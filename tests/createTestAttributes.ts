@@ -1,4 +1,5 @@
 import { getDatabase } from 'db/mongodb';
+import { castOptionsForAttribute } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import { createTestOptions, CreateTestOptionsInterface } from 'tests/createTestOptions';
 import {
@@ -126,31 +127,39 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
 
   // Wine features
   const attributeWineCombinationsId = new ObjectId();
+  const attributeWineCombinationsSlug = 'combinations';
   const attributeWineCombinations: AttributeModel = {
     _id: attributeWineCombinationsId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Сочетание',
       [SECONDARY_LOCALE]: 'Combinations',
     },
-    slug: 'combinations',
+    slug: attributeWineCombinationsSlug,
     variant: attributeVariantMultipleSelect,
     viewVariant: attributeViewVariantIcon,
     optionsGroupId: optionsGroupCombination._id,
-    options: optionsCombination,
+    options: castOptionsForAttribute({
+      options: optionsCombination,
+      attributeSlug: attributeWineCombinationsSlug,
+    }),
   };
 
   const attributeWineVintageId = new ObjectId();
+  const attributeWineVintageSlug = 'vintaz_vina';
   const attributeWineVintage: AttributeModel = {
     _id: attributeWineVintageId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Винтаж вина',
       [SECONDARY_LOCALE]: 'Wine vintage',
     },
-    slug: 'vintaz_vina',
+    slug: attributeWineVintageSlug,
     variant: attributeVariantSelect,
     viewVariant: attributeViewVariantList,
     optionsGroupId: optionsGroupWineVintage._id,
-    options: optionsVintage,
+    options: castOptionsForAttribute({
+      options: optionsVintage,
+      attributeSlug: attributeWineVintageSlug,
+    }),
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleAfterKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleAfterKeyword,
@@ -158,17 +167,21 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   const attributeWineColorId = new ObjectId();
+  const attributeWineColorSlug = 'tsvet_vina';
   const attributeWineColor: AttributeModel = {
     _id: attributeWineColorId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Цвет вина',
       [SECONDARY_LOCALE]: 'Wine color',
     },
-    slug: 'tsvet_vina',
+    slug: attributeWineColorSlug,
     variant: attributeVariantMultipleSelect,
     viewVariant: attributeViewVariantTag,
     optionsGroupId: optionsGroupColors._id,
-    options: optionsColor,
+    options: castOptionsForAttribute({
+      options: optionsColor,
+      attributeSlug: attributeWineColorSlug,
+    }),
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleBeforeKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleBeforeKeyword,
@@ -176,17 +189,21 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   const attributeWineVariantId = new ObjectId();
+  const attributeWineVariantSlug = 'tip_vina';
   const attributeWineVariant: AttributeModel = {
     _id: attributeWineVariantId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Тип вина',
       [SECONDARY_LOCALE]: 'Wine type',
     },
-    slug: 'tip_vina',
+    slug: attributeWineVariantSlug,
     variant: attributeVariantSelect,
     viewVariant: attributeViewVariantList,
     optionsGroupId: optionsGroupWineVariants._id,
-    options: optionsWineVariant,
+    options: castOptionsForAttribute({
+      options: optionsWineVariant,
+      attributeSlug: attributeWineVariantSlug,
+    }),
     positioningInTitle: {
       [DEFAULT_LOCALE]: attributePositionInTitleReplaceKeyword,
       [SECONDARY_LOCALE]: attributePositionInTitleReplaceKeyword,

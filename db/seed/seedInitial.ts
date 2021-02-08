@@ -47,6 +47,7 @@ import brandsData from 'db/seedData/brands.json';
 import manufacturersData from 'db/seedData/manufacturers.json';
 import rubricsData from 'db/seedData/rubrics.json';
 import { getNextItemId } from 'lib/itemIdUtils';
+import { castOptionsForRubric } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 
 export const seedInitial = async () => {
@@ -254,12 +255,7 @@ export const seedInitial = async () => {
             ...attribute,
             showInCatalogueNav: visible,
             showInCatalogueFilter: visible,
-            options: attribute.options.map((option) => {
-              return {
-                ...option,
-                ...DEFAULT_COUNTERS_OBJECT,
-              };
-            }),
+            options: castOptionsForRubric(attribute.options),
             ...DEFAULT_COUNTERS_OBJECT,
           });
         });

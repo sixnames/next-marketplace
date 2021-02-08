@@ -377,15 +377,15 @@ export interface NexusGenInputs {
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  GetAllRubricsInput: {
+    // input type
+    excludedRubricsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
+  };
   GetProductShopsInput: {
     // input type
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     sortBy: string | null; // String
     sortDir: NexusGenEnums['SortDirection'] | null; // SortDirection
-  };
-  GetRubricsTreeInput: {
-    // input type
-    excludedRubricsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
   };
   MakeAnOrderInput: {
     // input type
@@ -1601,6 +1601,7 @@ export interface NexusGenFieldTypes {
     getAllOrders: NexusGenRootTypes['OrdersPaginationPayload']; // OrdersPaginationPayload!
     getAllRoles: NexusGenRootTypes['Role'][]; // [Role!]!
     getAllRubricVariants: NexusGenRootTypes['RubricVariant'][]; // [RubricVariant!]!
+    getAllRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
     getAllUsers: NexusGenRootTypes['UsersPaginationPayload']; // UsersPaginationPayload!
     getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -1637,7 +1638,6 @@ export interface NexusGenFieldTypes {
     getRubric: NexusGenRootTypes['Rubric']; // Rubric!
     getRubricBySlug: NexusGenRootTypes['Rubric']; // Rubric!
     getRubricVariant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
-    getRubricsTree: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getSessionCart: NexusGenRootTypes['Cart']; // Cart!
     getSessionCities: NexusGenRootTypes['City'][]; // [City!]!
     getSessionCurrency: string; // String!
@@ -1692,6 +1692,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     metric: NexusGenRootTypes['Metric'] | null; // Metric
+    name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -1758,8 +1759,9 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    options: NexusGenRootTypes['Option'][]; // [Option!]!
+    options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    shopProductsCount: number; // Int!
     slug: string; // String!
     variants: NexusGenRootTypes['OptionVariant'][] | null; // [OptionVariant!]
     views: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2722,6 +2724,7 @@ export interface NexusGenFieldTypeNames {
     getAllOrders: 'OrdersPaginationPayload';
     getAllRoles: 'Role';
     getAllRubricVariants: 'RubricVariant';
+    getAllRubrics: 'Rubric';
     getAllShops: 'ShopsPaginationPayload';
     getAllUsers: 'UsersPaginationPayload';
     getAttributePositioningOptions: 'SelectOption';
@@ -2758,7 +2761,6 @@ export interface NexusGenFieldTypeNames {
     getRubric: 'Rubric';
     getRubricBySlug: 'Rubric';
     getRubricVariant: 'RubricVariant';
-    getRubricsTree: 'Rubric';
     getSessionCart: 'Cart';
     getSessionCities: 'City';
     getSessionCurrency: 'String';
@@ -2813,6 +2815,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     metric: 'Metric';
+    name: 'String';
     nameI18n: 'JSONObject';
     options: 'RubricOption';
     optionsGroupId: 'ObjectId';
@@ -2879,8 +2882,9 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    options: 'Option';
+    options: 'RubricOption';
     priorities: 'JSONObject';
+    shopProductsCount: 'Int';
     slug: 'String';
     variants: 'OptionVariant';
     views: 'JSONObject';
@@ -3462,6 +3466,10 @@ export interface NexusGenArgTypes {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
+    getAllRubrics: {
+      // args
+      input: NexusGenInputs['GetAllRubricsInput'] | null; // GetAllRubricsInput
+    };
     getAllShops: {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
@@ -3562,10 +3570,6 @@ export interface NexusGenArgTypes {
     getRubricVariant: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    getRubricsTree: {
-      // args
-      input: NexusGenInputs['GetRubricsTreeInput'] | null; // GetRubricsTreeInput
     };
     getShop: {
       // args

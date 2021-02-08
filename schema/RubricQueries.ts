@@ -5,8 +5,8 @@ import { COL_RUBRICS } from 'db/collectionNames';
 import { RUBRIC_LEVEL_ONE, SORT_ASC, SORT_DESC } from 'config/common';
 import { getRequestParams } from 'lib/sessionHelpers';
 
-export const GetRubricsTreeInput = inputObjectType({
-  name: 'GetRubricsTreeInput',
+export const GetAllRubricsInput = inputObjectType({
+  name: 'GetAllRubricsInput',
   definition(t) {
     t.list.nonNull.field('excludedRubricsIds', {
       type: 'ObjectId',
@@ -58,11 +58,11 @@ export const RubricQueries = extendType({
     });
 
     // Should return rubrics tree
-    t.nonNull.list.nonNull.field('getRubricsTree', {
+    t.nonNull.list.nonNull.field('getAllRubrics', {
       type: 'Rubric',
       args: {
         input: arg({
-          type: 'GetRubricsTreeInput',
+          type: 'GetAllRubricsInput',
           default: {},
         }),
       },
@@ -74,10 +74,7 @@ export const RubricQueries = extendType({
         const excludedIds = input?.excludedRubricsIds || [];
 
         const levelOneRubrics = await rubricsCollection
-          .find(
-            { level: RUBRIC_LEVEL_ONE, _id: { $nin: excludedIds } },
-            { sort: { itemId: SORT_ASC } },
-          )
+          .find({ _id: { $nin: excludedIds } }, { sort: { itemId: SORT_ASC } })
           .toArray();
 
         return levelOneRubrics;

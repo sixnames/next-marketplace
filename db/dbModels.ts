@@ -457,6 +457,10 @@ export interface ProductAttributeModel {
   number?: number | null;
 }
 
+export interface CitiesCounterModel {
+  [key: string]: number;
+}
+
 export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   active: boolean;
   slug: string;
@@ -470,10 +474,11 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
   archive: boolean;
+  selectedOptionsSlugs: string[];
   shopProductsIds: ObjectIdModel[];
-  shopProductsCountCities: TranslationModel;
-  minPriceCities: TranslationModel;
-  maxPriceCities: TranslationModel;
+  shopProductsCountCities: CitiesCounterModel;
+  minPriceCities: CitiesCounterModel;
+  maxPriceCities: CitiesCounterModel;
 }
 
 export interface ProductCardPricesModel {
@@ -541,7 +546,10 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel {}
+export interface RubricOptionModel extends OptionModel, CountersModel {
+  shopProductsCountCities: CitiesCounterModel;
+  options: RubricOptionModel[];
+}
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
   _id: ObjectIdModel;

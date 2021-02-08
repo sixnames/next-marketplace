@@ -47,11 +47,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     attributeWineCombinations,
     optionsSlugsCombination,
     attributeNumber,
-    optionsSlugsColor,
-    optionsSlugsWineVariant,
     rubricA,
     rubricB,
-    optionsSlugsVintage,
     brandA,
     brandB,
     brandC,
@@ -202,10 +199,16 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     secondaryLocaleName,
     active = true,
     itemId,
-  }: CreateTestProductInterface) {
+  }: CreateTestProductInterface): Promise<ProductModel> {
     const defaultDescription = 'defaultDescription';
     const secondaryDescription = 'secondaryDescription';
     const slug = generateSlug(defaultLocaleName);
+
+    const selectedOptionsSlugs = [
+      `${wineColorOptionsSlug}`,
+      `${wineTypeOptionsSlug}`,
+      `${wineVintageOptionsSlug}`,
+    ];
 
     const localFilePath = path.join(process.cwd(), 'tests', 'mockAssets', 'test-product-0.png');
     const s3Url = await findOrCreateTestAsset({
@@ -240,6 +243,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       shopProductsCountCities: {},
       minPriceCities: {},
       maxPriceCities: {},
+      selectedOptionsSlugs,
       rubricsIds,
       brandSlug,
       brandCollectionSlug,
@@ -255,8 +259,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   }
 
   const productA = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[2],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[2].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandA.slug,
     brandCollectionSlug: brandCollectionA.slug,
@@ -267,8 +271,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productB = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[2],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[2],
+    wineColorOptionsSlug: attributeWineColor.options[2].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[2].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandB.slug,
     brandCollectionSlug: brandCollectionB.slug,
@@ -280,8 +284,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productC = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[0],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[0],
+    wineColorOptionsSlug: attributeWineColor.options[0].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[0].slug,
     rubricsIds: [rubricB._id],
     brandSlug: brandA.slug,
     brandCollectionSlug: brandCollectionA.slug,
@@ -292,8 +296,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productD = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[1],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandB.slug,
     brandCollectionSlug: brandCollectionB.slug,
@@ -304,8 +308,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productF = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[1],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
     rubricsIds: [rubricA._id],
     manufacturerSlug: manufacturerA.slug,
     defaultLocaleName: `Product F ${DEFAULT_LOCALE}`,
@@ -314,9 +318,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const connectionProductA = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[1],
-    wineVintageOptionsSlug: optionsSlugsVintage[0],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
+    wineVintageOptionsSlug: attributeWineVintage.options[0].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
@@ -327,9 +331,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const connectionProductB = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[1],
-    wineVintageOptionsSlug: optionsSlugsVintage[1],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
+    wineVintageOptionsSlug: attributeWineVintage.options[1].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
@@ -340,9 +344,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const connectionProductC = await createTestProduct({
-    wineColorOptionsSlug: optionsSlugsColor[1],
-    wineTypeOptionsSlug: optionsSlugsWineVariant[1],
-    wineVintageOptionsSlug: optionsSlugsVintage[2],
+    wineColorOptionsSlug: attributeWineColor.options[1].slug,
+    wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
+    wineVintageOptionsSlug: attributeWineVintage.options[2].slug,
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,

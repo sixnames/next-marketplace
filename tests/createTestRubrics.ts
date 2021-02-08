@@ -1,4 +1,5 @@
 import { getDatabase } from 'db/mongodb';
+import { castOptionsForRubric } from 'lib/optionsUtils';
 import {
   createTestRubricVariants,
   CreateTestRubricVariantsInterface,
@@ -70,12 +71,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
         ...attribute,
         showInCatalogueFilter: visible,
         showInCatalogueNav: visible,
-        options: attribute.options.map((option) => {
-          return {
-            ...option,
-            ...DEFAULT_COUNTERS_OBJECT,
-          };
-        }),
+        options: castOptionsForRubric(attribute.options),
         ...DEFAULT_COUNTERS_OBJECT,
       };
     });
@@ -113,9 +109,9 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricADefaultName,
     [SECONDARY_LOCALE]: 'Wine',
   };
-  const rubricLevelOneAId = new ObjectId();
+  const rubricAId = new ObjectId();
   const rubricA: RubricModel = {
-    _id: rubricLevelOneAId,
+    _id: rubricAId,
     nameI18n: rubricAName,
     slug: generateDefaultLangSlug(rubricAName),
     variantId: rubricVariantAlcohol._id,
@@ -146,9 +142,9 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricBDefaultName,
     [SECONDARY_LOCALE]: 'Champagne',
   };
-  const rubricLevelOneBId = new ObjectId();
+  const rubricBId = new ObjectId();
   const rubricB: RubricModel = {
-    _id: rubricLevelOneBId,
+    _id: rubricBId,
     nameI18n: rubricBName,
     slug: generateDefaultLangSlug(rubricBName),
     variantId: rubricVariantAlcohol._id,
@@ -185,9 +181,9 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricCDefaultName,
     [SECONDARY_LOCALE]: 'Whiskey',
   };
-  const rubricLevelOneCId = new ObjectId();
+  const rubricCId = new ObjectId();
   const rubricC: RubricModel = {
-    _id: rubricLevelOneCId,
+    _id: rubricCId,
     nameI18n: rubricCName,
     slug: generateDefaultLangSlug(rubricCName),
     variantId: rubricVariantAlcohol._id,
@@ -218,9 +214,9 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricDDefaultName,
     [SECONDARY_LOCALE]: 'Cognac',
   };
-  const rubricLevelOneDId = new ObjectId();
+  const rubricDId = new ObjectId();
   const rubricD: RubricModel = {
-    _id: rubricLevelOneDId,
+    _id: rubricDId,
     nameI18n: rubricDName,
     slug: generateDefaultLangSlug(rubricDName),
     variantId: rubricVariantAlcohol._id,

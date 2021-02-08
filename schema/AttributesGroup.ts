@@ -1,3 +1,4 @@
+import { castOptionsForAttribute } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -480,11 +481,9 @@ export const attributesGroupMutations = extendType({
             const optionsGroup = await optionsGroupsCollection.findOne({
               _id: values.optionsGroupId,
             });
-            options = (optionsGroup?.options || []).map((option) => {
-              return {
-                ...option,
-                slug: `${slug}-${option.slug}`,
-              };
+            options = castOptionsForAttribute({
+              options: optionsGroup?.options || [],
+              attributeSlug: slug,
             });
           }
 
@@ -618,11 +617,9 @@ export const attributesGroupMutations = extendType({
             const optionsGroup = await optionsGroupsCollection.findOne({
               _id: values.optionsGroupId,
             });
-            options = (optionsGroup?.options || []).map((option) => {
-              return {
-                ...option,
-                slug: `${attribute.slug}-${option.slug}`,
-              };
+            options = castOptionsForAttribute({
+              options: optionsGroup?.options || [],
+              attributeSlug: attribute.slug,
             });
           }
 

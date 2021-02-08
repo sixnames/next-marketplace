@@ -220,6 +220,7 @@ export const ProductMutations = extendType({
             shopProductsCountCities: {},
             minPriceCities: {},
             maxPriceCities: {},
+            selectedOptionsSlugs: [],
             createdAt: new Date(),
             updatedAt: new Date(),
             attributes: values.attributes.map((attributeInput) => {

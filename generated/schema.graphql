@@ -640,14 +640,14 @@ enum Gender {
   she
 }
 
+input GetAllRubricsInput {
+  excludedRubricsIds: [ObjectId!]
+}
+
 input GetProductShopsInput {
   productId: ObjectId!
   sortBy: String = "price"
   sortDir: SortDirection = DESC
-}
-
-input GetRubricsTreeInput {
-  excludedRubricsIds: [ObjectId!]
 }
 
 """
@@ -1732,6 +1732,11 @@ type Query {
   getAllRubricVariants: [RubricVariant!]!
 
   """
+  Should return rubrics tree
+  """
+  getAllRubrics(input: GetAllRubricsInput = {}): [Rubric!]!
+
+  """
   Should return shop by given slug
   """
   getAllShops(input: PaginationInput): ShopsPaginationPayload!
@@ -1911,11 +1916,6 @@ type Query {
   getRubricVariant(_id: ObjectId!): RubricVariant!
 
   """
-  Should return rubrics tree
-  """
-  getRubricsTree(input: GetRubricsTreeInput = {}): [Rubric!]!
-
-  """
   Should return session user cart
   """
   getSessionCart: Cart!
@@ -2004,6 +2004,7 @@ type Rubric {
 type RubricAttribute {
   _id: ObjectId!
   metric: Metric
+  name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
   optionsGroupId: ObjectId
@@ -2077,8 +2078,9 @@ type RubricOption {
   icon: String
   name: String!
   nameI18n: JSONObject!
-  options: [Option!]!
+  options: [RubricOption!]!
   priorities: JSONObject!
+  shopProductsCount: Int!
   slug: String!
   variants: [OptionVariant!]
   views: JSONObject!

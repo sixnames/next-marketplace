@@ -1,3 +1,4 @@
+import { castOptionsForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -415,12 +416,7 @@ export const RubricMutations = extendType({
                       ...attribute,
                       showInCatalogueFilter: visible,
                       showInCatalogueNav: visible,
-                      options: attribute.options.map((option) => {
-                        return {
-                          ...option,
-                          ...DEFAULT_COUNTERS_OBJECT,
-                        };
-                      }),
+                      options: castOptionsForRubric(attribute.options),
                       ...DEFAULT_COUNTERS_OBJECT,
                     };
                   }),

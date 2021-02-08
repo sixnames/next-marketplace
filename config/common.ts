@@ -171,6 +171,9 @@ export const SORT_DESC = -1;
 export const SORT_DESC_STR = 'DESC';
 
 // CATALOGUE
+export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
+export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
+export const CATALOGUE_FILTER_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';

@@ -325,3 +325,47 @@ export async function updateOptionsList({
     return false;
   }
 }
+
+export interface GetRubricCatalogueAttributesInterface {
+  city: string;
+  rubricSlug: string;
+  attributes: RubricAttributeModel[];
+  maxVisibleOptions: number;
+}
+
+export function getRubricCatalogueAttributes({
+  city,
+  attributes,
+  maxVisibleOptions,
+}: GetRubricCatalogueAttributesInterface): RubricAttributeModel[] {
+  const visibleAttributes = attributes.filter(
+    ({ visibleInCatalogueCities, showInCatalogueNav }) => {
+      return visibleInCatalogueCities[city] && showInCatalogueNav;
+    },
+  );
+
+  const sortedAttributes: RubricAttributeModel[] = [];
+  visibleAttributes.forEach((attribute) => {
+    const visibleOptions = attribute.options.filter(({ visibleInCatalogueCities }) => {
+      return visibleInCatalogueCities[city];
+    });
+
+    const sortedOptions = visibleOptions
+      .sort((optionA, optionB) => {
+        const optionACounter =
+          noNaN(optionA.views[city]) +
+          noNaN(optionA.priorities[city]) +
+          noNaN(optionA.shopProductsCountCities[city]);
+        const optionBCounter =
+          noNaN(optionB.views[city]) +
+          noNaN(optionB.priorities[city]) +
+          noNaN(optionA.shopProductsCountCities[city]);
+        return optionBCounter - optionACounter;
+      })
+      .slice(0, maxVisibleOptions);
+
+    sortedAttributes.push({ ...attribute, options: sortedOptions });
+  });
+
+  return sortedAttributes;
+}

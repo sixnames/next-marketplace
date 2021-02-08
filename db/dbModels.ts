@@ -594,21 +594,6 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   variantId: ObjectIdModel;
 }
 
-export interface RubricNavItemAttributeOptionModel {
-  _id: ObjectIdModel;
-  slug: string;
-  name: string;
-  isDisabled: boolean;
-  counter: number;
-}
-
-export interface RubricNavItemAttributeModel {
-  _id: ObjectIdModel;
-  name: string;
-  isDisabled: boolean;
-  options: RubricNavItemAttributeOptionModel[];
-}
-
 export interface ShopProductModel extends TimestampModel {
   _id: ObjectIdModel;
   available: number;

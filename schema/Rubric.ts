@@ -1,39 +1,19 @@
+import { CATALOGUE_NAV_VISIBLE_OPTIONS, DEFAULT_LOCALE } from 'config/common';
 import { noNaN } from 'lib/numbers';
+import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributesGroupModel,
+  ConfigModel,
   ProductsPaginationPayloadModel,
+  RubricAttributeModel,
   RubricAttributesGroupModel,
-  RubricNavItemAttributeModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_CONFIGS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
-
-export const RubricNavItemAttributeOption = objectType({
-  name: 'RubricNavItemAttributeOption',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('slug');
-    t.nonNull.string('name');
-    t.nonNull.boolean('isDisabled');
-    t.nonNull.int('counter');
-  },
-});
-
-export const RubricNavItemAttribute = objectType({
-  name: 'RubricNavItemAttribute',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('name');
-    t.nonNull.boolean('isDisabled');
-    t.nonNull.list.nonNull.field('options', {
-      type: 'RubricNavItemAttributeOption',
-    });
-  },
-});
 
 export const RubricProductsCountersInput = inputObjectType({
   name: 'RubricProductsCountersInput',
@@ -176,13 +156,39 @@ export const Rubric = objectType({
       },
     });
 
-    // TODO optimize
     // Rubric navItems field resolver
     t.nonNull.list.nonNull.field('navItems', {
-      type: 'RubricNavItemAttribute',
-      resolve: async (): Promise<RubricNavItemAttributeModel[]> => {
+      type: 'RubricAttribute',
+      resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
         try {
-          return [];
+          const { city } = await getRequestParams(context);
+          const db = await getDatabase();
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          // Get nav config
+          const config = await configsCollection.findOne({ slug: 'stickyNavVisibleOptionsCount' });
+          let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
+          if (config) {
+            const configCityData = config.cities[city];
+            if (configCityData && configCityData[DEFAULT_LOCALE]) {
+              maxVisibleOptions =
+                configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
+            }
+          }
+
+          const visibleAttributes = source.attributes.filter(
+            ({ visibleInCatalogueCities, showInCatalogueNav }) => {
+              return visibleInCatalogueCities[city] && showInCatalogueNav;
+            },
+          );
+
+          const catalogueAttributes = getRubricCatalogueAttributes({
+            attributes: visibleAttributes,
+            rubricSlug: source.slug,
+            city,
+            maxVisibleOptions: noNaN(maxVisibleOptions),
+          });
+
+          return catalogueAttributes;
         } catch (e) {
           console.log(e);
           return [];

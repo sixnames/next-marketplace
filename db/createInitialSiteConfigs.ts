@@ -1,5 +1,13 @@
 import { ConfigModel, ConfigVariantModel, StoreFileFormat } from './dbModels';
-import { ASSETS_DIST_CONFIGS, DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import {
+  ASSETS_DIST_CONFIGS,
+  CATALOGUE_FILTER_VISIBLE_ATTRIBUTES,
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  CATALOGUE_NAV_VISIBLE_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+  SECONDARY_LOCALE,
+} from 'config/common';
 import { getDatabase } from './mongodb';
 import { COL_CONFIGS } from './collectionNames';
 import { Collection } from 'mongodb';
@@ -312,7 +320,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['3'],
+          [DEFAULT_LOCALE]: [CATALOGUE_NAV_VISIBLE_OPTIONS],
         },
       },
     },
@@ -329,7 +337,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['3'],
+          [DEFAULT_LOCALE]: [CATALOGUE_FILTER_VISIBLE_OPTIONS],
         },
       },
     },
@@ -346,7 +354,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['5'],
+          [DEFAULT_LOCALE]: [CATALOGUE_FILTER_VISIBLE_ATTRIBUTES],
         },
       },
     },

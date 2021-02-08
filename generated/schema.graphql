@@ -1990,7 +1990,7 @@ type Rubric {
   descriptionI18n: JSONObject!
   name: String!
   nameI18n: JSONObject!
-  navItems: [RubricNavItemAttribute!]!
+  navItems: [RubricAttribute!]!
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   productsCount: Int!
@@ -2048,21 +2048,6 @@ input RubricCatalogueTitleInput {
   gender: Gender!
   keywordI18n: JSONObject!
   prefixI18n: JSONObject
-}
-
-type RubricNavItemAttribute {
-  _id: ObjectId!
-  isDisabled: Boolean!
-  name: String!
-  options: [RubricNavItemAttributeOption!]!
-}
-
-type RubricNavItemAttributeOption {
-  _id: ObjectId!
-  counter: Int!
-  isDisabled: Boolean!
-  name: String!
-  slug: String!
 }
 
 type RubricOption {

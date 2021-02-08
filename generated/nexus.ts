@@ -784,8 +784,6 @@ export interface NexusGenObjects {
   RubricAttribute: dbModels.RubricAttributeModel;
   RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
   RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
-  RubricNavItemAttribute: dbModels.RubricNavItemAttributeModel;
-  RubricNavItemAttributeOption: dbModels.RubricNavItemAttributeOptionModel;
   RubricOption: dbModels.RubricOptionModel;
   RubricPayload: dbModels.RubricPayloadModel;
   RubricVariant: dbModels.RubricVariantModel;
@@ -1676,7 +1674,7 @@ export interface NexusGenFieldTypes {
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    navItems: NexusGenRootTypes['RubricNavItemAttribute'][]; // [RubricNavItemAttribute!]!
+    navItems: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     productsCount: number; // Int!
@@ -1727,21 +1725,6 @@ export interface NexusGenFieldTypes {
     keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
     prefix: string | null; // String
     prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-  };
-  RubricNavItemAttribute: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    isDisabled: boolean; // Boolean!
-    name: string; // String!
-    options: NexusGenRootTypes['RubricNavItemAttributeOption'][]; // [RubricNavItemAttributeOption!]!
-  };
-  RubricNavItemAttributeOption: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    counter: number; // Int!
-    isDisabled: boolean; // Boolean!
-    name: string; // String!
-    slug: string; // String!
   };
   RubricOption: {
     // field return type
@@ -2797,7 +2780,7 @@ export interface NexusGenFieldTypeNames {
     descriptionI18n: 'JSONObject';
     name: 'String';
     nameI18n: 'JSONObject';
-    navItems: 'RubricNavItemAttribute';
+    navItems: 'RubricAttribute';
     priorities: 'JSONObject';
     products: 'ProductsPaginationPayload';
     productsCount: 'Int';
@@ -2848,21 +2831,6 @@ export interface NexusGenFieldTypeNames {
     keywordI18n: 'JSONObject';
     prefix: 'String';
     prefixI18n: 'JSONObject';
-  };
-  RubricNavItemAttribute: {
-    // field return type name
-    _id: 'ObjectId';
-    isDisabled: 'Boolean';
-    name: 'String';
-    options: 'RubricNavItemAttributeOption';
-  };
-  RubricNavItemAttributeOption: {
-    // field return type name
-    _id: 'ObjectId';
-    counter: 'Int';
-    isDisabled: 'Boolean';
-    name: 'String';
-    slug: 'String';
   };
   RubricOption: {
     // field return type name

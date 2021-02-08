@@ -1786,7 +1786,7 @@ type Query {
   ): CatalogueData
 
   """
-  Should return catalogue nav rubrics tree
+  Should return catalogue nav rubrics
   """
   getCatalogueNavRubrics: [Rubric!]!
 
@@ -2065,16 +2065,21 @@ type RubricNavItemAttributeOption {
 
 type RubricOption {
   _id: ObjectId!
+  activeProductsCount: Int!
   color: String
   icon: String
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
   priorities: JSONObject!
+  productsCount: Int!
   shopProductsCount: Int!
+  shopProductsCountCities: JSONObject!
   slug: String!
   variants: [OptionVariant!]
   views: JSONObject!
+  visibleInNav: Boolean!
+  visibleInNavCities: JSONObject!
 }
 
 type RubricPayload implements Payload {

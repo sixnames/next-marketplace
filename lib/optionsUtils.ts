@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, RUBRIC_DEFAULT_COUNTERS } from 'config/common';
 import { OptionModel, RubricOptionModel } from 'db/dbModels';
 
 export interface FindOptionInGroupInterface {
@@ -124,7 +124,7 @@ export function castOptionsForRubric(options: OptionModel[]): RubricOptionModel[
     return {
       ...option,
       ...DEFAULT_COUNTERS_OBJECT,
-      shopProductsCountCities: {},
+      ...RUBRIC_DEFAULT_COUNTERS,
       options: castOptionsForRubric(option.options),
     };
   });

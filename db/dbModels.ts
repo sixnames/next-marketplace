@@ -551,8 +551,11 @@ export interface RubricVariantModel {
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel {
-  shopProductsCountCities: CitiesCounterModel;
   options: RubricOptionModel[];
+  shopProductsCountCities: CitiesCounterModel;
+  productsCount: number;
+  activeProductsCount: number;
+  visibleInNavCities: CitiesBooleanModel;
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {

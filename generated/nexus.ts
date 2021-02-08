@@ -1744,16 +1744,21 @@ export interface NexusGenFieldTypes {
   RubricOption: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    activeProductsCount: number; // Int!
     color: string | null; // String
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    productsCount: number; // Int!
     shopProductsCount: number; // Int!
+    shopProductsCountCities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenRootTypes['OptionVariant'][] | null; // [OptionVariant!]
     views: NexusGenScalars['JSONObject']; // JSONObject!
+    visibleInNav: boolean; // Boolean!
+    visibleInNavCities: NexusGenScalars['JSONObject']; // JSONObject!
   };
   RubricPayload: {
     // field return type
@@ -2858,16 +2863,21 @@ export interface NexusGenFieldTypeNames {
   RubricOption: {
     // field return type name
     _id: 'ObjectId';
+    activeProductsCount: 'Int';
     color: 'String';
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
     options: 'RubricOption';
     priorities: 'JSONObject';
+    productsCount: 'Int';
     shopProductsCount: 'Int';
+    shopProductsCountCities: 'JSONObject';
     slug: 'String';
     variants: 'OptionVariant';
     views: 'JSONObject';
+    visibleInNav: 'Boolean';
+    visibleInNavCities: 'JSONObject';
   };
   RubricPayload: {
     // field return type name

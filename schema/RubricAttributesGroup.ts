@@ -12,6 +12,10 @@ export const RubricOption = objectType({
     t.string('icon');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
+    t.nonNull.int('productsCount');
+    t.nonNull.int('activeProductsCount');
+    t.nonNull.json('shopProductsCountCities');
+    t.nonNull.json('visibleInNavCities');
     t.list.nonNull.field('variants', {
       type: 'OptionVariant',
     });
@@ -25,6 +29,15 @@ export const RubricOption = objectType({
       resolve: async (source, _args, context): Promise<number> => {
         const { getCityData } = await getRequestParams(context);
         return noNaN(getCityData(source.shopProductsCountCities));
+      },
+    });
+
+    // RubricOption visibleInNav field resolver
+    t.nonNull.field('visibleInNav', {
+      type: 'Boolean',
+      resolve: async (source, _args, context): Promise<boolean> => {
+        const { getCityData } = await getRequestParams(context);
+        return Boolean(getCityData(source.visibleInNavCities));
       },
     });
 

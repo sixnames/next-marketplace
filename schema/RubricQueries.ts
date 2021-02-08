@@ -81,32 +81,38 @@ export const RubricQueries = extendType({
       },
     });
 
-    // Should return catalogue nav rubrics tree
+    // Should return catalogue nav rubrics
     t.nonNull.list.nonNull.field('getCatalogueNavRubrics', {
       type: 'Rubric',
-      description: 'Should return catalogue nav rubrics tree',
+      description: 'Should return catalogue nav rubrics',
       resolve: async (_root, _args, context): Promise<RubricModel[]> => {
-        const { city } = await getRequestParams(context);
-        const db = await getDatabase();
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        try {
+          // console.log(context ? true : false);
+          const { city } = await getRequestParams(context);
+          const db = await getDatabase();
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-        const rubrics = await rubricsCollection
-          .aggregate([
-            {
-              $match: {
-                [`visibleInNavCities.${city}`]: true,
+          const rubrics = await rubricsCollection
+            .aggregate([
+              {
+                $match: {
+                  [`visibleInNavCities.${city}`]: true,
+                },
               },
-            },
-            {
-              $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priority.${city}`]: SORT_DESC,
+              {
+                $sort: {
+                  [`views.${city}`]: SORT_DESC,
+                  [`priority.${city}`]: SORT_DESC,
+                },
               },
-            },
-          ])
-          .toArray();
+            ])
+            .toArray();
 
-        return rubrics;
+          return rubrics;
+        } catch (e) {
+          console.log(e);
+          return [];
+        }
       },
     });
   },

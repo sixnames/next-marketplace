@@ -47,18 +47,32 @@ export async function recalculateRubricOptionProductCounters({
     ])
     .toArray();
 
-  const shopProductsCountCities: CitiesCounterModel = {};
-  aggregationResult.forEach(({ shopProductsCountCities }) => {
+  const optionShopProductsCountCities: CitiesCounterModel = {};
+  const productsCount = aggregationResult.length;
+  let activeProductsCount = 0;
+
+  aggregationResult.forEach(({ shopProductsCountCities, active }) => {
     for (const city of cities) {
       const citySlug = city.slug;
       const productCityCounter = noNaN(shopProductsCountCities[citySlug]);
       if (productCityCounter > 0) {
-        shopProductsCountCities[citySlug] = shopProductsCountCities[citySlug]
-          ? shopProductsCountCities[citySlug] + 1
+        optionShopProductsCountCities[citySlug] = optionShopProductsCountCities[citySlug]
+          ? optionShopProductsCountCities[citySlug] + 1
           : 1;
       }
     }
+
+    if (active) {
+      activeProductsCount = activeProductsCount + 1;
+    }
   });
+
+  const visibleInNavCities: CitiesBooleanModel = {};
+  for (const city of cities) {
+    const citySlug = city.slug;
+    const cityCounter = noNaN(optionShopProductsCountCities[citySlug]);
+    visibleInNavCities[citySlug] = cityCounter > 0;
+  }
 
   const options: RubricOptionModel[] = [];
   for await (const nestedOption of option.options) {
@@ -73,8 +87,11 @@ export async function recalculateRubricOptionProductCounters({
 
   return {
     ...option,
-    shopProductsCountCities,
     options,
+    shopProductsCountCities: optionShopProductsCountCities,
+    productsCount,
+    activeProductsCount,
+    visibleInNavCities,
   };
 }
 

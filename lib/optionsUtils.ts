@@ -6,7 +6,7 @@ export interface FindOptionInGroupInterface {
   condition: (treeOption: OptionModel) => boolean;
 }
 
-export function findOptionInGroup({
+export function findOptionInTree({
   options,
   condition,
 }: FindOptionInGroupInterface): OptionModel | null | undefined {
@@ -17,7 +17,7 @@ export function findOptionInGroup({
     }
 
     if (treeOption.options.length > 0) {
-      option = findOptionInGroup({ options: treeOption.options, condition });
+      option = findOptionInTree({ options: treeOption.options, condition });
     }
 
     if (!option && condition(treeOption)) {
@@ -44,6 +44,57 @@ export function updateOptionInTree({
       return {
         ...treeOption,
         options: updateOptionInTree({ options: treeOption.options, updater, condition }),
+      };
+    }
+    return treeOption;
+  });
+}
+
+export interface FindRubricOptionInGroupInterface {
+  options: RubricOptionModel[];
+  condition: (treeOption: RubricOptionModel) => boolean;
+}
+
+export function findRubricOptionInTree({
+  options,
+  condition,
+}: FindRubricOptionInGroupInterface): RubricOptionModel | null | undefined {
+  let option: RubricOptionModel | null | undefined = null;
+  options.forEach((treeOption) => {
+    if (option) {
+      return;
+    }
+
+    if (treeOption.options.length > 0) {
+      option = findRubricOptionInTree({ options: treeOption.options, condition });
+    }
+
+    if (!option && condition(treeOption)) {
+      option = treeOption;
+    }
+  });
+  return option;
+}
+
+export interface UpdateRubricOptionInGroup {
+  updater: (option: RubricOptionModel) => RubricOptionModel;
+  options: RubricOptionModel[];
+  condition: (treeOption: RubricOptionModel) => boolean;
+}
+
+export function updateRubricOptionInTree({
+  options,
+  updater,
+  condition,
+}: UpdateRubricOptionInGroup): RubricOptionModel[] {
+  return options.map((treeOption) => {
+    if (condition(treeOption)) {
+      return updater(treeOption);
+    }
+    if (treeOption.options.length > 0) {
+      return {
+        ...treeOption,
+        options: updateRubricOptionInTree({ options: treeOption.options, updater, condition }),
       };
     }
     return treeOption;

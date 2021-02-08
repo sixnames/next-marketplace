@@ -1,4 +1,5 @@
-import { deleteOptionFromTree, findOptionInGroup, updateOptionInTree } from 'lib/optionsUtils';
+import { deleteOptionFromTree, findOptionInTree, updateOptionInTree } from 'lib/optionsUtils';
+import { updateOptionsList } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
@@ -413,7 +414,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, parentOptionId, ...values } = input;
 
@@ -442,7 +442,7 @@ export const OptionsGroupMutations = extendType({
 
           // Check if option already exist in the group
           const inputNameKeys = Object.keys(values.nameI18n);
-          const exist = findOptionInGroup({
+          const exist = findOptionInTree({
             options: optionsGroup.options,
             condition: ({ nameI18n }) => {
               return inputNameKeys.some((key) => {
@@ -517,23 +517,17 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update attributes options list
-          const updatedAttributesResult = await attributesCollection.updateMany(
-            { optionsGroupId },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-          );
-          if (!updatedAttributesResult.result.ok) {
+          // Update attributes and rubrics options list
+          const rubricsUpdated = await updateOptionsList({
+            optionsGroupId,
+            options: updatedGroupOptions,
+          });
+          if (!rubricsUpdated) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.addOption.error'),
             };
           }
-
-          // TODO update rubrics attributes
 
           return {
             success: true,
@@ -572,7 +566,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId, ...values } = input;
 
@@ -601,7 +594,7 @@ export const OptionsGroupMutations = extendType({
 
           // Check if option already exist in the group
           const inputNameKeys = Object.keys(values.nameI18n);
-          const exist = findOptionInGroup({
+          const exist = findOptionInTree({
             options: optionsGroup.options,
             condition: ({ nameI18n }) => {
               return inputNameKeys.some((key) => {
@@ -650,23 +643,17 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update attributes options list
-          const updatedAttributesResult = await attributesCollection.updateMany(
-            { optionsGroupId },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-          );
-          if (!updatedAttributesResult.result.ok) {
+          // Update attributes and rubrics options list
+          const rubricsUpdated = await updateOptionsList({
+            optionsGroupId,
+            options: updatedGroupOptions,
+          });
+          if (!rubricsUpdated) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
             };
           }
-
-          // TODO update rubrics attributes
 
           return {
             success: true,
@@ -705,7 +692,6 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -748,23 +734,17 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // Update attributes options list
-          const updatedAttributesResult = await attributesCollection.updateMany(
-            { optionsGroupId },
-            {
-              $set: {
-                options: updatedGroupOptions,
-              },
-            },
-          );
-          if (!updatedAttributesResult.result.ok) {
+          // Update attributes and rubrics options list
+          const rubricsUpdated = await updateOptionsList({
+            optionsGroupId,
+            options: updatedGroupOptions,
+          });
+          if (!rubricsUpdated) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.deleteOption.error'),
             };
           }
-
-          // TODO update rubrics attributes
 
           return {
             success: true,

@@ -1688,8 +1688,8 @@ export interface NexusGenFieldTypes {
     variant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
     views: NexusGenScalars['JSONObject']; // JSONObject!
-    visibleInNav: boolean; // Boolean!
-    visibleInNavCities: NexusGenScalars['JSONObject']; // JSONObject!
+    visibleInCatalogue: boolean; // Boolean!
+    visibleInCatalogueCities: NexusGenScalars['JSONObject']; // JSONObject!
   };
   RubricAttribute: {
     // field return type
@@ -1707,6 +1707,8 @@ export interface NexusGenFieldTypes {
     variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
     views: NexusGenScalars['JSONObject']; // JSONObject!
+    visibleInCatalogue: boolean; // Boolean!
+    visibleInCatalogueCities: NexusGenScalars['JSONObject']; // JSONObject!
   };
   RubricAttributesGroup: {
     // field return type
@@ -1757,8 +1759,8 @@ export interface NexusGenFieldTypes {
     slug: string; // String!
     variants: NexusGenRootTypes['OptionVariant'][] | null; // [OptionVariant!]
     views: NexusGenScalars['JSONObject']; // JSONObject!
-    visibleInNav: boolean; // Boolean!
-    visibleInNavCities: NexusGenScalars['JSONObject']; // JSONObject!
+    visibleInCatalogue: boolean; // Boolean!
+    visibleInCatalogueCities: NexusGenScalars['JSONObject']; // JSONObject!
   };
   RubricPayload: {
     // field return type
@@ -2807,8 +2809,8 @@ export interface NexusGenFieldTypeNames {
     variant: 'RubricVariant';
     variantId: 'ObjectId';
     views: 'JSONObject';
-    visibleInNav: 'Boolean';
-    visibleInNavCities: 'JSONObject';
+    visibleInCatalogue: 'Boolean';
+    visibleInCatalogueCities: 'JSONObject';
   };
   RubricAttribute: {
     // field return type name
@@ -2826,6 +2828,8 @@ export interface NexusGenFieldTypeNames {
     variant: 'AttributeVariant';
     viewVariant: 'AttributeViewVariant';
     views: 'JSONObject';
+    visibleInCatalogue: 'Boolean';
+    visibleInCatalogueCities: 'JSONObject';
   };
   RubricAttributesGroup: {
     // field return type name
@@ -2876,8 +2880,8 @@ export interface NexusGenFieldTypeNames {
     slug: 'String';
     variants: 'OptionVariant';
     views: 'JSONObject';
-    visibleInNav: 'Boolean';
-    visibleInNavCities: 'JSONObject';
+    visibleInCatalogue: 'Boolean';
+    visibleInCatalogueCities: 'JSONObject';
   };
   RubricPayload: {
     // field return type name

@@ -73,6 +73,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
         showInCatalogueFilter: visible,
         showInCatalogueNav: visible,
         options: castOptionsForRubric(attribute.options),
+        visibleInCatalogueCities: {},
         ...DEFAULT_COUNTERS_OBJECT,
       };
     });

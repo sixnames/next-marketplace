@@ -550,12 +550,15 @@ export interface RubricVariantModel {
   nameI18n: TranslationModel;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel {
-  options: RubricOptionModel[];
-  shopProductsCountCities: CitiesCounterModel;
+export interface RubricCountersInterface {
   productsCount: number;
   activeProductsCount: number;
-  visibleInNavCities: CitiesBooleanModel;
+  shopProductsCountCities: CitiesCounterModel;
+  visibleInCatalogueCities: CitiesBooleanModel;
+}
+
+export interface RubricOptionModel extends OptionModel, CountersModel, RubricCountersInterface {
+  options: RubricOptionModel[];
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
@@ -563,6 +566,7 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   options: RubricOptionModel[];
+  visibleInCatalogueCities: CitiesBooleanModel;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {
@@ -577,7 +581,7 @@ export interface RubricCatalogueTitleModel {
   gender: GenderModel;
 }
 
-export interface RubricModel extends CountersModel {
+export interface RubricModel extends CountersModel, RubricCountersInterface {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
@@ -588,10 +592,6 @@ export interface RubricModel extends CountersModel {
   attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
-  shopProductsCountCities: CitiesCounterModel;
-  productsCount: number;
-  activeProductsCount: number;
-  visibleInNavCities: CitiesBooleanModel;
 }
 
 export interface RubricNavItemAttributeOptionModel {

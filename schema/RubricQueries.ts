@@ -96,7 +96,7 @@ export const RubricQueries = extendType({
             .aggregate([
               {
                 $match: {
-                  [`visibleInNavCities.${city}`]: true,
+                  [`visibleInCatalogueCities.${city}`]: true,
                 },
               },
               {

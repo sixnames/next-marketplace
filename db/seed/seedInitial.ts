@@ -257,6 +257,7 @@ export const seedInitial = async () => {
             showInCatalogueNav: visible,
             showInCatalogueFilter: visible,
             options: castOptionsForRubric(attribute.options),
+            visibleInCatalogueCities: {},
             ...DEFAULT_COUNTERS_OBJECT,
           });
         });

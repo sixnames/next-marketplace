@@ -2002,8 +2002,8 @@ type Rubric {
   variant: RubricVariant!
   variantId: ObjectId!
   views: JSONObject!
-  visibleInNav: Boolean!
-  visibleInNavCities: JSONObject!
+  visibleInCatalogue: Boolean!
+  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttribute {
@@ -2021,6 +2021,8 @@ type RubricAttribute {
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
   views: JSONObject!
+  visibleInCatalogue: Boolean!
+  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttributesGroup {
@@ -2078,8 +2080,8 @@ type RubricOption {
   slug: String!
   variants: [OptionVariant!]
   views: JSONObject!
-  visibleInNav: Boolean!
-  visibleInNavCities: JSONObject!
+  visibleInCatalogue: Boolean!
+  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricPayload implements Payload {

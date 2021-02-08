@@ -28,6 +28,7 @@ export interface RecalculateRubricOptionProductCountersInterface {
   productsCollection: Collection<ProductModel>;
 }
 
+// TODO option name based on rubric gender
 export async function recalculateRubricOptionProductCounters({
   rubricId,
   option,
@@ -67,11 +68,11 @@ export async function recalculateRubricOptionProductCounters({
     }
   });
 
-  const visibleInNavCities: CitiesBooleanModel = {};
+  const visibleInCatalogueCities: CitiesBooleanModel = {};
   for (const city of cities) {
     const citySlug = city.slug;
     const cityCounter = noNaN(optionShopProductsCountCities[citySlug]);
-    visibleInNavCities[citySlug] = cityCounter > 0;
+    visibleInCatalogueCities[citySlug] = cityCounter > 0;
   }
 
   const options: RubricOptionModel[] = [];
@@ -91,7 +92,7 @@ export async function recalculateRubricOptionProductCounters({
     shopProductsCountCities: optionShopProductsCountCities,
     productsCount,
     activeProductsCount,
-    visibleInNavCities,
+    visibleInCatalogueCities,
   };
 }
 
@@ -130,9 +131,18 @@ export async function recalculateRubricProductCounters({
         updatedOptions.push(updatedOption);
       }
 
+      const visibleInCatalogueCities: CitiesBooleanModel = {};
+      for (const city of cities) {
+        const citySlug = city.slug;
+        visibleInCatalogueCities[citySlug] = updatedOptions.some(({ visibleInCatalogueCities }) => {
+          return noNaN(visibleInCatalogueCities[citySlug]) > 0;
+        });
+      }
+
       updatedAttributes.push({
         ...attribute,
         options: updatedOptions,
+        visibleInCatalogueCities,
       });
     }
 
@@ -168,11 +178,11 @@ export async function recalculateRubricProductCounters({
       }
     });
 
-    const visibleInNavCities: CitiesBooleanModel = {};
+    const visibleInCatalogueCities: CitiesBooleanModel = {};
     for (const city of cities) {
       const citySlug = city.slug;
       const cityCounter = noNaN(rubricShopProductsCountCities[citySlug]);
-      visibleInNavCities[citySlug] = cityCounter > 0;
+      visibleInCatalogueCities[citySlug] = cityCounter > 0;
     }
 
     const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
@@ -185,7 +195,7 @@ export async function recalculateRubricProductCounters({
           productsCount,
           activeProductsCount,
           shopProductsCountCities: rubricShopProductsCountCities,
-          visibleInNavCities,
+          visibleInCatalogueCities,
         },
       },
       { returnOriginal: false },

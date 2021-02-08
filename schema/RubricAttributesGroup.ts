@@ -15,7 +15,7 @@ export const RubricOption = objectType({
     t.nonNull.int('productsCount');
     t.nonNull.int('activeProductsCount');
     t.nonNull.json('shopProductsCountCities');
-    t.nonNull.json('visibleInNavCities');
+    t.nonNull.json('visibleInCatalogueCities');
     t.list.nonNull.field('variants', {
       type: 'OptionVariant',
     });
@@ -32,12 +32,12 @@ export const RubricOption = objectType({
       },
     });
 
-    // RubricOption visibleInNav field resolver
-    t.nonNull.field('visibleInNav', {
+    // RubricOption visibleInCatalogue field resolver
+    t.nonNull.field('visibleInCatalogue', {
       type: 'Boolean',
       resolve: async (source, _args, context): Promise<boolean> => {
         const { getCityData } = await getRequestParams(context);
-        return Boolean(getCityData(source.visibleInNavCities));
+        return Boolean(getCityData(source.visibleInCatalogueCities));
       },
     });
 
@@ -64,6 +64,7 @@ export const RubricAttribute = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.json('positioningInTitle');
+    t.nonNull.json('visibleInCatalogueCities');
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricOption',
     });
@@ -75,6 +76,15 @@ export const RubricAttribute = objectType({
     });
     t.field('metric', {
       type: 'Metric',
+    });
+
+    // RubricAttribute visibleInCatalogue field resolver
+    t.nonNull.field('visibleInCatalogue', {
+      type: 'Boolean',
+      resolve: async (source, _args, context): Promise<boolean> => {
+        const { getCityData } = await getRequestParams(context);
+        return Boolean(getCityData(source.visibleInCatalogueCities));
+      },
     });
 
     // RubricAttribute name translation field resolver

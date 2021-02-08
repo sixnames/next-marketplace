@@ -9,7 +9,7 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CONFIRM_MODAL } from 'config/modals';
 import { RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
 import useTabsConfig from '../../hooks/useTabsConfig';
-import { QUERY_DATA_LAYOUT_NO_RUBRIC, RUBRIC_LEVEL_THREE, RUBRIC_LEVEL_ZERO } from 'config/common';
+import { QUERY_DATA_LAYOUT_NO_RUBRIC } from 'config/common';
 
 const RubricsRoute: React.FC = () => {
   const { query, removeQuery } = useRouterQuery();
@@ -57,9 +57,6 @@ const RubricsRoute: React.FC = () => {
   });
 
   const { data } = queryResult;
-  const level = data && data.getRubric ? data.getRubric.level : RUBRIC_LEVEL_ZERO;
-  // TODO fix hardcoded rubric last level
-  const notLastLevelRubric = level !== RUBRIC_LEVEL_THREE;
 
   function deleteRubricHandler() {
     if (data && data.getRubric) {
@@ -67,9 +64,7 @@ const RubricsRoute: React.FC = () => {
         variant: CONFIRM_MODAL,
         props: {
           testId: 'delete-rubric-modal',
-          message: notLastLevelRubric
-            ? 'Все вложенные рубрики так же будут удалены'
-            : 'Рубрика будет удалена из базы данных',
+          message: 'Рубрика будет удалена',
           confirm: () => {
             showLoading();
             return deleteRubricMutation({

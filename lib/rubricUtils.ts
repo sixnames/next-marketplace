@@ -1,6 +1,7 @@
 import { COL_ATTRIBUTES, COL_CITIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   AttributeModel,
+  CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
   ObjectIdModel,
@@ -47,18 +48,17 @@ export async function recalculateRubricOptionProductCounters({
     .toArray();
 
   const shopProductsCountCities: CitiesCounterModel = {};
-
-  for (const city of cities) {
-    const citySlug = city.slug;
-    const cityCounter = aggregationResult.reduce((acc, { shopProductsCountCities }) => {
+  aggregationResult.forEach(({ shopProductsCountCities }) => {
+    for (const city of cities) {
+      const citySlug = city.slug;
       const productCityCounter = noNaN(shopProductsCountCities[citySlug]);
       if (productCityCounter > 0) {
-        return acc + 1;
+        shopProductsCountCities[citySlug] = shopProductsCountCities[citySlug]
+          ? shopProductsCountCities[citySlug] + 1
+          : 1;
       }
-      return acc;
-    }, 0);
-    shopProductsCountCities[citySlug] = cityCounter;
-  }
+    }
+  });
 
   const options: RubricOptionModel[] = [];
   for await (const nestedOption of option.options) {
@@ -97,6 +97,7 @@ export async function recalculateRubricProductCounters({
       return null;
     }
 
+    // Update rubric attributes
     const updatedAttributes: RubricAttributeModel[] = [];
     for await (const attribute of rubric.attributes) {
       const updatedOptions: RubricOptionModel[] = [];
@@ -118,6 +119,45 @@ export async function recalculateRubricProductCounters({
       });
     }
 
+    // Update rubric counters
+    const aggregationResult = await productsCollection
+      .aggregate([
+        {
+          $match: {
+            rubricsIds: rubricId,
+            archive: false,
+          },
+        },
+      ])
+      .toArray();
+
+    const rubricShopProductsCountCities: CitiesCounterModel = {};
+    const productsCount = aggregationResult.length;
+    let activeProductsCount = 0;
+
+    aggregationResult.forEach(({ shopProductsCountCities, active }) => {
+      for (const city of cities) {
+        const citySlug = city.slug;
+        const productCityCounter = noNaN(shopProductsCountCities[citySlug]);
+        if (productCityCounter > 0) {
+          rubricShopProductsCountCities[citySlug] = rubricShopProductsCountCities[citySlug]
+            ? rubricShopProductsCountCities[citySlug] + 1
+            : 1;
+        }
+      }
+
+      if (active) {
+        activeProductsCount = activeProductsCount + 1;
+      }
+    });
+
+    const visibleInNavCities: CitiesBooleanModel = {};
+    for (const city of cities) {
+      const citySlug = city.slug;
+      const cityCounter = noNaN(rubricShopProductsCountCities[citySlug]);
+      visibleInNavCities[citySlug] = cityCounter > 0;
+    }
+
     const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
       {
         _id: rubricId,
@@ -125,6 +165,10 @@ export async function recalculateRubricProductCounters({
       {
         $set: {
           attributes: updatedAttributes,
+          productsCount,
+          activeProductsCount,
+          shopProductsCountCities: rubricShopProductsCountCities,
+          visibleInNavCities,
         },
       },
       { returnOriginal: false },

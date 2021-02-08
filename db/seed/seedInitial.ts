@@ -4,6 +4,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   OPTIONS_GROUP_VARIANT_TEXT,
+  RUBRIC_DEFAULT_COUNTERS,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -284,6 +285,7 @@ export const seedInitial = async () => {
           [DEFAULT_LOCALE]: '',
         },
         ...DEFAULT_COUNTERS_OBJECT,
+        ...RUBRIC_DEFAULT_COUNTERS,
       });
     }
 

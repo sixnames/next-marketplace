@@ -461,6 +461,10 @@ export interface CitiesCounterModel {
   [key: string]: number;
 }
 
+export interface CitiesBooleanModel {
+  [key: string]: boolean;
+}
+
 export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   active: boolean;
   slug: string;
@@ -581,6 +585,10 @@ export interface RubricModel extends CountersModel {
   attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
+  shopProductsCountCities: CitiesCounterModel;
+  productsCount: number;
+  activeProductsCount: number;
+  visibleInNavCities: CitiesBooleanModel;
 }
 
 export interface RubricNavItemAttributeOptionModel {
@@ -595,21 +603,7 @@ export interface RubricNavItemAttributeModel {
   _id: ObjectIdModel;
   name: string;
   isDisabled: boolean;
-  visibleOptions: RubricNavItemAttributeOptionModel[];
-  hiddenOptions: RubricNavItemAttributeOptionModel[];
   options: RubricNavItemAttributeOptionModel[];
-}
-
-export interface RubricNavItemsModel {
-  _id: ObjectIdModel;
-  isDisabled: boolean;
-  attributes: RubricNavItemAttributeModel[];
-}
-
-export interface RubricCountersModel {
-  _id: ObjectIdModel;
-  totalDocs: number;
-  totalActiveDocs: number;
 }
 
 export interface ShopProductModel extends TimestampModel {

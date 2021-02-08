@@ -21,6 +21,7 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COUNTERS_OBJECT,
+  RUBRIC_DEFAULT_COUNTERS,
 } from 'config/common';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
@@ -173,6 +174,7 @@ export const RubricMutations = extendType({
             attributes: [],
             attributesGroupsIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
+            ...RUBRIC_DEFAULT_COUNTERS,
           });
           const createdRubric = createdRubricResult.ops[0];
           if (!createdRubricResult.result.ok || !createdRubric) {

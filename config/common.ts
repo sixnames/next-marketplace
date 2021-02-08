@@ -147,7 +147,7 @@ export const ATTRIBUTE_POSITION_IN_TITLE_ENUMS = [
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
 ];
 
-// PRIORITY
+// COUNTERS
 export const DEFAULT_PRIORITY = 1;
 export const DEFAULT_COUNTERS_OBJECT = {
   priorities: {
@@ -157,13 +157,12 @@ export const DEFAULT_COUNTERS_OBJECT = {
     [DEFAULT_CITY]: DEFAULT_PRIORITY,
   },
 };
-
-// RUBRICS
-export const RUBRIC_LEVEL_ZERO = 0;
-export const RUBRIC_LEVEL_ONE = 1;
-export const RUBRIC_LEVEL_TWO = 2;
-export const RUBRIC_LEVEL_THREE = 3;
-export const RUBRIC_LEVEL_STEP = 1;
+export const RUBRIC_DEFAULT_COUNTERS = {
+  shopProductsCountCities: {},
+  visibleInNavCities: {},
+  productsCount: 0,
+  activeProductsCount: 0,
+};
 
 // SORT
 export const SORT_ASC = 1;

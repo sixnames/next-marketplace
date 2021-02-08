@@ -2,7 +2,7 @@ import { arg, extendType, inputObjectType, nonNull, stringArg } from 'nexus';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_RUBRICS } from 'db/collectionNames';
-import { RUBRIC_LEVEL_ONE, SORT_ASC, SORT_DESC } from 'config/common';
+import { SORT_ASC, SORT_DESC } from 'config/common';
 import { getRequestParams } from 'lib/sessionHelpers';
 
 export const GetAllRubricsInput = inputObjectType({
@@ -90,14 +90,23 @@ export const RubricQueries = extendType({
         const db = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-        const levelOneRubrics = await rubricsCollection
+        const rubrics = await rubricsCollection
           .aggregate([
-            { $match: { level: RUBRIC_LEVEL_ONE } },
-            { $sort: { [`views.${city}`]: SORT_DESC, [`priority.${city}`]: SORT_DESC } },
+            {
+              $match: {
+                [`visibleInNavCities.${city}`]: true,
+              },
+            },
+            {
+              $sort: {
+                [`views.${city}`]: SORT_DESC,
+                [`priority.${city}`]: SORT_DESC,
+              },
+            },
           ])
           .toArray();
 
-        return levelOneRubrics;
+        return rubrics;
       },
     });
   },

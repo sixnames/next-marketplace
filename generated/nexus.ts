@@ -784,10 +784,8 @@ export interface NexusGenObjects {
   RubricAttribute: dbModels.RubricAttributeModel;
   RubricAttributesGroup: dbModels.RubricAttributesGroupModel;
   RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
-  RubricCounters: dbModels.RubricCountersModel;
   RubricNavItemAttribute: dbModels.RubricNavItemAttributeModel;
   RubricNavItemAttributeOption: dbModels.RubricNavItemAttributeOptionModel;
-  RubricNavItems: dbModels.RubricNavItemsModel;
   RubricOption: dbModels.RubricOptionModel;
   RubricPayload: dbModels.RubricPayloadModel;
   RubricVariant: dbModels.RubricVariantModel;
@@ -1670,6 +1668,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
+    activeProductsCount: number; // Int!
     attributes: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
     attributesGroups: NexusGenRootTypes['RubricAttributesGroup'][]; // [RubricAttributesGroup!]!
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
@@ -1677,16 +1676,20 @@ export interface NexusGenFieldTypes {
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    navItems: NexusGenRootTypes['RubricNavItems']; // RubricNavItems!
+    navItems: NexusGenRootTypes['RubricNavItemAttribute'][]; // [RubricNavItemAttribute!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
-    productsCounters: NexusGenRootTypes['RubricCounters']; // RubricCounters!
+    productsCount: number; // Int!
+    shopProductsCount: number; // Int!
+    shopProductsCountCities: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescription: string; // String!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
     views: NexusGenScalars['JSONObject']; // JSONObject!
+    visibleInNav: boolean; // Boolean!
+    visibleInNavCities: NexusGenScalars['JSONObject']; // JSONObject!
   };
   RubricAttribute: {
     // field return type
@@ -1723,20 +1726,12 @@ export interface NexusGenFieldTypes {
     prefix: string | null; // String
     prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
-  RubricCounters: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    totalActiveDocs: number; // Int!
-    totalDocs: number; // Int!
-  };
   RubricNavItemAttribute: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    hiddenOptions: NexusGenRootTypes['RubricNavItemAttributeOption'][]; // [RubricNavItemAttributeOption!]!
     isDisabled: boolean; // Boolean!
     name: string; // String!
     options: NexusGenRootTypes['RubricNavItemAttributeOption'][]; // [RubricNavItemAttributeOption!]!
-    visibleOptions: NexusGenRootTypes['RubricNavItemAttributeOption'][]; // [RubricNavItemAttributeOption!]!
   };
   RubricNavItemAttributeOption: {
     // field return type
@@ -1745,12 +1740,6 @@ export interface NexusGenFieldTypes {
     isDisabled: boolean; // Boolean!
     name: string; // String!
     slug: string; // String!
-  };
-  RubricNavItems: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attributes: NexusGenRootTypes['RubricNavItemAttribute'][]; // [RubricNavItemAttribute!]!
-    isDisabled: boolean; // Boolean!
   };
   RubricOption: {
     // field return type
@@ -2793,6 +2782,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
+    activeProductsCount: 'Int';
     attributes: 'RubricAttribute';
     attributesGroups: 'RubricAttributesGroup';
     catalogueTitle: 'RubricCatalogueTitle';
@@ -2800,16 +2790,20 @@ export interface NexusGenFieldTypeNames {
     descriptionI18n: 'JSONObject';
     name: 'String';
     nameI18n: 'JSONObject';
-    navItems: 'RubricNavItems';
+    navItems: 'RubricNavItemAttribute';
     priorities: 'JSONObject';
     products: 'ProductsPaginationPayload';
-    productsCounters: 'RubricCounters';
+    productsCount: 'Int';
+    shopProductsCount: 'Int';
+    shopProductsCountCities: 'JSONObject';
     shortDescription: 'String';
     shortDescriptionI18n: 'JSONObject';
     slug: 'String';
     variant: 'RubricVariant';
     variantId: 'ObjectId';
     views: 'JSONObject';
+    visibleInNav: 'Boolean';
+    visibleInNavCities: 'JSONObject';
   };
   RubricAttribute: {
     // field return type name
@@ -2846,20 +2840,12 @@ export interface NexusGenFieldTypeNames {
     prefix: 'String';
     prefixI18n: 'JSONObject';
   };
-  RubricCounters: {
-    // field return type name
-    _id: 'ObjectId';
-    totalActiveDocs: 'Int';
-    totalDocs: 'Int';
-  };
   RubricNavItemAttribute: {
     // field return type name
     _id: 'ObjectId';
-    hiddenOptions: 'RubricNavItemAttributeOption';
     isDisabled: 'Boolean';
     name: 'String';
     options: 'RubricNavItemAttributeOption';
-    visibleOptions: 'RubricNavItemAttributeOption';
   };
   RubricNavItemAttributeOption: {
     // field return type name
@@ -2868,12 +2854,6 @@ export interface NexusGenFieldTypeNames {
     isDisabled: 'Boolean';
     name: 'String';
     slug: 'String';
-  };
-  RubricNavItems: {
-    // field return type name
-    _id: 'ObjectId';
-    attributes: 'RubricNavItemAttribute';
-    isDisabled: 'Boolean';
   };
   RubricOption: {
     // field return type name
@@ -3588,10 +3568,6 @@ export interface NexusGenArgTypes {
     products: {
       // args
       input?: NexusGenInputs['ProductsPaginationInput'] | null; // ProductsPaginationInput
-    };
-    productsCounters: {
-      // args
-      input?: NexusGenInputs['RubricProductsCountersInput'] | null; // RubricProductsCountersInput
     };
   };
   Shop: {

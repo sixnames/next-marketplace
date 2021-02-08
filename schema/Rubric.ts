@@ -1,18 +1,16 @@
+import { noNaN } from 'lib/numbers';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributesGroupModel,
-  ProductModel,
   ProductsPaginationPayloadModel,
   RubricAttributesGroupModel,
-  RubricCountersModel,
-  RubricNavItemsModel,
+  RubricNavItemAttributeModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_PRODUCTS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
-import { ObjectId } from 'mongodb';
 
 export const RubricNavItemAttributeOption = objectType({
   name: 'RubricNavItemAttributeOption',
@@ -31,35 +29,9 @@ export const RubricNavItemAttribute = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.string('name');
     t.nonNull.boolean('isDisabled');
-    t.nonNull.list.nonNull.field('visibleOptions', {
-      type: 'RubricNavItemAttributeOption',
-    });
-    t.nonNull.list.nonNull.field('hiddenOptions', {
-      type: 'RubricNavItemAttributeOption',
-    });
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricNavItemAttributeOption',
     });
-  },
-});
-
-export const RubricNavItems = objectType({
-  name: 'RubricNavItems',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.boolean('isDisabled');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'RubricNavItemAttribute',
-    });
-  },
-});
-
-export const RubricCounters = objectType({
-  name: 'RubricCounters',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.int('totalDocs');
-    t.nonNull.int('totalActiveDocs');
   },
 });
 
@@ -87,11 +59,33 @@ export const Rubric = objectType({
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
+    t.nonNull.int('productsCount');
+    t.nonNull.int('activeProductsCount');
+    t.nonNull.json('shopProductsCountCities');
+    t.nonNull.json('visibleInNavCities');
     t.nonNull.list.nonNull.field('attributes', {
       type: 'RubricAttribute',
     });
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',
+    });
+
+    // Rubric shopProductsCount field resolver
+    t.nonNull.field('shopProductsCount', {
+      type: 'Int',
+      resolve: async (source, _args, context): Promise<number> => {
+        const { getCityData } = await getRequestParams(context);
+        return noNaN(getCityData(source.shopProductsCountCities));
+      },
+    });
+
+    // Rubric visibleInNav field resolver
+    t.nonNull.field('visibleInNav', {
+      type: 'Boolean',
+      resolve: async (source, _args, context): Promise<boolean> => {
+        const { getCityData } = await getRequestParams(context);
+        return Boolean(getCityData(source.visibleInNavCities));
+      },
     });
 
     // Rubric attributesGroups field resolver
@@ -182,122 +176,16 @@ export const Rubric = objectType({
       },
     });
 
-    // Rubric productsCounters field resolver
-    t.nonNull.field('productsCounters', {
-      type: 'RubricCounters',
-      args: {
-        input: arg({
-          type: 'RubricProductsCountersInput',
-        }),
-      },
-      resolve: async (source, args): Promise<RubricCountersModel> => {
-        try {
-          const db = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-
-          const attributesStage = args?.input?.attributesIds
-            ? [
-                {
-                  $match: {
-                    'attributes.attributeId': { $in: args.input.attributesIds },
-                  },
-                },
-              ]
-            : [];
-
-          const excludedProductsStage = args?.input?.excludedProductsIds
-            ? [
-                {
-                  $match: {
-                    _id: { $nin: args.input.excludedProductsIds },
-                  },
-                },
-              ]
-            : [];
-
-          const aggregation = await productsCollection
-            .aggregate<RubricCountersModel>([
-              {
-                $match: {
-                  rubricsIds: source._id,
-                },
-              },
-              ...attributesStage,
-              ...excludedProductsStage,
-              {
-                $facet: {
-                  countAllDocs: [{ $match: { archive: false } }, { $count: 'totalDocs' }],
-                  countActiveDocs: [
-                    { $match: { active: true, archive: false } },
-                    { $count: 'totalActiveDocs' },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  totalDocs: '$totalDocsObject.totalDocs',
-                },
-              },
-              {
-                $addFields: {
-                  totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  totalActiveDocs: '$totalActiveDocsObject.totalActiveDocs',
-                },
-              },
-              {
-                $project: {
-                  totalActiveDocs: 1,
-                  totalDocs: 1,
-                },
-              },
-            ])
-            .toArray();
-
-          const aggregationResult = aggregation[0];
-
-          return {
-            _id: new ObjectId(),
-            totalActiveDocs: aggregationResult.totalActiveDocs || 0,
-            totalDocs: aggregationResult.totalDocs || 0,
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            _id: new ObjectId(),
-            totalActiveDocs: 0,
-            totalDocs: 0,
-          };
-        }
-      },
-    });
-
     // TODO optimize
     // Rubric navItems field resolver
-    t.nonNull.field('navItems', {
-      type: 'RubricNavItems',
-      resolve: async (): Promise<RubricNavItemsModel> => {
+    t.nonNull.list.nonNull.field('navItems', {
+      type: 'RubricNavItemAttribute',
+      resolve: async (): Promise<RubricNavItemAttributeModel[]> => {
         try {
-          return {
-            _id: new ObjectId(),
-            attributes: [],
-            isDisabled: true,
-          };
+          return [];
         } catch (e) {
           console.log(e);
-          return {
-            _id: new ObjectId(),
-            attributes: [],
-            isDisabled: true,
-          };
+          return [];
         }
       },
     });

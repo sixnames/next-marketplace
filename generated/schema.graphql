@@ -1982,6 +1982,7 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
+  activeProductsCount: Int!
   attributes: [RubricAttribute!]!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
@@ -1989,16 +1990,20 @@ type Rubric {
   descriptionI18n: JSONObject!
   name: String!
   nameI18n: JSONObject!
-  navItems: RubricNavItems!
+  navItems: [RubricNavItemAttribute!]!
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
-  productsCounters(input: RubricProductsCountersInput): RubricCounters!
+  productsCount: Int!
+  shopProductsCount: Int!
+  shopProductsCountCities: JSONObject!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
   variant: RubricVariant!
   variantId: ObjectId!
   views: JSONObject!
+  visibleInNav: Boolean!
+  visibleInNavCities: JSONObject!
 }
 
 type RubricAttribute {
@@ -2043,19 +2048,11 @@ input RubricCatalogueTitleInput {
   prefixI18n: JSONObject
 }
 
-type RubricCounters {
-  _id: ObjectId!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-}
-
 type RubricNavItemAttribute {
   _id: ObjectId!
-  hiddenOptions: [RubricNavItemAttributeOption!]!
   isDisabled: Boolean!
   name: String!
   options: [RubricNavItemAttributeOption!]!
-  visibleOptions: [RubricNavItemAttributeOption!]!
 }
 
 type RubricNavItemAttributeOption {
@@ -2064,12 +2061,6 @@ type RubricNavItemAttributeOption {
   isDisabled: Boolean!
   name: String!
   slug: String!
-}
-
-type RubricNavItems {
-  _id: ObjectId!
-  attributes: [RubricNavItemAttribute!]!
-  isDisabled: Boolean!
 }
 
 type RubricOption {

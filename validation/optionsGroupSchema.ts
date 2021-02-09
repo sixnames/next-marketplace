@@ -43,30 +43,12 @@ export const updateOptionsGroupSchema = (args: ValidationSchemaArgsInterface) =>
 };
 
 // Option schemas
-export const optionVariantSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    gender: Yup.mixed()
-      .oneOf(GENDER_ENUMS)
-      .required(
-        getFieldValidationMessage({
-          ...args,
-          slug: 'validation.option.variantGender',
-        }),
-      ),
-    value: requiredStringTranslationSchema({
-      ...args,
-      slug: 'validation.option.variantValue',
-    }),
-  });
-};
-
 export const optionInGroupCommonSchema = (args: ValidationSchemaArgsInterface) => ({
   nameI18n: requiredStringTranslationSchema({
     ...args,
     slug: 'validation.option.name',
   }),
   color: colorSchema(args),
-  variants: Yup.array().of(optionVariantSchema(args)),
   gender: Yup.mixed()
     .oneOf(GENDER_ENUMS)
     .required(getFieldValidationMessage({ ...args, slug: 'validation.option.gender' })),

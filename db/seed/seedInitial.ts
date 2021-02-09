@@ -1,11 +1,4 @@
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  DEFAULT_COUNTERS_OBJECT,
-  DEFAULT_LOCALE,
-  OPTIONS_GROUP_VARIANT_TEXT,
-  RUBRIC_DEFAULT_COUNTERS,
-} from 'config/common';
+import { DEFAULT_LOCALE, OPTIONS_GROUP_VARIANT_TEXT } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
@@ -14,7 +7,6 @@ import {
   COL_MANUFACTURERS,
   COL_OPTIONS_GROUPS,
   COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
 } from 'db/collectionNames';
 import {
   AttributeModel,
@@ -23,14 +15,10 @@ import {
   AttributeViewVariantModel,
   BrandCollectionModel,
   BrandModel,
-  GenderModel,
   ManufacturerModel,
-  ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupVariantModel,
-  RubricAttributeModel,
-  RubricModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -39,16 +27,13 @@ import {
   ParsedBrandInterface,
   ParsedManufacturerInterface,
   ParsedOptionsGroupInterface,
-  ParsedRubricInterface,
 } from 'db/parsedDataModels';
 import optionsData from 'db/seedData/optionsGroups.json';
 import attributesData from 'db/seedData/attributesGroups.json';
 import brandCollectionsData from 'db/seedData/brandCollections.json';
 import brandsData from 'db/seedData/brands.json';
 import manufacturersData from 'db/seedData/manufacturers.json';
-import rubricsData from 'db/seedData/rubrics.json';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { castOptionsForRubric } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 
 export const seedInitial = async () => {
@@ -206,89 +191,6 @@ export const seedInitial = async () => {
 
     if (!rubricVariantAlcohol.result.ok) {
       return false;
-    }
-
-    // Rubrics
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    for await (const rubric of rubricsData) {
-      const initialRubric: ParsedRubricInterface = rubric;
-      const attributesGroups = insertedAttributesGroups.filter(({ nameI18n }) => {
-        return initialRubric.attributesGroupNames.includes(nameI18n[DEFAULT_LOCALE]);
-      });
-
-      const excludedRubricCatalogueAttributes = [
-        'Пиво',
-        'Состав',
-        'Вид',
-        'Температура сервировки',
-        'Содержание хмеля',
-        'Температура ферментации',
-        'Страна производства',
-        'Капсула',
-        'Игристое вино/шампанское',
-        'Биодинамическое',
-        'Органическое',
-        'Самый старый спирт',
-        'Добавки',
-        'Сырье',
-        'Основа',
-        'Дистилляция',
-        'Выдержка в бочках',
-      ];
-      const rubricAttributes: RubricAttributeModel[] = [];
-      const attributesGroupsIds: ObjectIdModel[] = [];
-      for await (const attributesGroup of attributesGroups) {
-        const { attributesIds } = attributesGroup;
-        attributesGroupsIds.push(attributesGroup._id);
-
-        const groupAttributes = await attributesCollection
-          .find({
-            _id: { $in: attributesIds },
-          })
-          .toArray();
-
-        groupAttributes.forEach((attribute) => {
-          const visible =
-            (attribute.variant === ATTRIBUTE_VARIANT_SELECT ||
-              attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) &&
-            !excludedRubricCatalogueAttributes.includes(attribute.nameI18n[DEFAULT_LOCALE]);
-
-          rubricAttributes.push({
-            ...attribute,
-            showInCatalogueNav: visible,
-            showInCatalogueFilter: visible,
-            options: castOptionsForRubric(attribute.options),
-            visibleInCatalogueCities: {},
-            ...DEFAULT_COUNTERS_OBJECT,
-          });
-        });
-      }
-
-      const rubricName = {
-        [DEFAULT_LOCALE]: initialRubric.name,
-      };
-
-      await rubricsCollection.insertOne({
-        active: true,
-        slug: initialRubric.slug,
-        attributesGroupsIds,
-        attributes: rubricAttributes,
-        variantId: rubricVariantAlcohol.ops[0]._id,
-        nameI18n: rubricName,
-        catalogueTitle: {
-          gender: initialRubric.gender as GenderModel,
-          defaultTitleI18n: rubricName,
-          keywordI18n: rubricName,
-        },
-        descriptionI18n: {
-          [DEFAULT_LOCALE]: '',
-        },
-        shortDescriptionI18n: {
-          [DEFAULT_LOCALE]: '',
-        },
-        ...DEFAULT_COUNTERS_OBJECT,
-        ...RUBRIC_DEFAULT_COUNTERS,
-      });
     }
 
     return true;

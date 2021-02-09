@@ -8,6 +8,7 @@ import {
   getParamOptionFirstValueByKey,
   SelectedFilterInterface,
 } from 'lib/catalogueUtils';
+import { updateRubricViews } from 'lib/countersUtils';
 import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
@@ -150,26 +151,17 @@ export const CatalogueQueries = extendType({
         try {
           const { city, getFieldLocale, locale } = await getRequestParams(context);
           const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
           // Args
           const { catalogueFilter, productsInput } = args;
-          const [rubricSlug, ...selectedOptionsSlugs] = catalogueFilter;
-
-          // Check if rubric exist
-          const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-          if (!rubric) {
-            return null;
-          }
-
-          // TODO Increase all entities views counter
+          const [rubricSlug, ...allSelectedSlugs] = catalogueFilter;
 
           // Get selected filters and additional filters
           // and cast it to the objects
-          const mainFilters: string[] = [];
+          const selectedOptionsSlugs: string[] = [];
           const castedAdditionalFilters: CastCatalogueParamToObjectPayloadInterface[] = [];
-          selectedOptionsSlugs.forEach((param) => {
+          allSelectedSlugs.forEach((param) => {
             const castedParam = castCatalogueParamToObject(param);
             const { slug } = castedParam;
 
@@ -179,8 +171,35 @@ export const CatalogueQueries = extendType({
               return;
             }
 
-            mainFilters.push(param);
+            selectedOptionsSlugs.push(param);
           });
+          const selectedBrands: string[] = [];
+          const selectedBrandCollections: string[] = [];
+          const selectedManufacturers: string[] = [];
+          castedAdditionalFilters.forEach(({ slug, value }) => {
+            if (slug === CATALOGUE_BRAND_KEY) {
+              selectedBrands.push(value);
+            }
+            if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
+              selectedBrandCollections.push(value);
+            }
+            if (slug === CATALOGUE_MANUFACTURER_KEY) {
+              selectedManufacturers.push(value);
+            }
+          });
+
+          // Update catalogue view counters
+          const rubric = await updateRubricViews({
+            rubricSlug,
+            selectedOptionsSlugs,
+            selectedBrands,
+            selectedBrandCollections,
+            selectedManufacturers,
+            city,
+          });
+          if (!rubric) {
+            return null;
+          }
 
           // Cast additional filters
           const { limit, page } = productsInput;
@@ -219,41 +238,26 @@ export const CatalogueQueries = extendType({
             realSortBy = `priority.${city}`;
           }
 
-          const brandsInArguments: string[] = [];
-          const brandCollectionsInArguments: string[] = [];
-          const manufacturersInArguments: string[] = [];
-          castedAdditionalFilters.forEach(({ slug, value }) => {
-            if (slug === CATALOGUE_BRAND_KEY) {
-              brandsInArguments.push(value);
-            }
-            if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
-              brandCollectionsInArguments.push(value);
-            }
-            if (slug === CATALOGUE_MANUFACTURER_KEY) {
-              manufacturersInArguments.push(value);
-            }
-          });
-
           // Additional filters matchers
           const brandsMatch =
-            brandsInArguments.length > 0 ? { brandSlug: { $in: brandsInArguments } } : {};
+            selectedBrands.length > 0 ? { brandSlug: { $in: selectedBrands } } : {};
 
           const brandCollectionsMatch =
-            brandCollectionsInArguments.length > 0
-              ? { brandCollectionSlug: { $in: brandCollectionsInArguments } }
+            selectedBrandCollections.length > 0
+              ? { brandCollectionSlug: { $in: selectedBrandCollections } }
               : {};
 
           const manufacturersMatch =
-            manufacturersInArguments.length > 0
-              ? { manufacturerSlug: { $in: manufacturersInArguments } }
+            selectedManufacturers.length > 0
+              ? { manufacturerSlug: { $in: selectedManufacturers } }
               : {};
 
           // Products pipelines
           // filter
           const selectedFiltersPipeline =
-            mainFilters.length > 0
+            selectedOptionsSlugs.length > 0
               ? {
-                  selectedOptionsSlugs: { $in: mainFilters },
+                  selectedOptionsSlugs: { $in: selectedOptionsSlugs },
                 }
               : {};
 
@@ -405,7 +409,7 @@ export const CatalogueQueries = extendType({
             for await (const option of options) {
               // check if selected
               const optionSlug = option.slug;
-              const isSelected = selectedOptionsSlugs.includes(optionSlug);
+              const isSelected = allSelectedSlugs.includes(optionSlug);
 
               if (isSelected) {
                 // Push to the selected options list for catalogue title config
@@ -492,7 +496,7 @@ export const CatalogueQueries = extendType({
           const brandOptions = await getCatalogueAdditionalFilterOptions({
             productsMainPipeline,
             productForeignField: '$brandSlug',
-            collectionSlugs: brandsInArguments,
+            collectionSlugs: selectedBrands,
             filterKey: CATALOGUE_BRAND_KEY,
             collection: COL_BRANDS,
             catalogueFilterArgs: catalogueFilter,
@@ -515,7 +519,7 @@ export const CatalogueQueries = extendType({
           const brandCollectionOptions = await getCatalogueAdditionalFilterOptions({
             productsMainPipeline,
             productForeignField: '$brandCollectionSlug',
-            collectionSlugs: brandCollectionsInArguments,
+            collectionSlugs: selectedBrandCollections,
             filterKey: CATALOGUE_BRAND_COLLECTION_KEY,
             collection: COL_BRAND_COLLECTIONS,
             catalogueFilterArgs: catalogueFilter,
@@ -538,7 +542,7 @@ export const CatalogueQueries = extendType({
           const manufacturerOptions = await getCatalogueAdditionalFilterOptions({
             productsMainPipeline,
             productForeignField: '$manufacturerSlug',
-            collectionSlugs: manufacturersInArguments,
+            collectionSlugs: selectedManufacturers,
             filterKey: CATALOGUE_MANUFACTURER_KEY,
             collection: 'manufacturers',
             catalogueFilterArgs: catalogueFilter,

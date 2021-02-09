@@ -342,6 +342,24 @@ export async function updateOptionsList({
   }
 }
 
+export async function getCatalogueVisibleOptionsCount(city: string): Promise<number> {
+  const db = await getDatabase();
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+  // Get catalogue options config
+  const visibleOptionsConfig = await configsCollection.findOne({
+    slug: 'stickyNavVisibleOptionsCount',
+  });
+  let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
+  if (visibleOptionsConfig) {
+    const configCityData = visibleOptionsConfig.cities[city];
+    if (configCityData && configCityData[DEFAULT_LOCALE]) {
+      maxVisibleOptions = configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
+    }
+  }
+  return noNaN(maxVisibleOptions);
+}
+
 export interface GetRubricCatalogueOptionsInterface {
   options: RubricOptionModel[];
   maxVisibleOptions: number;
@@ -383,24 +401,6 @@ export function getRubricCatalogueOptions({
   });
 }
 
-export async function getCatalogueVisibleOptionsCont(city: string): Promise<number> {
-  const db = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-
-  // Get catalogue options config
-  const visibleOptionsConfig = await configsCollection.findOne({
-    slug: 'stickyNavVisibleOptionsCount',
-  });
-  let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
-  if (visibleOptionsConfig) {
-    const configCityData = visibleOptionsConfig.cities[city];
-    if (configCityData && configCityData[DEFAULT_LOCALE]) {
-      maxVisibleOptions = configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
-    }
-  }
-  return noNaN(maxVisibleOptions);
-}
-
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
   attributes: RubricAttributeModel[];
@@ -410,16 +410,16 @@ export async function getRubricCatalogueAttributes({
   city,
   attributes,
 }: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
-  const maxVisibleOptions = await getCatalogueVisibleOptionsCont(city);
+  const maxVisibleOptions = await getCatalogueVisibleOptionsCount(city);
 
   const visibleAttributes = attributes
     .filter(({ visibleInCatalogueCities, showInCatalogueNav }) => {
       return visibleInCatalogueCities[city] && showInCatalogueNav;
     })
     .sort((attributeA, attributeB) => {
-      const optionACounter = noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
-      const optionBCounter = noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
-      return optionBCounter - optionACounter;
+      const attributeACounter = noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
+      const attributeBCounter = noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
+      return attributeBCounter - attributeACounter;
     });
 
   const sortedAttributes: RubricAttributeModel[] = [];

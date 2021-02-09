@@ -18,7 +18,7 @@ import {
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
 } from 'config/common';
-import { getCatalogueVisibleOptionsCont } from 'lib/rubricUtils';
+import { getCatalogueVisibleOptionsCount } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import capitalize from 'capitalize';
@@ -93,7 +93,7 @@ export async function getCatalogueAdditionalFilterOptions({
 }: GetCatalogueAdditionalFilterOptionsInterface): Promise<
   GetCatalogueAdditionalFilterOptionsPayloadInterface[]
 > {
-  const maxVisibleOptions = await getCatalogueVisibleOptionsCont(city);
+  const maxVisibleOptions = await getCatalogueVisibleOptionsCount(city);
   const currentCatalogueSlug = catalogueFilterArgs.join('/');
   const db = await getDatabase();
   const aggregationResult = await db

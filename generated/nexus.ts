@@ -977,7 +977,6 @@ export interface NexusGenFieldTypes {
   };
   CatalogueFilterSelectedPrices: {
     // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
     clearSlug: string; // String!
     formattedMaxPrice: string; // String!
     formattedMinPrice: string; // String!
@@ -2078,7 +2077,6 @@ export interface NexusGenFieldTypeNames {
   };
   CatalogueFilterSelectedPrices: {
     // field return type name
-    _id: 'ObjectId';
     clearSlug: 'String';
     formattedMaxPrice: 'String';
     formattedMinPrice: 'String';

@@ -8,7 +8,6 @@ import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from '../../components/Icon/Icon';
-import Button from '../../components/Buttons/Button';
 import { useAppContext } from 'context/appContext';
 import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -21,7 +20,6 @@ import {
   CATALOGUE_MIN_PRICE_KEY,
 } from 'config/common';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { useCallback, useEffect, useState } from 'react';
 import { noNaN } from 'lib/numbers';
 import { useLocaleContext } from 'context/localeContext';
 
@@ -31,7 +29,7 @@ interface CatalogueFilterAttributeInterface {
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({ attribute }) => {
   const { getSiteConfigSingleValue } = useConfigContext();
-  const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false);
+  const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
   const maxVisibleOptionsString = getSiteConfigSingleValue('catalogueFilterVisibleOptionsCount');
   const maxVisibleOptions = parseInt(maxVisibleOptionsString, 10);
 
@@ -116,12 +114,10 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   const { currency } = useLocaleContext();
   const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
-  const [isAttributesOpen, setIsAttributesOpen] = useState<boolean>(false);
-  const [pricesRanges, setPricesRanges] = useState<number[]>(() => [minPrice, maxPrice]);
-  const [pricesValue, setPricesValue] = useState<number[]>([0, 0]);
+  const [pricesRanges, setPricesRanges] = React.useState<number[]>(() => [minPrice, maxPrice]);
+  const [pricesValue, setPricesValue] = React.useState<number[]>([0, 0]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const selectedMinPrice = getCatalogueFilterValueByKey({
       asPath: router.asPath,
       slug: CATALOGUE_MIN_PRICE_KEY,
@@ -138,11 +134,11 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
     setPricesValue([noNaN(selectedMinPrice), noNaN(selectedMaxPrice)]);
   }, [maxPrice, minPrice, router]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setPricesRanges([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
-  const resetPricesValueHandler = useCallback(() => {
+  const resetPricesValueHandler = React.useCallback(() => {
     const nextPath = getCatalogueFilterNextPath({
       asPath: router.asPath,
       excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
@@ -152,17 +148,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
     });
   }, [router, showErrorNotification]);
 
-  const maxVisibleAttributesString = getSiteConfigSingleValue(
-    'catalogueFilterVisibleAttributesCount',
-  );
-  const maxVisibleAttributes = parseInt(maxVisibleAttributesString, 10);
   const { attributes, selectedPrices } = catalogueFilter;
-  const visibleAttributes = attributes.slice(0, maxVisibleAttributes);
-  const hiddenAttributes = attributes.slice(+maxVisibleAttributes);
-
-  const moreTriggerText = isAttributesOpen
-    ? 'Скрыть дополнительные фильтры'
-    : 'Показать больше фильтров';
 
   const priceRangeHandleStyle = {
     backgroundColor: 'var(--primaryBackground)',
@@ -290,25 +276,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         </div>
 
-        {visibleAttributes.map((attribute) => {
+        {attributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
         })}
-
-        {isAttributesOpen
-          ? hiddenAttributes.map((attribute) => {
-              return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
-            })
-          : null}
-
-        {hiddenAttributes.length > 0 ? (
-          <Button
-            className={classes.moreAttributesTrigger}
-            onClick={() => setIsAttributesOpen((prevState) => !prevState)}
-            theme={'secondary'}
-          >
-            {moreTriggerText}
-          </Button>
-        ) : null}
       </div>
     </div>
   );

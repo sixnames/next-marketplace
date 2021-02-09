@@ -86,7 +86,6 @@ export interface CreateTestSiteConfigsPayloadInterface {
   configSiteThemeColor: ConfigModel;
   configStickyNavVisibleOptionsCount: ConfigModel;
   configCatalogueFilterVisibleOptionsCount: ConfigModel;
-  configCatalogueFilterVisibleAttributesCount: ConfigModel;
   configSeoTextTitle: ConfigModel;
   configSeoText: ConfigModel;
   allConfigs: ConfigModel[];
@@ -330,23 +329,6 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     },
   });
 
-  const configCatalogueFilterVisibleAttributesCount = await createConfig({
-    configCollection,
-    configTemplate: {
-      slug: 'catalogueFilterVisibleAttributesCount',
-      name: 'Количество видимых атрибутов в фильтре каталога.',
-      description: '',
-      variant: SITE_CONFIGS_VARIANT_NUMBER,
-      multi: false,
-      acceptedFormats: [],
-      cities: {
-        [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['5'],
-        },
-      },
-    },
-  });
-
   const configSeoTextTitle = await createConfig({
     configCollection,
     configTemplate: {
@@ -405,7 +387,6 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     configSiteThemeColor,
     configStickyNavVisibleOptionsCount,
     configCatalogueFilterVisibleOptionsCount,
-    configCatalogueFilterVisibleAttributesCount,
     configSeoTextTitle,
     configSeoText,
   ];
@@ -426,7 +407,6 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     configSiteThemeColor,
     configStickyNavVisibleOptionsCount,
     configCatalogueFilterVisibleOptionsCount,
-    configCatalogueFilterVisibleAttributesCount,
     configSeoTextTitle,
     configSeoText,
   };

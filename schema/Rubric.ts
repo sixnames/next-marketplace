@@ -1,18 +1,16 @@
-import { CATALOGUE_NAV_VISIBLE_OPTIONS, DEFAULT_LOCALE } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributesGroupModel,
-  ConfigModel,
   ProductsPaginationPayloadModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_CONFIGS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const RubricProductsCountersInput = inputObjectType({
@@ -162,33 +160,10 @@ export const Rubric = objectType({
       resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
         try {
           const { city } = await getRequestParams(context);
-          const db = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
-          // Get nav options config
-          const visibleOptionsConfig = await configsCollection.findOne({
-            slug: 'stickyNavVisibleOptionsCount',
-          });
-          let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
-          if (visibleOptionsConfig) {
-            const configCityData = visibleOptionsConfig.cities[city];
-            if (configCityData && configCityData[DEFAULT_LOCALE]) {
-              maxVisibleOptions =
-                configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
-            }
-          }
-
-          const visibleAttributes = source.attributes.filter(
-            ({ visibleInCatalogueCities, showInCatalogueNav }) => {
-              return visibleInCatalogueCities[city] && showInCatalogueNav;
-            },
-          );
-
-          const catalogueAttributes = getRubricCatalogueAttributes({
-            attributes: visibleAttributes,
-            rubricSlug: source.slug,
+          const catalogueAttributes = await getRubricCatalogueAttributes({
+            attributes: source.attributes,
             city,
-            maxVisibleOptions: noNaN(maxVisibleOptions),
           });
 
           return catalogueAttributes;

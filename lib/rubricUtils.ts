@@ -1,9 +1,17 @@
-import { COL_ATTRIBUTES, COL_CITIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { CATALOGUE_NAV_VISIBLE_OPTIONS, DEFAULT_LOCALE } from 'config/common';
+import {
+  COL_ATTRIBUTES,
+  COL_CITIES,
+  COL_CONFIGS,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import {
   AttributeModel,
   CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
+  ConfigModel,
   GenderModel,
   ObjectIdModel,
   OptionModel,
@@ -337,7 +345,6 @@ export async function updateOptionsList({
 export interface GetRubricCatalogueOptionsInterface {
   options: RubricOptionModel[];
   maxVisibleOptions: number;
-  rubricSlug: string;
   city: string;
 }
 
@@ -345,7 +352,6 @@ export function getRubricCatalogueOptions({
   options,
   maxVisibleOptions,
   city,
-  rubricSlug,
 }: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
   const visibleOptions = options.filter(({ visibleInCatalogueCities }) => {
     return visibleInCatalogueCities[city];
@@ -368,10 +374,8 @@ export function getRubricCatalogueOptions({
   return sortedOptions.map((option) => {
     return {
       ...option,
-      slug: `/${rubricSlug}/${option.slug}`,
       options: getRubricCatalogueOptions({
         options: option.options,
-        rubricSlug,
         maxVisibleOptions,
         city,
       }),
@@ -379,19 +383,35 @@ export function getRubricCatalogueOptions({
   });
 }
 
-export interface GetRubricCatalogueAttributesInterface {
-  city: string;
-  rubricSlug: string;
-  attributes: RubricAttributeModel[];
-  maxVisibleOptions: number;
+export async function getCatalogueVisibleOptionsCont(city: string): Promise<number> {
+  const db = await getDatabase();
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+  // Get catalogue options config
+  const visibleOptionsConfig = await configsCollection.findOne({
+    slug: 'stickyNavVisibleOptionsCount',
+  });
+  let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
+  if (visibleOptionsConfig) {
+    const configCityData = visibleOptionsConfig.cities[city];
+    if (configCityData && configCityData[DEFAULT_LOCALE]) {
+      maxVisibleOptions = configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
+    }
+  }
+  return noNaN(maxVisibleOptions);
 }
 
-export function getRubricCatalogueAttributes({
+export interface GetRubricCatalogueAttributesInterface {
+  city: string;
+  attributes: RubricAttributeModel[];
+}
+
+export async function getRubricCatalogueAttributes({
   city,
   attributes,
-  maxVisibleOptions,
-  rubricSlug,
-}: GetRubricCatalogueAttributesInterface): RubricAttributeModel[] {
+}: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
+  const maxVisibleOptions = await getCatalogueVisibleOptionsCont(city);
+
   const visibleAttributes = attributes
     .filter(({ visibleInCatalogueCities, showInCatalogueNav }) => {
       return visibleInCatalogueCities[city] && showInCatalogueNav;
@@ -409,7 +429,6 @@ export function getRubricCatalogueAttributes({
       options: getRubricCatalogueOptions({
         options: attribute.options,
         maxVisibleOptions,
-        rubricSlug,
         city,
       }),
     });

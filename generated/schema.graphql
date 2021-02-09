@@ -297,7 +297,6 @@ type CatalogueFilterAttributeOption {
 }
 
 type CatalogueFilterSelectedPrices {
-  _id: ObjectId!
   clearSlug: String!
   formattedMaxPrice: String!
   formattedMinPrice: String!

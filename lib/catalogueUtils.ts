@@ -18,6 +18,7 @@ import {
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
 } from 'config/common';
+import { getCatalogueVisibleOptionsCont } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { COL_PRODUCTS } from 'db/collectionNames';
 import capitalize from 'capitalize';
@@ -68,7 +69,7 @@ export function getParamOptionFirstValueByKey({
 
 interface GetCatalogueAdditionalFilterOptionsInterface {
   productForeignField: string;
-  productsMainPipeline: any[];
+  productsInitialPipeline: any[];
   collectionSlugs: string[];
   catalogueFilterArgs: string[];
   collection: string;
@@ -82,7 +83,7 @@ interface GetCatalogueAdditionalFilterOptionsPayloadInterface
 }
 
 export async function getCatalogueAdditionalFilterOptions({
-  productsMainPipeline,
+  productsInitialPipeline,
   catalogueFilterArgs,
   productForeignField,
   collectionSlugs,
@@ -92,6 +93,7 @@ export async function getCatalogueAdditionalFilterOptions({
 }: GetCatalogueAdditionalFilterOptionsInterface): Promise<
   GetCatalogueAdditionalFilterOptionsPayloadInterface[]
 > {
+  const maxVisibleOptions = await getCatalogueVisibleOptionsCont(city);
   const currentCatalogueSlug = catalogueFilterArgs.join('/');
   const db = await getDatabase();
   const aggregationResult = await db
@@ -105,13 +107,17 @@ export async function getCatalogueAdditionalFilterOptions({
         },
       },
 
+      {
+        $limit: maxVisibleOptions,
+      },
+
       // Lookup products
       {
         $lookup: {
           from: COL_PRODUCTS,
           let: { slug: '$slug' },
           pipeline: [
-            ...productsMainPipeline,
+            ...productsInitialPipeline,
             {
               $match: {
                 $expr: {
@@ -320,18 +326,10 @@ export function getCatalogueTitle({
     const value = options
       .map(({ variants, nameI18n }) => {
         const name = getFieldLocale(nameI18n);
-        if (variants && variants.length) {
-          const currentVariant = variants[finalGender];
-
-          if (!currentVariant && name) {
-            return name;
-          }
-
-          if (!currentVariant) {
-            return LOCALE_NOT_FOUND_FIELD_MESSAGE;
-          }
-
-          return getFieldLocale(currentVariant.value);
+        const currentVariant = variants[finalGender];
+        const variantLocale = currentVariant ? getFieldLocale(currentVariant) : null;
+        if (variantLocale && variantLocale !== LOCALE_NOT_FOUND_FIELD_MESSAGE) {
+          return variantLocale;
         }
         return name;
       })

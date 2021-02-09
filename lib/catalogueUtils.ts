@@ -101,9 +101,9 @@ export async function getCatalogueAdditionalFilterOptions({
     .aggregate([
       {
         $sort: {
-          _id: SORT_BY_ID_DIRECTION,
-          [`views.${city}`]: SORT_DESC,
           [`priority.${city}`]: SORT_DESC,
+          [`views.${city}`]: SORT_DESC,
+          _id: SORT_BY_ID_DIRECTION,
         },
       },
 

@@ -160,7 +160,7 @@ export const ProductQueries = extendType({
         // Increase product views counter
         if (!sessionRole.isStuff) {
           await updateModelViews({
-            sessionCity: city,
+            city,
             queryFilter: { _id: product._id },
             collectionName: COL_PRODUCTS,
           });

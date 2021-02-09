@@ -337,6 +337,7 @@ export async function updateOptionsList({
 export interface GetRubricCatalogueOptionsInterface {
   options: RubricOptionModel[];
   maxVisibleOptions: number;
+  rubricSlug: string;
   city: string;
 }
 
@@ -344,6 +345,7 @@ export function getRubricCatalogueOptions({
   options,
   maxVisibleOptions,
   city,
+  rubricSlug,
 }: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
   const visibleOptions = options.filter(({ visibleInCatalogueCities }) => {
     return visibleInCatalogueCities[city];
@@ -366,7 +368,13 @@ export function getRubricCatalogueOptions({
   return sortedOptions.map((option) => {
     return {
       ...option,
-      options: getRubricCatalogueOptions({ options: option.options, maxVisibleOptions, city }),
+      slug: `/${rubricSlug}/${option.slug}`,
+      options: getRubricCatalogueOptions({
+        options: option.options,
+        rubricSlug,
+        maxVisibleOptions,
+        city,
+      }),
     };
   });
 }
@@ -382,12 +390,17 @@ export function getRubricCatalogueAttributes({
   city,
   attributes,
   maxVisibleOptions,
+  rubricSlug,
 }: GetRubricCatalogueAttributesInterface): RubricAttributeModel[] {
-  const visibleAttributes = attributes.filter(
-    ({ visibleInCatalogueCities, showInCatalogueNav }) => {
+  const visibleAttributes = attributes
+    .filter(({ visibleInCatalogueCities, showInCatalogueNav }) => {
       return visibleInCatalogueCities[city] && showInCatalogueNav;
-    },
-  );
+    })
+    .sort((attributeA, attributeB) => {
+      const optionACounter = noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
+      const optionBCounter = noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
+      return optionBCounter - optionACounter;
+    });
 
   const sortedAttributes: RubricAttributeModel[] = [];
   visibleAttributes.forEach((attribute) => {
@@ -396,6 +409,7 @@ export function getRubricCatalogueAttributes({
       options: getRubricCatalogueOptions({
         options: attribute.options,
         maxVisibleOptions,
+        rubricSlug,
         city,
       }),
     });

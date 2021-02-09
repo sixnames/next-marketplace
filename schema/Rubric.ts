@@ -164,11 +164,14 @@ export const Rubric = objectType({
           const { city } = await getRequestParams(context);
           const db = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          // Get nav config
-          const config = await configsCollection.findOne({ slug: 'stickyNavVisibleOptionsCount' });
+
+          // Get nav options config
+          const visibleOptionsConfig = await configsCollection.findOne({
+            slug: 'stickyNavVisibleOptionsCount',
+          });
           let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
-          if (config) {
-            const configCityData = config.cities[city];
+          if (visibleOptionsConfig) {
+            const configCityData = visibleOptionsConfig.cities[city];
             if (configCityData && configCityData[DEFAULT_LOCALE]) {
               maxVisibleOptions =
                 configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;

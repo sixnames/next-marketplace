@@ -1,4 +1,3 @@
-import { RubricInTreeFragment, RubricInTreeCountersFragment } from 'generated/apolloComponents';
 import { IconType } from 'types/iconTypes';
 
 export type Theme = 'light' | 'dark' | 'undefined';
@@ -43,8 +42,4 @@ export interface NavItemInterface {
 export interface TranslationInterface {
   key: string;
   value: string;
-}
-
-export interface RubricInTreeInterface extends RubricInTreeFragment {
-  productsCounters: RubricInTreeCountersFragment;
 }

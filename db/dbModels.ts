@@ -441,7 +441,6 @@ export interface ProductConnectionItemModel {
 export interface ProductConnectionModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
-  attributesGroupId: ObjectIdModel;
   productsIds: ObjectIdModel[];
 }
 

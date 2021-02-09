@@ -22,7 +22,6 @@ export const attributeInGroupFragment = gql`
       _id
       name
     }
-    metricId
     metric {
       _id
       name

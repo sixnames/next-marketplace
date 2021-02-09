@@ -3,7 +3,6 @@ import { gql } from '@apollo/client';
 export const cmsProductAttributeFragment = gql`
   fragment CMSProductAttribute on ProductAttribute {
     attributeId
-    attributesGroupId
     attributeSlug
     showInCard
     selectedOptionsSlugs
@@ -13,7 +12,6 @@ export const cmsProductAttributeFragment = gql`
       name
       variant
       viewVariant
-      metricId
       metric {
         _id
         name
@@ -111,7 +109,6 @@ export const productAttributeASTFragment = gql`
     showAsBreadcrumb
     attributeId
     attributeSlug
-    attributesGroupId
     textI18n
     number
     selectedOptionsSlugs
@@ -132,24 +129,13 @@ export const productAttributeASTFragment = gql`
   }
 `;
 
-export const productAttributesGroupASTFragment = gql`
-  fragment ProductAttributesGroupAst on ProductAttributesGroupAst {
-    _id
-    name
-    astAttributes {
+export const PRODUCT_ATTRIBUTES_AST_QUERY = gql`
+  query GetProductAttributesAST($input: ProductAttributesASTInput!) {
+    getProductAttributesAST(input: $input) {
       ...ProductAttributeAst
     }
   }
   ${productAttributeASTFragment}
-`;
-
-export const PRODUCT_ATTRIBUTES_AST_QUERY = gql`
-  query GetProductAttributesAST($input: ProductAttributesASTInput!) {
-    getProductAttributesAST(input: $input) {
-      ...ProductAttributesGroupAst
-    }
-  }
-  ${productAttributesGroupASTFragment}
 `;
 
 export const brandCollectionsOptionFragment = gql`

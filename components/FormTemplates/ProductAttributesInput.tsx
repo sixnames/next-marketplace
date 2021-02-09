@@ -3,7 +3,6 @@ import { useFormikContext } from 'formik';
 import RequestError from 'components/RequestError/RequestError';
 import {
   ProductAttributeAstFragment,
-  ProductAttributesGroupAstFragment,
   useGetProductAttributesAstQuery,
 } from 'generated/apolloComponents';
 import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';
@@ -109,40 +108,6 @@ const ProductAttributesInputItem: React.FC<ProductAttributesInputItemInterface> 
   );
 };
 
-interface ProductAttributesInputGroupInterface {
-  attributesGroup: ProductAttributesGroupAstFragment;
-  attributesGroupIndex: number;
-}
-
-export const ProductAttributesInputGroup: React.FC<ProductAttributesInputGroupInterface> = ({
-  attributesGroup,
-  attributesGroupIndex,
-}) => {
-  const { name, astAttributes } = attributesGroup;
-  const inputName = `attributes[${attributesGroupIndex}]`;
-
-  return (
-    <div className={classes.frame}>
-      <div className={classes.titleHolder}>
-        <div className={classes.title}>{name}</div>
-      </div>
-
-      <div className={classes.list}>
-        {astAttributes.map((attributeAst, index) => {
-          const attributeInputName = `${inputName}.astAttributes[${index}]`;
-          return (
-            <ProductAttributesInputItem
-              attributeAst={attributeAst}
-              inputName={attributeInputName}
-              key={attributeAst.attributeId}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
 interface CreateNewProductAttributesSelectInterface {
   productId?: string | null;
   rubricsIds: string[];
@@ -152,7 +117,7 @@ const ProductAttributesInput: React.FC<CreateNewProductAttributesSelectInterface
   rubricsIds,
   productId,
 }) => {
-  const [attributes, setAttributes] = React.useState<ProductAttributesGroupAstFragment[]>([]);
+  const [attributes, setAttributes] = React.useState<ProductAttributeAstFragment[]>([]);
   const { data, error } = useGetProductAttributesAstQuery({
     variables: {
       input: {
@@ -180,12 +145,12 @@ const ProductAttributesInput: React.FC<CreateNewProductAttributesSelectInterface
 
   return (
     <div>
-      {values.attributes.map((attributesGroup, attributesGroupIndex) => {
+      {values.attributes.map((astAttribute, index) => {
         return (
-          <ProductAttributesInputGroup
-            key={attributesGroup._id}
-            attributesGroup={attributesGroup}
-            attributesGroupIndex={attributesGroupIndex}
+          <ProductAttributesInputItem
+            key={astAttribute.attribute._id}
+            attributeAst={astAttribute}
+            inputName={`attributes[${index}]`}
           />
         );
       })}

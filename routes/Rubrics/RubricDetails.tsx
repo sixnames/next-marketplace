@@ -1,4 +1,5 @@
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
+import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import * as React from 'react';
 import {
   GetRubricQuery,
@@ -15,7 +16,6 @@ import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import InnerWide from '../../components/Inner/InnerWide';
 import classes from './RubricDetails.module.css';
 import Accordion from '../../components/Accordion/Accordion';
-import { RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateRubricSchema } from 'validation/rubricSchema';
@@ -33,12 +33,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     awaitRefetchQueries: true,
     refetchQueries: [
       {
-        query: RUBRICS_TREE_QUERY,
-        variables: {
-          counters: {
-            noRubrics: true,
-          },
-        },
+        query: ALL_RUBRICS_QUERY,
       },
     ],
     onCompleted: (data) => onCompleteCallback(data.updateRubric),

@@ -1,19 +1,12 @@
 import { gql } from '@apollo/client';
 
-export const rubricInCountersTreeFragment = gql`
-  fragment RubricInTreeCounters on RubricCounters {
-    _id
-    totalActiveDocs
-    totalDocs
-  }
-`;
-
-export const rubricInTreeFragment = gql`
-  fragment RubricInTree on Rubric {
+export const rubricInListFragment = gql`
+  fragment RubricInList on Rubric {
     _id
     nameI18n
     name
-    level
+    productsCount
+    activeProductsCount
     variant {
       _id
       name
@@ -47,38 +40,19 @@ export const rubricProductsFragment = gql`
   ${rubricProductFragment}
 `;
 
-export const RUBRICS_TREE_QUERY = gql`
-  query GetRubricsTree($input: GetRubricsTreeInput, $countersInput: RubricProductsCountersInput) {
-    getRubricsTree(input: $input) {
-      ...RubricInTree
-      productsCounters(input: $countersInput) {
-        ...RubricInTreeCounters
-      }
-      children(input: $input) {
-        ...RubricInTree
-        productsCounters(input: $countersInput) {
-          ...RubricInTreeCounters
-        }
-        children(input: $input) {
-          ...RubricInTree
-          productsCounters(input: $countersInput) {
-            ...RubricInTreeCounters
-          }
-        }
-      }
+export const ALL_RUBRICS_QUERY = gql`
+  query GetAllRubrics($input: GetAllRubricsInput) {
+    getAllRubrics(input: $input) {
+      ...RubricInList
     }
   }
-  ${rubricInCountersTreeFragment}
-  ${rubricInTreeFragment}
+  ${rubricInListFragment}
 `;
 
 export const RUBRIC_QUERY = gql`
   query GetRubric($_id: ObjectId!) {
     getRubric(_id: $_id) {
-      ...RubricInTree
-      productsCounters {
-        ...RubricInTreeCounters
-      }
+      ...RubricInList
       active
       variantId
       descriptionI18n
@@ -91,9 +65,7 @@ export const RUBRIC_QUERY = gql`
       }
     }
   }
-
-  ${rubricInCountersTreeFragment}
-  ${rubricInTreeFragment}
+  ${rubricInListFragment}
 `;
 
 export const CREATE_RUBRIC_MUTATION = gql`
@@ -104,7 +76,7 @@ export const CREATE_RUBRIC_MUTATION = gql`
     }
   }
 
-  ${rubricInTreeFragment}
+  ${rubricInListFragment}
 `;
 
 export const UPDATE_RUBRIC = gql`
@@ -115,7 +87,7 @@ export const UPDATE_RUBRIC = gql`
     }
   }
 
-  ${rubricInTreeFragment}
+  ${rubricInListFragment}
 `;
 
 export const DELETE_RUBRIC = gql`
@@ -190,7 +162,7 @@ export const GET_ALL_PRODUCTS_QUERY = gql`
 `;
 
 export const rubricAttributeFragment = gql`
-  fragment RubricAttribute on Attribute {
+  fragment RubricAttribute on RubricAttribute {
     _id
     name
     variant
@@ -198,24 +170,18 @@ export const rubricAttributeFragment = gql`
       _id
       name
     }
-    optionsGroup {
-      _id
-      name
-    }
+    optionsGroupId
+    showInCatalogueFilter
+    showInCatalogueNav
   }
 `;
 
 export const rubricAttributesGroupFragment = gql`
   fragment RubricAttributesGroup on RubricAttributesGroup {
     _id
-    isOwner
-    showInCatalogueFilter
-    attributesGroup {
-      _id
-      name
-      attributes {
-        ...RubricAttribute
-      }
+    name
+    attributes {
+      ...RubricAttribute
     }
   }
   ${rubricAttributeFragment}
@@ -225,7 +191,6 @@ export const RUBRIC_ATTRIBUTES_QUERY = gql`
   query GetRubricAttributes($rubricId: ObjectId!) {
     getRubric(_id: $rubricId) {
       _id
-      level
       attributesGroups {
         ...RubricAttributesGroup
       }

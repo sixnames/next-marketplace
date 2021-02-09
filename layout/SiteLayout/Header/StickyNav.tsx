@@ -14,34 +14,20 @@ import { alwaysArray } from 'lib/arrayUtils';
 export interface StickyNavAttributeInterface {
   attribute: RubricNavItemAttributeFragment;
   hideDropdownHandler: () => void;
-  isDropdownOpen: boolean;
 }
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
   hideDropdownHandler,
-  isDropdownOpen,
 }) => {
   const { asPath } = useRouter();
-  const { _id, isDisabled, hiddenOptions, visibleOptions, name } = attribute;
-  const [isOptionsOpen, setIsOptionsOpen] = React.useState<boolean>(false);
-  const moreTriggerText = isOptionsOpen ? 'Скрыть' : 'Показать еще';
-
-  React.useEffect(() => {
-    if (!isDropdownOpen) {
-      setIsOptionsOpen(false);
-    }
-  }, [isDropdownOpen]);
-
-  if (isDisabled) {
-    return null;
-  }
+  const { _id, options, name } = attribute;
 
   return (
     <div key={_id}>
       <div className={`${classes.dropdownAttributeName}`}>{name}</div>
       <ul>
-        {visibleOptions.map((option) => {
+        {options.map((option) => {
           const isCurrent = asPath === option.slug;
 
           return (
@@ -58,35 +44,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             </li>
           );
         })}
-        {isOptionsOpen
-          ? hiddenOptions.map((option) => {
-              const isCurrent = asPath === option.slug;
-
-              return (
-                <li key={option._id}>
-                  <Link
-                    href={option.slug}
-                    onClick={hideDropdownHandler}
-                    className={`${classes.dropdownAttributeOption} ${
-                      isCurrent ? classes.currentOption : ''
-                    }`}
-                  >
-                    {option.name}
-                  </Link>
-                </li>
-              );
-            })
-          : null}
       </ul>
-
-      {hiddenOptions.length > 0 ? (
-        <div
-          className={classes.optionsTrigger}
-          onClick={() => setIsOptionsOpen((prevState) => !prevState)}
-        >
-          {moreTriggerText}
-        </div>
-      ) : null}
     </div>
   );
 };
@@ -103,7 +61,6 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const realCatalogueQuery = alwaysArray(catalogue);
   const catalogueSlug = realCatalogueQuery[0];
   const { name, slug, navItems } = rubric;
-  const { isDisabled } = navItems;
 
   // Get rubric slug from product card path
   const cardSlugs: string[] = alwaysArray(card).slice(0, card.length - 1);
@@ -115,18 +72,12 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const isCurrent = slug === catalogueSlug || rubricSlug === rubric.slug;
 
   function showDropdownHandler() {
-    if (!isDisabled) {
-      hideBurgerDropdown();
-      setIsDropdownOpen(true);
-    }
+    hideBurgerDropdown();
+    setIsDropdownOpen(true);
   }
 
   function hideDropdownHandler() {
     setIsDropdownOpen(false);
-  }
-
-  if (isDisabled) {
-    return null;
   }
 
   return (
@@ -148,12 +99,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
           <Inner className={classes.dropdownInner}>
             <div className={classes.dropdownList}>
-              {navItems.attributes.map((attribute) => {
+              {navItems.map((attribute) => {
                 return (
                   <StickyNavAttribute
                     key={attribute._id}
                     attribute={attribute}
-                    isDropdownOpen={isDropdownOpen}
                     hideDropdownHandler={hideDropdownHandler}
                   />
                 );

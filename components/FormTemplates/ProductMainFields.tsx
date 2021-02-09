@@ -2,16 +2,16 @@ import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
-import RubricsTree from 'routes/Rubrics/RubricsTree';
+import RubricsList from 'routes/Rubrics/RubricsList';
 import FormikArrayCheckbox from 'components/FormElements/Checkbox/FormikArrayCheckbox';
 import classes from 'components/Modal/CreateNewProductModal/CreateNewProductModal.module.css';
 import ProductAttributesInput from 'components/FormTemplates/ProductAttributesInput';
 import {
   CreateProductInput,
-  GetRubricsTreeQuery,
   BrandCollectionsOptionFragment,
-  ProductAttributesGroupAstFragment,
   useGetProductBrandsOptionsQuery,
+  GetAllRubricsQuery,
+  ProductAttributeAstFragment,
 } from 'generated/apolloComponents';
 import { useFormikContext } from 'formik';
 import Spinner from 'components/Spinner/Spinner';
@@ -22,19 +22,19 @@ export type ProductFormValuesBaseType = Omit<CreateProductInput, 'attributes' | 
 
 export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
-  attributes: ProductAttributesGroupAstFragment[];
+  attributes: ProductAttributeAstFragment[];
   assets?: any[] | null;
 }
 
 interface ProductMainFieldsInterface {
   rubricId?: string | null;
-  rubricsTree?: GetRubricsTreeQuery['getRubricsTree'];
+  rubrics?: GetAllRubricsQuery['getAllRubrics'];
   productId?: string | null;
 }
 
 const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
   rubricId,
-  rubricsTree,
+  rubrics,
   productId,
 }) => {
   const [brandCollections, setBrandCollections] = React.useState<BrandCollectionsOptionFragment[]>(
@@ -130,12 +130,12 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
         options={getManufacturersOptions}
       />
 
-      {!rubricId && rubricsTree ? (
+      {!rubricId && rubrics ? (
         <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>
-          <RubricsTree
+          <RubricsList
             low
-            isLastDisabled
-            tree={rubricsTree}
+            isAccordionDisabled
+            rubrics={rubrics}
             titleLeft={(_id, testId) => (
               <FormikArrayCheckbox
                 className={classes.rubricCheckbox}

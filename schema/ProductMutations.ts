@@ -2,7 +2,6 @@ import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
-  AttributesGroupModel,
   ManufacturerModel,
   ProductConnectionModel,
   ProductModel,
@@ -13,7 +12,6 @@ import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelper
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
@@ -50,7 +48,6 @@ export const ProductAttributeInput = inputObjectType({
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
-    t.nonNull.objectId('attributesGroupId');
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
@@ -126,7 +123,6 @@ export const CreateProductConnectionInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('productId');
     t.nonNull.objectId('attributeId');
-    t.nonNull.objectId('attributesGroupId');
   },
 });
 
@@ -625,20 +621,14 @@ export const ProductMutations = extendType({
           );
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const attributesGroupsCollection = db.collection<AttributesGroupModel>(
-            COL_ATTRIBUTES_GROUPS,
-          );
           const { input } = args;
-          const { productId, attributeId, attributesGroupId } = input;
+          const { productId, attributeId } = input;
 
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
           const attribute = await attributesCollection.findOne({ _id: attributeId });
-          const attributesGroup = await attributesGroupsCollection.findOne({
-            _id: attributesGroupId,
-          });
 
-          if (!product || !attribute || !attributesGroup) {
+          if (!product || !attribute) {
             return {
               success: false,
               message: await getApiMessage(`products.update.notFound`),
@@ -655,7 +645,6 @@ export const ProductMutations = extendType({
 
           // Check if connection already exist
           const exist = await productConnectionsCollection.findOne({
-            attributesGroupId,
             attributeId,
             productsIds: { $in: [productId] },
           });
@@ -668,7 +657,6 @@ export const ProductMutations = extendType({
 
           // Create connection
           const createdConnectionResult = await productConnectionsCollection.insertOne({
-            attributesGroupId,
             attributeId,
             productsIds: [productId],
           });

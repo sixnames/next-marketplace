@@ -2,11 +2,11 @@ import * as React from 'react';
 import { useAppContext } from 'context/appContext';
 import {
   RubricProductFragment,
+  useGetAllRubricsQuery,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
-  useGetRubricsTreeQuery,
 } from 'generated/apolloComponents';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
+import { ALL_RUBRICS_QUERY, RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
 import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
 import { CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import Spinner from '../../Spinner/Spinner';
@@ -15,7 +15,7 @@ import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
 import Button from '../../Buttons/Button';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
-import RubricsTree from '../../../routes/Rubrics/RubricsTree';
+import RubricsList from 'routes/Rubrics/RubricsList';
 import useProductsListColumns, {
   ProductColumnsInterface,
 } from '../../../hooks/useProductsListColumns';
@@ -238,15 +238,11 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
   const { showModal } = useAppContext();
-  const { data, error, loading } = useGetRubricsTreeQuery({
+  const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
     variables: {
       input: {
         excludedRubricsIds: rubricId ? [rubricId] : [],
-      },
-      countersInput: {
-        excludedProductsIds,
-        attributesIds,
       },
     },
   });
@@ -258,7 +254,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
         rubricId,
         refetchQueries: [
           {
-            query: RUBRICS_TREE_QUERY,
+            query: ALL_RUBRICS_QUERY,
             variables: {
               counters: { noRubrics: true },
             },
@@ -286,11 +282,11 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
     return <Spinner isNested />;
   }
 
-  if (error || !data || !data.getRubricsTree) {
+  if (error || !data || !data.getAllRubrics) {
     return <RequestError />;
   }
 
-  const { getRubricsTree } = data;
+  const { getAllRubrics } = data;
 
   return (
     <ModalFrame testId={testId} size={'wide'}>
@@ -326,9 +322,9 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
         />
       ) : (
         <React.Fragment>
-          <RubricsTree
+          <RubricsList
             low
-            tree={getRubricsTree}
+            rubrics={getAllRubrics}
             render={(viewRubric) => {
               return (
                 <ProductsList

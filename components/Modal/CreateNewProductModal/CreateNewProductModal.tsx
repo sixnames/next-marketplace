@@ -9,9 +9,8 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
 import {
   CreateProductMutation,
-  ProductAttributeInput,
   useCreateProductMutation,
-  useGetRubricsTreeQuery,
+  useGetAllRubricsQuery,
 } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import { MutationUpdaterFn, PureQueryOptions, RefetchQueriesFunction } from '@apollo/client';
@@ -36,7 +35,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     schema: createProductSchema,
   });
 
-  const { data, loading, error } = useGetRubricsTreeQuery({
+  const { data, loading, error } = useGetAllRubricsQuery({
     skip: Boolean(rubricId),
     fetchPolicy: 'network-only',
   });
@@ -53,8 +52,11 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     onError: onErrorCallback,
   });
 
-  if (loading && !rubricId) return <Spinner />;
-  if ((error || !data || !data.getRubricsTree) && !rubricId) {
+  if (loading && !rubricId) {
+    return <Spinner />;
+  }
+
+  if ((error || !data || !data.getAllRubrics) && !rubricId) {
     return (
       <ModalFrame>
         <RequestError />
@@ -79,32 +81,11 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          const attributes = values.attributes.reduce(
-            (acc: ProductAttributeInput[], attributesGroup) => {
-              const groupAttributes: ProductAttributeInput[] = attributesGroup.astAttributes.map(
-                (attribute) => {
-                  return {
-                    attributeId: attribute.attributeId,
-                    attributesGroupId: attribute.attributesGroupId,
-                    attributeSlug: attribute.attributeSlug,
-                    number: attribute.number,
-                    textI18n: attribute.textI18n,
-                    selectedOptionsSlugs: attribute.selectedOptionsSlugs,
-                    showAsBreadcrumb: attribute.showAsBreadcrumb,
-                    showInCard: attribute.showInCard,
-                  };
-                },
-              );
-              return [...acc, ...groupAttributes];
-            },
-            [],
-          );
 
           return createProductMutation({
             variables: {
               input: {
                 ...values,
-                attributes,
                 assets: values.assets || [],
               },
             },
@@ -123,7 +104,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 showInlineError
               />
 
-              <ProductMainFields rubricId={rubricId} rubricsTree={data?.getRubricsTree} />
+              <ProductMainFields rubricId={rubricId} rubrics={data?.getAllRubrics} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-new-product'}>

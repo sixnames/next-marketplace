@@ -72,9 +72,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
     icon: option?.icon || null,
     gender: option?.gender || null,
     variants: GENDER_ENUMS.map((gender) => {
-      const currentOptionVariant = option?.variants?.find((variant) => {
-        return variant.gender === gender;
-      });
+      const currentOptionVariant = option?.variants[gender];
       if (currentOptionVariant) {
         return {
           gender: currentOptionVariant.gender,
@@ -143,11 +141,11 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
               />
 
               <InputLine name={'variants'} label={'Склонение названия по родам'} labelTag={'div'}>
-                {values.variants.map(({ gender }, variantIndex) => {
+                {Object.keys(values.variants).map((gender) => {
                   return (
                     <FormikTranslationsInput
                       key={gender}
-                      name={`variants[${variantIndex}].value`}
+                      name={`variants.${gender}.value`}
                       label={getFieldTranslation(`selectsOptions.gender.${gender}.${locale}`)}
                       testId={`variant-${gender}`}
                       showInlineError

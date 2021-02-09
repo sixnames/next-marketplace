@@ -54,26 +54,18 @@ export const sessionUserFragment = gql`
 `;
 
 export const setRubricNavItemAttributeOptionFragment = gql`
-  fragment RubricNavItemAttributeOption on RubricNavItemAttributeOption {
+  fragment RubricNavItemAttributeOption on RubricOption {
     _id
     slug
     name
-    isDisabled
   }
 `;
 
 export const setRubricNavItemAttributeFragment = gql`
-  fragment RubricNavItemAttribute on RubricNavItemAttribute {
+  fragment RubricNavItemAttribute on RubricAttribute {
     _id
-    isDisabled
     name
     options {
-      ...RubricNavItemAttributeOption
-    }
-    visibleOptions {
-      ...RubricNavItemAttributeOption
-    }
-    hiddenOptions {
       ...RubricNavItemAttributeOption
     }
   }
@@ -85,17 +77,12 @@ export const catalogueNavRubricFragment = gql`
     _id
     name
     slug
-    level
     variant {
       _id
       name
     }
     navItems {
-      _id
-      isDisabled
-      attributes {
-        ...RubricNavItemAttribute
-      }
+      ...RubricNavItemAttribute
     }
   }
   ${setRubricNavItemAttributeFragment}

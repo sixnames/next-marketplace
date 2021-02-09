@@ -7,7 +7,6 @@ import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useGetRubricAttributesQuery,
-  useUpdateAttributesGroupInRubricMutation,
 } from 'generated/apolloComponents';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import Spinner from '../../components/Spinner/Spinner';
@@ -33,11 +32,6 @@ interface DeleteAttributesGroupInterface {
 
 interface RubricDetailsInterface {
   rubric: GetRubricQuery['getRubric'];
-}
-
-interface AttributesColumnsInterface {
-  attributesGroupId: string;
-  showInCatalogueFilter: string[];
 }
 
 export type AddAttributesGroupToRubricValues = Omit<AddAttributesGroupToRubricInput, 'rubricId'>;
@@ -78,11 +72,12 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     ...refetchConfig,
   });
 
-  const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
+  // TODO updateAttributesGroupInRubricMutation
+  /*const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateAttributesGroupInRubric),
     onError: onErrorCallback,
     ...refetchConfig,
-  });
+  });*/
 
   if (!data && !loading && !error) {
     return <DataLayoutTitle>Выберите рубрику</DataLayoutTitle>;
@@ -139,10 +134,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  const columns = ({
-    attributesGroupId,
-    showInCatalogueFilter,
-  }: AttributesColumnsInterface): TableColumn<RubricAttributeFragment>[] => [
+  const columns = (attributesGroupId: string): TableColumn<RubricAttributeFragment>[] => [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -175,11 +167,13 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           <Checkbox
             testId={`${dataItem.name}`}
             disabled={isDisabled}
-            checked={showInCatalogueFilter.includes(cellData)}
+            checked={dataItem.showInCatalogueFilter}
             value={cellData}
             name={'showInCatalogueFilter'}
             onChange={() => {
-              showLoading();
+              // TODO updateAttributesGroupInRubricMutation
+              console.log(attributesGroupId);
+              /*showLoading();
               updateAttributesGroupInRubricMutation({
                 variables: {
                   input: {
@@ -188,7 +182,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                     attributesGroupId: attributesGroupId,
                   },
                 },
-              }).catch((e) => console.log(e));
+              }).catch((e) => console.log(e));*/
             }}
           />
         );
@@ -212,8 +206,8 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <InnerWide>
-          {attributesGroups.map(({ attributesGroup, _id, showInCatalogueFilter, isOwner }) => {
-            const { name, attributes } = attributesGroup;
+          {attributesGroups.map((attributesGroup) => {
+            const { name, attributes, _id } = attributesGroup;
             return (
               <div key={_id} className={classes.attributesGroup}>
                 <Accordion
@@ -221,7 +215,6 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                   title={name}
                   titleRight={
                     <ContentItemControls
-                      disabled={!isOwner}
                       justifyContent={'flex-end'}
                       deleteTitle={'Удалить группу атрибутов из рубрики'}
                       deleteHandler={() => deleteAttributesGroupHandler(attributesGroup)}
@@ -231,10 +224,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                 >
                   <Table<RubricAttributeFragment>
                     data={attributes}
-                    columns={columns({
-                      attributesGroupId: attributesGroup._id,
-                      showInCatalogueFilter,
-                    })}
+                    columns={columns(attributesGroup._id)}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />

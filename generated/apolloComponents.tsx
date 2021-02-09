@@ -499,8 +499,8 @@ export type Query = {
   /** Should return rubric by given slug */
   getRubricBySlug: Rubric;
   /** Should return rubrics tree */
-  getRubricsTree: Array<Rubric>;
-  /** Should return catalogue nav rubrics tree */
+  getAllRubrics: Array<Rubric>;
+  /** Should return catalogue nav rubrics */
   getCatalogueNavRubrics: Array<Rubric>;
   /** Should return gender options */
   getGenderOptions: Array<SelectOption>;
@@ -527,7 +527,7 @@ export type Query = {
   /** Should paginated products */
   getProductsList: ProductsPaginationPayload;
   /** Should return product attributes AST for selected rubrics */
-  getProductAttributesAST: Array<ProductAttributesGroupAst>;
+  getProductAttributesAST: Array<ProductAttribute>;
   /** Should return shop by given id */
   getShop: Shop;
   /** Should return shop by given slug */
@@ -657,8 +657,8 @@ export type QueryGetRubricBySlugArgs = {
 };
 
 
-export type QueryGetRubricsTreeArgs = {
-  input?: Maybe<GetRubricsTreeInput>;
+export type QueryGetAllRubricsArgs = {
+  input?: Maybe<GetAllRubricsInput>;
 };
 
 
@@ -893,8 +893,10 @@ export type Mutation = {
   deleteRubric: RubricPayload;
   /** Should add attributes group to the rubric */
   addAttributesGroupToRubric: RubricPayload;
-  /** Should toggle attribute in the rubric showInCatalogueFilter ids list */
-  updateAttributesGroupInRubric: RubricPayload;
+  /** Should toggle attribute in the rubric attribute showInCatalogueFilter field */
+  toggleAttributeInRubricCatalogue: RubricPayload;
+  /** Should toggle attribute in the rubric attribute showInCatalogueNav field */
+  toggleAttributeInRubricNav: RubricPayload;
   /** Should delete attributes group from rubric */
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should add product to the rubric */
@@ -1229,8 +1231,13 @@ export type MutationAddAttributesGroupToRubricArgs = {
 };
 
 
-export type MutationUpdateAttributesGroupInRubricArgs = {
-  input: UpdateAttributesGroupInRubricInput;
+export type MutationToggleAttributeInRubricCatalogueArgs = {
+  input: UpdateAttributeInRubricInput;
+};
+
+
+export type MutationToggleAttributeInRubricNavArgs = {
+  input: UpdateAttributeInRubricInput;
 };
 
 
@@ -1494,12 +1501,6 @@ export type NavItem = {
   appNavigationChildren: Array<NavItem>;
 };
 
-export type OptionVariant = {
-  __typename?: 'OptionVariant';
-  value: Scalars['JSONObject'];
-  gender: Gender;
-};
-
 export type Option = {
   __typename?: 'Option';
   _id: Scalars['ObjectId'];
@@ -1507,10 +1508,9 @@ export type Option = {
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
-  views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
-  variants?: Maybe<Array<OptionVariant>>;
+  options: Array<Option>;
   name: Scalars['String'];
 };
 
@@ -1525,10 +1525,9 @@ export type OptionsGroup = {
   __typename?: 'OptionsGroup';
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  optionsIds: Array<Scalars['ObjectId']>;
+  options: Array<Option>;
   variant: OptionsGroupVariant;
   name: Scalars['String'];
-  options: Array<Option>;
 };
 
 export type OptionsGroupPayload = Payload & {
@@ -1556,11 +1555,12 @@ export type OptionVariantInput = {
 
 export type AddOptionToGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
+  parentOptionId?: Maybe<Scalars['ObjectId']>;
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
+  variants: Scalars['JSONObject'];
   gender: Gender;
-  variants: Array<OptionVariantInput>;
 };
 
 export type UpdateOptionInGroupInput = {
@@ -1569,8 +1569,8 @@ export type UpdateOptionInGroupInput = {
   nameI18n: Scalars['JSONObject'];
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
+  variants: Scalars['JSONObject'];
   gender?: Maybe<Gender>;
-  variants: Array<OptionVariantInput>;
 };
 
 export type DeleteOptionFromGroupInput = {
@@ -1610,17 +1610,13 @@ export type Attribute = {
   nameI18n: Scalars['JSONObject'];
   slug?: Maybe<Scalars['String']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
-  optionsIds: Array<Scalars['ObjectId']>;
-  metricId?: Maybe<Scalars['ObjectId']>;
+  options: Array<Option>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
+  metric?: Maybe<Metric>;
   name: Scalars['String'];
   optionsGroup?: Maybe<OptionsGroup>;
-  options: Array<Option>;
-  metric?: Maybe<Metric>;
 };
 
 export type AttributesGroup = {
@@ -1846,39 +1842,6 @@ export type UpdateRubricVariantInput = {
   nameI18n: Scalars['JSONObject'];
 };
 
-export type RubricNavItemAttributeOption = {
-  __typename?: 'RubricNavItemAttributeOption';
-  _id: Scalars['ObjectId'];
-  slug: Scalars['String'];
-  name: Scalars['String'];
-  isDisabled: Scalars['Boolean'];
-  counter: Scalars['Int'];
-};
-
-export type RubricNavItemAttribute = {
-  __typename?: 'RubricNavItemAttribute';
-  _id: Scalars['ObjectId'];
-  name: Scalars['String'];
-  isDisabled: Scalars['Boolean'];
-  visibleOptions: Array<RubricNavItemAttributeOption>;
-  hiddenOptions: Array<RubricNavItemAttributeOption>;
-  options: Array<RubricNavItemAttributeOption>;
-};
-
-export type RubricNavItems = {
-  __typename?: 'RubricNavItems';
-  _id: Scalars['ObjectId'];
-  isDisabled: Scalars['Boolean'];
-  attributes: Array<RubricNavItemAttribute>;
-};
-
-export type RubricCounters = {
-  __typename?: 'RubricCounters';
-  _id: Scalars['ObjectId'];
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-};
-
 export type RubricProductsCountersInput = {
   /** Filter by current attributes */
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
@@ -1893,38 +1856,30 @@ export type Rubric = {
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
   slug: Scalars['String'];
-  level: Scalars['Int'];
   active: Scalars['Boolean'];
-  parentId?: Maybe<Scalars['ObjectId']>;
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
+  productsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+  shopProductsCountCities: Scalars['JSONObject'];
+  visibleInCatalogueCities: Scalars['JSONObject'];
+  attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
+  shopProductsCount: Scalars['Int'];
+  visibleInCatalogue: Scalars['Boolean'];
   attributesGroups: Array<RubricAttributesGroup>;
   name: Scalars['String'];
   description: Scalars['String'];
   shortDescription: Scalars['String'];
   variant: RubricVariant;
-  parent?: Maybe<Rubric>;
-  children: Array<Rubric>;
   products: ProductsPaginationPayload;
-  productsCounters: RubricCounters;
-  navItems: RubricNavItems;
-};
-
-
-export type RubricChildrenArgs = {
-  input?: Maybe<GetRubricsTreeInput>;
+  navItems: Array<RubricAttribute>;
 };
 
 
 export type RubricProductsArgs = {
   input?: Maybe<ProductsPaginationInput>;
-};
-
-
-export type RubricProductsCountersArgs = {
-  input?: Maybe<RubricProductsCountersInput>;
 };
 
 export type RubricCatalogueTitle = {
@@ -1938,16 +1893,56 @@ export type RubricCatalogueTitle = {
   keyword: Scalars['String'];
 };
 
+export type RubricOption = {
+  __typename?: 'RubricOption';
+  _id: Scalars['ObjectId'];
+  slug: Scalars['String'];
+  nameI18n: Scalars['JSONObject'];
+  color?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
+  views: Scalars['JSONObject'];
+  priorities: Scalars['JSONObject'];
+  productsCount: Scalars['Int'];
+  activeProductsCount: Scalars['Int'];
+  shopProductsCountCities: Scalars['JSONObject'];
+  visibleInCatalogueCities: Scalars['JSONObject'];
+  variants: Scalars['JSONObject'];
+  options: Array<RubricOption>;
+  shopProductsCount: Scalars['Int'];
+  visibleInCatalogue: Scalars['Boolean'];
+  name: Scalars['String'];
+};
+
+export type RubricAttribute = {
+  __typename?: 'RubricAttribute';
+  _id: Scalars['ObjectId'];
+  showInCatalogueFilter: Scalars['Boolean'];
+  showInCatalogueNav: Scalars['Boolean'];
+  nameI18n: Scalars['JSONObject'];
+  slug?: Maybe<Scalars['String']>;
+  optionsGroupId?: Maybe<Scalars['ObjectId']>;
+  views: Scalars['JSONObject'];
+  priorities: Scalars['JSONObject'];
+  positioningInTitle?: Maybe<Scalars['JSONObject']>;
+  visibleInCatalogueCities: Scalars['JSONObject'];
+  options: Array<RubricOption>;
+  variant: AttributeVariant;
+  viewVariant: AttributeViewVariant;
+  metric?: Maybe<Metric>;
+  visibleInCatalogue: Scalars['Boolean'];
+  name: Scalars['String'];
+};
+
 export type RubricAttributesGroup = {
   __typename?: 'RubricAttributesGroup';
   _id: Scalars['ObjectId'];
-  showInCatalogueFilter: Array<Scalars['ObjectId']>;
-  attributesGroupId: Scalars['ObjectId'];
-  isOwner: Scalars['Boolean'];
-  attributesGroup: AttributesGroup;
+  nameI18n: Scalars['JSONObject'];
+  attributesIds: Array<Scalars['ObjectId']>;
+  attributes: Array<RubricAttribute>;
+  name: Scalars['String'];
 };
 
-export type GetRubricsTreeInput = {
+export type GetAllRubricsInput = {
   excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
 };
 
@@ -1969,7 +1964,6 @@ export type CreateRubricInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
-  parentId?: Maybe<Scalars['ObjectId']>;
   variantId: Scalars['ObjectId'];
   catalogueTitle: RubricCatalogueTitleInput;
 };
@@ -1994,9 +1988,8 @@ export type DeleteAttributesGroupFromRubricInput = {
   attributesGroupId: Scalars['ObjectId'];
 };
 
-export type UpdateAttributesGroupInRubricInput = {
+export type UpdateAttributeInRubricInput = {
   rubricId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
 };
 
@@ -2155,7 +2148,6 @@ export type ProductAttributeInput = {
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
   attributeSlug: Scalars['String'];
-  attributesGroupId: Scalars['ObjectId'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
   /** List of selected options slug */
@@ -2207,7 +2199,6 @@ export type UpdateProductInput = {
 export type CreateProductConnectionInput = {
   productId: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
 };
 
 export type AddProductToConnectionInput = {
@@ -2227,7 +2218,6 @@ export type ProductAttribute = {
   showInCard: Scalars['Boolean'];
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
   attributeSlug: Scalars['String'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
@@ -2239,7 +2229,6 @@ export type ProductAttribute = {
   text: Scalars['String'];
   attribute: Attribute;
   readableValue?: Maybe<Scalars['String']>;
-  attributesGroup: AttributesGroup;
 };
 
 export type ProductConnectionItem = {
@@ -2254,7 +2243,6 @@ export type ProductConnection = {
   __typename?: 'ProductConnection';
   _id: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
   productsIds: Array<Scalars['ObjectId']>;
   attribute: Attribute;
   connectionProducts: Array<ProductConnectionItem>;
@@ -2678,10 +2666,10 @@ export type MakeAnOrderInput = {
 
 export type CmsProductAttributeFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'attributeId' | 'attributesGroupId' | 'attributeSlug' | 'showInCard' | 'selectedOptionsSlugs'>
+  & Pick<ProductAttribute, 'attributeId' | 'attributeSlug' | 'showInCard' | 'selectedOptionsSlugs'>
   & { attribute: (
     { __typename?: 'Attribute' }
-    & Pick<Attribute, '_id' | 'slug' | 'name' | 'variant' | 'viewVariant' | 'metricId'>
+    & Pick<Attribute, '_id' | 'slug' | 'name' | 'variant' | 'viewVariant'>
     & { metric?: Maybe<(
       { __typename?: 'Metric' }
       & Pick<Metric, '_id' | 'name'>
@@ -2748,7 +2736,7 @@ export type GetProductQuery = (
 
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'attributesGroupId' | 'textI18n' | 'number' | 'selectedOptionsSlugs'>
+  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
@@ -2762,15 +2750,6 @@ export type ProductAttributeAstFragment = (
   ) }
 );
 
-export type ProductAttributesGroupAstFragment = (
-  { __typename?: 'ProductAttributesGroupAst' }
-  & Pick<ProductAttributesGroupAst, '_id' | 'name'>
-  & { astAttributes: Array<(
-    { __typename?: 'ProductAttribute' }
-    & ProductAttributeAstFragment
-  )> }
-);
-
 export type GetProductAttributesAstQueryVariables = Exact<{
   input: ProductAttributesAstInput;
 }>;
@@ -2779,8 +2758,8 @@ export type GetProductAttributesAstQueryVariables = Exact<{
 export type GetProductAttributesAstQuery = (
   { __typename?: 'Query' }
   & { getProductAttributesAST: Array<(
-    { __typename?: 'ProductAttributesGroupAst' }
-    & ProductAttributesGroupAstFragment
+    { __typename?: 'ProductAttribute' }
+    & ProductAttributeAstFragment
   )> }
 );
 
@@ -2927,14 +2906,9 @@ export type DeleteProductFromConnectionMutation = (
   ) }
 );
 
-export type RubricInTreeCountersFragment = (
-  { __typename?: 'RubricCounters' }
-  & Pick<RubricCounters, '_id' | 'totalActiveDocs' | 'totalDocs'>
-);
-
-export type RubricInTreeFragment = (
+export type RubricInListFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'name' | 'level'>
+  & Pick<Rubric, '_id' | 'nameI18n' | 'name' | 'productsCount' | 'activeProductsCount'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -2955,35 +2929,16 @@ export type RubricProductsPaginationFragment = (
   )> }
 );
 
-export type GetRubricsTreeQueryVariables = Exact<{
-  input?: Maybe<GetRubricsTreeInput>;
-  countersInput?: Maybe<RubricProductsCountersInput>;
+export type GetAllRubricsQueryVariables = Exact<{
+  input?: Maybe<GetAllRubricsInput>;
 }>;
 
 
-export type GetRubricsTreeQuery = (
+export type GetAllRubricsQuery = (
   { __typename?: 'Query' }
-  & { getRubricsTree: Array<(
+  & { getAllRubrics: Array<(
     { __typename?: 'Rubric' }
-    & { productsCounters: (
-      { __typename?: 'RubricCounters' }
-      & RubricInTreeCountersFragment
-    ), children: Array<(
-      { __typename?: 'Rubric' }
-      & { productsCounters: (
-        { __typename?: 'RubricCounters' }
-        & RubricInTreeCountersFragment
-      ), children: Array<(
-        { __typename?: 'Rubric' }
-        & { productsCounters: (
-          { __typename?: 'RubricCounters' }
-          & RubricInTreeCountersFragment
-        ) }
-        & RubricInTreeFragment
-      )> }
-      & RubricInTreeFragment
-    )> }
-    & RubricInTreeFragment
+    & RubricInListFragment
   )> }
 );
 
@@ -2997,14 +2952,11 @@ export type GetRubricQuery = (
   & { getRubric: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
-    & { productsCounters: (
-      { __typename?: 'RubricCounters' }
-      & RubricInTreeCountersFragment
-    ), catalogueTitle: (
+    & { catalogueTitle: (
       { __typename?: 'RubricCatalogueTitle' }
       & Pick<RubricCatalogueTitle, 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
     ) }
-    & RubricInTreeFragment
+    & RubricInListFragment
   ) }
 );
 
@@ -3120,28 +3072,21 @@ export type GetAllProductsQuery = (
 );
 
 export type RubricAttributeFragment = (
-  { __typename?: 'Attribute' }
-  & Pick<Attribute, '_id' | 'name' | 'variant'>
+  { __typename?: 'RubricAttribute' }
+  & Pick<RubricAttribute, '_id' | 'name' | 'variant' | 'optionsGroupId' | 'showInCatalogueFilter' | 'showInCatalogueNav'>
   & { metric?: Maybe<(
     { __typename?: 'Metric' }
     & Pick<Metric, '_id' | 'name'>
-  )>, optionsGroup?: Maybe<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '_id' | 'name'>
   )> }
 );
 
 export type RubricAttributesGroupFragment = (
   { __typename?: 'RubricAttributesGroup' }
-  & Pick<RubricAttributesGroup, '_id' | 'isOwner' | 'showInCatalogueFilter'>
-  & { attributesGroup: (
-    { __typename?: 'AttributesGroup' }
-    & Pick<AttributesGroup, '_id' | 'name'>
-    & { attributes: Array<(
-      { __typename?: 'Attribute' }
-      & RubricAttributeFragment
-    )> }
-  ) }
+  & Pick<RubricAttributesGroup, '_id' | 'name'>
+  & { attributes: Array<(
+    { __typename?: 'RubricAttribute' }
+    & RubricAttributeFragment
+  )> }
 );
 
 export type GetRubricAttributesQueryVariables = Exact<{
@@ -3153,7 +3098,7 @@ export type GetRubricAttributesQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id' | 'level'>
+    & Pick<Rubric, '_id'>
     & { attributesGroups: Array<(
       { __typename?: 'RubricAttributesGroup' }
       & RubricAttributesGroupFragment
@@ -3247,19 +3192,6 @@ export type AddAttributesGroupToRubricMutationVariables = Exact<{
 export type AddAttributesGroupToRubricMutation = (
   { __typename?: 'Mutation' }
   & { addAttributesGroupToRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateAttributesGroupInRubricMutationVariables = Exact<{
-  input: UpdateAttributesGroupInRubricInput;
-}>;
-
-
-export type UpdateAttributesGroupInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributesGroupInRubric: (
     { __typename?: 'RubricPayload' }
     & Pick<RubricPayload, 'success' | 'message'>
   ) }
@@ -3881,7 +3813,7 @@ export type GetAllAttributesGroupsQuery = (
 
 export type AttributeInGroupFragment = (
   { __typename?: 'Attribute' }
-  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId' | 'metricId'>
+  & Pick<Attribute, '_id' | 'nameI18n' | 'name' | 'variant' | 'viewVariant' | 'positioningInTitle' | 'optionsGroupId'>
   & { optionsGroup?: Maybe<(
     { __typename?: 'OptionsGroup' }
     & Pick<OptionsGroup, '_id' | 'name'>
@@ -4122,7 +4054,7 @@ export type CatalogueFilterFragment = (
 
 export type CatalogueRubricFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'name' | 'level' | 'slug'>
+  & Pick<Rubric, '_id' | 'name' | 'slug'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -4399,39 +4331,29 @@ export type SessionUserFragment = (
 );
 
 export type RubricNavItemAttributeOptionFragment = (
-  { __typename?: 'RubricNavItemAttributeOption' }
-  & Pick<RubricNavItemAttributeOption, '_id' | 'slug' | 'name' | 'isDisabled'>
+  { __typename?: 'RubricOption' }
+  & Pick<RubricOption, '_id' | 'slug' | 'name'>
 );
 
 export type RubricNavItemAttributeFragment = (
-  { __typename?: 'RubricNavItemAttribute' }
-  & Pick<RubricNavItemAttribute, '_id' | 'isDisabled' | 'name'>
+  { __typename?: 'RubricAttribute' }
+  & Pick<RubricAttribute, '_id' | 'name'>
   & { options: Array<(
-    { __typename?: 'RubricNavItemAttributeOption' }
-    & RubricNavItemAttributeOptionFragment
-  )>, visibleOptions: Array<(
-    { __typename?: 'RubricNavItemAttributeOption' }
-    & RubricNavItemAttributeOptionFragment
-  )>, hiddenOptions: Array<(
-    { __typename?: 'RubricNavItemAttributeOption' }
+    { __typename?: 'RubricOption' }
     & RubricNavItemAttributeOptionFragment
   )> }
 );
 
 export type CatalogueNavRubricFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'name' | 'slug' | 'level'>
+  & Pick<Rubric, '_id' | 'name' | 'slug'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
-  ), navItems: (
-    { __typename?: 'RubricNavItems' }
-    & Pick<RubricNavItems, '_id' | 'isDisabled'>
-    & { attributes: Array<(
-      { __typename?: 'RubricNavItemAttribute' }
-      & RubricNavItemAttributeFragment
-    )> }
-  ) }
+  ), navItems: Array<(
+    { __typename?: 'RubricAttribute' }
+    & RubricNavItemAttributeFragment
+  )> }
 );
 
 export type InitialQueryCityFragment = (
@@ -4555,11 +4477,7 @@ export type GetAllOptionsGroupsQuery = (
 
 export type OptionInGroupFragment = (
   { __typename?: 'Option' }
-  & Pick<Option, '_id' | 'nameI18n' | 'name' | 'color' | 'icon' | 'gender'>
-  & { variants?: Maybe<Array<(
-    { __typename?: 'OptionVariant' }
-    & Pick<OptionVariant, 'gender' | 'value'>
-  )>> }
+  & Pick<Option, '_id' | 'nameI18n' | 'name' | 'color' | 'icon' | 'gender' | 'variants'>
 );
 
 export type OptionsGroupFragment = (
@@ -4961,7 +4879,6 @@ export type UsersSerchQuery = (
 export const CmsProductAttributeFragmentDoc = gql`
     fragment CMSProductAttribute on ProductAttribute {
   attributeId
-  attributesGroupId
   attributeSlug
   showInCard
   selectedOptionsSlugs
@@ -4971,7 +4888,6 @@ export const CmsProductAttributeFragmentDoc = gql`
     name
     variant
     viewVariant
-    metricId
     metric {
       _id
       name
@@ -5052,7 +4968,6 @@ export const ProductAttributeAstFragmentDoc = gql`
   showAsBreadcrumb
   attributeId
   attributeSlug
-  attributesGroupId
   textI18n
   number
   selectedOptionsSlugs
@@ -5072,15 +4987,6 @@ export const ProductAttributeAstFragmentDoc = gql`
   }
 }
     `;
-export const ProductAttributesGroupAstFragmentDoc = gql`
-    fragment ProductAttributesGroupAst on ProductAttributesGroupAst {
-  _id
-  name
-  astAttributes {
-    ...ProductAttributeAst
-  }
-}
-    ${ProductAttributeAstFragmentDoc}`;
 export const BrandCollectionsOptionFragmentDoc = gql`
     fragment BrandCollectionsOption on BrandCollection {
   _id
@@ -5088,19 +4994,13 @@ export const BrandCollectionsOptionFragmentDoc = gql`
   name
 }
     `;
-export const RubricInTreeCountersFragmentDoc = gql`
-    fragment RubricInTreeCounters on RubricCounters {
-  _id
-  totalActiveDocs
-  totalDocs
-}
-    `;
-export const RubricInTreeFragmentDoc = gql`
-    fragment RubricInTree on Rubric {
+export const RubricInListFragmentDoc = gql`
+    fragment RubricInList on Rubric {
   _id
   nameI18n
   name
-  level
+  productsCount
+  activeProductsCount
   variant {
     _id
     name
@@ -5131,7 +5031,7 @@ export const RubricProductsPaginationFragmentDoc = gql`
 }
     ${RubricProductFragmentDoc}`;
 export const RubricAttributeFragmentDoc = gql`
-    fragment RubricAttribute on Attribute {
+    fragment RubricAttribute on RubricAttribute {
   _id
   name
   variant
@@ -5139,23 +5039,17 @@ export const RubricAttributeFragmentDoc = gql`
     _id
     name
   }
-  optionsGroup {
-    _id
-    name
-  }
+  optionsGroupId
+  showInCatalogueFilter
+  showInCatalogueNav
 }
     `;
 export const RubricAttributesGroupFragmentDoc = gql`
     fragment RubricAttributesGroup on RubricAttributesGroup {
   _id
-  isOwner
-  showInCatalogueFilter
-  attributesGroup {
-    _id
-    name
-    attributes {
-      ...RubricAttribute
-    }
+  name
+  attributes {
+    ...RubricAttribute
   }
 }
     ${RubricAttributeFragmentDoc}`;
@@ -5339,7 +5233,6 @@ export const AttributeInGroupFragmentDoc = gql`
     _id
     name
   }
-  metricId
   metric {
     _id
     name
@@ -5462,7 +5355,6 @@ export const CatalogueRubricFragmentDoc = gql`
     fragment CatalogueRubric on Rubric {
   _id
   name
-  level
   slug
   variant {
     _id
@@ -5666,25 +5558,17 @@ export const SessionUserFragmentDoc = gql`
 }
     ${SessionRoleFragmentFragmentDoc}`;
 export const RubricNavItemAttributeOptionFragmentDoc = gql`
-    fragment RubricNavItemAttributeOption on RubricNavItemAttributeOption {
+    fragment RubricNavItemAttributeOption on RubricOption {
   _id
   slug
   name
-  isDisabled
 }
     `;
 export const RubricNavItemAttributeFragmentDoc = gql`
-    fragment RubricNavItemAttribute on RubricNavItemAttribute {
+    fragment RubricNavItemAttribute on RubricAttribute {
   _id
-  isDisabled
   name
   options {
-    ...RubricNavItemAttributeOption
-  }
-  visibleOptions {
-    ...RubricNavItemAttributeOption
-  }
-  hiddenOptions {
     ...RubricNavItemAttributeOption
   }
 }
@@ -5694,17 +5578,12 @@ export const CatalogueNavRubricFragmentDoc = gql`
   _id
   name
   slug
-  level
   variant {
     _id
     name
   }
   navItems {
-    _id
-    isDisabled
-    attributes {
-      ...RubricNavItemAttribute
-    }
+    ...RubricNavItemAttribute
   }
 }
     ${RubricNavItemAttributeFragmentDoc}`;
@@ -5786,10 +5665,7 @@ export const OptionInGroupFragmentDoc = gql`
   color
   icon
   gender
-  variants {
-    gender
-    value
-  }
+  variants
 }
     `;
 export const OptionsGroupFragmentDoc = gql`
@@ -6032,10 +5908,10 @@ export type GetProductQueryResult = Apollo.QueryResult<GetProductQuery, GetProdu
 export const GetProductAttributesAstDocument = gql`
     query GetProductAttributesAST($input: ProductAttributesASTInput!) {
   getProductAttributesAST(input: $input) {
-    ...ProductAttributesGroupAst
+    ...ProductAttributeAst
   }
 }
-    ${ProductAttributesGroupAstFragmentDoc}`;
+    ${ProductAttributeAstFragmentDoc}`;
 
 /**
  * __useGetProductAttributesAstQuery__
@@ -6380,63 +6256,43 @@ export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.Muta
 export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
 export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
-export const GetRubricsTreeDocument = gql`
-    query GetRubricsTree($input: GetRubricsTreeInput, $countersInput: RubricProductsCountersInput) {
-  getRubricsTree(input: $input) {
-    ...RubricInTree
-    productsCounters(input: $countersInput) {
-      ...RubricInTreeCounters
-    }
-    children(input: $input) {
-      ...RubricInTree
-      productsCounters(input: $countersInput) {
-        ...RubricInTreeCounters
-      }
-      children(input: $input) {
-        ...RubricInTree
-        productsCounters(input: $countersInput) {
-          ...RubricInTreeCounters
-        }
-      }
-    }
+export const GetAllRubricsDocument = gql`
+    query GetAllRubrics($input: GetAllRubricsInput) {
+  getAllRubrics(input: $input) {
+    ...RubricInList
   }
 }
-    ${RubricInTreeFragmentDoc}
-${RubricInTreeCountersFragmentDoc}`;
+    ${RubricInListFragmentDoc}`;
 
 /**
- * __useGetRubricsTreeQuery__
+ * __useGetAllRubricsQuery__
  *
- * To run a query within a React component, call `useGetRubricsTreeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricsTreeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllRubricsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllRubricsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetRubricsTreeQuery({
+ * const { data, loading, error } = useGetAllRubricsQuery({
  *   variables: {
  *      input: // value for 'input'
- *      countersInput: // value for 'countersInput'
  *   },
  * });
  */
-export function useGetRubricsTreeQuery(baseOptions?: Apollo.QueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
-        return Apollo.useQuery<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>(GetRubricsTreeDocument, baseOptions);
+export function useGetAllRubricsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllRubricsQuery, GetAllRubricsQueryVariables>) {
+        return Apollo.useQuery<GetAllRubricsQuery, GetAllRubricsQueryVariables>(GetAllRubricsDocument, baseOptions);
       }
-export function useGetRubricsTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>) {
-          return Apollo.useLazyQuery<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>(GetRubricsTreeDocument, baseOptions);
+export function useGetAllRubricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRubricsQuery, GetAllRubricsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllRubricsQuery, GetAllRubricsQueryVariables>(GetAllRubricsDocument, baseOptions);
         }
-export type GetRubricsTreeQueryHookResult = ReturnType<typeof useGetRubricsTreeQuery>;
-export type GetRubricsTreeLazyQueryHookResult = ReturnType<typeof useGetRubricsTreeLazyQuery>;
-export type GetRubricsTreeQueryResult = Apollo.QueryResult<GetRubricsTreeQuery, GetRubricsTreeQueryVariables>;
+export type GetAllRubricsQueryHookResult = ReturnType<typeof useGetAllRubricsQuery>;
+export type GetAllRubricsLazyQueryHookResult = ReturnType<typeof useGetAllRubricsLazyQuery>;
+export type GetAllRubricsQueryResult = Apollo.QueryResult<GetAllRubricsQuery, GetAllRubricsQueryVariables>;
 export const GetRubricDocument = gql`
     query GetRubric($_id: ObjectId!) {
   getRubric(_id: $_id) {
-    ...RubricInTree
-    productsCounters {
-      ...RubricInTreeCounters
-    }
+    ...RubricInList
     active
     variantId
     descriptionI18n
@@ -6449,8 +6305,7 @@ export const GetRubricDocument = gql`
     }
   }
 }
-    ${RubricInTreeFragmentDoc}
-${RubricInTreeCountersFragmentDoc}`;
+    ${RubricInListFragmentDoc}`;
 
 /**
  * __useGetRubricQuery__
@@ -6753,7 +6608,6 @@ export const GetRubricAttributesDocument = gql`
     query GetRubricAttributes($rubricId: ObjectId!) {
   getRubric(_id: $rubricId) {
     _id
-    level
     attributesGroups {
       ...RubricAttributesGroup
     }
@@ -7017,39 +6871,6 @@ export function useAddAttributesGroupToRubricMutation(baseOptions?: Apollo.Mutat
 export type AddAttributesGroupToRubricMutationHookResult = ReturnType<typeof useAddAttributesGroupToRubricMutation>;
 export type AddAttributesGroupToRubricMutationResult = Apollo.MutationResult<AddAttributesGroupToRubricMutation>;
 export type AddAttributesGroupToRubricMutationOptions = Apollo.BaseMutationOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-export const UpdateAttributesGroupInRubricDocument = gql`
-    mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
-  updateAttributesGroupInRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateAttributesGroupInRubricMutationFn = Apollo.MutationFunction<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
-
-/**
- * __useUpdateAttributesGroupInRubricMutation__
- *
- * To run a mutation, you first call `useUpdateAttributesGroupInRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttributesGroupInRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttributesGroupInRubricMutation, { data, loading, error }] = useUpdateAttributesGroupInRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAttributesGroupInRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>) {
-        return Apollo.useMutation<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>(UpdateAttributesGroupInRubricDocument, baseOptions);
-      }
-export type UpdateAttributesGroupInRubricMutationHookResult = ReturnType<typeof useUpdateAttributesGroupInRubricMutation>;
-export type UpdateAttributesGroupInRubricMutationResult = Apollo.MutationResult<UpdateAttributesGroupInRubricMutation>;
-export type UpdateAttributesGroupInRubricMutationOptions = Apollo.BaseMutationOptions<UpdateAttributesGroupInRubricMutation, UpdateAttributesGroupInRubricMutationVariables>;
 export const DeleteAttributesGroupFromRubricDocument = gql`
     mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
   deleteAttributesGroupFromRubric(input: $input) {

@@ -2,8 +2,7 @@ import Image from 'next/image';
 import * as React from 'react';
 import {
   CmsProductFragment,
-  ProductAttributeInput,
-  useGetRubricsTreeQuery,
+  useGetAllRubricsQuery,
   useUpdateProductMutation,
 } from 'generated/apolloComponents';
 import InnerWide from '../../components/Inner/InnerWide';
@@ -29,7 +28,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     schema: updateProductSchema,
   });
 
-  const { data, loading, error } = useGetRubricsTreeQuery({
+  const { data, loading, error } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
   });
   const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
@@ -42,7 +41,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     return <Spinner />;
   }
 
-  if (error || !data || !data.getRubricsTree || !product) {
+  if (error || !data || !data.getAllRubrics || !product) {
     return <RequestError />;
   }
 
@@ -80,32 +79,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();
-          const attributes = values.attributes.reduce(
-            (acc: ProductAttributeInput[], attributesGroup) => {
-              const groupAttributes: ProductAttributeInput[] = attributesGroup.astAttributes.map(
-                (attribute) => {
-                  return {
-                    attributeId: attribute.attributeId,
-                    attributesGroupId: attribute.attributesGroupId,
-                    attributeSlug: attribute.attributeSlug,
-                    number: attribute.number,
-                    textI18n: attribute.textI18n,
-                    selectedOptionsSlugs: attribute.selectedOptionsSlugs,
-                    showAsBreadcrumb: attribute.showAsBreadcrumb,
-                    showInCard: attribute.showInCard,
-                  };
-                },
-              );
-              return [...acc, ...groupAttributes];
-            },
-            [],
-          );
           return updateProductMutation({
             variables: {
               input: {
                 productId: product._id,
                 ...values,
-                attributes,
               },
             },
           });
@@ -120,7 +98,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
               <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
-              <ProductMainFields productId={product._id} rubricsTree={data?.getRubricsTree} />
+              <ProductMainFields productId={product._id} rubrics={data?.getAllRubrics} />
 
               <Button testId={'submit-product'} type={'submit'}>
                 Сохранить

@@ -274,7 +274,6 @@ export interface NexusGenInputs {
   CreateProductConnectionInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateProductInput: {
@@ -411,7 +410,6 @@ export interface NexusGenInputs {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributeSlug: string; // String!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     number?: number | null; // Float
     selectedOptionsSlugs: string[]; // [String!]!
     showAsBreadcrumb: boolean; // Boolean!
@@ -1306,6 +1304,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string | null; // String
+    gender: NexusGenEnums['Gender'] | null; // Gender
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1533,7 +1532,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     connectionProducts: NexusGenRootTypes['ProductConnectionItem'][]; // [ProductConnectionItem!]!
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     productsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
@@ -2407,6 +2405,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     color: 'String';
+    gender: 'Gender';
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
@@ -2634,7 +2633,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
-    attributesGroupId: 'ObjectId';
     connectionProducts: 'ProductConnectionItem';
     products: 'Product';
     productsIds: 'ObjectId';

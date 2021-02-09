@@ -27,10 +27,7 @@ export const optionInGroupFragment = gql`
     color
     icon
     gender
-    variants {
-      gender
-      value
-    }
+    variants
   }
 `;
 

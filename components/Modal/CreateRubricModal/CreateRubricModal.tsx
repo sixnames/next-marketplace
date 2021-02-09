@@ -5,17 +5,17 @@ import ModalTitle from '../ModalTitle';
 import ModalButtons from '../ModalButtons';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
-import { CreateRubricInput, Gender, GetRubricsTreeQuery } from 'generated/apolloComponents';
+import { CreateRubricInput, Gender, GetAllRubricsQuery } from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import { createRubricSchema } from 'validation/rubricSchema';
-import RubricsTree from 'routes/Rubrics/RubricsTree';
+import RubricsList from 'routes/Rubrics/RubricsList';
 import FormikRadio from 'components/FormElements/Radio/FormikRadio';
 import classes from './CreateRubricModal.module.css';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
-  rubrics: GetRubricsTreeQuery['getRubricsTree'];
+  rubrics: GetAllRubricsQuery['getAllRubrics'];
 }
 
 const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubrics }) => {
@@ -35,7 +35,6 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
           descriptionI18n: {},
           shortDescriptionI18n: {},
           variantId: null,
-          parentId: null,
           catalogueTitle: {
             defaultTitleI18n: {},
             prefixI18n: {},
@@ -44,12 +43,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
           },
         }}
         onSubmit={(values) => {
-          const { parentId, ...restValues } = values;
-
-          confirm({
-            ...restValues,
-            parentId,
-          });
+          confirm(values);
         }}
       >
         {() => {
@@ -57,8 +51,8 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
             <Form>
               <RubricMainFields />
 
-              <RubricsTree
-                tree={rubrics}
+              <RubricsList
+                rubrics={rubrics}
                 testIdPrefix={'modal'}
                 titleLeft={(_id, testId) => {
                   return (

@@ -73,11 +73,11 @@ export const RubricQueries = extendType({
         const { input } = args;
         const excludedIds = input?.excludedRubricsIds || [];
 
-        const levelOneRubrics = await rubricsCollection
+        const rubrics = await rubricsCollection
           .find({ _id: { $nin: excludedIds } }, { sort: { itemId: SORT_ASC } })
           .toArray();
 
-        return levelOneRubrics;
+        return rubrics;
       },
     });
 

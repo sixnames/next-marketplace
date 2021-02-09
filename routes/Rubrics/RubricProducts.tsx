@@ -17,7 +17,7 @@ import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
 import Pager from '../../components/Pager/Pager';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
 import useProductsListColumns from '../../hooks/useProductsListColumns';
-import { RUBRIC_PRODUCTS_QUERY, RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
+import { RUBRIC_PRODUCTS_QUERY, ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import { useRouter } from 'next/router';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
 import { ROUTE_CMS } from 'config/common';
@@ -43,7 +43,7 @@ const RubricProducts: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
   const refetchQueries = [
     {
-      query: RUBRICS_TREE_QUERY,
+      query: ALL_RUBRICS_QUERY,
     },
     {
       query: RUBRIC_PRODUCTS_QUERY,

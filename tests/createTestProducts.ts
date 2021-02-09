@@ -42,7 +42,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     attributeOuterRatingA,
     attributeOuterRatingB,
     attributeOuterRatingC,
-    attributesGroupWineFeatures,
     attributeString,
     attributeWineCombinations,
     optionsSlugsCombination,
@@ -378,7 +377,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const connectionA: ProductConnectionModel = {
     _id: new ObjectId(),
     attributeId: attributeWineVintage._id,
-    attributesGroupId: attributesGroupWineFeatures._id,
     productsIds: [connectionProductA._id, connectionProductB._id, connectionProductC._id],
   };
   await productConnectionsCollection.insertMany([connectionA]);

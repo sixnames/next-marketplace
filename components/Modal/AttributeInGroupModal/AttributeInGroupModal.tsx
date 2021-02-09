@@ -65,7 +65,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         nameI18n: attribute.nameI18n,
         variant: attribute.variant,
         viewVariant: attribute.viewVariant,
-        metricId: attribute.metricId,
+        metricId: attribute.metric?._id,
         optionsGroupId: attribute.optionsGroupId,
         positioningInTitle: attribute.positioningInTitle,
       }

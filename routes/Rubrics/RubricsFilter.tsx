@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { useCreateRubricMutation, useGetRubricsTreeQuery } from 'generated/apolloComponents';
+import { useCreateRubricMutation, useGetAllRubricsQuery } from 'generated/apolloComponents';
 import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
-import RubricsTree from './RubricsTree';
+import RubricsList from 'routes/Rubrics/RubricsList';
 import FilterRadio from '../../components/FilterElements/FilterRadio/FilterRadio';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CREATE_RUBRIC_MODAL } from 'config/modals';
 import classes from './RubricsFilter.module.css';
-import { RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
+import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal/CreateRubricModal';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from 'config/common';
 
@@ -16,15 +16,12 @@ const RubricsFilter: React.FC = () => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
   });
-  const { data, error, loading } = useGetRubricsTreeQuery();
+  const { data, error, loading } = useGetAllRubricsQuery();
 
   const [createRubricMutation] = useCreateRubricMutation({
     refetchQueries: [
       {
-        query: RUBRICS_TREE_QUERY,
-        variables: {
-          counters: { noRubrics: true },
-        },
+        query: ALL_RUBRICS_QUERY,
       },
     ],
     awaitRefetchQueries: true,
@@ -36,17 +33,17 @@ const RubricsFilter: React.FC = () => {
     return <Spinner />;
   }
 
-  if (error || !data || !data.getRubricsTree) {
+  if (error || !data || !data.getAllRubrics) {
     return <RequestError />;
   }
 
-  const { getRubricsTree } = data;
+  const { getAllRubrics } = data;
 
   function createRubricHandler() {
     showModal<CreateRubricModalInterface>({
       variant: CREATE_RUBRIC_MODAL,
       props: {
-        rubrics: getRubricsTree,
+        rubrics: getAllRubrics,
         confirm: (values) => {
           showLoading();
           return createRubricMutation({ variables: { input: values } });
@@ -59,10 +56,10 @@ const RubricsFilter: React.FC = () => {
 
   return (
     <React.Fragment>
-      <RubricsTree
+      <RubricsList
         low
-        isLastDisabled
-        tree={getRubricsTree}
+        isAccordionDisabled
+        rubrics={getAllRubrics}
         titleLeft={(_id, testId) => (
           <FilterRadio
             _id={_id}

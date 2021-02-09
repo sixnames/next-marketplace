@@ -97,7 +97,6 @@ export const catalogueRubricFragment = gql`
   fragment CatalogueRubric on Rubric {
     _id
     name
-    level
     slug
     variant {
       _id

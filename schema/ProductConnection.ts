@@ -23,7 +23,6 @@ export const ProductConnection = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.objectId('attributeId');
-    t.nonNull.objectId('attributesGroupId');
     t.nonNull.list.nonNull.objectId('productsIds');
 
     // ProductConnection attribute field resolver

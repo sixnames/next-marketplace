@@ -63,15 +63,6 @@ export const ADD_ATTRIBUTES_GROUP_TO_RUBRIC = gql`
   }
 `;
 
-export const UPDATE_ATTRIBUTES_GROUP_IN_RUBRIC = gql`
-  mutation UpdateAttributesGroupInRubric($input: UpdateAttributesGroupInRubricInput!) {
-    updateAttributesGroupInRubric(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const DELETE_ATTRIBUTES_GROUP_FROM_RUBRIC = gql`
   mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
     deleteAttributesGroupFromRubric(input: $input) {

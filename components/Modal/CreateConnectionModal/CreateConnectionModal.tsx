@@ -82,10 +82,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
             return;
           }
 
-          confirm({
-            ...values,
-            attributesGroupId: productAttribute.attributesGroupId,
-          });
+          confirm(values);
         }}
       >
         {() => {

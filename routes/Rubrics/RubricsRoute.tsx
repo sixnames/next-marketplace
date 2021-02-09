@@ -1,3 +1,4 @@
+import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import * as React from 'react';
 import DataLayout from '../../components/DataLayout/DataLayout';
 import RubricsFilter from './RubricsFilter';
@@ -7,7 +8,6 @@ import NoRubricProducts from './NoRubricProducts';
 import useRouterQuery from '../../hooks/useRouterQuery';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { CONFIRM_MODAL } from 'config/modals';
-import { RUBRICS_TREE_QUERY } from 'graphql/complex/rubricsQueries';
 import useTabsConfig from '../../hooks/useTabsConfig';
 import { QUERY_DATA_LAYOUT_NO_RUBRIC } from 'config/common';
 
@@ -48,10 +48,7 @@ const RubricsRoute: React.FC = () => {
     awaitRefetchQueries: true,
     refetchQueries: [
       {
-        query: RUBRICS_TREE_QUERY,
-        variables: {
-          counters: { noRubrics: true },
-        },
+        query: ALL_RUBRICS_QUERY,
       },
     ],
   });

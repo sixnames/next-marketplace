@@ -10,6 +10,9 @@ export const Option = objectType({
     t.string('color');
     t.string('icon');
     t.nonNull.json('variants');
+    t.field('gender', {
+      type: 'Gender',
+    });
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',
     });

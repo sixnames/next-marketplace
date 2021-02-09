@@ -96,51 +96,38 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           </div>
                         ) : null}
 
-                        {currentRubric.navItems.attributes.map(
-                          ({ _id, isDisabled, options, name }) => {
-                            if (isDisabled) {
-                              return null;
-                            }
-                            return (
-                              <div className={classes.dropdownGroup} key={_id}>
-                                <div className={classes.dropdownGroupTitle}>{name}</div>
-                                <ul>
-                                  {options.map((option) => {
-                                    if (option.isDisabled) {
-                                      return null;
-                                    }
-                                    const isCurrent = asPath === option.slug;
-                                    return (
-                                      <li key={option._id}>
-                                        <Link
-                                          href={option.slug}
-                                          onClick={hideBurgerDropdown}
-                                          className={`${classes.dropdownGroupLink} ${
-                                            isCurrent ? classes.dropdownGroupLinkCurrent : ''
-                                          }`}
-                                        >
-                                          <span>{option.name}</span>
-                                          <BurgerDropdownChevron />
-                                        </Link>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              </div>
-                            );
-                          },
-                        )}
+                        {currentRubric.navItems.map(({ _id, options, name }) => {
+                          return (
+                            <div className={classes.dropdownGroup} key={_id}>
+                              <div className={classes.dropdownGroupTitle}>{name}</div>
+                              <ul>
+                                {options.map((option) => {
+                                  const isCurrent = asPath === option.slug;
+                                  return (
+                                    <li key={option._id}>
+                                      <Link
+                                        href={option.slug}
+                                        onClick={hideBurgerDropdown}
+                                        className={`${classes.dropdownGroupLink} ${
+                                          isCurrent ? classes.dropdownGroupLinkCurrent : ''
+                                        }`}
+                                      >
+                                        <span>{option.name}</span>
+                                        <BurgerDropdownChevron />
+                                      </Link>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                          );
+                        })}
                       </Fragment>
                     ) : (
                       <ul>
                         {catalogueNavRubrics.map((rubric) => {
-                          const { _id, name, slug, navItems } = rubric;
+                          const { _id, name, slug } = rubric;
                           const isCurrent = slug === catalogueSlug;
-                          const { isDisabled } = navItems;
-
-                          if (isDisabled) {
-                            return null;
-                          }
 
                           return (
                             <li key={_id} onClick={() => setCurrentRubric(rubric)}>

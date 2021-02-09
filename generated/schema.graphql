@@ -501,7 +501,6 @@ input CreateOptionsGroupInput {
 
 input CreateProductConnectionInput {
   attributeId: ObjectId!
-  attributesGroupId: ObjectId!
   productId: ObjectId!
 }
 
@@ -1225,6 +1224,7 @@ scalar ObjectId
 type Option {
   _id: ObjectId!
   color: String
+  gender: Gender
   icon: String
   name: String!
   nameI18n: JSONObject!
@@ -1496,7 +1496,6 @@ type ProductAttribute {
 input ProductAttributeInput {
   attributeId: ObjectId!
   attributeSlug: String!
-  attributesGroupId: ObjectId!
   number: Float
 
   """
@@ -1570,7 +1569,6 @@ type ProductConnection {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
-  attributesGroupId: ObjectId!
   connectionProducts: [ProductConnectionItem!]!
   products: [Product!]!
   productsIds: [ObjectId!]!

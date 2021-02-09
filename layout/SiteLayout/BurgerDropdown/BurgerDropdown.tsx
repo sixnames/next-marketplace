@@ -106,7 +106,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                   return (
                                     <li key={option._id}>
                                       <Link
-                                        href={option.slug}
+                                        href={`/${currentRubric.slug}/${option.slug}`}
                                         onClick={hideBurgerDropdown}
                                         className={`${classes.dropdownGroupLink} ${
                                           isCurrent ? classes.dropdownGroupLinkCurrent : ''

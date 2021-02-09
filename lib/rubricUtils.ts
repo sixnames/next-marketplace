@@ -334,6 +334,43 @@ export async function updateOptionsList({
   }
 }
 
+export interface GetRubricCatalogueOptionsInterface {
+  options: RubricOptionModel[];
+  maxVisibleOptions: number;
+  city: string;
+}
+
+export function getRubricCatalogueOptions({
+  options,
+  maxVisibleOptions,
+  city,
+}: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
+  const visibleOptions = options.filter(({ visibleInCatalogueCities }) => {
+    return visibleInCatalogueCities[city];
+  });
+
+  const sortedOptions = visibleOptions
+    .sort((optionA, optionB) => {
+      const optionACounter =
+        noNaN(optionA.views[city]) +
+        noNaN(optionA.priorities[city]) +
+        noNaN(optionA.shopProductsCountCities[city]);
+      const optionBCounter =
+        noNaN(optionB.views[city]) +
+        noNaN(optionB.priorities[city]) +
+        noNaN(optionA.shopProductsCountCities[city]);
+      return optionBCounter - optionACounter;
+    })
+    .slice(0, maxVisibleOptions);
+
+  return sortedOptions.map((option) => {
+    return {
+      ...option,
+      options: getRubricCatalogueOptions({ options: option.options, maxVisibleOptions, city }),
+    };
+  });
+}
+
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
   rubricSlug: string;
@@ -354,25 +391,14 @@ export function getRubricCatalogueAttributes({
 
   const sortedAttributes: RubricAttributeModel[] = [];
   visibleAttributes.forEach((attribute) => {
-    const visibleOptions = attribute.options.filter(({ visibleInCatalogueCities }) => {
-      return visibleInCatalogueCities[city];
+    sortedAttributes.push({
+      ...attribute,
+      options: getRubricCatalogueOptions({
+        options: attribute.options,
+        maxVisibleOptions,
+        city,
+      }),
     });
-
-    const sortedOptions = visibleOptions
-      .sort((optionA, optionB) => {
-        const optionACounter =
-          noNaN(optionA.views[city]) +
-          noNaN(optionA.priorities[city]) +
-          noNaN(optionA.shopProductsCountCities[city]);
-        const optionBCounter =
-          noNaN(optionB.views[city]) +
-          noNaN(optionB.priorities[city]) +
-          noNaN(optionA.shopProductsCountCities[city]);
-        return optionBCounter - optionACounter;
-      })
-      .slice(0, maxVisibleOptions);
-
-    sortedAttributes.push({ ...attribute, options: sortedOptions });
   });
 
   return sortedAttributes;

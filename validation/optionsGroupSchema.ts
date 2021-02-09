@@ -6,7 +6,7 @@ import {
   requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
 import { GENDER_ENUMS } from 'config/common';
-import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
 
 // Options group schemas
 export const optionsGroupIdSchema = (args: ValidationSchemaArgsInterface) => {

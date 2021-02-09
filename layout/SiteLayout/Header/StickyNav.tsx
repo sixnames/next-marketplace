@@ -14,11 +14,13 @@ import { alwaysArray } from 'lib/arrayUtils';
 export interface StickyNavAttributeInterface {
   attribute: RubricNavItemAttributeFragment;
   hideDropdownHandler: () => void;
+  rubricSlug: string;
 }
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
   hideDropdownHandler,
+  rubricSlug,
 }) => {
   const { asPath } = useRouter();
   const { _id, options, name } = attribute;
@@ -33,7 +35,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           return (
             <li key={option._id}>
               <Link
-                href={option.slug}
+                href={`/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
                   isCurrent ? classes.currentOption : ''
@@ -105,6 +107,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
                     key={attribute._id}
                     attribute={attribute}
                     hideDropdownHandler={hideDropdownHandler}
+                    rubricSlug={slug}
                   />
                 );
               })}

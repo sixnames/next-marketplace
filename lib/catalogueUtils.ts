@@ -69,7 +69,7 @@ export function getParamOptionFirstValueByKey({
 
 interface GetCatalogueAdditionalFilterOptionsInterface {
   productForeignField: string;
-  productsInitialPipeline: any[];
+  productsMainPipeline: any[];
   collectionSlugs: string[];
   catalogueFilterArgs: string[];
   collection: string;
@@ -83,7 +83,7 @@ interface GetCatalogueAdditionalFilterOptionsPayloadInterface
 }
 
 export async function getCatalogueAdditionalFilterOptions({
-  productsInitialPipeline,
+  productsMainPipeline,
   catalogueFilterArgs,
   productForeignField,
   collectionSlugs,
@@ -117,7 +117,7 @@ export async function getCatalogueAdditionalFilterOptions({
           from: COL_PRODUCTS,
           let: { slug: '$slug' },
           pipeline: [
-            ...productsInitialPipeline,
+            ...productsMainPipeline,
             {
               $match: {
                 $expr: {

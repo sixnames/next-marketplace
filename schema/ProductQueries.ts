@@ -17,7 +17,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import { updateModelViews } from 'lib/updateModelViews';
+import { updateModelViews } from 'lib/countersUtils';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const ProductsPaginationPayload = objectType({

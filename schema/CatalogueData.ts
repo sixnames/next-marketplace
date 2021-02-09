@@ -215,6 +215,9 @@ export const CatalogueQueries = extendType({
           if (sortBy === 'price') {
             realSortBy = 'minPrice';
           }
+          if (sortBy === 'priority') {
+            realSortBy = `priority.${city}`;
+          }
 
           const brandsInArguments: string[] = [];
           const brandCollectionsInArguments: string[] = [];
@@ -248,22 +251,26 @@ export const CatalogueQueries = extendType({
           // Products pipelines
           // filter
           const selectedFiltersPipeline =
-            selectedOptionsSlugs.length > 0
+            mainFilters.length > 0
               ? {
-                  selectedOptionsSlugs: { $in: selectedOptionsSlugs },
+                  selectedOptionsSlugs: { $in: mainFilters },
                 }
               : {};
 
           // price range pipeline
           const priceRangePipeline =
             minPrice && maxPrice
-              ? {
-                  [`$minPriceCities.${city}`]: {
-                    $gte: noNaN(minPrice),
-                    $lte: noNaN(maxPrice),
+              ? [
+                  {
+                    $match: {
+                      [`minPriceCities.${city}`]: {
+                        $gte: noNaN(minPrice),
+                        $lte: noNaN(maxPrice),
+                      },
+                    },
                   },
-                }
-              : {};
+                ]
+              : [];
 
           // Products initial pipeline
           const productsInitialPipeline = [
@@ -275,7 +282,6 @@ export const CatalogueQueries = extendType({
                 archive: false,
                 [`shopProductsCountCities.${city}`]: { $gt: 0 },
                 ...selectedFiltersPipeline,
-                ...priceRangePipeline,
                 ...brandsMatch,
                 ...brandCollectionsMatch,
                 ...manufacturersMatch,
@@ -286,6 +292,9 @@ export const CatalogueQueries = extendType({
             { $addFields: { minPrice: `$minPriceCities.${city}` } },
           ];
 
+          // Products main pipeline for filters counters
+          const productsMainPipeline = [...productsInitialPipeline, ...priceRangePipeline];
+
           const productsAggregationResult = await productsCollection
             .aggregate<ProductsPaginationPayloadModel>([
               ...productsInitialPipeline,
@@ -294,8 +303,8 @@ export const CatalogueQueries = extendType({
               {
                 $sort: {
                   [realSortBy]: realSortDir,
-                  [`views.${city}`]: SORT_DESC,
                   [`priority.${city}`]: SORT_DESC,
+                  [`views.${city}`]: SORT_DESC,
                   _id: SORT_BY_ID_DIRECTION,
                 },
               },
@@ -303,8 +312,8 @@ export const CatalogueQueries = extendType({
               // facet pagination totals
               {
                 $facet: {
-                  docs: [{ $skip: skip }, { $limit: realLimit }],
-                  countAllDocs: [{ $count: 'totalDocs' }],
+                  docs: [...priceRangePipeline, { $skip: skip }, { $limit: realLimit }],
+                  countAllDocs: [...priceRangePipeline, { $count: 'totalDocs' }],
                   minPriceDocs: [
                     { $group: { _id: '$minPrice' } },
                     { $sort: { _id: SORT_ASC } },
@@ -414,7 +423,7 @@ export const CatalogueQueries = extendType({
               // count products with current option
               const optionProducts = await productsCollection
                 .aggregate<any>([
-                  ...productsInitialPipeline,
+                  ...productsMainPipeline,
 
                   // option products match
                   {
@@ -481,7 +490,7 @@ export const CatalogueQueries = extendType({
 
           // Brands
           const brandOptions = await getCatalogueAdditionalFilterOptions({
-            productsInitialPipeline,
+            productsMainPipeline,
             productForeignField: '$brandSlug',
             collectionSlugs: brandsInArguments,
             filterKey: CATALOGUE_BRAND_KEY,
@@ -504,7 +513,7 @@ export const CatalogueQueries = extendType({
 
           // Brand collections
           const brandCollectionOptions = await getCatalogueAdditionalFilterOptions({
-            productsInitialPipeline,
+            productsMainPipeline,
             productForeignField: '$brandCollectionSlug',
             collectionSlugs: brandCollectionsInArguments,
             filterKey: CATALOGUE_BRAND_COLLECTION_KEY,
@@ -527,7 +536,7 @@ export const CatalogueQueries = extendType({
 
           // Manufacturers
           const manufacturerOptions = await getCatalogueAdditionalFilterOptions({
-            productsInitialPipeline,
+            productsMainPipeline,
             productForeignField: '$manufacturerSlug',
             collectionSlugs: manufacturersInArguments,
             filterKey: CATALOGUE_MANUFACTURER_KEY,

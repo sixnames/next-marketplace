@@ -321,9 +321,7 @@ export function getCatalogueTitle({
       .map(({ variants, nameI18n }) => {
         const name = getFieldLocale(nameI18n);
         if (variants && variants.length) {
-          const currentVariant = variants.find(({ gender }) => {
-            return gender === finalGender;
-          });
+          const currentVariant = variants[finalGender];
 
           if (!currentVariant && name) {
             return name;

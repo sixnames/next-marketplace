@@ -16,9 +16,7 @@ export const RubricOption = objectType({
     t.nonNull.int('activeProductsCount');
     t.nonNull.json('shopProductsCountCities');
     t.nonNull.json('visibleInCatalogueCities');
-    t.list.nonNull.field('variants', {
-      type: 'OptionVariant',
-    });
+    t.nonNull.json('variants');
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricOption',
     });

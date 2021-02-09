@@ -1,16 +1,6 @@
 import { objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 
-export const OptionVariant = objectType({
-  name: 'OptionVariant',
-  definition(t) {
-    t.nonNull.json('value');
-    t.nonNull.field('gender', {
-      type: 'Gender',
-    });
-  },
-});
-
 export const Option = objectType({
   name: 'Option',
   definition(t) {
@@ -19,9 +9,7 @@ export const Option = objectType({
     t.nonNull.json('nameI18n');
     t.string('color');
     t.string('icon');
-    t.list.nonNull.field('variants', {
-      type: 'OptionVariant',
-    });
+    t.nonNull.json('variants');
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',
     });

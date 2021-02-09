@@ -345,16 +345,15 @@ export interface NavItemModel {
   parentId?: ObjectIdModel | null;
 }
 
-export interface OptionVariantModel {
-  gender: GenderModel;
-  value: TranslationModel;
+export interface OptionVariantsModel {
+  [key: string]: TranslationModel;
 }
 
 export interface OptionModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  variants?: OptionVariantModel[] | null;
+  variants: OptionVariantsModel;
   gender?: GenderModel | null;
   color?: string | null;
   icon?: string | null;

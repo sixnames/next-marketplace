@@ -69,6 +69,7 @@ export const seedInitial = async () => {
           },
           slug: option.slug,
           options: [],
+          variants: {},
         };
       });
 

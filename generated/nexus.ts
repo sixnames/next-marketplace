@@ -153,7 +153,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     parentOptionId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    variants: NexusGenInputs['OptionVariantInput'][]; // [OptionVariantInput!]!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   AddProductAssetsInput: {
     // input type
@@ -580,7 +580,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    variants: NexusGenInputs['OptionVariantInput'][]; // [OptionVariantInput!]!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateOptionsGroupInput: {
     // input type
@@ -746,7 +746,6 @@ export interface NexusGenObjects {
   Mutation: {};
   NavItem: dbModels.NavItemModel;
   Option: dbModels.OptionModel;
-  OptionVariant: dbModels.OptionVariantModel;
   OptionsGroup: dbModels.OptionsGroupModel;
   OptionsGroupPayload: dbModels.OptionsGroupPayloadModel;
   Order: dbModels.OrderModel;
@@ -1312,12 +1311,7 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['Option'][]; // [Option!]!
     slug: string; // String!
-    variants: NexusGenRootTypes['OptionVariant'][] | null; // [OptionVariant!]
-  };
-  OptionVariant: {
-    // field return type
-    gender: NexusGenEnums['Gender']; // Gender!
-    value: NexusGenScalars['JSONObject']; // JSONObject!
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   OptionsGroup: {
     // field return type
@@ -1740,7 +1734,7 @@ export interface NexusGenFieldTypes {
     shopProductsCount: number; // Int!
     shopProductsCountCities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
-    variants: NexusGenRootTypes['OptionVariant'][] | null; // [OptionVariant!]
+    variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
     visibleInCatalogue: boolean; // Boolean!
     visibleInCatalogueCities: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2418,12 +2412,7 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     options: 'Option';
     slug: 'String';
-    variants: 'OptionVariant';
-  };
-  OptionVariant: {
-    // field return type name
-    gender: 'Gender';
-    value: 'JSONObject';
+    variants: 'JSONObject';
   };
   OptionsGroup: {
     // field return type name
@@ -2846,7 +2835,7 @@ export interface NexusGenFieldTypeNames {
     shopProductsCount: 'Int';
     shopProductsCountCities: 'JSONObject';
     slug: 'String';
-    variants: 'OptionVariant';
+    variants: 'JSONObject';
     views: 'JSONObject';
     visibleInCatalogue: 'Boolean';
     visibleInCatalogueCities: 'JSONObject';

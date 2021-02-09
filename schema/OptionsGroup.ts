@@ -155,11 +155,9 @@ export const AddOptionToGroupInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.string('color');
     t.string('icon');
+    t.nonNull.json('variants');
     t.nonNull.field('gender', {
       type: 'Gender',
-    });
-    t.nonNull.list.nonNull.field('variants', {
-      type: 'OptionVariantInput',
     });
   },
 });
@@ -172,11 +170,9 @@ export const UpdateOptionInGroupInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.string('color');
     t.string('icon');
+    t.nonNull.json('variants');
     t.field('gender', {
       type: 'Gender',
-    });
-    t.nonNull.list.nonNull.field('variants', {
-      type: 'OptionVariantInput',
     });
   },
 });
@@ -493,6 +489,7 @@ export const OptionsGroupMutations = extendType({
                 _id: new ObjectId(),
                 slug: newOptionSlug,
                 options: [],
+                variants: {},
               },
             ];
           }

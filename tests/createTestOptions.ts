@@ -71,6 +71,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderIt,
     slug: '1950',
     options: [],
+    variants: {},
   };
 
   const optionVintageBId = new ObjectId();
@@ -83,6 +84,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderIt,
     slug: '1978',
     options: [],
+    variants: {},
   };
 
   const optionVintageCId = new ObjectId();
@@ -95,6 +97,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderIt,
     slug: '2001',
     options: [],
+    variants: {},
   };
 
   const optionsVintage = [optionVintageA, optionVintageB, optionVintageC];
@@ -124,29 +127,20 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'beliy',
     color: 'ffffff',
     options: [],
-    variants: [
-      {
-        gender: genderShe,
-        value: {
-          [DEFAULT_LOCALE]: 'Белая',
-          [SECONDARY_LOCALE]: 'White',
-        },
+    variants: {
+      [genderShe]: {
+        [DEFAULT_LOCALE]: 'Белая',
+        [SECONDARY_LOCALE]: 'White',
       },
-      {
-        gender: genderHe,
-        value: {
-          [DEFAULT_LOCALE]: 'Белый',
-          [SECONDARY_LOCALE]: 'White',
-        },
+      [genderHe]: {
+        [DEFAULT_LOCALE]: 'Белый',
+        [SECONDARY_LOCALE]: 'White',
       },
-      {
-        gender: genderIt,
-        value: {
-          [DEFAULT_LOCALE]: 'Белое',
-          [SECONDARY_LOCALE]: 'White',
-        },
+      [genderIt]: {
+        [DEFAULT_LOCALE]: 'Белое',
+        [SECONDARY_LOCALE]: 'White',
       },
-    ],
+    },
   };
 
   const optionColorBId = new ObjectId();
@@ -160,29 +154,20 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'krasniy',
     color: '99020b',
     options: [],
-    variants: [
-      {
-        gender: genderShe,
-        value: {
-          [DEFAULT_LOCALE]: 'Красная',
-          [SECONDARY_LOCALE]: 'Red',
-        },
+    variants: {
+      [genderShe]: {
+        [DEFAULT_LOCALE]: 'Красная',
+        [SECONDARY_LOCALE]: 'Red',
       },
-      {
-        gender: genderHe,
-        value: {
-          [DEFAULT_LOCALE]: 'Красный',
-          [SECONDARY_LOCALE]: 'Red',
-        },
+      [genderHe]: {
+        [DEFAULT_LOCALE]: 'Красный',
+        [SECONDARY_LOCALE]: 'Red',
       },
-      {
-        gender: genderIt,
-        value: {
-          [DEFAULT_LOCALE]: 'Красное',
-          [SECONDARY_LOCALE]: 'Red',
-        },
+      [genderIt]: {
+        [DEFAULT_LOCALE]: 'Красное',
+        [SECONDARY_LOCALE]: 'Red',
       },
-    ],
+    },
   };
 
   const optionColorCId = new ObjectId();
@@ -196,29 +181,20 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'rozoviy',
     color: 'db8ce0',
     options: [],
-    variants: [
-      {
-        gender: genderShe,
-        value: {
-          [DEFAULT_LOCALE]: 'Розовая',
-          [SECONDARY_LOCALE]: 'Pink',
-        },
+    variants: {
+      [genderShe]: {
+        [DEFAULT_LOCALE]: 'Розовая',
+        [SECONDARY_LOCALE]: 'Pink',
       },
-      {
-        gender: genderHe,
-        value: {
-          [DEFAULT_LOCALE]: 'Розовый',
-          [SECONDARY_LOCALE]: 'Pink',
-        },
+      [genderHe]: {
+        [DEFAULT_LOCALE]: 'Розовый',
+        [SECONDARY_LOCALE]: 'Pink',
       },
-      {
-        gender: genderIt,
-        value: {
-          [DEFAULT_LOCALE]: 'Розовое',
-          [SECONDARY_LOCALE]: 'Pink',
-        },
+      [genderIt]: {
+        [DEFAULT_LOCALE]: 'Розовое',
+        [SECONDARY_LOCALE]: 'Pink',
       },
-    ],
+    },
   };
 
   const optionsColor = [optionColorA, optionColorB, optionColorC];
@@ -247,6 +223,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderHe,
     slug: 'portvein',
     options: [],
+    variants: {},
   };
 
   const optionWineVariantBId = new ObjectId();
@@ -259,6 +236,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderHe,
     slug: 'heres',
     options: [],
+    variants: {},
   };
 
   const optionWineVariantCId = new ObjectId();
@@ -271,6 +249,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     gender: genderHe,
     slug: 'vermut',
     options: [],
+    variants: {},
   };
 
   const optionWineVariantDId = new ObjectId();
@@ -285,6 +264,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     views: {},
     slug: 'kreplenoe',
     options: [],
+    variants: {},
   };
 
   const optionsWineVariant = [
@@ -324,6 +304,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     icon: 'white-meat',
     slug: 'white_meat',
     options: [],
+    variants: {},
   };
 
   const optionCombinationBId = new ObjectId();
@@ -337,6 +318,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     icon: 'soup',
     slug: 'soup',
     options: [],
+    variants: {},
   };
 
   const optionCombinationCId = new ObjectId();
@@ -350,6 +332,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     icon: 'fish',
     slug: 'fish',
     options: [],
+    variants: {},
   };
 
   const optionCombinationDId = new ObjectId();
@@ -363,6 +346,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     slug: 'seafood',
     gender: genderIt,
     options: [],
+    variants: {},
   };
 
   const optionsCombination = [

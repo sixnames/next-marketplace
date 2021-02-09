@@ -414,9 +414,7 @@ export const Product = objectType({
             // Get readable option name based on rubric gender
             const { variants, nameI18n } = firstSelectedOption;
             let filterNameString: string;
-            const currentVariant = variants?.find(
-              ({ gender }) => gender === rubric.catalogueTitle.gender,
-            );
+            const currentVariant = variants[rubric.catalogueTitle.gender];
             const currentVariantName = currentVariant
               ? getFieldLocale(currentVariant.value)
               : LOCALE_NOT_FOUND_FIELD_MESSAGE;

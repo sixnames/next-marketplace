@@ -4,6 +4,7 @@ import {
   CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
+  GenderModel,
   ObjectIdModel,
   OptionModel,
   ProductModel,
@@ -26,14 +27,15 @@ export interface RecalculateRubricOptionProductCountersInterface {
   option: RubricOptionModel;
   cities: CityModel[];
   productsCollection: Collection<ProductModel>;
+  rubricGender: GenderModel;
 }
 
-// TODO option name based on rubric gender
 export async function recalculateRubricOptionProductCounters({
   rubricId,
   option,
   cities,
   productsCollection,
+  rubricGender,
 }: RecalculateRubricOptionProductCountersInterface): Promise<RubricOptionModel> {
   const aggregationResult = await productsCollection
     .aggregate([
@@ -75,6 +77,9 @@ export async function recalculateRubricOptionProductCounters({
     visibleInCatalogueCities[citySlug] = cityCounter > 0;
   }
 
+  const currentVariant = option.variants[rubricGender];
+  const optionNameTranslations = currentVariant || option.nameI18n;
+
   const options: RubricOptionModel[] = [];
   for await (const nestedOption of option.options) {
     const recalculatedOption = await recalculateRubricOptionProductCounters({
@@ -82,12 +87,14 @@ export async function recalculateRubricOptionProductCounters({
       productsCollection,
       option: nestedOption,
       rubricId,
+      rubricGender,
     });
     options.push(recalculatedOption);
   }
 
   return {
     ...option,
+    nameI18n: optionNameTranslations,
     options,
     shopProductsCountCities: optionShopProductsCountCities,
     productsCount,
@@ -125,6 +132,7 @@ export async function recalculateRubricProductCounters({
           cities,
           productsCollection,
           rubricId: rubric._id,
+          rubricGender: rubric.catalogueTitle.gender,
           option,
         });
 

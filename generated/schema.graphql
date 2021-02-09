@@ -35,7 +35,7 @@ input AddOptionToGroupInput {
   nameI18n: JSONObject!
   optionsGroupId: ObjectId!
   parentOptionId: ObjectId
-  variants: [OptionVariantInput!]!
+  variants: JSONObject!
 }
 
 input AddProductAssetsInput {
@@ -1230,12 +1230,7 @@ type Option {
   nameI18n: JSONObject!
   options: [Option!]!
   slug: String!
-  variants: [OptionVariant!]
-}
-
-type OptionVariant {
-  gender: Gender!
-  value: JSONObject!
+  variants: JSONObject!
 }
 
 input OptionVariantInput {
@@ -2063,7 +2058,7 @@ type RubricOption {
   shopProductsCount: Int!
   shopProductsCountCities: JSONObject!
   slug: String!
-  variants: [OptionVariant!]
+  variants: JSONObject!
   views: JSONObject!
   visibleInCatalogue: Boolean!
   visibleInCatalogueCities: JSONObject!
@@ -2335,7 +2330,7 @@ input UpdateOptionInGroupInput {
   nameI18n: JSONObject!
   optionId: ObjectId!
   optionsGroupId: ObjectId!
-  variants: [OptionVariantInput!]!
+  variants: JSONObject!
 }
 
 input UpdateOptionsGroupInput {

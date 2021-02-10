@@ -647,6 +647,8 @@ export const attributesGroupMutations = extendType({
             };
           }
 
+          // TODO update attribute in products
+
           return {
             success: true,
             message: await getApiMessage('attributesGroups.updateAttribute.success'),

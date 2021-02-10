@@ -731,6 +731,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // TODO update option in connections
           // Update attributes and rubrics options list
           const rubricsUpdated = await updateOptionsList({
             optionsGroupId,

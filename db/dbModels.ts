@@ -433,15 +433,14 @@ export interface OrderModel extends BaseModel, TimestampModel {
 }
 
 export interface ProductConnectionItemModel {
-  _id: ObjectIdModel;
-  value: string;
-  product: ProductModel;
+  option: OptionModel;
+  productId: ObjectIdModel;
 }
 
 export interface ProductConnectionModel {
   _id: ObjectIdModel;
-  attributeId: ObjectIdModel;
-  productsIds: ObjectIdModel[];
+  attribute: AttributeModel;
+  connectionProducts: ProductConnectionItemModel[];
 }
 
 export interface ProductAttributeModel {
@@ -479,6 +478,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   selectedOptionsSlugs: string[];
   shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
+  connections: ProductConnectionModel[];
   minPriceCities: CitiesCounterModel;
   maxPriceCities: CitiesCounterModel;
 }

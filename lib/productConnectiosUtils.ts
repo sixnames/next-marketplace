@@ -1,23 +1,34 @@
-import { ProductModel } from 'db/dbModels';
-import { ObjectId } from 'mongodb';
+import { ProductConnectionModel, ProductModel } from 'db/dbModels';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
 
-export interface GetConnectionValuesFromProductInterface {
+export interface UpdateProductConnectionsInterface {
+  connections: ProductConnectionModel[];
   product: ProductModel;
-  attributeId: ObjectId;
-  locale: string;
 }
 
-export interface GetConnectionValuesFromProductPayloadInterface {
-  attributeSlug: string;
-  attributeValue: string;
-  optionName: string;
+export interface UpdateProductConnectionsPayloadInterface {
+  updatedSlug: string;
 }
 
-export interface GenerateDefaultLangSlugWithConnectionsInterface {
-  product: ProductModel;
-  locale: string;
-}
+export function createProductSlugWithConnections({
+  connections,
+  product,
+}: UpdateProductConnectionsInterface): UpdateProductConnectionsPayloadInterface {
+  const initialSlug = generateDefaultLangSlug(product.nameI18n);
 
-export interface GenerateDefaultLangSlugWithConnectionsPayloadInterface {
-  slug: string;
+  const connectionsValuesAsStringArray: string[] = connections.map(({ connectionProducts }) => {
+    const connectionProduct = connectionProducts.find(({ productId }) => {
+      return productId.equals(product._id);
+    });
+    if (!connectionProduct) {
+      return '';
+    }
+    return connectionProduct.option.slug;
+  });
+
+  const updatedSlug = [initialSlug, ...connectionsValuesAsStringArray].join('-');
+
+  return {
+    updatedSlug,
+  };
 }

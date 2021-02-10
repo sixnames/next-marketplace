@@ -1,4 +1,6 @@
 import { noNaN } from 'lib/numbers';
+import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -15,7 +17,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -217,6 +218,7 @@ export const ProductMutations = extendType({
             minPriceCities: {},
             maxPriceCities: {},
             selectedOptionsSlugs: [],
+            connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
             attributes: values.attributes.map((attributeInput) => {
@@ -616,9 +618,6 @@ export const ProductMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
@@ -644,9 +643,8 @@ export const ProductMutations = extendType({
           }
 
           // Check if connection already exist
-          const exist = await productConnectionsCollection.findOne({
-            attributeId,
-            productsIds: { $in: [productId] },
+          const exist = product.connections.some(({ attribute }) => {
+            return attribute._id.equals(attributeId);
           });
           if (exist) {
             return {
@@ -655,19 +653,45 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Create connection
-          const createdConnectionResult = await productConnectionsCollection.insertOne({
-            attributeId,
-            productsIds: [productId],
+          // Find current attribute in product
+          const productAttribute = product.attributes.find((productAttribute) => {
+            return productAttribute.attributeId.equals(attributeId);
           });
-          if (!createdConnectionResult.result.ok) {
+          if (!productAttribute) {
             return {
               success: false,
               message: await getApiMessage(`products.connection.createError`),
             };
           }
 
-          // TODO Create new slug for product
+          // Find current option
+          const option = attribute.options.find(({ slug }) => {
+            return slug === productAttribute.selectedOptionsSlugs[0];
+          });
+          if (!option) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.connection.createError`),
+            };
+          }
+
+          // Create connection
+          const createdConnection: ProductConnectionModel = {
+            _id: new ObjectId(),
+            attribute,
+            connectionProducts: [
+              {
+                option,
+                productId,
+              },
+            ],
+          };
+
+          // Create new slug for product
+          const { updatedSlug } = createProductSlugWithConnections({
+            product,
+            connections: [...product.connections, createdConnection],
+          });
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -676,8 +700,11 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                slug: 'slug',
+                slug: updatedSlug,
                 updatedAt: new Date(),
+              },
+              $push: {
+                connections: createdConnection,
               },
             },
             {
@@ -729,9 +756,6 @@ export const ProductMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, addProductId, connectionId } = input;
@@ -739,7 +763,10 @@ export const ProductMutations = extendType({
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
           const addProduct = await productsCollection.findOne({ _id: addProductId });
-          const connection = await productConnectionsCollection.findOne({ _id: connectionId });
+          const connection = product?.connections.find(({ _id }) => {
+            return _id.equals(connectionId);
+          });
+
           if (!product || !addProduct || !connection) {
             return {
               success: false,
@@ -747,18 +774,9 @@ export const ProductMutations = extendType({
             };
           }
 
-          // TODO Check if all attribute options are used for connection
-          const allOptionsAreUsed = false;
-          if (allOptionsAreUsed) {
-            return {
-              success: false,
-              message: await getApiMessage('products.update.allOptionsAreUsed'),
-            };
-          }
-
           // Check attribute existence in added product
           const attributeExist = addProduct.attributes.some((productAttribute) => {
-            return productAttribute.attributeId.equals(connection.attributeId);
+            return productAttribute.attributeId.equals(connection.attribute._id);
           });
           if (!attributeExist) {
             return {
@@ -769,18 +787,8 @@ export const ProductMutations = extendType({
 
           // Check attribute value in added product
           // it should have attribute value and shouldn't intersect with existing values in connection
-          const connectionProducts = await productsCollection
-            .find(
-              { _id: { $in: connection.productsIds } },
-              {
-                projection: {
-                  attributes: 1,
-                },
-              },
-            )
-            .toArray();
           const addProductConnectionAttribute = addProduct.attributes.find((attribute) => {
-            return attribute.attributeId.equals(connection.attributeId);
+            return attribute.attributeId.equals(connection.attribute._id);
           });
           if (!addProductConnectionAttribute) {
             return {
@@ -788,20 +796,15 @@ export const ProductMutations = extendType({
               message: await getApiMessage('products.connection.noAttributeError'),
             };
           }
-
-          const connectionValues = connectionProducts.reduce((acc: string[], { attributes }) => {
-            const attribute = attributes.find((attribute) => {
-              return attribute.attributeId.equals(connection.attributeId);
-            });
-            if (!attribute) {
-              return acc;
-            }
-            return [...acc, ...attribute.selectedOptionsSlugs];
-          }, []);
+          const connectionValues = connection.connectionProducts.reduce(
+            (acc: string[], { option }) => {
+              return [...acc, option.slug];
+            },
+            [],
+          );
           const includes = connectionValues.includes(
             addProductConnectionAttribute.selectedOptionsSlugs[0],
           );
-
           if (includes) {
             return {
               success: false,
@@ -809,23 +812,75 @@ export const ProductMutations = extendType({
             };
           }
 
-          // Update connection
-          const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
-            { _id: connectionId },
-            {
-              $addToSet: {
-                productsIds: addProduct._id,
-              },
-            },
-          );
-          if (!updatedConnectionResult.ok) {
+          // Find current option
+          const option = connection.attribute.options.find(({ slug }) => {
+            return slug === addProductConnectionAttribute.selectedOptionsSlugs[0];
+          });
+          if (!option) {
             return {
               success: false,
-              message: await getApiMessage(`products.connection.updateError`),
+              message: await getApiMessage(`products.connection.createError`),
             };
           }
 
-          // TODO Create new slug for added product
+          // Update connections
+          const updatedConnection = {
+            ...connection,
+            connectionProducts: [
+              ...connection.connectionProducts,
+              {
+                option,
+                productId: addProductId,
+              },
+            ],
+          };
+          const updatedConnectionsList = product.connections.reduce(
+            (acc: ProductConnectionModel[], productConnection) => {
+              if (productConnection._id.equals(connectionId)) {
+                return [...acc, updatedConnection];
+              }
+              return [...acc, productConnection];
+            },
+            [],
+          );
+
+          // Create new slug for added product
+          const { updatedSlug: addProductSlug } = createProductSlugWithConnections({
+            product: addProduct,
+            connections: [...addProduct.connections, updatedConnection],
+          });
+
+          // Update product with new slug and connection
+          const updatedAddProductResult = await productsCollection.findOneAndUpdate(
+            {
+              _id: addProductId,
+            },
+            {
+              $push: {
+                connections: updatedConnection,
+              },
+              $set: {
+                slug: addProductSlug,
+                updatedAt: new Date(),
+              },
+            },
+            {
+              returnOriginal: false,
+            },
+          );
+          const updatedAddProduct = updatedAddProductResult.value;
+          if (!updatedAddProductResult.ok || !updatedAddProduct) {
+            return {
+              success: false,
+              message: await getApiMessage(`products.update.error`),
+            };
+          }
+
+          // Create new slug for product
+          const { updatedSlug: productSlug } = createProductSlugWithConnections({
+            product,
+            connections: updatedConnectionsList,
+          });
 
           // Update product with new slug
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -834,7 +889,7 @@ export const ProductMutations = extendType({
             },
             {
               $set: {
-                slug: 'slug',
+                slug: productSlug,
                 updatedAt: new Date(),
               },
             },
@@ -887,9 +942,6 @@ export const ProductMutations = extendType({
 
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
-          const productConnectionsCollection = db.collection<ProductConnectionModel>(
-            COL_PRODUCT_CONNECTIONS,
-          );
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, deleteProductId, connectionId } = input;
@@ -898,7 +950,9 @@ export const ProductMutations = extendType({
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
           const deleteProduct = await productsCollection.findOne({ _id: deleteProductId });
-          const connection = await productConnectionsCollection.findOne({ _id: connectionId });
+          const connection = product?.connections.find(({ _id }) => {
+            return _id.equals(connectionId);
+          });
 
           if (!product || !deleteProduct || !connection) {
             return {
@@ -908,70 +962,114 @@ export const ProductMutations = extendType({
           }
 
           // Update or delete connection
-          if (connection.productsIds.length > minimumProductsCountForConnectionDelete) {
-            const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
-              { _id: connectionId },
-              {
-                $pull: {
-                  productsIds: deleteProduct._id,
-                },
-              },
-              { returnOriginal: false },
-            );
+          const connectionProductIds = connection.connectionProducts.map(
+            ({ productId }) => productId,
+          );
+          let success = true;
+          let updatedCurrentProduct = product;
 
-            if (!updatedConnectionResult.ok || !updatedConnectionResult.value) {
-              return {
-                success: false,
-                message: await getApiMessage(`products.connection.updateError`),
-              };
+          if (connection.connectionProducts.length > minimumProductsCountForConnectionDelete) {
+            for await (const productId of connectionProductIds) {
+              const updatedProductResult = await productsCollection.findOneAndUpdate(
+                { _id: productId },
+                {
+                  $pull: {
+                    'connection.connectionProducts': {
+                      productId: deleteProductId,
+                    },
+                  },
+                },
+                { returnOriginal: false },
+              );
+              const updatedProduct = updatedProductResult.value;
+              if (!updatedProductResult.ok || !updatedProduct) {
+                success = false;
+                break;
+              }
+
+              if (updatedProduct) {
+                // Create new slug for product
+                const { updatedSlug } = createProductSlugWithConnections({
+                  product: updatedProduct,
+                  connections: updatedProduct.connections,
+                });
+
+                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
+                  { _id: productId },
+                  {
+                    $set: {
+                      slug: updatedSlug,
+                    },
+                  },
+                  { returnOriginal: false },
+                );
+                const updatedProductSlug = updatedProductSlugResult.value;
+                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
+                  success = false;
+                  break;
+                }
+
+                if (updatedProductSlug._id.equals(productId)) {
+                  updatedCurrentProduct = updatedProductSlug;
+                }
+              }
             }
           } else {
-            const removedConnectionResult = await productConnectionsCollection.findOneAndDelete({
-              _id: connectionId,
-            });
+            // Delete connection if it has single product
+            for await (const productId of connectionProductIds) {
+              const updatedProductResult = await productsCollection.findOneAndUpdate(
+                { _id: productId },
+                {
+                  $pull: {
+                    connection: {
+                      _id: connectionId,
+                    },
+                  },
+                },
+                { returnOriginal: false },
+              );
 
-            if (!removedConnectionResult.ok) {
-              return {
-                success: false,
-                message: await getApiMessage(`products.connection.deleteError`),
-              };
+              const updatedProduct = updatedProductResult.value;
+              if (!updatedProductResult.ok || !updatedProduct) {
+                success = false;
+                break;
+              }
+
+              if (updatedProduct) {
+                // Create new slug for product
+                const { updatedSlug } = createProductSlugWithConnections({
+                  product: updatedProduct,
+                  connections: updatedProduct.connections,
+                });
+
+                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
+                  { _id: productId },
+                  {
+                    $set: {
+                      slug: updatedSlug,
+                    },
+                  },
+                  { returnOriginal: false },
+                );
+                const updatedProductSlug = updatedProductSlugResult.value;
+                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
+                  success = false;
+                  break;
+                }
+
+                if (updatedProductSlug._id.equals(productId)) {
+                  updatedCurrentProduct = updatedProductSlug;
+                }
+              }
             }
           }
 
-          // Create new slug for removed product
-          const slug = generateDefaultLangSlug(deleteProduct.nameI18n);
-
-          // Update product with new slug
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: deleteProductId,
-            },
-            {
-              $set: {
-                slug,
-                updatedAt: new Date(),
-              },
-            },
-            {
-              returnOriginal: false,
-            },
-          );
-
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`products.update.error`),
-            };
-          }
-
-          // Return updated product if args products ids is the same
-          const isSameProduct = productId.equals(deleteProductId);
-
+          const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
+          const errorMessage = await getApiMessage('products.connection.deleteError');
           return {
-            success: true,
-            message: await getApiMessage('products.connection.deleteProductSuccess'),
-            payload: isSameProduct ? updatedProduct : product,
+            success,
+            message: success ? successMessage : errorMessage,
+            payload: updatedCurrentProduct,
           };
         } catch (e) {
           return {

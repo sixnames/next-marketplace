@@ -1,7 +1,12 @@
 import { createTestBrands, CreateTestBrandsPayloadInterface } from './createTestBrands';
-import { ProductAttributeModel, ProductConnectionModel, ProductModel } from 'db/dbModels';
+import {
+  ObjectIdModel,
+  ProductAttributeModel,
+  ProductConnectionModel,
+  ProductModel,
+} from 'db/dbModels';
 import { generateSlug } from 'lib/slugUtils';
-import { COL_PRODUCT_CONNECTIONS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_PRODUCTS } from 'db/collectionNames';
 import {
   ASSETS_DIST_PRODUCTS,
   DEFAULT_COUNTERS_OBJECT,
@@ -176,7 +181,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   };
 
   interface CreateTestProductInterface extends ProductAttributesInterface {
-    rubricsIds: ObjectId[];
+    _id?: ObjectIdModel;
+    rubricsIds: ObjectIdModel[];
     brandSlug?: string;
     brandCollectionSlug?: string;
     manufacturerSlug?: string;
@@ -184,9 +190,11 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     defaultLocaleName: string;
     secondaryLocaleName: string;
     itemId: string;
+    connections?: ProductConnectionModel[];
   }
 
   async function createTestProduct({
+    _id = new ObjectId(),
     wineColorOptionsSlug,
     wineTypeOptionsSlug,
     wineVintageOptionsSlug,
@@ -197,6 +205,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     defaultLocaleName,
     secondaryLocaleName,
     active = true,
+    connections = [],
     itemId,
   }: CreateTestProductInterface): Promise<ProductModel> {
     const defaultDescription = 'defaultDescription';
@@ -222,7 +231,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     };
 
     return {
-      _id: new ObjectId(),
+      _id,
       archive: false,
       itemId,
       updatedAt: new Date(),
@@ -243,11 +252,12 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       minPriceCities: {},
       maxPriceCities: {},
       selectedOptionsSlugs,
+      slug,
+      connections,
       rubricsIds,
       brandSlug,
       brandCollectionSlug,
       manufacturerSlug,
-      slug,
       active,
       ...productAttributes({
         wineColorOptionsSlug,
@@ -316,10 +326,34 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '5',
   });
 
+  const connectionProductAId = new ObjectId();
+  const connectionProductBId = new ObjectId();
+  const connectionProductCId = new ObjectId();
+  const connectionA: ProductConnectionModel = {
+    _id: new ObjectId(),
+    attribute: attributeWineVintage,
+    connectionProducts: [
+      {
+        productId: connectionProductAId,
+        option: attributeWineVintage.options[0],
+      },
+      {
+        productId: connectionProductBId,
+        option: attributeWineVintage.options[1],
+      },
+      {
+        productId: connectionProductCId,
+        option: attributeWineVintage.options[2],
+      },
+    ],
+  };
+
   const connectionProductA = await createTestProduct({
+    _id: connectionProductAId,
     wineColorOptionsSlug: attributeWineColor.options[1].slug,
     wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
     wineVintageOptionsSlug: attributeWineVintage.options[0].slug,
+    connections: [connectionA],
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
@@ -330,9 +364,11 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const connectionProductB = await createTestProduct({
+    _id: connectionProductBId,
     wineColorOptionsSlug: attributeWineColor.options[1].slug,
     wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
     wineVintageOptionsSlug: attributeWineVintage.options[1].slug,
+    connections: [connectionA],
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
@@ -343,9 +379,11 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const connectionProductC = await createTestProduct({
+    _id: connectionProductCId,
     wineColorOptionsSlug: attributeWineColor.options[1].slug,
     wineTypeOptionsSlug: attributeWineVariant.options[1].slug,
     wineVintageOptionsSlug: attributeWineVintage.options[2].slug,
+    connections: [connectionA],
     rubricsIds: [rubricA._id],
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
@@ -370,16 +408,6 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     connectionProductB,
     connectionProductC,
   ]);
-
-  const productConnectionsCollection = db.collection<ProductConnectionModel>(
-    COL_PRODUCT_CONNECTIONS,
-  );
-  const connectionA: ProductConnectionModel = {
-    _id: new ObjectId(),
-    attributeId: attributeWineVintage._id,
-    productsIds: [connectionProductA._id, connectionProductB._id, connectionProductC._id],
-  };
-  await productConnectionsCollection.insertMany([connectionA]);
 
   // Get updated slugs for products in connection
   // A

@@ -56,6 +56,9 @@ export const ProductAttributeInput = inputObjectType({
     t.nonNull.field('attributeViewVariant', {
       type: 'AttributeViewVariant',
     });
+    t.nonNull.field('attributeVariant', {
+      type: 'AttributeVariant',
+    });
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {

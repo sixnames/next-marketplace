@@ -449,6 +449,7 @@ export interface ProductAttributeModel {
   attributeId: ObjectIdModel;
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
+  attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
@@ -488,36 +489,6 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
 export interface ProductCardPricesModel {
   min: string;
   max: string;
-}
-
-export interface ProductCardFeaturesModel {
-  _id: ObjectIdModel;
-  listFeatures: ProductAttributeModel[];
-  textFeatures: ProductAttributeModel[];
-  tagFeatures: ProductAttributeModel[];
-  iconFeatures: ProductAttributeModel[];
-  ratingFeatures: ProductAttributeModel[];
-}
-
-export interface ProductSnippetFeaturesModel {
-  _id: ObjectIdModel;
-  listFeaturesString: string;
-  ratingFeaturesValues: string[];
-}
-
-export interface ProductCardConnectionItemModel {
-  _id: ObjectIdModel;
-  value: string;
-  product: ProductModel;
-  isCurrent: boolean;
-}
-
-export interface ProductCardConnectionModel {
-  _id: ObjectIdModel;
-  name: string;
-  productsIds: ObjectIdModel[];
-  attributeId: ObjectIdModel;
-  connectionProducts: ProductCardConnectionItemModel[];
 }
 
 export interface ProductCardBreadcrumbModel {

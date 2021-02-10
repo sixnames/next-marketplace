@@ -1,3 +1,10 @@
+import {
+  ATTRIBUTE_VIEW_VARIANT_ICON,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  ATTRIBUTE_VIEW_VARIANT_TAG,
+  ATTRIBUTE_VIEW_VARIANT_TEXT,
+} from 'config/common';
 import { list, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -5,10 +12,9 @@ import {
   BrandCollectionModel,
   BrandModel,
   ManufacturerModel,
+  ProductAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardFeaturesModel,
   ProductCardPricesModel,
-  ProductSnippetFeaturesModel,
   RubricModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -22,7 +28,6 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { getCurrencyString } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
 import { noNaN } from 'lib/numbers';
 
 export const ProductCardBreadcrumb = objectType({
@@ -31,39 +36,6 @@ export const ProductCardBreadcrumb = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.string('name');
     t.nonNull.string('href');
-  },
-});
-
-export const ProductCardFeatures = objectType({
-  name: 'ProductCardFeatures',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.list.nonNull.field('listFeatures', {
-      type: 'ProductAttribute',
-    });
-    t.nonNull.list.nonNull.field('textFeatures', {
-      type: 'ProductAttribute',
-    });
-    t.nonNull.list.nonNull.field('tagFeatures', {
-      type: 'ProductAttribute',
-    });
-    t.nonNull.list.nonNull.field('iconFeatures', {
-      type: 'ProductAttribute',
-    });
-    t.nonNull.list.nonNull.field('ratingFeatures', {
-      type: 'ProductAttribute',
-    });
-  },
-});
-
-export const ProductSnippetFeatures = objectType({
-  name: 'ProductSnippetFeatures',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('listFeaturesString');
-    t.nonNull.list.nonNull.field('ratingFeaturesValues', {
-      type: 'String',
-    });
   },
 });
 
@@ -415,49 +387,53 @@ export const Product = objectType({
       },
     });
 
-    // TODO optimise this resolver
-    // Product snippetFeatures field resolver
-    t.nonNull.field('snippetFeatures', {
-      type: 'ProductSnippetFeatures',
-      description: `Returns all list view product attributes as one string and all rating view product attributes as strings array. Each string contains attribute name and product attribute value.`,
-      resolve: async (_source, _args, _context): Promise<ProductSnippetFeaturesModel> => {
-        try {
-          return {
-            _id: new ObjectId(),
-            ratingFeaturesValues: [],
-            listFeaturesString: '',
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            _id: new ObjectId(),
-            ratingFeaturesValues: [],
-            listFeaturesString: '',
-          };
-        }
+    // Product listFeatures field resolver
+    t.nonNull.list.nonNull.field('listFeatures', {
+      type: 'ProductAttribute',
+      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
+        return source.attributes.filter(({ attributeViewVariant }) => {
+          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+        });
       },
     });
 
-    // TODO optimise this resolver
-    // Product cardFeatures field resolver
-    t.nonNull.field('cardFeatures', {
-      type: 'ProductCardFeatures',
-      description: 'Should return product card features in readable form',
-      resolve: async (_source, _args, _context): Promise<ProductCardFeaturesModel> => {
-        const features: Omit<ProductCardFeaturesModel, 'listFeaturesString'> = {
-          _id: new ObjectId(),
-          listFeatures: [],
-          textFeatures: [],
-          tagFeatures: [],
-          iconFeatures: [],
-          ratingFeatures: [],
-        };
+    // Product textFeatures field resolver
+    t.nonNull.list.nonNull.field('textFeatures', {
+      type: 'ProductAttribute',
+      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
+        return source.attributes.filter(({ attributeViewVariant }) => {
+          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT;
+        });
+      },
+    });
 
-        try {
-          return features;
-        } catch {
-          return features;
-        }
+    // Product tagFeatures field resolver
+    t.nonNull.list.nonNull.field('tagFeatures', {
+      type: 'ProductAttribute',
+      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
+        return source.attributes.filter(({ attributeViewVariant }) => {
+          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_TAG;
+        });
+      },
+    });
+
+    // Product iconFeatures field resolver
+    t.nonNull.list.nonNull.field('iconFeatures', {
+      type: 'ProductAttribute',
+      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
+        return source.attributes.filter(({ attributeViewVariant }) => {
+          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_ICON;
+        });
+      },
+    });
+
+    // Product ratingFeatures field resolver
+    t.nonNull.list.nonNull.field('ratingFeatures', {
+      type: 'ProductAttribute',
+      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
+        return source.attributes.filter(({ attributeViewVariant }) => {
+          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING;
+        });
       },
     });
   },

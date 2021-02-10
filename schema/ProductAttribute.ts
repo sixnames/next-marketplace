@@ -1,5 +1,11 @@
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
+} from 'config/common';
 import { objectType } from 'nexus';
-import { AttributeModel, OptionModel } from 'db/dbModels';
+import { AttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_ATTRIBUTES } from 'db/collectionNames';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -11,12 +17,21 @@ export const ProductAttribute = objectType({
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
-    t.json('textI18n');
+    t.nonNull.field('attributeViewVariant', {
+      type: 'AttributeViewVariant',
+    });
+    t.nonNull.field('attributeVariant', {
+      type: 'AttributeVariant',
+    });
     t.json('attributeNameI18n');
+    t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
       type: 'String',
       description: 'List of selected options slug',
+    });
+    t.nonNull.list.nonNull.field('selectedOptions', {
+      type: 'Option',
     });
 
     // ProductAttribute name translation field resolver
@@ -25,14 +40,6 @@ export const ProductAttribute = objectType({
       resolve: async (source, _args, context) => {
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.attributeNameI18n);
-      },
-    });
-
-    // ProductAttribute selectedOptions field resolver
-    t.nonNull.list.nonNull.field('selectedOptions', {
-      type: 'Option',
-      resolve: async (_source): Promise<OptionModel[]> => {
-        return [];
       },
     });
 
@@ -65,8 +72,33 @@ export const ProductAttribute = objectType({
     // ProductAttribute readableValue field resolver
     t.field('readableValue', {
       type: 'String',
-      resolve: async (_source, _args, _context): Promise<string | null> => {
-        return '';
+      resolve: async (source, _args, context): Promise<string | null> => {
+        const { getI18nLocale } = await getRequestParams(context);
+
+        // Selects
+        if (
+          (source.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+            source.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
+          source.selectedOptions.length > 0
+        ) {
+          return source.selectedOptions
+            .map(({ nameI18n }) => {
+              return getI18nLocale(nameI18n);
+            })
+            .join(', ');
+        }
+
+        // String
+        if (source.attributeVariant === ATTRIBUTE_VARIANT_STRING) {
+          return source.textI18n ? getI18nLocale(source.textI18n) : null;
+        }
+
+        // Number
+        if (source.attributeVariant === ATTRIBUTE_VARIANT_NUMBER) {
+          return source.number ? `${source.number}` : null;
+        }
+
+        return null;
       },
     });
   },

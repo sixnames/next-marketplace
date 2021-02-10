@@ -1428,11 +1428,6 @@ type Product implements Base & Timestamp {
   cardBreadcrumbs(slug: [String!]!): [ProductCardBreadcrumb!]!
 
   """
-  Should return product card features in readable form
-  """
-  cardFeatures: ProductCardFeatures!
-
-  """
   Should find all connected shop products and return minimal and maximal price.
   """
   cardPrices: ProductCardPrices!
@@ -1445,7 +1440,9 @@ type Product implements Base & Timestamp {
   createdAt: Date!
   description: String!
   descriptionI18n: JSONObject!
+  iconFeatures: [ProductAttribute!]!
   itemId: String!
+  listFeatures: [ProductAttribute!]!
   mainImage: String!
   manufacturer: Manufacturer
   manufacturerSlug: String
@@ -1455,15 +1452,13 @@ type Product implements Base & Timestamp {
   nameI18n: JSONObject!
   originalName: String!
   priorities: JSONObject!
+  ratingFeatures: [ProductAttribute!]!
   rubrics: [Rubric!]!
   rubricsIds: [ObjectId!]!
   shopsCount: Int!
   slug: String!
-
-  """
-  Returns all list view product attributes as one string and all rating view product attributes as strings array. Each string contains attribute name and product attribute value.
-  """
-  snippetFeatures: ProductSnippetFeatures!
+  tagFeatures: [ProductAttribute!]!
+  textFeatures: [ProductAttribute!]!
   updatedAt: Date!
   views: JSONObject!
 }
@@ -1474,11 +1469,8 @@ type ProductAttribute {
   attributeName: String!
   attributeNameI18n: JSONObject
   attributeSlug: String!
-
-  """
-  List of selected options slug combined with attribute slug in for of attributeSlug-optionSlug
-  """
-  attributeSlugs: [String!]!
+  attributeVariant: AttributeVariant!
+  attributeViewVariant: AttributeViewVariant!
   number: Float
   readableValue: String
   selectedOptions: [Option!]!
@@ -1497,6 +1489,7 @@ input ProductAttributeInput {
   attributeId: ObjectId!
   attributeNameI18n: JSONObject!
   attributeSlug: String!
+  attributeVariant: AttributeVariant!
   attributeViewVariant: AttributeViewVariant!
   number: Float
 
@@ -1530,15 +1523,6 @@ type ProductCardBreadcrumb {
   name: String!
 }
 
-type ProductCardFeatures {
-  _id: ObjectId!
-  iconFeatures: [ProductAttribute!]!
-  listFeatures: [ProductAttribute!]!
-  ratingFeatures: [ProductAttribute!]!
-  tagFeatures: [ProductAttribute!]!
-  textFeatures: [ProductAttribute!]!
-}
-
 type ProductCardPrices {
   max: String!
   min: String!
@@ -1560,12 +1544,6 @@ type ProductPayload implements Payload {
   message: String!
   payload: Product
   success: Boolean!
-}
-
-type ProductSnippetFeatures {
-  _id: ObjectId!
-  listFeaturesString: String!
-  ratingFeaturesValues: [String!]!
 }
 
 input ProductsPaginationInput {

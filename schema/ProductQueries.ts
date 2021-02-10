@@ -280,6 +280,7 @@ export const ProductQueries = extendType({
               attributeSlug: attribute.slug,
               attributeNameI18n: attribute.nameI18n,
               attributeViewVariant: attribute.viewVariant,
+              attributeVariant: attribute.variant,
               selectedOptions: productAttribute?.selectedOptions || [],
               selectedOptionsSlugs: productAttribute?.selectedOptionsSlugs || [],
               number: productAttribute?.number || null,

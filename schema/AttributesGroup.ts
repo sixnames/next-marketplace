@@ -693,6 +693,8 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
+          // TODO check if attribute is used in product connections and in product attributes
+
           // Check if attributes group exist
           const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
             {

@@ -5,6 +5,8 @@ import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   ManufacturerModel,
+  OptionModel,
+  OptionsGroupModel,
   ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
@@ -17,6 +19,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
+  COL_OPTIONS_GROUPS,
   COL_PRODUCTS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -179,6 +182,7 @@ export const ProductMutations = extendType({
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
+          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const { input } = args;
           const { manufacturerSlug, brandSlug, brandCollectionSlug, ...values } = input;
 
@@ -202,12 +206,22 @@ export const ProductMutations = extendType({
             files: input.assets,
           });
 
-          // Create product
-          const slug = generateDefaultLangSlug(values.nameI18n);
+          // Get selected options
           const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
             const { selectedOptionsSlugs } = attributeInput;
             return [...acc, ...selectedOptionsSlugs];
           }, []);
+          const optionsGroups = await optionsGroupsCollection
+            .find({
+              'options.slug': { $in: selectedOptionsSlugs },
+            })
+            .toArray();
+          const options = optionsGroups.reduce((acc: OptionModel[], optionsGroup) => {
+            return [...acc, ...optionsGroup.options];
+          }, []);
+
+          // Create product
+          const slug = generateDefaultLangSlug(values.nameI18n);
 
           const createdProductResult = await productsCollection.insertOne({
             ...values,
@@ -230,16 +244,14 @@ export const ProductMutations = extendType({
             updatedAt: new Date(),
             selectedOptionsSlugs,
             attributes: values.attributes.map((attributeInput) => {
-              const attributeSlugs: string[] = [];
-              const { selectedOptionsSlugs, attributeSlug } = attributeInput;
+              let selectedOptions: OptionModel[] = [];
+              const { selectedOptionsSlugs } = attributeInput;
               if (selectedOptionsSlugs.length > 0) {
-                selectedOptionsSlugs.forEach((selectedOptionsSlug) => {
-                  attributeSlugs.push(`${attributeSlug}-${selectedOptionsSlug}`);
-                });
+                selectedOptions = options.filter(({ slug }) => selectedOptionsSlugs.includes(slug));
               }
               return {
                 ...attributeInput,
-                attributeSlugs,
+                selectedOptions,
               };
             }),
           });
@@ -289,6 +301,7 @@ export const ProductMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const { input } = args;
           const { productId, ...values } = input;
 
@@ -301,16 +314,25 @@ export const ProductMutations = extendType({
             };
           }
 
+          // Get selected options
+          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
+            const { selectedOptionsSlugs } = attributeInput;
+            return [...acc, ...selectedOptionsSlugs];
+          }, []);
+          const optionsGroups = await optionsGroupsCollection
+            .find({
+              'options.slug': { $in: selectedOptionsSlugs },
+            })
+            .toArray();
+          const options = optionsGroups.reduce((acc: OptionModel[], optionsGroup) => {
+            return [...acc, ...optionsGroup.options];
+          }, []);
+
           // Create new slug for product
           const { updatedSlug } = createProductSlugWithConnections({
             product,
             connections: product.connections,
           });
-
-          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
-            const { selectedOptionsSlugs } = attributeInput;
-            return [...acc, ...selectedOptionsSlugs];
-          }, []);
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -324,16 +346,16 @@ export const ProductMutations = extendType({
                 updatedAt: new Date(),
                 selectedOptionsSlugs,
                 attributes: values.attributes.map((attributeInput) => {
-                  const attributeSlugs: string[] = [];
-                  const { selectedOptionsSlugs, attributeSlug } = attributeInput;
+                  let selectedOptions: OptionModel[] = [];
+                  const { selectedOptionsSlugs } = attributeInput;
                   if (selectedOptionsSlugs.length > 0) {
-                    selectedOptionsSlugs.forEach((selectedOptionsSlug) => {
-                      attributeSlugs.push(`${attributeSlug}-${selectedOptionsSlug}`);
-                    });
+                    selectedOptions = options.filter(({ slug }) =>
+                      selectedOptionsSlugs.includes(slug),
+                    );
                   }
                   return {
                     ...attributeInput,
-                    attributeSlugs,
+                    selectedOptions,
                   };
                 }),
               },

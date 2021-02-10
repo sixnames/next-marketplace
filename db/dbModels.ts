@@ -450,8 +450,8 @@ export interface ProductAttributeModel {
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
   attributeViewVariant: AttributeViewVariantModel;
+  selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
-  attributeSlugs: string[];
   textI18n?: TranslationModel | null;
   number?: number | null;
 }

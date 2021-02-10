@@ -18,11 +18,6 @@ export const ProductAttribute = objectType({
       type: 'String',
       description: 'List of selected options slug',
     });
-    t.nonNull.list.nonNull.field('attributeSlugs', {
-      type: 'String',
-      description:
-        'List of selected options slug combined with attribute slug in for of attributeSlug-optionSlug',
-    });
 
     // ProductAttribute name translation field resolver
     t.nonNull.field('attributeName', {

@@ -640,6 +640,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // TODO update option in product connections and in product attributes
           // Update attributes and rubrics options list
           const rubricsUpdated = await updateOptionsList({
             optionsGroupId,
@@ -701,6 +702,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // TODO check if option is used in product connections and in product attributes
           // Delete option
           const updatedGroupOptions = deleteOptionFromTree({
             options: optionsGroup.options,
@@ -731,7 +733,7 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO update option in connections
+          // TODO update option in product connections and in product attributes
           // Update attributes and rubrics options list
           const rubricsUpdated = await updateOptionsList({
             optionsGroupId,

@@ -647,7 +647,7 @@ export const attributesGroupMutations = extendType({
             };
           }
 
-          // TODO update attribute in products
+          // TODO update attribute in product connections and in product attributes
 
           return {
             success: true,

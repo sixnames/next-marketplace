@@ -1426,7 +1426,6 @@ type Product implements Base & Timestamp {
   Should return product card breadcrumbs configs list for product card page
   """
   cardBreadcrumbs(slug: [String!]!): [ProductCardBreadcrumb!]!
-  cardConnections: [ProductCardConnection!]!
 
   """
   Should return product card features in readable form
@@ -1472,6 +1471,8 @@ type Product implements Base & Timestamp {
 type ProductAttribute {
   attribute: Attribute!
   attributeId: ObjectId!
+  attributeName: String!
+  attributeNameI18n: JSONObject
   attributeSlug: String!
 
   """
@@ -1494,7 +1495,9 @@ type ProductAttribute {
 
 input ProductAttributeInput {
   attributeId: ObjectId!
+  attributeNameI18n: JSONObject!
   attributeSlug: String!
+  attributeViewVariant: AttributeViewVariant!
   number: Float
 
   """
@@ -1527,29 +1530,6 @@ type ProductCardBreadcrumb {
   name: String!
 }
 
-type ProductCardConnection {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  connectionProducts: [ProductCardConnectionItem!]!
-
-  """
-  Name of attribute used for connection
-  """
-  name: String!
-  productsIds: [ObjectId!]!
-}
-
-type ProductCardConnectionItem {
-  _id: ObjectId!
-  isCurrent: Boolean!
-  product: Product!
-
-  """
-  Value of selected option for current product in connection
-  """
-  value: String!
-}
-
 type ProductCardFeatures {
   _id: ObjectId!
   iconFeatures: [ProductAttribute!]!
@@ -1567,20 +1547,13 @@ type ProductCardPrices {
 type ProductConnection {
   _id: ObjectId!
   attribute: Attribute!
-  attributeId: ObjectId!
   connectionProducts: [ProductConnectionItem!]!
-  products: [Product!]!
-  productsIds: [ObjectId!]!
 }
 
 type ProductConnectionItem {
-  _id: ObjectId!
+  option: Option!
   product: Product!
-
-  """
-  Value of selected option for current product in connection
-  """
-  value: String!
+  productId: ObjectId!
 }
 
 type ProductPayload implements Payload {

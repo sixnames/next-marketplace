@@ -12,6 +12,7 @@ export const ProductAttribute = objectType({
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
     t.json('textI18n');
+    t.json('attributeNameI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
       type: 'String',
@@ -21,6 +22,15 @@ export const ProductAttribute = objectType({
       type: 'String',
       description:
         'List of selected options slug combined with attribute slug in for of attributeSlug-optionSlug',
+    });
+
+    // ProductAttribute name translation field resolver
+    t.nonNull.field('attributeName', {
+      type: 'String',
+      resolve: async (source, _args, context) => {
+        const { getI18nLocale } = await getRequestParams(context);
+        return getI18nLocale(source.attributeNameI18n);
+      },
     });
 
     // ProductAttribute selectedOptions field resolver

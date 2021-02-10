@@ -49,6 +49,10 @@ export const ProductAttributeInput = inputObjectType({
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
+    t.nonNull.json('attributeNameI18n');
+    t.nonNull.field('attributeViewVariant', {
+      type: 'AttributeViewVariant',
+    });
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
@@ -200,6 +204,10 @@ export const ProductMutations = extendType({
 
           // Create product
           const slug = generateDefaultLangSlug(values.nameI18n);
+          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
+            const { selectedOptionsSlugs } = attributeInput;
+            return [...acc, ...selectedOptionsSlugs];
+          }, []);
 
           const createdProductResult = await productsCollection.insertOne({
             ...values,
@@ -217,10 +225,10 @@ export const ProductMutations = extendType({
             shopProductsCountCities: {},
             minPriceCities: {},
             maxPriceCities: {},
-            selectedOptionsSlugs: [],
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
+            selectedOptionsSlugs,
             attributes: values.attributes.map((attributeInput) => {
               const attributeSlugs: string[] = [];
               const { selectedOptionsSlugs, attributeSlug } = attributeInput;
@@ -293,7 +301,16 @@ export const ProductMutations = extendType({
             };
           }
 
-          // TODO Create new slug for product
+          // Create new slug for product
+          const { updatedSlug } = createProductSlugWithConnections({
+            product,
+            connections: product.connections,
+          });
+
+          const selectedOptionsSlugs = values.attributes.reduce((acc: string[], attributeInput) => {
+            const { selectedOptionsSlugs } = attributeInput;
+            return [...acc, ...selectedOptionsSlugs];
+          }, []);
 
           // Update product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -303,8 +320,9 @@ export const ProductMutations = extendType({
             {
               $set: {
                 ...values,
-                slug: 'slug',
+                slug: updatedSlug,
                 updatedAt: new Date(),
+                selectedOptionsSlugs,
                 attributes: values.attributes.map((attributeInput) => {
                   const attributeSlugs: string[] = [];
                   const { selectedOptionsSlugs, attributeSlug } = attributeInput;

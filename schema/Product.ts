@@ -6,12 +6,8 @@ import {
   BrandModel,
   ManufacturerModel,
   ProductCardBreadcrumbModel,
-  ProductCardConnectionItemModel,
-  ProductCardConnectionModel,
   ProductCardFeaturesModel,
   ProductCardPricesModel,
-  ProductConnectionModel,
-  ProductModel,
   ProductSnippetFeaturesModel,
   RubricModel,
   ShopProductModel,
@@ -22,15 +18,11 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_MANUFACTURERS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { LOCALE_NOT_FOUND_FIELD_MESSAGE } from 'config/common';
 import { getCurrencyString } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { getProductConnections } from 'lib/productAttributesUtils';
 import { noNaN } from 'lib/numbers';
 
 export const ProductCardBreadcrumb = objectType({
@@ -135,6 +127,9 @@ export const Product = objectType({
     t.nonNull.list.nonNull.field('attributes', {
       type: 'ProductAttribute',
     });
+    t.nonNull.list.nonNull.field('connections', {
+      type: 'ProductConnection',
+    });
 
     // Product name translation field resolver
     t.nonNull.field('name', {
@@ -229,25 +224,6 @@ export const Product = objectType({
       },
     });
 
-    // Product connections field resolver
-    t.nonNull.list.nonNull.field('connections', {
-      type: 'ProductConnection',
-      resolve: async (source): Promise<ProductConnectionModel[]> => {
-        const db = await getDatabase();
-        const productsConnectionsCollection = db.collection<ProductConnectionModel>(
-          COL_PRODUCT_CONNECTIONS,
-        );
-        const productsConnections = await productsConnectionsCollection
-          .find({
-            productsIds: {
-              $in: [source._id],
-            },
-          })
-          .toArray();
-        return productsConnections;
-      },
-    });
-
     // Product shopsCount field resolver
     t.nonNull.field('shopsCount', {
       type: 'Int',
@@ -269,6 +245,7 @@ export const Product = objectType({
           .find({
             _id: { $in: source.shopProductsIds },
             citySlug: city,
+            archive: false,
           })
           .toArray();
         return shopsProducts;
@@ -285,6 +262,7 @@ export const Product = objectType({
         const shopsProducts = await shopProductsCollection
           .find({
             _id: { $in: source.shopProductsIds },
+            archive: false,
           })
           .toArray();
         return shopsProducts;
@@ -344,7 +322,6 @@ export const Product = objectType({
           const { getFieldLocale } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { slug } = args;
 
           // Return empty configs list if slug arg is empty
@@ -387,9 +364,10 @@ export const Product = objectType({
               continue;
             }
 
-            const attribute = await attributesCollection.findOne({
-              _id: productAttribute.attributeId,
+            const attribute = rubric.attributes.find(({ _id }) => {
+              return productAttribute.attributeId.equals(_id);
             });
+
             // Continue if no attribute or no selectedOptionsSlugs
             if (!attribute) {
               continue;
@@ -411,24 +389,14 @@ export const Product = objectType({
               continue;
             }
 
-            // Get readable option name based on rubric gender
-            const { variants, nameI18n } = firstSelectedOption;
-            let filterNameString: string;
-            const currentVariant = variants[rubric.catalogueTitle.gender];
-            const currentVariantName = currentVariant
-              ? getFieldLocale(currentVariant.value)
-              : LOCALE_NOT_FOUND_FIELD_MESSAGE;
-            if (currentVariantName === LOCALE_NOT_FOUND_FIELD_MESSAGE) {
-              filterNameString = getFieldLocale(nameI18n);
-            } else {
-              filterNameString = currentVariantName;
-            }
+            // Get option name
+            const filterNameString = getFieldLocale(firstSelectedOption.nameI18n);
 
             // Push breadcrumb config to the list
             attributesBreadcrumbs.push({
               _id: attribute._id,
               name: filterNameString,
-              href: `/${rubricSlug}/${attribute.slug}-${firstSelectedOption.slug}`,
+              href: `/${rubricSlug}/${firstSelectedOption.slug}`,
             });
           }
 
@@ -470,6 +438,7 @@ export const Product = objectType({
       },
     });
 
+    // TODO optimise this resolver
     // Product cardFeatures field resolver
     t.nonNull.field('cardFeatures', {
       type: 'ProductCardFeatures',
@@ -488,83 +457,6 @@ export const Product = objectType({
           return features;
         } catch {
           return features;
-        }
-      },
-    });
-
-    // Product cardConnections field resolver
-    t.nonNull.list.nonNull.field('cardConnections', {
-      type: 'ProductCardConnection',
-      resolve: async (source, _args, context): Promise<ProductCardConnectionModel[]> => {
-        try {
-          const db = await getDatabase();
-          const { getFieldLocale, city } = await getRequestParams(context);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const rootProductId = source._id;
-
-          // Get all product connections
-          const connections = await getProductConnections(rootProductId);
-
-          // Cast connections data for product card
-          const cardConnections: ProductCardConnectionModel[] = [];
-          for await (const connection of connections) {
-            const attribute = await attributesCollection.findOne({ _id: connection.attributeId });
-            if (!attribute) {
-              continue;
-            }
-
-            const products = await productsCollection
-              .aggregate([
-                { $match: { _id: { $in: connection.productsIds } } },
-
-                // count shop products
-                { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-
-                // filter out products not added to the shops
-                { $match: { shopsCount: { $gt: 0 } } },
-              ])
-              .toArray();
-
-            cardConnections.push({
-              _id: connection._id,
-              name: getFieldLocale(attribute.nameI18n),
-              productsIds: connection.productsIds,
-              attributeId: connection.attributeId,
-              connectionProducts: products.reduce(
-                (acc: ProductCardConnectionItemModel[], connectionProduct) => {
-                  const productAttribute = connectionProduct.attributes.find(({ attributeId }) => {
-                    return attributeId.equals(connection.attributeId);
-                  });
-
-                  if (!productAttribute) {
-                    return acc;
-                  }
-
-                  const productConnectionValue = productAttribute.selectedOptionsSlugs[0];
-                  if (!productConnectionValue) {
-                    return acc;
-                  }
-
-                  return [
-                    ...acc,
-                    {
-                      _id: new ObjectId(),
-                      value: productConnectionValue,
-                      isCurrent: connectionProduct._id.equals(rootProductId),
-                      product: connectionProduct,
-                    },
-                  ];
-                },
-                [],
-              ),
-            });
-          }
-
-          return cardConnections;
-        } catch (e) {
-          console.log(e);
-          return [];
         }
       },
     });

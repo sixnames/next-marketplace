@@ -76,6 +76,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           {
             attributeId: attributeWineVintage._id,
             attributeSlug: attributeWineVintage.slug,
+            attributeNameI18n: attributeWineVintage.nameI18n,
+            attributeViewVariant: attributeWineVintage.viewVariant,
             showInCard: true,
             showAsBreadcrumb: false,
             selectedOptionsSlugs: [wineVintageOptionsSlug],
@@ -89,6 +91,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           {
             attributeId: attributeWineColor._id,
             attributeSlug: attributeWineColor.slug,
+            attributeNameI18n: attributeWineColor.nameI18n,
+            attributeViewVariant: attributeWineColor.viewVariant,
             showInCard: true,
             showAsBreadcrumb: true,
             selectedOptionsSlugs: [wineColorOptionsSlug],
@@ -102,6 +106,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           {
             attributeId: attributeWineVariant._id,
             attributeSlug: attributeWineVariant.slug,
+            attributeNameI18n: attributeWineVariant.nameI18n,
+            attributeViewVariant: attributeWineVariant.viewVariant,
             showInCard: true,
             showAsBreadcrumb: true,
             selectedOptionsSlugs: [wineTypeOptionsSlug],
@@ -119,6 +125,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeString._id,
           attributeSlug: attributeString.slug,
+          attributeNameI18n: attributeString.nameI18n,
+          attributeViewVariant: attributeString.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
@@ -131,6 +139,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeWineCombinations._id,
           attributeSlug: attributeWineCombinations.slug,
+          attributeNameI18n: attributeWineCombinations.nameI18n,
+          attributeViewVariant: attributeWineCombinations.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: optionsSlugsCombination,
@@ -141,6 +151,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeNumber._id,
           attributeSlug: attributeNumber.slug,
+          attributeNameI18n: attributeNumber.nameI18n,
+          attributeViewVariant: attributeNumber.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
@@ -152,6 +164,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeOuterRatingA._id,
           attributeSlug: attributeOuterRatingA.slug,
+          attributeNameI18n: attributeOuterRatingA.nameI18n,
+          attributeViewVariant: attributeOuterRatingA.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
@@ -161,6 +175,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeOuterRatingB._id,
           attributeSlug: attributeOuterRatingB.slug,
+          attributeNameI18n: attributeOuterRatingB.nameI18n,
+          attributeViewVariant: attributeOuterRatingB.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],
@@ -170,6 +186,8 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         {
           attributeId: attributeOuterRatingC._id,
           attributeSlug: attributeOuterRatingC.slug,
+          attributeNameI18n: attributeOuterRatingC.nameI18n,
+          attributeViewVariant: attributeOuterRatingC.viewVariant,
           showInCard: true,
           showAsBreadcrumb: false,
           selectedOptionsSlugs: [],

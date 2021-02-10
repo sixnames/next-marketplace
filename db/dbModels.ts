@@ -448,6 +448,8 @@ export interface ProductAttributeModel {
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
   attributeSlug: string;
+  attributeNameI18n: TranslationModel;
+  attributeViewVariant: AttributeViewVariantModel;
   selectedOptionsSlugs: string[];
   attributeSlugs: string[];
   textI18n?: TranslationModel | null;

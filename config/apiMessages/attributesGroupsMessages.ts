@@ -150,6 +150,13 @@ export const attributesGroupsMessages: MessageType[] = [
     },
   },
   {
+    slug: 'attributesGroups.deleteAttribute.used',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Атрибут используется в товарах.`,
+      [SECONDARY_LOCALE]: `Attribute is used in products.`,
+    },
+  },
+  {
     slug: 'attributesGroups.deleteAttribute.groupError',
     messageI18n: {
       [DEFAULT_LOCALE]: `Группа атрибутов не найдена.`,

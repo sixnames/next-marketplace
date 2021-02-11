@@ -288,6 +288,7 @@ export type MessageSlug =
   | 'attributesGroups.updateAttribute.duplicate'
   | 'attributesGroups.updateAttribute.updateError'
   | 'attributesGroups.updateAttribute.success'
+  | 'attributesGroups.deleteAttribute.used'
   | 'attributesGroups.deleteAttribute.deleteError'
   | 'attributesGroups.deleteAttribute.groupError'
   | 'attributesGroups.deleteAttribute.success'

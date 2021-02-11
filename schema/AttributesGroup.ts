@@ -1,4 +1,4 @@
-import { castOptionsForAttribute } from 'lib/optionsUtils';
+import { castOptionsForAttribute, castOptionsForRubric } from 'lib/optionsUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -8,6 +8,7 @@ import {
   MetricModel,
   OptionModel,
   OptionsGroupModel,
+  ProductModel,
   RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -16,12 +17,18 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_METRICS,
   COL_OPTIONS_GROUPS,
+  COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { SORT_ASC } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  DEFAULT_COUNTERS_OBJECT,
+  SORT_ASC,
+} from 'config/common';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
@@ -359,6 +366,7 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
           // Check if attributes group exist
           const group = await attributesGroupCollection.findOne({ _id: args._id });
@@ -369,13 +377,35 @@ export const attributesGroupMutations = extendType({
             };
           }
 
+          // Check if group attributes is used in product connections and in product attributes
+          const usedInProducts = await productsCollection.findOne({
+            $or: [
+              {
+                'attributes.attributeId': {
+                  $in: group.attributesIds,
+                },
+              },
+              {
+                'connections.attributeId': {
+                  $in: group.attributesIds,
+                },
+              },
+            ],
+          });
+          if (usedInProducts) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.delete.used`),
+            };
+          }
+
           // Check if used in rubrics
-          const connectedWithRubrics = await rubricsCollection.findOne({
+          const usedInRubrics = await rubricsCollection.findOne({
             'attributesGroups.attributesGroupId': {
               $in: [group._id],
             },
           });
-          if (connectedWithRubrics) {
+          if (usedInRubrics) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.delete.used`),
@@ -446,6 +476,7 @@ export const attributesGroupMutations = extendType({
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
           // Check if attributes group exist
           const attributesGroup = await attributesGroupCollection.findOne({
@@ -527,6 +558,32 @@ export const attributesGroupMutations = extendType({
             };
           }
 
+          // Add attribute to rubrics
+          const visibleInRubric =
+            createdAttribute.variant === ATTRIBUTE_VARIANT_SELECT ||
+            createdAttribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
+          const updatedRubricsResult = await rubricsCollection.updateMany(
+            { attributesGroupsIds: attributesGroupId },
+            {
+              $push: {
+                attributes: {
+                  ...createdAttribute,
+                  showInCatalogueFilter: visibleInRubric,
+                  showInCatalogueNav: visibleInRubric,
+                  options: castOptionsForRubric(createdAttribute.options),
+                  visibleInCatalogueCities: {},
+                  ...DEFAULT_COUNTERS_OBJECT,
+                },
+              },
+            },
+          );
+          if (!updatedRubricsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
+            };
+          }
+
           return {
             success: true,
             message: await getApiMessage('attributesGroups.addAttribute.success'),
@@ -571,6 +628,7 @@ export const attributesGroupMutations = extendType({
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
 
           // Check if attributes group exist
@@ -639,15 +697,53 @@ export const attributesGroupMutations = extendType({
                 metric,
               },
             },
+            {
+              returnOriginal: false,
+            },
           );
-          if (!updatedAttributeResult.ok || !updatedAttributeResult.value) {
+          const updatedAttribute = updatedAttributeResult.value;
+          if (!updatedAttributeResult.ok || !updatedAttribute) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
             };
           }
 
-          // TODO update attribute in product connections and in product attributes
+          // Update attribute in product connections and in product attributes
+          const updatedProductsResult = await productsCollection.updateMany(
+            {
+              $or: [
+                {
+                  'attributes.attributeId': attributeId,
+                },
+                {
+                  'connections.attributeId': attributeId,
+                },
+              ],
+            },
+            {
+              $set: {
+                'attributes.$[attribute].attributeNameI18n': updatedAttribute.nameI18n,
+                'attributes.$[attribute].attributeVariant': updatedAttribute.variant,
+                'attributes.$[attribute].attributeViewVariant': updatedAttribute.viewVariant,
+                'connections.$[connection].attributeNameI18n': updatedAttribute.nameI18n,
+                'connections.$[connection].attributeVariant': updatedAttribute.variant,
+                'connections.$[connection].attributeViewVariant': updatedAttribute.viewVariant,
+              },
+            },
+            {
+              arrayFilters: [
+                { 'attribute.attributeId': { $eq: updatedAttribute._id } },
+                { 'connection.attributeId': { $eq: updatedAttribute._id } },
+              ],
+            },
+          );
+          if (!updatedProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+            };
+          }
 
           return {
             success: true,
@@ -692,8 +788,29 @@ export const attributesGroupMutations = extendType({
             COL_ATTRIBUTES_GROUPS,
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
-          // TODO check if attribute is used in product connections and in product attributes
+          // Check if attribute is used in rubrics and product connections and in product attributes
+          const usedInProducts = await productsCollection.findOne({
+            $or: [
+              {
+                'attributes.attributeId': attributeId,
+              },
+              {
+                'connections.attributeId': attributeId,
+              },
+            ],
+          });
+          const usedInRubrics = await rubricsCollection.findOne({
+            'attributes._id': attributeId,
+          });
+          if (usedInProducts || usedInRubrics) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.deleteAttribute.used`),
+            };
+          }
 
           // Check if attributes group exist
           const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(

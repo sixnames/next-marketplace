@@ -312,7 +312,7 @@ export const OrderMutations = extendType({
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
-          // TODO create order log
+
           // Check if cart is empty
           if (cart.cartProducts.length < 1) {
             return {
@@ -500,7 +500,6 @@ export const OrderMutations = extendType({
                 userId: user._id,
                 variant: ORDER_LOG_VARIANT_STATUS as OrderLogVariantModel,
                 createdAt: new Date(),
-                updatedAt: new Date(),
               },
             ],
           });

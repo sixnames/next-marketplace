@@ -37,8 +37,8 @@ const options: InitOptions = {
       authorize: async (credentials: Record<string, any>) => {
         try {
           const db = await getDatabase();
-          const collection = db.collection(COL_USERS);
-          const user = await collection.findOne<UserModel>({ email: credentials.username });
+          const collection = db.collection<UserModel>(COL_USERS);
+          const user = await collection.findOne({ email: credentials.username });
 
           if (user) {
             const passwordResult = await bcrypt.compare(credentials.password, `${user.password}`);

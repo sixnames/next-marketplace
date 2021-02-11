@@ -147,8 +147,8 @@ export const UserQuery = queryType({
       },
       resolve: async (_source, args): Promise<UserModel> => {
         const db = await getDatabase();
-        const collection = db.collection(COL_USERS);
-        const user = await collection.findOne<UserModel>({ _id: args._id });
+        const collection = db.collection<UserModel>(COL_USERS);
+        const user = await collection.findOne({ _id: args._id });
         if (!user) {
           throw Error('User not found by given id');
         }

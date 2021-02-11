@@ -390,10 +390,11 @@ export enum OrderLogVariantModel {
   status = 'status',
 }
 
-export interface OrderLogModel extends TimestampModel {
+export interface OrderLogModel {
   _id: ObjectIdModel;
   variant: OrderLogVariantModel;
   userId: ObjectIdModel;
+  createdAt: DateModel;
 }
 
 export interface OrderProductModel {

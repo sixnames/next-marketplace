@@ -22,8 +22,8 @@ export async function setCollectionItemId(collectionName: string, counter: numbe
 
 export async function getNextItemId(collectionName: string): Promise<string> {
   const db = await getDatabase();
-  const idCountersCollection = db.collection(COL_ID_COUNTERS);
-  const idCounter = await idCountersCollection.findOne<IdCounterModel>({
+  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+  const idCounter = await idCountersCollection.findOne({
     collection: collectionName,
   });
 

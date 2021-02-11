@@ -17,7 +17,6 @@ export const COL_METRICS = 'metrics';
 export const COL_NAV_ITEMS = 'navItems';
 export const COL_OPTIONS_GROUPS = 'optionsGroups';
 export const COL_ORDERS = 'orders';
-export const COL_ORDER_LOGS = 'orderLogs';
 export const COL_ORDER_STATUSES = 'orderStatuses';
 export const COL_PRODUCTS = 'products';
 export const COL_ROLES = 'roles';

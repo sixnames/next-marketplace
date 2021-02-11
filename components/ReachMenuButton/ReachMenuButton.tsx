@@ -23,7 +23,8 @@ export interface MenuButtonInterface {
   buttonText?: (props: ButtonTextPropsInterface) => any;
   config: ReachMenuItemConfig[];
   initialValue?: string;
-  buttonAs?: keyof JSX.IntrinsicElements | React.ComponentType;
+  // buttonAs?: keyof JSX.IntrinsicElements | React.ComponentType;
+  buttonAs?: any;
 }
 
 const ReachMenuButton: React.FC<MenuButtonInterface> = ({

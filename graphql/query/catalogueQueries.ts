@@ -31,11 +31,13 @@ export const productSnippedFragment = gql`
     mainImage
     shopsCount
     listFeatures {
+      _id
       attributeId
       attributeName
       readableValue
     }
     ratingFeatures {
+      _id
       attributeId
       attributeName
       readableValue
@@ -44,6 +46,7 @@ export const productSnippedFragment = gql`
       ...SnippetConnection
     }
     cardPrices {
+      _id
       min
       max
     }

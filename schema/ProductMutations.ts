@@ -48,6 +48,7 @@ export const ProductPayload = objectType({
 export const ProductAttributeInput = inputObjectType({
   name: 'ProductAttributeInput',
   definition(t) {
+    t.nonNull.objectId('_id');
     t.nonNull.boolean('showInCard');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');

@@ -408,6 +408,7 @@ export interface NexusGenInputs {
   };
   ProductAttributeInput: {
     // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
@@ -1469,6 +1470,7 @@ export interface NexusGenFieldTypes {
   };
   ProductAttribute: {
     // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributeName: string; // String!
@@ -1503,6 +1505,7 @@ export interface NexusGenFieldTypes {
   };
   ProductCardPrices: {
     // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     max: string; // String!
     min: string; // String!
   };
@@ -2547,6 +2550,7 @@ export interface NexusGenFieldTypeNames {
   };
   ProductAttribute: {
     // field return type name
+    _id: 'ObjectId';
     attribute: 'Attribute';
     attributeId: 'ObjectId';
     attributeName: 'String';
@@ -2581,6 +2585,7 @@ export interface NexusGenFieldTypeNames {
   };
   ProductCardPrices: {
     // field return type name
+    _id: 'ObjectId';
     max: 'String';
     min: 'String';
   };

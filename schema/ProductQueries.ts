@@ -276,6 +276,7 @@ export const ProductQueries = extendType({
             });
 
             attributesAST.push({
+              _id: attribute._id,
               attributeId: attribute._id,
               attributeSlug: attribute.slug,
               attributeNameI18n: attribute.nameI18n,

@@ -76,6 +76,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const vintageAttribute: ProductAttributeModel[] = wineVintageOption
       ? [
           {
+            _id: attributeWineVintage._id,
             attributeId: attributeWineVintage._id,
             attributeSlug: attributeWineVintage.slug,
             attributeNameI18n: attributeWineVintage.nameI18n,
@@ -92,6 +93,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const colorAttribute: ProductAttributeModel[] = wineColorOption
       ? [
           {
+            _id: attributeWineColor._id,
             attributeId: attributeWineColor._id,
             attributeSlug: attributeWineColor.slug,
             attributeNameI18n: attributeWineColor.nameI18n,
@@ -108,6 +110,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const wineTypeAttribute: ProductAttributeModel[] = wineTypeOption
       ? [
           {
+            _id: attributeWineVariant._id,
             attributeId: attributeWineVariant._id,
             attributeSlug: attributeWineVariant.slug,
             attributeNameI18n: attributeWineVariant.nameI18n,
@@ -128,6 +131,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
         ...colorAttribute,
         ...wineTypeAttribute,
         {
+          _id: attributeString._id,
           attributeId: attributeString._id,
           attributeSlug: attributeString.slug,
           attributeNameI18n: attributeString.nameI18n,
@@ -143,6 +147,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           },
         },
         {
+          _id: attributeWineCombinations._id,
           attributeId: attributeWineCombinations._id,
           attributeSlug: attributeWineCombinations.slug,
           attributeNameI18n: attributeWineCombinations.nameI18n,
@@ -154,6 +159,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           selectedOptions: optionsCombination,
         },
         {
+          _id: attributeNumber._id,
           attributeId: attributeNumber._id,
           attributeSlug: attributeNumber.slug,
           attributeNameI18n: attributeNumber.nameI18n,
@@ -168,6 +174,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
         // Outer rating attributes
         {
+          _id: attributeOuterRatingA._id,
           attributeId: attributeOuterRatingA._id,
           attributeSlug: attributeOuterRatingA.slug,
           attributeNameI18n: attributeOuterRatingA.nameI18n,
@@ -180,6 +187,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           number: 18,
         },
         {
+          _id: attributeOuterRatingB._id,
           attributeId: attributeOuterRatingB._id,
           attributeSlug: attributeOuterRatingB.slug,
           attributeNameI18n: attributeOuterRatingB.nameI18n,
@@ -192,6 +200,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
           number: 89,
         },
         {
+          _id: attributeOuterRatingC._id,
           attributeId: attributeOuterRatingC._id,
           attributeSlug: attributeOuterRatingC.slug,
           attributeNameI18n: attributeOuterRatingC.nameI18n,

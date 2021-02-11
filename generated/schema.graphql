@@ -1464,6 +1464,7 @@ type Product implements Base & Timestamp {
 }
 
 type ProductAttribute {
+  _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
   attributeName: String!
@@ -1486,6 +1487,7 @@ type ProductAttribute {
 }
 
 input ProductAttributeInput {
+  _id: ObjectId!
   attributeId: ObjectId!
   attributeNameI18n: JSONObject!
   attributeSlug: String!
@@ -1524,6 +1526,7 @@ type ProductCardBreadcrumb {
 }
 
 type ProductCardPrices {
+  _id: ObjectId!
   max: String!
   min: String!
 }

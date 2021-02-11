@@ -108,12 +108,6 @@ export type Payload = {
   message: Scalars['String'];
 };
 
-export type ProductCardPrices = {
-  __typename?: 'ProductCardPrices';
-  min: Scalars['String'];
-  max: Scalars['String'];
-};
-
 /** Type for all selects options. */
 export type SelectOption = {
   __typename?: 'SelectOption';
@@ -2002,6 +1996,13 @@ export type DeleteProductFromRubricInput = {
   productId: Scalars['ObjectId'];
 };
 
+export type ProductCardPrices = {
+  __typename?: 'ProductCardPrices';
+  _id: Scalars['ObjectId'];
+  min: Scalars['String'];
+  max: Scalars['String'];
+};
+
 export type ProductCardBreadcrumb = {
   __typename?: 'ProductCardBreadcrumb';
   _id: Scalars['ObjectId'];
@@ -2126,6 +2127,7 @@ export type ProductPayload = Payload & {
 };
 
 export type ProductAttributeInput = {
+  _id: Scalars['ObjectId'];
   showInCard: Scalars['Boolean'];
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
@@ -2200,6 +2202,7 @@ export type DeleteProductFromConnectionInput = {
 
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
+  _id: Scalars['ObjectId'];
   showInCard: Scalars['Boolean'];
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
@@ -3825,11 +3828,8 @@ export type GetAttributesGroupsForRubricQuery = (
 
 export type CardFeatureFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'text' | 'number' | 'readableValue'>
-  & { attribute: (
-    { __typename?: 'Attribute' }
-    & Pick<Attribute, '_id' | 'name' | 'viewVariant'>
-  ), selectedOptions: Array<(
+  & Pick<ProductAttribute, '_id' | 'showInCard' | 'text' | 'number' | 'attributeName' | 'attributeViewVariant' | 'readableValue'>
+  & { selectedOptions: Array<(
     { __typename?: 'Option' }
     & Pick<Option, '_id' | 'slug' | 'name' | 'icon'>
   )> }
@@ -3842,6 +3842,7 @@ export type CardConnectionProductFragment = (
 
 export type CardConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
+  & Pick<ProductConnectionItem, '_id'>
   & { option: (
     { __typename?: 'Option' }
     & Pick<Option, '_id' | 'name'>
@@ -3899,7 +3900,7 @@ export type ProductCardFragment = (
   & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'description' | 'shopsCount'>
   & { cardPrices: (
     { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, 'min' | 'max'>
+    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
   ), cardShopProducts: Array<(
     { __typename?: 'ShopProduct' }
     & ShopProductSnippetFragment
@@ -3977,16 +3978,16 @@ export type ProductSnippetFragment = (
   & Pick<Product, '_id' | 'itemId' | 'name' | 'slug' | 'mainImage' | 'shopsCount'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, 'attributeId' | 'attributeName' | 'readableValue'>
+    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
   )>, ratingFeatures: Array<(
     { __typename?: 'ProductAttribute' }
-    & Pick<ProductAttribute, 'attributeId' | 'attributeName' | 'readableValue'>
+    & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
   )>, connections: Array<(
     { __typename?: 'ProductConnection' }
     & SnippetConnectionFragment
   )>, cardPrices: (
     { __typename?: 'ProductCardPrices' }
-    & Pick<ProductCardPrices, 'min' | 'max'>
+    & Pick<ProductCardPrices, '_id' | 'min' | 'max'>
   ) }
 );
 
@@ -5057,11 +5058,13 @@ export const ProductSnippetFragmentDoc = gql`
   mainImage
   shopsCount
   listFeatures {
+    _id
     attributeId
     attributeName
     readableValue
   }
   ratingFeatures {
+    _id
     attributeId
     attributeName
     readableValue
@@ -5070,6 +5073,7 @@ export const ProductSnippetFragmentDoc = gql`
     ...SnippetConnection
   }
   cardPrices {
+    _id
     min
     max
   }
@@ -5195,14 +5199,12 @@ export const AttributeInGroupFragmentDoc = gql`
     `;
 export const CardFeatureFragmentDoc = gql`
     fragment CardFeature on ProductAttribute {
+  _id
   showInCard
-  attribute {
-    _id
-    name
-    viewVariant
-  }
   text
   number
+  attributeName
+  attributeViewVariant
   readableValue
   selectedOptions {
     _id
@@ -5224,6 +5226,7 @@ export const CardConnectionProductFragmentDoc = gql`
     `;
 export const CardConnectionItemFragmentDoc = gql`
     fragment CardConnectionItem on ProductConnectionItem {
+  _id
   option {
     _id
     name
@@ -5252,6 +5255,7 @@ export const ProductCardFragmentDoc = gql`
   mainImage
   description
   cardPrices {
+    _id
     min
     max
   }

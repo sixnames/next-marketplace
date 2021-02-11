@@ -157,14 +157,6 @@ export const Payload = interfaceType({
   },
 });
 
-export const ProductCardPrices = objectType({
-  name: 'ProductCardPrices',
-  definition(t) {
-    t.nonNull.string('min');
-    t.nonNull.string('max');
-  },
-});
-
 export const SelectOption = objectType({
   name: 'SelectOption',
   description: 'Type for all selects options.',

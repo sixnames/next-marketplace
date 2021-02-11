@@ -2,14 +2,12 @@ import { gql } from '@apollo/client';
 
 export const cardFeatureFragment = gql`
   fragment CardFeature on ProductAttribute {
+    _id
     showInCard
-    attribute {
-      _id
-      name
-      viewVariant
-    }
     text
     number
+    attributeName
+    attributeViewVariant
     readableValue
     selectedOptions {
       _id
@@ -33,6 +31,7 @@ export const cardConnectionProductFragment = gql`
 
 export const cardConnectionItemFragment = gql`
   fragment CardConnectionItem on ProductConnectionItem {
+    _id
     option {
       _id
       name
@@ -110,6 +109,7 @@ export const productCardFragment = gql`
     mainImage
     description
     cardPrices {
+      _id
       min
       max
     }

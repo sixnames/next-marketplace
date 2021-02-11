@@ -450,6 +450,7 @@ export interface ProductConnectionModel {
 }
 
 export interface ProductAttributeModel {
+  _id: ObjectIdModel;
   showInCard: boolean;
   showAsBreadcrumb: boolean;
   attributeId: ObjectIdModel;
@@ -493,6 +494,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
 }
 
 export interface ProductCardPricesModel {
+  _id: ObjectIdModel;
   min: string;
   max: string;
 }

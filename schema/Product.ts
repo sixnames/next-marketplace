@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from 'config/common';
+import { ObjectId } from 'mongodb';
 import { list, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -29,6 +30,15 @@ import {
 } from 'db/collectionNames';
 import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+
+export const ProductCardPrices = objectType({
+  name: 'ProductCardPrices',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.string('min');
+    t.nonNull.string('max');
+  },
+});
 
 export const ProductCardBreadcrumb = objectType({
   name: 'ProductCardBreadcrumb',
@@ -269,11 +279,13 @@ export const Product = objectType({
           const minPrice = noNaN(source.minPriceCities[city]);
           const maxPrice = noNaN(source.maxPriceCities[city]);
           return {
+            _id: new ObjectId(),
             min: getCurrencyString({ value: minPrice, locale }),
             max: getCurrencyString({ value: maxPrice, locale }),
           };
         } catch {
           return {
+            _id: new ObjectId(),
             min: '0',
             max: '0',
           };

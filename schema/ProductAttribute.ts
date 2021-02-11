@@ -13,6 +13,7 @@ import { getRequestParams } from 'lib/sessionHelpers';
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',
   definition(t) {
+    t.nonNull.objectId('_id');
     t.nonNull.boolean('showInCard');
     t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');

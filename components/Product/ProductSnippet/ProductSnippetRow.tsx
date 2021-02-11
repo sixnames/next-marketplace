@@ -33,15 +33,12 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     cardPrices,
     _id,
     itemId,
-    cardFeatures,
-    snippetFeatures,
-    cardConnections,
+    listFeatures,
+    ratingFeatures,
+    connections,
     shopsCount,
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
-
-  const { ratingFeaturesValues } = snippetFeatures;
-  const { listFeatures } = cardFeatures;
   const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
 
   return (
@@ -63,16 +60,11 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           <div className={classes.contentColumn}>
             <div className={classes.name}>{name}</div>
             <div className={classes.listFeatures}>
-              {listFeatures.map(({ attribute, selectedOptions }) => {
+              {listFeatures.map(({ attributeName, attributeId, readableValue }) => {
                 return (
-                  <React.Fragment key={attribute._id}>
-                    <div className={classes.listFeaturesLabel}>{attribute.name}</div>
-                    <div className={classes.listFeaturesValue}>
-                      {selectedOptions.map(({ name }, index) => {
-                        const isLastOption = selectedOptions.length - 1 === index;
-                        return isLastOption ? name : `${name}, `;
-                      })}
-                    </div>
+                  <React.Fragment key={attributeId}>
+                    <div className={classes.listFeaturesLabel}>{attributeName}</div>
+                    <div className={classes.listFeaturesValue}>{readableValue}</div>
                   </React.Fragment>
                 );
               })}
@@ -80,10 +72,10 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
             <div className={classes.mainContentBottom}>
               <div className={classes.outerRatingList}>
-                {ratingFeaturesValues.map((rating) => {
+                {ratingFeatures.map(({ attributeId, attributeName, readableValue }) => {
                   return (
-                    <div key={rating} className={classes.outerRating}>
-                      {rating}
+                    <div key={attributeId} className={classes.outerRating}>
+                      {`${attributeName} ${readableValue}`}
                     </div>
                   );
                 })}
@@ -100,20 +92,22 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <ProductSnippetPrice value={cardPrices.min} />
 
             <div className={classes.productConnections}>
-              {cardConnections.map(({ _id, name, connectionProducts }) => {
+              {connections.map(({ _id, attributeName, connectionProducts }) => {
                 return (
                   <div key={_id} className={classes.connectionsGroup}>
-                    <div className={classes.connectionsGroupLabel}>{`${name}:`}</div>
-                    {connectionProducts.map(({ value, _id, isCurrent }, index) => {
+                    <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
+                    {connectionProducts.map(({ option, _id }, index) => {
                       const isLast = connectionProducts.length - 1 === index;
+                      const isCurrent = _id === product._id;
+
                       return (
                         <span
-                          key={_id}
+                          key={option._id}
                           className={`${classes.connectionsGroupValue} ${
                             isCurrent ? classes.connectionsGroupCurrentValue : ''
                           }`}
                         >
-                          {isLast ? value : `${value}, `}
+                          {isLast ? option.name : `${option.name}, `}
                         </span>
                       );
                     })}

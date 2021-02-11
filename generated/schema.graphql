@@ -1467,7 +1467,7 @@ type ProductAttribute {
   attribute: Attribute!
   attributeId: ObjectId!
   attributeName: String!
-  attributeNameI18n: JSONObject
+  attributeNameI18n: JSONObject!
   attributeSlug: String!
   attributeVariant: AttributeVariant!
   attributeViewVariant: AttributeViewVariant!
@@ -1531,6 +1531,7 @@ type ProductCardPrices {
 type ProductConnection {
   _id: ObjectId!
   attributeId: ObjectId!
+  attributeName: String!
   attributeNameI18n: JSONObject
   attributeSlug: String!
   attributeVariant: AttributeVariant!
@@ -1539,6 +1540,7 @@ type ProductConnection {
 }
 
 type ProductConnectionItem {
+  _id: ObjectId!
   option: Option!
   product: Product!
   productId: ObjectId!

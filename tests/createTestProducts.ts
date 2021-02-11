@@ -365,14 +365,17 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     attributeViewVariant: attributeWineVintage.viewVariant,
     connectionProducts: [
       {
+        _id: connectionProductAId,
         productId: connectionProductAId,
         option: attributeWineVintage.options[0],
       },
       {
+        _id: connectionProductBId,
         productId: connectionProductBId,
         option: attributeWineVintage.options[1],
       },
       {
+        _id: connectionProductCId,
         productId: connectionProductCId,
         option: attributeWineVintage.options[2],
       },

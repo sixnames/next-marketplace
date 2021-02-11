@@ -23,7 +23,7 @@ export const ProductAttribute = objectType({
     t.nonNull.field('attributeVariant', {
       type: 'AttributeVariant',
     });
-    t.json('attributeNameI18n');
+    t.nonNull.json('attributeNameI18n');
     t.json('textI18n');
     t.float('number');
     t.nonNull.list.nonNull.field('selectedOptionsSlugs', {

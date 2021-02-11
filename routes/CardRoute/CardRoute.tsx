@@ -51,9 +51,13 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     mainImage,
     name,
     cardPrices,
-    cardConnections,
+    connections,
     itemId,
-    cardFeatures,
+    listFeatures,
+    ratingFeatures,
+    textFeatures,
+    iconFeatures,
+    tagFeatures,
     shopsCount,
     cardBreadcrumbs,
     cardShopProducts,
@@ -62,7 +66,6 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
 
-  const { listFeatures, ratingFeatures, textFeatures, iconFeatures, tagFeatures } = cardFeatures;
   const isShopsPlural = shopsCount > 1;
 
   const tabsConfig = [
@@ -130,21 +133,23 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               </div>
 
               {/*Connections*/}
-              {cardConnections.length > 0 ? (
+              {connections.length > 0 ? (
                 <div className={classes.connections}>
-                  {cardConnections.map(({ _id, name, connectionProducts }) => {
+                  {connections.map(({ _id, attributeName, connectionProducts }) => {
                     return (
                       <div key={_id} className={classes.connectionsGroup}>
-                        <div className={classes.connectionsGroupLabel}>{`${name}:`}</div>
+                        <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
                         <div className={classes.connectionsList}>
-                          {connectionProducts.map(({ value, _id, product, isCurrent }) => {
+                          {connectionProducts.map(({ option, product }) => {
+                            const isCurrent = product._id === cardData._id;
+
                             if (isCurrent) {
                               return (
                                 <span
                                   className={`${classes.connectionsGroupItem} ${classes.connectionsGroupItemCurrent}`}
-                                  key={_id}
+                                  key={option._id}
                                 >
-                                  {value}
+                                  {option.name}
                                 </span>
                               );
                             }
@@ -152,10 +157,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                               <Link
                                 data-cy={`connection-${product._id}`}
                                 className={`${classes.connectionsGroupItem}`}
-                                key={_id}
+                                key={option._id}
                                 href={`/product/${product.slug}`}
                               >
-                                {value}
+                                {option.name}
                               </Link>
                             );
                           })}

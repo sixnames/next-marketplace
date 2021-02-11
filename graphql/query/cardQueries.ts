@@ -32,10 +32,11 @@ export const cardConnectionProductFragment = gql`
 `;
 
 export const cardConnectionItemFragment = gql`
-  fragment CardConnectionItem on ProductCardConnectionItem {
-    _id
-    value
-    isCurrent
+  fragment CardConnectionItem on ProductConnectionItem {
+    option {
+      _id
+      name
+    }
     product {
       ...CardConnectionProduct
     }
@@ -44,11 +45,9 @@ export const cardConnectionItemFragment = gql`
 `;
 
 export const cardConnectionFragment = gql`
-  fragment CardConnection on ProductCardConnection {
+  fragment CardConnection on ProductConnection {
     _id
-    name
-    productsIds
-    attributeId
+    attributeName
     connectionProducts {
       ...CardConnectionItem
     }
@@ -118,29 +117,22 @@ export const productCardFragment = gql`
     cardShopProducts {
       ...ShopProductSnippet
     }
-    snippetFeatures {
-      listFeaturesString
-      ratingFeaturesValues
+    listFeatures {
+      ...CardFeature
     }
-    cardFeatures {
-      _id
-      listFeatures {
-        ...CardFeature
-      }
-      textFeatures {
-        ...CardFeature
-      }
-      tagFeatures {
-        ...CardFeature
-      }
-      iconFeatures {
-        ...CardFeature
-      }
-      ratingFeatures {
-        ...CardFeature
-      }
+    textFeatures {
+      ...CardFeature
     }
-    cardConnections {
+    tagFeatures {
+      ...CardFeature
+    }
+    iconFeatures {
+      ...CardFeature
+    }
+    ratingFeatures {
+      ...CardFeature
+    }
+    connections {
       ...CardConnection
     }
   }

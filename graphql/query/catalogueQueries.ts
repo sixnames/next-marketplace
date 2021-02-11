@@ -1,5 +1,26 @@
 import { gql } from '@apollo/client';
-import { cardConnectionFragment } from './cardQueries';
+
+export const SnippetConnectionItemFragment = gql`
+  fragment SnippetConnectionItem on ProductConnectionItem {
+    _id
+    productId
+    option {
+      _id
+      name
+    }
+  }
+`;
+
+export const SnippetConnectionFragment = gql`
+  fragment SnippetConnection on ProductConnection {
+    _id
+    attributeName
+    connectionProducts {
+      ...SnippetConnectionItem
+    }
+  }
+  ${SnippetConnectionItemFragment}
+`;
 
 export const productSnippedFragment = gql`
   fragment ProductSnippet on Product {
@@ -9,35 +30,25 @@ export const productSnippedFragment = gql`
     slug
     mainImage
     shopsCount
-    cardConnections {
-      ...CardConnection
+    listFeatures {
+      attributeId
+      attributeName
+      readableValue
     }
-    snippetFeatures {
-      listFeaturesString
-      ratingFeaturesValues
+    ratingFeatures {
+      attributeId
+      attributeName
+      readableValue
     }
-    cardFeatures {
-      _id
-      listFeatures {
-        text
-        number
-        selectedOptions {
-          _id
-          name
-          icon
-        }
-        attribute {
-          _id
-          name
-        }
-      }
+    connections {
+      ...SnippetConnection
     }
     cardPrices {
       min
       max
     }
   }
-  ${cardConnectionFragment}
+  ${SnippetConnectionFragment}
 `;
 
 export const catalogueFilterAttributeOptionFragment = gql`
@@ -68,7 +79,6 @@ export const catalogueFilterAttributeFragment = gql`
 
 export const catalogueSelectedPricesFragment = gql`
   fragment CatalogueSelectedPrices on CatalogueFilterSelectedPrices {
-    _id
     clearSlug
     formattedMinPrice
     formattedMaxPrice

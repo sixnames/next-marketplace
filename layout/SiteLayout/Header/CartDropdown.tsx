@@ -43,8 +43,12 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             return null;
           }
 
-          const { mainImage, name, snippetFeatures } = productData;
-          const { listFeaturesString } = snippetFeatures;
+          const { mainImage, name, listFeatures } = productData;
+          const listFeaturesString = listFeatures
+            .map(({ readableValue }) => {
+              return readableValue;
+            })
+            .join(', ');
 
           return (
             <div key={_id} className={classes.product} data-cy={`cart-dropdown-product`}>

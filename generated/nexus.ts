@@ -1472,7 +1472,7 @@ export interface NexusGenFieldTypes {
     attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributeName: string; // String!
-    attributeNameI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    attributeNameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     attributeSlug: string; // String!
     attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
     attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
@@ -1510,6 +1510,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeName: string; // String!
     attributeNameI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     attributeSlug: string; // String!
     attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
@@ -1518,6 +1519,7 @@ export interface NexusGenFieldTypes {
   };
   ProductConnectionItem: {
     // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     option: NexusGenRootTypes['Option']; // Option!
     product: NexusGenRootTypes['Product']; // Product!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -2586,6 +2588,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     attributeId: 'ObjectId';
+    attributeName: 'String';
     attributeNameI18n: 'JSONObject';
     attributeSlug: 'String';
     attributeVariant: 'AttributeVariant';
@@ -2594,6 +2597,7 @@ export interface NexusGenFieldTypeNames {
   };
   ProductConnectionItem: {
     // field return type name
+    _id: 'ObjectId';
     option: 'Option';
     product: 'Product';
     productId: 'ObjectId';

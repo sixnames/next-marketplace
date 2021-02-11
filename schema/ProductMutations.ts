@@ -728,6 +728,7 @@ export const ProductMutations = extendType({
             attributeViewVariant: attribute.viewVariant,
             connectionProducts: [
               {
+                _id: productId,
                 option,
                 productId,
               },
@@ -881,6 +882,7 @@ export const ProductMutations = extendType({
             connectionProducts: [
               ...connection.connectionProducts,
               {
+                _id: addProductId,
                 option,
                 productId: addProductId,
               },

@@ -40,9 +40,11 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
     refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: productId } }],
   });
 
+  const excludedProductsIds = connection.connectionProducts.map(({ productId }) => productId);
+
   return (
     <ContentItemControls
-      testId={`${connection.attribute.name}-connection`}
+      testId={`${connection.attributeName}-connection`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -62,7 +64,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
             },
             createTitle: 'Добавить товар в связь',
             testId: 'add-product-to-connection-modal',
-            excludedProductsIds: connection.productsIds,
+            excludedProductsIds,
             attributesIds: [connection.attributeId],
           },
         });
@@ -131,7 +133,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  message: `Вы уверенны, что хотите удалить ${dataItem.product.name} из связи ${connection.attribute.name}?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.product.name} из связи ${connection.attributeName}?`,
                   testId: 'delete-product-from-connection-modal',
                   confirm: () => {
                     showLoading();
@@ -156,8 +158,8 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   return (
     <Accordion
-      testId={`${connection.attribute.name}-connection`}
-      title={connection.attribute.name}
+      testId={`${connection.attributeName}-connection`}
+      title={connection.attributeName}
       isOpen
       className={classes.listItem}
       titleRight={<ProductConnectionControls connection={connection} productId={productId} />}
@@ -165,7 +167,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       <Table<CmsProductConnectionItemFragment>
         columns={columns}
         data={connectionProducts}
-        tableTestId={`${connection.attribute.name}-connection-list`}
+        tableTestId={`${connection.attributeName}-connection-list`}
         testIdKey={'product.name'}
       />
     </Accordion>

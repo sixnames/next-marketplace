@@ -434,6 +434,7 @@ export interface OrderModel extends BaseModel, TimestampModel {
 }
 
 export interface ProductConnectionItemModel {
+  _id: ObjectIdModel;
   option: OptionModel;
   productId: ObjectIdModel;
 }

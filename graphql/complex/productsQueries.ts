@@ -27,8 +27,11 @@ export const cmsProductAttributeFragment = gql`
 
 export const cmSProductConnectionItemFragment = gql`
   fragment CmsProductConnectionItem on ProductConnectionItem {
-    _id
-    value
+    option {
+      _id
+      name
+    }
+    productId
     product {
       _id
       itemId
@@ -44,11 +47,7 @@ export const cmSProductConnectionFragment = gql`
   fragment CmsProductConnection on ProductConnection {
     _id
     attributeId
-    productsIds
-    attribute {
-      _id
-      name
-    }
+    attributeName
     connectionProducts {
       ...CmsProductConnectionItem
     }
@@ -112,6 +111,11 @@ export const productAttributeASTFragment = gql`
     textI18n
     number
     selectedOptionsSlugs
+    attributeName
+    attributeNameI18n
+    attributeSlug
+    attributeVariant
+    attributeViewVariant
     attribute {
       _id
       name

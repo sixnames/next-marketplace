@@ -64,7 +64,7 @@ export async function getServerSideProps(
     };
   } catch (e) {
     console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
+    console.log(e);
     return { props: {} };
   }
 }

@@ -4,9 +4,9 @@ import { useSiteContext } from 'context/siteContext';
 import Title from '../../components/Title/Title';
 import classes from './CartRoute.module.css';
 import {
-  CardConnectionFragment,
   CartProductFragment,
   ProductSnippetFragment,
+  SnippetConnectionFragment,
 } from 'generated/apolloComponents';
 import Image from 'next/image';
 import ButtonCross from '../../components/Buttons/ButtonCross';
@@ -79,8 +79,14 @@ interface CartProductMainDataInterface {
 }
 
 const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ product }) => {
-  const { itemId, name, snippetFeatures } = product;
-  const { listFeaturesString } = snippetFeatures;
+  const { itemId, name, listFeatures } = product;
+
+  const listFeaturesString = listFeatures
+    .map(({ readableValue }) => {
+      return readableValue;
+    })
+    .join(', ');
+
   return (
     <React.Fragment>
       <div>
@@ -93,19 +99,24 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({ product }
 };
 
 interface CartProductConnectionsInterface {
-  connections: CardConnectionFragment[];
+  connections: SnippetConnectionFragment[];
+  productId: string;
 }
 
-const CartProductConnections: React.FC<CartProductConnectionsInterface> = ({ connections }) => {
+const CartProductConnections: React.FC<CartProductConnectionsInterface> = ({
+  connections,
+  productId,
+}) => {
   return (
     <div className={classes.productConnections}>
-      {connections.map(({ _id, name, connectionProducts }) => {
+      {connections.map(({ _id, attributeName, connectionProducts }) => {
         return (
           <div key={_id} className={classes.connectionsGroup}>
-            <div className={classes.connectionsGroupLabel}>{`${name}:`}</div>
-            {connectionProducts.map(({ value, _id, isCurrent }) => {
+            <div className={classes.connectionsGroupLabel}>{`${attributeName}:`}</div>
+            {connectionProducts.map(({ option, _id }) => {
+              const isCurrent = _id === productId;
               if (isCurrent) {
-                return <span key={_id}>{value}</span>;
+                return <span key={option._id}>{option.name}</span>;
               }
               return null;
             })}
@@ -129,7 +140,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
     return null;
   }
 
-  const { cardPrices, cardConnections } = product;
+  const { cardPrices, connections } = product;
 
   return (
     <CartProductFrame product={productData} cartProductId={_id} isShopsVisible={isShopsVisible}>
@@ -140,7 +151,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
 
         <div className={classes.productGridRight}>
           <ProductSnippetPrice value={cardPrices.min} />
-          <CartProductConnections connections={cardConnections} />
+          <CartProductConnections connections={connections} productId={product._id} />
         </div>
       </div>
 
@@ -183,7 +194,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
   }
 
   const { formattedPrice, formattedOldPrice, discountedPercent, available, shop } = shopProduct;
-  const { cardConnections } = productData;
+  const { connections } = productData;
   const { address, name } = shop;
 
   return (
@@ -216,7 +227,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
             discountedPercent={discountedPercent}
           />
           <div className={classes.productConnections}>
-            <CartProductConnections connections={cardConnections} />
+            <CartProductConnections connections={connections} productId={productData._id} />
             <div className={classes.connectionsGroup}>{`В наличии ${available} шт`}</div>
           </div>
 

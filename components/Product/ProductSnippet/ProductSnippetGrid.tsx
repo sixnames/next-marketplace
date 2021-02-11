@@ -24,13 +24,17 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   size = 'normal',
 }) => {
   const { addShoplessProductToCart } = useSiteContext();
-  const { name, mainImage, slug, cardPrices, _id, snippetFeatures } = product;
+  const { name, mainImage, slug, cardPrices, _id, listFeatures, ratingFeatures } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
 
-  const { listFeaturesString, ratingFeaturesValues } = snippetFeatures;
-  const firstRatingFeature = ratingFeaturesValues[0];
+  const firstRatingFeature = ratingFeatures[0];
 
   const sizeClass = classes[size];
+  const listFeaturesString = listFeatures
+    .map(({ readableValue }) => {
+      return readableValue;
+    })
+    .join(', ');
 
   return (
     <LayoutCard className={`${classes.snippetCard} ${sizeClass}`} testId={testId}>
@@ -61,8 +65,8 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <div className={classes.bottomRight}>
         <div className={classes.outerRatingList}>
           {firstRatingFeature ? (
-            <div key={firstRatingFeature} className={classes.outerRating}>
-              {firstRatingFeature}
+            <div key={firstRatingFeature.attributeId} className={classes.outerRating}>
+              {`${firstRatingFeature.attributeName} ${firstRatingFeature.readableValue}`}
             </div>
           ) : null}
         </div>

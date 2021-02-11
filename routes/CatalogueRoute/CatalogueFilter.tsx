@@ -215,7 +215,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                     onClick={resetPricesValueHandler}
                     testId={'selected-prices'}
                     option={{
-                      _id: selectedPrices._id,
+                      _id: selectedPrices.clearSlug,
                       nextSlug: selectedPrices.clearSlug,
                       name: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
                       isSelected: true,

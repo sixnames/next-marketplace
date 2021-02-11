@@ -206,7 +206,6 @@ export type CatalogueSearchResult = {
 
 export type CatalogueFilterSelectedPrices = {
   __typename?: 'CatalogueFilterSelectedPrices';
-  _id: Scalars['ObjectId'];
   clearSlug: Scalars['String'];
   formattedMinPrice: Scalars['String'];
   formattedMaxPrice: Scalars['String'];
@@ -2010,23 +2009,6 @@ export type ProductCardBreadcrumb = {
   href: Scalars['String'];
 };
 
-export type ProductCardFeatures = {
-  __typename?: 'ProductCardFeatures';
-  _id: Scalars['ObjectId'];
-  listFeatures: Array<ProductAttribute>;
-  textFeatures: Array<ProductAttribute>;
-  tagFeatures: Array<ProductAttribute>;
-  iconFeatures: Array<ProductAttribute>;
-  ratingFeatures: Array<ProductAttribute>;
-};
-
-export type ProductSnippetFeatures = {
-  __typename?: 'ProductSnippetFeatures';
-  _id: Scalars['ObjectId'];
-  listFeaturesString: Scalars['String'];
-  ratingFeaturesValues: Array<Scalars['String']>;
-};
-
 export type ProductAttributesGroupAst = Base & {
   __typename?: 'ProductAttributesGroupAst';
   _id: Scalars['ObjectId'];
@@ -2058,6 +2040,7 @@ export type Product = Base & Timestamp & {
   priorities: Scalars['JSONObject'];
   assets: Array<Asset>;
   attributes: Array<ProductAttribute>;
+  connections: Array<ProductConnection>;
   name: Scalars['String'];
   description: Scalars['String'];
   mainImage: Scalars['String'];
@@ -2065,7 +2048,6 @@ export type Product = Base & Timestamp & {
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
-  connections: Array<ProductConnection>;
   shopsCount: Scalars['Int'];
   /** Returns shop products of session city for product card page */
   cardShopProducts: Array<ShopProduct>;
@@ -2077,11 +2059,11 @@ export type Product = Base & Timestamp & {
   cardPrices: ProductCardPrices;
   /** Should return product card breadcrumbs configs list for product card page */
   cardBreadcrumbs: Array<ProductCardBreadcrumb>;
-  /** Returns all list view product attributes as one string and all rating view product attributes as strings array. Each string contains attribute name and product attribute value. */
-  snippetFeatures: ProductSnippetFeatures;
-  /** Should return product card features in readable form */
-  cardFeatures: ProductCardFeatures;
-  cardConnections: Array<ProductCardConnection>;
+  listFeatures: Array<ProductAttribute>;
+  textFeatures: Array<ProductAttribute>;
+  tagFeatures: Array<ProductAttribute>;
+  iconFeatures: Array<ProductAttribute>;
+  ratingFeatures: Array<ProductAttribute>;
 };
 
 
@@ -2148,6 +2130,9 @@ export type ProductAttributeInput = {
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
   attributeSlug: Scalars['String'];
+  attributeNameI18n: Scalars['JSONObject'];
+  attributeViewVariant: AttributeViewVariant;
+  attributeVariant: AttributeVariant;
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
   /** List of selected options slug */
@@ -2219,13 +2204,15 @@ export type ProductAttribute = {
   showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
   attributeSlug: Scalars['String'];
+  attributeViewVariant: AttributeViewVariant;
+  attributeVariant: AttributeVariant;
+  attributeNameI18n: Scalars['JSONObject'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
   /** List of selected options slug */
   selectedOptionsSlugs: Array<Scalars['String']>;
-  /** List of selected options slug combined with attribute slug in for of attributeSlug-optionSlug */
-  attributeSlugs: Array<Scalars['String']>;
   selectedOptions: Array<Option>;
+  attributeName: Scalars['String'];
   text: Scalars['String'];
   attribute: Attribute;
   readableValue?: Maybe<Scalars['String']>;
@@ -2234,8 +2221,8 @@ export type ProductAttribute = {
 export type ProductConnectionItem = {
   __typename?: 'ProductConnectionItem';
   _id: Scalars['ObjectId'];
-  /** Value of selected option for current product in connection */
-  value: Scalars['String'];
+  option: Option;
+  productId: Scalars['ObjectId'];
   product: Product;
 };
 
@@ -2243,29 +2230,12 @@ export type ProductConnection = {
   __typename?: 'ProductConnection';
   _id: Scalars['ObjectId'];
   attributeId: Scalars['ObjectId'];
-  productsIds: Array<Scalars['ObjectId']>;
-  attribute: Attribute;
+  attributeSlug: Scalars['String'];
+  attributeNameI18n?: Maybe<Scalars['JSONObject']>;
+  attributeViewVariant: AttributeViewVariant;
+  attributeVariant: AttributeVariant;
   connectionProducts: Array<ProductConnectionItem>;
-  products: Array<Product>;
-};
-
-export type ProductCardConnectionItem = {
-  __typename?: 'ProductCardConnectionItem';
-  _id: Scalars['ObjectId'];
-  isCurrent: Scalars['Boolean'];
-  /** Value of selected option for current product in connection */
-  value: Scalars['String'];
-  product: Product;
-};
-
-export type ProductCardConnection = {
-  __typename?: 'ProductCardConnection';
-  _id: Scalars['ObjectId'];
-  attributeId: Scalars['ObjectId'];
-  productsIds: Array<Scalars['ObjectId']>;
-  /** Name of attribute used for connection */
-  name: Scalars['String'];
-  connectionProducts: Array<ProductCardConnectionItem>;
+  attributeName: Scalars['String'];
 };
 
 export type ShopProductOldPrice = Timestamp & {
@@ -2682,8 +2652,11 @@ export type CmsProductAttributeFragment = (
 
 export type CmsProductConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
-  & Pick<ProductConnectionItem, '_id' | 'value'>
-  & { product: (
+  & Pick<ProductConnectionItem, 'productId'>
+  & { option: (
+    { __typename?: 'Option' }
+    & Pick<Option, '_id' | 'name'>
+  ), product: (
     { __typename?: 'Product' }
     & Pick<Product, '_id' | 'itemId' | 'active' | 'name' | 'slug' | 'mainImage'>
   ) }
@@ -2691,11 +2664,8 @@ export type CmsProductConnectionItemFragment = (
 
 export type CmsProductConnectionFragment = (
   { __typename?: 'ProductConnection' }
-  & Pick<ProductConnection, '_id' | 'attributeId' | 'productsIds'>
-  & { attribute: (
-    { __typename?: 'Attribute' }
-    & Pick<Attribute, '_id' | 'name'>
-  ), connectionProducts: Array<(
+  & Pick<ProductConnection, '_id' | 'attributeId' | 'attributeName'>
+  & { connectionProducts: Array<(
     { __typename?: 'ProductConnectionItem' }
     & CmsProductConnectionItemFragment
   )> }
@@ -2736,7 +2706,7 @@ export type GetProductQuery = (
 
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs'>
+  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
@@ -3871,19 +3841,21 @@ export type CardConnectionProductFragment = (
 );
 
 export type CardConnectionItemFragment = (
-  { __typename?: 'ProductCardConnectionItem' }
-  & Pick<ProductCardConnectionItem, '_id' | 'value' | 'isCurrent'>
-  & { product: (
+  { __typename?: 'ProductConnectionItem' }
+  & { option: (
+    { __typename?: 'Option' }
+    & Pick<Option, '_id' | 'name'>
+  ), product: (
     { __typename?: 'Product' }
     & CardConnectionProductFragment
   ) }
 );
 
 export type CardConnectionFragment = (
-  { __typename?: 'ProductCardConnection' }
-  & Pick<ProductCardConnection, '_id' | 'name' | 'productsIds' | 'attributeId'>
+  { __typename?: 'ProductConnection' }
+  & Pick<ProductConnection, '_id' | 'attributeName'>
   & { connectionProducts: Array<(
-    { __typename?: 'ProductCardConnectionItem' }
+    { __typename?: 'ProductConnectionItem' }
     & CardConnectionItemFragment
   )> }
 );
@@ -3931,30 +3903,23 @@ export type ProductCardFragment = (
   ), cardShopProducts: Array<(
     { __typename?: 'ShopProduct' }
     & ShopProductSnippetFragment
-  )>, snippetFeatures: (
-    { __typename?: 'ProductSnippetFeatures' }
-    & Pick<ProductSnippetFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
-  ), cardFeatures: (
-    { __typename?: 'ProductCardFeatures' }
-    & Pick<ProductCardFeatures, '_id'>
-    & { listFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & CardFeatureFragment
-    )>, textFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & CardFeatureFragment
-    )>, tagFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & CardFeatureFragment
-    )>, iconFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & CardFeatureFragment
-    )>, ratingFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & CardFeatureFragment
-    )> }
-  ), cardConnections: Array<(
-    { __typename?: 'ProductCardConnection' }
+  )>, listFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CardFeatureFragment
+  )>, textFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CardFeatureFragment
+  )>, tagFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CardFeatureFragment
+  )>, iconFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CardFeatureFragment
+  )>, ratingFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & CardFeatureFragment
+  )>, connections: Array<(
+    { __typename?: 'ProductConnection' }
     & CardConnectionFragment
   )> }
 );
@@ -3989,30 +3954,37 @@ export type GetCatalogueCardShopsQuery = (
   )> }
 );
 
+export type SnippetConnectionItemFragment = (
+  { __typename?: 'ProductConnectionItem' }
+  & Pick<ProductConnectionItem, '_id' | 'productId'>
+  & { option: (
+    { __typename?: 'Option' }
+    & Pick<Option, '_id' | 'name'>
+  ) }
+);
+
+export type SnippetConnectionFragment = (
+  { __typename?: 'ProductConnection' }
+  & Pick<ProductConnection, '_id' | 'attributeName'>
+  & { connectionProducts: Array<(
+    { __typename?: 'ProductConnectionItem' }
+    & SnippetConnectionItemFragment
+  )> }
+);
+
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
   & Pick<Product, '_id' | 'itemId' | 'name' | 'slug' | 'mainImage' | 'shopsCount'>
-  & { cardConnections: Array<(
-    { __typename?: 'ProductCardConnection' }
-    & CardConnectionFragment
-  )>, snippetFeatures: (
-    { __typename?: 'ProductSnippetFeatures' }
-    & Pick<ProductSnippetFeatures, 'listFeaturesString' | 'ratingFeaturesValues'>
-  ), cardFeatures: (
-    { __typename?: 'ProductCardFeatures' }
-    & Pick<ProductCardFeatures, '_id'>
-    & { listFeatures: Array<(
-      { __typename?: 'ProductAttribute' }
-      & Pick<ProductAttribute, 'text' | 'number'>
-      & { selectedOptions: Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, '_id' | 'name' | 'icon'>
-      )>, attribute: (
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, '_id' | 'name'>
-      ) }
-    )> }
-  ), cardPrices: (
+  & { listFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & Pick<ProductAttribute, 'attributeId' | 'attributeName' | 'readableValue'>
+  )>, ratingFeatures: Array<(
+    { __typename?: 'ProductAttribute' }
+    & Pick<ProductAttribute, 'attributeId' | 'attributeName' | 'readableValue'>
+  )>, connections: Array<(
+    { __typename?: 'ProductConnection' }
+    & SnippetConnectionFragment
+  )>, cardPrices: (
     { __typename?: 'ProductCardPrices' }
     & Pick<ProductCardPrices, 'min' | 'max'>
   ) }
@@ -4034,7 +4006,7 @@ export type CatalogueFilterAttributeFragment = (
 
 export type CatalogueSelectedPricesFragment = (
   { __typename?: 'CatalogueFilterSelectedPrices' }
-  & Pick<CatalogueFilterSelectedPrices, '_id' | 'clearSlug' | 'formattedMinPrice' | 'formattedMaxPrice'>
+  & Pick<CatalogueFilterSelectedPrices, 'clearSlug' | 'formattedMinPrice' | 'formattedMaxPrice'>
 );
 
 export type CatalogueFilterFragment = (
@@ -4902,8 +4874,11 @@ export const CmsProductAttributeFragmentDoc = gql`
     `;
 export const CmsProductConnectionItemFragmentDoc = gql`
     fragment CmsProductConnectionItem on ProductConnectionItem {
-  _id
-  value
+  option {
+    _id
+    name
+  }
+  productId
   product {
     _id
     itemId
@@ -4918,11 +4893,7 @@ export const CmsProductConnectionFragmentDoc = gql`
     fragment CmsProductConnection on ProductConnection {
   _id
   attributeId
-  productsIds
-  attribute {
-    _id
-    name
-  }
+  attributeName
   connectionProducts {
     ...CmsProductConnectionItem
   }
@@ -4971,6 +4942,11 @@ export const ProductAttributeAstFragmentDoc = gql`
   textI18n
   number
   selectedOptionsSlugs
+  attributeName
+  attributeNameI18n
+  attributeSlug
+  attributeVariant
+  attributeViewVariant
   attribute {
     _id
     name
@@ -5053,37 +5029,25 @@ export const RubricAttributesGroupFragmentDoc = gql`
   }
 }
     ${RubricAttributeFragmentDoc}`;
-export const CardConnectionProductFragmentDoc = gql`
-    fragment CardConnectionProduct on Product {
+export const SnippetConnectionItemFragmentDoc = gql`
+    fragment SnippetConnectionItem on ProductConnectionItem {
   _id
-  itemId
-  slug
-  name
-  active
-  mainImage
+  productId
+  option {
+    _id
+    name
+  }
 }
     `;
-export const CardConnectionItemFragmentDoc = gql`
-    fragment CardConnectionItem on ProductCardConnectionItem {
+export const SnippetConnectionFragmentDoc = gql`
+    fragment SnippetConnection on ProductConnection {
   _id
-  value
-  isCurrent
-  product {
-    ...CardConnectionProduct
-  }
-}
-    ${CardConnectionProductFragmentDoc}`;
-export const CardConnectionFragmentDoc = gql`
-    fragment CardConnection on ProductCardConnection {
-  _id
-  name
-  productsIds
-  attributeId
+  attributeName
   connectionProducts {
-    ...CardConnectionItem
+    ...SnippetConnectionItem
   }
 }
-    ${CardConnectionItemFragmentDoc}`;
+    ${SnippetConnectionItemFragmentDoc}`;
 export const ProductSnippetFragmentDoc = gql`
     fragment ProductSnippet on Product {
   _id
@@ -5092,35 +5056,25 @@ export const ProductSnippetFragmentDoc = gql`
   slug
   mainImage
   shopsCount
-  cardConnections {
-    ...CardConnection
+  listFeatures {
+    attributeId
+    attributeName
+    readableValue
   }
-  snippetFeatures {
-    listFeaturesString
-    ratingFeaturesValues
+  ratingFeatures {
+    attributeId
+    attributeName
+    readableValue
   }
-  cardFeatures {
-    _id
-    listFeatures {
-      text
-      number
-      selectedOptions {
-        _id
-        name
-        icon
-      }
-      attribute {
-        _id
-        name
-      }
-    }
+  connections {
+    ...SnippetConnection
   }
   cardPrices {
     min
     max
   }
 }
-    ${CardConnectionFragmentDoc}`;
+    ${SnippetConnectionFragmentDoc}`;
 export const ShopSnippetFragmentDoc = gql`
     fragment ShopSnippet on Shop {
   _id
@@ -5258,6 +5212,36 @@ export const CardFeatureFragmentDoc = gql`
   }
 }
     `;
+export const CardConnectionProductFragmentDoc = gql`
+    fragment CardConnectionProduct on Product {
+  _id
+  itemId
+  slug
+  name
+  active
+  mainImage
+}
+    `;
+export const CardConnectionItemFragmentDoc = gql`
+    fragment CardConnectionItem on ProductConnectionItem {
+  option {
+    _id
+    name
+  }
+  product {
+    ...CardConnectionProduct
+  }
+}
+    ${CardConnectionProductFragmentDoc}`;
+export const CardConnectionFragmentDoc = gql`
+    fragment CardConnection on ProductConnection {
+  _id
+  attributeName
+  connectionProducts {
+    ...CardConnectionItem
+  }
+}
+    ${CardConnectionItemFragmentDoc}`;
 export const ProductCardFragmentDoc = gql`
     fragment ProductCard on Product {
   _id
@@ -5275,29 +5259,22 @@ export const ProductCardFragmentDoc = gql`
   cardShopProducts {
     ...ShopProductSnippet
   }
-  snippetFeatures {
-    listFeaturesString
-    ratingFeaturesValues
+  listFeatures {
+    ...CardFeature
   }
-  cardFeatures {
-    _id
-    listFeatures {
-      ...CardFeature
-    }
-    textFeatures {
-      ...CardFeature
-    }
-    tagFeatures {
-      ...CardFeature
-    }
-    iconFeatures {
-      ...CardFeature
-    }
-    ratingFeatures {
-      ...CardFeature
-    }
+  textFeatures {
+    ...CardFeature
   }
-  cardConnections {
+  tagFeatures {
+    ...CardFeature
+  }
+  iconFeatures {
+    ...CardFeature
+  }
+  ratingFeatures {
+    ...CardFeature
+  }
+  connections {
     ...CardConnection
   }
 }
@@ -5306,7 +5283,6 @@ ${CardFeatureFragmentDoc}
 ${CardConnectionFragmentDoc}`;
 export const CatalogueSelectedPricesFragmentDoc = gql`
     fragment CatalogueSelectedPrices on CatalogueFilterSelectedPrices {
-  _id
   clearSlug
   formattedMinPrice
   formattedMaxPrice

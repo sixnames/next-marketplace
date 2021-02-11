@@ -14,9 +14,10 @@ import {
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
+  ProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS_GROUPS, COL_PRODUCTS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/findDocumentByI18nField';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
@@ -707,6 +708,7 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const db = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -719,7 +721,24 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO check if option is used in product connections and in product attributes
+          // Check if option is used in product connections and in product attributes
+          const usedInProducts = await productsCollection.findOne({
+            $or: [
+              {
+                'attributes.selectedOptions._id': optionId,
+              },
+              {
+                'connections.connectionProducts.option._id': optionId,
+              },
+            ],
+          });
+          if (usedInProducts) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.deleteOption.used'),
+            };
+          }
+
           // Delete option
           const updatedGroupOptions = deleteOptionFromTree({
             options: optionsGroup.options,
@@ -750,7 +769,6 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO update option in product connections and in product attributes
           // Update attributes and rubrics options list
           const rubricsUpdated = await updateOptionsList({
             optionsGroupId,

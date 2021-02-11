@@ -179,7 +179,7 @@ export async function updateOptionInProducts({
       });
 
       if (!optionInAttribute) {
-        break;
+        continue;
       }
 
       await productsCollection.updateMany(

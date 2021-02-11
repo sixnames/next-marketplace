@@ -254,6 +254,7 @@ export type MessageSlug =
   | 'optionsGroups.updateOption.error'
   | 'optionsGroups.updateOption.success'
   | 'optionsGroups.deleteOption.notFound'
+  | 'optionsGroups.deleteOption.used'
   | 'optionsGroups.deleteOption.groupError'
   | 'optionsGroups.deleteOption.error'
   | 'optionsGroups.deleteOption.success'

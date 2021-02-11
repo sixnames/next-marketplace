@@ -171,6 +171,13 @@ export const optionsGroupsMessages: MessageType[] = [
     },
   },
   {
+    slug: 'optionsGroups.deleteOption.used',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Опция используется в товарах.`,
+      [SECONDARY_LOCALE]: `Option is used in products.`,
+    },
+  },
+  {
     slug: 'optionsGroups.deleteOption.groupError',
     messageI18n: {
       [DEFAULT_LOCALE]: `Группа опции не найдена.`,

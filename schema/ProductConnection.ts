@@ -29,9 +29,15 @@ export const ProductConnection = objectType({
   name: 'ProductConnection',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.field('attribute', {
-      type: 'Attribute',
+    t.nonNull.objectId('attributeId');
+    t.nonNull.string('attributeSlug');
+    t.nonNull.field('attributeViewVariant', {
+      type: 'AttributeViewVariant',
     });
+    t.nonNull.field('attributeVariant', {
+      type: 'AttributeVariant',
+    });
+    t.json('attributeNameI18n');
 
     // ProductConnection connectionProducts field resolver
     t.nonNull.list.nonNull.field('connectionProducts', {

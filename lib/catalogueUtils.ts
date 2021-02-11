@@ -219,8 +219,6 @@ export async function getCatalogueAdditionalFilterOptions({
     ])
     .toArray();
 
-  // TODO Increase option views counter if isSelected
-
   return aggregationResult;
 }
 

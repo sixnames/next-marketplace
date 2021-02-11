@@ -1509,7 +1509,11 @@ export interface NexusGenFieldTypes {
   ProductConnection: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attribute: NexusGenRootTypes['Attribute']; // Attribute!
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeNameI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    attributeSlug: string; // String!
+    attributeVariant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
+    attributeViewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
     connectionProducts: NexusGenRootTypes['ProductConnectionItem'][]; // [ProductConnectionItem!]!
   };
   ProductConnectionItem: {
@@ -2581,7 +2585,11 @@ export interface NexusGenFieldTypeNames {
   ProductConnection: {
     // field return type name
     _id: 'ObjectId';
-    attribute: 'Attribute';
+    attributeId: 'ObjectId';
+    attributeNameI18n: 'JSONObject';
+    attributeSlug: 'String';
+    attributeVariant: 'AttributeVariant';
+    attributeViewVariant: 'AttributeViewVariant';
     connectionProducts: 'ProductConnectionItem';
   };
   ProductConnectionItem: {

@@ -439,7 +439,11 @@ export interface ProductConnectionItemModel {
 
 export interface ProductConnectionModel {
   _id: ObjectIdModel;
-  attribute: AttributeModel;
+  attributeId: ObjectIdModel;
+  attributeSlug: string;
+  attributeNameI18n: TranslationModel;
+  attributeVariant: AttributeVariantModel;
+  attributeViewVariant: AttributeViewVariantModel;
   connectionProducts: ProductConnectionItemModel[];
 }
 

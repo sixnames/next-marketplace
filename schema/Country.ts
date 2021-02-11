@@ -564,7 +564,6 @@ export const CountryMutations = extendType({
           }
 
           // Remove city
-          // TODO remove city data from all entities?
           const removedCityResult = await citiesCollection.findOneAndDelete({ _id: cityId });
           if (!removedCityResult.ok) {
             return {

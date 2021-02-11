@@ -1,5 +1,5 @@
 import { deleteOptionFromTree, findOptionInTree, updateOptionInTree } from 'lib/optionsUtils';
-import { updateOptionsList } from 'lib/rubricUtils';
+import { updateOptionInProducts, updateOptionsList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
@@ -607,18 +607,27 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Update option
+          let updatedOption: OptionModel | null = null;
           const updatedGroupOptions = updateOptionInTree({
             options: optionsGroup.options,
             condition: (treeOption) => {
               return treeOption._id.equals(optionId);
             },
             updater: (option) => {
-              return {
+              updatedOption = {
                 ...option,
                 ...values,
               };
+
+              return updatedOption;
             },
           });
+          if (!updatedOption) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
 
           // Update options group
           const updatedOptionsGroupResult = await optionsGroupsCollection.findOneAndUpdate(
@@ -640,13 +649,21 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // TODO update option in product connections and in product attributes
           // Update attributes and rubrics options list
           const rubricsUpdated = await updateOptionsList({
             optionsGroupId,
             options: updatedGroupOptions,
           });
           if (!rubricsUpdated) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          // Update option in product connections and in product attributes
+          const productsUpdated = await updateOptionInProducts({ option: updatedOption });
+          if (!productsUpdated) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),

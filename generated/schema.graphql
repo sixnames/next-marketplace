@@ -1530,7 +1530,11 @@ type ProductCardPrices {
 
 type ProductConnection {
   _id: ObjectId!
-  attribute: Attribute!
+  attributeId: ObjectId!
+  attributeNameI18n: JSONObject
+  attributeSlug: String!
+  attributeVariant: AttributeVariant!
+  attributeViewVariant: AttributeViewVariant!
   connectionProducts: [ProductConnectionItem!]!
 }
 

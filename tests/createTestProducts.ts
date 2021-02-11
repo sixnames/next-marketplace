@@ -240,9 +240,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     const slug = generateSlug(defaultLocaleName);
 
     const selectedOptionsSlugs = [
-      `${wineColorOption}`,
-      `${wineTypeOption}`,
-      `${wineVintageOption}`,
+      `${wineColorOption?.slug}`,
+      `${wineTypeOption?.slug}`,
+      `${wineVintageOption?.slug}`,
     ];
 
     const localFilePath = path.join(process.cwd(), 'tests', 'mockAssets', 'test-product-0.png');
@@ -358,7 +358,11 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const connectionProductCId = new ObjectId();
   const connectionA: ProductConnectionModel = {
     _id: new ObjectId(),
-    attribute: attributeWineVintage,
+    attributeId: attributeWineVintage._id,
+    attributeSlug: attributeWineVintage.slug,
+    attributeNameI18n: attributeWineVintage.nameI18n,
+    attributeVariant: attributeWineVintage.variant,
+    attributeViewVariant: attributeWineVintage.viewVariant,
     connectionProducts: [
       {
         productId: connectionProductAId,

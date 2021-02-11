@@ -1,5 +1,15 @@
 import { DEFAULT_COUNTERS_OBJECT, RUBRIC_DEFAULT_COUNTERS } from 'config/common';
-import { OptionModel, RubricOptionModel } from 'db/dbModels';
+import { COL_ATTRIBUTES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import {
+  AttributeModel,
+  ObjectIdModel,
+  OptionModel,
+  ProductModel,
+  RubricAttributeModel,
+  RubricModel,
+  RubricOptionModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 
 export interface FindOptionInGroupInterface {
   options: OptionModel[];
@@ -146,4 +156,181 @@ export function castOptionsForAttribute({
       options: castOptionsForAttribute({ options: option.options, attributeSlug }),
     };
   });
+}
+
+export interface UpdateOptionInProductsInterface {
+  option: OptionModel;
+}
+
+export async function updateOptionInProducts({
+  option,
+}: UpdateOptionInProductsInterface): Promise<boolean> {
+  try {
+    const db = await getDatabase();
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const attributes = await attributesCollection.find({ 'options._id': option._id }).toArray();
+    const optionId = option._id;
+
+    // Update for each attribute
+    for await (const attribute of attributes) {
+      const optionInAttribute = attribute.options.find(({ _id }) => {
+        return _id.equals(optionId);
+      });
+
+      if (!optionInAttribute) {
+        break;
+      }
+
+      await productsCollection.updateMany(
+        {
+          $or: [
+            {
+              'attributes.selectedOptions._id': optionId,
+            },
+            {
+              connections: {
+                $elemMatch: {
+                  attributeId: attribute._id,
+                  'connectionProducts.option._id': optionId,
+                },
+              },
+            },
+          ],
+        },
+        {
+          $set: {
+            'attributes.$[attribute].selectedOptions.$[option]': optionInAttribute,
+            'connections.$[connection].connectionProducts.$[connectionProduct].option': optionInAttribute,
+          },
+        },
+        {
+          arrayFilters: [
+            { 'attribute.attributeId': { $eq: attribute._id } },
+            { 'option._id': { $eq: optionId } },
+            { 'connection.attributeId': { $eq: attribute._id } },
+            { 'connectionProduct.option._id': { $eq: optionId } },
+          ],
+        },
+      );
+    }
+
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export interface UpdateOptionsListInterface {
+  optionsGroupId: ObjectIdModel;
+  options: OptionModel[];
+}
+
+export async function updateOptionsList({
+  options,
+  optionsGroupId,
+}: UpdateOptionsListInterface): Promise<boolean> {
+  try {
+    const db = await getDatabase();
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+    const attributes = await attributesCollection.find({ optionsGroupId }).toArray();
+
+    // Update attributes options list
+    const updatedAttributes: AttributeModel[] = [];
+    for await (const attribute of attributes) {
+      const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
+        { _id: attribute._id },
+        {
+          $set: {
+            options: castOptionsForAttribute({ options, attributeSlug: attribute.slug }),
+          },
+        },
+        {
+          returnOriginal: false,
+        },
+      );
+
+      if (!updatedAttributeResult.ok || !updatedAttributeResult.value) {
+        continue;
+      }
+      updatedAttributes.push(updatedAttributeResult.value);
+    }
+    if (updatedAttributes.length !== attributes.length) {
+      return false;
+    }
+
+    // Update rubrics options list
+    const updatedRubrics: RubricModel[] = [];
+    const attributesIds = updatedAttributes.map(({ _id }) => _id);
+    const rubrics = await rubricsCollection
+      .find({ 'attributes._id': { $in: attributesIds } })
+      .toArray();
+
+    for await (const rubric of rubrics) {
+      const rubricAttributes = rubric.attributes.reduce(
+        (acc: RubricAttributeModel[], rubricAttribute) => {
+          const attribute = updatedAttributes.find(({ _id }) => _id.equals(rubricAttribute._id));
+          if (attribute) {
+            const castedOptions = castOptionsForRubric(attribute.options);
+            return [
+              ...acc,
+              {
+                ...rubricAttribute,
+                options: updateRubricOptionInTree({
+                  options: castedOptions,
+                  condition: (treeOption) => {
+                    const exist = findRubricOptionInTree({
+                      options: rubricAttribute.options,
+                      condition: (rubricTreeOption) => {
+                        return treeOption._id.equals(rubricTreeOption._id);
+                      },
+                    });
+                    return Boolean(exist);
+                  },
+                  updater: (treeOption) => {
+                    const rubricOption = findRubricOptionInTree({
+                      options: rubricAttribute.options,
+                      condition: (rubricTreeOption) => {
+                        return treeOption._id.equals(rubricTreeOption._id);
+                      },
+                    });
+                    return {
+                      ...rubricOption,
+                      ...treeOption,
+                    };
+                  },
+                }),
+              },
+            ];
+          }
+          return [...acc, rubricAttribute];
+        },
+        [],
+      );
+
+      const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+        { _id: rubric._id },
+        {
+          $set: {
+            attributes: rubricAttributes,
+          },
+        },
+      );
+      if (!updatedRubricResult.ok || !updatedRubricResult.value) {
+        continue;
+      }
+      updatedRubrics.push(updatedRubricResult.value);
+    }
+
+    if (updatedRubrics.length !== rubrics.length) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }

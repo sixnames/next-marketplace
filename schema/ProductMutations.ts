@@ -686,8 +686,8 @@ export const ProductMutations = extendType({
           }
 
           // Check if connection already exist
-          const exist = product.connections.some(({ attribute }) => {
-            return attribute._id.equals(attributeId);
+          const exist = product.connections.some((connection) => {
+            return connection.attributeId.equals(attributeId);
           });
           if (exist) {
             return {
@@ -721,7 +721,11 @@ export const ProductMutations = extendType({
           // Create connection
           const createdConnection: ProductConnectionModel = {
             _id: new ObjectId(),
-            attribute,
+            attributeId: attribute._id,
+            attributeSlug: attribute.slug,
+            attributeNameI18n: attribute.nameI18n,
+            attributeVariant: attribute.variant,
+            attributeViewVariant: attribute.viewVariant,
             connectionProducts: [
               {
                 option,
@@ -806,11 +810,16 @@ export const ProductMutations = extendType({
           // Check all entities availability
           const product = await productsCollection.findOne({ _id: productId });
           const addProduct = await productsCollection.findOne({ _id: addProductId });
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const connection = product?.connections.find(({ _id }) => {
             return _id.equals(connectionId);
           });
 
-          if (!product || !addProduct || !connection) {
+          const attribute = connection
+            ? await attributesCollection.findOne({ _id: connection.attributeId })
+            : null;
+
+          if (!product || !addProduct || !connection || !attribute) {
             return {
               success: false,
               message: await getApiMessage(`products.update.notFound`),
@@ -819,7 +828,7 @@ export const ProductMutations = extendType({
 
           // Check attribute existence in added product
           const attributeExist = addProduct.attributes.some((productAttribute) => {
-            return productAttribute.attributeId.equals(connection.attribute._id);
+            return productAttribute.attributeId.equals(connection.attributeId);
           });
           if (!attributeExist) {
             return {
@@ -831,7 +840,7 @@ export const ProductMutations = extendType({
           // Check attribute value in added product
           // it should have attribute value and shouldn't intersect with existing values in connection
           const addProductConnectionAttribute = addProduct.attributes.find((attribute) => {
-            return attribute.attributeId.equals(connection.attribute._id);
+            return attribute.attributeId.equals(connection.attributeId);
           });
           if (!addProductConnectionAttribute) {
             return {
@@ -856,7 +865,7 @@ export const ProductMutations = extendType({
           }
 
           // Find current option
-          const option = connection.attribute.options.find(({ slug }) => {
+          const option = attribute.options.find(({ slug }) => {
             return slug === addProductConnectionAttribute.selectedOptionsSlugs[0];
           });
           if (!option) {

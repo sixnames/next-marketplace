@@ -281,7 +281,6 @@ export const Product = objectType({
       },
     });
 
-    // TODO optimise this resolver
     // Product cardBreadcrumbs field resolver
     t.nonNull.list.nonNull.field('cardBreadcrumbs', {
       type: 'ProductCardBreadcrumb',

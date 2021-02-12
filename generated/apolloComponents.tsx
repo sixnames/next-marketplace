@@ -3031,6 +3031,32 @@ export type DeleteProductFromRubricMutation = (
   ) }
 );
 
+export type ToggleAttributeInRubricCatalogueMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type ToggleAttributeInRubricCatalogueMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleAttributeInRubricCatalogue: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type ToggleAttributeInRubricNavMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type ToggleAttributeInRubricNavMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleAttributeInRubricNav: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
+  ) }
+);
+
 export type GetAllProductsQueryVariables = Exact<{
   input: ProductsPaginationInput;
 }>;
@@ -6552,6 +6578,72 @@ export function useDeleteProductFromRubricMutation(baseOptions?: Apollo.Mutation
 export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationResult = Apollo.MutationResult<DeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
+export const ToggleAttributeInRubricCatalogueDocument = gql`
+    mutation ToggleAttributeInRubricCatalogue($input: UpdateAttributeInRubricInput!) {
+  toggleAttributeInRubricCatalogue(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ToggleAttributeInRubricCatalogueMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
+
+/**
+ * __useToggleAttributeInRubricCatalogueMutation__
+ *
+ * To run a mutation, you first call `useToggleAttributeInRubricCatalogueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAttributeInRubricCatalogueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAttributeInRubricCatalogueMutation, { data, loading, error }] = useToggleAttributeInRubricCatalogueMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleAttributeInRubricCatalogueMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>) {
+        return Apollo.useMutation<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>(ToggleAttributeInRubricCatalogueDocument, baseOptions);
+      }
+export type ToggleAttributeInRubricCatalogueMutationHookResult = ReturnType<typeof useToggleAttributeInRubricCatalogueMutation>;
+export type ToggleAttributeInRubricCatalogueMutationResult = Apollo.MutationResult<ToggleAttributeInRubricCatalogueMutation>;
+export type ToggleAttributeInRubricCatalogueMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
+export const ToggleAttributeInRubricNavDocument = gql`
+    mutation ToggleAttributeInRubricNav($input: UpdateAttributeInRubricInput!) {
+  toggleAttributeInRubricNav(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ToggleAttributeInRubricNavMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
+
+/**
+ * __useToggleAttributeInRubricNavMutation__
+ *
+ * To run a mutation, you first call `useToggleAttributeInRubricNavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAttributeInRubricNavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAttributeInRubricNavMutation, { data, loading, error }] = useToggleAttributeInRubricNavMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleAttributeInRubricNavMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>) {
+        return Apollo.useMutation<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>(ToggleAttributeInRubricNavDocument, baseOptions);
+      }
+export type ToggleAttributeInRubricNavMutationHookResult = ReturnType<typeof useToggleAttributeInRubricNavMutation>;
+export type ToggleAttributeInRubricNavMutationResult = Apollo.MutationResult<ToggleAttributeInRubricNavMutation>;
+export type ToggleAttributeInRubricNavMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductsPaginationInput!) {
   getProductsList(input: $input) {

@@ -151,6 +151,24 @@ export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
   }
 `;
 
+export const TOGGLE_ATTRIBUTE_IN_RUBRIC_CATALOGUE = gql`
+  mutation ToggleAttributeInRubricCatalogue($input: UpdateAttributeInRubricInput!) {
+    toggleAttributeInRubricCatalogue(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const TOGGLE_ATTRIBUTE_IN_RUBRIC_NAV = gql`
+  mutation ToggleAttributeInRubricNav($input: UpdateAttributeInRubricInput!) {
+    toggleAttributeInRubricNav(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const GET_ALL_PRODUCTS_QUERY = gql`
   query GetAllProducts($input: ProductsPaginationInput!) {
     getProductsList(input: $input) {

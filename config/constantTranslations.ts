@@ -35,6 +35,12 @@ export const constantTranslations = {
       [SECONDARY_LOCALE]: 'Data loading error.',
     },
   },
+  breadcrumbs: {
+    main: {
+      [DEFAULT_LOCALE]: 'Главная',
+      [SECONDARY_LOCALE]: 'Main',
+    },
+  },
   catalogueTitleSeparator: {
     [DEFAULT_LOCALE]: ' или ',
     [SECONDARY_LOCALE]: ' or ',

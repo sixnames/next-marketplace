@@ -1,3 +1,6 @@
+import { PRODUCT_CARD_RUBRIC_SLUG_PREFIX } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../../components/Inner/Inner';
 import classes from './CardRoute.module.css';
@@ -62,9 +65,15 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardBreadcrumbs,
     cardShopProducts,
   } = cardData;
+  const { query } = useRouter();
   const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
+
+  const additionalSlug = alwaysArray(query.card).find((slug) => {
+    return slug.includes(PRODUCT_CARD_RUBRIC_SLUG_PREFIX);
+  });
+  const additionalLinkSlug = additionalSlug ? `/${additionalSlug}` : '';
 
   const isShopsPlural = shopsCount > 1;
 
@@ -158,7 +167,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                                 data-cy={`connection-${product._id}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={option._id}
-                                href={`/product/${product.slug}`}
+                                href={`/product${additionalLinkSlug}/${product.slug}`}
                               >
                                 {option.name}
                               </Link>

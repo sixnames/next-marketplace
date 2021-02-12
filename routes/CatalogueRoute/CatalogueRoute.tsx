@@ -22,6 +22,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import {
   CATALOGUE_FILTER_SORT_KEYS,
+  PRODUCT_CARD_RUBRIC_SLUG_PREFIX,
   SORT_ASC_STR,
   SORT_BY_KEY,
   SORT_DESC_STR,
@@ -291,7 +292,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product._id}
                       testId={`catalogue-item-${product._id}`}
-                      additionalSlug={`/rubric-${rubric.slug}`}
+                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
                     />
                   ))}
             </InfiniteScroll>

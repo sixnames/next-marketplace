@@ -1,9 +1,11 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './LanguageTrigger.module.css';
 import MenuButtonWithName from '../ReachMenuButton/MenuButtonWithName';
 import { useLocaleContext } from 'context/localeContext';
 
 const LanguageTrigger: React.FC = () => {
+  const router = useRouter();
   const { languagesList, currentLocaleItem } = useLocaleContext();
   const config = React.useMemo(() => {
     return languagesList.map(({ slug, nativeName }) => {
@@ -11,8 +13,9 @@ const LanguageTrigger: React.FC = () => {
         _id: nativeName,
         name: nativeName,
         onSelect: () => {
-          // TODO change locale handler
-          console.log(slug);
+          router
+            .push(router.pathname, router.asPath, { locale: slug })
+            .catch((e) => console.log(e));
         },
       };
     });

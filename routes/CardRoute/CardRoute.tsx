@@ -25,14 +25,14 @@ interface CardRouteFeaturesInterface {
 const CardRouteListFeatures: React.FC<CardRouteFeaturesInterface> = ({ features }) => {
   return features.length > 0 ? (
     <div className={classes.mainFrameFeatures}>
-      {features.map(({ showInCard, attribute, readableValue }) => {
+      {features.map(({ showInCard, _id, attributeName, readableValue }) => {
         if (!showInCard) {
           return null;
         }
 
         return (
-          <div key={attribute._id} className={classes.feature}>
-            <div className={classes.featureTitle}>{attribute.name}</div>
+          <div key={_id} className={classes.feature}>
+            <div className={classes.featureTitle}>{attributeName}</div>
             <div>{readableValue}</div>
           </div>
         );
@@ -122,10 +122,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
                 <div className={classes.outerRatingsList}>
-                  {ratingFeatures.map(({ attribute, number }) => {
+                  {ratingFeatures.map(({ attributeName, _id, number }) => {
                     return (
-                      <div key={attribute._id} className={classes.outerRatingsItem}>
-                        {attribute.name} {number}
+                      <div key={_id} className={classes.outerRatingsItem}>
+                        {attributeName} {number}
                       </div>
                     );
                   })}
@@ -245,10 +245,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
         {/* Features */}
         <div className={classes.cardFeatures}>
           <div className={classes.cardFeaturesAside}>
-            {iconFeatures.map(({ attribute, selectedOptions }) => {
+            {iconFeatures.map(({ attributeName, _id, selectedOptions }) => {
               return (
-                <div className={classes.cardFeaturesGroup} key={attribute._id}>
-                  <div className={classes.cardFeaturesLabel}>{attribute.name}</div>
+                <div className={classes.cardFeaturesGroup} key={_id}>
+                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesCombinationsList}>
                     {selectedOptions.map(({ _id, name, icon }) => {
                       return (
@@ -263,10 +263,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
               );
             })}
 
-            {tagFeatures.map(({ attribute, selectedOptions }) => {
+            {tagFeatures.map(({ attributeName, selectedOptions, _id }) => {
               return (
-                <div className={classes.cardFeaturesGroup} key={attribute._id}>
-                  <div className={classes.cardFeaturesLabel}>{attribute.name}</div>
+                <div className={classes.cardFeaturesGroup} key={_id}>
+                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesTagsList}>
                     {selectedOptions.map((value) => (
                       <div className={classes.cardFeaturesTag} key={value._id}>
@@ -280,10 +280,10 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           </div>
 
           <div className={classes.cardFeaturesContent}>
-            {textFeatures.map(({ attribute, readableValue }) => {
+            {textFeatures.map(({ attributeName, _id, readableValue }) => {
               return (
-                <div className={classes.cardFeaturesGroup} key={attribute._id}>
-                  <div className={classes.cardFeaturesLabel}>{attribute.name}</div>
+                <div className={classes.cardFeaturesGroup} key={_id}>
+                  <div className={classes.cardFeaturesLabel}>{attributeName}</div>
                   <div className={classes.cardFeaturesText}>
                     <p>{readableValue}</p>
                   </div>

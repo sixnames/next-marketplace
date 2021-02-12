@@ -9,10 +9,6 @@ export type InputType = 'text' | 'number' | 'email' | 'tel' | 'password';
 export type JustifyType = 'flex-end' | 'flex-start';
 export type OnOffType = 'on' | 'off';
 export type NotificationVariant = 'success' | 'warning' | 'error';
-export type PostfixType =
-  | ('percent' | 'currency' | 'amount' | 'hours' | 'days' | 'human' | 'hash' | 'minutes')
-  | undefined
-  | any;
 
 export type ObjectType = Record<string, any>;
 

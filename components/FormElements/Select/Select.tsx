@@ -37,7 +37,6 @@ const Select: React.FC<SelectInterface> = ({
   labelPostfix,
   isHorizontal,
   labelLink,
-  postfix,
   label,
   notValid,
   value,
@@ -45,7 +44,6 @@ const Select: React.FC<SelectInterface> = ({
   isRequired,
   setNameToValue,
   testId,
-  prefix,
   labelTag,
   labelClass,
   lineContentClass,
@@ -88,8 +86,6 @@ const Select: React.FC<SelectInterface> = ({
       labelTag={labelTag}
       labelClass={labelClass}
       lineContentClass={lineContentClass}
-      postfix={postfix}
-      prefix={prefix}
       low={low}
       wide={wide}
     >

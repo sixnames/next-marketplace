@@ -1,7 +1,9 @@
+import * as React from 'react';
+import { getFieldTranslation } from 'config/constantTranslations';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useAppContext } from 'context/appContext';
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { ERROR_NOTIFICATION_MESSAGE } from 'config/notifications';
 
 interface ResponseInterface extends Record<string, any> {
   success: boolean;
@@ -13,9 +15,13 @@ interface UseMutationCallbacksInterface {
 }
 
 const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
+  const { locale } = useRouter();
   const { withModal } = props || {};
   const { showModal, hideModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
+  const defaultErrorMessage = React.useMemo(() => {
+    return getFieldTranslation(`messages.error.${locale}`);
+  }, [locale]);
 
   const onCompleteCallback = useCallback(
     (data: ResponseInterface) => {
@@ -25,7 +31,7 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
         }
         hideLoading();
         showErrorNotification({
-          title: data.message ? data.message : ERROR_NOTIFICATION_MESSAGE,
+          title: data.message ? data.message : defaultErrorMessage,
         });
       }
 
@@ -37,12 +43,19 @@ const useMutationCallbacks = (props?: UseMutationCallbacksInterface) => {
         });
       }
     },
-    [hideLoading, hideModal, showErrorNotification, showSuccessNotification, withModal],
+    [
+      defaultErrorMessage,
+      hideLoading,
+      hideModal,
+      showErrorNotification,
+      showSuccessNotification,
+      withModal,
+    ],
   );
 
   const onErrorCallback = useCallback(
     (error: any) => {
-      let message = ERROR_NOTIFICATION_MESSAGE;
+      let message = defaultErrorMessage;
       if (error && error.graphQLErrors) {
         message = error.graphQLErrors.map(({ message }: any) => `${message} `);
       }

@@ -25,6 +25,16 @@ import {
 } from './common';
 
 export const constantTranslations = {
+  messages: {
+    error: {
+      [DEFAULT_LOCALE]: 'Что-то пошло не так. Попробуйте ещё раз.',
+      [SECONDARY_LOCALE]: 'Something went wrong. Please try again.',
+    },
+    dataError: {
+      [DEFAULT_LOCALE]: 'Ошибка загрузки данных.',
+      [SECONDARY_LOCALE]: 'Data loading error.',
+    },
+  },
   catalogueTitleSeparator: {
     [DEFAULT_LOCALE]: ' или ',
     [SECONDARY_LOCALE]: ' or ',

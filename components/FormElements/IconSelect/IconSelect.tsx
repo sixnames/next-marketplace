@@ -17,13 +17,12 @@ const IconSelect: React.FC<IconSelectInterface> = ({ value, ...props }) => {
   }, [data, loading, error]);
 
   return (
-    <Select
-      prefix={<Icon className={classes.icon} name={value || 'cross'} />}
-      value={value}
-      options={options}
-      {...props}
-      firstOption={'Не выбрано'}
-    />
+    <div className={classes.iconSelect}>
+      <Select value={value} options={options} {...props} firstOption={'Не выбрано'} />
+      <div className={classes.iconHolder}>
+        <Icon className={classes.icon} name={value || 'cross'} />
+      </div>
+    </div>
   );
 };
 

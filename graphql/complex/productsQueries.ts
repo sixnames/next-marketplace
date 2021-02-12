@@ -104,6 +104,7 @@ export const PRODUCT_QUERY = gql`
 
 export const productAttributeASTFragment = gql`
   fragment ProductAttributeAst on ProductAttribute {
+    _id
     showInCard
     showAsBreadcrumb
     attributeId

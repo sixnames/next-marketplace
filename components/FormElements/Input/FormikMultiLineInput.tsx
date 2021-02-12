@@ -19,8 +19,6 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
   lineClass,
   low,
   wide,
-  postfix,
-  prefix,
   isHorizontal,
   labelTag,
   children,
@@ -63,8 +61,6 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
       lineClass={lineClass}
       low={low}
       wide={wide}
-      postfix={postfix}
-      prefix={prefix}
       isHorizontal={isHorizontal}
       description={description}
       lineContentClass={lineContentClass}

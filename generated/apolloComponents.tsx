@@ -2709,7 +2709,7 @@ export type GetProductQuery = (
 
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
+  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
@@ -4936,6 +4936,7 @@ export const CmsProductFragmentDoc = gql`
     ${CmsProductFieldsFragmentDoc}`;
 export const ProductAttributeAstFragmentDoc = gql`
     fragment ProductAttributeAst on ProductAttribute {
+  _id
   showInCard
   showAsBreadcrumb
   attributeId

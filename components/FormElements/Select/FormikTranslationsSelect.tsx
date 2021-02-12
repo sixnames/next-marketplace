@@ -18,8 +18,6 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   low,
   wide,
   labelPostfix,
-  postfix,
-  prefix,
   labelLink,
   isRequired,
   isHorizontal,
@@ -41,8 +39,6 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
         low={low}
         wide={wide}
         labelPostfix={labelPostfix}
-        postfix={postfix}
-        prefix={prefix}
         labelLink={labelLink}
         isRequired={isRequired}
         isHorizontal={isHorizontal}
@@ -64,8 +60,6 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
       low={low}
       wide={wide}
       labelPostfix={labelPostfix}
-      postfix={postfix}
-      prefix={prefix}
       labelLink={labelLink}
       isRequired={isRequired}
       isHorizontal={isHorizontal}

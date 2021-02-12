@@ -123,9 +123,9 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
 
               <FormikInput
                 label={'Цвет'}
+                labelPostfix={'#'}
                 name={'color'}
                 testId={'option-color'}
-                prefix={'hash'}
                 disabled={groupVariant !== OPTIONS_GROUP_VARIANT_COLOR}
                 isRequired={groupVariant === OPTIONS_GROUP_VARIANT_COLOR}
                 showInlineError

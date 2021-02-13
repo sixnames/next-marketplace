@@ -184,21 +184,15 @@ export async function productsPaginationQuery({
           {
             $addFields: {
               totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+              minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
+              maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
             },
           },
           {
             $addFields: {
               totalDocs: '$totalDocsObject.totalDocs',
-            },
-          },
-          {
-            $addFields: {
-              totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
-            },
-          },
-          {
-            $addFields: {
-              totalActiveDocs: '$totalActiveDocsObject.totalActiveDocs',
+              minPrice: '$minPriceDocsObject._id',
+              maxPrice: '$maxPriceDocsObject._id',
             },
           },
           {
@@ -216,30 +210,9 @@ export async function productsPaginationQuery({
             },
           },
           {
-            $addFields: {
-              minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
-            },
-          },
-          {
-            $addFields: {
-              minPrice: '$minPriceDocsObject._id',
-            },
-          },
-          {
-            $addFields: {
-              maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
-            },
-          },
-          {
-            $addFields: {
-              maxPrice: '$maxPriceDocsObject._id',
-            },
-          },
-          {
             $project: {
               docs: 1,
               totalDocs: 1,
-              totalActiveDocs: 1,
               totalPages: 1,
               minPrice: 1,
               maxPrice: 1,
@@ -252,7 +225,7 @@ export async function productsPaginationQuery({
             },
           },
         ],
-        options,
+        { ...options, allowDiskUse: true },
       )
       .toArray();
 

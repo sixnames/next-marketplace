@@ -1,7 +1,4 @@
 import { createInitialData } from 'db/createInitialData';
-import { seedBrands } from 'db/seed/seedBrands';
-import { seedInitial } from 'db/seed/seedInitial';
-import { seedRubrics } from 'db/seed/seedRubrics';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,17 +14,6 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
   // Initial
   if (entity === 'initial') {
     await createInitialData();
-    await seedInitial();
-  }
-
-  // Brands
-  if (entity === 'brands') {
-    await seedBrands();
-  }
-
-  // Rubrics
-  if (entity === 'rubrics') {
-    await seedRubrics();
   }
 
   res.statusCode = 200;

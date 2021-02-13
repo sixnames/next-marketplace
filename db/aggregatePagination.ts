@@ -122,7 +122,10 @@ export async function aggregatePagination<TModel>({
             },
           },
         ],
-        options,
+        {
+          ...options,
+          allowDiskUse: true,
+        },
       )
       .toArray();
 

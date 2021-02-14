@@ -83,6 +83,7 @@ export const createInitialData = async (): Promise<CreateInitialDataPayloadInter
     admin = createdAdmin.ops[0];
   }
 
+  // Create Collections
   await db.createCollection(COL_OPTIONS_GROUPS);
   await db.createCollection(COL_ATTRIBUTES);
   await db.createCollection(COL_ATTRIBUTES_GROUPS);

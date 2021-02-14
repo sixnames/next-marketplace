@@ -1,3 +1,4 @@
+import { createIndexes } from 'db/createIndexes';
 import { createInitialData } from 'db/createInitialData';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -14,6 +15,11 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
   // Initial
   if (entity === 'initial') {
     await createInitialData();
+  }
+
+  // Indexes
+  if (entity === 'indexes') {
+    await createIndexes();
   }
 
   res.statusCode = 200;

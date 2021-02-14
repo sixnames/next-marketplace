@@ -2881,7 +2881,7 @@ export type DeleteProductFromConnectionMutation = (
 
 export type RubricInListFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'name' | 'productsCount' | 'activeProductsCount'>
+  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name' | 'productsCount' | 'activeProductsCount'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -2933,6 +2933,24 @@ export type GetRubricQuery = (
   ) }
 );
 
+export type GetRubricBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type GetRubricBySlugQuery = (
+  { __typename?: 'Query' }
+  & { getRubricBySlug: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
+    & { catalogueTitle: (
+      { __typename?: 'RubricCatalogueTitle' }
+      & Pick<RubricCatalogueTitle, 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
+    ) }
+    & RubricInListFragment
+  ) }
+);
+
 export type CreateRubricMutationVariables = Exact<{
   input: CreateRubricInput;
 }>;
@@ -2973,18 +2991,16 @@ export type DeleteRubricMutation = (
 );
 
 export type GetRubricProductsQueryVariables = Exact<{
-  rubricId: Scalars['ObjectId'];
-  excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
-  excludedProductsIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
-  attributesIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
+  rubricSlug: Scalars['String'];
+  productsInput?: Maybe<ProductsPaginationInput>;
 }>;
 
 
 export type GetRubricProductsQuery = (
   { __typename?: 'Query' }
-  & { getRubric: (
+  & { getRubricBySlug: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id'>
+    & Pick<Rubric, '_id' | 'name'>
     & { products: (
       { __typename?: 'ProductsPaginationPayload' }
       & RubricProductsPaginationFragment
@@ -5002,6 +5018,7 @@ export const RubricInListFragmentDoc = gql`
     fragment RubricInList on Rubric {
   _id
   nameI18n
+  slug
   name
   productsCount
   activeProductsCount
@@ -6339,6 +6356,49 @@ export function useGetRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetRubricQueryHookResult = ReturnType<typeof useGetRubricQuery>;
 export type GetRubricLazyQueryHookResult = ReturnType<typeof useGetRubricLazyQuery>;
 export type GetRubricQueryResult = Apollo.QueryResult<GetRubricQuery, GetRubricQueryVariables>;
+export const GetRubricBySlugDocument = gql`
+    query GetRubricBySlug($slug: String!) {
+  getRubricBySlug(slug: $slug) {
+    ...RubricInList
+    active
+    variantId
+    descriptionI18n
+    shortDescriptionI18n
+    catalogueTitle {
+      defaultTitleI18n
+      prefixI18n
+      keywordI18n
+      gender
+    }
+  }
+}
+    ${RubricInListFragmentDoc}`;
+
+/**
+ * __useGetRubricBySlugQuery__
+ *
+ * To run a query within a React component, call `useGetRubricBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRubricBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRubricBySlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetRubricBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
+        return Apollo.useQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, baseOptions);
+      }
+export function useGetRubricBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
+          return Apollo.useLazyQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, baseOptions);
+        }
+export type GetRubricBySlugQueryHookResult = ReturnType<typeof useGetRubricBySlugQuery>;
+export type GetRubricBySlugLazyQueryHookResult = ReturnType<typeof useGetRubricBySlugLazyQuery>;
+export type GetRubricBySlugQueryResult = Apollo.QueryResult<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>;
 export const CreateRubricDocument = gql`
     mutation CreateRubric($input: CreateRubricInput!) {
   createRubric(input: $input) {
@@ -6439,12 +6499,11 @@ export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMu
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
 export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const GetRubricProductsDocument = gql`
-    query GetRubricProducts($rubricId: ObjectId!, $excludedRubricsIds: [ObjectId!], $excludedProductsIds: [ObjectId!], $attributesIds: [ObjectId!]) {
-  getRubric(_id: $rubricId) {
+    query GetRubricProducts($rubricSlug: String!, $productsInput: ProductsPaginationInput) {
+  getRubricBySlug(slug: $rubricSlug) {
     _id
-    products(
-      input: {excludedRubricsIds: $excludedRubricsIds, excludedProductsIds: $excludedProductsIds, attributesIds: $attributesIds}
-    ) {
+    name
+    products(input: $productsInput) {
       ...RubricProductsPagination
     }
   }
@@ -6463,10 +6522,8 @@ export const GetRubricProductsDocument = gql`
  * @example
  * const { data, loading, error } = useGetRubricProductsQuery({
  *   variables: {
- *      rubricId: // value for 'rubricId'
- *      excludedRubricsIds: // value for 'excludedRubricsIds'
- *      excludedProductsIds: // value for 'excludedProductsIds'
- *      attributesIds: // value for 'attributesIds'
+ *      rubricSlug: // value for 'rubricSlug'
+ *      productsInput: // value for 'productsInput'
  *   },
  * });
  */

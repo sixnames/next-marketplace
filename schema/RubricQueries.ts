@@ -57,6 +57,24 @@ export const RubricQueries = extendType({
       },
     });
 
+    // Should return rubric by given slug
+    t.nonNull.field('getRubricBySlug', {
+      type: 'Rubric',
+      description: 'Should return rubric by given slug',
+      args: {
+        slug: nonNull(stringArg()),
+      },
+      resolve: async (_root, args): Promise<RubricModel> => {
+        const db = await getDatabase();
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const rubric = await rubricsCollection.findOne({ slug: args.slug });
+        if (!rubric) {
+          throw Error('Rubric not fond by given slug');
+        }
+        return rubric;
+      },
+    });
+
     // Should return rubrics tree
     t.nonNull.list.nonNull.field('getAllRubrics', {
       type: 'Rubric',

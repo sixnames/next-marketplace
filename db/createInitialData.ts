@@ -1,6 +1,14 @@
 import { hash } from 'bcryptjs';
 import { UserModel } from 'db/dbModels';
-import { COL_USERS } from 'db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_OPTIONS_GROUPS,
+  COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_USERS,
+} from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
@@ -74,6 +82,13 @@ export const createInitialData = async (): Promise<CreateInitialDataPayloadInter
 
     admin = createdAdmin.ops[0];
   }
+
+  await db.createCollection(COL_OPTIONS_GROUPS);
+  await db.createCollection(COL_ATTRIBUTES);
+  await db.createCollection(COL_ATTRIBUTES_GROUPS);
+  await db.createCollection(COL_RUBRIC_VARIANTS);
+  await db.createCollection(COL_RUBRICS);
+  await db.createCollection(COL_PRODUCTS);
 
   return {
     ...configsPayload,

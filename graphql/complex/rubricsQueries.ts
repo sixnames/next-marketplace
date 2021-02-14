@@ -4,6 +4,7 @@ export const rubricInListFragment = gql`
   fragment RubricInList on Rubric {
     _id
     nameI18n
+    slug
     name
     productsCount
     activeProductsCount
@@ -68,6 +69,25 @@ export const RUBRIC_QUERY = gql`
   ${rubricInListFragment}
 `;
 
+export const RUBRIC_BY_SLUG_QUERY = gql`
+  query GetRubricBySlug($slug: String!) {
+    getRubricBySlug(slug: $slug) {
+      ...RubricInList
+      active
+      variantId
+      descriptionI18n
+      shortDescriptionI18n
+      catalogueTitle {
+        defaultTitleI18n
+        prefixI18n
+        keywordI18n
+        gender
+      }
+    }
+  }
+  ${rubricInListFragment}
+`;
+
 export const CREATE_RUBRIC_MUTATION = gql`
   mutation CreateRubric($input: CreateRubricInput!) {
     createRubric(input: $input) {
@@ -100,21 +120,11 @@ export const DELETE_RUBRIC = gql`
 `;
 
 export const RUBRIC_PRODUCTS_QUERY = gql`
-  query GetRubricProducts(
-    $rubricId: ObjectId!
-    $excludedRubricsIds: [ObjectId!]
-    $excludedProductsIds: [ObjectId!]
-    $attributesIds: [ObjectId!]
-  ) {
-    getRubric(_id: $rubricId) {
+  query GetRubricProducts($rubricSlug: String!, $productsInput: ProductsPaginationInput) {
+    getRubricBySlug(slug: $rubricSlug) {
       _id
-      products(
-        input: {
-          excludedRubricsIds: $excludedRubricsIds
-          excludedProductsIds: $excludedProductsIds
-          attributesIds: $attributesIds
-        }
-      ) {
+      name
+      products(input: $productsInput) {
         ...RubricProductsPagination
       }
     }

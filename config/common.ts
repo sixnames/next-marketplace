@@ -205,7 +205,7 @@ export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
-export const PAGINATION_DEFAULT_LIMIT = 50;
+export const PAGINATION_DEFAULT_LIMIT = 30;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const PAGE_DEFAULT = 1;

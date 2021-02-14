@@ -231,7 +231,7 @@ export async function productsPaginationQuery({
     console.log(JSON.stringify(stats, null, 2));*/
 
     const aggregated = await productsCollection
-      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })
+      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options, allowDiskUse: true })
       .toArray();
 
     const aggregationResult = aggregated[0];

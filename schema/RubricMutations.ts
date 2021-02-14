@@ -238,6 +238,9 @@ export const RubricMutations = extendType({
             collectionName: COL_RUBRICS,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
+            additionalQuery: {
+              _id: { $ne: rubricId },
+            },
           });
           if (exist) {
             return {

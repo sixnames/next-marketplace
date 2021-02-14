@@ -225,10 +225,10 @@ export async function productsPaginationQuery({
       },
     ];
 
-    const stats = await productsCollection
+    /*const stats = await productsCollection
       .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })
       .explain();
-    console.log(JSON.stringify(stats, null, 2));
+    console.log(JSON.stringify(stats, null, 2));*/
 
     const aggregated = await productsCollection
       .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })

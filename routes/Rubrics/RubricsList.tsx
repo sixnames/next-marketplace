@@ -28,7 +28,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
 
   const titleLeftContent = React.useCallback(
     (_id: any, name: string) => {
-      return titleLeft ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null;
+      return titleLeft ? titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null;
     },
     [finalTestIdPrefix, titleLeft],
   );
@@ -44,7 +44,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
 
         return (
           <Accordion
-            titleLeft={() => titleLeftContent(_id, name)}
+            titleLeft={titleLeftContent(_id, name)}
             disabled={productsCount === 0 || isAccordionDisabled}
             titleRight={
               <RubricsTreeCounters

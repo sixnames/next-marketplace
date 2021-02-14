@@ -55,7 +55,7 @@ const Accordion: React.FC<AccordionInterface> = ({
           titleClassName ? titleClassName : ''
         }`}
       >
-        {!!titleLeft && <div className={classes.titleLeft}>{titleLeft()}</div>}
+        {!!titleLeft && <div className={classes.titleLeft}>{titleLeft}</div>}
 
         <div
           data-cy={testId}

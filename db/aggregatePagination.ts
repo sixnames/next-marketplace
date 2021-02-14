@@ -76,20 +76,12 @@ export async function aggregatePagination<TModel>({
           {
             $addFields: {
               totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-            },
-          },
-          {
-            $addFields: {
-              totalDocs: '$totalDocsObject.totalDocs',
-            },
-          },
-          {
-            $addFields: {
               totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
             },
           },
           {
             $addFields: {
+              totalDocs: '$totalDocsObject.totalDocs',
               totalActiveDocs: '$totalActiveDocsObject.totalActiveDocs',
             },
           },

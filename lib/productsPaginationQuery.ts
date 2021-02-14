@@ -141,9 +141,6 @@ export async function productsPaginationQuery({
           ...isWithoutRubricsStage,
           ...attributesStage,
 
-          // count shop products
-          { $addFields: { shopsCount: `$shopProductsCountCities.${city}` } },
-
           // filter shop products data
           ...shopsMatchPipeline,
 

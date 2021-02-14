@@ -60,14 +60,16 @@ const RubricsFilter: React.FC = () => {
         low
         isAccordionDisabled
         rubrics={getAllRubrics}
-        titleLeft={(_id, testId) => (
-          <FilterRadio
-            _id={_id}
-            queryKey={'rubricId'}
-            testId={testId}
-            additionalQuery={initialTab}
-          />
-        )}
+        titleLeft={(_id, testId) => {
+          return (
+            <FilterRadio
+              _id={_id}
+              queryKey={'rubricId'}
+              testId={testId}
+              additionalQuery={initialTab}
+            />
+          );
+        }}
       />
 
       <div className={classes.noRubrics}>

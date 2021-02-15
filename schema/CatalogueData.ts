@@ -233,36 +233,46 @@ export const CatalogueQueries = extendType({
           const realPage = page || PAGE_DEFAULT;
           const skip = realPage ? (realPage - 1) * realLimit : 0;
           const realSortDir = castedSortDir || SORT_DESC;
-          let realSortBy = sortBy || sortByPriority;
+          let realSortBy: string | null = sortBy || sortByPriority;
           if (sortBy === 'price') {
             realSortBy = 'minPrice';
           }
           if (sortBy === 'priority' || sortBy === SORT_BY_CREATED_AT || sortBy === sortByPriority) {
-            realSortBy = sortByPriority;
+            realSortBy = null;
           }
 
           // Additional filters matchers
           const brandsMatch =
-            selectedBrandSlugs.length > 0 ? { brandSlug: { $in: selectedBrandSlugs } } : {};
+            selectedBrandSlugs.length > 0
+              ? [
+                  {
+                    $match: { brandSlug: { $in: selectedBrandSlugs } },
+                  },
+                ]
+              : [];
 
           const brandCollectionsMatch =
             selectedBrandCollectionSlugs.length > 0
-              ? { brandCollectionSlug: { $in: selectedBrandCollectionSlugs } }
-              : {};
+              ? [{ $match: { brandCollectionSlug: { $in: selectedBrandCollectionSlugs } } }]
+              : [];
 
           const manufacturersMatch =
             selectedManufacturerSlugs.length > 0
-              ? { manufacturerSlug: { $in: selectedManufacturerSlugs } }
-              : {};
+              ? [{ $match: { manufacturerSlug: { $in: selectedManufacturerSlugs } } }]
+              : [];
 
           // Products pipelines
           // filter
           const selectedFiltersPipeline =
             selectedOptionsSlugs.length > 0
-              ? {
-                  selectedOptionsSlugs: { $in: selectedOptionsSlugs },
-                }
-              : {};
+              ? [
+                  {
+                    $match: {
+                      selectedOptionsSlugs: { $in: selectedOptionsSlugs },
+                    },
+                  },
+                ]
+              : [];
 
           // price range pipeline
           const priceRangePipeline =
@@ -288,94 +298,119 @@ export const CatalogueQueries = extendType({
                 active: true,
                 archive: false,
                 // [`shopProductsCountCities.${city}`]: { $gt: 0 },
-                ...selectedFiltersPipeline,
-                ...brandsMatch,
-                ...brandCollectionsMatch,
-                ...manufacturersMatch,
               },
             },
+
+            // catalogue filter match
+            ...selectedFiltersPipeline,
+
+            // brands, brandCollections and manufacturers matchers
+            ...brandsMatch,
+            ...brandCollectionsMatch,
+            ...manufacturersMatch,
 
             // add minPrice field
             { $addFields: { minPrice: `$minPriceCities.${city}` } },
           ];
 
+          // Sort stage
+          const selectedSort = realSortBy
+            ? {
+                [realSortBy]: realSortDir,
+              }
+            : {};
+
+          const sortPipeline = [
+            {
+              $sort: {
+                ...selectedSort,
+                [`priority.${city}`]: SORT_DESC,
+                [`views.${city}`]: SORT_DESC,
+              },
+            },
+          ];
+
           // Products main pipeline for filters counters
           const productsMainPipeline = [...productsInitialPipeline, ...priceRangePipeline];
+          const productsFinalPipeline = [
+            ...productsInitialPipeline,
+
+            // sort
+            ...sortPipeline,
+
+            // facet pagination totals
+            {
+              $facet: {
+                docs: [...priceRangePipeline, { $skip: skip }, { $limit: realLimit }],
+                countAllDocs: [...priceRangePipeline, { $count: 'totalDocs' }],
+                minPriceDocs: [
+                  { $group: { _id: '$minPrice' } },
+                  { $sort: { _id: SORT_ASC } },
+                  { $limit: 1 },
+                ],
+                maxPriceDocs: [
+                  { $group: { _id: '$minPrice' } },
+                  { $sort: { _id: SORT_DESC } },
+                  { $limit: 1 },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+                minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
+                maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
+              },
+            },
+            {
+              $addFields: {
+                totalDocs: '$totalDocsObject.totalDocs',
+                minPrice: '$minPriceDocsObject._id',
+                maxPrice: '$maxPriceDocsObject._id',
+              },
+            },
+            {
+              $addFields: {
+                totalPagesFloat: {
+                  $divide: ['$totalDocs', realLimit],
+                },
+              },
+            },
+            {
+              $addFields: {
+                totalPages: {
+                  $ceil: '$totalPagesFloat',
+                },
+              },
+            },
+            {
+              $project: {
+                docs: 1,
+                totalDocs: 1,
+                totalPages: 1,
+                minPrice: 1,
+                maxPrice: 1,
+                hasPrevPage: {
+                  $gt: [page, PAGE_DEFAULT],
+                },
+                hasNextPage: {
+                  $lt: [page, '$totalPages'],
+                },
+              },
+            },
+          ];
+
+          /*const stats = await productsCollection
+            .aggregate<ProductsPaginationPayloadModel>(productsFinalPipeline, {
+              allowDiskUse: true,
+            })
+            .explain();
+          console.log(JSON.stringify(stats, null, 2));*/
 
           const productsAggregationResult = await productsCollection
-            .aggregate<ProductsPaginationPayloadModel>([
-              ...productsInitialPipeline,
-
-              // sort
-              {
-                $sort: {
-                  [realSortBy]: realSortDir,
-                  [`priority.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
-                },
-              },
-
-              // facet pagination totals
-              {
-                $facet: {
-                  docs: [...priceRangePipeline, { $skip: skip }, { $limit: realLimit }],
-                  countAllDocs: [...priceRangePipeline, { $count: 'totalDocs' }],
-                  minPriceDocs: [
-                    { $group: { _id: '$minPrice' } },
-                    { $sort: { _id: SORT_ASC } },
-                    { $limit: 1 },
-                  ],
-                  maxPriceDocs: [
-                    { $group: { _id: '$minPrice' } },
-                    { $sort: { _id: SORT_DESC } },
-                    { $limit: 1 },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-                  minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
-                  maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  totalDocs: '$totalDocsObject.totalDocs',
-                  minPrice: '$minPriceDocsObject._id',
-                  maxPrice: '$maxPriceDocsObject._id',
-                },
-              },
-              {
-                $addFields: {
-                  totalPagesFloat: {
-                    $divide: ['$totalDocs', realLimit],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  totalPages: {
-                    $ceil: '$totalPagesFloat',
-                  },
-                },
-              },
-              {
-                $project: {
-                  docs: 1,
-                  totalDocs: 1,
-                  totalPages: 1,
-                  minPrice: 1,
-                  maxPrice: 1,
-                  hasPrevPage: {
-                    $gt: [page, PAGE_DEFAULT],
-                  },
-                  hasNextPage: {
-                    $lt: [page, '$totalPages'],
-                  },
-                },
-              },
-            ])
+            .aggregate<ProductsPaginationPayloadModel>(productsFinalPipeline, {
+              allowDiskUse: true,
+            })
             .toArray();
 
           const aggregationResult = productsAggregationResult[0];
@@ -388,7 +423,7 @@ export const CatalogueQueries = extendType({
             totalDocs: aggregationResult.totalDocs || 0,
             totalActiveDocs: 0,
             totalPages: aggregationResult.totalPages || PAGE_DEFAULT,
-            sortBy: realSortBy,
+            sortBy: realSortBy || sortByPriority,
             sortDir: realSortDir,
             page: realPage,
             limit: realLimit,
@@ -427,20 +462,27 @@ export const CatalogueQueries = extendType({
                 : [...catalogueFilter, optionSlug].join('/');
 
               // count products with current option
-              const optionProducts = await productsCollection
-                .aggregate<any>([
-                  ...productsMainPipeline,
+              const optionProductsPipeline = [
+                ...productsMainPipeline,
 
-                  // option products match
-                  {
-                    $match: {
-                      selectedOptionsSlugs: optionSlug,
-                    },
+                // option products match
+                {
+                  $match: {
+                    selectedOptionsSlugs: optionSlug,
                   },
-                  {
-                    $count: 'counter',
-                  },
-                ])
+                },
+                {
+                  $count: 'counter',
+                },
+              ];
+
+              /*const optionsStats = await productsCollection
+                .aggregate<any>(optionProductsPipeline)
+                .explain();
+              console.log(JSON.stringify(optionsStats, null, 2));*/
+
+              const optionProducts = await productsCollection
+                .aggregate<any>(optionProductsPipeline)
                 .toArray();
               const counter = optionProducts[0]?.counter || 0;
 

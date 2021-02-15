@@ -67,18 +67,23 @@ export async function productsPaginationQuery({
     const realPage = page || PAGE_DEFAULT;
     const skip = realPage ? (realPage - 1) * realLimit : 0;
     const realSortDir = sortDir || SORT_DESC;
-    let realSortBy = sortBy || SORT_BY_CREATED_AT;
+    let realSortBy = sortBy || '_id';
     if (sortBy === 'price') {
       realSortBy = 'minPrice';
     }
+    /*if (sortBy === SORT_BY_CREATED_AT) {
+      realSortBy = '_id';
+    }*/
 
     const sortStage = realSortBy
       ? {
           [realSortBy]: realSortDir,
         }
       : {
-          [SORT_BY_CREATED_AT]: SORT_DESC,
+          _id: SORT_DESC,
         };
+
+    // console.log(sortStage);
 
     const excludedProductsStage = excludedProductsIds
       ? [
@@ -158,6 +163,7 @@ export async function productsPaginationQuery({
 
       // Stable sort
       { $sort: sortStage },
+      // { $sort: { _id: -1 } },
 
       // facet pagination totals
       {
@@ -181,8 +187,8 @@ export async function productsPaginationQuery({
         $addFields: {
           totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
           totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
-          minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
-          maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
+          // minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
+          // maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
         },
       },
       {

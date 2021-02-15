@@ -136,7 +136,33 @@ const RubricProducts: React.FC = () => {
   });
 
   if (loading) {
-    return <Spinner isNested />;
+    return (
+      <DataLayout
+        title={'Загрузка...'}
+        filterResult={() => {
+          return (
+            <div data-cy={'rubric-products'}>
+              <DataLayoutTitle
+                testId={'rubric-title'}
+                titleRight={
+                  <ContentItemControls
+                    testId={'product'}
+                    createTitle={'Добавить товар в рубрику'}
+                    createHandler={addProductToRubricModalHandler}
+                  />
+                }
+              >
+                {`Товары: ----`}
+              </DataLayoutTitle>
+
+              <DataLayoutContentFrame>
+                <Spinner isNested />
+              </DataLayoutContentFrame>
+            </div>
+          );
+        }}
+      />
+    );
   }
 
   if (error || !data || !data.getRubricBySlug) {

@@ -1365,7 +1365,7 @@ type OrdersPaginationPayload implements PaginationPayload {
 }
 
 input PaginationInput {
-  limit: Int = 30
+  limit: Int = 20
   page: Int = 1
   search: String
   sortBy: String = "createdAt"
@@ -1575,7 +1575,7 @@ input ProductsPaginationInput {
   Returns products not added to any rubric.
   """
   isWithoutRubrics: Boolean
-  limit: Int = 30
+  limit: Int = 20
   maxPrice: Int
   minPrice: Int
   page: Int = 1

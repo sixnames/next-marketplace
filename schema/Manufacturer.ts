@@ -1,3 +1,4 @@
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import {
@@ -214,6 +215,7 @@ export const ManufacturerMutations = extendType({
             ...input,
             itemId,
             slug,
+            ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
             updatedAt: new Date(),
           });

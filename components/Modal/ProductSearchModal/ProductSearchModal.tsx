@@ -26,13 +26,13 @@ import { PAGINATION_DEFAULT_LIMIT, QUERY_DATA_LAYOUT_NO_RUBRIC } from 'config/co
 
 interface ProductsListInterface extends ProductColumnsInterface {
   excludedRubricsId?: string;
-  viewRubric: string;
+  viewRubricSlug: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
 }
 
 const ProductsList: React.FC<ProductsListInterface> = ({
-  viewRubric,
+  viewRubricSlug,
   excludedRubricsId,
   excludedProductsIds,
   attributesIds,
@@ -46,10 +46,12 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   const { data, loading, error } = useGetRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      rubricId: viewRubric,
-      excludedProductsIds,
-      attributesIds,
-      excludedRubricsIds: excludedRubricsId ? [excludedRubricsId] : null,
+      rubricSlug: viewRubricSlug,
+      productsInput: {
+        excludedProductsIds,
+        attributesIds,
+        excludedRubricsIds: excludedRubricsId ? [excludedRubricsId] : null,
+      },
     },
   });
 
@@ -65,12 +67,12 @@ const ProductsList: React.FC<ProductsListInterface> = ({
     return <Spinner isNested />;
   }
 
-  if (error || !data || !data.getRubric) {
+  if (error || !data || !data.getRubricBySlug) {
     return <RequestError />;
   }
 
   const {
-    getRubric: { products },
+    getRubricBySlug: { products },
   } = data;
 
   return (
@@ -325,10 +327,10 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
           <RubricsList
             low
             rubrics={getAllRubrics}
-            render={(viewRubric) => {
+            render={({ slug }) => {
               return (
                 <ProductsList
-                  viewRubric={viewRubric}
+                  viewRubricSlug={slug}
                   excludedRubricsId={rubricId}
                   excludedProductsIds={excludedProductsIds}
                   attributesIds={attributesIds}

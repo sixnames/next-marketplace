@@ -26,7 +26,7 @@
 }
 
 .catalogue .list[class*='infinite-scroll-component'] {
-  overflow: hidden !important;
+  overflow: unset !important;
 }
 
 .controls {

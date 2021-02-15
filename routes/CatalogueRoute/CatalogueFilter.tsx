@@ -53,7 +53,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
       <div className={classes.attributeList}>
         {visibleOptions.map((option) => {
-          const testId = `${attribute.slug}-${option.slug}`;
+          const testId = `${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}
@@ -65,7 +65,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
         })}
         {isOptionsOpen
           ? hiddenOptions.map((option) => {
-              const testId = `${attribute.slug}-${option.slug}`;
+              const testId = `${option.slug}`;
               return (
                 <FilterLink
                   className={classes.attributeOption}
@@ -194,7 +194,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             <div className={classes.attributeList}>
               {catalogueFilter.selectedAttributes.map((attribute) => {
                 return attribute.options.map((option) => {
-                  const key = `${attribute.slug}-${option.slug}`;
+                  const key = `${option.slug}`;
                   return (
                     <FilterLink
                       withCross

@@ -206,7 +206,7 @@ export interface AttributesGroupModel {
   attributesIds: ObjectIdModel[];
 }
 
-export interface BrandModel extends BaseModel, TimestampModel {
+export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
@@ -214,7 +214,7 @@ export interface BrandModel extends BaseModel, TimestampModel {
   collectionsIds: ObjectIdModel[];
 }
 
-export interface BrandCollectionModel extends BaseModel, TimestampModel {
+export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
@@ -302,7 +302,7 @@ export interface LanguageModel {
   nativeName: string;
 }
 
-export interface ManufacturerModel extends BaseModel, TimestampModel {
+export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
   nameI18n: TranslationModel;
   slug: string;
   url?: URLModel[] | null;

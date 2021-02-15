@@ -5,7 +5,7 @@ import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
 import { generateSlug } from 'lib/slugUtils';
 import { setCollectionItemId } from 'lib/itemIdUtils';
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
 
 export interface GetFakeBrandInterface {
   itemId: string;
@@ -36,6 +36,7 @@ export async function getFakeBrand({
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
     },
+    ...DEFAULT_COUNTERS_OBJECT,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -54,6 +55,7 @@ export async function getFakeBrand({
       [SECONDARY_LOCALE]: 'description',
     },
     collectionsIds: [brandCollectionId],
+    ...DEFAULT_COUNTERS_OBJECT,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -86,6 +88,7 @@ export async function getFakeManufacturer({
       [DEFAULT_LOCALE]: 'Описание',
       [SECONDARY_LOCALE]: 'description',
     },
+    ...DEFAULT_COUNTERS_OBJECT,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

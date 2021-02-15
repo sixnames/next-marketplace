@@ -49,7 +49,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [rubricData]);
 
   const [getRubricData, { loading }] = useGetCatalogueRubricLazyQuery({
-    // fetchPolicy: 'network-only',
+    fetchPolicy: 'network-only',
     onError: () => showErrorNotification(),
     onCompleted: (data) => {
       if (data) {
@@ -84,11 +84,10 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     if (catalogueData) {
       const { products } = catalogueData;
       const { sortBy, sortDir, page, totalPages } = products;
-
       if (page !== totalPages) {
         getRubricData({
           variables: {
-            catalogueFilter: alwaysArray(router.query.rubric),
+            catalogueFilter: alwaysArray(router.query.catalogue),
             productsInput: {
               page: page + 1,
               sortDir,
@@ -99,6 +98,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
       }
     }
   }, [catalogueData, getRubricData]);
+  // }, [catalogueData, getRubricData, router.query.rubric]);
 
   const sortConfig = React.useMemo(
     () => [
@@ -223,81 +223,84 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
           />
 
           <div>
-            {isMobile ? (
-              <div className={classes.controlsMobile}>
-                <Button
-                  className={classes.controlsMobileButn}
-                  theme={'secondary'}
-                  onClick={showFilterHandler}
-                >
-                  Фильтр
-                </Button>
-                <ReachMenuButton
-                  config={sortConfig}
-                  buttonAs={'div'}
-                  buttonText={() => (
-                    <Button className={classes.controlsMobileButn} theme={'secondary'}>
-                      Сортировать
-                    </Button>
-                  )}
-                />
-              </div>
-            ) : (
-              <div className={classes.controls}>
-                <MenuButtonSorter config={sortConfig} />
-
-                <div className={`${classes.viewControls}`}>
-                  <button
-                    className={`${classes.viewControlsItem} ${
-                      isRowView ? '' : classes.viewControlsItemActive
-                    }`}
-                    onClick={() => setIsRowView(false)}
+            <div id={'catalogue-products'}>
+              {isMobile ? (
+                <div className={classes.controlsMobile}>
+                  <Button
+                    className={classes.controlsMobileButn}
+                    theme={'secondary'}
+                    onClick={showFilterHandler}
                   >
-                    <Icon name={'grid'} />
-                  </button>
-                  <button
-                    className={`${classes.viewControlsItem} ${
-                      isRowView ? classes.viewControlsItemActive : ''
-                    }`}
-                    onClick={() => setIsRowView(true)}
-                  >
-                    <Icon name={'rows'} />
-                  </button>
+                    Фильтр
+                  </Button>
+                  <ReachMenuButton
+                    config={sortConfig}
+                    buttonAs={'div'}
+                    buttonText={() => (
+                      <Button className={classes.controlsMobileButn} theme={'secondary'}>
+                        Сортировать
+                      </Button>
+                    )}
+                  />
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className={classes.controls}>
+                  <MenuButtonSorter config={sortConfig} />
 
-            <InfiniteScroll
-              className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
-              next={fetchMoreHandler}
-              hasMore={totalPages !== page}
-              dataLength={catalogueData.products.docs.length}
-              loader={
+                  <div className={`${classes.viewControls}`}>
+                    <button
+                      className={`${classes.viewControlsItem} ${
+                        isRowView ? '' : classes.viewControlsItemActive
+                      }`}
+                      onClick={() => setIsRowView(false)}
+                    >
+                      <Icon name={'grid'} />
+                    </button>
+                    <button
+                      className={`${classes.viewControlsItem} ${
+                        isRowView ? classes.viewControlsItemActive : ''
+                      }`}
+                      onClick={() => setIsRowView(true)}
+                    >
+                      <Icon name={'rows'} />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <InfiniteScroll
+                className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
+                next={fetchMoreHandler}
+                hasMore={totalPages !== page}
+                dataLength={catalogueData.products.docs.length}
+                scrollableTarget={'#catalogue-products'}
+                loader={<span />}
+              >
+                {isRowView && !isMobile
+                  ? docs.map((product) => (
+                      <ProductSnippetRow
+                        product={product}
+                        key={product._id}
+                        testId={`catalogue-item-${product._id}`}
+                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
+                      />
+                    ))
+                  : docs.map((product) => (
+                      <ProductSnippetGrid
+                        product={product}
+                        key={product._id}
+                        testId={`catalogue-item-${product._id}`}
+                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
+                      />
+                    ))}
+              </InfiniteScroll>
+
+              {loading ? (
                 <div className={`${classes.catalogueSpinner}`}>
                   <Spinner isNested />
                 </div>
-              }
-            >
-              {isRowView && !isMobile
-                ? docs.map((product) => (
-                    <ProductSnippetRow
-                      product={product}
-                      key={product._id}
-                      testId={`catalogue-item-${product._id}`}
-                      additionalSlug={`/rubric-${rubric.slug}`}
-                    />
-                  ))
-                : docs.map((product) => (
-                    <ProductSnippetGrid
-                      product={product}
-                      key={product._id}
-                      testId={`catalogue-item-${product._id}`}
-                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
-                    />
-                  ))}
-            </InfiniteScroll>
-
-            {loading ? <Spinner isNested /> : null}
+              ) : null}
+            </div>
           </div>
         </div>
       </Inner>

@@ -1,4 +1,9 @@
-import { CATALOGUE_NAV_VISIBLE_OPTIONS, DEFAULT_LOCALE } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  CATALOGUE_NAV_VISIBLE_OPTIONS,
+  DEFAULT_LOCALE,
+} from 'config/common';
 import { COL_CITIES, COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   CitiesBooleanModel,
@@ -244,11 +249,11 @@ export function getRubricCatalogueOptions({
   maxVisibleOptions,
   city,
 }: GetRubricCatalogueOptionsInterface): RubricOptionModel[] {
-  const visibleOptions = options.filter(({ visibleInCatalogueCities }) => {
+  /*const visibleOptions = options.filter(({ visibleInCatalogueCities }) => {
     return visibleInCatalogueCities[city];
-  });
+  });*/
 
-  const sortedOptions = visibleOptions
+  const sortedOptions = options
     .sort((optionA, optionB) => {
       const optionACounter =
         noNaN(optionA.views[city]) +
@@ -286,9 +291,18 @@ export async function getRubricCatalogueAttributes({
   const maxVisibleOptions = await getCatalogueVisibleOptionsCount(city);
 
   const visibleAttributes = attributes
-    .filter(({ visibleInCatalogueCities, showInCatalogueNav }) => {
-      return visibleInCatalogueCities[city] && showInCatalogueNav;
-    })
+    .filter(
+      ({
+        // visibleInCatalogueCities,
+        // showInCatalogueNav,
+        variant,
+      }) => {
+        // return visibleInCatalogueCities[city] && showInCatalogueNav;
+        return (
+          variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT
+        );
+      },
+    )
     .sort((attributeA, attributeB) => {
       const attributeACounter = noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
       const attributeBCounter = noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);

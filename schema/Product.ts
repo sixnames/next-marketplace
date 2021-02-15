@@ -5,6 +5,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
 } from 'config/common';
+import { getProductCurrentViewAttributes } from 'lib/productAttributesUtils';
 import { ObjectId } from 'mongodb';
 import { list, nonNull, objectType, stringArg } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -401,9 +402,10 @@ export const Product = objectType({
     // Product listFeatures field resolver
     t.nonNull.list.nonNull.field('listFeatures', {
       type: 'ProductAttribute',
-      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
-        return source.attributes.filter(({ attributeViewVariant }) => {
-          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        return getProductCurrentViewAttributes({
+          attributes: source.attributes,
+          viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         });
       },
     });
@@ -411,9 +413,10 @@ export const Product = objectType({
     // Product textFeatures field resolver
     t.nonNull.list.nonNull.field('textFeatures', {
       type: 'ProductAttribute',
-      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
-        return source.attributes.filter(({ attributeViewVariant }) => {
-          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT;
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        return getProductCurrentViewAttributes({
+          attributes: source.attributes,
+          viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
         });
       },
     });
@@ -421,9 +424,10 @@ export const Product = objectType({
     // Product tagFeatures field resolver
     t.nonNull.list.nonNull.field('tagFeatures', {
       type: 'ProductAttribute',
-      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
-        return source.attributes.filter(({ attributeViewVariant }) => {
-          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_TAG;
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        return getProductCurrentViewAttributes({
+          attributes: source.attributes,
+          viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
         });
       },
     });
@@ -431,9 +435,10 @@ export const Product = objectType({
     // Product iconFeatures field resolver
     t.nonNull.list.nonNull.field('iconFeatures', {
       type: 'ProductAttribute',
-      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
-        return source.attributes.filter(({ attributeViewVariant }) => {
-          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_ICON;
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        return getProductCurrentViewAttributes({
+          attributes: source.attributes,
+          viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
         });
       },
     });
@@ -441,9 +446,10 @@ export const Product = objectType({
     // Product ratingFeatures field resolver
     t.nonNull.list.nonNull.field('ratingFeatures', {
       type: 'ProductAttribute',
-      resolve: async (source, _args, _context): Promise<ProductAttributeModel[]> => {
-        return source.attributes.filter(({ attributeViewVariant }) => {
-          return attributeViewVariant === ATTRIBUTE_VIEW_VARIANT_OUTER_RATING;
+      resolve: async (source): Promise<ProductAttributeModel[]> => {
+        return getProductCurrentViewAttributes({
+          attributes: source.attributes,
+          viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         });
       },
     });

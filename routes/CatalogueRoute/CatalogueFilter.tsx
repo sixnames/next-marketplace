@@ -230,51 +230,53 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        <div className={classes.attribute}>
-          <div className={classes.attributeTitle}>
-            <span className={classes.attributeTitleText}>Цена</span>
-          </div>
-          <div className={classes.pricesFilterValues}>
-            <div className={classes.pricesFilterValuesItem}>
-              от
-              <Currency value={pricesValue[0]} />
+        {pricesValue[0] && pricesValue[1] ? (
+          <div className={classes.attribute}>
+            <div className={classes.attributeTitle}>
+              <span className={classes.attributeTitleText}>Цена</span>
             </div>
-            <div className={classes.pricesFilterValuesItem}>
-              до
-              <Currency value={pricesValue[1]} />
+            <div className={classes.pricesFilterValues}>
+              <div className={classes.pricesFilterValuesItem}>
+                от
+                <Currency value={pricesValue[0]} />
+              </div>
+              <div className={classes.pricesFilterValuesItem}>
+                до
+                <Currency value={pricesValue[1]} />
+              </div>
             </div>
-          </div>
-          <div className={classes.pricesFilterSlider}>
-            <Range
-              value={pricesValue}
-              min={pricesRanges[0]}
-              max={pricesRanges[1]}
-              onChange={setPricesValue}
-              trackStyle={[
-                {
-                  backgroundColor: 'var(--theme)',
-                },
-              ]}
-              railStyle={{
-                height: 2,
-                backgroundColor: 'var(--rangeRailBackground)',
-              }}
-              handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
-              onAfterChange={(val) => {
-                const [minPrice, maxPrice] = val;
-                const options = getCatalogueFilterNextPath({
-                  asPath: router.asPath,
-                  excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
-                });
-                const nextPath = `${options}/${CATALOGUE_MIN_PRICE_KEY}-${minPrice}/${CATALOGUE_MAX_PRICE_KEY}-${maxPrice}`;
+            <div className={classes.pricesFilterSlider}>
+              <Range
+                value={pricesValue}
+                min={pricesRanges[0]}
+                max={pricesRanges[1]}
+                onChange={setPricesValue}
+                trackStyle={[
+                  {
+                    backgroundColor: 'var(--theme)',
+                  },
+                ]}
+                railStyle={{
+                  height: 2,
+                  backgroundColor: 'var(--rangeRailBackground)',
+                }}
+                handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
+                onAfterChange={(val) => {
+                  const [minPrice, maxPrice] = val;
+                  const options = getCatalogueFilterNextPath({
+                    asPath: router.asPath,
+                    excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
+                  });
+                  const nextPath = `${options}/${CATALOGUE_MIN_PRICE_KEY}-${minPrice}/${CATALOGUE_MAX_PRICE_KEY}-${maxPrice}`;
 
-                router.push(nextPath).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-            />
+                  router.push(nextPath).catch(() => {
+                    showErrorNotification();
+                  });
+                }}
+              />
+            </div>
           </div>
-        </div>
+        ) : null}
 
         {attributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;

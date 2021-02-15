@@ -49,7 +49,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [rubricData]);
 
   const [getRubricData, { loading }] = useGetCatalogueRubricLazyQuery({
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
     onError: () => showErrorNotification(),
     onCompleted: (data) => {
       if (data) {

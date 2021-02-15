@@ -237,7 +237,7 @@ export const CatalogueQueries = extendType({
           if (sortBy === 'price') {
             realSortBy = 'minPrice';
           }
-          if (sortBy === 'priority' || sortBy === SORT_BY_CREATED_AT) {
+          if (sortBy === 'priority' || sortBy === SORT_BY_CREATED_AT || sortBy === sortByPriority) {
             realSortBy = sortByPriority;
           }
 
@@ -287,7 +287,7 @@ export const CatalogueQueries = extendType({
                 rubricsIds: rubric._id,
                 active: true,
                 archive: false,
-                [`shopProductsCountCities.${city}`]: { $gt: 0 },
+                // [`shopProductsCountCities.${city}`]: { $gt: 0 },
                 ...selectedFiltersPipeline,
                 ...brandsMatch,
                 ...brandCollectionsMatch,
@@ -312,7 +312,6 @@ export const CatalogueQueries = extendType({
                   [realSortBy]: realSortDir,
                   [`priority.${city}`]: SORT_DESC,
                   [`views.${city}`]: SORT_DESC,
-                  _id: SORT_BY_ID_DIRECTION,
                 },
               },
 

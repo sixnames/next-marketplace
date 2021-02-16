@@ -819,6 +819,7 @@ export const RubricMutations = extendType({
             {
               $pull: {
                 rubricsIds: rubricId,
+                selectedOptionsSlugs: rubric.slug,
               },
             },
           );

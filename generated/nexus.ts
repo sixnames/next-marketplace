@@ -213,6 +213,11 @@ export interface NexusGenInputs {
     formattedAddress: string; // String!
     point: NexusGenInputs['CoordinatesInput']; // CoordinatesInput!
   };
+  CatalogueProductsInput: {
+    // input type
+    filter: string[]; // [String!]!
+    key?: NexusGenScalars['ObjectId'] | null; // ObjectId
+  };
   ContactsInput: {
     // input type
     emails: NexusGenScalars['EmailAddress'][]; // [EmailAddress!]!
@@ -719,6 +724,7 @@ export interface NexusGenObjects {
   CatalogueFilterAttribute: dbModels.CatalogueFilterAttributeModel;
   CatalogueFilterAttributeOption: dbModels.CatalogueFilterAttributeOptionModel;
   CatalogueFilterSelectedPrices: dbModels.CatalogueFilterSelectedPricesModel;
+  CatalogueProducts: dbModels.CatalogueProductsModel;
   CatalogueSearchResult: dbModels.CatalogueSearchResultModel;
   CitiesPaginationPayload: dbModels.CitiesPaginationPayloadModel;
   City: dbModels.CityModel;
@@ -980,6 +986,11 @@ export interface NexusGenFieldTypes {
     clearSlug: string; // String!
     formattedMaxPrice: string; // String!
     formattedMinPrice: string; // String!
+  };
+  CatalogueProducts: {
+    // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    products: NexusGenRootTypes['Product'][]; // [Product!]!
   };
   CatalogueSearchResult: {
     // field return type
@@ -1580,6 +1591,7 @@ export interface NexusGenFieldTypes {
     getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
     getCatalogueData: NexusGenRootTypes['CatalogueData'] | null; // CatalogueData
     getCatalogueNavRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
+    getCatalogueProducts: NexusGenRootTypes['CatalogueProducts'] | null; // CatalogueProducts
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCatalogueSearchTopItems: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCity: NexusGenRootTypes['City']; // City!
@@ -2060,6 +2072,11 @@ export interface NexusGenFieldTypeNames {
     clearSlug: 'String';
     formattedMaxPrice: 'String';
     formattedMinPrice: 'String';
+  };
+  CatalogueProducts: {
+    // field return type name
+    _id: 'ObjectId';
+    products: 'Product';
   };
   CatalogueSearchResult: {
     // field return type name
@@ -2660,6 +2677,7 @@ export interface NexusGenFieldTypeNames {
     getBrandsOptions: 'Brand';
     getCatalogueData: 'CatalogueData';
     getCatalogueNavRubrics: 'Rubric';
+    getCatalogueProducts: 'CatalogueProducts';
     getCatalogueSearchResult: 'CatalogueSearchResult';
     getCatalogueSearchTopItems: 'CatalogueSearchResult';
     getCity: 'City';
@@ -3401,6 +3419,10 @@ export interface NexusGenArgTypes {
       // args
       catalogueFilter: string[]; // [String!]!
       productsInput: NexusGenInputs['ProductsPaginationInput']; // ProductsPaginationInput!
+    };
+    getCatalogueProducts: {
+      // args
+      input: NexusGenInputs['CatalogueProductsInput']; // CatalogueProductsInput!
     };
     getCatalogueSearchResult: {
       // args

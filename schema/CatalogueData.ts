@@ -13,7 +13,7 @@ import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
-import { arg, extendType, list, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import {
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
@@ -136,10 +136,142 @@ export const CatalogueData = objectType({
   },
 });
 
+export const CatalogueProducts = objectType({
+  name: 'CatalogueProducts',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.list.nonNull.field('products', {
+      type: 'Product',
+    });
+  },
+});
+
+export const CatalogueProductsInput = inputObjectType({
+  name: 'CatalogueProductsInput',
+  definition(t) {
+    t.objectId('key');
+    t.nonNull.list.nonNull.string('filter');
+  },
+});
+
 export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
     // Should return catalogue page data
+    t.field('getCatalogueProducts', {
+      type: 'CatalogueProducts',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueProductsInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args) => {
+        try {
+          const db = await getDatabase();
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const { input } = args;
+          const { key, filter } = input;
+          const [rubricSlug, ...allSelectedSlugs] = filter;
+          const limit = 20;
+
+          await productsCollection.createIndex({
+            selectedOptionsSlugs: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            [`minPriceCities.msk`]: -1,
+          });
+          await productsCollection.createIndex({
+            selectedOptionsSlugs: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            [`minPriceCities.msk`]: 1,
+          });
+
+          const keyStage = key
+            ? {
+                _id: {
+                  $gt: key,
+                },
+              }
+            : {};
+
+          const selectedSlugsState =
+            allSelectedSlugs.length > 0
+              ? {
+                  selectedOptionsSlugs: { $in: allSelectedSlugs },
+                }
+              : {};
+
+          /*await productsCollection.createIndex({
+            selectedOptionsSlugs: 1,
+            active: 1,
+            archive: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            [`minPriceCities.msk`]: -1,
+          });
+          await productsCollection.createIndex({
+            selectedOptionsSlugs: 1,
+            active: 1,
+            archive: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            [`minPriceCities.msk`]: 1,
+          });*/
+
+          // const indexes = await productsCollection.listIndexes().toArray();
+          // console.log(indexes);
+
+          const pipeline = [
+            {
+              $match: {
+                active: true,
+                archive: false,
+                selectedOptionsSlugs: {
+                  $in: filter,
+                },
+                ...selectedSlugsState,
+                ...keyStage,
+              },
+            },
+            {
+              $sort: {
+                [`views.msk`]: SORT_DESC,
+                [`priority.msk`]: SORT_DESC,
+                // _id: SORT_DESC,
+              },
+            },
+            {
+              $limit: limit,
+            },
+          ];
+
+          // console.log(JSON.stringify(pipeline, null, 2));
+          const rubric = await rubricsCollection.find({ slug: rubricSlug });
+          console.log(JSON.stringify(rubric, null, 2));
+
+          // const explain = await productsCollection.aggregate(pipeline).explain();
+          // console.log(JSON.stringify(explain, null, 2));
+
+          const products = await productsCollection.aggregate(pipeline).toArray();
+          const lastProduct = products[products.length - 1];
+
+          return {
+            _id: lastProduct._id,
+            products,
+          };
+        } catch (e) {
+          console.log(e);
+          return {
+            _id: new ObjectId(),
+            products: [],
+          };
+        }
+      },
+    });
     t.field('getCatalogueData', {
       type: 'CatalogueData',
       description: 'Should return catalogue page data',

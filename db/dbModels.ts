@@ -712,3 +712,8 @@ export interface CatalogueDataModel {
   catalogueFilter: CatalogueFilterModel;
   catalogueTitle: string;
 }
+
+export interface CatalogueProductsModel {
+  _id: ObjectIdModel;
+  products: ProductModel[];
+}

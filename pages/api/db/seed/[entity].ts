@@ -48,7 +48,7 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
     await createInitialData();
     await testSeed();
     await createIndexes();
-    process.env.DEBUG = undefined;
+    // process.env.DEBUG = undefined;
   }
 
   res.statusCode = 200;

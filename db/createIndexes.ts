@@ -28,13 +28,26 @@ export async function createIndexes() {
 
   // Products indexes
   const productsCollection = db.collection<ProductModel>(COL_RUBRICS);
-  await productsCollection.createIndex({ rubricsIds: 1, createdAt: -1 });
-  await productsCollection.createIndex({ rubricsIds: 1, createdAt: 1 });
-  await productsCollection.createIndex({ selectedOptionsSlugs: 1 });
-  await productsCollection.createIndex({ brandSlug: 1 });
-  await productsCollection.createIndex({ brandCollectionSlug: 1 });
-  await productsCollection.createIndex({ manufacturerSlug: 1 });
+  await productsCollection.createIndex({
+    selectedOptionsSlugs: 1,
+    [`views.msk`]: -1,
+    [`priority.msk`]: -1,
+    [`minPriceCities.msk`]: -1,
+  });
+  await productsCollection.createIndex({
+    selectedOptionsSlugs: 1,
+    [`views.msk`]: -1,
+    [`priority.msk`]: -1,
+    [`minPriceCities.msk`]: 1,
+  });
   await productsCollection.createIndex({ slug: 1 });
+  // await productsCollection.createIndex({ rubricsIds: 1, createdAt: -1 });
+  // await productsCollection.createIndex({ rubricsIds: 1, createdAt: 1 });
+  // await productsCollection.createIndex({ selectedOptionsSlugs: 1 });
+  // await productsCollection.createIndex({ brandSlug: 1 });
+  // await productsCollection.createIndex({ brandCollectionSlug: 1 });
+  // await productsCollection.createIndex({ manufacturerSlug: 1 });
+
   const indexes = await productsCollection.listIndexes().toArray();
   console.log(indexes);
 }

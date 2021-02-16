@@ -10,6 +10,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
+  RubricModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
@@ -21,6 +22,7 @@ import {
   COL_MANUFACTURERS,
   COL_OPTIONS_GROUPS,
   COL_PRODUCTS,
+  COL_RUBRICS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
@@ -187,8 +189,13 @@ export const ProductMutations = extendType({
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { manufacturerSlug, brandSlug, brandCollectionSlug, ...values } = input;
+          const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricsIds, ...values } = input;
+
+          // Get selected rubrics
+          const rubrics = await rubricsCollection.find({ _id: { $in: rubricsIds } }).toArray();
+          const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           const manufacturerEntity = manufacturerSlug
             ? await manufacturersCollection.findOne({ slug: manufacturerSlug })
@@ -246,7 +253,8 @@ export const ProductMutations = extendType({
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
-            selectedOptionsSlugs,
+            rubricsIds,
+            selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
             attributes: values.attributes.map((attributeInput) => {
               let selectedOptions: OptionModel[] = [];
               const { selectedOptionsSlugs } = attributeInput;
@@ -306,8 +314,13 @@ export const ProductMutations = extendType({
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { productId, ...values } = input;
+          const { productId, rubricsIds, ...values } = input;
+
+          // Get selected rubrics
+          const rubrics = await rubricsCollection.find({ _id: { $in: rubricsIds } }).toArray();
+          const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           // Check product availability
           const product = await productsCollection.findOne({ _id: productId });
@@ -348,7 +361,8 @@ export const ProductMutations = extendType({
                 ...values,
                 slug: updatedSlug,
                 updatedAt: new Date(),
-                selectedOptionsSlugs,
+                rubricsIds,
+                selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
                 attributes: values.attributes.map((attributeInput) => {
                   let selectedOptions: OptionModel[] = [];
                   const { selectedOptionsSlugs } = attributeInput;

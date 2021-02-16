@@ -302,6 +302,16 @@ type CatalogueFilterSelectedPrices {
   formattedMinPrice: String!
 }
 
+type CatalogueProducts {
+  _id: ObjectId!
+  products: [Product!]!
+}
+
+input CatalogueProductsInput {
+  filter: [String!]!
+  key: ObjectId
+}
+
 type CatalogueSearchResult {
   products: [Product!]!
   rubrics: [Rubric!]!
@@ -1741,6 +1751,7 @@ type Query {
   Should return catalogue nav rubrics
   """
   getCatalogueNavRubrics: [Rubric!]!
+  getCatalogueProducts(input: CatalogueProductsInput!): CatalogueProducts
 
   """
   Should return top search items

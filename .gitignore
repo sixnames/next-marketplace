@@ -39,3 +39,4 @@ yarn-error.log*
 # dev
 /data
 /db/initialData/parsed
+/db/initialData/parsedBigCollections

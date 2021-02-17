@@ -715,5 +715,6 @@ export interface CatalogueDataModel {
 
 export interface CatalogueProductsModel {
   _id: ObjectIdModel;
+  hasMore: boolean;
   products: ProductModel[];
 }

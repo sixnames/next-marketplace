@@ -304,6 +304,7 @@ type CatalogueFilterSelectedPrices {
 
 type CatalogueProducts {
   _id: ObjectId!
+  hasMore: Boolean!
   products: [Product!]!
 }
 

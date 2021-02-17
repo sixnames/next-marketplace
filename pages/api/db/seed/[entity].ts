@@ -5,7 +5,7 @@ import { Seeder } from 'mongo-seeding';
 import path from 'path';
 import { clearTestData } from 'tests/clearTestData';
 
-async function testSeed() {
+async function seedInitial() {
   process.env.DEBUG = 'mongo-seeding';
   const config = {
     database: process.env.MONGO_URL,
@@ -22,8 +22,27 @@ async function testSeed() {
   console.log('Seeded >>>>>>>>>>>>>>');
 }
 
+async function seedCollectionChunk(chunkName: string) {
+  process.env.DEBUG = 'mongo-seeding';
+  const config = {
+    database: process.env.MONGO_URL,
+    dropDatabase: false,
+  };
+  const seeder = new Seeder(config);
+  const collections = seeder.readCollectionsFromPath(
+    path.resolve(`./db/initialData/parsedBigCollections/${chunkName}`),
+  );
+  try {
+    await seeder.import(collections);
+  } catch (e) {
+    // Handle errors
+    console.log('Error ', e);
+  }
+  console.log('Seeded >>>>>>>>>>>>>>');
+}
+
 async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
-  const { key, entity } = req.query;
+  const { key, entity, chunkName } = req.query;
 
   if (key !== process.env.INITIAL_DATA_KEY || !entity) {
     res.statusCode = 401;
@@ -42,13 +61,17 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
     await createIndexes();
   }
 
-  // Test
+  // Seed initial
   if (entity === 'local') {
     await clearTestData();
     await createInitialData();
-    await testSeed();
+    await seedInitial();
     await createIndexes();
-    // process.env.DEBUG = undefined;
+  }
+
+  // Seed chunk
+  if (entity === 'chunk') {
+    await seedCollectionChunk(`${chunkName}`);
   }
 
   res.statusCode = 200;

@@ -990,6 +990,7 @@ export interface NexusGenFieldTypes {
   CatalogueProducts: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    hasMore: boolean; // Boolean!
     products: NexusGenRootTypes['Product'][]; // [Product!]!
   };
   CatalogueSearchResult: {
@@ -2076,6 +2077,7 @@ export interface NexusGenFieldTypeNames {
   CatalogueProducts: {
     // field return type name
     _id: 'ObjectId';
+    hasMore: 'Boolean';
     products: 'Product';
   };
   CatalogueSearchResult: {

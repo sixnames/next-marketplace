@@ -66,7 +66,6 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
     await clearTestData();
     await createInitialData();
     await seedInitial();
-    await createIndexes();
   }
 
   // Seed chunk

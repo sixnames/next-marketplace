@@ -303,9 +303,14 @@ type CatalogueFilterSelectedPrices {
 }
 
 type CatalogueProducts {
-  _id: ObjectId!
+  attributes: [CatalogueFilterAttribute!]!
+  catalogueTitle: String!
+  clearSlug: String!
   hasMore: Boolean!
+  lastProductId: ObjectId!
   products: [Product!]!
+  rubric: Rubric!
+  selectedAttributes: [CatalogueFilterAttribute!]!
 }
 
 input CatalogueProductsInput {

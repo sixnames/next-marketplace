@@ -11,6 +11,7 @@ module.exports = {
   },
   env: {
     AWS_IMAGE_FALLBACK: process.env.AWS_IMAGE_FALLBACK,
+    AWS_PRODUCT_IMAGE_FALLBACK: process.env.AWS_PRODUCT_IMAGE_FALLBACK,
     GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
   },
 };

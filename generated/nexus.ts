@@ -989,9 +989,14 @@ export interface NexusGenFieldTypes {
   };
   CatalogueProducts: {
     // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    attributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
+    catalogueTitle: string; // String!
+    clearSlug: string; // String!
     hasMore: boolean; // Boolean!
+    lastProductId: NexusGenScalars['ObjectId']; // ObjectId!
     products: NexusGenRootTypes['Product'][]; // [Product!]!
+    rubric: NexusGenRootTypes['Rubric']; // Rubric!
+    selectedAttributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
   };
   CatalogueSearchResult: {
     // field return type
@@ -2076,9 +2081,14 @@ export interface NexusGenFieldTypeNames {
   };
   CatalogueProducts: {
     // field return type name
-    _id: 'ObjectId';
+    attributes: 'CatalogueFilterAttribute';
+    catalogueTitle: 'String';
+    clearSlug: 'String';
     hasMore: 'Boolean';
+    lastProductId: 'ObjectId';
     products: 'Product';
+    rubric: 'Rubric';
+    selectedAttributes: 'CatalogueFilterAttribute';
   };
   CatalogueSearchResult: {
     // field return type name

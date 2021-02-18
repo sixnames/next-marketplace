@@ -323,3 +323,40 @@ export async function getRubricCatalogueAttributes({
 
   return sortedAttributes;
 }
+
+export interface GetRubricCatalogueAttributesBInterface {
+  city: string;
+  attributes: RubricAttributeModel[];
+  catalogueVisibleAttributesCount: number;
+  catalogueVisibleOptionsCount: number;
+}
+
+export async function getRubricCatalogueAttributesB({
+  city,
+  attributes,
+  catalogueVisibleAttributesCount,
+  catalogueVisibleOptionsCount,
+}: GetRubricCatalogueAttributesBInterface): Promise<RubricAttributeModel[]> {
+  const visibleAttributes = attributes
+    .filter(({ showInCatalogueFilter, variant }) => {
+      return (
+        showInCatalogueFilter &&
+        (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT)
+      );
+    })
+    .slice(0, catalogueVisibleAttributesCount);
+
+  const sortedAttributes: RubricAttributeModel[] = [];
+  visibleAttributes.forEach((attribute) => {
+    sortedAttributes.push({
+      ...attribute,
+      options: getRubricCatalogueOptions({
+        options: attribute.options,
+        maxVisibleOptions: catalogueVisibleOptionsCount,
+        city,
+      }),
+    });
+  });
+
+  return sortedAttributes;
+}

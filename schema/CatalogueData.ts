@@ -8,22 +8,27 @@ import {
   getParamOptionFirstValueByKey,
   SelectedFilterInterface,
 } from 'lib/catalogueUtils';
-import { updateRubricViews } from 'lib/countersUtils';
+import { updateRubricOptionsViews, updateRubricViews } from 'lib/countersUtils';
 import { getCurrencyString } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
+import { getRubricCatalogueAttributes, getRubricCatalogueAttributesB } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
 import {
+  BrandCollectionModel,
+  BrandModel,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
   CatalogueFilterSelectedPricesModel,
+  CatalogueProductsModel,
   CatalogueSearchResultModel,
   ConfigModel,
   LanguageModel,
+  ManufacturerModel,
   ProductModel,
   ProductsPaginationPayloadModel,
+  RubricAttributeModel,
   RubricModel,
   RubricOptionModel,
 } from 'db/dbModels';
@@ -34,6 +39,7 @@ import {
   COL_BRANDS,
   COL_CONFIGS,
   COL_LANGUAGES,
+  COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
@@ -57,6 +63,7 @@ import {
   SORT_DESC,
   SORT_DESC_STR,
   SORT_DIR_KEY,
+  VIEWS_COUNTER_STEP,
 } from 'config/common';
 
 export const CatalogueSearchResult = objectType({
@@ -145,10 +152,21 @@ export const CatalogueData = objectType({
 export const CatalogueProducts = objectType({
   name: 'CatalogueProducts',
   definition(t) {
-    t.nonNull.objectId('_id');
+    t.nonNull.objectId('lastProductId');
     t.nonNull.boolean('hasMore');
+    t.nonNull.string('clearSlug');
+    t.nonNull.field('rubric', {
+      type: 'Rubric',
+    });
     t.nonNull.list.nonNull.field('products', {
       type: 'Product',
+    });
+    t.nonNull.string('catalogueTitle');
+    t.nonNull.list.nonNull.field('attributes', {
+      type: 'CatalogueFilterAttribute',
+    });
+    t.nonNull.list.nonNull.field('selectedAttributes', {
+      type: 'CatalogueFilterAttribute',
     });
   },
 });
@@ -174,19 +192,30 @@ export const CatalogueQueries = extendType({
           }),
         ),
       },
-      resolve: async (_root, args, context) => {
+      resolve: async (_root, args, context): Promise<CatalogueProductsModel | null> => {
         try {
-          const timeStart = new Date().getTime();
-          const { getFieldLocale } = await getRequestParams(context);
+          // timers
+          // console.log(' ');
+          // console.log('===========================================================');
+          // const timeStart = new Date().getTime();
+          const sessionRole = await getSessionRole(context);
+          const { getFieldLocale, city, locale } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+          const brandCollectionsCollection = db.collection<BrandCollectionModel>(
+            COL_BRAND_COLLECTIONS,
+          );
+          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+
+          // Args
           const { input } = args;
           const { key, filter } = input;
-          const [rubricSlug] = filter;
-          const limit = 20;
+          const [rubricSlug, ...filterOptions] = filter;
 
+          // Get configs
           const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
             slug: 'catalogueFilterVisibleAttributesCount',
           });
@@ -208,12 +237,19 @@ export const CatalogueQueries = extendType({
               }
             : {};
 
+          const initialFilterProductsMatch =
+            filterOptions.length < 1
+              ? { selectedOptionsSlugs: rubricSlug }
+              : {
+                  selectedOptionsSlugs: {
+                    $all: filter,
+                  },
+                };
+
           const productsInitialMatch = {
+            ...initialFilterProductsMatch,
             active: true,
             archive: false,
-            selectedOptionsSlugs: {
-              $in: filter,
-            },
           };
 
           const productsMainPipeline = [
@@ -230,108 +266,74 @@ export const CatalogueQueries = extendType({
               },
             },
             {
-              $limit: limit,
+              $limit: CATALOGUE_PRODUCTS_LIMIT,
             },
           ];
 
-          // TODO add type
-          const rubrics = await rubricsCollection
-            .aggregate<any>([
-              {
-                $match: {
-                  slug: rubricSlug,
-                },
+          const catalogueRubricPipeline = [
+            {
+              $match: {
+                slug: rubricSlug,
               },
+            },
 
-              // attributes
-              {
-                $unwind: '$attributes',
+            // products
+            {
+              $lookup: {
+                from: COL_PRODUCTS,
+                pipeline: productsMainPipeline,
+                as: 'products',
               },
-              {
-                $match: {
-                  'attributes.showInCatalogueFilter': true,
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_PRODUCTS,
-                  let: { attributeSlug: '$attributes.slug' },
-                  pipeline: [
-                    {
-                      $match: {
-                        ...productsInitialMatch,
-                      },
-                    },
-                    {
-                      $match: {
-                        $expr: { $in: ['$$attributeSlug', '$selectedOptionsSlugs'] },
-                      },
-                    },
-                    { $count: 'countProducts' },
-                  ],
-                  as: 'attributeProducts',
-                },
-              },
-              {
-                $addFields: {
-                  productsCountObject: { $arrayElemAt: ['$attributeProducts', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  productsCount: 'attributeProducts.countProducts',
-                },
-              },
-              {
-                $sort: {
-                  productsCount: SORT_DESC,
-                  [`attributes.views.msk`]: SORT_DESC,
-                  [`attributes.priority.msk`]: SORT_DESC,
-                },
-              },
-              {
-                $limit: catalogueVisibleAttributesCount,
-              },
-              {
-                $group: {
-                  _id: '$_id',
-                  attributes: {
-                    $push: '$attributes',
+            },
+
+            // products count
+            {
+              $lookup: {
+                from: COL_PRODUCTS,
+                pipeline: [
+                  { $match: { ...productsInitialMatch } },
+                  {
+                    $count: 'counter',
                   },
-                },
+                ],
+                as: 'productsCount',
               },
+            },
+          ];
 
-              // products
-              {
-                $lookup: {
-                  from: COL_PRODUCTS,
-                  pipeline: productsMainPipeline,
-                  as: 'products',
-                },
-              },
-            ])
-            // .explain();
-            .toArray();
-          // console.log(JSON.stringify(rubric, null, 2));
-          // console.log(rubric);
+          /*const rubricsExplain = await rubricsCollection
+            .aggregate<any>(catalogueRubricPipeline)
+            .explain();
+          console.log(JSON.stringify(rubricsExplain, null, 2));*/
 
-          // const explain = await productsCollection.aggregate(pipeline).explain();
-          // console.log(JSON.stringify(explain, null, 2));
+          const rubrics = await rubricsCollection.aggregate<any>(catalogueRubricPipeline).toArray();
+
+          // const productsTime = new Date().getTime();
+          // console.log('Products >>>>>>>>>>>>>>>> ', productsTime - timeStart);
 
           const rubric = rubrics[0];
           if (!rubric) {
-            return {
-              _id: new ObjectId(),
-              hasMore: false,
-              products: [],
-            };
+            return null;
           }
+          // console.log(rubric);
 
+          // const beforeOptions = new Date().getTime();
           const selectedFilters: SelectedFilterInterface[] = [];
           const castedAttributes: CatalogueFilterAttributeModel[] = [];
-          const attributes = rubric.attributes;
+          const selectedAttributes: CatalogueFilterAttributeModel[] = [];
+          const attributes = await getRubricCatalogueAttributesB({
+            attributes: rubric.attributes,
+            catalogueVisibleAttributesCount,
+            catalogueVisibleOptionsCount,
+            city,
+          });
+
           for await (const attribute of attributes) {
-            const { options } = attribute;
+            if (castedAttributes.length === catalogueVisibleAttributesCount) {
+              break;
+            }
+
+            const { options } = attribute as RubricAttributeModel;
             const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
             const selectedOptions: RubricOptionModel[] = [];
 
@@ -353,15 +355,25 @@ export const CatalogueQueries = extendType({
                     .join('/')
                 : [...filter, optionSlug].join('/');
 
+              const optionProductsMatch =
+                filterOptions.length < 1
+                  ? { selectedOptionsSlugs: rubricSlug }
+                  : {
+                      selectedOptionsSlugs: {
+                        $all: [...filter, optionSlug],
+                      },
+                    };
+
               // count products with current option
               const optionProductsPipeline = [
-                { $match: { ...productsInitialMatch } },
-                // option products match
                 {
                   $match: {
-                    selectedOptionsSlugs: optionSlug,
+                    ...optionProductsMatch,
+                    active: true,
+                    archive: false,
                   },
                 },
+                { $limit: 1 },
                 {
                   $count: 'counter',
                 },
@@ -371,23 +383,23 @@ export const CatalogueQueries = extendType({
                 .aggregate<any>(optionProductsPipeline)
                 .explain();
               console.log(JSON.stringify(optionsStats, null, 2));*/
+              // console.log(`${optionSlug} `, optionsStats.stages[0].executionTimeMillisEstimate);
 
               const optionProducts = await productsCollection
                 .aggregate<any>(optionProductsPipeline)
                 .toArray();
+
               const counter = optionProducts[0]?.counter || 0;
 
-              if (counter > 0) {
-                castedOptions.push({
-                  _id: option._id,
-                  name: getFieldLocale(option.nameI18n),
-                  slug: option.slug,
-                  nextSlug: `/${optionNextSlug}`,
-                  isSelected,
-                  isDisabled: false,
-                  counter,
-                });
-              }
+              castedOptions.push({
+                _id: option._id,
+                name: getFieldLocale(option.nameI18n),
+                slug: option.slug,
+                nextSlug: `/${optionNextSlug}`,
+                isSelected,
+                isDisabled: counter < 1,
+                counter,
+              });
             }
 
             const otherSelectedValues = filter.filter((param) => {
@@ -399,9 +411,14 @@ export const CatalogueQueries = extendType({
             const sortedOptions = castedOptions.sort((optionA, optionB) => {
               return optionB.counter - optionA.counter;
             });
+            const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
+              if (isDisabled) {
+                return acc + 1;
+              }
+              return acc;
+            }, 0);
 
             const isSelected = sortedOptions.some(({ isSelected }) => isSelected);
-
             if (isSelected) {
               // Add selected items to the catalogue title config
               selectedFilters.push({
@@ -410,35 +427,158 @@ export const CatalogueQueries = extendType({
               });
             }
 
-            castedAttributes.push({
+            const castedAttribute = {
               _id: attribute._id,
               clearSlug,
               slug: attribute.slug,
               name: getFieldLocale(attribute.nameI18n),
               options: sortedOptions.slice(0, catalogueVisibleOptionsCount),
-              isDisabled: false,
+              isDisabled: disabledOptionsCount === sortedOptions.length,
               isSelected,
+            };
+
+            if (isSelected) {
+              selectedAttributes.push({
+                ...castedAttribute,
+                options: castedAttribute.options.filter((option) => {
+                  return option.isSelected;
+                }),
+              });
+            }
+
+            castedAttributes.push(castedAttribute);
+          }
+          // const afterOptions = new Date().getTime();
+          // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+
+          // Update catalogue counters
+          if (!sessionRole.isStuff) {
+            // cast additional filters
+            const selectedBrandSlugs: string[] = [];
+            const selectedBrandCollectionSlugs: string[] = [];
+            const selectedManufacturerSlugs: string[] = [];
+            filter.forEach((param) => {
+              const castedParam = castCatalogueParamToObject(param);
+              const { slug, value } = castedParam;
+
+              if (slug === CATALOGUE_BRAND_KEY) {
+                selectedBrandSlugs.push(value);
+              }
+              if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
+                selectedBrandCollectionSlugs.push(value);
+              }
+              if (slug === CATALOGUE_MANUFACTURER_KEY) {
+                selectedManufacturerSlugs.push(value);
+              }
             });
+
+            const counterUpdater = {
+              $inc: {
+                [`views.${city}`]: VIEWS_COUNTER_STEP,
+              },
+            };
+
+            // Update brand counters
+            if (selectedBrandSlugs.length > 0) {
+              await brandsCollection.updateMany(
+                { slug: { $in: selectedBrandSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update brand collection counters
+            if (selectedBrandCollectionSlugs.length > 0) {
+              await brandCollectionsCollection.updateMany(
+                { slug: { $in: selectedBrandCollectionSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update manufacturer counters
+            if (selectedManufacturerSlugs.length > 0) {
+              await manufacturersCollection.updateMany(
+                { slug: { $in: selectedManufacturerSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update rubric counters
+            const attributesSlugs = filter.map((selectedSlug) => {
+              return selectedSlug.split('-')[0];
+            });
+
+            const updatedAttributes: RubricAttributeModel[] = [];
+            rubric.attributes.forEach((attribute: RubricAttributeModel) => {
+              if (attributesSlugs.includes(attribute.slug)) {
+                attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                const updatedOptions = updateRubricOptionsViews({
+                  selectedOptionsSlugs: filter,
+                  options: attribute.options,
+                  city,
+                }).sort((optionA, optionB) => {
+                  const optionACounter =
+                    noNaN(optionA.views[city]) +
+                    noNaN(optionA.priorities[city]) +
+                    noNaN(optionA.shopProductsCountCities[city]);
+                  const optionBCounter =
+                    noNaN(optionB.views[city]) +
+                    noNaN(optionB.priorities[city]) +
+                    noNaN(optionA.shopProductsCountCities[city]);
+                  return optionBCounter - optionACounter;
+                });
+
+                attribute.options = updatedOptions;
+              }
+              updatedAttributes.push(attribute);
+            });
+
+            const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
+              const optionACounter =
+                noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
+              const optionBCounter =
+                noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
+              return optionBCounter - optionACounter;
+            });
+
+            await rubricsCollection.findOneAndUpdate(
+              { slug: rubricSlug },
+              {
+                ...counterUpdater,
+                $set: {
+                  attributes: sortedAttributes,
+                },
+              },
+              { returnOriginal: false },
+            );
           }
 
           const products = rubric.products;
           const lastProduct = products[products.length - 1];
 
-          const timeEnd = new Date().getTime();
-          console.log(timeEnd - timeStart);
+          // Get catalogue title
+          const catalogueTitle = getCatalogueTitle({
+            catalogueTitle: rubric.catalogueTitle,
+            selectedFilters,
+            getFieldLocale,
+            locale,
+          });
+
+          // const timeEnd = new Date().getTime();
+          // console.log('Total time: ', timeEnd - timeStart);
 
           return {
-            _id: lastProduct._id,
+            lastProductId: lastProduct._id,
             hasMore: key ? !key.equals(lastProduct._id) : false,
+            clearSlug: `/${rubricSlug}`,
+            rubric,
             products: rubric.products,
+            catalogueTitle,
+            attributes: castedAttributes,
+            selectedAttributes,
           };
         } catch (e) {
           console.log(e);
-          return {
-            _id: new ObjectId(),
-            hasMore: false,
-            products: [],
-          };
+          return null;
         }
       },
     });

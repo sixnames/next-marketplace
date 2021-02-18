@@ -714,7 +714,12 @@ export interface CatalogueDataModel {
 }
 
 export interface CatalogueProductsModel {
-  _id: ObjectIdModel;
+  lastProductId: ObjectIdModel;
   hasMore: boolean;
+  clearSlug: string;
+  rubric: RubricModel;
   products: ProductModel[];
+  catalogueTitle: string;
+  attributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
 }

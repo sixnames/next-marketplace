@@ -222,6 +222,10 @@ export const CatalogueQueries = extendType({
 
           const productsStartTime = new Date().getTime();
           const products = await productsCollection.aggregate(productsMainPipeline).toArray();
+          /*const productsExplain = await productsCollection
+            .aggregate(productsMainPipeline)
+            .explain();
+          console.log(JSON.stringify(productsExplain, null, 2));*/
           const productsEndTime = new Date().getTime();
           console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
@@ -291,11 +295,14 @@ export const CatalogueQueries = extendType({
                   };
 
               // Check if option has products
-              const optionProducts = await productsCollection.findOne({
-                ...optionProductsMatch,
-                active: true,
-                archive: false,
-              });
+              const optionProducts = await productsCollection.findOne(
+                {
+                  ...optionProductsMatch,
+                  active: true,
+                  archive: false,
+                },
+                { projection: { _id: 1 } },
+              );
               const counter = optionProducts ? 1 : 0;
 
               castedOptions.push({
@@ -343,16 +350,6 @@ export const CatalogueQueries = extendType({
               isDisabled: disabledOptionsCount === sortedOptions.length,
               isSelected,
             };
-
-            /*if (isSelected) {
-              selectedAttributes.push({
-                ...castedAttribute,
-                _id: new ObjectId(),
-                options: castedAttribute.options.filter((option) => {
-                  return option.isSelected;
-                }),
-              });
-            }*/
 
             castedAttributes.push(castedAttribute);
           }

@@ -94,7 +94,7 @@ export const catalogueRubricFragment = gql`
 
 export const catalogueDataFragment = gql`
   fragment CatalogueData on CatalogueData {
-    #    _id
+    _id
     lastProductId
     hasMore
     clearSlug

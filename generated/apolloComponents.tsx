@@ -223,7 +223,7 @@ export type CatalogueFilterAttribute = {
 export type CatalogueData = {
   __typename?: 'CatalogueData';
   _id: Scalars['ObjectId'];
-  lastProductId: Scalars['ObjectId'];
+  lastProductId?: Maybe<Scalars['ObjectId']>;
   hasMore: Scalars['Boolean'];
   clearSlug: Scalars['String'];
   filter: Array<Scalars['String']>;
@@ -4058,7 +4058,7 @@ export type CatalogueRubricFragment = (
 
 export type CatalogueDataFragment = (
   { __typename?: 'CatalogueData' }
-  & Pick<CatalogueData, 'lastProductId' | 'hasMore' | 'clearSlug' | 'filter' | 'catalogueTitle' | 'totalProducts'>
+  & Pick<CatalogueData, '_id' | 'lastProductId' | 'hasMore' | 'clearSlug' | 'filter' | 'catalogueTitle' | 'totalProducts'>
   & { rubric: (
     { __typename?: 'Rubric' }
     & CatalogueRubricFragment
@@ -5353,6 +5353,7 @@ export const CatalogueFilterAttributeFragmentDoc = gql`
     ${CatalogueFilterAttributeOptionFragmentDoc}`;
 export const CatalogueDataFragmentDoc = gql`
     fragment CatalogueData on CatalogueData {
+  _id
   lastProductId
   hasMore
   clearSlug

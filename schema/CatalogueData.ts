@@ -1,33 +1,23 @@
-import { getFieldTranslation } from 'config/constantTranslations';
 import {
   castCatalogueParamToObject,
-  CastCatalogueParamToObjectPayloadInterface,
-  getCatalogueAdditionalFilterOptions,
-  getCatalogueAttribute,
   getCatalogueTitle,
-  getParamOptionFirstValueByKey,
   SelectedFilterInterface,
 } from 'lib/catalogueUtils';
-import { updateRubricOptionsViews, updateRubricViews } from 'lib/countersUtils';
-import { getCurrencyString } from 'lib/i18n';
+import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
-import { getRubricCatalogueAttributes, getRubricCatalogueAttributesB } from 'lib/rubricUtils';
-import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
+import { getRubricCatalogueAttributesB } from 'lib/rubricUtils';
+import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
   BrandCollectionModel,
   BrandModel,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
-  CatalogueFilterSelectedPricesModel,
-  CatalogueProductsModel,
   CatalogueSearchResultModel,
   ConfigModel,
   LanguageModel,
   ManufacturerModel,
   ProductModel,
-  ProductsPaginationPayloadModel,
   RubricAttributeModel,
   RubricModel,
   RubricOptionModel,
@@ -46,23 +36,15 @@ import {
 import {
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
-  CATALOGUE_FILTER_EXCLUDED_KEYS,
   CATALOGUE_FILTER_VISIBLE_ATTRIBUTES,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_MANUFACTURER_KEY,
-  CATALOGUE_MAX_PRICE_KEY,
-  CATALOGUE_MIN_PRICE_KEY,
+  CATALOGUE_PRODUCTS_COUNT_LIMIT,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
-  PAGE_DEFAULT,
-  SORT_ASC,
-  SORT_BY_CREATED_AT,
   SORT_BY_ID_DIRECTION,
-  SORT_BY_KEY,
   SORT_DESC,
-  SORT_DESC_STR,
-  SORT_DIR_KEY,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 
@@ -75,15 +57,6 @@ export const CatalogueSearchResult = objectType({
     t.nonNull.list.nonNull.field('products', {
       type: 'Product',
     });
-  },
-});
-
-export const CatalogueFilterSelectedPrices = objectType({
-  name: 'CatalogueFilterSelectedPrices',
-  definition(t) {
-    t.nonNull.string('clearSlug');
-    t.nonNull.string('formattedMinPrice');
-    t.nonNull.string('formattedMaxPrice');
   },
 });
 
@@ -115,42 +88,8 @@ export const CatalogueFilterAttribute = objectType({
   },
 });
 
-export const CatalogueFilter = objectType({
-  name: 'CatalogueFilter',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('clearSlug');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-    t.nonNull.list.nonNull.field('selectedAttributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-    t.field('selectedPrices', {
-      type: 'CatalogueFilterSelectedPrices',
-    });
-  },
-});
-
 export const CatalogueData = objectType({
   name: 'CatalogueData',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('catalogueTitle');
-    t.nonNull.field('rubric', {
-      type: 'Rubric',
-    });
-    t.nonNull.field('products', {
-      type: 'ProductsPaginationPayload',
-    });
-    t.nonNull.field('catalogueFilter', {
-      type: 'CatalogueFilter',
-    });
-  },
-});
-
-export const CatalogueProducts = objectType({
-  name: 'CatalogueProducts',
   definition(t) {
     t.nonNull.objectId('lastProductId');
     t.nonNull.boolean('hasMore');
@@ -161,6 +100,7 @@ export const CatalogueProducts = objectType({
     t.nonNull.list.nonNull.field('products', {
       type: 'Product',
     });
+    t.nonNull.int('totalProducts');
     t.nonNull.string('catalogueTitle');
     t.nonNull.list.nonNull.field('attributes', {
       type: 'CatalogueFilterAttribute',
@@ -171,10 +111,10 @@ export const CatalogueProducts = objectType({
   },
 });
 
-export const CatalogueProductsInput = inputObjectType({
-  name: 'CatalogueProductsInput',
+export const CatalogueDataInput = inputObjectType({
+  name: 'CatalogueDataInput',
   definition(t) {
-    t.objectId('key');
+    t.objectId('keySet');
     t.nonNull.list.nonNull.string('filter');
   },
 });
@@ -183,20 +123,20 @@ export const CatalogueQueries = extendType({
   type: 'Query',
   definition(t) {
     // Should return catalogue page data
-    t.field('getCatalogueProducts', {
-      type: 'CatalogueProducts',
+    t.field('getCatalogueData', {
+      type: 'CatalogueData',
       args: {
         input: nonNull(
           arg({
-            type: 'CatalogueProductsInput',
+            type: 'CatalogueDataInput',
           }),
         ),
       },
-      resolve: async (_root, args, context): Promise<CatalogueProductsModel | null> => {
+      resolve: async (_root, args, context): Promise<CatalogueDataModel | null> => {
         try {
-          console.log(' ');
-          console.log('===========================================================');
-          const timeStart = new Date().getTime();
+          // console.log(' ');
+          // console.log('===========================================================');
+          // const timeStart = new Date().getTime();
           const { getFieldLocale, city, locale } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
@@ -205,7 +145,7 @@ export const CatalogueQueries = extendType({
 
           // Args
           const { input } = args;
-          const { key, filter } = input;
+          const { keySet, filter } = input;
           const [rubricSlug, ...filterOptions] = filter;
 
           // Get configs
@@ -224,8 +164,8 @@ export const CatalogueQueries = extendType({
 
           // Get rubric
           const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-          const rubricTime = new Date().getTime();
-          console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+          // const rubricTime = new Date().getTime();
+          // console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
 
           if (!rubric) {
             return null;
@@ -233,10 +173,10 @@ export const CatalogueQueries = extendType({
 
           // Get products
           const noFiltersSelected = filterOptions.length < 1;
-          const keyStage = key
+          const keyStage = keySet
             ? {
                 _id: {
-                  $gt: key,
+                  $gt: keySet,
                 },
               }
             : {};
@@ -264,8 +204,8 @@ export const CatalogueQueries = extendType({
             },
             {
               $sort: {
-                [`views.msk`]: SORT_DESC,
-                [`priority.msk`]: SORT_DESC,
+                [`views.${city}`]: SORT_DESC,
+                [`priority.${city}`]: SORT_DESC,
               },
             },
             {
@@ -273,33 +213,32 @@ export const CatalogueQueries = extendType({
             },
           ];
 
-          const productsStartTime = new Date().getTime();
+          // const productsStartTime = new Date().getTime();
           const products = await productsCollection.aggregate(productsMainPipeline).toArray();
-          const productsEndTime = new Date().getTime();
-          console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+          // const productsEndTime = new Date().getTime();
+          // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
-          const productsCountStartTime = new Date().getTime();
+          // const productsCountStartTime = new Date().getTime();
           const productsCountAggregation = await productsCollection
             .aggregate<any>([
               { $match: { ...productsInitialMatch } },
-              { $limit: 3000 },
+              { $limit: CATALOGUE_PRODUCTS_COUNT_LIMIT },
               {
                 $count: 'counter',
               },
             ])
             .toArray();
-          console.log(productsCountAggregation);
           const totalProducts = productsCountAggregation[0]
             ? productsCountAggregation[0].counter
             : 0;
-          const productsCountEndTime = new Date().getTime();
+          /*const productsCountEndTime = new Date().getTime();
           console.log(
             `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
             productsCountEndTime - productsCountStartTime,
-          );
+          );*/
 
           // Get filter attributes
-          const beforeOptions = new Date().getTime();
+          // const beforeOptions = new Date().getTime();
           const selectedFilters: SelectedFilterInterface[] = [];
           const castedAttributes: CatalogueFilterAttributeModel[] = [];
           const selectedAttributes: CatalogueFilterAttributeModel[] = [];
@@ -410,8 +349,8 @@ export const CatalogueQueries = extendType({
 
             castedAttributes.push(castedAttribute);
           }
-          const afterOptions = new Date().getTime();
-          console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+          // const afterOptions = new Date().getTime();
+          // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
           // Get catalogue title
           const catalogueTitle = getCatalogueTitle({
@@ -421,19 +360,23 @@ export const CatalogueQueries = extendType({
             locale,
           });
 
-          const timeEnd = new Date().getTime();
-          console.log('Total time: ', timeEnd - timeStart);
+          // const timeEnd = new Date().getTime();
+          // console.log('Total time: ', timeEnd - timeStart);
 
           // Get keySet pagination product
           const lastProduct = products[products.length - 1];
 
           return {
             lastProductId: lastProduct._id,
-            hasMore: key ? !key.equals(lastProduct._id) : false,
+            hasMore: keySet ? !keySet.equals(lastProduct._id) : false,
             clearSlug: `/${rubricSlug}`,
             rubric,
             products,
             catalogueTitle,
+            totalProducts:
+              totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
+                ? totalProducts
+                : CATALOGUE_PRODUCTS_COUNT_LIMIT,
             attributes: castedAttributes,
             selectedAttributes,
           };
@@ -444,7 +387,7 @@ export const CatalogueQueries = extendType({
       },
     });
 
-    t.field('getCatalogueData', {
+    /*t.field('getCatalogueData', {
       type: 'CatalogueData',
       description: 'Should return catalogue page data',
       args: {
@@ -704,12 +647,12 @@ export const CatalogueQueries = extendType({
             },
           ];
 
-          /*const stats = await productsCollection
+          /!*const stats = await productsCollection
             .aggregate<ProductsPaginationPayloadModel>(productsFinalPipeline, {
               allowDiskUse: true,
             })
             .explain();
-          console.log(JSON.stringify(stats, null, 2));*/
+          console.log(JSON.stringify(stats, null, 2));*!/
 
           const productsAggregationResult = await productsCollection
             .aggregate<ProductsPaginationPayloadModel>(productsFinalPipeline, {
@@ -780,10 +723,10 @@ export const CatalogueQueries = extendType({
                 },
               ];
 
-              /*const optionsStats = await productsCollection
+              /!*const optionsStats = await productsCollection
                 .aggregate<any>(optionProductsPipeline)
                 .explain();
-              console.log(JSON.stringify(optionsStats, null, 2));*/
+              console.log(JSON.stringify(optionsStats, null, 2));*!/
 
               const optionProducts = await productsCollection
                 .aggregate<any>(optionProductsPipeline)
@@ -981,7 +924,7 @@ export const CatalogueQueries = extendType({
           return null;
         }
       },
-    });
+    });*/
 
     // Should return top search items
     t.nonNull.field('getCatalogueSearchTopItems', {
@@ -1140,7 +1083,7 @@ export const CatalogueMutations = extendType({
       args: {
         input: nonNull(
           arg({
-            type: 'CatalogueProductsInput',
+            type: 'CatalogueDataInput',
           }),
         ),
       },

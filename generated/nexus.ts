@@ -213,10 +213,10 @@ export interface NexusGenInputs {
     formattedAddress: string; // String!
     point: NexusGenInputs['CoordinatesInput']; // CoordinatesInput!
   };
-  CatalogueProductsInput: {
+  CatalogueDataInput: {
     // input type
     filter: string[]; // [String!]!
-    key?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    keySet?: NexusGenScalars['ObjectId'] | null; // ObjectId
   };
   ContactsInput: {
     // input type
@@ -720,11 +720,8 @@ export interface NexusGenObjects {
   CartPayload: dbModels.CartPayloadModel;
   CartProduct: dbModels.CartProductModel;
   CatalogueData: dbModels.CatalogueDataModel;
-  CatalogueFilter: dbModels.CatalogueFilterModel;
   CatalogueFilterAttribute: dbModels.CatalogueFilterAttributeModel;
   CatalogueFilterAttributeOption: dbModels.CatalogueFilterAttributeOptionModel;
-  CatalogueFilterSelectedPrices: dbModels.CatalogueFilterSelectedPricesModel;
-  CatalogueProducts: dbModels.CatalogueProductsModel;
   CatalogueSearchResult: dbModels.CatalogueSearchResultModel;
   CitiesPaginationPayload: dbModels.CitiesPaginationPayloadModel;
   City: dbModels.CityModel;
@@ -947,19 +944,15 @@ export interface NexusGenFieldTypes {
   };
   CatalogueData: {
     // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    catalogueFilter: NexusGenRootTypes['CatalogueFilter']; // CatalogueFilter!
-    catalogueTitle: string; // String!
-    products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
-    rubric: NexusGenRootTypes['Rubric']; // Rubric!
-  };
-  CatalogueFilter: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
     attributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
+    catalogueTitle: string; // String!
     clearSlug: string; // String!
+    hasMore: boolean; // Boolean!
+    lastProductId: NexusGenScalars['ObjectId']; // ObjectId!
+    products: NexusGenRootTypes['Product'][]; // [Product!]!
+    rubric: NexusGenRootTypes['Rubric']; // Rubric!
     selectedAttributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
-    selectedPrices: NexusGenRootTypes['CatalogueFilterSelectedPrices'] | null; // CatalogueFilterSelectedPrices
+    totalProducts: number; // Int!
   };
   CatalogueFilterAttribute: {
     // field return type
@@ -980,23 +973,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nextSlug: string; // String!
     slug: string; // String!
-  };
-  CatalogueFilterSelectedPrices: {
-    // field return type
-    clearSlug: string; // String!
-    formattedMaxPrice: string; // String!
-    formattedMinPrice: string; // String!
-  };
-  CatalogueProducts: {
-    // field return type
-    attributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
-    catalogueTitle: string; // String!
-    clearSlug: string; // String!
-    hasMore: boolean; // Boolean!
-    lastProductId: NexusGenScalars['ObjectId']; // ObjectId!
-    products: NexusGenRootTypes['Product'][]; // [Product!]!
-    rubric: NexusGenRootTypes['Rubric']; // Rubric!
-    selectedAttributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
   };
   CatalogueSearchResult: {
     // field return type
@@ -1598,7 +1574,6 @@ export interface NexusGenFieldTypes {
     getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
     getCatalogueData: NexusGenRootTypes['CatalogueData'] | null; // CatalogueData
     getCatalogueNavRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
-    getCatalogueProducts: NexusGenRootTypes['CatalogueProducts'] | null; // CatalogueProducts
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCatalogueSearchTopItems: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
     getCity: NexusGenRootTypes['City']; // City!
@@ -2040,19 +2015,15 @@ export interface NexusGenFieldTypeNames {
   };
   CatalogueData: {
     // field return type name
-    _id: 'ObjectId';
-    catalogueFilter: 'CatalogueFilter';
-    catalogueTitle: 'String';
-    products: 'ProductsPaginationPayload';
-    rubric: 'Rubric';
-  };
-  CatalogueFilter: {
-    // field return type name
-    _id: 'ObjectId';
     attributes: 'CatalogueFilterAttribute';
+    catalogueTitle: 'String';
     clearSlug: 'String';
+    hasMore: 'Boolean';
+    lastProductId: 'ObjectId';
+    products: 'Product';
+    rubric: 'Rubric';
     selectedAttributes: 'CatalogueFilterAttribute';
-    selectedPrices: 'CatalogueFilterSelectedPrices';
+    totalProducts: 'Int';
   };
   CatalogueFilterAttribute: {
     // field return type name
@@ -2073,23 +2044,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nextSlug: 'String';
     slug: 'String';
-  };
-  CatalogueFilterSelectedPrices: {
-    // field return type name
-    clearSlug: 'String';
-    formattedMaxPrice: 'String';
-    formattedMinPrice: 'String';
-  };
-  CatalogueProducts: {
-    // field return type name
-    attributes: 'CatalogueFilterAttribute';
-    catalogueTitle: 'String';
-    clearSlug: 'String';
-    hasMore: 'Boolean';
-    lastProductId: 'ObjectId';
-    products: 'Product';
-    rubric: 'Rubric';
-    selectedAttributes: 'CatalogueFilterAttribute';
   };
   CatalogueSearchResult: {
     // field return type name
@@ -2691,7 +2645,6 @@ export interface NexusGenFieldTypeNames {
     getBrandsOptions: 'Brand';
     getCatalogueData: 'CatalogueData';
     getCatalogueNavRubrics: 'Rubric';
-    getCatalogueProducts: 'CatalogueProducts';
     getCatalogueSearchResult: 'CatalogueSearchResult';
     getCatalogueSearchTopItems: 'CatalogueSearchResult';
     getCity: 'City';
@@ -3267,7 +3220,7 @@ export interface NexusGenArgTypes {
     };
     updateCatalogueCounters: {
       // args
-      input: NexusGenInputs['CatalogueProductsInput']; // CatalogueProductsInput!
+      input: NexusGenInputs['CatalogueDataInput']; // CatalogueDataInput!
     };
     updateCityInCountry: {
       // args
@@ -3435,12 +3388,7 @@ export interface NexusGenArgTypes {
     };
     getCatalogueData: {
       // args
-      catalogueFilter: string[]; // [String!]!
-      productsInput: NexusGenInputs['ProductsPaginationInput']; // ProductsPaginationInput!
-    };
-    getCatalogueProducts: {
-      // args
-      input: NexusGenInputs['CatalogueProductsInput']; // CatalogueProductsInput!
+      input: NexusGenInputs['CatalogueDataInput']; // CatalogueDataInput!
     };
     getCatalogueSearchResult: {
       // args

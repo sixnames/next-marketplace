@@ -670,13 +670,6 @@ export interface CatalogueSearchResultModel {
   products: ProductModel[];
 }
 
-export interface CatalogueFilterSelectedPricesModel {
-  _id: ObjectIdModel;
-  clearSlug: string;
-  formattedMinPrice: string;
-  formattedMaxPrice: string;
-}
-
 export interface CatalogueFilterAttributeOptionModel {
   _id: ObjectIdModel;
   slug: string;
@@ -697,28 +690,13 @@ export interface CatalogueFilterAttributeModel {
   options: CatalogueFilterAttributeOptionModel[];
 }
 
-export interface CatalogueFilterModel {
-  _id: ObjectIdModel;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
-  selectedPrices?: CatalogueFilterSelectedPricesModel | null;
-  clearSlug: string;
-}
-
 export interface CatalogueDataModel {
-  _id: ObjectIdModel;
-  rubric: RubricModel;
-  products: ProductsPaginationPayloadModel;
-  catalogueFilter: CatalogueFilterModel;
-  catalogueTitle: string;
-}
-
-export interface CatalogueProductsModel {
   lastProductId: ObjectIdModel;
   hasMore: boolean;
   clearSlug: string;
   rubric: RubricModel;
   products: ProductModel[];
+  totalProducts: number;
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];
   selectedAttributes: CatalogueFilterAttributeModel[];

@@ -261,19 +261,20 @@ type CartProduct implements Base {
 }
 
 type CatalogueData {
-  _id: ObjectId!
-  catalogueFilter: CatalogueFilter!
+  attributes: [CatalogueFilterAttribute!]!
   catalogueTitle: String!
-  products: ProductsPaginationPayload!
+  clearSlug: String!
+  hasMore: Boolean!
+  lastProductId: ObjectId!
+  products: [Product!]!
   rubric: Rubric!
+  selectedAttributes: [CatalogueFilterAttribute!]!
+  totalProducts: Int!
 }
 
-type CatalogueFilter {
-  _id: ObjectId!
-  attributes: [CatalogueFilterAttribute!]!
-  clearSlug: String!
-  selectedAttributes: [CatalogueFilterAttribute!]!
-  selectedPrices: CatalogueFilterSelectedPrices
+input CatalogueDataInput {
+  filter: [String!]!
+  keySet: ObjectId
 }
 
 type CatalogueFilterAttribute {
@@ -294,28 +295,6 @@ type CatalogueFilterAttributeOption {
   name: String!
   nextSlug: String!
   slug: String!
-}
-
-type CatalogueFilterSelectedPrices {
-  clearSlug: String!
-  formattedMaxPrice: String!
-  formattedMinPrice: String!
-}
-
-type CatalogueProducts {
-  attributes: [CatalogueFilterAttribute!]!
-  catalogueTitle: String!
-  clearSlug: String!
-  hasMore: Boolean!
-  lastProductId: ObjectId!
-  products: [Product!]!
-  rubric: Rubric!
-  selectedAttributes: [CatalogueFilterAttribute!]!
-}
-
-input CatalogueProductsInput {
-  filter: [String!]!
-  key: ObjectId
 }
 
 type CatalogueSearchResult {
@@ -1094,7 +1073,7 @@ type Mutation {
   """
   Should update catalogue counters
   """
-  updateCatalogueCounters(input: CatalogueProductsInput!): Boolean!
+  updateCatalogueCounters(input: CatalogueDataInput!): Boolean!
 
   """
   Should update city
@@ -1749,20 +1728,12 @@ type Query {
   Should return brands list
   """
   getBrandsOptions: [Brand!]!
-
-  """
-  Should return catalogue page data
-  """
-  getCatalogueData(
-    catalogueFilter: [String!]!
-    productsInput: ProductsPaginationInput!
-  ): CatalogueData
+  getCatalogueData(input: CatalogueDataInput!): CatalogueData
 
   """
   Should return catalogue nav rubrics
   """
   getCatalogueNavRubrics: [Rubric!]!
-  getCatalogueProducts(input: CatalogueProductsInput!): CatalogueProducts
 
   """
   Should return top search items

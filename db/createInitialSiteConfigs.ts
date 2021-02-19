@@ -314,7 +314,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     configCollection,
     configTemplate: {
       slug: 'stickyNavVisibleAttributesCount',
-      name: 'Количество видимых опций в выпадающем меню.',
+      name: 'Количество видимых аттрибутов в выпадающем меню.',
       description: '',
       variant: SITE_CONFIGS_VARIANT_NUMBER,
       multi: false,

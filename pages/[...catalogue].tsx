@@ -49,8 +49,9 @@ export async function getServerSideProps(
     >({
       query: CATALOGUE_RUBRIC_QUERY,
       variables: {
-        catalogueFilter: alwaysArray(catalogue),
-        productsInput: {},
+        input: {
+          filter: alwaysArray(catalogue),
+        },
       },
     });
 

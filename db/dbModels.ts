@@ -691,9 +691,11 @@ export interface CatalogueFilterAttributeModel {
 }
 
 export interface CatalogueDataModel {
+  _id: ObjectIdModel;
   lastProductId: ObjectIdModel;
   hasMore: boolean;
   clearSlug: string;
+  filter: string[];
   rubric: RubricModel;
   products: ProductModel[];
   totalProducts: number;

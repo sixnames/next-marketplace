@@ -216,7 +216,7 @@ export interface NexusGenInputs {
   CatalogueDataInput: {
     // input type
     filter: string[]; // [String!]!
-    keySet?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    lastProductId?: NexusGenScalars['ObjectId'] | null; // ObjectId
   };
   ContactsInput: {
     // input type
@@ -944,11 +944,13 @@ export interface NexusGenFieldTypes {
   };
   CatalogueData: {
     // field return type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
     attributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
     catalogueTitle: string; // String!
     clearSlug: string; // String!
+    filter: string[]; // [String!]!
     hasMore: boolean; // Boolean!
-    lastProductId: NexusGenScalars['ObjectId']; // ObjectId!
+    lastProductId: NexusGenScalars['ObjectId'] | null; // ObjectId
     products: NexusGenRootTypes['Product'][]; // [Product!]!
     rubric: NexusGenRootTypes['Rubric']; // Rubric!
     selectedAttributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
@@ -2015,9 +2017,11 @@ export interface NexusGenFieldTypeNames {
   };
   CatalogueData: {
     // field return type name
+    _id: 'ObjectId';
     attributes: 'CatalogueFilterAttribute';
     catalogueTitle: 'String';
     clearSlug: 'String';
+    filter: 'String';
     hasMore: 'Boolean';
     lastProductId: 'ObjectId';
     products: 'Product';

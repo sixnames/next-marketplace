@@ -4,24 +4,28 @@ import Inner from '../../components/Inner/Inner';
 import RequestError from '../../components/RequestError/RequestError';
 import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
-import { CatalogueDataFragment, useGetCatalogueRubricLazyQuery } from 'generated/apolloComponents';
+import {
+  CatalogueDataFragment,
+  useGetCatalogueRubricLazyQuery,
+  useUpdateCatalogueCountersMutation,
+} from 'generated/apolloComponents';
 import ProductSnippetGrid from '../../components/Product/ProductSnippet/ProductSnippetGrid';
 import ProductSnippetRow from '../../components/Product/ProductSnippet/ProductSnippetRow';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import { useNotificationsContext } from 'context/notificationsContext';
 import Spinner from '../../components/Spinner/Spinner';
 import MenuButtonSorter from '../../components/ReachMenuButton/MenuButtonSorter';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Icon from '../../components/Icon/Icon';
 import { useAppContext } from 'context/appContext';
 import Button from '../../components/Buttons/Button';
 import ReachMenuButton from '../../components/ReachMenuButton/ReachMenuButton';
 import { useSiteContext } from 'context/siteContext';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import {
   CATALOGUE_FILTER_SORT_KEYS,
+  CATALOGUE_PRODUCTS_COUNT_LIMIT,
   PRODUCT_CARD_RUBRIC_SLUG_PREFIX,
   SORT_ASC_STR,
   SORT_BY_KEY,
@@ -38,15 +42,36 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const { isMobile } = useAppContext();
   const { fixBodyScroll } = useSiteContext();
   const { showErrorNotification } = useNotificationsContext();
+  const [pageLoading, setPageLoading] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [isRowView, setIsRowView] = React.useState<boolean>(false);
   const [catalogueData, setCatalogueData] = React.useState<CatalogueDataFragment>(() => {
     return rubricData;
   });
+  const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
 
   React.useEffect(() => {
     setCatalogueData(rubricData);
   }, [rubricData]);
+
+  React.useEffect(() => {
+    updateCatalogueCountersMutation({
+      variables: {
+        input: {
+          filter: catalogueData.filter,
+        },
+      },
+    }).catch((e) => console.log(e));
+  }, [catalogueData, updateCatalogueCountersMutation]);
+
+  React.useEffect(() => {
+    Router.events.on('routeChangeStart', () => {
+      setPageLoading(true);
+    });
+    Router.events.on('routeChangeComplete', () => {
+      setPageLoading(false);
+    });
+  }, []);
 
   const [getRubricData, { loading }] = useGetCatalogueRubricLazyQuery({
     fetchPolicy: 'network-only',
@@ -59,10 +84,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
           setCatalogueData((prevState) => {
             return {
               ...getCatalogueData,
-              products: {
-                ...getCatalogueData.products,
-                docs: [...prevState.products.docs, ...getCatalogueData.products.docs],
-              },
+              lastProductId: getCatalogueData.lastProductId,
+              products: [...prevState.products, ...getCatalogueData.products],
             };
           });
         }
@@ -81,24 +104,21 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [fixBodyScroll]);
 
   const fetchMoreHandler = React.useCallback(() => {
-    if (catalogueData) {
-      const { products } = catalogueData;
-      const { sortBy, sortDir, page, totalPages } = products;
-      if (page !== totalPages) {
+    if (catalogueData && catalogueData.hasMore && !pageLoading) {
+      const { filter, hasMore, products } = catalogueData;
+      const lastProduct = products[products.length - 1];
+      if (hasMore) {
         getRubricData({
           variables: {
-            catalogueFilter: alwaysArray(router.query.catalogue),
-            productsInput: {
-              page: page + 1,
-              sortDir,
-              sortBy,
+            input: {
+              filter,
+              lastProductId: lastProduct?._id,
             },
           },
         });
       }
     }
-  }, [catalogueData, getRubricData]);
-  // }, [catalogueData, getRubricData, router.query.rubric]);
+  }, [catalogueData, getRubricData, pageLoading]);
 
   const sortConfig = React.useMemo(
     () => [
@@ -185,11 +205,18 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const { rubric, products, catalogueTitle, catalogueFilter } = catalogueData;
+  const {
+    rubric,
+    hasMore,
+    catalogueTitle,
+    attributes,
+    selectedAttributes,
+    clearSlug,
+    totalProducts,
+  } = catalogueData;
   const { name } = rubric;
-  const { docs, totalDocs, totalPages, page, maxPrice, minPrice } = products;
 
-  if (totalDocs < 1) {
+  if (totalProducts < 1) {
     return (
       <div className={classes.catalogue}>
         <Breadcrumbs currentPageName={name} />
@@ -201,23 +228,25 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     );
   }
 
-  const catalogueCounter = isMobile ? `Найдено ${totalDocs}` : undefined;
+  const catalogueCounterString =
+    totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
+      ? `Найдено ${totalProducts}`
+      : `Найдено более ${totalProducts} товаров`;
 
   return (
     <div className={classes.catalogue}>
       <Breadcrumbs currentPageName={name} />
       <Inner lowTop testId={'catalogue'}>
-        <Title testId={'catalogue-title'} subtitle={catalogueCounter}>
+        <Title testId={'catalogue-title'} subtitle={isMobile ? catalogueCounterString : undefined}>
           {catalogueTitle}
         </Title>
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            totalDocs={totalDocs}
-            rubricClearSlug={catalogueFilter.clearSlug}
-            catalogueFilter={catalogueFilter}
+            attributes={attributes}
+            selectedAttributes={selectedAttributes}
+            catalogueCounterString={catalogueCounterString}
+            rubricClearSlug={clearSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
           />
@@ -271,28 +300,32 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
               <InfiniteScroll
                 className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
                 next={fetchMoreHandler}
-                hasMore={totalPages !== page}
-                dataLength={catalogueData.products.docs.length}
+                hasMore={hasMore}
+                dataLength={catalogueData.products.length}
                 scrollableTarget={'#catalogue-products'}
                 loader={<span />}
               >
-                {isRowView && !isMobile
-                  ? docs.map((product) => (
+                {catalogueData.products.map((product) => {
+                  if (isRowView && !isMobile) {
+                    return (
                       <ProductSnippetRow
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product._id}`}
                         additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
                       />
-                    ))
-                  : docs.map((product) => (
-                      <ProductSnippetGrid
-                        product={product}
-                        key={product._id}
-                        testId={`catalogue-item-${product._id}`}
-                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
-                      />
-                    ))}
+                    );
+                  }
+
+                  return (
+                    <ProductSnippetGrid
+                      product={product}
+                      key={product._id}
+                      testId={`catalogue-item-${product._id}`}
+                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
+                    />
+                  );
+                })}
               </InfiniteScroll>
 
               {loading ? (

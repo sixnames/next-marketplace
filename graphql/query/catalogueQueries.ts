@@ -80,32 +80,6 @@ export const catalogueFilterAttributeFragment = gql`
   ${catalogueFilterAttributeOptionFragment}
 `;
 
-export const catalogueSelectedPricesFragment = gql`
-  fragment CatalogueSelectedPrices on CatalogueFilterSelectedPrices {
-    clearSlug
-    formattedMinPrice
-    formattedMaxPrice
-  }
-`;
-
-export const catalogueFilterFragment = gql`
-  fragment CatalogueFilter on CatalogueFilter {
-    _id
-    clearSlug
-    selectedPrices {
-      ...CatalogueSelectedPrices
-    }
-    attributes {
-      ...CatalogueFilterAttribute
-    }
-    selectedAttributes {
-      ...CatalogueFilterAttribute
-    }
-  }
-  ${catalogueSelectedPricesFragment}
-  ${catalogueFilterAttributeFragment}
-`;
-
 export const catalogueRubricFragment = gql`
   fragment CatalogueRubric on Rubric {
     _id
@@ -120,36 +94,43 @@ export const catalogueRubricFragment = gql`
 
 export const catalogueDataFragment = gql`
   fragment CatalogueData on CatalogueData {
+    #    _id
+    lastProductId
+    hasMore
+    clearSlug
+    filter
     catalogueTitle
-    catalogueFilter {
-      ...CatalogueFilter
-    }
     rubric {
       ...CatalogueRubric
     }
     products {
-      totalDocs
-      page
-      totalPages
-      sortBy
-      sortDir
-      minPrice
-      maxPrice
-      docs {
-        ...ProductSnippet
-      }
+      ...ProductSnippet
+    }
+    totalProducts
+    catalogueTitle
+    attributes {
+      ...CatalogueFilterAttribute
+    }
+    selectedAttributes {
+      ...CatalogueFilterAttribute
     }
   }
-  ${catalogueFilterFragment}
+  ${catalogueFilterAttributeFragment}
   ${catalogueRubricFragment}
   ${productSnippedFragment}
 `;
 
 export const CATALOGUE_RUBRIC_QUERY = gql`
-  query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductsPaginationInput!) {
-    getCatalogueData(catalogueFilter: $catalogueFilter, productsInput: $productsInput) {
+  query GetCatalogueRubric($input: CatalogueDataInput!) {
+    getCatalogueData(input: $input) {
       ...CatalogueData
     }
   }
   ${catalogueDataFragment}
+`;
+
+export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`
+  mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
+    updateCatalogueCounters(input: $input)
+  }
 `;

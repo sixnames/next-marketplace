@@ -261,11 +261,13 @@ type CartProduct implements Base {
 }
 
 type CatalogueData {
+  _id: ObjectId!
   attributes: [CatalogueFilterAttribute!]!
   catalogueTitle: String!
   clearSlug: String!
+  filter: [String!]!
   hasMore: Boolean!
-  lastProductId: ObjectId!
+  lastProductId: ObjectId
   products: [Product!]!
   rubric: Rubric!
   selectedAttributes: [CatalogueFilterAttribute!]!
@@ -274,7 +276,7 @@ type CatalogueData {
 
 input CatalogueDataInput {
   filter: [String!]!
-  keySet: ObjectId
+  lastProductId: ObjectId
 }
 
 type CatalogueFilterAttribute {

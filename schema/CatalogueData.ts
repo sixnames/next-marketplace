@@ -35,6 +35,8 @@ import {
   COL_RUBRICS,
 } from 'db/collectionNames';
 import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
   CATALOGUE_FILTER_VISIBLE_ATTRIBUTES,
@@ -246,7 +248,6 @@ export const CatalogueQueries = extendType({
           const beforeOptions = new Date().getTime();
           const selectedFilters: SelectedFilterInterface[] = [];
           const castedAttributes: CatalogueFilterAttributeModel[] = [];
-          const selectedAttributes: CatalogueFilterAttributeModel[] = [];
           const attributes = await getRubricCatalogueAttributes({
             attributes: rubric.attributes,
             visibleAttributesCount,
@@ -343,7 +344,7 @@ export const CatalogueQueries = extendType({
               isSelected,
             };
 
-            if (isSelected) {
+            /*if (isSelected) {
               selectedAttributes.push({
                 ...castedAttribute,
                 _id: new ObjectId(),
@@ -351,12 +352,72 @@ export const CatalogueQueries = extendType({
                   return option.isSelected;
                 }),
               });
-            }
+            }*/
 
             castedAttributes.push(castedAttribute);
           }
           const afterOptions = new Date().getTime();
           console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+
+          // TODO clearSlug
+          // Get selected attributes
+          const castedFilters = filter.map((param) => castCatalogueParamToObject(param));
+          const selectedAttributes = rubric.attributes.reduce(
+            (acc: CatalogueFilterAttributeModel[], attribute) => {
+              if (
+                attribute.variant !== ATTRIBUTE_VARIANT_SELECT &&
+                attribute.variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+              ) {
+                return acc;
+              }
+              const currentFilter = castedFilters.find(({ slug }) => attribute.slug === slug);
+              if (!currentFilter) {
+                return acc;
+              }
+
+              const options = attribute.options.reduce(
+                (acc: CatalogueFilterAttributeOptionModel[], option) => {
+                  if (!filter.includes(option.slug)) {
+                    return acc;
+                  }
+
+                  const nextSlug = filter
+                    .filter((pathArg) => {
+                      return pathArg !== option.slug;
+                    })
+                    .join('/');
+                  return [
+                    ...acc,
+                    {
+                      _id: new ObjectId(),
+                      clearSlug: '',
+                      slug: option.slug,
+                      name: getFieldLocale(option.nameI18n),
+                      counter: 1,
+                      isSelected: true,
+                      isDisabled: false,
+                      nextSlug: `/${nextSlug}`,
+                    },
+                  ];
+                },
+                [],
+              );
+
+              return [
+                ...acc,
+                {
+                  _id: new ObjectId(),
+                  clearSlug: '',
+                  slug: attribute.slug,
+                  name: getFieldLocale(attribute.nameI18n),
+                  isSelected: true,
+                  isDisabled: false,
+                  options,
+                },
+              ];
+            },
+            [],
+          );
 
           // Get catalogue title
           const catalogueTitle = getCatalogueTitle({
@@ -382,6 +443,7 @@ export const CatalogueQueries = extendType({
               !(products.length < CATALOGUE_PRODUCTS_LIMIT);
           }
 
+          // TODO clearSlug
           return {
             _id: rubric._id,
             lastProductId: lastProduct?._id,

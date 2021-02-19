@@ -97,6 +97,7 @@ export interface CreateInitialSiteConfigsPayloadInterface {
   configPageDefaultTitle: ConfigModel;
   configPageDefaultDescription: ConfigModel;
   configSiteThemeColor: ConfigModel;
+  configStickyNavVisibleAttributesCount: ConfigModel;
   configStickyNavVisibleOptionsCount: ConfigModel;
   configCatalogueFilterVisibleOptionsCount: ConfigModel;
   configCatalogueFilterVisibleAttributesCount: ConfigModel;
@@ -309,6 +310,23 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     },
   });
 
+  const configStickyNavVisibleAttributesCount = await findOrCreateConfig({
+    configCollection,
+    configTemplate: {
+      slug: 'stickyNavVisibleAttributesCount',
+      name: 'Количество видимых опций в выпадающем меню.',
+      description: '',
+      variant: SITE_CONFIGS_VARIANT_NUMBER,
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [CATALOGUE_NAV_VISIBLE_OPTIONS],
+        },
+      },
+    },
+  });
+
   const configStickyNavVisibleOptionsCount = await findOrCreateConfig({
     configCollection,
     configTemplate: {
@@ -416,6 +434,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     configPageDefaultTitle,
     configPageDefaultDescription,
     configSiteThemeColor,
+    configStickyNavVisibleAttributesCount,
     configStickyNavVisibleOptionsCount,
     configCatalogueFilterVisibleOptionsCount,
     configCatalogueFilterVisibleAttributesCount,
@@ -437,6 +456,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     configPageDefaultTitle,
     configPageDefaultDescription,
     configSiteThemeColor,
+    configStickyNavVisibleAttributesCount,
     configStickyNavVisibleOptionsCount,
     configCatalogueFilterVisibleOptionsCount,
     configCatalogueFilterVisibleAttributesCount,

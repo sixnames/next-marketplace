@@ -5,7 +5,7 @@ import {
 } from 'lib/catalogueUtils';
 import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
-import { getRubricCatalogueAttributesB } from 'lib/rubricUtils';
+import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
   BrandCollectionModel,
@@ -155,10 +155,10 @@ export const CatalogueQueries = extendType({
           const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
             slug: 'catalogueFilterVisibleOptionsCount',
           });
-          const catalogueVisibleAttributesCount =
+          const visibleAttributesCount =
             noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
             noNaN(CATALOGUE_FILTER_VISIBLE_ATTRIBUTES);
-          const catalogueVisibleOptionsCount =
+          const visibleOptionsCount =
             noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
             noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
 
@@ -242,15 +242,15 @@ export const CatalogueQueries = extendType({
           const selectedFilters: SelectedFilterInterface[] = [];
           const castedAttributes: CatalogueFilterAttributeModel[] = [];
           const selectedAttributes: CatalogueFilterAttributeModel[] = [];
-          const attributes = await getRubricCatalogueAttributesB({
+          const attributes = await getRubricCatalogueAttributes({
             attributes: rubric.attributes,
-            catalogueVisibleAttributesCount,
-            catalogueVisibleOptionsCount,
+            visibleAttributesCount,
+            visibleOptionsCount,
             city,
           });
 
           for await (const attribute of attributes) {
-            if (castedAttributes.length === catalogueVisibleAttributesCount) {
+            if (castedAttributes.length === visibleAttributesCount) {
               break;
             }
 
@@ -333,7 +333,7 @@ export const CatalogueQueries = extendType({
               clearSlug,
               slug: attribute.slug,
               name: getFieldLocale(attribute.nameI18n),
-              options: sortedOptions.slice(0, catalogueVisibleOptionsCount),
+              options: sortedOptions.slice(0, visibleOptionsCount),
               isDisabled: disabledOptionsCount === sortedOptions.length,
               isSelected,
             };

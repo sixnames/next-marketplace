@@ -1,16 +1,23 @@
+import {
+  CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
+  CATALOGUE_NAV_VISIBLE_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+} from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributesGroupModel,
+  ConfigModel,
   ProductsPaginationPayloadModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_CONFIGS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const RubricProductsCountersInput = inputObjectType({
@@ -159,11 +166,29 @@ export const Rubric = objectType({
       type: 'RubricAttribute',
       resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
         try {
+          const db = await getDatabase();
           const { city } = await getRequestParams(context);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+          // Get configs
+          const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
+            slug: 'stickyNavVisibleAttributesCount',
+          });
+          const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+            slug: 'stickyNavVisibleOptionsCount',
+          });
+          const visibleAttributesCount =
+            noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+            noNaN(CATALOGUE_NAV_VISIBLE_ATTRIBUTES);
+          const visibleOptionsCount =
+            noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+            noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
           const catalogueAttributes = await getRubricCatalogueAttributes({
             attributes: source.attributes,
             city,
+            visibleAttributesCount,
+            visibleOptionsCount,
           });
 
           return catalogueAttributes;

@@ -282,61 +282,16 @@ export function getRubricCatalogueOptions({
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
   attributes: RubricAttributeModel[];
+  visibleAttributesCount: number;
+  visibleOptionsCount: number;
 }
 
 export async function getRubricCatalogueAttributes({
   city,
   attributes,
+  visibleAttributesCount,
+  visibleOptionsCount,
 }: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
-  const maxVisibleOptions = await getCatalogueVisibleOptionsCount(city);
-
-  const visibleAttributes = attributes
-    .filter(
-      ({
-        // visibleInCatalogueCities,
-        // showInCatalogueNav,
-        variant,
-      }) => {
-        // return visibleInCatalogueCities[city] && showInCatalogueNav;
-        return (
-          variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT
-        );
-      },
-    )
-    .sort((attributeA, attributeB) => {
-      const attributeACounter = noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
-      const attributeBCounter = noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
-      return attributeBCounter - attributeACounter;
-    });
-
-  const sortedAttributes: RubricAttributeModel[] = [];
-  visibleAttributes.forEach((attribute) => {
-    sortedAttributes.push({
-      ...attribute,
-      options: getRubricCatalogueOptions({
-        options: attribute.options,
-        maxVisibleOptions,
-        city,
-      }),
-    });
-  });
-
-  return sortedAttributes;
-}
-
-export interface GetRubricCatalogueAttributesBInterface {
-  city: string;
-  attributes: RubricAttributeModel[];
-  catalogueVisibleAttributesCount: number;
-  catalogueVisibleOptionsCount: number;
-}
-
-export async function getRubricCatalogueAttributesB({
-  city,
-  attributes,
-  catalogueVisibleAttributesCount,
-  catalogueVisibleOptionsCount,
-}: GetRubricCatalogueAttributesBInterface): Promise<RubricAttributeModel[]> {
   const visibleAttributes = attributes
     .filter(({ showInCatalogueFilter, variant }) => {
       return (
@@ -344,7 +299,7 @@ export async function getRubricCatalogueAttributesB({
         (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT)
       );
     })
-    .slice(0, catalogueVisibleAttributesCount);
+    .slice(0, visibleAttributesCount);
 
   const sortedAttributes: RubricAttributeModel[] = [];
   visibleAttributes.forEach((attribute) => {
@@ -352,7 +307,7 @@ export async function getRubricCatalogueAttributesB({
       ...attribute,
       options: getRubricCatalogueOptions({
         options: attribute.options,
-        maxVisibleOptions: catalogueVisibleOptionsCount,
+        maxVisibleOptions: visibleOptionsCount,
         city,
       }),
     });

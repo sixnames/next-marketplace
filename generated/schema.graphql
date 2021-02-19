@@ -1092,6 +1092,11 @@ type Mutation {
   updateBrand(input: UpdateBrandInput!): BrandPayload!
 
   """
+  Should update catalogue counters
+  """
+  updateCatalogueCounters(input: CatalogueProductsInput!): Boolean!
+
+  """
   Should update city
   """
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayload!

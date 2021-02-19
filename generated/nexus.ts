@@ -1276,6 +1276,7 @@ export interface NexusGenFieldTypes {
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
+    updateCatalogueCounters: boolean; // Boolean!
     updateCityInCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     updateCollectionInBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     updateCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -2368,6 +2369,7 @@ export interface NexusGenFieldTypeNames {
     updateAttributeInGroup: 'AttributesGroupPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
+    updateCatalogueCounters: 'Boolean';
     updateCityInCountry: 'CountryPayload';
     updateCollectionInBrand: 'BrandPayload';
     updateCompany: 'CompanyPayload';
@@ -3262,6 +3264,10 @@ export interface NexusGenArgTypes {
     updateBrand: {
       // args
       input: NexusGenInputs['UpdateBrandInput']; // UpdateBrandInput!
+    };
+    updateCatalogueCounters: {
+      // args
+      input: NexusGenInputs['CatalogueProductsInput']; // CatalogueProductsInput!
     };
     updateCityInCountry: {
       // args

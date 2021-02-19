@@ -194,21 +194,14 @@ export const CatalogueQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<CatalogueProductsModel | null> => {
         try {
-          // timers
-          // console.log(' ');
-          // console.log('===========================================================');
-          // const timeStart = new Date().getTime();
-          const sessionRole = await getSessionRole(context);
+          console.log(' ');
+          console.log('===========================================================');
+          const timeStart = new Date().getTime();
           const { getFieldLocale, city, locale } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const brandCollectionsCollection = db.collection<BrandCollectionModel>(
-            COL_BRAND_COLLECTIONS,
-          );
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
 
           // Args
           const { input } = args;
@@ -229,6 +222,17 @@ export const CatalogueQueries = extendType({
             noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
             noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
 
+          // Get rubric
+          const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+          const rubricTime = new Date().getTime();
+          console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+
+          if (!rubric) {
+            return null;
+          }
+
+          // Get products
+          const noFiltersSelected = filterOptions.length < 1;
           const keyStage = key
             ? {
                 _id: {
@@ -237,14 +241,13 @@ export const CatalogueQueries = extendType({
               }
             : {};
 
-          const initialFilterProductsMatch =
-            filterOptions.length < 1
-              ? { selectedOptionsSlugs: rubricSlug }
-              : {
-                  selectedOptionsSlugs: {
-                    $all: filter,
-                  },
-                };
+          const initialFilterProductsMatch = noFiltersSelected
+            ? { selectedOptionsSlugs: rubricSlug }
+            : {
+                selectedOptionsSlugs: {
+                  $all: filter,
+                },
+              };
 
           const productsInitialMatch = {
             ...initialFilterProductsMatch,
@@ -270,54 +273,33 @@ export const CatalogueQueries = extendType({
             },
           ];
 
-          const catalogueRubricPipeline = [
-            {
-              $match: {
-                slug: rubricSlug,
+          const productsStartTime = new Date().getTime();
+          const products = await productsCollection.aggregate(productsMainPipeline).toArray();
+          const productsEndTime = new Date().getTime();
+          console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+
+          const productsCountStartTime = new Date().getTime();
+          const productsCountAggregation = await productsCollection
+            .aggregate<any>([
+              { $match: { ...productsInitialMatch } },
+              { $limit: 3000 },
+              {
+                $count: 'counter',
               },
-            },
+            ])
+            .toArray();
+          console.log(productsCountAggregation);
+          const totalProducts = productsCountAggregation[0]
+            ? productsCountAggregation[0].counter
+            : 0;
+          const productsCountEndTime = new Date().getTime();
+          console.log(
+            `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
+            productsCountEndTime - productsCountStartTime,
+          );
 
-            // products
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                pipeline: productsMainPipeline,
-                as: 'products',
-              },
-            },
-
-            // products count
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                pipeline: [
-                  { $match: { ...productsInitialMatch } },
-                  {
-                    $count: 'counter',
-                  },
-                ],
-                as: 'productsCount',
-              },
-            },
-          ];
-
-          /*const rubricsExplain = await rubricsCollection
-            .aggregate<any>(catalogueRubricPipeline)
-            .explain();
-          console.log(JSON.stringify(rubricsExplain, null, 2));*/
-
-          const rubrics = await rubricsCollection.aggregate<any>(catalogueRubricPipeline).toArray();
-
-          // const productsTime = new Date().getTime();
-          // console.log('Products >>>>>>>>>>>>>>>> ', productsTime - timeStart);
-
-          const rubric = rubrics[0];
-          if (!rubric) {
-            return null;
-          }
-          // console.log(rubric);
-
-          // const beforeOptions = new Date().getTime();
+          // Get filter attributes
+          const beforeOptions = new Date().getTime();
           const selectedFilters: SelectedFilterInterface[] = [];
           const castedAttributes: CatalogueFilterAttributeModel[] = [];
           const selectedAttributes: CatalogueFilterAttributeModel[] = [];
@@ -355,41 +337,21 @@ export const CatalogueQueries = extendType({
                     .join('/')
                 : [...filter, optionSlug].join('/');
 
-              const optionProductsMatch =
-                filterOptions.length < 1
-                  ? { selectedOptionsSlugs: rubricSlug }
-                  : {
-                      selectedOptionsSlugs: {
-                        $all: [...filter, optionSlug],
-                      },
-                    };
+              const optionProductsMatch = noFiltersSelected
+                ? { selectedOptionsSlugs: rubricSlug }
+                : {
+                    selectedOptionsSlugs: {
+                      $all: [...filter, optionSlug],
+                    },
+                  };
 
-              // count products with current option
-              const optionProductsPipeline = [
-                {
-                  $match: {
-                    ...optionProductsMatch,
-                    active: true,
-                    archive: false,
-                  },
-                },
-                { $limit: 1 },
-                {
-                  $count: 'counter',
-                },
-              ];
-
-              /*const optionsStats = await productsCollection
-                .aggregate<any>(optionProductsPipeline)
-                .explain();
-              console.log(JSON.stringify(optionsStats, null, 2));*/
-              // console.log(`${optionSlug} `, optionsStats.stages[0].executionTimeMillisEstimate);
-
-              const optionProducts = await productsCollection
-                .aggregate<any>(optionProductsPipeline)
-                .toArray();
-
-              const counter = optionProducts[0]?.counter || 0;
+              // Check if option has products
+              const optionProducts = await productsCollection.findOne({
+                ...optionProductsMatch,
+                active: true,
+                archive: false,
+              });
+              const counter = optionProducts ? 1 : 0;
 
               castedOptions.push({
                 _id: option._id,
@@ -448,112 +410,8 @@ export const CatalogueQueries = extendType({
 
             castedAttributes.push(castedAttribute);
           }
-          // const afterOptions = new Date().getTime();
-          // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
-
-          // Update catalogue counters
-          if (!sessionRole.isStuff) {
-            // cast additional filters
-            const selectedBrandSlugs: string[] = [];
-            const selectedBrandCollectionSlugs: string[] = [];
-            const selectedManufacturerSlugs: string[] = [];
-            filter.forEach((param) => {
-              const castedParam = castCatalogueParamToObject(param);
-              const { slug, value } = castedParam;
-
-              if (slug === CATALOGUE_BRAND_KEY) {
-                selectedBrandSlugs.push(value);
-              }
-              if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
-                selectedBrandCollectionSlugs.push(value);
-              }
-              if (slug === CATALOGUE_MANUFACTURER_KEY) {
-                selectedManufacturerSlugs.push(value);
-              }
-            });
-
-            const counterUpdater = {
-              $inc: {
-                [`views.${city}`]: VIEWS_COUNTER_STEP,
-              },
-            };
-
-            // Update brand counters
-            if (selectedBrandSlugs.length > 0) {
-              await brandsCollection.updateMany(
-                { slug: { $in: selectedBrandSlugs } },
-                counterUpdater,
-              );
-            }
-
-            // Update brand collection counters
-            if (selectedBrandCollectionSlugs.length > 0) {
-              await brandCollectionsCollection.updateMany(
-                { slug: { $in: selectedBrandCollectionSlugs } },
-                counterUpdater,
-              );
-            }
-
-            // Update manufacturer counters
-            if (selectedManufacturerSlugs.length > 0) {
-              await manufacturersCollection.updateMany(
-                { slug: { $in: selectedManufacturerSlugs } },
-                counterUpdater,
-              );
-            }
-
-            // Update rubric counters
-            const attributesSlugs = filter.map((selectedSlug) => {
-              return selectedSlug.split('-')[0];
-            });
-
-            const updatedAttributes: RubricAttributeModel[] = [];
-            rubric.attributes.forEach((attribute: RubricAttributeModel) => {
-              if (attributesSlugs.includes(attribute.slug)) {
-                attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
-                const updatedOptions = updateRubricOptionsViews({
-                  selectedOptionsSlugs: filter,
-                  options: attribute.options,
-                  city,
-                }).sort((optionA, optionB) => {
-                  const optionACounter =
-                    noNaN(optionA.views[city]) +
-                    noNaN(optionA.priorities[city]) +
-                    noNaN(optionA.shopProductsCountCities[city]);
-                  const optionBCounter =
-                    noNaN(optionB.views[city]) +
-                    noNaN(optionB.priorities[city]) +
-                    noNaN(optionA.shopProductsCountCities[city]);
-                  return optionBCounter - optionACounter;
-                });
-
-                attribute.options = updatedOptions;
-              }
-              updatedAttributes.push(attribute);
-            });
-
-            const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
-              const optionACounter =
-                noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
-              const optionBCounter =
-                noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
-              return optionBCounter - optionACounter;
-            });
-
-            await rubricsCollection.findOneAndUpdate(
-              { slug: rubricSlug },
-              {
-                ...counterUpdater,
-                $set: {
-                  attributes: sortedAttributes,
-                },
-              },
-              { returnOriginal: false },
-            );
-          }
-
-          const products = rubric.products;
-          const lastProduct = products[products.length - 1];
+          const afterOptions = new Date().getTime();
+          console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
           // Get catalogue title
           const catalogueTitle = getCatalogueTitle({
@@ -563,15 +421,18 @@ export const CatalogueQueries = extendType({
             locale,
           });
 
-          // const timeEnd = new Date().getTime();
-          // console.log('Total time: ', timeEnd - timeStart);
+          const timeEnd = new Date().getTime();
+          console.log('Total time: ', timeEnd - timeStart);
+
+          // Get keySet pagination product
+          const lastProduct = products[products.length - 1];
 
           return {
             lastProductId: lastProduct._id,
             hasMore: key ? !key.equals(lastProduct._id) : false,
             clearSlug: `/${rubricSlug}`,
             rubric,
-            products: rubric.products,
+            products,
             catalogueTitle,
             attributes: castedAttributes,
             selectedAttributes,
@@ -1263,6 +1124,152 @@ export const CatalogueQueries = extendType({
             products: [],
             rubrics: [],
           };
+        }
+      },
+    });
+  },
+});
+
+export const CatalogueMutations = extendType({
+  type: 'Mutation',
+  definition(t) {
+    // Should update catalogue counters
+    t.nonNull.field('updateCatalogueCounters', {
+      type: 'Boolean',
+      description: 'Should update catalogue counters',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueProductsInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<boolean> => {
+        try {
+          const db = await getDatabase();
+          const sessionRole = await getSessionRole(context);
+          const { city } = await getRequestParams(context);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+          const brandCollectionsCollection = db.collection<BrandCollectionModel>(
+            COL_BRAND_COLLECTIONS,
+          );
+          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+
+          // Args
+          const { input } = args;
+          const { filter } = input;
+          const [rubricSlug] = filter;
+
+          if (!sessionRole.isStuff) {
+            const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+            if (!rubric) {
+              return false;
+            }
+
+            // cast additional filters
+            const selectedBrandSlugs: string[] = [];
+            const selectedBrandCollectionSlugs: string[] = [];
+            const selectedManufacturerSlugs: string[] = [];
+            filter.forEach((param) => {
+              const castedParam = castCatalogueParamToObject(param);
+              const { slug, value } = castedParam;
+
+              if (slug === CATALOGUE_BRAND_KEY) {
+                selectedBrandSlugs.push(value);
+              }
+              if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
+                selectedBrandCollectionSlugs.push(value);
+              }
+              if (slug === CATALOGUE_MANUFACTURER_KEY) {
+                selectedManufacturerSlugs.push(value);
+              }
+            });
+
+            const counterUpdater = {
+              $inc: {
+                [`views.${city}`]: VIEWS_COUNTER_STEP,
+              },
+            };
+
+            // Update brand counters
+            if (selectedBrandSlugs.length > 0) {
+              await brandsCollection.updateMany(
+                { slug: { $in: selectedBrandSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update brand collection counters
+            if (selectedBrandCollectionSlugs.length > 0) {
+              await brandCollectionsCollection.updateMany(
+                { slug: { $in: selectedBrandCollectionSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update manufacturer counters
+            if (selectedManufacturerSlugs.length > 0) {
+              await manufacturersCollection.updateMany(
+                { slug: { $in: selectedManufacturerSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update rubric counters
+            const attributesSlugs = filter.map((selectedSlug) => {
+              return selectedSlug.split('-')[0];
+            });
+
+            const updatedAttributes: RubricAttributeModel[] = [];
+            rubric.attributes.forEach((attribute: RubricAttributeModel) => {
+              if (attributesSlugs.includes(attribute.slug)) {
+                attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                const updatedOptions = updateRubricOptionsViews({
+                  selectedOptionsSlugs: filter,
+                  options: attribute.options,
+                  city,
+                }).sort((optionA, optionB) => {
+                  const optionACounter =
+                    noNaN(optionA.views[city]) +
+                    noNaN(optionA.priorities[city]) +
+                    noNaN(optionA.shopProductsCountCities[city]);
+                  const optionBCounter =
+                    noNaN(optionB.views[city]) +
+                    noNaN(optionB.priorities[city]) +
+                    noNaN(optionA.shopProductsCountCities[city]);
+                  return optionBCounter - optionACounter;
+                });
+
+                attribute.options = updatedOptions;
+              }
+              updatedAttributes.push(attribute);
+            });
+
+            const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
+              const optionACounter =
+                noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
+              const optionBCounter =
+                noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
+              return optionBCounter - optionACounter;
+            });
+
+            await rubricsCollection.findOneAndUpdate(
+              { _id: rubric._id },
+              {
+                ...counterUpdater,
+                $set: {
+                  attributes: sortedAttributes,
+                },
+              },
+              { returnOriginal: false },
+            );
+          }
+
+          return true;
+        } catch (e) {
+          console.log(e);
+          return false;
         }
       },
     });

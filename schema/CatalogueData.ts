@@ -228,7 +228,7 @@ export const CatalogueQueries = extendType({
               $sort: {
                 [`views.${city}`]: SORT_DESC,
                 [`priority.${city}`]: SORT_DESC,
-                _id: -1,
+                _id: SORT_DESC,
               },
             },
             {
@@ -384,7 +384,7 @@ export const CatalogueQueries = extendType({
           const afterOptions = new Date().getTime();
           console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
-          // TODO clearSlug
+          // TODO clearSlug with sorting
           // Get selected attributes
           const castedFilters = filter.map((param) => castCatalogueParamToObject(param));
           const selectedAttributes = rubric.attributes.reduce(
@@ -461,14 +461,14 @@ export const CatalogueQueries = extendType({
             totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
               ? totalProducts
               : CATALOGUE_PRODUCTS_COUNT_LIMIT;
-          let hasMore = products.length === CATALOGUE_PRODUCTS_LIMIT || products.length !== 0;
+          let hasMore = !(products.length < CATALOGUE_PRODUCTS_LIMIT);
           if (lastProduct && lastProductId) {
             hasMore =
               !lastProductId.equals(lastProduct?._id) &&
               !(products.length < CATALOGUE_PRODUCTS_LIMIT);
           }
 
-          // TODO clearSlug
+          // TODO clearSlug with sorting
           return {
             _id: rubric._id,
             lastProductId: lastProduct?._id,

@@ -1,12 +1,20 @@
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
+  COL_CITIES,
   COL_CONFIGS,
   COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
-import { BrandModel, ConfigModel, ManufacturerModel, ProductModel, RubricModel } from 'db/dbModels';
+import {
+  BrandModel,
+  CityModel,
+  ConfigModel,
+  ManufacturerModel,
+  ProductModel,
+  RubricModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 
 export async function createIndexes() {
@@ -35,22 +43,52 @@ export async function createIndexes() {
   // Products indexes
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
-  await productsCollection.createIndex({
-    rubricId: 1,
-    selectedOptionsSlugs: 1,
-    [`views.msk`]: -1,
-    [`priority.msk`]: -1,
-    _id: -1,
-  });
 
-  await productsCollection.createIndex({
-    rubricId: 1,
-    [`views.msk`]: -1,
-    [`priority.msk`]: -1,
-    _id: -1,
-  });
-  await productsCollection.createIndex({ slug: 1 });
+  // Cities indexes
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const cities = await citiesCollection.find({}).toArray();
+  for await (const city of cities) {
+    // Brands
+    await brandsCollection.createIndex({
+      [`minPriceCities.${city.slug}`]: -1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
 
-  const indexes = await productsCollection.listIndexes().toArray();
-  console.log(indexes);
+    // Brand collections
+    await brandCollectionsCollection.createIndex({
+      [`minPriceCities.${city.slug}`]: -1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+
+    // Manufacturers
+    await manufacturersCollection.createIndex({
+      [`minPriceCities.${city.slug}`]: -1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+
+    // Products
+    await productsCollection.createIndex({
+      rubricId: 1,
+      selectedOptionsSlugs: 1,
+      [`minPriceCities.${city.slug}`]: -1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      [`views.msk`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+  }
+
+  console.log('Indexes success');
 }

@@ -1,11 +1,20 @@
+import {
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_MANUFACTURERS,
+  COL_PRODUCTS,
+} from 'db/collectionNames';
 import { createIndexes } from 'db/createIndexes';
 import { createInitialData } from 'db/createInitialData';
+import { updateCollectionItemId } from 'lib/itemIdUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Seeder } from 'mongo-seeding';
 import path from 'path';
 import { clearTestData } from 'tests/clearTestData';
 
 async function seedInitial() {
+  await createInitialData();
+
   process.env.DEBUG = 'mongo-seeding';
   const config = {
     database: process.env.MONGO_URL,
@@ -19,7 +28,7 @@ async function seedInitial() {
     // Handle errors
     console.log('Error ', e);
   }
-  console.log('Seeded >>>>>>>>>>>>>>');
+  console.log('Seeded initial data >>>>>>>>>>>>>>');
 }
 
 async function seedCollectionChunk(chunkName: string) {
@@ -38,7 +47,7 @@ async function seedCollectionChunk(chunkName: string) {
     // Handle errors
     console.log('Error ', e);
   }
-  console.log('Seeded >>>>>>>>>>>>>>');
+  console.log(`Seeded ${chunkName} chunk >>>>>>>>>>>>>>`);
 }
 
 async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -58,19 +67,47 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
 
   // Indexes
   if (entity === 'indexes') {
+    console.log('Updating itemId counters');
+    const itemIdCollections = [COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS, COL_PRODUCTS];
+    for await (const collectionName of itemIdCollections) {
+      await updateCollectionItemId(collectionName);
+    }
+
+    console.log('Creating indexes');
     await createIndexes();
   }
 
   // Seed initial
   if (entity === 'local') {
+    console.log('Clearing db');
     await clearTestData();
+
+    console.log('Creating initial data');
     await createInitialData();
+
+    console.log('Seeding initial data');
     await seedInitial();
   }
 
   // Seed chunk
   if (entity === 'chunk') {
     await seedCollectionChunk(`${chunkName}`);
+  }
+
+  // Chunk A
+  if (entity === 'chunkA') {
+    const chunks = ['allProducts', 'wine-a'];
+    for await (const chunkName of chunks) {
+      await seedCollectionChunk(chunkName);
+    }
+  }
+
+  // Chunk B
+  if (entity === 'chunkB') {
+    const chunks = ['wine-b', 'wine-c', 'wine-d'];
+    for await (const chunkName of chunks) {
+      await seedCollectionChunk(chunkName);
+    }
   }
 
   res.statusCode = 200;

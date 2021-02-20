@@ -292,7 +292,7 @@ export interface NexusGenInputs {
     manufacturerSlug?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
-    rubricsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateRoleInput: {
     // input type
@@ -617,7 +617,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     originalName: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRoleInput: {
     // input type
@@ -1455,8 +1455,8 @@ export interface NexusGenFieldTypes {
     originalName: string; // String!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     rubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
-    rubricsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -2528,8 +2528,8 @@ export interface NexusGenFieldTypeNames {
     originalName: 'String';
     priorities: 'JSONObject';
     ratingFeatures: 'ProductAttribute';
+    rubricId: 'ObjectId';
     rubrics: 'Rubric';
-    rubricsIds: 'ObjectId';
     shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';

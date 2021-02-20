@@ -478,7 +478,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   originalName: string;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
-  rubricsIds: ObjectIdModel[];
+  rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
   brandSlug?: string | null;

@@ -79,7 +79,7 @@ export const CreateProductInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.list.nonNull.upload('assets');
-    t.nonNull.list.nonNull.objectId('rubricsIds');
+    t.nonNull.objectId('rubricId');
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
@@ -122,7 +122,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.string('originalName');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
-    t.nonNull.list.nonNull.objectId('rubricsIds');
+    t.nonNull.objectId('rubricId');
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
@@ -191,10 +191,10 @@ export const ProductMutations = extendType({
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricsIds, ...values } = input;
+          const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricId, ...values } = input;
 
           // Get selected rubrics
-          const rubrics = await rubricsCollection.find({ _id: { $in: rubricsIds } }).toArray();
+          const rubrics = await rubricsCollection.find({ _id: rubricId }).toArray();
           const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           const manufacturerEntity = manufacturerSlug
@@ -253,7 +253,7 @@ export const ProductMutations = extendType({
             connections: [],
             createdAt: new Date(),
             updatedAt: new Date(),
-            rubricsIds,
+            rubricId,
             selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
             attributes: values.attributes.map((attributeInput) => {
               let selectedOptions: OptionModel[] = [];
@@ -316,10 +316,10 @@ export const ProductMutations = extendType({
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { productId, rubricsIds, ...values } = input;
+          const { productId, rubricId, ...values } = input;
 
           // Get selected rubrics
-          const rubrics = await rubricsCollection.find({ _id: { $in: rubricsIds } }).toArray();
+          const rubrics = await rubricsCollection.find({ _id: rubricId }).toArray();
           const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           // Check product availability
@@ -361,7 +361,7 @@ export const ProductMutations = extendType({
                 ...values,
                 slug: updatedSlug,
                 updatedAt: new Date(),
-                rubricsIds,
+                rubricId,
                 selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
                 attributes: values.attributes.map((attributeInput) => {
                   let selectedOptions: OptionModel[] = [];

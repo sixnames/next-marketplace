@@ -731,7 +731,7 @@ export const RubricMutations = extendType({
           }
 
           // Check if product already added to the rubric
-          const exists = product.rubricsIds.some((id) => id.equals(rubricId));
+          const exists = product.rubricId.equals(rubricId);
           if (exists) {
             return {
               success: false,

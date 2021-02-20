@@ -177,6 +177,21 @@ export const CatalogueQueries = extendType({
             return null;
           }
 
+          /*await productsCollection.createIndex({
+            rubricId: 1,
+            selectedOptionsSlugs: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            _id: -1,
+          });
+  
+          await productsCollection.createIndex({
+            rubricId: 1,
+            [`views.msk`]: -1,
+            [`priority.msk`]: -1,
+            _id: -1,
+          });*/
+
           // Get products
           const noFiltersSelected = filterOptions.length < 1;
           const keyStage = lastProductId
@@ -188,17 +203,18 @@ export const CatalogueQueries = extendType({
             : {};
 
           const initialFilterProductsMatch = noFiltersSelected
-            ? { selectedOptionsSlugs: rubricSlug }
+            ? { rubricId: rubric._id }
             : {
+                rubricId: rubric._id,
                 selectedOptionsSlugs: {
-                  $all: filter,
+                  $all: filterOptions,
                 },
               };
 
           const productsInitialMatch = {
             ...initialFilterProductsMatch,
-            active: true,
-            archive: false,
+            // active: true,
+            // archive: false,
           };
 
           const productsMainPipeline = [
@@ -226,6 +242,7 @@ export const CatalogueQueries = extendType({
             .aggregate(productsMainPipeline)
             .explain();
           console.log(JSON.stringify(productsExplain, null, 2));*/
+
           const productsEndTime = new Date().getTime();
           console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
@@ -287,19 +304,30 @@ export const CatalogueQueries = extendType({
                 : [...filter, optionSlug].join('/');
 
               const optionProductsMatch = noFiltersSelected
-                ? { selectedOptionsSlugs: rubricSlug }
+                ? {
+                    rubricId: rubric._id,
+                    selectedOptionsSlugs: optionSlug,
+                  }
                 : {
-                    selectedOptionsSlugs: {
-                      $all: [...filter, optionSlug],
-                    },
+                    rubricId: rubric._id,
+                    $and: [
+                      {
+                        selectedOptionsSlugs: optionSlug,
+                      },
+                      {
+                        selectedOptionsSlugs: {
+                          $all: filterOptions,
+                        },
+                      },
+                    ],
                   };
 
               // Check if option has products
               const optionProducts = await productsCollection.findOne(
                 {
                   ...optionProductsMatch,
-                  active: true,
-                  archive: false,
+                  // active: true,
+                  // archive: false,
                 },
                 { projection: { _id: 1 } },
               );

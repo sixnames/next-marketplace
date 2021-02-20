@@ -98,7 +98,7 @@ export const Product = objectType({
     t.string('manufacturerSlug');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
-    t.nonNull.list.nonNull.objectId('rubricsIds');
+    t.nonNull.objectId('rubricId');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.nonNull.list.nonNull.field('assets', {
@@ -154,7 +154,7 @@ export const Product = objectType({
       resolve: async (source): Promise<RubricModel[]> => {
         const db = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const rubrics = await rubricsCollection.find({ _id: { $in: source.rubricsIds } }).toArray();
+        const rubrics = await rubricsCollection.find({ _id: source.rubricId }).toArray();
         return rubrics;
       },
     });

@@ -3,6 +3,7 @@ import {
   COL_BRANDS,
   COL_CONFIGS,
   COL_MANUFACTURERS,
+  COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { BrandModel, ConfigModel, ManufacturerModel, ProductModel, RubricModel } from 'db/dbModels';
@@ -13,49 +14,40 @@ export async function createIndexes() {
 
   // Brands indexes
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-  await brandsCollection.createIndex({ slug: 1 });
+  await brandsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Brand collections indexes
   const brandCollectionsCollection = db.collection<BrandModel>(COL_BRAND_COLLECTIONS);
-  await brandCollectionsCollection.createIndex({ slug: 1 });
+  await brandCollectionsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Manufacturers indexes
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-  await manufacturersCollection.createIndex({ slug: 1 });
+  await manufacturersCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Rubrics indexes
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  await rubricsCollection.createIndex({ slug: 1 });
+  await rubricsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Configs indexes
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  await configsCollection.createIndex({ slug: 1 });
+  await configsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Products indexes
-  const productsCollection = db.collection<ProductModel>(COL_RUBRICS);
+  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  await productsCollection.createIndex({ slug: 1 }, { unique: true });
   await productsCollection.createIndex({
+    rubricId: 1,
     selectedOptionsSlugs: 1,
-  });
-  await productsCollection.createIndex({
-    selectedOptionsSlugs: 1,
-    active: 1,
-    archive: 1,
-  });
-  await productsCollection.createIndex({
-    selectedOptionsSlugs: 1,
-    active: 1,
-    archive: 1,
     [`views.msk`]: -1,
     [`priority.msk`]: -1,
-    [`minPriceCities.msk`]: -1,
+    _id: -1,
   });
+
   await productsCollection.createIndex({
-    selectedOptionsSlugs: 1,
-    active: 1,
-    archive: 1,
+    rubricId: 1,
     [`views.msk`]: -1,
     [`priority.msk`]: -1,
-    [`minPriceCities.msk`]: 1,
+    _id: -1,
   });
   await productsCollection.createIndex({ slug: 1 });
 

@@ -6,6 +6,7 @@ import CatalogueFilter from './CatalogueFilter';
 import classes from './CatalogueRoute.module.css';
 import {
   CatalogueDataFragment,
+  ProductSnippetFragment,
   useGetCatalogueRubricLazyQuery,
   useUpdateCatalogueCountersMutation,
 } from 'generated/apolloComponents';
@@ -45,24 +46,36 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const [pageLoading, setPageLoading] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [isRowView, setIsRowView] = React.useState<boolean>(false);
-  const [catalogueData, setCatalogueData] = React.useState<CatalogueDataFragment>(() => {
-    return rubricData;
+  const [lastProductId, setLastProductId] = React.useState<string | null | undefined>(() => {
+    return rubricData.lastProductId;
+  });
+  const [hasMore, setHasMore] = React.useState<boolean>(() => {
+    return rubricData.hasMore;
+  });
+  const [products, setProducts] = React.useState<ProductSnippetFragment[]>(() => {
+    return rubricData.products;
   });
   const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
 
   React.useEffect(() => {
-    setCatalogueData(rubricData);
-  }, [rubricData]);
+    setProducts(() => {
+      return rubricData.products;
+    });
+  }, [rubricData.products]);
+
+  React.useEffect(() => {
+    console.log(products.length);
+  }, [products]);
 
   React.useEffect(() => {
     updateCatalogueCountersMutation({
       variables: {
         input: {
-          filter: catalogueData.filter,
+          filter: rubricData.filter,
         },
       },
     }).catch((e) => console.log(e));
-  }, [catalogueData, updateCatalogueCountersMutation]);
+  }, [rubricData, updateCatalogueCountersMutation]);
 
   React.useEffect(() => {
     Router.events.on('routeChangeStart', () => {
@@ -81,12 +94,10 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
         const { getCatalogueData } = data;
 
         if (getCatalogueData) {
-          setCatalogueData((prevState) => {
-            return {
-              ...getCatalogueData,
-              lastProductId: getCatalogueData.lastProductId,
-              products: [...prevState.products, ...getCatalogueData.products],
-            };
+          setLastProductId(getCatalogueData.lastProductId);
+          setHasMore(getCatalogueData.hasMore);
+          setProducts((prevState) => {
+            return [...prevState, ...getCatalogueData.products];
           });
         }
       }
@@ -104,21 +115,17 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [fixBodyScroll]);
 
   const fetchMoreHandler = React.useCallback(() => {
-    if (catalogueData && catalogueData.hasMore && !pageLoading) {
-      const { filter, hasMore, products } = catalogueData;
-      const lastProduct = products[products.length - 1];
-      if (hasMore) {
-        getRubricData({
-          variables: {
-            input: {
-              filter,
-              lastProductId: lastProduct?._id,
-            },
+    if (hasMore && !pageLoading) {
+      getRubricData({
+        variables: {
+          input: {
+            filter: rubricData.filter,
+            lastProductId: lastProductId,
           },
-        });
-      }
+        },
+      });
     }
-  }, [catalogueData, getRubricData, pageLoading]);
+  }, [getRubricData, hasMore, pageLoading, rubricData.filter, lastProductId]);
 
   const sortConfig = React.useMemo(
     () => [
@@ -197,56 +204,38 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     [router, showErrorNotification],
   );
 
-  if (!catalogueData) {
-    return (
-      <Inner>
-        <RequestError />
-      </Inner>
-    );
-  }
+  const catalogueCounterString = React.useMemo(() => {
+    return rubricData.totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
+      ? `Найдено ${rubricData.totalProducts}`
+      : `Найдено более ${rubricData.totalProducts} товаров`;
+  }, [rubricData.totalProducts]);
 
-  const {
-    rubric,
-    hasMore,
-    catalogueTitle,
-    attributes,
-    selectedAttributes,
-    clearSlug,
-    totalProducts,
-  } = catalogueData;
-  const { name } = rubric;
-
-  if (totalProducts < 1) {
+  if (rubricData.totalProducts < 1) {
     return (
       <div className={classes.catalogue}>
-        <Breadcrumbs currentPageName={name} />
+        <Breadcrumbs currentPageName={rubricData.rubric.name} />
         <Inner lowTop testId={'catalogue'}>
-          <Title testId={'catalogue-title'}>{catalogueTitle}</Title>
-          <RequestError message={'В данном разделе нет товаров. Загляните позже'} />
+          <Title testId={'catalogue-title'}>{rubricData.catalogueTitle}</Title>
+          <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
         </Inner>
       </div>
     );
   }
 
-  const catalogueCounterString =
-    totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
-      ? `Найдено ${totalProducts}`
-      : `Найдено более ${totalProducts} товаров`;
-
   return (
     <div className={classes.catalogue}>
-      <Breadcrumbs currentPageName={name} />
+      <Breadcrumbs currentPageName={rubricData.rubric.name} />
       <Inner lowTop testId={'catalogue'}>
         <Title testId={'catalogue-title'} subtitle={isMobile ? catalogueCounterString : undefined}>
-          {catalogueTitle}
+          {rubricData.catalogueTitle}
         </Title>
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
-            attributes={attributes}
-            selectedAttributes={selectedAttributes}
+            attributes={rubricData.attributes}
+            selectedAttributes={rubricData.selectedAttributes}
             catalogueCounterString={catalogueCounterString}
-            rubricClearSlug={clearSlug}
+            rubricClearSlug={rubricData.clearSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
           />
@@ -300,19 +289,19 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
               <InfiniteScroll
                 className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
                 next={fetchMoreHandler}
-                hasMore={hasMore}
-                dataLength={catalogueData.products.length}
+                hasMore={rubricData.hasMore}
+                dataLength={products.length}
                 scrollableTarget={'#catalogue-products'}
                 loader={<span />}
               >
-                {catalogueData.products.map((product) => {
+                {products.map((product) => {
                   if (isRowView && !isMobile) {
                     return (
                       <ProductSnippetRow
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product._id}`}
-                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
+                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubricData.rubric.slug}`}
                       />
                     );
                   }
@@ -322,7 +311,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product._id}
                       testId={`catalogue-item-${product._id}`}
-                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubric.slug}`}
+                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubricData.rubric.slug}`}
                     />
                   );
                 })}

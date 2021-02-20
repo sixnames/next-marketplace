@@ -510,7 +510,7 @@ input CreateProductInput {
   manufacturerSlug: String
   nameI18n: JSONObject!
   originalName: String!
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 input CreateRoleInput {
@@ -1455,8 +1455,8 @@ type Product implements Base & Timestamp {
   originalName: String!
   priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
+  rubricId: ObjectId!
   rubrics: [Rubric!]!
-  rubricsIds: [ObjectId!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
@@ -2312,7 +2312,7 @@ input UpdateProductInput {
   nameI18n: JSONObject!
   originalName: String!
   productId: ObjectId!
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 input UpdateRoleInput {

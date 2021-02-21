@@ -703,3 +703,8 @@ export interface CatalogueDataModel {
   attributes: CatalogueFilterAttributeModel[];
   selectedAttributes: CatalogueFilterAttributeModel[];
 }
+
+export interface CatalogueAdditionalOptionInterface {
+  key: string;
+  value: string;
+}

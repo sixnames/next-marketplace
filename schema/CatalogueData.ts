@@ -11,6 +11,7 @@ import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from
 import {
   BrandCollectionModel,
   BrandModel,
+  CatalogueAdditionalOptionInterface,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
@@ -39,6 +40,8 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
+  CATALOGUE_FILTER_EXCLUDED_KEYS,
+  CATALOGUE_FILTER_SORT_KEYS,
   CATALOGUE_FILTER_VISIBLE_ATTRIBUTES,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_MANUFACTURER_KEY,
@@ -47,8 +50,11 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
+  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
+  SORT_ASC,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
+  SORT_DESC_STR,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 
@@ -177,23 +183,42 @@ export const CatalogueQueries = extendType({
             return null;
           }
 
-          /*await productsCollection.createIndex({
-            rubricId: 1,
-            selectedOptionsSlugs: 1,
-            [`views.msk`]: -1,
-            [`priority.msk`]: -1,
-            _id: -1,
+          // Cast filter
+          const realFilterOptions: string[] = [];
+          let sortBy: string | null = null;
+          let sortDir: string | null = null;
+
+          const sortFilterOptions: string[] = [];
+          const excludedFilterOptions: CatalogueAdditionalOptionInterface[] = [];
+          filterOptions.forEach((filterOption) => {
+            const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
+            const filterOptionName = splittedOption[0];
+            const filterOptionValue = splittedOption[1];
+            if (filterOptionName) {
+              const excluded = CATALOGUE_FILTER_EXCLUDED_KEYS.includes(filterOptionName);
+              const isSort = CATALOGUE_FILTER_SORT_KEYS.includes(filterOptionName);
+
+              if (isSort) {
+                sortFilterOptions.push(filterOption);
+                sortBy = filterOptionName;
+                sortDir = filterOptionValue;
+                return;
+              }
+
+              if (excluded) {
+                excludedFilterOptions.push({
+                  key: filterOptionName,
+                  value: filterOptionValue,
+                });
+                return;
+              }
+
+              realFilterOptions.push(filterOption);
+            }
           });
-  
-          await productsCollection.createIndex({
-            rubricId: 1,
-            [`views.msk`]: -1,
-            [`priority.msk`]: -1,
-            _id: -1,
-          });*/
 
           // Get products
-          const noFiltersSelected = filterOptions.length < 1;
+          const noFiltersSelected = realFilterOptions.length < 1;
           const keyStage = lastProductId
             ? {
                 _id: {
@@ -207,7 +232,7 @@ export const CatalogueQueries = extendType({
             : {
                 rubricId: rubric._id,
                 selectedOptionsSlugs: {
-                  $all: filterOptions,
+                  $all: realFilterOptions,
                 },
               };
 
@@ -216,6 +241,22 @@ export const CatalogueQueries = extendType({
             // active: true,
             // archive: false,
           };
+
+          // sort stage
+          const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+          let sortStage = {
+            [`views.${city}`]: SORT_DESC,
+            [`priority.${city}`]: SORT_DESC,
+            _id: SORT_DESC,
+          };
+
+          // sort by price
+          if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
+            sortStage = {
+              [`minPriceCities.${city}`]: castedSortDir,
+              _id: SORT_DESC,
+            };
+          }
 
           const productsMainPipeline = [
             {
@@ -226,9 +267,7 @@ export const CatalogueQueries = extendType({
             },
             {
               $sort: {
-                [`views.${city}`]: SORT_DESC,
-                [`priority.${city}`]: SORT_DESC,
-                _id: SORT_DESC,
+                ...sortStage,
               },
             },
             {
@@ -316,7 +355,7 @@ export const CatalogueQueries = extendType({
                       },
                       {
                         selectedOptionsSlugs: {
-                          $all: filterOptions,
+                          $all: realFilterOptions,
                         },
                       },
                     ],
@@ -384,7 +423,6 @@ export const CatalogueQueries = extendType({
           const afterOptions = new Date().getTime();
           console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
-          // TODO clearSlug with sorting
           // Get selected attributes
           const castedFilters = filter.map((param) => castCatalogueParamToObject(param));
           const selectedAttributes = rubric.attributes.reduce(
@@ -468,12 +506,13 @@ export const CatalogueQueries = extendType({
               !(products.length < CATALOGUE_PRODUCTS_LIMIT);
           }
 
-          // TODO clearSlug with sorting
+          const sortPathname =
+            sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
           return {
             _id: rubric._id,
             lastProductId: lastProduct?._id,
             hasMore,
-            clearSlug: `/${rubricSlug}`,
+            clearSlug: `/${rubricSlug}${sortPathname}`,
             filter,
             rubric,
             products,

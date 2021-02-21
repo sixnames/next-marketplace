@@ -50,7 +50,6 @@ export async function createIndexes() {
   for await (const city of cities) {
     // Brands
     await brandsCollection.createIndex({
-      [`minPriceCities.${city.slug}`]: -1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
@@ -58,7 +57,6 @@ export async function createIndexes() {
 
     // Brand collections
     await brandCollectionsCollection.createIndex({
-      [`minPriceCities.${city.slug}`]: -1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
@@ -66,7 +64,6 @@ export async function createIndexes() {
 
     // Manufacturers
     await manufacturersCollection.createIndex({
-      [`minPriceCities.${city.slug}`]: -1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
@@ -75,8 +72,20 @@ export async function createIndexes() {
     // Products
     await productsCollection.createIndex({
       rubricId: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
       selectedOptionsSlugs: 1,
-      [`minPriceCities.${city.slug}`]: -1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
@@ -84,7 +93,7 @@ export async function createIndexes() {
 
     await productsCollection.createIndex({
       rubricId: 1,
-      [`views.msk`]: -1,
+      [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
     });

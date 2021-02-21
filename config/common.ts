@@ -186,24 +186,11 @@ export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
 export const SORT_BY_KEY = 'sortBy';
 export const SORT_DIR_KEY = 'sortDir';
-export const CATALOGUE_MIN_PRICE_KEY = 'minPrice';
-export const CATALOGUE_MAX_PRICE_KEY = 'maxPrice';
+export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];
 export const CATALOGUE_BRAND_KEY = 'brand';
 export const CATALOGUE_BRAND_COLLECTION_KEY = 'brandCollection';
 export const CATALOGUE_MANUFACTURER_KEY = 'manufacturer';
-export const CATALOGUE_FILTER_EXCLUDED_KEYS = [
-  // TODO price range
-  'TODO price range',
-  // SORT_BY_KEY,
-  // SORT_DIR_KEY,
-  // CATALOGUE_MIN_PRICE_KEY,
-  // CATALOGUE_MAX_PRICE_KEY,
-  // CATALOGUE_BRAND_KEY,
-  // CATALOGUE_BRAND_COLLECTION_KEY,
-  // CATALOGUE_MANUFACTURER_KEY,
-];
-export const CATALOGUE_FILTER_PRICE_KEYS = [CATALOGUE_MIN_PRICE_KEY, CATALOGUE_MAX_PRICE_KEY];
-export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];
+export const PRICE_ATTRIBUTE_SLUG = 'price';
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

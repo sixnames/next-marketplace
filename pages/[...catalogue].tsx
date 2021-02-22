@@ -35,6 +35,7 @@ import {
   GetCatalogueRubricQuery,
   GetCatalogueRubricQueryVariables,
   useGetCatalogueRubricQuery,
+  useUpdateCatalogueCountersMutation,
 } from 'generated/apolloComponents';
 import { PagePropsInterface } from 'pages/_app';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -60,6 +61,20 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   React.useEffect(() => {
     setState(rubricData);
   }, [rubricData]);
+
+  // update catalogue counters
+  const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
+  React.useEffect(() => {
+    updateCatalogueCountersMutation({
+      variables: {
+        input: {
+          filter: rubricData.filter,
+        },
+      },
+    }).catch((e) => {
+      console.log(e);
+    });
+  }, [rubricData, updateCatalogueCountersMutation]);
 
   const { loading } = useGetCatalogueRubricQuery({
     fetchPolicy: 'network-only',

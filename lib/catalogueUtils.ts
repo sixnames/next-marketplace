@@ -183,8 +183,12 @@ export async function getCatalogueAttributes({
     const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
     const selectedOptions: RubricOptionModel[] = [];
 
+    // console.log('');
+    // console.log(`Attribute ${slug} >>>>>>>>>`);
+
     for await (const option of options) {
       // check if selected
+      const optionStartTime = new Date().getTime();
       const optionSlug = option.slug;
       const isSelected = filter.includes(optionSlug);
 
@@ -248,6 +252,11 @@ export async function getCatalogueAttributes({
             }
           : {
               rubricId,
+              /*selectedOptionsSlugs: {
+                // $all: [...realFilterOptions, optionSlug],
+                $all: [optionSlug, ...realFilterOptions],
+              },*/
+              // selectedOptionsSlugs: optionSlug,
               $and: [
                 {
                   selectedOptionsSlugs: optionSlug,
@@ -269,17 +278,30 @@ export async function getCatalogueAttributes({
       const counter = optionProducts ? 1 : 0;
       const isDisabled = counter < 1;
 
-      if (!isDisabled) {
-        castedOptions.push({
-          _id: option._id,
-          name: getFieldLocale(option.nameI18n),
-          slug: option.slug,
-          nextSlug: `/${optionNextSlug}`,
-          isSelected,
-          isDisabled,
-          counter,
-        });
-      }
+      const optionEndTime = new Date().getTime();
+      const totalTime = optionEndTime - optionStartTime;
+      console.log(`${optionSlug} `, totalTime);
+      /*if (totalTime < 100) {
+        const optionProductsExplain = await productsCollection
+          .aggregate([
+            {
+              $match: optionProductsMatch,
+            },
+          ])
+          .explain();
+        console.log(JSON.stringify(optionProductsExplain, null, 2));
+      }*/
+      // console.log(JSON.stringify(optionProductsMatch, null, 2));
+
+      castedOptions.push({
+        _id: option._id,
+        name: getFieldLocale(option.nameI18n),
+        slug: option.slug,
+        nextSlug: `/${optionNextSlug}`,
+        isSelected,
+        isDisabled,
+        counter,
+      });
     }
 
     // attribute
@@ -320,9 +342,7 @@ export async function getCatalogueAttributes({
       isSelected,
     };
 
-    if (!isDisabled) {
-      castedAttributes.push(castedAttribute);
-    }
+    castedAttributes.push(castedAttribute);
   }
 
   return {

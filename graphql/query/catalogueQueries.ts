@@ -129,6 +129,17 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
   ${catalogueDataFragment}
 `;
 
+export const CATALOGUE_ADDITIONAL_ATTRIBUTES_QUERY = gql`
+  query CatalogueAdditionsAttributes($input: CatalogueAdditionalAttributesInput!) {
+    getCatalogueAdditionalAttributes(input: $input) {
+      additionalAttributes {
+        ...CatalogueFilterAttribute
+      }
+    }
+  }
+  ${catalogueFilterAttributeFragment}
+`;
+
 export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`
   mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
     updateCatalogueCounters(input: $input)

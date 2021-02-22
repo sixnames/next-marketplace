@@ -120,7 +120,7 @@ export interface PaginationInputModel {
 }
 
 export interface ProductsPaginationInputModel extends PaginationInputModel {
-  rubricsIds?: ObjectIdModel[] | null;
+  rubricId?: ObjectIdModel | null;
   attributesIds?: ObjectIdModel[] | null;
   excludedRubricsIds?: ObjectIdModel[] | null;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -704,7 +704,6 @@ export interface CatalogueDataModel {
   selectedAttributes: CatalogueFilterAttributeModel[];
 }
 
-export interface CatalogueAdditionalOptionInterface {
-  key: string;
-  value: string;
+export interface CatalogueAdditionalAttributesModel {
+  additionalAttributes: CatalogueFilterAttributeModel[];
 }

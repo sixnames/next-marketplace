@@ -153,7 +153,7 @@ export const Rubric = objectType({
         const paginationResult = await productsPaginationQuery({
           input: {
             ...args.input,
-            rubricsIds: [source._id],
+            rubricId: source._id,
           },
           city,
         });

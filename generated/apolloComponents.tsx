@@ -240,6 +240,16 @@ export type CatalogueDataInput = {
   filter: Array<Scalars['String']>;
 };
 
+export type CatalogueAdditionalAttributes = {
+  __typename?: 'CatalogueAdditionalAttributes';
+  additionalAttributes: Array<CatalogueFilterAttribute>;
+};
+
+export type CatalogueAdditionalAttributesInput = {
+  shownAttributesSlugs: Array<Scalars['String']>;
+  filter: Array<Scalars['String']>;
+};
+
 export type City = {
   __typename?: 'City';
   _id: Scalars['ObjectId'];
@@ -423,7 +433,10 @@ export type Query = {
   getAllCurrencies: Array<Currency>;
   /** Should all languages list */
   getAllLanguages: Array<Language>;
+  /** Should return catalogue page data */
   getCatalogueData?: Maybe<CatalogueData>;
+  /** Should return catalogue additional attributes */
+  getCatalogueAdditionalAttributes: CatalogueAdditionalAttributes;
   /** Should return top search items */
   getCatalogueSearchTopItems: CatalogueSearchResult;
   /** Should return top search items */
@@ -550,6 +563,11 @@ export type QueryGetAllUsersArgs = {
 
 export type QueryGetCatalogueDataArgs = {
   input: CatalogueDataInput;
+};
+
+
+export type QueryGetCatalogueAdditionalAttributesArgs = {
+  input: CatalogueAdditionalAttributesInput;
 };
 
 
@@ -2036,7 +2054,7 @@ export type Product = Base & Timestamp & {
   manufacturerSlug?: Maybe<Scalars['String']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   assets: Array<Asset>;
@@ -2097,7 +2115,7 @@ export type ProductsPaginationInput = {
   page?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   /** Filter by current rubrics */
-  rubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
+  rubricId?: Maybe<Scalars['ObjectId']>;
   /** Filter by current attributes */
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude products in current rubrics */
@@ -2116,7 +2134,7 @@ export type GetProductShopsInput = {
 
 export type ProductAttributesAstInput = {
   productId?: Maybe<Scalars['ObjectId']>;
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
 };
 
 export type ProductPayload = Payload & {
@@ -2147,7 +2165,7 @@ export type CreateProductInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   assets: Array<Scalars['Upload']>;
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2176,7 +2194,7 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2676,7 +2694,7 @@ export type CmsProductConnectionFragment = (
 
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricsIds' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricId' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
   & { assets: Array<(
     { __typename?: 'Asset' }
     & Pick<Asset, 'url' | 'index'>
@@ -2890,7 +2908,7 @@ export type RubricInListFragment = (
 
 export type RubricProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricsIds'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
 );
 
 export type RubricProductsPaginationFragment = (
@@ -4087,6 +4105,22 @@ export type GetCatalogueRubricQuery = (
   )> }
 );
 
+export type CatalogueAdditionsAttributesQueryVariables = Exact<{
+  input: CatalogueAdditionalAttributesInput;
+}>;
+
+
+export type CatalogueAdditionsAttributesQuery = (
+  { __typename?: 'Query' }
+  & { getCatalogueAdditionalAttributes: (
+    { __typename?: 'CatalogueAdditionalAttributes' }
+    & { additionalAttributes: Array<(
+      { __typename?: 'CatalogueFilterAttribute' }
+      & CatalogueFilterAttributeFragment
+    )> }
+  ) }
+);
+
 export type UpdateCatalogueCountersMutationVariables = Exact<{
   input: CatalogueDataInput;
 }>;
@@ -4946,7 +4980,7 @@ export const CmsProductFieldsFragmentDoc = gql`
   }
   active
   mainImage
-  rubricsIds
+  rubricId
   brandSlug
   brandCollectionSlug
   manufacturerSlug
@@ -5025,7 +5059,7 @@ export const RubricProductFragmentDoc = gql`
   slug
   mainImage
   active
-  rubricsIds
+  rubricId
 }
     `;
 export const RubricProductsPaginationFragmentDoc = gql`
@@ -8559,6 +8593,41 @@ export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
 export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
 export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const CatalogueAdditionsAttributesDocument = gql`
+    query CatalogueAdditionsAttributes($input: CatalogueAdditionalAttributesInput!) {
+  getCatalogueAdditionalAttributes(input: $input) {
+    additionalAttributes {
+      ...CatalogueFilterAttribute
+    }
+  }
+}
+    ${CatalogueFilterAttributeFragmentDoc}`;
+
+/**
+ * __useCatalogueAdditionsAttributesQuery__
+ *
+ * To run a query within a React component, call `useCatalogueAdditionsAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogueAdditionsAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogueAdditionsAttributesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCatalogueAdditionsAttributesQuery(baseOptions: Apollo.QueryHookOptions<CatalogueAdditionsAttributesQuery, CatalogueAdditionsAttributesQueryVariables>) {
+        return Apollo.useQuery<CatalogueAdditionsAttributesQuery, CatalogueAdditionsAttributesQueryVariables>(CatalogueAdditionsAttributesDocument, baseOptions);
+      }
+export function useCatalogueAdditionsAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogueAdditionsAttributesQuery, CatalogueAdditionsAttributesQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogueAdditionsAttributesQuery, CatalogueAdditionsAttributesQueryVariables>(CatalogueAdditionsAttributesDocument, baseOptions);
+        }
+export type CatalogueAdditionsAttributesQueryHookResult = ReturnType<typeof useCatalogueAdditionsAttributesQuery>;
+export type CatalogueAdditionsAttributesLazyQueryHookResult = ReturnType<typeof useCatalogueAdditionsAttributesLazyQuery>;
+export type CatalogueAdditionsAttributesQueryResult = Apollo.QueryResult<CatalogueAdditionsAttributesQuery, CatalogueAdditionsAttributesQueryVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)

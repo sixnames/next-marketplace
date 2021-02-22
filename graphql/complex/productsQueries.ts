@@ -71,7 +71,7 @@ export const cmsProductFieldsFragment = gql`
     }
     active
     mainImage
-    rubricsIds
+    rubricId
     brandSlug
     brandCollectionSlug
     manufacturerSlug

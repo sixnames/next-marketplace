@@ -27,23 +27,17 @@ export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
 }
 
 interface ProductMainFieldsInterface {
-  rubricId?: string | null;
   rubrics?: GetAllRubricsQuery['getAllRubrics'];
   productId?: string | null;
 }
 
-const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
-  rubricId,
-  rubrics,
-  productId,
-}) => {
+const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ rubrics, productId }) => {
   const [brandCollections, setBrandCollections] = React.useState<BrandCollectionsOptionFragment[]>(
     [],
   );
   const { values, setFieldValue } = useFormikContext<ProductFormValuesInterface>();
   const { data, loading, error } = useGetProductBrandsOptionsQuery();
-  const { rubricsIds } = values;
-  const showFeatures = rubricsIds.length > 0;
+  const showFeatures = !!values.rubricId;
 
   React.useEffect(() => {
     if (values.brandSlug) {
@@ -130,7 +124,7 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
         options={getManufacturersOptions}
       />
 
-      {!rubricId && rubrics ? (
+      {rubrics ? (
         <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>
           <RubricsList
             low
@@ -139,7 +133,7 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
             titleLeft={(_id, testId) => (
               <FormikArrayCheckbox
                 className={classes.rubricCheckbox}
-                name={'rubricsIds'}
+                name={'rubricId'}
                 testId={testId}
                 value={_id}
               />
@@ -148,9 +142,7 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({
         </InputLine>
       ) : null}
 
-      {showFeatures ? (
-        <ProductAttributesInput productId={productId} rubricsIds={rubricsIds} />
-      ) : null}
+      {showFeatures ? <ProductAttributesInput productId={productId} /> : null}
     </React.Fragment>
   );
 };

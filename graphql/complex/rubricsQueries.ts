@@ -24,7 +24,7 @@ export const rubricProductFragment = gql`
     slug
     mainImage
     active
-    rubricsIds
+    rubricId
   }
 `;
 

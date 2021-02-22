@@ -61,7 +61,7 @@ export const ProductsPaginationInput = inputObjectType({
     t.int('limit', {
       default: PAGINATION_DEFAULT_LIMIT,
     });
-    t.list.nonNull.objectId('rubricsIds', {
+    t.objectId('rubricId', {
       description: 'Filter by current rubrics',
     });
     t.list.nonNull.objectId('attributesIds', {
@@ -97,7 +97,7 @@ export const ProductAttributesASTInput = inputObjectType({
   name: 'ProductAttributesASTInput',
   definition(t) {
     t.objectId('productId');
-    t.nonNull.list.nonNull.objectId('rubricsIds');
+    t.nonNull.objectId('rubricId');
   },
 });
 
@@ -243,11 +243,11 @@ export const ProductQueries = extendType({
           const { input } = args;
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { rubricsIds, productId } = input;
+          const { rubricId, productId } = input;
 
           // Get all attributes groups ids
           const rubrics = await rubricsCollection
-            .find({ _id: { $in: rubricsIds } }, { projection: { attributesGroups: 1 } })
+            .find({ _id: rubricId }, { projection: { attributesGroups: 1 } })
             .toArray();
 
           // Get all attributes groups

@@ -260,6 +260,15 @@ type CartProduct implements Base {
   totalPrice: Int!
 }
 
+type CatalogueAdditionalAttributes {
+  additionalAttributes: [CatalogueFilterAttribute!]!
+}
+
+input CatalogueAdditionalAttributesInput {
+  filter: [String!]!
+  shownAttributesSlugs: [String!]!
+}
+
 type CatalogueData {
   _id: ObjectId!
   attributes: [CatalogueFilterAttribute!]!
@@ -1508,7 +1517,7 @@ input ProductAttributeInput {
 
 input ProductAttributesASTInput {
   productId: ObjectId
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 type ProductAttributesGroupAst implements Base {
@@ -1585,7 +1594,7 @@ input ProductsPaginationInput {
   """
   Filter by current rubrics
   """
-  rubricsIds: [ObjectId!]
+  rubricId: ObjectId
   search: String
   sortBy: String = "createdAt"
   sortDir: SortDirection = DESC
@@ -1730,6 +1739,17 @@ type Query {
   Should return brands list
   """
   getBrandsOptions: [Brand!]!
+
+  """
+  Should return catalogue additional attributes
+  """
+  getCatalogueAdditionalAttributes(
+    input: CatalogueAdditionalAttributesInput!
+  ): CatalogueAdditionalAttributes!
+
+  """
+  Should return catalogue page data
+  """
   getCatalogueData(input: CatalogueDataInput!): CatalogueData
 
   """

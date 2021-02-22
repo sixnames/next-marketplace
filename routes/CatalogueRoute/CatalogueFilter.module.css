@@ -3,10 +3,10 @@
 }
 
 .filterHolder {
-  --stickyGap: 1.5rem;
+  /*--stickyGap: 1.5rem;*/
 
-  position: sticky;
-  top: calc(var(--minLinkHeight) + var(--stickyGap));
+  /*position: sticky;*/
+  /*top: calc(var(--minLinkHeight) + var(--stickyGap));*/
 }
 
 .totalCounter {

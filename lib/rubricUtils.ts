@@ -40,7 +40,7 @@ export async function recalculateRubricOptionProductCounters({
     .aggregate([
       {
         $match: {
-          rubricsIds: rubricId,
+          rubricId: rubricId,
           selectedOptionsSlugs: option.slug,
           active: true,
           archive: false,
@@ -158,7 +158,7 @@ export async function recalculateRubricProductCounters({
       .aggregate([
         {
           $match: {
-            rubricsIds: rubricId,
+            rubricId: rubricId,
             archive: false,
           },
         },
@@ -282,8 +282,9 @@ export function getRubricCatalogueOptions({
 export interface GetRubricCatalogueAttributesInterface {
   city: string;
   attributes: RubricAttributeModel[];
-  visibleAttributesCount: number;
+  visibleAttributesCount?: number;
   visibleOptionsCount: number;
+  attributeCondition?: (attribute: RubricAttributeModel) => boolean;
 }
 
 export async function getRubricCatalogueAttributes({
@@ -291,18 +292,25 @@ export async function getRubricCatalogueAttributes({
   attributes,
   visibleAttributesCount,
   visibleOptionsCount,
+  attributeCondition,
 }: GetRubricCatalogueAttributesInterface): Promise<RubricAttributeModel[]> {
-  const visibleAttributes = attributes
-    .filter(({ showInCatalogueFilter, variant }) => {
-      return (
-        showInCatalogueFilter &&
-        (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT)
-      );
-    })
-    .slice(0, visibleAttributesCount);
+  const visibleAttributes = attributes.filter((attribute) => {
+    if (attributeCondition) {
+      return attributeCondition(attribute);
+    }
+    return (
+      attribute.showInCatalogueFilter &&
+      (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+        attribute.variant === ATTRIBUTE_VARIANT_SELECT)
+    );
+  });
+
+  const finalAttributes = visibleAttributesCount
+    ? visibleAttributes.slice(0, visibleAttributesCount)
+    : visibleAttributes;
 
   const sortedAttributes: RubricAttributeModel[] = [];
-  visibleAttributes.forEach((attribute) => {
+  finalAttributes.forEach((attribute) => {
     sortedAttributes.push({
       ...attribute,
       options: getRubricCatalogueOptions({

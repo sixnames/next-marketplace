@@ -48,14 +48,8 @@ export async function productsPaginationQuery({
   try {
     const db = await getDatabase();
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const {
-      excludedProductsIds,
-      excludedRubricsIds,
-      isWithoutRubrics,
-      rubricsIds,
-      attributesIds,
-      ...restInputValues
-    } = input || {};
+    const { excludedProductsIds, excludedRubricsIds, rubricId, attributesIds, ...restInputValues } =
+      input || {};
     const { page, sortDir, sortBy, limit } = restInputValues || {
       page: PAGE_DEFAULT,
       sortDir: SORT_DESC,
@@ -99,34 +93,17 @@ export async function productsPaginationQuery({
       ? [
           {
             $match: {
-              rubricsIds: { $nin: excludedRubricsIds },
+              rubricId: { $nin: excludedRubricsIds },
             },
           },
         ]
       : [];
 
-    const isWithoutRubricsStage = isWithoutRubrics
+    const rubricsStage = rubricId
       ? [
           {
             $match: {
-              $or: [
-                {
-                  rubricsIds: { $exists: true, $size: 0 },
-                },
-                {
-                  rubricsIds: { $exists: false },
-                },
-              ],
-            },
-          },
-        ]
-      : [];
-
-    const rubricsStage = rubricsIds
-      ? [
-          {
-            $match: {
-              rubricsIds: { $in: rubricsIds },
+              rubricId,
             },
           },
         ]
@@ -148,7 +125,6 @@ export async function productsPaginationQuery({
       ...rubricsStage,
       ...excludedProductsStage,
       ...excludedRubricsStage,
-      ...isWithoutRubricsStage,
       ...attributesStage,
 
       // filter shop products data

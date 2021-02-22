@@ -313,14 +313,15 @@ export const RubricMutations = extendType({
             };
           }
 
+          // TODO add product to inactive collection
           // Remove rubric and child rubrics ids from all connected products
           const updatedProductsResult = await productsCollection.updateMany(
             {
-              rubricsIds: _id,
+              rubricId: _id,
             },
             {
               $pull: {
-                rubricsIds: _id,
+                rubricIds: _id,
               },
             },
           );
@@ -745,8 +746,8 @@ export const RubricMutations = extendType({
               _id: productId,
             },
             {
-              $push: {
-                rubricsIds: rubricId,
+              $set: {
+                rubricId,
               },
             },
           );
@@ -811,15 +812,15 @@ export const RubricMutations = extendType({
             };
           }
 
+          // TODO add product to inactive collection
           // Remove rubric id from the product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
             {
               _id: productId,
             },
             {
-              $pull: {
-                rubricsIds: rubricId,
-                selectedOptionsSlugs: rubric.slug,
+              $set: {
+                rubricId,
               },
             },
           );

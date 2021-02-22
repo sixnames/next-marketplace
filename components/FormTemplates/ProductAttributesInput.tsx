@@ -110,24 +110,23 @@ const ProductAttributesInputItem: React.FC<ProductAttributesInputItemInterface> 
 
 interface CreateNewProductAttributesSelectInterface {
   productId?: string | null;
-  rubricsIds: string[];
 }
 
 const ProductAttributesInput: React.FC<CreateNewProductAttributesSelectInterface> = ({
-  rubricsIds,
   productId,
 }) => {
   const [attributes, setAttributes] = React.useState<ProductAttributeAstFragment[]>([]);
+  const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { data, error } = useGetProductAttributesAstQuery({
+    skip: !values.rubricId,
     variables: {
       input: {
         productId,
-        rubricsIds,
+        rubricId: `${values.rubricId}`,
       },
     },
     fetchPolicy: 'network-only',
   });
-  const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
 
   React.useEffect(() => {
     if (data && data.getProductAttributesAST) {

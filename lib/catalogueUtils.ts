@@ -1,4 +1,3 @@
-import { COL_PRODUCTS } from 'db/collectionNames';
 import {
   AttributeModel,
   CatalogueFilterAttributeModel,
@@ -6,7 +5,6 @@ import {
   GenderModel,
   ObjectIdModel,
   OptionModel,
-  ProductModel,
   RubricAttributeModel,
   RubricCatalogueTitleModel,
   RubricOptionModel,
@@ -174,7 +172,7 @@ export async function getCatalogueAttributes({
   pricesStage,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const db = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  // const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const selectedFilters: SelectedFilterInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeModel[] = [];
 
@@ -183,12 +181,9 @@ export async function getCatalogueAttributes({
     const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
     const selectedOptions: RubricOptionModel[] = [];
 
-    // console.log('');
-    // console.log(`Attribute ${slug} >>>>>>>>>`);
-
     for await (const option of options) {
       // check if selected
-      const optionStartTime = new Date().getTime();
+      // const optionStartTime = new Date().getTime();
       const optionSlug = option.slug;
       const isSelected = filter.includes(optionSlug);
 
@@ -252,46 +247,36 @@ export async function getCatalogueAttributes({
             }
           : {
               rubricId,
-              /*selectedOptionsSlugs: {
+              selectedOptionsSlugs: {
                 // $all: [...realFilterOptions, optionSlug],
                 $all: [optionSlug, ...realFilterOptions],
-              },*/
+              },
               // selectedOptionsSlugs: optionSlug,
-              $and: [
-                {
-                  selectedOptionsSlugs: optionSlug,
-                },
+              /*$and: [
                 {
                   selectedOptionsSlugs: {
                     $all: realFilterOptions,
                   },
                 },
-              ],
+                {
+                  selectedOptionsSlugs: optionSlug,
+                },
+              ],*/
               ...pricesStage,
             };
       }
 
       // Check if option has products
-      const optionProducts = await productsCollection.findOne(optionProductsMatch, {
+      /*const optionProducts = await productsCollection.findOne(optionProductsMatch, {
         projection: { _id: 1 },
-      });
+      });*/
+      const optionProducts = await db.collection('facets').findOne(optionProductsMatch);
       const counter = optionProducts ? 1 : 0;
       const isDisabled = counter < 1;
 
-      const optionEndTime = new Date().getTime();
-      const totalTime = optionEndTime - optionStartTime;
-      console.log(`${optionSlug} `, totalTime);
-      /*if (totalTime < 100) {
-        const optionProductsExplain = await productsCollection
-          .aggregate([
-            {
-              $match: optionProductsMatch,
-            },
-          ])
-          .explain();
-        console.log(JSON.stringify(optionProductsExplain, null, 2));
-      }*/
-      // console.log(JSON.stringify(optionProductsMatch, null, 2));
+      // const optionEndTime = new Date().getTime();
+      // const totalTime = optionEndTime - optionStartTime;
+      // console.log(`${optionSlug} `, totalTime);
 
       castedOptions.push({
         _id: option._id,

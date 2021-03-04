@@ -303,47 +303,7 @@ export const CatalogueQueries = extendType({
           ];
 
           const productsStartTime = new Date().getTime();
-          // const products = await productsCollection.aggregate(productsMainPipeline).toArray();
-
-          const products =
-            realFilterOptions.length > 1
-              ? await db
-                  .collection('facets')
-                  .aggregate([
-                    ...productsMainPipeline,
-                    {
-                      $lookup: {
-                        from: COL_PRODUCTS,
-                        foreignField: '_id',
-                        localField: '_id',
-                        as: 'product',
-                      },
-                    },
-                    { $replaceRoot: { newRoot: { $arrayElemAt: ['$product', 0] } } },
-                  ])
-                  .toArray()
-              : await productsCollection.aggregate(productsMainPipeline).toArray();
-          /*console.log(
-            JSON.stringify(
-              await db
-                .collection('facets')
-                .aggregate([
-                  ...productsMainPipeline,
-                  {
-                    $lookup: {
-                      from: COL_PRODUCTS,
-                      foreignField: '_id',
-                      localField: '_id',
-                      as: 'product',
-                    },
-                  },
-                  { $replaceRoot: { newRoot: { $arrayElemAt: ['$product', 0] } } },
-                ])
-                .explain(),
-              null,
-              2,
-            ),
-          );*/
+          const products = await productsCollection.aggregate(productsMainPipeline).toArray();
           /*const productsExplain = await productsCollection
             .aggregate(productsMainPipeline)
             .explain();
@@ -353,17 +313,7 @@ export const CatalogueQueries = extendType({
           console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
           const productsCountStartTime = new Date().getTime();
-          /*const productsCountAggregation = await productsCollection
-            .aggregate<any>([
-              { $match: { ...productsInitialMatch } },
-              { $limit: CATALOGUE_PRODUCTS_COUNT_LIMIT },
-              {
-                $count: 'counter',
-              },
-            ])
-            .toArray();*/
-          const productsCountAggregation = await db
-            .collection('facets')
+          const productsCountAggregation = await productsCollection
             .aggregate<any>([
               { $match: { ...productsInitialMatch } },
               { $limit: CATALOGUE_PRODUCTS_COUNT_LIMIT },

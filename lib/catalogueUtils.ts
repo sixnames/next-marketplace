@@ -252,12 +252,12 @@ export async function getCatalogueAttributes({
             }
           : {
               rubricId,
-              /*selectedOptionsSlugs: {
-                // $all: [...realFilterOptions, optionSlug],
-                $all: [optionSlug, ...realFilterOptions],
-              },*/
+              selectedOptionsSlugs: {
+                $all: [...realFilterOptions, optionSlug],
+                // $all: [optionSlug, ...realFilterOptions],
+              },
               // selectedOptionsSlugs: optionSlug,
-              $and: [
+              /*$and: [
                 {
                   selectedOptionsSlugs: optionSlug,
                 },
@@ -266,7 +266,7 @@ export async function getCatalogueAttributes({
                     $all: realFilterOptions,
                   },
                 },
-              ],
+              ],*/
               ...pricesStage,
             };
       }
@@ -281,17 +281,6 @@ export async function getCatalogueAttributes({
       const optionEndTime = new Date().getTime();
       const totalTime = optionEndTime - optionStartTime;
       console.log(`${optionSlug} `, totalTime);
-      /*if (totalTime < 100) {
-        const optionProductsExplain = await productsCollection
-          .aggregate([
-            {
-              $match: optionProductsMatch,
-            },
-          ])
-          .explain();
-        console.log(JSON.stringify(optionProductsExplain, null, 2));
-      }*/
-      // console.log(JSON.stringify(optionProductsMatch, null, 2));
 
       castedOptions.push({
         _id: option._id,

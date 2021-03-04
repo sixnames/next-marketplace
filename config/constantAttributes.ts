@@ -16,13 +16,10 @@ import { ObjectId } from 'mongodb';
 
 export function getPriceAttribute(): RubricAttributeModel {
   const commonOptionFields: Omit<RubricOptionModel, 'nameI18n' | '_id' | 'slug'> = {
-    visibleInCatalogueCities: {},
     priorities: {},
     views: {},
     options: [],
     variants: {},
-    shopProductsCountCities: {},
-    activeProductsCount: 0,
     productsCount: 0,
     gender: GENDER_IT as GenderModel,
   };
@@ -38,7 +35,6 @@ export function getPriceAttribute(): RubricAttributeModel {
     slug: PRICE_ATTRIBUTE_SLUG,
     priorities: {},
     views: {},
-    visibleInCatalogueCities: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG as AttributeViewVariantModel,

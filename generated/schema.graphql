@@ -1949,7 +1949,6 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
-  activeProductsCount: Int!
   attributes: [RubricAttribute!]!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!
@@ -1961,16 +1960,12 @@ type Rubric {
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   productsCount: Int!
-  shopProductsCount: Int!
-  shopProductsCountCities: JSONObject!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
   variant: RubricVariant!
   variantId: ObjectId!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttribute {
@@ -1988,8 +1983,6 @@ type RubricAttribute {
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttributesGroup {
@@ -2019,7 +2012,6 @@ input RubricCatalogueTitleInput {
 
 type RubricOption {
   _id: ObjectId!
-  activeProductsCount: Int!
   color: String
   icon: String
   name: String!
@@ -2027,13 +2019,9 @@ type RubricOption {
   options: [RubricOption!]!
   priorities: JSONObject!
   productsCount: Int!
-  shopProductsCount: Int!
-  shopProductsCountCities: JSONObject!
   slug: String!
   variants: JSONObject!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricPayload implements Payload {

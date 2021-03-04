@@ -45,32 +45,11 @@ export const Rubric = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.nonNull.int('productsCount');
-    t.nonNull.int('activeProductsCount');
-    t.nonNull.json('shopProductsCountCities');
-    t.nonNull.json('visibleInCatalogueCities');
     t.nonNull.list.nonNull.field('attributes', {
       type: 'RubricAttribute',
     });
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',
-    });
-
-    // Rubric shopProductsCount field resolver
-    t.nonNull.field('shopProductsCount', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { getCityData } = await getRequestParams(context);
-        return noNaN(getCityData(source.shopProductsCountCities));
-      },
-    });
-
-    // Rubric visibleInCatalogue field resolver
-    t.nonNull.field('visibleInCatalogue', {
-      type: 'Boolean',
-      resolve: async (source, _args, context): Promise<boolean> => {
-        const { getCityData } = await getRequestParams(context);
-        return Boolean(getCityData(source.visibleInCatalogueCities));
-      },
     });
 
     // Rubric attributesGroups field resolver

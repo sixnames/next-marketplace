@@ -826,13 +826,9 @@ export const CatalogueMutations = extendType({
                   city,
                 }).sort((optionA, optionB) => {
                   const optionACounter =
-                    noNaN(optionA.views[city]) +
-                    noNaN(optionA.priorities[city]) +
-                    noNaN(optionA.shopProductsCountCities[city]);
+                    noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
                   const optionBCounter =
-                    noNaN(optionB.views[city]) +
-                    noNaN(optionB.priorities[city]) +
-                    noNaN(optionA.shopProductsCountCities[city]);
+                    noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
                   return optionBCounter - optionACounter;
                 });
                 attribute.options = updatedOptions;

@@ -1,15 +1,9 @@
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  CATALOGUE_NAV_VISIBLE_OPTIONS,
-  DEFAULT_LOCALE,
-} from 'config/common';
-import { COL_CITIES, COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { ATTRIBUTE_VARIANT_MULTIPLE_SELECT, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
+import { COL_CITIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   CitiesBooleanModel,
   CitiesCounterModel,
   CityModel,
-  ConfigModel,
   GenderModel,
   ObjectIdModel,
   ProductModel,
@@ -46,36 +40,14 @@ export async function recalculateRubricOptionProductCounters({
           archive: false,
         },
       },
+      {
+        $project: {
+          _id: 1,
+        },
+      },
     ])
     .toArray();
-
-  const optionShopProductsCountCities: CitiesCounterModel = {};
   const productsCount = aggregationResult.length;
-  let activeProductsCount = 0;
-
-  aggregationResult.forEach(({ shopProductsCountCities, active }) => {
-    for (const city of cities) {
-      const citySlug = city.slug;
-      const productCityCounter = noNaN(shopProductsCountCities[citySlug]);
-      if (productCityCounter > 0) {
-        optionShopProductsCountCities[citySlug] = optionShopProductsCountCities[citySlug]
-          ? optionShopProductsCountCities[citySlug] + 1
-          : 1;
-      }
-    }
-
-    if (active) {
-      activeProductsCount = activeProductsCount + 1;
-    }
-  });
-
-  const visibleInCatalogueCities: CitiesBooleanModel = {};
-  for (const city of cities) {
-    const citySlug = city.slug;
-    const cityCounter = noNaN(optionShopProductsCountCities[citySlug]);
-    visibleInCatalogueCities[citySlug] = cityCounter > 0;
-  }
-
   const currentVariant = option.variants[rubricGender];
   const optionNameTranslations = currentVariant || option.nameI18n;
 
@@ -95,10 +67,7 @@ export async function recalculateRubricOptionProductCounters({
     ...option,
     nameI18n: optionNameTranslations,
     options,
-    shopProductsCountCities: optionShopProductsCountCities,
     productsCount,
-    activeProductsCount,
-    visibleInCatalogueCities,
   };
 }
 
@@ -138,18 +107,9 @@ export async function recalculateRubricProductCounters({
         updatedOptions.push(updatedOption);
       }
 
-      const visibleInCatalogueCities: CitiesBooleanModel = {};
-      for (const city of cities) {
-        const citySlug = city.slug;
-        visibleInCatalogueCities[citySlug] = updatedOptions.some(({ visibleInCatalogueCities }) => {
-          return noNaN(visibleInCatalogueCities[citySlug]) > 0;
-        });
-      }
-
       updatedAttributes.push({
         ...attribute,
         options: updatedOptions,
-        visibleInCatalogueCities,
       });
     }
 
@@ -201,8 +161,6 @@ export async function recalculateRubricProductCounters({
           attributes: updatedAttributes,
           productsCount,
           activeProductsCount,
-          shopProductsCountCities: rubricShopProductsCountCities,
-          visibleInCatalogueCities,
         },
       },
       { returnOriginal: false },
@@ -218,24 +176,6 @@ export async function recalculateRubricProductCounters({
     console.log(e);
     return null;
   }
-}
-
-export async function getCatalogueVisibleOptionsCount(city: string): Promise<number> {
-  const db = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-
-  // Get catalogue options config
-  const visibleOptionsConfig = await configsCollection.findOne({
-    slug: 'stickyNavVisibleOptionsCount',
-  });
-  let maxVisibleOptions = CATALOGUE_NAV_VISIBLE_OPTIONS;
-  if (visibleOptionsConfig) {
-    const configCityData = visibleOptionsConfig.cities[city];
-    if (configCityData && configCityData[DEFAULT_LOCALE]) {
-      maxVisibleOptions = configCityData[DEFAULT_LOCALE][0] || CATALOGUE_NAV_VISIBLE_OPTIONS;
-    }
-  }
-  return noNaN(maxVisibleOptions);
 }
 
 export interface GetRubricCatalogueOptionsInterface {
@@ -255,14 +195,8 @@ export function getRubricCatalogueOptions({
 
   const sortedOptions = options
     .sort((optionA, optionB) => {
-      const optionACounter =
-        noNaN(optionA.views[city]) +
-        noNaN(optionA.priorities[city]) +
-        noNaN(optionA.shopProductsCountCities[city]);
-      const optionBCounter =
-        noNaN(optionB.views[city]) +
-        noNaN(optionB.priorities[city]) +
-        noNaN(optionA.shopProductsCountCities[city]);
+      const optionACounter = noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
+      const optionBCounter = noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
       return optionBCounter - optionACounter;
     })
     .slice(0, maxVisibleOptions);

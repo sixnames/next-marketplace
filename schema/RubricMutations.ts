@@ -173,6 +173,7 @@ export const RubricMutations = extendType({
             active: true,
             attributes: [],
             attributesGroupsIds: [],
+            activeProductsCount: 0,
             ...DEFAULT_COUNTERS_OBJECT,
             ...RUBRIC_DEFAULT_COUNTERS,
           });

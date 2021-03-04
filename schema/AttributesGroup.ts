@@ -571,7 +571,6 @@ export const attributesGroupMutations = extendType({
                   showInCatalogueFilter: visibleInRubric,
                   showInCatalogueNav: visibleInRubric,
                   options: castOptionsForRubric(createdAttribute.options),
-                  visibleInCatalogueCities: {},
                   ...DEFAULT_COUNTERS_OBJECT,
                 },
               },

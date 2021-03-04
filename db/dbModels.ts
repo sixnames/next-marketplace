@@ -531,9 +531,6 @@ export interface RubricVariantModel {
 
 export interface RubricCountersInterface {
   productsCount: number;
-  activeProductsCount: number;
-  shopProductsCountCities: CitiesCounterModel;
-  visibleInCatalogueCities: CitiesBooleanModel;
 }
 
 export interface RubricOptionModel extends OptionModel, CountersModel, RubricCountersInterface {
@@ -545,7 +542,6 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   options: RubricOptionModel[];
-  visibleInCatalogueCities: CitiesBooleanModel;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {
@@ -571,6 +567,7 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
+  activeProductsCount: number;
 }
 
 export interface ShopProductModel extends TimestampModel {

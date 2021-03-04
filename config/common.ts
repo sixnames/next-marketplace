@@ -163,10 +163,7 @@ export const DEFAULT_COUNTERS_OBJECT = {
   },
 };
 export const RUBRIC_DEFAULT_COUNTERS = {
-  shopProductsCountCities: {},
-  visibleInCatalogueCities: {},
   productsCount: 0,
-  activeProductsCount: 0,
 };
 
 // SORT

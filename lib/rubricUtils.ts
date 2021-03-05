@@ -256,3 +256,86 @@ export async function getRubricCatalogueAttributes({
 
   return sortedAttributes;
 }
+
+export interface GetRubricNavOptionsInterface {
+  options: RubricOptionModel[];
+  maxVisibleOptions: number;
+  city: string;
+}
+
+export function getRubricNavOptions({
+  options,
+  maxVisibleOptions,
+  city,
+}: GetRubricNavOptionsInterface): RubricOptionModel[] {
+  const visibleOptions = options.filter(({ productsCount }) => {
+    return productsCount > 0;
+  });
+
+  const sortedOptions = visibleOptions
+    .sort((optionA, optionB) => {
+      const optionACounter = noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
+      const optionBCounter = noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
+      return optionBCounter - optionACounter;
+    })
+    .slice(0, maxVisibleOptions);
+
+  return sortedOptions.map((option) => {
+    return {
+      ...option,
+      options: getRubricNavOptions({
+        options: option.options,
+        maxVisibleOptions,
+        city,
+      }),
+    };
+  });
+}
+
+export interface GetRubricNavAttributesInterface {
+  city: string;
+  attributes: RubricAttributeModel[];
+  visibleOptionsCount: number;
+  visibleAttributesCount: number;
+}
+
+export async function getRubricNavAttributes({
+  city,
+  attributes,
+  visibleOptionsCount,
+  visibleAttributesCount,
+}: GetRubricNavAttributesInterface): Promise<RubricAttributeModel[]> {
+  const visibleAttributes = attributes
+    .filter((attribute) => {
+      return (
+        attribute.showInCatalogueFilter &&
+        (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+          attribute.variant === ATTRIBUTE_VARIANT_SELECT)
+      );
+    })
+    .slice(0, visibleAttributesCount);
+
+  const sortedAttributes: RubricAttributeModel[] = [];
+  visibleAttributes.forEach((attribute) => {
+    if (
+      !attribute.showInCatalogueFilter ||
+      !(
+        attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+        attribute.variant === ATTRIBUTE_VARIANT_SELECT
+      )
+    ) {
+      return;
+    }
+
+    sortedAttributes.push({
+      ...attribute,
+      options: getRubricNavOptions({
+        options: attribute.options,
+        maxVisibleOptions: visibleOptionsCount,
+        city,
+      }),
+    });
+  });
+
+  return sortedAttributes;
+}

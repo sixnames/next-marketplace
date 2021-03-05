@@ -260,10 +260,6 @@ type CartProduct implements Base {
   totalPrice: Int!
 }
 
-type CatalogueAdditionalAttributes {
-  additionalAttributes: [CatalogueFilterAttribute!]!
-}
-
 input CatalogueAdditionalAttributesInput {
   filter: [String!]!
   shownAttributesSlugs: [String!]!
@@ -291,7 +287,6 @@ input CatalogueDataInput {
 type CatalogueFilterAttribute {
   _id: ObjectId!
   clearSlug: String!
-  isDisabled: Boolean!
   isSelected: Boolean!
   name: String!
   options: [CatalogueFilterAttributeOption!]!
@@ -300,8 +295,6 @@ type CatalogueFilterAttribute {
 
 type CatalogueFilterAttributeOption {
   _id: ObjectId!
-  counter: Int!
-  isDisabled: Boolean!
   isSelected: Boolean!
   name: String!
   nextSlug: String!
@@ -1739,13 +1732,6 @@ type Query {
   Should return brands list
   """
   getBrandsOptions: [Brand!]!
-
-  """
-  Should return catalogue additional attributes
-  """
-  getCatalogueAdditionalAttributes(
-    input: CatalogueAdditionalAttributesInput!
-  ): CatalogueAdditionalAttributes!
 
   """
   Should return catalogue page data

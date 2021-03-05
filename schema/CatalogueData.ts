@@ -12,7 +12,6 @@ import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from
 import {
   BrandCollectionModel,
   BrandModel,
-  CatalogueAdditionalAttributesModel,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
@@ -76,9 +75,7 @@ export const CatalogueFilterAttributeOption = objectType({
     t.nonNull.string('name');
     t.nonNull.string('slug');
     t.nonNull.string('nextSlug');
-    t.nonNull.int('counter');
     t.nonNull.boolean('isSelected');
-    t.nonNull.boolean('isDisabled');
   },
 });
 
@@ -90,7 +87,6 @@ export const CatalogueFilterAttribute = objectType({
     t.nonNull.string('slug');
     t.nonNull.string('clearSlug');
     t.nonNull.boolean('isSelected');
-    t.nonNull.boolean('isDisabled');
     t.nonNull.list.nonNull.field('options', {
       type: 'CatalogueFilterAttributeOption',
     });
@@ -127,15 +123,6 @@ export const CatalogueDataInput = inputObjectType({
   definition(t) {
     t.objectId('lastProductId');
     t.nonNull.list.nonNull.string('filter');
-  },
-});
-
-export const CatalogueAdditionalAttributes = objectType({
-  name: 'CatalogueAdditionalAttributes',
-  definition(t) {
-    t.nonNull.list.nonNull.field('additionalAttributes', {
-      type: 'CatalogueFilterAttribute',
-    });
   },
 });
 
@@ -378,11 +365,11 @@ export const CatalogueQueries = extendType({
             visibleOptionsCount,
             city,
           });
-          console.log(attributes);
+
           const finalAttributes = [getPriceAttribute(), ...attributes];
-          const selectedFilters: any[] = [];
-          const castedAttributes: any[] = [];
-          /*const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
+          // const selectedFilters: any[] = [];
+          // const castedAttributes: any[] = [];
+          const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
             attributes: finalAttributes,
             rubricId: rubric._id,
             realFilterOptions,
@@ -390,9 +377,8 @@ export const CatalogueQueries = extendType({
             city,
             filter,
             noFiltersSelected,
-            visibleOptionsCount,
             pricesStage,
-          });*/
+          });
           const afterOptions = new Date().getTime();
           console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
@@ -491,124 +477,6 @@ export const CatalogueQueries = extendType({
         } catch (e) {
           console.log(e);
           return null;
-        }
-      },
-    });
-
-    // Should return catalogue additional attributes
-    t.nonNull.field('getCatalogueAdditionalAttributes', {
-      type: 'CatalogueAdditionalAttributes',
-      description: 'Should return catalogue additional attributes',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CatalogueAdditionalAttributesInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CatalogueAdditionalAttributesModel> => {
-        try {
-          console.log(' ');
-          console.log('Additional attributes');
-          const timeStart = new Date().getTime();
-          const { getFieldLocale, city } = await getRequestParams(context);
-          const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-
-          // Args
-          const { input } = args;
-          const { shownAttributesSlugs, filter } = input;
-          const [rubricSlug, ...filterOptions] = filter;
-
-          // Get configs
-          const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
-            slug: 'catalogueFilterVisibleOptionsCount',
-          });
-          const visibleOptionsCount =
-            noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
-            noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
-
-          // Get rubric
-          const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-
-          if (!rubric) {
-            return {
-              additionalAttributes: [],
-            };
-          }
-
-          // Cast selected options
-          const realFilterOptions: string[] = [];
-          let minPrice: number | null = null;
-          let maxPrice: number | null = null;
-          filterOptions.forEach((filterOption) => {
-            const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
-            const filterOptionName = splittedOption[0];
-            const filterOptionValue = splittedOption[1];
-            if (filterOptionName) {
-              const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
-
-              if (isPriceRange) {
-                const prices = filterOptionValue.split('_');
-                minPrice = prices[0] ? noNaN(prices[0]) : null;
-                maxPrice = prices[1] ? noNaN(prices[1]) : null;
-                return;
-              }
-
-              realFilterOptions.push(filterOption);
-            }
-          });
-
-          const pricesStage =
-            minPrice && maxPrice
-              ? {
-                  [`minPriceCities.${city}`]: {
-                    $gte: minPrice,
-                    $lte: maxPrice,
-                  },
-                }
-              : {};
-
-          const noFiltersSelected = realFilterOptions.length < 1;
-
-          const attributes = await getRubricCatalogueAttributes({
-            attributes: rubric.attributes,
-            visibleOptionsCount: 3,
-            city,
-            attributeCondition: ({ slug, showInCatalogueFilter, variant }) => {
-              return (
-                !shownAttributesSlugs.includes(slug) &&
-                showInCatalogueFilter &&
-                (variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-                  variant === ATTRIBUTE_VARIANT_SELECT)
-              );
-            },
-          });
-
-          const { castedAttributes } = await getCatalogueAttributes({
-            attributes,
-            rubricId: rubric._id,
-            realFilterOptions,
-            getFieldLocale,
-            city,
-            filter,
-            noFiltersSelected,
-            visibleOptionsCount,
-            pricesStage,
-          });
-
-          const timeEnd = new Date().getTime();
-          console.log('Additional attributes total time: ', timeEnd - timeStart);
-
-          return {
-            additionalAttributes: castedAttributes,
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            additionalAttributes: [],
-          };
         }
       },
     });

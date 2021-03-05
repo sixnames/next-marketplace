@@ -5,7 +5,7 @@ import {
   DEFAULT_LOCALE,
 } from 'config/common';
 import { noNaN } from 'lib/numbers';
-import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
+import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
@@ -163,7 +163,7 @@ export const Rubric = objectType({
             noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
             noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
-          const catalogueAttributes = await getRubricCatalogueAttributes({
+          const catalogueAttributes = await getRubricNavAttributes({
             attributes: source.attributes,
             city,
             visibleAttributesCount,

@@ -724,7 +724,6 @@ export interface NexusGenObjects {
   Cart: dbModels.CartModel;
   CartPayload: dbModels.CartPayloadModel;
   CartProduct: dbModels.CartProductModel;
-  CatalogueAdditionalAttributes: dbModels.CatalogueAdditionalAttributesModel;
   CatalogueData: dbModels.CatalogueDataModel;
   CatalogueFilterAttribute: dbModels.CatalogueFilterAttributeModel;
   CatalogueFilterAttributeOption: dbModels.CatalogueFilterAttributeOptionModel;
@@ -948,10 +947,6 @@ export interface NexusGenFieldTypes {
     shopProductId: NexusGenScalars['ObjectId'] | null; // ObjectId
     totalPrice: number; // Int!
   };
-  CatalogueAdditionalAttributes: {
-    // field return type
-    additionalAttributes: NexusGenRootTypes['CatalogueFilterAttribute'][]; // [CatalogueFilterAttribute!]!
-  };
   CatalogueData: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -970,7 +965,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     clearSlug: string; // String!
-    isDisabled: boolean; // Boolean!
     isSelected: boolean; // Boolean!
     name: string; // String!
     options: NexusGenRootTypes['CatalogueFilterAttributeOption'][]; // [CatalogueFilterAttributeOption!]!
@@ -979,8 +973,6 @@ export interface NexusGenFieldTypes {
   CatalogueFilterAttributeOption: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    counter: number; // Int!
-    isDisabled: boolean; // Boolean!
     isSelected: boolean; // Boolean!
     name: string; // String!
     nextSlug: string; // String!
@@ -1584,7 +1576,6 @@ export interface NexusGenFieldTypes {
     getBrand: NexusGenRootTypes['Brand']; // Brand!
     getBrandBySlug: NexusGenRootTypes['Brand'] | null; // Brand
     getBrandsOptions: NexusGenRootTypes['Brand'][]; // [Brand!]!
-    getCatalogueAdditionalAttributes: NexusGenRootTypes['CatalogueAdditionalAttributes']; // CatalogueAdditionalAttributes!
     getCatalogueData: NexusGenRootTypes['CatalogueData'] | null; // CatalogueData
     getCatalogueNavRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getCatalogueSearchResult: NexusGenRootTypes['CatalogueSearchResult']; // CatalogueSearchResult!
@@ -2014,10 +2005,6 @@ export interface NexusGenFieldTypeNames {
     shopProductId: 'ObjectId';
     totalPrice: 'Int';
   };
-  CatalogueAdditionalAttributes: {
-    // field return type name
-    additionalAttributes: 'CatalogueFilterAttribute';
-  };
   CatalogueData: {
     // field return type name
     _id: 'ObjectId';
@@ -2036,7 +2023,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     clearSlug: 'String';
-    isDisabled: 'Boolean';
     isSelected: 'Boolean';
     name: 'String';
     options: 'CatalogueFilterAttributeOption';
@@ -2045,8 +2031,6 @@ export interface NexusGenFieldTypeNames {
   CatalogueFilterAttributeOption: {
     // field return type name
     _id: 'ObjectId';
-    counter: 'Int';
-    isDisabled: 'Boolean';
     isSelected: 'Boolean';
     name: 'String';
     nextSlug: 'String';
@@ -2650,7 +2634,6 @@ export interface NexusGenFieldTypeNames {
     getBrand: 'Brand';
     getBrandBySlug: 'Brand';
     getBrandsOptions: 'Brand';
-    getCatalogueAdditionalAttributes: 'CatalogueAdditionalAttributes';
     getCatalogueData: 'CatalogueData';
     getCatalogueNavRubrics: 'Rubric';
     getCatalogueSearchResult: 'CatalogueSearchResult';
@@ -3381,10 +3364,6 @@ export interface NexusGenArgTypes {
     getBrandBySlug: {
       // args
       slug: string; // String!
-    };
-    getCatalogueAdditionalAttributes: {
-      // args
-      input: NexusGenInputs['CatalogueAdditionalAttributesInput']; // CatalogueAdditionalAttributesInput!
     };
     getCatalogueData: {
       // args

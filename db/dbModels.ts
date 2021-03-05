@@ -671,10 +671,8 @@ export interface CatalogueFilterAttributeOptionModel {
   _id: ObjectIdModel;
   slug: string;
   name: string;
-  counter: number;
   nextSlug: string;
   isSelected: boolean;
-  isDisabled: boolean;
 }
 
 export interface CatalogueFilterAttributeModel {
@@ -683,7 +681,6 @@ export interface CatalogueFilterAttributeModel {
   slug: string;
   name: string;
   isSelected: boolean;
-  isDisabled: boolean;
   options: CatalogueFilterAttributeOptionModel[];
 }
 
@@ -699,10 +696,6 @@ export interface CatalogueDataModel {
   catalogueTitle: string;
   attributes: CatalogueFilterAttributeModel[];
   selectedAttributes: CatalogueFilterAttributeModel[];
-}
-
-export interface CatalogueAdditionalAttributesModel {
-  additionalAttributes: CatalogueFilterAttributeModel[];
 }
 
 export interface ProductOptionInterface {

@@ -153,7 +153,6 @@ export interface GetCatalogueAttributesInterface {
   getFieldLocale: GetFieldLocaleType;
   noFiltersSelected: boolean;
   rubricId: ObjectIdModel;
-  visibleOptionsCount: number;
   pricesStage: any;
 }
 
@@ -170,7 +169,6 @@ export async function getCatalogueAttributes({
   city,
   noFiltersSelected,
   rubricId,
-  visibleOptionsCount,
   pricesStage,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
   const db = await getDatabase();
@@ -188,7 +186,6 @@ export async function getCatalogueAttributes({
 
     for await (const option of options) {
       // check if selected
-      const optionStartTime = new Date().getTime();
       const optionSlug = option.slug;
       const isSelected = filter.includes(optionSlug);
 
@@ -204,8 +201,6 @@ export async function getCatalogueAttributes({
             })
             .join('/')
         : [...filter, optionSlug].join('/');
-
-      let optionProductsMatch = {};
 
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {
@@ -231,7 +226,7 @@ export async function getCatalogueAttributes({
           $and: isPricesSelected ? [optionPricesStage, pricesStage] : [optionPricesStage],
         };
 
-        optionProductsMatch = noFiltersSelected
+        const optionProductsMatch = noFiltersSelected
           ? {
               rubricId,
               ...optionFinalPricesStage,
@@ -243,44 +238,22 @@ export async function getCatalogueAttributes({
               },
               ...optionFinalPricesStage,
             };
-      } else {
-        optionProductsMatch = noFiltersSelected
-          ? {
-              rubricId,
-              selectedOptionsSlugs: optionSlug,
-              ...pricesStage,
-            }
-          : {
-              rubricId,
-              selectedOptionsSlugs: {
-                $all: [...realFilterOptions, optionSlug],
-                // $all: [optionSlug, ...realFilterOptions],
-              },
-              // selectedOptionsSlugs: optionSlug,
-              /*$and: [
-                {
-                  selectedOptionsSlugs: optionSlug,
-                },
-                {
-                  selectedOptionsSlugs: {
-                    $all: realFilterOptions,
-                  },
-                },
-              ],*/
-              ...pricesStage,
-            };
+
+        const optionProduct = await productsCollection.findOne(optionProductsMatch, {
+          projection: { _id: 1 },
+        });
+
+        if (optionProduct) {
+          castedOptions.push({
+            _id: option._id,
+            name: getFieldLocale(option.nameI18n),
+            slug: option.slug,
+            nextSlug: `/${optionNextSlug}`,
+            isSelected,
+          });
+        }
+        continue;
       }
-
-      // Check if option has products
-      const optionProducts = await productsCollection.findOne(optionProductsMatch, {
-        projection: { _id: 1 },
-      });
-      const counter = optionProducts ? 1 : 0;
-      const isDisabled = counter < 1;
-
-      const optionEndTime = new Date().getTime();
-      const totalTime = optionEndTime - optionStartTime;
-      console.log(`${optionSlug} `, totalTime);
 
       castedOptions.push({
         _id: option._id,
@@ -288,9 +261,11 @@ export async function getCatalogueAttributes({
         slug: option.slug,
         nextSlug: `/${optionNextSlug}`,
         isSelected,
-        isDisabled,
-        counter,
       });
+    }
+
+    if (castedOptions.length < 1) {
+      continue;
     }
 
     // attribute
@@ -300,17 +275,7 @@ export async function getCatalogueAttributes({
     });
     const clearSlug = `/${otherSelectedValues.join('/')}`;
 
-    const sortedOptions = castedOptions.sort((optionA, optionB) => {
-      return optionB.counter - optionA.counter;
-    });
-    const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
-      if (isDisabled) {
-        return acc + 1;
-      }
-      return acc;
-    }, 0);
-
-    const isSelected = sortedOptions.some(({ isSelected }) => isSelected);
+    const isSelected = castedOptions.some(({ isSelected }) => isSelected);
     if (isSelected) {
       // Add selected items to the catalogue title config
       selectedFilters.push({
@@ -319,15 +284,12 @@ export async function getCatalogueAttributes({
       });
     }
 
-    const isDisabled = disabledOptionsCount === sortedOptions.length || sortedOptions.length < 1;
-
     const castedAttribute = {
       _id: attribute._id,
       clearSlug,
       slug: attribute.slug,
       name: getFieldLocale(attribute.nameI18n),
-      options: sortedOptions.slice(0, visibleOptionsCount),
-      isDisabled,
+      options: castedOptions,
       isSelected,
     };
 

@@ -97,6 +97,13 @@ export async function createIndexes() {
       [`priority.${city.slug}`]: -1,
       _id: -1,
     });
+
+    await db.collection('facets').createIndex({
+      rubricId: 1,
+      attributes: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
   }
 
   console.log('Indexes success');

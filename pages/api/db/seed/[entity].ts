@@ -8,11 +8,11 @@ import { createIndexes } from 'db/createIndexes';
 import { createInitialData } from 'db/createInitialData';
 import { updateCollectionItemId } from 'lib/itemIdUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Seeder } from 'mongo-seeding';
-import path from 'path';
+// import { Seeder } from 'mongo-seeding';
+// import path from 'path';
 import { clearTestData } from 'tests/clearTestData';
 
-async function seedInitial() {
+/*async function seedInitial() {
   await createInitialData();
 
   process.env.DEBUG = 'mongo-seeding';
@@ -48,10 +48,10 @@ async function seedCollectionChunk(chunkName: string) {
     console.log('Error ', e);
   }
   console.log(`Seeded ${chunkName} chunk >>>>>>>>>>>>>>`);
-}
+}*/
 
 async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
-  const { key, entity, chunkName } = req.query;
+  const { key, entity } = req.query;
 
   if (key !== process.env.INITIAL_DATA_KEY || !entity) {
     res.statusCode = 401;
@@ -60,10 +60,33 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
 
   console.log(`Seeding ${entity} data`);
 
-  // Initial
+  // Seed initial
   if (entity === 'initial') {
+    console.log('Clearing db');
+    await clearTestData();
+
+    console.log('Creating initial data');
     await createInitialData();
+
+    console.log('Success!');
+    // await seedInitial();
   }
+
+  // Chunk A
+  /*if (entity === 'chunkA') {
+    const chunks = ['allProducts', 'wine-a'];
+    for await (const chunkName of chunks) {
+      await seedCollectionChunk(chunkName);
+    }
+  }*/
+
+  // Chunk B
+  /*if (entity === 'chunkB') {
+    const chunks = ['wine-b', 'wine-c', 'wine-d'];
+    for await (const chunkName of chunks) {
+      await seedCollectionChunk(chunkName);
+    }
+  }*/
 
   // Indexes
   if (entity === 'indexes') {
@@ -75,39 +98,6 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
 
     console.log('Creating indexes');
     await createIndexes();
-  }
-
-  // Seed initial
-  if (entity === 'local') {
-    console.log('Clearing db');
-    await clearTestData();
-
-    console.log('Creating initial data');
-    await createInitialData();
-
-    console.log('Seeding initial data');
-    await seedInitial();
-  }
-
-  // Seed chunk
-  if (entity === 'chunk') {
-    await seedCollectionChunk(`${chunkName}`);
-  }
-
-  // Chunk A
-  if (entity === 'chunkA') {
-    const chunks = ['allProducts', 'wine-a'];
-    for await (const chunkName of chunks) {
-      await seedCollectionChunk(chunkName);
-    }
-  }
-
-  // Chunk B
-  if (entity === 'chunkB') {
-    const chunks = ['wine-b', 'wine-c', 'wine-d'];
-    for await (const chunkName of chunks) {
-      await seedCollectionChunk(chunkName);
-    }
   }
 
   res.statusCode = 200;

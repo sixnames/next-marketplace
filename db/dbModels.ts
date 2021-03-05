@@ -704,3 +704,8 @@ export interface CatalogueDataModel {
 export interface CatalogueAdditionalAttributesModel {
   additionalAttributes: CatalogueFilterAttributeModel[];
 }
+
+export interface ProductOptionInterface {
+  _id: string;
+  optionsSlugs: string[];
+}

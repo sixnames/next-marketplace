@@ -114,7 +114,7 @@ export const RubricQueries = extendType({
             .aggregate([
               {
                 $match: {
-                  [`visibleInCatalogueCities.${city}`]: true,
+                  activeProductsCount: { $gt: 0 },
                 },
               },
               {

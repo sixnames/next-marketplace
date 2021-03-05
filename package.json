@@ -17,7 +17,8 @@
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
-    "test": "npm run cy:start"
+    "test": "npm run cy:start",
+    "seed-test-data": "env-cmd seed ./db/initialData/parsed && env-cmd seed ./db/initialData/parsedBigCollections/allProducts && env-cmd seed ./db/initialData/parsedBigCollections/wine-a && env-cmd seed ./db/initialData/parsedBigCollections/wine-b && env-cmd seed ./db/initialData/parsedBigCollections/wine-c && env-cmd seed ./db/initialData/parsedBigCollections/wine-d"
   },
   "dependencies": {
     "@apollo/client": "^3.3.9",
@@ -106,6 +107,8 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "mongo-seeding": "^3.5.0",
+    "mongo-seeding-cli": "^3.5.0",
+    "env-cmd": "^10.1.0",
     "prettier": "^2.2.1",
     "typescript": "^4.1.5"
   }

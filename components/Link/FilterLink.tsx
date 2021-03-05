@@ -8,6 +8,7 @@ interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
   option: CatalogueFilterAttributeOptionFragment;
   withCross?: boolean;
+  disabled?: boolean;
 }
 
 const FilterLink: React.FC<FilterLinkInterface> = ({
@@ -15,15 +16,16 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   option,
   counter,
   withCross,
+  disabled,
   ...props
 }) => {
-  const { name, nextSlug, isSelected, isDisabled } = option;
+  const { name, nextSlug, isSelected } = option;
 
   return (
     <TagLink
       href={nextSlug}
       isActive={isSelected}
-      className={`${classes.filterLink} ${isDisabled ? classes.filterLinkDisabled : ''} ${
+      className={`${classes.filterLink} ${disabled ? classes.filterLinkDisabled : ''} ${
         className ? className : ''
       }`}
       {...props}

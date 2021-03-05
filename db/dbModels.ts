@@ -568,6 +568,7 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   activeProductsCount: number;
+  productsCount: number;
 }
 
 export interface ShopProductModel extends TimestampModel {

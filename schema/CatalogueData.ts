@@ -40,7 +40,6 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
-  CATALOGUE_FILTER_SORT_KEYS,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_MANUFACTURER_KEY,
   CATALOGUE_OPTION_SEPARATOR,
@@ -51,8 +50,10 @@ import {
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
   SORT_BY_ID_DIRECTION,
+  SORT_BY_KEY,
   SORT_DESC,
   SORT_DESC_STR,
+  SORT_DIR_KEY,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 
@@ -150,9 +151,9 @@ export const CatalogueQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<CatalogueDataModel | null> => {
         try {
-          console.log(' ');
-          console.log('===========================================================');
-          const timeStart = new Date().getTime();
+          // console.log(' ');
+          // console.log('===========================================================');
+          // const timeStart = new Date().getTime();
           const { getFieldLocale, city, locale } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
@@ -175,8 +176,8 @@ export const CatalogueQueries = extendType({
 
           // Get rubric
           const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
-          const rubricTime = new Date().getTime();
-          console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+          // const rubricTime = new Date().getTime();
+          // console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
 
           if (!rubric) {
             return null;
@@ -195,7 +196,6 @@ export const CatalogueQueries = extendType({
             const filterOptionName = splittedOption[0];
             const filterOptionValue = splittedOption[1];
             if (filterOptionName) {
-              const isSort = CATALOGUE_FILTER_SORT_KEYS.includes(filterOptionName);
               const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
 
               if (isPriceRange) {
@@ -205,9 +205,14 @@ export const CatalogueQueries = extendType({
                 return;
               }
 
-              if (isSort) {
+              if (filterOptionName === SORT_BY_KEY) {
                 sortFilterOptions.push(filterOption);
-                sortBy = filterOptionName;
+                sortBy = filterOptionValue;
+                return;
+              }
+
+              if (filterOptionName === SORT_DIR_KEY) {
+                sortFilterOptions.push(filterOption);
                 sortDir = filterOptionValue;
                 return;
               }
@@ -219,12 +224,16 @@ export const CatalogueQueries = extendType({
           // Get products
           const noFiltersSelected = realFilterOptions.length < 1;
           const keyStage = lastProductId
-            ? {
-                _id: {
-                  $lt: lastProductId,
+            ? [
+                {
+                  $match: {
+                    _id: {
+                      $lt: lastProductId,
+                    },
+                  },
                 },
-              }
-            : {};
+              ]
+            : [];
 
           const pricesStage =
             minPrice && maxPrice
@@ -270,7 +279,6 @@ export const CatalogueQueries = extendType({
             {
               $match: {
                 ...productsInitialMatch,
-                ...keyStage,
               },
             },
             {
@@ -278,20 +286,21 @@ export const CatalogueQueries = extendType({
                 ...sortStage,
               },
             },
+            ...keyStage,
             {
               $limit: CATALOGUE_PRODUCTS_LIMIT,
             },
           ];
 
           // Get catalogue products
-          const productsStartTime = new Date().getTime();
+          // const productsStartTime = new Date().getTime();
           const products = await productsCollection.aggregate(productsMainPipeline).toArray();
 
-          const productsEndTime = new Date().getTime();
-          console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+          // const productsEndTime = new Date().getTime();
+          // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
           // Count catalogue products
-          const productsCountStartTime = new Date().getTime();
+          // const productsCountStartTime = new Date().getTime();
           const productsCountAggregation = await productsCollection
             .aggregate<any>([
               { $match: { ...productsInitialMatch } },
@@ -303,14 +312,14 @@ export const CatalogueQueries = extendType({
           const totalProducts = productsCountAggregation[0]
             ? productsCountAggregation[0].counter
             : 0;
-          const productsCountEndTime = new Date().getTime();
-          console.log(
+          // const productsCountEndTime = new Date().getTime();
+          /*console.log(
             `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
             productsCountEndTime - productsCountStartTime,
-          );
+          );*/
 
           // Get options for catalogue attributes
-          const productOptionsAggregationStart = new Date().getTime();
+          // const productOptionsAggregationStart = new Date().getTime();
           const productOptionsAggregation = await productsCollection
             .aggregate<ProductOptionInterface>([
               { $match: { ...productsInitialMatch } },
@@ -351,14 +360,14 @@ export const CatalogueQueries = extendType({
               },
             ])
             .toArray();
-          const productOptionsAggregationEnd = new Date().getTime();
-          console.log(
+          // const productOptionsAggregationEnd = new Date().getTime();
+          /*console.log(
             `Product options >>>>>>>>>>>>>>>> `,
             productOptionsAggregationEnd - productOptionsAggregationStart,
-          );
+          );*/
 
           // Get filter attributes
-          const beforeOptions = new Date().getTime();
+          // const beforeOptions = new Date().getTime();
           const attributes = await getRubricCatalogueAttributes({
             config: productOptionsAggregation,
             attributes: rubric.attributes,
@@ -379,8 +388,8 @@ export const CatalogueQueries = extendType({
             noFiltersSelected,
             pricesStage,
           });
-          const afterOptions = new Date().getTime();
-          console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+          // const afterOptions = new Date().getTime();
+          // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
           // Get selected attributes
           const castedFilters = filter.map((param) => castCatalogueParamToObject(param));
@@ -458,9 +467,9 @@ export const CatalogueQueries = extendType({
           const sortPathname =
             sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
-          const timeEnd = new Date().getTime();
-          console.log('Total time: ', timeEnd - timeStart);
-
+          // const timeEnd = new Date().getTime();
+          // console.log('Total time: ', timeEnd - timeStart);
+          // console.log(lastProductId);
           return {
             _id: rubric._id,
             lastProductId: lastProduct?._id,

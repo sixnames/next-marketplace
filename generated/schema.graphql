@@ -1935,6 +1935,7 @@ type RolePayload implements Payload {
 type Rubric {
   _id: ObjectId!
   active: Boolean!
+  activeProductsCount: Int!
   attributes: [RubricAttribute!]!
   attributesGroups: [RubricAttributesGroup!]!
   catalogueTitle: RubricCatalogueTitle!

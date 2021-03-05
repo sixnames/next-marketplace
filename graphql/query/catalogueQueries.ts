@@ -58,11 +58,9 @@ export const catalogueFilterAttributeOptionFragment = gql`
   fragment CatalogueFilterAttributeOption on CatalogueFilterAttributeOption {
     _id
     name
-    counter
     slug
     nextSlug
     isSelected
-    isDisabled
   }
 `;
 
@@ -127,17 +125,6 @@ export const CATALOGUE_RUBRIC_QUERY = gql`
     }
   }
   ${catalogueDataFragment}
-`;
-
-export const CATALOGUE_ADDITIONAL_ATTRIBUTES_QUERY = gql`
-  query CatalogueAdditionsAttributes($input: CatalogueAdditionalAttributesInput!) {
-    getCatalogueAdditionalAttributes(input: $input) {
-      additionalAttributes {
-        ...CatalogueFilterAttribute
-      }
-    }
-  }
-  ${catalogueFilterAttributeFragment}
 `;
 
 export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`

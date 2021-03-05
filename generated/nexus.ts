@@ -1635,6 +1635,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
+    activeProductsCount: number; // Int!
     attributes: NexusGenRootTypes['RubricAttribute'][]; // [RubricAttribute!]!
     attributesGroups: NexusGenRootTypes['RubricAttributesGroup'][]; // [RubricAttributesGroup!]!
     catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
@@ -2693,6 +2694,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     active: 'Boolean';
+    activeProductsCount: 'Int';
     attributes: 'RubricAttribute';
     attributesGroups: 'RubricAttributesGroup';
     catalogueTitle: 'RubricCatalogueTitle';

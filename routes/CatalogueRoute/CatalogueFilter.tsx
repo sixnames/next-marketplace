@@ -1,12 +1,6 @@
-import Spinner from 'components/Spinner/Spinner';
-import { alwaysArray } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
-import {
-  CatalogueFilterAttributeFragment,
-  useCatalogueAdditionsAttributesQuery,
-} from 'generated/apolloComponents';
+import { CatalogueFilterAttributeFragment } from 'generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
@@ -99,26 +93,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
   hideFilterHandler,
   isFilterVisible,
 }) => {
-  const router = useRouter();
   const { isMobile } = useAppContext();
-  const [additionalFilters, setAdditionalFilters] = React.useState<
-    CatalogueFilterAttributeFragment[] | null
-  >(null);
-  const { data, loading } = useCatalogueAdditionsAttributesQuery({
-    ssr: false,
-    variables: {
-      input: {
-        filter: alwaysArray(router.query.catalogue),
-        shownAttributesSlugs: attributes.map(({ slug }) => slug),
-      },
-    },
-  });
-
-  React.useEffect(() => {
-    if (data && data.getCatalogueAdditionalAttributes) {
-      setAdditionalFilters(data.getCatalogueAdditionalAttributes.additionalAttributes);
-    }
-  }, [data]);
 
   return (
     <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
@@ -173,14 +148,6 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
         {attributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
         })}
-
-        {loading && !additionalFilters ? <Spinner isNested /> : null}
-
-        {additionalFilters
-          ? additionalFilters.map((attribute) => {
-              return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;
-            })
-          : null}
       </div>
     </div>
   );

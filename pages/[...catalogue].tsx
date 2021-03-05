@@ -104,10 +104,10 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   });
 
   const fetchMoreHandler = React.useCallback(() => {
-    if (state.hasMore) {
+    if (state.products.length < state.totalProducts) {
       setSkip(false);
     }
-  }, [state.hasMore]);
+  }, [state.products.length, state.totalProducts]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -281,7 +281,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
               <InfiniteScroll
                 className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
                 next={fetchMoreHandler}
-                hasMore={state.hasMore}
+                hasMore={state.products.length < state.totalProducts}
                 dataLength={state.products.length}
                 scrollableTarget={'#catalogue-products'}
                 loader={<span />}

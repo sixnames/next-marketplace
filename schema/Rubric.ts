@@ -45,6 +45,7 @@ export const Rubric = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.nonNull.int('productsCount');
+    t.nonNull.int('activeProductsCount');
     t.nonNull.list.nonNull.field('attributes', {
       type: 'RubricAttribute',
     });

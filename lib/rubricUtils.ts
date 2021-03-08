@@ -3,11 +3,8 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_OPTION_SEPARATOR,
 } from 'config/common';
-import { COL_CITIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
-  CitiesBooleanModel,
-  CitiesCounterModel,
-  CityModel,
   GenderModel,
   ObjectIdModel,
   ProductModel,
@@ -63,8 +60,6 @@ export async function recalculateRubricProductCounters({
     const db = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const cities = await citiesCollection.find({}).toArray();
 
     const rubric = await rubricsCollection.findOne({ _id: rubricId });
     if (!rubric) {
@@ -75,7 +70,7 @@ export async function recalculateRubricProductCounters({
       .aggregate<ProductOptionInterface>([
         {
           $match: {
-            rubricId: rubricId,
+            rubricId,
             active: true,
             archive: false,
           },
@@ -157,35 +152,23 @@ export async function recalculateRubricProductCounters({
             archive: false,
           },
         },
+        {
+          $project: {
+            shopProductsCountCities: 1,
+            active: 1,
+          },
+        },
       ])
       .toArray();
 
-    const rubricShopProductsCountCities: CitiesCounterModel = {};
     const productsCount = aggregationResult.length;
     let activeProductsCount = 0;
 
-    aggregationResult.forEach(({ shopProductsCountCities, active }) => {
-      for (const city of cities) {
-        const citySlug = city.slug;
-        const productCityCounter = noNaN(shopProductsCountCities[citySlug]);
-        if (productCityCounter > 0) {
-          rubricShopProductsCountCities[citySlug] = rubricShopProductsCountCities[citySlug]
-            ? rubricShopProductsCountCities[citySlug] + 1
-            : 1;
-        }
-      }
-
+    aggregationResult.forEach(({ active }) => {
       if (active) {
         activeProductsCount = activeProductsCount + 1;
       }
     });
-
-    const visibleInCatalogueCities: CitiesBooleanModel = {};
-    for (const city of cities) {
-      const citySlug = city.slug;
-      const cityCounter = noNaN(rubricShopProductsCountCities[citySlug]);
-      visibleInCatalogueCities[citySlug] = cityCounter > 0;
-    }
 
     const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
       {

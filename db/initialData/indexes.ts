@@ -100,7 +100,19 @@ async function createIndexes() {
       _id: -1,
     });
 
+    // Rubrics cities
+    await rubricsCollection.createIndex({
+      activeProductsCount: 1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+    });
+
     // Products catalogue
+    await productsCollection.createIndex({
+      rubricId: 1,
+      archive: 1,
+    });
+
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,

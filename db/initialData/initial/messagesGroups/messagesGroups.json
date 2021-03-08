@@ -1,0 +1,1367 @@
+[{
+  "_id": {
+    "$oid": "604325cbab3d5114fb2bc0b2"
+  },
+  "name": "Общее",
+  "messagesIds": [
+    {
+      "$oid": "604325cbab3d5114fb2bc0a2"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a3"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a4"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a5"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a6"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a7"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a8"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0a9"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0aa"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0ab"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0ac"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0ad"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0ae"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0af"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b0"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b1"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cbab3d5114fb2bc0bc"
+  },
+  "name": "Настройки сайта",
+  "messagesIds": [
+    {
+      "$oid": "604325cbab3d5114fb2bc0b3"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b4"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b5"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b6"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b7"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b8"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0b9"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0ba"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0bb"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cbab3d5114fb2bc0c7"
+  },
+  "name": "Валюта",
+  "messagesIds": [
+    {
+      "$oid": "604325cbab3d5114fb2bc0bd"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0be"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0bf"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c0"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c1"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c2"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c3"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c4"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c4"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c5"
+    },
+    {
+      "$oid": "604325cbab3d5114fb2bc0c6"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc0d6"
+  },
+  "name": "Языки",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc0c8"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0c9"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ca"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0cb"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0cc"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0cd"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ce"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0cf"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d0"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d1"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d2"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d3"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d4"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d5"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc0e5"
+  },
+  "name": "Города",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc0d7"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d8"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0d9"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0da"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0db"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0dc"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0dd"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0de"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0df"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e0"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e1"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e2"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e3"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e4"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc0f3"
+  },
+  "name": "Страны",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc0e6"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e7"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e8"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0e9"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ea"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0eb"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ec"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ed"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ee"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ef"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f0"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f1"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f2"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc10a"
+  },
+  "name": "Роли",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc0f4"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f5"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f6"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f7"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f8"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0f9"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0fa"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0fb"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0fc"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0fd"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0fe"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc0ff"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc100"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc101"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc102"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc103"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc104"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc105"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc106"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc107"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc108"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc109"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc121"
+  },
+  "name": "Пользователи",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc10b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc10c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc10d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc10e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc10f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc110"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc111"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc112"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc113"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc114"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc115"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc116"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc117"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc118"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc119"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc11f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc120"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc145"
+  },
+  "name": "Группы опций",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc122"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc123"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc124"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc125"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc126"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc127"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc128"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc129"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc12f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc130"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc131"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc132"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc133"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc134"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc135"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc136"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc137"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc138"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc139"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc13f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc140"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc141"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc142"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc143"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc144"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc166"
+  },
+  "name": "Группы атрибутов",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc146"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc147"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc148"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc149"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc14f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc150"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc151"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc152"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc153"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc154"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc155"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc156"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc157"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc158"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc159"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc15f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc160"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc161"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc162"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc163"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc164"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc165"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc172"
+  },
+  "name": "Типы рубрик",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc167"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc168"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc169"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc16f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc170"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc171"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325ccab3d5114fb2bc196"
+  },
+  "name": "Рубрики",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc173"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc174"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc175"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc176"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc177"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc178"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc179"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc17f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc180"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc181"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc182"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc183"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc184"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc185"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc186"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc187"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc188"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc189"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc18f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc190"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc191"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc192"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc193"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc194"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc195"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc1ba"
+  },
+  "name": "Товары",
+  "messagesIds": [
+    {
+      "$oid": "604325ccab3d5114fb2bc197"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc198"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc199"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19a"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19b"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19c"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19d"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19e"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc19f"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a0"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a1"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a2"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a3"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a4"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a5"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a6"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a7"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a8"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1a9"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1aa"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1ab"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1ac"
+    },
+    {
+      "$oid": "604325ccab3d5114fb2bc1ad"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ae"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1af"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b0"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b1"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b2"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b3"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b4"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b5"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b6"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b7"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b8"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1b9"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc1c4"
+  },
+  "name": "Метрические значения",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc1bb"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1bc"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1bd"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1be"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1bf"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c0"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c1"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c2"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c3"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc1d5"
+  },
+  "name": "Компании",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc1c5"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c6"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c7"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c8"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1c9"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ca"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1cb"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1cc"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1cd"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ce"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1cf"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d0"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d1"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d2"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d3"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d4"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc1ee"
+  },
+  "name": "Магазины",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc1d6"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d7"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d8"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1d9"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1da"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1db"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1dc"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1dd"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1de"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1df"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e0"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e1"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e2"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e3"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e4"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e5"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e6"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e7"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e8"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1e9"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ea"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1eb"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ec"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ed"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc1fd"
+  },
+  "name": "Товары магазина",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc1ef"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f0"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f1"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f2"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f3"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f4"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f5"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f6"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f7"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f8"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1f9"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1fa"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1fb"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1fc"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc212"
+  },
+  "name": "Корзина",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc1fe"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc1ff"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc200"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc201"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc202"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc203"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc204"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc205"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc206"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc207"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc208"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc209"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20a"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20b"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20c"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20d"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20e"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc20f"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc210"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc211"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc21b"
+  },
+  "name": "Заказы",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc213"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc214"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc215"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc216"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc217"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc218"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc219"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc21a"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc22b"
+  },
+  "name": "Бренды",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc21c"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc21d"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc21e"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc21f"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc220"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc221"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc222"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc223"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc224"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc225"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc226"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc227"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc228"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc229"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc22a"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc23a"
+  },
+  "name": "Линейки бренда",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc22c"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc22d"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc22e"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc22f"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc230"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc231"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc232"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc233"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc234"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc235"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc236"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc237"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc238"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc239"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc24a"
+  },
+  "name": "Производители",
+  "messagesIds": [
+    {
+      "$oid": "604325cdab3d5114fb2bc23b"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc23c"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc23d"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc23e"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc23f"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc240"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc241"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc242"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc243"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc244"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc245"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc246"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc247"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc248"
+    },
+    {
+      "$oid": "604325cdab3d5114fb2bc249"
+    }
+  ]
+}]

@@ -1,27 +1,12 @@
 import * as React from 'react';
 import classes from './CatalogueFilter.module.css';
-import {
-  CatalogueFilterAttributeFragment,
-  CatalogueFilterFragment,
-} from 'generated/apolloComponents';
+import { CatalogueFilterAttributeFragment } from 'generated/apolloComponents';
 import FilterLink from '../../components/Link/FilterLink';
 import Link from '../../components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from '../../components/Icon/Icon';
 import { useAppContext } from 'context/appContext';
-import { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { useRouter } from 'next/router';
-import { useNotificationsContext } from 'context/notificationsContext';
-import Currency from '../../components/Currency/Currency';
-import {
-  CATALOGUE_FILTER_PRICE_KEYS,
-  CATALOGUE_MAX_PRICE_KEY,
-  CATALOGUE_MIN_PRICE_KEY,
-} from 'config/common';
-import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { noNaN } from 'lib/numbers';
-import { useLocaleContext } from 'context/localeContext';
 
 interface CatalogueFilterAttributeInterface {
   attribute: CatalogueFilterAttributeFragment;
@@ -53,7 +38,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 
       <div className={classes.attributeList}>
         {visibleOptions.map((option) => {
-          const testId = `${attribute.slug}-${option.slug}`;
+          const testId = `${option.slug}`;
           return (
             <FilterLink
               className={classes.attributeOption}
@@ -65,7 +50,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
         })}
         {isOptionsOpen
           ? hiddenOptions.map((option) => {
-              const testId = `${attribute.slug}-${option.slug}`;
+              const testId = `${option.slug}`;
               return (
                 <FilterLink
                   className={classes.attributeOption}
@@ -92,78 +77,28 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributeInterface> = ({
 };
 
 interface CatalogueFilterInterface {
-  catalogueFilter: CatalogueFilterFragment;
-  minPrice: number;
-  maxPrice: number;
-  totalDocs: number;
+  attributes: CatalogueFilterAttributeFragment[];
+  selectedAttributes: CatalogueFilterAttributeFragment[];
+  catalogueCounterString: string;
   rubricClearSlug: string;
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
 }
 
 const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
-  catalogueFilter,
+  attributes,
+  selectedAttributes,
   rubricClearSlug,
-  totalDocs,
+  catalogueCounterString,
   hideFilterHandler,
   isFilterVisible,
-  minPrice,
-  maxPrice,
 }) => {
-  const router = useRouter();
-  const { currency } = useLocaleContext();
-  const { showErrorNotification } = useNotificationsContext();
   const { isMobile } = useAppContext();
-  const [pricesRanges, setPricesRanges] = React.useState<number[]>(() => [minPrice, maxPrice]);
-  const [pricesValue, setPricesValue] = React.useState<number[]>([0, 0]);
-
-  React.useEffect(() => {
-    const selectedMinPrice = getCatalogueFilterValueByKey({
-      asPath: router.asPath,
-      slug: CATALOGUE_MIN_PRICE_KEY,
-    });
-    const selectedMaxPrice = getCatalogueFilterValueByKey({
-      asPath: router.asPath,
-      slug: CATALOGUE_MAX_PRICE_KEY,
-    });
-    if (!selectedMinPrice || !selectedMaxPrice) {
-      setPricesValue([minPrice, maxPrice]);
-      return;
-    }
-
-    setPricesValue([noNaN(selectedMinPrice), noNaN(selectedMaxPrice)]);
-  }, [maxPrice, minPrice, router]);
-
-  React.useEffect(() => {
-    setPricesRanges([minPrice, maxPrice]);
-  }, [minPrice, maxPrice]);
-
-  const resetPricesValueHandler = React.useCallback(() => {
-    const nextPath = getCatalogueFilterNextPath({
-      asPath: router.asPath,
-      excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
-    });
-    router.push(nextPath).catch(() => {
-      showErrorNotification();
-    });
-  }, [router, showErrorNotification]);
-
-  const { attributes, selectedPrices } = catalogueFilter;
-
-  const priceRangeHandleStyle = {
-    backgroundColor: 'var(--primaryBackground)',
-    borderWidth: 1,
-    borderColor: 'var(--theme)',
-    height: 28,
-    width: 28,
-    marginTop: -12,
-    boxShadow: '0 0 0 rgba(var(--themeRGB), 0.1)',
-  };
 
   return (
     <div className={`${classes.filter} ${isFilterVisible ? classes.filterVisible : ''}`}>
       <div className={classes.filterHolder}>
-        <div className={classes.totalCounter}>{`Найдено ${totalDocs}`}</div>
+        <div className={classes.totalCounter}>{catalogueCounterString}</div>
 
         {isMobile ? (
           <div className={classes.filterTitle}>
@@ -174,7 +109,7 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
           </div>
         ) : null}
 
-        {catalogueFilter.selectedAttributes.length > 0 || selectedPrices ? (
+        {selectedAttributes.length > 0 ? (
           <div className={classes.attribute}>
             <div className={classes.attributeTitle}>
               <span className={classes.attributeTitleText}>Выбранные</span>
@@ -192,9 +127,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
             </div>
 
             <div className={classes.attributeList}>
-              {catalogueFilter.selectedAttributes.map((attribute) => {
+              {selectedAttributes.map((attribute) => {
                 return attribute.options.map((option) => {
-                  const key = `${attribute.slug}-${option.slug}`;
+                  const key = `${option.slug}`;
                   return (
                     <FilterLink
                       withCross
@@ -206,75 +141,9 @@ const CatalogueFilter: React.FC<CatalogueFilterInterface> = ({
                   );
                 });
               })}
-              {selectedPrices ? (
-                <div>
-                  <FilterLink
-                    withCross
-                    asLink={false}
-                    className={classes.attributeOption}
-                    onClick={resetPricesValueHandler}
-                    testId={'selected-prices'}
-                    option={{
-                      _id: selectedPrices.clearSlug,
-                      nextSlug: selectedPrices.clearSlug,
-                      name: `${selectedPrices.formattedMinPrice}-${selectedPrices.formattedMaxPrice} ${currency}`,
-                      isSelected: true,
-                      counter: 0,
-                      isDisabled: false,
-                      slug: 'selected-prices',
-                    }}
-                  />
-                </div>
-              ) : null}
             </div>
           </div>
         ) : null}
-
-        <div className={classes.attribute}>
-          <div className={classes.attributeTitle}>
-            <span className={classes.attributeTitleText}>Цена</span>
-          </div>
-          <div className={classes.pricesFilterValues}>
-            <div className={classes.pricesFilterValuesItem}>
-              от
-              <Currency value={pricesValue[0]} />
-            </div>
-            <div className={classes.pricesFilterValuesItem}>
-              до
-              <Currency value={pricesValue[1]} />
-            </div>
-          </div>
-          <div className={classes.pricesFilterSlider}>
-            <Range
-              value={pricesValue}
-              min={pricesRanges[0]}
-              max={pricesRanges[1]}
-              onChange={setPricesValue}
-              trackStyle={[
-                {
-                  backgroundColor: 'var(--theme)',
-                },
-              ]}
-              railStyle={{
-                height: 2,
-                backgroundColor: 'var(--rangeRailBackground)',
-              }}
-              handleStyle={[priceRangeHandleStyle, priceRangeHandleStyle]}
-              onAfterChange={(val) => {
-                const [minPrice, maxPrice] = val;
-                const options = getCatalogueFilterNextPath({
-                  asPath: router.asPath,
-                  excludedKeys: CATALOGUE_FILTER_PRICE_KEYS,
-                });
-                const nextPath = `${options}/${CATALOGUE_MIN_PRICE_KEY}-${minPrice}/${CATALOGUE_MAX_PRICE_KEY}-${maxPrice}`;
-
-                router.push(nextPath).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-            />
-          </div>
-        </div>
 
         {attributes.map((attribute) => {
           return <CatalogueFilterAttribute attribute={attribute} key={attribute._id} />;

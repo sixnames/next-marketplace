@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT, RUBRIC_DEFAULT_COUNTERS } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { COL_ATTRIBUTES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   AttributeModel,
@@ -134,7 +134,7 @@ export function castOptionsForRubric(options: OptionModel[]): RubricOptionModel[
     return {
       ...option,
       ...DEFAULT_COUNTERS_OBJECT,
-      ...RUBRIC_DEFAULT_COUNTERS,
+      isSelected: false,
       options: castOptionsForRubric(option.options),
     };
   });

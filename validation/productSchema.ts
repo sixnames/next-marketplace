@@ -50,7 +50,7 @@ export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =
       max: 1000,
       slug: 'validation.products.description',
     }),
-    rubricsIds: Yup.array().of(objectIdSchema({ ...args, slug: 'validation.products.rubrics' })),
+    rubricId: objectIdSchema({ ...args, slug: 'validation.products.rubrics' }),
   };
 };
 

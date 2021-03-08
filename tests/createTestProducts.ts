@@ -218,7 +218,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
   interface CreateTestProductInterface extends ProductAttributesInterface {
     _id?: ObjectIdModel;
-    rubricsIds: ObjectIdModel[];
+    rubricId: ObjectIdModel;
     brandSlug?: string;
     brandCollectionSlug?: string;
     manufacturerSlug?: string;
@@ -234,7 +234,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     wineColorOption,
     wineTypeOption,
     wineVintageOption,
-    rubricsIds,
+    rubricId,
     brandSlug,
     brandCollectionSlug,
     manufacturerSlug,
@@ -290,7 +290,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
       selectedOptionsSlugs,
       slug,
       connections,
-      rubricsIds,
+      rubricId,
       brandSlug,
       brandCollectionSlug,
       manufacturerSlug,
@@ -306,7 +306,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const productA = await createTestProduct({
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[2],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandA.slug,
     brandCollectionSlug: brandCollectionA.slug,
     manufacturerSlug: manufacturerA.slug,
@@ -318,7 +318,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const productB = await createTestProduct({
     wineColorOption: attributeWineColor.options[2],
     wineTypeOption: attributeWineVariant.options[2],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandB.slug,
     brandCollectionSlug: brandCollectionB.slug,
     manufacturerSlug: manufacturerB.slug,
@@ -331,7 +331,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const productC = await createTestProduct({
     wineColorOption: attributeWineColor.options[0],
     wineTypeOption: attributeWineVariant.options[0],
-    rubricsIds: [rubricB._id],
+    rubricId: rubricB._id,
     brandSlug: brandA.slug,
     brandCollectionSlug: brandCollectionA.slug,
     manufacturerSlug: manufacturerA.slug,
@@ -343,7 +343,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const productD = await createTestProduct({
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandB.slug,
     brandCollectionSlug: brandCollectionB.slug,
     manufacturerSlug: manufacturerB.slug,
@@ -355,7 +355,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   const productF = await createTestProduct({
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     manufacturerSlug: manufacturerA.slug,
     defaultLocaleName: `Product F ${DEFAULT_LOCALE}`,
     secondaryLocaleName: `Product F ${SECONDARY_LOCALE}`,
@@ -397,7 +397,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     wineTypeOption: attributeWineVariant.options[1],
     wineVintageOption: attributeWineVintage.options[0],
     connections: [connectionA],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
     manufacturerSlug: manufacturerC.slug,
@@ -412,7 +412,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     wineTypeOption: attributeWineVariant.options[1],
     wineVintageOption: attributeWineVintage.options[1],
     connections: [connectionA],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
     manufacturerSlug: manufacturerC.slug,
@@ -427,7 +427,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     wineTypeOption: attributeWineVariant.options[1],
     wineVintageOption: attributeWineVintage.options[2],
     connections: [connectionA],
-    rubricsIds: [rubricA._id],
+    rubricId: rubricA._id,
     brandSlug: brandC.slug,
     brandCollectionSlug: brandCollectionC.slug,
     manufacturerSlug: manufacturerC.slug,

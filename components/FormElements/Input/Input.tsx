@@ -41,8 +41,6 @@ const Input: React.FC<InputPropsInterface> = ({
   wide,
   labelPostfix,
   isHorizontal,
-  postfix,
-  prefix,
   labelLink,
   value,
   notValid,
@@ -70,8 +68,6 @@ const Input: React.FC<InputPropsInterface> = ({
       isHorizontal={isHorizontal}
       labelPostfix={labelPostfix}
       labelLink={labelLink}
-      postfix={postfix}
-      prefix={prefix}
       low={low}
       wide={wide}
     >

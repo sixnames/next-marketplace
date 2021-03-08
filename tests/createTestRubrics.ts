@@ -136,6 +136,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
+    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
     ...RUBRIC_DEFAULT_COUNTERS,
   };
@@ -176,6 +177,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
+    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
     ...RUBRIC_DEFAULT_COUNTERS,
   };
@@ -210,6 +212,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
+    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
     ...RUBRIC_DEFAULT_COUNTERS,
   };
@@ -244,6 +247,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
       },
       gender: genderIt,
     },
+    activeProductsCount: 0,
     ...DEFAULT_COUNTERS_OBJECT,
     ...RUBRIC_DEFAULT_COUNTERS,
   };

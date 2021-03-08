@@ -173,6 +173,7 @@ export const RubricMutations = extendType({
             active: true,
             attributes: [],
             attributesGroupsIds: [],
+            activeProductsCount: 0,
             ...DEFAULT_COUNTERS_OBJECT,
             ...RUBRIC_DEFAULT_COUNTERS,
           });
@@ -238,6 +239,9 @@ export const RubricMutations = extendType({
             collectionName: COL_RUBRICS,
             fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
+            additionalQuery: {
+              _id: { $ne: rubricId },
+            },
           });
           if (exist) {
             return {
@@ -310,14 +314,15 @@ export const RubricMutations = extendType({
             };
           }
 
+          // TODO add product to inactive collection
           // Remove rubric and child rubrics ids from all connected products
           const updatedProductsResult = await productsCollection.updateMany(
             {
-              rubricsIds: _id,
+              rubricId: _id,
             },
             {
               $pull: {
-                rubricsIds: _id,
+                rubricIds: _id,
               },
             },
           );
@@ -728,7 +733,7 @@ export const RubricMutations = extendType({
           }
 
           // Check if product already added to the rubric
-          const exists = product.rubricsIds.some((id) => id.equals(rubricId));
+          const exists = product.rubricId.equals(rubricId);
           if (exists) {
             return {
               success: false,
@@ -742,8 +747,8 @@ export const RubricMutations = extendType({
               _id: productId,
             },
             {
-              $push: {
-                rubricsIds: rubricId,
+              $set: {
+                rubricId,
               },
             },
           );
@@ -808,14 +813,15 @@ export const RubricMutations = extendType({
             };
           }
 
+          // TODO add product to inactive collection
           // Remove rubric id from the product
           const updatedProductResult = await productsCollection.findOneAndUpdate(
             {
               _id: productId,
             },
             {
-              $pull: {
-                rubricsIds: rubricId,
+              $set: {
+                rubricId,
               },
             },
           );

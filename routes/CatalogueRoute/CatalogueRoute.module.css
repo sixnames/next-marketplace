@@ -10,7 +10,6 @@
 
 .list {
   display: grid;
-  align-items: start;
   flex-grow: 1;
   grid-column-gap: var(--catalogueGridGap);
   grid-row-gap: var(--catalogueGridGap);
@@ -26,7 +25,7 @@
 }
 
 .catalogue .list[class*='infinite-scroll-component'] {
-  overflow: hidden !important;
+  overflow: unset !important;
 }
 
 .controls {

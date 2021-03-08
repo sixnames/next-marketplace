@@ -5,9 +5,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import RequestError from '../../components/RequestError/RequestError';
 import DataLayoutContentFrame from '../../components/DataLayout/DataLayoutContentFrame';
 import TabsContent from '../../components/TabsContent/TabsContent';
-import RubricDetails from './RubricDetails';
 import RubricAttributes from './RubricAttributes';
-import RubricProducts from './RubricProducts';
 import classes from './RubricsContent.module.css';
 
 interface RubricsContentInterface {
@@ -33,8 +31,6 @@ const RubricsContent: React.FC<RubricsContentInterface> = ({ queryResult = {} })
   return (
     <DataLayoutContentFrame>
       <TabsContent className={classes.content}>
-        <RubricProducts rubric={getRubric} />
-        <RubricDetails rubric={getRubric} />
         <RubricAttributes rubric={getRubric} />
       </TabsContent>
     </DataLayoutContentFrame>

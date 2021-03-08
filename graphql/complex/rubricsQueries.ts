@@ -4,6 +4,7 @@ export const rubricInListFragment = gql`
   fragment RubricInList on Rubric {
     _id
     nameI18n
+    slug
     name
     productsCount
     activeProductsCount
@@ -23,7 +24,7 @@ export const rubricProductFragment = gql`
     slug
     mainImage
     active
-    rubricsIds
+    rubricId
   }
 `;
 
@@ -52,6 +53,25 @@ export const ALL_RUBRICS_QUERY = gql`
 export const RUBRIC_QUERY = gql`
   query GetRubric($_id: ObjectId!) {
     getRubric(_id: $_id) {
+      ...RubricInList
+      active
+      variantId
+      descriptionI18n
+      shortDescriptionI18n
+      catalogueTitle {
+        defaultTitleI18n
+        prefixI18n
+        keywordI18n
+        gender
+      }
+    }
+  }
+  ${rubricInListFragment}
+`;
+
+export const RUBRIC_BY_SLUG_QUERY = gql`
+  query GetRubricBySlug($slug: String!) {
+    getRubricBySlug(slug: $slug) {
       ...RubricInList
       active
       variantId
@@ -100,21 +120,11 @@ export const DELETE_RUBRIC = gql`
 `;
 
 export const RUBRIC_PRODUCTS_QUERY = gql`
-  query GetRubricProducts(
-    $rubricId: ObjectId!
-    $excludedRubricsIds: [ObjectId!]
-    $excludedProductsIds: [ObjectId!]
-    $attributesIds: [ObjectId!]
-  ) {
-    getRubric(_id: $rubricId) {
+  query GetRubricProducts($rubricSlug: String!, $productsInput: ProductsPaginationInput) {
+    getRubricBySlug(slug: $rubricSlug) {
       _id
-      products(
-        input: {
-          excludedRubricsIds: $excludedRubricsIds
-          excludedProductsIds: $excludedProductsIds
-          attributesIds: $attributesIds
-        }
-      ) {
+      name
+      products(input: $productsInput) {
         ...RubricProductsPagination
       }
     }
@@ -145,6 +155,24 @@ export const ADD_PRODUCT_TO_RUBRIC_MUTATION = gql`
 export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
   mutation DeleteProductFromRubric($input: DeleteProductFromRubricInput!) {
     deleteProductFromRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const TOGGLE_ATTRIBUTE_IN_RUBRIC_CATALOGUE = gql`
+  mutation ToggleAttributeInRubricCatalogue($input: UpdateAttributeInRubricInput!) {
+    toggleAttributeInRubricCatalogue(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const TOGGLE_ATTRIBUTE_IN_RUBRIC_NAV = gql`
+  mutation ToggleAttributeInRubricNav($input: UpdateAttributeInRubricInput!) {
+    toggleAttributeInRubricNav(input: $input) {
       success
       message
     }

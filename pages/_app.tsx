@@ -8,11 +8,9 @@ import Router, { useRouter } from 'next/router';
 import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
 import { GetSiteInitialDataPayloadInterface } from 'lib/ssrUtils';
-import { Theme } from 'types/clientTypes';
 import NProgress from 'nprogress';
 
 export interface PagePropsInterface {
-  initialTheme: Theme;
   isMobileDevice: boolean;
 }
 

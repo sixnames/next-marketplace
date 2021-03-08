@@ -1,27 +1,29 @@
+import { COL_PRODUCTS } from 'db/collectionNames';
 import {
   AttributeModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
   GenderModel,
+  ObjectIdModel,
   OptionModel,
+  ProductModel,
+  RubricAttributeModel,
   RubricCatalogueTitleModel,
-  TranslationModel,
+  RubricOptionModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  CATALOGUE_OPTION_SEPARATOR,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  SORT_BY_ID_DIRECTION,
-  SORT_DESC,
+  PRICE_ATTRIBUTE_SLUG,
 } from 'config/common';
-import { getCatalogueVisibleOptionsCount } from 'lib/rubricUtils';
-import { ObjectId } from 'mongodb';
-import { COL_PRODUCTS } from 'db/collectionNames';
 import capitalize from 'capitalize';
+import { getDatabase } from 'db/mongodb';
+import { noNaN } from 'lib/numbers';
 import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
 
@@ -39,224 +41,6 @@ export function castCatalogueParamToObject(
   return {
     slug,
     value,
-  };
-}
-
-interface GetParamOptionFirstValueByKey {
-  slug: string;
-  castedParams: CastCatalogueParamToObjectPayloadInterface[];
-  defaultValue?: string;
-}
-
-export function getParamOptionFirstValueByKey({
-  slug,
-  castedParams,
-  defaultValue,
-}: GetParamOptionFirstValueByKey): string | undefined {
-  const currentParam = castedParams.find((param) => param.slug === slug);
-
-  if (!currentParam) {
-    return defaultValue;
-  }
-
-  const firstValue = currentParam.value;
-
-  if (!firstValue) {
-    return defaultValue;
-  }
-  return firstValue;
-}
-
-interface GetCatalogueAdditionalFilterOptionsInterface {
-  productForeignField: string;
-  productsMainPipeline: any[];
-  collectionSlugs: string[];
-  catalogueFilterArgs: string[];
-  collection: string;
-  filterKey: string;
-  city: string;
-}
-
-interface GetCatalogueAdditionalFilterOptionsPayloadInterface
-  extends Omit<CatalogueFilterAttributeOptionModel, 'name'> {
-  nameI18n: TranslationModel;
-}
-
-export async function getCatalogueAdditionalFilterOptions({
-  productsMainPipeline,
-  catalogueFilterArgs,
-  productForeignField,
-  collectionSlugs,
-  collection,
-  filterKey,
-  city,
-}: GetCatalogueAdditionalFilterOptionsInterface): Promise<
-  GetCatalogueAdditionalFilterOptionsPayloadInterface[]
-> {
-  const maxVisibleOptions = await getCatalogueVisibleOptionsCount(city);
-  const currentCatalogueSlug = catalogueFilterArgs.join('/');
-  const db = await getDatabase();
-  const aggregationResult = await db
-    .collection<GetCatalogueAdditionalFilterOptionsPayloadInterface>(collection)
-    .aggregate([
-      {
-        $sort: {
-          [`priority.${city}`]: SORT_DESC,
-          [`views.${city}`]: SORT_DESC,
-          _id: SORT_BY_ID_DIRECTION,
-        },
-      },
-
-      {
-        $limit: maxVisibleOptions,
-      },
-
-      // Lookup products
-      {
-        $lookup: {
-          from: COL_PRODUCTS,
-          let: { slug: '$slug' },
-          pipeline: [
-            ...productsMainPipeline,
-            {
-              $match: {
-                $expr: {
-                  $and: [{ $eq: [productForeignField, '$$slug'] }],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-              },
-            },
-          ],
-          as: 'products',
-        },
-      },
-
-      // Count products
-      { $addFields: { productsCount: { $size: '$products' } } },
-
-      // Add isDisabled field based on productsCount
-      {
-        $addFields: {
-          isDisabled: {
-            $lt: ['$productsCount', 1],
-          },
-        },
-      },
-
-      // Sort pipeline
-      {
-        $sort: {
-          [`views.${city}`]: SORT_DESC,
-          [`priority.${city}`]: SORT_DESC,
-          productsCount: SORT_DESC,
-          isDisabled: SORT_DESC,
-          _id: SORT_BY_ID_DIRECTION,
-        },
-      },
-
-      // Add isSelected field based on query args
-      {
-        $addFields: {
-          isSelected: {
-            $in: ['$slug', collectionSlugs],
-          },
-        },
-      },
-
-      // Add nextSlug field based on query args
-      {
-        $addFields: {
-          itemSlug: {
-            $concat: [`${filterKey}-`, '$slug'],
-          },
-        },
-      },
-      {
-        $addFields: {
-          resetSlugsList: {
-            $filter: {
-              input: catalogueFilterArgs,
-              as: 'filterArg',
-              cond: { $ne: ['$$filterArg', '$itemSlug'] },
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          nextSlug: {
-            $cond: {
-              if: '$isSelected',
-              then: {
-                $reduce: {
-                  input: '$resetSlugsList',
-                  initialValue: '',
-                  in: { $concat: ['$$value', '/', '$$this'] },
-                },
-              },
-              else: {
-                $concat: ['/', currentCatalogueSlug, '/', `$itemSlug`],
-              },
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          slug: 1,
-          nameI18n: 1,
-          nextSlug: 1,
-          isSelected: 1,
-          isDisabled: 1,
-          counter: '$productsCount',
-        },
-      },
-    ])
-    .toArray();
-
-  return aggregationResult;
-}
-
-export interface GetCatalogueAttributeInterface {
-  _id: ObjectId;
-  slug: string;
-  name: string;
-  options: CatalogueFilterAttributeOptionModel[];
-  catalogueFilter: string[];
-}
-
-export async function getCatalogueAttribute({
-  _id,
-  slug,
-  name,
-  options,
-  catalogueFilter,
-}: GetCatalogueAttributeInterface): Promise<CatalogueFilterAttributeModel> {
-  const otherSelectedValues = catalogueFilter.filter((param) => {
-    const castedParam = castCatalogueParamToObject(param);
-    return castedParam.slug !== slug;
-  });
-  const clearSlug = `/${otherSelectedValues.join('/')}`;
-  const isSelected = options.some(({ isSelected }) => isSelected);
-  const disabledOptionsCount = options.reduce((acc: number, { isDisabled }) => {
-    if (isDisabled) {
-      return acc + 1;
-    }
-    return acc;
-  }, 0);
-  return {
-    _id,
-    slug,
-    name,
-    clearSlug,
-    options,
-    isDisabled: disabledOptionsCount === options.length,
-    isSelected,
   };
 }
 
@@ -359,4 +143,165 @@ export function getCatalogueTitle({
       .join(' ')
       .toLocaleLowerCase(),
   );
+}
+
+export interface GetCatalogueAttributesInterface {
+  filter: string[];
+  realFilterOptions: string[];
+  attributes: RubricAttributeModel[];
+  city: string;
+  getFieldLocale: GetFieldLocaleType;
+  noFiltersSelected: boolean;
+  rubricId: ObjectIdModel;
+  pricesStage: any;
+}
+
+export interface GetCatalogueAttributesPayloadInterface {
+  selectedFilters: SelectedFilterInterface[];
+  castedAttributes: CatalogueFilterAttributeModel[];
+}
+
+export async function getCatalogueAttributes({
+  filter,
+  realFilterOptions,
+  getFieldLocale,
+  attributes,
+  city,
+  noFiltersSelected,
+  rubricId,
+  pricesStage,
+}: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
+  const db = await getDatabase();
+  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const selectedFilters: SelectedFilterInterface[] = [];
+  const castedAttributes: CatalogueFilterAttributeModel[] = [];
+
+  for await (const attribute of attributes) {
+    const { options, slug } = attribute;
+    const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
+    const selectedOptions: RubricOptionModel[] = [];
+
+    // console.log('');
+    // console.log(`Attribute ${slug} >>>>>>>>>`);
+
+    for await (const option of options) {
+      // check if selected
+      const optionSlug = option.slug;
+      const isSelected = filter.includes(optionSlug);
+
+      // Push to the selected options list for catalogue title config
+      if (isSelected) {
+        selectedOptions.push(option);
+      }
+
+      const optionNextSlug = isSelected
+        ? filter
+            .filter((pathArg) => {
+              return pathArg !== optionSlug;
+            })
+            .join('/')
+        : [...filter, optionSlug].join('/');
+
+      // If price attribute
+      if (slug === PRICE_ATTRIBUTE_SLUG) {
+        const splittedOption = optionSlug.split(CATALOGUE_OPTION_SEPARATOR);
+        const filterOptionValue = splittedOption[1];
+        const prices = filterOptionValue.split('_');
+        const minPrice = prices[0] ? noNaN(prices[0]) : null;
+        const maxPrice = prices[1] ? noNaN(prices[1]) : null;
+
+        if (!minPrice || !maxPrice) {
+          continue;
+        }
+        const isPricesSelected = Object.keys(pricesStage).length > 0;
+
+        const optionPricesStage = {
+          [`minPriceCities.${city}`]: {
+            $gte: minPrice,
+            $lte: maxPrice,
+          },
+        };
+
+        const optionFinalPricesStage = {
+          $and: isPricesSelected ? [optionPricesStage, pricesStage] : [optionPricesStage],
+        };
+
+        const optionProductsMatch = noFiltersSelected
+          ? {
+              rubricId,
+              active: true,
+              archive: false,
+              ...optionFinalPricesStage,
+            }
+          : {
+              rubricId,
+              active: true,
+              archive: false,
+              selectedOptionsSlugs: {
+                $all: realFilterOptions,
+              },
+              ...optionFinalPricesStage,
+            };
+
+        const optionProduct = await productsCollection.findOne(optionProductsMatch, {
+          projection: { _id: 1 },
+        });
+
+        if (optionProduct) {
+          castedOptions.push({
+            _id: option._id,
+            name: getFieldLocale(option.nameI18n),
+            slug: option.slug,
+            nextSlug: `/${optionNextSlug}`,
+            isSelected,
+          });
+        }
+        continue;
+      }
+
+      castedOptions.push({
+        _id: option._id,
+        name: getFieldLocale(option.nameI18n),
+        slug: option.slug,
+        nextSlug: `/${optionNextSlug}`,
+        isSelected,
+      });
+    }
+
+    if (castedOptions.length < 1) {
+      continue;
+    }
+
+    // attribute
+    const otherSelectedValues = filter.filter((param) => {
+      const castedParam = castCatalogueParamToObject(param);
+      return castedParam.slug !== attribute.slug;
+    });
+    const clearSlug = `/${otherSelectedValues.join('/')}`;
+
+    const isSelected = castedOptions.some(({ isSelected }) => isSelected);
+    if (isSelected) {
+      // Add selected items to the catalogue title config
+      selectedFilters.push({
+        attribute,
+        options: selectedOptions,
+      });
+    }
+
+    const castedAttribute = {
+      _id: attribute._id,
+      clearSlug,
+      slug: attribute.slug,
+      name: getFieldLocale(attribute.nameI18n),
+      options: castedOptions,
+      isSelected,
+    };
+
+    castedAttributes.push(castedAttribute);
+  }
+
+  return {
+    selectedFilters,
+    castedAttributes,
+  };
 }

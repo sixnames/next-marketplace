@@ -28,3 +28,5 @@
 - [ ] test data ids
 - [ ] permissions (role rules)
 - [ ] i18n with https://www.npmjs.com/package/next-rosetta ??? or i18next
+
+- [ ] Brands, attributes slugs to selectedOptionsSlugs product field 

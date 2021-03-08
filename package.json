@@ -17,7 +17,9 @@
     "cy:open": "cypress open",
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
-    "test": "npm run cy:start"
+    "test": "npm run cy:start",
+    "create-indexes": "npx ts-node -O '{\"module\":\"commonjs\"}' db/initialData/indexes.ts",
+    "seed-test-data": "env-cmd seed --drop-database ./db/initialData/initial && env-cmd seed ./db/initialData/parsed && env-cmd seed ./db/initialData/parsedBigCollections/allProducts && env-cmd seed ./db/initialData/parsedBigCollections/wine-a && env-cmd seed ./db/initialData/parsedBigCollections/wine-b && env-cmd seed ./db/initialData/parsedBigCollections/wine-c && env-cmd seed ./db/initialData/parsedBigCollections/wine-d && yarn create-indexes"
   },
   "dependencies": {
     "@apollo/client": "^3.3.9",
@@ -69,8 +71,8 @@
     "@graphql-codegen/typescript": "^1.21.0",
     "@graphql-codegen/typescript-operations": "^1.17.14",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
-    "@types/apollo-upload-client": "^14.1.0",
     "@types/add-zero": "^1.0.1",
+    "@types/apollo-upload-client": "^14.1.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/capitalize": "^2.0.0",
     "@types/cookie": "^0.4.0",
@@ -105,6 +107,9 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "mongo-seeding": "^3.5.0",
+    "mongo-seeding-cli": "^3.5.0",
+    "env-cmd": "^10.1.0",
     "prettier": "^2.2.1",
     "typescript": "^4.1.5"
   }

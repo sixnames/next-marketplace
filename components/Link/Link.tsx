@@ -12,7 +12,6 @@ export interface LinkInterface extends LinkProps, React.PropsWithChildren<any> {
   onClick?: () => void;
 }
 
-// TODO refactor this component
 const Link: React.FC<LinkInterface> = ({
   className = '',
   activeClassName = '',

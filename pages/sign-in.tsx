@@ -5,17 +5,15 @@ import { SESSION_USER_QUERY } from 'graphql/query/initialQueries';
 import SiteLayout from '../layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import SignInRoute from '../routes/SignInRoute/SignInRoute';
-import { PagePropsInterface } from './_app';
 import { csrfToken } from 'next-auth/client';
-// import classes from './SignIn.module.css';
 
-export interface SignInPageInterface extends PagePropsInterface {
+export interface SignInPageInterface {
   token: string;
 }
 
-const SignIn: NextPage<SignInPageInterface> = ({ initialTheme, token }) => {
+const SignIn: NextPage<SignInPageInterface> = ({ token }) => {
   return (
-    <SiteLayout initialTheme={initialTheme} title={'Авторизация'}>
+    <SiteLayout title={'Авторизация'}>
       <SignInRoute token={token} />
     </SiteLayout>
   );
@@ -25,7 +23,7 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     // Redirect user to the Home page if already authorized
     const { data } = await apolloClient.query<SessionUserQuery>({
@@ -46,7 +44,6 @@ export async function getServerSideProps(
     return {
       props: {
         token,
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

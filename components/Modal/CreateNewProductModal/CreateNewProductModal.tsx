@@ -69,7 +69,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     nameI18n: {},
     originalName: '',
     descriptionI18n: {},
-    rubricsIds: rubricId ? [rubricId] : [],
+    rubricId,
     attributes: [],
   };
 
@@ -104,7 +104,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
                 showInlineError
               />
 
-              <ProductMainFields rubricId={rubricId} rubrics={data?.getAllRubrics} />
+              <ProductMainFields rubrics={data?.getAllRubrics} />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-new-product'}>

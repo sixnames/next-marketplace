@@ -5,9 +5,14 @@ import classes from './RubricsTree.module.css';
 import RubricsTreeCounters from './RubricsTreeCounters';
 import RequestError from 'components/RequestError/RequestError';
 
+interface RubricsTreeRenderInterface {
+  _id: string;
+  slug: string;
+}
+
 interface RubricsTreeInterface {
   rubrics: GetAllRubricsQuery['getAllRubrics'];
-  render?: (_id: string) => any;
+  render?: (args: RubricsTreeRenderInterface) => any;
   isAccordionDisabled?: boolean;
   titleLeft?: (_id: string, testId?: string) => any;
   low?: boolean;
@@ -28,7 +33,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
 
   const titleLeftContent = React.useCallback(
     (_id: any, name: string) => {
-      return titleLeft ? () => titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null;
+      return titleLeft ? titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null;
     },
     [finalTestIdPrefix, titleLeft],
   );
@@ -40,11 +45,11 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
   return (
     <div className={`${classes.frame} ${low ? classes.frameLow : ''}`} data-cy={'rubrics-tree'}>
       {rubrics.map((item) => {
-        const { _id, activeProductsCount, productsCount, name } = item;
+        const { _id, activeProductsCount, productsCount, name, slug } = item;
 
         return (
           <Accordion
-            titleLeft={() => titleLeftContent(_id, name)}
+            titleLeft={titleLeftContent(_id, name)}
             disabled={productsCount === 0 || isAccordionDisabled}
             titleRight={
               <RubricsTreeCounters
@@ -57,7 +62,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
             key={_id}
             testId={`tree-${name}`}
           >
-            {render ? render(_id) : null}
+            {render ? render({ _id, slug }) : null}
           </Accordion>
         );
       })}

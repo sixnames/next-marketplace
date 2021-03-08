@@ -9,6 +9,7 @@ export const ONE_MINUTE = ONE_SECOND * 60;
 export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
+export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 
 // Cookies
 export const CART_COOKIE_KEY = 'cart';
@@ -62,6 +63,9 @@ export const ROUTE_SIGN_IN = '/sign-in';
 // Query params
 export const QUERY_DATA_LAYOUT_NO_RUBRIC = 'no-rubric';
 export const QUERY_DATA_LAYOUT_PAGE = 'page';
+
+// links
+export const PRODUCT_CARD_RUBRIC_SLUG_PREFIX = 'rubric-';
 
 //profile
 export const ROUTE_PROFILE = `/profile`;
@@ -159,10 +163,7 @@ export const DEFAULT_COUNTERS_OBJECT = {
   },
 };
 export const RUBRIC_DEFAULT_COUNTERS = {
-  shopProductsCountCities: {},
-  visibleInCatalogueCities: {},
   productsCount: 0,
-  activeProductsCount: 0,
 };
 
 // SORT
@@ -172,36 +173,26 @@ export const SORT_DESC = -1;
 export const SORT_DESC_STR = 'DESC';
 
 // CATALOGUE
+export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
-export const CATALOGUE_FILTER_VISIBLE_ATTRIBUTES = '3';
+export const CATALOGUE_FILTER_VISIBLE_ATTRIBUTES = '5';
 export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
 export const SORT_BY_KEY = 'sortBy';
 export const SORT_DIR_KEY = 'sortDir';
-export const CATALOGUE_MIN_PRICE_KEY = 'minPrice';
-export const CATALOGUE_MAX_PRICE_KEY = 'maxPrice';
+export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];
 export const CATALOGUE_BRAND_KEY = 'brand';
 export const CATALOGUE_BRAND_COLLECTION_KEY = 'brandCollection';
 export const CATALOGUE_MANUFACTURER_KEY = 'manufacturer';
-export const CATALOGUE_FILTER_EXCLUDED_KEYS = [
-  SORT_BY_KEY,
-  SORT_DIR_KEY,
-  CATALOGUE_MIN_PRICE_KEY,
-  CATALOGUE_MAX_PRICE_KEY,
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_BRAND_COLLECTION_KEY,
-  CATALOGUE_MANUFACTURER_KEY,
-];
-export const CATALOGUE_FILTER_PRICE_KEYS = [CATALOGUE_MIN_PRICE_KEY, CATALOGUE_MAX_PRICE_KEY];
-export const CATALOGUE_FILTER_SORT_KEYS = [SORT_BY_KEY, SORT_DIR_KEY];
+export const PRICE_ATTRIBUTE_SLUG = 'price';
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
-export const PAGINATION_DEFAULT_LIMIT = 100;
+export const PAGINATION_DEFAULT_LIMIT = 30;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const PAGE_DEFAULT = 1;

@@ -1,13 +1,18 @@
+import { getFieldTranslation } from 'config/constantTranslations';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './RequestError.module.css';
-import { DATA_ERROR_MESSAGE } from 'config/notifications';
 
 interface RequestErrorInterface {
   message?: string;
 }
 
-const RequestError: React.FC<RequestErrorInterface> = ({ message = DATA_ERROR_MESSAGE }) => {
-  return <div className={classes.frame}>{message}</div>;
+const RequestError: React.FC<RequestErrorInterface> = ({ message }) => {
+  const { locale } = useRouter();
+  const defaultErrorMessage = React.useMemo(() => {
+    return getFieldTranslation(`messages.dataError.${locale}`);
+  }, [locale]);
+  return <div className={classes.frame}>{message || defaultErrorMessage}</div>;
 };
 
 export default RequestError;

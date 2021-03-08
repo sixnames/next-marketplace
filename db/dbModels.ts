@@ -120,7 +120,7 @@ export interface PaginationInputModel {
 }
 
 export interface ProductsPaginationInputModel extends PaginationInputModel {
-  rubricsIds?: ObjectIdModel[] | null;
+  rubricId?: ObjectIdModel | null;
   attributesIds?: ObjectIdModel[] | null;
   excludedRubricsIds?: ObjectIdModel[] | null;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -206,7 +206,7 @@ export interface AttributesGroupModel {
   attributesIds: ObjectIdModel[];
 }
 
-export interface BrandModel extends BaseModel, TimestampModel {
+export interface BrandModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
@@ -214,7 +214,7 @@ export interface BrandModel extends BaseModel, TimestampModel {
   collectionsIds: ObjectIdModel[];
 }
 
-export interface BrandCollectionModel extends BaseModel, TimestampModel {
+export interface BrandCollectionModel extends BaseModel, TimestampModel, CountersModel {
   slug: string;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
@@ -302,7 +302,7 @@ export interface LanguageModel {
   nativeName: string;
 }
 
-export interface ManufacturerModel extends BaseModel, TimestampModel {
+export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
   nameI18n: TranslationModel;
   slug: string;
   url?: URLModel[] | null;
@@ -478,7 +478,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   originalName: string;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
-  rubricsIds: ObjectIdModel[];
+  rubricId: ObjectIdModel;
   attributes: ProductAttributeModel[];
   assets: AssetModel[];
   brandSlug?: string | null;
@@ -531,13 +531,11 @@ export interface RubricVariantModel {
 
 export interface RubricCountersInterface {
   productsCount: number;
-  activeProductsCount: number;
-  shopProductsCountCities: CitiesCounterModel;
-  visibleInCatalogueCities: CitiesBooleanModel;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel, RubricCountersInterface {
+export interface RubricOptionModel extends OptionModel, CountersModel {
   options: RubricOptionModel[];
+  isSelected: boolean;
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {
@@ -545,7 +543,6 @@ export interface RubricAttributeModel extends AttributeModel, CountersModel {
   showInCatalogueFilter: boolean;
   showInCatalogueNav: boolean;
   options: RubricOptionModel[];
-  visibleInCatalogueCities: CitiesBooleanModel;
 }
 
 export interface RubricAttributesGroupModel extends AttributesGroupModel {
@@ -571,6 +568,8 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   attributes: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
+  activeProductsCount: number;
+  productsCount: number;
 }
 
 export interface ShopProductModel extends TimestampModel {
@@ -670,21 +669,12 @@ export interface CatalogueSearchResultModel {
   products: ProductModel[];
 }
 
-export interface CatalogueFilterSelectedPricesModel {
-  _id: ObjectIdModel;
-  clearSlug: string;
-  formattedMinPrice: string;
-  formattedMaxPrice: string;
-}
-
 export interface CatalogueFilterAttributeOptionModel {
   _id: ObjectIdModel;
   slug: string;
   name: string;
-  counter: number;
   nextSlug: string;
   isSelected: boolean;
-  isDisabled: boolean;
 }
 
 export interface CatalogueFilterAttributeModel {
@@ -693,22 +683,24 @@ export interface CatalogueFilterAttributeModel {
   slug: string;
   name: string;
   isSelected: boolean;
-  isDisabled: boolean;
   options: CatalogueFilterAttributeOptionModel[];
-}
-
-export interface CatalogueFilterModel {
-  _id: ObjectIdModel;
-  attributes: CatalogueFilterAttributeModel[];
-  selectedAttributes: CatalogueFilterAttributeModel[];
-  selectedPrices?: CatalogueFilterSelectedPricesModel | null;
-  clearSlug: string;
 }
 
 export interface CatalogueDataModel {
   _id: ObjectIdModel;
+  lastProductId: ObjectIdModel;
+  hasMore: boolean;
+  clearSlug: string;
+  filter: string[];
   rubric: RubricModel;
-  products: ProductsPaginationPayloadModel;
-  catalogueFilter: CatalogueFilterModel;
+  products: ProductModel[];
+  totalProducts: number;
   catalogueTitle: string;
+  attributes: CatalogueFilterAttributeModel[];
+  selectedAttributes: CatalogueFilterAttributeModel[];
+}
+
+export interface ProductOptionInterface {
+  _id: string;
+  optionsSlugs: string[];
 }

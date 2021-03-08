@@ -1,56 +1,60 @@
-import { getFieldTranslation } from 'config/constantTranslations';
+import { getPriceAttribute } from 'config/constantAttributes';
 import {
   castCatalogueParamToObject,
-  CastCatalogueParamToObjectPayloadInterface,
-  getCatalogueAdditionalFilterOptions,
-  getCatalogueAttribute,
+  getCatalogueAttributes,
   getCatalogueTitle,
-  getParamOptionFirstValueByKey,
-  SelectedFilterInterface,
 } from 'lib/catalogueUtils';
-import { updateRubricViews } from 'lib/countersUtils';
-import { getCurrencyString } from 'lib/i18n';
+import { updateRubricOptionsViews } from 'lib/countersUtils';
 import { noNaN } from 'lib/numbers';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
-import { arg, extendType, list, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
+  BrandCollectionModel,
+  BrandModel,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
-  CatalogueFilterSelectedPricesModel,
   CatalogueSearchResultModel,
+  ConfigModel,
   LanguageModel,
+  ManufacturerModel,
   ProductModel,
-  ProductsPaginationPayloadModel,
+  ProductOptionInterface,
+  RubricAttributeModel,
   RubricModel,
-  RubricOptionModel,
 } from 'db/dbModels';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
+  COL_CONFIGS,
   COL_LANGUAGES,
+  COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
   CATALOGUE_BRAND_COLLECTION_KEY,
   CATALOGUE_BRAND_KEY,
-  CATALOGUE_FILTER_EXCLUDED_KEYS,
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_MANUFACTURER_KEY,
-  CATALOGUE_MAX_PRICE_KEY,
-  CATALOGUE_MIN_PRICE_KEY,
+  CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
-  PAGE_DEFAULT,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+  PRICE_ATTRIBUTE_SLUG,
+  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
-  SORT_BY_CREATED_AT,
   SORT_BY_ID_DIRECTION,
   SORT_BY_KEY,
   SORT_DESC,
   SORT_DESC_STR,
   SORT_DIR_KEY,
+  VIEWS_COUNTER_STEP,
 } from 'config/common';
 
 export const CatalogueSearchResult = objectType({
@@ -65,15 +69,6 @@ export const CatalogueSearchResult = objectType({
   },
 });
 
-export const CatalogueFilterSelectedPrices = objectType({
-  name: 'CatalogueFilterSelectedPrices',
-  definition(t) {
-    t.nonNull.string('clearSlug');
-    t.nonNull.string('formattedMinPrice');
-    t.nonNull.string('formattedMaxPrice');
-  },
-});
-
 export const CatalogueFilterAttributeOption = objectType({
   name: 'CatalogueFilterAttributeOption',
   definition(t) {
@@ -81,9 +76,7 @@ export const CatalogueFilterAttributeOption = objectType({
     t.nonNull.string('name');
     t.nonNull.string('slug');
     t.nonNull.string('nextSlug');
-    t.nonNull.int('counter');
     t.nonNull.boolean('isSelected');
-    t.nonNull.boolean('isDisabled');
   },
 });
 
@@ -95,26 +88,8 @@ export const CatalogueFilterAttribute = objectType({
     t.nonNull.string('slug');
     t.nonNull.string('clearSlug');
     t.nonNull.boolean('isSelected');
-    t.nonNull.boolean('isDisabled');
     t.nonNull.list.nonNull.field('options', {
       type: 'CatalogueFilterAttributeOption',
-    });
-  },
-});
-
-export const CatalogueFilter = objectType({
-  name: 'CatalogueFilter',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('clearSlug');
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-    t.nonNull.list.nonNull.field('selectedAttributes', {
-      type: 'CatalogueFilterAttribute',
-    });
-    t.field('selectedPrices', {
-      type: 'CatalogueFilterSelectedPrices',
     });
   },
 });
@@ -123,16 +98,40 @@ export const CatalogueData = objectType({
   name: 'CatalogueData',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.string('catalogueTitle');
+    t.objectId('lastProductId');
+    t.nonNull.boolean('hasMore');
+    t.nonNull.string('clearSlug');
+    t.nonNull.list.nonNull.string('filter');
     t.nonNull.field('rubric', {
       type: 'Rubric',
     });
-    t.nonNull.field('products', {
-      type: 'ProductsPaginationPayload',
+    t.nonNull.list.nonNull.field('products', {
+      type: 'Product',
     });
-    t.nonNull.field('catalogueFilter', {
-      type: 'CatalogueFilter',
+    t.nonNull.int('totalProducts');
+    t.nonNull.string('catalogueTitle');
+    t.nonNull.list.nonNull.field('attributes', {
+      type: 'CatalogueFilterAttribute',
     });
+    t.nonNull.list.nonNull.field('selectedAttributes', {
+      type: 'CatalogueFilterAttribute',
+    });
+  },
+});
+
+export const CatalogueDataInput = inputObjectType({
+  name: 'CatalogueDataInput',
+  definition(t) {
+    t.objectId('lastProductId');
+    t.nonNull.list.nonNull.string('filter');
+  },
+});
+
+export const CatalogueAdditionalAttributesInput = inputObjectType({
+  name: 'CatalogueAdditionalAttributesInput',
+  definition(t) {
+    t.nonNull.list.nonNull.string('shownAttributesSlugs');
+    t.nonNull.list.nonNull.string('filter');
   },
 });
 
@@ -144,466 +143,306 @@ export const CatalogueQueries = extendType({
       type: 'CatalogueData',
       description: 'Should return catalogue page data',
       args: {
-        catalogueFilter: nonNull(list(nonNull(stringArg()))),
-        productsInput: nonNull(arg({ type: 'ProductsPaginationInput' })),
+        input: nonNull(
+          arg({
+            type: 'CatalogueDataInput',
+          }),
+        ),
       },
       resolve: async (_root, args, context): Promise<CatalogueDataModel | null> => {
         try {
-          const sessionRole = await getSessionRole(context);
-          const { city, getFieldLocale, locale } = await getRequestParams(context);
+          // console.log(' ');
+          // console.log('===========================================================');
+          // const timeStart = new Date().getTime();
+          const { getFieldLocale, city, locale } = await getRequestParams(context);
           const db = await getDatabase();
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
           // Args
-          const { catalogueFilter, productsInput } = args;
-          const [rubricSlug, ...allSelectedSlugs] = catalogueFilter;
+          const { input } = args;
+          const { lastProductId, filter } = input;
+          const [rubricSlug, ...filterOptions] = filter;
 
-          // Get selected filters and additional filters
-          // and cast it to the objects
-          const selectedOptionsSlugs: string[] = [];
-          const castedAdditionalFilters: CastCatalogueParamToObjectPayloadInterface[] = [];
-          allSelectedSlugs.forEach((param) => {
-            const castedParam = castCatalogueParamToObject(param);
-            const { slug } = castedParam;
-
-            const isAdditional = CATALOGUE_FILTER_EXCLUDED_KEYS.includes(slug);
-            if (isAdditional) {
-              castedAdditionalFilters.push(castedParam);
-              return;
-            }
-
-            selectedOptionsSlugs.push(param);
-          });
-          const selectedBrandSlugs: string[] = [];
-          const selectedBrandCollectionSlugs: string[] = [];
-          const selectedManufacturerSlugs: string[] = [];
-          castedAdditionalFilters.forEach(({ slug, value }) => {
-            if (slug === CATALOGUE_BRAND_KEY) {
-              selectedBrandSlugs.push(value);
-            }
-            if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
-              selectedBrandCollectionSlugs.push(value);
-            }
-            if (slug === CATALOGUE_MANUFACTURER_KEY) {
-              selectedManufacturerSlugs.push(value);
-            }
+          // Get configs
+          const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+            slug: 'catalogueFilterVisibleOptionsCount',
           });
 
-          // Update catalogue view counters
-          const rubric = await updateRubricViews({
-            rubricSlug,
-            selectedOptionsSlugs,
-            selectedBrandSlugs,
-            selectedBrandCollectionSlugs,
-            selectedManufacturerSlugs,
-            sessionRole,
-            city,
-          });
+          const visibleOptionsCount =
+            noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+            noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+
+          // Get rubric
+          const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+          // const rubricTime = new Date().getTime();
+          // console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+
           if (!rubric) {
             return null;
           }
 
-          // Cast additional filters
-          const { limit, page } = productsInput;
-          const sortBy = getParamOptionFirstValueByKey({
-            defaultValue: SORT_BY_CREATED_AT,
-            castedParams: castedAdditionalFilters,
-            slug: SORT_BY_KEY,
+          // Cast selected options
+          const realFilterOptions: string[] = [];
+          let sortBy: string | null = null;
+          let sortDir: string | null = null;
+
+          const sortFilterOptions: string[] = [];
+          let minPrice: number | null = null;
+          let maxPrice: number | null = null;
+          filterOptions.forEach((filterOption) => {
+            const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
+            const filterOptionName = splittedOption[0];
+            const filterOptionValue = splittedOption[1];
+            if (filterOptionName) {
+              const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
+
+              if (isPriceRange) {
+                const prices = filterOptionValue.split('_');
+                minPrice = prices[0] ? noNaN(prices[0]) : null;
+                maxPrice = prices[1] ? noNaN(prices[1]) : null;
+                return;
+              }
+
+              if (filterOptionName === SORT_BY_KEY) {
+                sortFilterOptions.push(filterOption);
+                sortBy = filterOptionValue;
+                return;
+              }
+
+              if (filterOptionName === SORT_DIR_KEY) {
+                sortFilterOptions.push(filterOption);
+                sortDir = filterOptionValue;
+                return;
+              }
+
+              realFilterOptions.push(filterOption);
+            }
           });
 
-          const sortDir = getParamOptionFirstValueByKey({
-            defaultValue: SORT_DESC_STR,
-            castedParams: castedAdditionalFilters,
-            slug: SORT_DIR_KEY,
-          });
-          const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+          // Get products
+          const noFiltersSelected = realFilterOptions.length < 1;
+          const keyStage = lastProductId
+            ? [
+                {
+                  $match: {
+                    _id: {
+                      $lt: lastProductId,
+                    },
+                  },
+                },
+              ]
+            : [];
 
-          const minPrice = getParamOptionFirstValueByKey({
-            castedParams: castedAdditionalFilters,
-            slug: CATALOGUE_MIN_PRICE_KEY,
-          });
-
-          const maxPrice = getParamOptionFirstValueByKey({
-            castedParams: castedAdditionalFilters,
-            slug: CATALOGUE_MAX_PRICE_KEY,
-          });
-
-          const sortByPriority = `priority.${city}`;
-          const realLimit = limit || CATALOGUE_PRODUCTS_LIMIT;
-          const realPage = page || PAGE_DEFAULT;
-          const skip = realPage ? (realPage - 1) * realLimit : 0;
-          const realSortDir = castedSortDir || SORT_DESC;
-          let realSortBy = sortBy || sortByPriority;
-          if (sortBy === 'price') {
-            realSortBy = 'minPrice';
-          }
-          if (sortBy === 'priority' || sortBy === SORT_BY_CREATED_AT) {
-            realSortBy = sortByPriority;
-          }
-
-          // Additional filters matchers
-          const brandsMatch =
-            selectedBrandSlugs.length > 0 ? { brandSlug: { $in: selectedBrandSlugs } } : {};
-
-          const brandCollectionsMatch =
-            selectedBrandCollectionSlugs.length > 0
-              ? { brandCollectionSlug: { $in: selectedBrandCollectionSlugs } }
-              : {};
-
-          const manufacturersMatch =
-            selectedManufacturerSlugs.length > 0
-              ? { manufacturerSlug: { $in: selectedManufacturerSlugs } }
-              : {};
-
-          // Products pipelines
-          // filter
-          const selectedFiltersPipeline =
-            selectedOptionsSlugs.length > 0
+          const pricesStage =
+            minPrice && maxPrice
               ? {
-                  selectedOptionsSlugs: { $in: selectedOptionsSlugs },
+                  [`minPriceCities.${city}`]: {
+                    $gte: minPrice,
+                    $lte: maxPrice,
+                  },
                 }
               : {};
 
-          // price range pipeline
-          const priceRangePipeline =
-            minPrice && maxPrice
-              ? [
-                  {
-                    $match: {
-                      [`minPriceCities.${city}`]: {
-                        $gte: noNaN(minPrice),
-                        $lte: noNaN(maxPrice),
-                      },
-                    },
-                  },
-                ]
-              : [];
-
-          // Products initial pipeline
-          const productsInitialPipeline = [
-            // initial match
-            {
-              $match: {
-                rubricsIds: rubric._id,
+          const productsInitialMatch = noFiltersSelected
+            ? {
+                rubricId: rubric._id,
                 active: true,
                 archive: false,
-                [`shopProductsCountCities.${city}`]: { $gt: 0 },
-                ...selectedFiltersPipeline,
-                ...brandsMatch,
-                ...brandCollectionsMatch,
-                ...manufacturersMatch,
+                ...pricesStage,
+              }
+            : {
+                rubricId: rubric._id,
+                active: true,
+                archive: false,
+                selectedOptionsSlugs: {
+                  $all: realFilterOptions,
+                },
+                ...pricesStage,
+              };
+
+          // sort stage
+          const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+          let sortStage = {
+            [`views.${city}`]: SORT_DESC,
+            [`priority.${city}`]: SORT_DESC,
+            _id: SORT_DESC,
+          };
+
+          // sort by price
+          if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
+            sortStage = {
+              [`minPriceCities.${city}`]: castedSortDir,
+              _id: SORT_DESC,
+            };
+          }
+
+          const productsMainPipeline = [
+            {
+              $match: productsInitialMatch,
+            },
+            {
+              $sort: {
+                ...sortStage,
               },
             },
-
-            // add minPrice field
-            { $addFields: { minPrice: `$minPriceCities.${city}` } },
+            ...keyStage,
+            {
+              $limit: CATALOGUE_PRODUCTS_LIMIT,
+            },
           ];
 
-          // Products main pipeline for filters counters
-          const productsMainPipeline = [...productsInitialPipeline, ...priceRangePipeline];
+          // Get catalogue products
+          // const productsStartTime = new Date().getTime();
+          const products = await productsCollection.aggregate(productsMainPipeline).toArray();
 
-          const productsAggregationResult = await productsCollection
-            .aggregate<ProductsPaginationPayloadModel>([
-              ...productsInitialPipeline,
+          // const productsEndTime = new Date().getTime();
+          // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
 
-              // sort
+          // Count catalogue products
+          // const productsCountStartTime = new Date().getTime();
+          const productsCountAggregation = await productsCollection
+            .aggregate<any>([
+              { $match: productsInitialMatch },
               {
-                $sort: {
-                  [realSortBy]: realSortDir,
-                  [`priority.${city}`]: SORT_DESC,
-                  [`views.${city}`]: SORT_DESC,
-                  _id: SORT_BY_ID_DIRECTION,
-                },
+                $count: 'counter',
               },
+            ])
+            .toArray();
+          const totalProducts = productsCountAggregation[0]
+            ? productsCountAggregation[0].counter
+            : 0;
+          // const productsCountEndTime = new Date().getTime();
+          /*console.log(
+            `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
+            productsCountEndTime - productsCountStartTime,
+          );*/
 
-              // facet pagination totals
-              {
-                $facet: {
-                  docs: [...priceRangePipeline, { $skip: skip }, { $limit: realLimit }],
-                  countAllDocs: [...priceRangePipeline, { $count: 'totalDocs' }],
-                  minPriceDocs: [
-                    { $group: { _id: '$minPrice' } },
-                    { $sort: { _id: SORT_ASC } },
-                    { $limit: 1 },
-                  ],
-                  maxPriceDocs: [
-                    { $group: { _id: '$minPrice' } },
-                    { $sort: { _id: SORT_DESC } },
-                    { $limit: 1 },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-                  minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
-                  maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
-                },
-              },
-              {
-                $addFields: {
-                  totalDocs: '$totalDocsObject.totalDocs',
-                  minPrice: '$minPriceDocsObject._id',
-                  maxPrice: '$maxPriceDocsObject._id',
-                },
-              },
-              {
-                $addFields: {
-                  totalPagesFloat: {
-                    $divide: ['$totalDocs', realLimit],
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  totalPages: {
-                    $ceil: '$totalPagesFloat',
-                  },
-                },
-              },
+          // Get options for catalogue attributes
+          // const productOptionsAggregationStart = new Date().getTime();
+          const productOptionsAggregation = await productsCollection
+            .aggregate<ProductOptionInterface>([
+              { $match: productsInitialMatch },
               {
                 $project: {
-                  docs: 1,
-                  totalDocs: 1,
-                  totalPages: 1,
-                  minPrice: 1,
-                  maxPrice: 1,
-                  hasPrevPage: {
-                    $gt: [page, PAGE_DEFAULT],
+                  selectedOptionsSlugs: 1,
+                },
+              },
+              {
+                $unwind: '$selectedOptionsSlugs',
+              },
+              {
+                $group: {
+                  _id: '$selectedOptionsSlugs',
+                },
+              },
+              {
+                $addFields: {
+                  slugArray: {
+                    $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
                   },
-                  hasNextPage: {
-                    $lt: [page, '$totalPages'],
+                },
+              },
+              {
+                $addFields: {
+                  attributeSlug: {
+                    $arrayElemAt: ['$slugArray', 0],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: '$attributeSlug',
+                  optionsSlugs: {
+                    $addToSet: '$_id',
                   },
                 },
               },
             ])
             .toArray();
+          // const productOptionsAggregationEnd = new Date().getTime();
+          /*console.log(
+            `Product options >>>>>>>>>>>>>>>> `,
+            productOptionsAggregationEnd - productOptionsAggregationStart,
+          );*/
 
-          const aggregationResult = productsAggregationResult[0];
-
-          const products = {
-            ...aggregationResult,
-            docs: aggregationResult.docs || [],
-            minPrice: aggregationResult.minPrice || 0,
-            maxPrice: aggregationResult.maxPrice || 0,
-            totalDocs: aggregationResult.totalDocs || 0,
-            totalActiveDocs: 0,
-            totalPages: aggregationResult.totalPages || PAGE_DEFAULT,
-            sortBy: realSortBy,
-            sortDir: realSortDir,
-            page: realPage,
-            limit: realLimit,
-          };
-
-          // Catalogue filter
-          // cast attributes for CatalogueFilterAttribute
-          const selectedFilters: SelectedFilterInterface[] = [];
-          const castedAttributes: CatalogueFilterAttributeModel[] = [];
+          // Get filter attributes
+          // const beforeOptions = new Date().getTime();
           const attributes = await getRubricCatalogueAttributes({
+            config: productOptionsAggregation,
             attributes: rubric.attributes,
+            visibleOptionsCount,
             city,
           });
 
-          for await (const attribute of attributes) {
-            const { options } = attribute;
-            const castedOptions: CatalogueFilterAttributeOptionModel[] = [];
-            const selectedOptions: RubricOptionModel[] = [];
-
-            for await (const option of options) {
-              // check if selected
-              const optionSlug = option.slug;
-              const isSelected = allSelectedSlugs.includes(optionSlug);
-
-              if (isSelected) {
-                // Push to the selected options list for catalogue title config
-                selectedOptions.push(option);
-              }
-
-              const optionNextSlug = isSelected
-                ? catalogueFilter
-                    .filter((pathArg) => {
-                      return pathArg !== optionSlug;
-                    })
-                    .join('/')
-                : [...catalogueFilter, optionSlug].join('/');
-
-              // count products with current option
-              const optionProducts = await productsCollection
-                .aggregate<any>([
-                  ...productsMainPipeline,
-
-                  // option products match
-                  {
-                    $match: {
-                      selectedOptionsSlugs: optionSlug,
-                    },
-                  },
-                  {
-                    $count: 'counter',
-                  },
-                ])
-                .toArray();
-              const counter = optionProducts[0]?.counter || 0;
-
-              castedOptions.push({
-                _id: new ObjectId(),
-                name: getFieldLocale(option.nameI18n),
-                slug: option.slug,
-                nextSlug: `/${optionNextSlug}`,
-                isSelected,
-                isDisabled: counter < 1,
-                counter,
-              });
-            }
-
-            const otherSelectedValues = catalogueFilter.filter((param) => {
-              const castedParam = castCatalogueParamToObject(param);
-              return castedParam.slug !== attribute.slug;
-            });
-            const clearSlug = `/${otherSelectedValues.join('/')}`;
-
-            const sortedOptions = castedOptions.sort((optionA, optionB) => {
-              const isDisabledA = optionA.isDisabled ? 0 : 1;
-              const isDisabledB = optionB.isDisabled ? 0 : 1;
-              return isDisabledB - isDisabledA;
-            });
-            const disabledOptionsCount = sortedOptions.reduce((acc: number, { isDisabled }) => {
-              if (isDisabled) {
-                return acc + 1;
-              }
-              return acc;
-            }, 0);
-
-            const isSelected = sortedOptions.some(({ isSelected }) => isSelected);
-
-            if (isSelected) {
-              // Add selected items to the catalogue title config
-              selectedFilters.push({
-                attribute,
-                options: selectedOptions,
-              });
-            }
-
-            castedAttributes.push({
-              _id: new ObjectId(),
-              clearSlug,
-              slug: attribute.slug,
-              name: getFieldLocale(attribute.nameI18n),
-              options: sortedOptions,
-              isDisabled: disabledOptionsCount === sortedOptions.length,
-              isSelected,
-            });
-          }
-
-          // Brands
-          const brandOptions = await getCatalogueAdditionalFilterOptions({
-            productsMainPipeline,
-            productForeignField: '$brandSlug',
-            collectionSlugs: selectedBrandSlugs,
-            filterKey: CATALOGUE_BRAND_KEY,
-            collection: COL_BRANDS,
-            catalogueFilterArgs: catalogueFilter,
+          const finalAttributes = [getPriceAttribute(), ...attributes];
+          const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
+            attributes: finalAttributes,
+            rubricId: rubric._id,
+            realFilterOptions,
+            getFieldLocale,
             city,
+            filter,
+            noFiltersSelected,
+            pricesStage,
           });
-          const brandsAttribute = await getCatalogueAttribute({
-            _id: new ObjectId(),
-            slug: CATALOGUE_BRAND_KEY,
-            name: getFieldTranslation(`catalogueFilter.brands.${locale}`),
-            options: brandOptions.map((option) => {
-              return {
-                ...option,
-                name: getFieldLocale(option.nameI18n),
-              };
-            }),
-            catalogueFilter,
-          });
-
-          // Brand collections
-          const brandCollectionOptions = await getCatalogueAdditionalFilterOptions({
-            productsMainPipeline,
-            productForeignField: '$brandCollectionSlug',
-            collectionSlugs: selectedBrandCollectionSlugs,
-            filterKey: CATALOGUE_BRAND_COLLECTION_KEY,
-            collection: COL_BRAND_COLLECTIONS,
-            catalogueFilterArgs: catalogueFilter,
-            city,
-          });
-          const brandCollectionsAttribute = await getCatalogueAttribute({
-            _id: new ObjectId(),
-            slug: CATALOGUE_BRAND_COLLECTION_KEY,
-            name: getFieldTranslation(`catalogueFilter.brandCollections.${locale}`),
-            options: brandCollectionOptions.map((option) => {
-              return {
-                ...option,
-                name: getFieldLocale(option.nameI18n),
-              };
-            }),
-            catalogueFilter,
-          });
-
-          // Manufacturers
-          const manufacturerOptions = await getCatalogueAdditionalFilterOptions({
-            productsMainPipeline,
-            productForeignField: '$manufacturerSlug',
-            collectionSlugs: selectedManufacturerSlugs,
-            filterKey: CATALOGUE_MANUFACTURER_KEY,
-            collection: 'manufacturers',
-            catalogueFilterArgs: catalogueFilter,
-            city,
-          });
-          const manufacturersAttribute = await getCatalogueAttribute({
-            _id: new ObjectId(),
-            slug: CATALOGUE_MANUFACTURER_KEY,
-            name: getFieldTranslation(`catalogueFilter.manufacturers.${locale}`),
-            options: manufacturerOptions.map((option) => {
-              return {
-                ...option,
-                name: getFieldLocale(option.nameI18n),
-              };
-            }),
-            catalogueFilter,
-          });
-
-          // Final attributes list
-          const finalAttributes = [
-            ...castedAttributes,
-            brandsAttribute,
-            brandCollectionsAttribute,
-            manufacturersAttribute,
-          ];
-
-          // Get selected prices
-          const selectedFiltersWithoutPrices = catalogueFilter.filter((param) => {
-            const castedParam = castCatalogueParamToObject(param);
-            return (
-              castedParam.slug !== CATALOGUE_MIN_PRICE_KEY &&
-              castedParam.slug !== CATALOGUE_MAX_PRICE_KEY
-            );
-          });
-          const selectedPrices: CatalogueFilterSelectedPricesModel | null =
-            minPrice && maxPrice
-              ? {
-                  _id: new ObjectId(),
-                  clearSlug: `/${selectedFiltersWithoutPrices.join('/')}`,
-                  formattedMinPrice: getCurrencyString({ locale, value: minPrice }),
-                  formattedMaxPrice: getCurrencyString({ locale, value: maxPrice }),
-                }
-              : null;
+          // const afterOptions = new Date().getTime();
+          // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
           // Get selected attributes
-          const selectedAttributes = finalAttributes.reduce(
+          const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
+          const selectedAttributes = rubric.attributes.reduce(
             (acc: CatalogueFilterAttributeModel[], attribute) => {
-              if (!attribute.isSelected) {
+              if (
+                attribute.variant !== ATTRIBUTE_VARIANT_SELECT &&
+                attribute.variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+              ) {
                 return acc;
               }
+              const currentFilter = castedFilters.find(({ slug }) => attribute.slug === slug);
+              if (!currentFilter) {
+                return acc;
+              }
+
+              const options = attribute.options.reduce(
+                (acc: CatalogueFilterAttributeOptionModel[], option) => {
+                  if (!filterOptions.includes(option.slug)) {
+                    return acc;
+                  }
+
+                  const nextSlug = filter
+                    .filter((pathArg) => {
+                      return pathArg !== option.slug;
+                    })
+                    .join('/');
+                  return [
+                    ...acc,
+                    {
+                      _id: new ObjectId(),
+                      clearSlug: '',
+                      slug: option.slug,
+                      name: getFieldLocale(option.nameI18n),
+                      counter: 1,
+                      isSelected: true,
+                      isDisabled: false,
+                      nextSlug: `/${nextSlug}`,
+                    },
+                  ];
+                },
+                [],
+              );
+
               return [
                 ...acc,
                 {
-                  ...attribute,
                   _id: new ObjectId(),
-                  options: attribute.options.filter((option) => {
-                    return option.isSelected;
-                  }),
+                  clearSlug: '',
+                  slug: attribute.slug,
+                  name: getFieldLocale(attribute.nameI18n),
+                  isSelected: true,
+                  isDisabled: false,
+                  options,
                 },
               ];
             },
@@ -618,18 +457,30 @@ export const CatalogueQueries = extendType({
             locale,
           });
 
+          // Get keySet pagination
+          const lastProduct = products[products.length - 1];
+          const hasMore = Boolean(
+            lastProduct && lastProductId && !lastProductId.equals(lastProduct?._id),
+          );
+
+          const sortPathname =
+            sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
+
+          // const timeEnd = new Date().getTime();
+          // console.log('Total time: ', timeEnd - timeStart);
+          // console.log(lastProductId);
           return {
-            _id: new ObjectId(),
+            _id: rubric._id,
+            lastProductId: lastProduct?._id,
+            hasMore,
+            clearSlug: `/${rubricSlug}${sortPathname}`,
+            filter,
             rubric,
-            catalogueTitle,
             products,
-            catalogueFilter: {
-              _id: new ObjectId(),
-              attributes: finalAttributes,
-              selectedAttributes,
-              selectedPrices,
-              clearSlug: `/${rubric.slug}`,
-            },
+            catalogueTitle,
+            totalProducts,
+            attributes: castedAttributes,
+            selectedAttributes,
           };
         } catch (e) {
           console.log(e);
@@ -779,6 +630,147 @@ export const CatalogueQueries = extendType({
             products: [],
             rubrics: [],
           };
+        }
+      },
+    });
+  },
+});
+
+export const CatalogueMutations = extendType({
+  type: 'Mutation',
+  definition(t) {
+    // Should update catalogue counters
+    t.nonNull.field('updateCatalogueCounters', {
+      type: 'Boolean',
+      description: 'Should update catalogue counters',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'CatalogueDataInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<boolean> => {
+        try {
+          const db = await getDatabase();
+          const sessionRole = await getSessionRole(context);
+          const { city } = await getRequestParams(context);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+          const brandCollectionsCollection = db.collection<BrandCollectionModel>(
+            COL_BRAND_COLLECTIONS,
+          );
+          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+
+          // Args
+          const { input } = args;
+          const { filter } = input;
+          const [rubricSlug] = filter;
+
+          if (!sessionRole.isStuff) {
+            const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+            if (!rubric) {
+              return false;
+            }
+
+            // cast additional filters
+            const selectedBrandSlugs: string[] = [];
+            const selectedBrandCollectionSlugs: string[] = [];
+            const selectedManufacturerSlugs: string[] = [];
+            filter.forEach((param) => {
+              const castedParam = castCatalogueParamToObject(param);
+              const { slug, value } = castedParam;
+
+              if (slug === CATALOGUE_BRAND_KEY) {
+                selectedBrandSlugs.push(value);
+              }
+              if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
+                selectedBrandCollectionSlugs.push(value);
+              }
+              if (slug === CATALOGUE_MANUFACTURER_KEY) {
+                selectedManufacturerSlugs.push(value);
+              }
+            });
+
+            const counterUpdater = {
+              $inc: {
+                [`views.${city}`]: VIEWS_COUNTER_STEP,
+              },
+            };
+
+            // Update brand counters
+            if (selectedBrandSlugs.length > 0) {
+              await brandsCollection.updateMany(
+                { slug: { $in: selectedBrandSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update brand collection counters
+            if (selectedBrandCollectionSlugs.length > 0) {
+              await brandCollectionsCollection.updateMany(
+                { slug: { $in: selectedBrandCollectionSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update manufacturer counters
+            if (selectedManufacturerSlugs.length > 0) {
+              await manufacturersCollection.updateMany(
+                { slug: { $in: selectedManufacturerSlugs } },
+                counterUpdater,
+              );
+            }
+
+            // Update rubric counters
+            const attributesSlugs = filter.map((selectedSlug) => {
+              return selectedSlug.split(CATALOGUE_OPTION_SEPARATOR)[0];
+            });
+
+            const updatedAttributes: RubricAttributeModel[] = [];
+            rubric.attributes.forEach((attribute: RubricAttributeModel) => {
+              if (attributesSlugs.includes(attribute.slug)) {
+                attribute.views[city] = noNaN(attribute.views[city]) + VIEWS_COUNTER_STEP;
+                const updatedOptions = updateRubricOptionsViews({
+                  selectedOptionsSlugs: filter,
+                  options: attribute.options,
+                  city,
+                }).sort((optionA, optionB) => {
+                  const optionACounter =
+                    noNaN(optionA.views[city]) + noNaN(optionA.priorities[city]);
+                  const optionBCounter =
+                    noNaN(optionB.views[city]) + noNaN(optionB.priorities[city]);
+                  return optionBCounter - optionACounter;
+                });
+                attribute.options = updatedOptions;
+              }
+              updatedAttributes.push(attribute);
+            });
+
+            const sortedAttributes = updatedAttributes.sort((attributeA, attributeB) => {
+              const optionACounter =
+                noNaN(attributeA.views[city]) + noNaN(attributeA.priorities[city]);
+              const optionBCounter =
+                noNaN(attributeB.views[city]) + noNaN(attributeB.priorities[city]);
+              return optionBCounter - optionACounter;
+            });
+
+            await rubricsCollection.findOneAndUpdate(
+              { _id: rubric._id },
+              {
+                ...counterUpdater,
+                $set: {
+                  attributes: sortedAttributes,
+                },
+              },
+              { returnOriginal: false },
+            );
+          }
+
+          return true;
+        } catch (e) {
+          console.log(e);
+          return false;
         }
       },
     });

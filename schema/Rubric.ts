@@ -1,16 +1,23 @@
+import {
+  CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
+  CATALOGUE_NAV_VISIBLE_OPTIONS,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
+} from 'config/common';
 import { noNaN } from 'lib/numbers';
-import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
+import { getRubricNavAttributes } from 'lib/rubricUtils';
 import { arg, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 import {
   AttributesGroupModel,
+  ConfigModel,
   ProductsPaginationPayloadModel,
   RubricAttributeModel,
   RubricAttributesGroupModel,
   RubricVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_CONFIGS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const RubricProductsCountersInput = inputObjectType({
@@ -39,31 +46,11 @@ export const Rubric = objectType({
     t.nonNull.json('priorities');
     t.nonNull.int('productsCount');
     t.nonNull.int('activeProductsCount');
-    t.nonNull.json('shopProductsCountCities');
-    t.nonNull.json('visibleInCatalogueCities');
     t.nonNull.list.nonNull.field('attributes', {
       type: 'RubricAttribute',
     });
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitle',
-    });
-
-    // Rubric shopProductsCount field resolver
-    t.nonNull.field('shopProductsCount', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { getCityData } = await getRequestParams(context);
-        return noNaN(getCityData(source.shopProductsCountCities));
-      },
-    });
-
-    // Rubric visibleInCatalogue field resolver
-    t.nonNull.field('visibleInCatalogue', {
-      type: 'Boolean',
-      resolve: async (source, _args, context): Promise<boolean> => {
-        const { getCityData } = await getRequestParams(context);
-        return Boolean(getCityData(source.visibleInCatalogueCities));
-      },
     });
 
     // Rubric attributesGroups field resolver
@@ -146,7 +133,7 @@ export const Rubric = objectType({
         const paginationResult = await productsPaginationQuery({
           input: {
             ...args.input,
-            rubricsIds: [source._id],
+            rubricId: source._id,
           },
           city,
         });
@@ -159,11 +146,29 @@ export const Rubric = objectType({
       type: 'RubricAttribute',
       resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
         try {
+          const db = await getDatabase();
           const { city } = await getRequestParams(context);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
-          const catalogueAttributes = await getRubricCatalogueAttributes({
+          // Get configs
+          const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
+            slug: 'stickyNavVisibleAttributesCount',
+          });
+          const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+            slug: 'stickyNavVisibleOptionsCount',
+          });
+          const visibleAttributesCount =
+            noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+            noNaN(CATALOGUE_NAV_VISIBLE_ATTRIBUTES);
+          const visibleOptionsCount =
+            noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+            noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
+
+          const catalogueAttributes = await getRubricNavAttributes({
             attributes: source.attributes,
             city,
+            visibleAttributesCount,
+            visibleOptionsCount,
           });
 
           return catalogueAttributes;

@@ -1,0 +1,10 @@
+[{
+  "_id": {
+    "$oid": "604325cbab3d5114fb2bc09f"
+  },
+  "slug": "msk",
+  "nameI18n": {
+    "ru": "Москва",
+    "en": "Moscow"
+  }
+}]

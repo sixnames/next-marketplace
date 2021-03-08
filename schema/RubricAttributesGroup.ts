@@ -1,4 +1,3 @@
-import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
 
@@ -12,31 +11,10 @@ export const RubricOption = objectType({
     t.string('icon');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
-    t.nonNull.int('productsCount');
-    t.nonNull.int('activeProductsCount');
-    t.nonNull.json('shopProductsCountCities');
-    t.nonNull.json('visibleInCatalogueCities');
+    t.nonNull.boolean('isSelected');
     t.nonNull.json('variants');
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricOption',
-    });
-
-    // RubricOption shopProductsCount field resolver
-    t.nonNull.field('shopProductsCount', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const { getCityData } = await getRequestParams(context);
-        return noNaN(getCityData(source.shopProductsCountCities));
-      },
-    });
-
-    // RubricOption visibleInCatalogue field resolver
-    t.nonNull.field('visibleInCatalogue', {
-      type: 'Boolean',
-      resolve: async (source, _args, context): Promise<boolean> => {
-        const { getCityData } = await getRequestParams(context);
-        return Boolean(getCityData(source.visibleInCatalogueCities));
-      },
     });
 
     // RubricOption name translation field resolver
@@ -62,7 +40,6 @@ export const RubricAttribute = objectType({
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.json('positioningInTitle');
-    t.nonNull.json('visibleInCatalogueCities');
     t.nonNull.list.nonNull.field('options', {
       type: 'RubricOption',
     });
@@ -74,15 +51,6 @@ export const RubricAttribute = objectType({
     });
     t.field('metric', {
       type: 'Metric',
-    });
-
-    // RubricAttribute visibleInCatalogue field resolver
-    t.nonNull.field('visibleInCatalogue', {
-      type: 'Boolean',
-      resolve: async (source, _args, context): Promise<boolean> => {
-        const { getCityData } = await getRequestParams(context);
-        return Boolean(getCityData(source.visibleInCatalogueCities));
-      },
     });
 
     // RubricAttribute name translation field resolver

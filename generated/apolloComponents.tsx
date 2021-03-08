@@ -198,22 +198,13 @@ export type CatalogueSearchResult = {
   products: Array<Product>;
 };
 
-export type CatalogueFilterSelectedPrices = {
-  __typename?: 'CatalogueFilterSelectedPrices';
-  clearSlug: Scalars['String'];
-  formattedMinPrice: Scalars['String'];
-  formattedMaxPrice: Scalars['String'];
-};
-
 export type CatalogueFilterAttributeOption = {
   __typename?: 'CatalogueFilterAttributeOption';
   _id: Scalars['ObjectId'];
   name: Scalars['String'];
   slug: Scalars['String'];
   nextSlug: Scalars['String'];
-  counter: Scalars['Int'];
   isSelected: Scalars['Boolean'];
-  isDisabled: Scalars['Boolean'];
 };
 
 export type CatalogueFilterAttribute = {
@@ -223,26 +214,32 @@ export type CatalogueFilterAttribute = {
   slug: Scalars['String'];
   clearSlug: Scalars['String'];
   isSelected: Scalars['Boolean'];
-  isDisabled: Scalars['Boolean'];
   options: Array<CatalogueFilterAttributeOption>;
-};
-
-export type CatalogueFilter = {
-  __typename?: 'CatalogueFilter';
-  _id: Scalars['ObjectId'];
-  clearSlug: Scalars['String'];
-  attributes: Array<CatalogueFilterAttribute>;
-  selectedAttributes: Array<CatalogueFilterAttribute>;
-  selectedPrices?: Maybe<CatalogueFilterSelectedPrices>;
 };
 
 export type CatalogueData = {
   __typename?: 'CatalogueData';
   _id: Scalars['ObjectId'];
-  catalogueTitle: Scalars['String'];
+  lastProductId?: Maybe<Scalars['ObjectId']>;
+  hasMore: Scalars['Boolean'];
+  clearSlug: Scalars['String'];
+  filter: Array<Scalars['String']>;
   rubric: Rubric;
-  products: ProductsPaginationPayload;
-  catalogueFilter: CatalogueFilter;
+  products: Array<Product>;
+  totalProducts: Scalars['Int'];
+  catalogueTitle: Scalars['String'];
+  attributes: Array<CatalogueFilterAttribute>;
+  selectedAttributes: Array<CatalogueFilterAttribute>;
+};
+
+export type CatalogueDataInput = {
+  lastProductId?: Maybe<Scalars['ObjectId']>;
+  filter: Array<Scalars['String']>;
+};
+
+export type CatalogueAdditionalAttributesInput = {
+  shownAttributesSlugs: Array<Scalars['String']>;
+  filter: Array<Scalars['String']>;
 };
 
 export type City = {
@@ -555,8 +552,7 @@ export type QueryGetAllUsersArgs = {
 
 
 export type QueryGetCatalogueDataArgs = {
-  catalogueFilter: Array<Scalars['String']>;
-  productsInput: ProductsPaginationInput;
+  input: CatalogueDataInput;
 };
 
 
@@ -802,6 +798,8 @@ export type Mutation = {
   updateLanguage: LanguagePayload;
   /** Should delete language */
   deleteLanguage: LanguagePayload;
+  /** Should update catalogue counters */
+  updateCatalogueCounters: Scalars['Boolean'];
   /** Should create country */
   createCountry: CountryPayload;
   /** Should update country */
@@ -1011,6 +1009,11 @@ export type MutationUpdateLanguageArgs = {
 
 export type MutationDeleteLanguageArgs = {
   _id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateCatalogueCountersArgs = {
+  input: CatalogueDataInput;
 };
 
 
@@ -1855,12 +1858,8 @@ export type Rubric = {
   priorities: Scalars['JSONObject'];
   productsCount: Scalars['Int'];
   activeProductsCount: Scalars['Int'];
-  shopProductsCountCities: Scalars['JSONObject'];
-  visibleInCatalogueCities: Scalars['JSONObject'];
   attributes: Array<RubricAttribute>;
   catalogueTitle: RubricCatalogueTitle;
-  shopProductsCount: Scalars['Int'];
-  visibleInCatalogue: Scalars['Boolean'];
   attributesGroups: Array<RubricAttributesGroup>;
   name: Scalars['String'];
   description: Scalars['String'];
@@ -1896,13 +1895,8 @@ export type RubricOption = {
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   productsCount: Scalars['Int'];
-  activeProductsCount: Scalars['Int'];
-  shopProductsCountCities: Scalars['JSONObject'];
-  visibleInCatalogueCities: Scalars['JSONObject'];
   variants: Scalars['JSONObject'];
   options: Array<RubricOption>;
-  shopProductsCount: Scalars['Int'];
-  visibleInCatalogue: Scalars['Boolean'];
   name: Scalars['String'];
 };
 
@@ -1917,12 +1911,10 @@ export type RubricAttribute = {
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  visibleInCatalogueCities: Scalars['JSONObject'];
   options: Array<RubricOption>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
   metric?: Maybe<Metric>;
-  visibleInCatalogue: Scalars['Boolean'];
   name: Scalars['String'];
 };
 
@@ -2036,7 +2028,7 @@ export type Product = Base & Timestamp & {
   manufacturerSlug?: Maybe<Scalars['String']>;
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   assets: Array<Asset>;
@@ -2097,7 +2089,7 @@ export type ProductsPaginationInput = {
   page?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   /** Filter by current rubrics */
-  rubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
+  rubricId?: Maybe<Scalars['ObjectId']>;
   /** Filter by current attributes */
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
   /** Exclude products in current rubrics */
@@ -2116,7 +2108,7 @@ export type GetProductShopsInput = {
 
 export type ProductAttributesAstInput = {
   productId?: Maybe<Scalars['ObjectId']>;
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
 };
 
 export type ProductPayload = Payload & {
@@ -2147,7 +2139,7 @@ export type CreateProductInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   assets: Array<Scalars['Upload']>;
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2176,7 +2168,7 @@ export type UpdateProductInput = {
   originalName: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
-  rubricsIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2676,7 +2668,7 @@ export type CmsProductConnectionFragment = (
 
 export type CmsProductFieldsFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricsIds' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'originalName' | 'slug' | 'descriptionI18n' | 'description' | 'active' | 'mainImage' | 'rubricId' | 'brandSlug' | 'brandCollectionSlug' | 'manufacturerSlug'>
   & { assets: Array<(
     { __typename?: 'Asset' }
     & Pick<Asset, 'url' | 'index'>
@@ -2709,7 +2701,7 @@ export type GetProductQuery = (
 
 export type ProductAttributeAstFragment = (
   { __typename?: 'ProductAttribute' }
-  & Pick<ProductAttribute, 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
+  & Pick<ProductAttribute, '_id' | 'showInCard' | 'showAsBreadcrumb' | 'attributeId' | 'attributeSlug' | 'textI18n' | 'number' | 'selectedOptionsSlugs' | 'attributeName' | 'attributeNameI18n' | 'attributeVariant' | 'attributeViewVariant'>
   & { attribute: (
     { __typename?: 'Attribute' }
     & Pick<Attribute, '_id' | 'name' | 'variant'>
@@ -2881,7 +2873,7 @@ export type DeleteProductFromConnectionMutation = (
 
 export type RubricInListFragment = (
   { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'name' | 'productsCount' | 'activeProductsCount'>
+  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name' | 'productsCount' | 'activeProductsCount'>
   & { variant: (
     { __typename?: 'RubricVariant' }
     & Pick<RubricVariant, '_id' | 'name'>
@@ -2890,7 +2882,7 @@ export type RubricInListFragment = (
 
 export type RubricProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricsIds'>
+  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'name' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
 );
 
 export type RubricProductsPaginationFragment = (
@@ -2923,6 +2915,24 @@ export type GetRubricQueryVariables = Exact<{
 export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
+    & { catalogueTitle: (
+      { __typename?: 'RubricCatalogueTitle' }
+      & Pick<RubricCatalogueTitle, 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
+    ) }
+    & RubricInListFragment
+  ) }
+);
+
+export type GetRubricBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type GetRubricBySlugQuery = (
+  { __typename?: 'Query' }
+  & { getRubricBySlug: (
     { __typename?: 'Rubric' }
     & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
     & { catalogueTitle: (
@@ -2973,18 +2983,16 @@ export type DeleteRubricMutation = (
 );
 
 export type GetRubricProductsQueryVariables = Exact<{
-  rubricId: Scalars['ObjectId'];
-  excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
-  excludedProductsIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
-  attributesIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
+  rubricSlug: Scalars['String'];
+  productsInput?: Maybe<ProductsPaginationInput>;
 }>;
 
 
 export type GetRubricProductsQuery = (
   { __typename?: 'Query' }
-  & { getRubric: (
+  & { getRubricBySlug: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id'>
+    & Pick<Rubric, '_id' | 'name'>
     & { products: (
       { __typename?: 'ProductsPaginationPayload' }
       & RubricProductsPaginationFragment
@@ -3026,6 +3034,32 @@ export type DeleteProductFromRubricMutationVariables = Exact<{
 export type DeleteProductFromRubricMutation = (
   { __typename?: 'Mutation' }
   & { deleteProductFromRubric: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type ToggleAttributeInRubricCatalogueMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type ToggleAttributeInRubricCatalogueMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleAttributeInRubricCatalogue: (
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
+  ) }
+);
+
+export type ToggleAttributeInRubricNavMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
+}>;
+
+
+export type ToggleAttributeInRubricNavMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleAttributeInRubricNav: (
     { __typename?: 'RubricPayload' }
     & Pick<RubricPayload, 'success' | 'message'>
   ) }
@@ -3993,7 +4027,7 @@ export type ProductSnippetFragment = (
 
 export type CatalogueFilterAttributeOptionFragment = (
   { __typename?: 'CatalogueFilterAttributeOption' }
-  & Pick<CatalogueFilterAttributeOption, '_id' | 'name' | 'counter' | 'slug' | 'nextSlug' | 'isSelected' | 'isDisabled'>
+  & Pick<CatalogueFilterAttributeOption, '_id' | 'name' | 'slug' | 'nextSlug' | 'isSelected'>
 );
 
 export type CatalogueFilterAttributeFragment = (
@@ -4002,26 +4036,6 @@ export type CatalogueFilterAttributeFragment = (
   & { options: Array<(
     { __typename?: 'CatalogueFilterAttributeOption' }
     & CatalogueFilterAttributeOptionFragment
-  )> }
-);
-
-export type CatalogueSelectedPricesFragment = (
-  { __typename?: 'CatalogueFilterSelectedPrices' }
-  & Pick<CatalogueFilterSelectedPrices, 'clearSlug' | 'formattedMinPrice' | 'formattedMaxPrice'>
-);
-
-export type CatalogueFilterFragment = (
-  { __typename?: 'CatalogueFilter' }
-  & Pick<CatalogueFilter, '_id' | 'clearSlug'>
-  & { selectedPrices?: Maybe<(
-    { __typename?: 'CatalogueFilterSelectedPrices' }
-    & CatalogueSelectedPricesFragment
-  )>, attributes: Array<(
-    { __typename?: 'CatalogueFilterAttribute' }
-    & CatalogueFilterAttributeFragment
-  )>, selectedAttributes: Array<(
-    { __typename?: 'CatalogueFilterAttribute' }
-    & CatalogueFilterAttributeFragment
   )> }
 );
 
@@ -4036,26 +4050,24 @@ export type CatalogueRubricFragment = (
 
 export type CatalogueDataFragment = (
   { __typename?: 'CatalogueData' }
-  & Pick<CatalogueData, 'catalogueTitle'>
-  & { catalogueFilter: (
-    { __typename?: 'CatalogueFilter' }
-    & CatalogueFilterFragment
-  ), rubric: (
+  & Pick<CatalogueData, '_id' | 'lastProductId' | 'hasMore' | 'clearSlug' | 'filter' | 'catalogueTitle' | 'totalProducts'>
+  & { rubric: (
     { __typename?: 'Rubric' }
     & CatalogueRubricFragment
-  ), products: (
-    { __typename?: 'ProductsPaginationPayload' }
-    & Pick<ProductsPaginationPayload, 'totalDocs' | 'page' | 'totalPages' | 'sortBy' | 'sortDir' | 'minPrice' | 'maxPrice'>
-    & { docs: Array<(
-      { __typename?: 'Product' }
-      & ProductSnippetFragment
-    )> }
-  ) }
+  ), products: Array<(
+    { __typename?: 'Product' }
+    & ProductSnippetFragment
+  )>, attributes: Array<(
+    { __typename?: 'CatalogueFilterAttribute' }
+    & CatalogueFilterAttributeFragment
+  )>, selectedAttributes: Array<(
+    { __typename?: 'CatalogueFilterAttribute' }
+    & CatalogueFilterAttributeFragment
+  )> }
 );
 
 export type GetCatalogueRubricQueryVariables = Exact<{
-  catalogueFilter: Array<Scalars['String']> | Scalars['String'];
-  productsInput: ProductsPaginationInput;
+  input: CatalogueDataInput;
 }>;
 
 
@@ -4065,6 +4077,16 @@ export type GetCatalogueRubricQuery = (
     { __typename?: 'CatalogueData' }
     & CatalogueDataFragment
   )> }
+);
+
+export type UpdateCatalogueCountersMutationVariables = Exact<{
+  input: CatalogueDataInput;
+}>;
+
+
+export type UpdateCatalogueCountersMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateCatalogueCounters'>
 );
 
 export type CompanyInListFragment = (
@@ -4916,7 +4938,7 @@ export const CmsProductFieldsFragmentDoc = gql`
   }
   active
   mainImage
-  rubricsIds
+  rubricId
   brandSlug
   brandCollectionSlug
   manufacturerSlug
@@ -4936,6 +4958,7 @@ export const CmsProductFragmentDoc = gql`
     ${CmsProductFieldsFragmentDoc}`;
 export const ProductAttributeAstFragmentDoc = gql`
     fragment ProductAttributeAst on ProductAttribute {
+  _id
   showInCard
   showAsBreadcrumb
   attributeId
@@ -4975,6 +4998,7 @@ export const RubricInListFragmentDoc = gql`
     fragment RubricInList on Rubric {
   _id
   nameI18n
+  slug
   name
   productsCount
   activeProductsCount
@@ -4993,7 +5017,7 @@ export const RubricProductFragmentDoc = gql`
   slug
   mainImage
   active
-  rubricsIds
+  rubricId
 }
     `;
 export const RubricProductsPaginationFragmentDoc = gql`
@@ -5285,22 +5309,24 @@ export const ProductCardFragmentDoc = gql`
     ${ShopProductSnippetFragmentDoc}
 ${CardFeatureFragmentDoc}
 ${CardConnectionFragmentDoc}`;
-export const CatalogueSelectedPricesFragmentDoc = gql`
-    fragment CatalogueSelectedPrices on CatalogueFilterSelectedPrices {
-  clearSlug
-  formattedMinPrice
-  formattedMaxPrice
+export const CatalogueRubricFragmentDoc = gql`
+    fragment CatalogueRubric on Rubric {
+  _id
+  name
+  slug
+  variant {
+    _id
+    name
+  }
 }
     `;
 export const CatalogueFilterAttributeOptionFragmentDoc = gql`
     fragment CatalogueFilterAttributeOption on CatalogueFilterAttributeOption {
   _id
   name
-  counter
   slug
   nextSlug
   isSelected
-  isDisabled
 }
     `;
 export const CatalogueFilterAttributeFragmentDoc = gql`
@@ -5315,13 +5341,22 @@ export const CatalogueFilterAttributeFragmentDoc = gql`
   }
 }
     ${CatalogueFilterAttributeOptionFragmentDoc}`;
-export const CatalogueFilterFragmentDoc = gql`
-    fragment CatalogueFilter on CatalogueFilter {
+export const CatalogueDataFragmentDoc = gql`
+    fragment CatalogueData on CatalogueData {
   _id
+  lastProductId
+  hasMore
   clearSlug
-  selectedPrices {
-    ...CatalogueSelectedPrices
+  filter
+  catalogueTitle
+  rubric {
+    ...CatalogueRubric
   }
+  products {
+    ...ProductSnippet
+  }
+  totalProducts
+  catalogueTitle
   attributes {
     ...CatalogueFilterAttribute
   }
@@ -5329,44 +5364,9 @@ export const CatalogueFilterFragmentDoc = gql`
     ...CatalogueFilterAttribute
   }
 }
-    ${CatalogueSelectedPricesFragmentDoc}
+    ${CatalogueRubricFragmentDoc}
+${ProductSnippetFragmentDoc}
 ${CatalogueFilterAttributeFragmentDoc}`;
-export const CatalogueRubricFragmentDoc = gql`
-    fragment CatalogueRubric on Rubric {
-  _id
-  name
-  slug
-  variant {
-    _id
-    name
-  }
-}
-    `;
-export const CatalogueDataFragmentDoc = gql`
-    fragment CatalogueData on CatalogueData {
-  catalogueTitle
-  catalogueFilter {
-    ...CatalogueFilter
-  }
-  rubric {
-    ...CatalogueRubric
-  }
-  products {
-    totalDocs
-    page
-    totalPages
-    sortBy
-    sortDir
-    minPrice
-    maxPrice
-    docs {
-      ...ProductSnippet
-    }
-  }
-}
-    ${CatalogueFilterFragmentDoc}
-${CatalogueRubricFragmentDoc}
-${ProductSnippetFragmentDoc}`;
 export const CompanyInListFragmentDoc = gql`
     fragment CompanyInList on Company {
   _id
@@ -6312,6 +6312,49 @@ export function useGetRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetRubricQueryHookResult = ReturnType<typeof useGetRubricQuery>;
 export type GetRubricLazyQueryHookResult = ReturnType<typeof useGetRubricLazyQuery>;
 export type GetRubricQueryResult = Apollo.QueryResult<GetRubricQuery, GetRubricQueryVariables>;
+export const GetRubricBySlugDocument = gql`
+    query GetRubricBySlug($slug: String!) {
+  getRubricBySlug(slug: $slug) {
+    ...RubricInList
+    active
+    variantId
+    descriptionI18n
+    shortDescriptionI18n
+    catalogueTitle {
+      defaultTitleI18n
+      prefixI18n
+      keywordI18n
+      gender
+    }
+  }
+}
+    ${RubricInListFragmentDoc}`;
+
+/**
+ * __useGetRubricBySlugQuery__
+ *
+ * To run a query within a React component, call `useGetRubricBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRubricBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRubricBySlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetRubricBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
+        return Apollo.useQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, baseOptions);
+      }
+export function useGetRubricBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
+          return Apollo.useLazyQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, baseOptions);
+        }
+export type GetRubricBySlugQueryHookResult = ReturnType<typeof useGetRubricBySlugQuery>;
+export type GetRubricBySlugLazyQueryHookResult = ReturnType<typeof useGetRubricBySlugLazyQuery>;
+export type GetRubricBySlugQueryResult = Apollo.QueryResult<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>;
 export const CreateRubricDocument = gql`
     mutation CreateRubric($input: CreateRubricInput!) {
   createRubric(input: $input) {
@@ -6412,12 +6455,11 @@ export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMu
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
 export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
 export const GetRubricProductsDocument = gql`
-    query GetRubricProducts($rubricId: ObjectId!, $excludedRubricsIds: [ObjectId!], $excludedProductsIds: [ObjectId!], $attributesIds: [ObjectId!]) {
-  getRubric(_id: $rubricId) {
+    query GetRubricProducts($rubricSlug: String!, $productsInput: ProductsPaginationInput) {
+  getRubricBySlug(slug: $rubricSlug) {
     _id
-    products(
-      input: {excludedRubricsIds: $excludedRubricsIds, excludedProductsIds: $excludedProductsIds, attributesIds: $attributesIds}
-    ) {
+    name
+    products(input: $productsInput) {
       ...RubricProductsPagination
     }
   }
@@ -6436,10 +6478,8 @@ export const GetRubricProductsDocument = gql`
  * @example
  * const { data, loading, error } = useGetRubricProductsQuery({
  *   variables: {
- *      rubricId: // value for 'rubricId'
- *      excludedRubricsIds: // value for 'excludedRubricsIds'
- *      excludedProductsIds: // value for 'excludedProductsIds'
- *      attributesIds: // value for 'attributesIds'
+ *      rubricSlug: // value for 'rubricSlug'
+ *      productsInput: // value for 'productsInput'
  *   },
  * });
  */
@@ -6551,6 +6591,72 @@ export function useDeleteProductFromRubricMutation(baseOptions?: Apollo.Mutation
 export type DeleteProductFromRubricMutationHookResult = ReturnType<typeof useDeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationResult = Apollo.MutationResult<DeleteProductFromRubricMutation>;
 export type DeleteProductFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromRubricMutation, DeleteProductFromRubricMutationVariables>;
+export const ToggleAttributeInRubricCatalogueDocument = gql`
+    mutation ToggleAttributeInRubricCatalogue($input: UpdateAttributeInRubricInput!) {
+  toggleAttributeInRubricCatalogue(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ToggleAttributeInRubricCatalogueMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
+
+/**
+ * __useToggleAttributeInRubricCatalogueMutation__
+ *
+ * To run a mutation, you first call `useToggleAttributeInRubricCatalogueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAttributeInRubricCatalogueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAttributeInRubricCatalogueMutation, { data, loading, error }] = useToggleAttributeInRubricCatalogueMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleAttributeInRubricCatalogueMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>) {
+        return Apollo.useMutation<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>(ToggleAttributeInRubricCatalogueDocument, baseOptions);
+      }
+export type ToggleAttributeInRubricCatalogueMutationHookResult = ReturnType<typeof useToggleAttributeInRubricCatalogueMutation>;
+export type ToggleAttributeInRubricCatalogueMutationResult = Apollo.MutationResult<ToggleAttributeInRubricCatalogueMutation>;
+export type ToggleAttributeInRubricCatalogueMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricCatalogueMutation, ToggleAttributeInRubricCatalogueMutationVariables>;
+export const ToggleAttributeInRubricNavDocument = gql`
+    mutation ToggleAttributeInRubricNav($input: UpdateAttributeInRubricInput!) {
+  toggleAttributeInRubricNav(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type ToggleAttributeInRubricNavMutationFn = Apollo.MutationFunction<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
+
+/**
+ * __useToggleAttributeInRubricNavMutation__
+ *
+ * To run a mutation, you first call `useToggleAttributeInRubricNavMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleAttributeInRubricNavMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleAttributeInRubricNavMutation, { data, loading, error }] = useToggleAttributeInRubricNavMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useToggleAttributeInRubricNavMutation(baseOptions?: Apollo.MutationHookOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>) {
+        return Apollo.useMutation<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>(ToggleAttributeInRubricNavDocument, baseOptions);
+      }
+export type ToggleAttributeInRubricNavMutationHookResult = ReturnType<typeof useToggleAttributeInRubricNavMutation>;
+export type ToggleAttributeInRubricNavMutationResult = Apollo.MutationResult<ToggleAttributeInRubricNavMutation>;
+export type ToggleAttributeInRubricNavMutationOptions = Apollo.BaseMutationOptions<ToggleAttributeInRubricNavMutation, ToggleAttributeInRubricNavMutationVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts($input: ProductsPaginationInput!) {
   getProductsList(input: $input) {
@@ -8411,11 +8517,8 @@ export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatal
 export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
 export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
 export const GetCatalogueRubricDocument = gql`
-    query GetCatalogueRubric($catalogueFilter: [String!]!, $productsInput: ProductsPaginationInput!) {
-  getCatalogueData(
-    catalogueFilter: $catalogueFilter
-    productsInput: $productsInput
-  ) {
+    query GetCatalogueRubric($input: CatalogueDataInput!) {
+  getCatalogueData(input: $input) {
     ...CatalogueData
   }
 }
@@ -8433,8 +8536,7 @@ export const GetCatalogueRubricDocument = gql`
  * @example
  * const { data, loading, error } = useGetCatalogueRubricQuery({
  *   variables: {
- *      catalogueFilter: // value for 'catalogueFilter'
- *      productsInput: // value for 'productsInput'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -8447,6 +8549,36 @@ export function useGetCatalogueRubricLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCatalogueRubricQueryHookResult = ReturnType<typeof useGetCatalogueRubricQuery>;
 export type GetCatalogueRubricLazyQueryHookResult = ReturnType<typeof useGetCatalogueRubricLazyQuery>;
 export type GetCatalogueRubricQueryResult = Apollo.QueryResult<GetCatalogueRubricQuery, GetCatalogueRubricQueryVariables>;
+export const UpdateCatalogueCountersDocument = gql`
+    mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
+  updateCatalogueCounters(input: $input)
+}
+    `;
+export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
+
+/**
+ * __useUpdateCatalogueCountersMutation__
+ *
+ * To run a mutation, you first call `useUpdateCatalogueCountersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCatalogueCountersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCatalogueCountersMutation, { data, loading, error }] = useUpdateCatalogueCountersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCatalogueCountersMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>) {
+        return Apollo.useMutation<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>(UpdateCatalogueCountersDocument, baseOptions);
+      }
+export type UpdateCatalogueCountersMutationHookResult = ReturnType<typeof useUpdateCatalogueCountersMutation>;
+export type UpdateCatalogueCountersMutationResult = Apollo.MutationResult<UpdateCatalogueCountersMutation>;
+export type UpdateCatalogueCountersMutationOptions = Apollo.BaseMutationOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
 export const GetAllCompaniesDocument = gql`
     query GetAllCompanies($input: PaginationInput) {
   getAllCompanies(input: $input) {

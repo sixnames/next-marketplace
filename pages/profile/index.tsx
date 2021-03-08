@@ -6,11 +6,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import ProfileOrdersRoute from 'routes/ProfileOrdersRoute/ProfileOrdersRoute';
-import { PagePropsInterface } from '../_app';
 
-const Profile: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Profile: NextPage = () => {
   return (
-    <SiteLayout title={'История заказов'} initialTheme={initialTheme}>
+    <SiteLayout title={'История заказов'}>
       <ProfileLayout>
         <ProfileOrdersRoute />
       </ProfileLayout>
@@ -32,11 +31,10 @@ export async function getServerSideProps(
       };
     }
 
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

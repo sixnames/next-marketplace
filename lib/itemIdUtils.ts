@@ -4,6 +4,25 @@ import { DEFAULT_ID_COUNTER, ID_COUNTER_STEP, ID_COUNTER_DIGITS } from 'config/c
 import { getDatabase } from 'db/mongodb';
 import addZero from 'add-zero';
 
+export async function updateCollectionItemId(collectionName: string) {
+  const db = await getDatabase();
+  const entityCollection = db.collection(collectionName);
+  const idCountersCollection = db.collection(COL_ID_COUNTERS);
+  const counter = await entityCollection.countDocuments();
+
+  await idCountersCollection.findOneAndUpdate(
+    { collection: collectionName },
+    {
+      $set: {
+        counter: counter,
+      },
+    },
+    {
+      upsert: true,
+    },
+  );
+}
+
 export async function setCollectionItemId(collectionName: string, counter: number) {
   const db = await getDatabase();
   const idCountersCollection = db.collection(COL_ID_COUNTERS);

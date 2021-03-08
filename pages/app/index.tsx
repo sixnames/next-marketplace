@@ -8,9 +8,9 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
 
-const App: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const App: NextPage<PagePropsInterface> = () => {
   return (
-    <AppLayout initialTheme={initialTheme} title={'App'}>
+    <AppLayout title={'App'}>
       <Inner>
         <Title>App</Title>
       </Inner>
@@ -33,11 +33,10 @@ export async function getServerSideProps(
       };
     }
 
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

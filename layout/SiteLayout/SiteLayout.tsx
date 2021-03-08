@@ -1,7 +1,6 @@
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import { ThemeContextProvider } from 'context/themeContext';
-import { Theme } from 'types/clientTypes';
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
@@ -113,15 +112,9 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 interface SiteLayoutInterface {
   title?: string;
   description?: string;
-  initialTheme: Theme;
 }
 
-const SiteLayout: React.FC<SiteLayoutInterface> = ({
-  children,
-  initialTheme,
-  title,
-  description,
-}) => {
+const SiteLayout: React.FC<SiteLayoutInterface> = ({ children, title, description }) => {
   const { data } = useInitialSiteQuery();
 
   return (
@@ -129,7 +122,7 @@ const SiteLayout: React.FC<SiteLayoutInterface> = ({
       configs={data?.getAllConfigs || []}
       cities={data?.getSessionCities || []}
     >
-      <ThemeContextProvider initialTheme={initialTheme}>
+      <ThemeContextProvider>
         <LocaleContextProvider
           languagesList={data?.getAllLanguages || []}
           currency={data?.getSessionCurrency || DEFAULT_CURRENCY}

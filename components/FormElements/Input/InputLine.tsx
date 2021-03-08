@@ -2,7 +2,6 @@ import * as React from 'react';
 import classes from './InputLine.module.css';
 import Icon from '../../Icon/Icon';
 import Tooltip from '../../TTip/Tooltip';
-import { PostfixType } from 'types/clientTypes';
 
 export interface InputLinePropsInterface {
   name?: string;
@@ -14,8 +13,6 @@ export interface InputLinePropsInterface {
   wide?: boolean;
   labelPostfix?: any;
   isHorizontal?: boolean;
-  postfix?: PostfixType;
-  prefix?: PostfixType;
   labelLink?: any;
   isRequired?: boolean;
   labelTag?: keyof JSX.IntrinsicElements;
@@ -30,8 +27,6 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   wide,
   labelPostfix,
   labelClass,
-  postfix,
-  prefix,
   labelLink,
   isRequired,
   isHorizontal,
@@ -47,32 +42,6 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           htmlFor: name,
         }
       : {};
-
-  const showInputPostfix = (postfix: PostfixType, isPrefix?: boolean) => {
-    const postfixClassName = isPrefix ? classes.prefix : classes.postfix;
-
-    // TODO i18n
-    switch (postfix) {
-      case 'percent':
-        return <div className={postfixClassName}>%</div>;
-      case 'currency':
-        return <div className={postfixClassName}>р.</div>;
-      case 'amount':
-        return <div className={postfixClassName}>шт.</div>;
-      case 'hours':
-        return <div className={postfixClassName}>ч.</div>;
-      case 'minutes':
-        return <div className={postfixClassName}>мин.</div>;
-      case 'human':
-        return <div className={postfixClassName}>чел.</div>;
-      case 'days':
-        return <div className={postfixClassName}>дн.</div>;
-      case 'hash':
-        return <div className={postfixClassName}>#</div>;
-      default:
-        return postfix;
-    }
-  };
 
   const horizontalClassName = isHorizontal ? classes.horizontal : '';
   const wideClassName = wide ? classes.wide : '';
@@ -98,11 +67,9 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
         </TagName>
       )}
       <div className={classes.holder}>
-        {showInputPostfix(prefix, true)}
         <div className={`${classes.content} ${lineContentClass ? lineContentClass : ''}`}>
           {children}
         </div>
-        {showInputPostfix(postfix)}
       </div>
     </div>
   );

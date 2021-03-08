@@ -10,7 +10,6 @@ export interface RenderArgs<T> {
   rowIndex: number;
 }
 
-// TODO deep accessor type
 export interface TableColumn<T> {
   accessor?: string;
   cellStyle?: React.CSSProperties;
@@ -22,7 +21,6 @@ export interface TableColumn<T> {
   hide?: (args: RenderArgs<T>) => boolean;
 }
 
-// TODO deep testIdKey type
 type TableInterface<T> = {
   data?: T[] | null;
   columns: TableColumn<T>[];
@@ -30,6 +28,7 @@ type TableInterface<T> = {
   footerColumns?: any[];
   sortHandler?: (sortBy: string) => void;
   onRowClick?: (dataItem: T) => void;
+  onRowDoubleClick?: (dataItem: T) => void;
   className?: string;
   fixPosition?: number;
   emptyMessage?: string;
@@ -44,6 +43,7 @@ const Table = <T extends Record<string, any>>({
   footerColumns = [],
   sortHandler,
   onRowClick,
+  onRowDoubleClick,
   className,
   fixPosition = 0,
   emptyMessage = 'Список пуст',
@@ -75,7 +75,8 @@ const Table = <T extends Record<string, any>>({
 
         return (
           <tr
-            onClick={() => onRowClick && onRowClick(dataItem)}
+            onClick={() => (onRowClick ? onRowClick(dataItem) : null)}
+            onDoubleClick={() => (onRowDoubleClick ? onRowDoubleClick(dataItem) : null)}
             key={key}
             data-cy={`${testId}-row`}
             className={`${classes.row} ${isWarning ? classes.rowWarning : ''}`}

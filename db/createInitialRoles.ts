@@ -44,17 +44,6 @@ const cmsRoute: NavItemModel[] = [
   {
     _id: new ObjectId(),
     nameI18n: {
-      [DEFAULT_LOCALE]: `Товары`,
-      [SECONDARY_LOCALE]: `Products`,
-    },
-    index: 1,
-    slug: 'cms-products',
-    path: `${ROUTE_CMS}/products`,
-    navGroup: ROUTE_CMS_NAV_GROUP,
-  },
-  {
-    _id: new ObjectId(),
-    nameI18n: {
       [DEFAULT_LOCALE]: `Рубрикатор`,
       [SECONDARY_LOCALE]: `Rubrics`,
     },

@@ -9,15 +9,28 @@ interface PagerInterface {
   totalPages: number;
 }
 
+const pageStep = 1;
+const minimalPagesCount = 2;
+const marginPagesDisplayed = 2;
+
 const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
-  const pageStep = 1;
-  const marginPagesDisplayed = 2;
+  const [pageState, setPageState] = React.useState<number>(() => page);
 
   const initialPage = React.useMemo(() => {
     return page - pageStep;
   }, [page]);
 
-  if (totalPages < 2) {
+  React.useEffect(() => {
+    if (page !== pageState) {
+      setPage(pageState);
+    }
+  }, [page, pageState, setPage]);
+
+  const onPageChange = React.useCallback((currentPage) => {
+    setPageState(currentPage.selected + pageStep);
+  }, []);
+
+  if (totalPages < minimalPagesCount) {
     return null;
   }
 
@@ -26,7 +39,7 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
       <ReactPaginate
         pageCount={totalPages}
         initialPage={initialPage}
-        pageRangeDisplayed={pageStep}
+        pageRangeDisplayed={1}
         marginPagesDisplayed={marginPagesDisplayed}
         previousLabel={<Icon name={'chevron-left'} />}
         previousClassName={classes.prev}
@@ -37,9 +50,7 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         pageLinkClassName={classes.butn}
         breakLinkClassName={classes.butn}
         containerClassName={classes.container}
-        onPageChange={(currentPage) => {
-          setPage(currentPage.selected + pageStep);
-        }}
+        onPageChange={onPageChange}
       />
     </div>
   );

@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc24f"
+  },
+  "nameI18n": {
+    "ru": "Гость",
+    "en": "Guest"
+  },
+  "description": "Роль назначается новым или не авторизованным пользователям",
+  "slug": "guest",
+  "isStuff": false,
+  "rules": [],
+  "allowedAppNavigation": [],
+  "createdAt": {
+    "$date": "2021-03-06T06:48:45.728Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-06T06:48:45.728Z"
+  }
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc250"
+  },
+  "nameI18n": {
+    "ru": "Владелец компании",
+    "en": "Company owner"
+  },
+  "description": "Владелец компании",
+  "slug": "companyOwner",
+  "isStuff": false,
+  "rules": [],
+  "allowedAppNavigation": [],
+  "createdAt": {
+    "$date": "2021-03-06T06:48:45.783Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-06T06:48:45.783Z"
+  }
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc251"
+  },
+  "nameI18n": {
+    "ru": "Сотрудник компании",
+    "en": "Company manager"
+  },
+  "description": "Сотрудник компании",
+  "slug": "companyManager",
+  "isStuff": false,
+  "rules": [],
+  "allowedAppNavigation": [],
+  "createdAt": {
+    "$date": "2021-03-06T06:48:45.792Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-06T06:48:45.792Z"
+  }
+},{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc252"
+  },
+  "nameI18n": {
+    "ru": "Админ",
+    "en": "Admin"
+  },
+  "description": "Администратор сайта",
+  "slug": "admin",
+  "isStuff": true,
+  "rules": [],
+  "allowedAppNavigation": [],
+  "createdAt": {
+    "$date": "2021-03-06T06:48:45.802Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-06T06:48:45.802Z"
+  }
+}]

@@ -1,0 +1,22 @@
+[{
+  "_id": {
+    "$oid": "604325cdab3d5114fb2bc254"
+  },
+  "itemId": "000001",
+  "name": "Admin",
+  "lastName": "Site",
+  "secondName": "Bro",
+  "email": "admin@gmail.com",
+  "phone": "+79998884433",
+  "password": "$2a$10$6d0HEJiMB3.EnWtPmNapaO.0/9ITQZ8yQKv2fZ5HzK/nDNJEvubO.",
+  "createdAt": {
+    "$date": "2021-03-06T06:48:45.994Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-06T06:48:45.994Z"
+  },
+  "roleId": {
+    "$oid": "604325cdab3d5114fb2bc252"
+  },
+  "archive": false
+}]

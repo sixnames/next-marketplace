@@ -1,12 +1,10 @@
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import classes from './FakeInput.module.css';
-import { PostfixType } from 'types/clientTypes';
 
 interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'labelTag'> {
   className?: string;
   value: any;
-  postfix?: PostfixType;
   testId?: string | number | null;
 }
 
@@ -17,7 +15,6 @@ const FakeInput: React.FC<FakeInputInterface> = ({
   label,
   low,
   labelPostfix,
-  postfix,
   labelLink,
   testId,
 }) => {
@@ -29,7 +26,6 @@ const FakeInput: React.FC<FakeInputInterface> = ({
       label={label}
       labelPostfix={labelPostfix}
       labelLink={labelLink}
-      postfix={postfix}
       low={low}
       labelTag={'div'}
     >

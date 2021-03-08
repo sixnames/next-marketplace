@@ -260,26 +260,33 @@ type CartProduct implements Base {
   totalPrice: Int!
 }
 
-type CatalogueData {
-  _id: ObjectId!
-  catalogueFilter: CatalogueFilter!
-  catalogueTitle: String!
-  products: ProductsPaginationPayload!
-  rubric: Rubric!
+input CatalogueAdditionalAttributesInput {
+  filter: [String!]!
+  shownAttributesSlugs: [String!]!
 }
 
-type CatalogueFilter {
+type CatalogueData {
   _id: ObjectId!
   attributes: [CatalogueFilterAttribute!]!
+  catalogueTitle: String!
   clearSlug: String!
+  filter: [String!]!
+  hasMore: Boolean!
+  lastProductId: ObjectId
+  products: [Product!]!
+  rubric: Rubric!
   selectedAttributes: [CatalogueFilterAttribute!]!
-  selectedPrices: CatalogueFilterSelectedPrices
+  totalProducts: Int!
+}
+
+input CatalogueDataInput {
+  filter: [String!]!
+  lastProductId: ObjectId
 }
 
 type CatalogueFilterAttribute {
   _id: ObjectId!
   clearSlug: String!
-  isDisabled: Boolean!
   isSelected: Boolean!
   name: String!
   options: [CatalogueFilterAttributeOption!]!
@@ -288,18 +295,10 @@ type CatalogueFilterAttribute {
 
 type CatalogueFilterAttributeOption {
   _id: ObjectId!
-  counter: Int!
-  isDisabled: Boolean!
   isSelected: Boolean!
   name: String!
   nextSlug: String!
   slug: String!
-}
-
-type CatalogueFilterSelectedPrices {
-  clearSlug: String!
-  formattedMaxPrice: String!
-  formattedMinPrice: String!
 }
 
 type CatalogueSearchResult {
@@ -513,7 +512,7 @@ input CreateProductInput {
   manufacturerSlug: String
   nameI18n: JSONObject!
   originalName: String!
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 input CreateRoleInput {
@@ -1076,6 +1075,11 @@ type Mutation {
   updateBrand(input: UpdateBrandInput!): BrandPayload!
 
   """
+  Should update catalogue counters
+  """
+  updateCatalogueCounters(input: CatalogueDataInput!): Boolean!
+
+  """
   Should update city
   """
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayload!
@@ -1365,7 +1369,7 @@ type OrdersPaginationPayload implements PaginationPayload {
 }
 
 input PaginationInput {
-  limit: Int = 100
+  limit: Int = 30
   page: Int = 1
   search: String
   sortBy: String = "createdAt"
@@ -1453,8 +1457,8 @@ type Product implements Base & Timestamp {
   originalName: String!
   priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
+  rubricId: ObjectId!
   rubrics: [Rubric!]!
-  rubricsIds: [ObjectId!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
@@ -1506,7 +1510,7 @@ input ProductAttributeInput {
 
 input ProductAttributesASTInput {
   productId: ObjectId
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 type ProductAttributesGroupAst implements Base {
@@ -1575,7 +1579,7 @@ input ProductsPaginationInput {
   Returns products not added to any rubric.
   """
   isWithoutRubrics: Boolean
-  limit: Int = 100
+  limit: Int = 30
   maxPrice: Int
   minPrice: Int
   page: Int = 1
@@ -1583,7 +1587,7 @@ input ProductsPaginationInput {
   """
   Filter by current rubrics
   """
-  rubricsIds: [ObjectId!]
+  rubricId: ObjectId
   search: String
   sortBy: String = "createdAt"
   sortDir: SortDirection = DESC
@@ -1732,10 +1736,7 @@ type Query {
   """
   Should return catalogue page data
   """
-  getCatalogueData(
-    catalogueFilter: [String!]!
-    productsInput: ProductsPaginationInput!
-  ): CatalogueData
+  getCatalogueData(input: CatalogueDataInput!): CatalogueData
 
   """
   Should return catalogue nav rubrics
@@ -1946,16 +1947,12 @@ type Rubric {
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   productsCount: Int!
-  shopProductsCount: Int!
-  shopProductsCountCities: JSONObject!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
   variant: RubricVariant!
   variantId: ObjectId!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttribute {
@@ -1973,8 +1970,6 @@ type RubricAttribute {
   variant: AttributeVariant!
   viewVariant: AttributeViewVariant!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricAttributesGroup {
@@ -2004,21 +1999,16 @@ input RubricCatalogueTitleInput {
 
 type RubricOption {
   _id: ObjectId!
-  activeProductsCount: Int!
   color: String
   icon: String
+  isSelected: Boolean!
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
   priorities: JSONObject!
-  productsCount: Int!
-  shopProductsCount: Int!
-  shopProductsCountCities: JSONObject!
   slug: String!
   variants: JSONObject!
   views: JSONObject!
-  visibleInCatalogue: Boolean!
-  visibleInCatalogueCities: JSONObject!
 }
 
 type RubricPayload implements Payload {
@@ -2317,7 +2307,7 @@ input UpdateProductInput {
   nameI18n: JSONObject!
   originalName: String!
   productId: ObjectId!
-  rubricsIds: [ObjectId!]!
+  rubricId: ObjectId!
 }
 
 input UpdateRoleInput {

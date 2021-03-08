@@ -76,6 +76,7 @@
   left: 0;
   width: 100%;
   height: 130%;
+  max-height: 40rem;
 }
 
 .imageHolder img {
@@ -466,8 +467,8 @@
   .mainDataNoRightPadding {
     padding-right: 0;
   }
-  
-  
+
+
   .image {
     min-height: 20rem;
     margin-bottom: 1rem;

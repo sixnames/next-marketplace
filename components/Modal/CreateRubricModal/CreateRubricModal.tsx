@@ -5,20 +5,16 @@ import ModalTitle from '../ModalTitle';
 import ModalButtons from '../ModalButtons';
 import { Form, Formik } from 'formik';
 import Button from '../../Buttons/Button';
-import { CreateRubricInput, Gender, GetAllRubricsQuery } from 'generated/apolloComponents';
+import { CreateRubricInput, Gender } from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import { createRubricSchema } from 'validation/rubricSchema';
-import RubricsList from 'routes/Rubrics/RubricsList';
-import FormikRadio from 'components/FormElements/Radio/FormikRadio';
-import classes from './CreateRubricModal.module.css';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
-  rubrics: GetAllRubricsQuery['getAllRubrics'];
 }
 
-const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubrics }) => {
+const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createRubricSchema,
@@ -50,21 +46,6 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubr
           return (
             <Form>
               <RubricMainFields />
-
-              <RubricsList
-                rubrics={rubrics}
-                testIdPrefix={'modal'}
-                titleLeft={(_id, testId) => {
-                  return (
-                    <FormikRadio
-                      className={classes.treeRadio}
-                      name={'parentId'}
-                      value={_id}
-                      testId={testId}
-                    />
-                  );
-                }}
-              />
 
               <ModalButtons>
                 <Button type={'submit'} testId={'rubric-submit'}>

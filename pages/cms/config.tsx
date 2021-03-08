@@ -1,13 +1,12 @@
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { PagePropsInterface } from 'pages/_app';
 import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
 import ConfigsRoute from 'routes/ConfigsRoute/ConfigsRoute';
 
-const Config: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Config: NextPage = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <ConfigsRoute />
     </AppLayout>
   );

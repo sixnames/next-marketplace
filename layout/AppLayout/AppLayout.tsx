@@ -8,7 +8,6 @@ import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { UserContextProvider, useUserContext } from 'context/userContext';
 import { useInitialAppQuery } from 'generated/apolloComponents';
-import { Theme } from 'types/clientTypes';
 import AppNav from './AppNav';
 import { useAppContext } from 'context/appContext';
 import Meta from '../Meta';
@@ -54,10 +53,9 @@ const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, tit
 
 interface AppLayoutInterface extends AppLayoutConsumerInterface {
   description?: string;
-  initialTheme: Theme;
 }
 
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, initialTheme, title }) => {
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
   const { data } = useInitialAppQuery();
 
   return (
@@ -65,7 +63,7 @@ const AppLayout: React.FC<AppLayoutInterface> = ({ children, initialTheme, title
       configs={data?.getAllConfigs || []}
       cities={data?.getSessionCities || []}
     >
-      <ThemeContextProvider initialTheme={initialTheme}>
+      <ThemeContextProvider>
         <LocaleContextProvider
           languagesList={data?.getAllLanguages || []}
           currency={data?.getSessionCurrency || DEFAULT_CURRENCY}

@@ -4,11 +4,8 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { initializeApollo } from 'apollo/apolloClient';
 import { INITIAL_APP_QUERY, INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
 import { getSession } from 'next-auth/client';
-import { Theme } from 'types/clientTypes';
-import { parseCookies } from './parseCookies';
 
 export interface GetSSRSessionDataPayloadInterface {
-  initialTheme: string;
   isMobileDevice: boolean;
 }
 
@@ -22,11 +19,7 @@ export function getUserDeviceInfo(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
   );
 
-  // Get theme settings
-  const { theme } = parseCookies(req);
-
   return {
-    initialTheme: `${theme}` as Theme,
     isMobileDevice: Boolean(isMobileDevice),
   };
 }
@@ -100,11 +93,10 @@ export async function getCmsSsrProps(
       };
     }
 
-    const { initialTheme, isMobileDevice, apolloClient } = await getAppInitialData(context);
+    const { isMobileDevice, apolloClient } = await getAppInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

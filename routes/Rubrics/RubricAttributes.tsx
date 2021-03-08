@@ -7,6 +7,8 @@ import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useGetRubricAttributesQuery,
+  useToggleAttributeInRubricCatalogueMutation,
+  useToggleAttributeInRubricNavMutation,
 } from 'generated/apolloComponents';
 import DataLayoutTitle from '../../components/DataLayout/DataLayoutTitle';
 import Spinner from '../../components/Spinner/Spinner';
@@ -72,12 +74,17 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     ...refetchConfig,
   });
 
-  // TODO updateAttributesGroupInRubricMutation
-  /*const [updateAttributesGroupInRubricMutation] = useUpdateAttributesGroupInRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributesGroupInRubric),
+  const [toggleAttributeInRubricCatalogueMutation] = useToggleAttributeInRubricCatalogueMutation({
+    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricCatalogue),
     onError: onErrorCallback,
     ...refetchConfig,
-  });*/
+  });
+
+  const [toggleAttributeInRubricNavMutation] = useToggleAttributeInRubricNavMutation({
+    onCompleted: (data) => onCompleteCallback(data.toggleAttributeInRubricNav),
+    onError: onErrorCallback,
+    ...refetchConfig,
+  });
 
   if (!data && !loading && !error) {
     return <DataLayoutTitle>Выберите рубрику</DataLayoutTitle>;
@@ -134,7 +141,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     });
   }
 
-  const columns = (attributesGroupId: string): TableColumn<RubricAttributeFragment>[] => [
+  const columns: TableColumn<RubricAttributeFragment>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -171,18 +178,44 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
             value={cellData}
             name={'showInCatalogueFilter'}
             onChange={() => {
-              // TODO updateAttributesGroupInRubricMutation
-              console.log(attributesGroupId);
-              /*showLoading();
-              updateAttributesGroupInRubricMutation({
+              showLoading();
+              toggleAttributeInRubricCatalogueMutation({
                 variables: {
                   input: {
                     attributeId: cellData,
                     rubricId: rubric._id,
-                    attributesGroupId: attributesGroupId,
                   },
                 },
-              }).catch((e) => console.log(e));*/
+              }).catch((e) => console.log(e));
+            }}
+          />
+        );
+      },
+    },
+    {
+      accessor: '_id',
+      headTitle: 'Показывать в навигации',
+      render: ({ cellData, dataItem }) => {
+        const isDisabled =
+          dataItem.variant === ATTRIBUTE_VARIANT_NUMBER ||
+          dataItem.variant === ATTRIBUTE_VARIANT_STRING;
+        return (
+          <Checkbox
+            testId={`${dataItem.name}`}
+            disabled={isDisabled}
+            checked={dataItem.showInCatalogueFilter}
+            value={cellData}
+            name={'showInCatalogueNav'}
+            onChange={() => {
+              showLoading();
+              toggleAttributeInRubricNavMutation({
+                variables: {
+                  input: {
+                    attributeId: cellData,
+                    rubricId: rubric._id,
+                  },
+                },
+              }).catch((e) => console.log(e));
             }}
           />
         );
@@ -224,7 +257,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
                 >
                   <Table<RubricAttributeFragment>
                     data={attributes}
-                    columns={columns(attributesGroup._id)}
+                    columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />

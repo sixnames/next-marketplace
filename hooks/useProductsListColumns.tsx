@@ -38,54 +38,67 @@ const useProductsListColumns = ({
   isUpdateDisabled,
   isDeleteDisabled,
 }: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
-  return [
-    {
-      accessor: 'itemId',
-      headTitle: 'Арт.',
-      render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/products/${dataItem._id}`}>
-          <a>{cellData}</a>
-        </Link>
-      ),
-    },
-    {
-      accessor: 'mainImage',
-      headTitle: 'Фото',
-      render: ({ cellData, dataItem }) => {
-        return <TableRowImage src={cellData} alt={dataItem.name} title={dataItem.name} />;
+  return React.useMemo(() => {
+    return [
+      {
+        accessor: 'itemId',
+        headTitle: 'Арт.',
+        render: ({ cellData, dataItem }) => (
+          <Link href={`${ROUTE_CMS}/products/${dataItem._id}`}>
+            <a>{cellData}</a>
+          </Link>
+        ),
       },
-    },
-    {
-      accessor: 'name',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'active',
-      headTitle: 'Активен',
-      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
-    },
-    {
-      render: ({ dataItem }) => {
-        return (
-          <ContentItemControls
-            justifyContent={'flex-end'}
-            testId={dataItem.name}
-            createTitle={createTitle}
-            updateTitle={updateTitle}
-            deleteTitle={deleteTitle}
-            createHandler={createHandler ? () => createHandler(dataItem) : undefined}
-            updateHandler={updateHandler ? () => updateHandler(dataItem) : undefined}
-            deleteHandler={deleteHandler ? () => deleteHandler(dataItem) : undefined}
-            disabled={disabled}
-            isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(dataItem) : undefined}
-            isCreateDisabled={isCreateDisabled ? isCreateDisabled(dataItem) : undefined}
-            isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(dataItem) : undefined}
-          />
-        );
+      {
+        accessor: 'mainImage',
+        headTitle: 'Фото',
+        render: ({ cellData, dataItem }) => {
+          return <TableRowImage src={cellData} alt={dataItem.name} title={dataItem.name} />;
+        },
       },
-    },
-  ];
+      {
+        accessor: 'name',
+        headTitle: 'Название',
+        render: ({ cellData }) => cellData,
+      },
+      {
+        accessor: 'active',
+        headTitle: 'Активен',
+        render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
+      },
+      {
+        render: ({ dataItem }) => {
+          return (
+            <ContentItemControls
+              justifyContent={'flex-end'}
+              testId={dataItem.name}
+              createTitle={createTitle}
+              updateTitle={updateTitle}
+              deleteTitle={deleteTitle}
+              createHandler={createHandler ? () => createHandler(dataItem) : undefined}
+              updateHandler={updateHandler ? () => updateHandler(dataItem) : undefined}
+              deleteHandler={deleteHandler ? () => deleteHandler(dataItem) : undefined}
+              disabled={disabled}
+              isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(dataItem) : undefined}
+              isCreateDisabled={isCreateDisabled ? isCreateDisabled(dataItem) : undefined}
+              isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(dataItem) : undefined}
+            />
+          );
+        },
+      },
+    ];
+  }, [
+    createHandler,
+    createTitle,
+    deleteHandler,
+    deleteTitle,
+    disabled,
+    isCreateDisabled,
+    isDeleteDisabled,
+    isUpdateDisabled,
+    updateHandler,
+    updateTitle,
+  ]);
 };
 
 export default useProductsListColumns;

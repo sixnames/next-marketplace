@@ -1,8 +1,10 @@
+import { NOTIFICATION_TIMEOUT } from 'config/common';
+import { getFieldTranslation } from 'config/constantTranslations';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Portal from '@reach/portal';
 import classes from './NotificationsProvider.module.css';
 import Notification, { NotificationInterface } from 'components/Notification/Notification';
-import { ERROR_NOTIFICATION_MESSAGE, NOTIFICATION_TIMEOUT } from 'config/notifications';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
   createdAt: number;
@@ -68,7 +70,12 @@ const NotificationsProvider: React.FC = ({ children }) => {
 };
 
 function useNotificationsContext() {
+  const { locale } = useRouter();
   const context = React.useContext<NotificationsContextInterface>(NotificationsContext);
+
+  const defaultErrorMessage = React.useMemo(() => {
+    return getFieldTranslation(`messages.error.${locale}`);
+  }, [locale]);
 
   if (!context) {
     throw new Error('useNotificationsContext must be used within a NotificationsProvider');
@@ -101,7 +108,7 @@ function useNotificationsContext() {
 
   const showErrorNotification = React.useCallback(
     (props?: ApiNotificationInterface) => {
-      const { title = ERROR_NOTIFICATION_MESSAGE } = props || {};
+      const { title = defaultErrorMessage } = props || {};
 
       showNotification({
         title,
@@ -110,7 +117,7 @@ function useNotificationsContext() {
         testId: 'error-notification',
       });
     },
-    [showNotification],
+    [defaultErrorMessage, showNotification],
   );
 
   const showSuccessNotification = React.useCallback(

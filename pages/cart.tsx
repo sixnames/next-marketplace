@@ -3,11 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CartRoute from 'routes/CartRoute/CartRoute';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import { PagePropsInterface } from './_app';
 
-const Cart: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Cart: NextPage = () => {
   return (
-    <SiteLayout title={'Корзина'} initialTheme={initialTheme}>
+    <SiteLayout title={'Корзина'}>
       <CartRoute />
     </SiteLayout>
   );
@@ -17,11 +16,10 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

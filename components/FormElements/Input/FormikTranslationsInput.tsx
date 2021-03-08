@@ -18,8 +18,6 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
   low,
   wide,
   labelPostfix,
-  postfix,
-  prefix,
   labelLink,
   isRequired,
   isHorizontal,
@@ -40,8 +38,6 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
         low={low}
         wide={wide}
         labelPostfix={labelPostfix}
-        postfix={postfix}
-        prefix={prefix}
         labelLink={labelLink}
         isRequired={isRequired}
         isHorizontal={isHorizontal}
@@ -62,8 +58,6 @@ const FormikTranslationsInput: React.FC<FormikInputPropsInterface> = ({
       low={low}
       wide={wide}
       labelPostfix={labelPostfix}
-      postfix={postfix}
-      prefix={prefix}
       labelLink={labelLink}
       isRequired={isRequired}
       isHorizontal={isHorizontal}

@@ -6,11 +6,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import ProfileDetailsRoute from 'routes/ProfileDetailsRoute/ProfileDetailsRoute';
-import { PagePropsInterface } from '../_app';
 
-const ProfileDetails: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const ProfileDetails: NextPage = () => {
   return (
-    <SiteLayout title={'Профиль'} initialTheme={initialTheme}>
+    <SiteLayout title={'Профиль'}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>
@@ -33,11 +32,10 @@ export async function getServerSideProps(
       };
     }
 
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

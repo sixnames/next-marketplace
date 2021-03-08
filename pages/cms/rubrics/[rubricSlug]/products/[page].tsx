@@ -21,7 +21,6 @@ import useProductsListColumns from 'hooks/useProductsListColumns';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
@@ -210,9 +209,9 @@ const RubricProducts: React.FC = () => {
   );
 };
 
-const RubricProductsPage: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const RubricProductsPage: NextPage = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <RubricProducts />
     </AppLayout>
   );

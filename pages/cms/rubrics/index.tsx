@@ -18,7 +18,6 @@ import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
@@ -165,9 +164,9 @@ const RubricsRoute: React.FC = () => {
   );
 };
 
-const Rubrics: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Rubrics: NextPage = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <RubricsRoute />
     </AppLayout>
   );

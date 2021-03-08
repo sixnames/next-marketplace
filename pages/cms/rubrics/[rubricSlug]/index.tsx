@@ -19,7 +19,6 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
@@ -140,9 +139,9 @@ const RubricDetails: React.FC = () => {
   );
 };
 
-const Rubric: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Rubric: NextPage = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <RubricDetails />
     </AppLayout>
   );

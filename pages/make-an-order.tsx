@@ -3,11 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import MakeAnOrderRoute from 'routes/MakeAnOrderRoute/MakeAnOrderRoute';
-import { PagePropsInterface } from './_app';
 
-const MakeAnOrder: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const MakeAnOrder: NextPage = () => {
   return (
-    <SiteLayout initialTheme={initialTheme} title={'Корзина'}>
+    <SiteLayout title={'Корзина'}>
       <MakeAnOrderRoute />
     </SiteLayout>
   );
@@ -17,11 +16,10 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

@@ -4,11 +4,10 @@ import Title from '../components/Title/Title';
 import Inner from '../components/Inner/Inner';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import { PagePropsInterface } from './_app';
 
-const Home: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Home: NextPage = () => {
   return (
-    <SiteLayout initialTheme={initialTheme}>
+    <SiteLayout>
       <Inner>
         <Title>Main page</Title>
       </Inner>
@@ -20,11 +19,10 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

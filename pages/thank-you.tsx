@@ -3,11 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ThankYouRoute from 'routes/ThankYouRoute/ThankYouRoute';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import { PagePropsInterface } from './_app';
 
-const ThankYou: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const ThankYou: NextPage = () => {
   return (
-    <SiteLayout initialTheme={initialTheme} title={'Спасибо за заказ!'}>
+    <SiteLayout title={'Спасибо за заказ!'}>
       <ThankYouRoute />
     </SiteLayout>
   );
@@ -17,11 +16,10 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },

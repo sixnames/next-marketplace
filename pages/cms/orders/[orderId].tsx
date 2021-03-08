@@ -1,13 +1,12 @@
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
 import CmsOrderRoute from 'routes/CmsOrderRoute/CmsOrderRoute';
 
-const Order: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const Order: NextPage = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <CmsOrderRoute />
     </AppLayout>
   );

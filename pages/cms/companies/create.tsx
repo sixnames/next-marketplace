@@ -5,9 +5,9 @@ import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
 import CreateCompanyRoute from 'routes/Company/CreateCompanyRoute';
 
-const CompaniesCreate: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const CompaniesCreate: NextPage<PagePropsInterface> = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <CreateCompanyRoute />
     </AppLayout>
   );

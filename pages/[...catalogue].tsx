@@ -12,7 +12,6 @@ import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import {
   CATALOGUE_FILTER_SORT_KEYS,
-  CATALOGUE_PRODUCTS_COUNT_LIMIT,
   PRODUCT_CARD_RUBRIC_SLUG_PREFIX,
   SORT_ASC_STR,
   SORT_BY_KEY,
@@ -26,6 +25,7 @@ import { CATALOGUE_RUBRIC_QUERY } from 'graphql/query/catalogueQueries';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
+import { getCurrencyString } from 'lib/i18n';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -120,10 +120,11 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [fixBodyScroll]);
 
   const catalogueCounterString = React.useMemo(() => {
-    return rubricData.totalProducts < CATALOGUE_PRODUCTS_COUNT_LIMIT
-      ? `Найдено ${rubricData.totalProducts}`
-      : `Найдено более ${rubricData.totalProducts} товаров`;
-  }, [rubricData.totalProducts]);
+    return `Найдено ${getCurrencyString({
+      locale: `${router.locale}`,
+      value: rubricData.totalProducts,
+    })}`;
+  }, [router.locale, rubricData.totalProducts]);
 
   const sortConfig = React.useMemo(
     () => [
@@ -326,17 +327,17 @@ interface CatalogueInterface extends PagePropsInterface {
   rubricData?: CatalogueDataFragment | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ rubricData, initialTheme }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ rubricData }) => {
   if (!rubricData) {
     return (
-      <SiteLayout initialTheme={initialTheme}>
+      <SiteLayout>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
   }
 
   return (
-    <SiteLayout initialTheme={initialTheme} title={rubricData.catalogueTitle}>
+    <SiteLayout title={rubricData.catalogueTitle}>
       <CatalogueRoute rubricData={rubricData} />
     </SiteLayout>
   );
@@ -346,7 +347,7 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { initialTheme, isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
 
     // Get catalogue data
     const { query } = context;
@@ -366,7 +367,6 @@ export async function getServerSideProps(
 
     return {
       props: {
-        initialTheme,
         isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
         rubricData: data?.getCatalogueData,

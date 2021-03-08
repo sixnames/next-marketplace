@@ -1,13 +1,8 @@
 import * as React from 'react';
-import Cookies from 'js-cookie';
 import { debounce } from 'lodash';
 import { useConfigContext } from './configContext';
 import { THEME_COOKIE_KEY, THEME_DARK, THEME_LIGHT } from 'config/common';
 import { Theme } from 'types/clientTypes';
-
-interface ThemeContextProviderInterface {
-  initialTheme: Theme;
-}
 
 interface ThemeContextInterface {
   theme: Theme;
@@ -18,22 +13,25 @@ interface ThemeContextInterface {
 }
 
 const ThemeContext = React.createContext<ThemeContextInterface>({
-  theme: THEME_LIGHT,
+  theme: 'undefined',
   isDark: false,
   isLight: true,
   logoSlug: 'siteLogo',
 });
 
-const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
-  children,
-  initialTheme,
-}) => {
+const ThemeContextProvider: React.FC = ({ children }) => {
   const [vh, setVh] = React.useState(() =>
     typeof window !== 'undefined' ? window.innerHeight * 0.01 : 0,
   );
-  const [theme, setTheme] = React.useState(() => initialTheme);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [theme, setTheme] = React.useState<Theme>('undefined');
   const { themeStyles } = useConfigContext();
+
+  React.useEffect(() => {
+    const localStorageTheme = window.localStorage.getItem(THEME_COOKIE_KEY) as Theme;
+    if (localStorageTheme && localStorageTheme !== 'undefined') {
+      setTheme(localStorageTheme);
+    }
+  }, []);
 
   React.useEffect(() => {
     function resizeHandler() {
@@ -50,37 +48,23 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
   }, []);
 
   React.useEffect(() => {
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-      ? THEME_DARK
-      : THEME_LIGHT;
-    const realTheme = theme === 'undefined' ? systemTheme : theme;
-    if (theme !== realTheme) {
-      setTheme(realTheme);
-    }
-
     const themeStyle = `
       --vh: ${vh}px;
       --fullHeight: calc(${vh}px * 100);
       ${themeStyles}
       `;
 
-    if (ref && ref.current) {
-      ref.current.setAttribute('data-theme', realTheme);
-      ref.current.setAttribute('style', themeStyle);
-    }
-
     const pageHtml = document.querySelector('html');
     if (pageHtml) {
-      pageHtml.setAttribute('data-theme', realTheme);
       pageHtml.setAttribute('style', themeStyle);
     }
-  }, [vh, ref, theme, themeStyles]);
+  }, [vh, theme, themeStyles]);
 
   React.useEffect(() => {
-    // set theme to cookie
-    const themeInCookies = Cookies.get(THEME_COOKIE_KEY);
-    if (themeInCookies !== theme) {
-      Cookies.set(THEME_COOKIE_KEY, theme);
+    const localStorageTheme = window.localStorage.getItem(THEME_COOKIE_KEY);
+    if (theme !== 'undefined' && localStorageTheme !== theme) {
+      window.localStorage.setItem(THEME_COOKIE_KEY, theme);
+      document.documentElement.setAttribute('data-theme', theme);
     }
   }, [theme]);
 
@@ -103,11 +87,7 @@ const ThemeContextProvider: React.FC<ThemeContextProviderInterface> = ({
     };
   }, [theme, toggleTheme]);
 
-  return (
-    <ThemeContext.Provider value={value}>
-      <div ref={ref}>{children}</div>
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 const useThemeContext = (): ThemeContextInterface => {

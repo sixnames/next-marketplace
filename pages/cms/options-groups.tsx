@@ -5,9 +5,9 @@ import { NextPage } from 'next';
 import { getCmsSsrProps } from 'lib/ssrUtils';
 import OptionsGroupsRoute from 'routes/OptionsGroups/OptionsGroupsRoute';
 
-const OptionsGroups: NextPage<PagePropsInterface> = ({ initialTheme }) => {
+const OptionsGroups: NextPage<PagePropsInterface> = () => {
   return (
-    <AppLayout initialTheme={initialTheme}>
+    <AppLayout>
       <OptionsGroupsRoute />
     </AppLayout>
   );

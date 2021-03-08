@@ -5,12 +5,12 @@ import {
   COL_PRODUCTS,
 } from 'db/collectionNames';
 import { createIndexes } from 'db/createIndexes';
-import { createInitialData } from 'db/createInitialData';
+// import { createInitialData } from 'db/createInitialData';
 import { updateCollectionItemId } from 'lib/itemIdUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 // import { Seeder } from 'mongo-seeding';
 // import path from 'path';
-import { clearTestData } from 'tests/clearTestData';
+// import { clearTestData } from 'tests/clearTestData';
 
 /*async function seedInitial() {
   await createInitialData();
@@ -61,7 +61,7 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
   console.log(`Seeding ${entity} data`);
 
   // Seed initial
-  if (entity === 'initial') {
+  /*if (entity === 'initial') {
     console.log('Clearing db');
     await clearTestData();
 
@@ -70,7 +70,7 @@ async function seedDataHandler(req: NextApiRequest, res: NextApiResponse) {
 
     console.log('Success!');
     // await seedInitial();
-  }
+  }*/
 
   // Chunk A
   /*if (entity === 'chunkA') {

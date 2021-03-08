@@ -18,7 +18,8 @@
     "cy:start": "cypress run",
     "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes-groups.spec.ts",
     "test": "npm run cy:start",
-    "seed-test-data": "env-cmd seed ./db/initialData/parsed && env-cmd seed ./db/initialData/parsedBigCollections/allProducts && env-cmd seed ./db/initialData/parsedBigCollections/wine-a && env-cmd seed ./db/initialData/parsedBigCollections/wine-b && env-cmd seed ./db/initialData/parsedBigCollections/wine-c && env-cmd seed ./db/initialData/parsedBigCollections/wine-d"
+    "create-indexes": "npx ts-node -O '{\"module\":\"commonjs\"}' db/initialData/indexes.ts",
+    "seed-test-data": "env-cmd seed --drop-database ./db/initialData/initial && env-cmd seed ./db/initialData/parsed && env-cmd seed ./db/initialData/parsedBigCollections/allProducts && env-cmd seed ./db/initialData/parsedBigCollections/wine-a && env-cmd seed ./db/initialData/parsedBigCollections/wine-b && env-cmd seed ./db/initialData/parsedBigCollections/wine-c && env-cmd seed ./db/initialData/parsedBigCollections/wine-d && yarn create-indexes"
   },
   "dependencies": {
     "@apollo/client": "^3.3.9",

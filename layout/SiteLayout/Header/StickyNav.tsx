@@ -57,7 +57,7 @@ interface StickyNavItemInterface {
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { query } = useRouter();
-  const { hideBurgerDropdown } = useSiteContext();
+  const { hideBurgerDropdown, fixBodyScroll } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { catalogue = [], card = [] } = query;
   const realCatalogueQuery = alwaysArray(catalogue);
@@ -75,6 +75,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
 
   function showDropdownHandler() {
     hideBurgerDropdown();
+    fixBodyScroll(false);
     setIsDropdownOpen(true);
   }
 

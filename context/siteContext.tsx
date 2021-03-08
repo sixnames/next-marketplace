@@ -262,7 +262,6 @@ function useSiteContext(): UseSiteContextInterface {
   }, [context, fixBodyScroll]);
 
   const hideBurgerDropdown = React.useCallback(() => {
-    fixBodyScroll(false);
     context.setState((prevState) => ({
       ...prevState,
       isSearchOpen: false,

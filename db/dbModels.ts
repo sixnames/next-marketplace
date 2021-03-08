@@ -533,8 +533,9 @@ export interface RubricCountersInterface {
   productsCount: number;
 }
 
-export interface RubricOptionModel extends OptionModel, CountersModel, RubricCountersInterface {
+export interface RubricOptionModel extends OptionModel, CountersModel {
   options: RubricOptionModel[];
+  isSelected: boolean;
 }
 
 export interface RubricAttributeModel extends AttributeModel, CountersModel {

@@ -177,7 +177,7 @@ export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
 export const CATALOGUE_NAV_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = '3';
 export const CATALOGUE_FILTER_VISIBLE_ATTRIBUTES = '5';
-export const CATALOGUE_PRODUCTS_LIMIT = 20;
+export const CATALOGUE_PRODUCTS_LIMIT = 30;
 export const CATALOGUE_OPTION_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
 export const SORT_BY_KEY = 'sortBy';
@@ -192,7 +192,7 @@ export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
-export const PAGINATION_DEFAULT_LIMIT = 20;
+export const PAGINATION_DEFAULT_LIMIT = 30;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const PAGE_DEFAULT = 1;

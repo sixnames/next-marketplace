@@ -1,4 +1,8 @@
-import { ATTRIBUTE_VARIANT_MULTIPLE_SELECT, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  CATALOGUE_OPTION_SEPARATOR,
+} from 'config/common';
 import { COL_CITIES, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   CitiesBooleanModel,
@@ -14,52 +18,28 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { noNaN } from 'lib/numbers';
-import { Collection } from 'mongodb';
 
 export interface RecalculateRubricOptionProductCountersInterface {
-  rubricId: ObjectIdModel;
   option: RubricOptionModel;
-  cities: CityModel[];
-  productsCollection: Collection<ProductModel>;
   rubricGender: GenderModel;
+  visibleOptionsSlugs: string[];
 }
 
 export async function recalculateRubricOptionProductCounters({
-  rubricId,
   option,
-  cities,
-  productsCollection,
   rubricGender,
+  visibleOptionsSlugs,
 }: RecalculateRubricOptionProductCountersInterface): Promise<RubricOptionModel> {
-  const aggregationResult = await productsCollection
-    .aggregate([
-      {
-        $match: {
-          rubricId: rubricId,
-          selectedOptionsSlugs: option.slug,
-          active: true,
-          archive: false,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-        },
-      },
-    ])
-    .toArray();
-  const productsCount = aggregationResult.length;
   const currentVariant = option.variants[rubricGender];
   const optionNameTranslations = currentVariant || option.nameI18n;
+  const isSelected = visibleOptionsSlugs.includes(option.slug);
 
   const options: RubricOptionModel[] = [];
   for await (const nestedOption of option.options) {
     const recalculatedOption = await recalculateRubricOptionProductCounters({
-      cities,
-      productsCollection,
       option: nestedOption,
-      rubricId,
       rubricGender,
+      visibleOptionsSlugs,
     });
     options.push(recalculatedOption);
   }
@@ -68,7 +48,7 @@ export async function recalculateRubricOptionProductCounters({
     ...option,
     nameI18n: optionNameTranslations,
     options,
-    productsCount,
+    isSelected,
   };
 }
 
@@ -91,21 +71,75 @@ export async function recalculateRubricProductCounters({
       return null;
     }
 
+    const productOptionsAggregation = await productsCollection
+      .aggregate<ProductOptionInterface>([
+        {
+          $match: {
+            rubricId: rubricId,
+            active: true,
+            archive: false,
+          },
+        },
+        {
+          $project: {
+            selectedOptionsSlugs: 1,
+          },
+        },
+        {
+          $unwind: '$selectedOptionsSlugs',
+        },
+        {
+          $group: {
+            _id: '$selectedOptionsSlugs',
+          },
+        },
+        {
+          $addFields: {
+            slugArray: {
+              $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
+            },
+          },
+        },
+        {
+          $addFields: {
+            attributeSlug: {
+              $arrayElemAt: ['$slugArray', 0],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$attributeSlug',
+            optionsSlugs: {
+              $addToSet: '$_id',
+            },
+          },
+        },
+      ])
+      .toArray();
+
     // Update rubric attributes
     const updatedAttributes: RubricAttributeModel[] = [];
     for await (const attribute of rubric.attributes) {
       const updatedOptions: RubricOptionModel[] = [];
 
-      for await (const option of attribute.options) {
-        const updatedOption = await recalculateRubricOptionProductCounters({
-          cities,
-          productsCollection,
-          rubricId: rubric._id,
-          rubricGender: rubric.catalogueTitle.gender,
-          option,
-        });
-
-        updatedOptions.push(updatedOption);
+      const attributeInConfig = productOptionsAggregation.find(({ _id }) => _id === attribute.slug);
+      if (!attributeInConfig) {
+        for await (const option of attribute.options) {
+          updatedOptions.push({
+            ...option,
+            isSelected: false,
+          });
+        }
+      } else {
+        for await (const option of attribute.options) {
+          const updatedOption = await recalculateRubricOptionProductCounters({
+            visibleOptionsSlugs: attributeInConfig.optionsSlugs,
+            rubricGender: rubric.catalogueTitle.gender,
+            option,
+          });
+          updatedOptions.push(updatedOption);
+        }
       }
 
       updatedAttributes.push({
@@ -268,8 +302,8 @@ export function getRubricNavOptions({
   maxVisibleOptions,
   city,
 }: GetRubricNavOptionsInterface): RubricOptionModel[] {
-  const visibleOptions = options.filter(({ productsCount }) => {
-    return productsCount > 0;
+  const visibleOptions = options.filter(({ isSelected }) => {
+    return isSelected;
   });
 
   const sortedOptions = visibleOptions
@@ -308,7 +342,7 @@ export async function getRubricNavAttributes({
   const visibleAttributes = attributes
     .filter((attribute) => {
       return (
-        attribute.showInCatalogueFilter &&
+        attribute.showInCatalogueNav &&
         (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
           attribute.variant === ATTRIBUTE_VARIANT_SELECT)
       );
@@ -317,16 +351,6 @@ export async function getRubricNavAttributes({
 
   const sortedAttributes: RubricAttributeModel[] = [];
   visibleAttributes.forEach((attribute) => {
-    if (
-      !attribute.showInCatalogueFilter ||
-      !(
-        attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-        attribute.variant === ATTRIBUTE_VARIANT_SELECT
-      )
-    ) {
-      return;
-    }
-
     sortedAttributes.push({
       ...attribute,
       options: getRubricNavOptions({

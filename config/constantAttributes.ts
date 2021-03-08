@@ -20,7 +20,7 @@ export function getPriceAttribute(): RubricAttributeModel {
     views: {},
     options: [],
     variants: {},
-    productsCount: 0,
+    isSelected: true,
     gender: GENDER_IT as GenderModel,
   };
 

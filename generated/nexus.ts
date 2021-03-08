@@ -1694,11 +1694,11 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     color: string | null; // String
     icon: string | null; // String
+    isSelected: boolean; // Boolean!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
-    productsCount: number; // Int!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2753,11 +2753,11 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     color: 'String';
     icon: 'String';
+    isSelected: 'Boolean';
     name: 'String';
     nameI18n: 'JSONObject';
     options: 'RubricOption';
     priorities: 'JSONObject';
-    productsCount: 'Int';
     slug: 'String';
     variants: 'JSONObject';
     views: 'JSONObject';

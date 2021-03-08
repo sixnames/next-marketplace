@@ -229,10 +229,14 @@ export async function getCatalogueAttributes({
         const optionProductsMatch = noFiltersSelected
           ? {
               rubricId,
+              active: true,
+              archive: false,
               ...optionFinalPricesStage,
             }
           : {
               rubricId,
+              active: true,
+              archive: false,
               selectedOptionsSlugs: {
                 $all: realFilterOptions,
               },

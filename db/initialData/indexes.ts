@@ -100,15 +100,19 @@ async function createIndexes() {
       _id: -1,
     });
 
-    // Products
+    // Products catalogue
     await productsCollection.createIndex({
       rubricId: 1,
+      active: 1,
+      archive: 1,
       [`minPriceCities.${city.slug}`]: 1,
       _id: -1,
     });
 
     await productsCollection.createIndex({
       rubricId: 1,
+      active: 1,
+      archive: 1,
       selectedOptionsSlugs: 1,
       [`minPriceCities.${city.slug}`]: 1,
       _id: -1,
@@ -116,6 +120,8 @@ async function createIndexes() {
 
     await productsCollection.createIndex({
       rubricId: 1,
+      active: 1,
+      archive: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
@@ -124,6 +130,8 @@ async function createIndexes() {
 
     await productsCollection.createIndex({
       rubricId: 1,
+      active: 1,
+      archive: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,

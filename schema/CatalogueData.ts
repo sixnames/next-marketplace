@@ -245,19 +245,22 @@ export const CatalogueQueries = extendType({
                 }
               : {};
 
-          const initialFilterProductsMatch = noFiltersSelected
-            ? { rubricId: rubric._id, ...pricesStage }
+          const productsInitialMatch = noFiltersSelected
+            ? {
+                rubricId: rubric._id,
+                active: true,
+                archive: false,
+                ...pricesStage,
+              }
             : {
                 rubricId: rubric._id,
+                active: true,
+                archive: false,
                 selectedOptionsSlugs: {
                   $all: realFilterOptions,
                 },
                 ...pricesStage,
               };
-
-          const productsInitialMatch = {
-            ...initialFilterProductsMatch,
-          };
 
           // sort stage
           const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
@@ -277,9 +280,7 @@ export const CatalogueQueries = extendType({
 
           const productsMainPipeline = [
             {
-              $match: {
-                ...productsInitialMatch,
-              },
+              $match: productsInitialMatch,
             },
             {
               $sort: {
@@ -303,7 +304,7 @@ export const CatalogueQueries = extendType({
           // const productsCountStartTime = new Date().getTime();
           const productsCountAggregation = await productsCollection
             .aggregate<any>([
-              { $match: { ...productsInitialMatch } },
+              { $match: productsInitialMatch },
               {
                 $count: 'counter',
               },
@@ -322,7 +323,7 @@ export const CatalogueQueries = extendType({
           // const productOptionsAggregationStart = new Date().getTime();
           const productOptionsAggregation = await productsCollection
             .aggregate<ProductOptionInterface>([
-              { $match: { ...productsInitialMatch } },
+              { $match: productsInitialMatch },
               {
                 $project: {
                   selectedOptionsSlugs: 1,
@@ -376,8 +377,6 @@ export const CatalogueQueries = extendType({
           });
 
           const finalAttributes = [getPriceAttribute(), ...attributes];
-          // const selectedFilters: any[] = [];
-          // const castedAttributes: any[] = [];
           const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
             attributes: finalAttributes,
             rubricId: rubric._id,
@@ -392,7 +391,7 @@ export const CatalogueQueries = extendType({
           // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
 
           // Get selected attributes
-          const castedFilters = filter.map((param) => castCatalogueParamToObject(param));
+          const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
           const selectedAttributes = rubric.attributes.reduce(
             (acc: CatalogueFilterAttributeModel[], attribute) => {
               if (
@@ -408,7 +407,7 @@ export const CatalogueQueries = extendType({
 
               const options = attribute.options.reduce(
                 (acc: CatalogueFilterAttributeOptionModel[], option) => {
-                  if (!filter.includes(option.slug)) {
+                  if (!filterOptions.includes(option.slug)) {
                     return acc;
                   }
 

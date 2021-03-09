@@ -3,7 +3,6 @@ import { ROUTE_SIGN_IN } from 'config/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GetServerSidePropsResult } from 'next';
 import { initializeApollo } from 'apollo/apolloClient';
-import { INITIAL_APP_QUERY, INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
 import { getSession } from 'next-auth/client';
 import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
 import { ParsedUrlQuery } from 'querystring';
@@ -27,12 +26,7 @@ export interface SsrContext {
 export async function getInitialApolloState(
   context: SsrContext,
 ): Promise<ApolloClient<NormalizedCacheObject>> {
-  const apolloClient = initializeApollo(null, context);
-  await apolloClient.query({
-    query: INITIAL_SITE_QUERY,
-    context,
-  });
-  return apolloClient;
+  return initializeApollo(null, context);
 }
 
 export interface GetSiteInitialDataPayloadInterface {
@@ -52,12 +46,7 @@ export async function getSiteInitialData(
 export async function getAppInitialApolloState(
   context: SsrContext,
 ): Promise<ApolloClient<NormalizedCacheObject>> {
-  const apolloClient = initializeApollo(null, context);
-  await apolloClient.query({
-    query: INITIAL_APP_QUERY,
-    context,
-  });
-  return apolloClient;
+  return initializeApollo(null, context);
 }
 
 export interface GetAppInitialDataPayloadInterface {
@@ -82,7 +71,7 @@ export async function getCmsSsrProps(context: SsrContext): Promise<GetServerSide
       return {
         redirect: {
           permanent: false,
-          destination: ROUTE_SIGN_IN,
+          destination: `/${context.city}/${ROUTE_SIGN_IN}`,
         },
       };
     }

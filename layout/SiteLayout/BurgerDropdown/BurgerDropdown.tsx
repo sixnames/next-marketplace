@@ -1,3 +1,4 @@
+import { RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Inner from '../../../components/Inner/Inner';
@@ -12,7 +13,6 @@ import { useUserContext } from 'context/userContext';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { signOut } from 'next-auth/client';
-import { CatalogueNavRubricFragment } from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
 import { ROUTE_CMS, ROUTE_APP, ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
 
@@ -34,7 +34,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
     fixBodyScroll,
   } = useSiteContext();
   const [isCatalogueVisible, setIsCatalogueVisible] = React.useState<boolean>(true);
-  const [currentRubric, setCurrentRubric] = React.useState<CatalogueNavRubricFragment | null>(null);
+  const [currentRubric, setCurrentRubric] = React.useState<RubricModel | null>(null);
   const { getSiteConfigSingleValue } = useConfigContext();
   const { me } = useUserContext();
   const { asPath, query } = useRouter();
@@ -110,15 +110,15 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             </div>
                           ) : null}
 
-                          {currentRubric.navItems.map(({ _id, options, name }) => {
+                          {(currentRubric.navItems || []).map(({ _id, options, name }) => {
                             return (
-                              <div className={classes.dropdownGroup} key={_id}>
+                              <div className={classes.dropdownGroup} key={`${_id}`}>
                                 <div className={classes.dropdownGroupTitle}>{name}</div>
                                 <ul>
                                   {options.map((option) => {
                                     const isCurrent = asPath === option.slug;
                                     return (
-                                      <li key={option._id}>
+                                      <li key={`${option._id}`}>
                                         <Link
                                           href={`/${query.city}/${currentRubric.slug}/${option.slug}`}
                                           onClick={hideDropdownHandler}
@@ -144,7 +144,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             const isCurrent = slug === catalogueSlug;
 
                             return (
-                              <li key={_id} onClick={() => setCurrentRubric(rubric)}>
+                              <li key={`${_id}`} onClick={() => setCurrentRubric(rubric)}>
                                 <span
                                   className={`${classes.dropdownGroupLink} ${
                                     isCurrent ? classes.dropdownGroupLinkCurrent : ''

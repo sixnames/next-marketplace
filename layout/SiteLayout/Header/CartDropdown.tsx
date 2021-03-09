@@ -140,7 +140,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
         <Button
           className={classes.totalsButton}
           onClick={() => {
-            router.push('/cart').catch(() => {
+            router.push(`/${router.query.city}/cart`).catch(() => {
               showErrorNotification();
             });
           }}

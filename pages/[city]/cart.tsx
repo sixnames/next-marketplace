@@ -1,27 +1,33 @@
-import * as React from 'react';
-import Inner from '../../components/Inner/Inner';
+import Breadcrumbs from 'components/Breadcrumbs/Breadcrumbs';
+import Button from 'components/Buttons/Button';
+import ButtonCross from 'components/Buttons/ButtonCross';
+import ControlButton from 'components/Buttons/ControlButton';
+import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import Inner from 'components/Inner/Inner';
+import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
+import Spinner from 'components/Spinner/Spinner';
+import Title from 'components/Title/Title';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import Title from '../../components/Title/Title';
-import classes from './CartRoute.module.css';
 import {
   CartProductFragment,
   ProductSnippetFragment,
   SnippetConnectionFragment,
 } from 'generated/apolloComponents';
-import Image from 'next/image';
-import ButtonCross from '../../components/Buttons/ButtonCross';
-import ControlButton from '../../components/Buttons/ControlButton';
-import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
-import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
-import ProductSnippetPrice from '../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
-import Button from '../../components/Buttons/Button';
-import CartShopsList from './CartShopsList';
-import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import CartAside from './CartAside';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { useRouter } from 'next/router';
-import LayoutCard from '../../layout/LayoutCard/LayoutCard';
+import LayoutCard from 'layout/LayoutCard/LayoutCard';
+import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import CartAside from 'routes/CartRoute/CartAside';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { castDbData } from 'lib/ssrUtils';
+import classes from 'routes/CartRoute/CartRoute.module.css';
+import CartShopsList from 'routes/CartRoute/CartShopsList';
 
 interface CartProductFrameInterface {
   product: ProductSnippetFragment;
@@ -248,8 +254,20 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 const CartRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
-  const { cart } = useSiteContext();
+  const { cart, loadingCart } = useSiteContext();
   const { productsCount, cartProducts } = cart;
+
+  if (loadingCart) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} />
+
+        <Inner lowTop testId={'cart'}>
+          <Spinner isNested />
+        </Inner>
+      </div>
+    );
+  }
 
   if (cartProducts.length < 1) {
     return (
@@ -263,7 +281,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push('/').catch(() => {
+                router.push(`/${router.query.city}/`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -322,4 +340,36 @@ const CartRoute: React.FC = () => {
   );
 };
 
-export default CartRoute;
+interface CartInterface extends PagePropsInterface, SiteLayoutInterface {}
+
+const Cart: NextPage<CartInterface> = ({ navRubrics }) => {
+  return (
+    <SiteLayout title={'Корзина'} navRubrics={navRubrics}>
+      <CartRoute />
+    </SiteLayout>
+  );
+};
+
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CartInterface>> {
+  const { locale, query } = context;
+
+  // initial data
+  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
+  const rawNavRubrics = await getCatalogueNavRubrics({
+    locale: `${locale}`,
+    city: `${query.city}`,
+  });
+  const initialData = castDbData(rawInitialData);
+  const navRubrics = castDbData(rawNavRubrics);
+
+  return {
+    props: {
+      initialData,
+      navRubrics,
+    },
+  };
+}
+
+export default Cart;

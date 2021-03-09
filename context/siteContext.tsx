@@ -29,6 +29,7 @@ import { useAppContext } from './appContext';
 interface SiteContextStateInterface {
   isBurgerDropdownOpen: boolean;
   isSearchOpen: boolean;
+  loadingCart: boolean;
   cart: CartFragment;
 }
 
@@ -49,6 +50,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
   catalogueNavRubrics: [],
   isBurgerDropdownOpen: false,
   isSearchOpen: false,
+  loadingCart: true,
   cart: initialCart,
   setState: () => null,
 });
@@ -61,10 +63,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   catalogueNavRubrics,
 }) => {
-  const { data } = useSessionCartQuery({ fetchPolicy: 'network-only' });
+  const { data, loading } = useSessionCartQuery();
   const [state, setState] = React.useState<SiteContextStateInterface>(() => ({
     isBurgerDropdownOpen: false,
     isSearchOpen: false,
+    loadingCart: true,
     cart: initialCart,
     lastOrderItemId: null,
   }));
@@ -74,9 +77,10 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       setState((prevState) => ({
         ...prevState,
         cart: data.getSessionCart,
+        loadingCart: loading,
       }));
     }
-  }, [data]);
+  }, [loading, data]);
 
   const initialValue = React.useMemo(() => {
     return {
@@ -135,6 +139,7 @@ function useSiteContext(): UseSiteContextInterface {
           isSearchOpen: false,
           isBurgerDropdownOpen: false,
           cart: cartPayload?.payload || orderPayload?.cart || initialCart,
+          loadingCart: false,
         });
 
         return;
@@ -267,7 +272,7 @@ function useSiteContext(): UseSiteContextInterface {
       isSearchOpen: false,
       isBurgerDropdownOpen: false,
     }));
-  }, [context, fixBodyScroll]);
+  }, [context]);
 
   const toggleBurgerDropdown = React.useCallback(() => {
     context.setState((prevState) => {

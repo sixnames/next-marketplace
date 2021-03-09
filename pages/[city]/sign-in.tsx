@@ -2,9 +2,9 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { SessionUserQuery } from 'generated/apolloComponents';
 import { SESSION_USER_QUERY } from 'graphql/query/initialQueries';
-import SiteLayout from '../layout/SiteLayout/SiteLayout';
+import SiteLayout from 'layout/SiteLayout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import SignInRoute from '../routes/SignInRoute/SignInRoute';
+import SignInRoute from 'routes/SignInRoute/SignInRoute';
 import { csrfToken } from 'next-auth/client';
 
 export interface SignInPageInterface {

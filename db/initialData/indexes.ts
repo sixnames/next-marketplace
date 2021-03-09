@@ -10,6 +10,7 @@ import {
   ManufacturerModel,
   ProductModel,
   RubricModel,
+  ShopProductModel,
 } from '../dbModels';
 import { getDatabase } from '../mongodb';
 import {
@@ -23,6 +24,7 @@ import {
   COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from '../collectionNames';
 require('dotenv').config();
 
@@ -55,44 +57,47 @@ async function createIndexes() {
 
   console.log('Creating indexes');
 
-  // Brands indexes
+  // Brands
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
   await brandsCollection.createIndex({ slug: 1 }, { unique: true });
 
-  // Brand collections indexes
+  // Brand collections
   const brandCollectionsCollection = db.collection<BrandModel>(COL_BRAND_COLLECTIONS);
   await brandCollectionsCollection.createIndex({ slug: 1 }, { unique: true });
 
-  // Manufacturers indexes
+  // Manufacturers
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   await manufacturersCollection.createIndex({ slug: 1 }, { unique: true });
 
-  // Rubrics indexes
+  // Rubrics
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   await rubricsCollection.createIndex({ slug: 1 }, { unique: true });
 
-  // Configs indexes
+  // Configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   await configsCollection.createIndex({ slug: 1 }, { unique: true });
   await configsCollection.createIndex({ index: 1 });
 
-  // Languages indexes
+  // Languages
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   await languagesCollection.createIndex({ itemId: 1 }, { unique: true });
 
-  // Cities indexes
+  // Cities
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   await citiesCollection.createIndex({ itemId: 1 }, { unique: true });
 
-  // Countries indexes
+  // Countries
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
   await countriesCollection.createIndex({ citiesIds: 1 });
 
-  // Products indexes
+  // Shop products
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+  // Products
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
 
-  // Cities indexes
+  // Cities
   const cities = await citiesCollection.find({}).toArray();
   for await (const city of cities) {
     // Brands
@@ -121,6 +126,13 @@ async function createIndexes() {
       activeProductsCount: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
+    });
+
+    // Shop products
+    await shopProductsCollection.createIndex({
+      _id: 1,
+      citySlug: 1,
+      archive: 1,
     });
 
     // Products catalogue

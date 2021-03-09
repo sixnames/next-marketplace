@@ -21,11 +21,11 @@ import {
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { getCatalogueData } from 'lib/catalogueUtils';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { getCatalogueData, getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
+import { castDbData } from 'lib/ssrUtils';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -317,21 +317,21 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   );
 };
 
-interface CatalogueInterface extends PagePropsInterface {
+interface CatalogueInterface extends PagePropsInterface, SiteLayoutInterface {
   catalogueData?: CatalogueDataFragment | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData }) => {
+const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics }) => {
   if (!catalogueData) {
     return (
-      <SiteLayout>
+      <SiteLayout navRubrics={navRubrics}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
   }
 
   return (
-    <SiteLayout title={catalogueData.catalogueTitle}>
+    <SiteLayout title={catalogueData.catalogueTitle} navRubrics={navRubrics}>
       <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>
   );
@@ -344,7 +344,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+export const getStaticProps: GetStaticProps<any, { catalogue: string[]; city: string }> = async ({
+  params,
+  locale,
+}) => {
   const { catalogue, city } = params || {};
 
   const notFoundResponse = {
@@ -356,6 +359,11 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     return notFoundResponse;
   }
 
+  // initial data
+  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${city}` });
+  const rawNavRubrics = await getCatalogueNavRubrics({ locale: `${locale}`, city: `${city}` });
+
+  // catalogue
   const rawCatalogueData = await getCatalogueData({
     locale: `${locale}`,
     city: `${city}`,
@@ -363,20 +371,18 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
       filter: alwaysArray(catalogue),
     },
   });
-
   if (!rawCatalogueData) {
     return notFoundResponse;
   }
-
-  const catalogueData = JSON.parse(JSON.stringify(rawCatalogueData));
-
-  // initial page data
-  const { apolloClient } = await getSiteInitialData({ locale, city: `${city}` });
+  const catalogueData = castDbData(rawCatalogueData);
+  const initialData = castDbData(rawInitialData);
+  const navRubrics = castDbData(rawNavRubrics);
 
   return {
     props: {
       catalogueData,
-      initialApolloState: apolloClient.cache.extract(),
+      initialData,
+      navRubrics,
     },
     revalidate: 5,
   };

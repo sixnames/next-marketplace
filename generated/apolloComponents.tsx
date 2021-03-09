@@ -1894,7 +1894,7 @@ export type RubricOption = {
   icon?: Maybe<Scalars['String']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  productsCount: Scalars['Int'];
+  isSelected: Scalars['Boolean'];
   variants: Scalars['JSONObject'];
   options: Array<RubricOption>;
   name: Scalars['String'];
@@ -3871,7 +3871,7 @@ export type CardFeatureFragment = (
 
 export type CardConnectionProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'slug' | 'name' | 'active' | 'mainImage'>
+  & Pick<Product, '_id' | 'slug'>
 );
 
 export type CardConnectionItemFragment = (
@@ -5241,11 +5241,7 @@ export const CardFeatureFragmentDoc = gql`
 export const CardConnectionProductFragmentDoc = gql`
     fragment CardConnectionProduct on Product {
   _id
-  itemId
   slug
-  name
-  active
-  mainImage
 }
     `;
 export const CardConnectionItemFragmentDoc = gql`

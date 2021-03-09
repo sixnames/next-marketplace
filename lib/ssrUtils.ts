@@ -100,3 +100,7 @@ export async function getCmsSsrProps(context: SsrContext): Promise<GetServerSide
     return { props: {} };
   }
 }
+
+export function castDbData(data: any): any {
+  return JSON.parse(JSON.stringify(data));
+}

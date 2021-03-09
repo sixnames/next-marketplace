@@ -1,34 +1,73 @@
 import ErrorBoundaryFallback from 'components/ErrorBoundary/ErrorBoundaryFallback';
-import { GetCatalogueCardQuery, GetCatalogueCardQueryVariables } from 'generated/apolloComponents';
-import { CATALOGUE_CARD_QUERY } from 'graphql/query/cardQueries';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
+import { GetCatalogueCardQuery } from 'generated/apolloComponents';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getSiteInitialData } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { getCardData } from 'lib/cardUtils';
+import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
+import { castDbData } from 'lib/ssrUtils';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CardRoute from 'routes/CardRoute/CardRoute';
 
-interface CardInterface {
+interface CardInterface extends PagePropsInterface, SiteLayoutInterface {
   cardData?: GetCatalogueCardQuery['getProductCard'] | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData }) => {
+const Card: NextPage<CardInterface> = ({ cardData, navRubrics }) => {
   if (!cardData) {
     return (
-      <SiteLayout>
+      <SiteLayout navRubrics={navRubrics}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
   }
 
   return (
-    <SiteLayout>
+    <SiteLayout navRubrics={navRubrics}>
       <CardRoute cardData={cardData} />
     </SiteLayout>
   );
 };
 
-export async function getServerSideProps(
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<any, { city: string; card: string[] }> = async ({
+  params,
+  locale,
+}) => {
+  const { city, card } = params || {};
+
+  // initial data
+  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${city}` });
+  const rawNavRubrics = await getCatalogueNavRubrics({ locale: `${locale}`, city: `${city}` });
+  const initialData = castDbData(rawInitialData);
+  const navRubrics = castDbData(rawNavRubrics);
+
+  // card data
+  const rawCardData = await getCardData({
+    locale: `${locale}`,
+    city: `${city}`,
+    slug: alwaysArray(card),
+  });
+  const cardData = castDbData(rawCardData);
+
+  return {
+    props: {
+      initialData,
+      navRubrics,
+      cardData,
+    },
+    revalidate: 5,
+  };
+};
+
+/*export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
@@ -59,6 +98,6 @@ export async function getServerSideProps(
     console.log(JSON.stringify(e, null, 2));
     return { props: {} };
   }
-}
+}*/
 
 export default Card;

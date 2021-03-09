@@ -776,22 +776,22 @@ export const getCatalogueData = async ({
   }
 };
 
-export interface GetSiteInitialDataInterface {
+export interface GetPageInitialDataInterface {
   locale: string;
   city: string;
 }
 
-export interface SiteInitialDataPayload {
+export interface PageInitialDataPayload {
   configs: ConfigModel[];
-  languages: LanguageModel[];
   cities: CityModel[];
+  languages: LanguageModel[];
   currency: string;
 }
 
-export const getSiteInitialData = async ({
+export const getPageInitialData = async ({
   locale,
   city,
-}: GetSiteInitialDataInterface): Promise<SiteInitialDataPayload> => {
+}: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
       return '';
@@ -952,7 +952,7 @@ export const getCatalogueNavRubrics = async ({
 
   const rubrics: RubricModel[] = [];
   initialRubrics.forEach((rubric) => {
-    return {
+    rubrics.push({
       ...rubric,
       name: getFieldLocale(rubric.nameI18n),
       navItems: getRubricNavAttributes({
@@ -962,7 +962,7 @@ export const getCatalogueNavRubrics = async ({
         visibleOptionsCount,
         locale,
       }),
-    };
+    });
   });
 
   return rubrics;

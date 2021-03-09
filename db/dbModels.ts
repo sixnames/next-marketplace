@@ -82,27 +82,23 @@ export interface CoordinatesModel {
 export interface AddressModel {
   formattedAddress: string;
   point: PointGeoJSONModel;
+
+  // types for ui
+  formattedCoordinates?: CoordinatesModel;
 }
 
 export interface ContactsModel {
   emails: EmailAddressModel[];
   phones: PhoneNumberModel[];
+
+  // types for ui
+  formattedPhones?: FormattedPhoneModel[];
 }
 
 export interface AssetModel {
   url: string;
   index: number;
 }
-
-/*export interface CoordinatesInputModel {
-  lat: number;
-  lng: number;
-}
-
-export interface AddressInputModel {
-  formattedAddress: string;
-  point: CoordinatesInputModel;
-}*/
 
 // Sort direction
 export enum SortDirectionModel {
@@ -280,6 +276,8 @@ export interface ConfigModel {
   slug: string;
   name: string;
   description?: string | null;
+  value?: string[];
+  singleValue?: string;
   variant: ConfigVariantModel;
   cities: ConfigCitiesModel;
 }
@@ -439,6 +437,9 @@ export interface ProductConnectionItemModel {
   _id: ObjectIdModel;
   option: OptionModel;
   productId: ObjectIdModel;
+
+  // types for ui
+  product?: ProductModel;
 }
 
 export interface ProductConnectionModel {
@@ -449,6 +450,9 @@ export interface ProductConnectionModel {
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   connectionProducts: ProductConnectionItemModel[];
+
+  // types for ui
+  attributeName?: string;
 }
 
 export interface ProductAttributeModel {
@@ -495,6 +499,23 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   connections: ProductConnectionModel[];
   minPriceCities: CitiesCounterModel;
   maxPriceCities: CitiesCounterModel;
+
+  // types for ui
+  name?: string | null;
+  description?: string | null;
+  shopsCount?: number;
+  mainImage?: string;
+  listFeatures?: ProductAttributeModel[];
+  textFeatures?: ProductAttributeModel[];
+  tagFeatures?: ProductAttributeModel[];
+  iconFeatures?: ProductAttributeModel[];
+  ratingFeatures?: ProductAttributeModel[];
+  cardShopProducts?: ShopProductModel[];
+  cardPrices?: {
+    _id: ObjectIdModel;
+    min: string;
+    max: string;
+  };
 }
 
 export interface ProductCardPricesModel {
@@ -571,6 +592,7 @@ export interface RubricModel extends CountersModel, RubricCountersInterface {
   slug: string;
   active: boolean;
   attributes: RubricAttributeModel[];
+  navItems?: RubricAttributeModel[];
   attributesGroupsIds: ObjectIdModel[];
   variantId: ObjectIdModel;
   activeProductsCount: number;
@@ -586,6 +608,12 @@ export interface ShopProductModel extends TimestampModel {
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   archive: boolean;
+
+  // types for ui
+  formattedPrice?: string;
+  formattedOldPrice?: string | null;
+  discountedPercent?: number | null;
+  shop?: ShopModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {

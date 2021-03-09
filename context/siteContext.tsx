@@ -1,3 +1,4 @@
+import { RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import {
   AddProductToCartInput,
@@ -5,7 +6,6 @@ import {
   AddShopToCartProductInput,
   CartFragment,
   CartPayloadFragment,
-  CatalogueNavRubricFragment,
   DeleteProductFromCartInput,
   MakeAnOrderInput,
   MakeAnOrderPayloadFragment,
@@ -33,7 +33,7 @@ interface SiteContextStateInterface {
 }
 
 interface SiteContextInterface extends SiteContextStateInterface {
-  catalogueNavRubrics: CatalogueNavRubricFragment[];
+  catalogueNavRubrics: RubricModel[];
   setState: React.Dispatch<React.SetStateAction<SiteContextStateInterface>>;
 }
 
@@ -54,7 +54,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
 });
 
 interface SiteContextProviderInterface {
-  catalogueNavRubrics: CatalogueNavRubricFragment[];
+  catalogueNavRubrics: RubricModel[];
 }
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({

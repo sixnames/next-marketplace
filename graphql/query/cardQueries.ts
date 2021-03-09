@@ -21,11 +21,7 @@ export const cardFeatureFragment = gql`
 export const cardConnectionProductFragment = gql`
   fragment CardConnectionProduct on Product {
     _id
-    itemId
     slug
-    name
-    active
-    mainImage
   }
 `;
 

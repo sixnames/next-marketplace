@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { Fragment, useEffect, useRef } from 'react';
 import classes from './Header.module.css';
@@ -54,10 +55,12 @@ const HeaderSearchTrigger: React.FC = () => {
 
 const HeaderProfileLink: React.FC = () => {
   const { me } = useUserContext();
+  const router = useRouter();
+
   return (
     <Link
       testId={me ? `profile-link` : `sign-in-link`}
-      href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+      href={me ? `/${router.query.city}${ROUTE_PROFILE}` : `/${router.query.city}${ROUTE_SIGN_IN}`}
       className={`${classes.middleLink}`}
       activeClassName={`${classes.middleLinkActive}`}
     >

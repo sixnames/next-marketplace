@@ -264,7 +264,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             <li>
                               <Link
                                 onClick={hideDropdownHandler}
-                                href={ROUTE_CMS}
+                                href={`/${query.city}${ROUTE_CMS}`}
                                 className={`${classes.dropdownGroupLink}`}
                               >
                                 <span>CMS</span>
@@ -274,7 +274,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             <li>
                               <Link
                                 onClick={hideDropdownHandler}
-                                href={ROUTE_APP}
+                                href={`/${query.city}${ROUTE_APP}`}
                                 className={`${classes.dropdownGroupLink}`}
                               >
                                 <span>APP</span>

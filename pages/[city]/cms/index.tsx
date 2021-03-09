@@ -3,7 +3,7 @@ import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { NextPage } from 'next';
-import { getCmsSsrProps } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 
 const Cms: NextPage = () => {
   return (
@@ -15,6 +15,6 @@ const Cms: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getCmsSsrProps;
+export const getServerSideProps = getAppInitialData;
 
 export default Cms;

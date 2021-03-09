@@ -1,15 +1,19 @@
 import { ROUTE_SIGN_IN } from 'config/common';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
+import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { getSession } from 'next-auth/client';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { castDbData } from 'lib/ssrUtils';
 import ProfileDetailsRoute from 'routes/ProfileDetailsRoute/ProfileDetailsRoute';
 
-const ProfileDetails: NextPage = () => {
+interface ProfileDetailsInterface extends PagePropsInterface, SiteLayoutInterface {}
+
+const ProfileDetails: NextPage<ProfileDetailsInterface> = ({ navRubrics }) => {
   return (
-    <SiteLayout title={'Профиль'}>
+    <SiteLayout title={'Профиль'} navRubrics={navRubrics}>
       <ProfileLayout>
         <ProfileDetailsRoute />
       </ProfileLayout>
@@ -19,31 +23,33 @@ const ProfileDetails: NextPage = () => {
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    // Check if user authenticated
-    const session = await getSession(context);
-    if (!session?.user) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: ROUTE_SIGN_IN,
-        },
-      };
-    }
-
-    const { apolloClient } = await getSiteInitialData(context);
-
+): Promise<GetServerSidePropsResult<ProfileDetailsInterface>> {
+  const { locale, query } = context;
+  const session = await getSession(context);
+  if (!session?.user) {
     return {
-      props: {
-        initialApolloState: apolloClient.cache.extract(),
+      redirect: {
+        permanent: false,
+        destination: `/${query.city}${ROUTE_SIGN_IN}`,
       },
     };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
   }
+
+  // initial data
+  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
+  const rawNavRubrics = await getCatalogueNavRubrics({
+    locale: `${locale}`,
+    city: `${query.city}`,
+  });
+  const initialData = castDbData(rawInitialData);
+  const navRubrics = castDbData(rawNavRubrics);
+
+  return {
+    props: {
+      initialData,
+      navRubrics,
+    },
+  };
 }
 
 export default ProfileDetails;

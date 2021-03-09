@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { NextPage } from 'next';
-import { getCmsSsrProps } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 import ShopRoute from 'routes/Shop/ShopRoute';
 
 const Shop: NextPage = () => {
@@ -12,6 +12,6 @@ const Shop: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getCmsSsrProps;
+export const getServerSideProps = getAppInitialData;
 
 export default Shop;

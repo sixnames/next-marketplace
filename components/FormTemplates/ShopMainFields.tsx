@@ -7,10 +7,18 @@ import * as React from 'react';
 
 const ShopMainFields: React.FC = () => {
   const { cities } = useConfigContext();
+
+  const citiesOptions = cities.map((city) => {
+    return {
+      ...city,
+      _id: `${city._id}`,
+    };
+  });
+
   return (
     <React.Fragment>
       <FormikSelect
-        options={cities}
+        options={citiesOptions}
         label={'Город'}
         name={'citySlug'}
         testId={'citySlug'}

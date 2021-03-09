@@ -2,7 +2,7 @@ import * as React from 'react';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { NextPage } from 'next';
-import { getCmsSsrProps } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 import CreateCompanyRoute from 'routes/Company/CreateCompanyRoute';
 
 const CompaniesCreate: NextPage<PagePropsInterface> = () => {
@@ -13,6 +13,6 @@ const CompaniesCreate: NextPage<PagePropsInterface> = () => {
   );
 };
 
-export const getServerSideProps = getCmsSsrProps;
+export const getServerSideProps = getAppInitialData;
 
 export default CompaniesCreate;

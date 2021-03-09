@@ -233,6 +233,9 @@ export interface CityModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   slug: string;
+
+  // types for ui
+  name?: string;
 }
 
 export interface CompanyModel extends BaseModel, TimestampModel {

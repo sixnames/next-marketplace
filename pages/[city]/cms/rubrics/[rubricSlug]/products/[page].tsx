@@ -23,7 +23,7 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { NextPage } from 'next';
-import { getCmsSsrProps } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 
 const RubricProducts: React.FC = () => {
   const router = useRouter();
@@ -217,6 +217,6 @@ const RubricProductsPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getCmsSsrProps;
+export const getServerSideProps = getAppInitialData;
 
 export default RubricProductsPage;

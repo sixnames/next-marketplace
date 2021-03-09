@@ -24,7 +24,7 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const { me } = useUserContext();
+  const { me, loadingUser } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
     return [
@@ -91,7 +91,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
     ];
   }, []);
 
-  if (!me) {
+  if (loadingUser || !me) {
     return (
       <div className={classes.frame}>
         <Breadcrumbs currentPageName={'Профиль'} />

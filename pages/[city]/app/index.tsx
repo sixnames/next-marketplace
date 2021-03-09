@@ -1,14 +1,11 @@
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
-import { ROUTE_SIGN_IN } from 'config/common';
 import AppLayout from 'layout/AppLayout/AppLayout';
-import { getSession } from 'next-auth/client';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import { getAppInitialData } from 'lib/ssrUtils';
 
-const App: NextPage<PagePropsInterface> = () => {
+const App: NextPage = () => {
   return (
     <AppLayout title={'App'}>
       <Inner>
@@ -18,33 +15,6 @@ const App: NextPage<PagePropsInterface> = () => {
   );
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    // Check if user authenticated
-    const session = await getSession(context);
-    if (!session?.user) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: ROUTE_SIGN_IN,
-        },
-      };
-    }
-
-    const { apolloClient } = await getSiteInitialData(context);
-
-    return {
-      props: {
-        initialApolloState: apolloClient.cache.extract(),
-      },
-    };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
-}
+export const getServerSideProps = getAppInitialData;
 
 export default App;

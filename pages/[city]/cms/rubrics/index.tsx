@@ -20,7 +20,7 @@ import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { NextPage } from 'next';
-import { getCmsSsrProps } from 'lib/ssrUtils';
+import { getAppInitialData } from 'lib/ssrUtils';
 
 const RubricsRoute: React.FC = () => {
   const router = useRouter();
@@ -172,6 +172,6 @@ const Rubrics: NextPage = () => {
   );
 };
 
-export const getServerSideProps = getCmsSsrProps;
+export const getServerSideProps = getAppInitialData;
 
 export default Rubrics;

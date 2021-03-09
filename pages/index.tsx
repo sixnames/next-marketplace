@@ -1,10 +1,9 @@
 import { DEFAULT_CITY } from 'config/common';
 import * as React from 'react';
 import { GetServerSidePropsResult, NextPage } from 'next';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
 
 const Home: NextPage = () => {
-  return <SiteLayout />;
+  return <div />;
 };
 
 export const getServerSideProps = async (): Promise<GetServerSidePropsResult<any>> => {

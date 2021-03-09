@@ -5,6 +5,8 @@ import {
   BrandModel,
   CityModel,
   ConfigModel,
+  CountryModel,
+  LanguageModel,
   ManufacturerModel,
   ProductModel,
   RubricModel,
@@ -15,7 +17,9 @@ import {
   COL_BRANDS,
   COL_CITIES,
   COL_CONFIGS,
+  COL_COUNTRIES,
   COL_ID_COUNTERS,
+  COL_LANGUAGES,
   COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -70,13 +74,25 @@ async function createIndexes() {
   // Configs indexes
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   await configsCollection.createIndex({ slug: 1 }, { unique: true });
+  await configsCollection.createIndex({ index: 1 });
+
+  // Languages indexes
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  await languagesCollection.createIndex({ itemId: 1 }, { unique: true });
+
+  // Cities indexes
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  await citiesCollection.createIndex({ itemId: 1 }, { unique: true });
+
+  // Countries indexes
+  const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+  await countriesCollection.createIndex({ citiesIds: 1 });
 
   // Products indexes
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Cities indexes
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const cities = await citiesCollection.find({}).toArray();
   for await (const city of cities) {
     // Brands

@@ -1,12 +1,22 @@
 import { getPriceAttribute } from 'config/constantAttributes';
-import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_CITIES,
+  COL_CONFIGS,
+  COL_COUNTRIES,
+  COL_LANGUAGES,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import {
   AttributeModel,
   CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
+  CityModel,
   ConfigModel,
+  CountryModel,
   GenderModel,
+  LanguageModel,
   ObjectIdModel,
   OptionModel,
   ProductModel,
@@ -30,6 +40,7 @@ import {
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_CITY,
+  DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
@@ -43,7 +54,7 @@ import {
 } from 'config/common';
 import capitalize from 'capitalize';
 import { getDatabase } from 'db/mongodb';
-import { getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
+import { getCityFieldData, getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
@@ -356,16 +367,12 @@ export const getCatalogueData = async ({
   city,
   input,
 }: GetCatalogueDataInterface): Promise<CatalogueDataModel | null> => {
-  function getI18nLocale<T>(i18nField: Record<string, T>): T {
-    return getI18nLocaleValue(i18nField, locale);
-  }
-
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
       return '';
     }
 
-    let translation = getI18nLocale<string>(i18nField);
+    let translation = getI18nLocaleValue<string>(i18nField, locale);
 
     // Get fallback language if chosen not found
     if (!translation) {
@@ -765,4 +772,111 @@ export const getCatalogueData = async ({
     console.log(e);
     return null;
   }
+};
+
+export interface GetSiteInitialDataInterface {
+  locale: string;
+  city: string;
+}
+
+export interface SiteInitialDataPayload {
+  configs: ConfigModel[];
+  languages: LanguageModel[];
+  cities: CityModel[];
+  currency: string;
+}
+
+export const getSiteInitialData = async ({
+  locale,
+  city,
+}: GetSiteInitialDataInterface): Promise<SiteInitialDataPayload> => {
+  function getFieldLocale(i18nField?: Record<string, string> | null): string {
+    if (!i18nField) {
+      return '';
+    }
+
+    let translation = getI18nLocaleValue<string>(i18nField, locale);
+
+    // Get fallback language if chosen not found
+    if (!translation) {
+      translation = i18nField[SECONDARY_LOCALE];
+    }
+
+    // Get default language if fallback not found
+    if (!translation) {
+      translation = i18nField[DEFAULT_LOCALE];
+    }
+
+    // Set warning massage if fallback language not found
+    if (!translation) {
+      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+    }
+
+    return translation;
+  }
+
+  function getCityLocale(cityField: Record<string, Record<string, any>>): any {
+    const cityData = getCityFieldData(cityField, city);
+    if (!cityData) {
+      throw Error('getCityLocale error');
+    }
+    const cityLocale = getFieldLocale(cityData);
+    if (!cityLocale) {
+      throw Error('getCityLocale error');
+    }
+    return cityLocale;
+  }
+
+  const db = await getDatabase();
+
+  // configs
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const initialConfigs = await configsCollection.find({}, { sort: { index: SORT_ASC } }).toArray();
+  const configs = initialConfigs.map((config) => {
+    return {
+      ...config,
+      value: getCityLocale(config.cities),
+      singleValue: getCityLocale(config.cities)[0],
+    };
+  });
+
+  // languages
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection
+    .find(
+      {},
+      {
+        sort: {
+          itemId: SORT_ASC,
+        },
+      },
+    )
+    .toArray();
+
+  // cities
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const initialCities = await citiesCollection.find({}, { sort: { itemId: SORT_DESC } }).toArray();
+  const cities = initialCities.map((city) => {
+    return {
+      ...city,
+      name: getFieldLocale(city.nameI18n),
+    };
+  });
+
+  // currency
+  const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+  let currency = DEFAULT_CURRENCY;
+  const sessionCity = initialCities.find(({ slug }) => slug === city);
+  const country = await countriesCollection.findOne({ citiesIds: sessionCity?._id });
+  if (country) {
+    currency = country.currency;
+  }
+
+  return {
+    configs,
+    languages,
+    cities,
+    currency,
+  };
+  // getCatalogueNavRubrics: [],
 };

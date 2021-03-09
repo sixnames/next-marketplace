@@ -21,19 +21,14 @@ import {
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import { CATALOGUE_RUBRIC_QUERY } from 'graphql/query/catalogueQueries';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getCurrencyString } from 'lib/i18n';
-import { getSiteInitialData } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
   CatalogueDataFragment,
-  GetCatalogueRubricQuery,
-  GetCatalogueRubricQueryVariables,
   useGetCatalogueRubricQuery,
   useUpdateCatalogueCountersMutation,
 } from 'generated/apolloComponents';
@@ -343,7 +338,30 @@ const Catalogue: NextPage<CatalogueInterface> = ({ rubricData }) => {
   );
 };
 
-export async function getServerSideProps(
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+  const { catalogue, city } = params || {};
+  console.log({ catalogue, city, locale });
+  if (!catalogue) {
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {},
+    revalidate: 5,
+  };
+};
+
+/*export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
@@ -377,6 +395,6 @@ export async function getServerSideProps(
     console.log(e);
     return { props: {} };
   }
-}
+}*/
 
 export default Catalogue;

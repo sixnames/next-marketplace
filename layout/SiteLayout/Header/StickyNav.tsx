@@ -22,7 +22,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdownHandler,
   rubricSlug,
 }) => {
-  const { asPath } = useRouter();
+  const { asPath, query } = useRouter();
   const { _id, options, name } = attribute;
 
   return (
@@ -35,7 +35,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           return (
             <li key={option._id}>
               <Link
-                href={`/${rubricSlug}/${option.slug}`}
+                href={`/${query.city}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
                   isCurrent ? classes.currentOption : ''
@@ -91,7 +91,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${rubric._id}`}
     >
       <Link
-        href={`/${slug}`}
+        href={`${query.city}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}

@@ -516,6 +516,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
     min: string;
     max: string;
   };
+  cardBreadcrumbs?: ProductCardBreadcrumbModel[];
 }
 
 export interface ProductCardPricesModel {

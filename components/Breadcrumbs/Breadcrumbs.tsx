@@ -16,7 +16,7 @@ interface BreadcrumbsInterface {
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config = [] }) => {
-  const { locale } = useRouter();
+  const { locale, query } = useRouter();
   const { isMobile } = useAppContext();
 
   const mainPageName = React.useMemo(() => {
@@ -32,7 +32,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({ currentPageName, config =
       <Inner>
         <ul className={classes.list}>
           <li className={classes.listItem}>
-            <Link className={classes.link} href={'/'}>
+            <Link className={classes.link} href={`/${query.city}/`}>
               <span>{mainPageName}</span> —
             </Link>
           </li>

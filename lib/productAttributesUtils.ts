@@ -108,6 +108,12 @@ export function getProductCurrentViewCastedAttributes({
         ...attribute,
         readableValue,
         attributeName: getFieldLocale(attribute.attributeNameI18n),
+        selectedOptions: attribute.selectedOptions.map((option) => {
+          return {
+            ...option,
+            name: getFieldLocale(option.nameI18n),
+          };
+        }),
       },
     ];
   }, []);

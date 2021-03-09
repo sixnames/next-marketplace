@@ -1,31 +1,31 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { ROUTE_SIGN_IN } from 'config/common';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { IncomingMessage, ServerResponse } from 'http';
+import { GetServerSidePropsResult } from 'next';
 import { initializeApollo } from 'apollo/apolloClient';
 import { INITIAL_APP_QUERY, INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
 import { getSession } from 'next-auth/client';
+import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
+import { ParsedUrlQuery } from 'querystring';
 
-export interface GetSSRSessionDataPayloadInterface {
-  isMobileDevice: boolean;
-}
-
-export function getUserDeviceInfo(
-  context: GetServerSidePropsContext,
-): GetSSRSessionDataPayloadInterface {
-  const { req } = context;
-
-  // Detect session device
-  const isMobileDevice = `${req ? req.headers['user-agent'] : navigator.userAgent}`.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
-  );
-
-  return {
-    isMobileDevice: Boolean(isMobileDevice),
+export interface SsrContext {
+  req?: IncomingMessage & {
+    cookies: NextApiRequestCookies;
   };
+  res?: ServerResponse;
+  params?: any;
+  query?: ParsedUrlQuery;
+  preview?: boolean;
+  previewData?: any;
+  resolvedUrl?: string;
+  locale?: string;
+  locales?: string[];
+  defaultLocale?: string;
+  city?: string | null;
 }
 
 export async function getInitialApolloState(
-  context: GetServerSidePropsContext,
+  context: SsrContext,
 ): Promise<ApolloClient<NormalizedCacheObject>> {
   const apolloClient = initializeApollo(null, context);
   await apolloClient.query({
@@ -35,24 +35,22 @@ export async function getInitialApolloState(
   return apolloClient;
 }
 
-export interface GetSiteInitialDataPayloadInterface extends GetSSRSessionDataPayloadInterface {
+export interface GetSiteInitialDataPayloadInterface {
   apolloClient: ApolloClient<NormalizedCacheObject>;
 }
 
 export async function getSiteInitialData(
-  context: GetServerSidePropsContext,
+  context: SsrContext,
 ): Promise<GetSiteInitialDataPayloadInterface> {
   const apolloClient = await getInitialApolloState(context);
-  const userDeviceInfo = getUserDeviceInfo(context);
 
   return {
-    ...userDeviceInfo,
     apolloClient,
   };
 }
 
 export async function getAppInitialApolloState(
-  context: GetServerSidePropsContext,
+  context: SsrContext,
 ): Promise<ApolloClient<NormalizedCacheObject>> {
   const apolloClient = initializeApollo(null, context);
   await apolloClient.query({
@@ -62,25 +60,21 @@ export async function getAppInitialApolloState(
   return apolloClient;
 }
 
-export interface GetAppInitialDataPayloadInterface extends GetSSRSessionDataPayloadInterface {
+export interface GetAppInitialDataPayloadInterface {
   apolloClient: ApolloClient<NormalizedCacheObject>;
 }
 
 export async function getAppInitialData(
-  context: GetServerSidePropsContext,
+  context: SsrContext,
 ): Promise<GetAppInitialDataPayloadInterface> {
   const apolloClient = await getAppInitialApolloState(context);
-  const userDeviceInfo = getUserDeviceInfo(context);
 
   return {
-    ...userDeviceInfo,
     apolloClient,
   };
 }
 
-export async function getCmsSsrProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
+export async function getCmsSsrProps(context: SsrContext): Promise<GetServerSidePropsResult<any>> {
   try {
     // Check if user authenticated
     const session = await getSession(context);
@@ -93,11 +87,10 @@ export async function getCmsSsrProps(
       };
     }
 
-    const { isMobileDevice, apolloClient } = await getAppInitialData(context);
+    const { apolloClient } = await getAppInitialData(context);
 
     return {
       props: {
-        isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },
     };

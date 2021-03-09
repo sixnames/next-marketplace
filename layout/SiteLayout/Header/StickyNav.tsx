@@ -91,7 +91,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${rubric._id}`}
     >
       <Link
-        href={`${query.city}/${slug}`}
+        href={`/${query.city}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}

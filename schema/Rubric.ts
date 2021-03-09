@@ -82,6 +82,10 @@ export const Rubric = objectType({
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context) => {
+        if (source.name) {
+          return source.name;
+        }
+
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },

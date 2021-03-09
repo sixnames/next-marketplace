@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
@@ -23,6 +24,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   additionalSlug,
   size = 'normal',
 }) => {
+  const { query } = useRouter();
   const { addShoplessProductToCart } = useSiteContext();
   const { name, mainImage, slug, cardPrices, _id, listFeatures, ratingFeatures } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
@@ -95,7 +97,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         // style={{ display: 'none' }}
         className={classes.link}
         href={{
-          pathname: `/product${additionalLinkSlug}/${slug}`,
+          pathname: `/${query.city}/product${additionalLinkSlug}/${slug}`,
         }}
       >
         {name}

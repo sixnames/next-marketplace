@@ -23,7 +23,7 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { apolloClient } = await getSiteInitialData(context);
 
     // Redirect user to the Home page if already authorized
     const { data } = await apolloClient.query<SessionUserQuery>({
@@ -44,7 +44,6 @@ export async function getServerSideProps(
     return {
       props: {
         token,
-        isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },
     };

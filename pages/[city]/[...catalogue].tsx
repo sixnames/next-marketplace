@@ -22,8 +22,10 @@ import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import SiteLayout from 'layout/SiteLayout/SiteLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { getCurrencyString } from 'lib/i18n';
+import { getCatalogueData } from 'lib/catalogueUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -38,10 +40,10 @@ import CatalogueFilter from 'routes/CatalogueRoute/CatalogueFilter';
 import classes from 'routes/CatalogueRoute/CatalogueRoute.module.css';
 
 interface CatalogueRouteInterface {
-  rubricData: CatalogueDataFragment;
+  catalogueData: CatalogueDataFragment;
 }
 
-const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
+const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
   const router = useRouter();
   const { isMobile } = useAppContext();
   const { fixBodyScroll } = useSiteContext();
@@ -50,12 +52,12 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [isRowView, setIsRowView] = React.useState<boolean>(false);
   const [state, setState] = React.useState<CatalogueDataFragment>(() => {
-    return rubricData;
+    return catalogueData;
   });
 
   React.useEffect(() => {
-    setState(rubricData);
-  }, [rubricData]);
+    setState(catalogueData);
+  }, [catalogueData]);
 
   // update catalogue counters
   const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
@@ -63,13 +65,13 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     updateCatalogueCountersMutation({
       variables: {
         input: {
-          filter: rubricData.filter,
+          filter: catalogueData.filter,
         },
       },
     }).catch((e) => {
       console.log(e);
     });
-  }, [rubricData, updateCatalogueCountersMutation]);
+  }, [catalogueData, updateCatalogueCountersMutation]);
 
   const { loading } = useGetCatalogueRubricQuery({
     fetchPolicy: 'network-only',
@@ -115,11 +117,8 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
   }, [fixBodyScroll]);
 
   const catalogueCounterString = React.useMemo(() => {
-    return `Найдено ${getCurrencyString({
-      locale: `${router.locale}`,
-      value: rubricData.totalProducts,
-    })}`;
-  }, [router.locale, rubricData.totalProducts]);
+    return `Найдено ${catalogueData.totalProducts}`;
+  }, [catalogueData.totalProducts]);
 
   const sortConfig = React.useMemo(
     () => [
@@ -198,12 +197,12 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
     [router, showErrorNotification],
   );
 
-  if (rubricData.totalProducts < 1) {
+  if (catalogueData.totalProducts < 1) {
     return (
       <div className={classes.catalogue}>
-        <Breadcrumbs currentPageName={rubricData.rubric.name} />
+        <Breadcrumbs currentPageName={catalogueData.rubric.name} />
         <Inner lowTop testId={'catalogue'}>
-          <Title testId={'catalogue-title'}>{rubricData.catalogueTitle}</Title>
+          <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
         </Inner>
       </div>
@@ -212,18 +211,18 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 
   return (
     <div className={classes.catalogue}>
-      <Breadcrumbs currentPageName={rubricData.rubric.name} />
+      <Breadcrumbs currentPageName={catalogueData.rubric.name} />
       <Inner lowTop testId={'catalogue'}>
         <Title testId={'catalogue-title'} subtitle={isMobile ? catalogueCounterString : undefined}>
-          {rubricData.catalogueTitle}
+          {catalogueData.catalogueTitle}
         </Title>
 
         <div className={classes.catalogueContent}>
           <CatalogueFilter
-            attributes={rubricData.attributes}
-            selectedAttributes={rubricData.selectedAttributes}
+            attributes={catalogueData.attributes}
+            selectedAttributes={catalogueData.selectedAttributes}
             catalogueCounterString={catalogueCounterString}
-            rubricClearSlug={rubricData.clearSlug}
+            rubricClearSlug={catalogueData.clearSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
           />
@@ -289,7 +288,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product._id}`}
-                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubricData.rubric.slug}`}
+                        additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                       />
                     );
                   }
@@ -299,7 +298,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
                       product={product}
                       key={product._id}
                       testId={`catalogue-item-${product._id}`}
-                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${rubricData.rubric.slug}`}
+                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                     />
                   );
                 })}
@@ -319,11 +318,11 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ rubricData }) => {
 };
 
 interface CatalogueInterface extends PagePropsInterface {
-  rubricData?: CatalogueDataFragment | null;
+  catalogueData?: CatalogueDataFragment | null;
 }
 
-const Catalogue: NextPage<CatalogueInterface> = ({ rubricData }) => {
-  if (!rubricData) {
+const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData }) => {
+  if (!catalogueData) {
     return (
       <SiteLayout>
         <ErrorBoundaryFallback />
@@ -332,8 +331,8 @@ const Catalogue: NextPage<CatalogueInterface> = ({ rubricData }) => {
   }
 
   return (
-    <SiteLayout title={rubricData.catalogueTitle}>
-      <CatalogueRoute rubricData={rubricData} />
+    <SiteLayout title={catalogueData.catalogueTitle}>
+      <CatalogueRoute catalogueData={catalogueData} />
     </SiteLayout>
   );
 };
@@ -347,54 +346,40 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const { catalogue, city } = params || {};
-  console.log({ catalogue, city, locale });
+
+  const notFoundResponse = {
+    props: {},
+    notFound: true,
+  };
+
   if (!catalogue) {
-    return {
-      props: {},
-      notFound: true,
-    };
+    return notFoundResponse;
   }
 
+  const rawCatalogueData = await getCatalogueData({
+    locale: `${locale}`,
+    city: `${city}`,
+    input: {
+      filter: alwaysArray(catalogue),
+    },
+  });
+
+  if (!rawCatalogueData) {
+    return notFoundResponse;
+  }
+
+  const catalogueData = JSON.parse(JSON.stringify(rawCatalogueData));
+
+  // initial page data
+  const { apolloClient } = await getSiteInitialData({ locale, city: `${city}` });
+
   return {
-    props: {},
+    props: {
+      catalogueData,
+      initialApolloState: apolloClient.cache.extract(),
+    },
     revalidate: 5,
   };
 };
-
-/*export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
-
-    // Get catalogue data
-    const { query } = context;
-    const { catalogue } = query;
-
-    const { data } = await apolloClient.query<
-      GetCatalogueRubricQuery,
-      GetCatalogueRubricQueryVariables
-    >({
-      query: CATALOGUE_RUBRIC_QUERY,
-      variables: {
-        input: {
-          filter: alwaysArray(catalogue),
-        },
-      },
-    });
-
-    return {
-      props: {
-        isMobileDevice,
-        initialApolloState: apolloClient.cache.extract(),
-        rubricData: data?.getCatalogueData,
-      },
-    };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(e);
-    return { props: {} };
-  }
-}*/
 
 export default Catalogue;

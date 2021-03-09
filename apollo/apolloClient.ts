@@ -4,7 +4,7 @@ import * as React from 'react';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 let cacheLocale: string | undefined | null;
 
-function createIsomorphicLInk(ctx?: any, locale?: string) {
+function createIsomorphicLInk(ctx?: any, locale?: string, city?: string) {
   if (typeof window === 'undefined') {
     // on server
     const { SchemaLink } = require('@apollo/client/link/schema');
@@ -20,6 +20,7 @@ function createIsomorphicLInk(ctx?: any, locale?: string) {
         headers: {
           ...headers,
           'Content-Language': locale,
+          'x-city': city,
         },
       };
     });
@@ -34,11 +35,11 @@ function createIsomorphicLInk(ctx?: any, locale?: string) {
   }
 }
 
-function createApolloClient(ctx?: any, locale?: string) {
+function createApolloClient(ctx?: any, locale?: string, city?: string) {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     cache: new InMemoryCache(),
-    link: createIsomorphicLInk(ctx, locale),
+    link: createIsomorphicLInk(ctx, locale, city),
   });
 }
 
@@ -46,14 +47,15 @@ export function initializeApollo(
   initialState: NormalizedCacheObject | null = null,
   ctx?: any,
   locale?: string,
+  city?: string,
 ) {
   let client = apolloClient;
 
   if (cacheLocale !== locale) {
-    client = createApolloClient(ctx, locale);
+    client = createApolloClient(ctx, locale, city);
   }
 
-  const _apolloClient = client ?? createApolloClient(ctx, locale);
+  const _apolloClient = client ?? createApolloClient(ctx, locale, city);
 
   if (initialState) {
     _apolloClient.cache.restore(initialState);
@@ -68,8 +70,8 @@ export function initializeApollo(
   return client;
 }
 
-export function useApollo(initialState: NormalizedCacheObject, locale?: string) {
+export function useApollo(initialState: NormalizedCacheObject, locale?: string, city?: string) {
   return React.useMemo(() => {
-    return initializeApollo(initialState, null, locale);
-  }, [initialState, locale]);
+    return initializeApollo(initialState, null, locale, city);
+  }, [city, initialState, locale]);
 }

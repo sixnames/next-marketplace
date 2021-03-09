@@ -19,11 +19,10 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   try {
-    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
+    const { apolloClient } = await getSiteInitialData(context);
 
     return {
       props: {
-        isMobileDevice,
         initialApolloState: apolloClient.cache.extract(),
       },
     };

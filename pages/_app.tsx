@@ -20,9 +20,9 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
 function App({ Component, pageProps }: AppProps<GetSiteInitialDataPayloadInterface>) {
-  const { locale } = useRouter();
+  const { locale, query } = useRouter();
   const { session } = pageProps;
-  const apolloClient = useApollo(pageProps.initialApolloState, locale);
+  const apolloClient = useApollo(pageProps.initialApolloState, locale, query?.city as string);
 
   return (
     <Provider session={session}>

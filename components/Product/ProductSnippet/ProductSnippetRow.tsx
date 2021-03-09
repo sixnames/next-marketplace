@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
@@ -24,6 +25,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   testId,
   additionalSlug,
 }) => {
+  const { query } = useRouter();
   const [amount, setAmount] = React.useState<number>(1);
   const { addShoplessProductToCart } = useSiteContext();
   const {
@@ -157,7 +159,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         // style={{ display: 'none' }}
         className={classes.link}
         href={{
-          pathname: `/product${additionalLinkSlug}/${slug}`,
+          pathname: `/${query.city}/product${additionalLinkSlug}/${slug}`,
         }}
       >
         {name}

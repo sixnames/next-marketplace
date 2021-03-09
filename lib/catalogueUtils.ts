@@ -1,14 +1,19 @@
-import { COL_PRODUCTS } from 'db/collectionNames';
+import { getPriceAttribute } from 'config/constantAttributes';
+import { COL_CONFIGS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import {
   AttributeModel,
+  CatalogueDataModel,
   CatalogueFilterAttributeModel,
   CatalogueFilterAttributeOptionModel,
+  ConfigModel,
   GenderModel,
   ObjectIdModel,
   OptionModel,
   ProductModel,
+  ProductOptionInterface,
   RubricAttributeModel,
   RubricCatalogueTitleModel,
+  RubricModel,
   RubricOptionModel,
 } from 'db/dbModels';
 import {
@@ -17,15 +22,34 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
+  CATALOGUE_PRODUCTS_LIMIT,
+  DEFAULT_CITY,
+  DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
   PRICE_ATTRIBUTE_SLUG,
+  SECONDARY_LOCALE,
+  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
+  SORT_ASC,
+  SORT_BY_KEY,
+  SORT_DESC,
+  SORT_DESC_STR,
+  SORT_DIR_KEY,
 } from 'config/common';
 import capitalize from 'capitalize';
 import { getDatabase } from 'db/mongodb';
+import { getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
+import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
 import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
+import { ObjectId } from 'mongodb';
 
 export interface CastCatalogueParamToObjectPayloadInterface {
   slug: string;
@@ -63,6 +87,15 @@ export function getCatalogueTitle({
   locale,
 }: GetCatalogueTitleInterface): string {
   const { gender: rubricGender, defaultTitleI18n, keywordI18n, prefixI18n } = catalogueTitle;
+
+  function castArrayToTitle(arr: any[]): string {
+    return capitalize(
+      arr
+        .filter((value) => value)
+        .join(' ')
+        .toLocaleLowerCase(),
+    );
+  }
 
   // Return default rubric title if no filters selected
   if (selectedFilters.length < 1) {
@@ -138,11 +171,14 @@ export function getCatalogueTitle({
     }
   });
 
-  return capitalize(
-    [finalPrefix, ...beginOfTitle, ...beforeKeyword, finalKeyword, ...afterKeyword, ...endOfTitle]
-      .join(' ')
-      .toLocaleLowerCase(),
-  );
+  return castArrayToTitle([
+    finalPrefix,
+    ...beginOfTitle,
+    ...beforeKeyword,
+    finalKeyword,
+    ...afterKeyword,
+    ...endOfTitle,
+  ]);
 }
 
 export interface GetCatalogueAttributesInterface {
@@ -195,12 +231,12 @@ export async function getCatalogueAttributes({
       }
 
       const optionNextSlug = isSelected
-        ? filter
+        ? [city, ...filter]
             .filter((pathArg) => {
               return pathArg !== optionSlug;
             })
             .join('/')
-        : [...filter, optionSlug].join('/');
+        : [city, ...filter, optionSlug].join('/');
 
       // If price attribute
       if (slug === PRICE_ATTRIBUTE_SLUG) {
@@ -273,7 +309,7 @@ export async function getCatalogueAttributes({
     }
 
     // attribute
-    const otherSelectedValues = filter.filter((param) => {
+    const otherSelectedValues = [city, ...filter].filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });
@@ -305,3 +341,428 @@ export async function getCatalogueAttributes({
     castedAttributes,
   };
 }
+
+export interface GetCatalogueDataInterface {
+  locale: string;
+  city: string;
+  input: {
+    filter: string[];
+    lastProductId?: ObjectIdModel | null | undefined;
+  };
+}
+
+export const getCatalogueData = async ({
+  locale,
+  city,
+  input,
+}: GetCatalogueDataInterface): Promise<CatalogueDataModel | null> => {
+  function getI18nLocale<T>(i18nField: Record<string, T>): T {
+    return getI18nLocaleValue(i18nField, locale);
+  }
+
+  function getFieldLocale(i18nField?: Record<string, string> | null): string {
+    if (!i18nField) {
+      return '';
+    }
+
+    let translation = getI18nLocale<string>(i18nField);
+
+    // Get fallback language if chosen not found
+    if (!translation) {
+      translation = i18nField[SECONDARY_LOCALE];
+    }
+
+    // Get default language if fallback not found
+    if (!translation) {
+      translation = i18nField[DEFAULT_LOCALE];
+    }
+
+    // Set warning massage if fallback language not found
+    if (!translation) {
+      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+    }
+
+    return translation;
+  }
+
+  try {
+    // console.log(' ');
+    // console.log('===========================================================');
+    // const timeStart = new Date().getTime();
+    const db = await getDatabase();
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+    // Args
+    const { lastProductId, filter } = input;
+    const [rubricSlug, ...filterOptions] = filter;
+
+    // Get configs
+    const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+      slug: 'catalogueFilterVisibleOptionsCount',
+    });
+
+    const visibleOptionsCount =
+      noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+      noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
+
+    // Get rubric
+    const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+    // const rubricTime = new Date().getTime();
+    // console.log('Rubric and configs >>>>>>>>>>>>>>>> ', rubricTime - timeStart);
+
+    if (!rubric) {
+      return null;
+    }
+
+    // Cast selected options
+    const realFilterOptions: string[] = [];
+    let sortBy: string | null = null;
+    let sortDir: string | null = null;
+
+    const sortFilterOptions: string[] = [];
+    let minPrice: number | null = null;
+    let maxPrice: number | null = null;
+    filterOptions.forEach((filterOption) => {
+      const splittedOption = filterOption.split(CATALOGUE_OPTION_SEPARATOR);
+      const filterOptionName = splittedOption[0];
+      const filterOptionValue = splittedOption[1];
+      if (filterOptionName) {
+        const isPriceRange = filterOptionName === PRICE_ATTRIBUTE_SLUG;
+
+        if (isPriceRange) {
+          const prices = filterOptionValue.split('_');
+          minPrice = prices[0] ? noNaN(prices[0]) : null;
+          maxPrice = prices[1] ? noNaN(prices[1]) : null;
+          return;
+        }
+
+        if (filterOptionName === SORT_BY_KEY) {
+          sortFilterOptions.push(filterOption);
+          sortBy = filterOptionValue;
+          return;
+        }
+
+        if (filterOptionName === SORT_DIR_KEY) {
+          sortFilterOptions.push(filterOption);
+          sortDir = filterOptionValue;
+          return;
+        }
+
+        realFilterOptions.push(filterOption);
+      }
+    });
+
+    // Get products
+    const noFiltersSelected = realFilterOptions.length < 1;
+    const keyStage = lastProductId
+      ? [
+          {
+            $match: {
+              _id: {
+                $lt: lastProductId,
+              },
+            },
+          },
+        ]
+      : [];
+
+    const pricesStage =
+      minPrice && maxPrice
+        ? {
+            [`minPriceCities.${city}`]: {
+              $gte: minPrice,
+              $lte: maxPrice,
+            },
+          }
+        : {};
+
+    const productsInitialMatch = noFiltersSelected
+      ? {
+          rubricId: rubric._id,
+          active: true,
+          archive: false,
+          ...pricesStage,
+        }
+      : {
+          rubricId: rubric._id,
+          active: true,
+          archive: false,
+          selectedOptionsSlugs: {
+            $all: realFilterOptions,
+          },
+          ...pricesStage,
+        };
+
+    // sort stage
+    const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
+    let sortStage = {
+      [`views.${city}`]: SORT_DESC,
+      [`priority.${city}`]: SORT_DESC,
+      _id: SORT_DESC,
+    };
+
+    // sort by price
+    if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
+      sortStage = {
+        [`minPriceCities.${city}`]: castedSortDir,
+        _id: SORT_DESC,
+      };
+    }
+
+    const productsMainPipeline = [
+      {
+        $match: productsInitialMatch,
+      },
+      {
+        $sort: {
+          ...sortStage,
+        },
+      },
+      ...keyStage,
+      {
+        $limit: CATALOGUE_PRODUCTS_LIMIT,
+      },
+    ];
+
+    // Get catalogue products
+    // const productsStartTime = new Date().getTime();
+    const initialProducts = await productsCollection.aggregate(productsMainPipeline).toArray();
+    const products = [];
+    for await (const product of initialProducts) {
+      // prices
+      const minPrice = noNaN(product.minPriceCities[city]);
+      const maxPrice = noNaN(product.maxPriceCities[city]);
+      const cardPrices = {
+        _id: new ObjectId(),
+        min: getCurrencyString({ value: minPrice, locale }),
+        max: getCurrencyString({ value: maxPrice, locale }),
+      };
+
+      // image
+      const sortedAssets = product.assets.sort((assetA, assetB) => {
+        return assetA.index - assetB.index;
+      });
+      const firstAsset = sortedAssets[0];
+      let mainImage = `${process.env.AWS_IMAGE_FALLBACK}`;
+
+      if (firstAsset) {
+        mainImage = firstAsset.url;
+      }
+
+      // listFeatures
+      const listFeatures = getProductCurrentViewCastedAttributes({
+        attributes: product.attributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+        getFieldLocale,
+      });
+
+      // ratingFeatures
+      const ratingFeatures = getProductCurrentViewCastedAttributes({
+        attributes: product.attributes,
+        viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+        getFieldLocale,
+      });
+
+      products.push({
+        ...product,
+        listFeatures,
+        ratingFeatures,
+        name: getFieldLocale(product.nameI18n),
+        cardPrices,
+        mainImage,
+        shopsCount: noNaN(product.shopProductsCountCities[city]),
+      });
+    }
+
+    // const productsEndTime = new Date().getTime();
+    // console.log('Products >>>>>>>>>>>>>>>> ', productsEndTime - productsStartTime);
+
+    // Count catalogue products
+    // const productsCountStartTime = new Date().getTime();
+    const productsCountAggregation = await productsCollection
+      .aggregate<any>([
+        { $match: productsInitialMatch },
+        {
+          $count: 'counter',
+        },
+      ])
+      .toArray();
+    const totalProducts = productsCountAggregation[0] ? productsCountAggregation[0].counter : 0;
+    // const productsCountEndTime = new Date().getTime();
+    /*console.log(
+      `Products count ${totalProducts} >>>>>>>>>>>>>>>> `,
+      productsCountEndTime - productsCountStartTime,
+    );*/
+
+    // Get options for catalogue attributes
+    // const productOptionsAggregationStart = new Date().getTime();
+    const productOptionsAggregation = await productsCollection
+      .aggregate<ProductOptionInterface>([
+        { $match: productsInitialMatch },
+        {
+          $project: {
+            selectedOptionsSlugs: 1,
+          },
+        },
+        {
+          $unwind: '$selectedOptionsSlugs',
+        },
+        {
+          $group: {
+            _id: '$selectedOptionsSlugs',
+          },
+        },
+        {
+          $addFields: {
+            slugArray: {
+              $split: ['$_id', CATALOGUE_OPTION_SEPARATOR],
+            },
+          },
+        },
+        {
+          $addFields: {
+            attributeSlug: {
+              $arrayElemAt: ['$slugArray', 0],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$attributeSlug',
+            optionsSlugs: {
+              $addToSet: '$_id',
+            },
+          },
+        },
+      ])
+      .toArray();
+    // const productOptionsAggregationEnd = new Date().getTime();
+    /*console.log(
+      `Product options >>>>>>>>>>>>>>>> `,
+      productOptionsAggregationEnd - productOptionsAggregationStart,
+    );*/
+
+    // Get filter attributes
+    // const beforeOptions = new Date().getTime();
+    const attributes = await getRubricCatalogueAttributes({
+      config: productOptionsAggregation,
+      attributes: rubric.attributes,
+      visibleOptionsCount,
+      city,
+    });
+
+    const finalAttributes = [getPriceAttribute(), ...attributes];
+    const { selectedFilters, castedAttributes } = await getCatalogueAttributes({
+      attributes: finalAttributes,
+      rubricId: rubric._id,
+      realFilterOptions,
+      getFieldLocale,
+      city,
+      filter,
+      noFiltersSelected,
+      pricesStage,
+    });
+    // const afterOptions = new Date().getTime();
+    // console.log('Options >>>>>>>>>>>>>>>> ', afterOptions - beforeOptions);
+
+    // Get selected attributes
+    const castedFilters = filterOptions.map((param) => castCatalogueParamToObject(param));
+    const selectedAttributes = rubric.attributes.reduce(
+      (acc: CatalogueFilterAttributeModel[], attribute) => {
+        if (
+          attribute.variant !== ATTRIBUTE_VARIANT_SELECT &&
+          attribute.variant !== ATTRIBUTE_VARIANT_MULTIPLE_SELECT
+        ) {
+          return acc;
+        }
+        const currentFilter = castedFilters.find(({ slug }) => attribute.slug === slug);
+        if (!currentFilter) {
+          return acc;
+        }
+
+        const options = attribute.options.reduce(
+          (acc: CatalogueFilterAttributeOptionModel[], option) => {
+            if (!filterOptions.includes(option.slug)) {
+              return acc;
+            }
+
+            const nextSlug = filter
+              .filter((pathArg) => {
+                return pathArg !== option.slug;
+              })
+              .join('/');
+            return [
+              ...acc,
+              {
+                _id: new ObjectId(),
+                clearSlug: '',
+                slug: option.slug,
+                name: getFieldLocale(option.nameI18n),
+                counter: 1,
+                isSelected: true,
+                isDisabled: false,
+                nextSlug: `/${nextSlug}`,
+              },
+            ];
+          },
+          [],
+        );
+
+        return [
+          ...acc,
+          {
+            _id: new ObjectId(),
+            clearSlug: '',
+            slug: attribute.slug,
+            name: getFieldLocale(attribute.nameI18n),
+            isSelected: true,
+            isDisabled: false,
+            options,
+          },
+        ];
+      },
+      [],
+    );
+
+    // Get catalogue title
+    const catalogueTitle = getCatalogueTitle({
+      catalogueTitle: rubric.catalogueTitle,
+      selectedFilters,
+      getFieldLocale,
+      locale,
+    });
+
+    // Get keySet pagination
+    const lastProduct = products[products.length - 1];
+    const hasMore = Boolean(
+      lastProduct && lastProductId && !lastProductId.equals(lastProduct?._id),
+    );
+
+    const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
+
+    // const timeEnd = new Date().getTime();
+    // console.log('Total time: ', timeEnd - timeStart);
+    // console.log(lastProductId);
+    return {
+      _id: rubric._id,
+      lastProductId: lastProduct?._id,
+      hasMore,
+      clearSlug: `/${city}/${rubricSlug}${sortPathname}`,
+      filter,
+      rubric: {
+        ...rubric,
+        name: getFieldLocale(rubric.nameI18n),
+      },
+      products,
+      catalogueTitle,
+      totalProducts,
+      attributes: castedAttributes,
+      selectedAttributes,
+    };
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};

@@ -456,12 +456,14 @@ export interface ProductAttributeModel {
   attributeId: ObjectIdModel;
   attributeSlug: string;
   attributeNameI18n: TranslationModel;
+  attributeName?: string | null;
   attributeVariant: AttributeVariantModel;
   attributeViewVariant: AttributeViewVariantModel;
   selectedOptions: OptionModel[];
   selectedOptionsSlugs: string[];
   textI18n?: TranslationModel | null;
   number?: number | null;
+  readableValue?: string | null;
 }
 
 export interface CitiesCounterModel {
@@ -560,6 +562,7 @@ export interface RubricCatalogueTitleModel {
 export interface RubricModel extends CountersModel, RubricCountersInterface {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+  name?: string | null;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
   catalogueTitle: RubricCatalogueTitleModel;

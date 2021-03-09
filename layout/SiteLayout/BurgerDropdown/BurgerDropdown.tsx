@@ -100,7 +100,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           {currentRubric.slug !== catalogueSlug ? (
                             <div className={classes.dropdownGroup}>
                               <Link
-                                href={`${currentRubric.slug}`}
+                                href={`/${query.city}/${currentRubric.slug}`}
                                 onClick={hideDropdownHandler}
                                 className={`${classes.dropdownGroupLink}`}
                               >
@@ -120,7 +120,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                     return (
                                       <li key={option._id}>
                                         <Link
-                                          href={`/${currentRubric.slug}/${option.slug}`}
+                                          href={`/${query.city}/${currentRubric.slug}/${option.slug}`}
                                           onClick={hideDropdownHandler}
                                           className={`${classes.dropdownGroupLink} ${
                                             isCurrent ? classes.dropdownGroupLinkCurrent : ''
@@ -351,7 +351,6 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
             </OutsideClickHandler>
           </div>
         </div>
-        {/*<div className={classes.backdrop} onClick={hideDropdownHandler} />*/}
       </Inner>
     </div>
   );

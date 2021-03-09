@@ -360,6 +360,7 @@ export async function getCardData({
             projection: {
               _id: 1,
               slug: 1,
+              nameI18n: 1,
             },
           },
         );
@@ -372,7 +373,10 @@ export async function getCardData({
             ...connectionProduct.option,
             name: getFieldLocale(connectionProduct.option.nameI18n),
           },
-          product,
+          product: {
+            ...product,
+            name: getFieldLocale(product.nameI18n),
+          },
         });
       }
 

@@ -19,6 +19,8 @@ import {
   LanguageModel,
   ObjectIdModel,
   OptionModel,
+  ProductConnectionItemModel,
+  ProductConnectionModel,
   ProductModel,
   ProductOptionInterface,
   RubricAttributeModel,
@@ -574,6 +576,44 @@ export const getCatalogueData = async ({
         getFieldLocale,
       });
 
+      // connections
+      const connections: ProductConnectionModel[] = [];
+      for await (const productConnection of product.connections) {
+        const connectionProducts: ProductConnectionItemModel[] = [];
+        for await (const connectionProduct of productConnection.connectionProducts) {
+          const product = await productsCollection.findOne(
+            { _id: connectionProduct.productId },
+            {
+              projection: {
+                _id: 1,
+                slug: 1,
+                nameI18n: 1,
+              },
+            },
+          );
+          if (!product) {
+            continue;
+          }
+          connectionProducts.push({
+            ...connectionProduct,
+            option: {
+              ...connectionProduct.option,
+              name: getFieldLocale(connectionProduct.option.nameI18n),
+            },
+            product: {
+              ...product,
+              name: getFieldLocale(product.nameI18n),
+            },
+          });
+        }
+
+        connections.push({
+          ...productConnection,
+          attributeName: getFieldLocale(productConnection.attributeNameI18n),
+          connectionProducts,
+        });
+      }
+
       products.push({
         ...product,
         listFeatures,
@@ -582,6 +622,7 @@ export const getCatalogueData = async ({
         cardPrices,
         mainImage,
         shopsCount: noNaN(product.shopProductsCountCities[city]),
+        connections,
       });
     }
 

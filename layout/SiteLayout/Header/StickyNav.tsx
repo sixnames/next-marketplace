@@ -1,3 +1,4 @@
+import { AttributeModel, RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import classes from './StickyNav.module.css';
 import Inner from '../../../components/Inner/Inner';
@@ -5,14 +6,10 @@ import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
-import {
-  RubricNavItemAttributeFragment,
-  CatalogueNavRubricFragment,
-} from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
-  attribute: RubricNavItemAttributeFragment;
+  attribute: AttributeModel;
   hideDropdownHandler: () => void;
   rubricSlug: string;
 }
@@ -26,14 +23,14 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   const { _id, options, name } = attribute;
 
   return (
-    <div key={_id}>
+    <div key={`${_id}`}>
       <div className={`${classes.dropdownAttributeName}`}>{name}</div>
       <ul>
         {options.map((option) => {
           const isCurrent = asPath === option.slug;
 
           return (
-            <li key={option._id}>
+            <li key={`${option._id}`}>
               <Link
                 href={`/${query.city}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
@@ -52,7 +49,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 };
 
 interface StickyNavItemInterface {
-  rubric: CatalogueNavRubricFragment;
+  rubric: RubricModel;
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
@@ -102,10 +99,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
           <Inner className={classes.dropdownInner}>
             <div className={classes.dropdownList}>
-              {navItems.map((attribute) => {
+              {(navItems || []).map((attribute) => {
                 return (
                   <StickyNavAttribute
-                    key={attribute._id}
+                    key={`${attribute._id}`}
                     attribute={attribute}
                     hideDropdownHandler={hideDropdownHandler}
                     rubricSlug={slug}
@@ -136,7 +133,7 @@ const StickyNav: React.FC = () => {
         ) : null}
         <ul className={classes.navList}>
           {catalogueNavRubrics.map((rubric) => {
-            return <StickyNavItem rubric={rubric} key={rubric._id} />;
+            return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;
           })}
         </ul>
       </Inner>

@@ -151,7 +151,7 @@ export const Rubric = objectType({
       resolve: async (source, _args, context): Promise<RubricAttributeModel[]> => {
         try {
           const db = await getDatabase();
-          const { city } = await getRequestParams(context);
+          const { city, locale } = await getRequestParams(context);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
           // Get configs
@@ -168,11 +168,12 @@ export const Rubric = objectType({
             noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
             noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
-          const catalogueAttributes = await getRubricNavAttributes({
+          const catalogueAttributes = getRubricNavAttributes({
             attributes: source.attributes,
             city,
             visibleAttributesCount,
             visibleOptionsCount,
+            locale,
           });
 
           return catalogueAttributes;

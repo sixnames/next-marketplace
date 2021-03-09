@@ -37,6 +37,8 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  CATALOGUE_NAV_VISIBLE_ATTRIBUTES,
+  CATALOGUE_NAV_VISIBLE_OPTIONS,
   CATALOGUE_OPTION_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_CITY,
@@ -57,7 +59,7 @@ import { getDatabase } from 'db/mongodb';
 import { getCityFieldData, getCurrencyString, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getRubricCatalogueAttributes } from 'lib/rubricUtils';
+import { getRubricCatalogueAttributes, getRubricNavAttributes } from 'lib/rubricUtils';
 import { GetFieldLocaleType } from 'lib/sessionHelpers';
 import { getFieldTranslation } from 'config/constantTranslations';
 import { ObjectId } from 'mongodb';
@@ -878,5 +880,90 @@ export const getSiteInitialData = async ({
     cities,
     currency,
   };
-  // getCatalogueNavRubrics: [],
+};
+
+export interface GetCatalogueNavRubricsInterface {
+  locale: string;
+  city: string;
+}
+
+export const getCatalogueNavRubrics = async ({
+  city,
+  locale,
+}: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
+  function getFieldLocale(i18nField?: Record<string, string> | null): string {
+    if (!i18nField) {
+      return '';
+    }
+
+    let translation = getI18nLocaleValue<string>(i18nField, locale);
+
+    // Get fallback language if chosen not found
+    if (!translation) {
+      translation = i18nField[SECONDARY_LOCALE];
+    }
+
+    // Get default language if fallback not found
+    if (!translation) {
+      translation = i18nField[DEFAULT_LOCALE];
+    }
+
+    // Set warning massage if fallback language not found
+    if (!translation) {
+      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
+    }
+
+    return translation;
+  }
+
+  const db = await getDatabase();
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+
+  // Get configs
+  const catalogueFilterVisibleAttributesCount = await configsCollection.findOne({
+    slug: 'stickyNavVisibleAttributesCount',
+  });
+  const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
+    slug: 'stickyNavVisibleOptionsCount',
+  });
+  const visibleAttributesCount =
+    noNaN(catalogueFilterVisibleAttributesCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(CATALOGUE_NAV_VISIBLE_ATTRIBUTES);
+  const visibleOptionsCount =
+    noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
+    noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
+
+  const initialRubrics = await rubricsCollection
+    .aggregate([
+      {
+        $match: {
+          activeProductsCount: { $gt: 0 },
+        },
+      },
+      {
+        $sort: {
+          [`views.${city}`]: SORT_DESC,
+          [`priority.${city}`]: SORT_DESC,
+        },
+      },
+    ])
+    .toArray();
+
+  const rubrics: RubricModel[] = [];
+  initialRubrics.forEach((rubric) => {
+    return {
+      ...rubric,
+      name: getFieldLocale(rubric.nameI18n),
+      navItems: getRubricNavAttributes({
+        attributes: rubric.attributes,
+        city,
+        visibleAttributesCount,
+        visibleOptionsCount,
+        locale,
+      }),
+    };
+  });
+
+  return rubrics;
 };

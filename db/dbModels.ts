@@ -192,6 +192,7 @@ export interface AttributeModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
+  name?: string | null;
   variant: AttributeVariantModel;
   viewVariant: AttributeViewVariantModel;
   optionsGroupId?: ObjectIdModel | null;
@@ -353,6 +354,7 @@ export interface OptionModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
+  name?: string | null;
   variants: OptionVariantsModel;
   gender?: GenderModel | null;
   color?: string | null;

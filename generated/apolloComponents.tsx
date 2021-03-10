@@ -910,6 +910,8 @@ export type Mutation = {
   addProductToConnection: ProductPayload;
   /** Should create product connection */
   deleteProductFromConnection: ProductPayload;
+  /** Should update product counter */
+  updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
   updateShopProduct: ShopProductPayload;
   /** Should update shop */
@@ -1289,6 +1291,11 @@ export type MutationAddProductToConnectionArgs = {
 
 export type MutationDeleteProductFromConnectionArgs = {
   input: DeleteProductFromConnectionInput;
+};
+
+
+export type MutationUpdateProductCounterArgs = {
+  input: UpdateProductCounterInput;
 };
 
 
@@ -2191,6 +2198,10 @@ export type DeleteProductFromConnectionInput = {
   productId: Scalars['ObjectId'];
   deleteProductId: Scalars['ObjectId'];
   connectionId: Scalars['ObjectId'];
+};
+
+export type UpdateProductCounterInput = {
+  productSlug: Scalars['String'];
 };
 
 export type ProductAttribute = {
@@ -3991,6 +4002,16 @@ export type GetCatalogueCardShopsQuery = (
     { __typename?: 'ShopProduct' }
     & ShopProductSnippetFragment
   )> }
+);
+
+export type UpdateProductCounterMutationVariables = Exact<{
+  input: UpdateProductCounterInput;
+}>;
+
+
+export type UpdateProductCounterMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateProductCounter'>
 );
 
 export type SnippetConnectionItemFragment = (
@@ -8520,6 +8541,36 @@ export function useGetCatalogueCardShopsLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsQuery>;
 export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
 export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
+export const UpdateProductCounterDocument = gql`
+    mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
+  updateProductCounter(input: $input)
+}
+    `;
+export type UpdateProductCounterMutationFn = Apollo.MutationFunction<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
+
+/**
+ * __useUpdateProductCounterMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCounterMutation, { data, loading, error }] = useUpdateProductCounterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCounterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>) {
+        return Apollo.useMutation<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>(UpdateProductCounterDocument, baseOptions);
+      }
+export type UpdateProductCounterMutationHookResult = ReturnType<typeof useUpdateProductCounterMutation>;
+export type UpdateProductCounterMutationResult = Apollo.MutationResult<UpdateProductCounterMutation>;
+export type UpdateProductCounterMutationOptions = Apollo.BaseMutationOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
 export const GetCatalogueRubricDocument = gql`
     query GetCatalogueRubric($input: CatalogueDataInput!) {
   getCatalogueData(input: $input) {

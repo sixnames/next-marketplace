@@ -13,7 +13,7 @@ import {
   RubricModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
@@ -25,7 +25,7 @@ import {
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
+import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
   addProductToConnectionSchema,
@@ -155,6 +155,13 @@ export const DeleteProductFromConnectionInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.nonNull.objectId('deleteProductId');
     t.nonNull.objectId('connectionId');
+  },
+});
+
+export const UpdateProductCounterInput = inputObjectType({
+  name: 'UpdateProductCounterInput',
+  definition(t) {
+    t.nonNull.string('productSlug');
   },
 });
 
@@ -1145,6 +1152,42 @@ export const ProductMutations = extendType({
             success: false,
             message: getResolverErrorMessage(e),
           };
+        }
+      },
+    });
+
+    // Should update product counter
+    t.nonNull.field('updateProductCounter', {
+      type: 'Boolean',
+      description: 'Should update product counter',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductCounterInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<boolean> => {
+        try {
+          const db = await getDatabase();
+          const sessionRole = await getSessionRole(context);
+          const { city } = await getRequestParams(context);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          if (!sessionRole.isStuff) {
+            // Args
+            const { input } = args;
+            await productsCollection.findOneAndUpdate(
+              { slug: input.productSlug },
+              {
+                $inc: {
+                  [`views.${city}`]: VIEWS_COUNTER_STEP,
+                },
+              },
+            );
+          }
+          return true;
+        } catch (e) {
+          return false;
         }
       },
     });

@@ -13,7 +13,11 @@ import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { PRODUCT_CARD_RUBRIC_SLUG_PREFIX } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
-import { CardFeatureFragment, GetCatalogueCardQuery } from 'generated/apolloComponents';
+import {
+  CardFeatureFragment,
+  GetCatalogueCardQuery,
+  useUpdateProductCounterMutation,
+} from 'generated/apolloComponents';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
@@ -55,7 +59,6 @@ interface CardRouteInterface {
   cardData: GetCatalogueCardQuery['getProductCard'];
 }
 
-// TODO counter $inc !!!
 const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const {
     _id,
@@ -85,6 +88,17 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
   const isShopsPlural = shopsCount > 1;
   const isShopless = shopsCount < 1;
+
+  const [updateProductCounterMutation] = useUpdateProductCounterMutation();
+  React.useEffect(() => {
+    updateProductCounterMutation({
+      variables: {
+        input: {
+          productSlug: cardData.slug,
+        },
+      },
+    }).catch((e) => console.log(e));
+  }, [cardData.slug, updateProductCounterMutation]);
 
   const tabsConfig = [
     {

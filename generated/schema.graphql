@@ -1160,6 +1160,11 @@ type Mutation {
   updateProductAssetIndex(input: UpdateProductAssetIndexInput!): ProductPayload!
 
   """
+  Should update product counter
+  """
+  updateProductCounter(input: UpdateProductCounterInput!): Boolean!
+
+  """
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
@@ -2291,6 +2296,10 @@ input UpdateProductAssetIndexInput {
   assetNewIndex: Int!
   assetUrl: String!
   productId: ObjectId!
+}
+
+input UpdateProductCounterInput {
+  productSlug: String!
 }
 
 input UpdateProductInCartInput {

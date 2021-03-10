@@ -159,3 +159,10 @@ export const CATALOGUE_CARD_SHOPS_QUERY = gql`
   }
   ${productCardFragment}
 `;
+
+export const CARD_COUNTERS_MUTATION = gql`
+  mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
+    updateProductCounter(input: $input)
+  }
+  ${productCardFragment}
+`;

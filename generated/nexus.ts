@@ -606,6 +606,10 @@ export interface NexusGenInputs {
     assetUrl: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateProductCounterInput: {
+    // input type
+    productSlug: string; // String!
+  };
   UpdateProductInCartInput: {
     // input type
     amount: number; // Int!
@@ -1273,6 +1277,7 @@ export interface NexusGenFieldTypes {
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -2333,6 +2338,7 @@ export interface NexusGenFieldTypeNames {
     updateOptionsGroup: 'OptionsGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
+    updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateRole: 'RolePayload';
     updateRubric: 'RubricPayload';
@@ -3268,6 +3274,10 @@ export interface NexusGenArgTypes {
     updateProductAssetIndex: {
       // args
       input: NexusGenInputs['UpdateProductAssetIndexInput']; // UpdateProductAssetIndexInput!
+    };
+    updateProductCounter: {
+      // args
+      input: NexusGenInputs['UpdateProductCounterInput']; // UpdateProductCounterInput!
     };
     updateProductInCart: {
       // args

@@ -84,7 +84,8 @@
 }
 
 .mainDataContent {
-
+  display: flex;
+  flex-direction: column;
 }
 
 .feature {
@@ -228,6 +229,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: auto;
 }
 
 .btns {
@@ -294,7 +296,7 @@
 
 .cardFeaturesText {
   color: var(--textSecondaryColor);
-  line-height: 1.4;
+  line-height: 1.75;
 }
 
 .cardFeaturesText p:not(:first-child) {

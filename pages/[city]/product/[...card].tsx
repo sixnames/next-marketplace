@@ -135,19 +135,21 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 <div className={classes.innerRatingsFeedback}>12 отзывов</div>
               </div>
 
-              <div className={classes.outerRatings}>
-                <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
+              {ratingFeatures.length > 0 ? (
+                <div className={classes.outerRatings}>
+                  <div className={classes.outerRatingsLabel}>Мнение экспертов:</div>
 
-                <div className={classes.outerRatingsList}>
-                  {ratingFeatures.map(({ attributeName, _id, number }) => {
-                    return (
-                      <div key={_id} className={classes.outerRatingsItem}>
-                        {attributeName} {number}
-                      </div>
-                    );
-                  })}
+                  <div className={classes.outerRatingsList}>
+                    {ratingFeatures.map(({ attributeName, _id, number }) => {
+                      return (
+                        <div key={_id} className={classes.outerRatingsItem}>
+                          {attributeName} {number}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               {/*Connections*/}
               {connections.length > 0 ? (

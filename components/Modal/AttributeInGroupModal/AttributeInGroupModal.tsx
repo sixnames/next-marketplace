@@ -42,7 +42,9 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   const { hideModal } = useAppContext();
   const { data, loading, error } = useGetNewAttributeOptionsQuery();
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return <Spinner />;
+  }
 
   if (error || !data) {
     return (

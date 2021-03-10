@@ -628,6 +628,7 @@ export const attributesGroupMutations = extendType({
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const metricsCollection = db.collection<MetricModel>(COL_METRICS);
 
           // Check if attributes group exist
@@ -715,9 +716,6 @@ export const attributesGroupMutations = extendType({
                 {
                   'attributes.attributeId': attributeId,
                 },
-                {
-                  'connections.attributeId': attributeId,
-                },
               ],
             },
             {
@@ -738,6 +736,35 @@ export const attributesGroupMutations = extendType({
             },
           );
           if (!updatedProductsResult.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
+            };
+          }
+
+          // Update attribute in rubrics
+          const visibleInRubric =
+            updatedAttribute.variant === ATTRIBUTE_VARIANT_SELECT ||
+            updatedAttribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT;
+          const updatedRubrics = await rubricsCollection.updateMany(
+            {
+              attributesGroupsIds: attributesGroupId,
+            },
+            {
+              $set: {
+                'attributes.$[attribute]': {
+                  ...updatedAttribute,
+                  showInCatalogueFilter: visibleInRubric,
+                  showInCatalogueNav: visibleInRubric,
+                  options: castOptionsForRubric(updatedAttribute.options),
+                },
+              },
+            },
+            {
+              arrayFilters: [{ 'attribute._id': { $eq: updatedAttribute._id } }],
+            },
+          );
+          if (!updatedRubrics.result.ok) {
             return {
               success: false,
               message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

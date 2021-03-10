@@ -228,7 +228,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
                     input: Omit<UpdateAttributeInGroupInput, 'attributesGroupId' | 'attributeId'>,
                   ) => {
                     showLoading();
-                    return updateAttributeInGroupMutation({
+                    updateAttributeInGroupMutation({
                       variables: {
                         input: {
                           attributesGroupId,
@@ -236,7 +236,7 @@ const AttributesGroupsContent: React.FC<AttributesGroupsContentInterface> = ({ q
                           ...input,
                         },
                       },
-                    });
+                    }).catch((e) => console.log(e));
                   },
                 },
               });

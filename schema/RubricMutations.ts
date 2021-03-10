@@ -424,7 +424,6 @@ export const RubricMutations = extendType({
                       showInCatalogueFilter: visible,
                       showInCatalogueNav: visible,
                       options: castOptionsForRubric(attribute.options),
-                      visibleInCatalogueCities: {},
                       ...DEFAULT_COUNTERS_OBJECT,
                     };
                   }),

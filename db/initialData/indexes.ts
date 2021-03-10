@@ -105,6 +105,9 @@ async function createIndexes() {
     rubricId: 1,
     archive: 1,
   });
+  await productsCollection.createIndex({
+    'attributes.attributeId': 1,
+  });
 
   // Cities
   const cities = await citiesCollection.find({}).toArray();

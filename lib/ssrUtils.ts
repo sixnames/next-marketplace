@@ -39,7 +39,7 @@ export async function getAppInitialData(
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: `/${query?.city}${ROUTE_SIGN_IN}`,
       },
     };
   }

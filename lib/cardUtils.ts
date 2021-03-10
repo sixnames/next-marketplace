@@ -31,8 +31,6 @@ export interface GetCardBreadcrumbsInterface {
   slug: string[];
 }
 
-// TODO counter $inc !!!
-
 export async function getCardBreadcrumbs({
   locale,
   product,

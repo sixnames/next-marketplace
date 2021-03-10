@@ -216,7 +216,7 @@ function useSiteContext(): UseSiteContextInterface {
       cartContextUpdater({
         orderPayload: makeAnOrder,
         mutationCallback: () => {
-          router.push(`/thank-you?orderId=${order?.itemId}`).catch(() => {
+          router.push(`/${router.query.city}/thank-you?orderId=${order?.itemId}`).catch(() => {
             showErrorNotification();
           });
         },

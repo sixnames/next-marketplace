@@ -18,7 +18,7 @@ interface AppNavInterface {
 }
 
 const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
-  const { pathname } = useRouter();
+  const { pathname, query } = useRouter();
   const { isMobile } = useAppContext();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
 
@@ -55,7 +55,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                 <Tooltip title={isCompact ? 'Вернуться на сайт' : null}>
                   <div>
                     <Link
-                      href={`/`}
+                      href={`/${query.city}/`}
                       className={`${classes.bottomLink} ${
                         isCompact ? classes.bottomLinkCompact : ''
                       }`}
@@ -105,7 +105,9 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
         </div>
       </div>
 
-      {!isCompact && isMobile && <div className={classes.backdrop} onClick={closeNavHandler} />}
+      {!isCompact && isMobile ? (
+        <div className={classes.backdrop} onClick={closeNavHandler} />
+      ) : null}
     </nav>
   );
 };

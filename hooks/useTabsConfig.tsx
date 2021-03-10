@@ -1,5 +1,6 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import useRouterQuery from './useRouterQuery';
+import qs from 'qs';
 import { ParsedUrlQuery } from 'querystring';
 import { NavItemInterface } from 'types/clientTypes';
 
@@ -14,24 +15,25 @@ interface UseTabsConfigReturnInterface {
 }
 
 const useTabsConfig = (): UseTabsConfigReturnInterface => {
-  const { pathname, query } = useRouterQuery();
+  const { asPath, query, pathname } = useRouter();
 
   const generateTabsConfig = React.useCallback(
     ({ config }: UseTabsConfigInterface): NavItemInterface[] => {
-      return config.map((item, index) => ({
-        name: item.name,
-        path: {
-          pathname,
-          query: {
-            ...query,
-            tab: `${index}`,
-          },
-        },
-        testId: item.testId,
-        hidden: item.hidden,
-      }));
+      return config.map((item, index) => {
+        const newQuery = {
+          ...query,
+          tab: index,
+        };
+
+        return {
+          name: item.name,
+          path: `${asPath}?${qs.stringify(newQuery)}`,
+          testId: item.testId,
+          hidden: item.hidden,
+        };
+      });
     },
-    [pathname, query],
+    [asPath, query],
   );
 
   return {

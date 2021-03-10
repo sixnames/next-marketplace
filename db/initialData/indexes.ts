@@ -92,10 +92,19 @@ async function createIndexes() {
 
   // Shop products
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  await shopProductsCollection.createIndex({
+    _id: 1,
+    citySlug: 1,
+    archive: 1,
+  });
 
   // Products
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
+  await productsCollection.createIndex({
+    rubricId: 1,
+    archive: 1,
+  });
 
   // Cities
   const cities = await citiesCollection.find({}).toArray();
@@ -128,24 +137,19 @@ async function createIndexes() {
       [`priority.${city.slug}`]: -1,
     });
 
-    // Shop products
-    await shopProductsCollection.createIndex({
-      _id: 1,
-      citySlug: 1,
-      archive: 1,
-    });
-
     // Products catalogue
-    await productsCollection.createIndex({
-      rubricId: 1,
-      archive: 1,
-    });
 
+    // views / priority sort
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
       archive: 1,
-      [`minPriceCities.${city.slug}`]: 1,
+      brandSlug: 1,
+      brandCollectionSlug: 1,
+      manufacturerSlug: 1,
+      selectedOptionsSlugs: 1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -153,8 +157,22 @@ async function createIndexes() {
       rubricId: 1,
       active: 1,
       archive: 1,
+      brandCollectionSlug: 1,
+      manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
-      [`minPriceCities.${city.slug}`]: 1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      manufacturerSlug: 1,
+      selectedOptionsSlugs: 1,
+      [`views.${city.slug}`]: -1,
+      [`priority.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -174,6 +192,57 @@ async function createIndexes() {
       archive: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
+      _id: -1,
+    });
+
+    // minPrice sort
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      brandSlug: 1,
+      brandCollectionSlug: 1,
+      manufacturerSlug: 1,
+      selectedOptionsSlugs: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      brandCollectionSlug: 1,
+      manufacturerSlug: 1,
+      selectedOptionsSlugs: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      manufacturerSlug: 1,
+      selectedOptionsSlugs: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      selectedOptionsSlugs: 1,
+      [`minPriceCities.${city.slug}`]: 1,
+      _id: -1,
+    });
+
+    await productsCollection.createIndex({
+      rubricId: 1,
+      active: 1,
+      archive: 1,
+      [`minPriceCities.${city.slug}`]: 1,
       _id: -1,
     });
   }

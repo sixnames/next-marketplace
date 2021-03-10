@@ -27,7 +27,7 @@ const ThankYouRoute: React.FC = () => {
             className={classes.btnsItem}
             theme={'secondary'}
             onClick={() => {
-              router.push('/').catch(() => {
+              router.push(`/${router.query.city}/`).catch(() => {
                 showErrorNotification();
               });
             }}

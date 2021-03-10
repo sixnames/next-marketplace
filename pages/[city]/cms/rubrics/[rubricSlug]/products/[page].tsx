@@ -38,7 +38,9 @@ const RubricProducts: React.FC = () => {
   const setPage = React.useCallback(
     (page) => {
       router
-        .push(`${ROUTE_CMS}/rubrics/${router.query.rubricSlug}/products/${page}`)
+        .push(
+          `/${router.query.city}${ROUTE_CMS}/rubrics/${router.query.rubricSlug}/products/${page}`,
+        )
         .catch((e) => console.log(e));
     },
     [router],
@@ -128,7 +130,7 @@ const RubricProducts: React.FC = () => {
     deleteTitle: 'Удалить товар из рубрики',
     deleteHandler: deleteProductFromRubricHandler,
     updateTitle: 'Редактировать товар',
-    updateHandler: ({ _id }) => router.push(`${ROUTE_CMS}/products/${_id}`),
+    updateHandler: ({ _id }) => router.push(`/${router.query.city}${ROUTE_CMS}/products/${_id}`),
     isDeleteDisabled: ({ rubricId }) => {
       return rubricId !== `${data?.getRubricBySlug?._id}`;
     },

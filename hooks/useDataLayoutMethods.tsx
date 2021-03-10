@@ -38,6 +38,9 @@ const useDataLayoutMethods = (): UseDataLayoutMethodsInterface => {
   const contentFilters = React.useMemo(
     () =>
       Object.keys(query).reduce((acc: ObjectType, key) => {
+        if (key === 'city') {
+          return acc;
+        }
         acc[key] = query[key];
         return acc;
       }, {}),

@@ -137,7 +137,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `${options}/${SORT_BY_KEY}-priority`;
+          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-priority`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });
@@ -162,7 +162,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });
@@ -187,7 +187,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
+          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });

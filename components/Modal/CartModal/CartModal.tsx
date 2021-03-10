@@ -22,7 +22,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
 
   function navigateToCartRoute() {
     hideModal();
-    router.push('/cart').catch(() => {
+    router.push(`/${router.query.city}/cart`).catch(() => {
       showErrorNotification();
     });
   }

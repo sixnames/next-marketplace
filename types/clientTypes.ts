@@ -12,30 +12,19 @@ export type NotificationVariant = 'success' | 'warning' | 'error';
 
 export type ObjectType = Record<string, any>;
 
-export interface PathInterface {
-  pathname: string;
-  query?: { [key: string]: string | string[] };
-}
-
 export interface NavItemChildInterface {
   name: string;
-  path: string | PathInterface;
+  path: string;
   hidden?: boolean;
   testId?: string;
 }
 
 export interface NavItemInterface {
   name: string;
-  path?: string | PathInterface;
-  as?: string | PathInterface;
+  path?: string;
   icon?: IconType;
   counter?: number;
   children?: NavItemChildInterface[];
   hidden?: boolean;
   testId?: string;
-}
-
-export interface TranslationInterface {
-  key: string;
-  value: string;
 }

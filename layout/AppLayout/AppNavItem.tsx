@@ -1,4 +1,5 @@
 import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from '../../components/Icon/Icon';
 import Link from '../../components/Link/Link';
@@ -16,6 +17,7 @@ interface AppNavItemInterface {
 }
 
 const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandler, pathname }) => {
+  const { query } = useRouter();
   const [isDropdownActive, setIsDropdownActive] = React.useState(false);
   const { isCompact, setCompactOn, toggleCompactHandler } = useCompact(isDropdownActive);
   const { name, icon, path, appNavigationChildren, _id } = item;
@@ -80,7 +82,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
             return (
               <li className={classes.item} key={name} data-cy={`app-nav-item-${_id}`}>
                 <Link
-                  href={`${path}`}
+                  href={`/${query.city}${path}`}
                   className={`${classes.complexLink}`}
                   activeClassName={classes.linkActive}
                 >
@@ -101,7 +103,7 @@ const AppNavItem: React.FC<AppNavItemInterface> = ({ item, compact, openNavHandl
       <Tooltip title={compact ? name : ''}>
         <div>
           <Link
-            href={`${path}`}
+            href={`/${query.city}${path}`}
             className={`${classes.link} ${compact ? classes.linkCompact : ''}`}
             activeClassName={classes.linkActive}
           >

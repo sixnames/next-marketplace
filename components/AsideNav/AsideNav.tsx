@@ -34,14 +34,13 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
   React.useEffect(() => {
     config.forEach(({ children }) => {
       children.forEach(({ href, name }) => {
-        const itemPathname = typeof href === 'object' ? href.pathname : href;
-        const isSelected = router.pathname === itemPathname;
+        const isSelected = router.asPath === href;
         if (isSelected) {
           setButtonText(name);
         }
       });
     });
-  }, [config, router.pathname]);
+  }, [config, router.asPath]);
 
   return (
     <aside className={`${classes.frame} ${className ? className : ''}`} data-cy={testId}>
@@ -99,8 +98,7 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
                         ) : null}
                         <ul>
                           {children.map(({ counter, name, href }, linkIndex) => {
-                            const itemPathname = typeof href === 'object' ? href.pathname : href;
-                            const isSelected = router.pathname === itemPathname;
+                            const isSelected = router.asPath === href;
 
                             return (
                               <li key={linkIndex}>
@@ -111,9 +109,6 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
                                     router.push(href).catch(() => {
                                       showErrorNotification();
                                     });
-                                    console.log(name);
-                                    // onSelect(menuItem);
-                                    // setInternalButtonText(id);
                                   }}
                                 >
                                   {name}

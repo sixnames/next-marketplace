@@ -114,7 +114,9 @@ const CompaniesContent: React.FC = () => {
             deleteHandler={() => deleteCompanyHandler(dataItem)}
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/companies/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`/${router.query.city}${ROUTE_CMS}/companies/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
           />
         );

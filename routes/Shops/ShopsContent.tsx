@@ -64,7 +64,9 @@ const ShopsContent: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/shops/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`/${router.query.city}${ROUTE_CMS}/shops/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
             testId={dataItem.name}
           />

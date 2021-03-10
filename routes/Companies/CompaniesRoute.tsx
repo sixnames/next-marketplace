@@ -16,7 +16,7 @@ const CompaniesRoute: React.FC = () => {
       filterResult={() => <CompaniesContent />}
       contentControlsConfig={{
         createTitle: 'Создать компанию',
-        createHandler: () => router.push(`${ROUTE_CMS}/companies/create`),
+        createHandler: () => router.push(`/${router.query.city}${ROUTE_CMS}/companies/create`),
         testId: 'company',
       }}
     />

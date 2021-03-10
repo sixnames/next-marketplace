@@ -118,7 +118,7 @@ const MakeAnOrderRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push('/').catch(() => {
+                router.push(`/${router.query.city}/`).catch(() => {
                   showErrorNotification();
                 });
               }}

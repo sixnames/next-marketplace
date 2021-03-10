@@ -158,9 +158,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
       <Link
         // style={{ display: 'none' }}
         className={classes.link}
-        href={{
-          pathname: `/${query.city}/product${additionalLinkSlug}/${slug}`,
-        }}
+        href={`/${query.city}/product${additionalLinkSlug}/${slug}`}
       >
         {name}
       </Link>

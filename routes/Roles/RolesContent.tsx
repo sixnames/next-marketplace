@@ -77,7 +77,9 @@ const RolesContent: React.FC = () => {
             testId={dataItem.name}
             updateTitle={'Редактировать роль'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/roles/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`/${router.query.city}${ROUTE_CMS}/roles/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить роль'}
             deleteHandler={() => {

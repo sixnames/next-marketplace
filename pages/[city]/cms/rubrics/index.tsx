@@ -80,7 +80,9 @@ const RubricsRoute: React.FC = () => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/rubrics/${dataItem.slug}`).catch((e) => console.log(e));
+              router
+                .push(`/${router.query.city}${ROUTE_CMS}/rubrics/${dataItem.slug}`)
+                .catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -152,7 +154,7 @@ const RubricsRoute: React.FC = () => {
                 emptyMessage={'Список пуст'}
                 onRowDoubleClick={(rubric) => {
                   router
-                    .push(`${ROUTE_CMS}/rubrics/${rubric.slug}/products/1`)
+                    .push(`/${router.query.city}${ROUTE_CMS}/rubrics/${rubric.slug}/products/1`)
                     .catch((e) => console.log(e));
                 }}
               />

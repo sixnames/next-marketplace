@@ -25,6 +25,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
     <TagLink
       href={nextSlug}
       isActive={isSelected}
+      prefetch={false}
       className={`${classes.filterLink} ${disabled ? classes.filterLinkDisabled : ''} ${
         className ? className : ''
       }`}

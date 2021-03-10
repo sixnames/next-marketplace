@@ -25,6 +25,7 @@ const Link: React.FC<LinkInterface> = ({
   isTab = false,
   replace,
   onClick,
+  prefetch,
   ...props
 }) => {
   const { query, asPath } = useRouter() || { pathname: '', query: '' };
@@ -47,7 +48,7 @@ const Link: React.FC<LinkInterface> = ({
   }
 
   return (
-    <NextLink href={href} replace={replace}>
+    <NextLink href={href} replace={replace} prefetch={prefetch}>
       <a
         onClick={onClick}
         className={`${className ? className : ''} ${isCurrent ? activeClassName : ''}`}

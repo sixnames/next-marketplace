@@ -10,6 +10,7 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -24,6 +25,7 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
+  const router = useRouter();
   const { me, loadingUser } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
@@ -33,27 +35,27 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'История заказов',
-            href: `${ROUTE_PROFILE}`,
+            href: `/${router.query.city}${ROUTE_PROFILE}`,
             testId: 'profile-orders-link',
           },
           {
             name: 'Избранное',
-            href: `${ROUTE_PROFILE_FAVORITE}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_FAVORITE}`,
             testId: 'profile-favorite-link',
           },
           {
             name: 'Сравнение',
-            href: `${ROUTE_PROFILE_COMPARE}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_COMPARE}`,
             testId: 'profile-compare-link',
           },
           {
             name: 'Просмотренные товары',
-            href: `${ROUTE_PROFILE_VIEWED}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_VIEWED}`,
             testId: 'profile-viewed-link',
           },
           {
             name: 'Персональные предложения',
-            href: `${ROUTE_PROFILE_PROPOSALS}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_PROPOSALS}`,
             testId: 'profile-proposals-link',
           },
         ],
@@ -63,33 +65,33 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'Бонусный счет',
-            href: `${ROUTE_PROFILE_BONUS}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_BONUS}`,
             testId: 'profile-bonus-link',
           },
           {
             name: 'Мои предпочтения',
-            href: `${ROUTE_PROFILE_PREFERENCES}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_PREFERENCES}`,
             testId: 'profile-preferences-link',
           },
           {
             name: 'Моя переписка',
-            href: `${ROUTE_PROFILE_CHATS}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_CHATS}`,
             testId: 'profile-chats-link',
           },
           {
             name: 'Мои отзывы',
-            href: `${ROUTE_PROFILE_FEEDBACK}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_FEEDBACK}`,
             testId: 'profile-feedback-link',
           },
           {
             name: 'Профиль',
-            href: `${ROUTE_PROFILE_DETAILS}`,
+            href: `/${router.query.city}${ROUTE_PROFILE_DETAILS}`,
             testId: 'profile-details-link',
           },
         ],
       },
     ];
-  }, []);
+  }, [router.query.city]);
 
   if (loadingUser || !me) {
     return (

@@ -193,14 +193,14 @@ const HeaderMiddleRight: React.FC = () => {
 };
 
 const Header: React.FC = () => {
+  const city = useSessionCity();
   const { isSearchOpen } = useSiteContext();
-  const { logoSlug } = useThemeContext();
   const { isMobile } = useAppContext();
-  const { getSiteConfigSingleValue } = useConfigContext();
   const headerRef = useRef<HTMLElement | null>(null);
+  const { logoSlug } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
 
   const siteLogoSrc = getSiteConfigSingleValue(logoSlug);
-
   const configSiteName = getSiteConfigSingleValue('siteName');
 
   return (
@@ -210,7 +210,7 @@ const Header: React.FC = () => {
         <Inner className={classes.middle} lowTop>
           {isMobile ? null : <HeaderMiddleLeft />}
 
-          <Link href={'/'} className={classes.middleLogo} aria-label={'Главная страница'}>
+          <Link href={`/${city}/`} className={classes.middleLogo} aria-label={'Главная страница'}>
             <Image src={siteLogoSrc} width={166} height={27} alt={configSiteName} />
           </Link>
 

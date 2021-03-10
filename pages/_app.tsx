@@ -32,7 +32,10 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <Provider session={session}>
       <ApolloProvider client={apolloClient}>
-        <AppContextProvider isMobileDevice={pageProps.isMobileDevice}>
+        <AppContextProvider
+          sessionCity={pageProps.sessionCity}
+          isMobileDevice={pageProps.isMobileDevice}
+        >
           <NotificationsProvider>
             <ConfigContextProvider configs={initialData.configs} cities={initialData.cities}>
               <ThemeContextProvider>

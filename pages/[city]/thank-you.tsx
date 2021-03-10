@@ -1,10 +1,9 @@
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ThankYouRoute from 'routes/ThankYouRoute/ThankYouRoute';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { castDbData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 
 interface ThankYouInterface extends PagePropsInterface, SiteLayoutInterface {}
 
@@ -21,20 +20,17 @@ export async function getServerSideProps(
 ): Promise<GetServerSidePropsResult<ThankYouInterface>> {
   const { locale, query } = context;
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({
-    locale: `${locale}`,
-    city: `${query.city}`,
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
+    locale,
   });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
+
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   return {
-    props: {
-      initialData,
-      navRubrics,
-    },
+    props,
   };
 }
 

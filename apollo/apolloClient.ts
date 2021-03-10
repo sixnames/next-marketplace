@@ -70,7 +70,11 @@ export function initializeApollo(
   return client;
 }
 
-export function useApollo(initialState: NormalizedCacheObject, locale?: string, city?: string) {
+export function useApollo(
+  initialState: NormalizedCacheObject | null = null,
+  locale?: string,
+  city?: string,
+) {
   return React.useMemo(() => {
     return initializeApollo(initialState, null, locale, city);
   }, [city, initialState, locale]);

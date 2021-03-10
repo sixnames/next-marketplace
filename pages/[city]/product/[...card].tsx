@@ -21,9 +21,8 @@ import {
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
-import { castDbData } from 'lib/ssrUtils';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -369,67 +368,35 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<any, { city: string; card: string[] }> = async ({
-  params,
-  locale,
-}) => {
-  const { city, card } = params || {};
+export const getStaticProps: GetStaticProps<
+  CardInterface,
+  { city: string; card: string[] }
+> = async ({ params, locale }) => {
+  const { card } = params || {};
+  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
+    params,
+    locale,
+  });
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({ locale: `${locale}`, city: `${city}` });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   // card data
   const rawCardData = await getCardData({
     locale: `${locale}`,
-    city: `${city}`,
+    city: props.sessionCity,
     slug: alwaysArray(card),
   });
   const cardData = castDbData(rawCardData);
 
   return {
     props: {
-      initialData,
-      navRubrics,
+      ...props,
       cardData,
     },
-    revalidate: 5,
+    revalidate,
   };
 };
-
-/*export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    const { apolloClient } = await getSiteInitialData(context);
-
-    // Get product card data
-    const { query } = context;
-    const { card } = query;
-
-    const { data } = await apolloClient.query<
-      GetCatalogueCardQuery,
-      GetCatalogueCardQueryVariables
-    >({
-      query: CATALOGUE_CARD_QUERY,
-      variables: {
-        slug: alwaysArray(card),
-      },
-    });
-
-    return {
-      props: {
-        initialApolloState: apolloClient.cache.extract(),
-        cardData: data?.getProductCard,
-      },
-    };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
-}*/
 
 export default Card;

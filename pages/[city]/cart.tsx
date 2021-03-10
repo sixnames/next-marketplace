@@ -16,7 +16,6 @@ import {
   SnippetConnectionFragment,
 } from 'generated/apolloComponents';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -25,7 +24,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CartAside from 'routes/CartRoute/CartAside';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { castDbData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'routes/CartRoute/CartRoute.module.css';
 import CartShopsList from 'routes/CartRoute/CartShopsList';
 
@@ -355,20 +354,17 @@ export async function getServerSideProps(
 ): Promise<GetServerSidePropsResult<CartInterface>> {
   const { locale, query } = context;
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({
-    locale: `${locale}`,
-    city: `${query.city}`,
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
+    locale,
   });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
+
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   return {
-    props: {
-      initialData,
-      navRubrics,
-    },
+    props,
   };
 }
 

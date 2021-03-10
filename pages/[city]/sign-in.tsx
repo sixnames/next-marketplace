@@ -3,8 +3,7 @@ import Input, { InputEvent } from 'components/FormElements/Input/Input';
 import Inner from 'components/Inner/Inner';
 import Title from 'components/Title/Title';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
-import { castDbData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -124,12 +123,20 @@ export async function getServerSideProps(
   const { locale, query } = context;
   const session = await getSession(context);
 
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
+    locale,
+  });
+  if (cityNotFound) {
+    return redirectPayload;
+  }
+
   // Redirect user to the Home page if already authorized
   if (session?.user) {
     return {
       redirect: {
         permanent: false,
-        destination: `/${query.city}`,
+        destination: redirectPayload.redirect.destination,
       },
     };
   }
@@ -137,20 +144,10 @@ export async function getServerSideProps(
   // Get session token
   const token = await csrfToken(context);
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({
-    locale: `${locale}`,
-    city: `${query.city}`,
-  });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
-
   return {
     props: {
       token,
-      initialData,
-      navRubrics,
+      ...props,
     },
   };
 }

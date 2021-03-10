@@ -24,8 +24,8 @@ import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { getCatalogueData, getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
-import { castDbData } from 'lib/ssrUtils';
+import { getCatalogueData } from 'lib/catalogueUtils';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -344,14 +344,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<any, { catalogue: string[]; city: string }> = async ({
-  params,
-  locale,
-}) => {
-  const { catalogue, city } = params || {};
+export const getStaticProps: GetStaticProps<
+  CatalogueInterface,
+  { catalogue: string[]; city: string }
+> = async ({ params, locale }) => {
+  const { catalogue } = params || {};
+
+  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
+    params,
+    locale,
+  });
+
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   const notFoundResponse = {
-    props: {},
+    props,
     notFound: true,
   };
 
@@ -359,14 +368,10 @@ export const getStaticProps: GetStaticProps<any, { catalogue: string[]; city: st
     return notFoundResponse;
   }
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({ locale: `${locale}`, city: `${city}` });
-
   // catalogue
   const rawCatalogueData = await getCatalogueData({
     locale: `${locale}`,
-    city: `${city}`,
+    city: props.sessionCity,
     input: {
       filter: alwaysArray(catalogue),
     },
@@ -375,16 +380,13 @@ export const getStaticProps: GetStaticProps<any, { catalogue: string[]; city: st
     return notFoundResponse;
   }
   const catalogueData = castDbData(rawCatalogueData);
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
 
   return {
     props: {
+      ...props,
       catalogueData,
-      initialData,
-      navRubrics,
     },
-    revalidate: 5,
+    revalidate,
   };
 };
 

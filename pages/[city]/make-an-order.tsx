@@ -13,7 +13,6 @@ import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
 import { CartProductFragment } from 'generated/apolloComponents';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -21,7 +20,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { castDbData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import CartAside from 'routes/CartRoute/CartAside';
 import classes from 'routes/MakeAnOrderRoute/MakeAnOrderRoute.module.css';
 import { makeAnOrderSchema } from 'validation/orderSchema';
@@ -246,23 +245,20 @@ const MakeAnOrder: NextPage<MakeAnOrderInterface> = ({ navRubrics }) => {
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
+): Promise<GetServerSidePropsResult<MakeAnOrderInterface>> {
   const { locale, query } = context;
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${query.city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({
-    locale: `${locale}`,
-    city: `${query.city}`,
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
+    locale,
   });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
+
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   return {
-    props: {
-      initialData,
-      navRubrics,
-    },
+    props,
   };
 }
 

@@ -12,11 +12,11 @@ import { Provider } from 'next-auth/client';
 import Router, { useRouter } from 'next/router';
 import { AppContextProvider } from 'context/appContext';
 import { NotificationsProvider } from 'context/notificationsContext';
-import { GetSiteInitialDataPayloadInterface } from 'lib/ssrUtils';
 import NProgress from 'nprogress';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;
+  sessionCity: string;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -24,7 +24,7 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-function App({ Component, pageProps }: AppProps<GetSiteInitialDataPayloadInterface>) {
+function App({ Component, pageProps }: AppProps) {
   const { locale, query } = useRouter();
   const { session, initialData } = pageProps;
   const apolloClient = useApollo(pageProps.initialApolloState, locale, query?.city as string);

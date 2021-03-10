@@ -1,11 +1,10 @@
-import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Title from 'components/Title/Title';
 import Inner from 'components/Inner/Inner';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { castDbData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 
 interface HomePageInterface extends PagePropsInterface, SiteLayoutInterface {}
 
@@ -26,21 +25,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<any, { city: string }> = async ({ params, locale }) => {
-  const { city } = params || {};
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
+    params,
+    locale,
+  });
 
-  // initial data
-  const rawInitialData = await getPageInitialData({ locale: `${locale}`, city: `${city}` });
-  const rawNavRubrics = await getCatalogueNavRubrics({ locale: `${locale}`, city: `${city}` });
-  const initialData = castDbData(rawInitialData);
-  const navRubrics = castDbData(rawNavRubrics);
+  if (cityNotFound) {
+    return redirectPayload;
+  }
 
   return {
-    props: {
-      initialData,
-      navRubrics,
-    },
-    revalidate: 5,
+    props,
+    revalidate,
   };
 };
 

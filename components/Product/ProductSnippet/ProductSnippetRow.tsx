@@ -42,6 +42,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = shopsCount < 1;
 
   return (
     <LayoutCard className={classes.snippetCard} testId={testId}>
@@ -91,7 +92,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
 
           <div className={classes.contentColumn}>
-            <ProductSnippetPrice value={cardPrices.min} />
+            {isShopless ? null : <ProductSnippetPrice value={cardPrices.min} />}
 
             <div className={classes.productConnections}>
               {connections.map(({ _id, attributeName, connectionProducts }) => {
@@ -119,9 +120,11 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             </div>
 
             <div className={classes.inputs}>
-              <div
-                className={classes.shopsCounter}
-              >{`В наличии в ${shopsCount} ${shopsCounterPostfix}`}</div>
+              <div className={classes.shopsCounter}>
+                {shopsCount > 0
+                  ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
+                  : 'Нет в наличии'}
+              </div>
 
               <SpinnerInput
                 plusTestId={`card-shops-${_id}-plus`}
@@ -134,10 +137,12 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 min={1}
                 name={'amount'}
                 value={amount}
+                disabled={isShopless}
               />
             </div>
 
             <Button
+              disabled={isShopless}
               theme={'gray'}
               testId={`card-shops-${_id}-add-to-cart`}
               onClick={() => {

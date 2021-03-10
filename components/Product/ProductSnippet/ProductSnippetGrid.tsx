@@ -26,8 +26,18 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
 }) => {
   const { query } = useRouter();
   const { addShoplessProductToCart } = useSiteContext();
-  const { name, mainImage, slug, cardPrices, _id, listFeatures, ratingFeatures } = product;
+  const {
+    name,
+    mainImage,
+    slug,
+    cardPrices,
+    _id,
+    listFeatures,
+    ratingFeatures,
+    shopsCount,
+  } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
+  const isShopless = shopsCount < 1;
 
   const firstRatingFeature = ratingFeatures[0];
 
@@ -57,7 +67,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           <div className={classes.name}>{name}</div>
           <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
-        <ProductSnippetPrice value={cardPrices.min} />
+        <ProductSnippetPrice isShopless={isShopless} value={cardPrices.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>

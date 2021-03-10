@@ -84,6 +84,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   const additionalLinkSlug = additionalSlug ? `/${additionalSlug}` : '';
 
   const isShopsPlural = shopsCount > 1;
+  const isShopless = shopsCount < 1;
 
   const tabsConfig = [
     {
@@ -192,20 +193,24 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
               <div className={classes.mainDataBottom}>
                 <div>
-                  <div className={classes.price}>
-                    <div className={classes.cardLabel}>Цена от</div>
-                    <div className={classes.priceValue}>
-                      <Currency className={classes.priceItem} value={cardPrices.min} />
-                      до
-                      <Currency className={classes.priceItem} value={cardPrices.max} />
+                  {isShopless ? null : (
+                    <div className={classes.price}>
+                      <div className={classes.cardLabel}>Цена от</div>
+                      <div className={classes.priceValue}>
+                        <Currency className={classes.priceItem} value={cardPrices.min} />
+                        до
+                        <Currency className={classes.priceItem} value={cardPrices.max} />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className={classes.helpers}>
                     <div className={classes.cardLabel}>
-                      В наличии в {shopsCount} {isShopsPlural ? 'винотеках' : 'винотеке'}
+                      {isShopless
+                        ? 'Нет в наличии'
+                        : `В наличии в ${shopsCount} ${isShopsPlural ? 'винотеках' : 'винотеке'}`}
                     </div>
-                    <div>Сравнить цены</div>
+                    {isShopless ? null : <div>Сравнить цены</div>}
                   </div>
                 </div>
 

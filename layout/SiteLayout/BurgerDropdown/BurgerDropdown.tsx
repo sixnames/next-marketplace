@@ -1,4 +1,5 @@
 import { RubricModel } from 'db/dbModels';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Inner from '../../../components/Inner/Inner';
@@ -26,6 +27,7 @@ const BurgerDropdownChevron: React.FC = () => {
 };
 
 const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height }) => {
+  const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
   const {
     isBurgerDropdownOpen,
@@ -100,7 +102,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                           {currentRubric.slug !== catalogueSlug ? (
                             <div className={classes.dropdownGroup}>
                               <Link
-                                href={`/${query.city}/${currentRubric.slug}`}
+                                href={`/${city}/${currentRubric.slug}`}
                                 onClick={hideDropdownHandler}
                                 className={`${classes.dropdownGroupLink}`}
                               >
@@ -120,7 +122,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                                     return (
                                       <li key={`${option._id}`}>
                                         <Link
-                                          href={`/${query.city}/${currentRubric.slug}/${option.slug}`}
+                                          href={`/${city}/${currentRubric.slug}/${option.slug}`}
                                           onClick={hideDropdownHandler}
                                           className={`${classes.dropdownGroupLink} ${
                                             isCurrent ? classes.dropdownGroupLinkCurrent : ''
@@ -264,7 +266,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             <li>
                               <Link
                                 onClick={hideDropdownHandler}
-                                href={`/${query.city}${ROUTE_CMS}`}
+                                href={`/${city}${ROUTE_CMS}`}
                                 className={`${classes.dropdownGroupLink}`}
                               >
                                 <span>CMS</span>
@@ -274,7 +276,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                             <li>
                               <Link
                                 onClick={hideDropdownHandler}
-                                href={`/${query.city}${ROUTE_APP}`}
+                                href={`/${city}${ROUTE_APP}`}
                                 className={`${classes.dropdownGroupLink}`}
                               >
                                 <span>APP</span>

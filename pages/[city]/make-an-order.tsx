@@ -12,6 +12,7 @@ import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
 import { CartProductFragment } from 'generated/apolloComponents';
+import useSessionCity from 'hooks/useSessionCity';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
@@ -94,6 +95,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 };
 
 const MakeAnOrderRoute: React.FC = () => {
+  const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { makeAnOrder } = useSiteContext();
@@ -117,7 +119,7 @@ const MakeAnOrderRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/${router.query.city}/`).catch(() => {
+                router.push(`/${city}/`).catch(() => {
                   showErrorNotification();
                 });
               }}

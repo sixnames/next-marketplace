@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import { ShopInListFragment, useGetAllShopsQuery } from 'generated/apolloComponents';
 import useDataLayoutMethods from '../../hooks/useDataLayoutMethods';
@@ -14,6 +15,7 @@ import { ROUTE_CMS } from 'config/common';
 
 const ShopsContent: React.FC = () => {
   const router = useRouter();
+  const city = useSessionCity();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { data, loading, error } = useGetAllShopsQuery({
     fetchPolicy: 'network-only',
@@ -65,7 +67,7 @@ const ShopsContent: React.FC = () => {
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
               router
-                .push(`/${router.query.city}${ROUTE_CMS}/shops/${dataItem._id}`)
+                .push(`/${city}${ROUTE_CMS}/shops/${dataItem._id}`)
                 .catch((e) => console.log(e));
             }}
             testId={dataItem.name}

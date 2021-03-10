@@ -15,6 +15,7 @@ import {
   ProductSnippetFragment,
   SnippetConnectionFragment,
 } from 'generated/apolloComponents';
+import useSessionCity from 'hooks/useSessionCity';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
@@ -251,6 +252,7 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
 };
 
 const CartRoute: React.FC = () => {
+  const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   const { cart, loadingCart } = useSiteContext();
@@ -280,7 +282,7 @@ const CartRoute: React.FC = () => {
               className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
-                router.push(`/${router.query.city}/`).catch(() => {
+                router.push(`/${city}/`).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -327,7 +329,7 @@ const CartRoute: React.FC = () => {
               cart={cart}
               buttonText={'Купить'}
               onConfirmHandler={() => {
-                router.push(`/${router.query.city}/make-an-order`).catch(() => {
+                router.push(`/${city}/make-an-order`).catch(() => {
                   showErrorNotification();
                 });
               }}

@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './CartDropdown.module.css';
 import { CartFragment } from 'generated/apolloComponents';
@@ -19,6 +20,7 @@ interface CartDropdownInterface {
 }
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
+  const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
@@ -140,7 +142,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
         <Button
           className={classes.totalsButton}
           onClick={() => {
-            router.push(`/${router.query.city}/cart`).catch(() => {
+            router.push(`/${city}/cart`).catch(() => {
               showErrorNotification();
             });
           }}

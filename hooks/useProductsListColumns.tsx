@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import ContentItemControls, {
   ContentItemControlsInterface,
@@ -39,7 +39,7 @@ const useProductsListColumns = ({
   isUpdateDisabled,
   isDeleteDisabled,
 }: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
-  const router = useRouter();
+  const city = useSessionCity();
 
   return React.useMemo(() => {
     return [
@@ -47,7 +47,7 @@ const useProductsListColumns = ({
         accessor: 'itemId',
         headTitle: 'Арт.',
         render: ({ cellData, dataItem }) => (
-          <Link href={`/${router.query.city}${ROUTE_CMS}/products/${dataItem._id}`}>
+          <Link href={`/${city}${ROUTE_CMS}/products/${dataItem._id}`}>
             <a>{cellData}</a>
           </Link>
         ),

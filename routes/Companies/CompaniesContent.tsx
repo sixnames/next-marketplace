@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import {
   CompanyInListFragment,
@@ -21,6 +22,7 @@ import { useRouter } from 'next/router';
 import { ROUTE_CMS } from 'config/common';
 
 const CompaniesContent: React.FC = () => {
+  const city = useSessionCity();
   const router = useRouter();
   const { setPage, page, contentFilters } = useDataLayoutMethods();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
@@ -115,7 +117,7 @@ const CompaniesContent: React.FC = () => {
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
               router
-                .push(`/${router.query.city}${ROUTE_CMS}/companies/${dataItem._id}`)
+                .push(`/${city}${ROUTE_CMS}/companies/${dataItem._id}`)
                 .catch((e) => console.log(e));
             }}
           />

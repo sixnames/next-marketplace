@@ -17,6 +17,7 @@ import {
 } from 'generated/apolloComponents';
 import { ALL_RUBRICS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useSessionCity from 'hooks/useSessionCity';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppLayout from 'layout/AppLayout/AppLayout';
 import { useRouter } from 'next/router';
@@ -29,6 +30,7 @@ import { updateRubricSchema } from 'validation/rubricSchema';
 
 const RubricDetails: React.FC = () => {
   const { query } = useRouter();
+  const city = useSessionCity();
   const rubricQuery = useGetRubricBySlugQuery({
     variables: {
       slug: `${query.rubricSlug}`,
@@ -58,7 +60,7 @@ const RubricDetails: React.FC = () => {
       return [];
     }
 
-    const basePath = `/${query.city}${ROUTE_CMS}/rubrics/${rubric.slug}`;
+    const basePath = `/${city}${ROUTE_CMS}/rubrics/${rubric.slug}`;
 
     return [
       {
@@ -77,7 +79,7 @@ const RubricDetails: React.FC = () => {
         testId: 'attributes',
       },
     ];
-  }, [query.city, rubricQuery]);
+  }, [city, rubricQuery]);
 
   if (loading || rubricQuery.loading) {
     return <Spinner />;

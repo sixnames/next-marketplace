@@ -21,6 +21,7 @@ import {
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
+import useSessionCity from 'hooks/useSessionCity';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
@@ -44,6 +45,7 @@ interface CatalogueRouteInterface {
 }
 
 const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) => {
+  const city = useSessionCity();
   const router = useRouter();
   const { isMobile } = useAppContext();
   const { fixBodyScroll } = useSiteContext();
@@ -137,7 +139,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-priority`;
+          const nextPath = `/${city}/${options}/${SORT_BY_KEY}-priority`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });
@@ -162,7 +164,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+          const nextPath = `/${city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });
@@ -187,7 +189,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
             asPath: router.asPath,
             excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
           });
-          const nextPath = `/${router.query.city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
+          const nextPath = `/${city}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
           router.push(nextPath).catch(() => {
             showErrorNotification();
           });

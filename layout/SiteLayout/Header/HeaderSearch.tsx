@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
@@ -34,7 +34,7 @@ interface HeaderSearchResultInterface {
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, products }) => {
-  const router = useRouter();
+  const city = useSessionCity();
   const { hideSearchDropdown } = useSiteContext();
   return (
     <div className={classes.result}>
@@ -45,7 +45,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
             <li key={slug} data-cy={'search-rubric'}>
               <Link
                 onClick={hideSearchDropdown}
-                href={`/${router.query.city}/${slug}`}
+                href={`/${city}/${slug}`}
                 testId={`search-rubric-${name}`}
                 className={`${classes.rubric}`}
               >

@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ThankYouRoute.module.css';
 import Inner from '../../components/Inner/Inner';
@@ -8,6 +9,7 @@ import { useNotificationsContext } from 'context/notificationsContext';
 
 const ThankYouRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
+  const city = useSessionCity();
   const router = useRouter();
   const { query } = router;
 
@@ -27,14 +29,22 @@ const ThankYouRoute: React.FC = () => {
             className={classes.btnsItem}
             theme={'secondary'}
             onClick={() => {
-              router.push(`/${router.query.city}/`).catch(() => {
+              router.push(`/${city}/`).catch(() => {
                 showErrorNotification();
               });
             }}
           >
             на главную
           </Button>
-          <Button className={classes.btnsItem} theme={'secondary'}>
+          <Button
+            onClick={() => {
+              router.push(`/${city}/vino`).catch(() => {
+                showErrorNotification();
+              });
+            }}
+            className={classes.btnsItem}
+            theme={'secondary'}
+          >
             каталог вин
           </Button>
         </div>

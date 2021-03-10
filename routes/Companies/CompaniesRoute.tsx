@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import DataLayout from '../../components/DataLayout/DataLayout';
 import CompaniesFilter from './CompaniesFilter';
@@ -7,6 +8,7 @@ import { ROUTE_CMS } from 'config/common';
 
 const CompaniesRoute: React.FC = () => {
   const router = useRouter();
+  const city = useSessionCity();
 
   return (
     <DataLayout
@@ -16,7 +18,7 @@ const CompaniesRoute: React.FC = () => {
       filterResult={() => <CompaniesContent />}
       contentControlsConfig={{
         createTitle: 'Создать компанию',
-        createHandler: () => router.push(`/${router.query.city}${ROUTE_CMS}/companies/create`),
+        createHandler: () => router.push(`/${city}${ROUTE_CMS}/companies/create`),
         testId: 'company',
       }}
     />

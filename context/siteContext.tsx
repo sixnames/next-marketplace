@@ -1,4 +1,5 @@
 import { RubricModel } from 'db/dbModels';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import {
   AddProductToCartInput,
@@ -118,6 +119,7 @@ interface UseSiteContextInterface extends SiteContextInterface {
 }
 
 function useSiteContext(): UseSiteContextInterface {
+  const city = useSessionCity();
   const { isMobile } = useAppContext();
   const router = useRouter();
   const context = React.useContext<SiteContextInterface>(SiteContext);
@@ -216,7 +218,7 @@ function useSiteContext(): UseSiteContextInterface {
       cartContextUpdater({
         orderPayload: makeAnOrder,
         mutationCallback: () => {
-          router.push(`/${router.query.city}/thank-you?orderId=${order?.itemId}`).catch(() => {
+          router.push(`/${city}/thank-you?orderId=${order?.itemId}`).catch(() => {
             showErrorNotification();
           });
         },

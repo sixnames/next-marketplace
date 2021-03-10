@@ -31,7 +31,7 @@ const Link: React.FC<LinkInterface> = ({
   const asPathArray = asPath.split('?');
   const cleanAasPath = asPathArray[0];
   const hrefArray = href.split('?');
-  const hrefQuery = `?${hrefArray[1]}`;
+  const hrefQuery = hrefArray[1] || '';
   const parsedHrefQuery = qs.parse(hrefQuery);
   const cleanHref = hrefArray[0];
 
@@ -42,7 +42,8 @@ const Link: React.FC<LinkInterface> = ({
   }
 
   if (isTab) {
-    isCurrent = cleanHref === cleanAasPath && query.tab === parsedHrefQuery.tab;
+    const currentTab = query.tab || '0';
+    isCurrent = cleanHref === cleanAasPath && currentTab === parsedHrefQuery.tab;
   }
 
   return (

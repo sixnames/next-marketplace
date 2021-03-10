@@ -235,7 +235,7 @@ const RubricAttributes: React.FC<RubricDetailsInterface> = ({ rubric }) => {
           />
         }
       >
-        {rubric.name}
+        Атрибуты
       </DataLayoutTitle>
       <DataLayoutContentFrame>
         <InnerWide>

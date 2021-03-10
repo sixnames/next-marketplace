@@ -1961,6 +1961,7 @@ type RubricAttribute {
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
+  optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   priorities: JSONObject!

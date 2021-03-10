@@ -7,6 +7,7 @@ import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import InnerWide from 'components/Inner/InnerWide';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
+import { ROUTE_CMS } from 'config/common';
 import { Form, Formik } from 'formik';
 import {
   UpdateRubricInput,
@@ -23,6 +24,7 @@ import * as React from 'react';
 import { NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 import classes from 'routes/Rubrics/RubricDetails.module.css';
+import { NavItemInterface } from 'types/clientTypes';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
 const RubricDetails: React.FC = () => {
@@ -48,6 +50,34 @@ const RubricDetails: React.FC = () => {
   });
 
   const { data, loading, error } = useGetAllRubricVariantsQuery();
+
+  const filterResultNavConfig: NavItemInterface[] = React.useMemo(() => {
+    const rubric = rubricQuery.data?.getRubricBySlug;
+
+    if (!rubric) {
+      return [];
+    }
+
+    const basePath = `/${query.city}${ROUTE_CMS}/rubrics/${rubric.slug}`;
+
+    return [
+      {
+        name: 'Детали',
+        path: basePath,
+        testId: 'details',
+      },
+      {
+        name: 'Товары',
+        path: `${basePath}/products/1`,
+        testId: 'products',
+      },
+      {
+        name: 'Атрибуты',
+        path: `${basePath}/attributes`,
+        testId: 'attributes',
+      },
+    ];
+  }, [query.city, rubricQuery]);
 
   if (loading || rubricQuery.loading) {
     return <Spinner />;
@@ -92,6 +122,7 @@ const RubricDetails: React.FC = () => {
   return (
     <DataLayout
       title={name}
+      filterResultNavConfig={filterResultNavConfig}
       filterResult={() => {
         return (
           <div data-cy={'rubric-details'}>

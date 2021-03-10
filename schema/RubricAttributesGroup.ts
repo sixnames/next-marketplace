@@ -1,3 +1,6 @@
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { OptionsGroupModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
 
@@ -54,6 +57,20 @@ export const RubricAttribute = objectType({
     });
     t.field('metric', {
       type: 'Metric',
+    });
+
+    // Attribute optionsGroup field resolver
+    t.field('optionsGroup', {
+      type: 'OptionsGroup',
+      resolve: async (source): Promise<OptionsGroupModel | null> => {
+        if (!source.optionsGroupId) {
+          return null;
+        }
+        const db = await getDatabase();
+        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
+        return optionsGroup;
+      },
     });
 
     // RubricAttribute name translation field resolver

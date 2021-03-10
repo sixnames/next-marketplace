@@ -59,6 +59,7 @@ const ProductRoute: React.FC = () => {
     <DataLayout
       isFilterVisible
       filterResultNavConfig={navConfig}
+      withTabs={true}
       title={product.name}
       filterResult={() => (
         <DataLayoutContentFrame>

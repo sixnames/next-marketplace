@@ -199,6 +199,10 @@ export const rubricAttributeFragment = gql`
       name
     }
     optionsGroupId
+    optionsGroup {
+      _id
+      name
+    }
     showInCatalogueFilter
     showInCatalogueNav
   }

@@ -1915,6 +1915,7 @@ export type RubricAttribute = {
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
   metric?: Maybe<Metric>;
+  optionsGroup?: Maybe<OptionsGroup>;
   name: Scalars['String'];
 };
 
@@ -3084,6 +3085,9 @@ export type RubricAttributeFragment = (
   & { metric?: Maybe<(
     { __typename?: 'Metric' }
     & Pick<Metric, '_id' | 'name'>
+  )>, optionsGroup?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, '_id' | 'name'>
   )> }
 );
 
@@ -5041,6 +5045,10 @@ export const RubricAttributeFragmentDoc = gql`
     name
   }
   optionsGroupId
+  optionsGroup {
+    _id
+    name
+  }
   showInCatalogueFilter
   showInCatalogueNav
 }

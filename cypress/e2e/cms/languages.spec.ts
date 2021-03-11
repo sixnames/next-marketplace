@@ -1,9 +1,9 @@
-import { ISO_LANGUAGES, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CITY, ISO_LANGUAGES, ROUTE_CMS } from 'config/common';
 
 describe('Languages', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`${ROUTE_CMS}/languages`);
+    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/languages`);
   });
 
   after(() => {

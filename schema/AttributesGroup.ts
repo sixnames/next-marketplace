@@ -814,29 +814,7 @@ export const attributesGroupMutations = extendType({
             COL_ATTRIBUTES_GROUPS,
           );
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-
-          // Check if attribute is used in rubrics and product connections and in product attributes
-          const usedInProducts = await productsCollection.findOne({
-            $or: [
-              {
-                'attributes.attributeId': attributeId,
-              },
-              {
-                'connections.attributeId': attributeId,
-              },
-            ],
-          });
-          const usedInRubrics = await rubricsCollection.findOne({
-            'attributes._id': attributeId,
-          });
-          if (usedInProducts || usedInRubrics) {
-            return {
-              success: false,
-              message: await getApiMessage(`attributesGroups.deleteAttribute.used`),
-            };
-          }
 
           // Check if attributes group exist
           const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
@@ -859,6 +837,26 @@ export const attributesGroupMutations = extendType({
             };
           }
 
+          // Delete attribute from rubrics
+          const updatedRubrics = await rubricsCollection.updateMany(
+            {
+              attributesGroupsIds: attributesGroupId,
+            },
+            {
+              $pull: {
+                attributes: {
+                  _id: attributeId,
+                },
+              },
+            },
+          );
+          if (!updatedRubrics.result.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
+            };
+          }
+
           // Remove attribute
           const updatedAttributeResult = await attributesCollection.findOneAndDelete({
             _id: attributeId,
@@ -876,6 +874,7 @@ export const attributesGroupMutations = extendType({
             payload: updatedGroupResult.value,
           };
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

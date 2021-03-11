@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CITY,
   DEFAULT_LOCALE,
   GENDER_HE,
   GENDER_IT,
@@ -14,7 +15,7 @@ describe('Options Groups', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`${ROUTE_CMS}/options-groups`);
+    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/options-groups`);
   });
 
   after(() => {
@@ -104,6 +105,11 @@ describe('Options Groups', () => {
     cy.getByCy(`${optionName}-row`).should('exist');
     cy.getByCy(`${optionName}-${optionColor}`).should('exist');
 
+    // Should delete option from group
+    cy.getByCy(`${optionName}-option-delete`).click();
+    cy.getByCy(`confirm`).click();
+    cy.getByCy(`${optionName}-row`).should('not.exist');
+
     // Shouldn't delete options group connected to the attribute
     cy.getByCy(`options-group-delete`).click();
     cy.getByCy(`delete-options-group`).should('exist');
@@ -135,9 +141,6 @@ describe('Options Groups', () => {
     cy.getByCy(`option-color`).type(fakeColor);
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`nameI18n.${DEFAULT_LOCALE}-error`).should('exist');
-    cy.getByCy(`variants[0].value.${DEFAULT_LOCALE}-error`).should('exist');
-    cy.getByCy(`variants[1].value.${DEFAULT_LOCALE}-error`).should('exist');
-    cy.getByCy(`variants[2].value.${DEFAULT_LOCALE}-error`).should('exist');
     cy.getByCy(`color-error`).should('exist');
 
     //Shouldn't create option in group if there is an option with the same name
@@ -183,10 +186,5 @@ describe('Options Groups', () => {
     cy.getByCy(`option-submit`).click();
     cy.getByCy(`${optionNewName}-row`).should('exist');
     cy.getByCy(`${optionNewName}-${optionNewColor}`).should('exist');
-
-    // Should delete option from group
-    cy.getByCy(`${optionNewName}-option-delete`).click();
-    cy.getByCy(`confirm`).click();
-    cy.getByCy(`${optionNewName}-row`).should('not.exist');
   });
 });

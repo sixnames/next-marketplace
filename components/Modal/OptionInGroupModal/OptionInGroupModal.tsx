@@ -1,3 +1,4 @@
+import { OptionVariantsModel } from 'db/dbModels';
 import * as React from 'react';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
@@ -8,7 +9,6 @@ import Button from '../../Buttons/Button';
 import { useAppContext } from 'context/appContext';
 import {
   AddOptionToGroupInput,
-  Gender,
   useGetGenderOptionsQuery,
   UpdateOptionInGroupInput,
   OptionInGroupFragment,
@@ -71,19 +71,17 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
     color: option?.color || null,
     icon: option?.icon || null,
     gender: option?.gender || null,
-    variants: GENDER_ENUMS.map((gender) => {
+    variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
       const currentOptionVariant = option?.variants[gender];
       if (currentOptionVariant) {
         return {
-          gender: currentOptionVariant.gender,
-          value: currentOptionVariant.value,
+          [gender]: currentOptionVariant.gender,
         };
       }
-      return {
-        gender: gender as Gender,
-        value: {},
-      };
-    }),
+
+      acc[gender] = {};
+      return acc;
+    }, {}),
   };
 
   return (
@@ -145,7 +143,7 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({
                   return (
                     <FormikTranslationsInput
                       key={gender}
-                      name={`variants.${gender}.value`}
+                      name={`variants.${gender}`}
                       label={getFieldTranslation(`selectsOptions.gender.${gender}.${locale}`)}
                       testId={`variant-${gender}`}
                       showInlineError

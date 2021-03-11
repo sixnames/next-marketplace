@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Select, { SelectInterface } from '../Select/Select';
 import { SelectOptionFragment, useIconsOptionsQuery } from 'generated/apolloComponents';
-import Icon from '../../Icon/Icon';
 import classes from './IconSelect.module.css';
 
 export type IconSelectInterface = Omit<SelectInterface, 'options' | 'firstOption'>;
@@ -17,11 +16,15 @@ const IconSelect: React.FC<IconSelectInterface> = ({ value, ...props }) => {
   }, [data, loading, error]);
 
   return (
-    <div className={classes.iconSelect}>
-      <Select value={value} options={options} {...props} firstOption={'Не выбрано'} />
-      <div className={classes.iconHolder}>
-        <Icon className={classes.icon} name={value || 'cross'} />
-      </div>
+    <div className={classes.iconSelectHolder}>
+      <Select
+        lineIcon={value || 'cross'}
+        lineClass={classes.iconSelect}
+        value={value}
+        options={options}
+        {...props}
+        firstOption={'Не выбрано'}
+      />
     </div>
   );
 };

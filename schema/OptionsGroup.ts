@@ -594,12 +594,15 @@ export const OptionsGroupMutations = extendType({
           const inputNameKeys = Object.keys(values.nameI18n);
           const exist = findOptionInTree({
             options: optionsGroup.options,
-            condition: ({ nameI18n }) => {
-              return inputNameKeys.some((key) => {
-                return nameI18n[key] === values.nameI18n[key];
-              });
+            condition: ({ nameI18n, _id }) => {
+              return (
+                inputNameKeys.some((key) => {
+                  return nameI18n[key] === values.nameI18n[key];
+                }) && !_id.equals(optionId)
+              );
             },
           });
+
           if (exist) {
             return {
               success: false,

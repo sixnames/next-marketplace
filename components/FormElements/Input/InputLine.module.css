@@ -21,6 +21,21 @@
   flex-grow: 1;
 }
 
+.iconHolder {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  width: var(--formInputHeight);
+  height: var(--formInputHeight);
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: var(--textColor);
+}
+
 .postfix {
   width: 20px;
   margin-left: 5px;

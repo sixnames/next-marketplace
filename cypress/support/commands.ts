@@ -179,11 +179,11 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'makeAnOrder',
   ({ callback, orderFields, mockData }: Cypress.MakeAnOrderInterface) => {
-    const rubricLevelOneA = mockData.rubricLevelOneA;
+    const rubricA = mockData.rubricA;
     const productA = mockData.productA;
     const connectionProductA = mockData.connectionProductA;
 
-    cy.visit(`/${DEFAULT_CITY}/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${productA._id}`).click();
 
@@ -196,7 +196,7 @@ Cypress.Commands.add(
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${DEFAULT_CITY}/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${connectionProductA._id}`).click();
     cy.getByCy(`card-${connectionProductA._id}`).should('exist');

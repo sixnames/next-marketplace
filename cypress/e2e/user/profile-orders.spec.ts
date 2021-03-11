@@ -1,10 +1,11 @@
+import { DEFAULT_CITY } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Profile orders', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/`);
+    cy.testAuth(`/${DEFAULT_CITY}/`);
   });
 
   after(() => {

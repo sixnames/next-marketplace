@@ -6,6 +6,7 @@ import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
@@ -98,7 +99,7 @@ const MakeAnOrderRoute: React.FC = () => {
   const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { makeAnOrder } = useSiteContext();
+  const { makeAnOrder, loadingCart } = useSiteContext();
   const { me } = useUserContext();
   const { cart } = useSiteContext();
   const validationSchema = useValidationSchema({
@@ -106,6 +107,18 @@ const MakeAnOrderRoute: React.FC = () => {
   });
 
   const { productsCount, cartProducts } = cart;
+
+  if (loadingCart) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} />
+
+        <Inner lowTop testId={'cart'}>
+          <Spinner isNested />
+        </Inner>
+      </div>
+    );
+  }
 
   if (cartProducts.length < 1) {
     return (
@@ -221,7 +234,7 @@ const MakeAnOrderRoute: React.FC = () => {
                     <CartAside
                       cart={cart}
                       buttonText={'подтвердить заказ'}
-                      backLinkHref={'/cart'}
+                      backLinkHref={`/${city}/cart`}
                       buttonType={'submit'}
                     />
                   </div>

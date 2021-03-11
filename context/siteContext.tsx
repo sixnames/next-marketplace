@@ -64,7 +64,9 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   catalogueNavRubrics,
 }) => {
-  const { data, loading } = useSessionCartQuery();
+  const { data, loading } = useSessionCartQuery({
+    nextFetchPolicy: 'network-only',
+  });
   const [state, setState] = React.useState<SiteContextStateInterface>(() => ({
     isBurgerDropdownOpen: false,
     isSearchOpen: false,

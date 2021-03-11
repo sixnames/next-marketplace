@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { OptionModel, RubricModel } from 'db/dbModels';
 
@@ -6,7 +6,7 @@ describe('Catalogue filter', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit('/');
+    cy.visit(`/${DEFAULT_CITY}/`);
   });
 
   after(() => {
@@ -31,21 +31,17 @@ describe('Catalogue filter', () => {
     const colorOptionIndex = 1;
     const mockWineColorOption: OptionModel = mockData.optionsColor[colorOptionIndex];
     const mockWineColorOptionSlug = mockWineColorOption.slug;
-    const mockWineColorOptionVariant = (mockWineColorOption.variants || []).find(
-      ({ gender }) => gender === wineRubricTitleGender,
-    );
+    const mockWineColorOptionVariant = mockWineColorOption.variants[wineRubricTitleGender];
     const mockWineColorOptionVariantValue = mockWineColorOptionVariant
-      ? mockWineColorOptionVariant.value[DEFAULT_LOCALE]
+      ? mockWineColorOptionVariant[DEFAULT_LOCALE]
       : mockWineColorOption.nameI18n[DEFAULT_LOCALE];
 
     const variantOptionIndex = 2;
     const mockWineVariantOption: OptionModel = mockData.optionsWineVariant[variantOptionIndex];
     const mockWineVariantOptionSlug = mockWineVariantOption.slug;
-    const mockWineVariantOptionVariant = (mockWineVariantOption.variants || []).find(
-      ({ gender }) => gender === wineRubricTitleGender,
-    );
+    const mockWineVariantOptionVariant = mockWineVariantOption.variants[wineRubricTitleGender];
     const mockWineVariantOptionVariantValue = mockWineVariantOptionVariant
-      ? mockWineVariantOptionVariant.value[DEFAULT_LOCALE]
+      ? mockWineVariantOptionVariant[DEFAULT_LOCALE]
       : mockWineVariantOption.nameI18n[DEFAULT_LOCALE];
 
     // Should show search result

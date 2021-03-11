@@ -1,9 +1,9 @@
 import 'cypress-file-upload';
 // noinspection ES6PreferShortImport
 import {
+  DEFAULT_CITY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  ROUTE_SIGN_IN,
   SECONDARY_LOCALE,
 } from '../../config/common';
 import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterface;
@@ -183,7 +183,7 @@ Cypress.Commands.add(
     const productA = mockData.productA;
     const connectionProductA = mockData.connectionProductA;
 
-    cy.visit(`/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricLevelOneA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${productA._id}`).click();
 
@@ -196,7 +196,7 @@ Cypress.Commands.add(
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricLevelOneA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${connectionProductA._id}`).click();
     cy.getByCy(`card-${connectionProductA._id}`).should('exist');

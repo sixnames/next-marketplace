@@ -1,10 +1,11 @@
+import { DEFAULT_CITY } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Make an order', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.visit('/');
+    cy.visit(`/${DEFAULT_CITY}/`);
   });
 
   after(() => {
@@ -12,7 +13,7 @@ describe('Make an order', () => {
   });
 
   it('Should make an order', () => {
-    cy.visit(`/${mockData.rubricA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
     // Should navigate to cart
     cy.getByCy(`catalogue-item-${mockData.productA._id}`).click();
 
@@ -29,7 +30,7 @@ describe('Make an order', () => {
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${mockData.rubricA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`catalogue-item-${mockData.connectionProductA._id}`).click();
     cy.getByCy(`card-${mockData.connectionProductA._id}`).should('exist');
@@ -38,7 +39,7 @@ describe('Make an order', () => {
 
     // Add shopless product from catalogue #3
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${mockData.rubricA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${mockData.rubricA.slug}`);
     cy.getByCy(`catalogue-item-${mockData.connectionProductA._id}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();
 
@@ -66,6 +67,7 @@ describe('Make an order', () => {
     cy.getByCy(`cart-aside-confirm`).click();
 
     // Should validate and fill all order fields
+    cy.getByCy(`order-form`).should('exist');
     cy.getByCy(`cart-aside-confirm`).click();
     cy.get('[data-error="name"]').should('exist');
     cy.get('[data-error="phone"]').should('exist');

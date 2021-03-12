@@ -97,9 +97,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     name={'amount'}
                     value={amount}
                     min={1}
-                    testId={`cart-dropdown-${productData._id}-amount`}
-                    plusTestId={`cart-dropdown-${productData._id}-plus`}
-                    minusTestId={`cart-dropdown-${productData._id}-minus`}
+                    testId={`cart-dropdown-${productData.slug}-amount`}
+                    plusTestId={`cart-dropdown-${productData.slug}-plus`}
+                    minusTestId={`cart-dropdown-${productData.slug}-minus`}
                     size={'small'}
                     className={`${classes.amountInput}`}
                     onChange={(e) => {
@@ -112,7 +112,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                   <div className={classes.productButns}>
                     <ButtonCross
-                      testId={`cart-dropdown-${productData._id}-remove-from-cart`}
+                      testId={`cart-dropdown-${productData.slug}-remove-from-cart`}
                       iconSize={'smaller'}
                       size={'small'}
                       className={classes.productRemove}

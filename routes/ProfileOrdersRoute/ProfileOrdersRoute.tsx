@@ -104,7 +104,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
                   shopProductId: `${shopProduct?._id}`,
                 });
               }}
-              testId={`profile-order-product-${shopProduct?.product?._id}-add-to-cart`}
+              testId={`profile-order-product-${shopProduct?.product?.slug}-add-to-cart`}
               icon={'cart'}
             />
           </div>

@@ -4614,7 +4614,7 @@ export type MyOrderShopProductFragment = (
   & Pick<ShopProduct, '_id' | 'available' | 'inCartCount'>
   & { product: (
     { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'itemId' | 'mainImage'>
+    & Pick<Product, '_id' | 'slug' | 'itemId' | 'mainImage'>
   ) }
 );
 
@@ -5775,6 +5775,7 @@ export const MyOrderShopProductFragmentDoc = gql`
   inCartCount
   product {
     _id
+    slug
     itemId
     mainImage
   }

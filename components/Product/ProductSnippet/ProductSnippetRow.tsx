@@ -127,9 +127,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
               </div>
 
               <SpinnerInput
-                plusTestId={`card-shops-${_id}-plus`}
-                minusTestId={`card-shops-${_id}-minus`}
-                testId={`card-shops-${_id}-input`}
+                plusTestId={`card-shops-${slug}-plus`}
+                minusTestId={`card-shops-${slug}-minus`}
+                testId={`card-shops-${slug}-input`}
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
@@ -144,7 +144,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             <Button
               disabled={isShopless}
               theme={'gray'}
-              testId={`card-shops-${_id}-add-to-cart`}
+              testId={`card-shops-${slug}-add-to-cart`}
               onClick={() => {
                 addShoplessProductToCart({
                   amount,

@@ -123,7 +123,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   ];
 
   return (
-    <div className={classes.card} data-cy={`card-${_id}`}>
+    <div className={classes.card} data-cy={`card-${cardData.slug}`}>
       <Breadcrumbs currentPageName={name} config={cardBreadcrumbs} />
 
       <Inner>
@@ -188,7 +188,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                             }
                             return (
                               <Link
-                                data-cy={`connection-${product._id}`}
+                                data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={option._id}
                                 href={`/product${additionalLinkSlug}/${product.slug}`}
@@ -250,9 +250,9 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
-                plusTestId={`card-${_id}-plus`}
-                minusTestId={`card-${_id}-minus`}
-                testId={`card-${_id}-amount`}
+                plusTestId={`card-${cardData.slug}-plus`}
+                minusTestId={`card-${cardData.slug}-minus`}
+                testId={`card-${cardData.slug}-amount`}
                 frameClassName={`${classes.shoplessFromInput}`}
                 min={1}
                 name={'amount'}
@@ -265,7 +265,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                     productId: _id,
                   });
                 }}
-                testId={`card-${_id}-add-to-cart`}
+                testId={`card-${cardData.slug}-add-to-cart`}
                 className={classes.shoplessFromButton}
               >
                 В корзину

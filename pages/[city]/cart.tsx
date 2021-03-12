@@ -58,7 +58,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           <div className={classes.productContent}>
             {children}
             <ButtonCross
-              testId={`${_id}-remove-from-cart`}
+              testId={`${product.slug}-remove-from-cart`}
               iconSize={'small'}
               className={classes.productRemove}
               onClick={() => {
@@ -166,9 +166,9 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
           name={'amount'}
           value={amount}
           min={1}
-          testId={`${product._id}-amount`}
-          plusTestId={`${product._id}-plus`}
-          minusTestId={`${product._id}-minus`}
+          testId={`${product.slug}-amount`}
+          plusTestId={`${product.slug}-plus`}
+          minusTestId={`${product.slug}-minus`}
           frameClassName={`${classes.shoplessFromInput}`}
           className={`${classes.amountInput}`}
           onChange={(e) => {
@@ -182,7 +182,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
           onClick={() => {
             setIsShopsVisible(true);
           }}
-          testId={`${product._id}-show-shops`}
+          testId={`${product.slug}-show-shops`}
         >
           Выбрать винотеку
         </Button>
@@ -213,9 +213,9 @@ const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
             value={amount}
             min={1}
             max={available}
-            testId={`${productData._id}-amount`}
-            plusTestId={`${productData._id}-plus`}
-            minusTestId={`${productData._id}-minus`}
+            testId={`${productData.slug}-amount`}
+            plusTestId={`${productData.slug}-plus`}
+            minusTestId={`${productData.slug}-minus`}
             className={classes.amountInput}
             onChange={(e) => {
               updateProductInCart({

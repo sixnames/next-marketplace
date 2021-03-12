@@ -62,7 +62,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
               size={'small'}
               product={product}
               key={product._id}
-              testId={'search-product'}
+              testId={`search-product`}
             />
           );
         })}

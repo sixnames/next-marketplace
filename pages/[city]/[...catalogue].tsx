@@ -287,7 +287,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                       <ProductSnippetRow
                         product={product}
                         key={product._id}
-                        testId={`catalogue-item-${product._id}`}
+                        testId={`catalogue-item-${product.slug}`}
                         additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                       />
                     );
@@ -297,7 +297,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                     <ProductSnippetGrid
                       product={product}
                       key={product._id}
-                      testId={`catalogue-item-${product._id}`}
+                      testId={`catalogue-item-${product.slug}`}
                       additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                     />
                   );

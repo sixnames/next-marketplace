@@ -23,7 +23,7 @@ describe('Catalogue filter', () => {
       : '';
     const wineRubricTitleGender = wineRubricTitle.gender;
 
-    const wineRubricTestId = `main-rubric-list-item-${wineRubric._id}`;
+    const wineRubricTestId = `main-rubric-list-item-${wineRubric.slug}`;
 
     const mockAttributeWineColorSlug = mockData.attributeWineColor.slug;
     const mockAttributeWineVariantSlug = mockData.attributeWineVariant.slug;
@@ -64,7 +64,7 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-close').click();
     cy.getByCy('search-dropdown').should('not.exist');
 
-    // Should navigete to the rubric
+    // Should navigate to the rubric
     cy.getByCy(wineRubricTestId).trigger('mouseover');
     cy.getByCy('burger-dropdown').should('be.visible');
     cy.getByCy(wineRubricTestId).trigger('mouseout');

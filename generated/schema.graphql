@@ -1449,8 +1449,8 @@ type Product implements Base & Timestamp {
   originalName: String!
   priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
+  rubric: Rubric!
   rubricId: ObjectId!
-  rubrics: [Rubric!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!

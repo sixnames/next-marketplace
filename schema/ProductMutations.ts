@@ -752,7 +752,10 @@ export const ProductMutations = extendType({
             connectionProducts: [
               {
                 _id: productId,
-                option,
+                option: {
+                  ...option,
+                  options: [],
+                },
                 productId,
               },
             ],
@@ -962,12 +965,13 @@ export const ProductMutations = extendType({
           // Update product with new slug
           const updatedProductResult = await productsCollection.findOneAndUpdate(
             {
-              _id: addProductId,
+              _id: productId,
             },
             {
               $set: {
                 slug: productSlug,
                 updatedAt: new Date(),
+                connections: updatedConnectionsList,
               },
             },
             {
@@ -985,7 +989,7 @@ export const ProductMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.connection.addProductSuccess'),
-            payload: product,
+            payload: updatedProduct,
           };
         } catch (e) {
           return {
@@ -1042,112 +1046,86 @@ export const ProductMutations = extendType({
           const connectionProductIds = connection.connectionProducts.map(
             ({ productId }) => productId,
           );
-          let success = true;
-          let updatedCurrentProduct = product;
+
+          const errorMessage = await getApiMessage('products.connection.deleteError');
+          const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
           if (connection.connectionProducts.length > minimumProductsCountForConnectionDelete) {
-            for await (const productId of connectionProductIds) {
-              const updatedProductResult = await productsCollection.findOneAndUpdate(
-                { _id: productId },
-                {
-                  $pull: {
-                    'connection.connectionProducts': {
-                      productId: deleteProductId,
-                    },
+            const updatedProductsResult = await productsCollection.updateMany(
+              { _id: { $in: connectionProductIds } },
+              {
+                $pull: {
+                  'connections.$[connection].connectionProducts': {
+                    productId: deleteProductId,
                   },
                 },
-                { returnOriginal: false },
-              );
-              const updatedProduct = updatedProductResult.value;
-              if (!updatedProductResult.ok || !updatedProduct) {
-                success = false;
-                break;
-              }
+              },
+              { arrayFilters: [{ 'connection._id': { $eq: connectionId } }] },
+            );
 
-              if (updatedProduct) {
-                // Create new slug for product
-                const { updatedSlug } = createProductSlugWithConnections({
-                  product: updatedProduct,
-                  connections: updatedProduct.connections,
-                });
-
-                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
-                  { _id: productId },
-                  {
-                    $set: {
-                      slug: updatedSlug,
-                    },
-                  },
-                  { returnOriginal: false },
-                );
-                const updatedProductSlug = updatedProductSlugResult.value;
-                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
-                  success = false;
-                  break;
-                }
-
-                if (updatedProductSlug._id.equals(productId)) {
-                  updatedCurrentProduct = updatedProductSlug;
-                }
-              }
+            if (!updatedProductsResult.result.ok) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
             }
+
+            const updatedCurrentProduct = await productsCollection.findOne({ _id: productId });
+            return {
+              success: true,
+              message: successMessage,
+              payload: updatedCurrentProduct,
+            };
           } else {
-            // Delete connection if it has single product
-            for await (const productId of connectionProductIds) {
-              const updatedProductResult = await productsCollection.findOneAndUpdate(
-                { _id: productId },
-                {
-                  $pull: {
-                    connection: {
-                      _id: connectionId,
-                    },
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              { _id: deleteProductId },
+              {
+                $pull: {
+                  connections: {
+                    _id: connectionId,
                   },
                 },
-                { returnOriginal: false },
-              );
-
-              const updatedProduct = updatedProductResult.value;
-              if (!updatedProductResult.ok || !updatedProduct) {
-                success = false;
-                break;
-              }
-
-              if (updatedProduct) {
-                // Create new slug for product
-                const { updatedSlug } = createProductSlugWithConnections({
-                  product: updatedProduct,
-                  connections: updatedProduct.connections,
-                });
-
-                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
-                  { _id: productId },
-                  {
-                    $set: {
-                      slug: updatedSlug,
-                    },
-                  },
-                  { returnOriginal: false },
-                );
-                const updatedProductSlug = updatedProductSlugResult.value;
-                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
-                  success = false;
-                  break;
-                }
-
-                if (updatedProductSlug._id.equals(productId)) {
-                  updatedCurrentProduct = updatedProductSlug;
-                }
-              }
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
             }
-          }
 
-          const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
-          const errorMessage = await getApiMessage('products.connection.deleteError');
-          return {
-            success,
-            message: success ? successMessage : errorMessage,
-            payload: updatedCurrentProduct,
-          };
+            // Create new slug for product
+            const { updatedSlug } = createProductSlugWithConnections({
+              product: updatedProduct,
+              connections: updatedProduct.connections,
+            });
+            const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
+              { _id: productId },
+              {
+                $set: {
+                  slug: updatedSlug,
+                },
+              },
+              { returnOriginal: false },
+            );
+            const updatedProductSlug = updatedProductSlugResult.value;
+            if (!updatedProductSlugResult.ok || !updatedProductSlug) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
+            }
+
+            return {
+              success: true,
+              message: successMessage,
+              payload: updatedProductSlug,
+            };
+          }
         } catch (e) {
           return {
             success: false,

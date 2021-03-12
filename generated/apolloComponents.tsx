@@ -2031,7 +2031,7 @@ export type Product = Base & Timestamp & {
   name: Scalars['String'];
   description: Scalars['String'];
   mainImage: Scalars['String'];
-  rubrics: Array<Rubric>;
+  rubric: Rubric;
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
@@ -2666,7 +2666,10 @@ export type CmsProductFieldsFragment = (
   & { assets: Array<(
     { __typename?: 'Asset' }
     & Pick<Asset, 'url' | 'index'>
-  )>, attributes: Array<(
+  )>, rubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, '_id' | 'slug' | 'name'>
+  ), attributes: Array<(
     { __typename?: 'ProductAttribute' }
     & CmsProductAttributeFragment
   )>, connections: Array<(
@@ -4933,6 +4936,11 @@ export const CmsProductFieldsFragmentDoc = gql`
   active
   mainImage
   rubricId
+  rubric {
+    _id
+    slug
+    name
+  }
   brandSlug
   brandCollectionSlug
   manufacturerSlug

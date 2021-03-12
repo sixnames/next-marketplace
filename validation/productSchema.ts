@@ -7,7 +7,7 @@ import {
 } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { DEFAULT_LOCALE } from 'config/common';
-import { attributeIdSchema, attributesGroupIdSchema } from 'validation/attributesGroupSchema';
+import { attributeIdSchema } from 'validation/attributesGroupSchema';
 
 export const productIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.products.id' });
@@ -79,7 +79,6 @@ export const createProductConnectionSchema = (args: ValidationSchemaArgsInterfac
   return Yup.object({
     productId: productIdSchema(args),
     attributeId: attributeIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
   });
 };
 

@@ -148,13 +148,16 @@ export const Product = objectType({
     });
 
     // Product rubrics list resolver
-    t.nonNull.list.nonNull.field('rubrics', {
+    t.nonNull.field('rubric', {
       type: 'Rubric',
-      resolve: async (source): Promise<RubricModel[]> => {
+      resolve: async (source): Promise<RubricModel> => {
         const db = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const rubrics = await rubricsCollection.find({ _id: source.rubricId }).toArray();
-        return rubrics;
+        const rubric = await rubricsCollection.findOne({ _id: source.rubricId });
+        if (!rubric) {
+          throw Error('Product rubric not found');
+        }
+        return rubric;
       },
     });
 

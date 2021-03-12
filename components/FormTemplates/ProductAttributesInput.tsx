@@ -135,8 +135,10 @@ const ProductAttributesInput: React.FC<CreateNewProductAttributesSelectInterface
   }, [data, setFieldValue]);
 
   React.useEffect(() => {
-    setFieldValue('attributes', attributes);
-  }, [attributes, setFieldValue]);
+    if (values.attributes.length < 1) {
+      setFieldValue('attributes', attributes);
+    }
+  }, [attributes, setFieldValue, values.attributes.length]);
 
   if (!data || error) {
     return <RequestError />;

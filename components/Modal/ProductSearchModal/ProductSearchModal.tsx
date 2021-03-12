@@ -17,15 +17,17 @@ import useProductsListColumns, {
 import Table from '../../Table/Table';
 
 interface ProductsListInterface extends ProductColumnsInterface {
-  viewRubricSlug: string;
+  rubricSlug: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
+  search?: string | null;
 }
 
 const ProductsList: React.FC<ProductsListInterface> = ({
-  viewRubricSlug,
+  rubricSlug,
   excludedProductsIds,
   attributesIds,
+  search,
   ...props
 }) => {
   const columns = useProductsListColumns({
@@ -36,8 +38,9 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   const { data, loading, error } = useGetRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      rubricSlug: viewRubricSlug,
+      rubricSlug,
       productsInput: {
+        search,
         excludedProductsIds,
         attributesIds,
       },
@@ -78,12 +81,14 @@ interface ProductsSearchListInterface extends ProductColumnsInterface {
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
   search: string;
+  viewRubricSlug?: string;
 }
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
   excludedProductsIds,
   attributesIds,
+  viewRubricSlug,
   ...props
 }) => {
   const page = 1;
@@ -141,18 +146,41 @@ export interface ProductSearchModalInterface extends ProductColumnsInterface {
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
   testId?: string;
+  rubricSlug?: string;
 }
 
 const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   testId,
   excludedProductsIds,
   attributesIds,
+  rubricSlug,
   ...props
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
   const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
   });
+
+  if (rubricSlug) {
+    return (
+      <ModalFrame testId={testId} size={'wide'}>
+        <FormikIndividualSearch
+          onSubmit={setSearch}
+          testId={'product'}
+          withReset
+          onReset={() => setSearch(null)}
+        />
+
+        <ProductsList
+          search={search}
+          rubricSlug={rubricSlug}
+          excludedProductsIds={excludedProductsIds}
+          attributesIds={attributesIds}
+          {...props}
+        />
+      </ModalFrame>
+    );
+  }
 
   if (!data && !loading && !error) {
     return (
@@ -198,7 +226,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
             render={({ slug }) => {
               return (
                 <ProductsList
-                  viewRubricSlug={slug}
+                  rubricSlug={slug}
                   excludedProductsIds={excludedProductsIds}
                   attributesIds={attributesIds}
                   {...props}

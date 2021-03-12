@@ -23,12 +23,12 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal/ConfirmModa
 
 interface ProductConnectionControlsInterface {
   connection: CmsProductConnectionFragment;
-  productId: string;
+  product: CmsProductFragment;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
   connection,
-  productId,
+  product,
 }) => {
   const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
@@ -37,7 +37,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
     onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
     onError: onErrorCallback,
     awaitRefetchQueries: true,
-    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: productId } }],
+    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: product._id } }],
   });
 
   const excludedProductsIds = connection.connectionProducts.map(({ productId }) => productId);
@@ -50,14 +50,15 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
         showModal<ProductSearchModalInterface>({
           variant: PRODUCT_SEARCH_MODAL,
           props: {
-            createHandler: (product) => {
+            rubricSlug: product.rubric.slug,
+            createHandler: (addProduct) => {
               showLoading();
               addProductToConnectionMutation({
                 variables: {
                   input: {
-                    addProductId: product._id,
+                    addProductId: addProduct._id,
                     connectionId: connection._id,
-                    productId,
+                    productId: product._id,
                   },
                 },
               }).catch((e) => console.log(e));
@@ -74,13 +75,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 };
 
 export interface ProductConnectionsItemInterface {
-  productId: string;
+  product: CmsProductFragment;
   connection: CmsProductConnectionFragment;
 }
 
 const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
-  productId,
+  product,
 }) => {
   const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
@@ -89,7 +90,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
     onError: onErrorCallback,
     awaitRefetchQueries: true,
-    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: productId } }],
+    refetchQueries: [{ query: PRODUCT_QUERY, variables: { _id: product._id } }],
   });
 
   const { connectionProducts } = connection;
@@ -142,7 +143,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
                         input: {
                           deleteProductId: dataItem.product._id,
                           connectionId: connection._id,
-                          productId,
+                          productId: product._id,
                         },
                       },
                     }).catch((e) => console.log(e));
@@ -162,7 +163,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       title={connection.attributeName}
       isOpen
       className={classes.listItem}
-      titleRight={<ProductConnectionControls connection={connection} productId={productId} />}
+      titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
       <Table<CmsProductConnectionItemFragment>
         columns={columns}
@@ -196,7 +197,7 @@ const ProductConnections: React.FC<ProductConnectionsInterface> = ({ product }) 
           return (
             <ProductConnectionsItem
               key={connection._id}
-              productId={product._id}
+              product={product}
               connection={connection}
             />
           );

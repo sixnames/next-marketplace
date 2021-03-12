@@ -1453,8 +1453,8 @@ export interface NexusGenFieldTypes {
     originalName: string; // String!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -2507,8 +2507,8 @@ export interface NexusGenFieldTypeNames {
     originalName: 'String';
     priorities: 'JSONObject';
     ratingFeatures: 'ProductAttribute';
+    rubric: 'Rubric';
     rubricId: 'ObjectId';
-    rubrics: 'Rubric';
     shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';

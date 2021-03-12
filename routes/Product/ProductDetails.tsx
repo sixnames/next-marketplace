@@ -1,3 +1,5 @@
+import { PRODUCT_ATTRIBUTES_AST_QUERY, PRODUCT_QUERY } from 'graphql/complex/productsQueries';
+import { omit } from 'lodash';
 import Image from 'next/image';
 import * as React from 'react';
 import { CmsProductFragment, useUpdateProductMutation } from 'generated/apolloComponents';
@@ -26,6 +28,23 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateProduct),
+    refetchQueries: [
+      {
+        query: PRODUCT_QUERY,
+        variables: {
+          _id: product._id,
+        },
+      },
+      {
+        query: PRODUCT_ATTRIBUTES_AST_QUERY,
+        variables: {
+          input: {
+            productId: product._id,
+            rubricId: product.rubricId,
+          },
+        },
+      },
+    ],
   });
 
   const {
@@ -67,6 +86,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
               input: {
                 productId: product._id,
                 ...values,
+                attributes: values.attributes.map((productAttribute) => {
+                  return omit(productAttribute, ['attribute', '__typename', 'attributeName']);
+                }),
               },
             },
           });

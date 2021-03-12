@@ -281,13 +281,12 @@ export async function getCatalogueAttributes({
           ? {
               rubricId,
               active: true,
-              archive: false,
               ...optionFinalPricesStage,
             }
           : {
               rubricId,
               active: true,
-              archive: false,
+
               selectedOptionsSlugs: {
                 $all: realFilterOptions,
               },
@@ -493,13 +492,13 @@ export const getCatalogueData = async ({
       ? {
           rubricId: rubric._id,
           active: true,
-          archive: false,
+
           ...pricesStage,
         }
       : {
           rubricId: rubric._id,
           active: true,
-          archive: false,
+
           selectedOptionsSlugs: {
             $all: realFilterOptions,
           },

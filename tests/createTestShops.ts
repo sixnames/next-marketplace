@@ -93,7 +93,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -107,7 +107,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -121,7 +121,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productD._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -135,7 +135,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -149,7 +149,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -163,7 +163,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductC._id,
     citySlug: DEFAULT_CITY,
     shopId: shopAId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -185,7 +185,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const shopAName = 'shopA';
   const shopA: ShopModel = {
     _id: shopAId,
-    archive: false,
+
     itemId: shopAItemId,
     name: shopAName,
     slug: generateSlug(shopAName),
@@ -237,7 +237,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -251,7 +251,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -265,7 +265,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: productD._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -279,7 +279,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductA._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -293,7 +293,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductB._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -307,7 +307,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     productId: connectionProductC._id,
     citySlug: DEFAULT_CITY,
     shopId: shopBId,
-    archive: false,
+
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -333,7 +333,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   const shopBName = 'shopB';
   const shopB: ShopModel = {
     _id: shopBId,
-    archive: false,
+
     itemId: shopBItemId,
     name: shopBName,
     companyId: companyAId,
@@ -388,7 +388,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
 
   const companyA: CompanyModel = {
     _id: companyAId,
-    archive: false,
+
     itemId: companyItemId,
     name: companyName,
     slug: companySlug,

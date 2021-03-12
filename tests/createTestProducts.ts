@@ -268,7 +268,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
 
     return {
       _id,
-      archive: false,
+
       itemId,
       updatedAt: new Date(),
       createdAt: new Date(),

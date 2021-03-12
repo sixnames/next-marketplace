@@ -159,7 +159,6 @@ export const CatalogueQueries = extendType({
               {
                 $match: {
                   active: true,
-                  archive: false,
                 },
               },
               // filter out by shop products availability
@@ -235,7 +234,7 @@ export const CatalogueQueries = extendType({
               {
                 $match: {
                   active: true,
-                  archive: false,
+
                   $or: [
                     ...searchByName,
                     {

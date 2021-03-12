@@ -73,7 +73,6 @@ export async function recalculateRubricProductCounters({
           $match: {
             rubricId,
             active: true,
-            archive: false,
           },
         },
         {
@@ -150,7 +149,6 @@ export async function recalculateRubricProductCounters({
         {
           $match: {
             rubricId: rubricId,
-            archive: false,
           },
         },
         {

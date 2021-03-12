@@ -1,13 +1,7 @@
 import Image from 'next/image';
 import * as React from 'react';
-import {
-  CmsProductFragment,
-  useGetAllRubricsQuery,
-  useUpdateProductMutation,
-} from 'generated/apolloComponents';
+import { CmsProductFragment, useUpdateProductMutation } from 'generated/apolloComponents';
 import InnerWide from '../../components/Inner/InnerWide';
-import Spinner from '../../components/Spinner/Spinner';
-import RequestError from '../../components/RequestError/RequestError';
 import { Form, Formik } from 'formik';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
@@ -28,22 +22,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     schema: updateProductSchema,
   });
 
-  const { data, loading, error } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
-  });
   const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateProduct),
   });
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data || !data.getAllRubrics || !product) {
-    return <RequestError />;
-  }
 
   const {
     nameI18n,
@@ -98,7 +81,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
               <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
-              <ProductMainFields productId={product._id} rubrics={data?.getAllRubrics} />
+              <ProductMainFields productId={product._id} />
 
               <Button testId={'submit-product'} type={'submit'}>
                 Сохранить

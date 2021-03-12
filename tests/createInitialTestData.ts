@@ -58,7 +58,6 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
     createdAt: new Date(),
     updatedAt: new Date(),
     roleId: adminRole._id,
-    archive: false,
   });
 
   const admin = createdAdmin.ops[0];

@@ -14,7 +14,6 @@ describe('Rubrics', () => {
 
   it('Should validate rubric creation', () => {
     const mockRubricLevelOneName = mockData.rubricADefaultName;
-    const mockRubricLevelTwoName = mockData.rubricLevelTwoADefaultName;
     const mockRubricVariantName = mockData.rubricVariantAlcohol.nameI18n[DEFAULT_LOCALE];
 
     // Should show validation errors on new rubric creation
@@ -29,7 +28,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle.gender-error`).should('exist');
     cy.getByCy(`variantId-error`).should('exist');
 
-    // Shouldn't create a new rubric if exists on first level
+    // Shouldn't create a new rubric if exists
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelOneName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelOneName);
     cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelOneName);
@@ -38,22 +37,6 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelOneName);
     cy.selectOptionByTestId(`variantId`, mockRubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
-    cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.shouldError();
-
-    // Shouldn't create a new rubric if exists on second level
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(mockRubricLevelTwoName);
-    cy.selectOptionByTestId(`variantId`, mockRubricVariantName);
-    cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
-    cy.getByCy(`modal-tree-link-${mockRubricLevelOneName}`).click();
-    cy.selectOptionByTestId(`variantId`, mockRubricVariantName);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
     cy.shouldError();

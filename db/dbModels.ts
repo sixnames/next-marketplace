@@ -246,7 +246,6 @@ export interface CompanyModel extends BaseModel, TimestampModel {
   staffIds: ObjectIdModel[];
   contacts: ContactsModel;
   shopsIds: ObjectIdModel[];
-  archive: boolean;
 }
 
 export enum ConfigVariantModel {
@@ -433,7 +432,6 @@ export interface OrderModel extends BaseModel, TimestampModel {
   customer: OrderCustomerModel;
   products: OrderProductModel[];
   logs: OrderLogModel[];
-  archive: boolean;
 }
 
 export interface ProductConnectionItemModel {
@@ -495,7 +493,7 @@ export interface ProductModel extends BaseModel, TimestampModel, CountersModel {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-  archive: boolean;
+
   selectedOptionsSlugs: string[];
   shopProductsIds: ObjectIdModel[];
   shopProductsCountCities: CitiesCounterModel;
@@ -611,7 +609,6 @@ export interface ShopProductModel extends TimestampModel {
   oldPrices: ShopProductOldPriceModel[];
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
-  archive: boolean;
 
   // types for ui
   formattedPrice?: string;
@@ -630,7 +627,6 @@ export interface ShopModel extends BaseModel, TimestampModel {
   address: AddressModel;
   companyId: ObjectIdModel;
   shopProductsIds: ObjectIdModel[];
-  archive: boolean;
 }
 
 export interface UserModel extends BaseModel, TimestampModel {
@@ -644,7 +640,6 @@ export interface UserModel extends BaseModel, TimestampModel {
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   ordersIds?: ObjectIdModel[] | null;
-  archive: boolean;
 }
 
 // Payload

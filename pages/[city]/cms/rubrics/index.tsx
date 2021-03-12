@@ -26,7 +26,9 @@ import { getAppInitialData } from 'lib/ssrUtils';
 const RubricsRoute: React.FC = () => {
   const city = useSessionCity();
   const router = useRouter();
-  const { data, loading, error } = useGetAllRubricsQuery();
+  const { data, loading, error } = useGetAllRubricsQuery({
+    fetchPolicy: 'network-only',
+  });
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
   });
@@ -62,12 +64,16 @@ const RubricsRoute: React.FC = () => {
     {
       accessor: 'productsCount',
       headTitle: 'Всего товаров',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return <div data-cy={`${dataItem.name}-productsCount`}>{cellData}</div>;
+      },
     },
     {
       accessor: 'activeProductsCount',
       headTitle: 'Активных товаров',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData, dataItem }) => {
+        return <div data-cy={`${dataItem.name}-activeProductsCount`}>{cellData}</div>;
+      },
     },
     {
       accessor: 'variant',

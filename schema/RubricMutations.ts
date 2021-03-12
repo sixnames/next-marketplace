@@ -1,4 +1,5 @@
 import { castOptionsForRubric } from 'lib/optionsUtils';
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -26,7 +27,6 @@ import {
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
   addAttributesGroupToRubricSchema,
-  addProductToRubricSchema,
   createRubricSchema,
   deleteAttributesGroupFromRubricSchema,
   deleteProductFromRubricSchema,
@@ -105,14 +105,6 @@ export const UpdateAttributesGroupInRubricInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('rubricId');
     t.nonNull.objectId('attributeId');
-  },
-});
-
-export const AddProductToRubricInput = inputObjectType({
-  name: 'AddProductToRubricInput',
-  definition(t) {
-    t.nonNull.objectId('rubricId');
-    t.nonNull.objectId('productId');
   },
 });
 
@@ -315,17 +307,9 @@ export const RubricMutations = extendType({
           }
 
           // Remove rubric and child rubrics ids from all connected products
-          const updatedProductsResult = await productsCollection.updateMany(
-            {
-              rubricId: _id,
-            },
-            {
-              $set: {
-                active: false,
-                archive: true,
-              },
-            },
-          );
+          const updatedProductsResult = await productsCollection.deleteMany({
+            rubricId: _id,
+          });
           if (!updatedProductsResult.result.ok) {
             return {
               success: false,
@@ -333,7 +317,7 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Delete rubric and it's children
+          // Delete rubric
           const removedRubricsResult = await rubricsCollection.deleteOne({
             _id,
           });
@@ -692,87 +676,6 @@ export const RubricMutations = extendType({
       },
     });
 
-    // Should add product to the rubric
-    t.nonNull.field('addProductToRubric', {
-      type: 'RubricPayload',
-      description: 'Should add product to the rubric',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'AddProductToRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: addProductToRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const db = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-          const { input } = args;
-          const { rubricId, productId } = input;
-
-          // Check rubric and product availability
-          const product = await productsCollection.findOne({
-            _id: productId,
-          });
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric || !product) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.addProduct.notFound'),
-            };
-          }
-
-          // Check if product already added to the rubric
-          const exists = product.rubricId.equals(rubricId);
-          if (exists) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.addProduct.exists`),
-            };
-          }
-
-          // Add rubric id to the product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                rubricId,
-              },
-            },
-          );
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
-            return {
-              success: false,
-              message: await getApiMessage(`rubrics.addProduct.error`),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.addProduct.success'),
-            payload: rubric,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
     // Should remove product from the rubric
     t.nonNull.field('deleteProductFromRubric', {
       type: 'RubricPayload',
@@ -812,20 +715,20 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Remove rubric id from the product
-          const updatedProductResult = await productsCollection.findOneAndUpdate(
-            {
-              _id: productId,
-            },
-            {
-              $set: {
-                active: false,
-                archive: true,
-              },
-            },
-          );
-          const updatedProduct = updatedProductResult.value;
-          if (!updatedProductResult.ok || !updatedProduct) {
+          // Set product as archived
+          const updatedProductResult = await productsCollection.findOneAndDelete({
+            _id: productId,
+          });
+          if (!updatedProductResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage(`rubrics.deleteProduct.error`),
+            };
+          }
+
+          // Recalculate rubric
+          const updatedRubric = await recalculateRubricProductCounters({ rubricId });
+          if (!updatedRubric) {
             return {
               success: false,
               message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -835,7 +738,7 @@ export const RubricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubrics.deleteProduct.success'),
-            payload: rubric,
+            payload: updatedRubric,
           };
         } catch (e) {
           return {

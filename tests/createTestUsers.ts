@@ -38,7 +38,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '2',
       roleId: guestRole._id,
       password: sampleUserPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -58,7 +58,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '3',
       roleId: guestRole._id,
       password: sampleUserBPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -78,7 +78,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '4',
       roleId: companyOwnerRole._id,
       password: companyOwnerPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -98,7 +98,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '5',
       roleId: companyManagerRole._id,
       password: companyManagerPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },

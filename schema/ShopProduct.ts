@@ -22,7 +22,6 @@ export const ShopProduct = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.implements('Timestamp');
-    t.nonNull.boolean('archive');
     t.nonNull.string('citySlug');
     t.nonNull.int('available');
     t.nonNull.int('price');

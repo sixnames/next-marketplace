@@ -1,31 +1,22 @@
 import * as React from 'react';
-import { useAppContext } from 'context/appContext';
 import {
   RubricProductFragment,
   useGetAllRubricsQuery,
   useGetNonRubricProductsQuery,
   useGetRubricProductsQuery,
 } from 'generated/apolloComponents';
-import { ALL_RUBRICS_QUERY, RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
-import { CreateNewProductModalInterface } from '../CreateNewProductModal/CreateNewProductModal';
-import { CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import Spinner from '../../Spinner/Spinner';
 import RequestError from '../../RequestError/RequestError';
 import ModalFrame from '../ModalFrame';
 import ModalTitle from '../ModalTitle';
-import Button from '../../Buttons/Button';
 import FormikIndividualSearch from '../../FormElements/Search/FormikIndividualSearch';
 import RubricsList from 'routes/Rubrics/RubricsList';
 import useProductsListColumns, {
   ProductColumnsInterface,
 } from '../../../hooks/useProductsListColumns';
 import Table from '../../Table/Table';
-import Accordion from '../../Accordion/Accordion';
-import RubricsTreeCounters from '../../../routes/Rubrics/RubricsTreeCounters';
-import { PAGINATION_DEFAULT_LIMIT, QUERY_DATA_LAYOUT_NO_RUBRIC } from 'config/common';
 
 interface ProductsListInterface extends ProductColumnsInterface {
-  excludedRubricsId?: string;
   viewRubricSlug: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
@@ -33,7 +24,6 @@ interface ProductsListInterface extends ProductColumnsInterface {
 
 const ProductsList: React.FC<ProductsListInterface> = ({
   viewRubricSlug,
-  excludedRubricsId,
   excludedProductsIds,
   attributesIds,
   ...props
@@ -50,7 +40,6 @@ const ProductsList: React.FC<ProductsListInterface> = ({
       productsInput: {
         excludedProductsIds,
         attributesIds,
-        excludedRubricsIds: excludedRubricsId ? [excludedRubricsId] : null,
       },
     },
   });
@@ -85,81 +74,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   );
 };
 
-interface NotInRubricProductsListInterface extends ProductColumnsInterface {
-  excludedProductsIds?: string[];
-  attributesIds?: string[] | null;
-}
-
-const NotInRubricProductsList: React.FC<NotInRubricProductsListInterface> = ({
-  excludedProductsIds,
-  attributesIds,
-  ...props
-}) => {
-  const page = 1;
-  const limit = PAGINATION_DEFAULT_LIMIT;
-
-  const columns = useProductsListColumns({
-    createTitle: 'Добавить товар в рубрику',
-    ...props,
-  });
-
-  const { data, loading, error } = useGetNonRubricProductsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        isWithoutRubrics: true,
-        page,
-        limit,
-        excludedProductsIds,
-        attributesIds,
-      },
-    },
-  });
-
-  if (!data && !loading && !error) {
-    return (
-      <ModalFrame>
-        <ModalTitle>Ошибка загрузки данных</ModalTitle>
-      </ModalFrame>
-    );
-  }
-
-  if (loading) {
-    return <Spinner isNested />;
-  }
-
-  if (error || !data || !data.getProductsList) {
-    return <RequestError />;
-  }
-
-  const {
-    getProductsList: { docs, totalDocs, totalActiveDocs },
-  } = data;
-
-  return docs.length > 0 ? (
-    <Accordion
-      title={'Товары вне рубрик'}
-      testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
-      titleRight={
-        <RubricsTreeCounters
-          activeProductsCount={totalActiveDocs}
-          totalProductsCount={totalDocs}
-          testId={QUERY_DATA_LAYOUT_NO_RUBRIC}
-        />
-      }
-    >
-      <Table<RubricProductFragment>
-        data={docs}
-        columns={columns}
-        emptyMessage={'Список пуст'}
-        testIdKey={'name'}
-      />
-    </Accordion>
-  ) : null;
-};
-
 interface ProductsSearchListInterface extends ProductColumnsInterface {
-  excludedRubricsId?: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
   search: string;
@@ -167,7 +82,6 @@ interface ProductsSearchListInterface extends ProductColumnsInterface {
 
 const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
   search,
-  excludedRubricsId,
   excludedProductsIds,
   attributesIds,
   ...props
@@ -187,7 +101,6 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
         search,
         excludedProductsIds,
         attributesIds,
-        excludedRubricsIds: excludedRubricsId ? [excludedRubricsId] : null,
       },
     },
   });
@@ -225,52 +138,21 @@ const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
 };
 
 export interface ProductSearchModalInterface extends ProductColumnsInterface {
-  rubricId?: string;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
   testId?: string;
 }
 
 const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
-  rubricId,
   testId,
   excludedProductsIds,
   attributesIds,
   ...props
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
-  const { showModal } = useAppContext();
   const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        excludedRubricsIds: rubricId ? [rubricId] : [],
-      },
-    },
   });
-
-  function createProductModalHandler() {
-    showModal<CreateNewProductModalInterface>({
-      variant: CREATE_NEW_PRODUCT_MODAL,
-      props: {
-        rubricId,
-        refetchQueries: [
-          {
-            query: ALL_RUBRICS_QUERY,
-            variables: {
-              counters: { noRubrics: true },
-            },
-          },
-          {
-            query: RUBRIC_PRODUCTS_QUERY,
-            variables: {
-              _id: rubricId,
-            },
-          },
-        ],
-      },
-    });
-  }
 
   if (!data && !loading && !error) {
     return (
@@ -292,20 +174,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
   return (
     <ModalFrame testId={testId} size={'wide'}>
-      <ModalTitle
-        right={
-          <Button
-            size={'small'}
-            theme={'secondary'}
-            onClick={createProductModalHandler}
-            testId={'create-new-product'}
-          >
-            Создать товар
-          </Button>
-        }
-      >
-        Выберите товар
-      </ModalTitle>
+      <ModalTitle>Выберите товар</ModalTitle>
 
       <FormikIndividualSearch
         onSubmit={setSearch}
@@ -317,7 +186,6 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
       {search ? (
         <ProductsSearchList
           search={search}
-          excludedRubricsId={rubricId}
           excludedProductsIds={excludedProductsIds}
           attributesIds={attributesIds}
           {...props}
@@ -331,19 +199,12 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
               return (
                 <ProductsList
                   viewRubricSlug={slug}
-                  excludedRubricsId={rubricId}
                   excludedProductsIds={excludedProductsIds}
                   attributesIds={attributesIds}
                   {...props}
                 />
               );
             }}
-          />
-
-          <NotInRubricProductsList
-            excludedProductsIds={excludedProductsIds}
-            attributesIds={attributesIds}
-            {...props}
           />
         </React.Fragment>
       )}

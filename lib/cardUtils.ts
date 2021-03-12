@@ -276,7 +276,6 @@ export async function getCardData({
           $match: {
             _id: { $in: product.shopProductsIds },
             citySlug: city,
-            archive: false,
           },
         },
         {

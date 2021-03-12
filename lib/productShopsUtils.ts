@@ -16,7 +16,7 @@ export async function updateProductShopsData({
   // Get shop products data for current product
   const shopProductsData = await shopProductsCollection
     .aggregate<any>([
-      { $match: { productId, archive: false } },
+      { $match: { productId } },
       {
         $group: {
           _id: '$citySlug',

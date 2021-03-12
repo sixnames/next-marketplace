@@ -1,5 +1,6 @@
 import { noNaN } from 'lib/numbers';
 import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -196,13 +197,8 @@ export const ProductMutations = extendType({
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricId, ...values } = input;
-
-          // Get selected rubrics
-          const rubrics = await rubricsCollection.find({ _id: rubricId }).toArray();
-          const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           const manufacturerEntity = manufacturerSlug
             ? await manufacturersCollection.findOne({ slug: manufacturerSlug })
@@ -249,7 +245,6 @@ export const ProductMutations = extendType({
             manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
             brandSlug: brandEntity ? brandEntity.slug : undefined,
             brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
-            archive: false,
             active: true,
             priorities: {},
             views: {},
@@ -261,7 +256,7 @@ export const ProductMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
             rubricId,
-            selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
+            selectedOptionsSlugs,
             attributes: values.attributes.map((attributeInput) => {
               let selectedOptions: OptionModel[] = [];
               const { selectedOptionsSlugs } = attributeInput;
@@ -282,6 +277,9 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.create.error`),
             };
           }
+
+          // Recalculate rubric
+          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,
@@ -397,6 +395,9 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+
+          // Recalculate rubric
+          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,

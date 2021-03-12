@@ -4,6 +4,7 @@ import { Db } from 'mongodb';
 import {
   BrandModel,
   CityModel,
+  CompanyModel,
   ConfigModel,
   CountryModel,
   LanguageModel,
@@ -17,6 +18,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CITIES,
+  COL_COMPANIES,
   COL_CONFIGS,
   COL_COUNTRIES,
   COL_ID_COUNTERS,
@@ -90,12 +92,22 @@ async function createIndexes() {
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
   await countriesCollection.createIndex({ citiesIds: 1 });
 
+  // Companies
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  await companiesCollection.createIndex({ shopsIds: 1 });
+
   // Shop products
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  await shopProductsCollection.createIndex({ slug: 1 }, { unique: true });
   await shopProductsCollection.createIndex({
     _id: 1,
     citySlug: 1,
-    archive: 1,
+  });
+  await shopProductsCollection.createIndex({
+    productId: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
   });
 
   // Products
@@ -103,7 +115,6 @@ async function createIndexes() {
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
   await productsCollection.createIndex({
     rubricId: 1,
-    archive: 1,
   });
   await productsCollection.createIndex({
     'attributes.attributeId': 1,
@@ -146,7 +157,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       brandSlug: 1,
       brandCollectionSlug: 1,
       manufacturerSlug: 1,
@@ -159,7 +169,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       brandCollectionSlug: 1,
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
@@ -171,7 +180,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
@@ -182,7 +190,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
@@ -192,7 +199,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       [`views.${city.slug}`]: -1,
       [`priority.${city.slug}`]: -1,
       _id: -1,
@@ -202,7 +208,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       brandSlug: 1,
       brandCollectionSlug: 1,
       manufacturerSlug: 1,
@@ -214,7 +219,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       brandCollectionSlug: 1,
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
@@ -225,7 +229,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
       [`minPriceCities.${city.slug}`]: 1,
@@ -235,7 +238,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       selectedOptionsSlugs: 1,
       [`minPriceCities.${city.slug}`]: 1,
       _id: -1,
@@ -244,7 +246,6 @@ async function createIndexes() {
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
-      archive: 1,
       [`minPriceCities.${city.slug}`]: 1,
       _id: -1,
     });

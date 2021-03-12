@@ -2,20 +2,19 @@ import ContentItemControls from 'components/ContentItemControls/ContentItemContr
 import DataLayout from 'components/DataLayout/DataLayout';
 import DataLayoutContentFrame from 'components/DataLayout/DataLayoutContentFrame';
 import DataLayoutTitle from 'components/DataLayout/DataLayoutTitle';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal/ProductSearchModal';
+import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal/CreateNewProductModal';
 import Pager from 'components/Pager/Pager';
 import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Table from 'components/Table/Table';
 import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modals';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modals';
 import {
   RubricProductFragment,
-  useAddProductTuRubricMutation,
   useDeleteProductFromRubricMutation,
   useGetRubricProductsQuery,
 } from 'generated/apolloComponents';
-import { ALL_RUBRICS_QUERY, RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
+import { RUBRIC_PRODUCTS_QUERY } from 'graphql/complex/rubricsQueries';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useProductsListColumns from 'hooks/useProductsListColumns';
 import useSessionCity from 'hooks/useSessionCity';
@@ -46,7 +45,7 @@ const RubricProducts: React.FC = () => {
     [city, router],
   );
 
-  const { data, loading, error } = useGetRubricProductsQuery({
+  const { data, loading, error, refetch } = useGetRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
       rubricSlug: `${router.query.rubricSlug}`,
@@ -56,32 +55,17 @@ const RubricProducts: React.FC = () => {
     },
   });
 
-  const refetchQueries = React.useMemo(() => {
-    return [
-      {
-        query: ALL_RUBRICS_QUERY,
-      },
-      {
-        query: RUBRIC_PRODUCTS_QUERY,
-        variables: {
-          rubricSlug: `${router.query.rubricSlug}`,
-        },
-      },
-    ];
-  }, [router.query.rubricSlug]);
-
   const [deleteProductFromRubricMutation] = useDeleteProductFromRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteProductFromRubric),
+    onCompleted: (data) => {
+      onCompleteCallback(data.deleteProductFromRubric);
+      refetch({
+        rubricSlug: `${router.query.rubricSlug}`,
+        productsInput: {
+          page,
+        },
+      }).catch((e) => console.log(e));
+    },
     onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries,
-  });
-
-  const [addProductToRubricMutation] = useAddProductTuRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.addProductToRubric),
-    onError: onErrorCallback,
-    awaitRefetchQueries: true,
-    refetchQueries,
   });
 
   function deleteProductFromRubricHandler(product: RubricProductFragment) {
@@ -89,7 +73,7 @@ const RubricProducts: React.FC = () => {
       variant: CONFIRM_MODAL,
       props: {
         testId: 'delete-product-from-rubric-modal',
-        message: `Вы уверены, что хотите удалить товар ${product.name} из рубрики?`,
+        message: `Вы уверены, что хотите удалить товар ${product.name}?`,
         confirm: () => {
           showLoading();
           return deleteProductFromRubricMutation({
@@ -105,23 +89,22 @@ const RubricProducts: React.FC = () => {
     });
   }
 
-  function addProductToRubricModalHandler() {
-    showModal<ProductSearchModalInterface>({
-      variant: PRODUCT_SEARCH_MODAL,
+  function createProductModalHandler() {
+    showModal<CreateNewProductModalInterface>({
+      variant: CREATE_NEW_PRODUCT_MODAL,
       props: {
         rubricId: `${data?.getRubricBySlug?._id}`,
-        createHandler: (product) => {
-          addProductToRubricMutation({
+        refetchQueries: [
+          {
+            query: RUBRIC_PRODUCTS_QUERY,
             variables: {
-              input: {
-                rubricId: `${data?.getRubricBySlug?._id}`,
-                productId: product._id,
+              rubricSlug: `${router.query.rubricSlug}`,
+              productsInput: {
+                page,
               },
             },
-          }).catch((e) => console.log(e));
-        },
-        createTitle: 'Добавить товар в рубрику',
-        testId: 'add-product-to-rubric-modal',
+          },
+        ],
       },
     });
   }
@@ -143,19 +126,7 @@ const RubricProducts: React.FC = () => {
         filterResult={() => {
           return (
             <div data-cy={'rubric-products'}>
-              <DataLayoutTitle
-                testId={'rubric-title'}
-                titleRight={
-                  <ContentItemControls
-                    testId={'product'}
-                    createTitle={'Добавить товар в рубрику'}
-                    createHandler={addProductToRubricModalHandler}
-                  />
-                }
-              >
-                {`Товары: ----`}
-              </DataLayoutTitle>
-
+              <DataLayoutTitle testId={'rubric-title'}>{`Товары: ----`}</DataLayoutTitle>
               <DataLayoutContentFrame>
                 <Spinner isNested />
               </DataLayoutContentFrame>
@@ -188,7 +159,7 @@ const RubricProducts: React.FC = () => {
                 <ContentItemControls
                   testId={'product'}
                   createTitle={'Добавить товар в рубрику'}
-                  createHandler={addProductToRubricModalHandler}
+                  createHandler={createProductModalHandler}
                 />
               }
             >

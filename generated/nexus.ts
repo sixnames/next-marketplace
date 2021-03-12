@@ -171,11 +171,6 @@ export interface NexusGenInputs {
     connectionId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  AddProductToRubricInput: {
-    // input type
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   AddProductToShopInput: {
     // input type
     available: number; // Int!
@@ -1023,7 +1018,6 @@ export interface NexusGenFieldTypes {
   Company: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     contacts: NexusGenRootTypes['Contacts']; // Contacts!
     createdAt: NexusGenScalars['Date']; // Date!
     itemId: string; // String!
@@ -1205,7 +1199,6 @@ export interface NexusGenFieldTypes {
     addProductAssets: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    addProductToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addProductToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopAssets: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -1331,7 +1324,6 @@ export interface NexusGenFieldTypes {
   Order: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean | null; // Boolean
     comment: string | null; // String
     createdAt: NexusGenScalars['Date']; // Date!
     customer: NexusGenRootTypes['OrderCustomer']; // OrderCustomer!
@@ -1435,7 +1427,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
     allShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
-    archive: boolean; // Boolean!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     brand: NexusGenRootTypes['Brand'] | null; // Brand
@@ -1737,7 +1728,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     address: NexusGenRootTypes['Address']; // Address!
-    archive: boolean; // Boolean!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     city: NexusGenRootTypes['City']; // City!
     citySlug: string; // String!
@@ -1763,7 +1753,6 @@ export interface NexusGenFieldTypes {
   ShopProduct: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     available: number; // Int!
     citySlug: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
@@ -1820,7 +1809,6 @@ export interface NexusGenFieldTypes {
   User: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     createdAt: NexusGenScalars['Date']; // Date!
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     formattedPhone: NexusGenRootTypes['FormattedPhone']; // FormattedPhone!
@@ -2084,7 +2072,6 @@ export interface NexusGenFieldTypeNames {
   Company: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     contacts: 'Contacts';
     createdAt: 'Date';
     itemId: 'String';
@@ -2266,7 +2253,6 @@ export interface NexusGenFieldTypeNames {
     addProductAssets: 'ProductPayload';
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
-    addProductToRubric: 'RubricPayload';
     addProductToShop: 'ShopPayload';
     addShopAssets: 'ShopPayload';
     addShopToCartProduct: 'CartPayload';
@@ -2392,7 +2378,6 @@ export interface NexusGenFieldTypeNames {
   Order: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     comment: 'String';
     createdAt: 'Date';
     customer: 'OrderCustomer';
@@ -2496,7 +2481,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     active: 'Boolean';
     allShopProducts: 'ShopProduct';
-    archive: 'Boolean';
     assets: 'Asset';
     attributes: 'ProductAttribute';
     brand: 'Brand';
@@ -2798,7 +2782,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     address: 'Address';
-    archive: 'Boolean';
     assets: 'Asset';
     city: 'City';
     citySlug: 'String';
@@ -2824,7 +2807,6 @@ export interface NexusGenFieldTypeNames {
   ShopProduct: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     available: 'Int';
     citySlug: 'String';
     createdAt: 'Date';
@@ -2881,7 +2863,6 @@ export interface NexusGenFieldTypeNames {
   User: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     createdAt: 'Date';
     email: 'EmailAddress';
     formattedPhone: 'FormattedPhone';
@@ -2990,10 +2971,6 @@ export interface NexusGenArgTypes {
     addProductToConnection: {
       // args
       input: NexusGenInputs['AddProductToConnectionInput']; // AddProductToConnectionInput!
-    };
-    addProductToRubric: {
-      // args
-      input: NexusGenInputs['AddProductToRubricInput']; // AddProductToRubricInput!
     };
     addProductToShop: {
       // args

@@ -47,7 +47,6 @@ export const Shop = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.nonNull.boolean('archive');
     t.nonNull.string('name');
     t.nonNull.string('slug');
     t.nonNull.string('citySlug');
@@ -84,7 +83,6 @@ export const Shop = objectType({
             {
               $match: {
                 _id: { $in: source.shopProductsIds },
-                archive: false,
               },
             },
           ],
@@ -177,7 +175,7 @@ export const ShopQueries = extendType({
       resolve: async (_root, args): Promise<ShopModel> => {
         const db = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const shop = await shopsCollection.findOne({ slug: args.slug, archive: false });
+        const shop = await shopsCollection.findOne({ slug: args.slug });
         if (!shop) {
           throw Error('Shop not found by given slug');
         }
@@ -200,7 +198,6 @@ export const ShopQueries = extendType({
           city,
           input: args.input,
           collectionName: COL_SHOPS,
-          pipeline: [{ $match: { archive: false } }],
         });
         return paginationResult;
       },
@@ -730,8 +727,8 @@ export const ShopMutations = extendType({
           const { shopId, productId, ...values } = input;
 
           // Check shop and product availability
-          const shop = await shopsCollection.findOne({ _id: shopId, archive: false });
-          const product = await productsCollection.findOne({ _id: productId, archive: false });
+          const shop = await shopsCollection.findOne({ _id: shopId });
+          const product = await productsCollection.findOne({ _id: productId });
           if (!shop || !product) {
             return {
               success: false,
@@ -742,7 +739,7 @@ export const ShopMutations = extendType({
           // Check if product already exist in the shop
           const exist = await shopProductsCollection.findOne({
             productId,
-            archive: false,
+
             _id: { $in: shop.shopProductsIds },
           });
           if (exist) {
@@ -761,7 +758,6 @@ export const ShopMutations = extendType({
             shopId: shop._id,
             citySlug: shop.citySlug,
             oldPrices: [],
-            archive: false,
           });
           const createdShopProduct = createdShopProductResult.ops[0];
           if (!createdShopProductResult.result.ok || !createdShopProduct) {
@@ -845,19 +841,11 @@ export const ShopMutations = extendType({
             };
           }
 
-          // Set shop product as archived
-          const removedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-            {
-              _id: shopProductId,
-            },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-          );
-          const removedShopProduct = removedShopProductResult.value;
-          if (!removedShopProductResult.ok || !removedShopProduct) {
+          // Delete shop product
+          const removedShopProductResult = await shopProductsCollection.findOneAndDelete({
+            _id: shopProductId,
+          });
+          if (!removedShopProductResult.ok) {
             return {
               success: false,
               message: await getApiMessage('shops.deleteProduct.error'),

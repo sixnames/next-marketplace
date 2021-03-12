@@ -1,16 +1,11 @@
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import RubricsList from 'routes/Rubrics/RubricsList';
-import FormikArrayCheckbox from 'components/FormElements/Checkbox/FormikArrayCheckbox';
-import classes from 'components/Modal/CreateNewProductModal/CreateNewProductModal.module.css';
 import ProductAttributesInput from 'components/FormTemplates/ProductAttributesInput';
 import {
   CreateProductInput,
   BrandCollectionsOptionFragment,
   useGetProductBrandsOptionsQuery,
-  GetAllRubricsQuery,
   ProductAttributeAstFragment,
 } from 'generated/apolloComponents';
 import { useFormikContext } from 'formik';
@@ -27,17 +22,15 @@ export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
 }
 
 interface ProductMainFieldsInterface {
-  rubrics?: GetAllRubricsQuery['getAllRubrics'];
   productId?: string | null;
 }
 
-const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ rubrics, productId }) => {
+const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ productId }) => {
   const [brandCollections, setBrandCollections] = React.useState<BrandCollectionsOptionFragment[]>(
     [],
   );
   const { values, setFieldValue } = useFormikContext<ProductFormValuesInterface>();
   const { data, loading, error } = useGetProductBrandsOptionsQuery();
-  const showFeatures = !!values.rubricId;
 
   React.useEffect(() => {
     if (values.brandSlug) {
@@ -124,25 +117,7 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ rubrics, prod
         options={getManufacturersOptions}
       />
 
-      {rubrics ? (
-        <InputLine label={'Рубрики'} labelTag={'div'} name={'rubrics'} isRequired low>
-          <RubricsList
-            low
-            isAccordionDisabled
-            rubrics={rubrics}
-            titleLeft={(_id, testId) => (
-              <FormikArrayCheckbox
-                className={classes.rubricCheckbox}
-                name={'rubricId'}
-                testId={testId}
-                value={_id}
-              />
-            )}
-          />
-        </InputLine>
-      ) : null}
-
-      {showFeatures ? <ProductAttributesInput productId={productId} /> : null}
+      <ProductAttributesInput productId={productId} />
     </React.Fragment>
   );
 };

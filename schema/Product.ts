@@ -92,7 +92,6 @@ export const Product = objectType({
     t.nonNull.boolean('active');
     t.nonNull.string('slug');
     t.nonNull.string('originalName');
-    t.nonNull.boolean('archive');
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
@@ -228,7 +227,6 @@ export const Product = objectType({
           .find({
             _id: { $in: source.shopProductsIds },
             citySlug: city,
-            archive: false,
           })
           .toArray();
         return shopsProducts;
@@ -245,7 +243,6 @@ export const Product = objectType({
         const shopsProducts = await shopProductsCollection
           .find({
             _id: { $in: source.shopProductsIds },
-            archive: false,
           })
           .toArray();
         return shopsProducts;

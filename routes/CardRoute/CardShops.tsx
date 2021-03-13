@@ -3,10 +3,8 @@ import {
   GetProductShopsInput,
   ShopProductSnippetFragment,
   SortDirection,
-  useGetCatalogueCardShopsQuery,
 } from 'generated/apolloComponents';
-import Spinner from '../../components/Spinner/Spinner';
-import RequestError from '../../components/RequestError/RequestError';
+// import Spinner from '../../components/Spinner/Spinner';
 import CardShop from './CardShop';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
@@ -26,12 +24,12 @@ interface CardShopsListInterface {
   input: GetProductShopsInput;
   setInput: React.Dispatch<React.SetStateAction<GetProductShopsInput>>;
   setIsMap: React.Dispatch<React.SetStateAction<boolean>>;
-  loading: boolean;
+  // loading: boolean;
 }
 
 const CardShopsList: React.FC<CardShopsListInterface> = ({
   shops,
-  loading,
+  // loading,
   productId,
   setIsMap,
   setInput,
@@ -73,7 +71,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
     ],
     [input, productId, setInput],
   );
-
+  // TODO sort shops
   return (
     <div data-cy={`card-shops-list`}>
       {isMobile ? (
@@ -123,7 +121,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({
         </Disclosure>
       ) : null}
 
-      {loading ? <Spinner isNestedAbsolute /> : null}
+      {/*{loading ? <Spinner isNestedAbsolute /> : null}*/}
     </div>
   );
 };
@@ -157,39 +155,39 @@ interface CardShopsInterface {
 
 const CardShops: React.FC<CardShopsInterface> = ({ productId, initialShops }) => {
   const [isMap, setIsMap] = React.useState<boolean>(false);
-  const [shops, setShops] = React.useState<ShopProductSnippetFragment[]>(() => initialShops);
+  // const [shops] = React.useState<ShopProductSnippetFragment[]>(() => initialShops);
   const [input, setInput] = React.useState<GetProductShopsInput>(() => ({
     productId,
     sortBy: SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
     sortDir: SORT_ASC_STR as SortDirection,
   }));
-  const { data, loading, error } = useGetCatalogueCardShopsQuery({
+  /*const { data, loading, error } = useGetCatalogueCardShopsQuery({
     variables: {
       input,
     },
-  });
+  });*/
 
-  React.useEffect(() => {
+  /*React.useEffect(() => {
     if (data && !error && !loading) {
       setShops(data.getProductShops);
     }
-  }, [data, loading, error]);
+  }, [data, loading, error]);*/
 
-  if (error) {
+  /*if (error) {
     return <RequestError message={'Ошибка загрузки магазинов'} />;
-  }
+  }*/
 
   return (
     <div className={classes.frame} data-cy={`card-shops`}>
       {isMap ? (
-        <CardShopsMap shops={shops} setIsMap={setIsMap} />
+        <CardShopsMap shops={initialShops} setIsMap={setIsMap} />
       ) : (
         <CardShopsList
           productId={productId}
           input={input}
           setInput={setInput}
-          shops={shops}
-          loading={loading}
+          shops={initialShops}
+          // loading={loading}
           setIsMap={setIsMap}
         />
       )}

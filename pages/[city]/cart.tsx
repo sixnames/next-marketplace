@@ -289,7 +289,15 @@ const CartRoute: React.FC = () => {
             >
               на главную
             </Button>
-            <Button className={classes.emptyBtnsItem} theme={'secondary'}>
+            <Button
+              className={classes.emptyBtnsItem}
+              theme={'secondary'}
+              onClick={() => {
+                router.push(`/${city}/vino`).catch(() => {
+                  showErrorNotification();
+                });
+              }}
+            >
               каталог вин
             </Button>
           </div>

@@ -18,6 +18,7 @@ import {
   GetCatalogueCardQuery,
   useUpdateProductCounterMutation,
 } from 'generated/apolloComponents';
+import useSessionCity from 'hooks/useSessionCity';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
@@ -75,6 +76,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     cardBreadcrumbs,
     cardShopProducts,
   } = cardData;
+  const city = useSessionCity();
   const { query } = useRouter();
   const { addShoplessProductToCart } = useSiteContext();
   const { isMobile } = useAppContext();
@@ -191,7 +193,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
                                 data-cy={`connection-${product.slug}`}
                                 className={`${classes.connectionsGroupItem}`}
                                 key={option._id}
-                                href={`/product${additionalLinkSlug}/${product.slug}`}
+                                href={`/${city}/product${additionalLinkSlug}/${product.slug}`}
                               >
                                 {option.name}
                               </Link>

@@ -295,7 +295,7 @@ export async function getCardData({
         },
         {
           $project: {
-            shops: -1,
+            shops: 0,
           },
         },
       ])

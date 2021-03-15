@@ -13,15 +13,15 @@ services:
       - ./data:/data/db
     env_file:
       - .env
-#  app:
-#    container_name: app
-#    restart: always
-#    build:
-#      dockerfile: Dockerfile.stage
-#      context: .
-#    ports:
-#      - '3000:3000'
-#    env_file:
-#      - .env
-#    depends_on:
-#      - mongo
+  app:
+    container_name: app
+    restart: always
+    build:
+      dockerfile: Dockerfile.stage
+      context: .
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - mongo

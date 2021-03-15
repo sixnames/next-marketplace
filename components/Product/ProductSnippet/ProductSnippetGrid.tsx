@@ -1,3 +1,4 @@
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
@@ -6,7 +7,6 @@ import Link from '../../Link/Link';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
-import { useSiteContext } from 'context/siteContext';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
@@ -25,7 +25,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   size = 'normal',
 }) => {
   const city = useSessionCity();
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
     mainImage,

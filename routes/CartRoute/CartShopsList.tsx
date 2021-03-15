@@ -1,3 +1,4 @@
+import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import {
   GetProductShopsInput,
@@ -10,7 +11,6 @@ import Spinner from '../../components/Spinner/Spinner';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@reach/disclosure';
 import Button from '../../components/Buttons/Button';
 import classes from './CartShopsList.module.css';
-import { useSiteContext } from 'context/siteContext';
 import Image from 'next/image';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
@@ -23,7 +23,7 @@ interface CartShopInterface {
 }
 
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, cartProductId }) => {
-  const { addShopToCartProduct } = useSiteContext();
+  const { addShopToCartProduct } = useCartMutations();
   const { shop, formattedOldPrice, formattedPrice, discountedPercent, available } = shopProduct;
   const {
     assets,

@@ -1,3 +1,4 @@
+import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './CardShop.module.css';
 import { ShopProductSnippetFragment } from 'generated/apolloComponents';
@@ -8,7 +9,6 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
 import { useAppContext } from 'context/appContext';
 import Icon from '../../components/Icon/Icon';
-import { useSiteContext } from 'context/siteContext';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import LayoutCard from '../../layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
@@ -19,7 +19,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shopProduct }) => {
   const { isMobile } = useAppContext();
-  const { addProductToCart } = useSiteContext();
+  const { addProductToCart } = useCartMutations();
   const [amount, setAmount] = React.useState<number>(1);
   const {
     shop,

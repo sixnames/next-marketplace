@@ -6,15 +6,17 @@ import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner/Inner';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
 import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
+import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { useSiteContext } from 'context/siteContext';
 import {
   CartProductFragment,
   ProductSnippetFragment,
   SnippetConnectionFragment,
 } from 'generated/apolloComponents';
+import useCart from 'hooks/useCart';
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import LayoutCard from 'layout/LayoutCard/LayoutCard';
 import { noNaN } from 'lib/numbers';
@@ -41,7 +43,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   children,
   isShopsVisible,
 }) => {
-  const { deleteProductFromCart } = useSiteContext();
+  const { deleteProductFromCart } = useCartMutations();
   const { mainImage, name, _id } = product;
 
   return (
@@ -139,7 +141,7 @@ interface CartProductInterface {
 
 const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
   const [isShopsVisible, setIsShopsVisible] = React.useState<boolean>(false);
-  const { updateProductInCart } = useSiteContext();
+  const { updateProductInCart } = useCartMutations();
   const { product, shopProduct, _id, amount } = cartProduct;
   const productData = product || shopProduct?.product;
   if (!productData || !product) {
@@ -192,7 +194,7 @@ const CartShoplessProduct: React.FC<CartProductInterface> = ({ cartProduct }) =>
 };
 
 const CartProduct: React.FC<CartProductInterface> = ({ cartProduct }) => {
-  const { updateProductInCart } = useSiteContext();
+  const { updateProductInCart } = useCartMutations();
   const { product, shopProduct, amount, _id } = cartProduct;
   const productData = product || shopProduct?.product;
   if (!productData || !shopProduct) {
@@ -255,10 +257,9 @@ const CartRoute: React.FC = () => {
   const city = useSessionCity();
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
-  const { cart, loadingCart } = useSiteContext();
-  const { productsCount, cartProducts } = cart;
+  const { cart, loadingCart } = useCart();
 
-  if (loadingCart) {
+  if (loadingCart && !cart) {
     return (
       <div className={classes.cart}>
         <Breadcrumbs currentPageName={'Корзина'} />
@@ -269,6 +270,20 @@ const CartRoute: React.FC = () => {
       </div>
     );
   }
+
+  if (!cart) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} />
+
+        <Inner lowTop testId={'cart'}>
+          <RequestError />
+        </Inner>
+      </div>
+    );
+  }
+
+  const { productsCount, cartProducts } = cart;
 
   if (cartProducts.length < 1) {
     return (
@@ -318,17 +333,13 @@ const CartRoute: React.FC = () => {
         <div className={classes.frame}>
           <div data-cy={'cart-products'}>
             {cartProducts.map((cartProduct) => {
-              const { _id, isShopless, product, shopProduct } = cartProduct;
+              const { _id, isShopless } = cartProduct;
 
-              if (isShopless && product) {
+              if (isShopless) {
                 return <CartShoplessProduct cartProduct={cartProduct} key={_id} />;
               }
 
-              if (!isShopless && shopProduct) {
-                return <CartProduct cartProduct={cartProduct} key={_id} />;
-              }
-
-              return null;
+              return <CartProduct cartProduct={cartProduct} key={_id} />;
             })}
           </div>
 

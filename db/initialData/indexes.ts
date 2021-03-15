@@ -107,6 +107,10 @@ async function createIndexes() {
     productId: 1,
   });
   await shopProductsCollection.createIndex({
+    productId: 1,
+    citySlug: 1,
+  });
+  await shopProductsCollection.createIndex({
     companyId: 1,
   });
 

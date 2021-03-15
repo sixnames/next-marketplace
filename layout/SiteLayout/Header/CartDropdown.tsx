@@ -1,16 +1,16 @@
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './CartDropdown.module.css';
 import { CartFragment } from 'generated/apolloComponents';
 import Image from 'next/image';
-import ProductShopPrices from '../../../components/Product/ProductShopPrices/ProductShopPrices';
-import ProductSnippetPrice from '../../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
-import ButtonCross from '../../../components/Buttons/ButtonCross';
-import { useSiteContext } from 'context/siteContext';
-import ControlButton from '../../../components/Buttons/ControlButton';
-import SpinnerInput from '../../../components/FormElements/SpinnerInput/SpinnerInput';
-import Currency from '../../../components/Currency/Currency';
-import Button from '../../../components/Buttons/Button';
+import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
+import ButtonCross from 'components/Buttons/ButtonCross';
+import ControlButton from 'components/Buttons/ControlButton';
+import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import Currency from 'components/Currency/Currency';
+import Button from 'components/Buttons/Button';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { noNaN } from 'lib/numbers';
@@ -23,7 +23,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
+  const { deleteProductFromCart, updateProductInCart, clearCart } = useCartMutations();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
 
   return (

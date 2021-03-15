@@ -1,0 +1,3637 @@
+[{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b6"
+  },
+  "slug": "validation.string.min",
+  "messageI18n": {
+    "ru": "Минимальное количество символов",
+    "en": "Minimal length is"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b7"
+  },
+  "slug": "validation.string.max",
+  "messageI18n": {
+    "ru": "Максимальное количество символов",
+    "en": "Maximum length is"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b8"
+  },
+  "slug": "validation.number.min",
+  "messageI18n": {
+    "ru": "Минимальное значение",
+    "en": "Minimal value is"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b9"
+  },
+  "slug": "validation.number.max",
+  "messageI18n": {
+    "ru": "Максимальное значение",
+    "en": "Maximum value is"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ba"
+  },
+  "slug": "validation.email",
+  "messageI18n": {
+    "ru": "Не валидный формат Email адреса.",
+    "en": "Invalid Email format."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326bb"
+  },
+  "slug": "validation.email.required",
+  "messageI18n": {
+    "ru": "Email обязателен к заполнению.",
+    "en": "Email is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326bc"
+  },
+  "slug": "validation.phone",
+  "messageI18n": {
+    "ru": "Не валидный формат телефона.",
+    "en": "Invalid Phone format."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326bd"
+  },
+  "slug": "validation.phone.required",
+  "messageI18n": {
+    "ru": "Телефон обязателен к заполнению.",
+    "en": "Phone is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326be"
+  },
+  "slug": "validation.color",
+  "messageI18n": {
+    "ru": "Цвет должен быть в HEX формате. Пример fafafa.",
+    "en": "Invalid color format. Example fafafa"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326bf"
+  },
+  "slug": "validation.color.required",
+  "messageI18n": {
+    "ru": "Цвет обязателен к заполнению.",
+    "en": "Color is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c0"
+  },
+  "slug": "validation.translation.key",
+  "messageI18n": {
+    "ru": "Ключ языка обязателен к заполнению.",
+    "en": "Language key is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c1"
+  },
+  "slug": "validation.contacts",
+  "messageI18n": {
+    "ru": "Контакты обязательны к заполнению.",
+    "en": "Contacts is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c2"
+  },
+  "slug": "validation.address",
+  "messageI18n": {
+    "ru": "Адрес обязателен к заполнению.",
+    "en": "Address is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c3"
+  },
+  "slug": "validation.point.lat",
+  "messageI18n": {
+    "ru": "Широта обязательна к заполнению.",
+    "en": "Coordinates latitude is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c4"
+  },
+  "slug": "validation.point.lng",
+  "messageI18n": {
+    "ru": "Долгота обязательна к заполнению.",
+    "en": "Coordinates longitude is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c5"
+  },
+  "slug": "validation.url",
+  "messageI18n": {
+    "ru": "Ссыдка обязательна.",
+    "en": "Url is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c7"
+  },
+  "slug": "configs.update.success",
+  "messageI18n": {
+    "ru": "Настройки обновлены",
+    "en": "Config is updated"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c8"
+  },
+  "slug": "configs.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления настройки",
+    "en": "Config update error"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326c9"
+  },
+  "slug": "configs.updateAsset.notFound",
+  "messageI18n": {
+    "ru": "Настройка не найдена",
+    "en": "Config item not found"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ca"
+  },
+  "slug": "configs.updateAsset.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления настройки",
+    "en": "Config update error"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326cb"
+  },
+  "slug": "configs.updateAsset.success",
+  "messageI18n": {
+    "ru": "Настройка обновлена",
+    "en": "Config is updated"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326cc"
+  },
+  "slug": "validation.configs.id",
+  "messageI18n": {
+    "ru": "ID настройки обязательно к заполнению",
+    "en": "Config ID is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326cd"
+  },
+  "slug": "validation.configs.value",
+  "messageI18n": {
+    "ru": "Значение настройки обязательно к заполнению",
+    "en": "Config value is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ce"
+  },
+  "slug": "validation.configs.translation",
+  "messageI18n": {
+    "ru": "Значение мультиязычной настройки обязательно к заполнению",
+    "en": "Config multi lang value is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326cf"
+  },
+  "slug": "validation.configs.citySlug",
+  "messageI18n": {
+    "ru": "Ключ города обязателен к заполнению",
+    "en": "City key is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d1"
+  },
+  "slug": "currencies.create.duplicate",
+  "messageI18n": {
+    "ru": "Валюта с таким именем уже существует.",
+    "en": "Currency with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d2"
+  },
+  "slug": "currencies.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания валюты.",
+    "en": "Currency creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d3"
+  },
+  "slug": "currencies.create.success",
+  "messageI18n": {
+    "ru": "Валюта создана.",
+    "en": "Currency created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d4"
+  },
+  "slug": "currencies.update.duplicate",
+  "messageI18n": {
+    "ru": "Валюта с таким именем уже существует.",
+    "en": "Currency with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d5"
+  },
+  "slug": "currencies.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления валюты.",
+    "en": "Currency update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d6"
+  },
+  "slug": "currencies.update.success",
+  "messageI18n": {
+    "ru": "Валюта обновлена.",
+    "en": "Currency updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d7"
+  },
+  "slug": "currencies.delete.used",
+  "messageI18n": {
+    "ru": "Валюта используется в странах, её нельзя удалить.",
+    "en": "You can't delete currency is used in countries."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d8"
+  },
+  "slug": "currencies.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления валюты.",
+    "en": "Currency delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326d9"
+  },
+  "slug": "currencies.delete.error",
+  "messageI18n": {
+    "ru": "Валюта удалена.",
+    "en": "Currency removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326da"
+  },
+  "slug": "validation.currencies.id",
+  "messageI18n": {
+    "ru": "ID валюты обязательно к заполнению.",
+    "en": "Currency ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326db"
+  },
+  "slug": "validation.currencies.nameString",
+  "messageI18n": {
+    "ru": "Значение валюты обязательно к заполнению.",
+    "en": "Currency name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326dd"
+  },
+  "slug": "languages.setLanguageAsDefault.error",
+  "messageI18n": {
+    "ru": "Ошибка назначения языка основным.",
+    "en": "Error assigning the primary language.\n"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326de"
+  },
+  "slug": "languages.setLanguageAsDefault.success",
+  "messageI18n": {
+    "ru": "Язык назначен основным.",
+    "en": "The language is set as the main one."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326df"
+  },
+  "slug": "languages.create.duplicate",
+  "messageI18n": {
+    "ru": "Язык с таким именем уже существует.",
+    "en": "Language with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e0"
+  },
+  "slug": "languages.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания языка.",
+    "en": "Language creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e1"
+  },
+  "slug": "languages.create.success",
+  "messageI18n": {
+    "ru": "Язык создан.",
+    "en": "Language created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e2"
+  },
+  "slug": "languages.update.duplicate",
+  "messageI18n": {
+    "ru": "Язык с таким именем уже существует.",
+    "en": "Language with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e3"
+  },
+  "slug": "languages.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления языка.",
+    "en": "Language update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e4"
+  },
+  "slug": "languages.update.success",
+  "messageI18n": {
+    "ru": "Язык обновлён.",
+    "en": "Language updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e5"
+  },
+  "slug": "languages.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления языка.",
+    "en": "Language delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e6"
+  },
+  "slug": "languages.delete.success",
+  "messageI18n": {
+    "ru": "Язык удалён.",
+    "en": "Language removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e7"
+  },
+  "slug": "validation.languages.id",
+  "messageI18n": {
+    "ru": "ID обязательно к заполнению",
+    "en": "Language ID is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e8"
+  },
+  "slug": "validation.languages.name",
+  "messageI18n": {
+    "ru": "Название языка обязательно к заполнению",
+    "en": "Language name is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326e9"
+  },
+  "slug": "validation.languages.slug",
+  "messageI18n": {
+    "ru": "Ключ языка обязателен к заполнению",
+    "en": "Language key is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ea"
+  },
+  "slug": "validation.languages.nativeName",
+  "messageI18n": {
+    "ru": "Нативное название языка обязательно к заполнению",
+    "en": "Language native name is required"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ec"
+  },
+  "slug": "cities.create.notFound",
+  "messageI18n": {
+    "ru": "Страна не найдена.",
+    "en": "Country not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ed"
+  },
+  "slug": "cities.create.duplicate",
+  "messageI18n": {
+    "ru": "Город с таким названием уже существует в данной стране.",
+    "en": "City with same name is already exists in this country."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ee"
+  },
+  "slug": "cities.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания города.",
+    "en": "City creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ef"
+  },
+  "slug": "cities.create.success",
+  "messageI18n": {
+    "ru": "Город создан.",
+    "en": "City created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f0"
+  },
+  "slug": "cities.update.notFound",
+  "messageI18n": {
+    "ru": "Страна или город не найдены.",
+    "en": "Country or city not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f1"
+  },
+  "slug": "cities.update.duplicate",
+  "messageI18n": {
+    "ru": "Город с таким названием уже существует в данной стране.",
+    "en": "City with same name is already exists in this country."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f2"
+  },
+  "slug": "cities.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления города.",
+    "en": "City update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f3"
+  },
+  "slug": "cities.update.success",
+  "messageI18n": {
+    "ru": "Город обновлён.",
+    "en": "City updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f4"
+  },
+  "slug": "cities.delete.notFound",
+  "messageI18n": {
+    "ru": "Страна или город не найдены.",
+    "en": "Country or city not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f5"
+  },
+  "slug": "cities.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления города.",
+    "en": "City delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f6"
+  },
+  "slug": "cities.delete.success",
+  "messageI18n": {
+    "ru": "Город удалён.",
+    "en": "City removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f7"
+  },
+  "slug": "validation.cities.id",
+  "messageI18n": {
+    "ru": "ID города обязательно к заполнению.",
+    "en": "City ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f8"
+  },
+  "slug": "validation.cities.name",
+  "messageI18n": {
+    "ru": "Название города обязательно к заполнению.",
+    "en": "City Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326f9"
+  },
+  "slug": "validation.cities.slug",
+  "messageI18n": {
+    "ru": "Ключ города обязателен к заполнению.",
+    "en": "City Key is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326fb"
+  },
+  "slug": "countries.create.duplicate",
+  "messageI18n": {
+    "ru": "Страна с таким названием уже существует.",
+    "en": "Country with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326fc"
+  },
+  "slug": "countries.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания страны.",
+    "en": "Country creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326fd"
+  },
+  "slug": "countries.create.success",
+  "messageI18n": {
+    "ru": "Страна создана.",
+    "en": "Country created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326fe"
+  },
+  "slug": "countries.update.notFound",
+  "messageI18n": {
+    "ru": "Страна не найдена.",
+    "en": "Country not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326ff"
+  },
+  "slug": "countries.update.duplicate",
+  "messageI18n": {
+    "ru": "Страна с таким названием уже существует.",
+    "en": "Country with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32700"
+  },
+  "slug": "countries.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления страны.",
+    "en": "Country update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32701"
+  },
+  "slug": "countries.update.success",
+  "messageI18n": {
+    "ru": "Страна обновлена.",
+    "en": "Country updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32702"
+  },
+  "slug": "countries.delete.notFound",
+  "messageI18n": {
+    "ru": "Страна не найдена.",
+    "en": "Country not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32703"
+  },
+  "slug": "countries.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления страны.",
+    "en": "Country delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32704"
+  },
+  "slug": "countries.delete.success",
+  "messageI18n": {
+    "ru": "Страна удалена.",
+    "en": "Country removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32705"
+  },
+  "slug": "validation.countries.id",
+  "messageI18n": {
+    "ru": "ID страны обязательно к заполнению.",
+    "en": "Country ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32706"
+  },
+  "slug": "validation.countries.nameString",
+  "messageI18n": {
+    "ru": "Название страны обязательно к заполнению.",
+    "en": "Country Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32707"
+  },
+  "slug": "validation.countries.currency",
+  "messageI18n": {
+    "ru": "Валюта страны обязательна к заполнению.",
+    "en": "Country Currency is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32709"
+  },
+  "slug": "roles.create.duplicate",
+  "messageI18n": {
+    "ru": "Роль с данным названием уже существует.",
+    "en": "Role with the same name already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270a"
+  },
+  "slug": "roles.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания роли.",
+    "en": "Role creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270b"
+  },
+  "slug": "roles.create.success",
+  "messageI18n": {
+    "ru": "Роль создана.",
+    "en": "Role created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270c"
+  },
+  "slug": "roles.update.duplicate",
+  "messageI18n": {
+    "ru": "Роль с данным названием уже существует.",
+    "en": "Role with the same name already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270d"
+  },
+  "slug": "roles.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления роли.",
+    "en": "Role update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270e"
+  },
+  "slug": "roles.update.success",
+  "messageI18n": {
+    "ru": "Роль обновлена.",
+    "en": "Role updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3270f"
+  },
+  "slug": "roles.delete.notFound",
+  "messageI18n": {
+    "ru": "Роль не найдена.",
+    "en": "Role not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32710"
+  },
+  "slug": "roles.delete.rulesNotFound",
+  "messageI18n": {
+    "ru": "Правила роли не найдены.",
+    "en": "Role rules not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32711"
+  },
+  "slug": "roles.delete.rulesError",
+  "messageI18n": {
+    "ru": "Ошибка удаления правил роли.",
+    "en": "Role rules delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32712"
+  },
+  "slug": "roles.delete.guestRoleNotFound",
+  "messageI18n": {
+    "ru": "Гостевая роль не найдена.",
+    "en": "Guest role not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32713"
+  },
+  "slug": "roles.delete.usersUpdateError",
+  "messageI18n": {
+    "ru": "Ошибка обновления пользователей с удаляемой ролью.",
+    "en": "Error updating users with the role to be removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32714"
+  },
+  "slug": "roles.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления роли.",
+    "en": "Role delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32715"
+  },
+  "slug": "roles.delete.success",
+  "messageI18n": {
+    "ru": "Роль удалена.",
+    "en": "Role removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32716"
+  },
+  "slug": "roles.permissions.notFound",
+  "messageI18n": {
+    "ru": "Роль не найдена.",
+    "en": "Role not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32717"
+  },
+  "slug": "roles.permissions.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления прав доступа роли.",
+    "en": "Role permissions update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32718"
+  },
+  "slug": "roles.permissions.success",
+  "messageI18n": {
+    "ru": "Права доступа обновлены.",
+    "en": "Role permissions updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32719"
+  },
+  "slug": "validation.roles.id",
+  "messageI18n": {
+    "ru": "ID роли обязательно к заполнению.",
+    "en": "Role ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3271a"
+  },
+  "slug": "validation.roles.name",
+  "messageI18n": {
+    "ru": "Название роли обязательно к заполнению.",
+    "en": "Role name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3271b"
+  },
+  "slug": "validation.roles.description",
+  "messageI18n": {
+    "ru": "Описание роли обязательно к заполнению.",
+    "en": "Role description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3271c"
+  },
+  "slug": "validation.roles.ruleId",
+  "messageI18n": {
+    "ru": "ID правила роли обязательно к заполнению.",
+    "en": "Role rule ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3271d"
+  },
+  "slug": "validation.roles.navItemId",
+  "messageI18n": {
+    "ru": "ID навигации обязательно к заполнению.",
+    "en": "Nav item ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3271e"
+  },
+  "slug": "validation.roles.operationId",
+  "messageI18n": {
+    "ru": "ID операции обязательно к заполнению.",
+    "en": "Role rule operation ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32720"
+  },
+  "slug": "users.create.duplicate",
+  "messageI18n": {
+    "ru": "Пользователь с данным Email или телефоном уже существует.",
+    "en": "User with the same email or phone already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32721"
+  },
+  "slug": "users.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания пользователя.",
+    "en": "User creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32722"
+  },
+  "slug": "users.create.success",
+  "messageI18n": {
+    "ru": "Пользователь создан.",
+    "en": "User created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32723"
+  },
+  "slug": "users.update.duplicate",
+  "messageI18n": {
+    "ru": "Пользователь с данным Email или телефоном уже существует.",
+    "en": "User with the same email or phone already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32724"
+  },
+  "slug": "users.update.passwordSuccess",
+  "messageI18n": {
+    "ru": "Пароль обновлён.",
+    "en": "Password updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32725"
+  },
+  "slug": "users.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления пользователя.",
+    "en": "User update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32726"
+  },
+  "slug": "users.update.success",
+  "messageI18n": {
+    "ru": "Пользователь обновлён.",
+    "en": "User updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32727"
+  },
+  "slug": "users.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления пользователя.",
+    "en": "User delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32728"
+  },
+  "slug": "users.delete.success",
+  "messageI18n": {
+    "ru": "Пользователь удалён.",
+    "en": "User removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32729"
+  },
+  "slug": "users.signIn.authorized",
+  "messageI18n": {
+    "ru": "Вы уже авторизованы.",
+    "en": "Already authorized."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272a"
+  },
+  "slug": "users.signIn.emailError",
+  "messageI18n": {
+    "ru": "Пользователь с указанным email не найден.",
+    "en": "User not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272b"
+  },
+  "slug": "users.signIn.passwordError",
+  "messageI18n": {
+    "ru": "Введён неправильный пароль.",
+    "en": "Wrong password."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272c"
+  },
+  "slug": "users.signIn.success",
+  "messageI18n": {
+    "ru": "Здравствуйте! Рады Вас снова видеть.",
+    "en": "Hello! Glad to see you again."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272d"
+  },
+  "slug": "users.signOut.error",
+  "messageI18n": {
+    "ru": "Вы не авторизованы.",
+    "en": "Not authorized."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272e"
+  },
+  "slug": "users.signOut.success",
+  "messageI18n": {
+    "ru": "Вы вышли из аккаунта.",
+    "en": "Signed out."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3272f"
+  },
+  "slug": "validation.users.id",
+  "messageI18n": {
+    "ru": "ID пользователя обязательно к заполнению.",
+    "en": "User ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32730"
+  },
+  "slug": "validation.users.name",
+  "messageI18n": {
+    "ru": "Имя пользователя обязательно к заполнению.",
+    "en": "User name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32731"
+  },
+  "slug": "validation.users.lastName",
+  "messageI18n": {
+    "ru": "Фамилия пользователя обязательна к заполнению.",
+    "en": "User Last name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32732"
+  },
+  "slug": "validation.users.secondName",
+  "messageI18n": {
+    "ru": "Отчество пользователя обязательно к заполнению.",
+    "en": "User Second name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32733"
+  },
+  "slug": "validation.users.role",
+  "messageI18n": {
+    "ru": "Роль пользователя обязательна к заполнению.",
+    "en": "User Role is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32734"
+  },
+  "slug": "validation.users.password",
+  "messageI18n": {
+    "ru": "Пароль пользователя обязателен к заполнению.",
+    "en": "User Password is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32735"
+  },
+  "slug": "validation.users.passwordCompare",
+  "messageI18n": {
+    "ru": "Пароль не совпадает.",
+    "en": "Password do not match."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32737"
+  },
+  "slug": "optionsGroups.create.duplicate",
+  "messageI18n": {
+    "ru": "Группа опций с таким именем уже существует.",
+    "en": "Options group with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32738"
+  },
+  "slug": "optionsGroups.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания группы опций.",
+    "en": "Options group creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32739"
+  },
+  "slug": "optionsGroups.create.success",
+  "messageI18n": {
+    "ru": "Группа опций создана.",
+    "en": "Options group created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273a"
+  },
+  "slug": "optionsGroups.update.notFound",
+  "messageI18n": {
+    "ru": "Группа опций не найдена.",
+    "en": "Options group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273b"
+  },
+  "slug": "optionsGroups.update.duplicate",
+  "messageI18n": {
+    "ru": "Группа опций с таким именем уже существует.",
+    "en": "Options group with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273c"
+  },
+  "slug": "optionsGroups.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления группы опций.",
+    "en": "Options group update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273d"
+  },
+  "slug": "optionsGroups.update.success",
+  "messageI18n": {
+    "ru": "Группа опций обновлена.",
+    "en": "Options group updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273e"
+  },
+  "slug": "optionsGroups.delete.used",
+  "messageI18n": {
+    "ru": "Группа опций используется в атрибутах, её нельзя удалить.",
+    "en": "Options group is used in attributes. You can't delete it."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3273f"
+  },
+  "slug": "optionsGroups.delete.notFound",
+  "messageI18n": {
+    "ru": "Группа опций не найдена.",
+    "en": "Options group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32740"
+  },
+  "slug": "optionsGroups.delete.optionsError",
+  "messageI18n": {
+    "ru": "Ошибка удаления опций связанных с группой.",
+    "en": "Connected options delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32741"
+  },
+  "slug": "optionsGroups.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления группы опций.",
+    "en": "Options group delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32742"
+  },
+  "slug": "optionsGroups.delete.success",
+  "messageI18n": {
+    "ru": "Группа опций удалена.",
+    "en": "Options group removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32743"
+  },
+  "slug": "optionsGroups.addOption.groupError",
+  "messageI18n": {
+    "ru": "Группа опции не найдена.",
+    "en": "Options group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32744"
+  },
+  "slug": "optionsGroups.addOption.colorError",
+  "messageI18n": {
+    "ru": "Цвет обязателен.",
+    "en": "Color is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32745"
+  },
+  "slug": "optionsGroups.addOption.iconError",
+  "messageI18n": {
+    "ru": "Иконка обязательна.",
+    "en": "Icon is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32746"
+  },
+  "slug": "optionsGroups.addOption.optionError",
+  "messageI18n": {
+    "ru": "Ошибка создания опции.",
+    "en": "Option creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32747"
+  },
+  "slug": "optionsGroups.addOption.duplicate",
+  "messageI18n": {
+    "ru": "Опция с таким именем уже присутствует в данной группе.",
+    "en": "Option with same name is already exists in this group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32748"
+  },
+  "slug": "optionsGroups.addOption.error",
+  "messageI18n": {
+    "ru": "Ошибка привязки опции к группе.",
+    "en": "Option connect error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32749"
+  },
+  "slug": "optionsGroups.addOption.success",
+  "messageI18n": {
+    "ru": "Опция добавлена в группу.",
+    "en": "Option added to the group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274a"
+  },
+  "slug": "optionsGroups.updateOption.groupError",
+  "messageI18n": {
+    "ru": "Группа опции не найдена.",
+    "en": "Options group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274b"
+  },
+  "slug": "optionsGroups.updateOption.duplicate",
+  "messageI18n": {
+    "ru": "Опция с таким именем уже присутствует в данной группе.",
+    "en": "Option with same name is already exists in this group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274c"
+  },
+  "slug": "optionsGroups.updateOption.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления опции.",
+    "en": "Option update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274d"
+  },
+  "slug": "optionsGroups.updateOption.success",
+  "messageI18n": {
+    "ru": "Опция обновлена.",
+    "en": "Option updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274e"
+  },
+  "slug": "optionsGroups.deleteOption.notFound",
+  "messageI18n": {
+    "ru": "Опция не найдена.",
+    "en": "Option not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3274f"
+  },
+  "slug": "optionsGroups.deleteOption.used",
+  "messageI18n": {
+    "ru": "Опция используется в товарах.",
+    "en": "Option is used in products."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32750"
+  },
+  "slug": "optionsGroups.deleteOption.groupError",
+  "messageI18n": {
+    "ru": "Группа опции не найдена.",
+    "en": "Options group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32751"
+  },
+  "slug": "optionsGroups.deleteOption.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления опции.",
+    "en": "Option delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32752"
+  },
+  "slug": "optionsGroups.deleteOption.success",
+  "messageI18n": {
+    "ru": "Опция удалена.",
+    "en": "Option removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32753"
+  },
+  "slug": "validation.optionsGroup.id",
+  "messageI18n": {
+    "ru": "ID группы опций обязательно к заполнению.",
+    "en": "Options group ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32754"
+  },
+  "slug": "validation.optionsGroup.name",
+  "messageI18n": {
+    "ru": "Название группы опций обязательно к заполнению.",
+    "en": "Options group name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32755"
+  },
+  "slug": "validation.option.id",
+  "messageI18n": {
+    "ru": "ID опции обязательно к заполнению.",
+    "en": "Option ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32756"
+  },
+  "slug": "validation.option.name",
+  "messageI18n": {
+    "ru": "Название опции обязательно к заполнению.",
+    "en": "Option name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32757"
+  },
+  "slug": "validation.option.variantGender",
+  "messageI18n": {
+    "ru": "Род варианта опции обязателен к заполнению.",
+    "en": "Option variant gender is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32758"
+  },
+  "slug": "validation.option.variantValue",
+  "messageI18n": {
+    "ru": "Значение рода опции",
+    "en": "Option variant value is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32759"
+  },
+  "slug": "validation.option.gender",
+  "messageI18n": {
+    "ru": "Значение рода опции",
+    "en": "Option gender is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3275b"
+  },
+  "slug": "attributesGroups.create.duplicate",
+  "messageI18n": {
+    "ru": "Группа атрибутов с таким именем уже существует.",
+    "en": "Attributes group with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3275c"
+  },
+  "slug": "attributesGroups.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания группы атрибутов.",
+    "en": "Attributes group creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3275d"
+  },
+  "slug": "attributesGroups.create.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов создана.",
+    "en": "Attributes group created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3275e"
+  },
+  "slug": "attributesGroups.update.duplicate",
+  "messageI18n": {
+    "ru": "Группа атрибутов с таким именем уже существует.",
+    "en": "Attributes group with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3275f"
+  },
+  "slug": "attributesGroups.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления группы атрибутов.",
+    "en": "Attributes group update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32760"
+  },
+  "slug": "attributesGroups.update.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов обновлена.",
+    "en": "Attributes group updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32761"
+  },
+  "slug": "attributesGroups.delete.used",
+  "messageI18n": {
+    "ru": "Группа атрибутов используется в рубриках, её нельзя удалить.",
+    "en": "Attributes group is used in rubrics. You can't delete it."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32762"
+  },
+  "slug": "attributesGroups.delete.notFound",
+  "messageI18n": {
+    "ru": "Группа атрибутов не найдена.",
+    "en": "Attributes group deleted."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32763"
+  },
+  "slug": "attributesGroups.delete.attributesError",
+  "messageI18n": {
+    "ru": "Ошибка удаления атрибутов связанных с группой.",
+    "en": "Connected attributes delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32764"
+  },
+  "slug": "attributesGroups.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления группы атрибутов.",
+    "en": "Attributes group delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32765"
+  },
+  "slug": "attributesGroups.delete.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов удалена.",
+    "en": "Attributes group removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32766"
+  },
+  "slug": "attributesGroups.addAttribute.groupError",
+  "messageI18n": {
+    "ru": "Группа атрибутов не найдена.",
+    "en": "Attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32767"
+  },
+  "slug": "attributesGroups.addAttribute.attributeError",
+  "messageI18n": {
+    "ru": "Ошибка создания атрибута.",
+    "en": "Attributes creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32768"
+  },
+  "slug": "attributesGroups.addAttribute.duplicate",
+  "messageI18n": {
+    "ru": "Атрибут с таким именем уже присутствует в данной группе.",
+    "en": "Attributes with same name is already exists in this group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32769"
+  },
+  "slug": "attributesGroups.addAttribute.addError",
+  "messageI18n": {
+    "ru": "Ошибка привязки атрибута к группе.",
+    "en": "Attributes connect error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276a"
+  },
+  "slug": "attributesGroups.addAttribute.success",
+  "messageI18n": {
+    "ru": "Атрибут добавлен в группу.",
+    "en": "Attributes added to the group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276b"
+  },
+  "slug": "attributesGroups.updateAttribute.groupError",
+  "messageI18n": {
+    "ru": "Группа атрибутов не найдена.",
+    "en": "Attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276c"
+  },
+  "slug": "attributesGroups.updateAttribute.duplicate",
+  "messageI18n": {
+    "ru": "Атрибут с таким именем уже присутствует в данной группе.",
+    "en": "Attributes with same name is already exists in this group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276d"
+  },
+  "slug": "attributesGroups.updateAttribute.updateError",
+  "messageI18n": {
+    "ru": "Ошибка обновления атрибута.",
+    "en": "Attributes update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276e"
+  },
+  "slug": "attributesGroups.updateAttribute.success",
+  "messageI18n": {
+    "ru": "Атрибут обновлён.",
+    "en": "Attributes updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3276f"
+  },
+  "slug": "attributesGroups.deleteAttribute.deleteError",
+  "messageI18n": {
+    "ru": "Ошибка удаления атрибута.",
+    "en": "Attribute delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32770"
+  },
+  "slug": "attributesGroups.deleteAttribute.used",
+  "messageI18n": {
+    "ru": "Атрибут используется в товарах.",
+    "en": "Attribute is used in products."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32771"
+  },
+  "slug": "attributesGroups.deleteAttribute.groupError",
+  "messageI18n": {
+    "ru": "Группа атрибутов не найдена.",
+    "en": "Attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32772"
+  },
+  "slug": "attributesGroups.deleteAttribute.success",
+  "messageI18n": {
+    "ru": "Атрибут удалён.",
+    "en": "Attribute updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32773"
+  },
+  "slug": "validation.attributesGroups.id",
+  "messageI18n": {
+    "ru": "ID группы атрибутов обязательно к заполнению.",
+    "en": "Attributes group ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32774"
+  },
+  "slug": "validation.attributesGroups.name",
+  "messageI18n": {
+    "ru": "Название группы атрибутов обязательно к заполнению.",
+    "en": "Attributes group Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32775"
+  },
+  "slug": "validation.attributes.id",
+  "messageI18n": {
+    "ru": "ID атрибута обязательно к заполнению.",
+    "en": "Attribute ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32776"
+  },
+  "slug": "validation.attributes.name",
+  "messageI18n": {
+    "ru": "Название атрибута обязательно к заполнению.",
+    "en": "Attribute Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32777"
+  },
+  "slug": "validation.attributes.variant",
+  "messageI18n": {
+    "ru": "Тип атрибута обязателен к заполнению.",
+    "en": "Attribute Variant is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32778"
+  },
+  "slug": "validation.attributes.viewVariant",
+  "messageI18n": {
+    "ru": "Тип отображения атрибута обязателен к заполнению.",
+    "en": "Attribute view variant is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32779"
+  },
+  "slug": "validation.attributes.options",
+  "messageI18n": {
+    "ru": "Группа опций обязательна к заполнению.",
+    "en": "Attribute options group is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3277a"
+  },
+  "slug": "validation.attributes.position",
+  "messageI18n": {
+    "ru": "Позиционирование атрибута в заголовке каталога обязательно к заполнению.",
+    "en": "Attribute position in catalogue title is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3277c"
+  },
+  "slug": "rubricVariants.create.duplicate",
+  "messageI18n": {
+    "ru": "Тип рубрики с таким именем уже существует.",
+    "en": "Rubric variant with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3277d"
+  },
+  "slug": "rubricVariants.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания типа рубрики.",
+    "en": "Rubric variant creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3277e"
+  },
+  "slug": "rubricVariants.create.success",
+  "messageI18n": {
+    "ru": "Тип рубрики создан.",
+    "en": "Rubric variant created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3277f"
+  },
+  "slug": "rubricVariants.update.duplicate",
+  "messageI18n": {
+    "ru": "Тип рубрики с таким именем уже существует.",
+    "en": "Rubric variant with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32780"
+  },
+  "slug": "rubricVariants.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления типа рубрики.",
+    "en": "Rubric variant update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32781"
+  },
+  "slug": "rubricVariants.update.success",
+  "messageI18n": {
+    "ru": "Тип рубрики обновлён.",
+    "en": "Rubric variant updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32782"
+  },
+  "slug": "rubricVariants.delete.used",
+  "messageI18n": {
+    "ru": "Тип рубрики используется в рубриках, его нельзя удалить.",
+    "en": "Rubric variant is used in rubrics. You can't delete it."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32783"
+  },
+  "slug": "rubricVariants.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления типа рубрики.",
+    "en": "Rubric variant delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32784"
+  },
+  "slug": "rubricVariants.delete.success",
+  "messageI18n": {
+    "ru": "Тип рубрики удалён.",
+    "en": "Rubric variant deleted."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32785"
+  },
+  "slug": "validation.rubricVariants.id",
+  "messageI18n": {
+    "ru": "ID типа рубрики обязательно для заполнения.",
+    "en": "Rubric variant ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32786"
+  },
+  "slug": "validation.rubricVariants.name",
+  "messageI18n": {
+    "ru": "Название типа рубрики обязательно для заполнения.",
+    "en": "Rubric variant Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32788"
+  },
+  "slug": "rubrics.create.duplicate",
+  "messageI18n": {
+    "ru": "Рубрика с таким именем уже существует.",
+    "en": "Rubric with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32789"
+  },
+  "slug": "rubrics.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания рубрики.",
+    "en": "Rubric creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278a"
+  },
+  "slug": "rubrics.create.success",
+  "messageI18n": {
+    "ru": "Рубрика создана.",
+    "en": "Rubric created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278b"
+  },
+  "slug": "rubrics.update.notFound",
+  "messageI18n": {
+    "ru": "Рубрика не найдена.",
+    "en": "Rubric not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278c"
+  },
+  "slug": "rubrics.update.duplicate",
+  "messageI18n": {
+    "ru": "Рубрика с таким именем уже существует.",
+    "en": "Rubric with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278d"
+  },
+  "slug": "rubrics.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления рубрики.",
+    "en": "Rubric update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278e"
+  },
+  "slug": "rubrics.update.success",
+  "messageI18n": {
+    "ru": "Рубрика обновлена.",
+    "en": "Rubric updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3278f"
+  },
+  "slug": "rubrics.delete.notFound",
+  "messageI18n": {
+    "ru": "Рубрика не найдена.",
+    "en": "Rubric not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32790"
+  },
+  "slug": "rubrics.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления рубрики.",
+    "en": "Rubric delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32791"
+  },
+  "slug": "rubrics.delete.success",
+  "messageI18n": {
+    "ru": "Рубрика удалена.",
+    "en": "Rubric deleted."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32792"
+  },
+  "slug": "rubrics.addAttributesGroup.notFound",
+  "messageI18n": {
+    "ru": "Группа атрибутов или Рубрика не найдены.",
+    "en": "Rubric or attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32793"
+  },
+  "slug": "rubrics.addAttributesGroup.error",
+  "messageI18n": {
+    "ru": "Ошибка добавления Группы атрибутов в рубрику.",
+    "en": "Add attributes group to rubric error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32794"
+  },
+  "slug": "rubrics.addAttributesGroup.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов добавлена в рубрику.",
+    "en": "Attributes group added to the rubric."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32795"
+  },
+  "slug": "rubrics.updateAttributesGroup.notFound",
+  "messageI18n": {
+    "ru": "Группа атрибутов или Рубрика не найдены.",
+    "en": "Rubric or attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32796"
+  },
+  "slug": "rubrics.updateAttributesGroup.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления Группы атрибутов в рубрике.",
+    "en": "Update attributes group error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32797"
+  },
+  "slug": "rubrics.updateAttributesGroup.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов обновлена.",
+    "en": "Attributes group updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32798"
+  },
+  "slug": "rubrics.deleteAttributesGroup.notFound",
+  "messageI18n": {
+    "ru": "Группа атрибутов или Рубрика не найдены.",
+    "en": "Rubric or attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32799"
+  },
+  "slug": "rubrics.deleteAttributesGroup.ownerError",
+  "messageI18n": {
+    "ru": "Группу атрибутов нельзя удалить т.к. рубрика не является владельцем.",
+    "en": "You can't delete attributes group from not owner rubric"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279a"
+  },
+  "slug": "rubrics.deleteAttributesGroup.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления Группы атрибутов из рубрики.",
+    "en": "Delete attributes group from rubric error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279b"
+  },
+  "slug": "rubrics.deleteAttributesGroup.success",
+  "messageI18n": {
+    "ru": "Группа атрибутов удалена из рубрики.",
+    "en": "Attributes group removed from rubric."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279c"
+  },
+  "slug": "rubrics.addProduct.notFound",
+  "messageI18n": {
+    "ru": "Товар или Рубрика не найдены.",
+    "en": "Rubric or product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279d"
+  },
+  "slug": "rubrics.addProduct.exists",
+  "messageI18n": {
+    "ru": "Товар уже присутствует в группе.",
+    "en": "Product already exists in this group."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279e"
+  },
+  "slug": "rubrics.addProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка добавления товара в рубрику.",
+    "en": "Add product to rubric error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3279f"
+  },
+  "slug": "rubrics.addProduct.success",
+  "messageI18n": {
+    "ru": "Товар добавлен в рубрику.",
+    "en": "Product added to the rubric."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a0"
+  },
+  "slug": "rubrics.deleteProduct.notFound",
+  "messageI18n": {
+    "ru": "Товар или Рубрика не найдены.",
+    "en": "Rubric or product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a1"
+  },
+  "slug": "rubrics.deleteProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товара из рубрики.",
+    "en": "Delete product from rubric error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a2"
+  },
+  "slug": "rubrics.deleteProduct.success",
+  "messageI18n": {
+    "ru": "Товар удалён из рубрики.",
+    "en": "Product removed from rubric."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a3"
+  },
+  "slug": "validation.rubrics.id",
+  "messageI18n": {
+    "ru": "ID рубрики обязательно к заполнению.",
+    "en": "Rubric ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a4"
+  },
+  "slug": "validation.rubrics.name",
+  "messageI18n": {
+    "ru": "Название рубрики обязательно к заполнению.",
+    "en": "Rubric Name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a5"
+  },
+  "slug": "validation.rubrics.description",
+  "messageI18n": {
+    "ru": "Описание рубрики обязательно к заполнению.",
+    "en": "Rubric description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a6"
+  },
+  "slug": "validation.rubrics.shortDescription",
+  "messageI18n": {
+    "ru": "Короткое описание рубрики обязательно к заполнению.",
+    "en": "Rubric short description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a7"
+  },
+  "slug": "validation.rubrics.variant",
+  "messageI18n": {
+    "ru": "Тип рубрики обязателен к заполнению.",
+    "en": "Rubric Variant is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a8"
+  },
+  "slug": "validation.rubrics.defaultTitle",
+  "messageI18n": {
+    "ru": "Заголовок каталога обязателен к заполнению.",
+    "en": "Rubric catalogue default title is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327a9"
+  },
+  "slug": "validation.rubrics.keyword",
+  "messageI18n": {
+    "ru": "Ключевое слово рубрики обязательно к заполнению.",
+    "en": "Rubric keyword is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327aa"
+  },
+  "slug": "validation.rubrics.gender",
+  "messageI18n": {
+    "ru": "Род ключевого слова обязателен к заполнению.",
+    "en": "Rubric keyword gender is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ac"
+  },
+  "slug": "products.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания товара.",
+    "en": "Product creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ad"
+  },
+  "slug": "products.create.success",
+  "messageI18n": {
+    "ru": "Товар создан.",
+    "en": "Product created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ae"
+  },
+  "slug": "products.update.notFound",
+  "messageI18n": {
+    "ru": "Товар не найден.",
+    "en": "Product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327af"
+  },
+  "slug": "products.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления товара.",
+    "en": "Product update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b0"
+  },
+  "slug": "products.connection.exist",
+  "messageI18n": {
+    "ru": "Связь уже существует.",
+    "en": "Connection already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b1"
+  },
+  "slug": "products.connection.createError",
+  "messageI18n": {
+    "ru": "Ошибка создания связи.",
+    "en": "Connection creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b2"
+  },
+  "slug": "products.connection.updateError",
+  "messageI18n": {
+    "ru": "Ошибка обновления связи.",
+    "en": "Connection update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b3"
+  },
+  "slug": "products.connection.deleteError",
+  "messageI18n": {
+    "ru": "Ошибка удаления связи.",
+    "en": "Connection delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b4"
+  },
+  "slug": "products.connection.noAttributeError",
+  "messageI18n": {
+    "ru": "У добавляемого товара отсутствует необходимый атрибут.",
+    "en": "Required attribute is not added to the chosen product."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b5"
+  },
+  "slug": "products.connection.createSuccess",
+  "messageI18n": {
+    "ru": "Связь создана.",
+    "en": "Connection created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b6"
+  },
+  "slug": "products.connection.addProductSuccess",
+  "messageI18n": {
+    "ru": "Товар добавлен в связь.",
+    "en": "Connection product added."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b7"
+  },
+  "slug": "products.connection.deleteProductSuccess",
+  "messageI18n": {
+    "ru": "Товар удалён из связи.",
+    "en": "Connection product removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b8"
+  },
+  "slug": "products.connection.intersect",
+  "messageI18n": {
+    "ru": "Значение атрибута добавляемого товара пересекается со значениями в связи.",
+    "en": "Chosen product attribute value intersects with connection values."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327b9"
+  },
+  "slug": "products.update.attributeVariantError",
+  "messageI18n": {
+    "ru": "Атрибут должен иметь тип Селект.",
+    "en": "Attribute has to be Select variant."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ba"
+  },
+  "slug": "products.update.attributesGroupNotFound",
+  "messageI18n": {
+    "ru": "Группа атрибутов не найдена.",
+    "en": "Attributes group not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327bb"
+  },
+  "slug": "products.update.attributeNotFound",
+  "messageI18n": {
+    "ru": "Атрибут не найден.",
+    "en": "Attribute not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327bc"
+  },
+  "slug": "products.update.attributeValueNotFound",
+  "messageI18n": {
+    "ru": "Значение атрибута не найдено.",
+    "en": "Attribute value not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327bd"
+  },
+  "slug": "products.update.allOptionsAreUsed",
+  "messageI18n": {
+    "ru": "В связи использованы все опции.",
+    "en": "All options are used in this connection."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327be"
+  },
+  "slug": "products.update.success",
+  "messageI18n": {
+    "ru": "Товар обновлён.",
+    "en": "Product updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327bf"
+  },
+  "slug": "products.delete.notFound",
+  "messageI18n": {
+    "ru": "Товар не найден.",
+    "en": "Product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c0"
+  },
+  "slug": "products.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товара.",
+    "en": "Product delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c1"
+  },
+  "slug": "products.delete.success",
+  "messageI18n": {
+    "ru": "Товар удалён.",
+    "en": "Product removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c2"
+  },
+  "slug": "validation.products.id",
+  "messageI18n": {
+    "ru": "ID товара обязательно.",
+    "en": "Product ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c3"
+  },
+  "slug": "validation.productConnections.id",
+  "messageI18n": {
+    "ru": "ID связи товара обязательно.",
+    "en": "Product connection ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c4"
+  },
+  "slug": "validation.products.name",
+  "messageI18n": {
+    "ru": "Название товара обязательно.",
+    "en": "Product name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c5"
+  },
+  "slug": "validation.products.originalName",
+  "messageI18n": {
+    "ru": "Оригинальное название товара обязательно.",
+    "en": "Product original name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c6"
+  },
+  "slug": "validation.products.cardName",
+  "messageI18n": {
+    "ru": "Название карточки товара обязательно.",
+    "en": "Product card name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c7"
+  },
+  "slug": "validation.products.description",
+  "messageI18n": {
+    "ru": "Описание товара обязательно.",
+    "en": "Product description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c8"
+  },
+  "slug": "validation.products.rubrics",
+  "messageI18n": {
+    "ru": "Рубрики товара обязательны.",
+    "en": "Product rubrics is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327c9"
+  },
+  "slug": "validation.products.manufacturer",
+  "messageI18n": {
+    "ru": "Производитель товара обязателен.",
+    "en": "Product manufacturer is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ca"
+  },
+  "slug": "validation.products.price",
+  "messageI18n": {
+    "ru": "Цена товара обязательна.",
+    "en": "Product price is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327cb"
+  },
+  "slug": "validation.products.attributesGroupId",
+  "messageI18n": {
+    "ru": "ID группы атрибутов обязательно.",
+    "en": "Product attributes group ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327cc"
+  },
+  "slug": "validation.products.attributeId",
+  "messageI18n": {
+    "ru": "ID атрибута обязательно.",
+    "en": "Product attribute ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327cd"
+  },
+  "slug": "validation.products.attributeSlug",
+  "messageI18n": {
+    "ru": "Ключ атрибута обязателен.",
+    "en": "Product attribute key is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ce"
+  },
+  "slug": "validation.products.assets",
+  "messageI18n": {
+    "ru": "Фото товара обязательно.",
+    "en": "Product assets is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d0"
+  },
+  "slug": "metrics.create.duplicate",
+  "messageI18n": {
+    "ru": "Тип измерения с таким именем уже существует.",
+    "en": "Metric with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d1"
+  },
+  "slug": "metrics.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания типа измерения.",
+    "en": "Metric creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d2"
+  },
+  "slug": "metrics.create.success",
+  "messageI18n": {
+    "ru": "Тип измерения создан.",
+    "en": "Metric created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d3"
+  },
+  "slug": "metrics.update.duplicate",
+  "messageI18n": {
+    "ru": "Тип измерения с таким именем уже существует.",
+    "en": "Metric with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d4"
+  },
+  "slug": "metrics.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления типа измерения.",
+    "en": "Metric update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d5"
+  },
+  "slug": "metrics.update.success",
+  "messageI18n": {
+    "ru": "Тип измерения обновлён.",
+    "en": "Metric updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d6"
+  },
+  "slug": "metrics.delete.used",
+  "messageI18n": {
+    "ru": "Тип измерения используется в атрибутах, его нельзя удалить.",
+    "en": "Metric is used in attributes. You can't delete it."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d7"
+  },
+  "slug": "metrics.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления типа измерения.",
+    "en": "Metric delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327d8"
+  },
+  "slug": "metrics.delete.success",
+  "messageI18n": {
+    "ru": "Тип измерения удалён.",
+    "en": "Metric deleted."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327da"
+  },
+  "slug": "companies.create.duplicate",
+  "messageI18n": {
+    "ru": "Компания с таким названием уже существует.",
+    "en": "Company already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327db"
+  },
+  "slug": "companies.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания компании.",
+    "en": "Company creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327dc"
+  },
+  "slug": "companies.create.success",
+  "messageI18n": {
+    "ru": "Компания создана.",
+    "en": "Company created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327dd"
+  },
+  "slug": "companies.update.notFound",
+  "messageI18n": {
+    "ru": "Компания не найдена.",
+    "en": "Company not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327de"
+  },
+  "slug": "companies.update.duplicate",
+  "messageI18n": {
+    "ru": "Компания с таким названием уже существует.",
+    "en": "Company already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327df"
+  },
+  "slug": "companies.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления компании.",
+    "en": "Company update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e0"
+  },
+  "slug": "companies.update.success",
+  "messageI18n": {
+    "ru": "Компания обновлена.",
+    "en": "Company updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e1"
+  },
+  "slug": "companies.delete.notFound",
+  "messageI18n": {
+    "ru": "Компания не найдена.",
+    "en": "Company not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e2"
+  },
+  "slug": "companies.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления компании.",
+    "en": "Company delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e3"
+  },
+  "slug": "companies.shopsDelete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления магазинов компании.",
+    "en": "Company shops delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e4"
+  },
+  "slug": "companies.delete.success",
+  "messageI18n": {
+    "ru": "Компания удалена.",
+    "en": "Company removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e5"
+  },
+  "slug": "validation.companies.id",
+  "messageI18n": {
+    "ru": "ID компании обязательно к заполнению.",
+    "en": "Company ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e6"
+  },
+  "slug": "validation.companies.nameString",
+  "messageI18n": {
+    "ru": "Название обязательно к заполнению.",
+    "en": "Company name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e7"
+  },
+  "slug": "validation.companies.owner",
+  "messageI18n": {
+    "ru": "Владелец компании обязателен к заполнению.",
+    "en": "Company owner is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e8"
+  },
+  "slug": "validation.companies.staff",
+  "messageI18n": {
+    "ru": "Сотрудники компании обязательны к заполнению.",
+    "en": "Company staff is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327e9"
+  },
+  "slug": "validation.companies.logo",
+  "messageI18n": {
+    "ru": "Логотип компании обязателен к заполнению.",
+    "en": "Company logo is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327eb"
+  },
+  "slug": "shops.create.duplicate",
+  "messageI18n": {
+    "ru": "Магазин с таким названием уже существует.",
+    "en": "Shop already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ec"
+  },
+  "slug": "shops.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания магазина.",
+    "en": "Shop creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ed"
+  },
+  "slug": "shops.create.success",
+  "messageI18n": {
+    "ru": "Магазин создан.",
+    "en": "Shop created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ee"
+  },
+  "slug": "shops.update.notFound",
+  "messageI18n": {
+    "ru": "Магазин не найден.",
+    "en": "Shop not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ef"
+  },
+  "slug": "shops.update.duplicate",
+  "messageI18n": {
+    "ru": "Магазин с таким названием уже существует.",
+    "en": "Shop already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f0"
+  },
+  "slug": "shops.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления магазина.",
+    "en": "Shop update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f1"
+  },
+  "slug": "shops.update.success",
+  "messageI18n": {
+    "ru": "Магазин обновлен.",
+    "en": "Shop updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f2"
+  },
+  "slug": "shops.delete.notFound",
+  "messageI18n": {
+    "ru": "Магазин не найден.",
+    "en": "Shop not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f3"
+  },
+  "slug": "shops.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления магазина.",
+    "en": "Shop delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f4"
+  },
+  "slug": "shops.delete.success",
+  "messageI18n": {
+    "ru": "Магазин удален.",
+    "en": "Shop removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f5"
+  },
+  "slug": "shops.addProduct.duplicate",
+  "messageI18n": {
+    "ru": "Товар уже присутствует в магазине.",
+    "en": "Product already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f6"
+  },
+  "slug": "shops.addProduct.notFound",
+  "messageI18n": {
+    "ru": "Товар или магазин не найден.",
+    "en": "Product or shop not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f7"
+  },
+  "slug": "shops.addProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка добавления товара в магазин.",
+    "en": "Add product to the shop error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f8"
+  },
+  "slug": "shops.addProduct.success",
+  "messageI18n": {
+    "ru": "Товар добавлен в магазин.",
+    "en": "Product added to the shop."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327f9"
+  },
+  "slug": "shops.deleteProduct.notFound",
+  "messageI18n": {
+    "ru": "Товар или магазин не найдены.",
+    "en": "Product or shop not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327fa"
+  },
+  "slug": "shops.deleteProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товара из магазина.",
+    "en": "Delete product from shop error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327fb"
+  },
+  "slug": "shops.deleteProduct.success",
+  "messageI18n": {
+    "ru": "Товар удалён из магазина.",
+    "en": "Product removed from the shop."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327fc"
+  },
+  "slug": "validation.shops.id",
+  "messageI18n": {
+    "ru": "ID магазина обязательно к заполнению.",
+    "en": "Shop ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327fd"
+  },
+  "slug": "validation.shops.nameString",
+  "messageI18n": {
+    "ru": "Название обязательно к заполнению.",
+    "en": "Shop name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327fe"
+  },
+  "slug": "validation.shops.city",
+  "messageI18n": {
+    "ru": "Город обязателен к заполнению.",
+    "en": "Shop city is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c327ff"
+  },
+  "slug": "validation.shops.assets",
+  "messageI18n": {
+    "ru": "Фото магазина обязательны к заполнению.",
+    "en": "Shop assets is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32800"
+  },
+  "slug": "validation.shops.address",
+  "messageI18n": {
+    "ru": "Адрес магазина обязателен к заполнению.",
+    "en": "Shop address is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32801"
+  },
+  "slug": "validation.shops.logo",
+  "messageI18n": {
+    "ru": "Логотип магазина обязателен к заполнению.",
+    "en": "Shop logo is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32802"
+  },
+  "slug": "validation.shops.products",
+  "messageI18n": {
+    "ru": "Товары магазина обязательны к заполнению.",
+    "en": "Shop products is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32804"
+  },
+  "slug": "shopProducts.create.duplicate",
+  "messageI18n": {
+    "ru": "Товар магазина с таким названием уже существует.",
+    "en": "Shop product already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32805"
+  },
+  "slug": "shopProducts.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания товара в магазин.",
+    "en": "Shop product creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32806"
+  },
+  "slug": "shopProducts.create.success",
+  "messageI18n": {
+    "ru": "Товар магазина создан.",
+    "en": "Shop product created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32807"
+  },
+  "slug": "shopProducts.update.notFound",
+  "messageI18n": {
+    "ru": "Товар магазина не найден.",
+    "en": "Shop product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32808"
+  },
+  "slug": "shopProducts.update.duplicate",
+  "messageI18n": {
+    "ru": "Товар магазина уже существует.",
+    "en": "Shop product already exist."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32809"
+  },
+  "slug": "shopProducts.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления товара магазина.",
+    "en": "Shop product update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280a"
+  },
+  "slug": "shopProducts.update.success",
+  "messageI18n": {
+    "ru": "Товар магазина обновлен.",
+    "en": "Shop product updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280b"
+  },
+  "slug": "shopProducts.delete.notFound",
+  "messageI18n": {
+    "ru": "Товар магазина не найден.",
+    "en": "Shop product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280c"
+  },
+  "slug": "shopProducts.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товара магазина.",
+    "en": "Shop product delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280d"
+  },
+  "slug": "shopProducts.delete.success",
+  "messageI18n": {
+    "ru": "Товар магазина удален.",
+    "en": "Shop product removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280e"
+  },
+  "slug": "validation.shopProducts.id",
+  "messageI18n": {
+    "ru": "ID товара магазина обязательно к заполнению.",
+    "en": "Shop product ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3280f"
+  },
+  "slug": "validation.shopProducts.available",
+  "messageI18n": {
+    "ru": "Наличие обязательно к заполнению.",
+    "en": "Shop product availability is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32810"
+  },
+  "slug": "validation.shopProducts.price",
+  "messageI18n": {
+    "ru": "Цена товара магазина обязательна к заполнению.",
+    "en": "Shop product price is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32811"
+  },
+  "slug": "validation.shopProducts.product",
+  "messageI18n": {
+    "ru": "ID товара из каталога обязательно к заполнению.",
+    "en": "Catalogue product ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32813"
+  },
+  "slug": "carts.addProduct.cartNotFound",
+  "messageI18n": {
+    "ru": "Корзина не найдена.",
+    "en": "Cart not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32814"
+  },
+  "slug": "carts.addProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка добавления товара в корзину.",
+    "en": "Cart product addition error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32815"
+  },
+  "slug": "carts.addProduct.success",
+  "messageI18n": {
+    "ru": "Товар добавлен в корзину.",
+    "en": "Product added to the cart."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32816"
+  },
+  "slug": "carts.repeatOrder.orderNotFound",
+  "messageI18n": {
+    "ru": "Заказ не найден.",
+    "en": "Order not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32817"
+  },
+  "slug": "carts.repeatOrder.error",
+  "messageI18n": {
+    "ru": "Ошибка добавления товаров в корзину.",
+    "en": "Cart products addition error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32818"
+  },
+  "slug": "carts.repeatOrder.shopProductNotFound",
+  "messageI18n": {
+    "ru": "Товар магазина не найден.",
+    "en": "Shop product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32819"
+  },
+  "slug": "carts.repeatOrder.productNotFound",
+  "messageI18n": {
+    "ru": "Товар не найден.",
+    "en": "Product not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281a"
+  },
+  "slug": "carts.repeatOrder.notEnough",
+  "messageI18n": {
+    "ru": "В магазине не достаточно товаров.",
+    "en": "Not enough products in the shop."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281b"
+  },
+  "slug": "carts.repeatOrder.success",
+  "messageI18n": {
+    "ru": "Товары добавлены в корзину.",
+    "en": "Products added to the cart."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281c"
+  },
+  "slug": "carts.updateProduct.cartNotFound",
+  "messageI18n": {
+    "ru": "Корзина не найдена.",
+    "en": "Cart not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281d"
+  },
+  "slug": "carts.updateProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления товара корзины.",
+    "en": "Cart product update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281e"
+  },
+  "slug": "carts.updateProduct.success",
+  "messageI18n": {
+    "ru": "Товар обновлён.",
+    "en": "Product updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3281f"
+  },
+  "slug": "carts.deleteProduct.cartNotFound",
+  "messageI18n": {
+    "ru": "Корзина не найдена.",
+    "en": "Cart not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32820"
+  },
+  "slug": "carts.deleteProduct.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товара из корзины.",
+    "en": "Cart product delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32821"
+  },
+  "slug": "carts.deleteProduct.success",
+  "messageI18n": {
+    "ru": "Товар удалён из корзины.",
+    "en": "Product removed form the cart."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32822"
+  },
+  "slug": "carts.clear.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления товаров из корзины.",
+    "en": "Cart product delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32823"
+  },
+  "slug": "carts.clear.success",
+  "messageI18n": {
+    "ru": "Товары удалены из корзины.",
+    "en": "Product removed form the cart."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32824"
+  },
+  "slug": "validation.carts.shopProductId",
+  "messageI18n": {
+    "ru": "ID товара магазина обязательно.",
+    "en": "Shop product ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32825"
+  },
+  "slug": "validation.carts.amount",
+  "messageI18n": {
+    "ru": "Количество обязательно.",
+    "en": "Cart product amount is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32826"
+  },
+  "slug": "validation.carts.cartProductId",
+  "messageI18n": {
+    "ru": "ID товара корзины обязательно.",
+    "en": "Cart product ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32828"
+  },
+  "slug": "orders.makeAnOrder.guestRoleNotFound",
+  "messageI18n": {
+    "ru": "Исходная роль нового пользователя не найдена.",
+    "en": "New user default role not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32829"
+  },
+  "slug": "orders.makeAnOrder.userCreationError",
+  "messageI18n": {
+    "ru": "Ошибка создания нового пользователя.",
+    "en": "New user creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282a"
+  },
+  "slug": "orders.makeAnOrder.userCreationDuplicate",
+  "messageI18n": {
+    "ru": "Пользователь с данным Email или телефоном уже существует. Войдите в свой аккаунт пожалуйста.",
+    "en": "User with the same email or phone already exists. Please login."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282b"
+  },
+  "slug": "orders.makeAnOrder.productsNotFound",
+  "messageI18n": {
+    "ru": "Не все товары корзины найдены в магазинах.",
+    "en": "Not all products shops are found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282c"
+  },
+  "slug": "orders.makeAnOrder.initialStatusNotFound",
+  "messageI18n": {
+    "ru": "Исходный статус заказа не найден.",
+    "en": "Order default status not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282d"
+  },
+  "slug": "orders.makeAnOrder.empty",
+  "messageI18n": {
+    "ru": "Корзина пуста.",
+    "en": "Cart is empty."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282e"
+  },
+  "slug": "orders.makeAnOrder.error",
+  "messageI18n": {
+    "ru": "Ошибка создания заказа.",
+    "en": "Order creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3282f"
+  },
+  "slug": "orders.makeAnOrder.success",
+  "messageI18n": {
+    "ru": "Заказ создан.",
+    "en": "Order created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32831"
+  },
+  "slug": "brands.create.duplicate",
+  "messageI18n": {
+    "ru": "Бренд с указанным именем уже существует.",
+    "en": "Brand with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32832"
+  },
+  "slug": "brands.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания бренда.",
+    "en": "Brand creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32833"
+  },
+  "slug": "brands.create.success",
+  "messageI18n": {
+    "ru": "Бренд создан.",
+    "en": "Brand created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32834"
+  },
+  "slug": "brands.update.duplicate",
+  "messageI18n": {
+    "ru": "Бренд с указанным именем уже существует.",
+    "en": "Brand with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32835"
+  },
+  "slug": "brands.update.notFound",
+  "messageI18n": {
+    "ru": "Бренд не найден.",
+    "en": "Brand not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32836"
+  },
+  "slug": "brands.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления бренда.",
+    "en": "Brand update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32837"
+  },
+  "slug": "brands.update.success",
+  "messageI18n": {
+    "ru": "Бренд обновлён.",
+    "en": "Brand updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32838"
+  },
+  "slug": "brands.delete.notFound",
+  "messageI18n": {
+    "ru": "Бренд не найден.",
+    "en": "Brand not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32839"
+  },
+  "slug": "brands.delete.used",
+  "messageI18n": {
+    "ru": "Бренд используется в товарах.",
+    "en": "Brand is used in products."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283a"
+  },
+  "slug": "brands.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления бренда.",
+    "en": "Brand delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283b"
+  },
+  "slug": "brands.delete.success",
+  "messageI18n": {
+    "ru": "Бренд удалён.",
+    "en": "Brand removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283c"
+  },
+  "slug": "validation.brands.id",
+  "messageI18n": {
+    "ru": "ID бренда обязательно.",
+    "en": "Brand ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283d"
+  },
+  "slug": "validation.brands.name",
+  "messageI18n": {
+    "ru": "Название бренда обязательно.",
+    "en": "Brand name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283e"
+  },
+  "slug": "validation.brands.url",
+  "messageI18n": {
+    "ru": "Ссылка на сайт бренда обязательна.",
+    "en": "Brand url is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3283f"
+  },
+  "slug": "validation.brands.description",
+  "messageI18n": {
+    "ru": "Описание бренда обязательно.",
+    "en": "Brand description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32841"
+  },
+  "slug": "brandCollections.create.duplicate",
+  "messageI18n": {
+    "ru": "Коллекция бренда с указанным именем уже существует.",
+    "en": "Brand collection with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32842"
+  },
+  "slug": "brandCollections.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания коллекции бренда.",
+    "en": "Brand collection creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32843"
+  },
+  "slug": "brandCollections.create.success",
+  "messageI18n": {
+    "ru": "Коллекция бренда создана.",
+    "en": "Brand collection created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32844"
+  },
+  "slug": "brandCollections.update.duplicate",
+  "messageI18n": {
+    "ru": "Коллекция бренда с указанным именем уже существует.",
+    "en": "Brand collection with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32845"
+  },
+  "slug": "brandCollections.update.notFound",
+  "messageI18n": {
+    "ru": "Коллекция бренда не найдена.",
+    "en": "Brand collection not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32846"
+  },
+  "slug": "brandCollections.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления коллекции бренда.",
+    "en": "Brand collection update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32847"
+  },
+  "slug": "brandCollections.update.success",
+  "messageI18n": {
+    "ru": "Коллекция бренда обновлена.",
+    "en": "Brand collection updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32848"
+  },
+  "slug": "brandCollections.delete.notFound",
+  "messageI18n": {
+    "ru": "Коллекция бренда не найдена.",
+    "en": "Brand collection not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32849"
+  },
+  "slug": "brandCollections.delete.used",
+  "messageI18n": {
+    "ru": "Коллекция бренда используется в товарах.",
+    "en": "Brand collection is used in products."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3284a"
+  },
+  "slug": "brandCollections.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления коллекции бренда.",
+    "en": "Brand collection delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3284b"
+  },
+  "slug": "brandCollections.delete.success",
+  "messageI18n": {
+    "ru": "Коллекция бренда удалена.",
+    "en": "Brand collection removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3284c"
+  },
+  "slug": "validation.brandCollections.id",
+  "messageI18n": {
+    "ru": "ID коллекции бренда обязательно.",
+    "en": "Brand collection ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3284d"
+  },
+  "slug": "validation.brandCollections.name",
+  "messageI18n": {
+    "ru": "Название коллекции бренда обязательно.",
+    "en": "Brand collection name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3284e"
+  },
+  "slug": "validation.brandCollections.description",
+  "messageI18n": {
+    "ru": "Описание коллекции бренда обязательно.",
+    "en": "Brand collection description is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32850"
+  },
+  "slug": "manufacturers.create.duplicate",
+  "messageI18n": {
+    "ru": "Производитель с указанным именем уже существует.",
+    "en": "Manufacturer with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32851"
+  },
+  "slug": "manufacturers.create.error",
+  "messageI18n": {
+    "ru": "Ошибка создания производителя.",
+    "en": "Manufacturer creation error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32852"
+  },
+  "slug": "manufacturers.create.success",
+  "messageI18n": {
+    "ru": "Производитель создан.",
+    "en": "Manufacturer created."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32853"
+  },
+  "slug": "manufacturers.update.duplicate",
+  "messageI18n": {
+    "ru": "Производитель с указанным именем уже существует.",
+    "en": "Manufacturer with same name is already exists."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32854"
+  },
+  "slug": "manufacturers.update.notFound",
+  "messageI18n": {
+    "ru": "Производитель не найден.",
+    "en": "Brand not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32855"
+  },
+  "slug": "manufacturers.update.error",
+  "messageI18n": {
+    "ru": "Ошибка обновления производителя.",
+    "en": "Manufacturer update error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32856"
+  },
+  "slug": "manufacturers.update.success",
+  "messageI18n": {
+    "ru": "Производитель обновлён.",
+    "en": "Brand updated."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32857"
+  },
+  "slug": "manufacturers.delete.notFound",
+  "messageI18n": {
+    "ru": "Производитель не найден.",
+    "en": "Manufacturer not found."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32858"
+  },
+  "slug": "manufacturers.delete.used",
+  "messageI18n": {
+    "ru": "Производитель используется в товарах.",
+    "en": "Manufacturer is used in products."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c32859"
+  },
+  "slug": "manufacturers.delete.error",
+  "messageI18n": {
+    "ru": "Ошибка удаления производителя.",
+    "en": "Manufacturer delete error."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3285a"
+  },
+  "slug": "manufacturers.delete.success",
+  "messageI18n": {
+    "ru": "Производитель удалён.",
+    "en": "Manufacturer removed."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3285b"
+  },
+  "slug": "validation.manufacturers.id",
+  "messageI18n": {
+    "ru": "ID производителя обязательно.",
+    "en": "Manufacturer ID is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3285c"
+  },
+  "slug": "validation.manufacturers.name",
+  "messageI18n": {
+    "ru": "Название производителя обязательно.",
+    "en": "Manufacturer name is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3285d"
+  },
+  "slug": "validation.manufacturers.url",
+  "messageI18n": {
+    "ru": "Ссылка на сайт производителя обязательна.",
+    "en": "Manufacturer url is required."
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c3285e"
+  },
+  "slug": "validation.manufacturers.description",
+  "messageI18n": {
+    "ru": "Описание производителя обязательно.",
+    "en": "Manufacturer description is required."
+  }
+}]

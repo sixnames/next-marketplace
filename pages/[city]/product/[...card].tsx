@@ -12,12 +12,12 @@ import RatingStars from 'components/RatingStars/RatingStars';
 import ReachTabs from 'components/ReachTabs/ReachTabs';
 import { PRODUCT_CARD_RUBRIC_SLUG_PREFIX } from 'config/common';
 import { useAppContext } from 'context/appContext';
-import { useSiteContext } from 'context/siteContext';
 import {
   CardFeatureFragment,
   GetCatalogueCardQuery,
   useUpdateProductCounterMutation,
 } from 'generated/apolloComponents';
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -78,7 +78,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
   } = cardData;
   const city = useSessionCity();
   const { query } = useRouter();
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart } = useCartMutations();
   const { isMobile } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
 

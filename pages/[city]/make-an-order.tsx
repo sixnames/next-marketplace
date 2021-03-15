@@ -6,13 +6,15 @@ import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon/Icon';
 import Inner from 'components/Inner/Inner';
 import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import RequestError from 'components/RequestError/RequestError';
 import Spinner from 'components/Spinner/Spinner';
 import Title from 'components/Title/Title';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { useSiteContext } from 'context/siteContext';
 import { useUserContext } from 'context/userContext';
 import { Form, Formik } from 'formik';
 import { CartProductFragment } from 'generated/apolloComponents';
+import useCart from 'hooks/useCart';
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
@@ -99,16 +101,14 @@ const MakeAnOrderRoute: React.FC = () => {
   const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { makeAnOrder, loadingCart } = useSiteContext();
+  const { loadingCart, cart } = useCart();
+  const { makeAnOrder } = useCartMutations();
   const { me } = useUserContext();
-  const { cart } = useSiteContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
 
-  const { productsCount, cartProducts } = cart;
-
-  if (loadingCart) {
+  if (loadingCart && !cart) {
     return (
       <div className={classes.cart}>
         <Breadcrumbs currentPageName={'Корзина'} />
@@ -119,6 +119,20 @@ const MakeAnOrderRoute: React.FC = () => {
       </div>
     );
   }
+
+  if (!cart) {
+    return (
+      <div className={classes.cart}>
+        <Breadcrumbs currentPageName={'Корзина'} />
+
+        <Inner lowTop testId={'cart'}>
+          <RequestError />
+        </Inner>
+      </div>
+    );
+  }
+
+  const { productsCount, cartProducts } = cart;
 
   if (cartProducts.length < 1) {
     return (

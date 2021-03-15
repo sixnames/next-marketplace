@@ -51,7 +51,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     rubricD,
     productA,
     productB,
+    productC,
     productD,
+    productF,
     connectionProductA,
     connectionProductB,
     connectionProductC,
@@ -434,7 +436,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   // Update products shops data
   const updatedProductA = await updateProductShopsData({ productId: productA._id });
   const updatedProductB = await updateProductShopsData({ productId: productB._id });
+  await updateProductShopsData({ productId: productC._id });
   const updatedProductD = await updateProductShopsData({ productId: productD._id });
+  await updateProductShopsData({ productId: productF._id });
   const updatedConnectionProductA = await updateProductShopsData({
     productId: connectionProductA._id,
   });

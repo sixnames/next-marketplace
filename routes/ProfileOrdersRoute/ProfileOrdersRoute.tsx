@@ -1,3 +1,4 @@
+import useCartMutations from 'hooks/useCartMutations';
 import * as React from 'react';
 import classes from './ProfileOrdersRoute.module.css';
 import {
@@ -16,7 +17,6 @@ import Tooltip from '../../components/TTip/Tooltip';
 import Image from 'next/image';
 import ProductShopPrices from '../../components/Product/ProductShopPrices/ProductShopPrices';
 import Icon from '../../components/Icon/Icon';
-import { useSiteContext } from 'context/siteContext';
 import { noNaN } from 'lib/numbers';
 
 interface ProfileOrderProductInterface {
@@ -24,7 +24,7 @@ interface ProfileOrderProductInterface {
 }
 
 const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProduct }) => {
-  const { addProductToCart } = useSiteContext();
+  const { addProductToCart } = useCartMutations();
   const {
     name,
     shopProduct,
@@ -121,7 +121,7 @@ interface ProfileOrderInterface {
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const { itemId, createdAt, formattedTotalPrice, status, products } = order;
-  const { repeatAnOrder } = useSiteContext();
+  const { repeatAnOrder } = useCartMutations();
 
   return (
     <Disclosure onChange={() => setIsOpen((prevState) => !prevState)}>

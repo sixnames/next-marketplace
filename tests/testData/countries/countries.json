@@ -1,0 +1,23 @@
+[{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b2"
+  },
+  "citiesIds": [
+    {
+      "$oid": "604cad82b604c1c320c326b0"
+    }
+  ],
+  "name": "Россия",
+  "currency": "р."
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b3"
+  },
+  "name": "USA",
+  "citiesIds": [
+    {
+      "$oid": "604cad82b604c1c320c326b1"
+    }
+  ],
+  "currency": "$"
+}]

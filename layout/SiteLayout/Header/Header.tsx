@@ -1,3 +1,4 @@
+import useCart from 'hooks/useCart';
 import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import { Fragment, useEffect, useRef } from 'react';
@@ -130,9 +131,9 @@ const HeaderCartDropdownButton: React.FC<HeaderCartDropdownButtonInterface> = ({
 };
 
 const HeaderCartLink: React.FC = () => {
-  const { cart } = useSiteContext();
+  const { cart } = useCart();
 
-  if (cart.productsCount > 0) {
+  if (cart && cart.productsCount > 0) {
     return (
       <Menu>
         {({ isOpen }) => {

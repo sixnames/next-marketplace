@@ -1,8 +1,8 @@
+import useCartMutations from 'hooks/useCartMutations';
 import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
-import { useSiteContext } from 'context/siteContext';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 import RatingStars from '../../RatingStars/RatingStars';
 import Image from 'next/image';
@@ -27,7 +27,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 }) => {
   const city = useSessionCity();
   const [amount, setAmount] = React.useState<number>(1);
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
     mainImage,

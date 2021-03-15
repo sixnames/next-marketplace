@@ -1,0 +1,19 @@
+[{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b0"
+  },
+  "slug": "msk",
+  "nameI18n": {
+    "ru": "Москва",
+    "en": "Moscow"
+  }
+},{
+  "_id": {
+    "$oid": "604cad82b604c1c320c326b1"
+  },
+  "slug": "ny",
+  "nameI18n": {
+    "ru": "Нью Йорк",
+    "en": "New York"
+  }
+}]

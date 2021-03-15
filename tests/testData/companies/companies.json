@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "$oid": "604cad85b604c1c320c328a4"
+  },
+  "itemId": "1",
+  "name": "companyA",
+  "slug": "companya",
+  "contacts": {
+    "emails": [
+      "companyA@mail.com",
+      "companyAB@mail.com"
+    ],
+    "phones": [
+      "+78889990099",
+      "+78889990199"
+    ]
+  },
+  "ownerId": {
+    "$oid": "604cad83b604c1c320c3286b"
+  },
+  "logo": {
+    "url": "https://wpnextdev.s3.eu-central-1.amazonaws.com/companies/1/1.png",
+    "index": 0
+  },
+  "staffIds": [
+    {
+      "$oid": "604cad83b604c1c320c3286c"
+    }
+  ],
+  "shopsIds": [
+    {
+      "$oid": "604cad85b604c1c320c328a5"
+    },
+    {
+      "$oid": "604cad85b604c1c320c328ac"
+    }
+  ],
+  "createdAt": {
+    "$date": "2021-03-13T12:18:14.245Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-13T12:18:14.245Z"
+  }
+}]

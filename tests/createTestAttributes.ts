@@ -76,7 +76,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   const attributeViewVariantOuterRating = ATTRIBUTE_VIEW_VARIANT_OUTER_RATING as AttributeViewVariantModel;
 
   // Outer rating
-  const attributeOuterRatingAId = new ObjectId();
+  const attributeOuterRatingAId = new ObjectId('604cad83b604c1c320c3287f');
   const attributeOuterRatingA: AttributeModel = {
     _id: attributeOuterRatingAId,
     nameI18n: {
@@ -89,7 +89,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     options: [],
   };
 
-  const attributeOuterRatingBId = new ObjectId();
+  const attributeOuterRatingBId = new ObjectId('604cad83b604c1c320c32880');
   const attributeOuterRatingB: AttributeModel = {
     _id: attributeOuterRatingBId,
     nameI18n: {
@@ -102,7 +102,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     options: [],
   };
 
-  const attributeOuterRatingCId = new ObjectId();
+  const attributeOuterRatingCId = new ObjectId('604cad83b604c1c320c32881');
   const attributeOuterRatingC: AttributeModel = {
     _id: attributeOuterRatingCId,
     nameI18n: {
@@ -115,7 +115,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     options: [],
   };
 
-  const attributesGroupOuterRatingId = new ObjectId();
+  const attributesGroupOuterRatingId = new ObjectId('604cad83b604c1c320c32882');
   const attributesGroupOuterRating: AttributesGroupModel = {
     _id: attributesGroupOuterRatingId,
     attributesIds: [attributeOuterRatingAId, attributeOuterRatingBId, attributeOuterRatingCId],
@@ -126,7 +126,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   // Wine features
-  const attributeWineCombinationsId = new ObjectId();
+  const attributeWineCombinationsId = new ObjectId('604cad83b604c1c320c32883');
   const attributeWineCombinationsSlug = 'combinations';
   const attributeWineCombinations: AttributeModel = {
     _id: attributeWineCombinationsId,
@@ -144,7 +144,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     }),
   };
 
-  const attributeWineVintageId = new ObjectId();
+  const attributeWineVintageId = new ObjectId('604cad83b604c1c320c32884');
   const attributeWineVintageSlug = 'vintaz_vina';
   const attributeWineVintage: AttributeModel = {
     _id: attributeWineVintageId,
@@ -166,7 +166,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     },
   };
 
-  const attributeWineColorId = new ObjectId();
+  const attributeWineColorId = new ObjectId('604cad83b604c1c320c32885');
   const attributeWineColorSlug = 'tsvet_vina';
   const attributeWineColor: AttributeModel = {
     _id: attributeWineColorId,
@@ -188,7 +188,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     },
   };
 
-  const attributeWineVariantId = new ObjectId();
+  const attributeWineVariantId = new ObjectId('604cad83b604c1c320c32886');
   const attributeWineVariantSlug = 'tip_vina';
   const attributeWineVariant: AttributeModel = {
     _id: attributeWineVariantId,
@@ -210,7 +210,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     },
   };
 
-  const attributeStringId = new ObjectId();
+  const attributeStringId = new ObjectId('604cad83b604c1c320c32887');
   const attributeString: AttributeModel = {
     _id: attributeStringId,
     nameI18n: {
@@ -223,7 +223,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
     options: [],
   };
 
-  const attributeNumberId = new ObjectId();
+  const attributeNumberId = new ObjectId('604cad83b604c1c320c32888');
   const attributeNumber: AttributeModel = {
     _id: attributeNumberId,
     nameI18n: {
@@ -237,7 +237,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   const attributesGroupWineFeatures: AttributesGroupModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId('604cad83b604c1c320c32889'),
     nameI18n: {
       [DEFAULT_LOCALE]: 'Характеристики вина',
       [SECONDARY_LOCALE]: 'Wine features',
@@ -253,7 +253,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   const attributesGroupForDelete: AttributesGroupModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId('604cad83b604c1c320c3288a'),
     nameI18n: {
       [DEFAULT_LOCALE]: 'Группа атрибутов для удаления',
       [SECONDARY_LOCALE]: 'Group for delete',
@@ -262,7 +262,7 @@ export const createTestAttributes = async (): Promise<CreateTestAttributesPayloa
   };
 
   const attributesGroupWhiskeyFeatures: AttributesGroupModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId('604cad83b604c1c320c3288b'),
     nameI18n: {
       [DEFAULT_LOCALE]: 'Характеристики виски',
       [SECONDARY_LOCALE]: 'Whiskey features',

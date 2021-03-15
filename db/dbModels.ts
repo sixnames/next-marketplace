@@ -539,6 +539,7 @@ export interface RoleRuleModel {
 }
 
 export interface RoleBase {
+  _id: ObjectIdModel;
   nameI18n: TranslationModel;
   description?: string | null;
   slug: string;
@@ -546,7 +547,6 @@ export interface RoleBase {
 }
 
 export interface RoleModel extends RoleBase, TimestampModel {
-  _id: ObjectIdModel;
   rules: RoleRuleModel[];
   allowedAppNavigation: ObjectIdModel[];
 }

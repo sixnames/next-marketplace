@@ -218,6 +218,7 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   const guestRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId(),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Гость',
         [SECONDARY_LOCALE]: 'Guest',
@@ -232,6 +233,7 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   const companyOwnerRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId(),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Владелец компании',
         [SECONDARY_LOCALE]: 'Company owner',
@@ -246,6 +248,7 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   const companyManagerRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId(),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Сотрудник компании',
         [SECONDARY_LOCALE]: 'Company manager',
@@ -260,6 +263,7 @@ export async function createInitialRoles(): Promise<CreateInitialRolesPayloadInt
   const adminRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId(),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Админ',
         [SECONDARY_LOCALE]: 'Admin',

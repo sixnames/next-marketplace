@@ -217,7 +217,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   };
 
   interface CreateTestProductInterface extends ProductAttributesInterface {
-    _id?: ObjectIdModel;
+    _id: ObjectIdModel;
     rubricId: ObjectIdModel;
     brandSlug?: string;
     brandCollectionSlug?: string;
@@ -230,7 +230,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   }
 
   async function createTestProduct({
-    _id = new ObjectId(),
+    _id,
     wineColorOption,
     wineTypeOption,
     wineVintageOption,
@@ -304,6 +304,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   }
 
   const productA = await createTestProduct({
+    _id: new ObjectId('604cad83b604c1c320c3289b'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[2],
     rubricId: rubricA._id,
@@ -316,6 +317,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productB = await createTestProduct({
+    _id: new ObjectId('604cad83b604c1c320c3289c'),
     wineColorOption: attributeWineColor.options[2],
     wineTypeOption: attributeWineVariant.options[2],
     rubricId: rubricA._id,
@@ -329,6 +331,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productC = await createTestProduct({
+    _id: new ObjectId('604cad83b604c1c320c3289d'),
     wineColorOption: attributeWineColor.options[0],
     wineTypeOption: attributeWineVariant.options[0],
     rubricId: rubricB._id,
@@ -341,6 +344,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productD = await createTestProduct({
+    _id: new ObjectId('604cad84b604c1c320c3289e'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
     rubricId: rubricA._id,
@@ -353,6 +357,7 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
   });
 
   const productF = await createTestProduct({
+    _id: new ObjectId('604cad84b604c1c320c3289f'),
     wineColorOption: attributeWineColor.options[1],
     wineTypeOption: attributeWineVariant.options[1],
     rubricId: rubricA._id,
@@ -362,9 +367,9 @@ export const createTestProducts = async (): Promise<CreateTestProductsPayloadInt
     itemId: '5',
   });
 
-  const connectionProductAId = new ObjectId();
-  const connectionProductBId = new ObjectId();
-  const connectionProductCId = new ObjectId();
+  const connectionProductAId = new ObjectId('604cad84b604c1c320c328a0');
+  const connectionProductBId = new ObjectId('604cad84b604c1c320c328a1');
+  const connectionProductCId = new ObjectId('604cad84b604c1c320c328a2');
   const connectionA: ProductConnectionModel = {
     _id: new ObjectId(),
     attributeId: attributeWineVintage._id,

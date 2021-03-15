@@ -11,6 +11,8 @@ export interface GetFakeBrandInterface {
   itemId: string;
   brandCollectionName: string;
   brandName: string;
+  brandConnectionIdString: string;
+  brandIdString: string;
 }
 
 export interface GetFakeBrandPayloadInterface {
@@ -22,8 +24,10 @@ export async function getFakeBrand({
   itemId,
   brandCollectionName,
   brandName,
+  brandConnectionIdString,
+  brandIdString,
 }: GetFakeBrandInterface): Promise<GetFakeBrandPayloadInterface> {
-  const brandCollectionId = new ObjectId();
+  const brandCollectionId = new ObjectId(brandConnectionIdString);
   const brandCollection: BrandCollectionModel = {
     _id: brandCollectionId,
     itemId,
@@ -42,7 +46,7 @@ export async function getFakeBrand({
   };
 
   const brand: BrandModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId(brandIdString),
     itemId,
     nameI18n: {
       [DEFAULT_LOCALE]: brandName,
@@ -67,6 +71,7 @@ export async function getFakeBrand({
 }
 
 interface GetFakeManufacturerInterface {
+  idString: string;
   itemId: string;
   manufacturerName: string;
 }
@@ -74,9 +79,10 @@ interface GetFakeManufacturerInterface {
 export async function getFakeManufacturer({
   itemId,
   manufacturerName,
+  idString,
 }: GetFakeManufacturerInterface): Promise<ManufacturerModel> {
   return {
-    _id: new ObjectId(),
+    _id: new ObjectId(idString),
     itemId,
     nameI18n: {
       [DEFAULT_LOCALE]: manufacturerName,
@@ -119,6 +125,8 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
 
   // Brand A
   const { brandCollection: brandCollectionA, brand: brandA } = await getFakeBrand({
+    brandIdString: '604cad83b604c1c320c32893',
+    brandConnectionIdString: '604cad83b604c1c320c32892',
     itemId: '1',
     brandName: 'brandA',
     brandCollectionName: 'brandCollectionA',
@@ -126,6 +134,8 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
 
   // Brand B
   const { brandCollection: brandCollectionB, brand: brandB } = await getFakeBrand({
+    brandIdString: '604cad83b604c1c320c32895',
+    brandConnectionIdString: '604cad83b604c1c320c32894',
     itemId: '2',
     brandName: 'brandB',
     brandCollectionName: 'brandCollectionB',
@@ -133,6 +143,8 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
 
   // Brand C
   const { brandCollection: brandCollectionC, brand: brandC } = await getFakeBrand({
+    brandIdString: '604cad83b604c1c320c32897',
+    brandConnectionIdString: '604cad83b604c1c320c32896',
     itemId: '3',
     brandName: 'brandC',
     brandCollectionName: 'brandCollectionC',
@@ -140,18 +152,21 @@ export async function createTestBrands(): Promise<CreateTestBrandsPayloadInterfa
 
   // Manufacturer A
   const manufacturerA = await getFakeManufacturer({
+    idString: '604cad83b604c1c320c32898',
     itemId: '1',
     manufacturerName: 'manufacturerA',
   });
 
   // Manufacturer B
   const manufacturerB = await getFakeManufacturer({
+    idString: '604cad83b604c1c320c32899',
     itemId: '2',
     manufacturerName: 'manufacturerB',
   });
 
   // Manufacturer C
   const manufacturerC = await getFakeManufacturer({
+    idString: '604cad83b604c1c320c3289a',
     itemId: '3',
     manufacturerName: 'manufacturerC',
   });

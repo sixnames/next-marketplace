@@ -11,7 +11,7 @@ jobs:
       - name: deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd www && git pull && docker-compose -f docker-compose.stage.yml up -d && yarn install && yarn build
+          command: cd www && git pull && docker-compose -f docker-compose.stage.yml up -d && npm install && npm run build
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USERNAME }}
           privateKey: ${{ secrets.DEV_PRIVATE_KEY}}

@@ -30,6 +30,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
+    originalName,
     mainImage,
     slug,
     cardPrices,
@@ -49,7 +50,13 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
       <div className={`${classes.leftColumn}`}>
         <div className={`${classes.image}`}>
           <div className={classes.imageHolder}>
-            <Image src={mainImage} layout='fill' objectFit='contain' alt={name} title={name} />
+            <Image
+              src={mainImage}
+              layout='fill'
+              objectFit='contain'
+              alt={originalName}
+              title={originalName}
+            />
           </div>
         </div>
         <div className={`${classes.rating}`}>
@@ -61,7 +68,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         <div className={classes.art}>Артикул: {itemId}</div>
         <div className={classes.content}>
           <div className={classes.contentColumn}>
-            <div className={classes.name}>{name}</div>
+            <div className={classes.name}>{originalName}</div>
+            <div className={classes.nameTranslation}>{name}</div>
             <div className={classes.listFeatures}>
               {listFeatures.map(({ attributeName, attributeId, readableValue }) => {
                 return (
@@ -165,7 +173,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         className={classes.link}
         href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >
-        {name}
+        {originalName}
       </Link>
     </LayoutCard>
   );

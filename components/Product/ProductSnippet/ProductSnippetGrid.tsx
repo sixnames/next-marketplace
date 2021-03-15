@@ -28,6 +28,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
+    originalName,
     mainImage,
     slug,
     cardPrices,
@@ -57,14 +58,15 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             layout={'fill'}
             objectFit={'contain'}
             objectPosition={'center bottom'}
-            alt={name}
-            title={name}
+            alt={originalName}
+            title={originalName}
           />
         </div>
       </div>
       <div className={classes.content}>
         <div className={classes.contentTop}>
-          <div className={classes.name}>{name}</div>
+          <div className={classes.name}>{originalName}</div>
+          <div className={classes.nameTranslation}>{name}</div>
           <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
         <ProductSnippetPrice isShopless={isShopless} value={cardPrices.min} />
@@ -108,7 +110,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
         className={classes.link}
         href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >
-        {name}
+        {originalName}
       </Link>
     </LayoutCard>
   );

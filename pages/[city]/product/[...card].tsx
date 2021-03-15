@@ -64,6 +64,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
     _id,
     mainImage,
     name,
+    originalName,
     cardPrices,
     connections,
     itemId,
@@ -126,7 +127,7 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
 
   return (
     <div className={classes.card} data-cy={`card-${cardData.slug}`}>
-      <Breadcrumbs currentPageName={name} config={cardBreadcrumbs} />
+      <Breadcrumbs currentPageName={originalName} config={cardBreadcrumbs} />
 
       <Inner>
         <div className={classes.mainFrame}>
@@ -135,14 +136,21 @@ const CardRoute: React.FC<CardRouteInterface> = ({ cardData }) => {
           <div className={classes.mainData}>
             <div className={classes.image}>
               <div className={classes.imageHolder}>
-                <Image src={mainImage} alt={name} title={name} layout='fill' objectFit='contain' />
+                <Image
+                  src={mainImage}
+                  alt={originalName}
+                  title={originalName}
+                  layout='fill'
+                  objectFit='contain'
+                />
               </div>
             </div>
             <div className={classes.mainDataContent}>
               <div className={classes.cardNameHolder}>
                 <div className={classes.cardName}>
-                  <h1>{name}</h1>
+                  <h1>{originalName}</h1>
                 </div>
+                <div className={classes.cardNameTranslation}>{name}</div>
                 <div className={classes.cardArt}>Артикул: {itemId}</div>
               </div>
 

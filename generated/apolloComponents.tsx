@@ -4006,7 +4006,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'slug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -5084,6 +5084,7 @@ export const ProductSnippetFragmentDoc = gql`
   _id
   itemId
   name
+  originalName
   slug
   mainImage
   shopsCount

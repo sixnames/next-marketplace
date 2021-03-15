@@ -111,6 +111,12 @@
   font-weight: 700;
 }
 
+.cardNameTranslation {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+  margin-bottom: 0.5rem;
+}
+
 .cardArt {
   margin-top: 0.25rem;
   color: var(--textSecondaryColor);

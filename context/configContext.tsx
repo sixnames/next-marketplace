@@ -1,10 +1,10 @@
-import { InitialQueryCityFragment, SiteConfigFragment } from 'generated/apolloComponents';
+import { CityModel, ConfigModel } from 'db/dbModels';
 import * as React from 'react';
 import { noNaN } from 'lib/numbers';
 
 interface ConfigContextInterface {
-  configs: SiteConfigFragment[];
-  cities: InitialQueryCityFragment[];
+  configs: ConfigModel[];
+  cities: CityModel[];
 }
 
 const ConfigContext = React.createContext<ConfigContextInterface>({

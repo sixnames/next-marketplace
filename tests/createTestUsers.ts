@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import { ObjectId } from 'mongodb';
 import {
   createInitialTestData,
   CreateInitialTestDataPayloadInterface,
@@ -30,6 +31,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const sampleUser = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32869'),
       email: 'sampleUser@mail.com',
       name: 'sampleUserN',
       secondName: 'sampleUserS',
@@ -38,7 +40,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '2',
       roleId: guestRole._id,
       password: sampleUserPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -50,6 +52,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const sampleUserB = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286a'),
       email: 'sampleUserB@mail.com',
       name: 'sampleUserBN',
       secondName: 'sampleUserBS',
@@ -58,7 +61,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '3',
       roleId: guestRole._id,
       password: sampleUserBPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -70,6 +73,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyOwner = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286b'),
       email: 'companyOwner@mail.com',
       name: 'companyOwnerN',
       secondName: 'companyOwnerS',
@@ -78,7 +82,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '4',
       roleId: companyOwnerRole._id,
       password: companyOwnerPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -90,6 +94,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyManager = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286c'),
       email: 'companyManager@mail.com',
       name: 'companyManagerN',
       secondName: 'companyManagerS',
@@ -98,7 +103,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
       itemId: '5',
       roleId: companyManagerRole._id,
       password: companyManagerPasswordHash,
-      archive: false,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     },

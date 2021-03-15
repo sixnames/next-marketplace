@@ -27,6 +27,7 @@ export const productSnippedFragment = gql`
     _id
     itemId
     name
+    originalName
     slug
     mainImage
     shopsCount

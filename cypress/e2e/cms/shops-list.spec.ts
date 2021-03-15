@@ -1,10 +1,10 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { MOCK_ADDRESS_A } from 'tests/mockData';
 
 describe('Shops list', () => {
   let mockData: CreateTestDataPayloadInterface;
-  const shopsPath = `/cms/shops`;
+  const shopsPath = `/${DEFAULT_CITY}/cms/shops`;
 
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
@@ -74,11 +74,11 @@ describe('Shops list', () => {
     const modal = 'product-search-modal';
     const newProductAvailableAmount = `77777`;
     const newProductPriceAmount = `88888`;
-    const mockRubricLevelTwoNameB = mockData.rubricLevelTwoBDefaultName;
+    const mockRubricLevelTwoNameB = mockData.rubricBDefaultName;
     const newProductName = mockData.productC.nameI18n[DEFAULT_LOCALE];
     cy.getByCy(`add-shop-product`).click();
     cy.getByCy(modal).should('exist');
-    cy.getBySelector(`[data-cy=${modal}] [data-cy=tree-${mockRubricLevelTwoNameB}]`).click();
+    cy.getBySelector(`[data-cy="${modal}"] [data-cy="tree-${mockRubricLevelTwoNameB}"]`).click();
     cy.getByCy(`${newProductName}-create`).click();
     cy.getByCy(`update-shop-product-modal`).should('exist');
     cy.getByCy(`available`).clear().type(newProductAvailableAmount);

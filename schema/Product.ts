@@ -92,7 +92,6 @@ export const Product = objectType({
     t.nonNull.boolean('active');
     t.nonNull.string('slug');
     t.nonNull.string('originalName');
-    t.nonNull.boolean('archive');
     t.string('brandSlug');
     t.string('brandCollectionSlug');
     t.string('manufacturerSlug');
@@ -149,13 +148,16 @@ export const Product = objectType({
     });
 
     // Product rubrics list resolver
-    t.nonNull.list.nonNull.field('rubrics', {
+    t.nonNull.field('rubric', {
       type: 'Rubric',
-      resolve: async (source): Promise<RubricModel[]> => {
+      resolve: async (source): Promise<RubricModel> => {
         const db = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const rubrics = await rubricsCollection.find({ _id: source.rubricId }).toArray();
-        return rubrics;
+        const rubric = await rubricsCollection.findOne({ _id: source.rubricId });
+        if (!rubric) {
+          throw Error('Product rubric not found');
+        }
+        return rubric;
       },
     });
 
@@ -228,7 +230,6 @@ export const Product = objectType({
           .find({
             _id: { $in: source.shopProductsIds },
             citySlug: city,
-            archive: false,
           })
           .toArray();
         return shopsProducts;
@@ -245,7 +246,6 @@ export const Product = objectType({
         const shopsProducts = await shopProductsCollection
           .find({
             _id: { $in: source.shopProductsIds },
-            archive: false,
           })
           .toArray();
         return shopsProducts;

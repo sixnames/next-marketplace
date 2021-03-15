@@ -47,6 +47,7 @@ const Select: React.FC<SelectInterface> = ({
   labelTag,
   labelClass,
   lineContentClass,
+  lineIcon,
   ...props
 }) => {
   const withFirstOptions: SelectOptionInterface[] = firstOption
@@ -88,6 +89,7 @@ const Select: React.FC<SelectInterface> = ({
       lineContentClass={lineContentClass}
       low={low}
       wide={wide}
+      lineIcon={lineIcon}
     >
       <span className={classes.holder}>
         <select

@@ -10,6 +10,7 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProfileLayout.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -24,7 +25,8 @@ interface ProfileLayoutInterface {
 }
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
-  const { me } = useUserContext();
+  const city = useSessionCity();
+  const { me, loadingUser } = useUserContext();
 
   const navConfig = React.useMemo<AsideNavConfigType>(() => {
     return [
@@ -33,27 +35,27 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'История заказов',
-            href: `${ROUTE_PROFILE}`,
+            href: `/${city}${ROUTE_PROFILE}`,
             testId: 'profile-orders-link',
           },
           {
             name: 'Избранное',
-            href: `${ROUTE_PROFILE_FAVORITE}`,
+            href: `/${city}${ROUTE_PROFILE_FAVORITE}`,
             testId: 'profile-favorite-link',
           },
           {
             name: 'Сравнение',
-            href: `${ROUTE_PROFILE_COMPARE}`,
+            href: `/${city}${ROUTE_PROFILE_COMPARE}`,
             testId: 'profile-compare-link',
           },
           {
             name: 'Просмотренные товары',
-            href: `${ROUTE_PROFILE_VIEWED}`,
+            href: `/${city}${ROUTE_PROFILE_VIEWED}`,
             testId: 'profile-viewed-link',
           },
           {
             name: 'Персональные предложения',
-            href: `${ROUTE_PROFILE_PROPOSALS}`,
+            href: `/${city}${ROUTE_PROFILE_PROPOSALS}`,
             testId: 'profile-proposals-link',
           },
         ],
@@ -63,35 +65,35 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         children: [
           {
             name: 'Бонусный счет',
-            href: `${ROUTE_PROFILE_BONUS}`,
+            href: `/${city}${ROUTE_PROFILE_BONUS}`,
             testId: 'profile-bonus-link',
           },
           {
             name: 'Мои предпочтения',
-            href: `${ROUTE_PROFILE_PREFERENCES}`,
+            href: `/${city}${ROUTE_PROFILE_PREFERENCES}`,
             testId: 'profile-preferences-link',
           },
           {
             name: 'Моя переписка',
-            href: `${ROUTE_PROFILE_CHATS}`,
+            href: `/${city}${ROUTE_PROFILE_CHATS}`,
             testId: 'profile-chats-link',
           },
           {
             name: 'Мои отзывы',
-            href: `${ROUTE_PROFILE_FEEDBACK}`,
+            href: `/${city}${ROUTE_PROFILE_FEEDBACK}`,
             testId: 'profile-feedback-link',
           },
           {
             name: 'Профиль',
-            href: `${ROUTE_PROFILE_DETAILS}`,
+            href: `/${city}${ROUTE_PROFILE_DETAILS}`,
             testId: 'profile-details-link',
           },
         ],
       },
     ];
-  }, []);
+  }, [city]);
 
-  if (!me) {
+  if (loadingUser || !me) {
     return (
       <div className={classes.frame}>
         <Breadcrumbs currentPageName={'Профиль'} />

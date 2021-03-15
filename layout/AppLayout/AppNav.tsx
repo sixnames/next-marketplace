@@ -1,4 +1,5 @@
 import { AppNavParentItemFragment } from 'generated/apolloComponents';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import AppNavUser from './AppNavUser';
 import AppNavItem from './AppNavItem';
@@ -18,6 +19,7 @@ interface AppNavInterface {
 }
 
 const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
+  const city = useSessionCity();
   const { pathname } = useRouter();
   const { isMobile } = useAppContext();
   const { isCompact, toggleCompactHandler, setCompactOff, setCompactOn } = compact;
@@ -55,7 +57,7 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
                 <Tooltip title={isCompact ? 'Вернуться на сайт' : null}>
                   <div>
                     <Link
-                      href={`/`}
+                      href={`/${city}/`}
                       className={`${classes.bottomLink} ${
                         isCompact ? classes.bottomLinkCompact : ''
                       }`}
@@ -105,7 +107,9 @@ const AppNav: React.FC<AppNavInterface> = ({ compact, navItems }) => {
         </div>
       </div>
 
-      {!isCompact && isMobile && <div className={classes.backdrop} onClick={closeNavHandler} />}
+      {!isCompact && isMobile ? (
+        <div className={classes.backdrop} onClick={closeNavHandler} />
+      ) : null}
     </nav>
   );
 };

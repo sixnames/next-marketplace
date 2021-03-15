@@ -43,3 +43,78 @@ export function getProductCurrentViewAttributes({
     },
   );
 }
+
+export interface GetAttributeReadableValueInterface {
+  attribute: ProductAttributeModel;
+  getFieldLocale(i18nField?: Record<string, string> | null | undefined): string;
+}
+
+export function getAttributeReadableValue({
+  attribute,
+  getFieldLocale,
+}: GetAttributeReadableValueInterface): string | null {
+  if (
+    (attribute.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+      attribute.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
+    attribute.selectedOptions.length > 0
+  ) {
+    return attribute.selectedOptions
+      .map(({ nameI18n }) => {
+        return getFieldLocale(nameI18n);
+      })
+      .join(', ');
+  }
+
+  // String
+  if (attribute.attributeVariant === ATTRIBUTE_VARIANT_STRING) {
+    return attribute.textI18n ? getFieldLocale(attribute.textI18n) : null;
+  }
+
+  // Number
+  if (attribute.attributeVariant === ATTRIBUTE_VARIANT_NUMBER) {
+    return attribute.number ? `${attribute.number}` : null;
+  }
+
+  return null;
+}
+
+export interface GetProductCurrentViewCastedAttributes {
+  attributes: ProductAttributeModel[];
+  viewVariant: string;
+  getFieldLocale(i18nField?: Record<string, string> | null | undefined): string;
+}
+
+export function getProductCurrentViewCastedAttributes({
+  attributes,
+  viewVariant,
+  getFieldLocale,
+}: GetProductCurrentViewCastedAttributes): ProductAttributeModel[] {
+  return getProductCurrentViewAttributes({
+    attributes,
+    viewVariant,
+  }).reduce((acc: ProductAttributeModel[], attribute) => {
+    const readableValue = getAttributeReadableValue({
+      attribute,
+      getFieldLocale,
+    });
+
+    if (!readableValue) {
+      return acc;
+    }
+
+    return [
+      ...acc,
+      {
+        ...attribute,
+        readableValue,
+        attributeName: getFieldLocale(attribute.attributeNameI18n),
+        selectedOptions: attribute.selectedOptions.map((option) => {
+          return {
+            ...option,
+            name: getFieldLocale(option.nameI18n),
+          };
+        }),
+      },
+    ];
+  }, []);
+}

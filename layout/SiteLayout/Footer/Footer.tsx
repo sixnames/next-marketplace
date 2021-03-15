@@ -1,59 +1,29 @@
+import Link from 'components/Link/Link';
+import { useConfigContext } from 'context/configContext';
+import { useThemeContext } from 'context/themeContext';
+import useSessionCity from 'hooks/useSessionCity';
+import Image from 'next/image';
 import * as React from 'react';
 import Inner from '../../../components/Inner/Inner';
-import BlankLink from '../../../components/Link/BlankLink';
-import Icon from '../../../components/Icon/Icon';
-import Link from 'next/link';
 import classes from './Footer.module.css';
 
 const Footer: React.FC = () => {
+  const city = useSessionCity();
+  const { logoSlug } = useThemeContext();
+  const { getSiteConfigSingleValue } = useConfigContext();
+
+  const siteLogoSrc = getSiteConfigSingleValue(logoSlug);
+  const configSiteName = getSiteConfigSingleValue('siteName');
+
   return (
     <footer className={classes.frame}>
       <Inner className={classes.inner} lowBottom>
-        <ul className={classes.nav}>
-          {/*<li className={classes.navItem}>
-            <Link href={'/about'}>
-              <a>О компании</a>
-            </Link>
-          </li>
-          <li className={classes.navItem}>
-            <Link href={'/about'}>
-              <a>Наши кейсы</a>
-            </Link>
-          </li>*/}
-        </ul>
-
-        <div className={classes.right}>
-          <Link href={'/'}>
-            <a className={classes.logo} />
-          </Link>
-
-          <ul className={classes.contacts}>
-            <li className={classes.contactsItem}>
-              <address>contactAddress</address>
-            </li>
-            <li className={classes.contactsItem}>
-              <a href={`tel:contactPhoneLink`}>contactPhone</a>
-            </li>
-            <li className={classes.contactsItem}>
-              <a href={`mailto:contactEmail`}>E-mail: contactEmail</a>
-            </li>
-            <li className={classes.contactsItem}>schedule</li>
-          </ul>
-
-          <div className={classes.socials}>
-            <span>Следите за нами:</span>
-
-            <BlankLink href={'socialLinkInstagram'}>
-              <Icon name={'instagram'} />
-            </BlankLink>
-
-            <BlankLink href={'socialLinkFacebook'}>
-              <Icon name={'facebook'} />
-            </BlankLink>
-          </div>
-        </div>
-
-        <small className={classes.copyright}>© 2010 - {new Date().getFullYear()} Site™.</small>
+        <Link href={`/${city}/`} className={classes.logo} aria-label={'Главная страница'}>
+          <Image src={siteLogoSrc} width={166} height={27} alt={configSiteName} />
+        </Link>
+        <small className={classes.copyright}>
+          © 2010-{new Date().getFullYear()} {configSiteName}™
+        </small>
       </Inner>
     </footer>
   );

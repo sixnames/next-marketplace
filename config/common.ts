@@ -27,6 +27,7 @@ export const LOCALES = [DEFAULT_LOCALE, SECONDARY_LOCALE];
 
 export const CITY_COOKIE_KEY = 'city';
 export const LOCALE_HEADER = 'content-language';
+export const CITY_HEADER = 'x-city';
 export const LOCALE_NOT_FOUND_FIELD_MESSAGE = 'Field translation not found';
 
 // Cities and countries

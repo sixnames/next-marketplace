@@ -14,6 +14,7 @@ import {
   RubricOptionModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 
 export interface RecalculateRubricOptionProductCountersInterface {
@@ -72,7 +73,6 @@ export async function recalculateRubricProductCounters({
           $match: {
             rubricId,
             active: true,
-            archive: false,
           },
         },
         {
@@ -149,7 +149,6 @@ export async function recalculateRubricProductCounters({
         {
           $match: {
             rubricId: rubricId,
-            archive: false,
           },
         },
         {
@@ -276,6 +275,7 @@ export async function getRubricCatalogueAttributes({
 
 export interface GetRubricNavOptionsInterface {
   options: RubricOptionModel[];
+  locale: string;
   maxVisibleOptions: number;
   city: string;
 }
@@ -284,6 +284,7 @@ export function getRubricNavOptions({
   options,
   maxVisibleOptions,
   city,
+  locale,
 }: GetRubricNavOptionsInterface): RubricOptionModel[] {
   const visibleOptions = options.filter(({ isSelected }) => {
     return isSelected;
@@ -300,10 +301,12 @@ export function getRubricNavOptions({
   return sortedOptions.map((option) => {
     return {
       ...option,
+      name: getI18nLocaleValue(option.nameI18n, locale),
       options: getRubricNavOptions({
         options: option.options,
         maxVisibleOptions,
         city,
+        locale,
       }),
     };
   });
@@ -311,17 +314,19 @@ export function getRubricNavOptions({
 
 export interface GetRubricNavAttributesInterface {
   city: string;
+  locale: string;
   attributes: RubricAttributeModel[];
   visibleOptionsCount: number;
   visibleAttributesCount: number;
 }
 
-export async function getRubricNavAttributes({
+export function getRubricNavAttributes({
   city,
+  locale,
   attributes,
   visibleOptionsCount,
   visibleAttributesCount,
-}: GetRubricNavAttributesInterface): Promise<RubricAttributeModel[]> {
+}: GetRubricNavAttributesInterface): RubricAttributeModel[] {
   const visibleAttributes = attributes
     .filter((attribute) => {
       return (
@@ -336,10 +341,12 @@ export async function getRubricNavAttributes({
   visibleAttributes.forEach((attribute) => {
     sortedAttributes.push({
       ...attribute,
+      name: getI18nLocaleValue(attribute.nameI18n, locale),
       options: getRubricNavOptions({
         options: attribute.options,
         maxVisibleOptions: visibleOptionsCount,
         city,
+        locale,
       }),
     });
   });

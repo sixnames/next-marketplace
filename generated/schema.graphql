@@ -54,11 +54,6 @@ input AddProductToConnectionInput {
   productId: ObjectId!
 }
 
-input AddProductToRubricInput {
-  productId: ObjectId!
-  rubricId: ObjectId!
-}
-
 input AddProductToShopInput {
   available: Int!
   price: Int!
@@ -341,7 +336,6 @@ type CompaniesPaginationPayload implements PaginationPayload {
 
 type Company implements Base & Timestamp {
   _id: ObjectId!
-  archive: Boolean!
   contacts: Contacts!
   createdAt: Date!
   itemId: String!
@@ -800,11 +794,6 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
 
   """
-  Should add product to the rubric
-  """
-  addProductToRubric(input: AddProductToRubricInput!): RubricPayload!
-
-  """
   Should add product to the shop
   """
   addProductToShop(input: AddProductToShopInput!): ShopPayload!
@@ -1160,6 +1149,11 @@ type Mutation {
   updateProductAssetIndex(input: UpdateProductAssetIndexInput!): ProductPayload!
 
   """
+  Should update product counter
+  """
+  updateProductCounter(input: UpdateProductCounterInput!): Boolean!
+
+  """
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
@@ -1266,7 +1260,6 @@ enum OptionsGroupVariant {
 
 type Order implements Base & Timestamp {
   _id: ObjectId!
-  archive: Boolean
   comment: String
   createdAt: Date!
   customer: OrderCustomer!
@@ -1418,7 +1411,6 @@ type Product implements Base & Timestamp {
   Returns all shop products that product connected to
   """
   allShopProducts: [ShopProduct!]!
-  archive: Boolean!
   assets: [Asset!]!
   attributes: [ProductAttribute!]!
   brand: Brand
@@ -1457,8 +1449,8 @@ type Product implements Base & Timestamp {
   originalName: String!
   priorities: JSONObject!
   ratingFeatures: [ProductAttribute!]!
+  rubric: Rubric!
   rubricId: ObjectId!
-  rubrics: [Rubric!]!
   shopsCount: Int!
   slug: String!
   tagFeatures: [ProductAttribute!]!
@@ -1961,6 +1953,7 @@ type RubricAttribute {
   name: String!
   nameI18n: JSONObject!
   options: [RubricOption!]!
+  optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   priorities: JSONObject!
@@ -2053,7 +2046,6 @@ type SelectOption {
 type Shop implements Base & Timestamp {
   _id: ObjectId!
   address: Address!
-  archive: Boolean!
   assets: [Asset!]!
   city: City!
   citySlug: String!
@@ -2079,7 +2071,6 @@ type ShopPayload implements Payload {
 
 type ShopProduct implements Timestamp {
   _id: ObjectId!
-  archive: Boolean!
   available: Int!
   citySlug: String!
   createdAt: Date!
@@ -2292,6 +2283,10 @@ input UpdateProductAssetIndexInput {
   productId: ObjectId!
 }
 
+input UpdateProductCounterInput {
+  productSlug: String!
+}
+
 input UpdateProductInCartInput {
   amount: Int!
   cartProductId: ObjectId!
@@ -2375,7 +2370,6 @@ scalar Upload
 
 type User implements Base & Timestamp {
   _id: ObjectId!
-  archive: Boolean!
   createdAt: Date!
   email: EmailAddress!
   formattedPhone: FormattedPhone!

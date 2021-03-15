@@ -171,11 +171,6 @@ export interface NexusGenInputs {
     connectionId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  AddProductToRubricInput: {
-    // input type
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   AddProductToShopInput: {
     // input type
     available: number; // Int!
@@ -606,6 +601,10 @@ export interface NexusGenInputs {
     assetUrl: string; // String!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateProductCounterInput: {
+    // input type
+    productSlug: string; // String!
+  };
   UpdateProductInCartInput: {
     // input type
     amount: number; // Int!
@@ -1019,7 +1018,6 @@ export interface NexusGenFieldTypes {
   Company: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     contacts: NexusGenRootTypes['Contacts']; // Contacts!
     createdAt: NexusGenScalars['Date']; // Date!
     itemId: string; // String!
@@ -1201,7 +1199,6 @@ export interface NexusGenFieldTypes {
     addProductAssets: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    addProductToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addProductToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopAssets: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -1273,6 +1270,7 @@ export interface NexusGenFieldTypes {
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -1326,7 +1324,6 @@ export interface NexusGenFieldTypes {
   Order: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean | null; // Boolean
     comment: string | null; // String
     createdAt: NexusGenScalars['Date']; // Date!
     customer: NexusGenRootTypes['OrderCustomer']; // OrderCustomer!
@@ -1430,7 +1427,6 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
     allShopProducts: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
-    archive: boolean; // Boolean!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     attributes: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
     brand: NexusGenRootTypes['Brand'] | null; // Brand
@@ -1457,8 +1453,8 @@ export interface NexusGenFieldTypes {
     originalName: string; // String!
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     ratingFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
+    rubric: NexusGenRootTypes['Rubric']; // Rubric!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     shopsCount: number; // Int!
     slug: string; // String!
     tagFeatures: NexusGenRootTypes['ProductAttribute'][]; // [ProductAttribute!]!
@@ -1661,6 +1657,7 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     options: NexusGenRootTypes['RubricOption'][]; // [RubricOption!]!
+    optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1731,7 +1728,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     address: NexusGenRootTypes['Address']; // Address!
-    archive: boolean; // Boolean!
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     city: NexusGenRootTypes['City']; // City!
     citySlug: string; // String!
@@ -1757,7 +1753,6 @@ export interface NexusGenFieldTypes {
   ShopProduct: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     available: number; // Int!
     citySlug: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
@@ -1814,7 +1809,6 @@ export interface NexusGenFieldTypes {
   User: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    archive: boolean; // Boolean!
     createdAt: NexusGenScalars['Date']; // Date!
     email: NexusGenScalars['EmailAddress']; // EmailAddress!
     formattedPhone: NexusGenRootTypes['FormattedPhone']; // FormattedPhone!
@@ -2078,7 +2072,6 @@ export interface NexusGenFieldTypeNames {
   Company: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     contacts: 'Contacts';
     createdAt: 'Date';
     itemId: 'String';
@@ -2260,7 +2253,6 @@ export interface NexusGenFieldTypeNames {
     addProductAssets: 'ProductPayload';
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
-    addProductToRubric: 'RubricPayload';
     addProductToShop: 'ShopPayload';
     addShopAssets: 'ShopPayload';
     addShopToCartProduct: 'CartPayload';
@@ -2332,6 +2324,7 @@ export interface NexusGenFieldTypeNames {
     updateOptionsGroup: 'OptionsGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
+    updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateRole: 'RolePayload';
     updateRubric: 'RubricPayload';
@@ -2385,7 +2378,6 @@ export interface NexusGenFieldTypeNames {
   Order: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     comment: 'String';
     createdAt: 'Date';
     customer: 'OrderCustomer';
@@ -2489,7 +2481,6 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     active: 'Boolean';
     allShopProducts: 'ShopProduct';
-    archive: 'Boolean';
     assets: 'Asset';
     attributes: 'ProductAttribute';
     brand: 'Brand';
@@ -2516,8 +2507,8 @@ export interface NexusGenFieldTypeNames {
     originalName: 'String';
     priorities: 'JSONObject';
     ratingFeatures: 'ProductAttribute';
+    rubric: 'Rubric';
     rubricId: 'ObjectId';
-    rubrics: 'Rubric';
     shopsCount: 'Int';
     slug: 'String';
     tagFeatures: 'ProductAttribute';
@@ -2720,6 +2711,7 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     options: 'RubricOption';
+    optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';
     priorities: 'JSONObject';
@@ -2790,7 +2782,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     address: 'Address';
-    archive: 'Boolean';
     assets: 'Asset';
     city: 'City';
     citySlug: 'String';
@@ -2816,7 +2807,6 @@ export interface NexusGenFieldTypeNames {
   ShopProduct: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     available: 'Int';
     citySlug: 'String';
     createdAt: 'Date';
@@ -2873,7 +2863,6 @@ export interface NexusGenFieldTypeNames {
   User: {
     // field return type name
     _id: 'ObjectId';
-    archive: 'Boolean';
     createdAt: 'Date';
     email: 'EmailAddress';
     formattedPhone: 'FormattedPhone';
@@ -2982,10 +2971,6 @@ export interface NexusGenArgTypes {
     addProductToConnection: {
       // args
       input: NexusGenInputs['AddProductToConnectionInput']; // AddProductToConnectionInput!
-    };
-    addProductToRubric: {
-      // args
-      input: NexusGenInputs['AddProductToRubricInput']; // AddProductToRubricInput!
     };
     addProductToShop: {
       // args
@@ -3266,6 +3251,10 @@ export interface NexusGenArgTypes {
     updateProductAssetIndex: {
       // args
       input: NexusGenInputs['UpdateProductAssetIndexInput']; // UpdateProductAssetIndexInput!
+    };
+    updateProductCounter: {
+      // args
+      input: NexusGenInputs['UpdateProductCounterInput']; // UpdateProductCounterInput!
     };
     updateProductInCart: {
       // args

@@ -74,15 +74,7 @@ export const deleteAttributesGroupFromRubricSchema = (args: ValidationSchemaArgs
 export const updateAttributesGroupInRubricSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
     attributeId: attributeIdSchema(args),
-  });
-};
-
-export const addProductToRubricSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    rubricId: rubricIdSchema(args),
-    productId: productIdSchema(args),
   });
 };
 

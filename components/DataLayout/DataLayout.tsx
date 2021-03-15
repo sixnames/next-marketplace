@@ -26,6 +26,7 @@ interface DataLayoutInterface {
   filterResult: (args: FilterResultArgsInterface) => any;
   filterResultNavConfig?: NavItemInterface[] | null;
   isFilterVisible?: boolean;
+  withTabs?: boolean;
 }
 
 const DataLayout: React.FC<DataLayoutInterface> = ({
@@ -35,6 +36,7 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
   filterResultNavConfig,
   contentControlsConfig,
   isFilterVisible,
+  withTabs,
 }) => {
   const [filterVisible, setFilterVisible] = React.useState<boolean>(() => Boolean(isFilterVisible));
   const { query } = useDataLayoutMethods();
@@ -88,7 +90,7 @@ const DataLayout: React.FC<DataLayoutInterface> = ({
                 <MoreNav
                   navConfig={filterResultNavConfig}
                   className={classes.MoreNav}
-                  isTab={true}
+                  isTab={withTabs}
                 />
               </div>
             )}

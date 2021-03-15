@@ -1,15 +1,16 @@
+import useCartMutations from 'hooks/useCartMutations';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './CartDropdown.module.css';
 import { CartFragment } from 'generated/apolloComponents';
 import Image from 'next/image';
-import ProductShopPrices from '../../../components/Product/ProductShopPrices/ProductShopPrices';
-import ProductSnippetPrice from '../../../components/Product/ProductSnippetPrice/ProductSnippetPrice';
-import ButtonCross from '../../../components/Buttons/ButtonCross';
-import { useSiteContext } from 'context/siteContext';
-import ControlButton from '../../../components/Buttons/ControlButton';
-import SpinnerInput from '../../../components/FormElements/SpinnerInput/SpinnerInput';
-import Currency from '../../../components/Currency/Currency';
-import Button from '../../../components/Buttons/Button';
+import ProductShopPrices from 'components/Product/ProductShopPrices/ProductShopPrices';
+import ProductSnippetPrice from 'components/Product/ProductSnippetPrice/ProductSnippetPrice';
+import ButtonCross from 'components/Buttons/ButtonCross';
+import ControlButton from 'components/Buttons/ControlButton';
+import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import Currency from 'components/Currency/Currency';
+import Button from 'components/Buttons/Button';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { noNaN } from 'lib/numbers';
@@ -19,9 +20,10 @@ interface CartDropdownInterface {
 }
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
+  const city = useSessionCity();
   const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
+  const { deleteProductFromCart, updateProductInCart, clearCart } = useCartMutations();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
 
   return (
@@ -95,9 +97,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     name={'amount'}
                     value={amount}
                     min={1}
-                    testId={`cart-dropdown-${productData._id}-amount`}
-                    plusTestId={`cart-dropdown-${productData._id}-plus`}
-                    minusTestId={`cart-dropdown-${productData._id}-minus`}
+                    testId={`cart-dropdown-${productData.slug}-amount`}
+                    plusTestId={`cart-dropdown-${productData.slug}-plus`}
+                    minusTestId={`cart-dropdown-${productData.slug}-minus`}
                     size={'small'}
                     className={`${classes.amountInput}`}
                     onChange={(e) => {
@@ -110,7 +112,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
                   <div className={classes.productButns}>
                     <ButtonCross
-                      testId={`cart-dropdown-${productData._id}-remove-from-cart`}
+                      testId={`cart-dropdown-${productData.slug}-remove-from-cart`}
                       iconSize={'smaller'}
                       size={'small'}
                       className={classes.productRemove}
@@ -140,7 +142,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
         <Button
           className={classes.totalsButton}
           onClick={() => {
-            router.push('/cart').catch(() => {
+            router.push(`/${city}/cart`).catch(() => {
               showErrorNotification();
             });
           }}

@@ -31,7 +31,6 @@ export const Company = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.nonNull.boolean('archive');
     t.nonNull.string('name');
     t.nonNull.string('slug');
     t.nonNull.objectId('ownerId');
@@ -83,7 +82,7 @@ export const Company = objectType({
           city,
           input: args.input,
           collectionName: COL_SHOPS,
-          pipeline: [{ $match: { companyId: source._id, archive: false } }],
+          pipeline: [{ $match: { companyId: source._id } }],
         });
         return paginationResult;
       },
@@ -142,7 +141,6 @@ export const CompanyQueries = extendType({
           collectionName: COL_COMPANIES,
           input: args.input,
           city,
-          pipeline: [{ $match: { archive: false } }],
         });
         return paginationResult;
       },
@@ -251,7 +249,6 @@ export const CompanyMutations = extendType({
           // Check if company already exist
           const exist = await companiesCollection.findOne({
             name: input.name,
-            archive: false,
           });
           if (exist) {
             return {
@@ -283,7 +280,7 @@ export const CompanyMutations = extendType({
             slug,
             logo,
             shopsIds: [],
-            archive: false,
+
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -348,7 +345,7 @@ export const CompanyMutations = extendType({
           // Check if company already exist
           const exist = await companiesCollection.findOne({
             name: input.name,
-            archive: false,
+
             _id: { $ne: companyId },
           });
           if (exist) {
@@ -512,16 +509,9 @@ export const CompanyMutations = extendType({
 
           // Set all shops and shops products as archived
           // set shops products as archived
-          const removedShopsProducts = await shopProductsCollection.updateMany(
-            {
-              shopsId: { $in: company.shopsIds },
-            },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-          );
+          const removedShopsProducts = await shopProductsCollection.deleteMany({
+            shopsId: { $in: company.shopsIds },
+          });
           if (!removedShopsProducts.result.ok) {
             return {
               success: false,
@@ -530,14 +520,7 @@ export const CompanyMutations = extendType({
           }
 
           // set shops as archived
-          const removedShops = await shopsCollection.updateMany(
-            { _id: { $in: company.shopsIds } },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-          );
+          const removedShops = await shopsCollection.deleteMany({ _id: { $in: company.shopsIds } });
           if (!removedShops.result.ok) {
             return {
               success: false,
@@ -546,17 +529,8 @@ export const CompanyMutations = extendType({
           }
 
           // Set company as archived
-          const removedCompanyResult = await companiesCollection.findOneAndUpdate(
-            { _id },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-            { returnOriginal: false },
-          );
-          const removedCompany = removedCompanyResult.value;
-          if (!removedCompanyResult.ok || !removedCompany) {
+          const removedCompanyResult = await companiesCollection.findOneAndDelete({ _id });
+          if (!removedCompanyResult.ok) {
             return {
               success: false,
               message: await getApiMessage('companies.delete.error'),
@@ -569,7 +543,6 @@ export const CompanyMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('companies.delete.success'),
-            payload: removedCompany,
           };
         } catch (e) {
           return {
@@ -617,7 +590,7 @@ export const CompanyMutations = extendType({
           }
 
           // Check if shop already exist in the company
-          const exist = await shopsCollection.findOne({ name: values.name, archive: false });
+          const exist = await shopsCollection.findOne({ name: values.name });
           if (exist) {
             return {
               success: false,
@@ -656,7 +629,7 @@ export const CompanyMutations = extendType({
             logo,
             assets,
             companyId: companyId,
-            archive: false,
+
             shopProductsIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -764,16 +737,9 @@ export const CompanyMutations = extendType({
           }
 
           // Set shop products as archived
-          const removedShopProducts = await shopProductsCollection.updateMany(
-            {
-              _id: { $in: shop.shopProductsIds },
-            },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-          );
+          const removedShopProducts = await shopProductsCollection.deleteMany({
+            _id: { $in: shop.shopProductsIds },
+          });
           if (!removedShopProducts.result.ok) {
             return {
               success: false,
@@ -782,16 +748,8 @@ export const CompanyMutations = extendType({
           }
 
           // Set shop as archived
-          const removedShopResult = await shopsCollection.findOneAndUpdate(
-            { _id: shopId },
-            {
-              $set: {
-                archive: true,
-              },
-            },
-          );
-          const removedShop = removedShopResult.value;
-          if (!removedShopResult.ok || !removedShop) {
+          const removedShopResult = await shopsCollection.findOneAndDelete({ _id: shopId });
+          if (!removedShopResult.ok) {
             return {
               success: false,
               message: await getApiMessage('companies.shopsDelete.error'),

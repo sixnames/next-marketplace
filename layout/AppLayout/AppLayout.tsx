@@ -2,12 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Spinner from 'components/Spinner/Spinner';
 import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
-import { DEFAULT_CURRENCY } from 'config/common';
-import { ConfigContextProvider } from 'context/configContext';
-import { LocaleContextProvider } from 'context/localeContext';
-import { ThemeContextProvider } from 'context/themeContext';
-import { UserContextProvider, useUserContext } from 'context/userContext';
-import { useInitialAppQuery } from 'generated/apolloComponents';
+import { useUserContext } from 'context/userContext';
 import AppNav from './AppNav';
 import { useAppContext } from 'context/appContext';
 import Meta from '../Meta';
@@ -15,11 +10,12 @@ import Modal from 'components/Modal/Modal';
 import classes from './AppLayout.module.css';
 import useCompact from 'hooks/useCompact';
 
-interface AppLayoutConsumerInterface {
+interface AppLayoutInterface {
+  description?: string;
   title?: string;
 }
 
-const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, title }) => {
+const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
   const { pathname } = useRouter();
   const { isLoading, isModal, isMobile } = useAppContext();
   const compact = useCompact(isMobile);
@@ -45,35 +41,9 @@ const AppLayoutConsumer: React.FC<AppLayoutConsumerInterface> = ({ children, tit
         </ErrorBoundary>
       </main>
 
-      {isLoading && <Spinner />}
-      {isModal.show && <Modal modalType={isModal.variant} modalProps={isModal.props} />}
+      {isLoading ? <Spinner /> : null}
+      {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
-  );
-};
-
-interface AppLayoutInterface extends AppLayoutConsumerInterface {
-  description?: string;
-}
-
-const AppLayout: React.FC<AppLayoutInterface> = ({ children, title }) => {
-  const { data } = useInitialAppQuery();
-
-  return (
-    <ConfigContextProvider
-      configs={data?.getAllConfigs || []}
-      cities={data?.getSessionCities || []}
-    >
-      <ThemeContextProvider>
-        <LocaleContextProvider
-          languagesList={data?.getAllLanguages || []}
-          currency={data?.getSessionCurrency || DEFAULT_CURRENCY}
-        >
-          <UserContextProvider>
-            <AppLayoutConsumer title={title}>{children}</AppLayoutConsumer>
-          </UserContextProvider>
-        </LocaleContextProvider>
-      </ThemeContextProvider>
-    </ConfigContextProvider>
   );
 };
 

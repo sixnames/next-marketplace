@@ -4,6 +4,7 @@ import { SessionUserFragment, useSessionUserQuery } from 'generated/apolloCompon
 interface ContextState {
   isAuthenticated: boolean;
   me?: SessionUserFragment | null;
+  loadingUser: boolean;
 }
 
 interface UserContextInterface {
@@ -14,15 +15,17 @@ interface UserContextInterface {
 const UserContext = React.createContext<UserContextInterface>({
   state: {
     isAuthenticated: false,
+    loadingUser: true,
   },
 });
 
 const UserContextProvider: React.FC = ({ children }) => {
-  const { data } = useSessionUserQuery({ fetchPolicy: 'network-only' });
+  const { data, loading } = useSessionUserQuery({ fetchPolicy: 'network-only' });
   const [state, setState] = React.useState<ContextState>(() => {
     return {
       me: null,
       isAuthenticated: false,
+      loadingUser: true,
     };
   });
 
@@ -32,9 +35,10 @@ const UserContextProvider: React.FC = ({ children }) => {
         ...prevState,
         me: data.me,
         isAuthenticated: true,
+        loadingUser: loading,
       }));
     }
-  }, [data]);
+  }, [data, loading]);
 
   const value = React.useMemo(() => {
     return {
@@ -46,6 +50,7 @@ const UserContextProvider: React.FC = ({ children }) => {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
+// TODO add initial user for cms and app
 function useUserContext() {
   const context: UserContextInterface = React.useContext(UserContext);
 

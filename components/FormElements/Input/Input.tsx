@@ -49,6 +49,7 @@ const Input: React.FC<InputPropsInterface> = ({
   labelTag,
   icon,
   onClear,
+  lineIcon,
   ...props
 }) => {
   const withIconClass = icon ? classes.withIcon : '';
@@ -70,6 +71,7 @@ const Input: React.FC<InputPropsInterface> = ({
       labelLink={labelLink}
       low={low}
       wide={wide}
+      lineIcon={lineIcon}
     >
       {icon ? <Icon name={icon} className={classes.icon} /> : null}
 

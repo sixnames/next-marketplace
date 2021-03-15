@@ -1,0 +1,103 @@
+[{
+  "_id": {
+    "$oid": "604cad83b604c1c320c32893"
+  },
+  "itemId": "1",
+  "nameI18n": {
+    "ru": "brandA",
+    "en": "brandA"
+  },
+  "slug": "branda",
+  "url": [
+    "https://brandA.com"
+  ],
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "collectionsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32892"
+    }
+  ],
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "createdAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  }
+},{
+  "_id": {
+    "$oid": "604cad83b604c1c320c32895"
+  },
+  "itemId": "2",
+  "nameI18n": {
+    "ru": "brandB",
+    "en": "brandB"
+  },
+  "slug": "brandb",
+  "url": [
+    "https://brandB.com"
+  ],
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "collectionsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32894"
+    }
+  ],
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "createdAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  }
+},{
+  "_id": {
+    "$oid": "604cad83b604c1c320c32897"
+  },
+  "itemId": "3",
+  "nameI18n": {
+    "ru": "brandC",
+    "en": "brandC"
+  },
+  "slug": "brandc",
+  "url": [
+    "https://brandC.com"
+  ],
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "collectionsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32896"
+    }
+  ],
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "createdAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  },
+  "updatedAt": {
+    "$date": "2021-03-13T12:18:11.401Z"
+  }
+}]

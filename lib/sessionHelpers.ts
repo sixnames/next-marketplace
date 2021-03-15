@@ -3,6 +3,7 @@ import { CartModel, RoleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CART_COOKIE_KEY,
+  CITY_HEADER,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   LOCALE_HEADER,
@@ -67,34 +68,14 @@ export const getSessionLocale = (context: NexusContext): string => {
 };
 
 export const getSessionCity = (context: NexusContext): string => {
-  let city = DEFAULT_CITY;
-
-  const firstIndex = 0;
-  const secondIndex = 1;
-
-  // Get host from request Host header
-  const host = context.req.headers.host;
-  // Remove port if exist
-  const noPortHost = host?.split(':')[firstIndex];
-  // Get site domain from host parts
-  const hostParts = noPortHost?.split('.');
-  const domainIndex = hostParts?.findIndex((part) => part === process.env.HOST);
-
-  // Return default city if no subdomain
-  if (!domainIndex) {
-    return city;
+  // Get city form context if request form server
+  // Otherwise get city from x-city header
+  // populated with Apollo client
+  const headerCity = context?.req?.headers[CITY_HEADER];
+  if (headerCity) {
+    return `${headerCity}`;
   }
-
-  if (domainIndex < secondIndex) {
-    return city;
-  }
-
-  // Return subdomain as city
-  if (hostParts && hostParts[firstIndex]) {
-    city = hostParts[firstIndex];
-  }
-
-  return city;
+  return context.city || DEFAULT_CITY;
 };
 
 export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {

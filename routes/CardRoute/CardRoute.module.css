@@ -84,7 +84,8 @@
 }
 
 .mainDataContent {
-
+  display: flex;
+  flex-direction: column;
 }
 
 .feature {
@@ -108,6 +109,12 @@
 .cardName {
   font-size: 2.5rem;
   font-weight: 700;
+}
+
+.cardNameTranslation {
+  font-size: 0.875rem;
+  color: var(--textSecondaryColor);
+  margin-bottom: 0.5rem;
 }
 
 .cardArt {
@@ -228,6 +235,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: auto;
 }
 
 .btns {
@@ -263,6 +271,7 @@
 .helpers {
   display: flex;
   align-items: center;
+  min-height: var(--controlButtonHeight);
 }
 
 .addToCartForm {
@@ -294,7 +303,7 @@
 
 .cardFeaturesText {
   color: var(--textSecondaryColor);
-  line-height: 1.4;
+  line-height: 1.75;
 }
 
 .cardFeaturesText p:not(:first-child) {

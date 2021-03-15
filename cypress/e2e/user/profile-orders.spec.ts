@@ -1,10 +1,11 @@
+import { DEFAULT_CITY } from 'config/common';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 
 describe('Profile orders', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`/`);
+    cy.testAuth(`/${DEFAULT_CITY}/`);
   });
 
   after(() => {
@@ -27,7 +28,7 @@ describe('Profile orders', () => {
         cy.getByCy(`cart-modal-close`).click();
 
         // Should add product to cart from old order
-        cy.getByCy(`profile-order-product-${productA._id}-add-to-cart`).click();
+        cy.getByCy(`profile-order-product-${productA.slug}-add-to-cart`).click();
         cy.getByCy(`cart-modal`).should('exist');
         cy.getByCy(`cart-modal-close`).click();
       },

@@ -1,3 +1,6 @@
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { OptionsGroupModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
 
@@ -21,6 +24,9 @@ export const RubricOption = objectType({
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context): Promise<string> => {
+        if (source.name) {
+          return source.name;
+        }
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },
@@ -53,10 +59,27 @@ export const RubricAttribute = objectType({
       type: 'Metric',
     });
 
+    // Attribute optionsGroup field resolver
+    t.field('optionsGroup', {
+      type: 'OptionsGroup',
+      resolve: async (source): Promise<OptionsGroupModel | null> => {
+        if (!source.optionsGroupId) {
+          return null;
+        }
+        const db = await getDatabase();
+        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
+        return optionsGroup;
+      },
+    });
+
     // RubricAttribute name translation field resolver
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context) => {
+        if (source.name) {
+          return source.name;
+        }
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.nameI18n);
       },

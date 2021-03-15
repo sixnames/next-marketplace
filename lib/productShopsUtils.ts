@@ -1,7 +1,14 @@
 import { ObjectId } from 'mongodb';
 import { getDatabase } from 'db/mongodb';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductModel, ShopModel, ShopProductModel, TranslationModel } from 'db/dbModels';
+import { COL_CITIES, COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import {
+  CityModel,
+  ObjectIdModel,
+  ProductModel,
+  ShopModel,
+  ShopProductModel,
+  TranslationModel,
+} from 'db/dbModels';
 
 interface UpdateProductShopsDataInterface {
   productId: ObjectId;
@@ -12,41 +19,57 @@ export async function updateProductShopsData({
   const db = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const cities = await citiesCollection.find({}).toArray();
 
-  // Get shop products data for current product
-  const shopProductsData = await shopProductsCollection
-    .aggregate<any>([
-      { $match: { productId, archive: false } },
-      {
-        $group: {
-          _id: '$citySlug',
-          count: { $sum: 1 },
-          prices: { $push: '$price' },
-          ids: { $push: '$_id' },
-        },
-      },
-      {
-        $addFields: {
-          minPrice: { $min: '$prices' },
-          maxPrice: { $max: '$prices' },
-        },
-      },
-    ])
-    .toArray();
-
-  // Cast shop products data
   const shopProductsCountCities: TranslationModel = {};
   const minPriceCities: TranslationModel = {};
   const maxPriceCities: TranslationModel = {};
+  let shopProductsIds: ObjectIdModel[] = [];
 
-  const shopProductsIds = shopProductsData.reduce((acc: ObjectId[], group) => {
-    const { ids = [], _id, minPrice, maxPrice, count } = group;
-    shopProductsCountCities[_id] = count;
-    minPriceCities[_id] = minPrice;
-    maxPriceCities[_id] = maxPrice;
+  for await (const city of cities) {
+    const citySlug = city.slug;
 
-    return [...acc, ...ids];
-  }, []);
+    // Get shop products data for current product and city
+    const shopProductsData = await shopProductsCollection
+      .aggregate<any>([
+        { $match: { productId, citySlug } },
+        {
+          $group: {
+            _id: '$citySlug',
+            count: { $sum: 1 },
+            prices: { $push: '$price' },
+            ids: { $push: '$_id' },
+          },
+        },
+        {
+          $addFields: {
+            minPrice: { $min: '$prices' },
+            maxPrice: { $max: '$prices' },
+          },
+        },
+      ])
+      .toArray();
+
+    if (shopProductsData.length < 1) {
+      shopProductsCountCities[citySlug] = 0;
+      minPriceCities[citySlug] = 0;
+      maxPriceCities[citySlug] = 0;
+      continue;
+    }
+
+    // Cast shop products data
+    const cityShopProductsIds = shopProductsData.reduce((acc: ObjectId[], group) => {
+      const { ids = [], minPrice, maxPrice, count } = group;
+      shopProductsCountCities[citySlug] = count || 0;
+      minPriceCities[citySlug] = minPrice || 0;
+      maxPriceCities[citySlug] = maxPrice || 0;
+
+      return [...acc, ...ids];
+    }, []);
+
+    shopProductsIds = [...shopProductsIds, ...cityShopProductsIds];
+  }
 
   // Update product with new shops products data
   const updatedProductResult = await productsCollection.findOneAndUpdate(
@@ -64,7 +87,6 @@ export async function updateProductShopsData({
     },
   );
   if (!updatedProductResult.ok || !updatedProductResult.value) {
-    console.log(updatedProductResult);
     throw Error('Product shops data update error');
   }
 

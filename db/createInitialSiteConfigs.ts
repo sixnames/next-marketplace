@@ -10,13 +10,13 @@ import {
 } from 'config/common';
 import { getDatabase } from './mongodb';
 import { COL_CONFIGS } from './collectionNames';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import path from 'path';
 import { findOrCreateTestAsset } from 'lib/s3';
 
 type FindOrCreateConfigTemplate = Pick<
   ConfigModel,
-  'slug' | 'name' | 'description' | 'variant' | 'multi' | 'cities' | 'acceptedFormats'
+  'slug' | 'name' | 'description' | 'variant' | 'multi' | 'cities' | 'acceptedFormats' | '_id'
 >;
 
 interface FindOrCreateConfigInterface {
@@ -116,6 +116,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     sourceImage: `logo.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32683'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogo',
       name: 'Логотип сайта для тёмной темы',
@@ -131,6 +132,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     sourceImage: `logo-dark.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32684'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoDark',
       name: 'Логотип сайта для светлой темы',
@@ -146,6 +148,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     sourceImage: `logo-icon.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32685'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoIcon',
       name: 'Иконка логотипа сайта',
@@ -161,6 +164,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     sourceImage: `logo-name.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32686'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoName',
       name: 'Текст логотипа сайта',
@@ -176,6 +180,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
     sourceImage: `og-image.jpg`,
     format: 'jpg',
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32687'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'pageDefaultPreviewImage',
       name: 'Дефолтное превью изображение',
@@ -190,6 +195,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configSiteName = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32688'),
       variant: SITE_CONFIGS_VARIANT_STRING,
       slug: 'siteName',
       name: 'Название сайта',
@@ -207,6 +213,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configContactEmail = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32689'),
       variant: SITE_CONFIGS_VARIANT_EMAIL,
       slug: 'contactEmail',
       name: 'Контактный Email',
@@ -224,6 +231,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configContactPhone = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268a'),
       slug: 'contactPhone',
       name: 'Контактный телефон',
       description: 'Контактный телефон. Можно добавить несколько.',
@@ -241,6 +249,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configSiteFoundationYear = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268b'),
       slug: 'siteFoundationYear',
       name: 'Год основания сайта',
       description: '',
@@ -258,6 +267,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configPageDefaultTitle = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268c'),
       slug: 'pageDefaultTitle',
       name: 'Дефолтный title страницы',
       description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
@@ -276,6 +286,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configPageDefaultDescription = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268d'),
       slug: 'pageDefaultDescription',
       name: 'Дефолтный description страницы',
       description:
@@ -295,6 +306,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configSiteThemeColor = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268e'),
       slug: 'siteThemeColor',
       name: 'Акцент цвет сайта',
       description:
@@ -313,6 +325,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configStickyNavVisibleAttributesCount = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604325cbab3d5114fb2bc07d'),
       slug: 'stickyNavVisibleAttributesCount',
       name: 'Количество видимых аттрибутов в выпадающем меню.',
       description: '',
@@ -330,6 +343,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configStickyNavVisibleOptionsCount = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268f'),
       slug: 'stickyNavVisibleOptionsCount',
       name: 'Количество видимых опций в выпадающем меню.',
       description: '',
@@ -347,6 +361,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configCatalogueFilterVisibleAttributesCount = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604325cbab3d5114fb2bc07f'),
       slug: 'catalogueFilterVisibleAttributesCount',
       name: 'Количество видимых атрибутов в фильтре каталога.',
       description: '',
@@ -364,6 +379,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configCatalogueFilterVisibleOptionsCount = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32690'),
       slug: 'catalogueFilterVisibleOptionsCount',
       name: 'Количество видимых опций в фильтре каталога.',
       description: '',
@@ -381,6 +397,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configSeoTextTitle = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32691'),
       slug: 'seoTextTitle',
       name: 'Заголовок для SEO-текста',
       description: '',
@@ -398,6 +415,7 @@ export async function createInitialSiteConfigs(): Promise<CreateInitialSiteConfi
   const configSeoText = await findOrCreateConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32692'),
       slug: 'seoText',
       name: 'SEO текст.',
       description: 'Для корректного отображения текст должен быть в формате HTML',

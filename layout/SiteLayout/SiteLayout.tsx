@@ -1,6 +1,6 @@
+import { RubricModel } from 'db/dbModels';
 import * as React from 'react';
 import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
-import { ThemeContextProvider } from 'context/themeContext';
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
@@ -10,14 +10,10 @@ import { SiteContextProvider, useSiteContext } from 'context/siteContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 import { debounce } from 'lodash';
-import { ConfigContextProvider, useConfigContext } from 'context/configContext';
+import { useConfigContext } from 'context/configContext';
 import Inner from '../../components/Inner/Inner';
 import Title from '../../components/Title/Title';
 import StringButton from '../../components/Buttons/StringButton';
-import { LocaleContextProvider } from 'context/localeContext';
-import { UserContextProvider } from 'context/userContext';
-import { useInitialSiteQuery } from 'generated/apolloComponents';
-import { DEFAULT_CURRENCY } from 'config/common';
 import Modal from 'components/Modal/Modal';
 
 interface SiteLayoutConsumerInterface {
@@ -109,34 +105,24 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   );
 };
 
-interface SiteLayoutInterface {
+export interface SiteLayoutInterface {
   title?: string;
   description?: string;
+  navRubrics: RubricModel[];
 }
 
-const SiteLayout: React.FC<SiteLayoutInterface> = ({ children, title, description }) => {
-  const { data } = useInitialSiteQuery();
-
+const SiteLayout: React.FC<SiteLayoutInterface> = ({
+  children,
+  navRubrics,
+  title,
+  description,
+}) => {
   return (
-    <ConfigContextProvider
-      configs={data?.getAllConfigs || []}
-      cities={data?.getSessionCities || []}
-    >
-      <ThemeContextProvider>
-        <LocaleContextProvider
-          languagesList={data?.getAllLanguages || []}
-          currency={data?.getSessionCurrency || DEFAULT_CURRENCY}
-        >
-          <UserContextProvider>
-            <SiteContextProvider catalogueNavRubrics={data?.getCatalogueNavRubrics || []}>
-              <SiteLayoutConsumer title={title} description={description}>
-                {children}
-              </SiteLayoutConsumer>
-            </SiteContextProvider>
-          </UserContextProvider>
-        </LocaleContextProvider>
-      </ThemeContextProvider>
-    </ConfigContextProvider>
+    <SiteContextProvider catalogueNavRubrics={navRubrics}>
+      <SiteLayoutConsumer title={title} description={description}>
+        {children}
+      </SiteLayoutConsumer>
+    </SiteContextProvider>
   );
 };
 

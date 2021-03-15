@@ -143,15 +143,6 @@ export const GET_NON_RUBRIC_PRODUCTS_QUERY = gql`
   ${rubricProductsFragment}
 `;
 
-export const ADD_PRODUCT_TO_RUBRIC_MUTATION = gql`
-  mutation AddProductTuRubric($input: AddProductToRubricInput!) {
-    addProductToRubric(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
   mutation DeleteProductFromRubric($input: DeleteProductFromRubricInput!) {
     deleteProductFromRubric(input: $input) {
@@ -199,6 +190,10 @@ export const rubricAttributeFragment = gql`
       name
     }
     optionsGroupId
+    optionsGroup {
+      _id
+      name
+    }
     showInCatalogueFilter
     showInCatalogueNav
   }

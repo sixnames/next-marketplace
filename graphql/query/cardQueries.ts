@@ -21,11 +21,7 @@ export const cardFeatureFragment = gql`
 export const cardConnectionProductFragment = gql`
   fragment CardConnectionProduct on Product {
     _id
-    itemId
     slug
-    name
-    active
-    mainImage
   }
 `;
 
@@ -160,6 +156,13 @@ export const CATALOGUE_CARD_SHOPS_QUERY = gql`
     getProductShops(input: $input) {
       ...ShopProductSnippet
     }
+  }
+  ${productCardFragment}
+`;
+
+export const CARD_COUNTERS_MUTATION = gql`
+  mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
+    updateProductCounter(input: $input)
   }
   ${productCardFragment}
 `;

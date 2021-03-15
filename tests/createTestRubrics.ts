@@ -111,7 +111,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricADefaultName,
     [SECONDARY_LOCALE]: 'Wine',
   };
-  const rubricAId = new ObjectId();
+  const rubricAId = new ObjectId('604cad83b604c1c320c3288e');
   const rubricA: RubricModel = {
     _id: rubricAId,
     nameI18n: rubricAName,
@@ -146,7 +146,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricBDefaultName,
     [SECONDARY_LOCALE]: 'Champagne',
   };
-  const rubricBId = new ObjectId();
+  const rubricBId = new ObjectId('604cad83b604c1c320c3288f');
   const rubricB: RubricModel = {
     _id: rubricBId,
     nameI18n: rubricBName,
@@ -187,7 +187,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricCDefaultName,
     [SECONDARY_LOCALE]: 'Whiskey',
   };
-  const rubricCId = new ObjectId();
+  const rubricCId = new ObjectId('604cad83b604c1c320c32890');
   const rubricC: RubricModel = {
     _id: rubricCId,
     nameI18n: rubricCName,
@@ -222,7 +222,7 @@ export const createTestRubrics = async (): Promise<CreateTestRubricsPayloadInter
     [DEFAULT_LOCALE]: rubricDDefaultName,
     [SECONDARY_LOCALE]: 'Cognac',
   };
-  const rubricDId = new ObjectId();
+  const rubricDId = new ObjectId('604cad83b604c1c320c32891');
   const rubricD: RubricModel = {
     _id: rubricDId,
     nameI18n: rubricDName,

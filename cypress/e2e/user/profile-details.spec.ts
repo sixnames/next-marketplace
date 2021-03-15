@@ -1,9 +1,11 @@
+import { DEFAULT_CITY } from 'config/common';
+
 export {};
 
 describe('Profile details', () => {
   beforeEach(() => {
     cy.createTestData();
-    cy.testAuth(`/profile/details`);
+    cy.testAuth(`/${DEFAULT_CITY}/profile/details`);
   });
 
   after(() => {

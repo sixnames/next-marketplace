@@ -2,13 +2,13 @@ import { ASSETS_DIST_CONFIGS, DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } f
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel, ConfigVariantModel, StoreFileFormat } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import path from 'path';
 import { findOrCreateTestAsset } from 'lib/s3';
 
 type FindOrCreateConfigTemplate = Pick<
   ConfigModel,
-  'slug' | 'name' | 'description' | 'variant' | 'multi' | 'cities' | 'acceptedFormats'
+  'slug' | 'name' | 'description' | 'variant' | 'multi' | 'cities' | 'acceptedFormats' | '_id'
 >;
 
 interface FindOrCreateConfigInterface {
@@ -84,7 +84,9 @@ export interface CreateTestSiteConfigsPayloadInterface {
   configPageDefaultTitle: ConfigModel;
   configPageDefaultDescription: ConfigModel;
   configSiteThemeColor: ConfigModel;
+  configStickyNavVisibleAttributesCount: ConfigModel;
   configStickyNavVisibleOptionsCount: ConfigModel;
+  configCatalogueFilterVisibleAttributesCount: ConfigModel;
   configCatalogueFilterVisibleOptionsCount: ConfigModel;
   configSeoTextTitle: ConfigModel;
   configSeoText: ConfigModel;
@@ -101,6 +103,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     sourceImage: `logo.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32683'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogo',
       name: 'Логотип сайта для тёмной темы',
@@ -116,6 +119,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     sourceImage: `logo-dark.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32684'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoDark',
       name: 'Логотип сайта для светлой темы',
@@ -131,6 +135,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     sourceImage: `logo-icon.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad81b604c1c320c32685'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoIcon',
       name: 'Иконка логотипа сайта',
@@ -146,6 +151,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     sourceImage: `logo-name.svg`,
     format: 'svg',
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32686'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'siteLogoName',
       name: 'Текст логотипа сайта',
@@ -161,6 +167,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     sourceImage: `og-image.jpg`,
     format: 'jpg',
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32687'),
       variant: SITE_CONFIGS_VARIANT_ASSET,
       slug: 'pageDefaultPreviewImage',
       name: 'Дефолтное превью изображение',
@@ -175,6 +182,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configSiteName = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32688'),
       variant: SITE_CONFIGS_VARIANT_STRING,
       slug: 'siteName',
       name: 'Название сайта',
@@ -192,6 +200,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configContactEmail = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32689'),
       variant: SITE_CONFIGS_VARIANT_EMAIL,
       slug: 'contactEmail',
       name: 'Контактный Email',
@@ -209,6 +218,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configContactPhone = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268a'),
       slug: 'contactPhone',
       name: 'Контактный телефон',
       description: 'Контактный телефон. Можно добавить несколько.',
@@ -226,6 +236,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configSiteFoundationYear = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268b'),
       slug: 'siteFoundationYear',
       name: 'Год основания сайта',
       description: '',
@@ -243,6 +254,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configPageDefaultTitle = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268c'),
       slug: 'pageDefaultTitle',
       name: 'Дефолтный title страницы',
       description: 'Данное поле будет добавлено в атрибут title если страница не имеет такового',
@@ -261,6 +273,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configPageDefaultDescription = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268d'),
       slug: 'pageDefaultDescription',
       name: 'Дефолтный description страницы',
       description:
@@ -280,6 +293,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configSiteThemeColor = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268e'),
       slug: 'siteThemeColor',
       name: 'Акцент цвет сайта',
       description:
@@ -295,11 +309,48 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     },
   });
 
+  const configStickyNavVisibleAttributesCount = await createConfig({
+    configCollection,
+    configTemplate: {
+      _id: new ObjectId('604325cbab3d5114fb2bc07d'),
+      slug: 'stickyNavVisibleAttributesCount',
+      name: 'Количество видимых аттрибутов в выпадающем меню.',
+      description: '',
+      variant: SITE_CONFIGS_VARIANT_NUMBER,
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['3'],
+        },
+      },
+    },
+  });
+
   const configStickyNavVisibleOptionsCount = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c3268f'),
       slug: 'stickyNavVisibleOptionsCount',
       name: 'Количество видимых опций в выпадающем меню.',
+      description: '',
+      variant: SITE_CONFIGS_VARIANT_NUMBER,
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['3'],
+        },
+      },
+    },
+  });
+
+  const configCatalogueFilterVisibleAttributesCount = await createConfig({
+    configCollection,
+    configTemplate: {
+      _id: new ObjectId('604325cbab3d5114fb2bc07f'),
+      slug: 'catalogueFilterVisibleOptionsCount',
+      name: 'Количество видимых атрибутов в фильтре каталога.',
       description: '',
       variant: SITE_CONFIGS_VARIANT_NUMBER,
       multi: false,
@@ -315,6 +366,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configCatalogueFilterVisibleOptionsCount = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32690'),
       slug: 'catalogueFilterVisibleOptionsCount',
       name: 'Количество видимых опций в фильтре каталога.',
       description: '',
@@ -332,6 +384,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configSeoTextTitle = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32691'),
       slug: 'seoTextTitle',
       name: 'Заголовок для SEO-текста',
       description: '',
@@ -349,6 +402,7 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
   const configSeoText = await createConfig({
     configCollection,
     configTemplate: {
+      _id: new ObjectId('604cad82b604c1c320c32692'),
       slug: 'seoText',
       name: 'SEO текст.',
       description: 'Для корректного отображения текст должен быть в формате HTML',
@@ -385,7 +439,9 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     configPageDefaultTitle,
     configPageDefaultDescription,
     configSiteThemeColor,
+    configStickyNavVisibleAttributesCount,
     configStickyNavVisibleOptionsCount,
+    configCatalogueFilterVisibleAttributesCount,
     configCatalogueFilterVisibleOptionsCount,
     configSeoTextTitle,
     configSeoText,
@@ -405,7 +461,9 @@ export async function createTestSiteConfigs(): Promise<CreateTestSiteConfigsPayl
     configPageDefaultTitle,
     configPageDefaultDescription,
     configSiteThemeColor,
+    configStickyNavVisibleAttributesCount,
     configStickyNavVisibleOptionsCount,
+    configCatalogueFilterVisibleAttributesCount,
     configCatalogueFilterVisibleOptionsCount,
     configSeoTextTitle,
     configSeoText,

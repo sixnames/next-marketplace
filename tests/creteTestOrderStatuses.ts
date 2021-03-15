@@ -9,6 +9,7 @@ import {
   ORDER_STATUS_NEW,
   SECONDARY_LOCALE,
 } from 'config/common';
+import { ObjectId } from 'mongodb';
 
 export interface CreateTestOrderStatuses {
   initialOrderStatusNew: OrderStatusModel;
@@ -23,6 +24,7 @@ export const createTestOrderStatuses = async (): Promise<CreateTestOrderStatuses
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
 
   const createdInitialOrderStatusNew = await orderStatusesCollection.insertOne({
+    _id: new ObjectId('604cad82b604c1c320c32860'),
     slug: ORDER_STATUS_NEW,
     color: '#0097a7',
     createdAt: new Date(),
@@ -38,6 +40,7 @@ export const createTestOrderStatuses = async (): Promise<CreateTestOrderStatuses
   const initialOrderStatusNew = createdInitialOrderStatusNew.ops[0];
 
   const createdInitialOrderStatusConfirmed = await orderStatusesCollection.insertOne({
+    _id: new ObjectId('604cad82b604c1c320c32861'),
     slug: ORDER_STATUS_CONFIRMED,
     color: '#E7C55A',
     createdAt: new Date(),
@@ -53,6 +56,7 @@ export const createTestOrderStatuses = async (): Promise<CreateTestOrderStatuses
   const initialOrderStatusConfirmed = createdInitialOrderStatusConfirmed.ops[0];
 
   const createdInitialOrderStatusDone = await orderStatusesCollection.insertOne({
+    _id: new ObjectId('604cad82b604c1c320c32862'),
     slug: ORDER_STATUS_DONE,
     color: '#93AF42',
     createdAt: new Date(),
@@ -68,6 +72,7 @@ export const createTestOrderStatuses = async (): Promise<CreateTestOrderStatuses
   const initialOrderStatusDone = createdInitialOrderStatusDone.ops[0];
 
   const createdInitialOrderStatusCanceled = await orderStatusesCollection.insertOne({
+    _id: new ObjectId('604cad82b604c1c320c32863'),
     slug: ORDER_STATUS_CANCELED,
     color: '#AAACB0',
     createdAt: new Date(),

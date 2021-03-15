@@ -2,6 +2,7 @@ import { hash } from 'bcryptjs';
 import { COL_USERS } from 'db/collectionNames';
 import { UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
 import createTestApiMessages, {
   CreateTestApiMessagesPayloadInterface,
 } from 'tests/createTestApiMessages';
@@ -48,6 +49,7 @@ export const createInitialTestData = async (): Promise<CreateInitialTestDataPayl
   const adminPassword = await hash(`${process.env.ADMIN_PASSWORD}`, 10);
 
   const createdAdmin = await usersCollection.insertOne({
+    _id: new ObjectId('604cad82b604c1c320c32868'),
     itemId: '1',
     name: `${process.env.ADMIN_NAME}`,
     lastName: `${process.env.ADMIN_LAST_NAME}`,

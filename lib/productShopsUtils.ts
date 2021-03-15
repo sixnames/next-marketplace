@@ -71,13 +71,6 @@ export async function updateProductShopsData({
     shopProductsIds = [...shopProductsIds, ...cityShopProductsIds];
   }
 
-  console.log({
-    shopProductsIds,
-    shopProductsCountCities,
-    minPriceCities,
-    maxPriceCities,
-  });
-
   // Update product with new shops products data
   const updatedProductResult = await productsCollection.findOneAndUpdate(
     { _id: productId },

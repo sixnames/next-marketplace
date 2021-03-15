@@ -57,7 +57,6 @@ export const Order = objectType({
     t.implements('Base');
     t.implements('Timestamp');
     t.string('comment');
-    t.boolean('archive');
     t.nonNull.objectId('statusId');
     t.nonNull.field('customer', {
       type: 'OrderCustomer',
@@ -359,7 +358,7 @@ export const OrderMutations = extendType({
               phone: phoneToRaw(input.phone),
               itemId,
               password,
-              archive: false,
+
               ordersIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -478,7 +477,7 @@ export const OrderMutations = extendType({
           const orderItemId = await getNextItemId(COL_ORDERS);
           const createdOrderResult = await ordersCollection.insertOne({
             itemId: orderItemId,
-            archive: false,
+
             statusId: initialStatus._id,
             products: castedOrderProducts,
             comment: input.comment,

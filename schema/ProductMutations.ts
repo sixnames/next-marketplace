@@ -1,5 +1,6 @@
 import { noNaN } from 'lib/numbers';
 import { createProductSlugWithConnections } from 'lib/productConnectiosUtils';
+import { recalculateRubricProductCounters } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -13,7 +14,7 @@ import {
   RubricModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
@@ -25,7 +26,7 @@ import {
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT } from 'config/common';
+import { ASSETS_DIST_PRODUCTS, ATTRIBUTE_VARIANT_SELECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
   addProductToConnectionSchema,
@@ -158,6 +159,13 @@ export const DeleteProductFromConnectionInput = inputObjectType({
   },
 });
 
+export const UpdateProductCounterInput = inputObjectType({
+  name: 'UpdateProductCounterInput',
+  definition(t) {
+    t.nonNull.string('productSlug');
+  },
+});
+
 // Product Mutations
 export const ProductMutations = extendType({
   type: 'Mutation',
@@ -189,13 +197,8 @@ export const ProductMutations = extendType({
           const brandsCollection = db.collection<ProductModel>(COL_BRANDS);
           const brandCollectionsCollection = db.collection<ProductModel>(COL_BRAND_COLLECTIONS);
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
           const { manufacturerSlug, brandSlug, brandCollectionSlug, rubricId, ...values } = input;
-
-          // Get selected rubrics
-          const rubrics = await rubricsCollection.find({ _id: rubricId }).toArray();
-          const rubricsSlugs = rubrics.map(({ slug }) => slug);
 
           const manufacturerEntity = manufacturerSlug
             ? await manufacturersCollection.findOne({ slug: manufacturerSlug })
@@ -242,7 +245,6 @@ export const ProductMutations = extendType({
             manufacturerSlug: manufacturerEntity ? manufacturerEntity.slug : undefined,
             brandSlug: brandEntity ? brandEntity.slug : undefined,
             brandCollectionSlug: brandCollectionEntity ? brandCollectionEntity.slug : undefined,
-            archive: false,
             active: true,
             priorities: {},
             views: {},
@@ -254,7 +256,7 @@ export const ProductMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
             rubricId,
-            selectedOptionsSlugs: [...rubricsSlugs, ...selectedOptionsSlugs],
+            selectedOptionsSlugs,
             attributes: values.attributes.map((attributeInput) => {
               let selectedOptions: OptionModel[] = [];
               const { selectedOptionsSlugs } = attributeInput;
@@ -275,6 +277,9 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.create.error`),
             };
           }
+
+          // Recalculate rubric
+          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,
@@ -390,6 +395,9 @@ export const ProductMutations = extendType({
               message: await getApiMessage(`products.update.error`),
             };
           }
+
+          // Recalculate rubric
+          await recalculateRubricProductCounters({ rubricId });
 
           return {
             success: true,
@@ -744,7 +752,10 @@ export const ProductMutations = extendType({
             connectionProducts: [
               {
                 _id: productId,
-                option,
+                option: {
+                  ...option,
+                  options: [],
+                },
                 productId,
               },
             ],
@@ -954,12 +965,13 @@ export const ProductMutations = extendType({
           // Update product with new slug
           const updatedProductResult = await productsCollection.findOneAndUpdate(
             {
-              _id: addProductId,
+              _id: productId,
             },
             {
               $set: {
                 slug: productSlug,
                 updatedAt: new Date(),
+                connections: updatedConnectionsList,
               },
             },
             {
@@ -977,7 +989,7 @@ export const ProductMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.connection.addProductSuccess'),
-            payload: product,
+            payload: updatedProduct,
           };
         } catch (e) {
           return {
@@ -1034,117 +1046,127 @@ export const ProductMutations = extendType({
           const connectionProductIds = connection.connectionProducts.map(
             ({ productId }) => productId,
           );
-          let success = true;
-          let updatedCurrentProduct = product;
+
+          const errorMessage = await getApiMessage('products.connection.deleteError');
+          const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
           if (connection.connectionProducts.length > minimumProductsCountForConnectionDelete) {
-            for await (const productId of connectionProductIds) {
-              const updatedProductResult = await productsCollection.findOneAndUpdate(
-                { _id: productId },
-                {
-                  $pull: {
-                    'connection.connectionProducts': {
-                      productId: deleteProductId,
-                    },
+            const updatedProductsResult = await productsCollection.updateMany(
+              { _id: { $in: connectionProductIds } },
+              {
+                $pull: {
+                  'connections.$[connection].connectionProducts': {
+                    productId: deleteProductId,
                   },
                 },
-                { returnOriginal: false },
-              );
-              const updatedProduct = updatedProductResult.value;
-              if (!updatedProductResult.ok || !updatedProduct) {
-                success = false;
-                break;
-              }
+              },
+              { arrayFilters: [{ 'connection._id': { $eq: connectionId } }] },
+            );
 
-              if (updatedProduct) {
-                // Create new slug for product
-                const { updatedSlug } = createProductSlugWithConnections({
-                  product: updatedProduct,
-                  connections: updatedProduct.connections,
-                });
-
-                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
-                  { _id: productId },
-                  {
-                    $set: {
-                      slug: updatedSlug,
-                    },
-                  },
-                  { returnOriginal: false },
-                );
-                const updatedProductSlug = updatedProductSlugResult.value;
-                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
-                  success = false;
-                  break;
-                }
-
-                if (updatedProductSlug._id.equals(productId)) {
-                  updatedCurrentProduct = updatedProductSlug;
-                }
-              }
+            if (!updatedProductsResult.result.ok) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
             }
+
+            const updatedCurrentProduct = await productsCollection.findOne({ _id: productId });
+            return {
+              success: true,
+              message: successMessage,
+              payload: updatedCurrentProduct,
+            };
           } else {
-            // Delete connection if it has single product
-            for await (const productId of connectionProductIds) {
-              const updatedProductResult = await productsCollection.findOneAndUpdate(
-                { _id: productId },
-                {
-                  $pull: {
-                    connection: {
-                      _id: connectionId,
-                    },
+            const updatedProductResult = await productsCollection.findOneAndUpdate(
+              { _id: deleteProductId },
+              {
+                $pull: {
+                  connections: {
+                    _id: connectionId,
                   },
                 },
-                { returnOriginal: false },
-              );
-
-              const updatedProduct = updatedProductResult.value;
-              if (!updatedProductResult.ok || !updatedProduct) {
-                success = false;
-                break;
-              }
-
-              if (updatedProduct) {
-                // Create new slug for product
-                const { updatedSlug } = createProductSlugWithConnections({
-                  product: updatedProduct,
-                  connections: updatedProduct.connections,
-                });
-
-                const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
-                  { _id: productId },
-                  {
-                    $set: {
-                      slug: updatedSlug,
-                    },
-                  },
-                  { returnOriginal: false },
-                );
-                const updatedProductSlug = updatedProductSlugResult.value;
-                if (!updatedProductSlugResult.ok || !updatedProductSlug) {
-                  success = false;
-                  break;
-                }
-
-                if (updatedProductSlug._id.equals(productId)) {
-                  updatedCurrentProduct = updatedProductSlug;
-                }
-              }
+              },
+              {
+                returnOriginal: false,
+              },
+            );
+            const updatedProduct = updatedProductResult.value;
+            if (!updatedProductResult.ok || !updatedProduct) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
             }
-          }
 
-          const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
-          const errorMessage = await getApiMessage('products.connection.deleteError');
-          return {
-            success,
-            message: success ? successMessage : errorMessage,
-            payload: updatedCurrentProduct,
-          };
+            // Create new slug for product
+            const { updatedSlug } = createProductSlugWithConnections({
+              product: updatedProduct,
+              connections: updatedProduct.connections,
+            });
+            const updatedProductSlugResult = await productsCollection.findOneAndUpdate(
+              { _id: productId },
+              {
+                $set: {
+                  slug: updatedSlug,
+                },
+              },
+              { returnOriginal: false },
+            );
+            const updatedProductSlug = updatedProductSlugResult.value;
+            if (!updatedProductSlugResult.ok || !updatedProductSlug) {
+              return {
+                success: false,
+                message: errorMessage,
+              };
+            }
+
+            return {
+              success: true,
+              message: successMessage,
+              payload: updatedProductSlug,
+            };
+          }
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        }
+      },
+    });
+
+    // Should update product counter
+    t.nonNull.field('updateProductCounter', {
+      type: 'Boolean',
+      description: 'Should update product counter',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateProductCounterInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<boolean> => {
+        try {
+          const db = await getDatabase();
+          const sessionRole = await getSessionRole(context);
+          const { city } = await getRequestParams(context);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          if (!sessionRole.isStuff) {
+            // Args
+            const { input } = args;
+            await productsCollection.findOneAndUpdate(
+              { slug: input.productSlug },
+              {
+                $inc: {
+                  [`views.${city}`]: VIEWS_COUNTER_STEP,
+                },
+              },
+            );
+          }
+          return true;
+        } catch (e) {
+          return false;
         }
       },
     });

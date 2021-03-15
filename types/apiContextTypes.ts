@@ -8,4 +8,5 @@ export interface NexusContext {
   req: ApiRequest;
   res: ServerResponse;
   locale?: string;
+  city?: string;
 }

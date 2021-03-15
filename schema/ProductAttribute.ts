@@ -1,9 +1,4 @@
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_NUMBER,
-  ATTRIBUTE_VARIANT_SELECT,
-  ATTRIBUTE_VARIANT_STRING,
-} from 'config/common';
+import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { objectType } from 'nexus';
 import { AttributeModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -39,6 +34,10 @@ export const ProductAttribute = objectType({
     t.nonNull.field('attributeName', {
       type: 'String',
       resolve: async (source, _args, context) => {
+        if (source.attributeName) {
+          return source.attributeName;
+        }
+
         const { getI18nLocale } = await getRequestParams(context);
         return getI18nLocale(source.attributeNameI18n);
       },
@@ -74,32 +73,15 @@ export const ProductAttribute = objectType({
     t.field('readableValue', {
       type: 'String',
       resolve: async (source, _args, context): Promise<string | null> => {
+        if (source.readableValue) {
+          return source.readableValue;
+        }
+
         const { getI18nLocale } = await getRequestParams(context);
-
-        // Selects
-        if (
-          (source.attributeVariant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-            source.attributeVariant === ATTRIBUTE_VARIANT_SELECT) &&
-          source.selectedOptions.length > 0
-        ) {
-          return source.selectedOptions
-            .map(({ nameI18n }) => {
-              return getI18nLocale(nameI18n);
-            })
-            .join(', ');
-        }
-
-        // String
-        if (source.attributeVariant === ATTRIBUTE_VARIANT_STRING) {
-          return source.textI18n ? getI18nLocale(source.textI18n) : null;
-        }
-
-        // Number
-        if (source.attributeVariant === ATTRIBUTE_VARIANT_NUMBER) {
-          return source.number ? `${source.number}` : null;
-        }
-
-        return null;
+        return getAttributeReadableValue({
+          attribute: source,
+          getFieldLocale: getI18nLocale,
+        });
       },
     });
   },

@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import ContentItemControls, {
   ContentItemControlsInterface,
@@ -38,13 +39,15 @@ const useProductsListColumns = ({
   isUpdateDisabled,
   isDeleteDisabled,
 }: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
+  const city = useSessionCity();
+
   return React.useMemo(() => {
     return [
       {
         accessor: 'itemId',
         headTitle: 'Арт.',
         render: ({ cellData, dataItem }) => (
-          <Link href={`${ROUTE_CMS}/products/${dataItem._id}`}>
+          <Link href={`/${city}${ROUTE_CMS}/products/${dataItem._id}`}>
             <a>{cellData}</a>
           </Link>
         ),

@@ -1,0 +1,134 @@
+[{
+  "_id": {
+    "$oid": "604cad81b604c1c320c32678"
+  },
+  "slug": "app",
+  "nameI18n": {
+    "ru": "Главная",
+    "en": "Main"
+  },
+  "index": 0,
+  "icon": "cart",
+  "path": "/app",
+  "navGroup": "app"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c32679"
+  },
+  "nameI18n": {
+    "ru": "Заказы",
+    "en": "Orders"
+  },
+  "index": 0,
+  "slug": "cms-orders",
+  "path": "/cms/orders",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267a"
+  },
+  "nameI18n": {
+    "ru": "Рубрикатор",
+    "en": "Rubrics"
+  },
+  "index": 2,
+  "slug": "cms-rubrics",
+  "path": "/cms/rubrics",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267b"
+  },
+  "nameI18n": {
+    "ru": "Компании",
+    "en": "Companies"
+  },
+  "index": 3,
+  "slug": "cms-companies",
+  "path": "/cms/companies",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267c"
+  },
+  "nameI18n": {
+    "ru": "Магазины",
+    "en": "Shops"
+  },
+  "index": 4,
+  "slug": "cms-shops",
+  "path": "/cms/shops",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267d"
+  },
+  "nameI18n": {
+    "ru": "Типы рубрик",
+    "en": "Rubric variants"
+  },
+  "index": 5,
+  "slug": "cms-rubric-variants",
+  "path": "/cms/rubric-variants",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267e"
+  },
+  "nameI18n": {
+    "ru": "Группы атрибутов",
+    "en": "Attributes groups"
+  },
+  "index": 6,
+  "slug": "cms-attributes-groups",
+  "path": "/cms/attributes-groups",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c3267f"
+  },
+  "nameI18n": {
+    "ru": "Группы опций",
+    "en": "Options groups"
+  },
+  "index": 7,
+  "slug": "cms-options-groups",
+  "path": "/cms/options-groups",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c32680"
+  },
+  "nameI18n": {
+    "ru": "Языки сайта",
+    "en": "Site languages"
+  },
+  "index": 8,
+  "slug": "cms-languages",
+  "path": "/cms/languages",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c32681"
+  },
+  "nameI18n": {
+    "ru": "Настройки сайта",
+    "en": "Site settings"
+  },
+  "index": 98,
+  "slug": "cms-config",
+  "path": "/cms/config",
+  "navGroup": "cms"
+},{
+  "_id": {
+    "$oid": "604cad81b604c1c320c32682"
+  },
+  "nameI18n": {
+    "ru": "Роли",
+    "en": "Roles"
+  },
+  "index": 99,
+  "slug": "cms-roles",
+  "path": "/cms/roles",
+  "navGroup": "cms"
+}]

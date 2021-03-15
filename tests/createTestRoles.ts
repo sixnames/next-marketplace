@@ -1,5 +1,5 @@
 import { INITIAL_APP_NAVIGATION } from 'db/createInitialRoles';
-import { NavItemModel, RoleBase, RoleModel } from 'db/dbModels';
+import { NavItemModel, RoleModel, RoleBase } from 'db/dbModels';
 import {
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
@@ -10,7 +10,7 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 
 interface CreateRoleInterface {
   template: RoleBase;
@@ -57,6 +57,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
   const guestRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32864'),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Гость',
         [SECONDARY_LOCALE]: 'Guest',
@@ -71,6 +72,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
   const companyOwnerRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32865'),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Владелец компании',
         [SECONDARY_LOCALE]: 'Company owner',
@@ -85,6 +87,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
   const companyManagerRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32866'),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Сотрудник компании',
         [SECONDARY_LOCALE]: 'Company manager',
@@ -99,6 +102,7 @@ export async function createTestRoles(): Promise<CreateTestRolesPayloadInterface
   const adminRole = await createRole({
     rolesCollection,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32867'),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Админ',
         [SECONDARY_LOCALE]: 'Admin',

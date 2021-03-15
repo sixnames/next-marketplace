@@ -1,0 +1,2425 @@
+[{
+  "_id": {
+    "$oid": "604cad83b604c1c320c3288e"
+  },
+  "nameI18n": {
+    "ru": "Вино",
+    "en": "Wine"
+  },
+  "slug": "vino",
+  "variantId": {
+    "$oid": "604cad83b604c1c320c3288c"
+  },
+  "active": true,
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "shortDescriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "attributesGroupsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32882"
+    },
+    {
+      "$oid": "604cad83b604c1c320c32889"
+    }
+  ],
+  "attributes": [
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32883"
+      },
+      "nameI18n": {
+        "ru": "Сочетание",
+        "en": "Combinations"
+      },
+      "slug": "combinations",
+      "variant": "multipleSelect",
+      "viewVariant": "icon",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c3287e"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287a"
+          },
+          "nameI18n": {
+            "ru": "Белое мясо",
+            "en": "White meat"
+          },
+          "gender": "it",
+          "icon": "white-meat",
+          "slug": "combinations-white_meat",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287b"
+          },
+          "nameI18n": {
+            "ru": "Суп",
+            "en": "Soup"
+          },
+          "gender": "he",
+          "icon": "soup",
+          "slug": "combinations-soup",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287c"
+          },
+          "nameI18n": {
+            "ru": "Рыба",
+            "en": "Fish"
+          },
+          "gender": "she",
+          "icon": "fish",
+          "slug": "combinations-fish",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287d"
+          },
+          "nameI18n": {
+            "ru": "Дары моря",
+            "en": "Seafood"
+          },
+          "icon": "seafood",
+          "slug": "combinations-seafood",
+          "gender": "it",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32884"
+      },
+      "nameI18n": {
+        "ru": "Винтаж вина",
+        "en": "Wine vintage"
+      },
+      "slug": "vintaz_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32870"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286d"
+          },
+          "nameI18n": {
+            "ru": "1950",
+            "en": "1950"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1950",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286e"
+          },
+          "nameI18n": {
+            "ru": "1978",
+            "en": "1978"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1978",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286f"
+          },
+          "nameI18n": {
+            "ru": "2001",
+            "en": "2001"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-2001",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "afterKeyword",
+        "en": "afterKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32885"
+      },
+      "nameI18n": {
+        "ru": "Цвет вина",
+        "en": "Wine color"
+      },
+      "slug": "tsvet_vina",
+      "variant": "multipleSelect",
+      "viewVariant": "tag",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32874"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32871"
+          },
+          "nameI18n": {
+            "ru": "Белое",
+            "en": "White"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-beliy",
+          "color": "ffffff",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Белая",
+              "en": "White"
+            },
+            "he": {
+              "ru": "Белый",
+              "en": "White"
+            },
+            "it": {
+              "ru": "Белое",
+              "en": "White"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32872"
+          },
+          "nameI18n": {
+            "ru": "Красное",
+            "en": "Red"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-krasniy",
+          "color": "99020b",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Красная",
+              "en": "Red"
+            },
+            "he": {
+              "ru": "Красный",
+              "en": "Red"
+            },
+            "it": {
+              "ru": "Красное",
+              "en": "Red"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32873"
+          },
+          "nameI18n": {
+            "ru": "Розовое",
+            "en": "Pink"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-rozoviy",
+          "color": "db8ce0",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Розовая",
+              "en": "Pink"
+            },
+            "he": {
+              "ru": "Розовый",
+              "en": "Pink"
+            },
+            "it": {
+              "ru": "Розовое",
+              "en": "Pink"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "beforeKeyword",
+        "en": "beforeKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32886"
+      },
+      "nameI18n": {
+        "ru": "Тип вина",
+        "en": "Wine type"
+      },
+      "slug": "tip_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32879"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32875"
+          },
+          "nameI18n": {
+            "ru": "Портвейн",
+            "en": "Port wine"
+          },
+          "gender": "he",
+          "slug": "tip_vina-portvein",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32876"
+          },
+          "nameI18n": {
+            "ru": "Херес",
+            "en": "Heres"
+          },
+          "gender": "he",
+          "slug": "tip_vina-heres",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32877"
+          },
+          "nameI18n": {
+            "ru": "Вермут",
+            "en": "Vermut"
+          },
+          "gender": "he",
+          "slug": "tip_vina-vermut",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32878"
+          },
+          "nameI18n": {
+            "ru": "Крепленое",
+            "en": "Hard"
+          },
+          "gender": "it",
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "slug": "tip_vina-kreplenoe",
+          "options": [],
+          "variants": {},
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "replaceKeyword",
+        "en": "replaceKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32887"
+      },
+      "nameI18n": {
+        "ru": "Атрибут строка",
+        "en": "Attribute string"
+      },
+      "slug": "attribute_stroka",
+      "variant": "string",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32888"
+      },
+      "nameI18n": {
+        "ru": "Атрибут число",
+        "en": "Attribute number"
+      },
+      "slug": "attribute_chislo",
+      "variant": "number",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c3287f"
+      },
+      "nameI18n": {
+        "ru": "vivino",
+        "en": "vivino"
+      },
+      "slug": "vivino",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32880"
+      },
+      "nameI18n": {
+        "ru": "pr",
+        "en": "pr"
+      },
+      "slug": "pr",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32881"
+      },
+      "nameI18n": {
+        "ru": "ws",
+        "en": "ws"
+      },
+      "slug": "ws",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    }
+  ],
+  "catalogueTitle": {
+    "defaultTitleI18n": {
+      "ru": "Купить вино",
+      "en": "Buy a wine"
+    },
+    "prefixI18n": {
+      "ru": "Купить",
+      "en": "Buy a"
+    },
+    "keywordI18n": {
+      "ru": "вино",
+      "en": "wine"
+    },
+    "gender": "it"
+  },
+  "activeProductsCount": 6,
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "productsCount": 7
+},{
+  "_id": {
+    "$oid": "604cad83b604c1c320c3288f"
+  },
+  "nameI18n": {
+    "ru": "Шампанское и игристое",
+    "en": "Champagne"
+  },
+  "slug": "shampanskoe_i_igristoe",
+  "variantId": {
+    "$oid": "604cad83b604c1c320c3288c"
+  },
+  "active": true,
+  "attributesGroupsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32882"
+    },
+    {
+      "$oid": "604cad83b604c1c320c32889"
+    }
+  ],
+  "attributes": [
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32883"
+      },
+      "nameI18n": {
+        "ru": "Сочетание",
+        "en": "Combinations"
+      },
+      "slug": "combinations",
+      "variant": "multipleSelect",
+      "viewVariant": "icon",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c3287e"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287a"
+          },
+          "nameI18n": {
+            "ru": "Белое мясо",
+            "en": "White meat"
+          },
+          "gender": "it",
+          "icon": "white-meat",
+          "slug": "combinations-white_meat",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287b"
+          },
+          "nameI18n": {
+            "ru": "Суп",
+            "en": "Soup"
+          },
+          "gender": "he",
+          "icon": "soup",
+          "slug": "combinations-soup",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287c"
+          },
+          "nameI18n": {
+            "ru": "Рыба",
+            "en": "Fish"
+          },
+          "gender": "she",
+          "icon": "fish",
+          "slug": "combinations-fish",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287d"
+          },
+          "nameI18n": {
+            "ru": "Дары моря",
+            "en": "Seafood"
+          },
+          "icon": "seafood",
+          "slug": "combinations-seafood",
+          "gender": "it",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32884"
+      },
+      "nameI18n": {
+        "ru": "Винтаж вина",
+        "en": "Wine vintage"
+      },
+      "slug": "vintaz_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32870"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286d"
+          },
+          "nameI18n": {
+            "ru": "1950",
+            "en": "1950"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1950",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286e"
+          },
+          "nameI18n": {
+            "ru": "1978",
+            "en": "1978"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1978",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286f"
+          },
+          "nameI18n": {
+            "ru": "2001",
+            "en": "2001"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-2001",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "afterKeyword",
+        "en": "afterKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32885"
+      },
+      "nameI18n": {
+        "ru": "Цвет вина",
+        "en": "Wine color"
+      },
+      "slug": "tsvet_vina",
+      "variant": "multipleSelect",
+      "viewVariant": "tag",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32874"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32871"
+          },
+          "nameI18n": {
+            "ru": "Белое",
+            "en": "White"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-beliy",
+          "color": "ffffff",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Белая",
+              "en": "White"
+            },
+            "he": {
+              "ru": "Белый",
+              "en": "White"
+            },
+            "it": {
+              "ru": "Белое",
+              "en": "White"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32872"
+          },
+          "nameI18n": {
+            "ru": "Красное",
+            "en": "Red"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-krasniy",
+          "color": "99020b",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Красная",
+              "en": "Red"
+            },
+            "he": {
+              "ru": "Красный",
+              "en": "Red"
+            },
+            "it": {
+              "ru": "Красное",
+              "en": "Red"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32873"
+          },
+          "nameI18n": {
+            "ru": "Розовое",
+            "en": "Pink"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-rozoviy",
+          "color": "db8ce0",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Розовая",
+              "en": "Pink"
+            },
+            "he": {
+              "ru": "Розовый",
+              "en": "Pink"
+            },
+            "it": {
+              "ru": "Розовое",
+              "en": "Pink"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "beforeKeyword",
+        "en": "beforeKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32886"
+      },
+      "nameI18n": {
+        "ru": "Тип вина",
+        "en": "Wine type"
+      },
+      "slug": "tip_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32879"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32875"
+          },
+          "nameI18n": {
+            "ru": "Портвейн",
+            "en": "Port wine"
+          },
+          "gender": "he",
+          "slug": "tip_vina-portvein",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": true
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32876"
+          },
+          "nameI18n": {
+            "ru": "Херес",
+            "en": "Heres"
+          },
+          "gender": "he",
+          "slug": "tip_vina-heres",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32877"
+          },
+          "nameI18n": {
+            "ru": "Вермут",
+            "en": "Vermut"
+          },
+          "gender": "he",
+          "slug": "tip_vina-vermut",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32878"
+          },
+          "nameI18n": {
+            "ru": "Крепленое",
+            "en": "Hard"
+          },
+          "gender": "it",
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "slug": "tip_vina-kreplenoe",
+          "options": [],
+          "variants": {},
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "replaceKeyword",
+        "en": "replaceKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32887"
+      },
+      "nameI18n": {
+        "ru": "Атрибут строка",
+        "en": "Attribute string"
+      },
+      "slug": "attribute_stroka",
+      "variant": "string",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32888"
+      },
+      "nameI18n": {
+        "ru": "Атрибут число",
+        "en": "Attribute number"
+      },
+      "slug": "attribute_chislo",
+      "variant": "number",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c3287f"
+      },
+      "nameI18n": {
+        "ru": "vivino",
+        "en": "vivino"
+      },
+      "slug": "vivino",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32880"
+      },
+      "nameI18n": {
+        "ru": "pr",
+        "en": "pr"
+      },
+      "slug": "pr",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32881"
+      },
+      "nameI18n": {
+        "ru": "ws",
+        "en": "ws"
+      },
+      "slug": "ws",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    }
+  ],
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "shortDescriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "catalogueTitle": {
+    "defaultTitleI18n": {
+      "ru": "Купить шампанское",
+      "en": "Buy a champagne"
+    },
+    "prefixI18n": {
+      "ru": "Купить",
+      "en": "Buy a"
+    },
+    "keywordI18n": {
+      "ru": "шампанское",
+      "en": "champagne"
+    },
+    "gender": "it"
+  },
+  "activeProductsCount": 1,
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "productsCount": 1
+},{
+  "_id": {
+    "$oid": "604cad83b604c1c320c32890"
+  },
+  "nameI18n": {
+    "ru": "Виски",
+    "en": "Whiskey"
+  },
+  "slug": "viski",
+  "variantId": {
+    "$oid": "604cad83b604c1c320c3288c"
+  },
+  "active": true,
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "shortDescriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "attributesGroupsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32882"
+    },
+    {
+      "$oid": "604cad83b604c1c320c32889"
+    }
+  ],
+  "attributes": [
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32883"
+      },
+      "nameI18n": {
+        "ru": "Сочетание",
+        "en": "Combinations"
+      },
+      "slug": "combinations",
+      "variant": "multipleSelect",
+      "viewVariant": "icon",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c3287e"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287a"
+          },
+          "nameI18n": {
+            "ru": "Белое мясо",
+            "en": "White meat"
+          },
+          "gender": "it",
+          "icon": "white-meat",
+          "slug": "combinations-white_meat",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287b"
+          },
+          "nameI18n": {
+            "ru": "Суп",
+            "en": "Soup"
+          },
+          "gender": "he",
+          "icon": "soup",
+          "slug": "combinations-soup",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287c"
+          },
+          "nameI18n": {
+            "ru": "Рыба",
+            "en": "Fish"
+          },
+          "gender": "she",
+          "icon": "fish",
+          "slug": "combinations-fish",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287d"
+          },
+          "nameI18n": {
+            "ru": "Дары моря",
+            "en": "Seafood"
+          },
+          "icon": "seafood",
+          "slug": "combinations-seafood",
+          "gender": "it",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32884"
+      },
+      "nameI18n": {
+        "ru": "Винтаж вина",
+        "en": "Wine vintage"
+      },
+      "slug": "vintaz_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32870"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286d"
+          },
+          "nameI18n": {
+            "ru": "1950",
+            "en": "1950"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1950",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286e"
+          },
+          "nameI18n": {
+            "ru": "1978",
+            "en": "1978"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1978",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286f"
+          },
+          "nameI18n": {
+            "ru": "2001",
+            "en": "2001"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-2001",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "afterKeyword",
+        "en": "afterKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32885"
+      },
+      "nameI18n": {
+        "ru": "Цвет вина",
+        "en": "Wine color"
+      },
+      "slug": "tsvet_vina",
+      "variant": "multipleSelect",
+      "viewVariant": "tag",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32874"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32871"
+          },
+          "nameI18n": {
+            "ru": "Белый",
+            "en": "White"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-beliy",
+          "color": "ffffff",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Белая",
+              "en": "White"
+            },
+            "he": {
+              "ru": "Белый",
+              "en": "White"
+            },
+            "it": {
+              "ru": "Белое",
+              "en": "White"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32872"
+          },
+          "nameI18n": {
+            "ru": "Красный",
+            "en": "Red"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-krasniy",
+          "color": "99020b",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Красная",
+              "en": "Red"
+            },
+            "he": {
+              "ru": "Красный",
+              "en": "Red"
+            },
+            "it": {
+              "ru": "Красное",
+              "en": "Red"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32873"
+          },
+          "nameI18n": {
+            "ru": "Розовый",
+            "en": "Pink"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-rozoviy",
+          "color": "db8ce0",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Розовая",
+              "en": "Pink"
+            },
+            "he": {
+              "ru": "Розовый",
+              "en": "Pink"
+            },
+            "it": {
+              "ru": "Розовое",
+              "en": "Pink"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "beforeKeyword",
+        "en": "beforeKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32886"
+      },
+      "nameI18n": {
+        "ru": "Тип вина",
+        "en": "Wine type"
+      },
+      "slug": "tip_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32879"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32875"
+          },
+          "nameI18n": {
+            "ru": "Портвейн",
+            "en": "Port wine"
+          },
+          "gender": "he",
+          "slug": "tip_vina-portvein",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32876"
+          },
+          "nameI18n": {
+            "ru": "Херес",
+            "en": "Heres"
+          },
+          "gender": "he",
+          "slug": "tip_vina-heres",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32877"
+          },
+          "nameI18n": {
+            "ru": "Вермут",
+            "en": "Vermut"
+          },
+          "gender": "he",
+          "slug": "tip_vina-vermut",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32878"
+          },
+          "nameI18n": {
+            "ru": "Крепленое",
+            "en": "Hard"
+          },
+          "gender": "it",
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "slug": "tip_vina-kreplenoe",
+          "options": [],
+          "variants": {},
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "replaceKeyword",
+        "en": "replaceKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32887"
+      },
+      "nameI18n": {
+        "ru": "Атрибут строка",
+        "en": "Attribute string"
+      },
+      "slug": "attribute_stroka",
+      "variant": "string",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32888"
+      },
+      "nameI18n": {
+        "ru": "Атрибут число",
+        "en": "Attribute number"
+      },
+      "slug": "attribute_chislo",
+      "variant": "number",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c3287f"
+      },
+      "nameI18n": {
+        "ru": "vivino",
+        "en": "vivino"
+      },
+      "slug": "vivino",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32880"
+      },
+      "nameI18n": {
+        "ru": "pr",
+        "en": "pr"
+      },
+      "slug": "pr",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32881"
+      },
+      "nameI18n": {
+        "ru": "ws",
+        "en": "ws"
+      },
+      "slug": "ws",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    }
+  ],
+  "catalogueTitle": {
+    "defaultTitleI18n": {
+      "ru": "Купить Виски",
+      "en": "Buy a Whiskey"
+    },
+    "prefixI18n": {
+      "ru": "Купить",
+      "en": "Buy a"
+    },
+    "keywordI18n": {
+      "ru": "Виски",
+      "en": "Whiskey"
+    },
+    "gender": "it"
+  },
+  "activeProductsCount": 0,
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "productsCount": 0
+},{
+  "_id": {
+    "$oid": "604cad83b604c1c320c32891"
+  },
+  "nameI18n": {
+    "ru": "Коньяк",
+    "en": "Cognac"
+  },
+  "slug": "konyak",
+  "variantId": {
+    "$oid": "604cad83b604c1c320c3288c"
+  },
+  "active": true,
+  "descriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "shortDescriptionI18n": {
+    "ru": "Описание",
+    "en": "description"
+  },
+  "attributesGroupsIds": [
+    {
+      "$oid": "604cad83b604c1c320c32882"
+    },
+    {
+      "$oid": "604cad83b604c1c320c32889"
+    }
+  ],
+  "attributes": [
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32883"
+      },
+      "nameI18n": {
+        "ru": "Сочетание",
+        "en": "Combinations"
+      },
+      "slug": "combinations",
+      "variant": "multipleSelect",
+      "viewVariant": "icon",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c3287e"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287a"
+          },
+          "nameI18n": {
+            "ru": "Белое мясо",
+            "en": "White meat"
+          },
+          "gender": "it",
+          "icon": "white-meat",
+          "slug": "combinations-white_meat",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287b"
+          },
+          "nameI18n": {
+            "ru": "Суп",
+            "en": "Soup"
+          },
+          "gender": "he",
+          "icon": "soup",
+          "slug": "combinations-soup",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287c"
+          },
+          "nameI18n": {
+            "ru": "Рыба",
+            "en": "Fish"
+          },
+          "gender": "she",
+          "icon": "fish",
+          "slug": "combinations-fish",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3287d"
+          },
+          "nameI18n": {
+            "ru": "Дары моря",
+            "en": "Seafood"
+          },
+          "icon": "seafood",
+          "slug": "combinations-seafood",
+          "gender": "it",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32884"
+      },
+      "nameI18n": {
+        "ru": "Винтаж вина",
+        "en": "Wine vintage"
+      },
+      "slug": "vintaz_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32870"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286d"
+          },
+          "nameI18n": {
+            "ru": "1950",
+            "en": "1950"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1950",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286e"
+          },
+          "nameI18n": {
+            "ru": "1978",
+            "en": "1978"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-1978",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c3286f"
+          },
+          "nameI18n": {
+            "ru": "2001",
+            "en": "2001"
+          },
+          "gender": "it",
+          "slug": "vintaz_vina-2001",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "afterKeyword",
+        "en": "afterKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32885"
+      },
+      "nameI18n": {
+        "ru": "Цвет вина",
+        "en": "Wine color"
+      },
+      "slug": "tsvet_vina",
+      "variant": "multipleSelect",
+      "viewVariant": "tag",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32874"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32871"
+          },
+          "nameI18n": {
+            "ru": "Белый",
+            "en": "White"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-beliy",
+          "color": "ffffff",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Белая",
+              "en": "White"
+            },
+            "he": {
+              "ru": "Белый",
+              "en": "White"
+            },
+            "it": {
+              "ru": "Белое",
+              "en": "White"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32872"
+          },
+          "nameI18n": {
+            "ru": "Красный",
+            "en": "Red"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-krasniy",
+          "color": "99020b",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Красная",
+              "en": "Red"
+            },
+            "he": {
+              "ru": "Красный",
+              "en": "Red"
+            },
+            "it": {
+              "ru": "Красное",
+              "en": "Red"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32873"
+          },
+          "nameI18n": {
+            "ru": "Розовый",
+            "en": "Pink"
+          },
+          "gender": "he",
+          "slug": "tsvet_vina-rozoviy",
+          "color": "db8ce0",
+          "options": [],
+          "variants": {
+            "she": {
+              "ru": "Розовая",
+              "en": "Pink"
+            },
+            "he": {
+              "ru": "Розовый",
+              "en": "Pink"
+            },
+            "it": {
+              "ru": "Розовое",
+              "en": "Pink"
+            }
+          },
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "beforeKeyword",
+        "en": "beforeKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32886"
+      },
+      "nameI18n": {
+        "ru": "Тип вина",
+        "en": "Wine type"
+      },
+      "slug": "tip_vina",
+      "variant": "select",
+      "viewVariant": "list",
+      "optionsGroupId": {
+        "$oid": "604cad83b604c1c320c32879"
+      },
+      "options": [
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32875"
+          },
+          "nameI18n": {
+            "ru": "Портвейн",
+            "en": "Port wine"
+          },
+          "gender": "he",
+          "slug": "tip_vina-portvein",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32876"
+          },
+          "nameI18n": {
+            "ru": "Херес",
+            "en": "Heres"
+          },
+          "gender": "he",
+          "slug": "tip_vina-heres",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32877"
+          },
+          "nameI18n": {
+            "ru": "Вермут",
+            "en": "Vermut"
+          },
+          "gender": "he",
+          "slug": "tip_vina-vermut",
+          "options": [],
+          "variants": {},
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "isSelected": false
+        },
+        {
+          "_id": {
+            "$oid": "604cad83b604c1c320c32878"
+          },
+          "nameI18n": {
+            "ru": "Крепленое",
+            "en": "Hard"
+          },
+          "gender": "it",
+          "priorities": {
+            "msk": 1
+          },
+          "views": {
+            "msk": 1
+          },
+          "slug": "tip_vina-kreplenoe",
+          "options": [],
+          "variants": {},
+          "isSelected": false
+        }
+      ],
+      "positioningInTitle": {
+        "ru": "replaceKeyword",
+        "en": "replaceKeyword"
+      },
+      "showInCatalogueFilter": true,
+      "showInCatalogueNav": true,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32887"
+      },
+      "nameI18n": {
+        "ru": "Атрибут строка",
+        "en": "Attribute string"
+      },
+      "slug": "attribute_stroka",
+      "variant": "string",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32888"
+      },
+      "nameI18n": {
+        "ru": "Атрибут число",
+        "en": "Attribute number"
+      },
+      "slug": "attribute_chislo",
+      "variant": "number",
+      "viewVariant": "text",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c3287f"
+      },
+      "nameI18n": {
+        "ru": "vivino",
+        "en": "vivino"
+      },
+      "slug": "vivino",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32880"
+      },
+      "nameI18n": {
+        "ru": "pr",
+        "en": "pr"
+      },
+      "slug": "pr",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    },
+    {
+      "_id": {
+        "$oid": "604cad83b604c1c320c32881"
+      },
+      "nameI18n": {
+        "ru": "ws",
+        "en": "ws"
+      },
+      "slug": "ws",
+      "variant": "number",
+      "viewVariant": "outerRating",
+      "options": [],
+      "showInCatalogueFilter": false,
+      "showInCatalogueNav": false,
+      "visibleInCatalogueCities": {},
+      "priorities": {
+        "msk": 1
+      },
+      "views": {
+        "msk": 1
+      }
+    }
+  ],
+  "catalogueTitle": {
+    "defaultTitleI18n": {
+      "ru": "Купить коньяк",
+      "en": "Buy a cognac"
+    },
+    "prefixI18n": {
+      "ru": "Купить",
+      "en": "Buy a"
+    },
+    "keywordI18n": {
+      "ru": "коньяк",
+      "en": "cognac"
+    },
+    "gender": "it"
+  },
+  "activeProductsCount": 0,
+  "priorities": {
+    "msk": 1
+  },
+  "views": {
+    "msk": 1
+  },
+  "productsCount": 0
+}]

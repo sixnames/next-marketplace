@@ -1,3 +1,5 @@
+import useCartMutations from 'hooks/useCartMutations';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetGrid.module.css';
 import Image from 'next/image';
@@ -5,7 +7,6 @@ import Link from '../../Link/Link';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
 import ProductMarker from '../ProductMarker/ProductMarker';
 import RatingStars from '../../RatingStars/RatingStars';
-import { useSiteContext } from 'context/siteContext';
 import ControlButton from '../../Buttons/ControlButton';
 import ProductSnippetPrice from '../ProductSnippetPrice/ProductSnippetPrice';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
@@ -23,9 +24,21 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   additionalSlug,
   size = 'normal',
 }) => {
-  const { addShoplessProductToCart } = useSiteContext();
-  const { name, mainImage, slug, cardPrices, _id, listFeatures, ratingFeatures } = product;
+  const city = useSessionCity();
+  const { addShoplessProductToCart } = useCartMutations();
+  const {
+    name,
+    originalName,
+    mainImage,
+    slug,
+    cardPrices,
+    _id,
+    listFeatures,
+    ratingFeatures,
+    shopsCount,
+  } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
+  const isShopless = shopsCount < 1;
 
   const firstRatingFeature = ratingFeatures[0];
 
@@ -45,17 +58,18 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
             layout={'fill'}
             objectFit={'contain'}
             objectPosition={'center bottom'}
-            alt={name}
-            title={name}
+            alt={originalName}
+            title={originalName}
           />
         </div>
       </div>
       <div className={classes.content}>
         <div className={classes.contentTop}>
-          <div className={classes.name}>{name}</div>
+          <div className={classes.name}>{originalName}</div>
+          <div className={classes.nameTranslation}>{name}</div>
           <div className={classes.attributes}>{listFeaturesString}</div>
         </div>
-        <ProductSnippetPrice value={cardPrices.min} />
+        <ProductSnippetPrice isShopless={isShopless} value={cardPrices.min} />
       </div>
 
       <div className={`${classes.rating} ${classes.leftColumn}`}>
@@ -75,7 +89,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
           <ControlButton icon={'compare'} />
           <ControlButton icon={'heart'} />
           <ControlButton
-            testId={`catalogue-item-${_id}-add-to-cart`}
+            testId={`catalogue-item-${slug}-add-to-cart`}
             onClick={() =>
               addShoplessProductToCart({
                 amount: 1,
@@ -94,11 +108,9 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       <Link
         // style={{ display: 'none' }}
         className={classes.link}
-        href={{
-          pathname: `/product${additionalLinkSlug}/${slug}`,
-        }}
+        href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >
-        {name}
+        {originalName}
       </Link>
     </LayoutCard>
   );

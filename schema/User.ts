@@ -36,7 +36,6 @@ export const User = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.nonNull.boolean('archive');
     t.nonNull.string('name');
     t.string('lastName');
     t.string('secondName');
@@ -101,7 +100,7 @@ export const User = objectType({
       resolve: async (source, args, context): Promise<OrdersPaginationPayloadModel> => {
         const { city } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<OrderModel>({
-          pipeline: [{ $match: { _id: { $in: source.ordersIds }, archive: false } }],
+          pipeline: [{ $match: { _id: { $in: source.ordersIds } } }],
           collectionName: COL_ORDERS,
           input: args.input,
           city,
@@ -330,7 +329,7 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-            archive: false,
+
             ordersIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -647,7 +646,7 @@ export const UserMutations = mutationType({
             phone: phoneToRaw(input.phone),
             itemId,
             password,
-            archive: false,
+
             ordersIds: [],
             roleId: guestRole._id,
             createdAt: new Date(),

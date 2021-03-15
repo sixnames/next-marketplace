@@ -381,7 +381,6 @@ export type User = Base & Timestamp & {
   itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  archive: Scalars['Boolean'];
   name: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
@@ -890,8 +889,6 @@ export type Mutation = {
   toggleAttributeInRubricNav: RubricPayload;
   /** Should delete attributes group from rubric */
   deleteAttributesGroupFromRubric: RubricPayload;
-  /** Should add product to the rubric */
-  addProductToRubric: RubricPayload;
   /** Should remove product from rubric */
   deleteProductFromRubric: RubricPayload;
   /** Should create product */
@@ -910,6 +907,8 @@ export type Mutation = {
   addProductToConnection: ProductPayload;
   /** Should create product connection */
   deleteProductFromConnection: ProductPayload;
+  /** Should update product counter */
+  updateProductCounter: Scalars['Boolean'];
   /** Should update shop product */
   updateShopProduct: ShopProductPayload;
   /** Should update shop */
@@ -1242,11 +1241,6 @@ export type MutationDeleteAttributesGroupFromRubricArgs = {
 };
 
 
-export type MutationAddProductToRubricArgs = {
-  input: AddProductToRubricInput;
-};
-
-
 export type MutationDeleteProductFromRubricArgs = {
   input: DeleteProductFromRubricInput;
 };
@@ -1289,6 +1283,11 @@ export type MutationAddProductToConnectionArgs = {
 
 export type MutationDeleteProductFromConnectionArgs = {
   input: DeleteProductFromConnectionInput;
+};
+
+
+export type MutationUpdateProductCounterArgs = {
+  input: UpdateProductCounterInput;
 };
 
 
@@ -1894,7 +1893,7 @@ export type RubricOption = {
   icon?: Maybe<Scalars['String']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
-  productsCount: Scalars['Int'];
+  isSelected: Scalars['Boolean'];
   variants: Scalars['JSONObject'];
   options: Array<RubricOption>;
   name: Scalars['String'];
@@ -1915,6 +1914,7 @@ export type RubricAttribute = {
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
   metric?: Maybe<Metric>;
+  optionsGroup?: Maybe<OptionsGroup>;
   name: Scalars['String'];
 };
 
@@ -1978,11 +1978,6 @@ export type UpdateAttributeInRubricInput = {
   attributeId: Scalars['ObjectId'];
 };
 
-export type AddProductToRubricInput = {
-  rubricId: Scalars['ObjectId'];
-  productId: Scalars['ObjectId'];
-};
-
 export type DeleteProductFromRubricInput = {
   rubricId: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
@@ -2022,7 +2017,6 @@ export type Product = Base & Timestamp & {
   active: Scalars['Boolean'];
   slug: Scalars['String'];
   originalName: Scalars['String'];
-  archive: Scalars['Boolean'];
   brandSlug?: Maybe<Scalars['String']>;
   brandCollectionSlug?: Maybe<Scalars['String']>;
   manufacturerSlug?: Maybe<Scalars['String']>;
@@ -2037,7 +2031,7 @@ export type Product = Base & Timestamp & {
   name: Scalars['String'];
   description: Scalars['String'];
   mainImage: Scalars['String'];
-  rubrics: Array<Rubric>;
+  rubric: Rubric;
   brand?: Maybe<Brand>;
   brandCollection?: Maybe<BrandCollection>;
   manufacturer?: Maybe<Manufacturer>;
@@ -2192,6 +2186,10 @@ export type DeleteProductFromConnectionInput = {
   connectionId: Scalars['ObjectId'];
 };
 
+export type UpdateProductCounterInput = {
+  productSlug: Scalars['String'];
+};
+
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   _id: Scalars['ObjectId'];
@@ -2245,7 +2243,6 @@ export type ShopProduct = Timestamp & {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   _id: Scalars['ObjectId'];
-  archive: Scalars['Boolean'];
   citySlug: Scalars['String'];
   available: Scalars['Int'];
   price: Scalars['Int'];
@@ -2294,7 +2291,6 @@ export type Shop = Base & Timestamp & {
   itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  archive: Scalars['Boolean'];
   name: Scalars['String'];
   slug: Scalars['String'];
   citySlug: Scalars['String'];
@@ -2383,7 +2379,6 @@ export type Company = Base & Timestamp & {
   itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  archive: Scalars['Boolean'];
   name: Scalars['String'];
   slug: Scalars['String'];
   ownerId: Scalars['ObjectId'];
@@ -2579,7 +2574,6 @@ export type Order = Base & Timestamp & {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   comment?: Maybe<Scalars['String']>;
-  archive?: Maybe<Scalars['Boolean']>;
   statusId: Scalars['ObjectId'];
   customer: OrderCustomer;
   products: Array<OrderProduct>;
@@ -2672,7 +2666,10 @@ export type CmsProductFieldsFragment = (
   & { assets: Array<(
     { __typename?: 'Asset' }
     & Pick<Asset, 'url' | 'index'>
-  )>, attributes: Array<(
+  )>, rubric: (
+    { __typename?: 'Rubric' }
+    & Pick<Rubric, '_id' | 'slug' | 'name'>
+  ), attributes: Array<(
     { __typename?: 'ProductAttribute' }
     & CmsProductAttributeFragment
   )>, connections: Array<(
@@ -3013,19 +3010,6 @@ export type GetNonRubricProductsQuery = (
   ) }
 );
 
-export type AddProductTuRubricMutationVariables = Exact<{
-  input: AddProductToRubricInput;
-}>;
-
-
-export type AddProductTuRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductToRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
 export type DeleteProductFromRubricMutationVariables = Exact<{
   input: DeleteProductFromRubricInput;
 }>;
@@ -3084,6 +3068,9 @@ export type RubricAttributeFragment = (
   & { metric?: Maybe<(
     { __typename?: 'Metric' }
     & Pick<Metric, '_id' | 'name'>
+  )>, optionsGroup?: Maybe<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, '_id' | 'name'>
   )> }
 );
 
@@ -3871,7 +3858,7 @@ export type CardFeatureFragment = (
 
 export type CardConnectionProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'slug' | 'name' | 'active' | 'mainImage'>
+  & Pick<Product, '_id' | 'slug'>
 );
 
 export type CardConnectionItemFragment = (
@@ -3989,6 +3976,16 @@ export type GetCatalogueCardShopsQuery = (
   )> }
 );
 
+export type UpdateProductCounterMutationVariables = Exact<{
+  input: UpdateProductCounterInput;
+}>;
+
+
+export type UpdateProductCounterMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateProductCounter'>
+);
+
 export type SnippetConnectionItemFragment = (
   { __typename?: 'ProductConnectionItem' }
   & Pick<ProductConnectionItem, '_id' | 'productId'>
@@ -4009,7 +4006,7 @@ export type SnippetConnectionFragment = (
 
 export type ProductSnippetFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'name' | 'slug' | 'mainImage' | 'shopsCount'>
+  & Pick<Product, '_id' | 'itemId' | 'name' | 'originalName' | 'slug' | 'mainImage' | 'shopsCount'>
   & { listFeatures: Array<(
     { __typename?: 'ProductAttribute' }
     & Pick<ProductAttribute, '_id' | 'attributeId' | 'attributeName' | 'readableValue'>
@@ -4617,7 +4614,7 @@ export type MyOrderShopProductFragment = (
   & Pick<ShopProduct, '_id' | 'available' | 'inCartCount'>
   & { product: (
     { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'itemId' | 'mainImage'>
+    & Pick<Product, '_id' | 'slug' | 'itemId' | 'mainImage'>
   ) }
 );
 
@@ -4939,6 +4936,11 @@ export const CmsProductFieldsFragmentDoc = gql`
   active
   mainImage
   rubricId
+  rubric {
+    _id
+    slug
+    name
+  }
   brandSlug
   brandCollectionSlug
   manufacturerSlug
@@ -5041,6 +5043,10 @@ export const RubricAttributeFragmentDoc = gql`
     name
   }
   optionsGroupId
+  optionsGroup {
+    _id
+    name
+  }
   showInCatalogueFilter
   showInCatalogueNav
 }
@@ -5078,6 +5084,7 @@ export const ProductSnippetFragmentDoc = gql`
   _id
   itemId
   name
+  originalName
   slug
   mainImage
   shopsCount
@@ -5241,11 +5248,7 @@ export const CardFeatureFragmentDoc = gql`
 export const CardConnectionProductFragmentDoc = gql`
     fragment CardConnectionProduct on Product {
   _id
-  itemId
   slug
-  name
-  active
-  mainImage
 }
     `;
 export const CardConnectionItemFragmentDoc = gql`
@@ -5773,6 +5776,7 @@ export const MyOrderShopProductFragmentDoc = gql`
   inCartCount
   product {
     _id
+    slug
     itemId
     mainImage
   }
@@ -6525,39 +6529,6 @@ export function useGetNonRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetNonRubricProductsQueryHookResult = ReturnType<typeof useGetNonRubricProductsQuery>;
 export type GetNonRubricProductsLazyQueryHookResult = ReturnType<typeof useGetNonRubricProductsLazyQuery>;
 export type GetNonRubricProductsQueryResult = Apollo.QueryResult<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>;
-export const AddProductTuRubricDocument = gql`
-    mutation AddProductTuRubric($input: AddProductToRubricInput!) {
-  addProductToRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddProductTuRubricMutationFn = Apollo.MutationFunction<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>;
-
-/**
- * __useAddProductTuRubricMutation__
- *
- * To run a mutation, you first call `useAddProductTuRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductTuRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductTuRubricMutation, { data, loading, error }] = useAddProductTuRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductTuRubricMutation(baseOptions?: Apollo.MutationHookOptions<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>) {
-        return Apollo.useMutation<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>(AddProductTuRubricDocument, baseOptions);
-      }
-export type AddProductTuRubricMutationHookResult = ReturnType<typeof useAddProductTuRubricMutation>;
-export type AddProductTuRubricMutationResult = Apollo.MutationResult<AddProductTuRubricMutation>;
-export type AddProductTuRubricMutationOptions = Apollo.BaseMutationOptions<AddProductTuRubricMutation, AddProductTuRubricMutationVariables>;
 export const DeleteProductFromRubricDocument = gql`
     mutation DeleteProductFromRubric($input: DeleteProductFromRubricInput!) {
   deleteProductFromRubric(input: $input) {
@@ -8516,6 +8487,36 @@ export function useGetCatalogueCardShopsLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetCatalogueCardShopsQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsQuery>;
 export type GetCatalogueCardShopsLazyQueryHookResult = ReturnType<typeof useGetCatalogueCardShopsLazyQuery>;
 export type GetCatalogueCardShopsQueryResult = Apollo.QueryResult<GetCatalogueCardShopsQuery, GetCatalogueCardShopsQueryVariables>;
+export const UpdateProductCounterDocument = gql`
+    mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
+  updateProductCounter(input: $input)
+}
+    `;
+export type UpdateProductCounterMutationFn = Apollo.MutationFunction<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
+
+/**
+ * __useUpdateProductCounterMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductCounterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductCounterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductCounterMutation, { data, loading, error }] = useUpdateProductCounterMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductCounterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>) {
+        return Apollo.useMutation<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>(UpdateProductCounterDocument, baseOptions);
+      }
+export type UpdateProductCounterMutationHookResult = ReturnType<typeof useUpdateProductCounterMutation>;
+export type UpdateProductCounterMutationResult = Apollo.MutationResult<UpdateProductCounterMutation>;
+export type UpdateProductCounterMutationOptions = Apollo.BaseMutationOptions<UpdateProductCounterMutation, UpdateProductCounterMutationVariables>;
 export const GetCatalogueRubricDocument = gql`
     query GetCatalogueRubric($input: CatalogueDataInput!) {
   getCatalogueData(input: $input) {

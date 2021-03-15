@@ -65,7 +65,6 @@ export const createInitialData = async (): Promise<CreateInitialDataPayloadInter
       createdAt: new Date(),
       updatedAt: new Date(),
       roleId: adminRole._id,
-      archive: false,
     });
 
     if (!createdAdmin.result.ok) {

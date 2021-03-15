@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_ICON,
+  DEFAULT_CITY,
   DEFAULT_LOCALE,
   ROUTE_CMS,
   SECONDARY_LOCALE,
@@ -14,7 +15,7 @@ describe('Attributes Groups', () => {
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));
-    cy.testAuth(`${ROUTE_CMS}/attributes-groups`);
+    cy.testAuth(`/${DEFAULT_CITY}${ROUTE_CMS}/attributes-groups`);
   });
 
   after(() => {

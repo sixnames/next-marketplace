@@ -1,10 +1,10 @@
-import { DEFAULT_CITY } from 'config/common';
+import { DEFAULT_CITY, ROUTE_CMS } from 'config/common';
 import { getFullName } from 'lib/nameUtils';
 import { CreateTestDataPayloadInterface } from 'tests/createTestData';
 import { MOCK_ADDRESS_A } from 'tests/mockData';
 
 describe('Companies list', () => {
-  const companiesPath = `/cms/companies`;
+  const companiesPath = `/${DEFAULT_CITY}${ROUTE_CMS}/companies`;
   let mockData: CreateTestDataPayloadInterface;
   beforeEach(() => {
     cy.createTestData((mocks) => (mockData = mocks));

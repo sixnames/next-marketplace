@@ -8,6 +8,7 @@ export const myOrderShopProductFragment = gql`
     inCartCount
     product {
       _id
+      slug
       itemId
       mainImage
     }

@@ -192,7 +192,7 @@ const ConfigsContent: React.FC = () => {
           const isSvg = slug !== 'pageDefaultPreviewImage';
           return (
             <ConfigsAssetForm
-              key={config._id}
+              key={`${config._id}`}
               config={config}
               isSvg={isSvg}
               format={isSvg ? 'svg' : 'jpg'}
@@ -243,7 +243,7 @@ const ConfigsContent: React.FC = () => {
                             <Accordion
                               isOpen={slug === DEFAULT_CITY}
                               testId={cityTestId}
-                              title={name}
+                              title={`${name}`}
                               key={slug}
                             >
                               <div className={classes.accordionContent}>

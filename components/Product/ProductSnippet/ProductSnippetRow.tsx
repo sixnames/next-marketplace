@@ -1,7 +1,8 @@
+import useCartMutations from 'hooks/useCartMutations';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './ProductSnippetRow.module.css';
 import { ProductSnippetFragment } from 'generated/apolloComponents';
-import { useSiteContext } from 'context/siteContext';
 import LayoutCard from '../../../layout/LayoutCard/LayoutCard';
 import RatingStars from '../../RatingStars/RatingStars';
 import Image from 'next/image';
@@ -24,10 +25,12 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   testId,
   additionalSlug,
 }) => {
+  const city = useSessionCity();
   const [amount, setAmount] = React.useState<number>(1);
-  const { addShoplessProductToCart } = useSiteContext();
+  const { addShoplessProductToCart } = useCartMutations();
   const {
     name,
+    originalName,
     mainImage,
     slug,
     cardPrices,
@@ -40,13 +43,20 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
   } = product;
   const additionalLinkSlug = additionalSlug ? additionalSlug : '';
   const shopsCounterPostfix = shopsCount > 1 ? 'винотеках' : 'винотеке';
+  const isShopless = shopsCount < 1;
 
   return (
     <LayoutCard className={classes.snippetCard} testId={testId}>
       <div className={`${classes.leftColumn}`}>
         <div className={`${classes.image}`}>
           <div className={classes.imageHolder}>
-            <Image src={mainImage} layout='fill' objectFit='contain' alt={name} title={name} />
+            <Image
+              src={mainImage}
+              layout='fill'
+              objectFit='contain'
+              alt={originalName}
+              title={originalName}
+            />
           </div>
         </div>
         <div className={`${classes.rating}`}>
@@ -58,7 +68,8 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
         <div className={classes.art}>Артикул: {itemId}</div>
         <div className={classes.content}>
           <div className={classes.contentColumn}>
-            <div className={classes.name}>{name}</div>
+            <div className={classes.name}>{originalName}</div>
+            <div className={classes.nameTranslation}>{name}</div>
             <div className={classes.listFeatures}>
               {listFeatures.map(({ attributeName, attributeId, readableValue }) => {
                 return (
@@ -89,7 +100,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
           </div>
 
           <div className={classes.contentColumn}>
-            <ProductSnippetPrice value={cardPrices.min} />
+            {isShopless ? null : <ProductSnippetPrice value={cardPrices.min} />}
 
             <div className={classes.productConnections}>
               {connections.map(({ _id, attributeName, connectionProducts }) => {
@@ -117,14 +128,16 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
             </div>
 
             <div className={classes.inputs}>
-              <div
-                className={classes.shopsCounter}
-              >{`В наличии в ${shopsCount} ${shopsCounterPostfix}`}</div>
+              <div className={classes.shopsCounter}>
+                {shopsCount > 0
+                  ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
+                  : 'Нет в наличии'}
+              </div>
 
               <SpinnerInput
-                plusTestId={`card-shops-${_id}-plus`}
-                minusTestId={`card-shops-${_id}-minus`}
-                testId={`card-shops-${_id}-input`}
+                plusTestId={`card-shops-${slug}-plus`}
+                minusTestId={`card-shops-${slug}-minus`}
+                testId={`card-shops-${slug}-input`}
                 onChange={(e) => {
                   setAmount(noNaN(e.target.value));
                 }}
@@ -132,12 +145,14 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
                 min={1}
                 name={'amount'}
                 value={amount}
+                disabled={isShopless}
               />
             </div>
 
             <Button
+              disabled={isShopless}
               theme={'gray'}
-              testId={`card-shops-${_id}-add-to-cart`}
+              testId={`card-shops-${slug}-add-to-cart`}
               onClick={() => {
                 addShoplessProductToCart({
                   amount,
@@ -156,11 +171,9 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
       <Link
         // style={{ display: 'none' }}
         className={classes.link}
-        href={{
-          pathname: `/product${additionalLinkSlug}/${slug}`,
-        }}
+        href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >
-        {name}
+        {originalName}
       </Link>
     </LayoutCard>
   );

@@ -1,6 +1,7 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { ConfigModel } from 'db/dbModels';
 import * as React from 'react';
-import { SiteConfigFragment, useUpdateAssetConfigMutation } from 'generated/apolloComponents';
+import { useUpdateAssetConfigMutation } from 'generated/apolloComponents';
 import FormikImageUpload from '../../components/FormElements/Upload/FormikImageUpload';
 import { Form, Formik } from 'formik';
 import classes from './ConfigsAssetForm.module.css';
@@ -9,7 +10,7 @@ import { useRouter } from 'next/router';
 import { get } from 'lodash';
 
 interface ConfigsAssetFormInterface {
-  config: SiteConfigFragment;
+  config: ConfigModel;
   format: string;
   isSvg?: boolean;
 }

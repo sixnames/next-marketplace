@@ -1,13 +1,9 @@
+import { PRODUCT_ATTRIBUTES_AST_QUERY, PRODUCT_QUERY } from 'graphql/complex/productsQueries';
+import { omit } from 'lodash';
 import Image from 'next/image';
 import * as React from 'react';
-import {
-  CmsProductFragment,
-  useGetAllRubricsQuery,
-  useUpdateProductMutation,
-} from 'generated/apolloComponents';
+import { CmsProductFragment, useUpdateProductMutation } from 'generated/apolloComponents';
 import InnerWide from '../../components/Inner/InnerWide';
-import Spinner from '../../components/Spinner/Spinner';
-import RequestError from '../../components/RequestError/RequestError';
 import { Form, Formik } from 'formik';
 import Button from '../../components/Buttons/Button';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
@@ -28,22 +24,28 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
     schema: updateProductSchema,
   });
 
-  const { data, loading, error } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
-  });
   const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({});
   const [updateProductMutation] = useUpdateProductMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateProduct),
+    refetchQueries: [
+      {
+        query: PRODUCT_QUERY,
+        variables: {
+          _id: product._id,
+        },
+      },
+      {
+        query: PRODUCT_ATTRIBUTES_AST_QUERY,
+        variables: {
+          input: {
+            productId: product._id,
+            rubricId: product.rubricId,
+          },
+        },
+      },
+    ],
   });
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data || !data.getAllRubrics || !product) {
-    return <RequestError />;
-  }
 
   const {
     nameI18n,
@@ -84,6 +86,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
               input: {
                 productId: product._id,
                 ...values,
+                attributes: values.attributes.map((productAttribute) => {
+                  return omit(productAttribute, ['attribute', '__typename', 'attributeName']);
+                }),
               },
             },
           });
@@ -98,7 +103,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
 
               <FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />
 
-              <ProductMainFields productId={product._id} rubrics={data?.getAllRubrics} />
+              <ProductMainFields productId={product._id} />
 
               <Button testId={'submit-product'} type={'submit'}>
                 Сохранить

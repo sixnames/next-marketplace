@@ -1,20 +1,8 @@
-.iconSelect {
+.iconSelectHolder {
   display: flex;
   align-items: flex-end;
 }
 
-.iconHolder {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: flex-end;
-  width: var(--formInputHeight);
-  height: var(--formInputHeight);
-  margin-left: 1rem;
-}
-
-.icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  fill: var(--textColor);
+.iconSelect {
+  flex-grow: 1;
 }

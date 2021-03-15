@@ -1,3 +1,5 @@
+import { AttributeModel, RubricModel } from 'db/dbModels';
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './StickyNav.module.css';
 import Inner from '../../../components/Inner/Inner';
@@ -5,14 +7,10 @@ import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from '../../../components/Link/Link';
 import OutsideClickHandler from 'react-outside-click-handler';
-import {
-  RubricNavItemAttributeFragment,
-  CatalogueNavRubricFragment,
-} from 'generated/apolloComponents';
 import { alwaysArray } from 'lib/arrayUtils';
 
 export interface StickyNavAttributeInterface {
-  attribute: RubricNavItemAttributeFragment;
+  attribute: AttributeModel;
   hideDropdownHandler: () => void;
   rubricSlug: string;
 }
@@ -22,20 +20,21 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdownHandler,
   rubricSlug,
 }) => {
+  const city = useSessionCity();
   const { asPath } = useRouter();
   const { _id, options, name } = attribute;
 
   return (
-    <div key={_id}>
+    <div key={`${_id}`}>
       <div className={`${classes.dropdownAttributeName}`}>{name}</div>
       <ul>
         {options.map((option) => {
           const isCurrent = asPath === option.slug;
 
           return (
-            <li key={option._id}>
+            <li key={`${option._id}`}>
               <Link
-                href={`/${rubricSlug}/${option.slug}`}
+                href={`/${city}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
                   isCurrent ? classes.currentOption : ''
@@ -52,11 +51,12 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 };
 
 interface StickyNavItemInterface {
-  rubric: CatalogueNavRubricFragment;
+  rubric: RubricModel;
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
   const { query } = useRouter();
+  const city = useSessionCity();
   const { hideBurgerDropdown, fixBodyScroll } = useSiteContext();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
   const { catalogue = [], card = [] } = query;
@@ -88,10 +88,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       className={classes.navItem}
       onMouseEnter={showDropdownHandler}
       onMouseLeave={hideDropdownHandler}
-      data-cy={`main-rubric-list-item-${rubric._id}`}
+      data-cy={`main-rubric-list-item-${rubric.slug}`}
     >
       <Link
-        href={`/${slug}`}
+        href={`/${city}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}
         className={`${classes.rubric} ${isCurrent ? classes.currentRubric : ''}`}
@@ -102,10 +102,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
         <div className={`${classes.dropdown} ${isDropdownOpen ? classes.dropdownOpen : ''}`}>
           <Inner className={classes.dropdownInner}>
             <div className={classes.dropdownList}>
-              {navItems.map((attribute) => {
+              {(navItems || []).map((attribute) => {
                 return (
                   <StickyNavAttribute
-                    key={attribute._id}
+                    key={`${attribute._id}`}
                     attribute={attribute}
                     hideDropdownHandler={hideDropdownHandler}
                     rubricSlug={slug}
@@ -136,7 +136,7 @@ const StickyNav: React.FC = () => {
         ) : null}
         <ul className={classes.navList}>
           {catalogueNavRubrics.map((rubric) => {
-            return <StickyNavItem rubric={rubric} key={rubric._id} />;
+            return <StickyNavItem rubric={rubric} key={`${rubric._id}`} />;
           })}
         </ul>
       </Inner>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { IconType } from 'types/iconTypes';
 import classes from './InputLine.module.css';
 import Icon from '../../Icon/Icon';
 import Tooltip from '../../TTip/Tooltip';
@@ -17,6 +18,7 @@ export interface InputLinePropsInterface {
   isRequired?: boolean;
   labelTag?: keyof JSX.IntrinsicElements;
   description?: string | null;
+  lineIcon?: IconType;
 }
 
 const InputLine: React.FC<InputLinePropsInterface> = ({
@@ -34,6 +36,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
   children,
   description,
   lineContentClass,
+  lineIcon,
 }) => {
   const TagName = labelTag;
   const labelTagProps =
@@ -70,6 +73,11 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
         <div className={`${classes.content} ${lineContentClass ? lineContentClass : ''}`}>
           {children}
         </div>
+        {lineIcon ? (
+          <div className={classes.iconHolder}>
+            <Icon className={classes.icon} name={lineIcon} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

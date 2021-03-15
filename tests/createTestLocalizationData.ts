@@ -38,17 +38,19 @@ export const createTestLocalizationData = async (): Promise<CreateTestLocalizati
   const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
   const createdCurrencies = await currenciesCollection.insertMany([
     {
+      _id: new ObjectId('604cad82b604c1c320c326ae'),
       name: DEFAULT_CURRENCY,
     },
     {
+      _id: new ObjectId('604cad82b604c1c320c326af'),
       name: SECONDARY_CURRENCY,
     },
   ]);
 
   // Create initial cities
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  const defaultCityId = new ObjectId();
-  const secondaryCityId = new ObjectId();
+  const defaultCityId = new ObjectId('604cad82b604c1c320c326b0');
+  const secondaryCityId = new ObjectId('604cad82b604c1c320c326b1');
   const cities = await citiesCollection.insertMany([
     {
       _id: defaultCityId,
@@ -72,11 +74,13 @@ export const createTestLocalizationData = async (): Promise<CreateTestLocalizati
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
   const countries = await countriesCollection.insertMany([
     {
+      _id: new ObjectId('604cad82b604c1c320c326b2'),
       citiesIds: [defaultCityId],
       name: DEFAULT_COUNTRY,
       currency: DEFAULT_CURRENCY,
     },
     {
+      _id: new ObjectId('604cad82b604c1c320c326b3'),
       name: SECONDARY_COUNTRY,
       citiesIds: [secondaryCityId],
       currency: SECONDARY_CURRENCY,
@@ -87,11 +91,13 @@ export const createTestLocalizationData = async (): Promise<CreateTestLocalizati
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.insertMany([
     {
+      _id: new ObjectId('604cad82b604c1c320c326b4'),
       slug: DEFAULT_LOCALE,
       name: 'Русский',
       nativeName: DEFAULT_LOCALE,
     },
     {
+      _id: new ObjectId('604cad82b604c1c320c326b5'),
       slug: SECONDARY_LOCALE,
       name: 'English',
       nativeName: SECONDARY_LOCALE,

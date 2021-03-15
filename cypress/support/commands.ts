@@ -1,9 +1,9 @@
 import 'cypress-file-upload';
 // noinspection ES6PreferShortImport
 import {
+  DEFAULT_CITY,
   DEFAULT_LOCALE,
   LOCALE_NOT_FOUND_FIELD_MESSAGE,
-  ROUTE_SIGN_IN,
   SECONDARY_LOCALE,
 } from '../../config/common';
 import GetByTranslationFieldCyInterface = Cypress.GetByTranslationFieldCyInterface;
@@ -179,16 +179,16 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'makeAnOrder',
   ({ callback, orderFields, mockData }: Cypress.MakeAnOrderInterface) => {
-    const rubricLevelOneA = mockData.rubricLevelOneA;
+    const rubricA = mockData.rubricA;
     const productA = mockData.productA;
     const connectionProductA = mockData.connectionProductA;
 
-    cy.visit(`/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
     // Should navigate to cart
-    cy.getByCy(`catalogue-item-${productA._id}`).click();
+    cy.getByCy(`catalogue-item-${productA.slug}`).click();
 
     // Add product #1
-    cy.getByCy(`card-${productA._id}`).should('exist');
+    cy.getByCy(`card-${productA.slug}`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops`).should('exist');
     cy.getByCy(`card-shops-list`).should('exist');
@@ -196,10 +196,10 @@ Cypress.Commands.add(
 
     // Add second product #2
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`/${rubricLevelOneA.slug}`);
+    cy.visit(`/${DEFAULT_CITY}/${rubricA.slug}`);
     cy.getByCy('catalogue').should('exist');
-    cy.getByCy(`catalogue-item-${connectionProductA._id}`).click();
-    cy.getByCy(`card-${connectionProductA._id}`).should('exist');
+    cy.getByCy(`catalogue-item-${connectionProductA.slug}`).click();
+    cy.getByCy(`card-${connectionProductA.slug}`).should('exist');
     cy.getByCy(`card-tabs-shops`).click();
     cy.getByCy(`card-shops-${mockData.shopB.slug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-continue`).click();

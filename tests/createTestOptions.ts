@@ -61,7 +61,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const genderIt = GENDER_IT as GenderModel;
 
   // Vintage options
-  const optionVintageAId = new ObjectId();
+  const optionVintageAId = new ObjectId('604cad83b604c1c320c3286d');
   const optionVintageA: OptionModel = {
     _id: optionVintageAId,
     nameI18n: {
@@ -74,7 +74,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionVintageBId = new ObjectId();
+  const optionVintageBId = new ObjectId('604cad83b604c1c320c3286e');
   const optionVintageB: OptionModel = {
     _id: optionVintageBId,
     nameI18n: {
@@ -87,7 +87,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionVintageCId = new ObjectId();
+  const optionVintageCId = new ObjectId('604cad83b604c1c320c3286f');
   const optionVintageC: OptionModel = {
     _id: optionVintageCId,
     nameI18n: {
@@ -104,7 +104,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsIdsVintage = [optionVintageAId, optionVintageBId, optionVintageCId];
   const optionsSlugsVintage = optionsVintage.map(({ slug }) => slug);
 
-  const optionsGroupWineVintageId = new ObjectId();
+  const optionsGroupWineVintageId = new ObjectId('604cad83b604c1c320c32870');
   const optionsGroupWineVintage: OptionsGroupModel = {
     _id: optionsGroupWineVintageId,
     variant: optionsGroupVariantText,
@@ -116,7 +116,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Color options
-  const optionColorAId = new ObjectId();
+  const optionColorAId = new ObjectId('604cad83b604c1c320c32871');
   const optionColorA: OptionModel = {
     _id: optionColorAId,
     nameI18n: {
@@ -143,7 +143,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     },
   };
 
-  const optionColorBId = new ObjectId();
+  const optionColorBId = new ObjectId('604cad83b604c1c320c32872');
   const optionColorB: OptionModel = {
     _id: optionColorBId,
     nameI18n: {
@@ -170,7 +170,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     },
   };
 
-  const optionColorCId = new ObjectId();
+  const optionColorCId = new ObjectId('604cad83b604c1c320c32873');
   const optionColorC: OptionModel = {
     _id: optionColorCId,
     nameI18n: {
@@ -201,7 +201,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   const optionsSlugsColor = optionsColor.map(({ slug }) => slug);
   const optionsIdsColor = [optionColorAId, optionColorBId, optionColorCId];
 
-  const optionsGroupColorsId = new ObjectId();
+  const optionsGroupColorsId = new ObjectId('604cad83b604c1c320c32874');
   const optionsGroupColors: OptionsGroupModel = {
     _id: optionsGroupColorsId,
     variant: optionsGroupVariantColor,
@@ -213,7 +213,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Wine variant options
-  const optionWineVariantAId = new ObjectId();
+  const optionWineVariantAId = new ObjectId('604cad83b604c1c320c32875');
   const optionWineVariantA: OptionModel = {
     _id: optionWineVariantAId,
     nameI18n: {
@@ -226,7 +226,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionWineVariantBId = new ObjectId();
+  const optionWineVariantBId = new ObjectId('604cad83b604c1c320c32876');
   const optionWineVariantB: OptionModel = {
     _id: optionWineVariantBId,
     nameI18n: {
@@ -239,7 +239,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionWineVariantCId = new ObjectId();
+  const optionWineVariantCId = new ObjectId('604cad83b604c1c320c32877');
   const optionWineVariantC: OptionModel = {
     _id: optionWineVariantCId,
     nameI18n: {
@@ -252,7 +252,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionWineVariantDId = new ObjectId();
+  const optionWineVariantDId = new ObjectId('604cad83b604c1c320c32878');
   const optionWineVariantD = {
     _id: optionWineVariantDId,
     nameI18n: {
@@ -281,7 +281,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   ];
   const optionsSlugsWineVariant = optionsWineVariant.map(({ slug }) => slug);
 
-  const optionsGroupWineVariantsId = new ObjectId();
+  const optionsGroupWineVariantsId = new ObjectId('604cad83b604c1c320c32879');
   const optionsGroupWineVariants: OptionsGroupModel = {
     _id: optionsGroupWineVariantsId,
     variant: optionsGroupVariantText,
@@ -293,7 +293,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   };
 
   // Combination options
-  const optionCombinationAId = new ObjectId();
+  const optionCombinationAId = new ObjectId('604cad83b604c1c320c3287a');
   const optionCombinationA: OptionModel = {
     _id: optionCombinationAId,
     nameI18n: {
@@ -307,7 +307,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionCombinationBId = new ObjectId();
+  const optionCombinationBId = new ObjectId('604cad83b604c1c320c3287b');
   const optionCombinationB: OptionModel = {
     _id: optionCombinationBId,
     nameI18n: {
@@ -321,7 +321,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionCombinationCId = new ObjectId();
+  const optionCombinationCId = new ObjectId('604cad83b604c1c320c3287c');
   const optionCombinationC: OptionModel = {
     _id: optionCombinationCId,
     nameI18n: {
@@ -335,7 +335,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
     variants: {},
   };
 
-  const optionCombinationDId = new ObjectId();
+  const optionCombinationDId = new ObjectId('604cad83b604c1c320c3287d');
   const optionCombinationD: OptionModel = {
     _id: optionCombinationDId,
     nameI18n: {
@@ -363,7 +363,7 @@ export const createTestOptions = async (): Promise<CreateTestOptionsInterface> =
   ];
   const optionsSlugsCombination = optionsCombination.map(({ slug }) => slug);
 
-  const optionsGroupCombinationId = new ObjectId();
+  const optionsGroupCombinationId = new ObjectId('604cad83b604c1c320c3287e');
   const optionsGroupCombination: OptionsGroupModel = {
     _id: optionsGroupCombinationId,
     variant: optionsGroupVariantIcon,

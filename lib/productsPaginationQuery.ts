@@ -21,6 +21,7 @@ export interface ProductsPaginationQueryInterface {
   initialMatchPipeline?: any[];
   shopsMatchPipeline?: any[];
   options?: CollectionAggregationOptions;
+  active?: boolean;
 }
 
 const aggregationFallback: ProductsPaginationPayloadModel = {
@@ -44,6 +45,7 @@ export async function productsPaginationQuery({
   initialMatchPipeline = [],
   shopsMatchPipeline = [],
   options,
+  active,
 }: ProductsPaginationQueryInterface): Promise<ProductsPaginationPayloadModel> {
   try {
     const db = await getDatabase();
@@ -99,11 +101,15 @@ export async function productsPaginationQuery({
         ]
       : [];
 
+    // activity
+    const activeStage = active ? { active: true } : {};
+
     const rubricsStage = rubricId
       ? [
           {
             $match: {
               rubricId,
+              ...activeStage,
             },
           },
         ]
@@ -130,16 +136,11 @@ export async function productsPaginationQuery({
       // filter shop products data
       ...shopsMatchPipeline,
 
-      // add minPrice and maxPrice fields
-      // { $addFields: { minPrice: `$minPriceCities.${city}` } },
-      // { $addFields: { maxPrice: `$maxPriceCities.${city}` } },
-
       // Optional initial pipeline
       ...initialMatchPipeline,
 
       // Stable sort
       { $sort: sortStage },
-      // { $sort: { _id: -1 } },
 
       // facet pagination totals
       {
@@ -147,32 +148,18 @@ export async function productsPaginationQuery({
           docs: [{ $skip: skip }, { $limit: realLimit }],
           countAllDocs: [{ $count: 'totalDocs' }],
           countActiveDocs: [{ $match: { active: true } }, { $count: 'totalActiveDocs' }],
-          /*minPriceDocs: [
-            { $group: { _id: '$minPrice' } },
-            { $sort: { _id: SORT_ASC } },
-            { $limit: 1 },
-          ],
-          maxPriceDocs: [
-            { $group: { _id: '$maxPrice' } },
-            { $sort: { _id: SORT_DESC } },
-            { $limit: 1 },
-          ],*/
         },
       },
       {
         $addFields: {
           totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
           totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
-          // minPriceDocsObject: { $arrayElemAt: ['$minPriceDocs', 0] },
-          // maxPriceDocsObject: { $arrayElemAt: ['$maxPriceDocs', 0] },
         },
       },
       {
         $addFields: {
           totalDocs: '$totalDocsObject.totalDocs',
           totalActiveDocs: '$totalActiveDocsObject.totalActiveDocs',
-          // minPrice: '$minPriceDocsObject._id',
-          // maxPrice: '$maxPriceDocsObject._id',
         },
       },
       {
@@ -195,8 +182,6 @@ export async function productsPaginationQuery({
           totalDocs: 1,
           totalActiveDocs: 1,
           totalPages: 1,
-          // minPrice: 1,
-          // maxPrice: 1,
           hasPrevPage: {
             $gt: [page, PAGE_DEFAULT],
           },
@@ -213,7 +198,7 @@ export async function productsPaginationQuery({
     console.log(JSON.stringify(stats, null, 2));*/
 
     const aggregated = await productsCollection
-      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options, allowDiskUse: true })
+      .aggregate<ProductsPaginationPayloadModel>(pipeline, { ...options })
       .toArray();
 
     const aggregationResult = aggregated[0];

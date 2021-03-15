@@ -1,109 +1,144 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { ROUTE_SIGN_IN } from 'config/common';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { initializeApollo } from 'apollo/apolloClient';
-import { INITIAL_APP_QUERY, INITIAL_SITE_QUERY } from 'graphql/query/initialQueries';
+import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_SIGN_IN } from 'config/common';
+import { IncomingMessage, ServerResponse } from 'http';
+import { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
+import { getCatalogueNavRubrics, getPageInitialData } from 'lib/catalogueUtils';
+import { GetServerSidePropsResult } from 'next';
 import { getSession } from 'next-auth/client';
+import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
+import { PagePropsInterface } from 'pages/_app';
+import { ParsedUrlQuery } from 'querystring';
 
-export interface GetSSRSessionDataPayloadInterface {
-  isMobileDevice: boolean;
-}
-
-export function getUserDeviceInfo(
-  context: GetServerSidePropsContext,
-): GetSSRSessionDataPayloadInterface {
-  const { req } = context;
-
-  // Detect session device
-  const isMobileDevice = `${req ? req.headers['user-agent'] : navigator.userAgent}`.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
-  );
-
-  return {
-    isMobileDevice: Boolean(isMobileDevice),
+export interface SsrContext {
+  req?: IncomingMessage & {
+    cookies: NextApiRequestCookies;
   };
-}
-
-export async function getInitialApolloState(
-  context: GetServerSidePropsContext,
-): Promise<ApolloClient<NormalizedCacheObject>> {
-  const apolloClient = initializeApollo(null, context);
-  await apolloClient.query({
-    query: INITIAL_SITE_QUERY,
-    context,
-  });
-  return apolloClient;
-}
-
-export interface GetSiteInitialDataPayloadInterface extends GetSSRSessionDataPayloadInterface {
-  apolloClient: ApolloClient<NormalizedCacheObject>;
-}
-
-export async function getSiteInitialData(
-  context: GetServerSidePropsContext,
-): Promise<GetSiteInitialDataPayloadInterface> {
-  const apolloClient = await getInitialApolloState(context);
-  const userDeviceInfo = getUserDeviceInfo(context);
-
-  return {
-    ...userDeviceInfo,
-    apolloClient,
-  };
-}
-
-export async function getAppInitialApolloState(
-  context: GetServerSidePropsContext,
-): Promise<ApolloClient<NormalizedCacheObject>> {
-  const apolloClient = initializeApollo(null, context);
-  await apolloClient.query({
-    query: INITIAL_APP_QUERY,
-    context,
-  });
-  return apolloClient;
-}
-
-export interface GetAppInitialDataPayloadInterface extends GetSSRSessionDataPayloadInterface {
-  apolloClient: ApolloClient<NormalizedCacheObject>;
+  res?: ServerResponse;
+  params?: any;
+  query?: ParsedUrlQuery;
+  preview?: boolean;
+  previewData?: any;
+  resolvedUrl?: string;
+  locale?: string;
+  locales?: string[];
+  defaultLocale?: string;
+  city?: string | null;
 }
 
 export async function getAppInitialData(
-  context: GetServerSidePropsContext,
-): Promise<GetAppInitialDataPayloadInterface> {
-  const apolloClient = await getAppInitialApolloState(context);
-  const userDeviceInfo = getUserDeviceInfo(context);
+  context: SsrContext,
+): Promise<GetServerSidePropsResult<PagePropsInterface>> {
+  const { locale, query } = context;
+  const { city } = query || {};
+  const sessionCity = city ? `${city}` : DEFAULT_CITY;
+  const sessionLocale = locale || DEFAULT_LOCALE;
+
+  const initialDataProps = {
+    locale: `${sessionLocale}`,
+    city: sessionCity,
+  };
+
+  const rawInitialData = await getPageInitialData(initialDataProps);
+  const initialData = castDbData(rawInitialData);
+
+  const currentCity = rawInitialData.cities.find(({ slug }) => {
+    return slug === city;
+  });
+  if (!currentCity) {
+    return {
+      props: {
+        initialData,
+        sessionCity,
+      },
+      redirect: {
+        destination: `/404`,
+        permanent: true,
+      },
+    };
+  }
+
+  // Check if user authenticated
+  const session = await getSession(context);
+  if (!session?.user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/${sessionCity}${ROUTE_SIGN_IN}`,
+      },
+    };
+  }
 
   return {
-    ...userDeviceInfo,
-    apolloClient,
+    props: {
+      initialData,
+      sessionCity,
+    },
   };
 }
 
-export async function getCmsSsrProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    // Check if user authenticated
-    const session = await getSession(context);
-    if (!session?.user) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: ROUTE_SIGN_IN,
-        },
-      };
-    }
+export function castDbData(data: any): any {
+  return JSON.parse(JSON.stringify(data));
+}
 
-    const { isMobileDevice, apolloClient } = await getAppInitialData(context);
+export interface GetSiteInitialDataInterface {
+  params?: ParsedUrlQuery;
+  locale?: string;
+}
 
-    return {
-      props: {
-        isMobileDevice,
-        initialApolloState: apolloClient.cache.extract(),
-      },
+export interface SiteInitialDataPropsInterface
+  extends PagePropsInterface,
+    Omit<SiteLayoutInterface, 'description' | 'title'> {}
+
+export interface SiteInitialDataPayloadInterface {
+  props: SiteInitialDataPropsInterface;
+  cityNotFound: boolean;
+  revalidate: number;
+  redirectPayload: {
+    props: Record<string, any>;
+    redirect: {
+      destination: string;
+      permanent: boolean;
     };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
+  };
+}
+
+export async function getSiteInitialData({
+  params,
+  locale,
+}: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
+  const { city } = params || {};
+  const sessionCity = city ? `${city}` : DEFAULT_CITY;
+  const sessionLocale = locale || DEFAULT_LOCALE;
+
+  const initialDataProps = {
+    locale: sessionLocale,
+    city: sessionCity,
+  };
+
+  // initial data
+  const rawInitialData = await getPageInitialData(initialDataProps);
+  const rawNavRubrics = await getCatalogueNavRubrics(initialDataProps);
+  const initialData = castDbData(rawInitialData);
+  const navRubrics = castDbData(rawNavRubrics);
+
+  const currentCity = rawInitialData.cities.find(({ slug }) => {
+    return slug === city;
+  });
+  const cityNotFound = !currentCity;
+
+  return {
+    cityNotFound,
+    props: {
+      initialData,
+      navRubrics,
+      sessionCity: cityNotFound ? DEFAULT_CITY : sessionCity,
+    },
+    revalidate: 5,
+    redirectPayload: {
+      props: {},
+      redirect: {
+        destination: `/404`,
+        permanent: true,
+      },
+    },
+  };
 }

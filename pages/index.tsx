@@ -1,37 +1,19 @@
+import { DEFAULT_CITY } from 'config/common';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Title from '../components/Title/Title';
-import Inner from '../components/Inner/Inner';
-import SiteLayout from 'layout/SiteLayout/SiteLayout';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsResult, NextPage } from 'next';
 
 const Home: NextPage = () => {
-  return (
-    <SiteLayout>
-      <Inner>
-        <Title>Main page</Title>
-      </Inner>
-    </SiteLayout>
-  );
+  return <div />;
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  try {
-    const { isMobileDevice, apolloClient } = await getSiteInitialData(context);
-
-    return {
-      props: {
-        isMobileDevice,
-        initialApolloState: apolloClient.cache.extract(),
-      },
-    };
-  } catch (e) {
-    console.log('====== get Site server side props error ======');
-    console.log(JSON.stringify(e, null, 2));
-    return { props: {} };
-  }
-}
+export const getServerSideProps = async (): Promise<GetServerSidePropsResult<any>> => {
+  return {
+    props: {},
+    redirect: {
+      destination: `/${DEFAULT_CITY}/`,
+      permanent: true,
+    },
+  };
+};
 
 export default Home;

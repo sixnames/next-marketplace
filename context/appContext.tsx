@@ -1,3 +1,4 @@
+import { DEFAULT_CITY } from 'config/common';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
@@ -10,6 +11,7 @@ interface ContextState {
   };
   isMobile: boolean;
   isLoading: boolean;
+  sessionCity: string;
 }
 
 type AppContextType = {
@@ -22,41 +24,36 @@ type ModalProps<T> = {
   props?: T;
 };
 
+const defaultModalState = {
+  show: false,
+  props: {},
+  variant: '',
+};
+
 const AppContext = React.createContext<AppContextType>({
   state: {
-    isModal: {
-      show: false,
-      props: {},
-      variant: '',
-    },
+    isModal: defaultModalState,
     isMobile: false,
     isLoading: false,
+    sessionCity: DEFAULT_CITY,
   },
 });
 
 interface AppContextProviderInterface {
   isMobileDevice: boolean;
+  sessionCity: string;
 }
 
 const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   children,
   isMobileDevice,
+  sessionCity,
 }) => {
-  const defaultModalState = React.useMemo(
-    () => ({
-      show: false,
-      props: {},
-      variant: '',
-    }),
-    [],
-  );
-
-  const [state, setState] = React.useState(() => ({
+  const [state, setState] = React.useState<ContextState>(() => ({
     isMobile: isMobileDevice,
-    isModal: {
-      ...defaultModalState,
-    },
+    isModal: defaultModalState,
     isLoading: false,
+    sessionCity,
   }));
 
   React.useEffect(() => {
@@ -66,7 +63,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
         isModal: { ...defaultModalState },
       }));
     });
-  }, [defaultModalState]);
+  }, []);
 
   React.useEffect(() => {
     function resizeHandler() {

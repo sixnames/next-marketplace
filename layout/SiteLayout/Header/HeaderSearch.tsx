@@ -1,3 +1,4 @@
+import useSessionCity from 'hooks/useSessionCity';
 import * as React from 'react';
 import classes from './HeaderSearch.module.css';
 import Inner from '../../../components/Inner/Inner';
@@ -33,6 +34,7 @@ interface HeaderSearchResultInterface {
 }
 
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, products }) => {
+  const city = useSessionCity();
   const { hideSearchDropdown } = useSiteContext();
   return (
     <div className={classes.result}>
@@ -43,12 +45,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
             <li key={slug} data-cy={'search-rubric'}>
               <Link
                 onClick={hideSearchDropdown}
-                href={{
-                  pathname: `/[...catalogue]`,
-                }}
-                as={{
-                  pathname: `/${slug}`,
-                }}
+                href={`/${city}/${slug}`}
                 testId={`search-rubric-${name}`}
                 className={`${classes.rubric}`}
               >
@@ -65,7 +62,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({ rubrics, pr
               size={'small'}
               product={product}
               key={product._id}
-              testId={'search-product'}
+              testId={`search-product`}
             />
           );
         })}

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Link from '../Link/Link';
 import classes from './TabsNav.module.css';
-import { NavItemInterface, PathInterface } from 'types/clientTypes';
+import { NavItemInterface } from 'types/clientTypes';
 
 export interface TabsNavItemInterface extends NavItemInterface {
-  path: string | PathInterface;
+  path: string;
 }
 
 interface TabsNavInterface {
@@ -15,13 +15,12 @@ interface TabsNavInterface {
 const TabsNav: React.FC<TabsNavInterface> = ({ navConfig, className }) => {
   return (
     <ul className={`${classes.frame} ${className ? className : ''}`}>
-      {navConfig.map(({ name, path, as }, index) => (
+      {navConfig.map(({ name, path }, index) => (
         <li className={`${classes.item}`} key={name}>
           <Link
             activeClassName={classes.active}
             className={`${classes.link}`}
             href={path}
-            as={as}
             testId={`tab-${index}`}
             replace
             isTab

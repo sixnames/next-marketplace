@@ -29,7 +29,7 @@ export const createTestRubricVariants = async (): Promise<CreateTestRubricVarian
     [SECONDARY_LOCALE]: 'Alcohol',
   };
   const rubricVariantAlcohol: RubricVariantModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId('604cad83b604c1c320c3288c'),
     nameI18n: rubricVariantAlcoholName,
   };
 
@@ -39,7 +39,7 @@ export const createTestRubricVariants = async (): Promise<CreateTestRubricVarian
     [SECONDARY_LOCALE]: 'Juice',
   };
   const rubricVariantJuice: RubricVariantModel = {
-    _id: new ObjectId(),
+    _id: new ObjectId('604cad83b604c1c320c3288d'),
     nameI18n: rubricVariantJuiceName,
   };
 

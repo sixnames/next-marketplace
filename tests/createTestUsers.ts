@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import { ObjectId } from 'mongodb';
 import {
   createInitialTestData,
   CreateInitialTestDataPayloadInterface,
@@ -30,6 +31,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const sampleUser = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad82b604c1c320c32869'),
       email: 'sampleUser@mail.com',
       name: 'sampleUserN',
       secondName: 'sampleUserS',
@@ -50,6 +52,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const sampleUserB = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286a'),
       email: 'sampleUserB@mail.com',
       name: 'sampleUserBN',
       secondName: 'sampleUserBS',
@@ -70,6 +73,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyOwner = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286b'),
       email: 'companyOwner@mail.com',
       name: 'companyOwnerN',
       secondName: 'companyOwnerS',
@@ -90,6 +94,7 @@ export const createTestUsers = async (): Promise<CreateTestUsersPayloadInterface
   const companyManager = await createDbNode<UserModel>({
     collectionName: COL_USERS,
     template: {
+      _id: new ObjectId('604cad83b604c1c320c3286c'),
       email: 'companyManager@mail.com',
       name: 'companyManagerN',
       secondName: 'companyManagerS',

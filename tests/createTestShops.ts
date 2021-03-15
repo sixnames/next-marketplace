@@ -61,7 +61,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     companyManager,
   } = productsPayload;
 
-  const companyAId = new ObjectId();
+  const companyAId = new ObjectId('604cad85b604c1c320c328a4');
 
   // Shops assets paths
   const shopLogoLocalFilePath = path.join(
@@ -84,9 +84,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   );
 
   // Shop A products
-  const shopAId = new ObjectId();
+  const shopAId = new ObjectId('604cad85b604c1c320c328a5');
 
-  const shopAProductAId = new ObjectId();
+  const shopAProductAId = new ObjectId('604cad85b604c1c320c328a6');
   const shopAProductA: ShopProductModel = {
     _id: shopAProductAId,
     available: 20,
@@ -100,7 +100,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopAProductBId = new ObjectId();
+  const shopAProductBId = new ObjectId('604cad85b604c1c320c328a7');
   const shopAProductB: ShopProductModel = {
     _id: shopAProductBId,
     available: 3,
@@ -114,7 +114,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopAProductDId = new ObjectId();
+  const shopAProductDId = new ObjectId('604cad85b604c1c320c328a8');
   const shopAProductD: ShopProductModel = {
     _id: shopAProductDId,
     available: 0,
@@ -128,7 +128,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopAConnectionProductAId = new ObjectId();
+  const shopAConnectionProductAId = new ObjectId('604cad85b604c1c320c328a9');
   const shopAConnectionProductA: ShopProductModel = {
     _id: shopAConnectionProductAId,
     available: 32,
@@ -142,7 +142,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopAConnectionProductBId = new ObjectId();
+  const shopAConnectionProductBId = new ObjectId('604cad85b604c1c320c328aa');
   const shopAConnectionProductB: ShopProductModel = {
     _id: shopAConnectionProductBId,
     available: 0,
@@ -156,7 +156,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopAConnectionProductCId = new ObjectId();
+  const shopAConnectionProductCId = new ObjectId('604cad85b604c1c320c328ab');
   const shopAConnectionProductC: ShopProductModel = {
     _id: shopAConnectionProductCId,
     available: 45,
@@ -222,9 +222,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   };
 
   // Shop B products
-  const shopBId = new ObjectId();
+  const shopBId = new ObjectId('604cad85b604c1c320c328ac');
 
-  const shopBProductAId = new ObjectId();
+  const shopBProductAId = new ObjectId('604cad85b604c1c320c328ad');
   const shopBProductA: ShopProductModel = {
     _id: shopBProductAId,
     available: 19,
@@ -244,7 +244,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopBProductBId = new ObjectId();
+  const shopBProductBId = new ObjectId('604cad85b604c1c320c328ae');
   const shopBProductB: ShopProductModel = {
     _id: shopBProductBId,
     available: 13,
@@ -258,7 +258,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopBProductDId = new ObjectId();
+  const shopBProductDId = new ObjectId('604cad85b604c1c320c328af');
   const shopBProductD: ShopProductModel = {
     _id: shopBProductDId,
     available: 2,
@@ -272,7 +272,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopBConnectionProductAId = new ObjectId();
+  const shopBConnectionProductAId = new ObjectId('604cad85b604c1c320c328b0');
   const shopBConnectionProductA: ShopProductModel = {
     _id: shopBConnectionProductAId,
     available: 2,
@@ -286,7 +286,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopBConnectionProductBId = new ObjectId();
+  const shopBConnectionProductBId = new ObjectId('604cad85b604c1c320c328b1');
   const shopBConnectionProductB: ShopProductModel = {
     _id: shopBConnectionProductBId,
     available: 3,
@@ -300,7 +300,7 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     updatedAt: new Date(),
   };
 
-  const shopBConnectionProductCId = new ObjectId();
+  const shopBConnectionProductCId = new ObjectId('604cad85b604c1c320c328b2');
   const shopBConnectionProductC: ShopProductModel = {
     _id: shopBConnectionProductCId,
     available: 5,
@@ -436,9 +436,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
   // Update products shops data
   const updatedProductA = await updateProductShopsData({ productId: productA._id });
   const updatedProductB = await updateProductShopsData({ productId: productB._id });
-  await updateProductShopsData({ productId: productC._id });
+  const updatedProductC = await updateProductShopsData({ productId: productC._id });
   const updatedProductD = await updateProductShopsData({ productId: productD._id });
-  await updateProductShopsData({ productId: productF._id });
+  const updatedProductF = await updateProductShopsData({ productId: productF._id });
   const updatedConnectionProductA = await updateProductShopsData({
     productId: connectionProductA._id,
   });
@@ -476,7 +476,9 @@ export const createTestShops = async (): Promise<CreateTestShopsPayloadInterface
     mockCompanies,
     productA: updatedProductA,
     productB: updatedProductB,
+    productC: updatedProductC,
     productD: updatedProductD,
+    productF: updatedProductF,
     connectionProductA: updatedConnectionProductA,
     connectionProductB: updatedConnectionProductB,
     connectionProductC: updatedConnectionProductC,

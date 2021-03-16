@@ -10,7 +10,7 @@ export const getServerSideProps = async (): Promise<GetServerSidePropsResult<any
   return {
     props: {},
     redirect: {
-      destination: `/${DEFAULT_CITY}/`,
+      destination: `/${DEFAULT_CITY}`,
       permanent: true,
     },
   };

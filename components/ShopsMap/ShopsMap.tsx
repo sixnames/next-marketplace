@@ -29,7 +29,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   const { isDark } = useThemeContext();
   const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: `${process.env.GOOGLE_MAPS_API_KEY}`,
+    googleMapsApiKey: `${process.env.NEXT_GOOGLE_MAPS_API_KEY}`,
   });
   const siteIconSrc = getSiteConfigSingleValue('siteLogoIcon');
   const mapRef = React.useRef<any>(null);

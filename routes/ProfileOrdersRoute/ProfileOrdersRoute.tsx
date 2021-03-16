@@ -47,7 +47,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({ orderProd
 
   const productImageSrc = shopProduct
     ? shopProduct.product.mainImage
-    : `${process.env.AWS_PRODUCT_IMAGE_FALLBACK}`;
+    : `${process.env.NEXT_AWS_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
 

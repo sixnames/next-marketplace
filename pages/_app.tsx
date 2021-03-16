@@ -37,11 +37,14 @@ function App({ Component, pageProps }: AppProps) {
           isMobileDevice={pageProps.isMobileDevice}
         >
           <NotificationsProvider>
-            <ConfigContextProvider configs={initialData.configs} cities={initialData.cities}>
+            <ConfigContextProvider
+              configs={initialData?.configs || []}
+              cities={initialData?.cities || []}
+            >
               <ThemeContextProvider>
                 <LocaleContextProvider
-                  languagesList={initialData.languages}
-                  currency={initialData.currency}
+                  languagesList={initialData?.languages || []}
+                  currency={initialData?.currency || ''}
                 >
                   <UserContextProvider>
                     <Component {...pageProps} />

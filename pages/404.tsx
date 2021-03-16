@@ -1,33 +1,17 @@
 import Inner from 'components/Inner/Inner';
+import Link from 'components/Link/Link';
 import Title from 'components/Title/Title';
-import SiteLayout, { SiteLayoutInterface } from 'layout/SiteLayout/SiteLayout';
-import { getSiteInitialData } from 'lib/ssrUtils';
-import { GetStaticProps, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
+import { DEFAULT_CITY } from 'config/common';
+import { NextPage } from 'next';
 import * as React from 'react';
 
-interface ErrorPageInterface extends PagePropsInterface, SiteLayoutInterface {}
-
-const ErrorPage: NextPage<ErrorPageInterface> = ({ navRubrics }) => {
+const ErrorPage: NextPage = () => {
   return (
-    <SiteLayout navRubrics={navRubrics}>
-      <Inner>
-        <Title>Page not found</Title>
-      </Inner>
-    </SiteLayout>
+    <Inner>
+      <Title>404 Стараница не найдена</Title>
+      <Link href={`/${DEFAULT_CITY}`}>На главную</Link>
+    </Inner>
   );
-};
-
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const { props, revalidate } = await getSiteInitialData({
-    params,
-    locale,
-  });
-
-  return {
-    props,
-    revalidate,
-  };
 };
 
 export default ErrorPage;

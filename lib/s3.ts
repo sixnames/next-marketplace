@@ -9,14 +9,14 @@ import path from 'path';
 import fs from 'fs';
 
 // Set the AWS region
-const awsRegion = `${process.env.AWS_BUCKET_REGION}`; // e.g., "us-east-1"
+const awsRegion = `${process.env.NEXT_AWS_BUCKET_REGION}`; // e.g., "us-east-1"
 
 // Create an S3 client service object
 const s3 = new S3Client({
   region: awsRegion,
   credentials: {
-    secretAccessKey: `${process.env.AWS_SECRET_ACCESS_KEY}`,
-    accessKeyId: `${process.env.AWS_ACCESS_KEY_ID}`,
+    secretAccessKey: `${process.env.NEXT_AWS_SECRET_ACCESS_KEY}`,
+    accessKeyId: `${process.env.NEXT_AWS_ACCESS_KEY_ID}`,
   },
 });
 
@@ -34,17 +34,17 @@ export const uploadFileToS3 = async ({
   try {
     await s3.send(
       new PutObjectCommand({
-        Bucket: `${process.env.AWS_BUCKET_NAME}`,
+        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
         Key: filePath,
         Body: buffer,
         ContentType: contentType || undefined,
       }),
     );
 
-    return `https://${process.env.AWS_DOMAIN}/${filePath}`;
+    return `https://${process.env.NEXT_AWS_DOMAIN}/${filePath}`;
   } catch (e) {
     console.log('Error in uploadFileToS3 ', e);
-    return `${process.env.AWS_IMAGE_FALLBACK}`;
+    return `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
   }
 };
 
@@ -54,11 +54,11 @@ export interface DeleteFileToS3Interface {
 
 export const deleteFileFromS3 = async ({ filePath }: DeleteFileToS3Interface): Promise<boolean> => {
   try {
-    const filePathArr = filePath.split(`https://${process.env.AWS_DOMAIN}/`);
+    const filePathArr = filePath.split(`https://${process.env.NEXT_AWS_DOMAIN}/`);
     const Key = filePathArr[1];
     await s3.send(
       new DeleteObjectCommand({
-        Bucket: `${process.env.AWS_BUCKET_NAME}`,
+        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
         Key,
       }),
     );
@@ -79,13 +79,13 @@ export const findOrCreateFileInS3 = async ({
     // Check if asset already exist
     const file = await s3.send(
       new GetObjectCommand({
-        Bucket: `${process.env.AWS_BUCKET_NAME}`,
+        Bucket: `${process.env.NEXT_AWS_BUCKET_NAME}`,
         Key: filePath,
       }),
     );
 
     if (file) {
-      return `https://${process.env.AWS_DOMAIN}/${filePath}`;
+      return `https://${process.env.NEXT_AWS_DOMAIN}/${filePath}`;
     }
 
     const url = await uploadFileToS3({ filePath, buffer, contentType });

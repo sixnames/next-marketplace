@@ -1,4 +1,5 @@
 import { MongoClient, Db } from 'mongodb';
+import path from 'path';
 
 // Create cached connection variable
 let cachedDb: Db | undefined;
@@ -18,10 +19,22 @@ export async function getDatabase(): Promise<Db> {
   }
 
   // If no connection is cached, create a new one
-  const client = await MongoClient.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  const client = await MongoClient.connect(
+    uri,
+    process.env.NODE_ENV === 'production'
+      ? {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          tls: true,
+          tlsCAFile: path.join(process.cwd(), 'db/ca-certificates/Yandex/root.crt'),
+          replicaSet: process.env.MONGO_DB_RS,
+          authSource: process.env.MONGO_DB_NAME,
+        }
+      : {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        },
+  );
 
   // Select the database through the connection
   const db = await client.db(process.env.MONGO_DB_NAME);

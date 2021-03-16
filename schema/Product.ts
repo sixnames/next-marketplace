@@ -141,7 +141,7 @@ export const Product = objectType({
         const firstAsset = sortedAssets[0];
 
         if (!firstAsset) {
-          return `${process.env.AWS_IMAGE_FALLBACK}`;
+          return `${process.env.NEXT_AWS_IMAGE_FALLBACK}`;
         }
         return firstAsset.url;
       },

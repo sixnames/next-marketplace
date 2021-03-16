@@ -36,14 +36,14 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXT_TEST_NEXTAUTH_URL }}
           TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}
           INITIAL_DATA_KEY: ${{ secrets.NEXT_DEV_INITIAL_DATA_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
-          AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
-          AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
-          AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
-          AWS_PRODUCT_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_PRODUCT_IMAGE_FALLBACK }}
-          GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}
+          NEXT_AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
+          NEXT_AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
+          NEXT_AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
+          NEXT_AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
+          NEXT_AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
+          NEXT_AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
+          NEXT_AWS_PRODUCT_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_PRODUCT_IMAGE_FALLBACK }}
+          NEXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}
       - name: Start the app and run Cypress tests
         run: yarn start & yarn test
         env:
@@ -60,11 +60,11 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXT_TEST_NEXTAUTH_URL }}
           TEST_DATA_KEY: ${{ secrets.NEXT_DEV_TEST_DATA_KEY }}
           INITIAL_DATA_KEY: ${{ secrets.NEXT_DEV_INITIAL_DATA_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
-          AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
-          AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
-          AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
-          AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
-          AWS_PRODUCT_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_PRODUCT_IMAGE_FALLBACK }}
-          GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}
+          NEXT_AWS_ACCESS_KEY_ID: ${{ secrets.NEXT_DEV_AWS_ACCESS_KEY_ID }}
+          NEXT_AWS_SECRET_ACCESS_KEY: ${{ secrets.NEXT_DEV_AWS_SECRET_ACCESS_KEY }}
+          NEXT_AWS_BUCKET_NAME: ${{ secrets.NEXT_DEV_AWS_BUCKET_NAME }}
+          NEXT_AWS_BUCKET_REGION: ${{ secrets.NEXT_DEV_AWS_BUCKET_REGION }}
+          NEXT_AWS_DOMAIN: ${{ secrets.NEXT_DEV_AWS_DOMAIN }}
+          NEXT_AWS_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_IMAGE_FALLBACK }}
+          NEXT_AWS_PRODUCT_IMAGE_FALLBACK: ${{ secrets.NEXT_DEV_AWS_PRODUCT_IMAGE_FALLBACK }}
+          NEXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_DEV_GOOGLE_MAPS_API_KEY }}

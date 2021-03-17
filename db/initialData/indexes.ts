@@ -1,5 +1,3 @@
-#!/usr/bin/env ts-node-script
-
 import { Db } from 'mongodb';
 import {
   BrandModel,

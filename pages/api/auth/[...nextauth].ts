@@ -7,13 +7,13 @@ import { UserModel } from 'db/dbModels';
 import { COL_USERS } from 'db/collectionNames';
 
 const options: InitOptions = {
-  database: process.env.MONGO_URL,
   session: {
     jwt: true,
   },
+  /*database: process.env.MONGO_URL,
   pages: {
     signIn: '/sign-in',
-  },
+  },*/
   /*jwt: {
     signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,
 

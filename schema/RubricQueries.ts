@@ -105,7 +105,6 @@ export const RubricQueries = extendType({
       description: 'Should return catalogue nav rubrics',
       resolve: async (_root, _args, context): Promise<RubricModel[]> => {
         try {
-          // console.log(context ? true : false);
           const { city } = await getRequestParams(context);
           const db = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -120,7 +119,7 @@ export const RubricQueries = extendType({
               {
                 $sort: {
                   [`views.${city}`]: SORT_DESC,
-                  [`priority.${city}`]: SORT_DESC,
+                  [`priorities.${city}`]: SORT_DESC,
                 },
               },
             ])

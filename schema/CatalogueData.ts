@@ -147,7 +147,7 @@ export const CatalogueQueries = extendType({
             {
               $sort: {
                 [`views.${city}`]: SORT_DESC,
-                [`priority.${city}`]: SORT_DESC,
+                [`priorities.${city}`]: SORT_DESC,
                 _id: SORT_BY_ID_DIRECTION,
               },
             },
@@ -222,7 +222,7 @@ export const CatalogueQueries = extendType({
             {
               $sort: {
                 [`views.${city}`]: SORT_DESC,
-                [`priority.${city}`]: SORT_DESC,
+                [`priorities.${city}`]: SORT_DESC,
                 _id: SORT_BY_ID_DIRECTION,
               },
             },

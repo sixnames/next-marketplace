@@ -509,7 +509,7 @@ export const getCatalogueData = async ({
     const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
     let sortStage = {
       [`views.${city}`]: SORT_DESC,
-      [`priority.${city}`]: SORT_DESC,
+      [`priorities.${city}`]: SORT_DESC,
       _id: SORT_DESC,
     };
 
@@ -793,7 +793,7 @@ export const getCatalogueData = async ({
 
     // const timeEnd = new Date().getTime();
     // console.log('Total time: ', timeEnd - timeStart);
-    // console.log(lastProductId);
+
     return {
       _id: rubric._id,
       lastProductId: lastProduct?._id,
@@ -889,7 +889,7 @@ export const getPageInitialData = async ({
       {},
       {
         sort: {
-          itemId: SORT_ASC,
+          _id: SORT_ASC,
         },
       },
     )
@@ -931,6 +931,10 @@ export const getCatalogueNavRubrics = async ({
   city,
   locale,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
+  // console.log(' ');
+  // console.log('=================== getCatalogueNavRubrics =======================');
+  // const timeStart = new Date().getTime();
+
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
     if (!i18nField) {
       return '';
@@ -974,6 +978,8 @@ export const getCatalogueNavRubrics = async ({
     noNaN(catalogueFilterVisibleOptionsCount?.cities[DEFAULT_CITY][DEFAULT_LOCALE][0]) ||
     noNaN(CATALOGUE_NAV_VISIBLE_OPTIONS);
 
+  // console.log('Before rubrics', new Date().getTime() - timeStart);
+
   const initialRubrics = await rubricsCollection
     .aggregate([
       {
@@ -982,13 +988,30 @@ export const getCatalogueNavRubrics = async ({
         },
       },
       {
+        $project: {
+          _id: 1,
+          slug: 1,
+          nameI18n: 1,
+          attributes: {
+            $filter: {
+              input: '$attributes',
+              as: 'attribute',
+              cond: {
+                $eq: ['$$attribute.showInCatalogueNav', true],
+              },
+            },
+          },
+        },
+      },
+      {
         $sort: {
           [`views.${city}`]: SORT_DESC,
-          [`priority.${city}`]: SORT_DESC,
+          [`priorities.${city}`]: SORT_DESC,
         },
       },
     ])
     .toArray();
+  // console.log('After rubrics', new Date().getTime() - timeStart);
 
   const rubrics: RubricModel[] = [];
   initialRubrics.forEach((rubric) => {
@@ -1004,6 +1027,8 @@ export const getCatalogueNavRubrics = async ({
       }),
     });
   });
+
+  // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
   return rubrics;
 };

@@ -26,7 +26,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
@@ -337,27 +337,20 @@ const Catalogue: NextPage<CatalogueInterface> = ({ catalogueData, navRubrics }) 
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps<
-  CatalogueInterface,
-  { catalogue: string[]; city: string }
-> = async ({ params, locale }) => {
-  const { catalogue } = params || {};
-
-  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
-    params,
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CatalogueInterface>> {
+  const { locale, query } = context;
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
     locale,
   });
 
   if (cityNotFound) {
     return redirectPayload;
   }
+
+  const { catalogue } = query;
 
   const notFoundResponse = {
     props,
@@ -386,8 +379,7 @@ export const getStaticProps: GetStaticProps<
       ...props,
       catalogueData,
     },
-    revalidate,
   };
-};
+}
 
 export default Catalogue;

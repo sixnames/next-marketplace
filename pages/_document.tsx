@@ -31,7 +31,7 @@ function setInitialColorMode() {
   }
 
   const colorMode = getInitialColorMode();
-
+  window.localStorage.setItem('theme', colorMode);
   // add HTML attribute if dark mode
   document.documentElement.setAttribute('data-theme', colorMode);
 }

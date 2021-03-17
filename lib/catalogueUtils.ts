@@ -752,7 +752,7 @@ export const getCatalogueData = async ({
                 counter: 1,
                 isSelected: true,
                 isDisabled: false,
-                nextSlug: `/${nextSlug}`,
+                nextSlug: `/${city}/${nextSlug}`,
               },
             ];
           },

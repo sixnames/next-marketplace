@@ -209,7 +209,7 @@ const BurgerDropdown: React.FC<BurgerDropdownSizesInterface> = ({ top, height })
                         <Link
                           onClick={hideDropdownHandler}
                           testId={me ? `burger-profile-link` : `burger-sign-in-link`}
-                          href={me ? ROUTE_PROFILE : ROUTE_SIGN_IN}
+                          href={me ? `/${city}${ROUTE_PROFILE}` : `/${city}${ROUTE_SIGN_IN}`}
                           className={`${classes.dropdownGroupLink}`}
                         >
                           <span>Личный кабинет</span>

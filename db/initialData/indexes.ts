@@ -249,7 +249,7 @@ export async function createIndexes() {
   return;
 }
 
-/*(() => {
+(() => {
   createIndexes()
     .then(() => {
       console.log('Success!');
@@ -260,4 +260,4 @@ export async function createIndexes() {
       process.exit();
     });
   return;
-})();*/
+})();

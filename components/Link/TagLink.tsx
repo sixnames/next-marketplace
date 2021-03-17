@@ -16,6 +16,8 @@ const TagLink: React.FC<TagLinkInterface> = ({
   testId,
   isActive,
   asLink = true,
+  prefetch,
+  shallow,
   ...props
 }) => {
   if (asLink) {
@@ -23,6 +25,8 @@ const TagLink: React.FC<TagLinkInterface> = ({
       <Link
         href={href}
         testId={testId}
+        prefetch={prefetch}
+        shallow={shallow}
         className={`${classes.tagLink} ${isActive ? classes.tagLinkActive : ''} ${
           variant === 'dark' ? classes.tagLinkDark : ''
         } ${className ? className : ''}`}

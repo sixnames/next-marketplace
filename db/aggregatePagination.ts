@@ -61,8 +61,8 @@ export async function aggregatePagination<TModel>({
           {
             $sort: {
               [realSortBy]: realSortDir,
-              [`priority.${city}`]: SORT_DESC,
               [`views.${city}`]: SORT_DESC,
+              [`priorities.${city}`]: SORT_DESC,
               _id: SORT_BY_ID_DIRECTION,
             },
           },

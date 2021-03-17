@@ -1,5 +1,3 @@
-#!/usr/bin/env ts-node-script
-
 import { Db } from 'mongodb';
 import {
   BrandModel,
@@ -7,7 +5,6 @@ import {
   CompanyModel,
   ConfigModel,
   CountryModel,
-  LanguageModel,
   ManufacturerModel,
   ProductModel,
   RubricModel,
@@ -22,7 +19,6 @@ import {
   COL_CONFIGS,
   COL_COUNTRIES,
   COL_ID_COUNTERS,
-  COL_LANGUAGES,
   COL_MANUFACTURERS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -48,7 +44,7 @@ async function updateCollectionItemId(collectionName: string, db: Db) {
   );
 }
 
-async function createIndexes() {
+export async function createIndexes() {
   const db = await getDatabase();
 
   console.log('Updating itemId counters');
@@ -80,13 +76,8 @@ async function createIndexes() {
   await configsCollection.createIndex({ slug: 1 }, { unique: true });
   await configsCollection.createIndex({ index: 1 });
 
-  // Languages
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  await languagesCollection.createIndex({ itemId: 1 }, { unique: true });
-
   // Cities
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  await citiesCollection.createIndex({ itemId: 1 }, { unique: true });
 
   // Countries
   const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
@@ -130,21 +121,21 @@ async function createIndexes() {
     // Brands
     await brandsCollection.createIndex({
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
     // Brand collections
     await brandCollectionsCollection.createIndex({
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
     // Manufacturers
     await manufacturersCollection.createIndex({
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -152,12 +143,12 @@ async function createIndexes() {
     await rubricsCollection.createIndex({
       activeProductsCount: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
     });
 
     // Products catalogue
 
-    // views / priority sort
+    // views / priorities sort
     await productsCollection.createIndex({
       rubricId: 1,
       active: 1,
@@ -166,7 +157,7 @@ async function createIndexes() {
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -177,7 +168,7 @@ async function createIndexes() {
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -187,7 +178,7 @@ async function createIndexes() {
       manufacturerSlug: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -196,7 +187,7 @@ async function createIndexes() {
       active: 1,
       selectedOptionsSlugs: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -204,7 +195,7 @@ async function createIndexes() {
       rubricId: 1,
       active: 1,
       [`views.${city.slug}`]: -1,
-      [`priority.${city.slug}`]: -1,
+      [`priorities.${city.slug}`]: -1,
       _id: -1,
     });
 
@@ -258,7 +249,7 @@ async function createIndexes() {
   return;
 }
 
-(() => {
+/*(() => {
   createIndexes()
     .then(() => {
       console.log('Success!');
@@ -269,4 +260,4 @@ async function createIndexes() {
       process.exit();
     });
   return;
-})();
+})();*/

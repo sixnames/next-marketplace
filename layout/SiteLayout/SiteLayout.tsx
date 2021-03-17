@@ -10,10 +10,6 @@ import { SiteContextProvider, useSiteContext } from 'context/siteContext';
 import classes from './SiteLayout.module.css';
 import BurgerDropdown, { BurgerDropdownSizesInterface } from './BurgerDropdown/BurgerDropdown';
 import { debounce } from 'lodash';
-import { useConfigContext } from 'context/configContext';
-import Inner from '../../components/Inner/Inner';
-import Title from '../../components/Title/Title';
-import StringButton from '../../components/Buttons/StringButton';
 import Modal from 'components/Modal/Modal';
 
 interface SiteLayoutConsumerInterface {
@@ -26,8 +22,8 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   title,
   description,
 }) => {
-  const [isSeoTextOpen, setIsSeoTextOpen] = React.useState<boolean>(false);
-  const { getSiteConfigSingleValue } = useConfigContext();
+  // const [isSeoTextOpen, setIsSeoTextOpen] = React.useState<boolean>(false);
+  // const { getSiteConfigSingleValue } = useConfigContext();
   const { isLoading, isModal, isMobile } = useAppContext();
   const { isBurgerDropdownOpen } = useSiteContext();
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -38,9 +34,9 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
     top: 0,
     height: 0,
   });
-  const seoText = getSiteConfigSingleValue('seoText');
-  const seoTextTitle = getSiteConfigSingleValue('seoTextTitle');
-  const seoTextButtonLabel = isSeoTextOpen ? 'Скрыть' : 'Читать далее';
+  // const seoText = getSiteConfigSingleValue('seoText');
+  // const seoTextTitle = getSiteConfigSingleValue('seoTextTitle');
+  // const seoTextButtonLabel = isSeoTextOpen ? 'Скрыть' : 'Читать далее';
 
   // Set burger dropdown sizes
   React.useEffect(() => {
@@ -77,7 +73,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
           <ErrorBoundary>
             <div>
               {children}
-              <Inner>
+              {/*<Inner>
                 <div className={`${classes.seoTextHolder}`}>
                   <Title size={'small'} tag={'h3'}>
                     {seoTextTitle}
@@ -90,7 +86,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
                     {seoTextButtonLabel}
                   </StringButton>
                 </div>
-              </Inner>
+              </Inner>*/}
             </div>
           </ErrorBoundary>
         </main>

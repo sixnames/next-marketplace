@@ -24,7 +24,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { getCardData } from 'lib/cardUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -371,20 +371,12 @@ const Card: NextPage<CardInterface> = ({ cardData, navRubrics }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps<
-  CardInterface,
-  { city: string; card: string[] }
-> = async ({ params, locale }) => {
-  const { card } = params || {};
-  const { cityNotFound, props, revalidate, redirectPayload } = await getSiteInitialData({
-    params,
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CardInterface>> {
+  const { locale, query } = context;
+  const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
+    params: query,
     locale,
   });
 
@@ -396,7 +388,7 @@ export const getStaticProps: GetStaticProps<
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
-    slug: alwaysArray(card),
+    slug: alwaysArray(query.card),
   });
   const cardData = castDbData(rawCardData);
 
@@ -405,8 +397,7 @@ export const getStaticProps: GetStaticProps<
       ...props,
       cardData,
     },
-    revalidate,
   };
-};
+}
 
 export default Card;

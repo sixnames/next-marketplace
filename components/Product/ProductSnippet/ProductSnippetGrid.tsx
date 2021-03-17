@@ -107,6 +107,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
 
       <Link
         // style={{ display: 'none' }}
+        prefetch={false}
         className={classes.link}
         href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >

@@ -170,6 +170,7 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
 
       <Link
         // style={{ display: 'none' }}
+        prefetch={false}
         className={classes.link}
         href={`/${city}/product${additionalLinkSlug}/${slug}`}
       >

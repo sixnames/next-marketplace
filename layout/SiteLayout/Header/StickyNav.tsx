@@ -34,6 +34,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
           return (
             <li key={`${option._id}`}>
               <Link
+                prefetch={false}
                 href={`/${city}/${rubricSlug}/${option.slug}`}
                 onClick={hideDropdownHandler}
                 className={`${classes.dropdownAttributeOption} ${
@@ -91,6 +92,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({ rubric }) => {
       data-cy={`main-rubric-list-item-${rubric.slug}`}
     >
       <Link
+        prefetch={false}
         href={`/${city}/${slug}`}
         onClick={hideDropdownHandler}
         testId={`main-rubric-${name}`}

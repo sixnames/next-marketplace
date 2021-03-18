@@ -48,7 +48,7 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const [skip, setSkip] = React.useState<boolean>(true);
   const { showErrorNotification } = useNotificationsContext();
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
-  const [isRowView, setIsRowView] = React.useState<boolean>(false);
+  const [isRowView, setIsRowView] = React.useState<boolean>(true);
   const [state, setState] = React.useState<CatalogueDataFragment>(() => {
     return catalogueData;
   });

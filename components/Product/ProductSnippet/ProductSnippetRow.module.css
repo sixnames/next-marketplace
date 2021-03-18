@@ -34,19 +34,14 @@
 
 .image {
   position: relative;
-  min-height: 14rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1rem;
+  flex-grow: 1;
 }
 
-.imageHolder {
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  width: 80%;
-  height: 120%;
-}
-
-.imageHolder img {
+.image img {
   filter: drop-shadow(var(--wp-shadow-25));
 }
 

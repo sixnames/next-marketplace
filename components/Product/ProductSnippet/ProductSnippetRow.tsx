@@ -51,15 +51,16 @@ const ProductSnippetRow: React.FC<ProductSnippetRowInterface> = ({
     <LayoutCard className={`${classes.snippetCard} ${className ? className : ''}`} testId={testId}>
       <div className={`${classes.leftColumn}`}>
         <div className={`${classes.image}`}>
-          <div className={classes.imageHolder}>
-            <Image
-              src={mainImage}
-              layout='fill'
-              objectFit='contain'
-              alt={originalName}
-              title={originalName}
-            />
-          </div>
+          <Image
+            src={mainImage}
+            objectFit={'contain'}
+            objectPosition={'center'}
+            alt={originalName}
+            title={originalName}
+            width={100}
+            height={250}
+            quality={50}
+          />
         </div>
         <div className={`${classes.rating}`}>
           <RatingStars size={'small'} rating={4.9} />

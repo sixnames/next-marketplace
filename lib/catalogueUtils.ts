@@ -951,6 +951,8 @@ export const getCatalogueNavRubrics = async ({
     _id: 1,
     slug: 1,
     nameI18n: 1,
+    views: 1,
+    priorities: 1,
   };
 
   const initialRubrics = await rubricsCollection
@@ -1016,6 +1018,8 @@ export const getCatalogueNavRubrics = async ({
           _id: '$_id',
           slug: { $first: '$slug' },
           nameI18n: { $first: '$nameI18n' },
+          views: { $first: '$views' },
+          priorities: { $first: '$priorities' },
           attributes: {
             $push: '$attributes',
           },

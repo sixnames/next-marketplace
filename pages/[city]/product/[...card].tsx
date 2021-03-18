@@ -375,10 +375,15 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CardInterface>> {
   const { locale, query } = context;
+  // console.log(' ');
+  // console.log('==================================');
+  // const startTime = new Date().getTime();
+
   const { cityNotFound, props, redirectPayload } = await getSiteInitialData({
     params: query,
     locale,
   });
+  // console.log(`After initial data `, new Date().getTime() - startTime);
 
   if (cityNotFound) {
     return redirectPayload;
@@ -391,6 +396,7 @@ export async function getServerSideProps(
     slug: alwaysArray(query.card),
   });
   const cardData = castDbData(rawCardData);
+  // console.log(`After card `, new Date().getTime() - startTime);
 
   return {
     props: {

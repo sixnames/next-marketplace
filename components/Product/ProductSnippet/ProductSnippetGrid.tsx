@@ -57,16 +57,16 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
       testId={testId}
     >
       <div className={`${classes.image} ${classes.leftColumn}`}>
-        <div className={classes.imageHolder}>
-          <Image
-            src={mainImage}
-            layout={'fill'}
-            objectFit={'contain'}
-            objectPosition={'center bottom'}
-            alt={originalName}
-            title={originalName}
-          />
-        </div>
+        <Image
+          src={mainImage}
+          objectFit={'contain'}
+          objectPosition={'center'}
+          alt={originalName}
+          title={originalName}
+          width={85}
+          height={190}
+          quality={50}
+        />
       </div>
       <div className={classes.content}>
         <div className={classes.contentTop}>

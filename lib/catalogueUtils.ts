@@ -935,31 +935,6 @@ export const getCatalogueNavRubrics = async ({
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
 
-  function getFieldLocale(i18nField?: Record<string, string> | null): string {
-    if (!i18nField) {
-      return '';
-    }
-
-    let translation = getI18nLocaleValue<string>(i18nField, locale);
-
-    // Get fallback language if chosen not found
-    if (!translation) {
-      translation = i18nField[SECONDARY_LOCALE];
-    }
-
-    // Get default language if fallback not found
-    if (!translation) {
-      translation = i18nField[DEFAULT_LOCALE];
-    }
-
-    // Set warning massage if fallback language not found
-    if (!translation) {
-      translation = LOCALE_NOT_FOUND_FIELD_MESSAGE;
-    }
-
-    return translation;
-  }
-
   const db = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -980,6 +955,12 @@ export const getCatalogueNavRubrics = async ({
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
 
+  const constantProject = {
+    _id: 1,
+    slug: 1,
+    nameI18n: 1,
+  };
+
   const initialRubrics = await rubricsCollection
     .aggregate([
       {
@@ -989,9 +970,7 @@ export const getCatalogueNavRubrics = async ({
       },
       {
         $project: {
-          _id: 1,
-          slug: 1,
-          nameI18n: 1,
+          ...constantProject,
           attributes: {
             $filter: {
               input: '$attributes',
@@ -1000,6 +979,53 @@ export const getCatalogueNavRubrics = async ({
                 $eq: ['$$attribute.showInCatalogueNav', true],
               },
             },
+          },
+        },
+      },
+      {
+        $addFields: {
+          attributes: {
+            $slice: ['$attributes', visibleAttributesCount],
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$attributes',
+        },
+      },
+      {
+        $addFields: {
+          'attributes.options.options': [],
+        },
+      },
+      {
+        $addFields: {
+          'attributes.options': {
+            $filter: {
+              input: '$attributes.options',
+              as: 'option',
+              cond: {
+                $eq: ['$$option.isSelected', true],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          'attributes.options': {
+            $slice: ['$attributes.options', visibleOptionsCount],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          slug: { $first: '$slug' },
+          nameI18n: { $first: '$nameI18n' },
+          attributes: {
+            $push: '$attributes',
           },
         },
       },
@@ -1017,12 +1043,9 @@ export const getCatalogueNavRubrics = async ({
   initialRubrics.forEach((rubric) => {
     rubrics.push({
       ...rubric,
-      name: getFieldLocale(rubric.nameI18n),
+      name: getI18nLocaleValue<string>(rubric.nameI18n, locale),
       navItems: getRubricNavAttributes({
         attributes: rubric.attributes,
-        city,
-        visibleAttributesCount,
-        visibleOptionsCount,
         locale,
       }),
     });

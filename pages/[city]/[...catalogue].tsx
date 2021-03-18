@@ -54,6 +54,23 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
   const [state, setState] = React.useState<CatalogueDataFragment>(() => {
     return catalogueData;
   });
+  const [isCatalogueLoading, setIsCatalogueLoading] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const handleRouteStart = () => {
+      setIsCatalogueLoading(true);
+    };
+    const handleRouteComplete = () => {
+      setIsCatalogueLoading(false);
+    };
+    router.events.on('routeChangeStart', handleRouteStart);
+    router.events.on('routeChangeComplete', handleRouteComplete);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteStart);
+      router.events.off('routeChangeComplete', handleRouteComplete);
+    };
+    // eslint-disable-next-line
+  }, []);
 
   React.useEffect(() => {
     setState(catalogueData);
@@ -273,36 +290,46 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                 </div>
               )}
 
-              <InfiniteScroll
-                className={`${classes.list} ${isRowView ? classes.listRows : classes.listColumns}`}
-                next={fetchMoreHandler}
-                hasMore={state.products.length < state.totalProducts}
-                dataLength={state.products.length}
-                scrollableTarget={'#catalogue-products'}
-                loader={<span />}
-              >
-                {state.products.map((product) => {
-                  if (isRowView && !isMobile) {
+              <div className={classes.loaderHolder}>
+                {isCatalogueLoading ? (
+                  <Spinner className={classes.loaderSpinner} isNested={true} />
+                ) : null}
+
+                <InfiniteScroll
+                  className={`${classes.list} ${
+                    isRowView ? classes.listRows : classes.listColumns
+                  }`}
+                  next={fetchMoreHandler}
+                  hasMore={state.products.length < state.totalProducts}
+                  dataLength={state.products.length}
+                  scrollableTarget={'#catalogue-products'}
+                  loader={<span />}
+                >
+                  {state.products.map((product) => {
+                    if (isRowView && !isMobile) {
+                      return (
+                        <ProductSnippetRow
+                          className={isCatalogueLoading ? classes.loadingSnippet : ''}
+                          product={product}
+                          key={product._id}
+                          testId={`catalogue-item-${product.slug}`}
+                          additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
+                        />
+                      );
+                    }
+
                     return (
-                      <ProductSnippetRow
+                      <ProductSnippetGrid
+                        className={isCatalogueLoading ? classes.loadingSnippet : ''}
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product.slug}`}
                         additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
                       />
                     );
-                  }
-
-                  return (
-                    <ProductSnippetGrid
-                      product={product}
-                      key={product._id}
-                      testId={`catalogue-item-${product.slug}`}
-                      additionalSlug={`/${PRODUCT_CARD_RUBRIC_SLUG_PREFIX}${catalogueData.rubric.slug}`}
-                    />
-                  );
-                })}
-              </InfiniteScroll>
+                  })}
+                </InfiniteScroll>
+              </div>
 
               {loading ? (
                 <div className={`${classes.catalogueSpinner}`}>

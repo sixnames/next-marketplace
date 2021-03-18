@@ -16,6 +16,7 @@ interface ProductSnippetGridInterface {
   testId?: string;
   additionalSlug?: string;
   size?: 'small' | 'normal';
+  className?: string;
 }
 
 const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
@@ -23,6 +24,7 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
   testId,
   additionalSlug,
   size = 'normal',
+  className,
 }) => {
   const city = useSessionCity();
   const { addShoplessProductToCart } = useCartMutations();
@@ -50,7 +52,10 @@ const ProductSnippetGrid: React.FC<ProductSnippetGridInterface> = ({
     .join(', ');
 
   return (
-    <LayoutCard className={`${classes.snippetCard} ${sizeClass}`} testId={testId}>
+    <LayoutCard
+      className={`${classes.snippetCard} ${sizeClass} ${className ? className : ''}`}
+      testId={testId}
+    >
       <div className={`${classes.image} ${classes.leftColumn}`}>
         <div className={classes.imageHolder}>
           <Image

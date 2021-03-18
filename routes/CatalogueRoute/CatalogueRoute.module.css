@@ -99,6 +99,22 @@
   transition: color 0.2s;
 }
 
+.loaderHolder {
+  position: relative;
+}
+
+.loaderHolder .loaderSpinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+}
+
+.loadingSnippet {
+  opacity: 0.5;
+}
+
 @media only screen and (max-width: 1024px) {
   .catalogue {
     margin-top: 3rem;

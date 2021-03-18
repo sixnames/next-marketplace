@@ -292,7 +292,9 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
               <div className={classes.loaderHolder}>
                 {isCatalogueLoading ? (
-                  <Spinner className={classes.loaderSpinner} isNested={true} />
+                  <div className={classes.loaderFrame}>
+                    <Spinner className={classes.loaderSpinner} isNested={true} />
+                  </div>
                 ) : null}
 
                 <InfiniteScroll
@@ -309,7 +311,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
                     if (isRowView && !isMobile) {
                       return (
                         <ProductSnippetRow
-                          className={isCatalogueLoading ? classes.loadingSnippet : ''}
                           product={product}
                           key={product._id}
                           testId={`catalogue-item-${product.slug}`}
@@ -320,7 +321,6 @@ const CatalogueRoute: React.FC<CatalogueRouteInterface> = ({ catalogueData }) =>
 
                     return (
                       <ProductSnippetGrid
-                        className={isCatalogueLoading ? classes.loadingSnippet : ''}
                         product={product}
                         key={product._id}
                         testId={`catalogue-item-${product.slug}`}
